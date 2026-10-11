@@ -28,6 +28,7 @@ The loop in `Sources/TabbiKitCore/Focus/FocusRecordings/cafe.m4a` was made from 
 - It starts from Freesound's high-quality OGG rendition of the recording (Freesound needs an account to download the original WAV).
 - The steadiest two minutes were picked (the fewest sudden sounds and the least change in level), skipping the first second.
 - A gentle high-pass at 90 Hz removes rumble, and a narrow notch removes a steady 100 Hz hum.
+- A slow leveler (a 4 second, zero-phase gain ride of at most 3 dB) evens out a table that gets louder or a lull, so every 10 seconds of the loop are within a decibel of the room's level.
 - Cups and spoons that stand out of the room are softened, and a look-ahead limiter keeps every peak within 13.5 dB of the room's level, so nothing clinks out at you.
 - The last 6 seconds are crossfaded (equal power) into the first 6, so the end flows straight into the start and the loop point cannot be heard.
 - It is normalized to -17 LUFS integrated with true peaks under -2 dBTP and encoded as mono AAC-LC at 96 kb/s and 48 kHz, the rate the mixer plays at, by Apple's encoder, which records the encoder delay so the loop decodes to exactly 5,760,000 samples.
