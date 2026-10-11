@@ -22,20 +22,4 @@ final class SpotifyPanelLogicTests: XCTestCase {
             XCTAssert((50.0 / 360 - 1e-9...110.0 / 360 + 1e-9).contains(gap), "\(seed): \(gap)")
         }
     }
-
-    func testScrubberMapsDragToTime() {
-        XCTAssertEqual(SpotifyScrubber.position(atX: 50, width: 200, duration: 240), 60)
-        XCTAssertEqual(SpotifyScrubber.position(atX: 200, width: 200, duration: 240), 240)
-    }
-
-    func testScrubberClampsOutsideTheTrack() {
-        XCTAssertEqual(SpotifyScrubber.position(atX: -30, width: 200, duration: 240), 0)
-        XCTAssertEqual(SpotifyScrubber.position(atX: 900, width: 200, duration: 240), 240)
-    }
-
-    func testScrubberHandlesDegenerateInput() {
-        XCTAssertEqual(SpotifyScrubber.position(atX: 10, width: 0, duration: 240), 0)
-        XCTAssertEqual(SpotifyScrubber.position(atX: 10, width: 200, duration: 0), 0)
-        XCTAssertEqual(SpotifyScrubber.position(atX: .nan, width: 200, duration: 240), 0)
-    }
 }

@@ -41,6 +41,8 @@
 	<string>%@가 다듬지 못했어요. 이 계획도 괜찮아요.</string>
 	<key>%@ couldn't refine this plan</key>
 	<string>%@가 계획을 다듬지 못했어요</string>
+	<key>%@ didn't respond. Click to try again</key>
+	<string>%@이(가) 응답하지 않았어요. 클릭해서 다시 시도하세요</string>
 	<key>%@ didn't send back a usable plan. Try again in a moment.</key>
 	<string>%@에서 쓸 수 있는 계획을 받지 못했어요. 잠시 후 다시 시도해 주세요.</string>
 	<key>%@ done for today. Open %@</key>
@@ -107,6 +109,8 @@
 	<string>%@도 함께 쉬는 중</string>
 	<key>%@ isn't connected</key>
 	<string>%@ 연결 안 됨</string>
+	<key>%@ isn't installed</key>
+	<string>%@이(가) 설치되어 있지 않아요</string>
 	<key>%@ isn't on this Mac</key>
 	<string>이 Mac에 %@ 없음</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
@@ -117,6 +121,10 @@
 	<string>%@가 새에게 노래를 배웠어요</string>
 	<key>%@ left</key>
 	<string>%@ 남음</string>
+	<key>%@ level</key>
+	<string>%@ 레벨</string>
+	<key>%@ level %@</key>
+	<string>%1$@ 레벨 %2$@</string>
 	<key>%@ level in the blend</key>
 	<string>블렌드 속 %@ 음량</string>
 	<key>%@ made friends with a pigeon</key>
@@ -129,6 +137,8 @@
 	<string>%@가 창가에서 낮잠 잤어요</string>
 	<key>%@ naps until the timer runs</key>
 	<string>타이머가 시작될 때까지 %@는 낮잠 중</string>
+	<key>%@ needs permission to control %@ to start your playlist. Click to open Privacy &amp; Security › Automation</key>
+	<string>플레이리스트를 시작하려면 %1$@이(가) %2$@을(를) 제어할 수 있도록 허용해야 해요. 클릭하면 개인정보 보호 및 보안 › 자동화가 열려요</string>
 	<key>%@ not found</key>
 	<string>%@을(를) 찾을 수 없음</string>
 	<key>%@ of %@</key>
@@ -373,6 +383,8 @@
 	<string>%@ 탭을 노치 맨 끝에 추가</string>
 	<key>Add %@ in Tabs to include this</key>
 	<string>포함하려면 탭에서 %@ 추가하기</string>
+	<key>Add %@ to the blend</key>
+	<string>블렌드에 %@ 추가</string>
 	<key>Add AnkiConnect to Anki</key>
 	<string>Anki에 AnkiConnect 추가</string>
 	<key>Add App…</key>
@@ -461,6 +473,8 @@
 	<string>모두 선택 사항이에요. 지금은 할 일이 없어요.</string>
 	<key>Allow</key>
 	<string>허용</string>
+	<key>Allow %@ access</key>
+	<string>%@ 접근 허용</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>회의에 맞춰 계획하려면 개인정보 보호 및 보안에서 %@를 허용해 주세요.</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -483,6 +497,8 @@
 	<string>내장 디스플레이가 아닌 화면에서도 노치를 허용해요</string>
 	<key>Almost there: one thing left to do</key>
 	<string>거의 다 됐어요: 하나만 더 하면 돼요</string>
+	<key>Already playing during focus</key>
+	<string>집중하는 동안 이미 재생 중이에요</string>
 	<key>Already playing: focus is running</key>
 	<string>이미 재생 중: 집중 중입니다</string>
 	<key>Always</key>
@@ -603,6 +619,8 @@
 	<string>체크리스트로 돌아가기</string>
 	<key>Back to the notch (Esc)</key>
 	<string>노치로 돌아가기 (Esc)</string>
+	<key>Back to the timer</key>
+	<string>타이머로 돌아가기</string>
 	<key>Back to today</key>
 	<string>오늘로 돌아가기</string>
 	<key>Backwards Cap</key>
@@ -975,6 +993,8 @@
 	<string>어제 목록을 읽을 수 없어요</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>%1$@ 키트를 삭제하지 못했어요: %2$@</string>
+	<key>Couldn't start the playlist</key>
+	<string>플레이리스트를 시작하지 못했어요</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>스크린샷을 찍지 못했어요. 다시 시도하세요.</string>
 	<key>Count this session for you again</key>
@@ -1043,6 +1063,8 @@
 	<string>가져온 키트를 삭제하고 기본 키트로 돌아가요</string>
 	<key>Delete this key from your Keychain</key>
 	<string>키체인에서 이 키 삭제</string>
+	<key>Delete this preset</key>
+	<string>이 프리셋 삭제</string>
 	<key>Delete your %@ account?</key>
 	<string>%@ 계정을 삭제할까요?</string>
 	<key>Delete your Party data from the friends server</key>
@@ -1483,6 +1505,8 @@
 	<string>설치</string>
 	<key>Install %@ to plan with it.</key>
 	<string>%@로 계획하려면 설치해 주세요.</string>
+	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
+	<string>이 플레이리스트를 재생하려면 %@을(를) 설치하거나 다른 플레이리스트를 고르세요. 클릭하면 닫혀요</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Claude Code를 설치하고 로그인하면 5시간 및 주간 한도를 실시간으로 볼 수 있어요.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1597,6 +1621,8 @@
 	<string>나가기</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>비워 두면 빠르고 저렴한 기본값을 써요.</string>
+	<key>Leave notifications on while studying</key>
+	<string>공부하는 동안 알림 켜 두기</string>
 	<key>Leave the party</key>
 	<string>파티에서 나가기</string>
 	<key>Leave the party; the next member becomes host</key>
@@ -2201,6 +2227,8 @@
 	<string>AI 요청을 받도록 허용하려면 %1$@을(를) 다시 고르세요. 그 전까지 %2$@은(는) 아무것도 보내지 않아요.</string>
 	<key>Pick a cozy focus playlist</key>
 	<string>아늑한 집중 플레이리스트 고르기</string>
+	<key>Pick a focus sound or a playlist</key>
+	<string>집중 사운드나 플레이리스트를 고르세요</string>
 	<key>Pick a kit</key>
 	<string>키트를 골라 주세요</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
@@ -2213,6 +2241,8 @@
 	<string>이름과 펫을 고르고 생년월을 알려 주세요.</string>
 	<key>Pick a sound to preview it</key>
 	<string>미리 들을 사운드를 고르세요</string>
+	<key>Pick a sound, then save the blend here</key>
+	<string>사운드를 고른 다음 여기에 블렌드를 저장하세요</string>
 	<key>Pick any</key>
 	<string>여러 개 고를 수 있어요</string>
 	<key>Pick any app from your Applications folder</key>
@@ -2265,20 +2295,30 @@
 	<string>하루 계획하는 중…</string>
 	<key>Play</key>
 	<string>재생</string>
+	<key>Play %@ (%@) now and with every focus block</key>
+	<string>%1$@(%2$@)을 지금, 그리고 집중 블록마다 재생</string>
+	<key>Play %@. Long-press or right-click to rename or delete</key>
+	<string>%@ 재생. 길게 누르거나 오른쪽 클릭으로 이름 변경 또는 삭제</string>
 	<key>Play a soft sound with celebrations that have no sound of their own</key>
 	<string>자체 소리가 없는 축하에 부드러운 소리를 재생해요</string>
+	<key>Play your playlist now. It's the link from the Focus options in Settings &gt; Tabs; picking a preset replaces it</key>
+	<string>내 플레이리스트를 지금 재생해요. 설정 &gt; 탭의 집중 옵션에 넣은 링크이며, 프리셋을 고르면 바뀌어요</string>
 	<key>Play, pause and skip in Apple Music.</key>
 	<string>Apple Music에서 재생, 일시정지, 건너뛰기.</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>Spotify에서 재생, 일시정지, 건너뛰기.</string>
 	<key>Play, pause and skip songs from the notch.</key>
 	<string>노치에서 노래를 재생, 일시정지, 건너뛸 수 있어요.</string>
+	<key>Playback position</key>
+	<string>재생 위치</string>
 	<key>Players</key>
 	<string>플레이어</string>
 	<key>Playing in %@</key>
 	<string>%@에서 재생 중</string>
 	<key>Playlist</key>
 	<string>플레이리스트</string>
+	<key>Plays %@ with focus. Click to change it</key>
+	<string>집중할 때 %@ 재생. 클릭해서 바꾸세요</string>
 	<key>Plays in Spotify.</key>
 	<string>Spotify에서 재생합니다.</string>
 	<key>Plays “%@” from your Music library.</key>
@@ -2391,6 +2431,8 @@
 	<string>삭제</string>
 	<key>Remove %@</key>
 	<string>%@ 제거</string>
+	<key>Remove %@ from the blend</key>
+	<string>블렌드에서 %@ 빼기</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
 	<string>%@ 탭을 노치에서 빼고 더 추가하기로 돌려놓기</string>
 	<key>Remove Kit</key>
@@ -2495,6 +2537,8 @@
 	<string>벚꽃 가지</string>
 	<key>Save</key>
 	<string>저장</string>
+	<key>Save this blend as a preset</key>
+	<string>이 블렌드를 프리셋으로 저장</string>
 	<key>Save this key in your Keychain</key>
 	<string>이 키를 키체인에 저장</string>
 	<key>Save today's review and show the checklist</key>
@@ -3155,10 +3199,14 @@
 	<string>방해금지 모드를 잠깐 켰다가 다시 끄기</string>
 	<key>Turn On Party</key>
 	<string>파티 켜기</string>
+	<key>Turn off %@: stop it and don't start it with focus</key>
+	<string>%@ 끄기: 멈추고 집중할 때 재생하지 않아요</string>
 	<key>Turn on</key>
 	<string>켜기</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
 	<string>시스템 설정에서 Tabbi의 알림 허용을 켜 주세요.</string>
+	<key>Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)</key>
+	<string>딥 포커스 동안 방해금지 모드 켜기(집중 모드 단축어 실행)</string>
 	<key>Turn on Do Not Disturb during focus</key>
 	<string>집중하는 동안 방해금지 모드 켜기</string>
 	<key>Turn on Do Not Disturb whenever the focus timer runs</key>
@@ -3495,6 +3543,8 @@
 	<string>펫, 연속 기록, 진행 중인 타이머.</string>
 	<key>Your plan</key>
 	<string>내 계획</string>
+	<key>Your playlist</key>
+	<string>내 플레이리스트</string>
 	<key>Your setup already matches %@</key>
 	<string>이미 %@과(와) 같은 설정이에요</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>

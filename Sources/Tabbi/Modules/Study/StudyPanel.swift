@@ -77,7 +77,7 @@ private indirect enum StudyPanelOverlay: Equatable {
         switch snapshot {
         case .picker: self = .picker
         case .info(let kind): self = .info(kind, from: nil)
-        case .sounds: self = .sounds
+        case .sounds, .soundsDenied: self = .sounds
         case .custom: self = .custom
         case .method, .paused, nil: return nil
         }

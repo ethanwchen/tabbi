@@ -1371,6 +1371,78 @@
         }
       }
     },
+    "%@ didn't respond. Click to try again" : {
+      "comment" : "Focus sound mixer: tooltip on the playlist issue row when the music app did not respond. %@ is Spotify or Music.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يستجب %@. انقر للمحاولة مرة أخرى"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ hat nicht reagiert. Klicke, um es noch einmal zu versuchen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ no respondió. Haz clic para intentarlo de nuevo"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi tumugon ang %@. I-click para subukan ulit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ n'a pas répondu. Clique pour réessayer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@が応答しませんでした。クリックして再試行"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@이(가) 응답하지 않았어요. 클릭해서 다시 시도하세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O %@ não respondeu. Clique para tentar de novo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ не ответил. Нажми, чтобы попробовать снова"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@没有响应。点按以重试"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@沒有回應。按一下以重試"
+          }
+        }
+      }
+    },
     "%@ didn't send back a usable plan. Try again in a moment." : {
       "comment" : "Today panel, Plan my day (AI or on-device plan of focus blocks around calendar events). Error detail. %@ is the AI name.",
       "extractionState" : "manual",
@@ -3747,6 +3819,78 @@
         }
       }
     },
+    "%@ isn't installed" : {
+      "comment" : "Focus sound mixer: the playlist issue row when the music app is missing. %@ is Spotify.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ غير مثبت"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ist nicht installiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ no está instalado"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi naka-install ang %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ n'est pas installé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@がインストールされていません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@이(가) 설치되어 있지 않아요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ não está instalado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ не установлен"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未安装%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未安裝%@"
+          }
+        }
+      }
+    },
     "%@ isn't on this Mac" : {
       "comment" : "Connection status line in Settings > Connections (Music). %@ is an app or connection name, %lld a number.",
       "extractionState" : "manual",
@@ -4103,6 +4247,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "還剩 %@"
+          }
+        }
+      }
+    },
+    "%@ level" : {
+      "comment" : "Focus sound mixer: VoiceOver name of a sound's level slider. %@ is the sound, e.g. Rain.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مستوى %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pegel von %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nivel de %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lakas ng %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niveau de %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の音量"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 레벨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nível de %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уровень: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@音量"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@音量"
+          }
+        }
+      }
+    },
+    "%@ level %@" : {
+      "comment" : "Focus sound mixer: tooltip on a sound's level slider. The first %@ is the sound (Rain), the second the level (60%).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مستوى %1$@ %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pegel von %1$@: %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nivel de %1$@: %2$@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lakas ng %1$@: %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niveau de %1$@ : %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@の音量 %2$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 레벨 %2$@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nível de %1$@: %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уровень: %1$@, %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@音量 %2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@音量 %2$@"
           }
         }
       }
@@ -4535,6 +4823,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ 在計時開始前小睡一下"
+          }
+        }
+      }
+    },
+    "%@ needs permission to control %@ to start your playlist. Click to open Privacy & Security › Automation" : {
+      "comment" : "Focus sound mixer: tooltip on the playlist issue row. The first %@ is the app's name (Tabbi), the second the music app (Spotify).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتاج %1$@ إلى إذن للتحكم في %2$@ لتشغيل قائمة التشغيل. انقر لفتح الخصوصية والأمن › الأتمتة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ braucht die Erlaubnis, %2$@ zu steuern, um deine Playlist zu starten. Klicke, um Datenschutz & Sicherheit › Automation zu öffnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ necesita permiso para controlar %2$@ y poner tu playlist. Haz clic para abrir Privacidad y seguridad › Automatización"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kailangan ng %1$@ ng pahintulot na kontrolin ang %2$@ para simulan ang playlist mo. I-click para buksan ang Privacy & Security › Automation"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ a besoin de l'autorisation de contrôler %2$@ pour lancer ta playlist. Clique pour ouvrir Confidentialité et sécurité › Automatisation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレイリストを再生するには、%1$@が%2$@を操作する許可が必要です。クリックして プライバシーとセキュリティ › オートメーション を開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "플레이리스트를 시작하려면 %1$@이(가) %2$@을(를) 제어할 수 있도록 허용해야 해요. 클릭하면 개인정보 보호 및 보안 › 자동화가 열려요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ precisa de permissão para controlar o %2$@ e tocar sua playlist. Clique para abrir Privacidade e Segurança › Automação"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ нужно разрешение управлять %2$@, чтобы включить плейлист. Нажми, чтобы открыть «Конфиденциальность и безопасность» › «Автоматизация»"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@需要控制%2$@的权限才能播放你的播放列表。点按以打开“隐私与安全性 › 自动化”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@需要控制%2$@的權限才能播放你的播放列表。按一下以打開「隱私權與安全性」›「自動化」"
           }
         }
       }
@@ -21233,6 +21593,78 @@
         }
       }
     },
+    "Add %@ to the blend" : {
+      "comment" : "Focus sound mixer: tooltip on a sound tile not in the blend. %@ is the sound, e.g. Rain.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أضف %@ إلى المزيج"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ zur Mischung hinzufügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir %@ a la mezcla"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idagdag ang %@ sa halo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter %@ au mélange"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をブレンドに加える"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "블렌드에 %@ 추가"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar %@ à mistura"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить «%@» в микс"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将%@加入混音"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將%@加入混音"
+          }
+        }
+      }
+    },
     "Add AnkiConnect to Anki" : {
       "comment" : "Anki panel: setup title when the add-on is missing.",
       "extractionState" : "manual",
@@ -24871,6 +25303,78 @@
         }
       }
     },
+    "Allow %@ access" : {
+      "comment" : "Focus sound mixer: the playlist issue row when Tabbi has no Automation access to the music app. %@ is Spotify or Music.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسمح بالوصول إلى %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugriff auf %@ erlauben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir acceso a %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Payagan ang access sa %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoriser l'accès à %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@へのアクセスを許可"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 접근 허용"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir acesso ao %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разрешить доступ к %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允许访问%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允許取用%@"
+          }
+        }
+      }
+    },
     "Allow %@ in Privacy & Security to plan around meetings." : {
       "comment" : "Today panel, Plan my day (AI or on-device plan of focus blocks around calendar events). %@ is the app name Tabbi. Privacy & Security is the macOS System Settings pane, use its localized name.",
       "extractionState" : "manual",
@@ -25659,6 +26163,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "快好了：還差一件事"
+          }
+        }
+      }
+    },
+    "Already playing during focus" : {
+      "comment" : "Focus sound mixer: tooltip on the dimmed preview button while a focus block plays the sound.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يعمل بالفعل أثناء التركيز"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Läuft schon während des Fokus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya suena durante el enfoque"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tumutugtog na habang naka-focus"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déjà en lecture pendant le focus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "集中中はすでに再生しています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "집중하는 동안 이미 재생 중이에요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já tocando durante o foco"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уже звучит во время фокуса"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "专注期间已在播放"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "專注期間已在播放"
           }
         }
       }
@@ -29981,6 +30557,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "回到瀏海（Esc）"
+          }
+        }
+      }
+    },
+    "Back to the timer" : {
+      "comment" : "Focus sound mixer: tooltip on the close button that returns to the timer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العودة إلى المؤقت"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück zum Timer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver al temporizador"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bumalik sa timer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retour au minuteur"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タイマーに戻る"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "타이머로 돌아가기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voltar ao timer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назад к таймеру"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回计时器"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回計時器"
           }
         }
       }
@@ -43653,6 +44301,78 @@
         }
       }
     },
+    "Couldn't start the playlist" : {
+      "comment" : "Focus sound mixer: the playlist issue row when the music app did not respond.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر تشغيل قائمة التشغيل"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist ließ sich nicht starten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo iniciar la playlist"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi masimulan ang playlist"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de lancer la playlist"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレイリストを再生できませんでした"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "플레이리스트를 시작하지 못했어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível tocar a playlist"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось включить плейлист"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法播放播放列表"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法播放播放列表"
+          }
+        }
+      }
+    },
     "Couldn't take a screenshot. Try again." : {
       "comment" : "Ask AI: error line when the screenshot failed.",
       "extractionState" : "manual",
@@ -46098,6 +46818,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "從鑰匙圈刪除此密鑰"
+          }
+        }
+      }
+    },
+    "Delete this preset" : {
+      "comment" : "Focus sound mixer: tooltip on the trash button while renaming a saved blend.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "احذف هذا الإعداد المسبق"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Vorlage löschen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar este preajuste"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Burahin ang preset na ito"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer ce préréglage"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このプリセットを削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 프리셋 삭제"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar esta predefinição"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить этот пресет"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除此预设"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除此預設"
           }
         }
       }
@@ -62682,6 +63474,78 @@
         }
       }
     },
+    "Install %@ to play this playlist, or pick another one. Click to dismiss" : {
+      "comment" : "Focus sound mixer: tooltip on the playlist issue row when the music app is missing. %@ is Spotify.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ثبّت %@ لتشغيل قائمة التشغيل هذه، أو اختر قائمة أخرى. انقر للإخفاء"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installiere %@, um diese Playlist abzuspielen, oder wähle eine andere. Klicke zum Ausblenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instala %@ para reproducir esta playlist o elige otra. Haz clic para descartar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-install ang %@ para i-play ang playlist na ito, o pumili ng iba. I-click para isara"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installe %@ pour lire cette playlist, ou choisis-en une autre. Clique pour masquer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このプレイリストを再生するには%@をインストールするか、別のものを選んでください。クリックで閉じる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 플레이리스트를 재생하려면 %@을(를) 설치하거나 다른 플레이리스트를 고르세요. 클릭하면 닫혀요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instale o %@ para tocar esta playlist ou escolha outra. Clique para dispensar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установи %@, чтобы слушать этот плейлист, или выбери другой. Нажми, чтобы скрыть"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装%@即可播放此播放列表，或选择其他播放列表。点按以关闭"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安裝%@即可播放此播放列表，或選擇其他播放列表。按一下以關閉"
+          }
+        }
+      }
+    },
     "Install Claude Code and sign in to see your live 5-hour and weekly limits." : {
       "comment" : "AI Usage card text when the claude CLI is missing.",
       "extractionState" : "manual",
@@ -66818,6 +67682,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "留空即使用預設模型，快速又便宜。"
+          }
+        }
+      }
+    },
+    "Leave notifications on while studying" : {
+      "comment" : "Focus sound mixer: tooltip on the lit Do Not Disturb switch.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اترك الإشعارات تعمل أثناء الدراسة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen beim Lernen eingeschaltet lassen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deja las notificaciones activadas mientras estudias"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hayaang naka-on ang mga notification habang nag-aaral"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laisser les notifications pendant l'étude"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "勉強中も通知をオンのままにする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공부하는 동안 알림 켜 두기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixe as notificações ligadas enquanto estuda"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оставить уведомления во время учебы"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "学习时保持通知开启"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "讀書時保持通知開啟"
           }
         }
       }
@@ -88804,6 +89740,78 @@
         }
       }
     },
+    "Pick a focus sound or a playlist" : {
+      "comment" : "Timer: tooltip on the focus sound button while nothing plays with focus.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر صوت تركيز أو قائمة تشغيل"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle einen Fokusklang oder eine Playlist"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un sonido de enfoque o una playlist"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pumili ng focus sound o playlist"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis un son de focus ou une playlist"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "集中サウンドかプレイリストを選ぶ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "집중 사운드나 플레이리스트를 고르세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um som de foco ou uma playlist"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери звук фокуса или плейлист"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择专注声音或播放列表"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇專注聲音或播放列表"
+          }
+        }
+      }
+    },
     "Pick a kit" : {
       "comment" : "Onboarding heading. A kit is a preset set of tabs.",
       "extractionState" : "manual",
@@ -89232,6 +90240,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選一種聲音來試聽"
+          }
+        }
+      }
+    },
+    "Pick a sound, then save the blend here" : {
+      "comment" : "Focus sound mixer: tooltip on an empty preset slot while no sound is picked.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر صوتًا، ثم احفظ المزيج هنا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle einen Klang und sichere die Mischung dann hier"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un sonido y luego guarda la mezcla aquí"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pumili ng sound, saka i-save dito ang halo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis un son, puis enregistre le mélange ici"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サウンドを選んでから、ここにブレンドを保存"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사운드를 고른 다음 여기에 블렌드를 저장하세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um som e salve a mistura aqui"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери звук, а потом сохрани микс здесь"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先选择一种声音，再在这里保存混音"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先選擇一種聲音，再在這裡儲存混音"
           }
         }
       }
@@ -91108,6 +92188,150 @@
         }
       }
     },
+    "Play %@ (%@) now and with every focus block" : {
+      "comment" : "Focus sound mixer: tooltip on a playlist row not in use. The first %@ is the playlist's name, the second its curator (Spotify).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغّل %1$@ (%2$@) الآن ومع كل فترة تركيز"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ (%2$@) jetzt und bei jedem Fokusblock abspielen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducir %1$@ (%2$@) ahora y en cada bloque de enfoque"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-play ang %1$@ (%2$@) ngayon at sa bawat focus block"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lire %1$@ (%2$@) maintenant et à chaque bloc de focus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@(%2$@)を今すぐ、そして集中ブロックごとに再生"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@(%2$@)을 지금, 그리고 집중 블록마다 재생"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocar %1$@ (%2$@) agora e em cada bloco de foco"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включить %1$@ (%2$@) сейчас и в каждом блоке фокуса"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立即播放%1$@(%2$@)，每个专注时段也会播放"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立即播放%1$@(%2$@)，每個專注時段也會播放"
+          }
+        }
+      }
+    },
+    "Play %@. Long-press or right-click to rename or delete" : {
+      "comment" : "Focus sound mixer: tooltip on a saved blend chip. %@ is the blend, e.g. Rain + Fireplace.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغّل %@. اضغط مطولًا أو انقر بزر الفأرة الأيمن لإعادة التسمية أو الحذف"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ abspielen. Lang drücken oder rechtsklicken zum Umbenennen oder Löschen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducir %@. Mantén pulsado o haz clic derecho para renombrar o eliminar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-play ang %@. Pindutin nang matagal o i-right-click para palitan ang pangalan o burahin"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lire %@. Appui long ou clic droit pour renommer ou supprimer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@を再生。長押しまたは右クリックで名前変更・削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 재생. 길게 누르거나 오른쪽 클릭으로 이름 변경 또는 삭제"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocar %@. Mantenha pressionado ou clique com o botão direito para renomear ou apagar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включить %@. Долгое нажатие или правый клик, чтобы переименовать или удалить"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放%@。长按或右键点按可重命名或删除"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放%@。長按或按右鍵可重新命名或刪除"
+          }
+        }
+      }
+    },
     "Play a soft sound with celebrations that have no sound of their own" : {
       "comment" : "Tooltip on the Celebration sound toggle in Settings > General.",
       "extractionState" : "manual",
@@ -91176,6 +92400,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "為沒有自帶音效的慶祝播放輕柔的聲音"
+          }
+        }
+      }
+    },
+    "Play your playlist now. It's the link from the Focus options in Settings > Tabs; picking a preset replaces it" : {
+      "comment" : "Focus sound mixer: tooltip on the Your playlist row.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغّل قائمة التشغيل لديك الآن. إنها الرابط من خيارات التركيز في الإعدادات > علامات التبويب، واختيار إعداد مسبق يستبدله"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Playlist jetzt abspielen. Es ist der Link aus den Fokus-Optionen unter Einstellungen > Tabs; eine Vorlage ersetzt ihn"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproduce tu playlist ahora. Es el enlace de las opciones de Enfoque en Ajustes > Pestañas; elegir una predefinida lo reemplaza"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-play ngayon ang playlist mo. Ito ang link mula sa Focus options sa Settings > Tabs; papalitan ito kapag pumili ka ng preset"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lire ta playlist maintenant. C'est le lien des options Focus dans Réglages > Onglets ; choisir une playlist proposée le remplace"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたのプレイリストを今すぐ再生。設定 > タブ の集中オプションのリンクです。プリセットを選ぶと置き換わります"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 플레이리스트를 지금 재생해요. 설정 > 탭의 집중 옵션에 넣은 링크이며, 프리셋을 고르면 바뀌어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque sua playlist agora. É o link das opções de Foco em Ajustes > Abas; escolher uma sugestão o substitui"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включить твой плейлист сейчас. Это ссылка из параметров фокуса в Настройки > Вкладки; выбор готового плейлиста заменит ее"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立即播放你的播放列表。它是 设置 > 标签页 中专注选项里的链接；选择预设会替换它"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立即播放你的播放列表。它是「設定 > 標籤頁」中專注選項裡的連結；選擇預設會取代它"
           }
         }
       }
@@ -91396,6 +92692,78 @@
         }
       }
     },
+    "Playback position" : {
+      "comment" : "Now Playing: VoiceOver name of the playback scrubber.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "موضع التشغيل"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiedergabeposition"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posición de reproducción"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posisyon ng playback"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Position de lecture"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再生位置"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재생 위치"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posição da reprodução"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Позиция воспроизведения"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放位置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放位置"
+          }
+        }
+      }
+    },
     "Players" : {
       "comment" : "Now Playing settings section header: which music players show.",
       "extractionState" : "manual",
@@ -91608,6 +92976,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "播放列表"
+          }
+        }
+      }
+    },
+    "Plays %@ with focus. Click to change it" : {
+      "comment" : "Timer: tooltip on the focus sound button. %@ is what plays, e.g. Rain + Fireplace and Deep Focus.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يعمل %@ مع التركيز. انقر لتغييره"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spielt %@ beim Fokus. Klicke zum Ändern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suena %@ durante el enfoque. Haz clic para cambiarlo"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tumutugtog ang %@ habang naka-focus. I-click para palitan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joue %@ pendant le focus. Clique pour changer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "集中中に%@を再生。クリックして変更"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "집중할 때 %@ 재생. 클릭해서 바꾸세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca %@ durante o foco. Clique para mudar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Во время фокуса звучит %@. Нажми, чтобы изменить"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "专注时播放%@。点按以更改"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "專注時播放%@。按一下以更改"
           }
         }
       }
@@ -95680,6 +97120,78 @@
         }
       }
     },
+    "Remove %@ from the blend" : {
+      "comment" : "Focus sound mixer: tooltip on a sound tile in the blend. %@ is the sound, e.g. Rain.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أزل %@ من المزيج"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ aus der Mischung nehmen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar %@ de la mezcla"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alisin ang %@ sa halo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retirer %@ du mélange"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をブレンドから外す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "블렌드에서 %@ 빼기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tirar %@ da mistura"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Убрать «%@» из микса"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从混音中移除%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從混音中移除%@"
+          }
+        }
+      }
+    },
     "Remove %@ from the notch; it goes back to Add more" : {
       "comment" : "Tooltip on the remove button in Settings > Tabs; %@ is the tab name, Add more is the module library list.",
       "extractionState" : "manual",
@@ -99691,6 +101203,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "儲存"
+          }
+        }
+      }
+    },
+    "Save this blend as a preset" : {
+      "comment" : "Focus sound mixer: tooltip on an empty preset slot.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "احفظ هذا المزيج كإعداد مسبق"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Mischung als Vorlage sichern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar esta mezcla como preajuste"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-save ang halong ito bilang preset"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer ce mélange comme préréglage"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このブレンドをプリセットとして保存"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 블렌드를 프리셋으로 저장"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvar esta mistura como predefinição"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохранить этот микс как пресет"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将此混音存为预设"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將此混音存為預設"
           }
         }
       }
@@ -123676,6 +125260,78 @@
         }
       }
     },
+    "Turn off %@: stop it and don't start it with focus" : {
+      "comment" : "Focus sound mixer: tooltip on the playlist row in use. %@ is the playlist's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أوقف %@: أوقف تشغيلها ولا تبدأها مع التركيز"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ausschalten: stoppen und nicht mehr mit dem Fokus starten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivar %@: detenerla y no iniciarla con el enfoque"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-off ang %@: ihinto ito at huwag simulan kasabay ng focus"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactiver %@ : l'arrêter et ne plus la lancer avec le focus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をオフ:停止して、集中と一緒に再生しない"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 끄기: 멈추고 집중할 때 재생하지 않아요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desligar %@: parar e não tocar com o foco"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выключить %@: остановить и не включать с фокусом"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭%@：停止播放，专注时也不再播放"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉%@：停止播放，專注時也不再播放"
+          }
+        }
+      }
+    },
     "Turn on" : {
       "comment" : "Button in Settings > Connections that turns on Do Not Disturb during focus.",
       "extractionState" : "manual",
@@ -123816,6 +125472,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在「系統設定」中為 Tabbi 開啟「允許通知」。"
+          }
+        }
+      }
+    },
+    "Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)" : {
+      "comment" : "Focus sound mixer: tooltip on the Do Not Disturb switch while it is off.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغّل عدم الإزعاج أثناء التركيز العميق (يشغّل اختصارات التركيز)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht stören beim tiefen Fokus einschalten (führt deine Fokus-Kurzbefehle aus)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa No molestar durante el enfoque profundo (ejecuta tus atajos de Concentración)"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-on ang Do Not Disturb habang deep focus (pinapatakbo ang mga Focus shortcut mo)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activer Ne pas déranger pendant le focus profond (lance tes raccourcis Concentration)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ディープフォーカス中におやすみモードをオンにする(集中モードのショートカットを実行)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "딥 포커스 동안 방해금지 모드 켜기(집중 모드 단축어 실행)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ative o Não Perturbe durante o foco profundo (executa seus atalhos de Foco)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включать «Не беспокоить» во время глубокого фокуса (запускает твои быстрые команды фокуса)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "深度专注时开启勿扰模式(运行你的专注模式快捷指令)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "深度專注時開啟勿擾模式(執行你的專注模式捷徑)"
           }
         }
       }
@@ -136957,6 +138685,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的計畫"
+          }
+        }
+      }
+    },
+    "Your playlist" : {
+      "comment" : "Focus sound mixer: the playlist row for a link typed in Settings that is not one of the presets.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قائمة التشغيل لديك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Playlist"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu playlist"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang playlist mo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta playlist"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたのプレイリスト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 플레이리스트"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua playlist"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твой плейлист"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的播放列表"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的播放列表"
           }
         }
       }

@@ -41,6 +41,8 @@
 	<string>Hindi ito na-refine ng %@. Puwede pa rin ang planong ito.</string>
 	<key>%@ couldn't refine this plan</key>
 	<string>Hindi ma-refine ng %@ ang plan na ito</string>
+	<key>%@ didn't respond. Click to try again</key>
+	<string>Hindi tumugon ang %@. I-click para subukan ulit</string>
 	<key>%@ didn't send back a usable plan. Try again in a moment.</key>
 	<string>Walang magagamit na plano mula sa %@. Subukan ulit mamaya.</string>
 	<key>%@ done for today. Open %@</key>
@@ -107,6 +109,8 @@
 	<string>Nagbe-break si %@ kasama mo</string>
 	<key>%@ isn't connected</key>
 	<string>Hindi nakakonekta ang %@</string>
+	<key>%@ isn't installed</key>
+	<string>Hindi naka-install ang %@</string>
 	<key>%@ isn't on this Mac</key>
 	<string>Wala ang %@ sa Mac na ito</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
@@ -117,6 +121,10 @@
 	<string>Natuto si %@ ng awit mula sa ibon</string>
 	<key>%@ left</key>
 	<string>%@ na lang</string>
+	<key>%@ level</key>
+	<string>Lakas ng %@</string>
+	<key>%@ level %@</key>
+	<string>Lakas ng %1$@: %2$@</string>
 	<key>%@ level in the blend</key>
 	<string>Lakas ng %@ sa blend</string>
 	<key>%@ made friends with a pigeon</key>
@@ -129,6 +137,8 @@
 	<string>Umidlip si %@ sa maaraw na bintana</string>
 	<key>%@ naps until the timer runs</key>
 	<string>Umiidlip si %@ hanggang tumakbo ang timer</string>
+	<key>%@ needs permission to control %@ to start your playlist. Click to open Privacy &amp; Security › Automation</key>
+	<string>Kailangan ng %1$@ ng pahintulot na kontrolin ang %2$@ para simulan ang playlist mo. I-click para buksan ang Privacy &amp; Security › Automation</string>
 	<key>%@ not found</key>
 	<string>Hindi makita ang %@</string>
 	<key>%@ of %@</key>
@@ -373,6 +383,8 @@
 	<string>Idagdag ang %@ bilang huling tab sa notch</string>
 	<key>Add %@ in Tabs to include this</key>
 	<string>Idagdag ang %@ sa Tabs para maisama ito</string>
+	<key>Add %@ to the blend</key>
+	<string>Idagdag ang %@ sa halo</string>
 	<key>Add AnkiConnect to Anki</key>
 	<string>Idagdag ang AnkiConnect sa Anki</string>
 	<key>Add App…</key>
@@ -461,6 +473,8 @@
 	<string>Opsyonal lahat. Wala pang kailangang gawin.</string>
 	<key>Allow</key>
 	<string>Payagan</string>
+	<key>Allow %@ access</key>
+	<string>Payagan ang access sa %@</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>Payagan ang %@ sa Privacy &amp; Security para makapagplano sa paligid ng mga meeting.</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -483,6 +497,8 @@
 	<string>Payagan ang notch sa mga display bukod sa built-in</string>
 	<key>Almost there: one thing left to do</key>
 	<string>Malapit na: isang bagay na lang</string>
+	<key>Already playing during focus</key>
+	<string>Tumutugtog na habang naka-focus</string>
 	<key>Already playing: focus is running</key>
 	<string>Tumutugtog na: tumatakbo ang focus</string>
 	<key>Always</key>
@@ -603,6 +619,8 @@
 	<string>Bumalik sa checklist</string>
 	<key>Back to the notch (Esc)</key>
 	<string>Balik sa notch (Esc)</string>
+	<key>Back to the timer</key>
+	<string>Bumalik sa timer</string>
 	<key>Back to today</key>
 	<string>Balik sa ngayon</string>
 	<key>Backwards Cap</key>
@@ -975,6 +993,8 @@
 	<string>Hindi mabasa ang listahan kahapon</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>Hindi maalis ang %1$@: %2$@</string>
+	<key>Couldn't start the playlist</key>
+	<string>Hindi masimulan ang playlist</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>Hindi makakuha ng screenshot. Subukan ulit.</string>
 	<key>Count this session for you again</key>
@@ -1043,6 +1063,8 @@
 	<string>Burahin ang na-import na kit na ito at bumalik sa default na kit</string>
 	<key>Delete this key from your Keychain</key>
 	<string>Burahin ang key na ito sa Keychain mo</string>
+	<key>Delete this preset</key>
+	<string>Burahin ang preset na ito</string>
 	<key>Delete your %@ account?</key>
 	<string>Burahin ang %@ account mo?</string>
 	<key>Delete your Party data from the friends server</key>
@@ -1483,6 +1505,8 @@
 	<string>I-install</string>
 	<key>Install %@ to plan with it.</key>
 	<string>I-install ang %@ para magamit ito sa pagpaplano.</string>
+	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
+	<string>I-install ang %@ para i-play ang playlist na ito, o pumili ng iba. I-click para isara</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>I-install ang Claude Code at mag-sign in para makita ang live na 5-oras at lingguhang limit mo.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1597,6 +1621,8 @@
 	<string>Umalis</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>Iwanang blangko para sa default, na mabilis at mura.</string>
+	<key>Leave notifications on while studying</key>
+	<string>Hayaang naka-on ang mga notification habang nag-aaral</string>
 	<key>Leave the party</key>
 	<string>Umalis sa party</string>
 	<key>Leave the party; the next member becomes host</key>
@@ -2201,6 +2227,8 @@
 	<string>Piliin ulit ang %1$@ para payagan itong tumanggap ng mga AI request mo. Walang ipapadala ang %2$@ hangga't hindi mo ginagawa ito.</string>
 	<key>Pick a cozy focus playlist</key>
 	<string>Pumili ng cozy na focus playlist</string>
+	<key>Pick a focus sound or a playlist</key>
+	<string>Pumili ng focus sound o playlist</string>
 	<key>Pick a kit</key>
 	<string>Pumili ng kit</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
@@ -2213,6 +2241,8 @@
 	<string>Pumili ng pangalan at pet, at sabihin kung kailan ka ipinanganak.</string>
 	<key>Pick a sound to preview it</key>
 	<string>Pumili ng sound para i-preview</string>
+	<key>Pick a sound, then save the blend here</key>
+	<string>Pumili ng sound, saka i-save dito ang halo</string>
 	<key>Pick any</key>
 	<string>Pumili kahit ilan</string>
 	<key>Pick any app from your Applications folder</key>
@@ -2265,20 +2295,30 @@
 	<string>Pinaplano ang araw mo…</string>
 	<key>Play</key>
 	<string>I-play</string>
+	<key>Play %@ (%@) now and with every focus block</key>
+	<string>I-play ang %1$@ (%2$@) ngayon at sa bawat focus block</string>
+	<key>Play %@. Long-press or right-click to rename or delete</key>
+	<string>I-play ang %@. Pindutin nang matagal o i-right-click para palitan ang pangalan o burahin</string>
 	<key>Play a soft sound with celebrations that have no sound of their own</key>
 	<string>Magpatugtog ng malambing na tunog sa mga celebration na walang sariling tunog</string>
+	<key>Play your playlist now. It's the link from the Focus options in Settings &gt; Tabs; picking a preset replaces it</key>
+	<string>I-play ngayon ang playlist mo. Ito ang link mula sa Focus options sa Settings &gt; Tabs; papalitan ito kapag pumili ka ng preset</string>
 	<key>Play, pause and skip in Apple Music.</key>
 	<string>Mag-play, mag-pause at mag-skip sa Apple Music.</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>Mag-play, mag-pause at mag-skip sa Spotify.</string>
 	<key>Play, pause and skip songs from the notch.</key>
 	<string>Mag-play, mag-pause at mag-skip ng kanta mula sa notch.</string>
+	<key>Playback position</key>
+	<string>Posisyon ng playback</string>
 	<key>Players</key>
 	<string>Mga player</string>
 	<key>Playing in %@</key>
 	<string>Tumutugtog sa %@</string>
 	<key>Playlist</key>
 	<string>Playlist</string>
+	<key>Plays %@ with focus. Click to change it</key>
+	<string>Tumutugtog ang %@ habang naka-focus. I-click para palitan</string>
 	<key>Plays in Spotify.</key>
 	<string>Tutugtog sa Spotify.</string>
 	<key>Plays “%@” from your Music library.</key>
@@ -2391,6 +2431,8 @@
 	<string>Alisin</string>
 	<key>Remove %@</key>
 	<string>Alisin ang %@</string>
+	<key>Remove %@ from the blend</key>
+	<string>Alisin ang %@ sa halo</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
 	<string>Alisin ang %@ sa notch; babalik ito sa Add more</string>
 	<key>Remove Kit</key>
@@ -2495,6 +2537,8 @@
 	<string>Sanga ng Sakura</string>
 	<key>Save</key>
 	<string>I-save</string>
+	<key>Save this blend as a preset</key>
+	<string>I-save ang halong ito bilang preset</string>
 	<key>Save this key in your Keychain</key>
 	<string>I-save ang key na ito sa Keychain mo</string>
 	<key>Save today's review and show the checklist</key>
@@ -3155,10 +3199,14 @@
 	<string>I-on sandali ang Do Not Disturb, tapos i-off ulit</string>
 	<key>Turn On Party</key>
 	<string>I-on ang Party</string>
+	<key>Turn off %@: stop it and don't start it with focus</key>
+	<string>I-off ang %@: ihinto ito at huwag simulan kasabay ng focus</string>
 	<key>Turn on</key>
 	<string>I-on</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
 	<string>I-on ang Allow Notifications para sa Tabbi sa System Settings.</string>
+	<key>Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)</key>
+	<string>I-on ang Do Not Disturb habang deep focus (pinapatakbo ang mga Focus shortcut mo)</string>
 	<key>Turn on Do Not Disturb during focus</key>
 	<string>I-on ang Do Not Disturb habang naka-focus</string>
 	<key>Turn on Do Not Disturb whenever the focus timer runs</key>
@@ -3495,6 +3543,8 @@
 	<string>Ang pet mo, ang streak mo, at ang tumatakbong timer.</string>
 	<key>Your plan</key>
 	<string>Plano mo</string>
+	<key>Your playlist</key>
+	<string>Ang playlist mo</string>
 	<key>Your setup already matches %@</key>
 	<string>Tugma na ang setup mo sa %@</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>

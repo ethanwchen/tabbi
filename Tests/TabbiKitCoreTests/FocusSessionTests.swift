@@ -183,4 +183,110 @@ final class FocusSessionTests: XCTestCase {
         session.observe(.playing, of: .music)
         XCTAssertTrue(go(&session, .interrupted).contains(.pausePlaylist(.music)))
     }
+
+    // MARK: - Picking a playlist in the mixer
+
+    private func picking(_ text: String) -> FocusSettings {
+        var settings = full
+        settings.playlistText = text
+        return settings
+    }
+
+    func testAPickOutsideFocusPlaysRightAway() {
+        var session = FocusSession()
+        XCTAssertEqual(session.choosePlaylist(in: full), [.playPlaylist(spotify)], "the click asked for it")
+    }
+
+    func testAPhaseStartingAfterAPickLeavesItPlayingAndPausesItAtTheBreak() {
+        var session = FocusSession()
+        _ = session.choosePlaylist(in: full)
+        let start = go(&session, .focusing, playing: [.spotify])
+        XCTAssertFalse(start.contains(.playPlaylist(spotify)), "already playing, not restarted")
+        session.observe(.playing, of: .spotify)
+        XCTAssertTrue(go(&session, .interrupted).contains(.pausePlaylist(.spotify)), "focus mode looks after it")
+    }
+
+    func testAPhaseStartingWhileAPickIsStillLoadingDoesntStartItTwice() {
+        var session = FocusSession()
+        _ = session.choosePlaylist(in: full)
+        XCTAssertFalse(go(&session, .focusing).contains(.playPlaylist(spotify)))
+    }
+
+    func testAPickMidPhasePlaysNowAndBecomesThePhasesPlaylist() {
+        var session = FocusSession()
+        _ = go(&session, .focusing, settings: .default)
+        let other = FocusPlaylist.spotify(uri: "spotify:playlist:other")
+        XCTAssertEqual(session.choosePlaylist(in: picking("spotify:playlist:other").withoutSound), [.playPlaylist(other)])
+        session.observe(.playing, of: .spotify)
+        XCTAssertEqual(go(&session, .interrupted), [.pausePlaylist(.spotify)], "paused at the break like one the phase started")
+        // The picked playlist is in the settings now, which the next phase reads.
+        XCTAssertEqual(go(&session, .focusing, settings: picking("spotify:playlist:other").withoutSound),
+                       [.resumePlaylist(.spotify)], "and resumed after it, though the phase started without one")
+    }
+
+    func testAPickPlaysEvenOverMusicTheUserDeclinedEarlier() {
+        var session = FocusSession()
+        _ = go(&session, .focusing)
+        session.observe(.playing, of: .spotify)
+        session.observe(.paused, of: .spotify)  // declined for this session
+        XCTAssertEqual(session.choosePlaylist(in: picking("spotify:playlist:other")),
+                       [.playPlaylist(.spotify(uri: "spotify:playlist:other"))])
+    }
+
+    func testSwitchingAppsPausesThePlaylistFocusModeStarted() {
+        var session = FocusSession()
+        _ = go(&session, .focusing)
+        session.observe(.playing, of: .spotify)
+        let music = "https://music.apple.com/us/playlist/focus/pl.abc"
+        let actions = session.choosePlaylist(in: picking(music))
+        XCTAssertEqual(actions.first, .pausePlaylist(.spotify))
+        XCTAssertEqual(actions.count, 2)
+    }
+
+    func testTurningThePlaylistOffPausesOnlyWhatFocusModeStarted() {
+        var session = FocusSession()
+        _ = session.choosePlaylist(in: full)
+        session.observe(.playing, of: .spotify)
+        XCTAssertEqual(session.choosePlaylist(in: picking("")), [.pausePlaylist(.spotify)])
+
+        var theirs = FocusSession()
+        _ = go(&theirs, .focusing, playing: [.spotify])  // their own music, never ours
+        XCTAssertEqual(theirs.choosePlaylist(in: picking("")), [], "never pause music focus mode didn't start")
+        XCTAssertEqual(go(&theirs, .interrupted), [.stopSound, .runShortcut("Off")])
+    }
+
+    func testTurningItOffMidPhaseLeavesNothingToPauseAtTheBreak() {
+        var session = FocusSession()
+        _ = go(&session, .focusing)
+        session.observe(.playing, of: .spotify)
+        XCTAssertEqual(session.choosePlaylist(in: picking("")), [.pausePlaylist(.spotify)])
+        XCTAssertEqual(go(&session, .interrupted), [.stopSound, .runShortcut("Off")])
+    }
+
+    func testPickingThePlaylistPausedAtTheBreakResumesIt() {
+        var session = FocusSession()
+        _ = go(&session, .focusing)
+        session.observe(.playing, of: .spotify)
+        _ = go(&session, .interrupted)
+        XCTAssertEqual(session.choosePlaylist(in: full), [.resumePlaylist(.spotify)])
+    }
+
+    func testPausingAPickOutsideFocusHandsItBack() {
+        var session = FocusSession()
+        _ = session.choosePlaylist(in: full)
+        session.observe(.playing, of: .spotify)
+        session.observe(.paused, of: .spotify)
+        XCTAssertEqual(session.choosePlaylist(in: picking("")), [], "theirs again: nothing of ours to pause")
+        _ = session.choosePlaylist(in: full)
+        session.observe(.playing, of: .spotify)
+        session.observe(.paused, of: .spotify)
+        XCTAssertTrue(go(&session, .focusing).contains(.playPlaylist(spotify)), "the next phase starts it fresh")
+    }
+}
+
+private extension FocusSettings {
+    /// Only the playlist: no sound and no shortcuts, so a phase's actions are the playlist's alone.
+    var withoutSound: FocusSettings {
+        FocusSettings(playlistText: playlistText)
+    }
 }

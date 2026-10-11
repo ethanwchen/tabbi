@@ -317,50 +317,26 @@ private struct SpotifyScrubberBar: View {
 
     /// Position under the pointer while dragging; nil otherwise.
     @State private var dragPosition: TimeInterval?
-    @State private var hovering = false
 
     private var duration: TimeInterval { playback.track?.duration ?? 0 }
     private var shownPosition: TimeInterval { dragPosition ?? playback.position }
-    private var isActive: Bool { hovering || dragPosition != nil }
 
     var body: some View {
         VStack(spacing: Theme.Spacing.xs) {
-            GeometryReader { proxy in
-                let width = proxy.size.width
-                let fraction = duration > 0 ? min(max(shownPosition / duration, 0), 1) : 0
-                ZStack(alignment: .leading) {
-                    Capsule().fill(Theme.Palette.surfaceHover)
-                    Capsule()
-                        .fill(isActive ? NowPlayingModule.descriptor.accentColor : Theme.Palette.primaryText)
-                        .frame(width: max(width * fraction, isActive ? 0 : 4))
-                    Circle()
-                        .fill(Theme.Palette.primaryText)
-                        .frame(width: 10, height: 10)
-                        .shadow(color: .black.opacity(0.4), radius: 2)
-                        .offset(x: width * fraction - 5)
-                        .opacity(isActive ? 1 : 0)
-                }
-                .frame(height: isActive ? 6 : 4)
-                .frame(maxHeight: .infinity)
-                .contentShape(Rectangle())
-                .gesture(
-                    DragGesture(minimumDistance: 0)
-                        .onChanged { value in
-                            dragPosition = SpotifyScrubber.position(
-                                atX: value.location.x, width: width, duration: duration)
-                        }
-                        .onEnded { value in
-                            onSeek(SpotifyScrubber.position(
-                                atX: value.location.x, width: width, duration: duration))
+            TrackSlider(value: duration > 0 ? shownPosition / duration : 0,
+                        tint: NowPlayingModule.descriptor.accentColor, idleTint: Theme.Palette.primaryText,
+                        trackHeight: 4, activeTrackHeight: 6, knobDiameter: 10, knobVisibility: .whileActive,
+                        step: duration > 0 ? min(10 / duration, 1) : 0.1,
+                        help: String(localized: "Drag to seek", bundle: .tabbi),
+                        accessibilityLabel: String(localized: "Playback position", bundle: .tabbi),
+                        accessibilityValue: PlaybackTimeFormatter.string(shownPosition),
+                        onChange: { dragPosition = $0 * duration },
+                        onCommit: { fraction in
+                            onSeek(fraction * duration)
                             dragPosition = nil
-                        }
-                )
-            }
-            .frame(height: 12)
-            .onHover { hovering = $0 }
-            .help(String(localized: "Drag to seek", bundle: .tabbi))
-            .disabled(duration <= 0)
-            .motion(Theme.Motion.snappy, value: isActive)
+                        })
+                .frame(height: 12)
+                .disabled(duration <= 0)
 
             HStack {
                 Text(PlaybackTimeFormatter.string(shownPosition))
@@ -487,48 +463,21 @@ private struct SpotifyVolumeControl: View {
     }
 
     private var slider: some View {
-        GeometryReader { proxy in
-            let width = proxy.size.width
-            let fraction = CGFloat(shownVolume) / 100
-            ZStack(alignment: .leading) {
-                Capsule().fill(Theme.Palette.surfaceHover)
-                Capsule()
-                    .fill(NowPlayingModule.descriptor.accentColor)
-                    .frame(width: width * fraction)
-                Circle()
-                    .fill(Theme.Palette.primaryText)
-                    .frame(width: 10, height: 10)
-                    .shadow(color: .black.opacity(0.4), radius: 2)
-                    .offset(x: width * fraction - 5)
-            }
-            .frame(height: 4)
-            .frame(maxHeight: .infinity)
-            .contentShape(Rectangle())
-            .gesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { value in
-                        let volume = MediaVolume.volume(atX: value.location.x, width: width)
+        TrackSlider(value: Double(shownVolume) / 100, tint: NowPlayingModule.descriptor.accentColor,
+                    trackHeight: 4, knobDiameter: 10,
+                    help: String(localized: "Volume \((Double(shownVolume) / 100).formatted(.percent))", bundle: .tabbi),
+                    accessibilityLabel: String(localized: "Volume", bundle: .tabbi),
+                    accessibilityValue: (Double(shownVolume) / 100).formatted(.percent),
+                    onChange: { fraction in
+                        let volume = MediaVolume.volume(at: fraction)
                         dragVolume = volume
                         onChange(volume)
-                    }
-                    .onEnded { value in
-                        onChange(MediaVolume.volume(atX: value.location.x, width: width))
+                    },
+                    onCommit: { fraction in
+                        onChange(MediaVolume.volume(at: fraction))
                         dragVolume = nil
-                    }
-            )
-        }
-        .frame(width: Self.sliderWidth, height: Self.height)
-        .help(String(localized: "Volume \((Double(shownVolume) / 100).formatted(.percent))", bundle: .tabbi))
-        .accessibilityElement()
-        .accessibilityLabel(String(localized: "Volume", bundle: .tabbi))
-        .accessibilityValue((Double(shownVolume) / 100).formatted(.percent))
-        .accessibilityAdjustableAction { direction in
-            switch direction {
-            case .increment: onChange(volume + 10)
-            case .decrement: onChange(volume - 10)
-            @unknown default: break
-            }
-        }
+                    })
+            .frame(width: Self.sliderWidth, height: Self.height)
     }
 
     private static func symbol(for volume: Int) -> String {

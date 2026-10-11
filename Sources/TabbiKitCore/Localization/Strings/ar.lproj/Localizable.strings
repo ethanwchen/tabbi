@@ -41,6 +41,8 @@
 	<string>تعذّر على %@ تحسينها. هذه الخطة ما زالت صالحة.</string>
 	<key>%@ couldn't refine this plan</key>
 	<string>تعذّر على %@ تحسين هذه الخطة</string>
+	<key>%@ didn't respond. Click to try again</key>
+	<string>لم يستجب %@. انقر للمحاولة مرة أخرى</string>
 	<key>%@ didn't send back a usable plan. Try again in a moment.</key>
 	<string>لم يُرجع %@ خطة صالحة. حاول مجددًا بعد قليل.</string>
 	<key>%@ done for today. Open %@</key>
@@ -107,6 +109,8 @@
 	<string>%@ يأخذ الاستراحة معك</string>
 	<key>%@ isn't connected</key>
 	<string>%@ غير متصل</string>
+	<key>%@ isn't installed</key>
+	<string>%@ غير مثبت</string>
 	<key>%@ isn't on this Mac</key>
 	<string>%@ غير موجود على هذا الـMac</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
@@ -117,6 +121,10 @@
 	<string>%@ تعلم أغنية من عصفور</string>
 	<key>%@ left</key>
 	<string>باقي %@</string>
+	<key>%@ level</key>
+	<string>مستوى %@</string>
+	<key>%@ level %@</key>
+	<string>مستوى %1$@ %2$@</string>
 	<key>%@ level in the blend</key>
 	<string>مستوى %@ في المزيج</string>
 	<key>%@ made friends with a pigeon</key>
@@ -129,6 +137,8 @@
 	<string>%@ غفا على حافة نافذة مشمسة</string>
 	<key>%@ naps until the timer runs</key>
 	<string>%@ يأخذ قيلولة حتى يعمل المؤقت</string>
+	<key>%@ needs permission to control %@ to start your playlist. Click to open Privacy &amp; Security › Automation</key>
+	<string>يحتاج %1$@ إلى إذن للتحكم في %2$@ لتشغيل قائمة التشغيل. انقر لفتح الخصوصية والأمن › الأتمتة</string>
 	<key>%@ not found</key>
 	<string>%@ غير موجود</string>
 	<key>%@ of %@</key>
@@ -363,6 +373,8 @@
 	<string>أضف %@ كآخر علامة تبويب في النوتش</string>
 	<key>Add %@ in Tabs to include this</key>
 	<string>أضف %@ في علامات التبويب لتضمين هذا</string>
+	<key>Add %@ to the blend</key>
+	<string>أضف %@ إلى المزيج</string>
 	<key>Add AnkiConnect to Anki</key>
 	<string>أضف AnkiConnect إلى Anki</string>
 	<key>Add App…</key>
@@ -451,6 +463,8 @@
 	<string>كله اختياري. لا شيء مطلوب الآن.</string>
 	<key>Allow</key>
 	<string>سماح</string>
+	<key>Allow %@ access</key>
+	<string>اسمح بالوصول إلى %@</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>اسمح لـ %@ في الخصوصية والأمن ليخطط حول اجتماعاتك.</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -473,6 +487,8 @@
 	<string>إظهار النوتش على شاشات غير الشاشة المدمجة</string>
 	<key>Almost there: one thing left to do</key>
 	<string>اقتربت: بقي أمر واحد</string>
+	<key>Already playing during focus</key>
+	<string>يعمل بالفعل أثناء التركيز</string>
 	<key>Already playing: focus is running</key>
 	<string>يعمل بالفعل: التركيز جارٍ</string>
 	<key>Always</key>
@@ -593,6 +609,8 @@
 	<string>العودة إلى القائمة</string>
 	<key>Back to the notch (Esc)</key>
 	<string>العودة إلى النوتش (Esc)</string>
+	<key>Back to the timer</key>
+	<string>العودة إلى المؤقت</string>
 	<key>Back to today</key>
 	<string>العودة إلى اليوم</string>
 	<key>Backwards Cap</key>
@@ -963,6 +981,8 @@
 	<string>تعذّرت قراءة قائمة الأمس</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>تعذّرت إزالة %@: %@</string>
+	<key>Couldn't start the playlist</key>
+	<string>تعذّر تشغيل قائمة التشغيل</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>تعذّر التقاط لقطة الشاشة. حاول مجددًا.</string>
 	<key>Count this session for you again</key>
@@ -1031,6 +1051,8 @@
 	<string>حذف هذه الحزمة المستوردة والعودة إلى الحزمة الافتراضية</string>
 	<key>Delete this key from your Keychain</key>
 	<string>حذف هذا المفتاح من سلسلة المفاتيح</string>
+	<key>Delete this preset</key>
+	<string>احذف هذا الإعداد المسبق</string>
 	<key>Delete your %@ account?</key>
 	<string>حذف حسابك في %@؟</string>
 	<key>Delete your Party data from the friends server</key>
@@ -1469,6 +1491,8 @@
 	<string>تثبيت</string>
 	<key>Install %@ to plan with it.</key>
 	<string>ثبّت %@ لتخطط به.</string>
+	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
+	<string>ثبّت %@ لتشغيل قائمة التشغيل هذه، أو اختر قائمة أخرى. انقر للإخفاء</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>ثبّت Claude Code وسجّل الدخول لترى حدّي الـ 5 ساعات والأسبوع مباشرةً.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1581,6 +1605,8 @@
 	<string>مغادرة</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>اتركه فارغًا للافتراضي، فهو سريع وقليل التكلفة.</string>
+	<key>Leave notifications on while studying</key>
+	<string>اترك الإشعارات تعمل أثناء الدراسة</string>
 	<key>Leave the party</key>
 	<string>مغادرة المجموعة</string>
 	<key>Leave the party; the next member becomes host</key>
@@ -2185,6 +2211,8 @@
 	<string>اختر %@ مجددًا للسماح له باستقبال طلبات AI. لن يرسل %@ شيئًا قبل ذلك.</string>
 	<key>Pick a cozy focus playlist</key>
 	<string>اختر قائمة تشغيل هادئة للتركيز</string>
+	<key>Pick a focus sound or a playlist</key>
+	<string>اختر صوت تركيز أو قائمة تشغيل</string>
 	<key>Pick a kit</key>
 	<string>اختر حزمة</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
@@ -2197,6 +2225,8 @@
 	<string>اختر اسمًا ورفيقًا، وأخبرنا متى وُلدت.</string>
 	<key>Pick a sound to preview it</key>
 	<string>اختر صوتًا لمعاينته</string>
+	<key>Pick a sound, then save the blend here</key>
+	<string>اختر صوتًا، ثم احفظ المزيج هنا</string>
 	<key>Pick any</key>
 	<string>اختر ما تشاء</string>
 	<key>Pick any app from your Applications folder</key>
@@ -2249,20 +2279,30 @@
 	<string>جارٍ تخطيط يومك…</string>
 	<key>Play</key>
 	<string>تشغيل</string>
+	<key>Play %@ (%@) now and with every focus block</key>
+	<string>شغّل %1$@ (%2$@) الآن ومع كل فترة تركيز</string>
+	<key>Play %@. Long-press or right-click to rename or delete</key>
+	<string>شغّل %@. اضغط مطولًا أو انقر بزر الفأرة الأيمن لإعادة التسمية أو الحذف</string>
 	<key>Play a soft sound with celebrations that have no sound of their own</key>
 	<string>تشغيل صوت هادئ مع الاحتفالات التي ليس لها صوت خاص</string>
+	<key>Play your playlist now. It's the link from the Focus options in Settings &gt; Tabs; picking a preset replaces it</key>
+	<string>شغّل قائمة التشغيل لديك الآن. إنها الرابط من خيارات التركيز في الإعدادات &gt; علامات التبويب، واختيار إعداد مسبق يستبدله</string>
 	<key>Play, pause and skip in Apple Music.</key>
 	<string>شغّل وأوقف وتخطَّ في Apple Music.</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>شغّل وأوقف وتخطَّ في Spotify.</string>
 	<key>Play, pause and skip songs from the notch.</key>
 	<string>شغّل الأغاني وأوقفها وتخطَّها من النوتش.</string>
+	<key>Playback position</key>
+	<string>موضع التشغيل</string>
 	<key>Players</key>
 	<string>المشغّلات</string>
 	<key>Playing in %@</key>
 	<string>قيد التشغيل في %@</string>
 	<key>Playlist</key>
 	<string>قائمة تشغيل</string>
+	<key>Plays %@ with focus. Click to change it</key>
+	<string>يعمل %@ مع التركيز. انقر لتغييره</string>
 	<key>Plays in Spotify.</key>
 	<string>تُشغَّل في Spotify.</string>
 	<key>Plays “%@” from your Music library.</key>
@@ -2373,6 +2413,8 @@
 	<string>إزالة</string>
 	<key>Remove %@</key>
 	<string>إزالة %@</string>
+	<key>Remove %@ from the blend</key>
+	<string>أزل %@ من المزيج</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
 	<string>إزالة %@ من النوتش؛ ستعود إلى إضافة المزيد</string>
 	<key>Remove Kit</key>
@@ -2475,6 +2517,8 @@
 	<string>غصن ساكورا</string>
 	<key>Save</key>
 	<string>حفظ</string>
+	<key>Save this blend as a preset</key>
+	<string>احفظ هذا المزيج كإعداد مسبق</string>
 	<key>Save this key in your Keychain</key>
 	<string>حفظ هذا المفتاح في سلسلة المفاتيح</string>
 	<key>Save today's review and show the checklist</key>
@@ -3123,10 +3167,14 @@
 	<string>شغّل عدم الإزعاج لحظة، ثم أوقفه مرة أخرى</string>
 	<key>Turn On Party</key>
 	<string>تشغيل المجموعة</string>
+	<key>Turn off %@: stop it and don't start it with focus</key>
+	<string>أوقف %@: أوقف تشغيلها ولا تبدأها مع التركيز</string>
 	<key>Turn on</key>
 	<string>تشغيل</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
 	<string>شغّل السماح بالإشعارات لـTabbi في إعدادات النظام.</string>
+	<key>Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)</key>
+	<string>شغّل عدم الإزعاج أثناء التركيز العميق (يشغّل اختصارات التركيز)</string>
 	<key>Turn on Do Not Disturb during focus</key>
 	<string>شغّل عدم الإزعاج أثناء التركيز</string>
 	<key>Turn on Do Not Disturb whenever the focus timer runs</key>
@@ -3457,6 +3505,8 @@
 	<string>رفيقك وسلسلة اليوم والمؤقت الجاري.</string>
 	<key>Your plan</key>
 	<string>خطتك</string>
+	<key>Your playlist</key>
+	<string>قائمة التشغيل لديك</string>
 	<key>Your setup already matches %@</key>
 	<string>إعداداتك تطابق %@ بالفعل</string>
 	<key>Your tabs</key>

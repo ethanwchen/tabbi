@@ -47,6 +47,9 @@ public enum FocusSessionAction: Equatable, Sendable {
 /// - A playlist we paused at a break resumes where it left off in the next
 ///   focus phase, rather than restarting from its first track, unless the
 ///   user played something in that app meanwhile.
+/// - Picking a playlist in the mixer is the user asking for it, so it
+///   plays right away (`choosePlaylist(in:)`), and focus mode then looks
+///   after it as if a focus phase had started it.
 public struct FocusSession: Equatable, Sendable {
     /// Who controls the playlist's app during this session.
     enum PlaylistControl: Equatable, Sendable {
@@ -99,8 +102,11 @@ public struct FocusSession: Equatable, Sendable {
         switch playlist {
         case .requested(let owned, _) where owned == source && state == .playing:
             playlist = .playing(source)
-        case .playing(let owned) where owned == source && state != .playing && isFocusing:
-            playlist = .declined
+        case .playing(let owned) where owned == source && state != .playing:
+            // Mid-phase that declines it for the session; outside focus (a
+            // pick the user then paused) it's simply theirs again, and the
+            // next phase starts it fresh.
+            playlist = isFocusing ? .declined : .none
         case .paused(let item) where item.source == source && state != .paused:
             // The user played something there during the break, or quit
             // the app: resuming would no longer continue our playlist.
@@ -110,13 +116,56 @@ public struct FocusSession: Equatable, Sendable {
         }
     }
 
+    /// The user picked the playlist in `settings` (or turned it off) from
+    /// the mixer. A pick plays now, even over other music and outside a
+    /// focus phase, since the click asked for it; a phase that starts later
+    /// finds it playing and leaves it be, then pauses it at the break like
+    /// one it started. A pick mid-phase also becomes the playlist that phase
+    /// pauses and resumes. Turning the playlist off pauses it only if focus
+    /// mode started it.
+    public mutating func choosePlaylist(in settings: FocusSettings) -> [FocusSessionAction] {
+        if isFocusing { active?.playlistText = settings.playlistText }
+        var actions: [FocusSessionAction] = []
+        let owned = ownedSource
+        guard let item = settings.playlist else {
+            if let owned { actions.append(.pausePlaylist(owned)) }
+            playlist = .none
+            return actions
+        }
+        if let owned, owned != item.source { actions.append(.pausePlaylist(owned)) }
+        if case .paused(item) = playlist {
+            playlist = .requested(item.source, autoPlays: true)
+            actions.append(.resumePlaylist(item.source))
+        } else {
+            playlist = .requested(item.source, autoPlays: FocusPlaylistScript.startsPlayback(item))
+            actions.append(.playPlaylist(item))
+        }
+        return actions
+    }
+
+    /// True while a pick from the mixer is still starting in `source`, so a
+    /// phase starting meanwhile doesn't start it a second time.
+    private func isRequested(_ source: MediaSource) -> Bool {
+        if case .requested(source, _) = playlist { return true }
+        return false
+    }
+
+    /// The app focus mode started playing in, and so may pause.
+    private var ownedSource: MediaSource? {
+        switch playlist {
+        case .requested(let source, autoPlays: true), .playing(let source): source
+        case .requested(_, autoPlays: false), .none, .paused, .declined: nil
+        }
+    }
+
     private mutating func startFocus(_ settings: FocusSettings, isPlaying: (MediaSource) -> Bool) -> [FocusSessionAction] {
         active = settings
         var actions: [FocusSessionAction] = []
         if !settings.mix.isOff {
             actions.append(.startSound(settings.mix, volume: settings.volume))
         }
-        if let item = settings.playlist, playlist != .declined, !isPlaying(item.source) {
+        if let item = settings.playlist, playlist != .declined, !isPlaying(item.source),
+           !isRequested(item.source) {
             if case .paused(item) = playlist {
                 playlist = .requested(item.source, autoPlays: true)
                 actions.append(.resumePlaylist(item.source))
