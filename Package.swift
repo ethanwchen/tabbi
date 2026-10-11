@@ -54,7 +54,9 @@ let package = Package(
             // Kit manifests, edition files, pet art, themes and seasonal
             // events ship as human-editable JSON (see docs/kits.md,
             // Edition.swift, PetArt.swift, ThemeCatalog.swift and
-            // SeasonalEventCatalog.swift). The String Catalog holds every
+            // SeasonalEventCatalog.swift). FocusRecordings holds the
+            // recorded focus sounds (FocusRecording.swift, credits in
+            // docs/sounds.md). The String Catalog holds every
             // user-facing string and its translations (L10n.swift), and
             // scripts/compile-strings.sh compiles it into the committed
             // Localization/Strings/<language>.lproj folders, which ship
@@ -65,7 +67,7 @@ let package = Package(
             resources: [
                 .copy("Kits/Bundled"), .copy("Editions/BundledEditions"), .copy("Pets/PetArt"),
                 .copy("Themes/themes.json"), .copy("StudyMethods/study-methods.json"),
-                .copy("Events/events.json"),
+                .copy("Events/events.json"), .copy("Focus/FocusRecordings"),
                 .copy("Localization/Strings"),
             ],
             swiftSettings: coreSettings

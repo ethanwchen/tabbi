@@ -56,8 +56,8 @@ public struct OnePoleFilter: Sendable {
 
 /// Second-order filter from the RBJ "Audio EQ Cookbook" (direct form I).
 ///
-/// Used where a one-pole slope is too soft: shaping rain hiss, the murmur
-/// band of a cafe, the rumble under a fire.
+/// Used where a one-pole slope is too soft: shaping rain hiss and the
+/// rumble under a fire.
 public struct BiquadFilter: Sendable {
     public enum Kind: Sendable { case lowPass, highPass, bandPass }
 

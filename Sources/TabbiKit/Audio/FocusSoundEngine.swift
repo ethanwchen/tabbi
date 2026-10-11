@@ -84,6 +84,9 @@ public final class FocusSoundEngine {
     /// sound again fades back in.
     public func setMix(_ mix: FocusMix) {
         self.mix = mix
+        // Decode a recorded sound before taking the lock, so the audio
+        // thread never waits on it.
+        FocusMixer.preloadRecordings(for: mix)
         box.withMixer { $0.setMix(mix) }
         if isPlaying { updateTransport() }
     }

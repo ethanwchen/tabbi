@@ -1,6 +1,7 @@
 import Foundation
 
-/// A procedurally generated focus sound. "Off" is not a case: it is an
+/// A focus sound: generated sample by sample, or (the cafe) a bundled
+/// recording played as a seamless loop. "Off" is not a case: it is an
 /// empty mix, so a mix of layers covers every choice uniformly.
 public enum FocusSound: String, CaseIterable, Codable, Sendable, Identifiable {
     case brown
@@ -20,6 +21,14 @@ public enum FocusSound: String, CaseIterable, Codable, Sendable, Identifiable {
         case .rain: String(localized: "Rain", bundle: .tabbi)
         case .fireplace: String(localized: "Fireplace", bundle: .tabbi)
         case .cafe: String(localized: "Cafe murmur", bundle: .tabbi)
+        }
+    }
+
+    /// The bundled recording this sound plays, or nil for a synthesized one.
+    public var recording: FocusRecording.Name? {
+        switch self {
+        case .cafe: .cafe
+        case .brown, .pink, .white, .rain, .fireplace: nil
         }
     }
 
@@ -51,7 +60,7 @@ public enum FocusSound: String, CaseIterable, Codable, Sendable, Identifiable {
         case .white: -6.2
         case .rain: -4.2
         case .fireplace: 2.6
-        case .cafe: -2.3
+        case .cafe: -2.8
         }
     }
 
@@ -77,9 +86,12 @@ public struct FocusSoundGenerator: Sendable {
     private var noise: NoiseGenerator?
     private var rain: RainSynth?
     private var fireplace: FireplaceSynth?
-    private var cafe: CafeSynth?
+    private var loop: RecordingLoop?
 
-    public init(sound: FocusSound, sampleRate: Double, seed: UInt64 = 0x5EED) {
+    /// - Parameter loadsRecording: for a recorded sound, decode the recording
+    ///   now. `FocusMixer` passes false so a sound nobody picked never takes
+    ///   memory, and calls `prepareRecording()` when a mix first uses it.
+    public init(sound: FocusSound, sampleRate: Double, seed: UInt64 = 0x5EED, loadsRecording: Bool = true) {
         self.sound = sound
         switch sound {
         case .brown: noise = NoiseGenerator(color: .brown, sampleRate: sampleRate, seed: seed)
@@ -87,8 +99,14 @@ public struct FocusSoundGenerator: Sendable {
         case .white: noise = NoiseGenerator(color: .white, sampleRate: sampleRate, seed: seed)
         case .rain: rain = RainSynth(sampleRate: sampleRate, seed: seed)
         case .fireplace: fireplace = FireplaceSynth(sampleRate: sampleRate, seed: seed)
-        case .cafe: cafe = CafeSynth(sampleRate: sampleRate, seed: seed)
+        case .cafe: loop = RecordingLoop(.cafe, sampleRate: sampleRate, seed: seed, loadsNow: loadsRecording)
         }
+    }
+
+    /// Makes sure a recorded sound has its recording, decoding it if no
+    /// other generator has yet. Does nothing for a synthesized sound.
+    public mutating func prepareRecording() {
+        loop?.prepare()
     }
 
     public mutating func next() -> Float {
@@ -96,7 +114,7 @@ public struct FocusSoundGenerator: Sendable {
         case .brown, .pink, .white: noise?.next() ?? 0
         case .rain: rain?.next() ?? 0
         case .fireplace: fireplace?.next() ?? 0
-        case .cafe: cafe?.next() ?? 0
+        case .cafe: loop?.next() ?? 0
         }
     }
 

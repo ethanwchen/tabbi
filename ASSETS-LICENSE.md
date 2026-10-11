@@ -10,6 +10,9 @@ That includes every pet, breed, costume, limited edition item (the Founder's Pin
 Anything added later stays MIT too, unless it is marked as paid content in the way described below.
 Nothing in this file takes back, narrows or adds conditions to the rights the MIT License already gave anyone.
 
+A few assets are public domain works by others rather than Tabbi's own, such as the cafe focus sound.
+They are listed with their source and license in [docs/sounds.md](docs/sounds.md), and you may use them under those terms, which are no stricter than MIT.
+
 ## Paid artwork added later
 
 Tabbi may one day offer an optional supporter tier, Tabbi Plus, with cosmetic items.

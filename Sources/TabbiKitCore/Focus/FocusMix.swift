@@ -110,10 +110,12 @@ public struct FocusMix: Codable, Equatable, Sendable {
 /// sound's loudness trim, master volume, a 2 s fade in and out, and a soft
 /// clip on the sum.
 ///
-/// Every sound's generator is created up front, so changing the mix, the
-/// volume or the transport never allocates; the render path is safe to run
-/// on the real-time audio thread. Layers at zero gain aren't rendered, and
-/// once stopped and faded out the mixer outputs exact silence for free.
+/// Every sound's generator is created up front, so changing the volume or
+/// the transport never allocates, and neither does changing the mix once a
+/// recorded sound's recording is decoded (`preloadRecordings(for:)`); the
+/// render path is safe to run on the real-time audio thread. Layers at zero
+/// gain aren't rendered, and once stopped and faded out the mixer outputs
+/// exact silence for free.
 public struct FocusMixer: Sendable {
     /// Fade in, fade out and crossfade time between mixes.
     public static let fadeSeconds = 2.0
@@ -137,7 +139,8 @@ public struct FocusMixer: Sendable {
         volumeGlideSamples = Int(sampleRate * Self.volumeGlideSeconds)
         // Distinct seeds so two layers never share a random stream.
         generators = FocusSound.allCases.enumerated().map { index, sound in
-            FocusSoundGenerator(sound: sound, sampleRate: sampleRate, seed: seed &+ UInt64(index) &* 0x9E37_79B9)
+            FocusSoundGenerator(
+                sound: sound, sampleRate: sampleRate, seed: seed &+ UInt64(index) &* 0x9E37_79B9, loadsRecording: false)
         }
         layerGains = FocusSound.allCases.map { _ in GainRamp(value: 0) }
         let clamped = Self.clampVolume(volume)
@@ -162,15 +165,28 @@ public struct FocusMixer: Sendable {
     /// Switches to `mix`. While playing, sounds leaving fade out and sounds
     /// arriving fade in over `fadeSeconds`; while stopped it applies at once,
     /// since the transport fade covers the next start.
+    ///
+    /// A recorded sound is decoded here the first time a mix uses it, unless
+    /// `preloadRecordings(for:)` already did; call that first, outside any
+    /// lock the audio thread takes.
     public mutating func setMix(_ mix: FocusMix) {
         self.mix = mix
         let gains = mix.gains
         let length = isSilent ? 0 : fadeSamples
         for (index, sound) in FocusSound.allCases.enumerated() {
+            if mix.contains(sound) { generators[index].prepareRecording() }
             let target = (gains[sound] ?? 0) * sound.loudnessGain
             if layerGains[index].target != target {
                 layerGains[index].ramp(to: target, samples: length)
             }
+        }
+    }
+
+    /// Decodes the recordings `mix` plays, so `setMix` finds them ready.
+    /// Takes tens of milliseconds the first time and nothing after.
+    public static func preloadRecordings(for mix: FocusMix) {
+        for layer in mix.layers {
+            if let name = layer.sound.recording { _ = FocusRecording.named(name) }
         }
     }
 
