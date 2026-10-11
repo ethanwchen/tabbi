@@ -81,9 +81,11 @@ extension ConnectionGuide {
     }
 
     /// The walkthrough for this guide. Do Not Disturb names the user's own
-    /// shortcuts, which default to the suggested ones.
+    /// shortcuts, which default to the suggested ones. Claude's sign-in runs
+    /// `claudeExecutable`, the `claude` Tabbi found, by its full path.
     public func walkthrough(onShortcut: String = FocusSettings.suggestedOnShortcut,
-                            offShortcut: String = FocusSettings.suggestedOffShortcut) -> ConnectionWalkthrough {
+                            offShortcut: String = FocusSettings.suggestedOffShortcut,
+                            claudeExecutable: URL? = nil) -> ConnectionWalkthrough {
         let code = AnkiConnectClient.addOnCode
         let reopenAnki = ConnectionWalkthrough.Step(
             symbol: "arrow.clockwise", text: String(localized: "Quit Anki and open it again. Tabbi notices by itself.", bundle: .tabbi)
@@ -151,14 +153,14 @@ extension ConnectionGuide {
                     .init(symbol: "doc.on.clipboard",
                           text: String(localized: "Click in the Terminal window, press Command-V to paste, then press Return.", bundle: .tabbi),
                           copyable: command),
-                    .init(symbol: "person.crop.circle.badge.checkmark",
-                          text: String(localized: "When it's done, sign in with your Claude account. Tabbi notices by itself.", bundle: .tabbi)),
+                    .init(symbol: "safari",
+                          text: String(localized: "It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.", bundle: .tabbi)),
                 ],
                 start: .copyAndOpen(text: command, app: .terminal),
                 learnMore: ClaudeConnectionState.installPage
             )
         case .claudeSignIn:
-            let command = ClaudeConnectionState.signInCommand
+            let command = ClaudeConnectionState.signInCommand(executable: claudeExecutable)
             return ConnectionWalkthrough(
                 title: String(localized: "Sign in to Claude", bundle: .tabbi),
                 intro: String(localized: "Claude is on your Mac. Sign in once and Tabbi can use it.", bundle: .tabbi),

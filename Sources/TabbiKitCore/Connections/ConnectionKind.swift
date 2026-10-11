@@ -104,7 +104,8 @@ public enum ConnectionKind: String, CaseIterable, Identifiable, Hashable, Sendab
         case .doNotDisturb:
             FocusShortcutsState(onName: "Tabbi Focus On", offName: "Tabbi Focus Off",
                                 installed: ["Tabbi Focus On"]).diagnosis
-        case .claude: ClaudeConnectionState.ready.diagnosis
+        // A path with no personal folder in it, for the sign-in line.
+        case .claude: ClaudeConnectionState.ready.diagnosis(executable: URL(fileURLWithPath: "/opt/homebrew/bin/claude"))
         case .party: PartyConnectionState.connected(friendCode: "PUFF-42").diagnosis
         }
     }

@@ -263,11 +263,13 @@ final class ConnectionsStore: ObservableObject {
         waiting[kind] = nil
     }
 
-    /// The walkthrough for a guide, naming the user's own shortcuts.
+    /// The walkthrough for a guide, naming the user's own shortcuts and
+    /// the `claude` the latest check found.
     func walkthrough(for guide: ConnectionGuide) -> ConnectionWalkthrough {
-        guard guide == .focusShortcuts, !isDemo else { return guide.walkthrough() }
+        let claude = diagnoses[.claude]?.executable
+        guard guide == .focusShortcuts, !isDemo else { return guide.walkthrough(claudeExecutable: claude) }
         let names = ConnectionProbes.focusShortcutNames()
-        return guide.walkthrough(onShortcut: names.on, offShortcut: names.off)
+        return guide.walkthrough(onShortcut: names.on, offShortcut: names.off, claudeExecutable: claude)
     }
 
     // MARK: Actions

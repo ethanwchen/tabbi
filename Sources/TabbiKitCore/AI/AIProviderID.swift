@@ -94,16 +94,35 @@ public enum AIProviderID: String, Codable, CaseIterable, Hashable, Sendable {
     /// The button that opens `setupPage`.
     public var setupPageTitle: String { requiresAPIKey ? String(localized: "Get a Key", bundle: .tabbi) : String(localized: "Install", bundle: .tabbi) }
 
-    /// What to do once installed, for the providers whose setup is more
-    /// than an install or a key: the CLIs sign in on first run, and Ollama
-    /// needs the model downloaded once. `model` is the one Tabbi will ask for.
-    public func setupHint(model: String) -> String? {
-        switch self {
-        case .claudeCLI: String(localized: "Run claude in Terminal once to sign in.", bundle: .tabbi)
-        case .codexCLI: String(localized: "Run codex in Terminal once to sign in.", bundle: .tabbi)
-        case .geminiCLI: String(localized: "Run gemini in Terminal once to sign in with Google.", bundle: .tabbi)
-        case .anthropic, .openAI, .gemini: nil
-        case .ollama: String(localized: "With Ollama open, run ollama pull \(model) in Terminal once.", bundle: .tabbi)
+    /// The next step, for the providers whose setup is more than a key: a
+    /// command line tool needs installing, then signing in once, and Ollama
+    /// needs the model downloaded once. `model` is the one Tabbi will ask
+    /// for, and `tool` where the provider's command line tool stands.
+    ///
+    /// It never tells the user to type a tool's bare name: a tool that is
+    /// not installed can't run, and one that is may still be missing from
+    /// a fresh Terminal window's PATH (Claude's installer puts it in
+    /// `~/.local/bin`), so a found tool is named by its full path. Claude
+    /// Code points to the Claude row in Connections instead, whose
+    /// walkthrough installs and signs in with one pasted line.
+    public func setupHint(model: String, tool: AIToolLookup) -> String? {
+        switch (self, tool) {
+        case (.anthropic, _), (.openAI, _), (.gemini, _): return nil
+        case (.ollama, _): return String(localized: "With Ollama open, run ollama pull \(model) in Terminal once.", bundle: .tabbi)
+        case (.claudeCLI, .missing):
+            let button = ConnectionAction.showGuide(.claudeInstall).title
+            return String(localized: "To install it, click \(button) on the Claude row below.", bundle: .tabbi)
+        case (.claudeCLI, .found):
+            return String(localized: "The Claude row below shows how to sign in, if you still need to.", bundle: .tabbi)
+        case (_, .missing):
+            return String(localized: "Click \(setupPageTitle) for the official steps, then come back here.", bundle: .tabbi)
+        case (.codexCLI, .found(let executable)):
+            let command = ShellCommandLine.running(executable, arguments: ["login"])
+            return String(localized: "To sign in, run \(command) in Terminal once.", bundle: .tabbi)
+        case (.geminiCLI, .found(let executable)):
+            let command = ShellCommandLine.running(executable)
+            return String(localized: "To sign in with Google, run \(command) in Terminal once.", bundle: .tabbi)
+        case (_, .looking): return nil
         }
     }
 
@@ -153,4 +172,15 @@ public enum AIProviderID: String, Codable, CaseIterable, Hashable, Sendable {
     public static func available(sandboxed: Bool) -> [AIProviderID] {
         allCases.filter { !sandboxed || $0.worksInSandbox }
     }
+}
+
+/// Where a provider's command line tool stands on this Mac, which decides
+/// the setup hint Settings shows under the AI choice.
+public enum AIToolLookup: Hashable, Sendable {
+    /// Still looking; the login shell can take a moment.
+    case looking
+    /// Not found anywhere Tabbi looks.
+    case missing
+    /// Found at this file, which a hint names in full.
+    case found(URL)
 }

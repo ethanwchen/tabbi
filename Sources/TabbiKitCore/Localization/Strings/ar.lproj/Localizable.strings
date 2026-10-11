@@ -805,6 +805,8 @@
 	<string>أنجز هدف بطاقات، لا وقتًا</string>
 	<key>Clear completed tasks</key>
 	<string>مسح المهام المكتملة</string>
+	<key>Click %@ for the official steps, then come back here.</key>
+	<string>انقر على %@ لرؤية الخطوات الرسمية، ثم عد إلى هنا.</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
 	<string>انقر AnkiConnect في القائمة، ثم انقر Check for Updates.</string>
 	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
@@ -1509,6 +1511,8 @@
 	<string>هل الاختصار “%@” موجود؟</string>
 	<key>It belongs to your Apple Account. Delete Account in General removes it.</key>
 	<string>إنها مرتبطة بحساب Apple الخاص بك. يزيلها حذف الحساب في عام.</string>
+	<key>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</key>
+	<string>يثبّت Claude، ثم يفتح صفحة تسجيل الدخول في متصفحك. سجّل الدخول هناك وسيلاحظ Tabbi ذلك تلقائيًا.</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
 	<string>إنه تطبيق بطاقات مجاني. نزّله ثم عد إلى هنا.</string>
 	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
@@ -2455,12 +2459,6 @@
 	<string>إعادة الإعداد</string>
 	<key>Run a checkup on %@ and see what's wrong, in plain words</key>
 	<string>افحص %@ واعرف المشكلة بكلمات بسيطة</string>
-	<key>Run claude in Terminal once to sign in.</key>
-	<string>شغّل claude في Terminal مرة واحدة لتسجيل الدخول.</string>
-	<key>Run codex in Terminal once to sign in.</key>
-	<string>شغّل codex في Terminal مرة واحدة لتسجيل الدخول.</string>
-	<key>Run gemini in Terminal once to sign in with Google.</key>
-	<string>شغّل gemini في Terminal مرة واحدة لتسجيل الدخول باستخدام Google.</string>
 	<key>Run the checks for %@ again</key>
 	<string>إعادة فحص %@</string>
 	<key>Run your Focus shortcuts when the focus timer starts and stops</key>
@@ -2935,6 +2933,8 @@
 	<string>الـAI الذي يجيب في اسأل وخطّط يومي والتحسين</string>
 	<key>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</key>
 	<string>تعرض علامة تبويب Anki بطاقاتك المستحقة وأهم رزمك وسلسلتك، ويحتسب اليوم مراجعاتك ضمن يومك.</string>
+	<key>The Claude row below shows how to sign in, if you still need to.</key>
+	<string>يوضح صف Claude أدناه كيفية تسجيل الدخول إن كنت لا تزال بحاجة إلى ذلك.</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>لم تحفظ سلسلة المفاتيح المفتاح. حاول مرة أخرى.</string>
 	<key>The Party tab asks when you were born before you join. Then open the link again.</key>
@@ -3069,6 +3069,12 @@
 	<string>نصائح لتركيز أفضل</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
 	<string>لإرفاق شاشتك، شغّل Tabbi ضمن تسجيل الشاشة. تُرسل لقطة الشاشة إلى %@ مع سؤالك فقط.</string>
+	<key>To install it, click %@ on the Claude row below.</key>
+	<string>لتثبيته، انقر على %@ في صف Claude أدناه.</string>
+	<key>To sign in with Google, run %@ in Terminal once.</key>
+	<string>لتسجيل الدخول باستخدام Google، شغّل %@ في Terminal مرة واحدة.</string>
+	<key>To sign in, run %@ in Terminal once.</key>
+	<string>لتسجيل الدخول، شغّل %@ في Terminal مرة واحدة.</string>
 	<key>Today</key>
 	<string>اليوم</string>
 	<key>Today in %@</key>
@@ -3269,8 +3275,6 @@
 	<string>عند انتهاء التركيز</string>
 	<key>When focus starts</key>
 	<string>عند بدء التركيز</string>
-	<key>When it's done, sign in with your Claude account. Tabbi notices by itself.</key>
-	<string>عند الانتهاء، سجّل الدخول بحساب Claude. سيلاحظ Tabbi ذلك تلقائيًا.</string>
 	<key>When off, the notch hides while the lid is closed.</key>
 	<string>عند الإيقاف، يختفي النوتش أثناء إغلاق الغطاء.</string>
 	<key>When the reminder can come, in your Mac's time zone</key>

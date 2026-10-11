@@ -18,6 +18,12 @@ struct AIProviderSection: View {
     @EnvironmentObject private var settings: SettingsStore
     /// The provider waiting for the user's permission while the alert shows.
     @State private var pendingConsent: AIProviderID?
+    /// The latest answer to where a provider's command line tool is, which
+    /// the status row and the footer's hint both follow (see `tool`).
+    @State private var lookup: ToolLookup?
+    /// Bumped each time Tabbi becomes active, so a tool installed in
+    /// Terminal meanwhile is found on return.
+    @State private var lookups = 0
 
     var body: some View {
         Section {
@@ -29,13 +35,21 @@ struct AIProviderSection: View {
             }
             .help(String(localized: "The AI that answers Ask, Plan my day and Refine", bundle: .tabbi))
             if let provider = ai.setupState.provider {
-                AIProviderStatusRow(ai: ai, provider: provider)
+                AIProviderStatusRow(ai: ai, provider: provider, tool: tool)
                     .id(provider)
             }
         } header: {
             Text("AI", bundle: .tabbi)
         } footer: {
+            // Selectable, so a line the hint gives can be copied.
             SectionFooter(footer)
+                .textSelection(.enabled)
+        }
+        .task(id: ToolLookupKey(provider: ai.setupState.provider, generation: lookups)) {
+            await lookUpTool()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            lookups += 1
         }
         .alert(pendingConsent?.consentTitle ?? "", isPresented: isAskingConsent, presenting: pendingConsent) { provider in
             Button(String(localized: "Allow", bundle: .tabbi)) { settings.settings.ai.choose(provider) }
@@ -57,6 +71,31 @@ struct AIProviderSection: View {
         })
     }
 
+    private struct ToolLookupKey: Hashable {
+        let provider: AIProviderID?
+        let generation: Int
+    }
+
+    private struct ToolLookup {
+        let provider: AIProviderID
+        let result: AIToolLookup
+    }
+
+    /// Where the picked provider's tool is: "looking" until the first
+    /// answer for this provider. A check on return keeps the last answer
+    /// until the new one is in, so the row doesn't flicker.
+    private var tool: AIToolLookup {
+        guard let lookup, lookup.provider == ai.setupState.provider else { return .looking }
+        return lookup.result
+    }
+
+    private func lookUpTool() async {
+        guard let provider = ai.setupState.provider, provider.isCommandLineTool else { return }
+        let result = await ai.toolLookup(provider)
+        guard !Task.isCancelled else { return }
+        lookup = ToolLookup(provider: provider, result: result)
+    }
+
     private var isAskingConsent: Binding<Bool> {
         Binding(get: { pendingConsent != nil }, set: { if !$0 { pendingConsent = nil } })
     }
@@ -72,7 +111,7 @@ struct AIProviderSection: View {
             return String(localized: "Pick one to use Ask, Plan my day and Refine. \(Edition.current.name) sends nothing until you do.", bundle: .tabbi)
         }
         let hint = provider.requiresAPIKey ? String(localized: "Your key stays in your Keychain.", bundle: .tabbi)
-            : provider.setupHint(model: settings.settings.ai.model(for: provider)) ?? ""
+            : provider.setupHint(model: settings.settings.ai.model(for: provider), tool: tool) ?? ""
         let recipient = provider.vendorName.map { String(localized: "Sends what you ask to \($0).", bundle: .tabbi) } ?? ""
         return Sentences.join([provider.setupSummary, recipient, hint])
     }
@@ -83,17 +122,17 @@ struct AIProviderSection: View {
 private struct AIProviderStatusRow: View {
     @ObservedObject var ai: AIService
     let provider: AIProviderID
+    /// Where the command line tool is; the section looks it up, since its
+    /// footer's hint follows the same answer.
+    let tool: AIToolLookup
     @State private var draft = ""
     @State private var saveFailed = false
-    /// Nil while the lookup runs; always true for providers with no tool.
-    @State private var isInstalled: Bool?
 
     var body: some View {
         if provider.requiresAPIKey {
             keyRow
         } else {
             toolRow
-                .task { isInstalled = await ai.isInstalled(provider) }
         }
     }
 
@@ -142,21 +181,23 @@ private struct AIProviderStatusRow: View {
                     Text("Runs on this Mac", bundle: .tabbi)
                         .foregroundStyle(.secondary)
                     pageButton
-                } else if let isInstalled {
-                    if isInstalled {
+                } else {
+                    switch tool {
+                    case .found(let executable):
                         Label(String(localized: "Installed", bundle: .tabbi), systemImage: "checkmark.circle.fill")
                             .labelStyle(StatusLabelStyle(tint: .green))
                             .foregroundStyle(.secondary)
-                    } else {
+                            .help(executable.path)
+                    case .missing:
                         Label(String(localized: "Not found on this Mac", bundle: .tabbi), systemImage: "exclamationmark.circle.fill")
                             .labelStyle(StatusLabelStyle(tint: .orange))
                             .foregroundStyle(.secondary)
                         pageButton
+                    case .looking:
+                        ProgressView().controlSize(.small)
+                        Text("Looking for it", bundle: .tabbi)
+                            .foregroundStyle(.secondary)
                     }
-                } else {
-                    ProgressView().controlSize(.small)
-                    Text("Looking for it", bundle: .tabbi)
-                        .foregroundStyle(.secondary)
                 }
             }
         }

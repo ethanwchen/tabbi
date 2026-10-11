@@ -50,6 +50,17 @@ final class AIService: ObservableObject {
         return await Task.detached(priority: .userInitiated) { AIProviderFactory.defaultLocate(id) != nil }.value
     }
 
+    /// Where `id`'s command line tool is, for Settings' setup hint, which
+    /// names it by its full path. A demo run (which has a sample provider)
+    /// shows the tool in Homebrew's folder, so the hint never names the
+    /// real home folder and snapshots don't depend on this Mac.
+    func toolLookup(_ id: AIProviderID) async -> AIToolLookup {
+        guard case .cli(let executable) = id.transport else { return .missing }
+        if sampleProvider != nil { return .found(URL(fileURLWithPath: "/opt/homebrew/bin/\(executable)")) }
+        let found = await Task.detached(priority: .userInitiated) { AIProviderFactory.defaultLocate(id) }.value
+        return found.map(AIToolLookup.found) ?? .missing
+    }
+
     /// The assistant's name for running text ("Refine with Gemini"), or
     /// "AI" while no provider is picked.
     var assistantName: String { (setupState.provider ?? sampleProvider)?.assistantName ?? "AI" }

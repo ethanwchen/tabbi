@@ -70,11 +70,41 @@ final class AISettingsTests: XCTestCase {
     }
 
     func testSetupHintsCoverEveryProviderWithoutAKey() {
+        let found = AIToolLookup.found(URL(fileURLWithPath: "/opt/homebrew/bin/tool"))
         for id in AIProviderID.allCases {
-            XCTAssertEqual(id.setupHint(model: "m") == nil, id.requiresAPIKey, "\(id)")
+            XCTAssertEqual(id.setupHint(model: "m", tool: .missing) == nil, id.requiresAPIKey, "\(id)")
+            XCTAssertEqual(id.setupHint(model: "m", tool: found) == nil, id.requiresAPIKey, "\(id)")
         }
-        XCTAssertEqual(AIProviderID.ollama.setupHint(model: AISettings().model(for: .ollama)),
+        XCTAssertEqual(AIProviderID.ollama.setupHint(model: AISettings().model(for: .ollama), tool: .looking),
                        "With Ollama open, run ollama pull llama3.2 in Terminal once.")
+    }
+
+    /// A tool that isn't installed can't run, and one that is may not be on
+    /// a fresh Terminal window's PATH, so no hint names a bare tool to run.
+    func testCommandLineToolHintsNeverAskToRunAToolByItsBareName() {
+        let tools: [AIProviderID] = [.claudeCLI, .codexCLI, .geminiCLI]
+        for id in tools {
+            guard case .cli(let name) = id.transport else { return XCTFail("\(id)") }
+            XCTAssertNil(id.setupHint(model: "", tool: .looking), "\(id)")
+            let missing = id.setupHint(model: "", tool: .missing) ?? ""
+            XCTAssertFalse(missing.contains("run \(name)") || missing.contains("Run \(name)"), missing)
+            XCTAssertFalse(missing.contains("Terminal"), missing)
+        }
+        XCTAssertEqual(AIProviderID.claudeCLI.setupHint(model: "", tool: .missing),
+                       "To install it, click Show me how on the Claude row below.")
+        XCTAssertEqual(AIProviderID.codexCLI.setupHint(model: "", tool: .missing),
+                       "Click Install for the official steps, then come back here.")
+
+        let codex = URL(fileURLWithPath: "/Users/Ana Lee/.npm-global/bin/codex")
+        XCTAssertEqual(AIProviderID.codexCLI.setupHint(model: "", tool: .found(codex)),
+                       "To sign in, run '/Users/Ana Lee/.npm-global/bin/codex' login in Terminal once.")
+        let gemini = URL(fileURLWithPath: "/opt/homebrew/bin/gemini")
+        XCTAssertEqual(AIProviderID.geminiCLI.setupHint(model: "", tool: .found(gemini)),
+                       "To sign in with Google, run /opt/homebrew/bin/gemini in Terminal once.")
+        // Claude's sign-in goes through its Connections row, whose line runs
+        // claude by its full path.
+        XCTAssertEqual(AIProviderID.claudeCLI.setupHint(model: "", tool: .found(URL(fileURLWithPath: "/Users/ana/.local/bin/claude"))),
+                       "The Claude row below shows how to sign in, if you still need to.")
     }
 
     func testInMemoryKeysTrimAndBlankDeletes() {

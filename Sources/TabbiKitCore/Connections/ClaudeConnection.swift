@@ -29,11 +29,27 @@ public enum ClaudeConnectionState: Hashable, Sendable {
 
     /// The official setup page, for "Show me how".
     public static let installPage = URL(string: "https://code.claude.com/docs/en/setup")!
-    /// The one line the setup page gives for a Mac, offered to copy.
-    public static let installCommand = "curl -fsSL https://claude.ai/install.sh | bash"
-    /// The line that signs in, offered to copy. It opens a sign-in page in
-    /// the browser, so Tabbi never sees the password.
-    public static let signInCommand = "claude auth login"
+    /// Where Claude's native installer puts `claude`. A fresh Terminal
+    /// window often lacks that folder on its PATH (the installer only
+    /// prints a hint), so the lines Tabbi offers name the file itself.
+    public static let installedExecutable = "~/.local/bin/claude"
+    /// The arguments that sign in. They open a sign-in page in the
+    /// browser, so Tabbi never sees the password.
+    public static let signInArguments = ["auth", "login"]
+    /// The one line offered to copy for a first setup: the official Mac
+    /// installer from the setup page, then the sign-in, run by the path the
+    /// installer just wrote so it works before PATH knows about it. `&&`
+    /// skips the sign-in when the install fails.
+    public static let installCommand =
+        "curl -fsSL https://claude.ai/install.sh | bash && \(installedExecutable) \(signInArguments.joined(separator: " "))"
+
+    /// The sign-in line offered to copy. It runs the `claude` Tabbi found
+    /// by its full path, since a Terminal window may not find it by name,
+    /// and falls back to the plain command only when no path is known.
+    public static func signInCommand(executable: URL?) -> String {
+        guard let executable else { return (["claude"] + signInArguments).joined(separator: " ") }
+        return ShellCommandLine.running(executable, arguments: signInArguments)
+    }
     /// The arguments of the sign-in probe.
     public static let probeArguments = ["auth", "status", "--json"]
 
