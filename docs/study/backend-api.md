@@ -178,7 +178,9 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `GET /v1/grants` | token | the limited edition items the maintainer granted me |
 | `POST /v1/suggestions` | none | the website's Suggest form: send the maintainer an idea |
 | `POST /v1/crashes` | none | a crash report the person agreed to send |
-| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer), limited edition grants, see [Limited edition grants](#limited-edition-grants-maintainer), the suggestions inbox, see [Suggestions](#suggestions-maintainer), crash reports, see [Crash reports](#crash-reports-maintainer), and aggregate counts, see [Stats](#stats-maintainer) |
+| `GET /v1/public/downloads` | none | the website's rounded download figure, see [Downloads](#downloads-maintainer) |
+| `GET /v1/public/downloads/badge` | none | the README's shields.io badge with the exact total, see [Downloads](#downloads-maintainer) |
+| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer), limited edition grants, see [Limited edition grants](#limited-edition-grants-maintainer), the suggestions inbox, see [Suggestions](#suggestions-maintainer), crash reports, see [Crash reports](#crash-reports-maintainer), aggregate counts, see [Stats](#stats-maintainer), and the App Store units behind the download figure, see [Downloads](#downloads-maintainer) |
 
 ### `GET /`
 
@@ -726,6 +728,45 @@ The same `ADMIN_TOKEN` rules as the moderation routes apply.
 
 Each call reads about two rows per user (one scan of `users` and one of `presence`), so check it now and then rather than polling it.
 `npm run stats` in `backend/` prints these numbers next to the GitHub release download counts; see [`../ops.md`](../ops.md#product-metrics).
+
+## Downloads (maintainer)
+
+The website shows a total download count once it reaches 10,000 ("10,000+ downloads"), counted without the app sending anything (`src/downloads.ts`).
+The total adds two sources:
+
+- **GitHub:** the public `download_count` of every `.dmg` asset of every published release, which is one per new install: the website's `Tabbi.dmg` and the versioned `Tabbi-<version>.dmg` that the Homebrew cask fetches.
+  The update zip (`Tabbi-<version>.zip`) and `appcast.xml` are left out, since Sparkle fetches them on Macs that already have Tabbi, so an update never counts as a second download.
+- **App Store:** the Mac App Store edition's units, which only App Store Connect knows, so the maintainer stores the figure by hand.
+
+`GET /v1/public/downloads` needs no token and returns only the rounded figure:
+
+```json
+{"ok": true, "milestone": 25000, "at": 1789000000}
+```
+
+- `milestone` is the largest of 10,000, 25,000, 50,000, 100,000, 250,000 and so on (1, 2.5 and 5 times a power of ten) that the total reaches, or `0` below 10,000.
+- `at` is when the GitHub part was counted.
+  The Hub asks GitHub at most once every 6 hours (sending the optional `GITHUB_TOKEN` secret, which lifts GitHub's limit of 60 requests an hour per IP, shared on Cloudflare's network), and the reply's `Cache-Control: public, max-age` is the time left until the next count.
+  If GitHub fails, the last good count stays and the Hub tries again after 15 minutes; before any count has worked, the total is the App Store units alone.
+
+`GET /v1/public/downloads/badge` needs no token and returns a shields.io endpoint badge with the exact total, from the same cached count, for the README.
+The maintainer chose to show the exact figure there from the first download.
+- It is rate limited to 30 requests a minute per client; the website asks once per build.
+
+The two operator routes follow the same `ADMIN_TOKEN` rules as the moderation routes:
+
+- `GET /v1/admin/downloads` returns the exact numbers: `{ok, github: {installs, updates, countedAt} | null, appStore: {units, origin, updatedAt} | null, total, milestone}`.
+- `PUT /v1/admin/downloads/app-store` with `{"units": <whole number, 0 to 1,000,000,000>}` stores the App Store units to date and returns `{ok, appStore}`.
+  The figure replaces the previous one; it is not added to it.
+
+```sh
+# First-time downloads (Units) since launch, from App Store Connect > Sales and Trends
+curl -X PUT -H "Authorization: Bearer $TABBI_ADMIN_TOKEN" -H "Content-Type: application/json" \
+  -d '{"units": 12345}' "$TABBI_BACKEND_URL/v1/admin/downloads/app-store"
+```
+
+The units are stored in the `download_counts` table, one row per source with an `origin` (`manual` for this route).
+An App Store Connect API pull (the Sales and Trends reports, which need an API key with the Sales role kept as a Worker secret) can later write the same row with origin `app-store-connect`, from a scheduled Worker or the Hub's alarm, without changing either reply.
 
 ## Errors common to all routes
 

@@ -217,16 +217,16 @@ describe("Founding Member", () => {
   });
 });
 
-describe("schema step 12", () => {
-  it("adds the entitlements table to a database at version 11 and keeps its accounts", async () => {
-    const stub = env.HUB.get(env.HUB.idFromName("version-11"));
+describe("schema step 13", () => {
+  it("adds the entitlements table to a database at version 12 and keeps its accounts", async () => {
+    const stub = env.HUB.get(env.HUB.idFromName("version-12"));
     await runInDurableObject(stub, (_, state) => {
       const sql = state.storage.sql;
       sql.exec("DROP TABLE entitlements");
-      sql.exec("UPDATE schema_version SET version = 11");
+      sql.exec("UPDATE schema_version SET version = 12");
       sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, created_at) VALUES ('s', 'CCCCCCCC', 'r', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 12 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 13 }]);
       expect(sql.exec("SELECT apple_sub, code FROM apple_accounts").toArray()).toEqual([{ apple_sub: "s", code: "CCCCCCCC" }]);
       expect(sql.exec("SELECT * FROM entitlements").toArray()).toEqual([]);
     });

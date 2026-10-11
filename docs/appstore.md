@@ -108,7 +108,9 @@ The listing copy comes from the listing research (October 2026), with only the f
   Answer the questionnaire as the build stands, and say yes wherever it asks about AI-generated content or chat, since Ask AI shows a provider's answers that Tabbi does not filter; if that answer raises the rating, accept the higher rating rather than leave it out.
   When Party comes back it adds user content (display names, study presence and reports), so answer yes to user-generated content and expect a rating of at least 13+, which matches the 13+ age check in the app and the Terms.
 - Sign-in information: not required (signing in is optional and only syncs the pet and streaks)
-- Pricing: free
+- Pricing: free.
+  The app has no tip, coffee or other external payment link in either edition, and this listing has none (Guideline 3.1.1); the website's optional Support Tabbi link lives only on the website.
+  If an optional supporter tier comes later, the App Store edition must offer it through In-App Purchase, and the Description changes in the same submission.
 - Export compliance: the build sets `ITSAppUsesNonExemptEncryption` to `NO` (it only uses HTTPS through the system)
 
 The name, subtitle and keywords name no other company's product.

@@ -55,6 +55,6 @@ Nothing goes out until Ethan says go.
 - Repo: https://github.com/ethanwchen/tabbi
 - Releases: https://github.com/ethanwchen/tabbi/releases/latest
 - Issues: https://github.com/ethanwchen/tabbi/issues
-- Coffee: https://buymeacoffee.com/ethanpolar
+- Support Tabbi: https://buymeacoffee.com/ethanpolar
 - Support: support@tabbinotch.com
 - Press kit: [press-kit.md](press-kit.md)

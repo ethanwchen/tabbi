@@ -14,7 +14,7 @@ import { DurableObject } from "cloudflare:workers";
 import { AdminSecrets, exportTables, isAdminToken, notFound, parseRestore } from "./admin";
 import {
   AUTH_FAILURES_PER_MIN, DEFAULT_NAME, DEFAULT_PET_NAME, HttpError, MAX_DEVICE_TOKENS, MAX_FRIENDS, MAX_PARTY_MEMBERS, PARTY_IDLE_EXPIRY_S, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
-  clientKey, isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, readText, sha256Hex, utcDay,
+  clientKey, int, isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, readText, sha256Hex, utcDay,
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
@@ -46,9 +46,13 @@ import {
   PUBLIC_STATS_PER_MIN, PUBLIC_STATS_TTL_S, PublicMetric, activeCounts, parsePublicMetric, publicBadge, signupsByDay,
   signupsSince,
 } from "./stats";
+import {
+  APP_STORE_UNITS_MAX, DOWNLOADS_PER_MIN, DOWNLOADS_REPO, DOWNLOADS_RETRY_S, DOWNLOADS_TTL_S, Downloads, DownloadsSecrets,
+  RELEASE_PAGES_MAX, StoredCount, countDownloads, downloadsBadge, downloadMilestone, fetchReleases,
+} from "./downloads";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
-export interface Env extends AppleSecrets, AdminSecrets, WebAuthVars, FoundingVars {
+export interface Env extends AppleSecrets, AdminSecrets, WebAuthVars, DownloadsSecrets, FoundingVars {
   HUB: DurableObjectNamespace<Hub>;
 }
 
@@ -286,6 +290,18 @@ CREATE TABLE web_sign_ins (
 CREATE INDEX web_sign_ins_by_expiry ON web_sign_ins (expires_at);
 `;
 
+/** Download counts kept outside GitHub (see downloads.ts). */
+const DOWNLOAD_COUNTS_SCHEMA = `
+-- One row per source GitHub cannot count, today only 'app-store': its units, whether the maintainer set
+-- them by hand ('manual') or an App Store Connect pull did ('app-store-connect'), and when.
+CREATE TABLE download_counts (
+  source     TEXT PRIMARY KEY,
+  units      INTEGER NOT NULL,
+  origin     TEXT NOT NULL,
+  updated_at INTEGER NOT NULL
+) WITHOUT ROWID;
+`;
+
 /** Entitlements of Sign in with Apple accounts (see entitlements.ts). */
 const ENTITLEMENTS_SCHEMA = `
 -- One entitlement a user holds, as in founding. Only Sign in with Apple accounts hold entitlements.
@@ -312,7 +328,8 @@ CREATE UNIQUE INDEX entitlements_by_reference ON entitlements (source, reference
  */
 const MIGRATIONS = [
   SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA, GRANTS_SCHEMA,
-  SUGGESTIONS_SCHEMA, SUGGESTION_APP_SCHEMA, CRASHES_SCHEMA, WEB_SIGN_IN_SCHEMA, ENTITLEMENTS_SCHEMA,
+  SUGGESTIONS_SCHEMA, SUGGESTION_APP_SCHEMA, CRASHES_SCHEMA, WEB_SIGN_IN_SCHEMA, DOWNLOAD_COUNTS_SCHEMA,
+  ENTITLEMENTS_SCHEMA,
 ];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
@@ -460,6 +477,13 @@ export class Hub extends DurableObject<Env> {
   private studyDaysSweptOn: string | null = null;
   /** The public badge counts and when they were taken; see publicStats(). */
   private publicCounts: { at: number; counts: Record<PublicMetric, number> } | null = null;
+  /**
+   * GitHub's download counts, when they were taken, and when to ask GitHub again. After a failed fetch
+   * `downloads` stays the last good count (null until one succeeds). See githubDownloads().
+   */
+  private githubCounts: { at: number; downloads: Downloads | null; nextCheck: number } | null = null;
+  /** The GitHub fetch in flight, which concurrent requests share. */
+  private githubRefresh: Promise<void> | null = null;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -583,6 +607,8 @@ export class Hub extends DurableObject<Env> {
     if (path === "/v1/crashes" && method === "POST") return await this.reportCrash(req, now);
     if (path.startsWith("/v1/admin/")) return await this.admin(req, path, method, now);
     if (path === "/v1/public/stats" && method === "GET") return this.publicStats(req, now);
+    if (path === "/v1/public/downloads" && method === "GET") return await this.publicDownloads(req, now);
+    if (path === "/v1/public/downloads/badge" && method === "GET") return await this.downloadsBadge(req, now);
 
     const caller = await this.authenticate(req, now);
 
@@ -689,6 +715,8 @@ export class Hub extends DurableObject<Env> {
     }
     if (path === "/v1/admin/restore" && method === "POST") return await this.restore(req, now);
     if (path === "/v1/admin/stats" && method === "GET") return this.adminStats(now);
+    if (path === "/v1/admin/downloads" && method === "GET") return await this.adminDownloads(now);
+    if (path === "/v1/admin/downloads/app-store" && method === "PUT") return await this.setAppStoreUnits(req, now);
     if (path === "/v1/admin/reports" && method === "GET") {
       const status = new URL(req.url).searchParams.get("status") ?? "open";
       if (status !== "open" && status !== "all") throw new HttpError(400, "invalid_field", "status must be open or all");
@@ -795,6 +823,90 @@ export class Hub extends DurableObject<Env> {
     return json(publicBadge(metric, this.publicCounts.counts), 200, {
       "Cache-Control": `public, max-age=${PUBLIC_STATS_TTL_S - age}`,
     });
+  }
+
+  // ---------- downloads ----------
+
+  /**
+   * GitHub's download counts, fetched at most once per DOWNLOADS_TTL_S. A failed fetch keeps the last
+   * good count and tries again after DOWNLOADS_RETRY_S; `downloads` is null only until one succeeds.
+   */
+  private async githubDownloads(now: number): Promise<{ at: number; downloads: Downloads | null }> {
+    if (!this.githubCounts || now >= this.githubCounts.nextCheck) {
+      this.githubRefresh ??= (async () => {
+        try {
+          const releases = await fetchReleases(DOWNLOADS_REPO, this.env.GITHUB_TOKEN, fetch, RELEASE_PAGES_MAX, 5000);
+          this.githubCounts = { at: now, downloads: countDownloads(releases), nextCheck: now + DOWNLOADS_TTL_S };
+        } catch (e) {
+          logEvent("warn", "github_downloads_failed", errorFields(e));
+          const last = this.githubCounts;
+          this.githubCounts = { at: last?.at ?? now, downloads: last?.downloads ?? null, nextCheck: now + DOWNLOADS_RETRY_S };
+        } finally {
+          this.githubRefresh = null;
+        }
+      })();
+      await this.githubRefresh;
+    }
+    const { at, downloads } = this.githubCounts!;
+    return { at, downloads };
+  }
+
+  /** The App Store units the maintainer (or later an App Store Connect pull) last stored, if any. */
+  private appStoreUnits(): StoredCount | null {
+    const row = this.sql.exec<{ units: number; origin: string; updated_at: number }>(
+      "SELECT units, origin, updated_at FROM download_counts WHERE source = 'app-store'",
+    ).toArray()[0];
+    return row ? { units: row.units, origin: row.origin as StoredCount["origin"], updatedAt: row.updated_at } : null;
+  }
+
+  /**
+   * GET /v1/public/downloads: the website's download figure (see downloads.ts). It needs no token and
+   * returns only `milestone`, the total rounded down to a friendly step (0 below 10,000); the README badge has the exact sum.
+   */
+  private async publicDownloads(req: Request, now: number): Promise<Response> {
+    this.rateLimit("downloads:" + clientKey(req), DOWNLOADS_PER_MIN, now);
+    const github = await this.githubDownloads(now);
+    const total = (github.downloads?.installs ?? 0) + (this.appStoreUnits()?.units ?? 0);
+    const maxAge = Math.max(0, this.githubCounts!.nextCheck - now);
+    return json({ ok: true, milestone: downloadMilestone(total), at: github.at }, 200, { "Cache-Control": `public, max-age=${maxAge}` });
+  }
+
+  /**
+   * GET /v1/public/downloads/badge: a shields.io endpoint badge for the README with the exact total
+   * (DMG installs plus App Store units), which the maintainer chose to show from the first download.
+   */
+  private async downloadsBadge(req: Request, now: number): Promise<Response> {
+    this.rateLimit("downloads:" + clientKey(req), DOWNLOADS_PER_MIN, now);
+    const github = await this.githubDownloads(now);
+    const total = (github.downloads?.installs ?? 0) + (this.appStoreUnits()?.units ?? 0);
+    const maxAge = Math.max(0, this.githubCounts!.nextCheck - now);
+    return json(downloadsBadge(total), 200, { "Cache-Control": `public, max-age=${maxAge}` });
+  }
+
+  /** GET /v1/admin/downloads: the exact counts behind the public milestone. */
+  private async adminDownloads(now: number): Promise<Response> {
+    const github = await this.githubDownloads(now);
+    const appStore = this.appStoreUnits();
+    const total = (github.downloads?.installs ?? 0) + (appStore?.units ?? 0);
+    return json({
+      ok: true,
+      github: github.downloads ? { installs: github.downloads.installs, updates: github.downloads.updates, countedAt: github.at } : null,
+      appStore,
+      total,
+      milestone: downloadMilestone(total),
+    });
+  }
+
+  /** PUT /v1/admin/downloads/app-store with `{ units }`: the App Store edition's units to date. */
+  private async setAppStoreUnits(req: Request, now: number): Promise<Response> {
+    const body = await readBody(req, ["units"]);
+    const units = int(body.units, "units", 0, APP_STORE_UNITS_MAX);
+    this.sql.exec(
+      "INSERT INTO download_counts (source, units, origin, updated_at) VALUES ('app-store', ?, 'manual', ?) " +
+      "ON CONFLICT (source) DO UPDATE SET units = excluded.units, origin = excluded.origin, updated_at = excluded.updated_at",
+      units, now,
+    );
+    return json({ ok: true, appStore: this.appStoreUnits() });
   }
 
   /** `usage` including this request's statements so far (the stats queries count too). */
