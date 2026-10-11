@@ -20,6 +20,8 @@ export default defineConfig(async () => ({
         APPLE_TEAM_ID: "TESTTEAM01",
         APPLE_KEY_ID: "TESTKEY001",
         APPLE_PRIVATE_KEY: await throwawayAppleKey(),
+        // A launch on March 1, 2026 closes the founding window at the end of June 8, 2026 (entitlements.test.ts).
+        FOUNDING_LAUNCH: "2026-03-01",
         ADMIN_TOKEN: Array.from(crypto.getRandomValues(new Uint8Array(32)), (b) => b.toString(16).padStart(2, "0")).join(""),
       },
     },

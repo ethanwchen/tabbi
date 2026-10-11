@@ -1273,6 +1273,14 @@
 	<string>带回：活动进度 %lld 分钟</string>
 	<key>Found: the rare %@ fur</key>
 	<string>带回：稀有毛色「%@」</string>
+	<key>Founder's Pin</key>
+	<string>创始徽章</string>
+	<key>Founding Member</key>
+	<string>创始成员</string>
+	<key>Founding Member: joined Tabbi in its first 100 days.</key>
+	<string>创始成员：在 Tabbi 最初 100 天内加入。</string>
+	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
+	<string>创始成员：你在 Tabbi 最初 100 天内加入。</string>
 	<key>Free all day</key>
 	<string>全天空闲</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1347,6 +1355,8 @@
 	<string>给你的猫取个名字</string>
 	<key>Give your dog a name</key>
 	<string>给你的狗取个名字</string>
+	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
+	<string>送给在 Tabbi 最初 100 天内登录的每个人。</string>
 	<key>Given to everyone who used Tabbi in its launch week.</key>
 	<string>送给在发布周使用 Tabbi 的每个人。</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>

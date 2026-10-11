@@ -37,6 +37,9 @@ final class SyncStore: ObservableObject {
     /// The age check (`PartyAgeCheck`): accounts are for people 13 and
     /// older, so signing in waits until it passed.
     @Published private(set) var ageStatus: PartyAgeCheck.Status
+    /// Whether the pet holds the Founder's Pin (`PetSave.isFoundingMember`),
+    /// which the Account row shows as the Founding badge while signed in.
+    @Published private(set) var isFoundingMember = false
 
     /// Sent after the stored Party credentials changed (sign in, sign out,
     /// delete), so Party reconnects with the new identity.
@@ -58,6 +61,7 @@ final class SyncStore: ObservableObject {
     let signInMethod: AppleSignInMethod
     private let webCallback: @MainActor (URL) async throws -> URL?
     private let pet: ClosetStore
+    private var foundingWatch: AnyCancellable?
     private let stateURL: URL?
     private let credentials: any PartyCredentialStore
     private let server: () -> URL?
@@ -123,6 +127,7 @@ final class SyncStore: ObservableObject {
             name = "Sam Rivera"
             lastSyncedAt = clock().addingTimeInterval(-4 * 60)
             ageStatus = .passed
+            watchFounding()
             return
         }
         let url = runMode.isSnapshot ? nil : storage.file("state.json", in: "Sync")
@@ -142,6 +147,16 @@ final class SyncStore: ObservableObject {
         name = loaded.session?.name
         lastSyncedAt = loaded.lastSyncedAt
         ageStatus = PartyAgeCheck.status(eligibleFrom: ageAnswer.load(), at: clock())
+        watchFounding()
+    }
+
+    /// Follows whether the pet holds the Founder's Pin, for the Account row.
+    private func watchFounding() {
+        isFoundingMember = pet.closet.save.isFoundingMember
+        foundingWatch = pet.saves
+            .map(\.isFoundingMember)
+            .removeDuplicates()
+            .sink { [weak self] founding in self?.isFoundingMember = founding }
     }
 
     var isSignedIn: Bool { state.isSignedIn }

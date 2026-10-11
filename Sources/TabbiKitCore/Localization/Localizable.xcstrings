@@ -55086,6 +55086,294 @@
         }
       }
     },
+    "Founder's Pin" : {
+      "comment" : "Closet: name of a limited edition pet accessory, a small gold pin given to Founding Members (people who signed in during Tabbi's first 100 days).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دبوس المؤسسين"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gründer-Anstecker"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pin fundador"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pin ng Tagapagtatag"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pin's fondateur"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファウンダーピン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "창립 멤버 핀"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Broche de fundador"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Значок основателя"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创始徽章"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "創始徽章"
+          }
+        }
+      }
+    },
+    "Founding Member" : {
+      "comment" : "Badge next to a name (Settings > General Account row, Party roster and friends list tooltips) for people who signed in during Tabbi's first 100 days.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عضو مؤسس"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gründungsmitglied"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miembro fundador"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kasaping Tagapagtatag"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membre fondateur"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "創設メンバー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "창립 멤버"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membro fundador"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Участник-основатель"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创始成员"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "創始成員"
+          }
+        }
+      }
+    },
+    "Founding Member: joined Tabbi in its first 100 days." : {
+      "comment" : "Tooltip and accessibility label of the Founding Member badge, a small gold seal next to a friend's or party member's name in Party.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عضو مؤسس: انضم إلى Tabbi في أول 100 يوم."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gründungsmitglied: in den ersten 100 Tagen zu Tabbi gekommen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miembro fundador: se unió a Tabbi en sus primeros 100 días."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kasaping Tagapagtatag: sumali sa Tabbi sa unang 100 araw nito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membre fondateur : a rejoint Tabbi pendant ses 100 premiers jours."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "創設メンバー：Tabbiの最初の100日間に参加。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "창립 멤버: Tabbi의 첫 100일 안에 함께했어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membro fundador: chegou ao Tabbi nos primeiros 100 dias."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Участник-основатель: с Tabbi с первых 100 дней."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创始成员：在 Tabbi 最初 100 天内加入。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "創始成員：在 Tabbi 最初 100 天內加入。"
+          }
+        }
+      }
+    },
+    "Founding Member: you joined Tabbi in its first 100 days." : {
+      "comment" : "Tooltip and accessibility label of the Founding Member badge, a small gold seal next to the user's own name (Settings > General Account row, and You in the Party roster).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عضو مؤسس: انضممت إلى Tabbi في أول 100 يوم."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gründungsmitglied: Du warst in den ersten 100 Tagen bei Tabbi dabei."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miembro fundador: te uniste a Tabbi en sus primeros 100 días."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kasaping Tagapagtatag: sumali ka sa Tabbi sa unang 100 araw nito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membre fondateur : tu as rejoint Tabbi pendant ses 100 premiers jours."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "創設メンバー：Tabbiの最初の100日間に参加しました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "창립 멤버: Tabbi의 첫 100일 안에 함께했어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membro fundador: você chegou ao Tabbi nos primeiros 100 dias."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Участник-основатель: ты с Tabbi с первых 100 дней."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创始成员：你在 Tabbi 最初 100 天内加入。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "創始成員：你在 Tabbi 最初 100 天內加入。"
+          }
+        }
+      }
+    },
     "Free all day" : {
       "comment" : "Today panel, Up next card empty state (calendar). Title when tomorrow has no events.",
       "extractionState" : "manual",
@@ -57746,6 +58034,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "幫你的狗取個名字"
+          }
+        }
+      }
+    },
+    "Given to everyone who signs in to Tabbi in its first 100 days." : {
+      "comment" : "How to earn the Founder's Pin, a limited edition Closet item: signing in with Apple during the 100 days after Tabbi launched.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هدية لكل من يسجّل الدخول إلى Tabbi في أول 100 يوم."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für alle, die sich in den ersten 100 Tagen bei Tabbi anmelden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para todos los que inician sesión en Tabbi en sus primeros 100 días."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para sa lahat ng mag-sign in sa Tabbi sa unang 100 araw nito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offert à tous ceux qui se connectent à Tabbi pendant ses 100 premiers jours."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiの最初の100日間にサインインしたすべての人に贈られます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 출시 후 100일 안에 로그인한 모든 분께 드려요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para todos que entrarem no Tabbi nos primeiros 100 dias."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для всех, кто вошёл в Tabbi в первые 100 дней."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送给在 Tabbi 最初 100 天内登录的每个人。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送給在 Tabbi 最初 100 天內登入的每個人。"
           }
         }
       }

@@ -121,6 +121,17 @@ final class PartyClientTests: XCTestCase {
         XCTAssertFalse(friends[2].canJoin, "an offline friend's party is not joinable")
     }
 
+    func testProfileBadgesDecodeAndDefaultToNone() async throws {
+        let founder = #"{"code":"F0UNDR2K","name":"Fay","petName":"Pip","species":"cat","breed":"tabby","colors":[],"costume":"none","accessories":[],"points":0,"level":1,"badges":["founding","fromTheFuture"]}"#
+        let body = #"{"ok":true,"friends":[{"profile":\#(founder),"since":1789000000,"presence":null,"online":false,"party":null},{"profile":\#(Fixture.ben),"since":1789000500,"presence":null,"online":false,"party":null}]}"#
+        let (client, _) = self.client(["GET /v1/friends": .json(body)])
+        let friends = try await client.friends()
+        XCTAssertEqual(friends[0].profile.badges, ["founding", "fromTheFuture"])
+        XCTAssertTrue(friends[0].profile.isFoundingMember)
+        XCTAssertEqual(friends[1].profile.badges, [], "older servers and other replies send no badges")
+        XCTAssertFalse(friends[1].profile.isFoundingMember)
+    }
+
     func testAddFriendNormalizesThePastedCode() async throws {
         let (client, transport) = self.client(["POST /v1/friends": .json(#"{"ok":true,"added":true,"friend":\#(Fixture.ben)}"#)])
         let result = try await client.addFriend(code: "  b3nx-9qrt ")

@@ -1273,6 +1273,14 @@
 	<string>발견: 이벤트에 %lld분</string>
 	<key>Found: the rare %@ fur</key>
 	<string>발견: 희귀 털색 '%@'</string>
+	<key>Founder's Pin</key>
+	<string>창립 멤버 핀</string>
+	<key>Founding Member</key>
+	<string>창립 멤버</string>
+	<key>Founding Member: joined Tabbi in its first 100 days.</key>
+	<string>창립 멤버: Tabbi의 첫 100일 안에 함께했어요.</string>
+	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
+	<string>창립 멤버: Tabbi의 첫 100일 안에 함께했어요.</string>
 	<key>Free all day</key>
 	<string>하루 종일 비어 있어요</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1347,6 +1355,8 @@
 	<string>고양이에게 이름을 지어 주세요</string>
 	<key>Give your dog a name</key>
 	<string>강아지에게 이름을 지어 주세요</string>
+	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
+	<string>Tabbi 출시 후 100일 안에 로그인한 모든 분께 드려요.</string>
 	<key>Given to everyone who used Tabbi in its launch week.</key>
 	<string>출시 주간에 Tabbi를 쓴 모든 분께 드려요.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>

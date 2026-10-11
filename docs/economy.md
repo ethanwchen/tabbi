@@ -97,6 +97,7 @@ Points cannot buy them, and they are never tied to money or donations: they are 
 | Flame Headband | 7 days in a row with at least 5 focused minutes each | flicker |
 | Golden Laurel | 50 hours (3000 minutes) focused in total | shimmer |
 | Team Medal | A Party shared session finished with the user in it | sparkle |
+| Founder's Pin | Granted to every Sign in with Apple account made in Tabbi's first 100 days (Founding Member, see below) | sparkle |
 
 Milestones are read from the activity log (`PetMilestoneProgress`): every `focus.completed` record counts its minutes, from any module and whether it finished or not.
 A day with 5 or more focused minutes in total is a study day, the same floor that earns points.
@@ -112,6 +113,21 @@ That route answers for any friends token, so a signed-out Party identity gets it
 The app asks it once per launch, wake and identity: Party after it connects (signed in or not), and sync after its first round on a signed-in Mac, so a grant arrives even with Party off.
 New items celebrate in the Closet like a milestone unlock.
 The server's list of grantable ids is `backend/shared/limited-items.json`, which `PetLimitedTests` holds to `PetLimitedEdition`.
+
+### Founding Member
+
+Everyone who signs in with Apple in the first 100 days after launch is a Founding Member, and so is every account made before the launch (the beta testers).
+A Founding Member gets the Founder's Pin, a small gold pin with crimson ribbon tails worn in the neck slot, and a Founding badge.
+The badge shows on the Account row in Settings > General, and friends and party members see a small gold seal next to the name in Party; hovering it reads "Founding Member: you joined Tabbi in its first 100 days."
+It is free, permanent and never sold, like every limited item.
+
+The window is server configuration: the Worker variable `FOUNDING_LAUNCH` (unix seconds or an ISO 8601 date such as `2026-11-03`, which means midnight UTC) starts it, and it ends 100 days later.
+Until `FOUNDING_LAUNCH` is set, nobody is left out, so every account is founding.
+A value the server cannot read grants nothing new rather than everything, since a founding grant cannot be taken back.
+What counts is when the account first signed in with Apple (`apple_accounts.created_at`), not when its Party friend code was made, and a Party identity that never signed in is not founding.
+The server records the entitlement by itself at every sign-in and whenever the app asks for its grants, so no maintainer run is needed and beta accounts get it on their next launch.
+It comes back through `GET /v1/grants` on every Mac and after a reinstall, and stays recorded even if `FOUNDING_LAUNCH` changes later.
+Deleting the account deletes it; an account made again after the window is not founding.
 
 ### Seasonal events
 
@@ -171,3 +187,19 @@ The rules live in `StudyReminder` and `StudyReminderSave` (`TabbiKitCore/Streaks
 - The pending notification stays when Tabbi quits, so macOS still delivers it, and the next day is planned when Tabbi runs again.
 - A time skipped by a daylight saving change moves to the next valid moment.
 - The choice is saved in `Pet/reminder.json` in the edition's folder; demo and snapshot runs save and post nothing.
+
+## Entitlements
+
+The server keeps a small entitlements model tied to the Sign in with Apple account (`backend/src/entitlements.ts`, tested by `backend/test/entitlements.test.ts`), so something recorded once is honored on every Mac and in both editions.
+The catalog is `backend/shared/entitlements.json`: each entitlement has an id, whether it shows a badge to others, and the limited items it brings.
+Founding Member (`founding`) is the first and today the only one.
+Each row in the `entitlements` table names the user, the entitlement, its `source` (how it was recorded), an optional `reference`, a start and an optional end.
+`GET /v1/grants` returns the maintainer's grants plus the items of the caller's active entitlements, and the ids of those entitlements; friends lists and party rosters carry each profile's `badges`.
+In the app, owning the Founder's Pin is what shows the badge on the user's own Account row, and `PartyProfile.badges` shows it on others.
+
+Nothing is for sale, and there are no purchase routes, prices or payment code.
+If an optional supporter tier (Tabbi Plus) ever comes, it would plug in here without changing the model.
+A purchase would be one more row: its store as `source` (`app-store` for StoreKit in the App Store edition, or the merchant of record, such as Paddle, for the direct download), the store's original transaction or subscription id as `reference`, which a unique index lets be recorded only once, and `ends_at` for a subscription period.
+The App Store edition would verify a signed StoreKit transaction (with the account's id as its `appAccountToken`) and the direct edition would take the merchant's signed webhook, and both would write that row for the same account, so a purchase made in one edition is honored in the other.
+Such a tier would only add cosmetics and Party hosting perks: no premium currency, no loot boxes, no paid streak freezes and nothing that helps anyone earn points or items faster.
+Everything shipped before it, Founding Member included, stays free.

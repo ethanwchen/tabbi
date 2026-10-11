@@ -53,7 +53,10 @@ To turn on the operator endpoints (reading website suggestions and crash reports
 openssl rand -hex 32 | npx wrangler secret put ADMIN_TOKEN
 ```
 
-Until it is set, the admin routes answer 404. How to read reports and act on them is in [the API doc](../docs/study/backend-api.md#moderation-maintainer).
+Until it is set, the admin routes answer 404.
+
+At launch, set `FOUNDING_LAUNCH` under `[vars]` in `wrangler.toml` (and under `[env.staging.vars]` for staging) to the launch day, then deploy.
+It starts the 100-day window in which every account that signs in with Apple becomes a Founding Member; until it is set, every account does ([docs/economy.md](../docs/economy.md#founding-member)). How to read reports and act on them is in [the API doc](../docs/study/backend-api.md#moderation-maintainer).
 
 The tables in that storage are versioned in `src/hub.ts` (`MIGRATIONS`, recorded in a `schema_version` table): the Hub applies missing steps when it starts, so a deploy upgrades the database by itself.
 Add a schema change as a new step at the end and never edit a deployed one.

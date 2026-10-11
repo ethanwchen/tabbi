@@ -1261,6 +1261,14 @@
 	<string>لقية: %lld دقيقة نحو الفعالية</string>
 	<key>Found: the rare %@ fur</key>
 	<string>لقية: فرو %@ النادر</string>
+	<key>Founder's Pin</key>
+	<string>دبوس المؤسسين</string>
+	<key>Founding Member</key>
+	<string>عضو مؤسس</string>
+	<key>Founding Member: joined Tabbi in its first 100 days.</key>
+	<string>عضو مؤسس: انضم إلى Tabbi في أول 100 يوم.</string>
+	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
+	<string>عضو مؤسس: انضممت إلى Tabbi في أول 100 يوم.</string>
 	<key>Free all day</key>
 	<string>يوم حر بالكامل</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1335,6 +1343,8 @@
 	<string>امنح قطتك اسمًا</string>
 	<key>Give your dog a name</key>
 	<string>سمِّ كلبك</string>
+	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
+	<string>هدية لكل من يسجّل الدخول إلى Tabbi في أول 100 يوم.</string>
 	<key>Given to everyone who used Tabbi in its launch week.</key>
 	<string>هدية لكل من استخدم Tabbi في أسبوع إطلاقه.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>

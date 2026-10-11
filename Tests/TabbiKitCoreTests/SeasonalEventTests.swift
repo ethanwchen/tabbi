@@ -344,6 +344,7 @@ final class SeasonalEventTests: XCTestCase {
         }
         let milestones = PetLimitedShelf(kind: .milestones, items: [
             .accessory(.backwardsCap), .accessory(.flameHeadband), .accessory(.goldenLaurel), .accessory(.teamMedal),
+            .accessory(.foundersPin),
         ])
         for shelves in [shelves(2026, 10, 10), shelves(2026, 10, 20), shelves(2027, 2, 10)] {
             XCTAssertEqual(shelves.flatMap(\.items).sorted { $0.id < $1.id }, PetCloset.limitedShelf.sorted { $0.id < $1.id },

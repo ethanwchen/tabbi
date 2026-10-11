@@ -103,14 +103,14 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
             <tr><td>Blocks</td><td>The friend codes you blocked, and when.</td><td>Until you unblock them</td></tr>
             <tr><td>Reports</td><td>A report you send: the reported person's friend code, their name and pet name at that moment, your friend code, the reason, your optional note (up to 280 characters), the time, and how and when we resolved it.</td><td>Until the reporter or the reported person deletes their data</td></tr>
             <tr><td>Moderation</td><td>Whether a user is banned, and a name or pet name we replaced, so it cannot be set again.</td><td>Until that user deletes their data</td></tr>
-            <tr><td>Limited items</td><td>The ids of limited edition pet items we gave you for free (for example the launch-week cap), and when.</td><td>Until you delete your data</td></tr>
+            <tr><td>Limited items</td><td>The ids of limited edition pet items we gave you for free (for example the launch-week cap), and when; and, if you signed in with Apple in Tabbi's first 100 days, that you are a Founding Member.</td><td>Until you delete your data</td></tr>
           </tbody>
         </table>
       </div>
       <p class="measure"><strong>Never collected:</strong> email addresses, real names, passwords, device names, card or deck content, note text, and IP addresses.
         The Party endpoints reject requests that carry fields they do not expect.
         Your local calendar day (for example 2026-10-02) can hint at your time zone; it is used only to count minutes toward the right day.</p>
-      <p class="measure"><strong>Who can see it.</strong> Friends see your profile, presence, whether you are in a party, and your weekly minutes.
+      <p class="measure"><strong>Who can see it.</strong> Friends see your profile (with a Founding badge if you are a Founding Member), presence, whether you are in a party, and your weekly minutes.
         Members of your party see the profile and presence of everyone in it, including people who are not their friends.
         There is no directory or search: nobody can find you without your friend code or a party code.
         An invite link (<code>tabbinotch.com/add/...</code> or <code>/join/...</code>) holds only that code, so share it only with people you want to study with. The site does not store the code.

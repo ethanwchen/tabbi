@@ -20,6 +20,7 @@ import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfil
 import { json } from "./http";
 import { errorFields, logEvent, routeOf } from "./log";
 import { readCohort, readGrant, parseGrantItem } from "./grants";
+import { FOUNDING, FoundingVars, badgesOf, foundingEnd, isFounding, itemsOf } from "./entitlements";
 import { SYNC_PUT_PER_MIN, etag, parseIfMatch, readSyncDocument } from "./sync";
 import {
   APPLE_AUTH_FIELDS, APPLE_AUTH_PER_MIN, APPLE_CLIENT_ID, AppleSecrets, exchangeAuthorizationCode, parseAppleAuth,
@@ -51,7 +52,7 @@ import {
 } from "./downloads";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
-export interface Env extends AppleSecrets, AdminSecrets, WebAuthVars, DownloadsSecrets {
+export interface Env extends AppleSecrets, AdminSecrets, WebAuthVars, DownloadsSecrets, FoundingVars {
   HUB: DurableObjectNamespace<Hub>;
 }
 
@@ -301,6 +302,25 @@ CREATE TABLE download_counts (
 ) WITHOUT ROWID;
 `;
 
+/** Entitlements of Sign in with Apple accounts (see entitlements.ts). */
+const ENTITLEMENTS_SCHEMA = `
+-- One entitlement a user holds, as in founding. Only Sign in with Apple accounts hold entitlements.
+-- source says how it was recorded (the founding rule today); reference is the store's transaction id
+-- for a purchase, null for anything free, and names at most one row per source so a purchase can be
+-- recorded once. ends_at null means it never ends.
+CREATE TABLE entitlements (
+  code        TEXT NOT NULL,
+  entitlement TEXT NOT NULL,
+  source      TEXT NOT NULL,
+  reference   TEXT,
+  starts_at   INTEGER NOT NULL,
+  ends_at     INTEGER,
+  created_at  INTEGER NOT NULL,
+  PRIMARY KEY (code, entitlement, source)
+) WITHOUT ROWID;
+CREATE UNIQUE INDEX entitlements_by_reference ON entitlements (source, reference) WHERE reference IS NOT NULL;
+`;
+
 /**
  * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
@@ -309,6 +329,7 @@ CREATE TABLE download_counts (
 const MIGRATIONS = [
   SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA, GRANTS_SCHEMA,
   SUGGESTIONS_SCHEMA, SUGGESTION_APP_SCHEMA, CRASHES_SCHEMA, WEB_SIGN_IN_SCHEMA, DOWNLOAD_COUNTS_SCHEMA,
+  ENTITLEMENTS_SCHEMA,
 ];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
@@ -619,7 +640,7 @@ export class Hub extends DurableObject<Env> {
     if (path === "/v1/party/session" && method === "POST") return this.startSession(req, caller, now);
     if (path === "/v1/party/session" && method === "DELETE") return this.endSession(caller, now);
 
-    if (path === "/v1/grants" && method === "GET") return this.listGrants(caller);
+    if (path === "/v1/grants" && method === "GET") return this.listGrants(caller, now);
 
     if (path === "/v1/sync" && method === "GET") return this.getSync(caller);
     // Awaited here: putSync can throw before its first await, and a rejection that is only adopted by
@@ -717,7 +738,7 @@ export class Hub extends DurableObject<Env> {
     const crash = /^\/v1\/admin\/crashes\/(\d+)$/.exec(path);
     if (crash && method === "DELETE") return this.adminDeleteCrash(Number(crash[1]));
     const grants = /^\/v1\/admin\/users\/([^/]+)\/grants$/.exec(path);
-    if (grants && method === "GET") return this.adminListGrants(grants[1]);
+    if (grants && method === "GET") return this.adminListGrants(grants[1], now);
     if (grants && method === "POST") return await this.adminGrant(req, grants[1], now);
     const grant = /^\/v1\/admin\/users\/([^/]+)\/grants\/([^/]+)$/.exec(path);
     if (grant && method === "DELETE") return this.adminRevoke(grant[1], decodeURIComponent(grant[2]));
@@ -1062,6 +1083,7 @@ export class Hub extends DurableObject<Env> {
     this.sql.exec("DELETE FROM bans WHERE code = ?", code);
     this.sql.exec("DELETE FROM name_holds WHERE code = ?", code);
     this.sql.exec("DELETE FROM grants WHERE code = ?", code);
+    this.sql.exec("DELETE FROM entitlements WHERE code = ?", code);
     this.live.delete(code);
   }
 
@@ -1086,10 +1108,11 @@ export class Hub extends DurableObject<Env> {
        WHERE f.a = ? AND f.b NOT IN (SELECT code FROM bans) ORDER BY u.name COLLATE NOCASE, u.code`,
       caller.code, caller.code, caller.code, now - PARTY_IDLE_EXPIRY_S, caller.code,
     ).toArray();
+    const badges = this.badgesByCode(rows.map((r) => r.code), now);
     const friends = rows.map((r) => {
       const presence = this.live.get(r.code)?.presence ?? rowToPresence(r);
       return {
-        profile: rowToProfile(r),
+        profile: { ...rowToProfile(r), badges: badges.get(r.code) ?? [] },
         since: r.since,
         presence: publicPresence(presence, now),
         online: isOnline(presence, now),
@@ -1380,9 +1403,10 @@ export class Hub extends DurableObject<Env> {
     return json({ ok: true, unbanned });
   }
 
-  /** GET /v1/admin/users/{code}/grants: the limited edition items the user holds. */
-  private adminListGrants(raw: string): Response {
-    return json({ ok: true, grants: this.grantsOf(this.adminTarget(raw).code) });
+  /** GET /v1/admin/users/{code}/grants: the limited edition items the maintainer granted the user, and its entitlements. */
+  private adminListGrants(raw: string, now: number): Response {
+    const code = this.adminTarget(raw).code;
+    return json({ ok: true, grants: this.grantsOf(code), entitlements: this.activeEntitlements(code, now) });
   }
 
   /** POST /v1/admin/users/{code}/grants with `{ item }`: gives the user the item; granting it again is a no-op. */
@@ -1425,9 +1449,64 @@ export class Hub extends DurableObject<Env> {
 
   // ---------- grants ----------
 
-  /** GET /v1/grants: the caller's limited edition items, for signed-in accounts and anonymous users alike. */
-  private listGrants(caller: Caller): Response {
-    return json({ ok: true, items: this.grantsOf(caller.code) });
+  /**
+   * GET /v1/grants: the caller's limited edition items, for signed-in accounts and anonymous users alike:
+   * the maintainer's grants, oldest first, then the items the caller's entitlements bring, and the ids
+   * of those entitlements.
+   */
+  private listGrants(caller: Caller, now: number): Response {
+    this.recordFounding(caller.code, now);
+    const entitlements = this.activeEntitlements(caller.code, now);
+    const items = this.grantsOf(caller.code);
+    for (const item of itemsOf(entitlements)) if (!items.includes(item)) items.push(item);
+    return json({ ok: true, items, entitlements });
+  }
+
+  // ---------- entitlements ----------
+
+  /**
+   * Records Founding Member for a Sign in with Apple account that first signed in before the founding
+   * window ended (see entitlements.ts). It runs at every sign-in and whenever the app asks for its grants,
+   * so it needs no maintainer run, and accounts from before this rule (beta testers) get it on their next
+   * launch. Recording is idempotent, and a recorded entitlement stays even if FOUNDING_LAUNCH changes.
+   */
+  private recordFounding(code: string, now: number): void {
+    const account = this.sql.exec<{ created_at: number }>(
+      "SELECT created_at FROM apple_accounts WHERE code = ?", code).toArray()[0];
+    if (!account || !isFounding(account.created_at, foundingEnd(this.env))) return;
+    this.sql.exec(
+      `INSERT OR IGNORE INTO entitlements (code, entitlement, source, reference, starts_at, ends_at, created_at)
+       VALUES (?, ?, ?, NULL, ?, NULL, ?)`,
+      code, FOUNDING, FOUNDING, Math.min(account.created_at, now), now,
+    );
+  }
+
+  /** The ids of the entitlements `code` holds at `now`, in id order. */
+  private activeEntitlements(code: string, now: number): string[] {
+    return this.activeEntitlementRows([code], now).map((r) => r.entitlement);
+  }
+
+  /** The badges each of `codes` shows to others; users without one are left out of the map. */
+  private badgesByCode(codes: string[], now: number): Map<string, string[]> {
+    const held = new Map<string, string[]>();
+    for (const r of this.activeEntitlementRows(codes, now)) held.set(r.code, [...(held.get(r.code) ?? []), r.entitlement]);
+    const badges = new Map<string, string[]>();
+    for (const [code, entitlements] of held) {
+      const shown = badgesOf(entitlements);
+      if (shown.length > 0) badges.set(code, shown);
+    }
+    return badges;
+  }
+
+  /** The entitlements each of `codes` holds at `now`, as rows sorted by code and id. */
+  private activeEntitlementRows(codes: string[], now: number) {
+    if (codes.length === 0) return [];
+    return this.sql.exec<{ code: string; entitlement: string }>(
+      `SELECT DISTINCT code, entitlement FROM entitlements
+       WHERE code IN (SELECT value FROM json_each(?)) AND starts_at <= ? AND (ends_at IS NULL OR ends_at > ?)
+       ORDER BY code, entitlement`,
+      JSON.stringify(codes), now, now,
+    ).toArray();
   }
 
   // ---------- presence ----------
@@ -1625,6 +1704,7 @@ export class Hub extends DurableObject<Env> {
       result = { token: code === caller?.code ? callerToken! : freshToken, code, newAccount: true };
     });
     const { token, code, newAccount } = result!;
+    this.recordFounding(code, now);
     const profile = rowToProfile(this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).one());
     return json({ ok: true, token, code, profile, newAccount });
   }
@@ -2035,6 +2115,7 @@ export class Hub extends DurableObject<Env> {
     const session: PartySession | null = p.session_method !== null && p.session_phase_ends_at !== null && p.session_started_at !== null
       ? { method: p.session_method, phaseEndsAt: p.session_phase_ends_at, startedAt: p.session_started_at }
       : null;
+    const badges = this.badgesByCode(rows.map((r) => r.code), now);
     return {
       code,
       host: p.host,
@@ -2046,7 +2127,7 @@ export class Hub extends DurableObject<Env> {
       members: rows.map((r) => {
         const presence = this.presenceOf(r.code);
         return {
-          profile: rowToProfile(r),
+          profile: { ...rowToProfile(r), badges: badges.get(r.code) ?? [] },
           joinedAt: r.joined_at,
           host: r.code === p.host,
           presence: publicPresence(presence, now),

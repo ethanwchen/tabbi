@@ -9,7 +9,8 @@ public struct PetLimitedShelf: Hashable, Sendable {
     public enum Kind: Hashable, Sendable {
         /// The featured event: the run going on now, or the next to start.
         case event(SeasonalEventOccurrence, isActive: Bool)
-        /// Limited items that are not seasonal: milestones and the launch week cap.
+        /// Limited items that are not seasonal: milestones, the launch week cap
+        /// and the Founder's Pin.
         case milestones
         /// The other events' items, which come back with their next run.
         case laterEvents

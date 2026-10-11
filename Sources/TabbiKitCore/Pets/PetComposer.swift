@@ -473,6 +473,7 @@ public enum PetComposer {
         case .scarf: .body(CostumeArt.scarf)
         case .bowTie: .body(CostumeArt.bowTie)
         case .teamMedal: .body(CostumeArt.teamMedal)
+        case .foundersPin: .body(CostumeArt.foundersPin)
         case .roundGlasses: .face(CostumeArt.roundGlasses)
         case .coolSunglasses: .face(CostumeArt.coolSunglasses)
         case .heartGlasses: .face(CostumeArt.heartGlasses)

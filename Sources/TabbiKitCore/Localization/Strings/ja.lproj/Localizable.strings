@@ -1273,6 +1273,14 @@
 	<string>おみやげ: イベントに%lld分</string>
 	<key>Found: the rare %@ fur</key>
 	<string>おみやげ: レア毛色「%@」</string>
+	<key>Founder's Pin</key>
+	<string>ファウンダーピン</string>
+	<key>Founding Member</key>
+	<string>創設メンバー</string>
+	<key>Founding Member: joined Tabbi in its first 100 days.</key>
+	<string>創設メンバー：Tabbiの最初の100日間に参加。</string>
+	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
+	<string>創設メンバー：Tabbiの最初の100日間に参加しました。</string>
 	<key>Free all day</key>
 	<string>終日予定なし</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1347,6 +1355,8 @@
 	<string>ネコに名前をつけよう</string>
 	<key>Give your dog a name</key>
 	<string>イヌに名前をつけよう</string>
+	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
+	<string>Tabbiの最初の100日間にサインインしたすべての人に贈られます。</string>
 	<key>Given to everyone who used Tabbi in its launch week.</key>
 	<string>リリース週にTabbiを使ったすべての人に贈られます。</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>

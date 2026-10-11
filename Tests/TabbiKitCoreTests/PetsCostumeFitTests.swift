@@ -36,8 +36,11 @@ final class PetCostumeFitTests: XCTestCase {
     }
 
     /// A held mug or a chin tucked in for a nap can hide a neck item.
+    /// The laptop stands in front of the chest, so it can hide the Founder's
+    /// Pin, the one neck item worn on the chest instead of around the neck.
     private func hidesTheNeck(_ animation: PetAnimation, _ accessories: [PetAccessory]) -> Bool {
         (animation == .coffee || animation == .nap) && accessories.contains { $0.slot == .neck }
+            || animation == .typing && accessories.contains(.foundersPin)
     }
 
     /// A curled-up pet lies on the bottom row, and so does what it wears

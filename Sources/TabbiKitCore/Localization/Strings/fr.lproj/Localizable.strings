@@ -1273,6 +1273,14 @@
 	<string>Trouvé : %lld min pour l'événement</string>
 	<key>Found: the rare %@ fur</key>
 	<string>Trouvé : pelage rare %@</string>
+	<key>Founder's Pin</key>
+	<string>Pin's fondateur</string>
+	<key>Founding Member</key>
+	<string>Membre fondateur</string>
+	<key>Founding Member: joined Tabbi in its first 100 days.</key>
+	<string>Membre fondateur : a rejoint Tabbi pendant ses 100 premiers jours.</string>
+	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
+	<string>Membre fondateur : tu as rejoint Tabbi pendant ses 100 premiers jours.</string>
 	<key>Free all day</key>
 	<string>Libre toute la journée</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1347,6 +1355,8 @@
 	<string>Donne un nom à ton chat</string>
 	<key>Give your dog a name</key>
 	<string>Donne un nom à ton chien</string>
+	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
+	<string>Offert à tous ceux qui se connectent à Tabbi pendant ses 100 premiers jours.</string>
 	<key>Given to everyone who used Tabbi in its launch week.</key>
 	<string>Offert à tous ceux qui ont utilisé Tabbi pendant sa semaine de lancement.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>

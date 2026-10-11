@@ -45,7 +45,7 @@ extension PetItem {
         case .accessory(let accessory):
             switch accessory {
             case .stethoscope, .roundGlasses, .surgicalCap, .headMirror, .graduationCap, .chunkyHeadphones,
-                 .goldenLaurel: .study
+                 .goldenLaurel, .foundersPin: .study
             case .scarf, .beanie, .chefHat, .backwardsCap: .cozy
             case .tinyCrown, .wizardHat, .pirateHat, .blindfoldedSorcerer, .astronautHelmet, .ninjaHeadband,
                  .angelWings, .kingsCape, .halo, .sparkleTrail: .fantasy
@@ -78,6 +78,7 @@ extension PetItem {
                  .cherryPetals, .sparkleTrail, .rainCloud: 3
             case .moonlitWitchHat, .pumpkinHat, .reindeerAntlers, .snowScarf, .heartGlasses, .summerShades, .lionDanceHat,
                  .sakuraSprig: 4
+            case .foundersPin: 5
             }
         }
     }

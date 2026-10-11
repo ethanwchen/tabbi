@@ -1273,6 +1273,14 @@
 	<string>Находка: %lld мин к событию</string>
 	<key>Found: the rare %@ fur</key>
 	<string>Находка: редкий мех «%@»</string>
+	<key>Founder's Pin</key>
+	<string>Значок основателя</string>
+	<key>Founding Member</key>
+	<string>Участник-основатель</string>
+	<key>Founding Member: joined Tabbi in its first 100 days.</key>
+	<string>Участник-основатель: с Tabbi с первых 100 дней.</string>
+	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
+	<string>Участник-основатель: ты с Tabbi с первых 100 дней.</string>
 	<key>Free all day</key>
 	<string>Весь день свободен</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1347,6 +1355,8 @@
 	<string>Дай имя своей кошке</string>
 	<key>Give your dog a name</key>
 	<string>Дай имя своей собаке</string>
+	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
+	<string>Для всех, кто вошёл в Tabbi в первые 100 дней.</string>
 	<key>Given to everyone who used Tabbi in its launch week.</key>
 	<string>Для всех, кто пользовался Tabbi в неделю запуска.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>

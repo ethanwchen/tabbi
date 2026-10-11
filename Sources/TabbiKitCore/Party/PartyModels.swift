@@ -14,6 +14,10 @@ public struct PartyProfile: Codable, Hashable, Sendable {
     public var accessories: [String]
     public var points: Int
     public var level: Int
+    /// Badges the server shows next to the name, as entitlement ids
+    /// (`PartyBadge.founding`). Friends lists and party rosters carry them;
+    /// other replies, and older servers, leave them out, which reads as none.
+    public var badges: [String]
 
     public init(
         code: String,
@@ -25,7 +29,8 @@ public struct PartyProfile: Codable, Hashable, Sendable {
         costume: String = "none",
         accessories: [String] = [],
         points: Int = 0,
-        level: Int = 1
+        level: Int = 1,
+        badges: [String] = []
     ) {
         self.code = code
         self.name = name
@@ -37,7 +42,39 @@ public struct PartyProfile: Codable, Hashable, Sendable {
         self.accessories = accessories
         self.points = points
         self.level = level
+        self.badges = badges
     }
+
+    private enum CodingKeys: String, CodingKey {
+        case code, name, petName, species, breed, colors, costume, accessories, points, level, badges
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        code = try container.decode(String.self, forKey: .code)
+        name = try container.decode(String.self, forKey: .name)
+        petName = try container.decode(String.self, forKey: .petName)
+        species = try container.decode(String.self, forKey: .species)
+        breed = try container.decode(String.self, forKey: .breed)
+        colors = try container.decode([String].self, forKey: .colors)
+        costume = try container.decode(String.self, forKey: .costume)
+        accessories = try container.decode([String].self, forKey: .accessories)
+        points = try container.decode(Int.self, forKey: .points)
+        level = try container.decode(Int.self, forKey: .level)
+        badges = try container.decodeIfPresent([String].self, forKey: .badges) ?? []
+    }
+
+    /// Whether the user is a Founding Member: signed in during Tabbi's
+    /// first 100 days.
+    public var isFoundingMember: Bool { badges.contains(PartyBadge.founding) }
+}
+
+/// The badge ids the server can send in `PartyProfile.badges`
+/// (`backend/shared/entitlements.json`). An id the app does not know yet is
+/// ignored.
+public enum PartyBadge {
+    /// Founding Member: signed in with Apple in Tabbi's first 100 days.
+    public static let founding = "founding"
 }
 
 /// The profile fields the app may write. Every field is optional: `nil`
