@@ -19,8 +19,12 @@
 	<string>%@ Tentando de novo em segundo plano.</string>
 	<key>%@ can't control %@</key>
 	<string>O %1$@ não consegue controlar o %2$@</string>
+	<key>%@ couldn't refine it. This plan still works.</key>
+	<string>O %@ não conseguiu refinar. Este plano ainda funciona.</string>
 	<key>%@ couldn't refine this plan</key>
 	<string>%@ não conseguiu refinar este plano</string>
+	<key>%@ didn't send back a usable plan. Try again in a moment.</key>
+	<string>O %@ não devolveu um plano utilizável. Tente de novo em instantes.</string>
 	<key>%@ done for today. Open %@</key>
 	<string>%1$@ concluído por hoje. Abrir %2$@</string>
 	<key>%@ free</key>
@@ -37,6 +41,10 @@
 	<string>%@ já é usado por outro app. Grave um atalho diferente.</string>
 	<key>%@ is damaged, so it's left untouched.</key>
 	<string>%@ está danificado, então ficou intocado.</string>
+	<key>%@ is fitting your tasks around today's events</key>
+	<string>O %@ está encaixando suas tarefas nos eventos de hoje</string>
+	<key>%@ is fitting your tasks around tomorrow's events</key>
+	<string>O %@ está encaixando suas tarefas nos eventos de amanhã</string>
 	<key>%@ is in use</key>
 	<string>%@ em uso</string>
 	<key>%@ is in your party</key>
@@ -45,6 +53,8 @@
 	<string>%@ está te fazendo companhia</string>
 	<key>%@ is looking over this plan...</key>
 	<string>%@ está revisando este plano...</string>
+	<key>%@ is looking over this plan…</key>
+	<string>O %@ está revisando este plano…</string>
 	<key>%@ is napping until your next session</key>
 	<string>%@ está cochilando até sua próxima sessão</string>
 	<key>%@ is on a break with you</key>
@@ -57,6 +67,8 @@
 	<string>%@ está fazendo a pausa com você</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
 	<string>O %@ ainda não está neste Mac. Conexões mostra como adicionar.</string>
+	<key>%@ isn't set up yet</key>
+	<string>%@ ainda não está configurado</string>
 	<key>%@ left</key>
 	<string>faltam %@</string>
 	<key>%@ misses you</key>
@@ -71,6 +83,8 @@
 	<string>%1$@ de %2$@</string>
 	<key>%@ of focus.</key>
 	<string>%@ de foco.</string>
+	<key>%@ reads your events on this Mac and never uploads them</key>
+	<string>O %@ lê seus eventos neste Mac e nunca os envia</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
 	<string>%1$@ vai até %2$@. Próximo item, %3$@: %4$@ de foco.</string>
 	<key>%@ settings</key>
@@ -83,6 +97,8 @@
 	<string>%@ de estudo hoje</string>
 	<key>%@ suggests no changes</key>
 	<string>%@ não sugere mudanças</string>
+	<key>%@ suggests no changes.</key>
+	<string>O %@ não sugere mudanças.</string>
 	<key>%@ today</key>
 	<string>%@ hoje</string>
 	<key>%@ tokens</key>
@@ -109,6 +125,8 @@
 	<string>%@. %@</string>
 	<key>%@: %@</key>
 	<string>%@: %@</string>
+	<key>%@: %@ done today</key>
+	<string>%1$@: %2$@ hoje</string>
 	<key>%@: %@ left</key>
 	<string>%@: faltam %@</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
@@ -187,6 +205,8 @@
 	<string>Um lembrete diário, nas opções do Closet.</string>
 	<key>A few extras</key>
 	<string>Alguns extras</string>
+	<key>A free day</key>
+	<string>Um dia livre</string>
 	<key>A fresh day</key>
 	<string>Um novo dia</string>
 	<key>A fresh start for the new year. Focus a little each day.</key>
@@ -205,8 +225,12 @@
 	<string>Uma primeira semana juntos incrível.</string>
 	<key>A question can take up to %lld screenshots</key>
 	<string>Uma pergunta aceita até %lld capturas</string>
+	<key>A quiet day. Rest up and start fresh tomorrow.</key>
+	<string>Um dia tranquilo. Descanse e recomece amanhã.</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>Uma semana de descanso. Um novo começo te espera.</string>
+	<key>A sample day. Your own events show here once the calendar is connected.</key>
+	<string>Um dia de exemplo. Seus eventos aparecem aqui quando a agenda estiver conectada.</string>
 	<key>A shorter timer</key>
 	<string>Timer mais curto</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
@@ -223,6 +247,8 @@
 	<string>Chave de API</string>
 	<key>About</key>
 	<string>Sobre</string>
+	<key>Access is off</key>
+	<string>Acesso desligado</string>
 	<key>Account</key>
 	<string>Conta</string>
 	<key>Accounts are for people %lld and older. Signing in opens in %@.</key>
@@ -251,6 +277,8 @@
 	<string>Adicionar tarefa…</string>
 	<key>Add all</key>
 	<string>Adicionar tudo</string>
+	<key>Add every block to your default calendar</key>
+	<string>Adicione todos os blocos à sua agenda padrão</string>
 	<key>Add every proposed block to your calendar</key>
 	<string>Adicionar todos os blocos sugeridos à sua agenda</string>
 	<key>Add key</key>
@@ -267,6 +295,8 @@
 	<string>Adicione o que você quer fazer. As tarefas pendentes de hoje entram de manhã.</string>
 	<key>Add your %@ key</key>
 	<string>Adicione sua chave do %@</string>
+	<key>Add your %@ key in Settings.</key>
+	<string>Adicione sua chave do %@ nos Ajustes.</string>
 	<key>Add your calendar</key>
 	<string>Adicione sua agenda</string>
 	<key>Add…</key>
@@ -289,10 +319,18 @@
 	<string>Tudo opcional. Nada a fazer agora.</string>
 	<key>Allow</key>
 	<string>Permitir</string>
+	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
+	<string>Permita o %@ em Privacidade e Segurança para planejar em torno das reuniões.</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
 	<string>Permita o %@ em Privacidade e Segurança.</string>
 	<key>Allow %@ in System Settings › General › Login Items.</key>
 	<string>Permita o %@ em Ajustes do Sistema › Geral › Itens de Início.</string>
+	<key>Allow %@ to read your calendars</key>
+	<string>Permita que o %@ leia suas agendas</string>
+	<key>Allow %@ to read your calendars. macOS asks once.</key>
+	<string>Permita que o %@ leia suas agendas. O macOS pergunta uma vez.</string>
+	<key>Allow Access</key>
+	<string>Permitir acesso</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
 	<string>Permita o acesso em Privacidade e Segurança › Automação.</string>
 	<key>Allow screenshots</key>
@@ -331,6 +369,8 @@
 	<string>Aparece quando o cursor chega ao topo, no centro.</string>
 	<key>Apps and permissions</key>
 	<string>Apps e permissões</string>
+	<key>Ask %@ again</key>
+	<string>Perguntar ao %@ de novo</string>
 	<key>Ask %@ anything</key>
 	<string>Pergunte qualquer coisa ao %@</string>
 	<key>Ask %@ anything…</key>
@@ -373,6 +413,8 @@
 	<string>Voltar ao chat</string>
 	<key>Back to the chat without a screenshot</key>
 	<string>Voltar ao chat sem captura</string>
+	<key>Back to the checklist</key>
+	<string>Voltar à lista</string>
 	<key>Back to the notch (Esc)</key>
 	<string>Voltar ao notch (Esc)</string>
 	<key>Back to today</key>
@@ -385,6 +427,8 @@
 	<string>Melhor dia %@</string>
 	<key>Blindfolded Sorcerer</key>
 	<string>Venda de feiticeiro</string>
+	<key>Blocks go to your calendar.</key>
+	<string>Vão para sua agenda.</string>
 	<key>Bow Tie</key>
 	<string>Gravata-borboleta</string>
 	<key>Break</key>
@@ -408,7 +452,7 @@
 	<key>Calendar</key>
 	<string>Calendário</string>
 	<key>Calendar access</key>
-	<string>Acesso ao calendário</string>
+	<string>Agenda</string>
 	<key>Calendar access is off</key>
 	<string>O acesso à agenda está desligado</string>
 	<key>Calendars</key>
@@ -479,6 +523,8 @@
 	<string>Escolha um método</string>
 	<key>Choose an AI to ask questions</key>
 	<string>Escolha uma IA para perguntar</string>
+	<key>Choose an AI to plan with</key>
+	<string>Escolha uma IA para planejar</string>
 	<key>Choose how big the open notch is. Every tab uses the same size.</key>
 	<string>Escolha o tamanho do notch aberto. Todas as abas usam o mesmo.</string>
 	<key>Choose how lively the notch's animations are</key>
@@ -579,6 +625,8 @@
 	<string>Não foi possível adicionar à agenda. Tente de novo</string>
 	<key>Couldn't import %@: %@</key>
 	<string>Não foi possível importar %1$@: %2$@</string>
+	<key>Couldn't plan your day</key>
+	<string>Não deu para planejar seu dia</string>
 	<key>Couldn't read today's list</key>
 	<string>Não foi possível ler a lista de hoje</string>
 	<key>Couldn't read tomorrow's list</key>
@@ -657,6 +705,8 @@
 	<string>Moletom de dinossauro</string>
 	<key>Discard</key>
 	<string>Descartar</string>
+	<key>Discard the plan and show the checklist</key>
+	<string>Descartar o plano e mostrar a lista</string>
 	<key>Disconnected display</key>
 	<string>Tela desconectada</string>
 	<key>Display</key>
@@ -715,6 +765,8 @@
 	<string>Tudo desbloqueado. Vista como quiser.</string>
 	<key>Exam Season</key>
 	<string>Época de provas</string>
+	<key>Example</key>
+	<string>Exemplo</string>
 	<key>Fantasy</key>
 	<string>Fantasia</string>
 	<key>Fast</key>
@@ -739,6 +791,10 @@
 	<string>Encaixe suas tarefas, revisões e pausas na agenda de hoje</string>
 	<key>Fit your open tasks, reviews and breaks around tomorrow's calendar</key>
 	<string>Encaixe suas tarefas, revisões e pausas na agenda de amanhã</string>
+	<key>Fitting your work and breaks around today's events</key>
+	<string>Encaixando seu trabalho e pausas nos eventos de hoje</string>
+	<key>Fitting your work and breaks around tomorrow's events</key>
+	<string>Encaixando seu trabalho e pausas nos eventos de amanhã</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
 	<string>Arrumou algo em outro app? Volte aqui e a luz se atualiza sozinha.</string>
 	<key>Flame Headband</key>
@@ -765,6 +821,8 @@
 	<string>Sessão de foco</string>
 	<key>Focus session done</key>
 	<string>Sessão de foco concluída</string>
+	<key>Focus sessions completed today</key>
+	<string>Sessões de foco concluídas hoje</string>
 	<key>Focus time</key>
 	<string>Tempo de foco</string>
 	<key>Focus time today, out of your daily goal</key>
@@ -785,6 +843,8 @@
 	<string>Focando em</string>
 	<key>Focusing on: %@</key>
 	<string>Focando em: %@</string>
+	<key>Free all day</key>
+	<string>Livre o dia todo</string>
 	<key>Free and offline: runs a model on this Mac.</key>
 	<string>Grátis e offline: roda um modelo neste Mac.</string>
 	<key>Free freeze used</key>
@@ -923,6 +983,8 @@
 	<string>Tokens de entrada, saída e cache de todas as sessões do %@ desde a meia-noite</string>
 	<key>Install</key>
 	<string>Instalar</string>
+	<key>Install %@ to plan with it.</key>
+	<string>Instale o %@ para planejar com ele.</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Instale o Claude Code e entre para ver seus limites de 5 horas e semanais ao vivo.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1001,6 +1063,8 @@
 	<string>Sair do grupo</string>
 	<key>Leave the party; the next member becomes host</key>
 	<string>Sair do grupo; o próximo membro vira o anfitrião</string>
+	<key>Leave this block out</key>
+	<string>Tirar este bloco</string>
 	<key>Leave this block out of the plan</key>
 	<string>Deixar este bloco fora do plano</string>
 	<key>Leave this question unanswered</key>
@@ -1117,6 +1181,8 @@
 	<string>Sem eventos</string>
 	<key>No events on your calendars today.</key>
 	<string>Nenhum evento nas suas agendas hoje.</string>
+	<key>No focus sessions today</key>
+	<string>Nenhuma sessão de foco hoje</string>
 	<key>No free time</key>
 	<string>Sem tempo livre</string>
 	<key>No free time left</key>
@@ -1139,6 +1205,8 @@
 	<string>Ainda sem sequência</string>
 	<key>No study</key>
 	<string>Sem estudo</string>
+	<key>No study yet</key>
+	<string>Nenhum estudo ainda</string>
 	<key>No study, under %lld min, under %lld min, under %lld min, and %lld min or more</key>
 	<string>Sem estudo, menos de %1$lld min, menos de %2$lld min, menos de %3$lld min e %4$lld min ou mais</string>
 	<key>None</key>
@@ -1149,8 +1217,12 @@
 	<string>Nenhum ainda</string>
 	<key>Not Now</key>
 	<string>Agora não</string>
+	<key>Not added</key>
+	<string>Não adicionado</string>
 	<key>Not checked yet · refresh to load your live limits</key>
 	<string>Ainda não verificado · atualize para ver seus limites</string>
+	<key>Not connected</key>
+	<string>Não conectada</string>
 	<key>Not done</key>
 	<string>Não concluído</string>
 	<key>Not found on this Mac</key>
@@ -1167,18 +1239,28 @@
 	<string>Ainda não sincronizado</string>
 	<key>Notch</key>
 	<string>Notch</string>
+	<key>Nothing carries over</key>
+	<string>Nada pendente</string>
+	<key>Nothing checked off</key>
+	<string>Nada concluído</string>
 	<key>Nothing due today</key>
 	<string>Nada pendente hoje</string>
+	<key>Nothing left to plan</key>
+	<string>Nada mais para planejar</string>
 	<key>Nothing listed yesterday</key>
 	<string>Nada na lista ontem</string>
 	<key>Nothing on today</key>
 	<string>Nada para hoje</string>
 	<key>Nothing on your calendar today</key>
 	<string>Nada na sua agenda hoje</string>
+	<key>Nothing on your calendars tomorrow.</key>
+	<string>Nada nas suas agendas amanhã.</string>
 	<key>Nothing planned</key>
 	<string>Nada planejado</string>
 	<key>Nothing playing</key>
 	<string>Nada tocando</string>
+	<key>Nothing was on your calendars yesterday.</key>
+	<string>Não havia nada nas suas agendas ontem.</string>
 	<key>Notifications</key>
 	<string>Notificações</string>
 	<key>Now Playing</key>
@@ -1229,12 +1311,24 @@
 	<string>Abra o Anki, esta aba se conecta sozinha</string>
 	<key>Open Automation settings</key>
 	<string>Abrir ajustes de Automação</string>
+	<key>Open Calendars privacy settings</key>
+	<string>Abrir a privacidade de Calendários</string>
+	<key>Open Calendars privacy settings to turn access on</key>
+	<string>Abra a privacidade de Calendários para ligar o acesso</string>
 	<key>Open Connections</key>
 	<string>Abrir Conexões</string>
+	<key>Open Connections to connect your calendar</key>
+	<string>Abra Conexões para conectar sua agenda</string>
+	<key>Open Connections to finish setting this up</key>
+	<string>Abra Conexões para terminar a configuração</string>
 	<key>Open Connections to set up the AI</key>
 	<string>Abrir Conexões para configurar a IA</string>
+	<key>Open Internet Accounts to add a Google, Exchange or iCloud calendar</key>
+	<string>Abra Contas de Internet para adicionar uma agenda do Google, Exchange ou iCloud</string>
 	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
 	<string>Abrir Privacidade e Segurança &gt; Gravação de Tela nos Ajustes do Sistema</string>
+	<key>Open Privacy &amp; Security to allow Calendar access</key>
+	<string>Abra Privacidade e Segurança para permitir o acesso à agenda</string>
 	<key>Open Settings</key>
 	<string>Abrir Ajustes</string>
 	<key>Open Settings &gt; General to sign in with Apple</key>
@@ -1251,6 +1345,8 @@
 	<string>Abrir na visualização grande (Command-Return envia e amplia)</string>
 	<key>Open on hover</key>
 	<string>Abrir ao passar o cursor</string>
+	<key>Open the %@ app to connect</key>
+	<string>Abra o app %@ para conectar</string>
 	<key>Open the notch after hovering it briefly</key>
 	<string>Abre o notch depois de passar o cursor por um instante</string>
 	<key>Open the notch to see your recap.</key>
@@ -1361,12 +1457,22 @@
 	<string>Planejar</string>
 	<key>Plan my day</key>
 	<string>Planejar meu dia</string>
+	<key>Plan my day asks the AI you pick in Settings.</key>
+	<string>Planejar meu dia usa a IA que você escolher nos Ajustes.</string>
+	<key>Plan my day fits your plan around your calendar.</key>
+	<string>Planejar meu dia encaixa seu plano na sua agenda.</string>
 	<key>Plan my day: %@</key>
 	<string>Planejar meu dia: %@</string>
 	<key>Plan tomorrow</key>
 	<string>Planejar amanhã</string>
 	<key>Planned with %@</key>
 	<string>Planejado com %@</string>
+	<key>Planning</key>
+	<string>Planejando</string>
+	<key>Planning tomorrow…</key>
+	<string>Planejando amanhã…</string>
+	<key>Planning your day…</key>
+	<string>Planejando seu dia…</string>
 	<key>Play</key>
 	<string>Tocar</string>
 	<key>Play a soft sound with celebrations that have no sound of their own</key>
@@ -1429,8 +1535,12 @@
 	<string>Refinar</string>
 	<key>Refine and AI day plans: your calendar event titles and times, tasks, goals and the plan.</key>
 	<string>Refinar e planos do dia com IA: títulos e horários dos eventos da sua agenda, tarefas, metas e o plano.</string>
+	<key>Refine with %@: ask for suggestions on this plan (optional)</key>
+	<string>Refinar com %@: peça sugestões para este plano (opcional)</string>
 	<key>Refine with %@: suggest a better order or lengths for this plan</key>
 	<string>Refinar com %@: sugerir ordem ou duração melhores para este plano</string>
+	<key>Refined with %@.</key>
+	<string>Refinado com %@.</string>
 	<key>Refined with %@: %@</key>
 	<string>Refinado com %1$@: %2$@</string>
 	<key>Refresh failed · %@</key>
@@ -1499,6 +1609,8 @@
 	<string>Revisar %1$@ no Anki: %2$lld pendentes. Fixe outro baralho com a estrela.</string>
 	<key>Review %@ in Anki: %lld new, %lld learning, %lld review</key>
 	<string>Revisar %1$@ no Anki: %2$lld novos, %3$lld aprendendo, %4$lld revisar</string>
+	<key>Review block</key>
+	<string>Bloco de revisão</string>
 	<key>Review in Anki</key>
 	<string>Revisar no Anki</string>
 	<key>Review today and see what carries over to tomorrow</key>
@@ -1533,6 +1645,8 @@
 	<string>Salvar</string>
 	<key>Save this key in your Keychain</key>
 	<string>Salvar esta chave nas suas Chaves</string>
+	<key>Save today's review and show the checklist</key>
+	<string>Salvar o resumo de hoje e mostrar a lista</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
 	<string>Os chats salvos ficam só neste Mac e nunca são enviados</string>
 	<key>Saved in your Keychain</key>
@@ -1551,6 +1665,8 @@
 	<string>Veja os eventos de hoje no notch.</string>
 	<key>See what's next</key>
 	<string>Veja o que vem aí</string>
+	<key>See your %@ here. It only takes a moment.</key>
+	<string>Veja %@ aqui. Leva só um instante.</string>
 	<key>See your day at a glance</key>
 	<string>Seu dia num relance</string>
 	<key>Select AnkiConnect and click Check for Updates</key>
@@ -1571,6 +1687,8 @@
 	<string>Kit: %@</string>
 	<key>Set up %@ to ask questions</key>
 	<string>Configure o %@ para perguntar</string>
+	<key>Set up AI</key>
+	<string>Configurar IA</string>
 	<key>Settings…</key>
 	<string>Ajustes…</string>
 	<key>Setup</key>
@@ -1729,6 +1847,8 @@
 	<string>Começar com estas abas</string>
 	<key>Starting Anki</key>
 	<string>Iniciando o Anki</string>
+	<key>Stays on this Mac</key>
+	<string>Fica neste Mac</string>
 	<key>Step %lld of %lld</key>
 	<string>Etapa %1$lld de %2$lld</string>
 	<key>Step away for a bit</key>
@@ -1771,8 +1891,12 @@
 	<string>Estude 7 dias seguidos.</string>
 	<key>Study Hoodie</key>
 	<string>Moletom de estudo</string>
+	<key>Study block</key>
+	<string>Bloco de estudo</string>
 	<key>Study parties</key>
 	<string>Grupos de estudo</string>
+	<key>Study points earned today, to spend on your pet's outfits</key>
+	<string>Pontos de estudo ganhos hoje, para gastar nas roupas do seu pet</string>
 	<key>Study together</key>
 	<string>Estudem juntos</string>
 	<key>Study with friends and see who is focusing now.</key>
@@ -1841,6 +1965,8 @@
 	<string>As Chaves não salvaram a chave. Tente de novo.</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>As flores chegaram. Cultive algo seu.</string>
+	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
+	<string>A agenda não aceitou os eventos. Verifique o acesso à agenda e tente de novo.</string>
 	<key>The focus timer is on this task</key>
 	<string>O timer de foco está nesta tarefa</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1859,12 +1985,18 @@
 	<string>O código do grupo. Clique para copiar e envie para os amigos.</string>
 	<key>The rest of the day is yours.</key>
 	<string>O resto do dia é seu.</string>
+	<key>The review couldn't be written to disk. Try Done again.</key>
+	<string>Não deu para salvar o resumo no disco. Toque em Pronto de novo.</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>A sessão continua para toda a party até acabar ou você encerrar</string>
 	<key>The tool's own default</key>
 	<string>O padrão da ferramenta</string>
 	<key>The year you were born</key>
 	<string>O ano em que você nasceu</string>
+	<key>Then a break until %@</key>
+	<string>Depois uma pausa até %@</string>
+	<key>There's no free time worth a block before the evening.</key>
+	<string>Não há tempo livre suficiente para um bloco antes da noite.</string>
 	<key>Thermal state: %@</key>
 	<string>Estado térmico: %@</string>
 	<key>Thinking</key>
@@ -1881,6 +2013,8 @@
 	<string>Esta tarefa está na lista de hoje</string>
 	<key>Time for a %lld-minute break.</key>
 	<string>Hora de uma pausa de %lld minutos.</string>
+	<key>Time studied today and study sessions finished</key>
+	<string>Tempo de estudo hoje e sessões de estudo concluídas</string>
 	<key>Timer</key>
 	<string>Timer</string>
 	<key>Timer: %@</key>
@@ -1899,10 +2033,16 @@
 	<string>Hoje no %@</string>
 	<key>Today on a timeline</key>
 	<string>Hoje em uma linha do tempo</string>
+	<key>Today's %@. Google calendars show up once added in Internet Accounts.</key>
+	<string>Hoje: %@. Agendas do Google aparecem depois de adicionadas em Contas de Internet.</string>
+	<key>Today's calendar</key>
+	<string>Agenda de hoje</string>
 	<key>Today's events and the free time between them. Google calendars show up once added in Internet Accounts.</key>
 	<string>Os eventos de hoje e o tempo livre entre eles. Agendas do Google aparecem depois de adicionadas em Contas de Internet.</string>
 	<key>Tomorrow</key>
 	<string>Amanhã</string>
+	<key>Tomorrow has no free time worth a block before the evening.</key>
+	<string>Amanhã não há tempo livre suficiente para um bloco antes da noite.</string>
 	<key>Tomorrow's calendar</key>
 	<string>Agenda de amanhã</string>
 	<key>Took back the import of %@.</key>
@@ -1959,6 +2099,8 @@
 	<string>Evento sem título</string>
 	<key>Up next</key>
 	<string>A seguir</string>
+	<key>Up next shows your %@ as the day goes, and Plan my day fits work around them.</key>
+	<string>A seguir mostra %@ ao longo do dia, e Planejar meu dia encaixa o trabalho nos intervalos.</string>
 	<key>Update AnkiConnect</key>
 	<string>Atualize o AnkiConnect</string>
 	<key>Updated %@ and applied it.</key>
@@ -1975,6 +2117,8 @@
 	<string>Usa seu plano do ChatGPT pelo comando codex.</string>
 	<key>Uses your Claude subscription through the claude command.</key>
 	<string>Usa sua assinatura do Claude pelo comando claude.</string>
+	<key>Using Google? Add it in Internet Accounts to see your %@ here.</key>
+	<string>Usa o Google? Adicione em Contas de Internet para ver %@ aqui.</string>
 	<key>Using a copy outside Applications? Just open it.</key>
 	<string>O Anki está em outra pasta? É só abrir.</string>
 	<key>Valentine's Week</key>
@@ -2051,10 +2195,16 @@
 	<string>Encerrar</string>
 	<key>Wrap up: review today and see what carries over</key>
 	<string>Encerrar: revise o dia e veja o que fica pendente</string>
+	<key>Wrap-up</key>
+	<string>Encerramento</string>
 	<key>Write a polite reminder</key>
 	<string>Escreva um lembrete educado</string>
 	<key>Write to %@</key>
 	<string>Escrever para %@</string>
+	<key>Writing a short summary of your day</key>
+	<string>Escrevendo um breve resumo do seu dia</string>
+	<key>Writing a summary</key>
+	<string>Escrevendo um resumo</string>
 	<key>Year</key>
 	<string>Ano</string>
 	<key>Yesterday</key>
@@ -2071,6 +2221,8 @@
 	<string>Dá para configurar quando quiser nos Ajustes.</string>
 	<key>You can set this up any time in the %@ tab.</key>
 	<string>Dá para configurar quando quiser na aba %@.</string>
+	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
+	<string>Você estudou %@ hoje. Descanse e recomece amanhã.</string>
 	<key>You started it for the party</key>
 	<string>Você iniciou para a party</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>
@@ -2103,6 +2255,8 @@
 	<string>Seu nome, até %lld caracteres</string>
 	<key>Your pet</key>
 	<string>Seu pet</string>
+	<key>Your plan</key>
+	<string>Seu plano</string>
 	<key>Your setup already matches %@</key>
 	<string>Sua configuração já corresponde a %@</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>
@@ -2125,12 +2279,18 @@
 	<string>pendentes</string>
 	<key>ending</key>
 	<string>terminando</string>
+	<key>events</key>
+	<string>eventos</string>
 	<key>in %@</key>
 	<string>em %@</string>
 	<key>in the last 30 days</key>
 	<string>nos últimos 30 dias</string>
 	<key>just now</key>
 	<string>agora mesmo</string>
+	<key>lectures, labs, and shifts</key>
+	<string>aulas, laboratórios e plantões</string>
+	<key>meetings and calls</key>
+	<string>reuniões e chamadas</string>
 	<key>no free time</key>
 	<string>sem tempo livre</string>
 	<key>nothing yet; pick a sound</key>

@@ -189,23 +189,25 @@ public enum DayReviewer {
         var stats: [DayReviewStat] = []
         if let study = review.study {
             let text = study.minutes > 0 || study.sessions > 0
-                ? "\(duration(minutes: study.minutes)) · \(count(study.sessions, "session"))"
-                : "No study yet"
+                ? "\(duration(minutes: study.minutes)) · \(String(localized: "\(study.sessions) sessions", bundle: .tabbi))"
+                : String(localized: "No study yet", bundle: .tabbi)
             stats.append(DayReviewStat(symbol: "book.closed.fill", text: text,
-                                       help: "Time studied today and study sessions finished"))
+                                       help: String(localized: "Time studied today and study sessions finished", bundle: .tabbi)))
         } else {
             let text = review.focusSessions > 0
-                ? "\(count(review.focusSessions, "focus session")) · \(duration(minutes: review.focusMinutes))"
-                : "No focus sessions today"
-            stats.append(DayReviewStat(symbol: "scope", text: text, help: "Focus sessions completed today"))
+                ? "\(focusCount(review.focusSessions)) · \(duration(minutes: review.focusMinutes))"
+                : String(localized: "No focus sessions today", bundle: .tabbi)
+            stats.append(DayReviewStat(symbol: "scope", text: text,
+                                       help: String(localized: "Focus sessions completed today", bundle: .tabbi)))
         }
         for goal in review.progress {
             stats.append(DayReviewStat(symbol: "checkmark.circle", text: goal.amount,
-                                       help: "\(goal.title): \(goal.amount) done today"))
+                                       help: String(localized: "\(goal.title): \(goal.amount) done today", bundle: .tabbi)))
         }
         if let points = review.study?.points {
-            stats.append(DayReviewStat(symbol: "star.fill", text: "\(points) pts",
-                                       help: "Study points earned today, to spend on your pet's outfits"))
+            stats.append(DayReviewStat(symbol: "star.fill", text: String(localized: "\(points) pts", bundle: .tabbi),
+                                       help: String(localized: "Study points earned today, to spend on your pet's outfits",
+                                                    bundle: .tabbi)))
         }
         return stats
     }
@@ -215,8 +217,9 @@ public enum DayReviewer {
         DurationFormat.minutes(minutes)
     }
 
-    private static func count(_ value: Int, _ noun: String) -> String {
-        value == 1 ? "1 \(noun)" : "\(value) \(noun)s"
+    /// "1 focus session", "3 focus sessions".
+    private static func focusCount(_ value: Int) -> String {
+        String(localized: "\(value) focus sessions", bundle: .tabbi)
     }
 
     /// Arguments inserted before `-- <prompt>`. No tools and no MCP servers:
@@ -287,26 +290,28 @@ public enum DayReviewer {
     /// its answer is unusable, so the review never ends in an error.
     public static func fallbackSummary(for review: DayReview) -> String {
         let finished = review.done.count
-        let focus = review.focusSessions == 1 ? "1 focus session" : "\(review.focusSessions) focus sessions"
-        switch (finished, review.carryingOver.count) {
+        let carrying = review.carryingOver.count
+        switch (finished, carrying) {
         case (0, 0):
             if let minutes = review.study?.minutes, minutes > 0 {
-                return "You put in \(duration(minutes: minutes)) of study today. Rest up and start fresh tomorrow."
+                return String(localized: "You put in \(duration(minutes: minutes)) of study today. Rest up and start fresh tomorrow.",
+                              bundle: .tabbi)
             }
             return review.focusSessions > 0
-                ? "You put in \(focus) today. Rest up and start fresh tomorrow."
-                : "A quiet day. Rest up and start fresh tomorrow."
+                ? String(localized: "You put in \(review.focusSessions) focus sessions today. Rest up and start fresh tomorrow.",
+                         bundle: .tabbi)
+                : String(localized: "A quiet day. Rest up and start fresh tomorrow.", bundle: .tabbi)
         case (0, _):
-            return "Not every day is a checklist day. Tomorrow starts with \(taskCount(review.carryingOver.count)) ready to go."
+            return String(localized: "Not every day is a checklist day. Tomorrow starts with \(carrying) tasks ready to go.",
+                          bundle: .tabbi)
         case (_, 0):
-            return "You cleared all \(taskCount(finished)) today. Enjoy the evening."
+            return String(localized: "You cleared all \(finished) tasks today. Enjoy the evening.", bundle: .tabbi)
         default:
-            return "You finished \(taskCount(finished)) today. \(taskCount(review.carryingOver.count).capitalizedFirst) will be waiting tomorrow."
+            return Sentences.join([
+                String(localized: "You finished \(finished) tasks today.", bundle: .tabbi),
+                String(localized: "\(carrying) tasks will be waiting tomorrow.", bundle: .tabbi),
+            ])
         }
-    }
-
-    private static func taskCount(_ count: Int) -> String {
-        count == 1 ? "1 task" : "\(count) tasks"
     }
 }
 
@@ -378,10 +383,6 @@ public extension DayReview {
         }
         return review
     }
-}
-
-private extension String {
-    var capitalizedFirst: String { prefix(1).uppercased() + dropFirst() }
 }
 
 extension ActivityRecord {

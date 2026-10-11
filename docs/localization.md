@@ -63,6 +63,8 @@ The onboarding, the tab titles and module summaries, the notch's context menu an
 So are the notifications (focus timer, weekly recap, study reminder, Party), the recap's cheer lines, the Party celebration, and the Closet: its sections and labels, every outfit, accessory, theme, species and fur color name, and the seasonal events and limited items.
 The AI consent alert, the AI provider row in Settings > Connections and the age check before Party and Sign in with Apple are translated too; their legal meaning must stay exact.
 The main controls of every tab's panel (Today, Focus, Now Playing, System, AI Usage, Ask AI, Study, Anki, Party and Schedule) are translated too, with the calendar card, the focus and study timer labels and the Ask AI setup screen.
+Today's Plan my day, Wrap-up and calendar onboarding step are translated as well; the summaries the AI writes there follow its English prompt, so they stay English.
+The bundled kits' words for calendar events ("meetings and calls") are looked up in the catalog like the seasonal events (`UpNextEmptyState.localizedEvents`), and a kit's own phrase stays as written.
 The modules' own Settings panes (the Options button in Settings > Tabs) and the module setup views follow pane by pane.
 Breed names stay English, because a pet that still goes by its breed is recognized by comparing its saved name to the breed's name.
 These stay English on purpose for now:
@@ -70,8 +72,7 @@ These stay English on purpose for now:
 - long help text and error details,
 - the bundled kits' names, summaries and questions,
 - the connection status headlines and details and the setup sheets in Settings > Connections,
-- the study method names and taglines and the theme names, which come from bundled JSON files that the Windows port reads too and need a localized field there first,
-- the calendar card sentences that name the kit's word for events (a kit field, so it waits for localized kit text).
+- the study method names and taglines and the theme names, which come from bundled JSON files that the Windows port reads too and need a localized field there first.
 
 ## Checking
 

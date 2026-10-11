@@ -19,8 +19,12 @@
 	<string>%@ 正在背景重試。</string>
 	<key>%@ can't control %@</key>
 	<string>%1$@ 無法控制 %2$@</string>
+	<key>%@ couldn't refine it. This plan still works.</key>
+	<string>%@ 無法優化，這份計畫仍然可用。</string>
 	<key>%@ couldn't refine this plan</key>
 	<string>%@ 無法調整這份計畫</string>
+	<key>%@ didn't send back a usable plan. Try again in a moment.</key>
+	<string>%@ 沒有傳回可用的計畫。請稍後再試。</string>
 	<key>%@ done for today. Open %@</key>
 	<string>%1$@ 今天已完成。打開 %2$@</string>
 	<key>%@ free</key>
@@ -37,6 +41,10 @@
 	<string>%@ 已被其他 App 使用。請錄製其他快速鍵。</string>
 	<key>%@ is damaged, so it's left untouched.</key>
 	<string>%@ 已損毀，因此不會變更。</string>
+	<key>%@ is fitting your tasks around today's events</key>
+	<string>%@ 正在依今天的行程安排你的任務</string>
+	<key>%@ is fitting your tasks around tomorrow's events</key>
+	<string>%@ 正在依明天的行程安排你的任務</string>
 	<key>%@ is in use</key>
 	<string>正在使用 %@</string>
 	<key>%@ is in your party</key>
@@ -45,6 +53,8 @@
 	<string>%@ 正在陪著你</string>
 	<key>%@ is looking over this plan...</key>
 	<string>%@ 正在看這份計畫...</string>
+	<key>%@ is looking over this plan…</key>
+	<string>%@ 正在檢視這份計畫…</string>
 	<key>%@ is napping until your next session</key>
 	<string>%@ 在下次專注前小睡一下</string>
 	<key>%@ is on a break with you</key>
@@ -57,6 +67,8 @@
 	<string>%@ 正陪你一起休息</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
 	<string>這台 Mac 上還沒有 %@。「連線」會告訴你如何加入。</string>
+	<key>%@ isn't set up yet</key>
+	<string>%@ 尚未設定</string>
 	<key>%@ left</key>
 	<string>還剩 %@</string>
 	<key>%@ misses you</key>
@@ -71,6 +83,8 @@
 	<string>%1$@ / %2$@</string>
 	<key>%@ of focus.</key>
 	<string>專注了 %@。</string>
+	<key>%@ reads your events on this Mac and never uploads them</key>
+	<string>%@ 在這台 Mac 上讀取你的行程，絕不上傳</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
 	<string>%1$@ 持續到 %2$@。下一個物品「%3$@」：已專注 %4$@。</string>
 	<key>%@ settings</key>
@@ -83,6 +97,8 @@
 	<string>今天學習了 %@</string>
 	<key>%@ suggests no changes</key>
 	<string>%@ 建議不需更改</string>
+	<key>%@ suggests no changes.</key>
+	<string>%@ 建議不用更改。</string>
 	<key>%@ today</key>
 	<string>今天 %@</string>
 	<key>%@ tokens</key>
@@ -109,6 +125,8 @@
 	<string>%@。%@</string>
 	<key>%@: %@</key>
 	<string>%@：%@</string>
+	<key>%@: %@ done today</key>
+	<string>%1$@：今天完成 %2$@</string>
 	<key>%@: %@ left</key>
 	<string>%@：剩餘 %@</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
@@ -187,6 +205,8 @@
 	<string>每天提醒一下，在「衣櫥」選項中。</string>
 	<key>A few extras</key>
 	<string>一些小功能</string>
+	<key>A free day</key>
+	<string>空閒的一天</string>
 	<key>A fresh day</key>
 	<string>嶄新的一天</string>
 	<key>A fresh start for the new year. Focus a little each day.</key>
@@ -205,8 +225,12 @@
 	<string>一起度過的美好第一週。</string>
 	<key>A question can take up to %lld screenshots</key>
 	<string>每個問題最多可附加 %lld 張截圖</string>
+	<key>A quiet day. Rest up and start fresh tomorrow.</key>
+	<string>平靜的一天。好好休息，明天重新出發。</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>休息的一週，新的開始正等著你。</string>
+	<key>A sample day. Your own events show here once the calendar is connected.</key>
+	<string>範例行程。連接行事曆後，這裡會顯示你自己的行程。</string>
 	<key>A shorter timer</key>
 	<string>縮短計時</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
@@ -223,6 +247,8 @@
 	<string>API 密鑰</string>
 	<key>About</key>
 	<string>關於</string>
+	<key>Access is off</key>
+	<string>取用權限已關閉</string>
 	<key>Account</key>
 	<string>帳號</string>
 	<key>Accounts are for people %lld and older. Signing in opens in %@.</key>
@@ -251,6 +277,8 @@
 	<string>加入任務…</string>
 	<key>Add all</key>
 	<string>全部加入</string>
+	<key>Add every block to your default calendar</key>
+	<string>把所有時段加入預設行事曆</string>
 	<key>Add every proposed block to your calendar</key>
 	<string>將所有建議時段加入行事曆</string>
 	<key>Add key</key>
@@ -267,6 +295,8 @@
 	<string>加入想完成的事。今天未完成的任務會在早上加進來。</string>
 	<key>Add your %@ key</key>
 	<string>加入你的 %@ 密鑰</string>
+	<key>Add your %@ key in Settings.</key>
+	<string>請在設定中加入你的 %@ 金鑰。</string>
 	<key>Add your calendar</key>
 	<string>加入你的行事曆</string>
 	<key>Add…</key>
@@ -289,10 +319,18 @@
 	<string>都是選用的，現在不用做什麼。</string>
 	<key>Allow</key>
 	<string>允許</string>
+	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
+	<string>請在「隱私權與安全性」中允許 %@，以便配合會議規劃。</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
 	<string>請在「隱私權與安全性」中允許 %@。</string>
 	<key>Allow %@ in System Settings › General › Login Items.</key>
 	<string>請在「系統設定」›「一般」›「登入項目」中允許 %@。</string>
+	<key>Allow %@ to read your calendars</key>
+	<string>允許 %@ 讀取你的行事曆</string>
+	<key>Allow %@ to read your calendars. macOS asks once.</key>
+	<string>允許 %@ 讀取你的行事曆。macOS 只會詢問一次。</string>
+	<key>Allow Access</key>
+	<string>允許取用</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
 	<string>請在「隱私權與安全性」›「自動化」中允許取用。</string>
 	<key>Allow screenshots</key>
@@ -331,6 +369,8 @@
 	<string>指標移到螢幕上方中央時出現。</string>
 	<key>Apps and permissions</key>
 	<string>App 與權限</string>
+	<key>Ask %@ again</key>
+	<string>再問一次 %@</string>
 	<key>Ask %@ anything</key>
 	<string>問 %@ 任何問題</string>
 	<key>Ask %@ anything…</key>
@@ -373,6 +413,8 @@
 	<string>回到聊天</string>
 	<key>Back to the chat without a screenshot</key>
 	<string>不附截圖，回到聊天</string>
+	<key>Back to the checklist</key>
+	<string>返回清單</string>
 	<key>Back to the notch (Esc)</key>
 	<string>回到瀏海（Esc）</string>
 	<key>Back to today</key>
@@ -385,6 +427,8 @@
 	<string>最佳一天 %@</string>
 	<key>Blindfolded Sorcerer</key>
 	<string>蒙眼術士</string>
+	<key>Blocks go to your calendar.</key>
+	<string>時段會加入你的行事曆。</string>
 	<key>Bow Tie</key>
 	<string>領結</string>
 	<key>Break</key>
@@ -479,6 +523,8 @@
 	<string>選擇方法</string>
 	<key>Choose an AI to ask questions</key>
 	<string>選擇一個 AI 來提問</string>
+	<key>Choose an AI to plan with</key>
+	<string>選擇一個 AI 來規劃</string>
 	<key>Choose how big the open notch is. Every tab uses the same size.</key>
 	<string>選擇展開後瀏海的大小。每個標籤頁都使用相同大小。</string>
 	<key>Choose how lively the notch's animations are</key>
@@ -579,6 +625,8 @@
 	<string>無法加入行事曆，請再試一次</string>
 	<key>Couldn't import %@: %@</key>
 	<string>無法匯入 %1$@：%2$@</string>
+	<key>Couldn't plan your day</key>
+	<string>無法規劃今天</string>
 	<key>Couldn't read today's list</key>
 	<string>無法讀取今天的清單</string>
 	<key>Couldn't read tomorrow's list</key>
@@ -657,6 +705,8 @@
 	<string>恐龍帽T</string>
 	<key>Discard</key>
 	<string>捨棄</string>
+	<key>Discard the plan and show the checklist</key>
+	<string>捨棄這份計畫並顯示清單</string>
 	<key>Disconnected display</key>
 	<string>已中斷連接的顯示器</string>
 	<key>Display</key>
@@ -715,6 +765,8 @@
 	<string>已全部解鎖。隨心打扮吧。</string>
 	<key>Exam Season</key>
 	<string>考試季</string>
+	<key>Example</key>
+	<string>範例</string>
 	<key>Fantasy</key>
 	<string>奇幻</string>
 	<key>Fast</key>
@@ -739,6 +791,10 @@
 	<string>依今天的行事曆安排待辦任務、複習和休息</string>
 	<key>Fit your open tasks, reviews and breaks around tomorrow's calendar</key>
 	<string>依明天的行事曆安排待辦任務、複習和休息</string>
+	<key>Fitting your work and breaks around today's events</key>
+	<string>正在依今天的行程安排工作和休息</string>
+	<key>Fitting your work and breaks around tomorrow's events</key>
+	<string>正在依明天的行程安排工作和休息</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
 	<string>在其他 App 裡修好了嗎？回到這裡，指示燈會自動更新。</string>
 	<key>Flame Headband</key>
@@ -765,6 +821,8 @@
 	<string>專注時段</string>
 	<key>Focus session done</key>
 	<string>專注時段完成</string>
+	<key>Focus sessions completed today</key>
+	<string>今天完成的專注時段</string>
 	<key>Focus time</key>
 	<string>專注時間</string>
 	<key>Focus time today, out of your daily goal</key>
@@ -785,6 +843,8 @@
 	<string>正在專注</string>
 	<key>Focusing on: %@</key>
 	<string>正在專注：%@</string>
+	<key>Free all day</key>
+	<string>整天有空</string>
 	<key>Free and offline: runs a model on this Mac.</key>
 	<string>免費且離線：在這台 Mac 上執行模型。</string>
 	<key>Free freeze used</key>
@@ -923,6 +983,8 @@
 	<string>自午夜以來所有 %@ 工作階段的輸入、輸出和快取 Token</string>
 	<key>Install</key>
 	<string>安裝</string>
+	<key>Install %@ to plan with it.</key>
+	<string>安裝 %@ 後即可用它規劃。</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>安裝 Claude Code 並登入，即可查看即時的 5 小時和每週限額。</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1001,6 +1063,8 @@
 	<string>離開派對</string>
 	<key>Leave the party; the next member becomes host</key>
 	<string>離開派對，下一位成員會成為主持人</string>
+	<key>Leave this block out</key>
+	<string>拿掉這個時段</string>
 	<key>Leave this block out of the plan</key>
 	<string>將此時段移出計畫</string>
 	<key>Leave this question unanswered</key>
@@ -1117,6 +1181,8 @@
 	<string>沒有行程</string>
 	<key>No events on your calendars today.</key>
 	<string>今天行事曆上沒有行程。</string>
+	<key>No focus sessions today</key>
+	<string>今天沒有專注</string>
 	<key>No free time</key>
 	<string>沒有空閒時間</string>
 	<key>No free time left</key>
@@ -1139,6 +1205,8 @@
 	<string>還沒有連續紀錄</string>
 	<key>No study</key>
 	<string>未學習</string>
+	<key>No study yet</key>
+	<string>還沒學習</string>
 	<key>No study, under %lld min, under %lld min, under %lld min, and %lld min or more</key>
 	<string>未學習、不到 %1$lld 分鐘、不到 %2$lld 分鐘、不到 %3$lld 分鐘、%4$lld 分鐘以上</string>
 	<key>None</key>
@@ -1149,8 +1217,12 @@
 	<string>尚無</string>
 	<key>Not Now</key>
 	<string>以後再說</string>
+	<key>Not added</key>
+	<string>未加入</string>
 	<key>Not checked yet · refresh to load your live limits</key>
 	<string>尚未檢查 · 重新整理以載入即時額度</string>
+	<key>Not connected</key>
+	<string>未連接</string>
 	<key>Not done</key>
 	<string>未完成</string>
 	<key>Not found on this Mac</key>
@@ -1167,18 +1239,28 @@
 	<string>尚未同步</string>
 	<key>Notch</key>
 	<string>瀏海</string>
+	<key>Nothing carries over</key>
+	<string>沒有延到明天的任務</string>
+	<key>Nothing checked off</key>
+	<string>還沒完成任何項目</string>
 	<key>Nothing due today</key>
 	<string>今天沒有待複習的卡片</string>
+	<key>Nothing left to plan</key>
+	<string>沒有可規劃的了</string>
 	<key>Nothing listed yesterday</key>
 	<string>昨天沒有列出任何事項</string>
 	<key>Nothing on today</key>
 	<string>今天沒有安排</string>
 	<key>Nothing on your calendar today</key>
 	<string>今天行事曆上沒有安排</string>
+	<key>Nothing on your calendars tomorrow.</key>
+	<string>明天行事曆上沒有行程。</string>
 	<key>Nothing planned</key>
 	<string>沒有計畫</string>
 	<key>Nothing playing</key>
 	<string>沒有正在播放的內容</string>
+	<key>Nothing was on your calendars yesterday.</key>
+	<string>昨天行事曆上沒有行程。</string>
 	<key>Notifications</key>
 	<string>通知</string>
 	<key>Now Playing</key>
@@ -1229,12 +1311,24 @@
 	<string>打開 Anki，此標籤頁會自動連線</string>
 	<key>Open Automation settings</key>
 	<string>打開「自動化」設定</string>
+	<key>Open Calendars privacy settings</key>
+	<string>打開行事曆隱私權設定</string>
+	<key>Open Calendars privacy settings to turn access on</key>
+	<string>打開行事曆隱私權設定以開啟取用權限</string>
 	<key>Open Connections</key>
 	<string>打開「連線」</string>
+	<key>Open Connections to connect your calendar</key>
+	<string>打開「連線」來連接你的行事曆</string>
+	<key>Open Connections to finish setting this up</key>
+	<string>打開「連線」完成設定</string>
 	<key>Open Connections to set up the AI</key>
 	<string>打開「連線」以設定 AI</string>
+	<key>Open Internet Accounts to add a Google, Exchange or iCloud calendar</key>
+	<string>打開「網際網路帳號」加入 Google、Exchange 或 iCloud 行事曆</string>
 	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
 	<string>在「系統設定」中打開「隱私權與安全性」&gt;「螢幕與系統錄音」</string>
+	<key>Open Privacy &amp; Security to allow Calendar access</key>
+	<string>打開「隱私權與安全性」允許取用行事曆</string>
 	<key>Open Settings</key>
 	<string>打開設定</string>
 	<key>Open Settings &gt; General to sign in with Apple</key>
@@ -1251,6 +1345,8 @@
 	<string>在大視圖中打開（Command-Return 傳送並展開）</string>
 	<key>Open on hover</key>
 	<string>滑過時打開</string>
+	<key>Open the %@ app to connect</key>
+	<string>打開 %@ App 來連接</string>
 	<key>Open the notch after hovering it briefly</key>
 	<string>游標停留片刻後打開瀏海</string>
 	<key>Open the notch to see your recap.</key>
@@ -1361,12 +1457,22 @@
 	<string>規劃</string>
 	<key>Plan my day</key>
 	<string>規劃今天</string>
+	<key>Plan my day asks the AI you pick in Settings.</key>
+	<string>「規劃今天」會使用你在設定中選擇的 AI。</string>
+	<key>Plan my day fits your plan around your calendar.</key>
+	<string>「規劃今天」會依你的行事曆安排計畫。</string>
 	<key>Plan my day: %@</key>
 	<string>規劃今天：%@</string>
 	<key>Plan tomorrow</key>
 	<string>規劃明天</string>
 	<key>Planned with %@</key>
 	<string>由 %@ 規劃</string>
+	<key>Planning</key>
+	<string>正在規劃</string>
+	<key>Planning tomorrow…</key>
+	<string>正在規劃明天…</string>
+	<key>Planning your day…</key>
+	<string>正在規劃今天…</string>
 	<key>Play</key>
 	<string>播放</string>
 	<key>Play a soft sound with celebrations that have no sound of their own</key>
@@ -1429,8 +1535,12 @@
 	<string>優化</string>
 	<key>Refine and AI day plans: your calendar event titles and times, tasks, goals and the plan.</key>
 	<string>「優化」和 AI 每日規劃：你的行事曆行程標題和時間、任務、目標以及計畫。</string>
+	<key>Refine with %@: ask for suggestions on this plan (optional)</key>
+	<string>用 %@ 優化：為這份計畫徵詢建議（選用）</string>
 	<key>Refine with %@: suggest a better order or lengths for this plan</key>
 	<string>用 %@ 優化：為這個計畫建議更好的順序或長度</string>
+	<key>Refined with %@.</key>
+	<string>已用 %@ 優化。</string>
 	<key>Refined with %@: %@</key>
 	<string>已用 %1$@ 優化：%2$@</string>
 	<key>Refresh failed · %@</key>
@@ -1499,6 +1609,8 @@
 	<string>在 Anki 中複習 %1$@：%2$lld 張待複習。點星號可釘選其他牌組。</string>
 	<key>Review %@ in Anki: %lld new, %lld learning, %lld review</key>
 	<string>在 Anki 中複習 %1$@：新卡片 %2$lld，學習中 %3$lld，待複習 %4$lld</string>
+	<key>Review block</key>
+	<string>複習時段</string>
 	<key>Review in Anki</key>
 	<string>在 Anki 中複習</string>
 	<key>Review today and see what carries over to tomorrow</key>
@@ -1533,6 +1645,8 @@
 	<string>儲存</string>
 	<key>Save this key in your Keychain</key>
 	<string>將這個密鑰存入鑰匙圈</string>
+	<key>Save today's review and show the checklist</key>
+	<string>儲存今天的回顧並顯示清單</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
 	<string>儲存的聊天只會留在這台 Mac 上，絕不會上傳</string>
 	<key>Saved in your Keychain</key>
@@ -1551,6 +1665,8 @@
 	<string>在瀏海裡查看今天的行程。</string>
 	<key>See what's next</key>
 	<string>看看接下來有什麼</string>
+	<key>See your %@ here. It only takes a moment.</key>
+	<string>在這裡查看你的%@，只要一下子。</string>
 	<key>See your day at a glance</key>
 	<string>一眼看清你的一天</string>
 	<key>Select AnkiConnect and click Check for Updates</key>
@@ -1571,6 +1687,8 @@
 	<string>設定 %@</string>
 	<key>Set up %@ to ask questions</key>
 	<string>設定 %@ 後即可提問</string>
+	<key>Set up AI</key>
+	<string>設定 AI</string>
 	<key>Settings…</key>
 	<string>設定…</string>
 	<key>Setup</key>
@@ -1729,6 +1847,8 @@
 	<string>用這些標籤頁開始</string>
 	<key>Starting Anki</key>
 	<string>正在啟動 Anki</string>
+	<key>Stays on this Mac</key>
+	<string>只留在本機</string>
 	<key>Step %lld of %lld</key>
 	<string>第 %1$lld 步，共 %2$lld 步</string>
 	<key>Step away for a bit</key>
@@ -1771,8 +1891,12 @@
 	<string>連續學習 7 天。</string>
 	<key>Study Hoodie</key>
 	<string>學習帽T</string>
+	<key>Study block</key>
+	<string>學習時段</string>
 	<key>Study parties</key>
 	<string>學習派對</string>
+	<key>Study points earned today, to spend on your pet's outfits</key>
+	<string>今天賺到的學習點數，可以幫寵物換裝</string>
 	<key>Study together</key>
 	<string>一起學習</string>
 	<key>Study with friends and see who is focusing now.</key>
@@ -1841,6 +1965,8 @@
 	<string>鑰匙圈沒有儲存密鑰。請再試一次。</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>花開了。也讓你的努力開花吧。</string>
+	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
+	<string>行事曆未接受這些行程。請檢查行事曆取用權限後再試一次。</string>
 	<key>The focus timer is on this task</key>
 	<string>專注計時器正用於這項任務</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1859,12 +1985,18 @@
 	<string>派對代碼。點一下拷貝，再傳給好友。</string>
 	<key>The rest of the day is yours.</key>
 	<string>今天剩下的時間都是你的。</string>
+	<key>The review couldn't be written to disk. Try Done again.</key>
+	<string>回顧無法寫入磁碟。請再按一次「完成」。</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>這次專注會為整個派對進行，直到結束或你手動結束</string>
 	<key>The tool's own default</key>
 	<string>工具本身的預設值</string>
 	<key>The year you were born</key>
 	<string>你出生的年份</string>
+	<key>Then a break until %@</key>
+	<string>然後休息到 %@</string>
+	<key>There's no free time worth a block before the evening.</key>
+	<string>傍晚前沒有足夠的空檔可以安排時段。</string>
 	<key>Thermal state: %@</key>
 	<string>溫度狀態：%@</string>
 	<key>Thinking</key>
@@ -1881,6 +2013,8 @@
 	<string>這項任務已在今天的清單中</string>
 	<key>Time for a %lld-minute break.</key>
 	<string>休息 %lld 分鐘吧。</string>
+	<key>Time studied today and study sessions finished</key>
+	<string>今天的學習時間和完成的學習次數</string>
 	<key>Timer</key>
 	<string>計時器</string>
 	<key>Timer: %@</key>
@@ -1899,10 +2033,16 @@
 	<string>今天的 %@</string>
 	<key>Today on a timeline</key>
 	<string>以時間軸顯示今天</string>
+	<key>Today's %@. Google calendars show up once added in Internet Accounts.</key>
+	<string>今天的%@。在「網際網路帳號」中加入後，Google 行事曆也會顯示。</string>
+	<key>Today's calendar</key>
+	<string>今天的行事曆</string>
 	<key>Today's events and the free time between them. Google calendars show up once added in Internet Accounts.</key>
 	<string>今天的行程和中間的空閒時間。Google 行事曆在「Internet 帳號」中加入後就會顯示。</string>
 	<key>Tomorrow</key>
 	<string>明天</string>
+	<key>Tomorrow has no free time worth a block before the evening.</key>
+	<string>明天傍晚前沒有足夠的空檔可以安排時段。</string>
 	<key>Tomorrow's calendar</key>
 	<string>明天的行事曆</string>
 	<key>Took back the import of %@.</key>
@@ -1959,6 +2099,8 @@
 	<string>未命名行程</string>
 	<key>Up next</key>
 	<string>接下來</string>
+	<key>Up next shows your %@ as the day goes, and Plan my day fits work around them.</key>
+	<string>「接下來」會隨時顯示你的%@，「規劃今天」會配合它們安排工作。</string>
 	<key>Update AnkiConnect</key>
 	<string>更新 AnkiConnect</string>
 	<key>Updated %@ and applied it.</key>
@@ -1975,6 +2117,8 @@
 	<string>透過 codex 指令使用你的 ChatGPT 方案。</string>
 	<key>Uses your Claude subscription through the claude command.</key>
 	<string>透過 claude 指令使用你的 Claude 訂閱。</string>
+	<key>Using Google? Add it in Internet Accounts to see your %@ here.</key>
+	<string>使用 Google？在「網際網路帳號」中加入後，就能在這裡看到你的%@。</string>
 	<key>Using a copy outside Applications? Just open it.</key>
 	<string>Anki 不在「應用程式」資料夾？直接打開就好。</string>
 	<key>Valentine's Week</key>
@@ -2051,10 +2195,16 @@
 	<string>收尾</string>
 	<key>Wrap up: review today and see what carries over</key>
 	<string>收尾：回顧今天，看看哪些要順延</string>
+	<key>Wrap-up</key>
+	<string>收尾</string>
 	<key>Write a polite reminder</key>
 	<string>寫一則禮貌的提醒</string>
 	<key>Write to %@</key>
 	<string>寫信至 %@</string>
+	<key>Writing a short summary of your day</key>
+	<string>正在寫今天的簡短總結</string>
+	<key>Writing a summary</key>
+	<string>正在寫總結</string>
 	<key>Year</key>
 	<string>年份</string>
 	<key>Yesterday</key>
@@ -2071,6 +2221,8 @@
 	<string>可以隨時在設定中進行設定。</string>
 	<key>You can set this up any time in the %@ tab.</key>
 	<string>可以隨時在「%@」標籤頁中設定。</string>
+	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
+	<string>今天學習了 %@。好好休息，明天重新出發。</string>
 	<key>You started it for the party</key>
 	<string>你為派對發起的</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>
@@ -2103,6 +2255,8 @@
 	<string>你的名字，最多 %lld 個字元</string>
 	<key>Your pet</key>
 	<string>你的寵物</string>
+	<key>Your plan</key>
+	<string>你的計畫</string>
 	<key>Your setup already matches %@</key>
 	<string>你的設定已與 %@ 相符</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>
@@ -2125,12 +2279,18 @@
 	<string>待複習</string>
 	<key>ending</key>
 	<string>即將結束</string>
+	<key>events</key>
+	<string>行程</string>
 	<key>in %@</key>
 	<string>%@後</string>
 	<key>in the last 30 days</key>
 	<string>（近 30 天）</string>
 	<key>just now</key>
 	<string>剛剛</string>
+	<key>lectures, labs, and shifts</key>
+	<string>課堂、實驗和值班</string>
+	<key>meetings and calls</key>
+	<string>會議和通話</string>
 	<key>no free time</key>
 	<string>沒有空閒時間</string>
 	<key>nothing yet; pick a sound</key>

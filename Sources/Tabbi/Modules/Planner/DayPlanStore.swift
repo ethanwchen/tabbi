@@ -36,22 +36,25 @@ final class DayPlanStore: ObservableObject {
 
         var title: String {
             switch self {
-            case .aiNotSetUp(nil): "Choose an AI to plan with"
-            case .aiNotSetUp(let id?): "\(id.displayName) isn't set up yet"
-            case .calendarOff: "Calendar access is off"
-            case .calendarUnavailable: "Connect your calendar"
-            case .aiFailed: "Couldn't plan your day"
+            case .aiNotSetUp(nil): String(localized: "Choose an AI to plan with", bundle: .tabbi)
+            case .aiNotSetUp(let id?): String(localized: "\(id.displayName) isn't set up yet", bundle: .tabbi)
+            case .calendarOff: String(localized: "Calendar access is off", bundle: .tabbi)
+            case .calendarUnavailable: String(localized: "Connect your calendar", bundle: .tabbi)
+            case .aiFailed: String(localized: "Couldn't plan your day", bundle: .tabbi)
             }
         }
 
         var detail: String {
             switch self {
-            case .aiNotSetUp(nil): "Plan my day asks the AI you pick in Settings."
+            case .aiNotSetUp(nil): String(localized: "Plan my day asks the AI you pick in Settings.", bundle: .tabbi)
             case .aiNotSetUp(let id?):
-                id.requiresAPIKey ? "Add your \(id.displayName) key in Settings." : "Install \(id.displayName) to plan with it."
-            case .calendarOff: "Allow \(Edition.current.name) in Privacy & Security to plan around meetings."
-            case .calendarUnavailable: "Plan my day fits your plan around your calendar."
-            case .aiFailed(let assistant): "\(assistant) didn't send back a usable plan. Try again in a moment."
+                id.requiresAPIKey ? String(localized: "Add your \(id.displayName) key in Settings.", bundle: .tabbi)
+                    : String(localized: "Install \(id.displayName) to plan with it.", bundle: .tabbi)
+            case .calendarOff:
+                String(localized: "Allow \(Edition.current.name) in Privacy & Security to plan around meetings.", bundle: .tabbi)
+            case .calendarUnavailable: String(localized: "Plan my day fits your plan around your calendar.", bundle: .tabbi)
+            case .aiFailed(let assistant):
+                String(localized: "\(assistant) didn't send back a usable plan. Try again in a moment.", bundle: .tabbi)
             }
         }
 

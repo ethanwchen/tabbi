@@ -19,8 +19,12 @@
 	<string>%@ Sinusubukan ulit sa background.</string>
 	<key>%@ can't control %@</key>
 	<string>Hindi makontrol ng %1$@ ang %2$@</string>
+	<key>%@ couldn't refine it. This plan still works.</key>
+	<string>Hindi ito na-refine ng %@. Puwede pa rin ang planong ito.</string>
 	<key>%@ couldn't refine this plan</key>
 	<string>Hindi ma-refine ng %@ ang plan na ito</string>
+	<key>%@ didn't send back a usable plan. Try again in a moment.</key>
+	<string>Walang magagamit na plano mula sa %@. Subukan ulit mamaya.</string>
 	<key>%@ done for today. Open %@</key>
 	<string>Tapos na ang %1$@ para ngayong araw. Buksan ang %2$@</string>
 	<key>%@ free</key>
@@ -37,6 +41,10 @@
 	<string>Ginagamit na ng ibang app ang %@. Mag-record ng ibang shortcut.</string>
 	<key>%@ is damaged, so it's left untouched.</key>
 	<string>Sira ang %@, kaya hindi ito ginalaw.</string>
+	<key>%@ is fitting your tasks around today's events</key>
+	<string>Inaayos ng %@ ang mga task mo sa paligid ng mga event ngayon</string>
+	<key>%@ is fitting your tasks around tomorrow's events</key>
+	<string>Inaayos ng %@ ang mga task mo sa paligid ng mga event bukas</string>
 	<key>%@ is in use</key>
 	<string>Ginagamit ang %@</string>
 	<key>%@ is in your party</key>
@@ -45,6 +53,8 @@
 	<string>Sinasamahan ka ni %@</string>
 	<key>%@ is looking over this plan...</key>
 	<string>Tinitingnan ng %@ ang plan na ito...</string>
+	<key>%@ is looking over this plan…</key>
+	<string>Sinusuri ng %@ ang planong ito…</string>
 	<key>%@ is napping until your next session</key>
 	<string>Natutulog si %@ hanggang sa susunod mong session</string>
 	<key>%@ is on a break with you</key>
@@ -57,6 +67,8 @@
 	<string>Nagbe-break si %@ kasama mo</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
 	<string>Wala pa ang %@ sa Mac na ito. Ipapakita ng Connections kung paano ito idagdag.</string>
+	<key>%@ isn't set up yet</key>
+	<string>Hindi pa naka-set up ang %@</string>
 	<key>%@ left</key>
 	<string>%@ na lang</string>
 	<key>%@ misses you</key>
@@ -71,6 +83,8 @@
 	<string>%1$@ ng %2$@</string>
 	<key>%@ of focus.</key>
 	<string>%@ ng focus.</string>
+	<key>%@ reads your events on this Mac and never uploads them</key>
+	<string>Binabasa ng %@ ang mga event mo sa Mac na ito at hindi kailanman ina-upload</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
 	<string>Tatakbo ang %1$@ hanggang %2$@. Susunod na item, %3$@: %4$@ naka-focus.</string>
 	<key>%@ settings</key>
@@ -83,6 +97,8 @@
 	<string>Nag-aral nang %@ ngayon</string>
 	<key>%@ suggests no changes</key>
 	<string>Walang mungkahing pagbabago ang %@</string>
+	<key>%@ suggests no changes.</key>
+	<string>Walang iminumungkahing pagbabago ang %@.</string>
 	<key>%@ today</key>
 	<string>%@ ngayon</string>
 	<key>%@ tokens</key>
@@ -109,6 +125,8 @@
 	<string>%@. %@</string>
 	<key>%@: %@</key>
 	<string>%@: %@</string>
+	<key>%@: %@ done today</key>
+	<string>%1$@: %2$@ natapos ngayon</string>
 	<key>%@: %@ left</key>
 	<string>%1$@: %2$@ na lang</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
@@ -187,6 +205,8 @@
 	<string>Isang paalala araw-araw, sa Closet options.</string>
 	<key>A few extras</key>
 	<string>Ilang extra</string>
+	<key>A free day</key>
+	<string>Bakanteng araw</string>
 	<key>A fresh day</key>
 	<string>Bagong araw</string>
 	<key>A fresh start for the new year. Focus a little each day.</key>
@@ -205,8 +225,12 @@
 	<string>Isang masayang unang linggo nating magkasama.</string>
 	<key>A question can take up to %lld screenshots</key>
 	<string>Hanggang %lld screenshot lang ang puwede sa isang tanong</string>
+	<key>A quiet day. Rest up and start fresh tomorrow.</key>
+	<string>Tahimik na araw. Magpahinga ka at magsimula ulit bukas.</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>Isang linggo ng pahinga. May bagong simulang naghihintay.</string>
+	<key>A sample day. Your own events show here once the calendar is connected.</key>
+	<string>Halimbawang araw. Lalabas dito ang sarili mong mga event kapag naka-connect na ang calendar.</string>
 	<key>A shorter timer</key>
 	<string>Mas maikling timer</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
@@ -223,6 +247,8 @@
 	<string>API key</string>
 	<key>About</key>
 	<string>About</string>
+	<key>Access is off</key>
+	<string>Naka-off ang access</string>
 	<key>Account</key>
 	<string>Account</string>
 	<key>Accounts are for people %lld and older. Signing in opens in %@.</key>
@@ -251,6 +277,8 @@
 	<string>Magdagdag ng task…</string>
 	<key>Add all</key>
 	<string>Idagdag lahat</string>
+	<key>Add every block to your default calendar</key>
+	<string>Idagdag lahat ng block sa default calendar mo</string>
 	<key>Add every proposed block to your calendar</key>
 	<string>Idagdag sa calendar mo ang lahat ng iminungkahing block</string>
 	<key>Add key</key>
@@ -267,6 +295,8 @@
 	<string>Idagdag ang gusto mong matapos. Sasama sa umaga ang mga hindi natapos na task ngayon.</string>
 	<key>Add your %@ key</key>
 	<string>Idagdag ang %@ key mo</string>
+	<key>Add your %@ key in Settings.</key>
+	<string>Idagdag ang %@ key mo sa Settings.</string>
 	<key>Add your calendar</key>
 	<string>Idagdag ang calendar mo</string>
 	<key>Add…</key>
@@ -289,10 +319,18 @@
 	<string>Opsyonal lahat. Wala pang kailangang gawin.</string>
 	<key>Allow</key>
 	<string>Payagan</string>
+	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
+	<string>Payagan ang %@ sa Privacy &amp; Security para makapagplano sa paligid ng mga meeting.</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
 	<string>Payagan ang %@ sa Privacy &amp; Security.</string>
 	<key>Allow %@ in System Settings › General › Login Items.</key>
 	<string>Payagan ang %@ sa System Settings › General › Login Items.</string>
+	<key>Allow %@ to read your calendars</key>
+	<string>Payagan ang %@ na basahin ang mga calendar mo</string>
+	<key>Allow %@ to read your calendars. macOS asks once.</key>
+	<string>Payagan ang %@ na basahin ang mga calendar mo. Isang beses lang magtatanong ang macOS.</string>
+	<key>Allow Access</key>
+	<string>Payagan</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
 	<string>Payagan ang access sa Privacy &amp; Security › Automation.</string>
 	<key>Allow screenshots</key>
@@ -331,6 +369,8 @@
 	<string>Lumalabas kapag umabot ang pointer sa itaas na gitna.</string>
 	<key>Apps and permissions</key>
 	<string>Mga app at pahintulot</string>
+	<key>Ask %@ again</key>
+	<string>Tanungin ulit si %@</string>
 	<key>Ask %@ anything</key>
 	<string>Tanungin si %@ ng kahit ano</string>
 	<key>Ask %@ anything…</key>
@@ -373,6 +413,8 @@
 	<string>Balik sa chat</string>
 	<key>Back to the chat without a screenshot</key>
 	<string>Balik sa chat nang walang screenshot</string>
+	<key>Back to the checklist</key>
+	<string>Bumalik sa checklist</string>
 	<key>Back to the notch (Esc)</key>
 	<string>Balik sa notch (Esc)</string>
 	<key>Back to today</key>
@@ -385,6 +427,8 @@
 	<string>Top na araw: %@</string>
 	<key>Blindfolded Sorcerer</key>
 	<string>Nakapiring na Salamangkero</string>
+	<key>Blocks go to your calendar.</key>
+	<string>Mapupunta sa calendar mo.</string>
 	<key>Bow Tie</key>
 	<string>Bow Tie</string>
 	<key>Break</key>
@@ -408,7 +452,7 @@
 	<key>Calendar</key>
 	<string>Calendar</string>
 	<key>Calendar access</key>
-	<string>Access sa calendar</string>
+	<string>Calendar</string>
 	<key>Calendar access is off</key>
 	<string>Naka-off ang access sa calendar</string>
 	<key>Calendars</key>
@@ -479,6 +523,8 @@
 	<string>Pumili ng paraan</string>
 	<key>Choose an AI to ask questions</key>
 	<string>Pumili ng AI para sa mga tanong mo</string>
+	<key>Choose an AI to plan with</key>
+	<string>Pumili ng AI para magplano</string>
 	<key>Choose how big the open notch is. Every tab uses the same size.</key>
 	<string>Piliin kung gaano kalaki ang bukas na notch. Pareho ang laki ng bawat tab.</string>
 	<key>Choose how lively the notch's animations are</key>
@@ -579,6 +625,8 @@
 	<string>Hindi maidagdag sa calendar mo. Subukan ulit</string>
 	<key>Couldn't import %@: %@</key>
 	<string>Hindi ma-import ang %1$@: %2$@</string>
+	<key>Couldn't plan your day</key>
+	<string>Hindi naplano ang araw mo</string>
 	<key>Couldn't read today's list</key>
 	<string>Hindi mabasa ang listahan ngayon</string>
 	<key>Couldn't read tomorrow's list</key>
@@ -657,6 +705,8 @@
 	<string>Hoodie na Dinosaur</string>
 	<key>Discard</key>
 	<string>Itapon</string>
+	<key>Discard the plan and show the checklist</key>
+	<string>Itapon ang plano at ipakita ang checklist</string>
 	<key>Disconnected display</key>
 	<string>Na-disconnect na display</string>
 	<key>Display</key>
@@ -715,6 +765,8 @@
 	<string>Na-unlock lahat. Bihisan mo ayon sa gusto mo.</string>
 	<key>Exam Season</key>
 	<string>Panahon ng Exam</string>
+	<key>Example</key>
+	<string>Halimbawa</string>
 	<key>Fantasy</key>
 	<string>Fantasy</string>
 	<key>Fast</key>
@@ -739,6 +791,10 @@
 	<string>Ilagay ang mga natitira mong task, review at break sa paligid ng calendar ngayon</string>
 	<key>Fit your open tasks, reviews and breaks around tomorrow's calendar</key>
 	<string>Ilagay ang mga natitira mong task, review at break sa paligid ng calendar bukas</string>
+	<key>Fitting your work and breaks around today's events</key>
+	<string>Inaayos ang trabaho at break mo sa paligid ng mga event ngayon</string>
+	<key>Fitting your work and breaks around tomorrow's events</key>
+	<string>Inaayos ang trabaho at break mo sa paligid ng mga event bukas</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
 	<string>May inayos sa ibang app? Bumalik dito at kusang mag-a-update ang ilaw.</string>
 	<key>Flame Headband</key>
@@ -765,6 +821,8 @@
 	<string>Focus session</string>
 	<key>Focus session done</key>
 	<string>Tapos na ang focus session</string>
+	<key>Focus sessions completed today</key>
+	<string>Mga focus session na natapos ngayon</string>
 	<key>Focus time</key>
 	<string>Oras ng focus</string>
 	<key>Focus time today, out of your daily goal</key>
@@ -785,6 +843,8 @@
 	<string>Naka-focus sa</string>
 	<key>Focusing on: %@</key>
 	<string>Naka-focus sa: %@</string>
+	<key>Free all day</key>
+	<string>Libre buong araw</string>
 	<key>Free and offline: runs a model on this Mac.</key>
 	<string>Libre at offline: nagpapatakbo ng model sa Mac na ito.</string>
 	<key>Free freeze used</key>
@@ -923,6 +983,8 @@
 	<string>Input, output at cache token sa lahat ng %@ session mula hatinggabi</string>
 	<key>Install</key>
 	<string>I-install</string>
+	<key>Install %@ to plan with it.</key>
+	<string>I-install ang %@ para magamit ito sa pagpaplano.</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>I-install ang Claude Code at mag-sign in para makita ang live na 5-oras at lingguhang limit mo.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1001,6 +1063,8 @@
 	<string>Umalis sa party</string>
 	<key>Leave the party; the next member becomes host</key>
 	<string>Umalis sa party; magiging host ang susunod na miyembro</string>
+	<key>Leave this block out</key>
+	<string>Huwag isama ang block na ito</string>
 	<key>Leave this block out of the plan</key>
 	<string>Huwag isama ang block na ito sa plan</string>
 	<key>Leave this question unanswered</key>
@@ -1117,6 +1181,8 @@
 	<string>Walang event</string>
 	<key>No events on your calendars today.</key>
 	<string>Walang event sa mga calendar mo ngayon.</string>
+	<key>No focus sessions today</key>
+	<string>Walang focus session ngayon</string>
 	<key>No free time</key>
 	<string>Walang libreng oras</string>
 	<key>No free time left</key>
@@ -1139,6 +1205,8 @@
 	<string>Wala pang streak</string>
 	<key>No study</key>
 	<string>Walang pag-aaral</string>
+	<key>No study yet</key>
+	<string>Wala pang pag-aaral</string>
 	<key>No study, under %lld min, under %lld min, under %lld min, and %lld min or more</key>
 	<string>Walang pag-aaral, wala pang %1$lld min, wala pang %2$lld min, wala pang %3$lld min, at %4$lld min pataas</string>
 	<key>None</key>
@@ -1149,8 +1217,12 @@
 	<string>Wala pa</string>
 	<key>Not Now</key>
 	<string>Hindi Ngayon</string>
+	<key>Not added</key>
+	<string>Hindi naidagdag</string>
 	<key>Not checked yet · refresh to load your live limits</key>
 	<string>Hindi pa nasusuri · i-refresh para makita ang live limits mo</string>
+	<key>Not connected</key>
+	<string>Hindi naka-connect</string>
 	<key>Not done</key>
 	<string>Hindi pa tapos</string>
 	<key>Not found on this Mac</key>
@@ -1167,18 +1239,28 @@
 	<string>Hindi pa naka-sync</string>
 	<key>Notch</key>
 	<string>Notch</string>
+	<key>Nothing carries over</key>
+	<string>Walang dadalhin bukas</string>
+	<key>Nothing checked off</key>
+	<string>Walang na-check</string>
 	<key>Nothing due today</key>
 	<string>Walang due ngayon</string>
+	<key>Nothing left to plan</key>
+	<string>Wala nang ipaplano</string>
 	<key>Nothing listed yesterday</key>
 	<string>Walang nakalista kahapon</string>
 	<key>Nothing on today</key>
 	<string>Walang ganap ngayon</string>
 	<key>Nothing on your calendar today</key>
 	<string>Walang laman ang calendar mo ngayon</string>
+	<key>Nothing on your calendars tomorrow.</key>
+	<string>Walang laman ang mga calendar mo bukas.</string>
 	<key>Nothing planned</key>
 	<string>Walang plano</string>
 	<key>Nothing playing</key>
 	<string>Walang tumutugtog</string>
+	<key>Nothing was on your calendars yesterday.</key>
+	<string>Walang laman ang mga calendar mo kahapon.</string>
 	<key>Notifications</key>
 	<string>Mga Notification</string>
 	<key>Now Playing</key>
@@ -1229,12 +1311,24 @@
 	<string>Buksan ang Anki; kusang kokonekta ang tab na ito</string>
 	<key>Open Automation settings</key>
 	<string>Buksan ang Automation settings</string>
+	<key>Open Calendars privacy settings</key>
+	<string>Buksan ang privacy settings ng Calendars</string>
+	<key>Open Calendars privacy settings to turn access on</key>
+	<string>Buksan ang privacy settings ng Calendars para i-on ang access</string>
 	<key>Open Connections</key>
 	<string>Buksan ang Connections</string>
+	<key>Open Connections to connect your calendar</key>
+	<string>Buksan ang Connections para i-connect ang calendar mo</string>
+	<key>Open Connections to finish setting this up</key>
+	<string>Buksan ang Connections para tapusin ang setup</string>
 	<key>Open Connections to set up the AI</key>
 	<string>Buksan ang Connections para i-set up ang AI</string>
+	<key>Open Internet Accounts to add a Google, Exchange or iCloud calendar</key>
+	<string>Buksan ang Internet Accounts para magdagdag ng Google, Exchange o iCloud calendar</string>
 	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
 	<string>Buksan ang Privacy &amp; Security &gt; Screen Recording sa System Settings</string>
+	<key>Open Privacy &amp; Security to allow Calendar access</key>
+	<string>Buksan ang Privacy &amp; Security para payagan ang access sa Calendar</string>
 	<key>Open Settings</key>
 	<string>Buksan ang Settings</string>
 	<key>Open Settings &gt; General to sign in with Apple</key>
@@ -1251,6 +1345,8 @@
 	<string>Buksan sa malaking view (Command-Return para mag-send at mag-expand)</string>
 	<key>Open on hover</key>
 	<string>Buksan pag tinapatan</string>
+	<key>Open the %@ app to connect</key>
+	<string>Buksan ang %@ app para mag-connect</string>
 	<key>Open the notch after hovering it briefly</key>
 	<string>Buksan ang notch pagkatapos itong tapatan sandali</string>
 	<key>Open the notch to see your recap.</key>
@@ -1361,12 +1457,22 @@
 	<string>Planuhin</string>
 	<key>Plan my day</key>
 	<string>Planuhin ang araw</string>
+	<key>Plan my day asks the AI you pick in Settings.</key>
+	<string>Ginagamit ng Planuhin ang araw ang AI na pinili mo sa Settings.</string>
+	<key>Plan my day fits your plan around your calendar.</key>
+	<string>Inaayos ng Planuhin ang araw ang plano mo ayon sa calendar mo.</string>
 	<key>Plan my day: %@</key>
 	<string>Planuhin ang araw: %@</string>
 	<key>Plan tomorrow</key>
 	<string>Planuhin ang bukas</string>
 	<key>Planned with %@</key>
 	<string>Pinlano gamit ang %@</string>
+	<key>Planning</key>
+	<string>Nagpaplano</string>
+	<key>Planning tomorrow…</key>
+	<string>Pinaplano ang bukas…</string>
+	<key>Planning your day…</key>
+	<string>Pinaplano ang araw mo…</string>
 	<key>Play</key>
 	<string>I-play</string>
 	<key>Play a soft sound with celebrations that have no sound of their own</key>
@@ -1429,8 +1535,12 @@
 	<string>Refine</string>
 	<key>Refine and AI day plans: your calendar event titles and times, tasks, goals and the plan.</key>
 	<string>Refine at AI day plan: mga title at oras ng calendar event mo, mga task, goal at ang plan.</string>
+	<key>Refine with %@: ask for suggestions on this plan (optional)</key>
+	<string>I-refine gamit ang %@: humingi ng mungkahi sa planong ito (opsyonal)</string>
 	<key>Refine with %@: suggest a better order or lengths for this plan</key>
 	<string>I-refine gamit ang %@: magmungkahi ng mas magandang ayos o haba para sa plan na ito</string>
+	<key>Refined with %@.</key>
+	<string>Na-refine gamit ang %@.</string>
 	<key>Refined with %@: %@</key>
 	<string>Na-refine gamit ang %1$@: %2$@</string>
 	<key>Refresh failed · %@</key>
@@ -1499,6 +1609,8 @@
 	<string>I-review ang %1$@ sa Anki: %2$lld due. I-pin ang ibang deck gamit ang star nito.</string>
 	<key>Review %@ in Anki: %lld new, %lld learning, %lld review</key>
 	<string>I-review ang %1$@ sa Anki: %2$lld bago, %3$lld learning, %4$lld review</string>
+	<key>Review block</key>
+	<string>Review block</string>
 	<key>Review in Anki</key>
 	<string>I-review sa Anki</string>
 	<key>Review today and see what carries over to tomorrow</key>
@@ -1533,6 +1645,8 @@
 	<string>I-save</string>
 	<key>Save this key in your Keychain</key>
 	<string>I-save ang key na ito sa Keychain mo</string>
+	<key>Save today's review and show the checklist</key>
+	<string>I-save ang review ngayon at ipakita ang checklist</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
 	<string>Sa Mac na ito lang nakatago ang mga naka-save na chat at hindi kailanman ina-upload</string>
 	<key>Saved in your Keychain</key>
@@ -1551,6 +1665,8 @@
 	<string>Tingnan ang mga event ngayon sa notch.</string>
 	<key>See what's next</key>
 	<string>Tingnan ang susunod</string>
+	<key>See your %@ here. It only takes a moment.</key>
+	<string>Tingnan dito ang mga %@ mo. Saglit lang ito.</string>
 	<key>See your day at a glance</key>
 	<string>Silipin ang araw mo</string>
 	<key>Select AnkiConnect and click Check for Updates</key>
@@ -1571,6 +1687,8 @@
 	<string>Setup: %@</string>
 	<key>Set up %@ to ask questions</key>
 	<string>I-set up ang %@ para makapagtanong</string>
+	<key>Set up AI</key>
+	<string>I-set up ang AI</string>
 	<key>Settings…</key>
 	<string>Settings…</string>
 	<key>Setup</key>
@@ -1656,7 +1774,7 @@
 	<key>Skip</key>
 	<string>I-skip</string>
 	<key>Skip Setup</key>
-	<string>I-skip ang Setup</string>
+	<string>I-skip</string>
 	<key>Skip and Finish</key>
 	<string>I-skip at Tapusin</string>
 	<key>Skip the break</key>
@@ -1729,6 +1847,8 @@
 	<string>Magsimula sa mga tab na ito</string>
 	<key>Starting Anki</key>
 	<string>Sinisimulan ang Anki</string>
+	<key>Stays on this Mac</key>
+	<string>Nasa Mac lang na ito</string>
 	<key>Step %lld of %lld</key>
 	<string>Hakbang %1$lld sa %2$lld</string>
 	<key>Step away for a bit</key>
@@ -1771,8 +1891,12 @@
 	<string>Mag-aral nang 7 araw nang sunod-sunod.</string>
 	<key>Study Hoodie</key>
 	<string>Hoodie ng Pag-aaral</string>
+	<key>Study block</key>
+	<string>Study block</string>
 	<key>Study parties</key>
 	<string>Study party</string>
+	<key>Study points earned today, to spend on your pet's outfits</key>
+	<string>Study points na nakuha ngayon, pambili ng outfit ng pet mo</string>
 	<key>Study together</key>
 	<string>Sabay mag-aral</string>
 	<key>Study with friends and see who is focusing now.</key>
@@ -1841,6 +1965,8 @@
 	<string>Hindi na-save ng Keychain ang key. Subukan ulit.</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>Namumulaklak na. Magpalago ka rin ng sarili mo.</string>
+	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
+	<string>Hindi tinanggap ng calendar ang mga event. Tingnan ang access sa Calendar at subukan ulit.</string>
 	<key>The focus timer is on this task</key>
 	<string>Nasa task na ito ang focus timer</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1859,12 +1985,18 @@
 	<string>Ang party code. I-click para kopyahin, tapos ipadala sa mga kaibigan.</string>
 	<key>The rest of the day is yours.</key>
 	<string>Sa iyo na ang natitirang araw.</string>
+	<key>The review couldn't be written to disk. Try Done again.</key>
+	<string>Hindi na-save sa disk ang review. Pindutin ulit ang Tapos.</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>Tatakbo ang session para sa buong party hanggang matapos ito o tapusin mo</string>
 	<key>The tool's own default</key>
 	<string>Default ng tool</string>
 	<key>The year you were born</key>
 	<string>Taon ng kapanganakan mo</string>
+	<key>Then a break until %@</key>
+	<string>Tapos break hanggang %@</string>
+	<key>There's no free time worth a block before the evening.</key>
+	<string>Wala nang sapat na bakanteng oras para sa block bago gumabi.</string>
 	<key>Thermal state: %@</key>
 	<string>Init: %@</string>
 	<key>Thinking</key>
@@ -1881,6 +2013,8 @@
 	<string>Nasa listahan ngayon ang task na ito</string>
 	<key>Time for a %lld-minute break.</key>
 	<string>Oras na para sa %lld-minutong break.</string>
+	<key>Time studied today and study sessions finished</key>
+	<string>Oras ng pag-aaral ngayon at mga study session na natapos</string>
 	<key>Timer</key>
 	<string>Timer</string>
 	<key>Timer: %@</key>
@@ -1899,10 +2033,16 @@
 	<string>Ngayon sa %@</string>
 	<key>Today on a timeline</key>
 	<string>Ngayong araw sa timeline</string>
+	<key>Today's %@. Google calendars show up once added in Internet Accounts.</key>
+	<string>Mga %@ ngayon. Lalabas ang Google calendars kapag naidagdag sa Internet Accounts.</string>
+	<key>Today's calendar</key>
+	<string>Calendar ngayon</string>
 	<key>Today's events and the free time between them. Google calendars show up once added in Internet Accounts.</key>
 	<string>Mga event ngayon at ang libreng oras sa pagitan nila. Lalabas ang mga Google calendar pag naidagdag na sa Internet Accounts.</string>
 	<key>Tomorrow</key>
 	<string>Bukas</string>
+	<key>Tomorrow has no free time worth a block before the evening.</key>
+	<string>Walang sapat na bakanteng oras bukas para sa block bago gumabi.</string>
 	<key>Tomorrow's calendar</key>
 	<string>Calendar bukas</string>
 	<key>Took back the import of %@.</key>
@@ -1959,6 +2099,8 @@
 	<string>Event na walang title</string>
 	<key>Up next</key>
 	<string>Susunod</string>
+	<key>Up next shows your %@ as the day goes, and Plan my day fits work around them.</key>
+	<string>Nasa Susunod ang mga %@ mo, at isinisingit ng Planuhin ang araw ang trabaho sa pagitan.</string>
 	<key>Update AnkiConnect</key>
 	<string>I-update ang AnkiConnect</string>
 	<key>Updated %@ and applied it.</key>
@@ -1975,6 +2117,8 @@
 	<string>Ginagamit ang ChatGPT plan mo sa pamamagitan ng codex command.</string>
 	<key>Uses your Claude subscription through the claude command.</key>
 	<string>Ginagamit ang Claude subscription mo sa pamamagitan ng claude command.</string>
+	<key>Using Google? Add it in Internet Accounts to see your %@ here.</key>
+	<string>Gumagamit ng Google? Idagdag ito sa Internet Accounts para makita rito ang mga %@ mo.</string>
 	<key>Using a copy outside Applications? Just open it.</key>
 	<string>Nasa labas ng Applications ang kopya mo? Buksan mo lang.</string>
 	<key>Valentine's Week</key>
@@ -2051,10 +2195,16 @@
 	<string>Wrap up</string>
 	<key>Wrap up: review today and see what carries over</key>
 	<string>Wrap up: balikan ang araw at tingnan ang dadalhin bukas</string>
+	<key>Wrap-up</key>
+	<string>Wrap up</string>
 	<key>Write a polite reminder</key>
 	<string>Sumulat ng magalang na paalala</string>
 	<key>Write to %@</key>
 	<string>Sumulat sa %@</string>
+	<key>Writing a short summary of your day</key>
+	<string>Isinusulat ang maikling buod ng araw mo</string>
+	<key>Writing a summary</key>
+	<string>Isinusulat ang buod</string>
 	<key>Year</key>
 	<string>Taon</string>
 	<key>Yesterday</key>
@@ -2071,6 +2221,8 @@
 	<string>Mase-set up mo ito anumang oras sa Settings.</string>
 	<key>You can set this up any time in the %@ tab.</key>
 	<string>Mase-set up mo ito anumang oras sa tab na %@.</string>
+	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
+	<string>Nag-aral ka ng %@ ngayon. Magpahinga ka at magsimula ulit bukas.</string>
 	<key>You started it for the party</key>
 	<string>Ikaw ang nagsimula nito para sa party</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>
@@ -2103,6 +2255,8 @@
 	<string>Pangalan mo, hanggang %lld character</string>
 	<key>Your pet</key>
 	<string>Pet mo</string>
+	<key>Your plan</key>
+	<string>Plano mo</string>
 	<key>Your setup already matches %@</key>
 	<string>Tugma na ang setup mo sa %@</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>
@@ -2125,12 +2279,18 @@
 	<string>due</string>
 	<key>ending</key>
 	<string>patapos na</string>
+	<key>events</key>
+	<string>event</string>
 	<key>in %@</key>
 	<string>sa loob ng %@</string>
 	<key>in the last 30 days</key>
 	<string>sa huling 30 araw</string>
 	<key>just now</key>
 	<string>ngayon lang</string>
+	<key>lectures, labs, and shifts</key>
+	<string>lecture, lab at shift</string>
+	<key>meetings and calls</key>
+	<string>meeting at tawag</string>
 	<key>no free time</key>
 	<string>walang libreng oras</string>
 	<key>nothing yet; pick a sound</key>

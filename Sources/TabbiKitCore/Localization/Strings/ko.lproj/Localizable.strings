@@ -19,8 +19,12 @@
 	<string>%@ 백그라운드에서 다시 시도하는 중이에요.</string>
 	<key>%@ can't control %@</key>
 	<string>%1$@에서 %2$@을(를) 제어할 수 없어요</string>
+	<key>%@ couldn't refine it. This plan still works.</key>
+	<string>%@가 다듬지 못했어요. 이 계획도 괜찮아요.</string>
 	<key>%@ couldn't refine this plan</key>
 	<string>%@가 계획을 다듬지 못했어요</string>
+	<key>%@ didn't send back a usable plan. Try again in a moment.</key>
+	<string>%@에서 쓸 수 있는 계획을 받지 못했어요. 잠시 후 다시 시도해 주세요.</string>
 	<key>%@ done for today. Open %@</key>
 	<string>%1$@ 오늘 완료. %2$@ 열기</string>
 	<key>%@ free</key>
@@ -37,6 +41,10 @@
 	<string>%@ 키는 다른 앱에서 이미 쓰고 있어요. 다른 단축키를 입력해 주세요.</string>
 	<key>%@ is damaged, so it's left untouched.</key>
 	<string>%@ 파일이 손상되어 그대로 두었어요.</string>
+	<key>%@ is fitting your tasks around today's events</key>
+	<string>%@가 오늘 일정에 맞춰 할 일을 배치하는 중</string>
+	<key>%@ is fitting your tasks around tomorrow's events</key>
+	<string>%@가 내일 일정에 맞춰 할 일을 배치하는 중</string>
 	<key>%@ is in use</key>
 	<string>%@ 사용 중</string>
 	<key>%@ is in your party</key>
@@ -45,6 +53,8 @@
 	<string>%@가 곁에 있어요</string>
 	<key>%@ is looking over this plan...</key>
 	<string>%@가 계획을 살펴보는 중...</string>
+	<key>%@ is looking over this plan…</key>
+	<string>%@가 계획을 살펴보는 중…</string>
 	<key>%@ is napping until your next session</key>
 	<string>%@는 다음 세션까지 낮잠 중</string>
 	<key>%@ is on a break with you</key>
@@ -57,6 +67,8 @@
 	<string>%@도 함께 쉬는 중</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
 	<string>이 Mac에 아직 %@가 없어요. 연결에서 추가하는 방법을 알려 드려요.</string>
+	<key>%@ isn't set up yet</key>
+	<string>%@가 아직 설정되지 않았어요</string>
 	<key>%@ left</key>
 	<string>%@ 남음</string>
 	<key>%@ misses you</key>
@@ -71,6 +83,8 @@
 	<string>%1$@ / %2$@</string>
 	<key>%@ of focus.</key>
 	<string>%@ 집중했어요.</string>
+	<key>%@ reads your events on this Mac and never uploads them</key>
+	<string>%@는 이 Mac에서 일정을 읽고 절대 업로드하지 않아요</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
 	<string>%1$@은(는) %2$@까지예요. 다음 아이템 %3$@: %4$@ 집중함.</string>
 	<key>%@ settings</key>
@@ -83,6 +97,8 @@
 	<string>오늘 %@ 공부함</string>
 	<key>%@ suggests no changes</key>
 	<string>%@가 바꿀 점이 없대요</string>
+	<key>%@ suggests no changes.</key>
+	<string>%@의 변경 제안이 없어요.</string>
 	<key>%@ today</key>
 	<string>오늘 %@</string>
 	<key>%@ tokens</key>
@@ -109,6 +125,8 @@
 	<string>%@. %@</string>
 	<key>%@: %@</key>
 	<string>%@: %@</string>
+	<key>%@: %@ done today</key>
+	<string>%1$@: 오늘 %2$@ 완료</string>
 	<key>%@: %@ left</key>
 	<string>%@: %@ 남음</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
@@ -187,6 +205,8 @@
 	<string>Closet 옵션에서 매일 알림을 켜요.</string>
 	<key>A few extras</key>
 	<string>추가 기능</string>
+	<key>A free day</key>
+	<string>여유로운 하루</string>
 	<key>A fresh day</key>
 	<string>새로운 하루</string>
 	<key>A fresh start for the new year. Focus a little each day.</key>
@@ -205,8 +225,12 @@
 	<string>함께한 멋진 첫 주였어요.</string>
 	<key>A question can take up to %lld screenshots</key>
 	<string>질문 하나에 스크린샷은 최대 %lld장까지</string>
+	<key>A quiet day. Rest up and start fresh tomorrow.</key>
+	<string>조용한 하루였어요. 푹 쉬고 내일 새롭게 시작해요.</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>푹 쉰 한 주였어요. 새로운 시작이 기다려요.</string>
+	<key>A sample day. Your own events show here once the calendar is connected.</key>
+	<string>샘플 하루예요. 캘린더를 연결하면 내 일정이 여기에 표시돼요.</string>
 	<key>A shorter timer</key>
 	<string>타이머 줄이기</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
@@ -223,6 +247,8 @@
 	<string>API 키</string>
 	<key>About</key>
 	<string>정보</string>
+	<key>Access is off</key>
+	<string>접근이 꺼져 있어요</string>
 	<key>Account</key>
 	<string>계정</string>
 	<key>Accounts are for people %lld and older. Signing in opens in %@.</key>
@@ -251,6 +277,8 @@
 	<string>할 일 추가…</string>
 	<key>Add all</key>
 	<string>모두 추가</string>
+	<key>Add every block to your default calendar</key>
+	<string>모든 블록을 기본 캘린더에 추가</string>
 	<key>Add every proposed block to your calendar</key>
 	<string>제안된 블록을 모두 캘린더에 추가</string>
 	<key>Add key</key>
@@ -267,6 +295,8 @@
 	<string>하고 싶은 일을 추가하세요. 오늘 못 끝낸 일은 아침에 함께 옮겨져요.</string>
 	<key>Add your %@ key</key>
 	<string>%@ 키를 추가해요</string>
+	<key>Add your %@ key in Settings.</key>
+	<string>설정에서 %@ 키를 추가해 주세요.</string>
 	<key>Add your calendar</key>
 	<string>캘린더를 추가해요</string>
 	<key>Add…</key>
@@ -289,10 +319,18 @@
 	<string>모두 선택 사항이에요. 지금은 할 일이 없어요.</string>
 	<key>Allow</key>
 	<string>허용</string>
+	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
+	<string>회의에 맞춰 계획하려면 개인정보 보호 및 보안에서 %@를 허용해 주세요.</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
 	<string>개인정보 보호 및 보안에서 %@를 허용해 주세요.</string>
 	<key>Allow %@ in System Settings › General › Login Items.</key>
 	<string>시스템 설정 › 일반 › 로그인 항목에서 %@을(를) 허용해 주세요.</string>
+	<key>Allow %@ to read your calendars</key>
+	<string>%@가 캘린더를 읽도록 허용</string>
+	<key>Allow %@ to read your calendars. macOS asks once.</key>
+	<string>%@가 캘린더를 읽도록 허용해요. macOS가 한 번만 물어봐요.</string>
+	<key>Allow Access</key>
+	<string>접근 허용</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
 	<string>개인정보 보호 및 보안 › 자동화에서 접근을 허용하세요.</string>
 	<key>Allow screenshots</key>
@@ -331,6 +369,8 @@
 	<string>포인터가 화면 위쪽 가운데에 닿으면 나타나요.</string>
 	<key>Apps and permissions</key>
 	<string>앱 및 권한</string>
+	<key>Ask %@ again</key>
+	<string>%@에게 다시 묻기</string>
 	<key>Ask %@ anything</key>
 	<string>%@에게 무엇이든 물어보세요</string>
 	<key>Ask %@ anything…</key>
@@ -373,6 +413,8 @@
 	<string>채팅으로 돌아가기</string>
 	<key>Back to the chat without a screenshot</key>
 	<string>스크린샷 없이 채팅으로 돌아가기</string>
+	<key>Back to the checklist</key>
+	<string>체크리스트로 돌아가기</string>
 	<key>Back to the notch (Esc)</key>
 	<string>노치로 돌아가기 (Esc)</string>
 	<key>Back to today</key>
@@ -385,6 +427,8 @@
 	<string>최고 %@</string>
 	<key>Blindfolded Sorcerer</key>
 	<string>눈가리개 술사</string>
+	<key>Blocks go to your calendar.</key>
+	<string>블록은 캘린더에 추가돼요.</string>
 	<key>Bow Tie</key>
 	<string>나비넥타이</string>
 	<key>Break</key>
@@ -479,6 +523,8 @@
 	<string>방법 선택</string>
 	<key>Choose an AI to ask questions</key>
 	<string>질문할 AI를 골라요</string>
+	<key>Choose an AI to plan with</key>
+	<string>계획에 사용할 AI를 골라 주세요</string>
 	<key>Choose how big the open notch is. Every tab uses the same size.</key>
 	<string>열린 노치의 크기를 골라요. 모든 탭이 같은 크기를 써요.</string>
 	<key>Choose how lively the notch's animations are</key>
@@ -579,6 +625,8 @@
 	<string>캘린더에 추가하지 못했어요. 다시 시도해 주세요</string>
 	<key>Couldn't import %@: %@</key>
 	<string>%1$@ 키트를 가져오지 못했어요: %2$@</string>
+	<key>Couldn't plan your day</key>
+	<string>하루를 계획하지 못했어요</string>
 	<key>Couldn't read today's list</key>
 	<string>오늘 목록을 읽을 수 없어요</string>
 	<key>Couldn't read tomorrow's list</key>
@@ -657,6 +705,8 @@
 	<string>공룡 후드티</string>
 	<key>Discard</key>
 	<string>버리기</string>
+	<key>Discard the plan and show the checklist</key>
+	<string>계획을 버리고 체크리스트 보기</string>
 	<key>Disconnected display</key>
 	<string>연결 해제된 디스플레이</string>
 	<key>Display</key>
@@ -715,6 +765,8 @@
 	<string>모두 잠금 해제됐어요. 마음껏 꾸며 보세요.</string>
 	<key>Exam Season</key>
 	<string>시험 기간</string>
+	<key>Example</key>
+	<string>예시</string>
 	<key>Fantasy</key>
 	<string>판타지</string>
 	<key>Fast</key>
@@ -739,6 +791,10 @@
 	<string>남은 할 일, 복습, 휴식을 오늘 일정에 맞춰 배치해요</string>
 	<key>Fit your open tasks, reviews and breaks around tomorrow's calendar</key>
 	<string>남은 할 일, 복습, 휴식을 내일 일정에 맞춰 배치해요</string>
+	<key>Fitting your work and breaks around today's events</key>
+	<string>오늘 일정에 맞춰 작업과 휴식을 배치하는 중</string>
+	<key>Fitting your work and breaks around tomorrow's events</key>
+	<string>내일 일정에 맞춰 작업과 휴식을 배치하는 중</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
 	<string>다른 앱에서 고쳤나요? 여기로 돌아오면 표시등이 알아서 바뀌어요.</string>
 	<key>Flame Headband</key>
@@ -765,6 +821,8 @@
 	<string>집중 세션</string>
 	<key>Focus session done</key>
 	<string>집중 세션 완료</string>
+	<key>Focus sessions completed today</key>
+	<string>오늘 완료한 집중 세션</string>
 	<key>Focus time</key>
 	<string>집중 시간</string>
 	<key>Focus time today, out of your daily goal</key>
@@ -785,6 +843,8 @@
 	<string>집중 중</string>
 	<key>Focusing on: %@</key>
 	<string>집중 중: %@</string>
+	<key>Free all day</key>
+	<string>하루 종일 비어 있어요</string>
 	<key>Free and offline: runs a model on this Mac.</key>
 	<string>무료, 오프라인: 이 Mac에서 모델을 실행해요.</string>
 	<key>Free freeze used</key>
@@ -923,6 +983,8 @@
 	<string>자정 이후 모든 %@ 세션의 입력, 출력, 캐시 토큰</string>
 	<key>Install</key>
 	<string>설치</string>
+	<key>Install %@ to plan with it.</key>
+	<string>%@로 계획하려면 설치해 주세요.</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Claude Code를 설치하고 로그인하면 5시간 및 주간 한도를 실시간으로 볼 수 있어요.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1001,6 +1063,8 @@
 	<string>파티에서 나가기</string>
 	<key>Leave the party; the next member becomes host</key>
 	<string>파티에서 나가요. 다음 멤버가 호스트가 돼요</string>
+	<key>Leave this block out</key>
+	<string>이 블록 빼기</string>
 	<key>Leave this block out of the plan</key>
 	<string>이 블록을 계획에서 빼기</string>
 	<key>Leave this question unanswered</key>
@@ -1117,6 +1181,8 @@
 	<string>일정 없음</string>
 	<key>No events on your calendars today.</key>
 	<string>오늘은 캘린더에 일정이 없어요.</string>
+	<key>No focus sessions today</key>
+	<string>오늘 집중 세션 없음</string>
 	<key>No free time</key>
 	<string>여유 시간 없음</string>
 	<key>No free time left</key>
@@ -1139,6 +1205,8 @@
 	<string>아직 연속 기록 없음</string>
 	<key>No study</key>
 	<string>공부 안 함</string>
+	<key>No study yet</key>
+	<string>아직 공부 안 함</string>
 	<key>No study, under %lld min, under %lld min, under %lld min, and %lld min or more</key>
 	<string>공부 안 함, %1$lld분 미만, %2$lld분 미만, %3$lld분 미만, %4$lld분 이상</string>
 	<key>None</key>
@@ -1149,8 +1217,12 @@
 	<string>아직 없음</string>
 	<key>Not Now</key>
 	<string>나중에</string>
+	<key>Not added</key>
+	<string>추가 안 됨</string>
 	<key>Not checked yet · refresh to load your live limits</key>
 	<string>아직 확인 안 함 · 새로고침해서 한도 불러오기</string>
+	<key>Not connected</key>
+	<string>연결 안 됨</string>
 	<key>Not done</key>
 	<string>미완료</string>
 	<key>Not found on this Mac</key>
@@ -1167,18 +1239,28 @@
 	<string>아직 동기화 안 됨</string>
 	<key>Notch</key>
 	<string>노치</string>
+	<key>Nothing carries over</key>
+	<string>넘어가는 항목 없음</string>
+	<key>Nothing checked off</key>
+	<string>완료한 항목 없음</string>
 	<key>Nothing due today</key>
 	<string>오늘은 복습할 카드가 없어요</string>
+	<key>Nothing left to plan</key>
+	<string>계획할 시간이 없어요</string>
 	<key>Nothing listed yesterday</key>
 	<string>어제는 목록이 비어 있었어요</string>
 	<key>Nothing on today</key>
 	<string>오늘은 일정이 없어요</string>
 	<key>Nothing on your calendar today</key>
 	<string>오늘은 일정이 없어요</string>
+	<key>Nothing on your calendars tomorrow.</key>
+	<string>내일은 캘린더에 일정이 없어요.</string>
 	<key>Nothing planned</key>
 	<string>계획 없음</string>
 	<key>Nothing playing</key>
 	<string>재생 중인 곡 없음</string>
+	<key>Nothing was on your calendars yesterday.</key>
+	<string>어제는 캘린더에 일정이 없었어요.</string>
 	<key>Notifications</key>
 	<string>알림</string>
 	<key>Now Playing</key>
@@ -1229,12 +1311,24 @@
 	<string>Anki를 열면 이 탭이 알아서 연결돼요</string>
 	<key>Open Automation settings</key>
 	<string>자동화 설정 열기</string>
+	<key>Open Calendars privacy settings</key>
+	<string>캘린더 개인정보 설정 열기</string>
+	<key>Open Calendars privacy settings to turn access on</key>
+	<string>캘린더 개인정보 설정을 열어 접근 켜기</string>
 	<key>Open Connections</key>
 	<string>연결 열기</string>
+	<key>Open Connections to connect your calendar</key>
+	<string>연결을 열어 캘린더 연결하기</string>
+	<key>Open Connections to finish setting this up</key>
+	<string>연결을 열어 설정 마치기</string>
 	<key>Open Connections to set up the AI</key>
 	<string>연결을 열어 AI 설정</string>
+	<key>Open Internet Accounts to add a Google, Exchange or iCloud calendar</key>
+	<string>인터넷 계정을 열어 Google, Exchange 또는 iCloud 캘린더 추가하기</string>
 	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
 	<string>시스템 설정에서 개인정보 보호 및 보안 &gt; 화면 기록 열기</string>
+	<key>Open Privacy &amp; Security to allow Calendar access</key>
+	<string>개인정보 보호 및 보안을 열어 캘린더 접근 허용하기</string>
 	<key>Open Settings</key>
 	<string>설정 열기</string>
 	<key>Open Settings &gt; General to sign in with Apple</key>
@@ -1251,6 +1345,8 @@
 	<string>큰 화면으로 열기 (Command-Return으로 보내고 확대)</string>
 	<key>Open on hover</key>
 	<string>마우스를 올리면 열기</string>
+	<key>Open the %@ app to connect</key>
+	<string>%@ 앱을 열어 연결하세요</string>
 	<key>Open the notch after hovering it briefly</key>
 	<string>잠깐 마우스를 올리면 노치를 열어요</string>
 	<key>Open the notch to see your recap.</key>
@@ -1361,12 +1457,22 @@
 	<string>계획</string>
 	<key>Plan my day</key>
 	<string>하루 계획</string>
+	<key>Plan my day asks the AI you pick in Settings.</key>
+	<string>하루 계획은 설정에서 고른 AI에게 요청해요.</string>
+	<key>Plan my day fits your plan around your calendar.</key>
+	<string>하루 계획은 캘린더에 맞춰 계획을 짜요.</string>
 	<key>Plan my day: %@</key>
 	<string>하루 계획: %@</string>
 	<key>Plan tomorrow</key>
 	<string>내일 계획하기</string>
 	<key>Planned with %@</key>
 	<string>%@에서 계획함</string>
+	<key>Planning</key>
+	<string>계획하는 중</string>
+	<key>Planning tomorrow…</key>
+	<string>내일 계획하는 중…</string>
+	<key>Planning your day…</key>
+	<string>하루 계획하는 중…</string>
 	<key>Play</key>
 	<string>재생</string>
 	<key>Play a soft sound with celebrations that have no sound of their own</key>
@@ -1429,8 +1535,12 @@
 	<string>다듬기</string>
 	<key>Refine and AI day plans: your calendar event titles and times, tasks, goals and the plan.</key>
 	<string>다듬기와 AI 하루 계획: 캘린더 일정의 제목과 시간, 할 일, 목표, 계획.</string>
+	<key>Refine with %@: ask for suggestions on this plan (optional)</key>
+	<string>%@로 다듬기: 이 계획에 대한 제안 받기(선택)</string>
 	<key>Refine with %@: suggest a better order or lengths for this plan</key>
 	<string>%@로 다듬기: 더 나은 순서나 길이를 제안해요</string>
+	<key>Refined with %@.</key>
+	<string>%@로 다듬었어요.</string>
 	<key>Refined with %@: %@</key>
 	<string>%1$@로 다듬음: %2$@</string>
 	<key>Refresh failed · %@</key>
@@ -1499,6 +1609,8 @@
 	<string>Anki에서 %1$@ 복습: %2$lld장 남음. 다른 덱은 별표로 고정하세요.</string>
 	<key>Review %@ in Anki: %lld new, %lld learning, %lld review</key>
 	<string>Anki에서 %1$@ 복습: 새 카드 %2$lld, 학습 중 %3$lld, 복습 %4$lld</string>
+	<key>Review block</key>
+	<string>복습 블록</string>
 	<key>Review in Anki</key>
 	<string>Anki에서 복습</string>
 	<key>Review today and see what carries over to tomorrow</key>
@@ -1533,6 +1645,8 @@
 	<string>저장</string>
 	<key>Save this key in your Keychain</key>
 	<string>이 키를 키체인에 저장</string>
+	<key>Save today's review and show the checklist</key>
+	<string>오늘의 마무리를 저장하고 체크리스트 보기</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
 	<string>저장된 채팅은 이 Mac에만 보관되고 업로드되지 않아요</string>
 	<key>Saved in your Keychain</key>
@@ -1551,6 +1665,8 @@
 	<string>오늘 일정을 노치에서 확인해요.</string>
 	<key>See what's next</key>
 	<string>다음 일정을 확인해요</string>
+	<key>See your %@ here. It only takes a moment.</key>
+	<string>여기에서 %@을 확인하세요. 금방 끝나요.</string>
 	<key>See your day at a glance</key>
 	<string>하루를 한눈에</string>
 	<key>Select AnkiConnect and click Check for Updates</key>
@@ -1571,6 +1687,8 @@
 	<string>%@ 설정</string>
 	<key>Set up %@ to ask questions</key>
 	<string>%@를 설정하고 질문해요</string>
+	<key>Set up AI</key>
+	<string>AI 설정</string>
 	<key>Settings…</key>
 	<string>설정…</string>
 	<key>Setup</key>
@@ -1729,6 +1847,8 @@
 	<string>이 탭으로 시작</string>
 	<key>Starting Anki</key>
 	<string>Anki 시작 중</string>
+	<key>Stays on this Mac</key>
+	<string>이 Mac에만 저장</string>
 	<key>Step %lld of %lld</key>
 	<string>%2$lld단계 중 %1$lld단계</string>
 	<key>Step away for a bit</key>
@@ -1771,8 +1891,12 @@
 	<string>7일 연속 공부하세요.</string>
 	<key>Study Hoodie</key>
 	<string>공부 후드티</string>
+	<key>Study block</key>
+	<string>공부 블록</string>
 	<key>Study parties</key>
 	<string>스터디 파티</string>
+	<key>Study points earned today, to spend on your pet's outfits</key>
+	<string>오늘 모은 공부 포인트, 펫 옷에 쓸 수 있어요</string>
 	<key>Study together</key>
 	<string>함께 공부해요</string>
 	<key>Study with friends and see who is focusing now.</key>
@@ -1841,6 +1965,8 @@
 	<string>키체인에 키를 저장하지 못했어요. 다시 시도해 주세요.</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>꽃이 피었어요. 나만의 무언가를 키워 봐요.</string>
+	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
+	<string>캘린더에 일정을 추가하지 못했어요. 캘린더 접근을 확인하고 다시 시도해 주세요.</string>
 	<key>The focus timer is on this task</key>
 	<string>집중 타이머가 이 할 일에 맞춰져 있어요</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1859,12 +1985,18 @@
 	<string>파티 코드예요. 클릭해서 복사한 뒤 친구에게 보내세요.</string>
 	<key>The rest of the day is yours.</key>
 	<string>남은 하루는 온전히 당신 거예요.</string>
+	<key>The review couldn't be written to disk. Try Done again.</key>
+	<string>마무리를 디스크에 저장하지 못했어요. 완료를 다시 눌러 주세요.</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>세션은 끝나거나 직접 끝낼 때까지 파티 전체에서 계속돼요</string>
 	<key>The tool's own default</key>
 	<string>도구 기본값</string>
 	<key>The year you were born</key>
 	<string>태어난 연도</string>
+	<key>Then a break until %@</key>
+	<string>이후 %@까지 휴식</string>
+	<key>There's no free time worth a block before the evening.</key>
+	<string>저녁 전까지 블록을 넣을 만한 빈 시간이 없어요.</string>
 	<key>Thermal state: %@</key>
 	<string>발열 상태: %@</string>
 	<key>Thinking</key>
@@ -1881,6 +2013,8 @@
 	<string>이 할 일은 오늘 목록에 있어요</string>
 	<key>Time for a %lld-minute break.</key>
 	<string>%lld분 휴식할 시간이에요.</string>
+	<key>Time studied today and study sessions finished</key>
+	<string>오늘 공부한 시간과 완료한 세션</string>
 	<key>Timer</key>
 	<string>타이머</string>
 	<key>Timer: %@</key>
@@ -1899,10 +2033,16 @@
 	<string>오늘의 %@</string>
 	<key>Today on a timeline</key>
 	<string>오늘을 타임라인으로</string>
+	<key>Today's %@. Google calendars show up once added in Internet Accounts.</key>
+	<string>오늘의 %@. Google 캘린더는 인터넷 계정에 추가하면 표시돼요.</string>
+	<key>Today's calendar</key>
+	<string>오늘의 캘린더</string>
 	<key>Today's events and the free time between them. Google calendars show up once added in Internet Accounts.</key>
 	<string>오늘 일정과 그 사이 여유 시간. Google 캘린더는 인터넷 계정에 추가하면 보여요.</string>
 	<key>Tomorrow</key>
 	<string>내일</string>
+	<key>Tomorrow has no free time worth a block before the evening.</key>
+	<string>내일은 저녁 전까지 블록을 넣을 만한 빈 시간이 없어요.</string>
 	<key>Tomorrow's calendar</key>
 	<string>내일 일정</string>
 	<key>Took back the import of %@.</key>
@@ -1959,6 +2099,8 @@
 	<string>제목 없는 일정</string>
 	<key>Up next</key>
 	<string>다음 일정</string>
+	<key>Up next shows your %@ as the day goes, and Plan my day fits work around them.</key>
+	<string>다음 일정에서 하루의 %@을 보여 주고, 하루 계획이 그 사이에 작업을 넣어 줘요.</string>
 	<key>Update AnkiConnect</key>
 	<string>AnkiConnect 업데이트</string>
 	<key>Updated %@ and applied it.</key>
@@ -1975,6 +2117,8 @@
 	<string>codex 명령으로 ChatGPT 요금제를 사용해요.</string>
 	<key>Uses your Claude subscription through the claude command.</key>
 	<string>claude 명령으로 Claude 구독을 사용해요.</string>
+	<key>Using Google? Add it in Internet Accounts to see your %@ here.</key>
+	<string>Google을 쓰나요? 인터넷 계정에 추가하면 %@을 여기에서 볼 수 있어요.</string>
 	<key>Using a copy outside Applications? Just open it.</key>
 	<string>다른 위치에 있나요? 그냥 열어 주세요.</string>
 	<key>Valentine's Week</key>
@@ -2051,10 +2195,16 @@
 	<string>마무리</string>
 	<key>Wrap up: review today and see what carries over</key>
 	<string>마무리: 오늘을 돌아보고 넘길 일을 확인해요</string>
+	<key>Wrap-up</key>
+	<string>마무리</string>
 	<key>Write a polite reminder</key>
 	<string>정중한 리마인더 써 줘</string>
 	<key>Write to %@</key>
 	<string>%@(으)로 이메일 보내기</string>
+	<key>Writing a short summary of your day</key>
+	<string>하루를 짧게 정리하는 중</string>
+	<key>Writing a summary</key>
+	<string>요약 작성 중</string>
 	<key>Year</key>
 	<string>연도</string>
 	<key>Yesterday</key>
@@ -2071,6 +2221,8 @@
 	<string>설정에서 언제든 설정할 수 있어요.</string>
 	<key>You can set this up any time in the %@ tab.</key>
 	<string>%@ 탭에서 언제든 설정할 수 있어요.</string>
+	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
+	<string>오늘 %@ 공부했어요. 푹 쉬고 내일 새롭게 시작해요.</string>
 	<key>You started it for the party</key>
 	<string>내가 파티를 위해 시작했어요</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>
@@ -2103,6 +2255,8 @@
 	<string>이름, 최대 %lld자</string>
 	<key>Your pet</key>
 	<string>내 펫</string>
+	<key>Your plan</key>
+	<string>내 계획</string>
 	<key>Your setup already matches %@</key>
 	<string>이미 %@과(와) 같은 설정이에요</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>
@@ -2125,12 +2279,18 @@
 	<string>장 남음</string>
 	<key>ending</key>
 	<string>곧 끝나요</string>
+	<key>events</key>
+	<string>일정</string>
 	<key>in %@</key>
 	<string>%@ 후</string>
 	<key>in the last 30 days</key>
 	<string>최근 30일</string>
 	<key>just now</key>
 	<string>방금</string>
+	<key>lectures, labs, and shifts</key>
+	<string>강의, 실습, 근무</string>
+	<key>meetings and calls</key>
+	<string>회의와 통화</string>
 	<key>no free time</key>
 	<string>여유 시간 없음</string>
 	<key>nothing yet; pick a sound</key>

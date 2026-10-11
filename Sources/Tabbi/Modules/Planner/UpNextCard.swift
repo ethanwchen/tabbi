@@ -127,8 +127,8 @@ private struct UpNextJoinButton: View {
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .help("Join \(link.provider.displayName) call")
-        .accessibilityLabel("Join \(link.provider.displayName) call")
+        .help(Text("Join \(link.provider.displayName) call", bundle: .tabbi))
+        .accessibilityLabel(Text("Join \(link.provider.displayName) call", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }

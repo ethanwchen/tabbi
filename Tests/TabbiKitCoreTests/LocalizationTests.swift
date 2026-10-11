@@ -87,6 +87,22 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(String.localizedStringWithFormat(hat, 90, "ハロウィン"), "ハロウィンの期間中に90分集中しよう。")
     }
 
+    /// The calendar sentences name each bundled kit's word for events
+    /// ("lectures, labs, and shifts"), looked up in the catalog like the
+    /// seasonal events, so every language needs each phrase.
+    func testEveryBundledKitsEventWordIsTranslated() throws {
+        let phrases = Set(KitLibrary.bundled.kits.map { TodayPlanSettings(kit: $0.defaults).upNextEvents } + ["events"])
+        let missing = "\u{0}missing"
+        for language in L10n.languages where language != L10n.sourceLanguage {
+            let bundle = try XCTUnwrap(L10n.strings(for: language))
+            for phrase in phrases {
+                XCTAssertNotEqual(bundle.localizedString(forKey: phrase, value: missing, table: nil), missing,
+                                  "\(language) lacks \"\(phrase)\"")
+            }
+        }
+        XCTAssertEqual(UpNextEmptyState.localizedEvents("gigs and rehearsals"), "gigs and rehearsals")
+    }
+
     /// The .lproj folders that ship are compiled from the catalog by
     /// scripts/compile-strings.sh, and committed. This re-derives what each
     /// language's files must hold (every string and every plural form) and

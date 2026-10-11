@@ -19,8 +19,12 @@
 	<string>%@ バックグラウンドで再試行しています。</string>
 	<key>%@ can't control %@</key>
 	<string>%1$@は%2$@を操作できません</string>
+	<key>%@ couldn't refine it. This plan still works.</key>
+	<string>%@ は調整できませんでした。この計画のままで大丈夫です。</string>
 	<key>%@ couldn't refine this plan</key>
 	<string>%@ は計画を調整できませんでした</string>
+	<key>%@ didn't send back a usable plan. Try again in a moment.</key>
+	<string>%@ から使える計画が返ってきませんでした。少し待ってからもう一度お試しください。</string>
 	<key>%@ done for today. Open %@</key>
 	<string>%1$@は今日は完了。%2$@を開く</string>
 	<key>%@ free</key>
@@ -37,6 +41,10 @@
 	<string>%@は別のアプリで使われています。別のショートカットを登録してください。</string>
 	<key>%@ is damaged, so it's left untouched.</key>
 	<string>%@ が破損しているため、そのままにしています。</string>
+	<key>%@ is fitting your tasks around today's events</key>
+	<string>%@ が今日の予定に合わせてタスクを配置しています</string>
+	<key>%@ is fitting your tasks around tomorrow's events</key>
+	<string>%@ が明日の予定に合わせてタスクを配置しています</string>
 	<key>%@ is in use</key>
 	<string>%@を使用中</string>
 	<key>%@ is in your party</key>
@@ -45,6 +53,8 @@
 	<string>%@がそばにいます</string>
 	<key>%@ is looking over this plan...</key>
 	<string>%@ が計画を確認中...</string>
+	<key>%@ is looking over this plan…</key>
+	<string>%@ が計画を確認中…</string>
 	<key>%@ is napping until your next session</key>
 	<string>%@は次のセッションまでお昼寝中</string>
 	<key>%@ is on a break with you</key>
@@ -57,6 +67,8 @@
 	<string>%@もいっしょに休憩中</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
 	<string>%@ はまだこの Mac にありません。追加方法は「接続」で確認できます。</string>
+	<key>%@ isn't set up yet</key>
+	<string>%@ はまだ設定されていません</string>
 	<key>%@ left</key>
 	<string>残り%@</string>
 	<key>%@ misses you</key>
@@ -71,6 +83,8 @@
 	<string>%1$@ / %2$@</string>
 	<key>%@ of focus.</key>
 	<string>%@ 集中しました。</string>
+	<key>%@ reads your events on this Mac and never uploads them</key>
+	<string>%@ は予定をこの Mac 上で読み取り、アップロードすることはありません</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
 	<string>%1$@は%2$@まで。次のアイテム「%3$@」: 集中 %4$@。</string>
 	<key>%@ settings</key>
@@ -83,6 +97,8 @@
 	<string>今日%@勉強</string>
 	<key>%@ suggests no changes</key>
 	<string>%@ からの変更提案はありません</string>
+	<key>%@ suggests no changes.</key>
+	<string>%@ からの変更提案はありません。</string>
 	<key>%@ today</key>
 	<string>今日%@</string>
 	<key>%@ tokens</key>
@@ -109,6 +125,8 @@
 	<string>%@。%@</string>
 	<key>%@: %@</key>
 	<string>%@：%@</string>
+	<key>%@: %@ done today</key>
+	<string>%1$@: 今日 %2$@ 完了</string>
 	<key>%@: %@ left</key>
 	<string>%@: 残り %@</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
@@ -187,6 +205,8 @@
 	<string>Closetのオプションで設定できます。</string>
 	<key>A few extras</key>
 	<string>おまけ機能</string>
+	<key>A free day</key>
+	<string>予定のない日</string>
 	<key>A fresh day</key>
 	<string>新しい1日</string>
 	<key>A fresh start for the new year. Focus a little each day.</key>
@@ -205,8 +225,12 @@
 	<string>一緒に過ごした、すてきな最初の1週間。</string>
 	<key>A question can take up to %lld screenshots</key>
 	<string>1つの質問に添付できるスクリーンショットは%lld枚まで</string>
+	<key>A quiet day. Rest up and start fresh tomorrow.</key>
+	<string>静かな1日でした。ゆっくり休んで、明日また始めましょう。</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>ひと休みの1週間。新しいスタートが待ってるよ。</string>
+	<key>A sample day. Your own events show here once the calendar is connected.</key>
+	<string>サンプルの1日です。カレンダーを接続すると、あなたの予定がここに表示されます。</string>
 	<key>A shorter timer</key>
 	<string>タイマーを短く</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
@@ -223,6 +247,8 @@
 	<string>APIキー</string>
 	<key>About</key>
 	<string>情報</string>
+	<key>Access is off</key>
+	<string>アクセスがオフです</string>
 	<key>Account</key>
 	<string>アカウント</string>
 	<key>Accounts are for people %lld and older. Signing in opens in %@.</key>
@@ -251,6 +277,8 @@
 	<string>タスクを追加…</string>
 	<key>Add all</key>
 	<string>すべて追加</string>
+	<key>Add every block to your default calendar</key>
+	<string>すべてのブロックをデフォルトのカレンダーに追加</string>
 	<key>Add every proposed block to your calendar</key>
 	<string>提案されたブロックをすべてカレンダーに追加</string>
 	<key>Add key</key>
@@ -267,6 +295,8 @@
 	<string>やりたいことを追加しましょう。今日の未完了タスクは朝に加わります。</string>
 	<key>Add your %@ key</key>
 	<string>%@ のキーを追加</string>
+	<key>Add your %@ key in Settings.</key>
+	<string>設定で %@ のキーを追加してください。</string>
 	<key>Add your calendar</key>
 	<string>カレンダーを追加しよう</string>
 	<key>Add…</key>
@@ -289,10 +319,18 @@
 	<string>どれも任意です。今は何もしなくて大丈夫。</string>
 	<key>Allow</key>
 	<string>許可</string>
+	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
+	<string>会議に合わせて計画するには、「プライバシーとセキュリティ」で %@ を許可してください。</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
 	<string>「プライバシーとセキュリティ」で %@ を許可してください。</string>
 	<key>Allow %@ in System Settings › General › Login Items.</key>
 	<string>システム設定 › 一般 › ログイン項目で %@ を許可してください。</string>
+	<key>Allow %@ to read your calendars</key>
+	<string>%@ にカレンダーの読み取りを許可</string>
+	<key>Allow %@ to read your calendars. macOS asks once.</key>
+	<string>%@ にカレンダーの読み取りを許可します。macOS が一度だけ確認します。</string>
+	<key>Allow Access</key>
+	<string>アクセスを許可</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
 	<string>プライバシーとセキュリティ › オートメーションで許可してください。</string>
 	<key>Allow screenshots</key>
@@ -331,6 +369,8 @@
 	<string>ポインタが画面上部の中央に来ると表示されます。</string>
 	<key>Apps and permissions</key>
 	<string>アプリと権限</string>
+	<key>Ask %@ again</key>
+	<string>%@ にもう一度聞く</string>
 	<key>Ask %@ anything</key>
 	<string>%@に何でも聞いてみよう</string>
 	<key>Ask %@ anything…</key>
@@ -373,6 +413,8 @@
 	<string>チャットに戻る</string>
 	<key>Back to the chat without a screenshot</key>
 	<string>スクリーンショットなしでチャットに戻る</string>
+	<key>Back to the checklist</key>
+	<string>チェックリストに戻る</string>
 	<key>Back to the notch (Esc)</key>
 	<string>ノッチに戻る(Esc)</string>
 	<key>Back to today</key>
@@ -385,6 +427,8 @@
 	<string>最高 %@</string>
 	<key>Blindfolded Sorcerer</key>
 	<string>目隠しの術師</string>
+	<key>Blocks go to your calendar.</key>
+	<string>ブロックはカレンダーに追加されます。</string>
 	<key>Bow Tie</key>
 	<string>蝶ネクタイ</string>
 	<key>Break</key>
@@ -408,7 +452,7 @@
 	<key>Calendar</key>
 	<string>カレンダー</string>
 	<key>Calendar access</key>
-	<string>カレンダーへのアクセス</string>
+	<string>カレンダー連携</string>
 	<key>Calendar access is off</key>
 	<string>カレンダーへのアクセスがオフです</string>
 	<key>Calendars</key>
@@ -479,6 +523,8 @@
 	<string>メソッドを選択</string>
 	<key>Choose an AI to ask questions</key>
 	<string>質問に使う AI を選ぼう</string>
+	<key>Choose an AI to plan with</key>
+	<string>計画に使う AI を選んでください</string>
 	<key>Choose how big the open notch is. Every tab uses the same size.</key>
 	<string>開いたノッチの大きさを選びます。すべてのタブで同じサイズです。</string>
 	<key>Choose how lively the notch's animations are</key>
@@ -579,6 +625,8 @@
 	<string>カレンダーに追加できませんでした。もう一度お試しください</string>
 	<key>Couldn't import %@: %@</key>
 	<string>%1$@を読み込めませんでした: %2$@</string>
+	<key>Couldn't plan your day</key>
+	<string>1日を計画できませんでした</string>
 	<key>Couldn't read today's list</key>
 	<string>今日のリストを読み込めません</string>
 	<key>Couldn't read tomorrow's list</key>
@@ -657,6 +705,8 @@
 	<string>きょうりゅうパーカー</string>
 	<key>Discard</key>
 	<string>破棄</string>
+	<key>Discard the plan and show the checklist</key>
+	<string>計画を破棄してチェックリストを表示</string>
 	<key>Disconnected display</key>
 	<string>接続されていないディスプレイ</string>
 	<key>Display</key>
@@ -715,6 +765,8 @@
 	<string>すべて解放済み。好きなだけおしゃれしよう。</string>
 	<key>Exam Season</key>
 	<string>試験シーズン</string>
+	<key>Example</key>
+	<string>例</string>
 	<key>Fantasy</key>
 	<string>ファンタジー</string>
 	<key>Fast</key>
@@ -739,6 +791,10 @@
 	<string>未完了のタスク、復習、休憩を今日の予定に合わせて配置</string>
 	<key>Fit your open tasks, reviews and breaks around tomorrow's calendar</key>
 	<string>未完了のタスク、復習、休憩を明日の予定に合わせて配置</string>
+	<key>Fitting your work and breaks around today's events</key>
+	<string>今日の予定に合わせて作業と休憩を配置しています</string>
+	<key>Fitting your work and breaks around tomorrow's events</key>
+	<string>明日の予定に合わせて作業と休憩を配置しています</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
 	<string>別のアプリで直したら、ここに戻ってきてください。ランプは自動で更新されます。</string>
 	<key>Flame Headband</key>
@@ -765,6 +821,8 @@
 	<string>集中セッション</string>
 	<key>Focus session done</key>
 	<string>集中セッション完了</string>
+	<key>Focus sessions completed today</key>
+	<string>今日完了した集中セッション</string>
 	<key>Focus time</key>
 	<string>集中時間</string>
 	<key>Focus time today, out of your daily goal</key>
@@ -785,6 +843,8 @@
 	<string>集中中</string>
 	<key>Focusing on: %@</key>
 	<string>集中中: %@</string>
+	<key>Free all day</key>
+	<string>終日予定なし</string>
 	<key>Free and offline: runs a model on this Mac.</key>
 	<string>無料・オフライン: このMacでモデルを動かします。</string>
 	<key>Free freeze used</key>
@@ -923,6 +983,8 @@
 	<string>深夜0時以降のすべての%@セッションの入力・出力・キャッシュトークン</string>
 	<key>Install</key>
 	<string>インストール</string>
+	<key>Install %@ to plan with it.</key>
+	<string>%@ で計画するには、インストールしてください。</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Claude Codeをインストールしてサインインすると、5時間と週間の上限をリアルタイムで確認できます。</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1001,6 +1063,8 @@
 	<string>パーティを退出</string>
 	<key>Leave the party; the next member becomes host</key>
 	<string>パーティを退出します。次のメンバーがホストになります</string>
+	<key>Leave this block out</key>
+	<string>このブロックを外す</string>
 	<key>Leave this block out of the plan</key>
 	<string>このブロックを計画から外す</string>
 	<key>Leave this question unanswered</key>
@@ -1117,6 +1181,8 @@
 	<string>予定なし</string>
 	<key>No events on your calendars today.</key>
 	<string>今日はカレンダーに予定がありません。</string>
+	<key>No focus sessions today</key>
+	<string>今日の集中セッションなし</string>
 	<key>No free time</key>
 	<string>空き時間なし</string>
 	<key>No free time left</key>
@@ -1139,6 +1205,8 @@
 	<string>まだ連続記録なし</string>
 	<key>No study</key>
 	<string>勉強なし</string>
+	<key>No study yet</key>
+	<string>まだ勉強していません</string>
 	<key>No study, under %lld min, under %lld min, under %lld min, and %lld min or more</key>
 	<string>勉強なし、%1$lld分未満、%2$lld分未満、%3$lld分未満、%4$lld分以上</string>
 	<key>None</key>
@@ -1149,8 +1217,12 @@
 	<string>まだなし</string>
 	<key>Not Now</key>
 	<string>今はしない</string>
+	<key>Not added</key>
+	<string>未追加</string>
 	<key>Not checked yet · refresh to load your live limits</key>
 	<string>未確認 · 更新すると上限を読み込みます</string>
+	<key>Not connected</key>
+	<string>未接続</string>
 	<key>Not done</key>
 	<string>未完了</string>
 	<key>Not found on this Mac</key>
@@ -1167,18 +1239,28 @@
 	<string>まだ同期していません</string>
 	<key>Notch</key>
 	<string>ノッチ</string>
+	<key>Nothing carries over</key>
+	<string>持ち越しなし</string>
+	<key>Nothing checked off</key>
+	<string>完了した項目なし</string>
 	<key>Nothing due today</key>
 	<string>今日の復習はありません</string>
+	<key>Nothing left to plan</key>
+	<string>計画できる時間がありません</string>
 	<key>Nothing listed yesterday</key>
 	<string>昨日のリストは空でした</string>
 	<key>Nothing on today</key>
 	<string>今日は予定なし</string>
 	<key>Nothing on your calendar today</key>
 	<string>今日の予定はありません</string>
+	<key>Nothing on your calendars tomorrow.</key>
+	<string>明日はカレンダーに予定がありません。</string>
 	<key>Nothing planned</key>
 	<string>予定なし</string>
 	<key>Nothing playing</key>
 	<string>再生中の曲はありません</string>
+	<key>Nothing was on your calendars yesterday.</key>
+	<string>昨日はカレンダーに予定がありませんでした。</string>
 	<key>Notifications</key>
 	<string>通知</string>
 	<key>Now Playing</key>
@@ -1229,12 +1311,24 @@
 	<string>Anki を開くと、このタブが自動で接続します</string>
 	<key>Open Automation settings</key>
 	<string>オートメーション設定を開く</string>
+	<key>Open Calendars privacy settings</key>
+	<string>カレンダーのプライバシー設定を開く</string>
+	<key>Open Calendars privacy settings to turn access on</key>
+	<string>カレンダーのプライバシー設定を開いてアクセスをオンにする</string>
 	<key>Open Connections</key>
 	<string>接続を開く</string>
+	<key>Open Connections to connect your calendar</key>
+	<string>「接続」を開いてカレンダーを接続</string>
+	<key>Open Connections to finish setting this up</key>
+	<string>「接続」を開いて設定を完了</string>
 	<key>Open Connections to set up the AI</key>
 	<string>接続を開いてAIを設定</string>
+	<key>Open Internet Accounts to add a Google, Exchange or iCloud calendar</key>
+	<string>「インターネットアカウント」を開いて Google、Exchange、iCloud のカレンダーを追加</string>
 	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
 	<string>システム設定の「プライバシーとセキュリティ」&gt;「画面収録」を開く</string>
+	<key>Open Privacy &amp; Security to allow Calendar access</key>
+	<string>「プライバシーとセキュリティ」を開いてカレンダーへのアクセスを許可</string>
 	<key>Open Settings</key>
 	<string>設定を開く</string>
 	<key>Open Settings &gt; General to sign in with Apple</key>
@@ -1251,6 +1345,8 @@
 	<string>大きな表示で開く(Command-Returnで送信して拡大)</string>
 	<key>Open on hover</key>
 	<string>ポインタを置いて開く</string>
+	<key>Open the %@ app to connect</key>
+	<string>%@ アプリを開いて接続</string>
 	<key>Open the notch after hovering it briefly</key>
 	<string>少しポインタを置くとノッチを開きます</string>
 	<key>Open the notch to see your recap.</key>
@@ -1361,12 +1457,22 @@
 	<string>計画</string>
 	<key>Plan my day</key>
 	<string>1日を計画</string>
+	<key>Plan my day asks the AI you pick in Settings.</key>
+	<string>「1日を計画」は設定で選んだ AI に依頼します。</string>
+	<key>Plan my day fits your plan around your calendar.</key>
+	<string>「1日を計画」はカレンダーに合わせて予定を組みます。</string>
 	<key>Plan my day: %@</key>
 	<string>1日を計画: %@</string>
 	<key>Plan tomorrow</key>
 	<string>明日を計画</string>
 	<key>Planned with %@</key>
 	<string>%@ で計画</string>
+	<key>Planning</key>
+	<string>計画中</string>
+	<key>Planning tomorrow…</key>
+	<string>明日を計画中…</string>
+	<key>Planning your day…</key>
+	<string>1日を計画中…</string>
 	<key>Play</key>
 	<string>再生</string>
 	<key>Play a soft sound with celebrations that have no sound of their own</key>
@@ -1429,8 +1535,12 @@
 	<string>調整</string>
 	<key>Refine and AI day plans: your calendar event titles and times, tasks, goals and the plan.</key>
 	<string>調整とAIの1日プラン: カレンダーの予定のタイトルと時刻、タスク、目標、プラン。</string>
+	<key>Refine with %@: ask for suggestions on this plan (optional)</key>
+	<string>%@ で調整: この計画への提案をもらう（任意）</string>
 	<key>Refine with %@: suggest a better order or lengths for this plan</key>
 	<string>%@ で調整: より良い順番や長さを提案</string>
+	<key>Refined with %@.</key>
+	<string>%@ で調整しました。</string>
 	<key>Refined with %@: %@</key>
 	<string>%1$@ で調整: %2$@</string>
 	<key>Refresh failed · %@</key>
@@ -1499,6 +1609,8 @@
 	<string>Anki で %1$@ を復習: %2$lld 枚。別のデッキは星で固定できます。</string>
 	<key>Review %@ in Anki: %lld new, %lld learning, %lld review</key>
 	<string>Anki で %1$@ を復習: 新規 %2$lld、学習中 %3$lld、復習 %4$lld</string>
+	<key>Review block</key>
+	<string>復習ブロック</string>
 	<key>Review in Anki</key>
 	<string>Anki で復習</string>
 	<key>Review today and see what carries over to tomorrow</key>
@@ -1533,6 +1645,8 @@
 	<string>保存</string>
 	<key>Save this key in your Keychain</key>
 	<string>このキーをキーチェーンに保存</string>
+	<key>Save today's review and show the checklist</key>
+	<string>今日の振り返りを保存してチェックリストを表示</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
 	<string>保存したチャットはこのMacにだけ残り、アップロードされません</string>
 	<key>Saved in your Keychain</key>
@@ -1551,6 +1665,8 @@
 	<string>今日の予定をノッチで確認。</string>
 	<key>See what's next</key>
 	<string>次の予定を見よう</string>
+	<key>See your %@ here. It only takes a moment.</key>
+	<string>%@をここで確認できます。設定はすぐ終わります。</string>
 	<key>See your day at a glance</key>
 	<string>一日をひと目で</string>
 	<key>Select AnkiConnect and click Check for Updates</key>
@@ -1571,6 +1687,8 @@
 	<string>%@を設定</string>
 	<key>Set up %@ to ask questions</key>
 	<string>%@ を設定して質問しよう</string>
+	<key>Set up AI</key>
+	<string>AI を設定</string>
 	<key>Settings…</key>
 	<string>設定…</string>
 	<key>Setup</key>
@@ -1729,6 +1847,8 @@
 	<string>このタブで始める</string>
 	<key>Starting Anki</key>
 	<string>Anki を起動中</string>
+	<key>Stays on this Mac</key>
+	<string>この Mac 内のみ</string>
 	<key>Step %lld of %lld</key>
 	<string>ステップ %1$lld/%2$lld</string>
 	<key>Step away for a bit</key>
@@ -1771,8 +1891,12 @@
 	<string>7日連続で学習しよう。</string>
 	<key>Study Hoodie</key>
 	<string>勉強パーカー</string>
+	<key>Study block</key>
+	<string>勉強ブロック</string>
 	<key>Study parties</key>
 	<string>スタディパーティー</string>
+	<key>Study points earned today, to spend on your pet's outfits</key>
+	<string>今日ためた勉強ポイント。ペットの衣装に使えます</string>
 	<key>Study together</key>
 	<string>一緒に勉強</string>
 	<key>Study with friends and see who is focusing now.</key>
@@ -1841,6 +1965,8 @@
 	<string>キーチェーンにキーを保存できませんでした。もう一度お試しください。</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>桜が咲きました。あなたも何かを育てよう。</string>
+	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
+	<string>カレンダーに予定を追加できませんでした。カレンダーへのアクセスを確認して、もう一度お試しください。</string>
 	<key>The focus timer is on this task</key>
 	<string>集中タイマーはこのタスクに設定中</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1859,12 +1985,18 @@
 	<string>パーティコードです。クリックでコピーして友達に送りましょう。</string>
 	<key>The rest of the day is yours.</key>
 	<string>残りの時間は自由に使おう。</string>
+	<key>The review couldn't be written to disk. Try Done again.</key>
+	<string>振り返りをディスクに保存できませんでした。もう一度「完了」を押してください。</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>セッションは終了するか、あなたが終えるまでパーティ全員で続きます</string>
 	<key>The tool's own default</key>
 	<string>ツールのデフォルト</string>
 	<key>The year you were born</key>
 	<string>生まれた年</string>
+	<key>Then a break until %@</key>
+	<string>その後 %@ まで休憩</string>
+	<key>There's no free time worth a block before the evening.</key>
+	<string>夕方までにブロックを入れられる空き時間がありません。</string>
 	<key>Thermal state: %@</key>
 	<string>温度状態：%@</string>
 	<key>Thinking</key>
@@ -1881,6 +2013,8 @@
 	<string>このタスクは今日のリストにあります</string>
 	<key>Time for a %lld-minute break.</key>
 	<string>%lld分間の休憩タイムです。</string>
+	<key>Time studied today and study sessions finished</key>
+	<string>今日の勉強時間と完了したセッション</string>
 	<key>Timer</key>
 	<string>タイマー</string>
 	<key>Timer: %@</key>
@@ -1899,10 +2033,16 @@
 	<string>今日の%@</string>
 	<key>Today on a timeline</key>
 	<string>今日をタイムラインで表示</string>
+	<key>Today's %@. Google calendars show up once added in Internet Accounts.</key>
+	<string>今日の%@。Google カレンダーは「インターネットアカウント」で追加すると表示されます。</string>
+	<key>Today's calendar</key>
+	<string>今日のカレンダー</string>
 	<key>Today's events and the free time between them. Google calendars show up once added in Internet Accounts.</key>
 	<string>今日の予定とその間の空き時間。Google カレンダーはインターネットアカウントに追加すると表示されます。</string>
 	<key>Tomorrow</key>
 	<string>明日</string>
+	<key>Tomorrow has no free time worth a block before the evening.</key>
+	<string>明日は夕方までにブロックを入れられる空き時間がありません。</string>
 	<key>Tomorrow's calendar</key>
 	<string>明日の予定</string>
 	<key>Took back the import of %@.</key>
@@ -1959,6 +2099,8 @@
 	<string>無題の予定</string>
 	<key>Up next</key>
 	<string>次の予定</string>
+	<key>Up next shows your %@ as the day goes, and Plan my day fits work around them.</key>
+	<string>「次の予定」で1日の%@を確認でき、「1日を計画」がその合間に作業を組み込みます。</string>
 	<key>Update AnkiConnect</key>
 	<string>AnkiConnect をアップデート</string>
 	<key>Updated %@ and applied it.</key>
@@ -1975,6 +2117,8 @@
 	<string>codexコマンドでChatGPTのプランを使います。</string>
 	<key>Uses your Claude subscription through the claude command.</key>
 	<string>claudeコマンドでClaudeのサブスクリプションを使います。</string>
+	<key>Using Google? Add it in Internet Accounts to see your %@ here.</key>
+	<string>Google を使っていますか？「インターネットアカウント」で追加すると、%@がここに表示されます。</string>
 	<key>Using a copy outside Applications? Just open it.</key>
 	<string>別の場所の Anki? そのまま開いてください。</string>
 	<key>Valentine's Week</key>
@@ -2051,10 +2195,16 @@
 	<string>振り返り</string>
 	<key>Wrap up: review today and see what carries over</key>
 	<string>振り返り: 今日を見直し、持ち越すものを確認</string>
+	<key>Wrap-up</key>
+	<string>振り返り</string>
 	<key>Write a polite reminder</key>
 	<string>丁寧なリマインダーを書いて</string>
 	<key>Write to %@</key>
 	<string>%@にメール</string>
+	<key>Writing a short summary of your day</key>
+	<string>1日の短いまとめを書いています</string>
+	<key>Writing a summary</key>
+	<string>まとめを作成中</string>
 	<key>Year</key>
 	<string>年</string>
 	<key>Yesterday</key>
@@ -2071,6 +2221,8 @@
 	<string>設定でいつでも設定できます。</string>
 	<key>You can set this up any time in the %@ tab.</key>
 	<string>「%@」タブでいつでも設定できます。</string>
+	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
+	<string>今日は%@勉強しました。ゆっくり休んで、明日また始めましょう。</string>
 	<key>You started it for the party</key>
 	<string>あなたがパーティ用に開始</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>
@@ -2103,6 +2255,8 @@
 	<string>名前（%lld文字まで）</string>
 	<key>Your pet</key>
 	<string>あなたのペット</string>
+	<key>Your plan</key>
+	<string>あなたの計画</string>
 	<key>Your setup already matches %@</key>
 	<string>すでに %@ と同じ設定です</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>
@@ -2125,12 +2279,18 @@
 	<string>枚</string>
 	<key>ending</key>
 	<string>まもなく終了</string>
+	<key>events</key>
+	<string>予定</string>
 	<key>in %@</key>
 	<string>%@後</string>
 	<key>in the last 30 days</key>
 	<string>（過去30日間）</string>
 	<key>just now</key>
 	<string>たった今</string>
+	<key>lectures, labs, and shifts</key>
+	<string>講義、実習、シフト</string>
+	<key>meetings and calls</key>
+	<string>会議や通話</string>
 	<key>no free time</key>
 	<string>空き時間なし</string>
 	<key>nothing yet; pick a sound</key>
