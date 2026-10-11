@@ -32,6 +32,9 @@ struct NotchPetWing: View {
     /// The cheer whose first hop has played, so a redraw never restarts it.
     @State private var cheered: Int?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// Right to left, the wing sits on the other side of the camera, so the
+    /// pet walks the other way; offsets mirror on their own, its facing not.
+    @Environment(\.layoutDirection) private var layoutDirection
 
     init(pet: TickerPet) {
         self.pet = pet
@@ -75,7 +78,8 @@ struct NotchPetWing: View {
     static let adventureTravel: CGFloat = 24
 
     /// Trotting toward the notch (the walk clip faces left, so mirrored) on
-    /// the way out, and back out of it facing left, fading with distance.
+    /// the way out, and back out of it facing left, fading with distance;
+    /// the other way round right to left.
     private func walker(_ phase: PetAdventure.Phase, adventure: PetAdventure, at date: Date) -> some View {
         let leaving = if case .leaving = phase { true } else { false }
         let start = leaving ? adventure.departsAt : adventure.returnsAt
@@ -84,7 +88,7 @@ struct NotchPetWing: View {
         // Whole points keep the pixel art crisp as it moves.
         let offset = (phase.distance * Self.adventureTravel).rounded()
         return PetSpriteView(canvas: frame.canvas, palette: player.palette, pixelSize: Self.pixelSize)
-            .scaleEffect(x: leaving ? -1 : 1, y: 1)
+            .scaleEffect(x: leaving == (layoutDirection == .leftToRight) ? -1 : 1, y: 1)
             .opacity(1 - phase.distance)
             .offset(x: offset - 3, y: -NotchPreviewLayout.petLift)
             .accessibilityLabel(pet.profile.name)

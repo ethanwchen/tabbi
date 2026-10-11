@@ -30,7 +30,7 @@ public final class PetPlayer: ObservableObject {
     ) {
         self.profile = profile
         self.ceiling = ceiling
-        clips = PetClipSet(profile: profile, ceiling: ceiling)
+        clips = PetClipSet.cached(profile: profile, ceiling: ceiling)
         animator = PetAnimator(durations: clips.durations, place: place, asleep: asleep, activity: activity,
                                activitySince: activitySince?.timeIntervalSinceReferenceDate,
                                happy: profile.bondLook.happyIdle, at: date.timeIntervalSinceReferenceDate, seed: seed)
@@ -56,7 +56,7 @@ public final class PetPlayer: ObservableObject {
         let time = date.timeIntervalSinceReferenceDate
         animator.advance(to: time)
         self.profile = profile
-        clips = PetClipSet(profile: profile, ceiling: ceiling)
+        clips = PetClipSet.cached(profile: profile, ceiling: ceiling)
         // Durations can differ between looks, so restart in the same place.
         animator = PetAnimator(durations: clips.durations, place: animator.place,
                                asleep: animator.isAsleep, activity: animator.activity,

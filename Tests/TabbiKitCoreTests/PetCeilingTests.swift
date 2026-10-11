@@ -36,4 +36,16 @@ final class PetCeilingTests: XCTestCase {
             XCTAssertTrue(shown.contains { $0 > bare }, "\(accessory) still shows lower down")
         }
     }
+
+    func testTheCacheHandsBackTheSameClipsPerLookAndCeiling() {
+        var profile = PetProfile.starter(.dog)
+        profile.rename("Biscuit")
+        let fitted = PetClipSet.cached(profile: profile, ceiling: 2)
+        XCTAssertEqual(fitted, PetClipSet(profile: profile, ceiling: 2))
+        XCTAssertEqual(PetClipSet.cached(profile: profile, ceiling: 2), fitted)
+        XCTAssertEqual(PetClipSet.cached(profile: profile), PetClipSet(profile: profile), "the ceiling is part of the key")
+        // A rename changes nothing drawn, so it reuses the clips.
+        profile.rename("Waffles")
+        XCTAssertEqual(PetClipSet.cached(profile: profile, ceiling: 2), fitted)
+    }
 }

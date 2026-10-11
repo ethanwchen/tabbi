@@ -1,4 +1,5 @@
 import Foundation
+import os
 
 /// Every clip for one dressed pet, built once so a player never composes
 /// frames while animating.
@@ -23,6 +24,34 @@ public struct PetClipSet: Hashable, Sendable {
         self.init(breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories,
                   bond: profile.bondLook, ceiling: ceiling)
     }
+
+    /// The clips for `profile`, composed once and kept for the next view
+    /// that shows the same look: the closed notch draws its pet anew each
+    /// time the ticker comes back to it, and composing every clip takes a
+    /// noticeable moment. A handful of looks are kept, newest last.
+    public static func cached(profile: PetProfile, ceiling: Int? = nil) -> PetClipSet {
+        let key = CacheKey(breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories,
+                           bond: profile.bondLook, ceiling: ceiling)
+        if let hit = cache.withLock({ $0.first { $0.key == key }?.clips }) { return hit }
+        let clips = PetClipSet(profile: profile, ceiling: ceiling)
+        cache.withLock { entries in
+            entries.removeAll { $0.key == key }
+            entries.append((key, clips))
+            if entries.count > cacheSize { entries.removeFirst(entries.count - cacheSize) }
+        }
+        return clips
+    }
+
+    private struct CacheKey: Hashable, Sendable {
+        let breed: PetBreed
+        let outfit: PetOutfit
+        let accessories: [PetAccessory]
+        let bond: PetBondLook
+        let ceiling: Int?
+    }
+
+    private static let cacheSize = 6
+    private static let cache = OSAllocatedUnfairLock<[(key: CacheKey, clips: PetClipSet)]>(initialState: [])
 
     public subscript(animation: PetAnimation) -> PetClip {
         // Every case is built in init, so the lookup always succeeds.

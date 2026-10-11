@@ -321,11 +321,10 @@ extension PetComposer {
             case .head(let offset): origin + offset
             }
         }
-        func finish(_ step: PetTimeline.Frame, _ composed: Composed, drop: Int, withAura: Bool = true,
-                    withEffects: Bool = true) -> PetCanvas {
+        func finish(_ step: PetTimeline.Frame, _ composed: Composed, drop: Int) -> PetCanvas {
             let pet = composed.canvas.shifted(x: 0, y: step.shiftY + drop)
             var canvas = pet
-            for effect in withEffects ? step.effects : [] {
+            for effect in step.effects {
                 let grid = PetArt.effect.grid(effect.grid)
                 let y = place(effect.y, from: head.y) + drop
                 canvas = canvas.adding(grid, at: PetPoint(x: place(effect.x, from: head.x), y: max(y, ceiling ?? y)))
@@ -352,7 +351,7 @@ extension PetComposer {
             let effects = canvas.added(over: pet)
             // Petals float in the free air in front of the pet and its
             // effects, and in front of wings.
-            if withAura, let aura = composed.aura {
+            if let aura = composed.aura {
                 canvas = canvas.scattering(ceiling.map { aura.keepingParticles(below: $0) } ?? aura)
             }
             // Wings go behind the pet and its effects: a "z" or a heart
@@ -364,10 +363,13 @@ extension PetComposer {
         }
         /// How far a step moves down to clear `ceiling`: what its highest
         /// tick needs, but no more than its lowest tick has room for.
+        /// The pet and what it wears are its canvas and its back layer
+        /// (wings), moved by the step's shift; steam and dust stay low.
         func fittingDrop(_ step: PetTimeline.Frame, _ phases: [Composed]) -> Int {
             guard let ceiling else { return 0 }
-            let bounds = phases.compactMap { finish(step, $0, drop: 0, withAura: false, withEffects: false).opaqueBounds }
-            guard let top = bounds.map(\.minY).min(), let bottom = bounds.map(\.maxY).max() else { return 0 }
+            let bounds = phases.flatMap { [$0.canvas.opaqueBounds, $0.back?.opaqueBounds].compactMap { $0 } }
+            guard let minY = bounds.map(\.minY).min(), let maxY = bounds.map(\.maxY).max() else { return 0 }
+            let top = max(0, minY + step.shiftY), bottom = min(frameSize - 1, maxY + step.shiftY)
             return max(0, min(ceiling - top, frameSize - 1 - bottom))
         }
         let frames = zip(timeline.frames, phases).map { step, phases in
