@@ -35,6 +35,8 @@
 	<string>%@ 没有返回可用的计划。请稍后再试。</string>
 	<key>%@ done for today. Open %@</key>
 	<string>%1$@今天已完成。打开 %2$@</string>
+	<key>%@ focused today</key>
+	<string>今天专注 %@</string>
 	<key>%@ free</key>
 	<string>空闲 %@</string>
 	<key>%@ free this week</key>
@@ -1617,6 +1619,8 @@
 	<string>今天日历上没有事件。</string>
 	<key>No focus sessions today</key>
 	<string>今天没有专注</string>
+	<key>No focus yet</key>
+	<string>还没专注</string>
 	<key>No free time</key>
 	<string>没有空闲时间</string>
 	<key>No free time left</key>
@@ -2549,6 +2553,8 @@
 	<string>开始倒计时</string>
 	<key>Start timer</key>
 	<string>开始计时</string>
+	<key>Start today</key>
+	<string>今天开始</string>
 	<key>Start using %@ with what you picked so far. Settings can run setup again.</key>
 	<string>按目前的选择开始使用 %@。可以在设置中重新设置。</string>
 	<key>Start with one tab and turn on the ones you want</key>
@@ -3247,6 +3253,8 @@
 	<string>你的宠物</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>你的宠物名字不可用，请在衣橱中重命名。</string>
+	<key>Your pet, today's streak and the running timer.</key>
+	<string>你的宠物、连续记录和正在运行的计时器。</string>
 	<key>Your plan</key>
 	<string>你的计划</string>
 	<key>Your setup already matches %@</key>
@@ -3325,6 +3333,8 @@
 	<string>共同专注</string>
 	<key>starts %@</key>
 	<string>%@ 开始</string>
+	<key>streak</key>
+	<string>连续</string>
 	<key>switch.on</key>
 	<string>开</string>
 	<key>task</key>
@@ -3333,6 +3343,8 @@
 	<string>项任务</string>
 	<key>the host</key>
 	<string>房主</string>
+	<key>today</key>
+	<string>今天</string>
 	<key>tokens</key>
 	<string>Token</string>
 	<key>until %@</key>

@@ -171,7 +171,8 @@ public struct WidgetState: Hashable, Codable, Sendable {
         let today = PlannerDayKey(date: now, calendar: calendar)
         let end = now.addingTimeInterval(18 * 60)
         return WidgetState(pet: .starter(.cat), day: today, focusMinutes: 85, streakDays: 5, lastFocusDay: today,
-                           timer: Timer(phase: .focus, label: "Focus", clock: .countdown(endsAt: end)))
+                           timer: Timer(phase: .focus, label: String(localized: "Focus", bundle: .tabbi),
+                                        clock: .countdown(endsAt: end)))
     }
 }
 

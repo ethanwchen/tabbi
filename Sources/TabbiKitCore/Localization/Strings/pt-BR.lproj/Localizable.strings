@@ -35,6 +35,8 @@
 	<string>O %@ não devolveu um plano utilizável. Tente de novo em instantes.</string>
 	<key>%@ done for today. Open %@</key>
 	<string>%1$@ concluído por hoje. Abrir %2$@</string>
+	<key>%@ focused today</key>
+	<string>%@ de foco hoje</string>
 	<key>%@ free</key>
 	<string>%@ livre</string>
 	<key>%@ free this week</key>
@@ -1617,6 +1619,8 @@
 	<string>Nenhum evento nas suas agendas hoje.</string>
 	<key>No focus sessions today</key>
 	<string>Nenhuma sessão de foco hoje</string>
+	<key>No focus yet</key>
+	<string>Sem foco ainda</string>
 	<key>No free time</key>
 	<string>Sem tempo livre</string>
 	<key>No free time left</key>
@@ -2549,6 +2553,8 @@
 	<string>Iniciar a contagem</string>
 	<key>Start timer</key>
 	<string>Iniciar</string>
+	<key>Start today</key>
+	<string>Comece hoje</string>
 	<key>Start using %@ with what you picked so far. Settings can run setup again.</key>
 	<string>Comece a usar o %@ com o que escolheu até agora. Dá para refazer a configuração nos Ajustes.</string>
 	<key>Start with one tab and turn on the ones you want</key>
@@ -3247,6 +3253,8 @@
 	<string>Seu pet</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>O nome do seu pet não é permitido. Renomeie seu pet no Closet.</string>
+	<key>Your pet, today's streak and the running timer.</key>
+	<string>Seu pet, sua sequência e o timer em andamento.</string>
 	<key>Your plan</key>
 	<string>Seu plano</string>
 	<key>Your setup already matches %@</key>
@@ -3325,6 +3333,8 @@
 	<string>foco compartilhado</string>
 	<key>starts %@</key>
 	<string>começa em %@</string>
+	<key>streak</key>
+	<string>sequência</string>
 	<key>switch.on</key>
 	<string>Ativado</string>
 	<key>task</key>
@@ -3333,6 +3343,8 @@
 	<string>tarefas</string>
 	<key>the host</key>
 	<string>o anfitrião</string>
+	<key>today</key>
+	<string>hoje</string>
 	<key>tokens</key>
 	<string>tokens</string>
 	<key>until %@</key>

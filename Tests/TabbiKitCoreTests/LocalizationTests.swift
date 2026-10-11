@@ -67,6 +67,23 @@ final class LocalizationTests: XCTestCase {
                        ["С тобой 1 друг.", "С тобой 2 друга.", "С тобой 5 друзей.", "С тобой 21 друг."])
     }
 
+    /// The widget's streak count has a key of its own ("%lld days" is the
+    /// Closet chart's dative phrase), with an English plural, so English
+    /// reads "12 days" and German the nominative "12 Tage".
+    func testWidgetStreakDaysReadAsAPlainCount() throws {
+        let key = "%lld streak days"
+        let cases: [(language: String, expected: [String])] = [
+            ("en", ["1 day", "2 days", "5 days", "21 days"]),
+            ("de", ["1 Tag", "2 Tage", "5 Tage", "21 Tage"]),
+            ("ru", ["1 день", "2 дня", "5 дней", "21 день"]),
+        ]
+        for (language, expected) in cases {
+            let format = try XCTUnwrap(L10n.strings(for: language)).localizedString(forKey: key, value: nil, table: nil)
+            XCTAssertEqual([1, 2, 5, 21].map { String(format: format, locale: Locale(identifier: language), $0) },
+                           expected, language)
+        }
+    }
+
     /// Seasonal event names and taglines live in events.json, in English,
     /// and are looked up in the catalog by that text, so a new event or a
     /// reworded line needs its translations added with it.

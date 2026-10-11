@@ -243,6 +243,22 @@
 			<string>%lld sesiones hoy</string>
 		</dict>
 	</dict>
+	<key>%lld streak days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld día</string>
+			<key>other</key>
+			<string>%lld días</string>
+		</dict>
+	</dict>
 	<key>%lld tasks left</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

@@ -74,6 +74,8 @@ Their steps name macOS and Anki menus and buttons as those apps show them in eac
 The kit questions and import review in Settings, the weekly recap card and its history, the crash report and update rows, and the Party invite, onboarding and report sheets are translated as well.
 The recap card's stat captions ("sessions", "best day") sit under a number drawn on its own, so each is a caption with a singular and a plural key rather than a plural variation; Russian uses the nominative plural there, and the row drops its last stats when the captions run long, so keep them to one or two short words.
 The Party invite card (titles, messages, buttons and tooltips from `PartyInviteFlow`) and the "Move to Applications" alert are translated too, and the alert names the Applications folder as macOS does in each language (Programme, アプリケーション).
+The desktop widget is translated too: the extension reads the same strings from its own copy of `Tabbi_TabbiKitCore.bundle`, and `scripts/assemble.sh` gives its `Info.plist` the app's `CFBundleLocalizations`.
+Its streak count uses the key `%lld streak days` (English "12 days"), because `%lld days` is the Closet chart's dative phrase.
 Breed names stay English, because a pet that still goes by its breed is recognized by comparing its saved name to the breed's name.
 These stay English on purpose for now:
 

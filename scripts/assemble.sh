@@ -142,6 +142,8 @@ plutil -replace CFBundleSupportedPlatforms -json '["MacOSX"]' "$widget_plist"
 for key in CFBundleShortVersionString CFBundleVersion LSMinimumSystemVersion; do
     plutil -replace "$key" -string "$(plutil -extract "$key" raw -o - "$plist")" "$widget_plist"
 done
+# The app's languages, so the widget's dates and numbers follow the user's.
+plutil -replace CFBundleLocalizations -json "$(plutil -extract CFBundleLocalizations json -o - "$plist")" "$widget_plist"
 plutil -replace NSExtension -json '{"NSExtensionPointIdentifier":"com.apple.widgetkit-extension"}' "$widget_plist"
 plutil -lint -s "$widget_plist"
 echo "$app"
