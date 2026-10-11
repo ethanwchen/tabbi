@@ -1,4 +1,5 @@
 import AppKit
+import Combine
 import SwiftUI
 import TabbiKitCore
 
@@ -32,6 +33,10 @@ public final class CelebrationCenter: ObservableObject {
     /// The latest pet cheer for the closed notch; the ticker shows it while
     /// `PetCheer.isShowing(at:)`.
     @Published public private(set) var cheer: PetCheer?
+    /// Fires when the last open panel goes away, so a moment drawn beside
+    /// the closed notch (the pet coach's award line), which the open panel
+    /// would cover, can wait for it like `cheer(_:waitsForClose:)` does.
+    public let notchClosed = PassthroughSubject<Void, Never>()
 
     private var pacer = CelebrationPacer()
     private var stages = 0
@@ -39,7 +44,7 @@ public final class CelebrationCenter: ObservableObject {
     private var waiting: (kind: PetCheer.Kind, since: Date)?
     /// How long a waiting cheer stays worth playing: a goal reached an
     /// hour before the panel closed is old news.
-    static let waitLimit: TimeInterval = 10 * 60
+    public static let waitLimit: TimeInterval = 10 * 60
     private let isEnabled: Bool
     private let hapticsEnabled: () -> Bool
     private let soundEnabled: () -> Bool
@@ -160,16 +165,20 @@ public final class CelebrationCenter: ObservableObject {
     func stageAppeared() { stages += 1 }
     func stageDisappeared() {
         stages = max(0, stages - 1)
-        guard stages == 0, waiting != nil else { return }
+        guard stages == 0 else { return }
         // On the next turn, so switching tabs (one stage leaving as the
         // next arrives) never counts as the notch closing.
         DispatchQueue.main.async { [weak self] in
-            MainActor.assumeIsolated { self?.playWaitingCheer() }
+            MainActor.assumeIsolated {
+                guard let self, !self.isShowing else { return }
+                self.notchClosed.send()
+                self.playWaitingCheer()
+            }
         }
     }
 
     private func playWaitingCheer() {
-        guard !isShowing, let waiting else { return }
+        guard let waiting else { return }
         self.waiting = nil
         guard now().timeIntervalSince(waiting.since) < Self.waitLimit else { return }
         cheer(waiting.kind)

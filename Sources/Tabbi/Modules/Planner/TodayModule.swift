@@ -47,6 +47,11 @@ final class TodayModule: NotchModule {
             .sink { [store] in store.focusClockOwner = $0 }
             .store(in: &cancellables)
         settings.$settings
+            .map { $0.modules.enabled.contains(.focus) }
+            .removeDuplicates()
+            .sink { [store] in store.isFocusTabOn = $0 }
+            .store(in: &cancellables)
+        settings.$settings
             .map(\.cleanedDisplayName)
             .removeDuplicates()
             .sink { [store] in store.displayName = $0 }
