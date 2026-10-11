@@ -27,7 +27,7 @@ SUGGESTIONS = BACKEND + '/v1/suggestions'
 # root-relative paths keep 404.html working at any depth.
 NAV = [
     ('/about', 'About'),
-    ('/support', 'Support'),
+    ('/support', 'Help'),
     (DOWNLOAD, 'Download'),
 ]
 
@@ -147,7 +147,7 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True, 
 
   <footer class="site">
     <nav class="wrap" aria-label="More">
-      <a href="/support">Support</a>
+      <a href="/support">Help</a>
       <a href="/suggest">Suggest</a>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
