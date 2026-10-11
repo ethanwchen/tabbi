@@ -275,7 +275,7 @@ Upload them in file name order:
 
 1. `1-timer`: "A cozy timer in your notch", the Timer running in round 2 of 4 with two focus sounds on.
 2. `2-cheer`: "Every session ends in a cheer" with the subcaption "Earn points, unlock outfits, and hear from your cat.", the closed notch centered at the top edge with the session-end card hanging below it ("That's a wrap. Well done!", +35 and the bar toward the next unlock, "1 more session to Ninja Headband"), and the big cheering cat on the dunes saying a Cat wisdom line ("The pawn keeps moving forward. One square at a time, it can become anything it wants.").
-3. `3-closet`: "Earn points, dress your cat" with the subcaption "Every focus day fills your chart.", the Closet's Activity section (the study heatmap, 30 days of focus time, best day and streak) beside Mochi in the King's Cape, with 240 points (`open-large-closet`).
+3. `3-closet`: "Earn points, dress your cat" with the subcaption "Every focus day fills your chart.", the Closet's Activity section (the study heatmap, 30 days of focus time, best day and streak) beside Mochi in the Cozy Hoodie and Beanie, with 240 points (`open-large-closet`).
    The preview's Closet beat still picks the Wardrobe, since that beat shows an item being worn.
 4. `4-today`: "Today, right up top", Today with tasks, Up next and the mini timer.
    It reads "2 of 5 done": the demo day has three tasks, under the Focus time and flashcard rows that other tabs share, so the whole list fits without scrolling (the spec lists a walk in place of the flashcard row).
@@ -297,7 +297,7 @@ The real panel hangs from the menu bar, drawn 1:1 from snapshots rendered at 3 p
 Shot 2 has no open panel, so it shows the closed notch (190 by 32 pt, at the panels' 3 pixels per point) centered at the top of the stage like a MacBook's; the menu bar there is as tall as the notch.
 In the app the pet says the session-end card and then its Cat wisdom line in one bubble beside the notch; the shot shows both at once so the moment reads at gallery size: the card centered below the notch and the wisdom bubble beside the big cat, each cut from the app's own coach snapshots at 5 pixels per point (`coach-session-end` and `coach-wisdom-all-0`, which `TABBI_WISDOM_ALL=1` renders).
 The card leaves out its tail, which points at the small pet beside the notch, and the wisdom bubble's tail is redrawn toward the big cat; the script warns if the wisdom bubble runs past the margin or crowds the card.
-The demo pet, Mochi in the same King's Cape and round glasses as in the panel, sits on the front dune in a different mood per shot (typing, cheering, awake, asleep, and with headphones and a mug for music).
+The demo pet, Mochi, sits on the front dune in a different mood and costume per shot: the panel's Cozy Hoodie and Beanie typing (Timer), a party hat and bow tie cheering (the session end), the same look as the panel (Closet and recap), a flower crown (Today), the Dinosaur Hoodie asleep (Tomorrow), headphones and sunglasses with a mug (music) and a graduation cap and glasses (flashcards).
 It is drawn by the app's own pet renderer (`swift run PetGallery <folder> accents`) and scaled up with nearest neighbor by whole numbers (12x, 13x in the Closet shot), so the pixel art stays sharp.
 Shot 5 uses the night variant of the canvas: dusk dunes, pixel stars and a darker menu bar.
 Fredoka is bundled in [`appstore/fonts`](appstore/fonts) with its SIL Open Font License.

@@ -172,15 +172,17 @@ final class PetClosetTests: XCTestCase {
         XCTAssertTrue(states.contains { if case .locked = $0 { true } else { false } })
     }
 
-    /// The App Store Closet shot: the shelf in view mostly owned, an
-    /// animated item worn, and points left for an item ready to unlock.
-    func testDemoIsAWellStockedWardrobeWearingAnAnimatedItem() throws {
+    /// The App Store Closet shot: the shelf in view mostly owned, a cozy
+    /// look worn, and points left for an item ready to unlock.
+    func testDemoIsAWellStockedWardrobeWearingACozyLook() throws {
         let demo = PetCloset.demo
         let firstShelf = try XCTUnwrap(PetCloset.shelves.first).items
         let owned = firstShelf.filter { demo.save.ledger.owns($0) }
         XCTAssertGreaterThanOrEqual(owned.count, 6)
         XCTAssertLessThan(owned.count, firstShelf.count, "some items are still to earn")
-        XCTAssertTrue(demo.profile.accessories.contains(.kingsCape))
+        XCTAssertEqual(demo.profile.outfit, .cozyHoodie)
+        XCTAssertEqual(demo.profile.accessories, [.beanie])
+        XCTAssertTrue(demo.save.ledger.owns(.outfit(.cozyHoodie)) && demo.save.ledger.owns(.accessory(.beanie)))
         XCTAssertEqual(demo.balance, 240)
         XCTAssertEqual(demo.nextUnlock?.missing, 0)
     }

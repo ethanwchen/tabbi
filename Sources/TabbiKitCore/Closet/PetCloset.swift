@@ -266,8 +266,8 @@ public struct PetCloset: Hashable, Sendable {
 extension PetCloset {
     /// The `TABBI_DEMO=1` closet, as the App Store screenshots show it: a
     /// well-stocked wardrobe weeks in. Every Study shelf item but the two
-    /// showpieces is owned (the shelf that opens in view), the animated
-    /// King's Cape is worn, about 240 points are left with the next item
+    /// showpieces is owned (the shelf that opens in view), the Cozy Hoodie
+    /// and the Beanie are worn, about 240 points are left with the next item
     /// ready to unlock, and the launch week cap and the Founder's Pin are
     /// granted (with the milestones part of the way,
     /// `PetMilestoneProgress.demo`).
@@ -275,7 +275,7 @@ extension PetCloset {
         let purchased: [PetItem] = [
             .accessory(.beanie), .accessory(.roundGlasses), .outfit(.scrubs), .accessory(.stethoscope),
             .accessory(.surgicalCap), .accessory(.chunkyHeadphones), .accessory(.headMirror),
-            .accessory(.kingsCape),
+            .outfit(.cozyHoodie),
         ]
         let spent = purchased.reduce(0) { $0 + $1.cost }
         let ledger = PetPointsLedger(
@@ -283,7 +283,7 @@ extension PetCloset {
             purchased: Set(purchased),
             granted: [PetLimitedEdition.launchWeekCap.item, PetLimitedEdition.foundingMember.item]
         )
-        let profile = PetProfile(name: "Mochi", breed: .britishShorthair, accessories: [.kingsCape, .roundGlasses])
+        let profile = PetProfile(name: "Mochi", breed: .britishShorthair, outfit: .cozyHoodie, accessories: [.beanie])
         return PetCloset(save: PetSave(profile: profile, ledger: ledger))
     }
 }

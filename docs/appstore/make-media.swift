@@ -27,7 +27,8 @@
 // over a full-bleed desktop stage (an original dune wallpaper with a plain
 // translucent menu bar, no device and no Apple logo) with the real Large
 // Tabbi panel hanging from the menu bar, drawn 1:1. The demo pet, Mochi in
-// the same outfit as in the panel, sits on the front dune, drawn by the app's
+// a different costume per shot (the panel's own look where the panel shows
+// Mochi), sits on the front dune, drawn by the app's
 // own pet renderer (PetGallery) and scaled up with nearest neighbor.
 // Shot 5 is the night (dark) variant.
 //
@@ -341,8 +342,8 @@ func drawGrain(canvas: CGSize, in context: CGContext) {
     context.restoreGState()
 }
 
-/// One frame of the demo pet from PetGallery's accents. Animated items (the
-/// King's Cape) have a frame per tick of their loop; the brightest one, with
+/// One frame of the demo pet from PetGallery's accents. Animated items have
+/// a frame per tick of their loop; the brightest one, with
 /// the glimmer out, is used.
 struct PetPose {
     var look = "demo"
@@ -1001,20 +1002,20 @@ let shots: [Shot] = [
          panel: "open-large-study", tint: orange, hero: CGPoint(x: 0.22, y: 0.5),
          pet: PetPose(animation: "typing", frame: 2), petSide: .left),
     Shot(file: "2-cheer", caption: "Every session ends in a cheer", subcaption: "Earn points, unlock outfits, and hear from your cat.",
-         tint: orange, pet: PetPose(animation: "celebrate", frame: 2), petSide: .at(820)),
+         tint: orange, pet: PetPose(look: "party", animation: "celebrate", frame: 2), petSide: .at(820)),
     Shot(file: "3-closet", caption: "Earn points, dress your cat", subcaption: "Every focus day fills your chart.",
          panel: "open-large-closet", tint: gold, hero: CGPoint(x: 0.25, y: 0.5),
          pet: PetPose(animation: "idle"), petSide: .right, petPixel: 13),
     Shot(file: "4-today", caption: "Today, right up top", subcaption: "Tasks, calendar and your timer at a glance.",
-         panel: "open-large-planner", tint: purple, pet: PetPose(animation: "typing", frame: 6), petSide: .left),
+         panel: "open-large-planner", tint: purple, pet: PetPose(look: "flowers", animation: "typing", frame: 6), petSide: .left),
     Shot(file: "5-tomorrow", caption: "Plan tomorrow tonight", subcaption: "Look back at yesterday, then line up tomorrow.",
          panel: "open-planner-tomorrow", night: true, tint: purple,
-         pet: PetPose(animation: "sleep"), petSide: .left),
+         pet: PetPose(look: "dino", animation: "sleep"), petSide: .left),
     Shot(file: "6-music", caption: "Music without switching apps", subcaption: "Play, skip and like songs from the notch.",
          panel: "open-large-spotify", tint: green, hero: CGPoint(x: 0.25, y: 0.5),
          pet: PetPose(look: "headphones", animation: "coffee", frame: 4), petSide: .right),
     Shot(file: "7-flashcards", caption: "Flashcards between tasks", subcaption: "See what is due and review in one click.",
-         panel: "open-large-anki", tint: blue, pet: PetPose(animation: "typing", frame: 9), petSide: .left),
+         panel: "open-large-anki", tint: blue, pet: PetPose(look: "scholar", animation: "typing", frame: 9), petSide: .left),
     Shot(file: "8-recap", caption: "Your week, wrapped up", subcaption: "Hours focused, best day and your cat's new look.",
          panel: "open-recap-large-heavy", tint: gold, pet: PetPose(animation: "celebrate", frame: 3), petSide: .right),
 ]
