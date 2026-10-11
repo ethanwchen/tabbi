@@ -49,7 +49,7 @@ private struct AnkiConnectedCard: View {
                         .frame(width: 28, height: 28)
                         .background(Circle().fill(accent.opacity(0.16)))
                     VStack(alignment: .leading, spacing: 0) {
-                        Text("Anki is connected")
+                        Text("Anki is connected", bundle: .tabbi)
                             .font(Theme.Typography.bodyEmphasis)
                             .foregroundStyle(Theme.Palette.primaryText)
                         Text(deckLine)
@@ -59,13 +59,13 @@ private struct AnkiConnectedCard: View {
                     }
                     .lineLimit(1)
                 }
-                Text("The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.")
+                Text("The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.", bundle: .tabbi)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .lineLimit(3)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
-                Label("Read through AnkiConnect on this Mac", systemImage: "lock.fill")
+                Label(String(localized: "Read through AnkiConnect on this Mac", bundle: .tabbi), systemImage: "lock.fill")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .labelStyle(AnkiSetupLabelStyle())

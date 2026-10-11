@@ -142,7 +142,7 @@ public struct HotkeyRecorderField: View {
         .onHover { hovering = $0 }
         .motion(Motion.snappy, value: recorder.isRecording)
         .help(recorder.isRecording ? "Press a new shortcut, or Esc to cancel" : "Click to record a new shortcut")
-        .accessibilityLabel("Shortcut \(hotkey.displayString)")
+        .accessibilityLabel(String(localized: "Shortcut \(hotkey.displayString)", bundle: .tabbi))
     }
 
     private var label: String {

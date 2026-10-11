@@ -15,7 +15,7 @@ struct StudyCustomEditor: View {
         let isCurrent = store.session.method.kind == .custom
         VStack(alignment: .leading, spacing: Theme.Spacing.s) {
             HStack(spacing: Theme.Spacing.s) {
-                Text("Custom")
+                Text("Custom", bundle: .tabbi)
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
                 Text(rhythm.method.rhythmLabel)
@@ -79,7 +79,7 @@ struct StudyCustomEditor: View {
         return Card {
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 HStack {
-                    Text("Long break")
+                    Text("Long break", bundle: .tabbi)
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.tertiaryText)
                     Spacer(minLength: 0)
@@ -169,7 +169,7 @@ struct StudyEditButton: View {
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .help("Edit the Custom focus and break lengths")
+        .help(String(localized: "Edit the Custom focus and break lengths", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }

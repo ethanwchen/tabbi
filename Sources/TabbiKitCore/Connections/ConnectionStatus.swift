@@ -46,8 +46,15 @@ public struct ConnectionApp: Hashable, Sendable {
     /// name, Apple Music, as on its connection row, so the sentence never
     /// has to decline a translated app name. `name` is how scripts address
     /// the app.
+    /// Terminal and Shortcuts go by the names macOS gives them in the
+    /// user's language (Kurzbefehle, ターミナル).
     public var displayName: String {
-        self == .music ? "Apple Music" : name
+        switch self {
+        case .music: "Apple Music"
+        case .terminal: String(localized: "Terminal", bundle: .tabbi, comment: "The Terminal app, named as macOS names it.")
+        case .shortcuts: String(localized: "Shortcuts", bundle: .tabbi, comment: "The Shortcuts app, named as macOS names it.")
+        default: name
+        }
     }
 
     public static let anki = ConnectionApp(

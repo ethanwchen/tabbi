@@ -69,12 +69,14 @@ The modules' own Settings panes (the Options button in Settings > Tabs) are tran
 Those panes have a fixed height, so a translated footer must wrap to no more lines than the English one, or the last row is clipped: check them in `settings-tabs-<module>.png`.
 App names follow the name macOS gives them in each language (Musik, ミュージック, Быстрые команды), and `MediaSource.names` joins them with the language's own "or".
 Settings > Connections shows each connection's status headline and detail, its tooltips and the Party setup sheet in the user's language, and calls Apple's Music app Apple Music there, as its connection row does (`ConnectionApp.displayName`), so no sentence has to decline a translated app name.
+The troubleshooter's checks ("Something not working?"), the setup walkthroughs and the screens before a macOS permission prompt are translated too, and so are the support details copied from the troubleshooter, apart from their field labels and state code.
+Their steps name macOS and Anki menus and buttons as those apps show them in each language, and Terminal and Shortcuts by their macOS names (Kurzbefehle, ターミナル).
+The kit questions and import review in Settings, the weekly recap card and its history, the crash report and update rows, and the Party invite, onboarding and report sheets are translated as well.
 Breed names stay English, because a pet that still goes by its breed is recognized by comparing its saved name to the breed's name.
 These stay English on purpose for now:
 
 - long help text and error details,
 - the bundled kits' names, summaries and questions,
-- the connection diagnosis lines and the setup walkthrough sheets in Settings > Connections,
 - the study method names and taglines and the theme names, which come from bundled JSON files that the Windows port reads too and need a localized field there first.
 
 ## Checking

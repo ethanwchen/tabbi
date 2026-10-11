@@ -483,6 +483,22 @@
 			<string>Repasa hoy para mantener tu racha de %lld días</string>
 		</dict>
 	</dict>
+	<key>Yes, from %lld accounts.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Sí, de %lld cuenta.</string>
+			<key>other</key>
+			<string>Sí, de %lld cuentas.</string>
+		</dict>
+	</dict>
 	<key>You cleared all %lld tasks today. Enjoy the evening.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

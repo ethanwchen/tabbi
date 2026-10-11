@@ -483,6 +483,22 @@
 			<string>Mag-review ngayon para mapanatili ang %lld-araw na streak mo</string>
 		</dict>
 	</dict>
+	<key>Yes, from %lld accounts.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Oo, mula sa %lld account.</string>
+			<key>other</key>
+			<string>Oo, mula sa %lld na account.</string>
+		</dict>
+	</dict>
 	<key>You cleared all %lld tasks today. Enjoy the evening.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

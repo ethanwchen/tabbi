@@ -60,7 +60,7 @@ struct KitImportReviewView: View {
                 }
                 if !preview.newPermissions.isEmpty {
                     row("Permissions") {
-                        Text("New tabs may ask for \(list(preview.newPermissions.map(\.title))).")
+                        Text("New tabs may ask for \(list(preview.newPermissions.map(\.title))).", bundle: .tabbi)
                     }
                 }
                 if !preview.newNetworkAccess.isEmpty {
@@ -74,7 +74,7 @@ struct KitImportReviewView: View {
                 }
                 if preview.changesNotchPreviews {
                     row("Closed notch") {
-                        Text("Shows the previews this kit picks.")
+                        Text("Shows the previews this kit picks.", bundle: .tabbi)
                     }
                 }
                 if !issues.isEmpty {
@@ -97,7 +97,7 @@ struct KitImportReviewView: View {
             .padding(.horizontal, 24)
             .padding(.top, 24)
 
-            Text("Switching keeps your other settings, and you can undo it under Kit in Settings.")
+            Text("Switching keeps your other settings, and you can undo it under Kit in Settings.", bundle: .tabbi)
                 .font(.callout)
                 .foregroundStyle(.tertiary)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -107,11 +107,11 @@ struct KitImportReviewView: View {
 
             HStack(spacing: 8) {
                 if let back {
-                    Button("Back", action: back)
+                    Button(String(localized: "Back", bundle: .tabbi), action: back)
                         .controlSize(.large)
-                        .help("Change your answers")
+                        .help(String(localized: "Change your answers", bundle: .tabbi))
                 }
-                Button("Cancel", action: cancel)
+                Button(String(localized: "Cancel", bundle: .tabbi), action: cancel)
                     .keyboardShortcut(.cancelAction)
                     .controlSize(.large)
                     .help(isActiveKit ? "Keep the kit as it was" : "Don't import \(kit.name)")

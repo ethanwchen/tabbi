@@ -208,7 +208,7 @@ private struct ClosetNameButton: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .help("Rename your pet")
+        .help(String(localized: "Rename your pet", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -310,7 +310,7 @@ private struct ClosetPointsChip: View {
         .frame(height: 22)
         .background(Capsule().fill(Theme.Palette.surface))
         .overlay(Capsule().strokeBorder(Theme.Palette.stroke, lineWidth: 0.5))
-        .help("Points: 1 for every focused minute, plus a bonus for finishing a session")
+        .help(String(localized: "Points: 1 for every focused minute, plus a bonus for finishing a session", bundle: .tabbi))
         .motion(Theme.Motion.snappy, value: balance)
     }
 }
@@ -1060,8 +1060,11 @@ private struct ClosetStreak: View {
             .foregroundStyle(Theme.Palette.secondaryText)
             .lineLimit(1)
             .monospacedDigit()
-            .help("A missed day uses a freeze, so the streak keeps going. "
-                  + "You get one free freeze each week, and can hold \(StreakFreezeRules.maxHeld) extra.")
+            .help(Sentences.join([
+                String(localized: "A missed day uses a freeze, so the streak keeps going.", bundle: .tabbi),
+                String(localized: "You get one free freeze each week, and can hold \(StreakFreezeRules.maxHeld) extra.",
+                       bundle: .tabbi),
+            ]))
             Spacer(minLength: Theme.Spacing.s)
             ClosetBuyFreezeButton(streak: streak, balance: store.closet.balance) {
                 withMotion(Theme.Motion.snappy) { _ = store.buyStreakFreeze() }

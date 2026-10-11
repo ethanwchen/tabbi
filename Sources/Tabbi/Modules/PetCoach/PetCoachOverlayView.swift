@@ -363,7 +363,7 @@ private struct PetCelebrationText: View {
                 .frame(height: 18)
                 .background(Capsule().fill(accent.opacity(0.16)))
                 .fixedSize()
-                .help("Points earned for this session")
+                .help(String(localized: "Points earned for this session", bundle: .tabbi))
             }
             if let progress {
                 PetUnlockBar(progress: progress, fraction: shown ? progress.fraction : progress.fractionBefore,

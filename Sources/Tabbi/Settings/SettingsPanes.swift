@@ -1275,9 +1275,9 @@ struct AboutSettingsPane: View {
                 .foregroundStyle(.tertiary)
                 .padding(.top, 20)
             HStack(spacing: 12) {
-                Link("Privacy Policy", destination: SupportContact.privacyURL)
+                Link(String(localized: "Privacy Policy", bundle: .tabbi), destination: SupportContact.privacyURL)
                     .help(SupportContact.privacyURL.absoluteString)
-                Link("Terms of Use", destination: SupportContact.termsURL)
+                Link(String(localized: "Terms of Use", bundle: .tabbi), destination: SupportContact.termsURL)
                     .help(SupportContact.termsURL.absoluteString)
             }
             .font(.caption)

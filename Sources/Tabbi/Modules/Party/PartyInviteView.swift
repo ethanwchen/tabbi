@@ -23,7 +23,7 @@ private struct PartyInviteTitle: View {
             Image(systemName: PartyModule.descriptor.symbol)
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(PartyStyle.accent)
-            Text("Party invite")
+            Text("Party invite", bundle: .tabbi)
                 .font(Theme.Typography.title)
                 .foregroundStyle(Theme.Palette.primaryText)
                 .lineLimit(1)

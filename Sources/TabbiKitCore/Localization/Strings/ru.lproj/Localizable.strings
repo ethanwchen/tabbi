@@ -23,6 +23,8 @@
 	<string>%@ от %@, играет в Spotify.</string>
 	<key>%@ can't control %@</key>
 	<string>%1$@ не может управлять %2$@</string>
+	<key>%@ checkup</key>
+	<string>Проверка: %@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
 	<string>%@ не удалось улучшить план. Этот план тоже подойдет.</string>
 	<key>%@ couldn't refine this plan</key>
@@ -135,6 +137,8 @@
 	<string>%@, лимитированная серия: нажми, чтобы снять</string>
 	<key>%@, limited edition: click to wear</key>
 	<string>%@, лимитированная серия: нажми, чтобы надеть</string>
+	<key>%@.</key>
+	<string>%@.</string>
 	<key>%@. %@</key>
 	<string>%@. %@</string>
 	<key>%@.fontWeight(.medium)). %@</key>
@@ -223,6 +227,8 @@
 	<string>Ежедневное напоминание, в параметрах Гардероба.</string>
 	<key>A few extras</key>
 	<string>Пара бонусов</string>
+	<key>A few quick questions so your tabs and starter tasks fit you. Skip any you like.</key>
+	<string>Пара быстрых вопросов, чтобы вкладки и первые задачи подошли тебе. Любой можно пропустить.</string>
 	<key>A free day</key>
 	<string>Свободный день</string>
 	<key>A fresh day</key>
@@ -245,6 +251,8 @@
 	<string>Таймер длиннее</string>
 	<key>A lovely first week together.</key>
 	<string>Чудесная первая неделя вместе.</string>
+	<key>A missed day uses a freeze, so the streak keeps going.</key>
+	<string>Пропущенный день тратит заморозку, и серия не прерывается.</string>
 	<key>A question can take up to %lld screenshots</key>
 	<string>К вопросу можно приложить до %lld снимков экрана</string>
 	<key>A quiet day. Rest up and start fresh tomorrow.</key>
@@ -299,6 +307,8 @@
 	<string>Добавь пару дел, которые хочешь сделать сегодня.</string>
 	<key>Add a kit someone shared as a .json file; you see what it changes first</key>
 	<string>Добавить набор, которым поделились в файле .json. Сначала ты увидишь, что он изменит</string>
+	<key>Add a note (optional)</key>
+	<string>Добавить заметку (необязательно)</string>
 	<key>Add a task for tomorrow…</key>
 	<string>Задача на завтра…</string>
 	<key>Add a task…</key>
@@ -329,12 +339,16 @@
 	<string>Добавь свой ключ %@</string>
 	<key>Add your %@ key in Settings.</key>
 	<string>Добавь ключ %@ в Настройках.</string>
+	<key>Add your Google Calendar</key>
+	<string>Добавь Google Календарь</string>
 	<key>Add your Google or school account to see its events here.</key>
 	<string>Добавь аккаунт Google или школьный аккаунт, чтобы видеть события здесь.</string>
 	<key>Add your calendar</key>
 	<string>Добавь свой календарь</string>
 	<key>Add…</key>
 	<string>Добавить…</string>
+	<key>After %@ closes unexpectedly, ask before sending a crash report, send it without asking, or never send one</key>
+	<string>Если %@ неожиданно закроется: спросить перед отправкой отчета о сбое, отправить без вопроса или никогда не отправлять</string>
 	<key>Alerts</key>
 	<string>Уведомления</string>
 	<key>Alerts are blocked</key>
@@ -423,10 +437,14 @@
 	<string>Не удалось открыть Anki</string>
 	<key>AnkiConnect blocked this app</key>
 	<string>AnkiConnect заблокировал это приложение</string>
+	<key>AnkiConnect is a free add-on that lets Tabbi count your due cards. It takes about a minute.</key>
+	<string>Бесплатное дополнение AnkiConnect позволяет Tabbi считать карточки к повторению. Это займет около минуты.</string>
 	<key>AnkiConnect is set to ask for a key. Turning that off takes a minute.</key>
 	<string>AnkiConnect просит ключ. Выключить это можно за минуту.</string>
 	<key>AnkiConnect wants an API key</key>
 	<string>AnkiConnect требует ключ API</string>
+	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
+	<string>Настройки AnkiConnect не пускают Tabbi. Сброс к стандартным все исправит, а карточки не тронет.</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>Еще одна ровная неделя. Так держать.</string>
 	<key>Answers</key>
@@ -443,6 +461,8 @@
 	<string>Появляется, когда указатель доходит до верха по центру.</string>
 	<key>Apps and permissions</key>
 	<string>Приложения и разрешения</string>
+	<key>Are you signed in to Claude?</key>
+	<string>Вход в Claude выполнен?</string>
 	<key>Ask %@ again</key>
 	<string>Спросить %@ еще раз</string>
 	<key>Ask %@ anything</key>
@@ -501,10 +521,14 @@
 	<string>Шапка</string>
 	<key>Best day %@</key>
 	<string>Лучший день: %@</string>
+	<key>Blend</key>
+	<string>Микс</string>
 	<key>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</key>
 	<string>До трёх звуков или тишина. Звук создаётся на твоём Mac, нарастает с фокусом и затихает в перерыв.</string>
 	<key>Blindfolded Sorcerer</key>
 	<string>Повязка мага</string>
+	<key>Block %@</key>
+	<string>Заблокировать: %@</string>
 	<key>Blocked</key>
 	<string>Заблокированные</string>
 	<key>Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.</key>
@@ -547,6 +571,12 @@
 	<string>Календарь не подключен</string>
 	<key>Calendars</key>
 	<string>Календари</string>
+	<key>Can Tabbi reach Party?</key>
+	<string>Tabbi может подключиться к Party?</string>
+	<key>Can Tabbi see your cards?</key>
+	<string>Tabbi видит твои карточки?</string>
+	<key>Can Tabbi see your shortcuts?</key>
+	<string>Tabbi видит твои быстрые команды?</string>
 	<key>Can't reach the party server</key>
 	<string>Сервер пати недоступен</string>
 	<key>Can't reach the party server.</key>
@@ -573,6 +603,8 @@
 	<string>Изменить отсчет на %lld мин или на минуту от текущего момента, если это время прошло</string>
 	<key>Change the timer method</key>
 	<string>Сменить метод таймера</string>
+	<key>Change your answers</key>
+	<string>Изменить ответы</string>
 	<key>Changes appear at once, with no animation.</key>
 	<string>Изменения видны сразу, без анимации.</string>
 	<key>Charcoal</key>
@@ -595,8 +627,12 @@
 	<string>Проверить снова</string>
 	<key>Check for Updates…</key>
 	<string>Проверить обновления…</string>
+	<key>Check for updates automatically</key>
+	<string>Проверять обновления автоматически</string>
 	<key>Check live limits (sends a tiny request with your claude CLI)</key>
 	<string>Проверить лимиты (отправит крошечный запрос через твой claude CLI)</string>
+	<key>Check once a day and offer new versions as they come out</key>
+	<string>Проверять раз в день и предлагать новые версии, как только они выходят</string>
 	<key>Check that this claude runs and report its version</key>
 	<string>Проверить, что этот claude работает, и показать версию</string>
 	<key>Check that your Wi-Fi is on, then try again.</key>
@@ -607,6 +643,8 @@
 	<string>Проверь подключение к интернету. Друзья и пати появятся, когда оно вернется.</string>
 	<key>Checking</key>
 	<string>Проверка</string>
+	<key>Checking %@</key>
+	<string>Проверка: %@</string>
 	<key>Checking limits…</key>
 	<string>Проверка лимитов…</string>
 	<key>Checking…</key>
@@ -643,32 +681,50 @@
 	<string>Большие наушники</string>
 	<key>Classic</key>
 	<string>Классика</string>
+	<key>Claude is an AI helper. Tabbi uses it to plan your day and answer questions. It's optional: everything else works without it.</key>
+	<string>ИИ-помощник Claude помогает Tabbi планировать твой день и отвечать на вопросы. Он необязателен: все остальное работает и без него.</string>
 	<key>Claude is installed. Sign in once and Tabbi can use it.</key>
 	<string>Claude установлен. Войди один раз, и Tabbi сможет его использовать.</string>
+	<key>Claude is on your Mac. Sign in once and Tabbi can use it.</key>
+	<string>Claude уже есть на Mac. Войди один раз, и Tabbi сможет им пользоваться.</string>
 	<key>Claude is optional</key>
 	<string>Claude не обязателен</string>
 	<key>Claude is ready</key>
 	<string>Claude готов</string>
 	<key>Claude location</key>
 	<string>Путь к Claude</string>
+	<key>Claude only sees your events when you ask it to plan your day.</key>
+	<string>Claude видит твои события, только когда ты просишь его спланировать день.</string>
 	<key>Clear "%@"</key>
 	<string>Убрать «%@»</string>
 	<key>Clear All</key>
 	<string>Удалить все</string>
 	<key>Clear completed tasks</key>
 	<string>Убрать выполненные задачи</string>
+	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
+	<string>Выбери AnkiConnect в списке и нажми «Check for Updates».</string>
 	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
 	<string>Нажми «Подключить», а затем «Разрешить», когда Mac спросит, может ли Tabbi управлять %@.</string>
 	<key>Click Connect, then Allow when your Mac asks. It only asks once.</key>
 	<string>Нажми «Подключить», а затем «Разрешить», когда Mac спросит. Он спросит только раз.</string>
+	<key>Click Get Add-ons, paste this code, then click OK.</key>
+	<string>Нажми «Get Add-ons», вставь этот код и нажми «OK».</string>
 	<key>Click Restore Defaults, then OK</key>
 	<string>Нажми «Восстановить по умолчанию», затем OK</string>
+	<key>Click Restore Defaults, then OK.</key>
+	<string>Нажми «Restore Defaults», затем «OK».</string>
 	<key>Click a block to add or skip just that one</key>
 	<string>Нажми на блок, чтобы добавить или пропустить только его</string>
 	<key>Click a tab to turn it on or off. Drag to reorder.</key>
 	<string>Нажми на вкладку, чтобы включить или выключить. Перетаскивай для порядка.</string>
 	<key>Click again to delete every saved chat</key>
 	<string>Нажми еще раз, чтобы удалить все сохраненные чаты</string>
+	<key>Click in the Terminal window, press Command-V to paste, then press Return.</key>
+	<string>Щелкни в окне Терминала, нажми Command-V, чтобы вставить, затем нажми Return.</string>
+	<key>Click the button below. It copies the setup line and opens Terminal, an app that comes with your Mac.</key>
+	<string>Нажми кнопку ниже. Она скопирует команду установки и откроет Терминал, встроенное приложение Mac.</string>
+	<key>Click the button below. It copies the sign-in line and opens Terminal.</key>
+	<string>Нажми кнопку ниже. Она скопирует команду входа и откроет Терминал.</string>
 	<key>Click to dismiss</key>
 	<string>Нажми, чтобы закрыть</string>
 	<key>Close</key>
@@ -679,12 +735,18 @@
 	<string>Закрой открытые окна в Anki и проверь снова.</string>
 	<key>Close details</key>
 	<string>Закрыть подробности</string>
+	<key>Close the checkup</key>
+	<string>Закрыть проверку</string>
 	<key>Close the plan</key>
 	<string>Закрыть план</string>
 	<key>Close the plan without adding anything</key>
 	<string>Закрыть план, ничего не добавляя</string>
 	<key>Close this</key>
 	<string>Закрыть</string>
+	<key>Close this guide</key>
+	<string>Закрыть руководство</string>
+	<key>Close this guide. You can come back any time.</key>
+	<string>Закрыть руководство. Вернуться можно в любой момент.</string>
 	<key>Close this. Party keeps trying by itself.</key>
 	<string>Закрыть. Party продолжит попытки сама.</string>
 	<key>Close this. You can set up Party any time.</key>
@@ -729,6 +791,8 @@
 	<string>Далее</string>
 	<key>Continue to Sign in with Apple</key>
 	<string>Продолжить со входом с Apple</string>
+	<key>Control %@ from the notch</key>
+	<string>Управление %@ из выреза</string>
 	<key>Control Spotify or Apple Music from the notch.</key>
 	<string>Управляй Spotify или Apple Music из выреза.</string>
 	<key>Cool Sunglasses</key>
@@ -739,20 +803,32 @@
 	<string>Скопировать</string>
 	<key>Copy Invite Link</key>
 	<string>Скопировать ссылку-приглашение</string>
+	<key>Copy and open %@</key>
+	<string>Скопировать и открыть %@</string>
 	<key>Copy answer</key>
 	<string>Скопировать ответ</string>
 	<key>Copy code</key>
 	<string>Скопировать код</string>
 	<key>Copy code %@</key>
 	<string>Скопировать код %@</string>
+	<key>Copy code and open Anki</key>
+	<string>Скопировать код и открыть Anki</string>
+	<key>Copy details</key>
+	<string>Копировать отчет</string>
 	<key>Copy friend code</key>
 	<string>Скопировать код друга</string>
 	<key>Copy the AnkiConnect add-on code to paste into Anki</key>
 	<string>Скопировать код дополнения AnkiConnect для вставки в Anki</string>
+	<key>Copy what Tabbi found, to paste into a message if you ask someone for help</key>
+	<string>Скопировать результаты проверки, чтобы вставить их в сообщение, если попросишь кого-то о помощи</string>
+	<key>Copy what you need to paste, then open %@</key>
+	<string>Скопировать то, что нужно вставить, и открыть %@</string>
 	<key>Copy your friend code to send to a friend</key>
 	<string>Скопировать код друга, чтобы отправить другу</string>
 	<key>Copy your friend code to share it</key>
 	<string>Скопировать код друга, чтобы поделиться</string>
+	<key>Copy “%@” so you can paste it</key>
+	<string>Скопировать «%@», чтобы вставить</string>
 	<key>Couldn't add to your calendar. Try again</key>
 	<string>Не удалось добавить в календарь. Попробуй еще раз</string>
 	<key>Couldn't check your shortcuts</key>
@@ -787,10 +863,16 @@
 	<string>Уютный шарф</string>
 	<key>Cozy days and quiet focus before the new year.</key>
 	<string>Уютные дни и тихий фокус перед Новым годом.</string>
+	<key>Crash report contents</key>
+	<string>Содержимое отчета о сбое</string>
+	<key>Crash reports</key>
+	<string>Отчеты о сбоях</string>
 	<key>Cream</key>
 	<string>Кремовый</string>
 	<key>Create a party and get a code to share</key>
 	<string>Создай пати и получи код, чтобы поделиться</string>
+	<key>Custom</key>
+	<string>Свой</string>
 	<key>Daily focus goal met</key>
 	<string>Дневная цель достигнута</string>
 	<key>Daily reminder</key>
@@ -855,6 +937,16 @@
 	<string>Находить claude автоматически</string>
 	<key>Development build</key>
 	<string>Сборка для разработки</string>
+	<key>Did you answer the age question?</key>
+	<string>Ответ на вопрос о возрасте есть?</string>
+	<key>Did you let Tabbi control %@?</key>
+	<string>У Tabbi есть доступ к управлению %@?</string>
+	<key>Did you let Tabbi see your calendar?</key>
+	<string>У Tabbi есть доступ к календарю?</string>
+	<key>Did you let Tabbi show alerts?</key>
+	<string>Tabbi разрешено показывать уведомления?</string>
+	<key>Did you pick a name?</key>
+	<string>Имя выбрано?</string>
 	<key>Dinosaur Hoodie</key>
 	<string>Худи-динозавр</string>
 	<key>Discard</key>
@@ -875,6 +967,10 @@
 	<string>«Не беспокоить» готов</string>
 	<key>Do Not Disturb isn't set up</key>
 	<string>«Не беспокоить» не настроен</string>
+	<key>Does Anki let Tabbi in?</key>
+	<string>Anki пускает Tabbi?</string>
+	<key>Does your Mac have any calendars?</key>
+	<string>На Mac есть календари?</string>
 	<key>Dog</key>
 	<string>Собака</string>
 	<key>Done</key>
@@ -887,6 +983,8 @@
 	<string>Перетащи для перемотки</string>
 	<key>Each day's list shows up here the day after.</key>
 	<string>Список каждого дня появится здесь на следующий день.</string>
+	<key>Each week you focus shows up here.</key>
+	<string>Здесь появится каждая неделя с фокусом.</string>
 	<key>Earned by reaching study milestones</key>
 	<string>Даются за учебные рубежи</string>
 	<key>Earned by studying, never sold</key>
@@ -895,6 +993,8 @@
 	<string>Получено. Нажми, чтобы снять.</string>
 	<key>Earned. Click to wear.</key>
 	<string>Получено. Нажми, чтобы надеть.</string>
+	<key>Edit the Custom focus and break lengths</key>
+	<string>Изменить длительность фокуса и перерывов для метода «Свой»</string>
 	<key>Email Support</key>
 	<string>Написать в поддержку</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
@@ -923,12 +1023,16 @@
 	<string>Каждый вопрос открывает большое окно чата под вырезом. Esc вернет назад.</string>
 	<key>Everyone else has stepped out</key>
 	<string>Все остальные вышли</string>
+	<key>Everything checks out.</key>
+	<string>Все в порядке.</string>
 	<key>Everything here is already at its default</key>
 	<string>Здесь уже все по умолчанию</string>
 	<key>Everything unfinished is on today</key>
 	<string>Все невыполненное перенесено на сегодня</string>
 	<key>Everything unlocked. Dress up as you like.</key>
 	<string>Все открыто. Наряжай как хочешь.</string>
+	<key>Evidence: %@</key>
+	<string>Доказательства: %@</string>
 	<key>Exam Season</key>
 	<string>Сессия экзаменов</string>
 	<key>Example</key>
@@ -1051,6 +1155,8 @@
 	<string>Друзья видят это имя и питомца из Гардероба. Поделись кодом, чтобы тебя добавили.</string>
 	<key>Friends see you as offline. Your study minutes still count.</key>
 	<string>Для друзей ты не в сети. Минуты учебы все равно считаются.</string>
+	<key>Friends see your name, your pet and when you're studying. Nothing about your cards or decks leaves your Mac.</key>
+	<string>Друзья видят твое имя, питомца и когда ты учишься. Ничего о твоих карточках и колодах не покидает Mac.</string>
 	<key>Friends server</key>
 	<string>Сервер друзей</string>
 	<key>Frog Hat</key>
@@ -1077,6 +1183,8 @@
 	<string>Загрузить Anki</string>
 	<key>Get a Key</key>
 	<string>Получить ключ</string>
+	<key>Get a heads-up when time's up</key>
+	<string>Напомним, когда время выйдет</string>
 	<key>Get an alert when a timer ends.</key>
 	<string>Уведомление, когда таймер закончится.</string>
 	<key>Give your cat a name</key>
@@ -1145,10 +1253,14 @@
 	<string>Скрыть свой статус от друзей</string>
 	<key>History</key>
 	<string>История</string>
+	<key>How %@ works</key>
+	<string>Как работает %@</string>
 	<key>How long each item stays before the next one</key>
 	<string>Сколько показывать каждый пункт перед следующим</string>
 	<key>How much of your Claude or Codex plan you have used.</key>
 	<string>Сколько ты использовал(а) из своего тарифа Claude или Codex.</string>
+	<key>If %@ isn't open, Tabbi opens it first so your Mac can ask.</key>
+	<string>Если приложение %@ не открыто, Tabbi сначала откроет его, чтобы Mac мог спросить.</string>
 	<key>Import</key>
 	<string>Импортировать</string>
 	<key>Import Kit…</key>
@@ -1161,12 +1273,20 @@
 	<string>Набор %@ импортирован. Выбери его в разделе «Набор», чтобы использовать.</string>
 	<key>In %@, choose %@.</key>
 	<string>В %1$@ выбери %2$@.</string>
+	<key>In Anki's menu bar, click Tools, then Add-ons.</key>
+	<string>В строке меню Anki нажми «Инструменты», затем «Дополнения».</string>
 	<key>In Anki, choose Tools › Add-ons</key>
 	<string>В Anki выбери «Инструменты › Дополнения»</string>
 	<key>In Anki, choose Tools › Add-ons › AnkiConnect › Config</key>
 	<string>В Anki выбери «Инструменты › Дополнения › AnkiConnect › Настройки»</string>
 	<key>In Anki, choose Tools › Add-ons › Get Add-ons…</key>
 	<string>В Anki выбери «Инструменты › Дополнения › Загрузить дополнения…»</string>
+	<key>In Anki, click Tools, then Add-ons. Click AnkiConnect, then Config.</key>
+	<string>В Anki нажми «Инструменты», затем «Дополнения». Выбери AnkiConnect и нажми «Config».</string>
+	<key>In Internet Accounts, click Add Account, then Google, and sign in.</key>
+	<string>В разделе «Учетные записи интернета» нажми «Добавить учетную запись», затем «Google» и войди.</string>
+	<key>In Shortcuts, click the + button and name the new shortcut:</key>
+	<string>В «Быстрых командах» нажми кнопку + и назови новую команду так:</string>
 	<key>In System Settings, set Tabbi to Full Access under Calendars.</key>
 	<string>В Системных настройках в разделе «Календари» выбери для Tabbi «Полный доступ».</string>
 	<key>In System Settings, turn on %@ under Tabbi.</key>
@@ -1207,6 +1327,24 @@
 	<string>Учетные записи интернета</string>
 	<key>Invite links</key>
 	<string>Ссылки-приглашения</string>
+	<key>Is %@ on this Mac?</key>
+	<string>Приложение %@ есть на этом Mac?</string>
+	<key>Is Anki on this Mac?</key>
+	<string>Anki есть на этом Mac?</string>
+	<key>Is Anki open?</key>
+	<string>Anki открыт?</string>
+	<key>Is AnkiConnect up to date?</key>
+	<string>AnkiConnect обновлен?</string>
+	<key>Is Claude on this Mac?</key>
+	<string>Claude есть на этом Mac?</string>
+	<key>Is Do Not Disturb turned on in Tabbi?</key>
+	<string>В Tabbi включен режим «Не беспокоить»?</string>
+	<key>Is a Google calendar on this Mac?</key>
+	<string>На этом Mac есть Google Календарь?</string>
+	<key>Is the AnkiConnect add-on on?</key>
+	<string>Дополнение AnkiConnect включено?</string>
+	<key>Is the “%@” shortcut there?</key>
+	<string>Быстрая команда «%@» есть?</string>
 	<key>It belongs to your Apple Account. Delete Account in General removes it.</key>
 	<string>Они в Аккаунте Apple. Удалить: «Основные» &gt; «Удалить учетную запись».</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
@@ -1251,6 +1389,8 @@
 	<string>Оставить и продолжить</string>
 	<key>Keep this name</key>
 	<string>Оставить это имя</string>
+	<key>Keep your current kit and tabs</key>
+	<string>Оставить текущий набор и вкладки</string>
 	<key>King's Cape</key>
 	<string>Королевская мантия</string>
 	<key>Kit</key>
@@ -1285,6 +1425,8 @@
 	<string>Меньше</string>
 	<key>Let %@ find you again. You won't be friends until one of you adds the other.</key>
 	<string>%@ снова сможет тебя найти. Друзьями вы станете, когда кто-то добавит другого.</string>
+	<key>Let Tabbi into Anki</key>
+	<string>Пустить Tabbi в Anki</string>
 	<key>Let your AI fit your open tasks around today's calendar</key>
 	<string>Пусть ИИ разместит открытые задачи вокруг календаря на сегодня</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
@@ -1333,6 +1475,10 @@
 	<string>Лунный Новый год</string>
 	<key>Main display</key>
 	<string>Основной дисплей</string>
+	<key>Make one more the same way, turned Off, and name it:</key>
+	<string>Таким же образом создай еще одну, с «Выключить», и назови ее так:</string>
+	<key>Make sure Calendars is turned on for that account.</key>
+	<string>Проверь, что для этой учетной записи включены «Календари».</string>
 	<key>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</key>
 	<string>Создай две простые команды в приложении «Быстрые команды». Это займет пару минут.</string>
 	<key>Make “%@” so Tabbi can switch Do Not Disturb both ways.</key>
@@ -1377,6 +1523,8 @@
 	<string>Другие события</string>
 	<key>More focus than last week. Nice climb!</key>
 	<string>Больше фокуса, чем на прошлой неделе. Так держать!</string>
+	<key>More help</key>
+	<string>Дополнительная помощь</string>
 	<key>More options</key>
 	<string>Другие параметры</string>
 	<key>More tabs</key>
@@ -1393,6 +1541,8 @@
 	<string>Выключить звук</string>
 	<key>Name</key>
 	<string>Имя</string>
+	<key>Name your pet</key>
+	<string>Дай питомцу имя</string>
 	<key>Name your pet and dress it in items you earn.</key>
 	<string>Дай питомцу имя и наряжай его в заработанные вещи.</string>
 	<key>Needs one step</key>
@@ -1403,12 +1553,20 @@
 	<string>Новые</string>
 	<key>New chat</key>
 	<string>Новый чат</string>
+	<key>New tabs may ask for %@.</key>
+	<string>Новые вкладки могут запросить: %@.</string>
 	<key>Next meeting</key>
 	<string>Следующая встреча</string>
 	<key>Next track</key>
 	<string>Следующий трек</string>
 	<key>Next unlock</key>
 	<string>Следующая награда</string>
+	<key>Next, your Mac asks if Tabbi can control %@. Click Allow.</key>
+	<string>Сейчас Mac спросит, можно ли Tabbi управлять %@. Нажми «Разрешить».</string>
+	<key>Next, your Mac asks if Tabbi can send alerts. Click Allow.</key>
+	<string>Сейчас Mac спросит, можно ли Tabbi присылать уведомления. Нажми «Разрешить».</string>
+	<key>Next, your Mac asks if Tabbi can use your calendar. Click Allow.</key>
+	<string>Сейчас Mac спросит, можно ли Tabbi пользоваться календарем. Нажми «Разрешить».</string>
 	<key>Ninja Headband</key>
 	<string>Повязка ниндзя</string>
 	<key>No answer</key>
@@ -1453,6 +1611,50 @@
 	<string>Учебы пока нет</string>
 	<key>No study, under %lld min, under %lld min, under %lld min, and %lld min or more</key>
 	<string>Без занятий, до %1$lld мин, до %2$lld мин, до %3$lld мин и от %4$lld мин</string>
+	<key>No. A setting on this Mac blocks it.</key>
+	<string>Нет. Это блокирует настройка на этом Mac.</string>
+	<key>No. Add your Google or school account in Internet Accounts.</key>
+	<string>Нет. Добавь аккаунт Google или учебный аккаунт в разделе «Учетные записи интернета».</string>
+	<key>No. Anki didn't answer this time.</key>
+	<string>Нет. В этот раз Anki не ответил.</string>
+	<key>No. Anki is a free app from apps.ankiweb.net.</key>
+	<string>Нет. Anki можно бесплатно скачать с apps.ankiweb.net.</string>
+	<key>No. Anki is busy. A window inside Anki may be open.</key>
+	<string>Нет. Anki занят. Возможно, в Anki открыто окно.</string>
+	<key>No. Anki is waiting for you to pick a profile.</key>
+	<string>Нет. Anki ждет, пока ты выберешь профиль.</string>
+	<key>No. Anki turned Tabbi down when it asked.</key>
+	<string>Нет. Anki отклонил запрос Tabbi.</string>
+	<key>No. AnkiConnect is set to ask for a key.</key>
+	<string>Нет. AnkiConnect настроен запрашивать ключ.</string>
+	<key>No. Check that your Wi-Fi is on, then try again.</key>
+	<string>Нет. Проверь, что Wi-Fi включен, и попробуй снова.</string>
+	<key>No. Click Turn on, or switch it on in Settings under Focus.</key>
+	<string>Нет. Нажми «Включить» или включи в настройках, в разделе «Фокус».</string>
+	<key>No. Get %@ to control music from the notch.</key>
+	<string>Нет. Установи %@, чтобы управлять музыкой из выреза.</string>
+	<key>No. Install it, or restart Anki if you just did.</key>
+	<string>Нет. Установи его, а если оно уже установлено, перезапусти Anki.</string>
+	<key>No. It's turned off in System Settings.</key>
+	<string>Нет. Доступ выключен в Системных настройках.</string>
+	<key>No. Make it in Shortcuts with this exact name.</key>
+	<string>Нет. Создай ее в «Быстрых командах» точно с таким названием.</string>
+	<key>No. Set it up to use Plan my day and Ask AI with Claude.</key>
+	<string>Нет. Настрой его, чтобы пользоваться функциями «План дня» и «Спросить ИИ» с Claude.</string>
+	<key>No. Sign in once and Tabbi can use it.</key>
+	<string>Нет. Войди один раз, и Tabbi сможет им пользоваться.</string>
+	<key>No. Tabbi can only see your cards while Anki is open.</key>
+	<string>Нет. Tabbi видит твои карточки, только пока Anki открыт.</string>
+	<key>No. That's fine if you don't use Google. The Calendar row can add it.</key>
+	<string>Нет. Если ты не пользуешься Google, это нормально. Добавить его можно в строке «Календарь».</string>
+	<key>No. The Shortcuts app didn't answer. Click Check again.</key>
+	<string>Нет. Приложение «Быстрые команды» не ответило. Нажми «Проверить снова».</string>
+	<key>No. They're turned off in System Settings.</key>
+	<string>Нет. Уведомления выключены в Системных настройках.</string>
+	<key>No. This copy is too old for Tabbi.</key>
+	<string>Нет. Эта версия слишком старая для Tabbi.</string>
+	<key>No. This copy of Tabbi can't ask for it.</key>
+	<string>Нет. Эта версия Tabbi не может запросить доступ.</string>
 	<key>None</key>
 	<string>Нет</string>
 	<key>None of your tabs need another app right now.</key>
@@ -1467,8 +1669,12 @@
 	<string>Не добавлено</string>
 	<key>Not available</key>
 	<string>Недоступно</string>
+	<key>Not checked yet</key>
+	<string>Еще не проверено</string>
 	<key>Not checked yet · refresh to load your live limits</key>
 	<string>Еще не проверено · обнови, чтобы загрузить лимиты</string>
+	<key>Not checked yet. Fix the step above first.</key>
+	<string>Еще не проверено. Сначала исправь шаг выше.</string>
 	<key>Not connected</key>
 	<string>Не подключен</string>
 	<key>Not connected to Tabbi yet</key>
@@ -1493,6 +1699,14 @@
 	<string>Не настроено</string>
 	<key>Not synced yet</key>
 	<string>Еще не синхронизировано</string>
+	<key>Not yet. Open the Party tab to answer.</key>
+	<string>Пока нет. Открой вкладку Party, чтобы ответить.</string>
+	<key>Not yet. Pick a name and a pet to start.</key>
+	<string>Пока нет. Выбери имя и питомца, чтобы начать.</string>
+	<key>Not yet. Your Mac can only ask while %@ is open.</key>
+	<string>Пока нет. Mac может спросить, только пока приложение %@ открыто.</string>
+	<key>Not yet. Your Mac hasn't asked you.</key>
+	<string>Пока нет. Mac еще не спрашивал.</string>
 	<key>Notch</key>
 	<string>Вырез</string>
 	<key>Nothing carries over</key>
@@ -1553,6 +1767,8 @@
 	<string>Одно нажатие, и дальше.</string>
 	<key>Online</key>
 	<string>В сети</string>
+	<key>Only partly. Tabbi can add events but can't read them.</key>
+	<string>Только частично. Tabbi может добавлять события, но не читать их.</string>
 	<key>Only the host can change the session.</key>
 	<string>Менять сессию может только хост.</string>
 	<key>Only while a focus phase runs, at most a few times an hour. Your pet checks how long since you last typed or moved the pointer, and which app is in front. Nothing else, and no permissions.</key>
@@ -1599,6 +1815,8 @@
 	<string>Открыть «Подключения», чтобы завершить настройку</string>
 	<key>Open Connections to set up the AI</key>
 	<string>Открыть подключения, чтобы настроить ИИ</string>
+	<key>Open Internet Accounts</key>
+	<string>Открыть «Учетные записи интернета»</string>
 	<key>Open Internet Accounts to add a Google, Exchange or iCloud calendar</key>
 	<string>Открыть «Учетные записи интернета», чтобы добавить календарь Google, Exchange или iCloud</string>
 	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
@@ -1637,10 +1855,14 @@
 	<string>Открыть официальную страницу в браузере</string>
 	<key>Open the official page to download %@</key>
 	<string>Открыть официальную страницу, чтобы скачать: %@</string>
+	<key>Open the official setup page</key>
+	<string>Открыть официальную страницу установки</string>
 	<key>Open the right page in System Settings</key>
 	<string>Открыть нужный раздел в Системных настройках</string>
 	<key>Open this chat and continue it</key>
 	<string>Открыть этот чат и продолжить</string>
+	<key>Open your recap for %@</key>
+	<string>Открыть итоги за %@</string>
 	<key>Opening %@…</key>
 	<string>Открывается %@…</string>
 	<key>Opening Anki…</key>
@@ -1655,6 +1877,8 @@
 	<string>Открывает страницу предложений с уже указанными версией приложения, версией macOS и выпуском</string>
 	<key>Opens the notch when the pointer rests on it.</key>
 	<string>Открывает вырез, когда указатель задерживается на нем.</string>
+	<key>Optional</key>
+	<string>Необязательно</string>
 	<key>Optional, with your Apple Account.</key>
 	<string>По желанию, с Аккаунтом Apple.</string>
 	<key>Options…</key>
@@ -1679,6 +1903,10 @@
 	<string>Party не подключается</string>
 	<key>Party code</key>
 	<string>Код Party</string>
+	<key>Party invite</key>
+	<string>Приглашение</string>
+	<key>Party is for people %lld and older.</key>
+	<string>Party доступна с %lld лет.</string>
 	<key>Party is for people %lld and older. It opens here in %@.</key>
 	<string>Party доступна с %1$lld лет. Она откроется здесь в %2$@.</string>
 	<key>Party is for people %lld and older. It opens in %@.</key>
@@ -1731,6 +1959,8 @@
 	<string>Питомец</string>
 	<key>Pet Coach</key>
 	<string>Питомец-тренер</string>
+	<key>Pick %@</key>
+	<string>Выбрать: %@</string>
 	<key>Pick %@ again to allow it to receive your AI requests. %@ sends nothing until you do.</key>
 	<string>Выбери %1$@ снова, чтобы разрешить отправку твоих запросов к ИИ. До этого %2$@ ничего не отправляет.</string>
 	<key>Pick a cozy focus playlist</key>
@@ -1747,6 +1977,8 @@
 	<string>Выбери имя и питомца и укажи дату рождения.</string>
 	<key>Pick a sound to preview it</key>
 	<string>Выбери звук, чтобы прослушать</string>
+	<key>Pick any</key>
+	<string>Сколько угодно</string>
 	<key>Pick any app from your Applications folder</key>
 	<string>Выбери любое приложение из папки «Программы»</string>
 	<key>Pick any that fit.</key>
@@ -1813,10 +2045,16 @@
 	<string>Играет в Spotify.</string>
 	<key>Plays “%@” from your Music library.</key>
 	<string>Играет «%@» из медиатеки Музыки.</string>
+	<key>Points earned for this session</key>
+	<string>Очки за эту сессию</string>
 	<key>Points earned today; spend them on your pet's wardrobe</key>
 	<string>Очки за сегодня: потрать их на гардероб питомца</string>
+	<key>Points: 1 for every focused minute, plus a bonus for finishing a session</key>
+	<string>Очки: 1 за каждую минуту фокуса и бонус за завершенную сессию</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Для статистики Claude и ответов.</string>
+	<key>Preset %@</key>
+	<string>Пресет %@</string>
 	<key>Presets</key>
 	<string>Подборки</string>
 	<key>Preview</key>
@@ -1825,6 +2063,8 @@
 	<string>Предыдущий трек</string>
 	<key>Privacy</key>
 	<string>Конфиденциальность</string>
+	<key>Privacy Policy</key>
+	<string>Политика конфиденциальности</string>
 	<key>Productivity</key>
 	<string>Продуктивность</string>
 	<key>Profile</key>
@@ -1837,6 +2077,8 @@
 	<string>Шапка-тыква</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
 	<string>Вернуть «Основные» к исходному виду. «Открывать при входе» не меняется.</string>
+	<key>Put the recap away</key>
+	<string>Убрать итоги</string>
 	<key>Quick and crisp, with no bounce.</key>
 	<string>Быстро и четко, без отскока.</string>
 	<key>Quick answers right here. %@ can't see your files.</key>
@@ -1853,10 +2095,16 @@
 	<string>Завершить %@ и закрыть вырез до следующего запуска (⌘Q)</string>
 	<key>Quit Anki and open it again so it loads AnkiConnect</key>
 	<string>Закрыть Anki и открыть снова, чтобы загрузился AnkiConnect</string>
+	<key>Quit Anki and open it again. If it asks about Tabbi, click Yes.</key>
+	<string>Закрой Anki и открой снова. Если он спросит про Tabbi, нажми «Да».</string>
+	<key>Quit Anki and open it again. Tabbi notices by itself.</key>
+	<string>Закрой Anki и открой снова. Tabbi заметит это автоматически.</string>
 	<key>Rain</key>
 	<string>Дождь</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Прочитать свежие журналы Codex (ничего не отправляет)</string>
+	<key>Read through AnkiConnect on this Mac</key>
+	<string>Прочитано через AnkiConnect на этом Mac</string>
 	<key>Reading %@ sessions…</key>
 	<string>Чтение сеансов %@…</string>
 	<key>Reading Codex logs…</key>
@@ -1913,12 +2161,20 @@
 	<string>Набор %@ удален.</string>
 	<key>Removes your profile, friends and parties from the server.</key>
 	<string>Удаляет профиль, друзей и пати с сервера.</string>
+	<key>Rename</key>
+	<string>Переименовать</string>
+	<key>Rename your pet</key>
+	<string>Переименовать питомца</string>
 	<key>Repeat</key>
 	<string>Повтор</string>
 	<key>Repeat all songs</key>
 	<string>Повторять все песни</string>
 	<key>Repeat this song</key>
 	<string>Повторять эту песню</string>
+	<key>Report %@</key>
+	<string>Пожаловаться: %@</string>
+	<key>Report %@…</key>
+	<string>Пожаловаться: %@…</string>
 	<key>Report a problem: %@</key>
 	<string>Сообщить о проблеме: %@</string>
 	<key>Reset to Default</key>
@@ -1981,6 +2237,8 @@
 	<string>Один раз запусти codex в Терминале, чтобы войти.</string>
 	<key>Run gemini in Terminal once to sign in with Google.</key>
 	<string>Один раз запусти gemini в Терминале, чтобы войти через Google.</string>
+	<key>Run the checks for %@ again</key>
+	<string>Проверить снова: %@</string>
 	<key>Run your Focus shortcuts when the focus timer starts and stops</key>
 	<string>Запускать команды фокусирования, когда таймер фокуса стартует и останавливается</string>
 	<key>Run “%@” now</key>
@@ -2011,6 +2269,8 @@
 	<string>Снимок экрана, отправленный с этим вопросом</string>
 	<key>Scrubs</key>
 	<string>Медицинский костюм</string>
+	<key>Search for Set Focus, add it, and pick Do Not Disturb, turned On.</key>
+	<string>Найди действие «Задать фокусирование», добавь его, выбери «Не беспокоить» и «Включить».</string>
 	<key>Seasonal</key>
 	<string>Сезонное</string>
 	<key>See due cards and start reviews.</key>
@@ -2047,6 +2307,10 @@
 	<string>Настрой %@, чтобы задавать вопросы</string>
 	<key>Set up AI</key>
 	<string>Настроить ИИ</string>
+	<key>Set up Claude</key>
+	<string>Настроить Claude</string>
+	<key>Set up Do Not Disturb</key>
+	<string>Настроить «Не беспокоить»</string>
 	<key>Settings…</key>
 	<string>Настройки…</string>
 	<key>Setup</key>
@@ -2063,10 +2327,14 @@
 	<string>Общий фокус: осталось %@</string>
 	<key>Shortcut</key>
 	<string>Сочетание клавиш</string>
+	<key>Shortcut %@</key>
+	<string>Сочетание клавиш %@</string>
 	<key>Shortcut name</key>
 	<string>Название команды</string>
 	<key>Shortcut ran.</key>
 	<string>Команда выполнена.</string>
+	<key>Shortcuts</key>
+	<string>Быстрые команды</string>
 	<key>Show %@</key>
 	<string>Показать %@</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
@@ -2105,12 +2373,16 @@
 	<string>Показать вчерашний календарь</string>
 	<key>Show yesterday's list</key>
 	<string>Показать вчерашний список</string>
+	<key>Show your calendar in Tabbi</key>
+	<string>Календарь в Tabbi</string>
 	<key>Show your studies some love this week.</key>
 	<string>Удели учебе немного любви на этой неделе.</string>
 	<key>Showing local stats only</key>
 	<string>Только локальная статистика</string>
 	<key>Shown to friends in Party and used to greet you.</key>
 	<string>Видно друзьям в Party, и так мы тебя приветствуем.</string>
+	<key>Shows the previews this kit picks.</key>
+	<string>Показывает превью, выбранные этим набором.</string>
 	<key>Shuffle</key>
 	<string>Перемешать</string>
 	<key>Sign In</key>
@@ -2119,6 +2391,8 @@
 	<string>Войти…</string>
 	<key>Sign Out</key>
 	<string>Выйти</string>
+	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
+	<string>Войди на открывшейся странице. Tabbi заметит это автоматически.</string>
 	<key>Sign in to Claude</key>
 	<string>Войди в Claude</string>
 	<key>Sign in with Apple</key>
@@ -2245,6 +2519,8 @@
 	<string>Уходит в сторону, когда видео, игра или приложение во весь экран.</string>
 	<key>Stethoscope</key>
 	<string>Стетоскоп</string>
+	<key>Still checking.</key>
+	<string>Проверяем.</string>
 	<key>Stop</key>
 	<string>Стоп</string>
 	<key>Stop and keep the time focused so far</key>
@@ -2305,12 +2581,18 @@
 	<string>Плащ супергероя</string>
 	<key>Surgical Cap</key>
 	<string>Хирургическая шапочка</string>
+	<key>Switch Kit</key>
+	<string>Сменить набор</string>
 	<key>Switch every</key>
 	<string>Менять каждые</string>
+	<key>Switch to %@ with these answers</key>
+	<string>Перейти на %@ с этими ответами</string>
 	<key>Switch to %@: %@</key>
 	<string>Перейти на %1$@: %2$@</string>
 	<key>Switched to %@.</key>
 	<string>Выбран набор %@.</string>
+	<key>Switching keeps your other settings, and you can undo it under Kit in Settings.</key>
+	<string>Остальные настройки сохранятся, а отменить смену можно в разделе «Набор» в настройках.</string>
 	<key>Switching kits replaces your tabs with the kit's</key>
 	<string>При смене набора твои вкладки заменятся вкладками набора</string>
 	<key>Sync with AnkiWeb</key>
@@ -2329,12 +2611,26 @@
 	<string>Tabbi не может управлять: %@</string>
 	<key>Tabbi can't read your calendar</key>
 	<string>Tabbi не видит календарь</string>
+	<key>Tabbi checks by itself and turns green when it works.</key>
+	<string>Tabbi проверяет автоматически и загорается зеленым, когда все работает.</string>
+	<key>Tabbi is checking %@ right now. This takes a second.</key>
+	<string>Tabbi сейчас проверяет: %@. Это займет секунду.</string>
 	<key>Tabbi is checking this right now</key>
 	<string>Tabbi проверяет это прямо сейчас</string>
+	<key>Tabbi is still checking. This takes a second.</key>
+	<string>Tabbi еще проверяет. Это займет секунду.</string>
 	<key>Tabbi leaves your alerts alone until you turn it on.</key>
 	<string>Пока ты его не включишь, Tabbi не трогает уведомления.</string>
+	<key>Tabbi only alerts you when a focus block or break ends.</key>
+	<string>Tabbi пришлет уведомление, только когда закончится блок фокуса или перерыв.</string>
+	<key>Tabbi only plays, pauses, skips and shows what's playing.</key>
+	<string>Tabbi только включает, ставит на паузу, переключает треки и показывает, что играет.</string>
+	<key>Tabbi only reads events to show today's plan.</key>
+	<string>Tabbi читает события, только чтобы показать план на сегодня.</string>
 	<key>Tabbi reads %@ and sends nothing.</key>
 	<string>Tabbi читает %@ и ничего не отправляет.</string>
+	<key>Tabbi shows the calendars your Mac knows about. Add your Google account once and its events show up.</key>
+	<string>Tabbi показывает календари, которые есть на Mac. Добавь аккаунт Google один раз, и его события появятся.</string>
 	<key>Tabbi tells you when a focus block or break ends.</key>
 	<string>Tabbi сообщит, когда закончится блок фокуса или перерыв.</string>
 	<key>Tabs</key>
@@ -2351,6 +2647,10 @@
 	<string>Задачи на сегодня</string>
 	<key>Team Medal</key>
 	<string>Командная медаль</string>
+	<key>Terminal</key>
+	<string>Терминал</string>
+	<key>Terms of Use</key>
+	<string>Условия использования</string>
 	<key>Test</key>
 	<string>Проверить</string>
 	<key>Test it</key>
@@ -2373,12 +2673,16 @@
 	<string>ИИ</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
 	<string>ИИ для вопросов, плана дня и улучшения</string>
+	<key>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</key>
+	<string>Вкладка Anki показывает карточки к повторению, главные колоды и серию, а Сегодня засчитывает повторения в твой день.</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>Связке ключей не удалось сохранить ключ. Попробуй еще раз.</string>
 	<key>The Shortcuts app didn't answer in time. Try again in a moment.</key>
 	<string>Приложение «Быстрые команды» не ответило вовремя. Попробуй чуть позже.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
 	<string>Инструмент командной строки Быстрых команд недоступен на этом Mac.</string>
+	<key>The Tabbi team reviews it. %@ isn't told.</key>
+	<string>Команда Tabbi рассмотрит жалобу. %@ не узнает об этом.</string>
 	<key>The app this needs isn't on this Mac</key>
 	<string>Нужного приложения нет на этом Mac</string>
 	<key>The blossoms are out. Grow something of your own.</key>
@@ -2401,6 +2705,8 @@
 	<string>Месяц рождения</string>
 	<key>The name friends see, up to %lld characters</key>
 	<string>Имя, которое видят друзья, до %lld симв.</string>
+	<key>The name friends see, up to %lld characters. Click to change it.</key>
+	<string>Имя, которое видят друзья, до %lld симв. Нажми, чтобы изменить.</string>
 	<key>The name friends see, up to %lld letters</key>
 	<string>Имя для друзей, не больше %lld букв</string>
 	<key>The next seven days at a glance</key>
@@ -2421,10 +2727,16 @@
 	<string>Сервер это не принял.</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>Сессия идет для всей Party, пока не закончится или пока ты ее не завершишь</string>
+	<key>The shared session is done. Click to dismiss.</key>
+	<string>Общая сессия завершена. Нажми, чтобы закрыть.</string>
 	<key>The shortcut failed.</key>
 	<string>Команда не сработала.</string>
 	<key>The shortcut took too long and was stopped.</key>
 	<string>Команда выполнялась слишком долго и была остановлена.</string>
+	<key>The tabs %@ starts with: %@</key>
+	<string>Начальные вкладки набора %1$@: %2$@</string>
+	<key>The timer starts with %@</key>
+	<string>Таймер начнется с метода %@</string>
 	<key>The tool's own default</key>
 	<string>По умолчанию в инструменте</string>
 	<key>The year you were born</key>
@@ -2455,6 +2767,10 @@
 	<string>Это демо. Ничего не удалено.</string>
 	<key>This is usually short. Check again in a moment.</key>
 	<string>Обычно это ненадолго. Проверь снова чуть позже.</string>
+	<key>This is what needs fixing</key>
+	<string>Вот что нужно исправить</string>
+	<key>This part works</key>
+	<string>Эта часть работает</string>
 	<key>This tab reads your decks through the free AnkiConnect add-on.</key>
 	<string>Эта вкладка читает колоды через бесплатное дополнение AnkiConnect.</string>
 	<key>This takes a few seconds.</key>
@@ -2527,6 +2843,8 @@
 	<string>Выключить %@</string>
 	<key>Turn %@ on</key>
 	<string>Включить %@</string>
+	<key>Turn %@ on for a moment, then off again</key>
+	<string>Ненадолго включить %@, затем выключить</string>
 	<key>Turn Do Not Disturb on for a moment, then off again</key>
 	<string>Ненадолго включить «Не беспокоить» и снова выключить</string>
 	<key>Turn on</key>
@@ -2657,6 +2975,8 @@
 	<string>Привет, я %@</string>
 	<key>What happened when Tabbi ran your shortcuts</key>
 	<string>Что произошло, когда Tabbi запустил твои команды</string>
+	<key>What happened, in a sentence or two</key>
+	<string>Что случилось, в паре предложений</string>
 	<key>What should we call you?</key>
 	<string>Как тебя зовут?</string>
 	<key>When Anki asked whether to let Tabbi in, the answer was no.</key>
@@ -2665,6 +2985,8 @@
 	<string>В конце фокуса</string>
 	<key>When focus starts</key>
 	<string>В начале фокуса</string>
+	<key>When it's done, sign in with your Claude account. Tabbi notices by itself.</key>
+	<string>Когда все будет готово, войди в свой аккаунт Claude. Tabbi заметит это автоматически.</string>
 	<key>When off, the notch hides while the lid is closed.</key>
 	<string>Если выключено, вырез скрывается при закрытой крышке.</string>
 	<key>When the reminder can come, in your Mac's time zone</key>
@@ -2715,6 +3037,20 @@
 	<string>Пишем сводку</string>
 	<key>Year</key>
 	<string>Год</string>
+	<key>Yes, %@ is installed.</key>
+	<string>Да, приложение %@ установлено.</string>
+	<key>Yes, Anki is installed.</key>
+	<string>Да, Anki установлен.</string>
+	<key>Yes, Anki is open.</key>
+	<string>Да, Anki открыт.</string>
+	<key>Yes, AnkiConnect answers.</key>
+	<string>Да, AnkiConnect отвечает.</string>
+	<key>Yes, Tabbi can count your cards.</key>
+	<string>Да, Tabbi может считать твои карточки.</string>
+	<key>Yes, the last time %@ was open.</key>
+	<string>Да, при последнем запуске %@.</string>
+	<key>Yes.</key>
+	<string>Да.</string>
 	<key>Yesterday</key>
 	<string>Вчера</string>
 	<key>Yesterday's calendar</key>
@@ -2737,6 +3073,10 @@
 	<string>Это можно настроить в любой момент в Настройках.</string>
 	<key>You can set this up any time in the %@ tab.</key>
 	<string>Это можно настроить в любой момент во вкладке «%@».</string>
+	<key>You can turn alerts off any time in System Settings.</key>
+	<string>Уведомления можно выключить в любой момент в Системных настройках.</string>
+	<key>You get one free freeze each week, and can hold %lld extra.</key>
+	<string>Каждую неделю дается одна бесплатная заморозка, и можно хранить еще %lld.</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>Сегодня на учебу ушло %@. Отдохни, а завтра начнешь с новыми силами.</string>
 	<key>You started it for the party</key>
@@ -2751,20 +3091,30 @@
 	<string>Сегодня отправлено много жалоб. Попробуй завтра.</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>
 	<string>Твой ключ %@. Он хранится в Связке ключей.</string>
+	<key>Your Mac asks next</key>
+	<string>Дальше спросит Mac</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Mac заряжается, а %@ немного попьет</string>
+	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>
+	<string>Mac разрешает приложениям переключать «Не беспокоить» только через быстрые команды, которые создаешь ты. Хватит двух простых.</string>
 	<key>Your Mac's CPU, GPU and memory use at a glance.</key>
 	<string>Загрузка ЦП, ГП и памяти Mac на одном экране.</string>
 	<key>Your Party data</key>
 	<string>Твои данные Party</string>
 	<key>Your Party data was deleted.</key>
 	<string>Данные Party удалены.</string>
+	<key>Your best week</key>
+	<string>Твоя лучшая неделя</string>
 	<key>Your best week yet!</key>
 	<string>Твоя лучшая неделя!</string>
 	<key>Your cards due today show up here.</key>
 	<string>Здесь появятся карточки на сегодня.</string>
 	<key>Your cat</key>
 	<string>Твой кот</string>
+	<key>Your code</key>
+	<string>Твой код</string>
+	<key>Your copy of AnkiConnect is too old for Tabbi. Anki can update it in a few clicks.</key>
+	<string>Твоя версия AnkiConnect слишком старая для Tabbi. В Anki ее можно обновить в пару кликов.</string>
 	<key>Your copy of the AnkiConnect add-on is too old for Tabbi.</key>
 	<string>Твоя версия аддона AnkiConnect слишком старая для Tabbi.</string>
 	<key>Your data</key>
@@ -2775,6 +3125,8 @@
 	<string>Твой пес</string>
 	<key>Your due cards show up in Tabbi.</key>
 	<string>Карточки к повторению видны в Tabbi.</string>
+	<key>Your first recap arrives Sunday evening.</key>
+	<string>Первые итоги придут в воскресенье вечером.</string>
 	<key>Your friend code</key>
 	<string>Твой код друга</string>
 	<key>Your friend code is %@. Share it so friends can add you.</key>
@@ -2815,6 +3167,8 @@
 	<string>Твой таймер</string>
 	<key>Your to-do list, what is up next, and a day plan.</key>
 	<string>Список дел, ближайшие события и план дня.</string>
+	<key>Your week</key>
+	<string>Твоя неделя</string>
 	<key>Your week with Tabbi is ready</key>
 	<string>Твоя неделя с Tabbi: итоги готовы</string>
 	<key>all day: %@</key>
