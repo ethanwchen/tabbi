@@ -29,10 +29,10 @@ public enum PartyReportReason: String, Codable, CaseIterable, Hashable, Sendable
     /// The label in the reason picker.
     public var title: String {
         switch self {
-        case .inappropriateName: return "Inappropriate name"
-        case .harassment: return "Harassment"
-        case .spam: return "Spam"
-        case .other: return "Other"
+        case .inappropriateName: return String(localized: "Inappropriate name", bundle: .tabbi)
+        case .harassment: return String(localized: "Harassment", bundle: .tabbi)
+        case .spam: return String(localized: "Spam", bundle: .tabbi)
+        case .other: return String(localized: "Other", bundle: .tabbi)
         }
     }
 }
@@ -82,7 +82,7 @@ public enum SupportContact {
     /// Opens a new message to `email` in the user's mail app.
     public static let mailURL = URL(string: "mailto:\(email)")!
     /// The line both places show.
-    public static let reportLine = "Report a problem: \(email)"
+    public static var reportLine: String { String(localized: "Report a problem: \(email)", bundle: .tabbi) }
     /// The Terms of Use and Privacy Policy on the website, which Party's
     /// age check and Settings > About link to.
     public static let termsURL = URL(string: "https://tabbinotch.com/terms")!
@@ -112,9 +112,9 @@ public struct PartyNameRefusal: OptionSet, Hashable, Sendable {
     /// The friendly line shown under the name, or nil when nothing was refused.
     public var message: String? {
         switch (contains(.name), contains(.petName)) {
-        case (true, true): return "That name and your pet's name aren't allowed. Please pick others."
-        case (true, false): return "That name isn't allowed. Please pick another."
-        case (false, true): return "Your pet's name isn't allowed. Rename your pet in the Closet."
+        case (true, true): return String(localized: "That name and your pet's name aren't allowed. Please pick others.", bundle: .tabbi)
+        case (true, false): return String(localized: "That name isn't allowed. Please pick another.", bundle: .tabbi)
+        case (false, true): return String(localized: "Your pet's name isn't allowed. Rename your pet in the Closet.", bundle: .tabbi)
         case (false, false): return nil
         }
     }

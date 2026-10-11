@@ -415,7 +415,7 @@ final class PartyStore: ObservableObject {
         guard pending == nil else { return }
         deletionNotice = nil
         if isDemo {
-            deletionNotice = "This is a demo. Nothing was deleted."
+            deletionNotice = String(localized: "This is a demo. Nothing was deleted.", bundle: .tabbi)
             return
         }
         guard let account = account ?? storedAccount() else { return }
@@ -433,7 +433,7 @@ final class PartyStore: ObservableObject {
                 tracker = PartyPresenceTracker()
                 tracker.setInvisible(settings.invisible)
                 saveTracker()
-                deletionNotice = "Your Party data was deleted."
+                deletionNotice = String(localized: "Your Party data was deleted.", bundle: .tabbi)
             } catch {
                 self?.deletionNotice = Self.partyError(error).message
             }

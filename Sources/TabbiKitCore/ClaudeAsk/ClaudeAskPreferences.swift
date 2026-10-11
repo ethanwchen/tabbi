@@ -12,9 +12,9 @@ public enum ClaudeAskLargeView: String, Codable, CaseIterable, Sendable {
     /// The choice as Settings lists it.
     public var title: String {
         switch self {
-        case .askEachTime: "Ask each time"
-        case .always: "Always"
-        case .never: "Never"
+        case .askEachTime: String(localized: "Ask each time", bundle: .tabbi)
+        case .always: String(localized: "Always", bundle: .tabbi)
+        case .never: String(localized: "Never", bundle: .tabbi)
         }
     }
 
