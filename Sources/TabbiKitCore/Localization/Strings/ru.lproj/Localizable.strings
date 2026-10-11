@@ -65,6 +65,8 @@
 	<string>%@ в твоей пати</string>
 	<key>%@ is keeping you company</key>
 	<string>%@ составляет тебе компанию</string>
+	<key>%@ is keeping you company. %@</key>
+	<string>%1$@ составляет тебе компанию. %2$@</string>
 	<key>%@ is looking over this plan...</key>
 	<string>%@ изучает этот план...</string>
 	<key>%@ is looking over this plan…</key>
@@ -75,6 +77,8 @@
 	<string>%@ теперь твой друг</string>
 	<key>%@ is on a break with you</key>
 	<string>%@ отдыхает вместе с тобой</string>
+	<key>%@ is ready in the Closet</key>
+	<string>«%@» ждет в Гардеробе</string>
 	<key>%@ is studying with the party</key>
 	<string>%@ учится вместе с пати</string>
 	<key>%@ is studying with you</key>
@@ -249,6 +253,10 @@
 	<string>Адрес сервера друзей. Оставь пустым для %@.</string>
 	<key>A gentle nudge from %@ on days you haven't studied yet</key>
 	<string>Мягкое напоминание от %@ в дни, когда учебы еще не было</string>
+	<key>A gift: %lld min toward the event</key>
+	<string>Подарок: %lld мин к событию</string>
+	<key>A gift: the rare %@ fur</key>
+	<string>Подарок: редкий мех «%@»</string>
 	<key>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</key>
 	<string>Набор - это готовый комплект вкладок. При смене он заменит твои вкладки и добавит свои стартовые задачи в Сегодня.</string>
 	<key>A kit is a set of tabs. You can change them any time.</key>
@@ -257,6 +265,8 @@
 	<string>Легкий отклик трекпада у края выреза и при праздновании.</string>
 	<key>A lighter week. Every minute counts.</key>
 	<string>Спокойная неделя. Каждая минута на счету.</string>
+	<key>A line from your pet. Hover to keep it, click to send the pet home. Turn it off in Settings › General.</key>
+	<string>Фраза от питомца. Наведи указатель, чтобы она осталась, или нажми, чтобы отправить питомца домой. Отключается в Настройках › Основные.</string>
 	<key>A longer timer</key>
 	<string>Таймер длиннее</string>
 	<key>A lovely first week together.</key>
@@ -267,6 +277,8 @@
 	<string>К вопросу можно приложить до %lld снимков экрана</string>
 	<key>A quiet day. Rest up and start fresh tomorrow.</key>
 	<string>Тихий день. Отдохни, а завтра начнешь с новыми силами.</string>
+	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
+	<string>Редкий цвет меха от питомца. Примерь его в Гардеробе, в разделе «Оформление».</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>Неделя отдыха. Впереди новое начало.</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
@@ -551,6 +563,10 @@
 	<string>Заблокированные не видят тебя и не могут добавить или войти в пати. Заблокировать или пожаловаться: правый клик в Party.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>Добавятся в календарь.</string>
+	<key>Bonus minutes toward this event's limited items</key>
+	<string>Бонусные минуты для лимитированных предметов этого события</string>
+	<key>Bonus points from your pet, added to your balance</key>
+	<string>Бонусные очки от питомца, уже на твоем счету</string>
 	<key>Bow Tie</key>
 	<string>Бабочка</string>
 	<key>Break</key>
@@ -559,6 +575,8 @@
 	<string>Перерыв окончен</string>
 	<key>Breed</key>
 	<string>Порода</string>
+	<key>Breed colors</key>
+	<string>Цвета породы</string>
 	<key>Bring %@ to the front</key>
 	<string>Вывести %@ на передний план</string>
 	<key>Brown noise</key>
@@ -609,6 +627,10 @@
 	<string>Карты на сегодня и твоя серия повторов.</string>
 	<key>Cat</key>
 	<string>Кошка</string>
+	<key>Cat wisdom</key>
+	<string>Кошачья мудрость</string>
+	<key>Cats land on their feet because they never stop turning toward the ground. Welcome back.</key>
+	<string>Кошка падает на лапы: она до конца поворачивается к земле. С возвращением.</string>
 	<key>Celebration sound</key>
 	<string>Звук празднования</string>
 	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
@@ -745,6 +767,8 @@
 	<string>Нажми кнопку ниже. Она скопирует команду входа и откроет Терминал.</string>
 	<key>Click to dismiss</key>
 	<string>Нажми, чтобы закрыть</string>
+	<key>Click to send the pet home</key>
+	<string>Нажми, чтобы отправить питомца домой</string>
 	<key>Close</key>
 	<string>Закрыть</string>
 	<key>Close %@ settings</key>
@@ -1005,6 +1029,8 @@
 	<string>Больше не спрашивать</string>
 	<key>Done</key>
 	<string>Готово</string>
+	<key>Done! You stuck with it.</key>
+	<string>Готово! До самого конца.</string>
 	<key>Drag to reorder</key>
 	<string>Перетащи для порядка</string>
 	<key>Drag to reorder, or select a tab and press Option-Up or Option-Down. At least one tab stays.</key>
@@ -1041,12 +1067,20 @@
 	<string>Завершить этот отрезок и сделать подходящий перерыв</string>
 	<key>Ends at %@</key>
 	<string>До %@</string>
+	<key>Enough for the %@ and the %@ now.</key>
+	<string>Уже хватает на «%1$@» и «%2$@».</string>
+	<key>Enough for the %@ now</key>
+	<string>Уже хватает на «%@»</string>
+	<key>Enough for the %@ now.</key>
+	<string>Уже хватает на «%@».</string>
 	<key>Event</key>
 	<string>Событие</string>
 	<key>Every deck is caught up</key>
 	<string>Все колоды повторены</string>
 	<key>Every focused minute fills in today's square</key>
 	<string>Каждая минута фокуса заполняет сегодняшнюю клетку</string>
+	<key>Every hour you give your future, it gives back with interest.</key>
+	<string>Каждый час, отданный будущему, вернется с процентами.</string>
 	<key>Every module is already a tab.</key>
 	<string>Все модули уже во вкладках.</string>
 	<key>Every question opens a larger chat view under the notch. Press Esc to go back.</key>
@@ -1067,6 +1101,8 @@
 	<string>Сессия экзаменов</string>
 	<key>Example</key>
 	<string>Пример</string>
+	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
+	<string>Сорваться не значит проиграть. Проиграть значит не вернуться. А ты снова здесь.</string>
 	<key>Fantasy</key>
 	<string>Фэнтези</string>
 	<key>Fast</key>
@@ -1201,6 +1237,8 @@
 	<string>Развлечения</string>
 	<key>Fur</key>
 	<string>Мех</string>
+	<key>Fur color %@</key>
+	<string>Цвет меха %@</string>
 	<key>GB</key>
 	<string>ГБ</string>
 	<key>GPU utilization, last 60 seconds</key>
@@ -1255,6 +1293,8 @@
 	<string>Тактильный отклик</string>
 	<key>Harassment</key>
 	<string>Травля</string>
+	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
+	<string>Трудное становится легким так же, как протаптываются тропы: шаг, много раз.</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>Есть код? Введи %lld-значный код пати и нажми Return, чтобы присоединиться</string>
 	<key>Head Mirror</key>
@@ -1285,6 +1325,8 @@
 	<string>Скрыть свой статус от друзей</string>
 	<key>History</key>
 	<string>История</string>
+	<key>Honey</key>
+	<string>Медовый</string>
 	<key>How %@ works</key>
 	<string>Как работает %@</string>
 	<key>How long each item stays before the next one</key>
@@ -1467,6 +1509,8 @@
 	<string>Пусть ИИ разместит открытые задачи вокруг календаря на сегодня</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>Пусть ИИ разместит открытые задачи вокруг календаря на завтра</string>
+	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
+	<string>Питомец иногда скажет ободряющую фразу сразу после фокус-сессии, не чаще раза в день</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>Питомец выйдет из выреза, если ты отвлекаешься во время фокус-фазы</string>
 	<key>Like</key>
@@ -1545,14 +1589,20 @@
 	<string>Сообщения</string>
 	<key>Method</key>
 	<string>Метод</string>
+	<key>Midnight</key>
+	<string>Полночный</string>
 	<key>Milestones</key>
 	<string>Рубежи</string>
+	<key>Mint</key>
+	<string>Мятный</string>
 	<key>Model</key>
 	<string>Модель</string>
 	<key>Month</key>
 	<string>Месяц</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Лунная шляпа ведьмы</string>
+	<key>Moonstone</key>
+	<string>Лунный</string>
 	<key>More</key>
 	<string>Больше</string>
 	<key>More events</key>
@@ -1565,6 +1615,8 @@
 	<string>Другие параметры</string>
 	<key>More tabs</key>
 	<string>Другие вкладки</string>
+	<key>Most people wait to feel ready. You just started. That's the difference.</key>
+	<string>Многие ждут, когда почувствуют готовность. А ты просто начинаешь. В этом разница.</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>Переместить %@ в папку «Программы»?</string>
 	<key>Move down</key>
@@ -1697,6 +1749,8 @@
 	<string>Нет. Эта версия слишком старая для Tabbi.</string>
 	<key>No. This copy of Tabbi can't ask for it.</key>
 	<string>Нет. Эта версия Tabbi не может запросить доступ.</string>
+	<key>Nobody sees roots growing. Then one day there's a tree.</key>
+	<string>Никто не видит, как растут корни. А потом однажды там стоит дерево.</string>
 	<key>None</key>
 	<string>Нет</string>
 	<key>None of your tabs need another app right now.</key>
@@ -1781,6 +1835,8 @@
 	<string>Уведомления Tabbi выключены</string>
 	<key>Now Playing</key>
 	<string>Музыка</string>
+	<key>Now and then, a short line from your pet after a focus session.</key>
+	<string>Иногда после фокус-сессии питомец скажет короткую фразу.</string>
 	<key>Nudge me during focus</key>
 	<string>Подталкивать во время фокуса</string>
 	<key>Nudges</key>
@@ -2161,6 +2217,8 @@
 	<string>Закрой Anki и открой снова. Tabbi заметит это автоматически.</string>
 	<key>Rain</key>
 	<string>Дождь</string>
+	<key>Rare</key>
+	<string>Редкие</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Прочитать свежие журналы Codex (ничего не отправляет)</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2357,6 +2415,8 @@
 	<string>Отправляет твои запросы в %@.</string>
 	<key>Server</key>
 	<string>Сервер</string>
+	<key>Session done. Nice work!</key>
+	<string>Есть! Отличная работа!</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>Задай "apiKey" значение null и нажми OK</string>
 	<key>Set this up later from its tab</key>
@@ -2377,6 +2437,8 @@
 	<string>Настройки…</string>
 	<key>Setup</key>
 	<string>Настройка</string>
+	<key>Seven days. You're not trying anymore. You're becoming.</key>
+	<string>Семь дней. Ты уже не пытаешься. Ты становишься.</string>
 	<key>Share a link from Party.</key>
 	<string>Поделись ссылкой из Party.</string>
 	<key>Share an invite link. A friend who opens it can add you in one click.</key>
@@ -2444,7 +2506,7 @@
 	<key>Showing local stats only</key>
 	<string>Только локальная статистика</string>
 	<key>Shown to friends in Party and used to greet you.</key>
-	<string>Видно друзьям в Party, и так мы тебя приветствуем.</string>
+	<string>Для друзей в Party и приветствия.</string>
 	<key>Shows the previews this kit picks.</key>
 	<string>Показывает превью, выбранные этим набором.</string>
 	<key>Shuffle</key>
@@ -2491,10 +2553,14 @@
 	<string>Перейти к перерыву</string>
 	<key>Sky</key>
 	<string>Небесный</string>
+	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
+	<string>Сон тоже часть работы. Иди и придумай во сне завтрашние ходы.</string>
 	<key>Smooth</key>
 	<string>Плавно</string>
 	<key>Snowy Scarf</key>
 	<string>Снежный шарф</string>
+	<key>Some is infinitely more than none. Rest. The board will be here.</key>
+	<string>Немного бесконечно больше, чем ничего. Отдохни. Доска никуда не денется.</string>
 	<key>Something not working?</key>
 	<string>Что-то не работает?</string>
 	<key>Sound</key>
@@ -2515,6 +2581,8 @@
 	<string>Пружинисто, с легким отскоком.</string>
 	<key>Sprint</key>
 	<string>Спринт</string>
+	<key>Stars don't rush. They just keep burning.</key>
+	<string>Звезды не спешат. Они просто продолжают гореть.</string>
 	<key>Start %@ automatically when you log in</key>
 	<string>Автоматически запускать %@ при входе в систему</string>
 	<key>Start Party</key>
@@ -2707,12 +2775,16 @@
 	<string>Отменить импорт %@</string>
 	<key>Taking a screenshot</key>
 	<string>Делаем снимок экрана</string>
+	<key>Talent is a head start. Showing up is the whole race.</key>
+	<string>Талант дает фору. А вся гонка в том, чтобы приходить.</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>Отклик трекпада, когда указатель достигает выреза или идет празднование</string>
 	<key>Tasks left today</key>
 	<string>Задачи на сегодня</string>
 	<key>Team Medal</key>
 	<string>Командная медаль</string>
+	<key>Ten hours of betting on yourself. Keep betting.</key>
+	<string>Десять часов ставок на себя. Продолжай ставить.</string>
 	<key>Terminal</key>
 	<string>Терминал</string>
 	<key>Terms of Use</key>
@@ -2735,6 +2807,8 @@
 	<string>В этой пати нет мест.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>Это имя питомца недопустимо. Выбери другое.</string>
+	<key>That's a wrap. Well done!</key>
+	<string>Вот и все. Молодец!</string>
 	<key>That's your own code.</key>
 	<string>Это твой собственный код.</string>
 	<key>That's your own link</key>
@@ -2793,6 +2867,14 @@
 	<string>Сервер пати занят. Скоро повторим.</string>
 	<key>The party server reported a problem.</key>
 	<string>Сервер пати сообщил о проблеме.</string>
+	<key>The pawn has crossed half the board. The far side is closer than it looks.</key>
+	<string>Пешка прошла полдоски. Дальний край ближе, чем кажется.</string>
+	<key>The pawn keeps moving forward. One square at a time, it can become anything it wants.</key>
+	<string>Пешка идет только вперед. Клетка за клеткой, она может стать кем угодно.</string>
+	<key>The pawn reached the last square. Now it can move any way it wants. So can you.</key>
+	<string>Пешка дошла до последней клетки. Теперь она может ходить как угодно. И ты тоже.</string>
+	<key>The person you're becoming is built in quiet hours like this one.</key>
+	<string>Тот, кем ты становишься, создается в такие тихие часы, как этот.</string>
 	<key>The rest of the day is yours.</key>
 	<string>Остаток дня в твоем распоряжении.</string>
 	<key>The review couldn't be written to disk. Try Done again.</key>
@@ -2813,6 +2895,8 @@
 	<string>Таймер начнется с метода %@</string>
 	<key>The tool's own default</key>
 	<string>По умолчанию в инструменте</string>
+	<key>The work no one sees is the work that changes you.</key>
+	<string>Работа, которую никто не видит, и меняет тебя.</string>
 	<key>The year you were born</key>
 	<string>Год рождения</string>
 	<key>Then a break until %@</key>
@@ -2825,6 +2909,8 @@
 	<string>У этого человека уже 50 друзей.</string>
 	<key>Thinking</key>
 	<string>Думаю</string>
+	<key>Thirty days ago this was hard. Notice that it isn't anymore.</key>
+	<string>Тридцать дней назад это было трудно. Заметь, что теперь уже нет.</string>
 	<key>This Mac blocks calendar access</key>
 	<string>Mac блокирует доступ к календарю</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
@@ -3045,6 +3131,8 @@
 	<string>Пройти шаги подключения: %@</string>
 	<key>Wardrobe</key>
 	<string>Одежда</string>
+	<key>Water carves canyons by never skipping a day.</key>
+	<string>Вода прорезает каньоны, потому что не пропускает ни дня.</string>
 	<key>Wearing</key>
 	<string>Надето</string>
 	<key>Week</key>
@@ -3108,7 +3196,7 @@
 	<key>Wizard Robe</key>
 	<string>Мантия волшебника</string>
 	<key>Works from any app. On Today, type right away to add a task.</key>
-	<string>Работает в любом приложении. На вкладке «Сегодня» сразу вводи задачу.</string>
+	<string>Везде. На «Сегодня» сразу вводи задачу.</string>
 	<key>Wrap up</key>
 	<string>Итоги</string>
 	<key>Wrap up: review today and see what carries over</key>
@@ -3165,6 +3253,8 @@
 	<string>Это можно настроить в любой момент во вкладке «%@».</string>
 	<key>You can turn alerts off any time in System Settings.</key>
 	<string>Уведомления можно выключить в любой момент в Системных настройках.</string>
+	<key>You didn't feel like it, and you did it anyway. That's the whole secret.</key>
+	<string>Настроения не было, а дело сделано. В этом весь секрет.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>Каждую неделю дается одна бесплатная заморозка, и можно хранить еще %lld.</string>
 	<key>You joined the party</key>
@@ -3179,6 +3269,8 @@
 	<string>Ты уже в этой группе</string>
 	<key>You're in Party</key>
 	<string>Ты в Party</string>
+	<key>You're not behind. You're on your own clock, and it only moves forward.</key>
+	<string>Ты не отстаешь. У тебя свои часы, и они идут только вперед.</string>
 	<key>You're not in a party anymore.</key>
 	<string>Ты больше не в пати.</string>
 	<key>You're the only one here for now.</key>

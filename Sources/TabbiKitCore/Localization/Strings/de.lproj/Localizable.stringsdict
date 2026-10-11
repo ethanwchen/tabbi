@@ -131,6 +131,54 @@
 			<string>%lld Freunde sind mit dir hier.</string>
 		</dict>
 	</dict>
+	<key>%lld minutes in the bank.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Minute gesammelt.</string>
+			<key>other</key>
+			<string>%lld Minuten gesammelt.</string>
+		</dict>
+	</dict>
+	<key>%lld more points for %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Noch %1$lld Punkt für %2$@</string>
+			<key>other</key>
+			<string>Noch %1$lld Punkte für %2$@</string>
+		</dict>
+	</dict>
+	<key>%lld more sessions to %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Noch %1$lld Sitzung bis %2$@</string>
+			<key>other</key>
+			<string>Noch %1$lld Sitzungen bis %2$@</string>
+		</dict>
+	</dict>
 	<key>%lld no longer fit</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -225,6 +273,22 @@
 			<string>%lld Sitzung</string>
 			<key>other</key>
 			<string>%lld Sitzungen</string>
+		</dict>
+	</dict>
+	<key>%lld sessions done. Wow!</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Sitzung. Wow!</string>
+			<key>other</key>
+			<string>%lld Sitzungen. Wow!</string>
 		</dict>
 	</dict>
 	<key>%lld sessions today</key>
@@ -401,6 +465,22 @@
 			<string>+%lld Pkt.</string>
 			<key>other</key>
 			<string>+%lld Pkt.</string>
+		</dict>
+	</dict>
+	<key>A gift: %lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Ein Geschenk: %lld Bonuspunkt</string>
+			<key>other</key>
+			<string>Ein Geschenk: %lld Bonuspunkte</string>
 		</dict>
 	</dict>
 	<key>All %lld cards done for today</key>

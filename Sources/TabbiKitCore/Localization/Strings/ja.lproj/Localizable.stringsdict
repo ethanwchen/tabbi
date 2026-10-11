@@ -115,6 +115,48 @@
 			<string>%lld人のフレンドが一緒にいます。</string>
 		</dict>
 	</dict>
+	<key>%lld minutes in the bank.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld分たまったよ。</string>
+		</dict>
+	</dict>
+	<key>%lld more points for %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%2$@まであと%1$lldポイント</string>
+		</dict>
+	</dict>
+	<key>%lld more sessions to %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%2$@まであと%1$lldセッション</string>
+		</dict>
+	</dict>
 	<key>%lld no longer fit</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -197,6 +239,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>%lldセッション</string>
+		</dict>
+	</dict>
+	<key>%lld sessions done. Wow!</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lldセッション完了！</string>
 		</dict>
 	</dict>
 	<key>%lld sessions today</key>
@@ -351,6 +407,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>+%lld pt</string>
+		</dict>
+	</dict>
+	<key>A gift: %lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>プレゼント: ボーナス%lldポイント</string>
 		</dict>
 	</dict>
 	<key>All %lld cards done for today</key>

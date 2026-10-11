@@ -65,6 +65,8 @@
 	<string>%@ is in your party</string>
 	<key>%@ is keeping you company</key>
 	<string>%@ is keeping you company</string>
+	<key>%@ is keeping you company. %@</key>
+	<string>%@ is keeping you company. %@</string>
 	<key>%@ is looking over this plan...</key>
 	<string>%@ is looking over this plan...</string>
 	<key>%@ is looking over this plan…</key>
@@ -75,6 +77,8 @@
 	<string>%@ is now your friend</string>
 	<key>%@ is on a break with you</key>
 	<string>%@ is on a break with you</string>
+	<key>%@ is ready in the Closet</key>
+	<string>%@ is ready in the Closet</string>
 	<key>%@ is studying with the party</key>
 	<string>%@ is studying with the party</string>
 	<key>%@ is studying with you</key>
@@ -249,6 +253,10 @@
 	<string>A friends server address. Leave empty for %@.</string>
 	<key>A gentle nudge from %@ on days you haven't studied yet</key>
 	<string>A gentle nudge from %@ on days you haven't studied yet</string>
+	<key>A gift: %lld min toward the event</key>
+	<string>A gift: %lld min toward the event</string>
+	<key>A gift: the rare %@ fur</key>
+	<string>A gift: the rare %@ fur</string>
 	<key>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</key>
 	<string>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</string>
 	<key>A kit is a set of tabs. You can change them any time.</key>
@@ -257,6 +265,8 @@
 	<string>A light trackpad tap at the notch edge and on celebrations.</string>
 	<key>A lighter week. Every minute counts.</key>
 	<string>A lighter week. Every minute counts.</string>
+	<key>A line from your pet. Hover to keep it, click to send the pet home. Turn it off in Settings › General.</key>
+	<string>A line from your pet. Hover to keep it, click to send the pet home. Turn it off in Settings › General.</string>
 	<key>A longer timer</key>
 	<string>A longer timer</string>
 	<key>A lovely first week together.</key>
@@ -267,6 +277,8 @@
 	<string>A question can take up to %lld screenshots</string>
 	<key>A quiet day. Rest up and start fresh tomorrow.</key>
 	<string>A quiet day. Rest up and start fresh tomorrow.</string>
+	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
+	<string>A rare fur color from your pet. Try it in the Closet under Look.</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>A restful week. A fresh start awaits.</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
@@ -551,6 +563,10 @@
 	<string>Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>Blocks go to your calendar.</string>
+	<key>Bonus minutes toward this event's limited items</key>
+	<string>Bonus minutes toward this event's limited items</string>
+	<key>Bonus points from your pet, added to your balance</key>
+	<string>Bonus points from your pet, added to your balance</string>
 	<key>Bow Tie</key>
 	<string>Bow Tie</string>
 	<key>Break</key>
@@ -559,6 +575,8 @@
 	<string>Break's over</string>
 	<key>Breed</key>
 	<string>Breed</string>
+	<key>Breed colors</key>
+	<string>Breed colors</string>
 	<key>Bring %@ to the front</key>
 	<string>Bring %@ to the front</string>
 	<key>Brown noise</key>
@@ -609,6 +627,10 @@
 	<string>Cards due today and your daily review streak.</string>
 	<key>Cat</key>
 	<string>Cat</string>
+	<key>Cat wisdom</key>
+	<string>Cat wisdom</string>
+	<key>Cats land on their feet because they never stop turning toward the ground. Welcome back.</key>
+	<string>Cats land on their feet because they never stop turning toward the ground. Welcome back.</string>
 	<key>Celebration sound</key>
 	<string>Celebration sound</string>
 	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
@@ -745,6 +767,8 @@
 	<string>Click the button below. It copies the sign-in line and opens Terminal.</string>
 	<key>Click to dismiss</key>
 	<string>Click to dismiss</string>
+	<key>Click to send the pet home</key>
+	<string>Click to send the pet home</string>
 	<key>Close</key>
 	<string>Close</string>
 	<key>Close %@ settings</key>
@@ -1005,6 +1029,8 @@
 	<string>Don't ask again</string>
 	<key>Done</key>
 	<string>Done</string>
+	<key>Done! You stuck with it.</key>
+	<string>Done! You stuck with it.</string>
 	<key>Drag to reorder</key>
 	<string>Drag to reorder</string>
 	<key>Drag to reorder, or select a tab and press Option-Up or Option-Down. At least one tab stays.</key>
@@ -1041,12 +1067,20 @@
 	<string>End this stretch and take a sized break</string>
 	<key>Ends at %@</key>
 	<string>Ends at %@</string>
+	<key>Enough for the %@ and the %@ now.</key>
+	<string>Enough for the %@ and the %@ now.</string>
+	<key>Enough for the %@ now</key>
+	<string>Enough for the %@ now</string>
+	<key>Enough for the %@ now.</key>
+	<string>Enough for the %@ now.</string>
 	<key>Event</key>
 	<string>Event</string>
 	<key>Every deck is caught up</key>
 	<string>Every deck is caught up</string>
 	<key>Every focused minute fills in today's square</key>
 	<string>Every focused minute fills in today's square</string>
+	<key>Every hour you give your future, it gives back with interest.</key>
+	<string>Every hour you give your future, it gives back with interest.</string>
 	<key>Every module is already a tab.</key>
 	<string>Every module is already a tab.</string>
 	<key>Every question opens a larger chat view under the notch. Press Esc to go back.</key>
@@ -1067,6 +1101,8 @@
 	<string>Exam Season</string>
 	<key>Example</key>
 	<string>Example</string>
+	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
+	<string>Falling off isn't failing. Staying off is. And look, you're back.</string>
 	<key>Fantasy</key>
 	<string>Fantasy</string>
 	<key>Fast</key>
@@ -1201,6 +1237,8 @@
 	<string>Fun</string>
 	<key>Fur</key>
 	<string>Fur</string>
+	<key>Fur color %@</key>
+	<string>Fur color %@</string>
 	<key>GB</key>
 	<string>GB</string>
 	<key>GPU utilization, last 60 seconds</key>
@@ -1255,6 +1293,8 @@
 	<string>Haptic feedback</string>
 	<key>Harassment</key>
 	<string>Harassment</string>
+	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
+	<string>Hard things get easy the same way paths get worn: one step, many times.</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>Have a code? Type the %lld-character party code and press Return to join</string>
 	<key>Head Mirror</key>
@@ -1285,6 +1325,8 @@
 	<string>Hide your status from friends</string>
 	<key>History</key>
 	<string>History</string>
+	<key>Honey</key>
+	<string>Honey</string>
 	<key>How %@ works</key>
 	<string>How %@ works</string>
 	<key>How long each item stays before the next one</key>
@@ -1467,6 +1509,8 @@
 	<string>Let your AI fit your open tasks around today's calendar</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>Let your AI fit your open tasks around tomorrow's calendar</string>
+	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
+	<string>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>Let your pet walk out of the notch when you drift during a focus phase</string>
 	<key>Like</key>
@@ -1545,14 +1589,20 @@
 	<string>Messages</string>
 	<key>Method</key>
 	<string>Method</string>
+	<key>Midnight</key>
+	<string>Midnight</string>
 	<key>Milestones</key>
 	<string>Milestones</string>
+	<key>Mint</key>
+	<string>Mint</string>
 	<key>Model</key>
 	<string>Model</string>
 	<key>Month</key>
 	<string>Month</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Moonlit Witch Hat</string>
+	<key>Moonstone</key>
+	<string>Moonstone</string>
 	<key>More</key>
 	<string>More</string>
 	<key>More events</key>
@@ -1565,6 +1615,8 @@
 	<string>More options</string>
 	<key>More tabs</key>
 	<string>More tabs</string>
+	<key>Most people wait to feel ready. You just started. That's the difference.</key>
+	<string>Most people wait to feel ready. You just started. That's the difference.</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>Move %@ to your Applications folder?</string>
 	<key>Move down</key>
@@ -1697,6 +1749,8 @@
 	<string>No. This copy is too old for Tabbi.</string>
 	<key>No. This copy of Tabbi can't ask for it.</key>
 	<string>No. This copy of Tabbi can't ask for it.</string>
+	<key>Nobody sees roots growing. Then one day there's a tree.</key>
+	<string>Nobody sees roots growing. Then one day there's a tree.</string>
 	<key>None</key>
 	<string>None</string>
 	<key>None of your tabs need another app right now.</key>
@@ -1781,6 +1835,8 @@
 	<string>Notifications are off for Tabbi</string>
 	<key>Now Playing</key>
 	<string>Now Playing</string>
+	<key>Now and then, a short line from your pet after a focus session.</key>
+	<string>Now and then, a short line from your pet after a focus session.</string>
 	<key>Nudge me during focus</key>
 	<string>Nudge me during focus</string>
 	<key>Nudges</key>
@@ -2161,6 +2217,8 @@
 	<string>Quit Anki and open it again. Tabbi notices by itself.</string>
 	<key>Rain</key>
 	<string>Rain</string>
+	<key>Rare</key>
+	<string>Rare</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Read the latest Codex logs (sends nothing)</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2357,6 +2415,8 @@
 	<string>Sends what you ask to %@.</string>
 	<key>Server</key>
 	<string>Server</string>
+	<key>Session done. Nice work!</key>
+	<string>Session done. Nice work!</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>Set "apiKey" to null, then click OK</string>
 	<key>Set this up later from its tab</key>
@@ -2377,6 +2437,8 @@
 	<string>Settings…</string>
 	<key>Setup</key>
 	<string>Setup</string>
+	<key>Seven days. You're not trying anymore. You're becoming.</key>
+	<string>Seven days. You're not trying anymore. You're becoming.</string>
 	<key>Share a link from Party.</key>
 	<string>Share a link from Party.</string>
 	<key>Share an invite link. A friend who opens it can add you in one click.</key>
@@ -2491,10 +2553,14 @@
 	<string>Skip to the break</string>
 	<key>Sky</key>
 	<string>Sky</string>
+	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
+	<string>Sleep is part of the work. Go dream up tomorrow's moves.</string>
 	<key>Smooth</key>
 	<string>Smooth</string>
 	<key>Snowy Scarf</key>
 	<string>Snowy Scarf</string>
+	<key>Some is infinitely more than none. Rest. The board will be here.</key>
+	<string>Some is infinitely more than none. Rest. The board will be here.</string>
 	<key>Something not working?</key>
 	<string>Something not working?</string>
 	<key>Sound</key>
@@ -2515,6 +2581,8 @@
 	<string>Springy, with a little bounce.</string>
 	<key>Sprint</key>
 	<string>Sprint</string>
+	<key>Stars don't rush. They just keep burning.</key>
+	<string>Stars don't rush. They just keep burning.</string>
 	<key>Start %@ automatically when you log in</key>
 	<string>Start %@ automatically when you log in</string>
 	<key>Start Party</key>
@@ -2707,12 +2775,16 @@
 	<string>Take back this import of %@</string>
 	<key>Taking a screenshot</key>
 	<string>Taking a screenshot</string>
+	<key>Talent is a head start. Showing up is the whole race.</key>
+	<string>Talent is a head start. Showing up is the whole race.</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>Tap the trackpad when the pointer reaches the notch or a celebration plays</string>
 	<key>Tasks left today</key>
 	<string>Tasks left today</string>
 	<key>Team Medal</key>
 	<string>Team Medal</string>
+	<key>Ten hours of betting on yourself. Keep betting.</key>
+	<string>Ten hours of betting on yourself. Keep betting.</string>
 	<key>Terminal</key>
 	<string>Terminal</string>
 	<key>Terms of Use</key>
@@ -2735,6 +2807,8 @@
 	<string>That party is full.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>That pet name isn't allowed. Please pick another.</string>
+	<key>That's a wrap. Well done!</key>
+	<string>That's a wrap. Well done!</string>
 	<key>That's your own code.</key>
 	<string>That's your own code.</string>
 	<key>That's your own link</key>
@@ -2793,6 +2867,14 @@
 	<string>The party server is busy. Trying again shortly.</string>
 	<key>The party server reported a problem.</key>
 	<string>The party server reported a problem.</string>
+	<key>The pawn has crossed half the board. The far side is closer than it looks.</key>
+	<string>The pawn has crossed half the board. The far side is closer than it looks.</string>
+	<key>The pawn keeps moving forward. One square at a time, it can become anything it wants.</key>
+	<string>The pawn keeps moving forward. One square at a time, it can become anything it wants.</string>
+	<key>The pawn reached the last square. Now it can move any way it wants. So can you.</key>
+	<string>The pawn reached the last square. Now it can move any way it wants. So can you.</string>
+	<key>The person you're becoming is built in quiet hours like this one.</key>
+	<string>The person you're becoming is built in quiet hours like this one.</string>
 	<key>The rest of the day is yours.</key>
 	<string>The rest of the day is yours.</string>
 	<key>The review couldn't be written to disk. Try Done again.</key>
@@ -2813,6 +2895,8 @@
 	<string>The timer starts with %@</string>
 	<key>The tool's own default</key>
 	<string>The tool's own default</string>
+	<key>The work no one sees is the work that changes you.</key>
+	<string>The work no one sees is the work that changes you.</string>
 	<key>The year you were born</key>
 	<string>The year you were born</string>
 	<key>Then a break until %@</key>
@@ -2825,6 +2909,8 @@
 	<string>They already have 50 friends.</string>
 	<key>Thinking</key>
 	<string>Thinking</string>
+	<key>Thirty days ago this was hard. Notice that it isn't anymore.</key>
+	<string>Thirty days ago this was hard. Notice that it isn't anymore.</string>
 	<key>This Mac blocks calendar access</key>
 	<string>This Mac blocks calendar access</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
@@ -3045,6 +3131,8 @@
 	<string>Walk through the steps to connect %@</string>
 	<key>Wardrobe</key>
 	<string>Wardrobe</string>
+	<key>Water carves canyons by never skipping a day.</key>
+	<string>Water carves canyons by never skipping a day.</string>
 	<key>Wearing</key>
 	<string>Wearing</string>
 	<key>Week</key>
@@ -3165,6 +3253,8 @@
 	<string>You can set this up any time in the %@ tab.</string>
 	<key>You can turn alerts off any time in System Settings.</key>
 	<string>You can turn alerts off any time in System Settings.</string>
+	<key>You didn't feel like it, and you did it anyway. That's the whole secret.</key>
+	<string>You didn't feel like it, and you did it anyway. That's the whole secret.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>You get one free freeze each week, and can hold %lld extra.</string>
 	<key>You joined the party</key>
@@ -3179,6 +3269,8 @@
 	<string>You're already in this party</string>
 	<key>You're in Party</key>
 	<string>You're in Party</string>
+	<key>You're not behind. You're on your own clock, and it only moves forward.</key>
+	<string>You're not behind. You're on your own clock, and it only moves forward.</string>
 	<key>You're not in a party anymore.</key>
 	<string>You're not in a party anymore.</string>
 	<key>You're the only one here for now.</key>

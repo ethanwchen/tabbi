@@ -2049,6 +2049,72 @@
         }
       }
     },
+    "%@ is keeping you company. %@" : {
+      "comment" : "Closed notch tooltip when the pet's next unlock is near. The first value is the pet's name, the second says what the unlock still needs, e.g. \"1 more session to Beanie\".",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ leistet dir Gesellschaft. %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ te hace compañía. %2$@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinasamahan ka ni %1$@. %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ te tient compagnie. %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@がそばにいます。%2$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@가 곁에 있어요. %2$@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ está te fazendo companhia. %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ составляет тебе компанию. %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 在陪着你。%2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 正在陪著你。%2$@"
+          }
+        }
+      }
+    },
     "%@ is looking over this plan..." : {
       "comment" : "Schedule panel: status while the AI refines; %@ is the assistant's name.",
       "extractionState" : "manual",
@@ -2375,6 +2441,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ 正陪你一起休息"
+          }
+        }
+      }
+    },
+    "%@ is ready in the Closet" : {
+      "comment" : "Tooltip on the bar toward the next unlock when there are enough points; the value is the item's name. Closet is the tab.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ wartet in der Garderobe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ya te espera en el Armario"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Handa na ang %@ sa Closet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ t'attend dans la Garde-robe"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@がクローゼットで待っています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "옷장에서 %@ 준비 완료"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ já está esperando no Closet"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«%@» ждет в Гардеробе"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@已在衣橱中等你"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@已在衣櫥裡等你"
           }
         }
       }
@@ -7219,6 +7351,582 @@
         }
       }
     },
+    "%lld minutes in the bank." : {
+      "comment" : "Pet coach bubble after a focus session: the headline beside the points pill, on one short line. For a session stopped early that still earned points; the value is the focused minutes.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Minute gesammelt."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Minuten gesammelt."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minute in the bank."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minutes in the bank."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minuto ganado."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minutos ganados."
+                }
+              }
+            }
+          }
+        },
+        "fil" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minuto, naipon na."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minuto, naipon na."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minute gagnée."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minutes gagnées."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld分たまったよ。"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld분 적립 완료."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minuto garantido."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minutos garantidos."
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld минуты в копилке."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld минут в копилке."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld минута в копилке."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld минуты в копилке."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "又存下 %lld 分钟。"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hant" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "又存下 %lld 分鐘。"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld more points for %@" : {
+      "comment" : "Tooltip on the bar toward the next unlock: the points still missing, then the item's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Noch %1$lld Punkt für %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Noch %1$lld Punkte für %2$@"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld more point for %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld more points for %2$@"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld punto más para %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld puntos más para %2$@"
+                }
+              }
+            }
+          }
+        },
+        "fil" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld puntos pa para sa %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld puntos pa para sa %2$@"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Encore %1$lld point pour %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Encore %1$lld points pour %2$@"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%2$@まであと%1$lldポイント"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%2$@까지 %1$lld포인트 남았어요"
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Falta %1$lld ponto para %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Faltam %1$lld pontos para %2$@"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Еще %1$lld очка до «%2$@»"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Еще %1$lld очков до «%2$@»"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Еще %1$lld очко до «%2$@»"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Еще %1$lld очка до «%2$@»"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "还差 %1$lld 积分就能换%2$@"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hant" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "再 %1$lld 點就能換%2$@"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld more sessions to %@" : {
+      "comment" : "Under the bar toward the next unlock and in the closed notch tooltip: focus sessions like the last one still needed, then the item's name. One short line.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Noch %1$lld Sitzung bis %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Noch %1$lld Sitzungen bis %2$@"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld more session to %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld more sessions to %2$@"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld sesión más para %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld sesiones más para %2$@"
+                }
+              }
+            }
+          }
+        },
+        "fil" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld session pa para sa %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld session pa para sa %2$@"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Encore %1$lld session pour %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Encore %1$lld sessions pour %2$@"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%2$@まであと%1$lldセッション"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%2$@까지 %1$lld세션 남았어요"
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Falta %1$lld sessão para %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Faltam %1$lld sessões para %2$@"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Еще %1$lld сессии до «%2$@»"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Еще %1$lld сессий до «%2$@»"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Еще %1$lld сессия до «%2$@»"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Еще %1$lld сессии до «%2$@»"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "再专注 %1$lld 次就能换%2$@"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hant" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "再專注 %1$lld 次就能換%2$@"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld new, %lld learning, %lld review" : {
       "comment" : "Anki panel: VoiceOver value of a deck row: counts of new, learning and review cards.",
       "extractionState" : "manual",
@@ -8826,6 +9534,198 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld 次"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld sessions done. Wow!" : {
+      "comment" : "Pet coach bubble after a focus session: the headline beside the points pill, on one short line. For two or more sessions finished at once.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Sitzung. Wow!"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Sitzungen. Wow!"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld session done. Wow!"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld sessions done. Wow!"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld sesión. ¡Guau!"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld sesiones. ¡Guau!"
+                }
+              }
+            }
+          }
+        },
+        "fil" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld session. Wow!"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld session. Wow!"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld session. Waouh !"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld sessions. Waouh !"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lldセッション完了！"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld세션 완료. 대단해요!"
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld sessão. Uau!"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld sessões. Uau!"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld сессии. Ого!"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld сессий. Ого!"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld сессия. Ого!"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld сессии. Ого!"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "完成 %lld 次专注，太厉害了！"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hant" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "完成 %lld 次專注，太厲害了！"
                 }
               }
             }
@@ -12928,6 +13828,330 @@
         }
       }
     },
+    "A gift: %lld bonus points" : {
+      "comment" : "One line in the pet's bubble after a focus session: the pet brought bonus points.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ein Geschenk: %lld Bonuspunkt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ein Geschenk: %lld Bonuspunkte"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "A gift: %lld bonus point"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "A gift: %lld bonus points"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Un regalo: %lld punto extra"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Un regalo: %lld puntos extra"
+                }
+              }
+            }
+          }
+        },
+        "fil" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Regalo: %lld bonus na puntos"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Regalo: %lld bonus na puntos"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Un cadeau : %lld point bonus"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Un cadeau : %lld points bonus"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "プレゼント: ボーナス%lldポイント"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "선물: 보너스 %lld포인트"
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Um presente: %lld ponto bônus"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Um presente: %lld pontos bônus"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Подарок: %lld бонусных очка"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Подарок: %lld бонусных очков"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Подарок: %lld бонусное очко"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Подарок: %lld бонусного очка"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "礼物：额外 %lld 积分"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hant" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "禮物：額外 %lld 點"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "A gift: %lld min toward the event" : {
+      "comment" : "One line in the pet's bubble after a focus session: the pet brought focused minutes for the running seasonal event. Keep \"min\" abbreviated.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Geschenk: %lld min für das Event"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un regalo: %lld min para el evento"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regalo: %lld min para sa event"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un cadeau : %lld min pour l'événement"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレゼント: イベントに%lld分"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선물: 이벤트에 %lld분"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um presente: %lld min para o evento"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подарок: %lld мин к событию"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "礼物：活动进度 +%lld 分钟"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "禮物：活動進度 +%lld 分鐘"
+          }
+        }
+      }
+    },
+    "A gift: the rare %@ fur" : {
+      "comment" : "One line in the pet's bubble after a focus session: the pet brought a rare fur color. The value is the color's name (Mint, Honey).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Geschenk: das seltene Fell %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un regalo: el color de pelo raro %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regalo: ang rare na balahibong %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un cadeau : le pelage rare %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレゼント: レアな毛色「%@」"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선물: 희귀한 %@ 털색"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um presente: a cor de pelo rara %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подарок: редкий мех «%@»"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "礼物：稀有毛色“%@”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "禮物：稀有毛色「%@」"
+          }
+        }
+      }
+    },
     "A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today." : {
       "comment" : "Footer in Settings > Tabs. Today is a module name.",
       "extractionState" : "manual",
@@ -13188,6 +14412,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "輕鬆的一週，每一分鐘都算數。"
+          }
+        }
+      }
+    },
+    "A line from your pet. Hover to keep it, click to send the pet home. Turn it off in Settings › General." : {
+      "comment" : "Tooltip on a Cat wisdom line in the pet's bubble. Settings › General names the Settings window and its General pane.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Satz von deinem Haustier. Zeig darauf, damit er bleibt, oder klicke, um dein Haustier heimzuschicken. Ausschalten unter Einstellungen › Allgemein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una frase de tu mascota. Pasa el puntero por encima para dejarla o haz clic para mandar a tu mascota a casa. Desactívala en Ajustes › General."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isang linya mula sa pet mo. I-hover para manatili ito, o i-click para pauwiin ang pet. I-off ito sa Settings › General."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un mot de ton compagnon. Survole-le pour le garder, ou clique pour le renvoyer à la maison. Désactive-le dans Réglages › Général."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペットからのひとこと。ポインタを重ねると表示が続き、クリックでペットが帰ります。「設定」›「一般」でオフにできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "펫의 한마디예요. 포인터를 올리면 계속 보이고, 클릭하면 펫이 집으로 돌아가요. 설정 › 일반에서 끌 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma frase do seu pet. Passe o ponteiro para manter ou clique para mandar o pet para casa. Desative em Ajustes › Geral."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фраза от питомца. Наведи указатель, чтобы она осталась, или нажми, чтобы отправить питомца домой. Отключается в Настройках › Основные."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "宠物的一句话。将指针悬停可保留，点按让宠物回家。可在“设置”›“通用”中关闭。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "寵物的一句話。將指標停在上面可保留，按一下讓寵物回家。可在「設定」›「一般」中關閉。"
           }
         }
       }
@@ -13518,6 +14808,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "平靜的一天。好好休息，明天重新出發。"
+          }
+        }
+      }
+    },
+    "A rare fur color from your pet. Try it in the Closet under Look." : {
+      "comment" : "Tooltip on a surprise gift of a rare fur color. Closet is the tab, Look its section; use their translations.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine seltene Fellfarbe von deinem Haustier. Probier sie in der Garderobe unter Aussehen aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un color de pelo raro de tu mascota. Pruébalo en el Armario, en Aspecto."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isang rare na kulay ng balahibo mula sa pet mo. Subukan ito sa Closet sa ilalim ng Look."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une couleur de pelage rare de ton compagnon. Essaie-la dans la Garde-robe, sous Apparence."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペットからのレアな毛色。クローゼットの「外観」で試してみて。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "펫이 준 희귀한 털색이에요. 옷장의 모양에서 입혀 보세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma cor de pelo rara do seu pet. Experimente no Closet, em Aparência."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Редкий цвет меха от питомца. Примерь его в Гардеробе, в разделе «Оформление»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "宠物送来的稀有毛色。到衣橱的“外观”里试试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "寵物送來的稀有毛色。到衣櫥的「外觀」裡試試看。"
           }
         }
       }
@@ -23474,6 +24830,138 @@
         }
       }
     },
+    "Bonus minutes toward this event's limited items" : {
+      "comment" : "Tooltip on a surprise gift of focused minutes counted toward the running seasonal event.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bonusminuten für die limitierten Items dieses Events"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minutos extra para los artículos limitados de este evento"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bonus minutes para sa mga limitadong item ng event na ito"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des minutes bonus pour les objets limités de cet événement"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このイベントの限定アイテムに向けたボーナス時間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 이벤트 한정 아이템을 위한 보너스 시간"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minutos bônus para os itens limitados deste evento"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бонусные минуты для лимитированных предметов этого события"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "计入本次活动限定物品的额外分钟数"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "計入這次活動限定物品的額外分鐘數"
+          }
+        }
+      }
+    },
+    "Bonus points from your pet, added to your balance" : {
+      "comment" : "Tooltip on a surprise gift of bonus points in the pet's bubble after a focus session.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bonuspunkte von deinem Haustier, deinem Guthaben gutgeschrieben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puntos extra de tu mascota, sumados a tu saldo"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bonus points mula sa pet mo, idinagdag sa balance mo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des points bonus de ton compagnon, ajoutés à ton solde"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペットからのボーナスポイント。残高に追加されました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "펫이 준 보너스 포인트, 잔액에 더해졌어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pontos bônus do seu pet, somados ao seu saldo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бонусные очки от питомца, уже на твоем счету"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "宠物送来的额外积分，已加入你的余额"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "寵物送來的額外點數，已加進你的餘額"
+          }
+        }
+      }
+    },
     "Bow Tie" : {
       "comment" : "Closet: name of a pet accessory.",
       "extractionState" : "manual",
@@ -23734,6 +25222,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "品種"
+          }
+        }
+      }
+    },
+    "Breed colors" : {
+      "comment" : "Tooltip on the Closet swatch that resets the pet to its breed's own fur colors.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rassenfarben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colores de la raza"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mga kulay ng lahi"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couleurs de la race"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "品種の色"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "품종 색상"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cores da raça"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цвета породы"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "品种原色"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "品種原色"
           }
         }
       }
@@ -25385,6 +26939,138 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "貓"
+          }
+        }
+      }
+    },
+    "Cat wisdom" : {
+      "comment" : "Name of the feature where the pet says a short encouraging line after a focus session; a label in its bubble and a toggle in Settings > General.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katzenweisheit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sabiduría felina"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Payo ng pusa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sagesse de chat"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ネコのひとこと"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고양이의 한마디"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sabedoria felina"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кошачья мудрость"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "猫咪箴言"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "貓咪箴言"
+          }
+        }
+      }
+    },
+    "Cats land on their feet because they never stop turning toward the ground. Welcome back." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. This one follows the first session after two or more days without one. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katzen landen auf den Pfoten, weil sie sich bis zuletzt zum Boden drehen. Willkommen zurück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los gatos caen de pie porque nunca dejan de girar hacia el suelo. Qué bueno verte de nuevo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laging nakatapak ang pusa sa pagbagsak dahil hindi ito tumitigil sa pagbaling sa lupa. Welcome back."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les chats retombent sur leurs pattes parce qu'ils se tournent vers le sol jusqu'au bout. Bon retour."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ネコが足から着地できるのは、最後まで地面のほうへ体をひねり続けるから。おかえり。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고양이가 발로 착지하는 건 끝까지 땅 쪽으로 몸을 돌리기 때문이에요. 다시 온 걸 환영해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gatos caem de pé porque nunca param de se virar para o chão. Que bom ter você de volta."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кошка падает на лапы: она до конца поворачивается к земле. С возвращением."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "猫总能四脚着地，因为它们从不停止转向地面。欢迎回来。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "貓總能四腳著地，因為牠們從不停止轉向地面。歡迎回來。"
           }
         }
       }
@@ -29877,6 +31563,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "點一下即可關閉"
+          }
+        }
+      }
+    },
+    "Click to send the pet home" : {
+      "comment" : "Tooltip on the pet coach's speech bubble; a click closes it and the pet walks back to the notch.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke, um dein Haustier heimzuschicken"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic para mandar a tu mascota a casa"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-click para pauwiin ang pet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique pour renvoyer ton compagnon à la maison"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリックでペットがおうちに帰ります"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클릭하면 펫이 집으로 돌아가요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique para mandar seu pet para casa"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми, чтобы отправить питомца домой"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点按让宠物回家"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按一下讓寵物回家"
           }
         }
       }
@@ -38464,6 +40216,72 @@
         }
       }
     },
+    "Done! You stuck with it." : {
+      "comment" : "Pet coach bubble after a focus session: the headline beside the points pill, on one short line. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geschafft. Durchgezogen!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Listo! No te rendiste."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tapos! Hindi ka sumuko."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fini ! Tu as tenu bon."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最後までやりきったね！"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료! 끝까지 해냈어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto! Foi até o fim."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Готово! До самого конца."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成！你坚持下来了。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成！你堅持下來了。"
+          }
+        }
+      }
+    },
     "Drag to reorder" : {
       "comment" : "Tooltip on a tab's drag handle.",
       "extractionState" : "manual",
@@ -39413,7 +41231,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Termine-la pour tous dans l'onglet Party"
+            "value" : "Termine-la pour tous dans l'onglet Groupe"
           }
         },
         "ja" : {
@@ -39652,6 +41470,205 @@
         }
       }
     },
+    "Enough for the %@ and the %@ now." : {
+      "comment" : "Pet coach bubble after a focus session, under the headline when it brought enough points for a Closet item. One short line. The values are two items' names.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt genug für %1$@ und %2$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya te alcanza para %1$@ y %2$@."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sapat na para sa %1$@ at %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu as assez pour %1$@ et %2$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@と%2$@と交換できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이제 %1$@, %2$@ 교환 가능."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já dá para pegar %1$@ e %2$@."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уже хватает на «%1$@» и «%2$@»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "现在可以换%1$@和%2$@了。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在可以換%1$@和%2$@了。"
+          }
+        }
+      }
+    },
+    "Enough for the %@ now" : {
+      "comment" : "Under the bar toward the next unlock, once the points are enough; the value is the item's name. One short line.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt genug für %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya te alcanza para %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sapat na para sa %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu as assez pour %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@と交換できます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이제 %@ 교환 가능"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já dá para pegar %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уже хватает на «%@»"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "现在可以换%@了"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在可以換%@了"
+          }
+        }
+      }
+    },
+    "Enough for the %@ now." : {
+      "comment" : "Pet coach bubble after a focus session, under the headline when it brought enough points for a Closet item. One short line. The value is the item's name.",
+      "extractionState" : "manual",
+      "generatesSymbol" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt genug für %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya te alcanza para %@."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sapat na para sa %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu as assez pour %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@と交換できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이제 %@ 교환 가능."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já dá para pegar %@."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уже хватает на «%@»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "现在可以换%@了。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在可以換%@了。"
+          }
+        }
+      }
+    },
     "Event" : {
       "comment" : "Closet badge on an item from a seasonal event.",
       "extractionState" : "manual",
@@ -39846,6 +41863,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "每一分鐘的專注都會填進今天的格子"
+          }
+        }
+      }
+    },
+    "Every hour you give your future, it gives back with interest." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jede Stunde, die du deiner Zukunft schenkst, zahlt sie mit Zinsen zurück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada hora que le das a tu futuro, te la devuelve con intereses."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bawat oras na ibinibigay mo sa kinabukasan mo, ibinabalik nito nang may tubo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque heure que tu donnes à ton futur, il te la rend avec les intérêts."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未来に預けた一時間は、利子をつけて返ってくる。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미래에 준 한 시간은 이자를 붙여 돌아와요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada hora que você dá ao seu futuro, ele devolve com juros."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Каждый час, отданный будущему, вернется с процентами."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你给未来的每一小时，它都会连本带利还给你。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你給未來的每一小時，它都會連本帶利還給你。"
           }
         }
       }
@@ -40506,6 +42589,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "範例"
+          }
+        }
+      }
+    },
+    "Falling off isn't failing. Staying off is. And look, you're back." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. This one follows the first session after two or more days without one. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rausfallen ist kein Scheitern. Draußen bleiben schon. Und schau, du bist zurück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caerse no es fracasar. Quedarse fuera, sí. Y mira, has vuelto."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi pagkabigo ang mahinto. Ang hindi na bumalik, iyon. At tingnan mo, nandito ka ulit."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Décrocher, ce n'est pas échouer. Ne pas revenir, si. Et regarde, tu es là."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "離れるのは失敗じゃない。戻らないことが失敗。ほら、ちゃんと戻ってきた。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "멈추는 건 실패가 아니에요. 계속 멈춰 있는 게 실패죠. 봐요, 다시 왔잖아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parar não é fracassar. Ficar parado é. E olha só, você voltou."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сорваться не значит проиграть. Проиграть значит не вернуться. А ты снова здесь."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中断不是失败，一直不回来才是。你看，你回来了。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中斷不是失敗，一直不回來才是。你看，你回來了。"
           }
         }
       }
@@ -44681,7 +46830,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tes amis le voient dans Party, et %@ s'en sert pour te saluer."
+            "value" : "Tes amis le voient dans Groupe, et %@ s'en sert pour te saluer."
           }
         },
         "ja" : {
@@ -45312,6 +47461,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "毛色"
+          }
+        }
+      }
+    },
+    "Fur color %@" : {
+      "comment" : "Tooltip on a fur color swatch in the Closet that has no name; the value is its hex code.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fellfarbe %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Color de pelo %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kulay ng balahibo %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couleur de pelage %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毛色 %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "털색 %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cor do pelo %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цвет меха %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毛色 %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毛色 %@"
           }
         }
       }
@@ -47098,6 +49313,72 @@
         }
       }
     },
+    "Hard things get easy the same way paths get worn: one step, many times." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schweres wird leicht, wie Pfade entstehen: ein Schritt, viele Male."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo difícil se vuelve fácil como se forman los senderos: un paso, muchas veces."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nagiging madali ang mahirap gaya ng pagbuo ng daan: isang hakbang, paulit-ulit."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le difficile devient facile comme se tracent les sentiers : un pas, bien des fois."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "難しいことが簡単になるのは、道ができるのと同じ。一歩を、何度も。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "어려운 일이 쉬워지는 건 길이 나는 것과 같아요. 한 걸음을 여러 번."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O difícil fica fácil como se abre uma trilha: um passo, muitas vezes."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Трудное становится легким так же, как протаптываются тропы: шаг, много раз."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "难事变容易，就像路是走出来的：一步，走很多次。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "難事變容易，就像路是走出來的：一步，走很多次。"
+          }
+        }
+      }
+    },
     "Have a code? Type the %lld-character party code and press Return to join" : {
       "comment" : "Party: tooltip on the party code field; %lld is the code length.",
       "extractionState" : "manual",
@@ -48084,6 +50365,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "記錄"
+          }
+        }
+      }
+    },
+    "Honey" : {
+      "comment" : "Name of a rare fur color a surprise gift can bring, like the Closet's other fur colors.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Honig"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miel"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulot"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miel"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ハニー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "꿀색"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mel"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Медовый"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "蜂蜜色"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "蜂蜜色"
           }
         }
       }
@@ -53057,7 +55404,7 @@
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Huling na-sync %@"
+            "value" : "Na-sync %@"
           }
         },
         "fr" : {
@@ -54090,6 +56437,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "讓你的 AI 依明天的行事曆安排待辦任務"
+          }
+        }
+      }
+    },
+    "Let your pet say a rare encouraging line right after a focus session ends, at most once a day" : {
+      "comment" : "Tooltip on the Cat wisdom toggle in Settings > General.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lass dein Haustier direkt nach einer Fokussitzung ab und zu etwas Aufmunterndes sagen, höchstens einmal am Tag"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deja que tu mascota diga de vez en cuando una frase de ánimo justo al terminar una sesión de enfoque, como mucho una vez al día"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hayaang magsabi ang pet mo ng pampalakas-loob paminsan-minsan pagkatapos ng focus session, hanggang isang beses kada araw"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laisse ton compagnon dire de temps en temps un mot d'encouragement juste après une session de concentration, au plus une fois par jour"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "集中セッションの直後に、ペットがときどき励ましのひとことを話します。1日に1回まで"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "집중 세션이 끝난 직후 펫이 가끔 응원의 한마디를 해요. 하루에 한 번까지"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixe seu pet dizer de vez em quando uma frase de incentivo logo após uma sessão de foco, no máximo uma vez por dia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Питомец иногда скажет ободряющую фразу сразу после фокус-сессии, не чаще раза в день"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "专注时段一结束，宠物偶尔会说一句鼓励的话，每天最多一次"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "專注時段一結束，寵物偶爾會說一句鼓勵的話，每天最多一次"
           }
         }
       }
@@ -56670,6 +59083,72 @@
         }
       }
     },
+    "Midnight" : {
+      "comment" : "Name of a rare fur color (a deep blue) a surprise gift can bring.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitternacht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medianoche"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hatinggabi"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minuit"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミッドナイト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미드나이트"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meia-noite"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полночный"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "午夜蓝"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "午夜藍"
+          }
+        }
+      }
+    },
     "Milestones" : {
       "comment" : "Closet Limited shelf title for milestone items.",
       "extractionState" : "manual",
@@ -56732,6 +59211,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "里程碑"
+          }
+        }
+      }
+    },
+    "Mint" : {
+      "comment" : "Name of a rare fur color a surprise gift can bring, like the Closet's other fur colors.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minze"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menta"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mint"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menthe"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミント"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "민트"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menta"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мятный"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "薄荷色"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "薄荷色"
           }
         }
       }
@@ -56930,6 +59475,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "月光女巫帽"
+          }
+        }
+      }
+    },
+    "Moonstone" : {
+      "comment" : "Name of a rare fur color (a pale silvery blue) a surprise gift can bring.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mondstein"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piedra lunar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moonstone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pierre de lune"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ムーンストーン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "문스톤"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pedra-da-lua"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лунный"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月光石"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月光石"
           }
         }
       }
@@ -57326,6 +59937,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更多標籤頁"
+          }
+        }
+      }
+    },
+    "Most people wait to feel ready. You just started. That's the difference." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die meisten warten, bis sie sich bereit fühlen. Du hast einfach angefangen. Das ist der Unterschied."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Casi todos esperan a sentirse listos. Tú simplemente empezaste. Esa es la diferencia."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karamihan, naghihintay munang maging handa. Ikaw, nagsimula na lang. Iyan ang pagkakaiba."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La plupart attendent de se sentir prêts. Toi, tu as commencé. C'est toute la différence."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "多くの人は準備ができるのを待つ。あなたはもう始めた。それが違い。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대부분은 준비될 때까지 기다려요. 그냥 시작했다는 것, 그게 차이예요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A maioria espera se sentir pronta. Você simplesmente começou. Essa é a diferença."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Многие ждут, когда почувствуют готовность. А ты просто начинаешь. В этом разница."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "多数人等到觉得准备好了才开始。你直接开始了。差别就在这里。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "多數人等到覺得準備好了才開始。你直接開始了。差別就在這裡。"
           }
         }
       }
@@ -61687,6 +64364,72 @@
         }
       }
     },
+    "Nobody sees roots growing. Then one day there's a tree." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niemand sieht Wurzeln wachsen. Und eines Tages steht da ein Baum."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nadie ve crecer las raíces. Y un día, ahí hay un árbol."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Walang nakakakita sa paglaki ng ugat. Tapos isang araw, may puno na."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personne ne voit pousser les racines. Puis un jour, il y a un arbre."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "根が伸びるのは誰にも見えない。でもある日、そこに木が立っている。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "뿌리가 자라는 건 아무도 못 봐요. 그러다 어느 날 나무가 서 있죠."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguém vê as raízes crescendo. Até que um dia, lá está uma árvore."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Никто не видит, как растут корни. А потом однажды там стоит дерево."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没人看见根在生长。直到有一天，那里长出了一棵树。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有人看見根在生長。直到有一天，那裡長出了一棵樹。"
+          }
+        }
+      }
+    },
     "None" : {
       "comment" : "Closet: name of a pet outfit.",
       "extractionState" : "manual",
@@ -64648,6 +67391,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在播放"
+          }
+        }
+      }
+    },
+    "Now and then, a short line from your pet after a focus session." : {
+      "comment" : "Subtitle of the Cat wisdom toggle in Settings > General.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ab und zu ein kurzer Satz von deinem Haustier nach einer Fokussitzung."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De vez en cuando, una frase corta de tu mascota tras una sesión de enfoque."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paminsan-minsan, isang maikling linya mula sa pet mo pagkatapos ng focus session."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De temps en temps, un petit mot de ton compagnon après une session."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "集中セッションのあと、ときどきペットがひとこと話します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "집중 세션이 끝나면 가끔 펫이 짧게 한마디해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De vez em quando, uma frase curta do seu pet depois de uma sessão de foco."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Иногда после фокус-сессии питомец скажет короткую фразу."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "专注时段结束后，宠物偶尔会说一句话。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "專注時段結束後，寵物偶爾會說一句話。"
           }
         }
       }
@@ -77192,6 +80001,72 @@
         }
       }
     },
+    "Rare" : {
+      "comment" : "Closet > Look: the row label beside rare fur colors found as surprise gifts. A very narrow column: one short word.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raros"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rare"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rares"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "レア"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "희귀"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raros"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Редкие"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "稀有"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "稀有"
+          }
+        }
+      }
+    },
     "Read the latest Codex logs (sends nothing)" : {
       "comment" : "Tooltip on the AI Usage refresh button for Codex.",
       "extractionState" : "manual",
@@ -83853,6 +86728,72 @@
         }
       }
     },
+    "Session done. Nice work!" : {
+      "comment" : "Pet coach bubble after a focus session: the headline beside the points pill, on one short line. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geschafft. Stark!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Hecho! Buen trabajo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tapos na! Ang galing!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminé. Bien joué !"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完了！よくがんばったね！"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세션 완료. 잘했어요!"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluído. Mandou bem!"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Есть! Отличная работа!"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "专注完成，做得好！"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "專注完成，做得好！"
+          }
+        }
+      }
+    },
     "Set \"apiKey\" to null, then click OK" : {
       "comment" : "Anki panel: setup step; \"apiKey\" and null are config text, keep them as is.",
       "extractionState" : "manual",
@@ -84513,6 +87454,72 @@
         }
       }
     },
+    "Seven days. You're not trying anymore. You're becoming." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. This one marks a study milestone, once. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sieben Tage. Du versuchst es nicht mehr. Du wirst es."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siete días. Ya no lo estás intentando. Te estás convirtiendo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pitong araw. Hindi ka na lang sumusubok. Nagbabago ka na."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sept jours. Tu n'essaies plus. Tu deviens."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7日間。もう「挑戦」じゃない。あなたは変わりつつある。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7일째. 이제 시도하는 게 아니에요. 변해 가고 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sete dias. Você não está mais tentando. Você está se tornando."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Семь дней. Ты уже не пытаешься. Ты становишься."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "七天了。你不再只是尝试，你正在蜕变。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "七天了。你不再只是嘗試，你正在蛻變。"
+          }
+        }
+      }
+    },
     "Share a link from Party." : {
       "comment" : "Where to find invite links. Party is a tab name.",
       "extractionState" : "manual",
@@ -84538,7 +87545,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage un lien depuis Party."
+            "value" : "Partage un lien depuis Groupe."
           }
         },
         "ja" : {
@@ -86711,13 +89718,13 @@
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Makikita ng mga kaibigan sa Party at gagamitin sa pagbati sa iyo."
+            "value" : "Para sa Party at sa pagbati sa iyo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Visible par tes amis dans Groupe et utilisé pour te saluer."
+            "value" : "Pour tes amis dans Groupe et pour te saluer."
           }
         },
         "ja" : {
@@ -86741,7 +89748,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Видно друзьям в Party, и так мы тебя приветствуем."
+            "value" : "Для друзей в Party и приветствия."
           }
         },
         "zh-Hans" : {
@@ -88277,6 +91284,72 @@
         }
       }
     },
+    "Sleep is part of the work. Go dream up tomorrow's moves." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. This one follows a session finished late at night; \"moves\" are chess moves. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlaf gehört zur Arbeit. Träum dir die Züge von morgen aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dormir también es parte del trabajo. Ve a soñar las jugadas de mañana."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bahagi ng trabaho ang tulog. Mangarap ka na ng mga galaw para bukas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le sommeil fait partie du travail. Va rêver aux coups de demain."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "眠るのも努力のうち。明日の一手を夢で考えよう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잠도 노력의 일부예요. 가서 내일의 수를 꿈꿔 봐요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dormir faz parte do trabalho. Vá sonhar com as jogadas de amanhã."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сон тоже часть работы. Иди и придумай во сне завтрашние ходы."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "睡觉也是功课的一部分。去梦里想想明天的棋步吧。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "睡覺也是功課的一部分。去夢裡想想明天的棋步吧。"
+          }
+        }
+      }
+    },
     "Smooth" : {
       "comment" : "Animation pace option in Settings > General.",
       "extractionState" : "manual",
@@ -88405,6 +91478,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "雪花圍巾"
+          }
+        }
+      }
+    },
+    "Some is infinitely more than none. Rest. The board will be here." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. This one follows a session stopped early. \"The board\" is the chessboard of the pawn lines. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein bisschen ist unendlich viel mehr als nichts. Ruh dich aus. Das Schachbrett läuft nicht weg."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algo es infinitamente más que nada. Descansa. El tablero seguirá aquí."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang kaunti ay higit na higit sa wala. Magpahinga ka. Nandito pa rin ang board."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un peu, c'est infiniment plus que rien. Repose-toi. L'échiquier sera encore là."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "少しでも、ゼロより限りなく大きい。休もう。盤はここで待ってる。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "조금이라도 한 건 안 한 것보다 훨씬 커요. 쉬어요. 판은 여기 그대로 있을 거예요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um pouco é infinitamente mais que nada. Descanse. O tabuleiro vai estar aqui."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Немного бесконечно больше, чем ничего. Отдохни. Доска никуда не денется."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "做一点，远远胜过什么都不做。休息吧，棋盘会一直在这里。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "做一點，遠遠勝過什麼都不做。休息吧，棋盤會一直在這裡。"
           }
         }
       }
@@ -89065,6 +92204,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "衝刺"
+          }
+        }
+      }
+    },
+    "Stars don't rush. They just keep burning." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sterne hetzen nicht. Sie leuchten einfach weiter."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las estrellas no tienen prisa. Solo siguen brillando."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi nagmamadali ang mga bituin. Patuloy lang silang nagliliyab."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les étoiles ne se pressent pas. Elles continuent de briller."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星は急がない。ただ燃え続けるだけ。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "별은 서두르지 않아요. 그저 계속 타오를 뿐이죠."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As estrelas não têm pressa. Só continuam brilhando."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звезды не спешат. Они просто продолжают гореть."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星星从不着急。它们只是持续燃烧。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星星從不著急。它們只是持續燃燒。"
           }
         }
       }
@@ -91008,7 +94213,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quitte quand tu veux dans l'onglet Party"
+            "value" : "Quitte quand tu veux dans l'onglet Groupe"
           }
         },
         "ja" : {
@@ -95405,6 +98610,72 @@
         }
       }
     },
+    "Talent is a head start. Showing up is the whole race." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Talent ist ein Vorsprung. Dranbleiben ist das ganze Rennen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El talento es ventaja de salida. Presentarse es toda la carrera."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang talento ay maagang simula. Ang pagsipot ang buong karera."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le talent, c'est une longueur d'avance. Être là, c'est toute la course."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "才能はスタートの差にすぎない。来続けることがレースのすべて。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재능은 조금 앞선 출발일 뿐. 꾸준히 나오는 게 경주의 전부예요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Talento é largar na frente. Aparecer é a corrida inteira."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Талант дает фору. А вся гонка в том, чтобы приходить."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "天赋只是起跑时的领先。坚持出现，才是整场比赛。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "天分只是起跑時的領先。持續出現，才是整場比賽。"
+          }
+        }
+      }
+    },
     "Tap the trackpad when the pointer reaches the notch or a celebration plays" : {
       "comment" : "Tooltip on the Haptic feedback toggle in Settings > General.",
       "extractionState" : "manual",
@@ -95599,6 +98870,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "團隊獎牌"
+          }
+        }
+      }
+    },
+    "Ten hours of betting on yourself. Keep betting." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. This one marks a study milestone, once. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zehn Stunden, in denen du auf dich gesetzt hast. Setz weiter auf dich."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diez horas apostando por ti. Sigue apostando."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sampung oras ng pagtaya sa sarili mo. Tumaya ka pa."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dix heures à miser sur toi. Continue de miser."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自分に賭けた10時間。これからも賭け続けよう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나 자신에게 건 10시간. 계속 걸어 봐요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dez horas apostando em você. Continue apostando."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Десять часов ставок на себя. Продолжай ставить."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "十个小时，都押在自己身上。继续押下去。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "十個小時，都押在自己身上。繼續押下去。"
           }
         }
       }
@@ -96325,6 +99662,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "不能使用這個寵物名字，請換一個。"
+          }
+        }
+      }
+    },
+    "That's a wrap. Well done!" : {
+      "comment" : "Pet coach bubble after a focus session: the headline beside the points pill, on one short line. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das war's. Gut gemacht!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo. ¡Bien hecho!"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tapos na. Magaling!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et voilà. Bravo !"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "おつかれさま。いいね！"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "끝! 수고했어요!"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fechou. Muito bem!"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вот и все. Молодец!"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收工！表现很棒！"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收工！表現很棒！"
           }
         }
       }
@@ -98244,6 +101647,270 @@
         }
       }
     },
+    "The pawn has crossed half the board. The far side is closer than it looks." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. This one marks a study milestone, once. \"The pawn\" is a chess pawn, the app's image for steady progress. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Bauer hat das halbe Brett überquert. Die andere Seite ist näher, als sie aussieht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El peón ha cruzado medio tablero. El otro lado está más cerca de lo que parece."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakatawid na ang piyon sa kalahati ng board. Mas malapit na ang dulo kaysa sa inaakala mo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le pion a traversé la moitié de l'échiquier. L'autre bout est plus proche qu'il n'y paraît."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ポーンは盤の半分を越えた。向こう側は見た目より近い。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "폰이 판의 절반을 건넜어요. 반대편은 보이는 것보다 가까워요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O peão já cruzou metade do tabuleiro. O outro lado está mais perto do que parece."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пешка прошла полдоски. Дальний край ближе, чем кажется."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小兵已经走过半个棋盘。对面比看起来更近。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小兵已經走過半個棋盤。對面比看起來更近。"
+          }
+        }
+      }
+    },
+    "The pawn keeps moving forward. One square at a time, it can become anything it wants." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. \"The pawn\" is a chess pawn, the app's image for steady progress. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Bauer zieht immer weiter. Feld für Feld kann er alles werden, was er will."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El peón sigue avanzando. Casilla a casilla, puede llegar a ser lo que quiera."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patuloy na umaabante ang piyon. Isang hakbang sa bawat parisukat, puwede itong maging kahit ano."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le pion avance toujours. Case après case, il peut devenir tout ce qu'il veut."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ポーンは前に進み続ける。一マスずつ進めば、何にだってなれる。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "폰은 계속 앞으로 나아가요. 한 칸씩 가다 보면 무엇이든 될 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O peão segue em frente. Uma casa de cada vez, ele pode virar o que quiser."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пешка идет только вперед. Клетка за клеткой, она может стать кем угодно."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小兵一直向前走。一格一格地走，它能成为任何它想成为的样子。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小兵一直往前走。一格一格前進，它能成為任何它想成為的樣子。"
+          }
+        }
+      }
+    },
+    "The pawn reached the last square. Now it can move any way it wants. So can you." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. This one marks a study milestone, once. \"The pawn\" is a chess pawn, the app's image for steady progress. A pawn on the last square becomes any piece. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Bauer hat das letzte Feld erreicht. Jetzt kann er ziehen, wie er will. Du auch."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El peón llegó a la última casilla. Ahora puede moverse como quiera. Y tú también."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Narating na ng piyon ang huling parisukat. Puwede na itong gumalaw kahit saan. Ikaw rin."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le pion a atteint la dernière case. Il peut maintenant aller où il veut. Toi aussi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ポーンは最後のマスにたどり着いた。もうどこへでも動ける。あなたも。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "폰이 마지막 칸에 도착했어요. 이제 어디로든 갈 수 있어요. 당신도요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O peão chegou à última casa. Agora pode se mover como quiser. Você também."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пешка дошла до последней клетки. Теперь она может ходить как угодно. И ты тоже."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小兵走到了最后一格。现在它想怎么走都可以。你也一样。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小兵走到了最後一格。現在它想怎麼走都可以。你也一樣。"
+          }
+        }
+      }
+    },
+    "The person you're becoming is built in quiet hours like this one." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wer du wirst, entsteht in stillen Stunden wie dieser."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La persona en la que te conviertes se construye en horas tranquilas como esta."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nabubuo ang taong nagiging ikaw sa mga tahimik na oras na tulad nito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La personne que tu deviens se construit dans des heures calmes comme celle-ci."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "なりたい自分は、こんな静かな時間の中でつくられていく。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앞으로의 나는 이런 조용한 시간 속에서 만들어져요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A pessoa que você está se tornando nasce em horas tranquilas como esta."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тот, кем ты становишься, создается в такие тихие часы, как этот."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你正在成为的那个人，就是在这样安静的时光里塑造出来的。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你正在成為的那個人，就是在這樣安靜的時光裡打造出來的。"
+          }
+        }
+      }
+    },
     "The rest of the day is yours." : {
       "comment" : "Calendar card detail when today's events are over.",
       "extractionState" : "manual",
@@ -98904,6 +102571,72 @@
         }
       }
     },
+    "The work no one sees is the work that changes you." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Arbeit, die niemand sieht, ist die, die dich verändert."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El trabajo que nadie ve es el que te cambia."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang trabahong walang nakakakita ang siyang nagbabago sa iyo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le travail que personne ne voit est celui qui te change."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "誰にも見えない努力こそが、あなたを変えていく。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아무도 보지 않는 노력이 나를 바꿔요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O trabalho que ninguém vê é o que muda você."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Работа, которую никто не видит, и меняет тебя."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没人看见的努力，才是改变你的力量。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有人看見的努力，才是改變你的力量。"
+          }
+        }
+      }
+    },
     "The year you were born" : {
       "comment" : "Tooltip of the birth year menu.",
       "extractionState" : "manual",
@@ -99296,6 +103029,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "思考中"
+          }
+        }
+      }
+    },
+    "Thirty days ago this was hard. Notice that it isn't anymore." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. This one marks a study milestone, once. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vor dreißig Tagen war das schwer. Merkst du, dass es das nicht mehr ist?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hace treinta días esto costaba. Fíjate en que ya no."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tatlumpung araw na ang nakalipas, mahirap ito. Pansinin mo, hindi na ngayon."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il y a trente jours, c'était dur. Remarque que ça ne l'est plus."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30日前は大変だった。今はもうそうじゃないことに気づいて。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30일 전엔 이게 힘들었어요. 이제는 아니라는 걸 느껴 봐요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trinta dias atrás isso era difícil. Repare que não é mais."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тридцать дней назад это было трудно. Заметь, что теперь уже нет."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "三十天前，这还很难。留意一下，现在已经不难了。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "三十天前，這還很難。留意一下，現在已經不難了。"
           }
         }
       }
@@ -106562,6 +110361,72 @@
         }
       }
     },
+    "Water carves canyons by never skipping a day." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wasser gräbt Schluchten, weil es keinen Tag auslässt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El agua talla cañones sin saltarse ni un día."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakakaukit ng bangin ang tubig dahil hindi ito lumalaktaw ng araw."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'eau creuse des canyons en ne sautant jamais un jour."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "水が谷を刻めるのは、一日も休まないから。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물이 협곡을 만드는 건 하루도 빠지지 않아서예요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A água esculpe cânions sem pular um dia sequer."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вода прорезает каньоны, потому что не пропускает ни дня."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "水能冲刷出峡谷，是因为它一天也不停歇。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "水能刻出峽谷，是因為它一天也不停歇。"
+          }
+        }
+      }
+    },
     "Wearing" : {
       "comment" : "Closet item state: the pet has it on.",
       "extractionState" : "manual",
@@ -108627,13 +112492,13 @@
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gumagana sa kahit anong app. Sa Ngayon, mag-type agad para magdagdag ng task."
+            "value" : "Kahit saan. Sa Ngayon, i-type agad ang task."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Marche depuis n'importe quelle app. Sur Aujourd'hui, tape directement pour ajouter une tâche."
+            "value" : "Partout. Sur Aujourd'hui, tape aussitôt une tâche."
           }
         },
         "ja" : {
@@ -108657,7 +112522,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Работает в любом приложении. На вкладке «Сегодня» сразу вводи задачу."
+            "value" : "Везде. На «Сегодня» сразу вводи задачу."
           }
         },
         "zh-Hans" : {
@@ -108669,7 +112534,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在任何 App 中都能用。在「今天」中直接輸入即可加入任務。"
+            "value" : "任何 App 都能用。在「今天」直接輸入任務。"
           }
         }
       }
@@ -110906,6 +114771,72 @@
         }
       }
     },
+    "You didn't feel like it, and you did it anyway. That's the whole secret." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hattest keine Lust und hast es trotzdem gemacht. Das ist das ganze Geheimnis."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No tenías ganas y lo hiciste igual. Ese es todo el secreto."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wala kang gana, pero ginawa mo pa rin. Iyan ang buong sikreto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu n'avais pas envie, et tu l'as fait quand même. C'est tout le secret."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "気が乗らなくても、やった。秘訣はそれだけ。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하기 싫었는데도 해냈어요. 비결은 그게 전부예요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você não estava a fim e fez mesmo assim. Esse é todo o segredo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настроения не было, а дело сделано. В этом весь секрет."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你不想做，但还是做了。秘诀就这么简单。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你不想做，但還是做了。祕訣就這麼簡單。"
+          }
+        }
+      }
+    },
     "You finished %lld tasks today." : {
       "comment" : "Today panel, Wrap-up (end-of-day review). Summary, first sentence.",
       "extractionState" : "manual",
@@ -111748,6 +115679,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你已加入派對"
+          }
+        }
+      }
+    },
+    "You're not behind. You're on your own clock, and it only moves forward." : {
+      "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du bist nicht hinterher. Du gehst nach deiner eigenen Uhr, und die läuft nur vorwärts."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No llevas retraso. Sigues tu propio reloj, y solo avanza."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi ka nahuhuli. Sarili mong orasan ang sinusunod mo, at pasulong lang ito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu n'es pas en retard. Tu suis ta propre horloge, et elle ne fait qu'avancer."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "遅れてなんかいない。自分の時計で進んでいて、その針は前にしか進まない。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "늦은 게 아니에요. 나만의 시계로 가고 있고, 그 시계는 앞으로만 가요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não tem atraso nenhum. Você segue o seu próprio relógio, e ele só anda para frente."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ты не отстаешь. У тебя свои часы, и они идут только вперед."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你没有落后。你有自己的时钟，而它只会向前走。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你沒有落後。你有自己的時鐘，而它只會往前走。"
           }
         }
       }

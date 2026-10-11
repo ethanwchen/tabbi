@@ -123,21 +123,27 @@ extension PetStudyAward {
     /// names a subject, so any kit can use it.
     public var headline: String {
         switch completedSessions {
-        case 0: "\(minutes) minutes in the bank."
+        case 0: String(localized: "\(minutes) minutes in the bank.", bundle: .tabbi)
         case 1: Self.cheers[minutes % Self.cheers.count]
-        default: "\(completedSessions) sessions done. Wow!"
+        default: String(localized: "\(completedSessions) sessions done. Wow!", bundle: .tabbi)
         }
     }
 
-    private static let cheers = ["Session done. Nice work!", "That's a wrap. Well done!", "Done! You stuck with it."]
+    private static var cheers: [String] {
+        [
+            String(localized: "Session done. Nice work!", bundle: .tabbi),
+            String(localized: "That's a wrap. Well done!", bundle: .tabbi),
+            String(localized: "Done! You stuck with it.", bundle: .tabbi),
+        ]
+    }
 
     /// The second line on a level-up, e.g. "Enough for the Beanie now.";
     /// nil otherwise.
     public var unlockLine: String? {
-        let names = unlocked.prefix(2).map { "the \($0.displayName)" }
-        guard let first = names.first else { return nil }
-        let list = names.count == 2 ? "\(first) and \(names[1])" : first
-        return "Enough for \(list) now."
+        guard let first = unlocked.first?.displayName else { return nil }
+        guard unlocked.count > 1 else { return String(localized: "Enough for the \(first) now.", bundle: .tabbi) }
+        let second = unlocked[1].displayName
+        return String(localized: "Enough for the \(first) and the \(second) now.", bundle: .tabbi)
     }
 
     /// The points pill, e.g. "+35".

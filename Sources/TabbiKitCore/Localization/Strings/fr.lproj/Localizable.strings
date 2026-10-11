@@ -65,6 +65,8 @@
 	<string>%@ est dans ton groupe</string>
 	<key>%@ is keeping you company</key>
 	<string>%@ te tient compagnie</string>
+	<key>%@ is keeping you company. %@</key>
+	<string>%1$@ te tient compagnie. %2$@</string>
 	<key>%@ is looking over this plan...</key>
 	<string>%@ examine ce plan...</string>
 	<key>%@ is looking over this plan…</key>
@@ -75,6 +77,8 @@
 	<string>%@ fait maintenant partie de tes amis</string>
 	<key>%@ is on a break with you</key>
 	<string>%@ fait une pause avec toi</string>
+	<key>%@ is ready in the Closet</key>
+	<string>%@ t'attend dans la Garde-robe</string>
 	<key>%@ is studying with the party</key>
 	<string>%@ étudie avec la party</string>
 	<key>%@ is studying with you</key>
@@ -249,6 +253,10 @@
 	<string>Adresse d'un serveur d'amis. Vide pour %@.</string>
 	<key>A gentle nudge from %@ on days you haven't studied yet</key>
 	<string>Un petit rappel de %@ les jours où tu n'as pas encore étudié</string>
+	<key>A gift: %lld min toward the event</key>
+	<string>Un cadeau : %lld min pour l'événement</string>
+	<key>A gift: the rare %@ fur</key>
+	<string>Un cadeau : le pelage rare %@</string>
 	<key>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</key>
 	<string>Un kit, c'est un ensemble d'onglets prêt à l'emploi. En changer remplace tes onglets et ajoute ses tâches de départ à Aujourd'hui.</string>
 	<key>A kit is a set of tabs. You can change them any time.</key>
@@ -257,6 +265,8 @@
 	<string>Un léger tapotement du trackpad au bord de l'encoche et lors des célébrations.</string>
 	<key>A lighter week. Every minute counts.</key>
 	<string>Une semaine plus légère. Chaque minute compte.</string>
+	<key>A line from your pet. Hover to keep it, click to send the pet home. Turn it off in Settings › General.</key>
+	<string>Un mot de ton compagnon. Survole-le pour le garder, ou clique pour le renvoyer à la maison. Désactive-le dans Réglages › Général.</string>
 	<key>A longer timer</key>
 	<string>Minuteur plus long</string>
 	<key>A lovely first week together.</key>
@@ -267,6 +277,8 @@
 	<string>Une question peut inclure jusqu'à %lld captures</string>
 	<key>A quiet day. Rest up and start fresh tomorrow.</key>
 	<string>Une journée calme. Repose-toi et repars de plus belle demain.</string>
+	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
+	<string>Une couleur de pelage rare de ton compagnon. Essaie-la dans la Garde-robe, sous Apparence.</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>Une semaine reposante. Un nouveau départ vous attend.</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
@@ -551,6 +563,10 @@
 	<string>Les bloqués ne peuvent ni te voir, ni t'ajouter, ni rejoindre tes groupes. Pour bloquer ou signaler, clic droit dans Groupe.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>Ajoutés à ton calendrier.</string>
+	<key>Bonus minutes toward this event's limited items</key>
+	<string>Des minutes bonus pour les objets limités de cet événement</string>
+	<key>Bonus points from your pet, added to your balance</key>
+	<string>Des points bonus de ton compagnon, ajoutés à ton solde</string>
 	<key>Bow Tie</key>
 	<string>Nœud papillon</string>
 	<key>Break</key>
@@ -559,6 +575,8 @@
 	<string>Fin de la pause</string>
 	<key>Breed</key>
 	<string>Race</string>
+	<key>Breed colors</key>
+	<string>Couleurs de la race</string>
 	<key>Bring %@ to the front</key>
 	<string>Mettre %@ au premier plan</string>
 	<key>Brown noise</key>
@@ -609,6 +627,10 @@
 	<string>Les cartes du jour et ta série de révisions.</string>
 	<key>Cat</key>
 	<string>Chat</string>
+	<key>Cat wisdom</key>
+	<string>Sagesse de chat</string>
+	<key>Cats land on their feet because they never stop turning toward the ground. Welcome back.</key>
+	<string>Les chats retombent sur leurs pattes parce qu'ils se tournent vers le sol jusqu'au bout. Bon retour.</string>
 	<key>Celebration sound</key>
 	<string>Son de célébration</string>
 	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
@@ -745,6 +767,8 @@
 	<string>Clique sur le bouton ci-dessous. Il copie la ligne de connexion et ouvre Terminal.</string>
 	<key>Click to dismiss</key>
 	<string>Clique pour fermer</string>
+	<key>Click to send the pet home</key>
+	<string>Clique pour renvoyer ton compagnon à la maison</string>
 	<key>Close</key>
 	<string>Fermer</string>
 	<key>Close %@ settings</key>
@@ -1005,6 +1029,8 @@
 	<string>Ne plus demander</string>
 	<key>Done</key>
 	<string>Terminé</string>
+	<key>Done! You stuck with it.</key>
+	<string>Fini ! Tu as tenu bon.</string>
 	<key>Drag to reorder</key>
 	<string>Glisse pour réordonner</string>
 	<key>Drag to reorder, or select a tab and press Option-Up or Option-Down. At least one tab stays.</key>
@@ -1034,19 +1060,27 @@
 	<key>End</key>
 	<string>Terminer</string>
 	<key>End it for everyone in the Party tab</key>
-	<string>Termine-la pour tous dans l'onglet Party</string>
+	<string>Termine-la pour tous dans l'onglet Groupe</string>
 	<key>End the shared session for everyone</key>
 	<string>Terminer la session partagée pour tous</string>
 	<key>End this stretch and take a sized break</key>
 	<string>Finis la séance et prends une pause adaptée</string>
 	<key>Ends at %@</key>
 	<string>Se termine à %@</string>
+	<key>Enough for the %@ and the %@ now.</key>
+	<string>Tu as assez pour %1$@ et %2$@.</string>
+	<key>Enough for the %@ now</key>
+	<string>Tu as assez pour %@</string>
+	<key>Enough for the %@ now.</key>
+	<string>Tu as assez pour %@.</string>
 	<key>Event</key>
 	<string>Événement</string>
 	<key>Every deck is caught up</key>
 	<string>Tous les paquets sont à jour</string>
 	<key>Every focused minute fills in today's square</key>
 	<string>Chaque minute de focus remplit la case du jour</string>
+	<key>Every hour you give your future, it gives back with interest.</key>
+	<string>Chaque heure que tu donnes à ton futur, il te la rend avec les intérêts.</string>
 	<key>Every module is already a tab.</key>
 	<string>Chaque module est déjà un onglet.</string>
 	<key>Every question opens a larger chat view under the notch. Press Esc to go back.</key>
@@ -1067,6 +1101,8 @@
 	<string>Période d'examens</string>
 	<key>Example</key>
 	<string>Exemple</string>
+	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
+	<string>Décrocher, ce n'est pas échouer. Ne pas revenir, si. Et regarde, tu es là.</string>
 	<key>Fantasy</key>
 	<string>Fantaisie</string>
 	<key>Fast</key>
@@ -1182,7 +1218,7 @@
 	<key>Friends only see each other on the same server. Change it only to run your own.</key>
 	<string>Tes amis ne te voient que sur le même serveur. Change-le seulement pour le tien.</string>
 	<key>Friends see it in Party, and %@ uses it to greet you.</key>
-	<string>Tes amis le voient dans Party, et %@ s'en sert pour te saluer.</string>
+	<string>Tes amis le voient dans Groupe, et %@ s'en sert pour te saluer.</string>
 	<key>Friends see this name and the pet you dress in the Closet. Share your code so they can add you.</key>
 	<string>Tes amis voient ce nom et le compagnon habillé dans Garde-robe. Partage ton code pour qu'ils t'ajoutent.</string>
 	<key>Friends see you as offline. Your study minutes still count.</key>
@@ -1201,6 +1237,8 @@
 	<string>Loisirs</string>
 	<key>Fur</key>
 	<string>Pelage</string>
+	<key>Fur color %@</key>
+	<string>Couleur de pelage %@</string>
 	<key>GB</key>
 	<string>Go</string>
 	<key>GPU utilization, last 60 seconds</key>
@@ -1255,6 +1293,8 @@
 	<string>Retour haptique</string>
 	<key>Harassment</key>
 	<string>Harcèlement</string>
+	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
+	<string>Le difficile devient facile comme se tracent les sentiers : un pas, bien des fois.</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>Tu as un code ? Tape le code de groupe à %lld caractères et appuie sur Entrée pour rejoindre</string>
 	<key>Head Mirror</key>
@@ -1285,6 +1325,8 @@
 	<string>Masquer ton statut à tes amis</string>
 	<key>History</key>
 	<string>Historique</string>
+	<key>Honey</key>
+	<string>Miel</string>
 	<key>How %@ works</key>
 	<string>Comment fonctionne %@</string>
 	<key>How long each item stays before the next one</key>
@@ -1467,6 +1509,8 @@
 	<string>Laisse ton IA placer tes tâches autour de l'agenda du jour</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>Laisse ton IA placer tes tâches autour de l'agenda de demain</string>
+	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
+	<string>Laisse ton compagnon dire de temps en temps un mot d'encouragement juste après une session de concentration, au plus une fois par jour</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>Ton compagnon sort de l'encoche si tu décroches pendant une phase de concentration</string>
 	<key>Like</key>
@@ -1545,14 +1589,20 @@
 	<string>Messages</string>
 	<key>Method</key>
 	<string>Méthode</string>
+	<key>Midnight</key>
+	<string>Minuit</string>
 	<key>Milestones</key>
 	<string>Étapes</string>
+	<key>Mint</key>
+	<string>Menthe</string>
 	<key>Model</key>
 	<string>Modèle</string>
 	<key>Month</key>
 	<string>Mois</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Chapeau de sorcière lunaire</string>
+	<key>Moonstone</key>
+	<string>Pierre de lune</string>
 	<key>More</key>
 	<string>Plus</string>
 	<key>More events</key>
@@ -1565,6 +1615,8 @@
 	<string>Plus d'options</string>
 	<key>More tabs</key>
 	<string>Plus d'onglets</string>
+	<key>Most people wait to feel ready. You just started. That's the difference.</key>
+	<string>La plupart attendent de se sentir prêts. Toi, tu as commencé. C'est toute la différence.</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>Déplacer %@ dans ton dossier Applications ?</string>
 	<key>Move down</key>
@@ -1697,6 +1749,8 @@
 	<string>Non. Cette version est trop ancienne pour Tabbi.</string>
 	<key>No. This copy of Tabbi can't ask for it.</key>
 	<string>Non. Cette version de Tabbi ne peut pas le demander.</string>
+	<key>Nobody sees roots growing. Then one day there's a tree.</key>
+	<string>Personne ne voit pousser les racines. Puis un jour, il y a un arbre.</string>
 	<key>None</key>
 	<string>Aucun</string>
 	<key>None of your tabs need another app right now.</key>
@@ -1781,6 +1835,8 @@
 	<string>Les notifications de Tabbi sont désactivées</string>
 	<key>Now Playing</key>
 	<string>Musique</string>
+	<key>Now and then, a short line from your pet after a focus session.</key>
+	<string>De temps en temps, un petit mot de ton compagnon après une session.</string>
 	<key>Nudge me during focus</key>
 	<string>Me relancer pendant la concentration</string>
 	<key>Nudges</key>
@@ -2161,6 +2217,8 @@
 	<string>Quitte Anki et rouvre-le. Tabbi le remarque tout seul.</string>
 	<key>Rain</key>
 	<string>Pluie</string>
+	<key>Rare</key>
+	<string>Rares</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Lire les derniers journaux Codex (n'envoie rien)</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2357,6 +2415,8 @@
 	<string>Envoie tes demandes à %@.</string>
 	<key>Server</key>
 	<string>Serveur</string>
+	<key>Session done. Nice work!</key>
+	<string>Terminé. Bien joué !</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>Mets "apiKey" à null, puis clique sur OK</string>
 	<key>Set this up later from its tab</key>
@@ -2377,8 +2437,10 @@
 	<string>Réglages…</string>
 	<key>Setup</key>
 	<string>Configuration</string>
+	<key>Seven days. You're not trying anymore. You're becoming.</key>
+	<string>Sept jours. Tu n'essaies plus. Tu deviens.</string>
 	<key>Share a link from Party.</key>
-	<string>Partage un lien depuis Party.</string>
+	<string>Partage un lien depuis Groupe.</string>
 	<key>Share an invite link. A friend who opens it can add you in one click.</key>
 	<string>Partage un lien d'invitation. Un ami qui l'ouvre peut t'ajouter en un clic.</string>
 	<key>Share an invite link. Friends who open it can join this party in one click.</key>
@@ -2444,7 +2506,7 @@
 	<key>Showing local stats only</key>
 	<string>Statistiques locales uniquement</string>
 	<key>Shown to friends in Party and used to greet you.</key>
-	<string>Visible par tes amis dans Groupe et utilisé pour te saluer.</string>
+	<string>Pour tes amis dans Groupe et pour te saluer.</string>
 	<key>Shows the previews this kit picks.</key>
 	<string>Affiche les aperçus choisis par ce kit.</string>
 	<key>Shuffle</key>
@@ -2491,10 +2553,14 @@
 	<string>Passer à la pause</string>
 	<key>Sky</key>
 	<string>Ciel</string>
+	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
+	<string>Le sommeil fait partie du travail. Va rêver aux coups de demain.</string>
 	<key>Smooth</key>
 	<string>Fluide</string>
 	<key>Snowy Scarf</key>
 	<string>Écharpe enneigée</string>
+	<key>Some is infinitely more than none. Rest. The board will be here.</key>
+	<string>Un peu, c'est infiniment plus que rien. Repose-toi. L'échiquier sera encore là.</string>
 	<key>Something not working?</key>
 	<string>Un souci ?</string>
 	<key>Sound</key>
@@ -2515,6 +2581,8 @@
 	<string>Souple, avec un léger rebond.</string>
 	<key>Sprint</key>
 	<string>Sprint</string>
+	<key>Stars don't rush. They just keep burning.</key>
+	<string>Les étoiles ne se pressent pas. Elles continuent de briller.</string>
 	<key>Start %@ automatically when you log in</key>
 	<string>Lancer %@ automatiquement à la connexion</string>
 	<key>Start Party</key>
@@ -2574,7 +2642,7 @@
 	<key>Step out</key>
 	<string>M'absenter</string>
 	<key>Step out in the Party tab anytime</key>
-	<string>Quitte quand tu veux dans l'onglet Party</string>
+	<string>Quitte quand tu veux dans l'onglet Groupe</string>
 	<key>Step out of this session; it goes on for the others</key>
 	<string>Quitte cette session, elle continue pour les autres</string>
 	<key>Stepping out keeps the session going for the others; your own timer comes back here</key>
@@ -2707,12 +2775,16 @@
 	<string>Annuler l'importation de %@</string>
 	<key>Taking a screenshot</key>
 	<string>Capture en cours</string>
+	<key>Talent is a head start. Showing up is the whole race.</key>
+	<string>Le talent, c'est une longueur d'avance. Être là, c'est toute la course.</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>Le trackpad tapote quand le pointeur atteint l'encoche ou lors d'une célébration</string>
 	<key>Tasks left today</key>
 	<string>Tâches restantes du jour</string>
 	<key>Team Medal</key>
 	<string>Médaille d'équipe</string>
+	<key>Ten hours of betting on yourself. Keep betting.</key>
+	<string>Dix heures à miser sur toi. Continue de miser.</string>
 	<key>Terminal</key>
 	<string>Terminal</string>
 	<key>Terms of Use</key>
@@ -2735,6 +2807,8 @@
 	<string>Ce groupe est complet.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>Ce nom de compagnon n'est pas autorisé. Choisis-en un autre.</string>
+	<key>That's a wrap. Well done!</key>
+	<string>Et voilà. Bravo !</string>
 	<key>That's your own code.</key>
 	<string>C'est ton propre code.</string>
 	<key>That's your own link</key>
@@ -2793,6 +2867,14 @@
 	<string>Le serveur de groupes est occupé. Nouvel essai dans un instant.</string>
 	<key>The party server reported a problem.</key>
 	<string>Le serveur de groupes a signalé un problème.</string>
+	<key>The pawn has crossed half the board. The far side is closer than it looks.</key>
+	<string>Le pion a traversé la moitié de l'échiquier. L'autre bout est plus proche qu'il n'y paraît.</string>
+	<key>The pawn keeps moving forward. One square at a time, it can become anything it wants.</key>
+	<string>Le pion avance toujours. Case après case, il peut devenir tout ce qu'il veut.</string>
+	<key>The pawn reached the last square. Now it can move any way it wants. So can you.</key>
+	<string>Le pion a atteint la dernière case. Il peut maintenant aller où il veut. Toi aussi.</string>
+	<key>The person you're becoming is built in quiet hours like this one.</key>
+	<string>La personne que tu deviens se construit dans des heures calmes comme celle-ci.</string>
 	<key>The rest of the day is yours.</key>
 	<string>Le reste de la journée est à toi.</string>
 	<key>The review couldn't be written to disk. Try Done again.</key>
@@ -2813,6 +2895,8 @@
 	<string>Le minuteur démarre avec %@</string>
 	<key>The tool's own default</key>
 	<string>Celui par défaut de l'outil</string>
+	<key>The work no one sees is the work that changes you.</key>
+	<string>Le travail que personne ne voit est celui qui te change.</string>
 	<key>The year you were born</key>
 	<string>Ton année de naissance</string>
 	<key>Then a break until %@</key>
@@ -2825,6 +2909,8 @@
 	<string>Cette personne a déjà 50 amis.</string>
 	<key>Thinking</key>
 	<string>Réflexion</string>
+	<key>Thirty days ago this was hard. Notice that it isn't anymore.</key>
+	<string>Il y a trente jours, c'était dur. Remarque que ça ne l'est plus.</string>
 	<key>This Mac blocks calendar access</key>
 	<string>Ce Mac bloque l'accès au calendrier</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
@@ -3045,6 +3131,8 @@
 	<string>Suivre les étapes de connexion : %@</string>
 	<key>Wardrobe</key>
 	<string>Garde-robe</string>
+	<key>Water carves canyons by never skipping a day.</key>
+	<string>L'eau creuse des canyons en ne sautant jamais un jour.</string>
 	<key>Wearing</key>
 	<string>Porté</string>
 	<key>Week</key>
@@ -3108,7 +3196,7 @@
 	<key>Wizard Robe</key>
 	<string>Robe de sorcier</string>
 	<key>Works from any app. On Today, type right away to add a task.</key>
-	<string>Marche depuis n'importe quelle app. Sur Aujourd'hui, tape directement pour ajouter une tâche.</string>
+	<string>Partout. Sur Aujourd'hui, tape aussitôt une tâche.</string>
 	<key>Wrap up</key>
 	<string>Bilan</string>
 	<key>Wrap up: review today and see what carries over</key>
@@ -3165,6 +3253,8 @@
 	<string>Tu peux le configurer à tout moment dans l'onglet %@.</string>
 	<key>You can turn alerts off any time in System Settings.</key>
 	<string>Tu peux couper les alertes à tout moment dans Réglages Système.</string>
+	<key>You didn't feel like it, and you did it anyway. That's the whole secret.</key>
+	<string>Tu n'avais pas envie, et tu l'as fait quand même. C'est tout le secret.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>Tu reçois un gel offert chaque semaine et peux en garder %lld de plus.</string>
 	<key>You joined the party</key>
@@ -3179,6 +3269,8 @@
 	<string>Tu es déjà dans ce groupe</string>
 	<key>You're in Party</key>
 	<string>Tu es dans Groupe</string>
+	<key>You're not behind. You're on your own clock, and it only moves forward.</key>
+	<string>Tu n'es pas en retard. Tu suis ta propre horloge, et elle ne fait qu'avancer.</string>
 	<key>You're not in a party anymore.</key>
 	<string>Tu n'es plus dans un groupe.</string>
 	<key>You're the only one here for now.</key>

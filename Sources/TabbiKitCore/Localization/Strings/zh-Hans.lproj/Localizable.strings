@@ -65,6 +65,8 @@
 	<string>%@ 在你的派对中</string>
 	<key>%@ is keeping you company</key>
 	<string>%@ 在陪着你</string>
+	<key>%@ is keeping you company. %@</key>
+	<string>%1$@ 在陪着你。%2$@</string>
 	<key>%@ is looking over this plan...</key>
 	<string>%@ 正在查看此计划...</string>
 	<key>%@ is looking over this plan…</key>
@@ -75,6 +77,8 @@
 	<string>%@ 已成为你的好友</string>
 	<key>%@ is on a break with you</key>
 	<string>%@ 正陪你休息</string>
+	<key>%@ is ready in the Closet</key>
+	<string>%@已在衣橱中等你</string>
 	<key>%@ is studying with the party</key>
 	<string>%@ 正和派对一起学习</string>
 	<key>%@ is studying with you</key>
@@ -249,6 +253,10 @@
 	<string>好友服务器地址。留空则使用 %@。</string>
 	<key>A gentle nudge from %@ on days you haven't studied yet</key>
 	<string>当天还没学习时，%@ 会轻轻提醒你</string>
+	<key>A gift: %lld min toward the event</key>
+	<string>礼物：活动进度 +%lld 分钟</string>
+	<key>A gift: the rare %@ fur</key>
+	<string>礼物：稀有毛色“%@”</string>
 	<key>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</key>
 	<string>套件是一组现成的标签页。切换后会替换你的标签页，并把它的初始任务添加到“今天”。</string>
 	<key>A kit is a set of tabs. You can change them any time.</key>
@@ -257,6 +265,8 @@
 	<string>到达刘海边缘和庆祝时，触控板轻轻一震。</string>
 	<key>A lighter week. Every minute counts.</key>
 	<string>轻松的一周，每一分钟都算数。</string>
+	<key>A line from your pet. Hover to keep it, click to send the pet home. Turn it off in Settings › General.</key>
+	<string>宠物的一句话。将指针悬停可保留，点按让宠物回家。可在“设置”›“通用”中关闭。</string>
 	<key>A longer timer</key>
 	<string>延长计时</string>
 	<key>A lovely first week together.</key>
@@ -267,6 +277,8 @@
 	<string>每个问题最多可附 %lld 张截图</string>
 	<key>A quiet day. Rest up and start fresh tomorrow.</key>
 	<string>平静的一天。好好休息，明天重新出发。</string>
+	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
+	<string>宠物送来的稀有毛色。到衣橱的“外观”里试试。</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>休息的一周，新的开始在等你。</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
@@ -551,6 +563,10 @@
 	<string>被屏蔽的人无法看到你、添加你或加入你的派对。要屏蔽或举报某人，请在派对中右键点按对方。</string>
 	<key>Blocks go to your calendar.</key>
 	<string>时段会添加到你的日历。</string>
+	<key>Bonus minutes toward this event's limited items</key>
+	<string>计入本次活动限定物品的额外分钟数</string>
+	<key>Bonus points from your pet, added to your balance</key>
+	<string>宠物送来的额外积分，已加入你的余额</string>
 	<key>Bow Tie</key>
 	<string>领结</string>
 	<key>Break</key>
@@ -559,6 +575,8 @@
 	<string>休息结束</string>
 	<key>Breed</key>
 	<string>品种</string>
+	<key>Breed colors</key>
+	<string>品种原色</string>
 	<key>Bring %@ to the front</key>
 	<string>将 %@ 置于最前</string>
 	<key>Brown noise</key>
@@ -609,6 +627,10 @@
 	<string>今天要复习的卡片和连续复习天数。</string>
 	<key>Cat</key>
 	<string>猫</string>
+	<key>Cat wisdom</key>
+	<string>猫咪箴言</string>
+	<key>Cats land on their feet because they never stop turning toward the ground. Welcome back.</key>
+	<string>猫总能四脚着地，因为它们从不停止转向地面。欢迎回来。</string>
 	<key>Celebration sound</key>
 	<string>庆祝音效</string>
 	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
@@ -745,6 +767,8 @@
 	<string>点按下方按钮。它会复制登录命令并打开“终端”。</string>
 	<key>Click to dismiss</key>
 	<string>点按以关闭</string>
+	<key>Click to send the pet home</key>
+	<string>点按让宠物回家</string>
 	<key>Close</key>
 	<string>关闭</string>
 	<key>Close %@ settings</key>
@@ -1005,6 +1029,8 @@
 	<string>不再询问</string>
 	<key>Done</key>
 	<string>完成</string>
+	<key>Done! You stuck with it.</key>
+	<string>完成！你坚持下来了。</string>
 	<key>Drag to reorder</key>
 	<string>拖动以调整顺序</string>
 	<key>Drag to reorder, or select a tab and press Option-Up or Option-Down. At least one tab stays.</key>
@@ -1041,12 +1067,20 @@
 	<string>结束本段，按时长休息一下</string>
 	<key>Ends at %@</key>
 	<string>%@ 结束</string>
+	<key>Enough for the %@ and the %@ now.</key>
+	<string>现在可以换%1$@和%2$@了。</string>
+	<key>Enough for the %@ now</key>
+	<string>现在可以换%@了</string>
+	<key>Enough for the %@ now.</key>
+	<string>现在可以换%@了。</string>
 	<key>Event</key>
 	<string>活动</string>
 	<key>Every deck is caught up</key>
 	<string>所有牌组都已完成</string>
 	<key>Every focused minute fills in today's square</key>
 	<string>每一分钟专注都会填满今天的格子</string>
+	<key>Every hour you give your future, it gives back with interest.</key>
+	<string>你给未来的每一小时，它都会连本带利还给你。</string>
 	<key>Every module is already a tab.</key>
 	<string>所有模块都已是标签页。</string>
 	<key>Every question opens a larger chat view under the notch. Press Esc to go back.</key>
@@ -1067,6 +1101,8 @@
 	<string>考试季</string>
 	<key>Example</key>
 	<string>示例</string>
+	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
+	<string>中断不是失败，一直不回来才是。你看，你回来了。</string>
 	<key>Fantasy</key>
 	<string>奇幻</string>
 	<key>Fast</key>
@@ -1201,6 +1237,8 @@
 	<string>趣味</string>
 	<key>Fur</key>
 	<string>毛色</string>
+	<key>Fur color %@</key>
+	<string>毛色 %@</string>
 	<key>GB</key>
 	<string>GB</string>
 	<key>GPU utilization, last 60 seconds</key>
@@ -1255,6 +1293,8 @@
 	<string>触觉反馈</string>
 	<key>Harassment</key>
 	<string>骚扰</string>
+	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
+	<string>难事变容易，就像路是走出来的：一步，走很多次。</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>有代码？输入 %lld 位派对代码，然后按回车键加入</string>
 	<key>Head Mirror</key>
@@ -1285,6 +1325,8 @@
 	<string>对好友隐藏你的状态</string>
 	<key>History</key>
 	<string>历史记录</string>
+	<key>Honey</key>
+	<string>蜂蜜色</string>
 	<key>How %@ works</key>
 	<string>%@ 的原理</string>
 	<key>How long each item stays before the next one</key>
@@ -1467,6 +1509,8 @@
 	<string>让 AI 按今天的日程安排待办</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>让 AI 按明天的日程安排待办</string>
+	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
+	<string>专注时段一结束，宠物偶尔会说一句鼓励的话，每天最多一次</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>专注阶段走神时，让宠物从刘海里走出来</string>
 	<key>Like</key>
@@ -1545,14 +1589,20 @@
 	<string>消息</string>
 	<key>Method</key>
 	<string>方法</string>
+	<key>Midnight</key>
+	<string>午夜蓝</string>
 	<key>Milestones</key>
 	<string>里程碑</string>
+	<key>Mint</key>
+	<string>薄荷色</string>
 	<key>Model</key>
 	<string>模型</string>
 	<key>Month</key>
 	<string>月份</string>
 	<key>Moonlit Witch Hat</key>
 	<string>月光女巫帽</string>
+	<key>Moonstone</key>
+	<string>月光石</string>
 	<key>More</key>
 	<string>多</string>
 	<key>More events</key>
@@ -1565,6 +1615,8 @@
 	<string>更多选项</string>
 	<key>More tabs</key>
 	<string>更多标签页</string>
+	<key>Most people wait to feel ready. You just started. That's the difference.</key>
+	<string>多数人等到觉得准备好了才开始。你直接开始了。差别就在这里。</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>要将 %@ 移到“应用程序”文件夹吗？</string>
 	<key>Move down</key>
@@ -1697,6 +1749,8 @@
 	<string>不是。这个版本太旧，Tabbi 用不了。</string>
 	<key>No. This copy of Tabbi can't ask for it.</key>
 	<string>没有。这个版本的 Tabbi 无法请求此权限。</string>
+	<key>Nobody sees roots growing. Then one day there's a tree.</key>
+	<string>没人看见根在生长。直到有一天，那里长出了一棵树。</string>
 	<key>None</key>
 	<string>无</string>
 	<key>None of your tabs need another app right now.</key>
@@ -1781,6 +1835,8 @@
 	<string>Tabbi 的通知已关闭</string>
 	<key>Now Playing</key>
 	<string>正在播放</string>
+	<key>Now and then, a short line from your pet after a focus session.</key>
+	<string>专注时段结束后，宠物偶尔会说一句话。</string>
 	<key>Nudge me during focus</key>
 	<string>专注时提醒我</string>
 	<key>Nudges</key>
@@ -2161,6 +2217,8 @@
 	<string>退出 Anki 再重新打开。Tabbi 会自动发现。</string>
 	<key>Rain</key>
 	<string>雨声</string>
+	<key>Rare</key>
+	<string>稀有</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>读取最新的 Codex 日志（不发送任何内容）</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2357,6 +2415,8 @@
 	<string>会将你的提问发送给 %@。</string>
 	<key>Server</key>
 	<string>服务器</string>
+	<key>Session done. Nice work!</key>
+	<string>专注完成，做得好！</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>将 "apiKey" 设为 null，然后点按 OK</string>
 	<key>Set this up later from its tab</key>
@@ -2377,6 +2437,8 @@
 	<string>设置…</string>
 	<key>Setup</key>
 	<string>设置</string>
+	<key>Seven days. You're not trying anymore. You're becoming.</key>
+	<string>七天了。你不再只是尝试，你正在蜕变。</string>
 	<key>Share a link from Party.</key>
 	<string>在 Party 中分享链接。</string>
 	<key>Share an invite link. A friend who opens it can add you in one click.</key>
@@ -2491,10 +2553,14 @@
 	<string>跳到休息</string>
 	<key>Sky</key>
 	<string>天蓝色</string>
+	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
+	<string>睡觉也是功课的一部分。去梦里想想明天的棋步吧。</string>
 	<key>Smooth</key>
 	<string>流畅</string>
 	<key>Snowy Scarf</key>
 	<string>雪花围巾</string>
+	<key>Some is infinitely more than none. Rest. The board will be here.</key>
+	<string>做一点，远远胜过什么都不做。休息吧，棋盘会一直在这里。</string>
 	<key>Something not working?</key>
 	<string>遇到问题了？</string>
 	<key>Sound</key>
@@ -2515,6 +2581,8 @@
 	<string>富有弹性，轻轻回弹。</string>
 	<key>Sprint</key>
 	<string>冲刺</string>
+	<key>Stars don't rush. They just keep burning.</key>
+	<string>星星从不着急。它们只是持续燃烧。</string>
 	<key>Start %@ automatically when you log in</key>
 	<string>登录时自动启动 %@</string>
 	<key>Start Party</key>
@@ -2707,12 +2775,16 @@
 	<string>撤销导入 %@</string>
 	<key>Taking a screenshot</key>
 	<string>正在截图</string>
+	<key>Talent is a head start. Showing up is the whole race.</key>
+	<string>天赋只是起跑时的领先。坚持出现，才是整场比赛。</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>指针到达刘海或播放庆祝时，触控板轻震一下</string>
 	<key>Tasks left today</key>
 	<string>今天剩余任务</string>
 	<key>Team Medal</key>
 	<string>团队奖牌</string>
+	<key>Ten hours of betting on yourself. Keep betting.</key>
+	<string>十个小时，都押在自己身上。继续押下去。</string>
 	<key>Terminal</key>
 	<string>终端</string>
 	<key>Terms of Use</key>
@@ -2735,6 +2807,8 @@
 	<string>该派对已满。</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>这个宠物名字不可用，请换一个。</string>
+	<key>That's a wrap. Well done!</key>
+	<string>收工！表现很棒！</string>
 	<key>That's your own code.</key>
 	<string>这是你自己的代码。</string>
 	<key>That's your own link</key>
@@ -2793,6 +2867,14 @@
 	<string>派对服务器繁忙，稍后自动重试。</string>
 	<key>The party server reported a problem.</key>
 	<string>派对服务器报告了一个问题。</string>
+	<key>The pawn has crossed half the board. The far side is closer than it looks.</key>
+	<string>小兵已经走过半个棋盘。对面比看起来更近。</string>
+	<key>The pawn keeps moving forward. One square at a time, it can become anything it wants.</key>
+	<string>小兵一直向前走。一格一格地走，它能成为任何它想成为的样子。</string>
+	<key>The pawn reached the last square. Now it can move any way it wants. So can you.</key>
+	<string>小兵走到了最后一格。现在它想怎么走都可以。你也一样。</string>
+	<key>The person you're becoming is built in quiet hours like this one.</key>
+	<string>你正在成为的那个人，就是在这样安静的时光里塑造出来的。</string>
 	<key>The rest of the day is yours.</key>
 	<string>今天剩下的时间都属于你。</string>
 	<key>The review couldn't be written to disk. Try Done again.</key>
@@ -2813,6 +2895,8 @@
 	<string>计时器将以 %@ 开始</string>
 	<key>The tool's own default</key>
 	<string>工具自身的默认值</string>
+	<key>The work no one sees is the work that changes you.</key>
+	<string>没人看见的努力，才是改变你的力量。</string>
 	<key>The year you were born</key>
 	<string>你出生的年份</string>
 	<key>Then a break until %@</key>
@@ -2825,6 +2909,8 @@
 	<string>对方已经有 50 位好友了。</string>
 	<key>Thinking</key>
 	<string>思考中</string>
+	<key>Thirty days ago this was hard. Notice that it isn't anymore.</key>
+	<string>三十天前，这还很难。留意一下，现在已经不难了。</string>
 	<key>This Mac blocks calendar access</key>
 	<string>这台 Mac 禁止访问日历</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
@@ -3045,6 +3131,8 @@
 	<string>按步骤连接：%@</string>
 	<key>Wardrobe</key>
 	<string>衣橱</string>
+	<key>Water carves canyons by never skipping a day.</key>
+	<string>水能冲刷出峡谷，是因为它一天也不停歇。</string>
 	<key>Wearing</key>
 	<string>穿着中</string>
 	<key>Week</key>
@@ -3165,6 +3253,8 @@
 	<string>可随时在“%@”标签页中设置。</string>
 	<key>You can turn alerts off any time in System Settings.</key>
 	<string>你随时可以在系统设置中关闭提醒。</string>
+	<key>You didn't feel like it, and you did it anyway. That's the whole secret.</key>
+	<string>你不想做，但还是做了。秘诀就这么简单。</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>每周免费获得一次冻结，另外最多可存 %lld 次。</string>
 	<key>You joined the party</key>
@@ -3179,6 +3269,8 @@
 	<string>你已经在这个派对里了</string>
 	<key>You're in Party</key>
 	<string>你已加入派对</string>
+	<key>You're not behind. You're on your own clock, and it only moves forward.</key>
+	<string>你没有落后。你有自己的时钟，而它只会向前走。</string>
 	<key>You're not in a party anymore.</key>
 	<string>你已不在派对中。</string>
 	<key>You're the only one here for now.</key>

@@ -163,6 +163,66 @@
 			<string>С тобой %lld друга.</string>
 		</dict>
 	</dict>
+	<key>%lld minutes in the bank.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld минуты в копилке.</string>
+			<key>many</key>
+			<string>%lld минут в копилке.</string>
+			<key>one</key>
+			<string>%lld минута в копилке.</string>
+			<key>other</key>
+			<string>%lld минуты в копилке.</string>
+		</dict>
+	</dict>
+	<key>%lld more points for %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Еще %1$lld очка до «%2$@»</string>
+			<key>many</key>
+			<string>Еще %1$lld очков до «%2$@»</string>
+			<key>one</key>
+			<string>Еще %1$lld очко до «%2$@»</string>
+			<key>other</key>
+			<string>Еще %1$lld очка до «%2$@»</string>
+		</dict>
+	</dict>
+	<key>%lld more sessions to %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Еще %1$lld сессии до «%2$@»</string>
+			<key>many</key>
+			<string>Еще %1$lld сессий до «%2$@»</string>
+			<key>one</key>
+			<string>Еще %1$lld сессия до «%2$@»</string>
+			<key>other</key>
+			<string>Еще %1$lld сессии до «%2$@»</string>
+		</dict>
+	</dict>
 	<key>%lld no longer fit</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -281,6 +341,26 @@
 			<string>%lld сессия</string>
 			<key>other</key>
 			<string>%lld сессии</string>
+		</dict>
+	</dict>
+	<key>%lld sessions done. Wow!</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld сессии. Ого!</string>
+			<key>many</key>
+			<string>%lld сессий. Ого!</string>
+			<key>one</key>
+			<string>%lld сессия. Ого!</string>
+			<key>other</key>
+			<string>%lld сессии. Ого!</string>
 		</dict>
 	</dict>
 	<key>%lld sessions today</key>
@@ -501,6 +581,26 @@
 			<string>+%lld очк.</string>
 			<key>other</key>
 			<string>+%lld очк.</string>
+		</dict>
+	</dict>
+	<key>A gift: %lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Подарок: %lld бонусных очка</string>
+			<key>many</key>
+			<string>Подарок: %lld бонусных очков</string>
+			<key>one</key>
+			<string>Подарок: %lld бонусное очко</string>
+			<key>other</key>
+			<string>Подарок: %lld бонусного очка</string>
 		</dict>
 	</dict>
 	<key>All %lld cards done for today</key>

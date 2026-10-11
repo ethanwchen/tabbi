@@ -65,6 +65,8 @@
 	<string>%@はあなたのパーティにいます</string>
 	<key>%@ is keeping you company</key>
 	<string>%@がそばにいます</string>
+	<key>%@ is keeping you company. %@</key>
+	<string>%1$@がそばにいます。%2$@</string>
 	<key>%@ is looking over this plan...</key>
 	<string>%@ が計画を確認中...</string>
 	<key>%@ is looking over this plan…</key>
@@ -75,6 +77,8 @@
 	<string>%@とフレンドになりました</string>
 	<key>%@ is on a break with you</key>
 	<string>%@も一緒に休憩中</string>
+	<key>%@ is ready in the Closet</key>
+	<string>%@がクローゼットで待っています</string>
 	<key>%@ is studying with the party</key>
 	<string>%@はパーティと勉強中</string>
 	<key>%@ is studying with you</key>
@@ -249,6 +253,10 @@
 	<string>フレンドサーバーのアドレス。空欄なら%@。</string>
 	<key>A gentle nudge from %@ on days you haven't studied yet</key>
 	<string>まだ勉強していない日に%@がそっとお知らせ</string>
+	<key>A gift: %lld min toward the event</key>
+	<string>プレゼント: イベントに%lld分</string>
+	<key>A gift: the rare %@ fur</key>
+	<string>プレゼント: レアな毛色「%@」</string>
 	<key>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</key>
 	<string>キットはすぐ使えるタブのセットです。切り替えるとタブが置き換わり、最初のタスクが「今日」に追加されます。</string>
 	<key>A kit is a set of tabs. You can change them any time.</key>
@@ -257,6 +265,8 @@
 	<string>ノッチの端やお祝いのときに、トラックパッドが軽く振動します。</string>
 	<key>A lighter week. Every minute counts.</key>
 	<string>ゆったりな1週間。1分1分が大切だよ。</string>
+	<key>A line from your pet. Hover to keep it, click to send the pet home. Turn it off in Settings › General.</key>
+	<string>ペットからのひとこと。ポインタを重ねると表示が続き、クリックでペットが帰ります。「設定」›「一般」でオフにできます。</string>
 	<key>A longer timer</key>
 	<string>タイマーを長く</string>
 	<key>A lovely first week together.</key>
@@ -267,6 +277,8 @@
 	<string>1つの質問に添付できるスクリーンショットは%lld枚まで</string>
 	<key>A quiet day. Rest up and start fresh tomorrow.</key>
 	<string>静かな1日でした。ゆっくり休んで、明日また始めましょう。</string>
+	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
+	<string>ペットからのレアな毛色。クローゼットの「外観」で試してみて。</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>ひと休みの1週間。新しいスタートが待ってるよ。</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
@@ -551,6 +563,10 @@
 	<string>ブロックした人はあなたを見たり、追加したり、パーティに参加したりできません。ブロックや報告はパーティで右クリック。</string>
 	<key>Blocks go to your calendar.</key>
 	<string>ブロックはカレンダーに追加されます。</string>
+	<key>Bonus minutes toward this event's limited items</key>
+	<string>このイベントの限定アイテムに向けたボーナス時間</string>
+	<key>Bonus points from your pet, added to your balance</key>
+	<string>ペットからのボーナスポイント。残高に追加されました</string>
 	<key>Bow Tie</key>
 	<string>蝶ネクタイ</string>
 	<key>Break</key>
@@ -559,6 +575,8 @@
 	<string>休憩おしまい</string>
 	<key>Breed</key>
 	<string>品種</string>
+	<key>Breed colors</key>
+	<string>品種の色</string>
 	<key>Bring %@ to the front</key>
 	<string>%@を前面に表示</string>
 	<key>Brown noise</key>
@@ -609,6 +627,10 @@
 	<string>今日の復習カードと連続記録。</string>
 	<key>Cat</key>
 	<string>ネコ</string>
+	<key>Cat wisdom</key>
+	<string>ネコのひとこと</string>
+	<key>Cats land on their feet because they never stop turning toward the ground. Welcome back.</key>
+	<string>ネコが足から着地できるのは、最後まで地面のほうへ体をひねり続けるから。おかえり。</string>
 	<key>Celebration sound</key>
 	<string>お祝いのサウンド</string>
 	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
@@ -745,6 +767,8 @@
 	<string>下のボタンをクリックすると、サインイン用のコマンドがコピーされ、ターミナルが開きます。</string>
 	<key>Click to dismiss</key>
 	<string>クリックして閉じる</string>
+	<key>Click to send the pet home</key>
+	<string>クリックでペットがおうちに帰ります</string>
 	<key>Close</key>
 	<string>閉じる</string>
 	<key>Close %@ settings</key>
@@ -1005,6 +1029,8 @@
 	<string>今後確認しない</string>
 	<key>Done</key>
 	<string>完了</string>
+	<key>Done! You stuck with it.</key>
+	<string>最後までやりきったね！</string>
 	<key>Drag to reorder</key>
 	<string>ドラッグで並べ替え</string>
 	<key>Drag to reorder, or select a tab and press Option-Up or Option-Down. At least one tab stays.</key>
@@ -1041,12 +1067,20 @@
 	<string>ここで区切って、長さに合った休憩を取る</string>
 	<key>Ends at %@</key>
 	<string>%@に終了</string>
+	<key>Enough for the %@ and the %@ now.</key>
+	<string>%1$@と%2$@と交換できます。</string>
+	<key>Enough for the %@ now</key>
+	<string>%@と交換できます</string>
+	<key>Enough for the %@ now.</key>
+	<string>%@と交換できます。</string>
 	<key>Event</key>
 	<string>イベント</string>
 	<key>Every deck is caught up</key>
 	<string>すべてのデッキが完了</string>
 	<key>Every focused minute fills in today's square</key>
 	<string>集中した分だけ今日のマスが埋まります</string>
+	<key>Every hour you give your future, it gives back with interest.</key>
+	<string>未来に預けた一時間は、利子をつけて返ってくる。</string>
 	<key>Every module is already a tab.</key>
 	<string>すべてのモジュールがタブになっています。</string>
 	<key>Every question opens a larger chat view under the notch. Press Esc to go back.</key>
@@ -1067,6 +1101,8 @@
 	<string>試験シーズン</string>
 	<key>Example</key>
 	<string>例</string>
+	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
+	<string>離れるのは失敗じゃない。戻らないことが失敗。ほら、ちゃんと戻ってきた。</string>
 	<key>Fantasy</key>
 	<string>ファンタジー</string>
 	<key>Fast</key>
@@ -1201,6 +1237,8 @@
 	<string>お楽しみ</string>
 	<key>Fur</key>
 	<string>毛色</string>
+	<key>Fur color %@</key>
+	<string>毛色 %@</string>
 	<key>GB</key>
 	<string>GB</string>
 	<key>GPU utilization, last 60 seconds</key>
@@ -1255,6 +1293,8 @@
 	<string>触覚フィードバック</string>
 	<key>Harassment</key>
 	<string>嫌がらせ</string>
+	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
+	<string>難しいことが簡単になるのは、道ができるのと同じ。一歩を、何度も。</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>コードをお持ちですか？%lld文字のパーティコードを入力してReturnキーを押すと参加できます</string>
 	<key>Head Mirror</key>
@@ -1285,6 +1325,8 @@
 	<string>フレンドにステータスを隠す</string>
 	<key>History</key>
 	<string>履歴</string>
+	<key>Honey</key>
+	<string>ハニー</string>
 	<key>How %@ works</key>
 	<string>%@のしくみ</string>
 	<key>How long each item stays before the next one</key>
@@ -1467,6 +1509,8 @@
 	<string>AIが未完了のタスクを今日の予定に合わせて配置</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>AIが未完了のタスクを明日の予定に合わせて配置</string>
+	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
+	<string>集中セッションの直後に、ペットがときどき励ましのひとことを話します。1日に1回まで</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>集中フェーズ中に気がそれたら、ペットがノッチから出てきます</string>
 	<key>Like</key>
@@ -1545,14 +1589,20 @@
 	<string>メッセージ</string>
 	<key>Method</key>
 	<string>メソッド</string>
+	<key>Midnight</key>
+	<string>ミッドナイト</string>
 	<key>Milestones</key>
 	<string>マイルストーン</string>
+	<key>Mint</key>
+	<string>ミント</string>
 	<key>Model</key>
 	<string>モデル</string>
 	<key>Month</key>
 	<string>月</string>
 	<key>Moonlit Witch Hat</key>
 	<string>月夜の魔女の帽子</string>
+	<key>Moonstone</key>
+	<string>ムーンストーン</string>
 	<key>More</key>
 	<string>多</string>
 	<key>More events</key>
@@ -1565,6 +1615,8 @@
 	<string>その他のオプション</string>
 	<key>More tabs</key>
 	<string>その他のタブ</string>
+	<key>Most people wait to feel ready. You just started. That's the difference.</key>
+	<string>多くの人は準備ができるのを待つ。あなたはもう始めた。それが違い。</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>%@をアプリケーションフォルダに移動しますか？</string>
 	<key>Move down</key>
@@ -1697,6 +1749,8 @@
 	<string>いいえ。このバージョンはTabbiには古すぎます。</string>
 	<key>No. This copy of Tabbi can't ask for it.</key>
 	<string>いいえ。このTabbiではアクセスを求められません。</string>
+	<key>Nobody sees roots growing. Then one day there's a tree.</key>
+	<string>根が伸びるのは誰にも見えない。でもある日、そこに木が立っている。</string>
 	<key>None</key>
 	<string>なし</string>
 	<key>None of your tabs need another app right now.</key>
@@ -1781,6 +1835,8 @@
 	<string>Tabbiの通知がオフです</string>
 	<key>Now Playing</key>
 	<string>再生中</string>
+	<key>Now and then, a short line from your pet after a focus session.</key>
+	<string>集中セッションのあと、ときどきペットがひとこと話します。</string>
 	<key>Nudge me during focus</key>
 	<string>集中中に声をかけてもらう</string>
 	<key>Nudges</key>
@@ -2161,6 +2217,8 @@
 	<string>Ankiを終了して、もう一度開いてください。Tabbiが自動で気づきます。</string>
 	<key>Rain</key>
 	<string>雨</string>
+	<key>Rare</key>
+	<string>レア</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>最新のCodexログを読む（何も送信しません）</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2357,6 +2415,8 @@
 	<string>質問内容は%@に送信されます。</string>
 	<key>Server</key>
 	<string>サーバー</string>
+	<key>Session done. Nice work!</key>
+	<string>完了！よくがんばったね！</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>"apiKey" を null にして OK をクリック</string>
 	<key>Set this up later from its tab</key>
@@ -2377,6 +2437,8 @@
 	<string>設定…</string>
 	<key>Setup</key>
 	<string>セットアップ</string>
+	<key>Seven days. You're not trying anymore. You're becoming.</key>
+	<string>7日間。もう「挑戦」じゃない。あなたは変わりつつある。</string>
 	<key>Share a link from Party.</key>
 	<string>Partyからリンクを共有。</string>
 	<key>Share an invite link. A friend who opens it can add you in one click.</key>
@@ -2491,10 +2553,14 @@
 	<string>休憩へスキップ</string>
 	<key>Sky</key>
 	<string>スカイ</string>
+	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
+	<string>眠るのも努力のうち。明日の一手を夢で考えよう。</string>
 	<key>Smooth</key>
 	<string>なめらか</string>
 	<key>Snowy Scarf</key>
 	<string>雪のマフラー</string>
+	<key>Some is infinitely more than none. Rest. The board will be here.</key>
+	<string>少しでも、ゼロより限りなく大きい。休もう。盤はここで待ってる。</string>
 	<key>Something not working?</key>
 	<string>うまく動かないときは</string>
 	<key>Sound</key>
@@ -2515,6 +2581,8 @@
 	<string>弾むように、少しだけバウンド。</string>
 	<key>Sprint</key>
 	<string>スプリント</string>
+	<key>Stars don't rush. They just keep burning.</key>
+	<string>星は急がない。ただ燃え続けるだけ。</string>
 	<key>Start %@ automatically when you log in</key>
 	<string>ログイン時に %@ を自動で起動します</string>
 	<key>Start Party</key>
@@ -2707,12 +2775,16 @@
 	<string>%@ の読み込みを取り消します</string>
 	<key>Taking a screenshot</key>
 	<string>スクリーンショットを撮影中</string>
+	<key>Talent is a head start. Showing up is the whole race.</key>
+	<string>才能はスタートの差にすぎない。来続けることがレースのすべて。</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>ポインタがノッチに届いたときやお祝いのときにトラックパッドを振動させる</string>
 	<key>Tasks left today</key>
 	<string>今日の残りタスク</string>
 	<key>Team Medal</key>
 	<string>チームメダル</string>
+	<key>Ten hours of betting on yourself. Keep betting.</key>
+	<string>自分に賭けた10時間。これからも賭け続けよう。</string>
 	<key>Terminal</key>
 	<string>ターミナル</string>
 	<key>Terms of Use</key>
@@ -2735,6 +2807,8 @@
 	<string>このパーティは満員です。</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>そのペットの名前は使えません。別の名前にしてください。</string>
+	<key>That's a wrap. Well done!</key>
+	<string>おつかれさま。いいね！</string>
 	<key>That's your own code.</key>
 	<string>それはあなた自身のコードです。</string>
 	<key>That's your own link</key>
@@ -2793,6 +2867,14 @@
 	<string>パーティサーバーが混み合っています。まもなく再試行します。</string>
 	<key>The party server reported a problem.</key>
 	<string>パーティサーバーで問題が発生しました。</string>
+	<key>The pawn has crossed half the board. The far side is closer than it looks.</key>
+	<string>ポーンは盤の半分を越えた。向こう側は見た目より近い。</string>
+	<key>The pawn keeps moving forward. One square at a time, it can become anything it wants.</key>
+	<string>ポーンは前に進み続ける。一マスずつ進めば、何にだってなれる。</string>
+	<key>The pawn reached the last square. Now it can move any way it wants. So can you.</key>
+	<string>ポーンは最後のマスにたどり着いた。もうどこへでも動ける。あなたも。</string>
+	<key>The person you're becoming is built in quiet hours like this one.</key>
+	<string>なりたい自分は、こんな静かな時間の中でつくられていく。</string>
 	<key>The rest of the day is yours.</key>
 	<string>残りの時間は自由に使おう。</string>
 	<key>The review couldn't be written to disk. Try Done again.</key>
@@ -2813,6 +2895,8 @@
 	<string>タイマーは%@で始まります</string>
 	<key>The tool's own default</key>
 	<string>ツールのデフォルト</string>
+	<key>The work no one sees is the work that changes you.</key>
+	<string>誰にも見えない努力こそが、あなたを変えていく。</string>
 	<key>The year you were born</key>
 	<string>生まれた年</string>
 	<key>Then a break until %@</key>
@@ -2825,6 +2909,8 @@
 	<string>相手のフレンドがすでに50人います。</string>
 	<key>Thinking</key>
 	<string>考え中</string>
+	<key>Thirty days ago this was hard. Notice that it isn't anymore.</key>
+	<string>30日前は大変だった。今はもうそうじゃないことに気づいて。</string>
 	<key>This Mac blocks calendar access</key>
 	<string>このMacはカレンダーへのアクセスをブロックしています</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
@@ -3045,6 +3131,8 @@
 	<string>%@に接続する手順を見る</string>
 	<key>Wardrobe</key>
 	<string>ワードローブ</string>
+	<key>Water carves canyons by never skipping a day.</key>
+	<string>水が谷を刻めるのは、一日も休まないから。</string>
 	<key>Wearing</key>
 	<string>着用中</string>
 	<key>Week</key>
@@ -3165,6 +3253,8 @@
 	<string>「%@」タブでいつでも設定できます。</string>
 	<key>You can turn alerts off any time in System Settings.</key>
 	<string>通知はシステム設定でいつでもオフにできます。</string>
+	<key>You didn't feel like it, and you did it anyway. That's the whole secret.</key>
+	<string>気が乗らなくても、やった。秘訣はそれだけ。</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>毎週フリーズが1つ無料でもらえ、ほかに%lld個まで持てます。</string>
 	<key>You joined the party</key>
@@ -3179,6 +3269,8 @@
 	<string>このパーティにはもう参加しています</string>
 	<key>You're in Party</key>
 	<string>パーティに参加中</string>
+	<key>You're not behind. You're on your own clock, and it only moves forward.</key>
+	<string>遅れてなんかいない。自分の時計で進んでいて、その針は前にしか進まない。</string>
 	<key>You're not in a party anymore.</key>
 	<string>パーティに参加していません。</string>
 	<key>You're the only one here for now.</key>

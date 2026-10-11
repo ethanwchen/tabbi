@@ -65,6 +65,8 @@
 	<string>%@ 님이 내 파티에 있어요</string>
 	<key>%@ is keeping you company</key>
 	<string>%@가 곁에 있어요</string>
+	<key>%@ is keeping you company. %@</key>
+	<string>%1$@가 곁에 있어요. %2$@</string>
 	<key>%@ is looking over this plan...</key>
 	<string>%@가 계획을 살펴보는 중...</string>
 	<key>%@ is looking over this plan…</key>
@@ -75,6 +77,8 @@
 	<string>이제 %@ 님과 친구예요</string>
 	<key>%@ is on a break with you</key>
 	<string>%@도 함께 쉬는 중</string>
+	<key>%@ is ready in the Closet</key>
+	<string>옷장에서 %@ 준비 완료</string>
 	<key>%@ is studying with the party</key>
 	<string>%@는 파티와 함께 공부 중</string>
 	<key>%@ is studying with you</key>
@@ -249,6 +253,10 @@
 	<string>친구 서버 주소. 비워 두면 %@ 서버를 써요.</string>
 	<key>A gentle nudge from %@ on days you haven't studied yet</key>
 	<string>아직 공부하지 않은 날 %@이(가) 살짝 알려 줘요</string>
+	<key>A gift: %lld min toward the event</key>
+	<string>선물: 이벤트에 %lld분</string>
+	<key>A gift: the rare %@ fur</key>
+	<string>선물: 희귀한 %@ 털색</string>
 	<key>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</key>
 	<string>키트는 미리 준비된 탭 묶음이에요. 바꾸면 탭이 바뀌고 시작 할 일이 오늘에 추가돼요.</string>
 	<key>A kit is a set of tabs. You can change them any time.</key>
@@ -257,6 +265,8 @@
 	<string>노치 가장자리와 축하할 때 트랙패드가 살짝 톡 울려요.</string>
 	<key>A lighter week. Every minute counts.</key>
 	<string>가벼운 한 주였어요. 1분도 소중해요.</string>
+	<key>A line from your pet. Hover to keep it, click to send the pet home. Turn it off in Settings › General.</key>
+	<string>펫의 한마디예요. 포인터를 올리면 계속 보이고, 클릭하면 펫이 집으로 돌아가요. 설정 › 일반에서 끌 수 있어요.</string>
 	<key>A longer timer</key>
 	<string>타이머 늘리기</string>
 	<key>A lovely first week together.</key>
@@ -267,6 +277,8 @@
 	<string>질문 하나에 스크린샷은 최대 %lld장까지</string>
 	<key>A quiet day. Rest up and start fresh tomorrow.</key>
 	<string>조용한 하루였어요. 푹 쉬고 내일 새롭게 시작해요.</string>
+	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
+	<string>펫이 준 희귀한 털색이에요. 옷장의 모양에서 입혀 보세요.</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>푹 쉰 한 주였어요. 새로운 시작이 기다려요.</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
@@ -551,6 +563,10 @@
 	<string>차단한 사람은 나를 보거나 추가하거나 내 파티에 참여할 수 없어요. 차단이나 신고는 파티에서 오른쪽 클릭하세요.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>블록은 캘린더에 추가돼요.</string>
+	<key>Bonus minutes toward this event's limited items</key>
+	<string>이번 이벤트 한정 아이템을 위한 보너스 시간</string>
+	<key>Bonus points from your pet, added to your balance</key>
+	<string>펫이 준 보너스 포인트, 잔액에 더해졌어요</string>
 	<key>Bow Tie</key>
 	<string>나비넥타이</string>
 	<key>Break</key>
@@ -559,6 +575,8 @@
 	<string>휴식 끝</string>
 	<key>Breed</key>
 	<string>품종</string>
+	<key>Breed colors</key>
+	<string>품종 색상</string>
 	<key>Bring %@ to the front</key>
 	<string>%@ 앞으로 가져오기</string>
 	<key>Brown noise</key>
@@ -609,6 +627,10 @@
 	<string>오늘 복습할 카드와 연속 복습 기록.</string>
 	<key>Cat</key>
 	<string>고양이</string>
+	<key>Cat wisdom</key>
+	<string>고양이의 한마디</string>
+	<key>Cats land on their feet because they never stop turning toward the ground. Welcome back.</key>
+	<string>고양이가 발로 착지하는 건 끝까지 땅 쪽으로 몸을 돌리기 때문이에요. 다시 온 걸 환영해요.</string>
 	<key>Celebration sound</key>
 	<string>축하 소리</string>
 	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
@@ -745,6 +767,8 @@
 	<string>아래 버튼을 클릭하면 로그인 명령어가 복사되고 터미널이 열려요.</string>
 	<key>Click to dismiss</key>
 	<string>클릭하여 닫기</string>
+	<key>Click to send the pet home</key>
+	<string>클릭하면 펫이 집으로 돌아가요</string>
 	<key>Close</key>
 	<string>닫기</string>
 	<key>Close %@ settings</key>
@@ -1005,6 +1029,8 @@
 	<string>다시 묻지 않기</string>
 	<key>Done</key>
 	<string>완료</string>
+	<key>Done! You stuck with it.</key>
+	<string>완료! 끝까지 해냈어요.</string>
 	<key>Drag to reorder</key>
 	<string>드래그해서 순서 바꾸기</string>
 	<key>Drag to reorder, or select a tab and press Option-Up or Option-Down. At least one tab stays.</key>
@@ -1041,12 +1067,20 @@
 	<string>이 구간을 끝내고 알맞은 휴식하기</string>
 	<key>Ends at %@</key>
 	<string>%@에 종료</string>
+	<key>Enough for the %@ and the %@ now.</key>
+	<string>이제 %1$@, %2$@ 교환 가능.</string>
+	<key>Enough for the %@ now</key>
+	<string>이제 %@ 교환 가능</string>
+	<key>Enough for the %@ now.</key>
+	<string>이제 %@ 교환 가능.</string>
 	<key>Event</key>
 	<string>이벤트</string>
 	<key>Every deck is caught up</key>
 	<string>모든 덱을 다 끝냈어요</string>
 	<key>Every focused minute fills in today's square</key>
 	<string>집중한 만큼 오늘 칸이 채워져요</string>
+	<key>Every hour you give your future, it gives back with interest.</key>
+	<string>미래에 준 한 시간은 이자를 붙여 돌아와요.</string>
 	<key>Every module is already a tab.</key>
 	<string>모든 모듈이 이미 탭이에요.</string>
 	<key>Every question opens a larger chat view under the notch. Press Esc to go back.</key>
@@ -1067,6 +1101,8 @@
 	<string>시험 기간</string>
 	<key>Example</key>
 	<string>예시</string>
+	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
+	<string>멈추는 건 실패가 아니에요. 계속 멈춰 있는 게 실패죠. 봐요, 다시 왔잖아요.</string>
 	<key>Fantasy</key>
 	<string>판타지</string>
 	<key>Fast</key>
@@ -1201,6 +1237,8 @@
 	<string>재미</string>
 	<key>Fur</key>
 	<string>털색</string>
+	<key>Fur color %@</key>
+	<string>털색 %@</string>
 	<key>GB</key>
 	<string>GB</string>
 	<key>GPU utilization, last 60 seconds</key>
@@ -1255,6 +1293,8 @@
 	<string>햅틱 피드백</string>
 	<key>Harassment</key>
 	<string>괴롭힘</string>
+	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
+	<string>어려운 일이 쉬워지는 건 길이 나는 것과 같아요. 한 걸음을 여러 번.</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>코드가 있나요? %lld자리 파티 코드를 입력하고 Return 키를 눌러 참가하세요</string>
 	<key>Head Mirror</key>
@@ -1285,6 +1325,8 @@
 	<string>친구에게 내 상태 숨기기</string>
 	<key>History</key>
 	<string>기록</string>
+	<key>Honey</key>
+	<string>꿀색</string>
 	<key>How %@ works</key>
 	<string>%@ 방법 알아보기</string>
 	<key>How long each item stays before the next one</key>
@@ -1467,6 +1509,8 @@
 	<string>AI가 남은 할 일을 오늘 일정에 맞춰 배치해요</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>AI가 남은 할 일을 내일 일정에 맞춰 배치해요</string>
+	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
+	<string>집중 세션이 끝난 직후 펫이 가끔 응원의 한마디를 해요. 하루에 한 번까지</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>집중 시간에 딴짓하면 펫이 노치에서 걸어 나와요</string>
 	<key>Like</key>
@@ -1545,14 +1589,20 @@
 	<string>메시지</string>
 	<key>Method</key>
 	<string>방법</string>
+	<key>Midnight</key>
+	<string>미드나이트</string>
 	<key>Milestones</key>
 	<string>마일스톤</string>
+	<key>Mint</key>
+	<string>민트</string>
 	<key>Model</key>
 	<string>모델</string>
 	<key>Month</key>
 	<string>월</string>
 	<key>Moonlit Witch Hat</key>
 	<string>달빛 마녀 모자</string>
+	<key>Moonstone</key>
+	<string>문스톤</string>
 	<key>More</key>
 	<string>많음</string>
 	<key>More events</key>
@@ -1565,6 +1615,8 @@
 	<string>추가 옵션</string>
 	<key>More tabs</key>
 	<string>탭 더 보기</string>
+	<key>Most people wait to feel ready. You just started. That's the difference.</key>
+	<string>대부분은 준비될 때까지 기다려요. 그냥 시작했다는 것, 그게 차이예요.</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>%@을(를) 응용 프로그램 폴더로 옮길까요?</string>
 	<key>Move down</key>
@@ -1697,6 +1749,8 @@
 	<string>아니요. 이 버전은 Tabbi에 쓰기엔 너무 오래됐어요.</string>
 	<key>No. This copy of Tabbi can't ask for it.</key>
 	<string>아니요. 이 버전의 Tabbi는 권한을 요청할 수 없어요.</string>
+	<key>Nobody sees roots growing. Then one day there's a tree.</key>
+	<string>뿌리가 자라는 건 아무도 못 봐요. 그러다 어느 날 나무가 서 있죠.</string>
 	<key>None</key>
 	<string>없음</string>
 	<key>None of your tabs need another app right now.</key>
@@ -1781,6 +1835,8 @@
 	<string>Tabbi 알림이 꺼져 있어요</string>
 	<key>Now Playing</key>
 	<string>재생 중</string>
+	<key>Now and then, a short line from your pet after a focus session.</key>
+	<string>집중 세션이 끝나면 가끔 펫이 짧게 한마디해요.</string>
 	<key>Nudge me during focus</key>
 	<string>집중 중에 알려 주기</string>
 	<key>Nudges</key>
@@ -2161,6 +2217,8 @@
 	<string>Anki를 종료한 뒤 다시 열어 주세요. Tabbi가 알아서 알아차려요.</string>
 	<key>Rain</key>
 	<string>빗소리</string>
+	<key>Rare</key>
+	<string>희귀</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>최신 Codex 로그 읽기 (아무것도 보내지 않음)</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2357,6 +2415,8 @@
 	<string>질문한 내용은 %@에 보내져요.</string>
 	<key>Server</key>
 	<string>서버</string>
+	<key>Session done. Nice work!</key>
+	<string>세션 완료. 잘했어요!</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>"apiKey"를 null로 바꾸고 OK 클릭</string>
 	<key>Set this up later from its tab</key>
@@ -2377,6 +2437,8 @@
 	<string>설정…</string>
 	<key>Setup</key>
 	<string>설정</string>
+	<key>Seven days. You're not trying anymore. You're becoming.</key>
+	<string>7일째. 이제 시도하는 게 아니에요. 변해 가고 있어요.</string>
 	<key>Share a link from Party.</key>
 	<string>Party에서 링크를 공유해요.</string>
 	<key>Share an invite link. A friend who opens it can add you in one click.</key>
@@ -2491,10 +2553,14 @@
 	<string>휴식으로 건너뛰기</string>
 	<key>Sky</key>
 	<string>하늘색</string>
+	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
+	<string>잠도 노력의 일부예요. 가서 내일의 수를 꿈꿔 봐요.</string>
 	<key>Smooth</key>
 	<string>부드럽게</string>
 	<key>Snowy Scarf</key>
 	<string>눈송이 목도리</string>
+	<key>Some is infinitely more than none. Rest. The board will be here.</key>
+	<string>조금이라도 한 건 안 한 것보다 훨씬 커요. 쉬어요. 판은 여기 그대로 있을 거예요.</string>
 	<key>Something not working?</key>
 	<string>잘 안 되나요?</string>
 	<key>Sound</key>
@@ -2515,6 +2581,8 @@
 	<string>통통 튀듯 살짝 바운스해요.</string>
 	<key>Sprint</key>
 	<string>스프린트</string>
+	<key>Stars don't rush. They just keep burning.</key>
+	<string>별은 서두르지 않아요. 그저 계속 타오를 뿐이죠.</string>
 	<key>Start %@ automatically when you log in</key>
 	<string>로그인할 때 %@을(를) 자동으로 실행해요</string>
 	<key>Start Party</key>
@@ -2707,12 +2775,16 @@
 	<string>%@ 가져오기를 취소해요</string>
 	<key>Taking a screenshot</key>
 	<string>스크린샷 찍는 중</string>
+	<key>Talent is a head start. Showing up is the whole race.</key>
+	<string>재능은 조금 앞선 출발일 뿐. 꾸준히 나오는 게 경주의 전부예요.</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>포인터가 노치에 닿거나 축하할 때 트랙패드를 톡 울려요</string>
 	<key>Tasks left today</key>
 	<string>오늘 남은 할 일</string>
 	<key>Team Medal</key>
 	<string>팀 메달</string>
+	<key>Ten hours of betting on yourself. Keep betting.</key>
+	<string>나 자신에게 건 10시간. 계속 걸어 봐요.</string>
 	<key>Terminal</key>
 	<string>터미널</string>
 	<key>Terms of Use</key>
@@ -2735,6 +2807,8 @@
 	<string>파티가 꽉 찼어요.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>사용할 수 없는 펫 이름이에요. 다른 이름을 골라 주세요.</string>
+	<key>That's a wrap. Well done!</key>
+	<string>끝! 수고했어요!</string>
 	<key>That's your own code.</key>
 	<string>내 코드예요.</string>
 	<key>That's your own link</key>
@@ -2793,6 +2867,14 @@
 	<string>파티 서버가 바빠요. 잠시 후 다시 시도해요.</string>
 	<key>The party server reported a problem.</key>
 	<string>파티 서버에 문제가 생겼어요.</string>
+	<key>The pawn has crossed half the board. The far side is closer than it looks.</key>
+	<string>폰이 판의 절반을 건넜어요. 반대편은 보이는 것보다 가까워요.</string>
+	<key>The pawn keeps moving forward. One square at a time, it can become anything it wants.</key>
+	<string>폰은 계속 앞으로 나아가요. 한 칸씩 가다 보면 무엇이든 될 수 있어요.</string>
+	<key>The pawn reached the last square. Now it can move any way it wants. So can you.</key>
+	<string>폰이 마지막 칸에 도착했어요. 이제 어디로든 갈 수 있어요. 당신도요.</string>
+	<key>The person you're becoming is built in quiet hours like this one.</key>
+	<string>앞으로의 나는 이런 조용한 시간 속에서 만들어져요.</string>
 	<key>The rest of the day is yours.</key>
 	<string>남은 하루는 온전히 당신 거예요.</string>
 	<key>The review couldn't be written to disk. Try Done again.</key>
@@ -2813,6 +2895,8 @@
 	<string>타이머가 %@(으)로 시작해요</string>
 	<key>The tool's own default</key>
 	<string>도구 기본값</string>
+	<key>The work no one sees is the work that changes you.</key>
+	<string>아무도 보지 않는 노력이 나를 바꿔요.</string>
 	<key>The year you were born</key>
 	<string>태어난 연도</string>
 	<key>Then a break until %@</key>
@@ -2825,6 +2909,8 @@
 	<string>상대방의 친구가 이미 50명이에요.</string>
 	<key>Thinking</key>
 	<string>생각 중</string>
+	<key>Thirty days ago this was hard. Notice that it isn't anymore.</key>
+	<string>30일 전엔 이게 힘들었어요. 이제는 아니라는 걸 느껴 봐요.</string>
 	<key>This Mac blocks calendar access</key>
 	<string>이 Mac은 캘린더 접근을 막아요</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
@@ -3045,6 +3131,8 @@
 	<string>단계별로 연결하기: %@</string>
 	<key>Wardrobe</key>
 	<string>옷장</string>
+	<key>Water carves canyons by never skipping a day.</key>
+	<string>물이 협곡을 만드는 건 하루도 빠지지 않아서예요.</string>
 	<key>Wearing</key>
 	<string>착용 중</string>
 	<key>Week</key>
@@ -3165,6 +3253,8 @@
 	<string>%@ 탭에서 언제든 설정할 수 있어요.</string>
 	<key>You can turn alerts off any time in System Settings.</key>
 	<string>알림은 시스템 설정에서 언제든 끌 수 있어요.</string>
+	<key>You didn't feel like it, and you did it anyway. That's the whole secret.</key>
+	<string>하기 싫었는데도 해냈어요. 비결은 그게 전부예요.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>매주 보호 하나를 무료로 받고, %lld개까지 더 가지고 있을 수 있어요.</string>
 	<key>You joined the party</key>
@@ -3179,6 +3269,8 @@
 	<string>이미 이 파티에 있어요</string>
 	<key>You're in Party</key>
 	<string>파티에 참여했어요</string>
+	<key>You're not behind. You're on your own clock, and it only moves forward.</key>
+	<string>늦은 게 아니에요. 나만의 시계로 가고 있고, 그 시계는 앞으로만 가요.</string>
 	<key>You're not in a party anymore.</key>
 	<string>더 이상 파티에 있지 않아요.</string>
 	<key>You're the only one here for now.</key>

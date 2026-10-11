@@ -76,6 +76,9 @@ The recap card's stat captions ("sessions", "best day") sit under a number drawn
 The Party invite card (titles, messages, buttons and tooltips from `PartyInviteFlow`) and the "Move to Applications" alert are translated too, and the alert names the Applications folder as macOS does in each language (Programme, アプリケーション).
 The desktop widget is translated too: the extension reads the same strings from its own copy of `Tabbi_TabbiKitCore.bundle`, and `scripts/assemble.sh` gives its `Info.plist` the app's `CFBundleLocalizations`.
 Its streak count uses the key `%lld streak days` (English "12 days"), because `%lld days` is the Closet chart's dative phrase.
+The end-of-session moment is translated too: the headline and points, the bar toward the next unlock, the surprise gift lines and the rare fur names, the closed notch's unlock hint and the Cat wisdom toggle in Settings > General.
+Cat wisdom lines are approved English copy in `CatWisdom`, which the schedule hands out by text, so `CatWisdomLine.displayText` looks each one up in the catalog by that English, as the seasonal events are, and `LocalizationTests` fails when a line lacks a language.
+A wisdom line shows in at most three lines in the pet's bubble, so check a new translation in the `coach-wisdom-all-*` snapshots, which `TABBI_WISDOM_ALL=1` adds to a `--snapshot` run.
 Breed names stay English, because a pet that still goes by its breed is recognized by comparing its saved name to the breed's name.
 These stay English on purpose for now:
 

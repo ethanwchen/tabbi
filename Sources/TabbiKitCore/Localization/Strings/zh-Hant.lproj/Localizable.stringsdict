@@ -115,6 +115,48 @@
 			<string>有 %lld 位好友陪著你。</string>
 		</dict>
 	</dict>
+	<key>%lld minutes in the bank.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>又存下 %lld 分鐘。</string>
+		</dict>
+	</dict>
+	<key>%lld more points for %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>再 %1$lld 點就能換%2$@</string>
+		</dict>
+	</dict>
+	<key>%lld more sessions to %@</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>再專注 %1$lld 次就能換%2$@</string>
+		</dict>
+	</dict>
 	<key>%lld no longer fit</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -197,6 +239,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>%lld 次</string>
+		</dict>
+	</dict>
+	<key>%lld sessions done. Wow!</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>完成 %lld 次專注，太厲害了！</string>
 		</dict>
 	</dict>
 	<key>%lld sessions today</key>
@@ -351,6 +407,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>+%lld 點</string>
+		</dict>
+	</dict>
+	<key>A gift: %lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>禮物：額外 %lld 點</string>
 		</dict>
 	</dict>
 	<key>All %lld cards done for today</key>

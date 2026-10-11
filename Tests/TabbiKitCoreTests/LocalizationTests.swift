@@ -123,6 +123,27 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(UpNextEmptyState.localizedEvents("gigs and rehearsals"), "gigs and rehearsals")
     }
 
+    /// Cat wisdom lines are approved English copy that the schedule hands
+    /// out by text, and `CatWisdomLine.displayText` looks the translation up
+    /// by it, so a new or reworded line needs its translations added with it.
+    func testEveryCatWisdomLineIsTranslated() throws {
+        let lines = CatWisdom.daily + CatWisdom.comeback + [CatWisdom.earlyStop, CatWisdom.lateNight]
+            + CatWisdomMilestone.allCases.map(\.line)
+        let missing = "\u{0}missing"
+        for language in L10n.languages where language != L10n.sourceLanguage {
+            let bundle = try XCTUnwrap(L10n.strings(for: language))
+            for line in lines {
+                XCTAssertNotEqual(bundle.localizedString(forKey: line, value: missing, table: nil), missing,
+                                  "\(language) lacks \"\(line)\"")
+            }
+        }
+        XCTAssertEqual(CatWisdomLine(kind: .firstOfDay, text: "Not a catalog line.").displayText, "Not a catalog line.")
+        let russian = try XCTUnwrap(L10n.strings(for: "ru"))
+        let sessions = russian.localizedString(forKey: "%lld more sessions to %@", value: nil, table: nil)
+        XCTAssertEqual([1, 2, 5].map { String(format: sessions, locale: Locale(identifier: "ru"), $0, "Шапка") },
+                       ["Еще 1 сессия до «Шапка»", "Еще 2 сессии до «Шапка»", "Еще 5 сессий до «Шапка»"])
+    }
+
     /// The .lproj folders that ship are compiled from the catalog by
     /// scripts/compile-strings.sh, and committed. This re-derives what each
     /// language's files must hold (every string and every plural form) and

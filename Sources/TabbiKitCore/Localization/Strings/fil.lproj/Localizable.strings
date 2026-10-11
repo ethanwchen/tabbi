@@ -65,6 +65,8 @@
 	<string>Nasa party mo si %@</string>
 	<key>%@ is keeping you company</key>
 	<string>Sinasamahan ka ni %@</string>
+	<key>%@ is keeping you company. %@</key>
+	<string>Sinasamahan ka ni %1$@. %2$@</string>
 	<key>%@ is looking over this plan...</key>
 	<string>Tinitingnan ng %@ ang plan na ito...</string>
 	<key>%@ is looking over this plan…</key>
@@ -75,6 +77,8 @@
 	<string>Kaibigan mo na si %@</string>
 	<key>%@ is on a break with you</key>
 	<string>Nagbe-break si %@ kasama mo</string>
+	<key>%@ is ready in the Closet</key>
+	<string>Handa na ang %@ sa Closet</string>
 	<key>%@ is studying with the party</key>
 	<string>Nag-aaral si %@ kasama ang party</string>
 	<key>%@ is studying with you</key>
@@ -249,6 +253,10 @@
 	<string>Address ng friends server. Iwanang blangko para sa %@.</string>
 	<key>A gentle nudge from %@ on days you haven't studied yet</key>
 	<string>Banayad na paalala mula kay %@ kapag hindi ka pa nag-aaral</string>
+	<key>A gift: %lld min toward the event</key>
+	<string>Regalo: %lld min para sa event</string>
+	<key>A gift: the rare %@ fur</key>
+	<string>Regalo: ang rare na balahibong %@</string>
 	<key>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</key>
 	<string>Ang kit ay handang set ng mga tab. Kapag lumipat ka, papalitan nito ang mga tab mo at idadagdag ang mga panimulang task nito sa Ngayon.</string>
 	<key>A kit is a set of tabs. You can change them any time.</key>
@@ -257,6 +265,8 @@
 	<string>Isang mahinang tap sa trackpad sa gilid ng notch at sa mga celebration.</string>
 	<key>A lighter week. Every minute counts.</key>
 	<string>Mas magaan na linggo. Mahalaga ang bawat minuto.</string>
+	<key>A line from your pet. Hover to keep it, click to send the pet home. Turn it off in Settings › General.</key>
+	<string>Isang linya mula sa pet mo. I-hover para manatili ito, o i-click para pauwiin ang pet. I-off ito sa Settings › General.</string>
 	<key>A longer timer</key>
 	<string>Mas mahabang timer</string>
 	<key>A lovely first week together.</key>
@@ -267,6 +277,8 @@
 	<string>Hanggang %lld screenshot lang ang puwede sa isang tanong</string>
 	<key>A quiet day. Rest up and start fresh tomorrow.</key>
 	<string>Tahimik na araw. Magpahinga ka at magsimula ulit bukas.</string>
+	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
+	<string>Isang rare na kulay ng balahibo mula sa pet mo. Subukan ito sa Closet sa ilalim ng Look.</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>Isang linggo ng pahinga. May bagong simulang naghihintay.</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
@@ -551,6 +563,10 @@
 	<string>Hindi ka makikita, ma-add o masasalihan ng naka-block. Para mag-block o mag-report, i-right-click sila sa Party.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>Mapupunta sa calendar mo.</string>
+	<key>Bonus minutes toward this event's limited items</key>
+	<string>Bonus minutes para sa mga limitadong item ng event na ito</string>
+	<key>Bonus points from your pet, added to your balance</key>
+	<string>Bonus points mula sa pet mo, idinagdag sa balance mo</string>
 	<key>Bow Tie</key>
 	<string>Bow Tie</string>
 	<key>Break</key>
@@ -559,6 +575,8 @@
 	<string>Tapos na ang break</string>
 	<key>Breed</key>
 	<string>Lahi</string>
+	<key>Breed colors</key>
+	<string>Mga kulay ng lahi</string>
 	<key>Bring %@ to the front</key>
 	<string>Dalhin sa harap ang %@</string>
 	<key>Brown noise</key>
@@ -609,6 +627,10 @@
 	<string>Mga card na due ngayon at ang daily review streak mo.</string>
 	<key>Cat</key>
 	<string>Pusa</string>
+	<key>Cat wisdom</key>
+	<string>Payo ng pusa</string>
+	<key>Cats land on their feet because they never stop turning toward the ground. Welcome back.</key>
+	<string>Laging nakatapak ang pusa sa pagbagsak dahil hindi ito tumitigil sa pagbaling sa lupa. Welcome back.</string>
 	<key>Celebration sound</key>
 	<string>Tunog ng celebration</string>
 	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
@@ -745,6 +767,8 @@
 	<string>I-click ang button sa ibaba. Kinokopya nito ang sign-in line at binubuksan ang Terminal.</string>
 	<key>Click to dismiss</key>
 	<string>I-click para isara</string>
+	<key>Click to send the pet home</key>
+	<string>I-click para pauwiin ang pet</string>
 	<key>Close</key>
 	<string>Isara</string>
 	<key>Close %@ settings</key>
@@ -1005,6 +1029,8 @@
 	<string>Huwag nang itanong ulit</string>
 	<key>Done</key>
 	<string>Tapos</string>
+	<key>Done! You stuck with it.</key>
+	<string>Tapos! Hindi ka sumuko.</string>
 	<key>Drag to reorder</key>
 	<string>I-drag para ayusin</string>
 	<key>Drag to reorder, or select a tab and press Option-Up or Option-Down. At least one tab stays.</key>
@@ -1041,12 +1067,20 @@
 	<string>Tapusin ang yugtong ito at mag-break nang akma ang haba</string>
 	<key>Ends at %@</key>
 	<string>Matatapos sa %@</string>
+	<key>Enough for the %@ and the %@ now.</key>
+	<string>Sapat na para sa %1$@ at %2$@.</string>
+	<key>Enough for the %@ now</key>
+	<string>Sapat na para sa %@</string>
+	<key>Enough for the %@ now.</key>
+	<string>Sapat na para sa %@.</string>
 	<key>Event</key>
 	<string>Event</string>
 	<key>Every deck is caught up</key>
 	<string>Tapos na ang lahat ng deck</string>
 	<key>Every focused minute fills in today's square</key>
 	<string>Pinupuno ng bawat minutong naka-focus ang kahon ngayon</string>
+	<key>Every hour you give your future, it gives back with interest.</key>
+	<string>Bawat oras na ibinibigay mo sa kinabukasan mo, ibinabalik nito nang may tubo.</string>
 	<key>Every module is already a tab.</key>
 	<string>Tab na ang bawat module.</string>
 	<key>Every question opens a larger chat view under the notch. Press Esc to go back.</key>
@@ -1067,6 +1101,8 @@
 	<string>Panahon ng Exam</string>
 	<key>Example</key>
 	<string>Halimbawa</string>
+	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
+	<string>Hindi pagkabigo ang mahinto. Ang hindi na bumalik, iyon. At tingnan mo, nandito ka ulit.</string>
 	<key>Fantasy</key>
 	<string>Fantasy</string>
 	<key>Fast</key>
@@ -1201,6 +1237,8 @@
 	<string>Libangan</string>
 	<key>Fur</key>
 	<string>Balahibo</string>
+	<key>Fur color %@</key>
+	<string>Kulay ng balahibo %@</string>
 	<key>GB</key>
 	<string>GB</string>
 	<key>GPU utilization, last 60 seconds</key>
@@ -1255,6 +1293,8 @@
 	<string>Haptic feedback</string>
 	<key>Harassment</key>
 	<string>Harassment</string>
+	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
+	<string>Nagiging madali ang mahirap gaya ng pagbuo ng daan: isang hakbang, paulit-ulit.</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>May code ka? I-type ang %lld-character na party code at pindutin ang Return para sumali</string>
 	<key>Head Mirror</key>
@@ -1285,6 +1325,8 @@
 	<string>Itago ang status mo sa mga kaibigan</string>
 	<key>History</key>
 	<string>History</string>
+	<key>Honey</key>
+	<string>Pulot</string>
 	<key>How %@ works</key>
 	<string>Paano gumagana ang %@</string>
 	<key>How long each item stays before the next one</key>
@@ -1436,7 +1478,7 @@
 	<key>Last 7 days</key>
 	<string>Huling 7 araw</string>
 	<key>Last synced %@</key>
-	<string>Huling na-sync %@</string>
+	<string>Na-sync %@</string>
 	<key>Launch %@</key>
 	<string>Buksan ang %@</string>
 	<key>Launch at login</key>
@@ -1467,6 +1509,8 @@
 	<string>Hayaan ang AI mo na ilagay ang mga natitira mong task sa paligid ng calendar ngayon</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>Hayaan ang AI mo na ilagay ang mga natitira mong task sa paligid ng calendar bukas</string>
+	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
+	<string>Hayaang magsabi ang pet mo ng pampalakas-loob paminsan-minsan pagkatapos ng focus session, hanggang isang beses kada araw</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>Hayaang lumabas ang pet sa notch kapag nalilihis ka sa focus</string>
 	<key>Like</key>
@@ -1545,14 +1589,20 @@
 	<string>Mga mensahe</string>
 	<key>Method</key>
 	<string>Paraan</string>
+	<key>Midnight</key>
+	<string>Hatinggabi</string>
 	<key>Milestones</key>
 	<string>Mga Milestone</string>
+	<key>Mint</key>
+	<string>Mint</string>
 	<key>Model</key>
 	<string>Model</string>
 	<key>Month</key>
 	<string>Buwan</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Sombrero ng Bruha sa Buwan</string>
+	<key>Moonstone</key>
+	<string>Moonstone</string>
 	<key>More</key>
 	<string>Mas marami</string>
 	<key>More events</key>
@@ -1565,6 +1615,8 @@
 	<string>Iba pang opsyon</string>
 	<key>More tabs</key>
 	<string>Iba pang tab</string>
+	<key>Most people wait to feel ready. You just started. That's the difference.</key>
+	<string>Karamihan, naghihintay munang maging handa. Ikaw, nagsimula na lang. Iyan ang pagkakaiba.</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>Ilipat ang %@ sa Applications folder mo?</string>
 	<key>Move down</key>
@@ -1697,6 +1749,8 @@
 	<string>Hindi. Masyadong luma ang version na ito para sa Tabbi.</string>
 	<key>No. This copy of Tabbi can't ask for it.</key>
 	<string>Hindi. Hindi ito mahihingi ng version na ito ng Tabbi.</string>
+	<key>Nobody sees roots growing. Then one day there's a tree.</key>
+	<string>Walang nakakakita sa paglaki ng ugat. Tapos isang araw, may puno na.</string>
 	<key>None</key>
 	<string>Wala</string>
 	<key>None of your tabs need another app right now.</key>
@@ -1781,6 +1835,8 @@
 	<string>Naka-off ang notifications ng Tabbi</string>
 	<key>Now Playing</key>
 	<string>Now Playing</string>
+	<key>Now and then, a short line from your pet after a focus session.</key>
+	<string>Paminsan-minsan, isang maikling linya mula sa pet mo pagkatapos ng focus session.</string>
 	<key>Nudge me during focus</key>
 	<string>Paalalahanan ako habang nagfo-focus</string>
 	<key>Nudges</key>
@@ -2161,6 +2217,8 @@
 	<string>I-quit ang Anki at buksan ulit. Kusang mapapansin ito ng Tabbi.</string>
 	<key>Rain</key>
 	<string>Ulan</string>
+	<key>Rare</key>
+	<string>Rare</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Basahin ang pinakabagong Codex log (walang ipinapadala)</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2357,6 +2415,8 @@
 	<string>Ipinapadala ang mga tanong mo sa %@.</string>
 	<key>Server</key>
 	<string>Server</string>
+	<key>Session done. Nice work!</key>
+	<string>Tapos na! Ang galing!</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>Gawing null ang "apiKey", tapos i-click ang OK</string>
 	<key>Set this up later from its tab</key>
@@ -2377,6 +2437,8 @@
 	<string>Settings…</string>
 	<key>Setup</key>
 	<string>Setup</string>
+	<key>Seven days. You're not trying anymore. You're becoming.</key>
+	<string>Pitong araw. Hindi ka na lang sumusubok. Nagbabago ka na.</string>
 	<key>Share a link from Party.</key>
 	<string>Mag-share ng link mula sa Party.</string>
 	<key>Share an invite link. A friend who opens it can add you in one click.</key>
@@ -2444,7 +2506,7 @@
 	<key>Showing local stats only</key>
 	<string>Local stats lang ang ipinapakita</string>
 	<key>Shown to friends in Party and used to greet you.</key>
-	<string>Makikita ng mga kaibigan sa Party at gagamitin sa pagbati sa iyo.</string>
+	<string>Para sa Party at sa pagbati sa iyo.</string>
 	<key>Shows the previews this kit picks.</key>
 	<string>Ipinapakita ang mga preview na pinili ng kit na ito.</string>
 	<key>Shuffle</key>
@@ -2491,10 +2553,14 @@
 	<string>Lumaktaw sa break</string>
 	<key>Sky</key>
 	<string>Sky</string>
+	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
+	<string>Bahagi ng trabaho ang tulog. Mangarap ka na ng mga galaw para bukas.</string>
 	<key>Smooth</key>
 	<string>Smooth</string>
 	<key>Snowy Scarf</key>
 	<string>Maniyebeng Scarf</string>
+	<key>Some is infinitely more than none. Rest. The board will be here.</key>
+	<string>Ang kaunti ay higit na higit sa wala. Magpahinga ka. Nandito pa rin ang board.</string>
 	<key>Something not working?</key>
 	<string>May hindi gumagana?</string>
 	<key>Sound</key>
@@ -2515,6 +2581,8 @@
 	<string>Malambot, may kaunting talbog.</string>
 	<key>Sprint</key>
 	<string>Sprint</string>
+	<key>Stars don't rush. They just keep burning.</key>
+	<string>Hindi nagmamadali ang mga bituin. Patuloy lang silang nagliliyab.</string>
 	<key>Start %@ automatically when you log in</key>
 	<string>Awtomatikong simulan ang %@ pag nag-log in ka</string>
 	<key>Start Party</key>
@@ -2707,12 +2775,16 @@
 	<string>Bawiin ang pag-import ng %@</string>
 	<key>Taking a screenshot</key>
 	<string>Kumukuha ng screenshot</string>
+	<key>Talent is a head start. Showing up is the whole race.</key>
+	<string>Ang talento ay maagang simula. Ang pagsipot ang buong karera.</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>Mag-tap sa trackpad pag umabot ang pointer sa notch o may celebration</string>
 	<key>Tasks left today</key>
 	<string>Natitirang task ngayon</string>
 	<key>Team Medal</key>
 	<string>Medalya ng Team</string>
+	<key>Ten hours of betting on yourself. Keep betting.</key>
+	<string>Sampung oras ng pagtaya sa sarili mo. Tumaya ka pa.</string>
 	<key>Terminal</key>
 	<string>Terminal</string>
 	<key>Terms of Use</key>
@@ -2735,6 +2807,8 @@
 	<string>Puno na ang party na iyan.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>Hindi puwede ang pangalang iyan para sa pet. Pumili ng iba.</string>
+	<key>That's a wrap. Well done!</key>
+	<string>Tapos na. Magaling!</string>
 	<key>That's your own code.</key>
 	<string>Sarili mong code iyan.</string>
 	<key>That's your own link</key>
@@ -2793,6 +2867,14 @@
 	<string>Abala ang party server. Susubukan ulit mamaya.</string>
 	<key>The party server reported a problem.</key>
 	<string>May problemang iniulat ang party server.</string>
+	<key>The pawn has crossed half the board. The far side is closer than it looks.</key>
+	<string>Nakatawid na ang piyon sa kalahati ng board. Mas malapit na ang dulo kaysa sa inaakala mo.</string>
+	<key>The pawn keeps moving forward. One square at a time, it can become anything it wants.</key>
+	<string>Patuloy na umaabante ang piyon. Isang hakbang sa bawat parisukat, puwede itong maging kahit ano.</string>
+	<key>The pawn reached the last square. Now it can move any way it wants. So can you.</key>
+	<string>Narating na ng piyon ang huling parisukat. Puwede na itong gumalaw kahit saan. Ikaw rin.</string>
+	<key>The person you're becoming is built in quiet hours like this one.</key>
+	<string>Nabubuo ang taong nagiging ikaw sa mga tahimik na oras na tulad nito.</string>
 	<key>The rest of the day is yours.</key>
 	<string>Sa iyo na ang natitirang araw.</string>
 	<key>The review couldn't be written to disk. Try Done again.</key>
@@ -2813,6 +2895,8 @@
 	<string>Magsisimula ang timer sa %@</string>
 	<key>The tool's own default</key>
 	<string>Default ng tool</string>
+	<key>The work no one sees is the work that changes you.</key>
+	<string>Ang trabahong walang nakakakita ang siyang nagbabago sa iyo.</string>
 	<key>The year you were born</key>
 	<string>Taon ng kapanganakan mo</string>
 	<key>Then a break until %@</key>
@@ -2825,6 +2909,8 @@
 	<string>May 50 kaibigan na sila.</string>
 	<key>Thinking</key>
 	<string>Nag-iisip</string>
+	<key>Thirty days ago this was hard. Notice that it isn't anymore.</key>
+	<string>Tatlumpung araw na ang nakalipas, mahirap ito. Pansinin mo, hindi na ngayon.</string>
 	<key>This Mac blocks calendar access</key>
 	<string>Bina-block ng Mac na ito ang calendar</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
@@ -3045,6 +3131,8 @@
 	<string>Sundan ang mga hakbang para ikonekta ang %@</string>
 	<key>Wardrobe</key>
 	<string>Wardrobe</string>
+	<key>Water carves canyons by never skipping a day.</key>
+	<string>Nakakaukit ng bangin ang tubig dahil hindi ito lumalaktaw ng araw.</string>
 	<key>Wearing</key>
 	<string>Suot</string>
 	<key>Week</key>
@@ -3108,7 +3196,7 @@
 	<key>Wizard Robe</key>
 	<string>Balabal ng Wizard</string>
 	<key>Works from any app. On Today, type right away to add a task.</key>
-	<string>Gumagana sa kahit anong app. Sa Ngayon, mag-type agad para magdagdag ng task.</string>
+	<string>Kahit saan. Sa Ngayon, i-type agad ang task.</string>
 	<key>Wrap up</key>
 	<string>Wrap up</string>
 	<key>Wrap up: review today and see what carries over</key>
@@ -3165,6 +3253,8 @@
 	<string>Mase-set up mo ito anumang oras sa tab na %@.</string>
 	<key>You can turn alerts off any time in System Settings.</key>
 	<string>Puwede mong i-off ang mga alerto kahit kailan sa System Settings.</string>
+	<key>You didn't feel like it, and you did it anyway. That's the whole secret.</key>
+	<string>Wala kang gana, pero ginawa mo pa rin. Iyan ang buong sikreto.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>May isang libreng freeze ka bawat linggo, at puwede kang mag-ipon ng %lld pa.</string>
 	<key>You joined the party</key>
@@ -3179,6 +3269,8 @@
 	<string>Kasali ka na sa party na ito</string>
 	<key>You're in Party</key>
 	<string>Nasa Party ka na</string>
+	<key>You're not behind. You're on your own clock, and it only moves forward.</key>
+	<string>Hindi ka nahuhuli. Sarili mong orasan ang sinusunod mo, at pasulong lang ito.</string>
 	<key>You're not in a party anymore.</key>
 	<string>Wala ka na sa party.</string>
 	<key>You're the only one here for now.</key>

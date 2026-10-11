@@ -916,10 +916,11 @@ struct FeedbackSection: View {
             }
             .help(String(localized: "Show a recap of your week the first time you open the notch after Sunday 6 pm", bundle: .tabbi))
             Toggle(isOn: $store.settings.catWisdomEnabled) {
-                Text("Cat wisdom")
-                Text("Now and then, a short line from your pet after a focus session.")
+                Text("Cat wisdom", bundle: .tabbi)
+                Text("Now and then, a short line from your pet after a focus session.", bundle: .tabbi)
             }
-            .help("Let your pet say a rare encouraging line right after a focus session ends, at most once a day")
+            .help(Text("Let your pet say a rare encouraging line right after a focus session ends, at most once a day",
+                        bundle: .tabbi))
             Picker(selection: $store.settings.motionPace) {
                 ForEach(MotionPace.allCases, id: \.self) { pace in
                     Text(pace.title).tag(pace)

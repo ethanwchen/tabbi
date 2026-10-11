@@ -94,6 +94,14 @@ public struct CatWisdomLine: Hashable, Sendable {
         self.kind = kind
         self.text = text
     }
+
+    /// The line in the user's language. `text` is the approved English,
+    /// which the schedule and tests work with, so the translation is looked
+    /// up by it, as seasonal event names are; a line the catalog lacks
+    /// shows as written.
+    public var displayText: String {
+        Bundle.tabbi.localizedString(forKey: text, value: text, table: nil)
+    }
 }
 
 /// A focus session that just ended, as the wisdom schedule sees it.

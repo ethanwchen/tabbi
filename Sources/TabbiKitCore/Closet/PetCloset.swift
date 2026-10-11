@@ -175,7 +175,7 @@ public struct PetCloset: Hashable, Sendable {
             String(localized: "Silver", bundle: .tabbi), String(localized: "Cream", bundle: .tabbi),
             String(localized: "Lilac", bundle: .tabbi), String(localized: "Sky", bundle: .tabbi),
         ]
-        return furSwatches.firstIndex(of: color).map { names[$0] } ?? RareFur.all.first { $0.color == color }?.name
+        return furSwatches.firstIndex(of: color).map { names[$0] } ?? RareFur.all.first { $0.color == color }?.displayName
     }
 
     /// Swatches offered by earlier builds, paired with the swatch that took

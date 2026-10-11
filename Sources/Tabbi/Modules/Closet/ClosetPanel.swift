@@ -1239,7 +1239,7 @@ private struct ClosetLook: View {
             }
             // Rare furs come only as surprise gifts, so the row shows once one is found.
             if !rareFurs.isEmpty {
-                row("Rare") {
+                row(String(localized: "Rare", bundle: .tabbi)) {
                     HStack(spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
                         ForEach(rareFurs) { fur in
                             ClosetSwatch(color: fur.color, isSelected: store.closet.furTint == fur.color) {
@@ -1296,7 +1296,8 @@ struct ClosetSwatch: View {
             .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .help(color.map { PetCloset.name(ofSwatch: $0) ?? "Fur color \($0.hex)" } ?? "Breed colors")
+        .help(color.map { PetCloset.name(ofSwatch: $0) ?? String(localized: "Fur color \($0.hex)", bundle: .tabbi) }
+              ?? String(localized: "Breed colors", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: isSelected)
