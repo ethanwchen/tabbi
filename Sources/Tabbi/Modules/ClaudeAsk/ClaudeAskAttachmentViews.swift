@@ -18,7 +18,7 @@ struct PendingAttachments: View {
                     .transition(.motionPop)
                 }
                 if session.captureFailed {
-                    Label("Couldn't take a screenshot. Try again.", systemImage: "exclamationmark.triangle.fill")
+                    Label(String(localized: "Couldn't take a screenshot. Try again.", bundle: .tabbi), systemImage: "exclamationmark.triangle.fill")
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.secondaryText)
                         .lineLimit(1)
@@ -50,7 +50,7 @@ private struct PendingThumbnail: View {
                         .contentShape(Circle())
                 }
                 .buttonStyle(.plain)
-                .help("Remove this screenshot")
+                .help(String(localized: "Remove this screenshot", bundle: .tabbi))
                 .offset(x: Theme.Spacing.xs, y: -Theme.Spacing.xs)
                 .opacity(hovering ? 1 : 0)
                 .allowsHitTesting(hovering)
@@ -92,7 +92,7 @@ struct AttachmentThumbnail: View {
         .frame(width: width, height: height)
         .clipShape(shape)
         .overlay(shape.strokeBorder(Theme.Palette.stroke, lineWidth: 0.5))
-        .help("Screenshot sent with this question")
+        .help(String(localized: "Screenshot sent with this question", bundle: .tabbi))
     }
 }
 
@@ -111,7 +111,7 @@ struct AttachButton: View {
                     .controlSize(.small)
                     .scaleEffect(0.7)
                     .frame(width: 24, height: 24)
-                    .help("Taking a screenshot")
+                    .help(String(localized: "Taking a screenshot", bundle: .tabbi))
                     .transition(.opacity)
             } else {
                 IconButton(symbol: "camera.viewfinder", size: 24, help: help) { session.attachScreenshot() }
@@ -125,8 +125,8 @@ struct AttachButton: View {
 
     private var help: String {
         isFull
-            ? "A question can take up to \(ClaudeAskSession.maxPendingAttachments) screenshots"
-            : "Attach a screenshot of this screen (Tabbi stays out of it)"
+            ? String(localized: "A question can take up to \(ClaudeAskSession.maxPendingAttachments) screenshots", bundle: .tabbi)
+            : String(localized: "Attach a screenshot of this screen (Tabbi stays out of it)", bundle: .tabbi)
     }
 }
 
@@ -143,10 +143,10 @@ struct ScreenAccessView: View {
                 .font(.system(size: 20, weight: .semibold))
                 .foregroundStyle(accent)
             VStack(spacing: Theme.Spacing.xs) {
-                Text("Allow screenshots")
+                Text("Allow screenshots", bundle: .tabbi)
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
-                Text("To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to \(session.ai.assistantName) with your question.")
+                Text("To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to \(session.ai.assistantName) with your question.", bundle: .tabbi)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .multilineTextAlignment(.center)
@@ -154,12 +154,12 @@ struct ScreenAccessView: View {
                     .frame(maxWidth: 380)
             }
             HStack(spacing: Theme.Spacing.s) {
-                PillButton(title: "Not Now", help: "Back to the chat without a screenshot") {
+                PillButton(title: String(localized: "Not Now", bundle: .tabbi), help: String(localized: "Back to the chat without a screenshot", bundle: .tabbi)) {
                     session.isAskingScreenAccess = false
                 }
-                PillButton(title: "Open System Settings", symbol: "arrow.up.forward.app",
+                PillButton(title: String(localized: "Open System Settings", bundle: .tabbi), symbol: "arrow.up.forward.app",
                            tint: Theme.Palette.primaryText,
-                           help: "Open Privacy & Security > Screen Recording in System Settings") {
+                           help: String(localized: "Open Privacy & Security > Screen Recording in System Settings", bundle: .tabbi)) {
                     session.openScreenRecordingSettings()
                 }
             }

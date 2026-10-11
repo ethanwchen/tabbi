@@ -102,9 +102,9 @@ struct DueCard: View {
             HStack(spacing: Theme.Spacing.m) {
                 ring
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                    QueueRow(title: "New", count: summary.newDue, color: Queue.new, showsTitle: !isCompact)
-                    QueueRow(title: "Learning", count: summary.learnDue, color: Queue.learning, showsTitle: !isCompact)
-                    QueueRow(title: "Review", count: summary.reviewDue, color: Queue.review, showsTitle: !isCompact)
+                    QueueRow(title: String(localized: "New", bundle: .tabbi), count: summary.newDue, color: Queue.new, showsTitle: !isCompact)
+                    QueueRow(title: String(localized: "Learning", bundle: .tabbi), count: summary.learnDue, color: Queue.learning, showsTitle: !isCompact)
+                    QueueRow(title: String(localized: "Review", bundle: .tabbi), count: summary.reviewDue, color: Queue.review, showsTitle: !isCompact)
                     Rectangle()
                         .fill(Theme.Palette.stroke)
                         .frame(height: 0.5)
@@ -115,7 +115,7 @@ struct DueCard: View {
                                 .font(.system(size: 9, weight: .bold))
                                 .foregroundStyle(Theme.Palette.tertiaryText)
                         } else {
-                            Text("Done")
+                            Text("Done", bundle: .tabbi)
                                 .foregroundStyle(Theme.Palette.tertiaryText)
                         }
                         Spacer(minLength: 0)
@@ -142,7 +142,7 @@ struct DueCard: View {
                     Image(systemName: "checkmark")
                         .font(.system(size: 20, weight: .bold, design: .rounded))
                         .foregroundStyle(Theme.Palette.success)
-                    Text("All done")
+                    Text("All done", bundle: .tabbi)
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.tertiaryText)
                 }
@@ -152,7 +152,7 @@ struct DueCard: View {
                         .font(Theme.Typography.metric)
                         .foregroundStyle(Theme.Palette.primaryText)
                         .contentTransition(.numericText(countsDown: true))
-                    Text("due")
+                    Text("due", bundle: .tabbi)
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.tertiaryText)
                 }
@@ -235,7 +235,7 @@ private struct DecksCard: View {
             } else if let problem = store.problem {
                 StaleNotice(problem: problem, updatedAt: store.updatedAt)
             } else {
-                Text(showsAll ? "All decks with cards due" : "Top decks")
+                Text(showsAll ? String(localized: "All decks with cards due", bundle: .tabbi) : String(localized: "Top decks", bundle: .tabbi))
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
             }
@@ -286,12 +286,12 @@ private struct OpeningNotice: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.xs) {
             Spinner(tint: accent, size: 10, lineWidth: 1.5)
-            Text("Opening Anki…")
+            Text("Opening Anki…", bundle: .tabbi)
                 .foregroundStyle(Theme.Palette.secondaryText)
                 .lineLimit(1)
         }
         .font(Theme.Typography.caption)
-        .help(opening.deck.map { "Waiting for Anki to start, then opening \($0)" } ?? "Waiting for Anki to start")
+        .help(opening.deck.map { String(localized: "Waiting for Anki to start, then opening \($0)", bundle: .tabbi) } ?? String(localized: "Waiting for Anki to start", bundle: .tabbi))
     }
 }
 
@@ -345,7 +345,7 @@ private struct ExpandButton: View {
             showsAll.toggle()
         } label: {
             HStack(spacing: Theme.Spacing.xxs) {
-                Text(showsAll ? "Show less" : "All \(total)")
+                Text(showsAll ? String(localized: "Show less", bundle: .tabbi) : String(localized: "All \(total)", bundle: .tabbi))
                 Image(systemName: showsAll ? "chevron.up" : "chevron.down")
                     .font(.system(size: 8, weight: .bold))
             }
@@ -357,7 +357,7 @@ private struct ExpandButton: View {
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
-        .help(showsAll ? "Show the top decks beside today's total" : "Show every deck with cards due")
+        .help(showsAll ? String(localized: "Show the top decks beside today's total", bundle: .tabbi) : String(localized: "Show every deck with cards due", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -416,13 +416,13 @@ private struct DeckRow: View {
         .accessibilityElement(children: .combine)
         // Combined, the bare counts read "Biology, 6, 2, 28"; say what they count.
         .accessibilityLabel(row.title)
-        .accessibilityValue("\(deck.newCount) new, \(deck.learnCount) learning, \(deck.reviewCount) review")
+        .accessibilityValue(String(localized: "\(deck.newCount) new, \(deck.learnCount) learning, \(deck.reviewCount) review", bundle: .tabbi))
         .accessibilityAddTraits(.isButton)
-        .accessibilityAction(named: isFavorite ? "Unpin favorite" : "Pin as favorite", toggleFavorite)
-        .help("Review \(deck.name) in Anki: \(deck.newCount) new, \(deck.learnCount) learning, \(deck.reviewCount) review")
+        .accessibilityAction(named: isFavorite ? String(localized: "Unpin favorite", bundle: .tabbi) : String(localized: "Pin as favorite", bundle: .tabbi), toggleFavorite)
+        .help(String(localized: "Review \(deck.name) in Anki: \(deck.newCount) new, \(deck.learnCount) learning, \(deck.reviewCount) review", bundle: .tabbi))
         .contextMenu {
-            Button("Review in Anki", action: action)
-            Button(isFavorite ? "Unpin Favorite Deck" : "Pin as Favorite Deck", action: toggleFavorite)
+            Button(String(localized: "Review in Anki", bundle: .tabbi), action: action)
+            Button(isFavorite ? String(localized: "Unpin Favorite Deck", bundle: .tabbi) : String(localized: "Pin as Favorite Deck", bundle: .tabbi), action: toggleFavorite)
         }
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
@@ -455,7 +455,7 @@ private struct FavoriteStar: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .help(isFavorite ? "Unpin \(deck) from the Study button" : "Pin \(deck) to the Study button")
+        .help(isFavorite ? String(localized: "Unpin \(deck) from the Study button", bundle: .tabbi) : String(localized: "Pin \(deck) to the Study button", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -467,7 +467,7 @@ private struct AllCaughtUp: View {
             Image(systemName: "checkmark.seal.fill")
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(Theme.Palette.success)
-            Text("Every deck is caught up")
+            Text("Every deck is caught up", bundle: .tabbi)
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.secondaryText)
         }
@@ -497,7 +497,7 @@ private struct AnkiFooter: View {
                 if let favorite = store.favorite {
                     studyButton(favorite)
                 } else {
-                    AnkiPrimaryButton(title: "Start reviews", symbol: "play.fill",
+                    AnkiPrimaryButton(title: String(localized: "Start reviews", bundle: .tabbi), symbol: "play.fill",
                                       help: startHelp, action: { store.startReviews() })
                         .disabled(summary.dueTotal == 0)
                         .opacity(summary.dueTotal == 0 ? 0.4 : 1)
@@ -514,16 +514,16 @@ private struct AnkiFooter: View {
         let name = deck?.name ?? favorite.name
         let due = deck?.dueTotal ?? 0
         let help = due > 0
-            ? "Review \(name) in Anki: \(due) due. Pin another deck with its star."
-            : "Open \(name) in Anki. Nothing is due there today."
-        return AnkiPrimaryButton(title: "Study \(AnkiDeckName.leaf(name))", symbol: "play.fill",
+            ? String(localized: "Review \(name) in Anki: \(due) due. Pin another deck with its star.", bundle: .tabbi)
+            : String(localized: "Open \(name) in Anki. Nothing is due there today.", bundle: .tabbi)
+        return AnkiPrimaryButton(title: String(localized: "Study \(AnkiDeckName.leaf(name))", bundle: .tabbi), symbol: "play.fill",
                                  badge: due > 0 ? due : nil, help: help, action: store.studyFavorite)
             .layoutPriority(1)
     }
 
     private var startHelp: String {
-        guard let deck = summary.topDecks.first else { return "Nothing due today" }
-        return "Open \(deck.name) for review in Anki"
+        guard let deck = summary.topDecks.first else { return String(localized: "Nothing due today", bundle: .tabbi) }
+        return String(localized: "Open \(deck.name) for review in Anki", bundle: .tabbi)
     }
 }
 
@@ -542,8 +542,8 @@ private struct StreakBadge: View {
                 .fixedSize()
         }
         .help(streak > 0 && !reviewedToday
-              ? "Review today to keep your \(streak)-day streak"
-              : "Days in a row with at least one review")
+              ? String(localized: "Review today to keep your \(streak)-day streak", bundle: .tabbi)
+              : String(localized: "Days in a row with at least one review", bundle: .tabbi))
     }
 }
 
@@ -583,7 +583,7 @@ private struct SyncButton: View {
 
     var body: some View {
         IconButton(symbol: "arrow.triangle.2.circlepath", size: 28,
-                   help: isSyncing ? "Syncing with AnkiWeb…" : "Sync with AnkiWeb", action: action)
+                   help: isSyncing ? String(localized: "Syncing with AnkiWeb…", bundle: .tabbi) : String(localized: "Sync with AnkiWeb", bundle: .tabbi), action: action)
             .spinning(isSyncing)
         .disabled(isSyncing)
     }
@@ -593,8 +593,8 @@ private struct SyncButton: View {
 
 struct AnkiLoadingView: View {
     var body: some View {
-        StatusMessage(symbol: nil, tint: accent, title: "Looking for Anki…",
-                      message: "Your cards due today show up here.")
+        StatusMessage(symbol: nil, tint: accent, title: String(localized: "Looking for Anki…", bundle: .tabbi),
+                      message: String(localized: "Your cards due today show up here.", bundle: .tabbi))
     }
 }
 
@@ -618,7 +618,7 @@ struct AnkiSetupView: View {
                     if store.opening != nil {
                         Spinner(tint: accent, size: 20)
                     } else if store.state == .starting {
-                        PawLoader(tint: accent, size: 20, label: "Starting Anki")
+                        PawLoader(tint: accent, size: 20, label: String(localized: "Starting Anki", bundle: .tabbi))
                     } else {
                         Image(systemName: guide.symbol)
                             .font(.system(size: 22, weight: .semibold))
@@ -670,25 +670,25 @@ struct AnkiSetupView: View {
                 if let favorite = store.favorite {
                     // Anki is closed, so the favorite opens by its stored
                     // name: one click launches Anki and opens that deck.
-                    AnkiPrimaryButton(title: "Study \(AnkiDeckName.leaf(favorite.name))", symbol: "play.fill",
-                                      help: "Open Anki straight into \(favorite.name)", action: store.studyFavorite)
-                    AnkiSecondaryButton(title: "Open Anki", symbol: "arrow.up.forward.app",
-                                        help: "Open Anki; this tab connects on its own", action: store.openAnki)
+                    AnkiPrimaryButton(title: String(localized: "Study \(AnkiDeckName.leaf(favorite.name))", bundle: .tabbi), symbol: "play.fill",
+                                      help: String(localized: "Open Anki straight into \(favorite.name)", bundle: .tabbi), action: store.studyFavorite)
+                    AnkiSecondaryButton(title: String(localized: "Open Anki", bundle: .tabbi), symbol: "arrow.up.forward.app",
+                                        help: String(localized: "Open Anki; this tab connects on its own", bundle: .tabbi), action: store.openAnki)
                 } else {
-                    AnkiPrimaryButton(title: "Open Anki", symbol: "arrow.up.forward.app.fill",
-                                      help: "Open Anki; this tab connects on its own", action: store.openAnki)
+                    AnkiPrimaryButton(title: String(localized: "Open Anki", bundle: .tabbi), symbol: "arrow.up.forward.app.fill",
+                                      help: String(localized: "Open Anki; this tab connects on its own", bundle: .tabbi), action: store.openAnki)
                 }
             case .notInstalled:
-                AnkiPrimaryButton(title: "Get Anki", symbol: "arrow.down.circle.fill",
-                                  help: "Open apps.ankiweb.net in your browser", action: store.getAnki)
+                AnkiPrimaryButton(title: String(localized: "Get Anki", bundle: .tabbi), symbol: "arrow.down.circle.fill",
+                                  help: String(localized: "Open apps.ankiweb.net in your browser", bundle: .tabbi), action: store.getAnki)
             case .addOnMissing:
                 CopyCodeButton(code: AnkiConnectClient.addOnCode)
                 restartButton
             case .needsPermission, .addOnOutdated:
                 restartButton
             case .problem:
-                AnkiPrimaryButton(title: "Try again", symbol: "arrow.clockwise",
-                                  help: "Ask Anki again", action: store.refresh)
+                AnkiPrimaryButton(title: String(localized: "Try again", bundle: .tabbi), symbol: "arrow.clockwise",
+                                  help: String(localized: "Ask Anki again", bundle: .tabbi), action: store.refresh)
             case .starting, .checking, .ready:
                 EmptyView()
             }
@@ -703,9 +703,9 @@ struct AnkiSetupView: View {
     }
 
     private var restartButton: some View {
-        AnkiSecondaryButton(title: store.isRestarting ? "Restarting…" : "Restart Anki",
+        AnkiSecondaryButton(title: store.isRestarting ? String(localized: "Restarting…", bundle: .tabbi) : String(localized: "Restart Anki", bundle: .tabbi),
                             symbol: "arrow.clockwise",
-                            help: "Quit Anki and open it again so it loads AnkiConnect",
+                            help: String(localized: "Quit Anki and open it again so it loads AnkiConnect", bundle: .tabbi),
                             action: store.restartAnki)
             .disabled(store.isRestarting)
     }
@@ -725,78 +725,78 @@ private struct AnkiSetupGuide {
             // A click is launching Anki to open a deck: say which, so the
             // wait reads as progress rather than a setup step.
             symbol = "rectangle.stack"
-            title = opening.deck.map { "Opening \(AnkiDeckName.leaf($0))…" } ?? "Opening Anki…"
+            title = opening.deck.map { String(localized: "Opening \(AnkiDeckName.leaf($0))…", bundle: .tabbi) } ?? String(localized: "Opening Anki…", bundle: .tabbi)
             message = opening.phase == .launching
-                ? "Anki is starting. The deck opens for review as soon as it's ready."
-                : "Asking Anki to open the deck for review."
+                ? String(localized: "Anki is starting. The deck opens for review as soon as it's ready.", bundle: .tabbi)
+                : String(localized: "Asking Anki to open the deck for review.", bundle: .tabbi)
             return
         }
         switch state {
         case .notInstalled:
             symbol = "arrow.down.app"
-            title = "Anki isn't installed"
-            message = "Install the free Anki desktop app to see your due cards, decks and streak here."
-            hint = "Using a copy outside Applications? Just open it."
+            title = String(localized: "Anki isn't installed", bundle: .tabbi)
+            message = String(localized: "Install the free Anki desktop app to see your due cards, decks and streak here.", bundle: .tabbi)
+            hint = String(localized: "Using a copy outside Applications? Just open it.", bundle: .tabbi)
         case .notRunning where notice == .launchFailed:
             // A click tried to launch Anki and macOS refused: say so, or
             // the screen would look as if the click did nothing.
             symbol = "exclamationmark.triangle"
-            title = AnkiOpenOutcome.launchFailed.title ?? "Anki wouldn't open"
+            title = AnkiOpenOutcome.launchFailed.title ?? String(localized: "Anki wouldn't open", bundle: .tabbi)
             message = AnkiOpenOutcome.launchFailed.suggestion ?? ""
         case .notRunning:
             symbol = "power"
-            title = "Anki is closed"
-            message = "Open Anki to see today's due cards. This tab connects as soon as it's running."
+            title = String(localized: "Anki is closed", bundle: .tabbi)
+            message = String(localized: "Open Anki to see today's due cards. This tab connects as soon as it's running.", bundle: .tabbi)
         case .starting:
             symbol = "hourglass"
-            title = "Connecting to Anki…"
-            message = "Waiting for Anki to finish loading its add-ons."
+            title = String(localized: "Connecting to Anki…", bundle: .tabbi)
+            message = String(localized: "Waiting for Anki to finish loading its add-ons.", bundle: .tabbi)
         case .addOnMissing where notice == .addOnMissing:
             // A click opened Anki but couldn't open its deck: name the one
             // step left. The store already put the code on the clipboard.
             symbol = "puzzlepiece.extension"
-            title = "One step to open decks from here"
-            message = "Install the AnkiConnect add-on to open decks directly."
+            title = String(localized: "One step to open decks from here", bundle: .tabbi)
+            message = String(localized: "Install the AnkiConnect add-on to open decks directly.", bundle: .tabbi)
             steps = [
-                "In Anki, choose Tools › Add-ons › Get Add-ons…",
-                "Paste the code \(AnkiConnectClient.addOnCode) (copied) and click OK",
-                "Restart Anki, then click the deck again",
+                String(localized: "In Anki, choose Tools › Add-ons › Get Add-ons…", bundle: .tabbi),
+                String(localized: "Paste the code \(AnkiConnectClient.addOnCode) (copied) and click OK", bundle: .tabbi),
+                String(localized: "Restart Anki, then click the deck again", bundle: .tabbi),
             ]
         case .addOnMissing:
             symbol = "puzzlepiece.extension"
-            title = "Add AnkiConnect to Anki"
-            message = "This tab reads your decks through the free AnkiConnect add-on."
+            title = String(localized: "Add AnkiConnect to Anki", bundle: .tabbi)
+            message = String(localized: "This tab reads your decks through the free AnkiConnect add-on.", bundle: .tabbi)
             steps = [
-                "In Anki, choose Tools › Add-ons › Get Add-ons…",
-                "Paste the code \(AnkiConnectClient.addOnCode) and click OK",
-                "Restart Anki to load it",
+                String(localized: "In Anki, choose Tools › Add-ons › Get Add-ons…", bundle: .tabbi),
+                String(localized: "Paste the code \(AnkiConnectClient.addOnCode) and click OK", bundle: .tabbi),
+                String(localized: "Restart Anki to load it", bundle: .tabbi),
             ]
         case .needsPermission(.apiKeyRequired):
             symbol = "key"
-            title = "AnkiConnect wants an API key"
-            message = "Its config sets an API key, which this tab doesn't send."
+            title = String(localized: "AnkiConnect wants an API key", bundle: .tabbi)
+            message = String(localized: "Its config sets an API key, which this tab doesn't send.", bundle: .tabbi)
             steps = [
-                "In Anki, choose Tools › Add-ons › AnkiConnect › Config",
-                "Set \"apiKey\" to null, then click OK",
-                "Restart Anki",
+                String(localized: "In Anki, choose Tools › Add-ons › AnkiConnect › Config", bundle: .tabbi),
+                String(localized: "Set \"apiKey\" to null, then click OK", bundle: .tabbi),
+                String(localized: "Restart Anki", bundle: .tabbi),
             ]
         case .needsPermission:
             symbol = "hand.raised"
-            title = "AnkiConnect blocked this app"
-            message = "Its settings turned the connection away."
+            title = String(localized: "AnkiConnect blocked this app", bundle: .tabbi)
+            message = String(localized: "Its settings turned the connection away.", bundle: .tabbi)
             steps = [
-                "In Anki, choose Tools › Add-ons › AnkiConnect › Config",
-                "Click Restore Defaults, then OK",
-                "Restart Anki",
+                String(localized: "In Anki, choose Tools › Add-ons › AnkiConnect › Config", bundle: .tabbi),
+                String(localized: "Click Restore Defaults, then OK", bundle: .tabbi),
+                String(localized: "Restart Anki", bundle: .tabbi),
             ]
         case .addOnOutdated:
             symbol = "arrow.triangle.2.circlepath"
-            title = "Update AnkiConnect"
-            message = "The installed AnkiConnect is too old for this tab."
+            title = String(localized: "Update AnkiConnect", bundle: .tabbi)
+            message = String(localized: "The installed AnkiConnect is too old for this tab.", bundle: .tabbi)
             steps = [
-                "In Anki, choose Tools › Add-ons",
-                "Select AnkiConnect and click Check for Updates",
-                "Restart Anki",
+                String(localized: "In Anki, choose Tools › Add-ons", bundle: .tabbi),
+                String(localized: "Select AnkiConnect and click Check for Updates", bundle: .tabbi),
+                String(localized: "Restart Anki", bundle: .tabbi),
             ]
         case .problem(let error):
             symbol = "exclamationmark.triangle"
@@ -804,7 +804,7 @@ private struct AnkiSetupGuide {
             message = error.suggestion
         case .checking, .ready:
             symbol = "rectangle.stack"
-            title = "Looking for Anki…"
+            title = String(localized: "Looking for Anki…", bundle: .tabbi)
             message = ""
         }
     }
@@ -837,9 +837,9 @@ private struct CopyCodeButton: View {
     @State private var copied = false
 
     var body: some View {
-        AnkiPrimaryButton(title: copied ? "Copied" : "Copy code \(code)",
+        AnkiPrimaryButton(title: copied ? String(localized: "Copied", bundle: .tabbi) : String(localized: "Copy code \(code)", bundle: .tabbi),
                           symbol: copied ? "checkmark" : "doc.on.doc.fill",
-                          help: "Copy the AnkiConnect add-on code to paste into Anki") {
+                          help: String(localized: "Copy the AnkiConnect add-on code to paste into Anki", bundle: .tabbi)) {
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(code, forType: .string)
             withMotion(Theme.Motion.snappy) { copied = true }

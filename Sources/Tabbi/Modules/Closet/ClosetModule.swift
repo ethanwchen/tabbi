@@ -14,15 +14,15 @@ import TabbiKit
 @MainActor
 final class ClosetModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
-        id: .closet, title: "Closet", symbol: "pawprint.fill",
-        summary: "Name your pet and dress it in items you earn.", category: .fun,
+        id: .closet, title: String(localized: "Closet", bundle: .tabbi), symbol: "pawprint.fill",
+        summary: String(localized: "Name your pet and dress it in items you earn.", bundle: .tabbi), category: .fun,
         accent: ModuleAccent(red: 0.98, green: 0.80, blue: 0.30),
         kitSettings: KitSettingsSchema([
             "coachLines": PetCoachMessages.kitSettingType,
             "pet": PetProfile.kitSettingType,
         ]),
         setup: [.pet],
-        headerShortcut: ModuleHeaderShortcut(label: "Your pet", key: "p")
+        headerShortcut: ModuleHeaderShortcut(label: String(localized: "Your pet", bundle: .tabbi), key: "p")
     )
     let store: ClosetStore
     /// The weekly recaps, listed in the Closet's Weeks section.

@@ -15021,7 +15021,7 @@
             "suggestsSprintBreak" : false
           },
           "view" : {
-            "caption" : "of 1 cards",
+            "caption" : "of 1 card",
             "countsDown" : false,
             "deepFocus" : "idle",
             "petDozing" : true,
@@ -15104,7 +15104,7 @@
             "suggestsSprintBreak" : false
           },
           "view" : {
-            "caption" : "of 1 cards",
+            "caption" : "of 1 card",
             "countsDown" : false,
             "deepFocus" : "focusing",
             "petDozing" : false,
@@ -15191,7 +15191,7 @@
             "suggestsSprintBreak" : false
           },
           "view" : {
-            "caption" : "of 1 cards",
+            "caption" : "of 1 card",
             "countsDown" : false,
             "deepFocus" : "focusing",
             "petDozing" : false,

@@ -9,7 +9,7 @@ public enum TickerInterval: Int, CaseIterable, Identifiable, Sendable {
     public var id: Int { rawValue }
     public var seconds: TimeInterval { TimeInterval(rawValue) }
     /// Picker label, e.g. "8 seconds".
-    public var title: String { "\(rawValue) seconds" }
+    public var title: String { Duration.seconds(rawValue).formatted(.units(width: .wide)) }
 }
 
 /// Preferences for the live preview beside the closed notch.

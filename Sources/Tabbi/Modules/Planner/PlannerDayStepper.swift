@@ -9,8 +9,8 @@ import TabbiKit
 struct DayStepper<Title: View>: View {
     let viewing: PlannerViewedDay
     /// Tooltips of the arrows that leave today, naming what they show.
-    var yesterdayHelp = "Show yesterday's list"
-    var tomorrowHelp = "Plan tomorrow"
+    var yesterdayHelp = String(localized: "Show yesterday's list", bundle: .tabbi)
+    var tomorrowHelp = String(localized: "Plan tomorrow", bundle: .tabbi)
     let show: (PlannerViewedDay) -> Void
     @ViewBuilder var title: Title
 
@@ -27,7 +27,7 @@ struct DayStepper<Title: View>: View {
     }
 
     private func arrow(_ symbol: String, to day: PlannerViewedDay?, help: String) -> some View {
-        DayStepArrow(symbol: symbol, help: day == .today ? "Back to today" : help) {
+        DayStepArrow(symbol: symbol, help: day == .today ? String(localized: "Back to today", bundle: .tabbi) : help) {
             if let day { step(to: day) }
         }
         .disabled(day == nil)
@@ -81,7 +81,7 @@ private struct DayTitleButton<Label: View>: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .help("Back to today")
+        .help(String(localized: "Back to today", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -96,18 +96,18 @@ struct PlannerLeftoversBar: View {
         let count = store.leftovers.count
         HStack(spacing: Theme.Spacing.s) {
             if count > 0 {
-                Text(count == 1 ? "1 task left unfinished" : "\(count) tasks left unfinished")
+                Text("\(count) tasks left unfinished", bundle: .tabbi)
                     .font(Theme.Typography.caption.monospacedDigit())
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .lineLimit(1)
                 Spacer(minLength: Theme.Spacing.s)
-                PlannerPillButton(title: "Move to today", symbol: "arrow.uturn.forward", isProminent: true,
-                                  height: 28, help: "Add the unfinished tasks to the end of today's list") {
+                PlannerPillButton(title: String(localized: "Move to today", bundle: .tabbi), symbol: "arrow.uturn.forward", isProminent: true,
+                                  height: 28, help: String(localized: "Add the unfinished tasks to the end of today's list", bundle: .tabbi)) {
                     withMotion(Theme.Motion.snappy) { store.moveToToday() }
                 }
                 .transition(.motionPop)
             } else if !store.items.isEmpty {
-                Label(store.shownDay.doneCount == store.items.count ? "All done" : "Everything unfinished is on today",
+                Label(store.shownDay.doneCount == store.items.count ? String(localized: "All done", bundle: .tabbi) : String(localized: "Everything unfinished is on today", bundle: .tabbi),
                       systemImage: "checkmark.circle.fill")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.secondaryText)

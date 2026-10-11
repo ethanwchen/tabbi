@@ -5,8 +5,8 @@ import TabbiKitCore
 @MainActor
 final class SystemModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
-        id: .system, title: "System", symbol: "cpu",
-        summary: "Your Mac's CPU, GPU and memory use at a glance.", category: .system,
+        id: .system, title: String(localized: "System", bundle: .tabbi), symbol: "cpu",
+        summary: String(localized: "Your Mac's CPU, GPU and memory use at a glance.", bundle: .tabbi), category: .system,
         accent: ModuleAccent(red: 0.35, green: 0.78, blue: 1.00)
     )
     private let monitor: SystemMonitor

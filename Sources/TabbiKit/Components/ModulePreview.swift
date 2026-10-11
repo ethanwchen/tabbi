@@ -61,7 +61,7 @@ public struct ModulePreview: View {
                 .foregroundStyle(Theme.Palette.primaryText)
                 .fixedSize(horizontal: false, vertical: true)
                 .lineLimit(3)
-            Text("In development")
+            Text("In development", bundle: .tabbi)
                 .font(Theme.Typography.caption)
                 .foregroundStyle(accent)
                 .padding(.horizontal, Theme.Spacing.s)

@@ -8,8 +8,8 @@ import TabbiKit
 @MainActor
 final class TodayModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
-        id: .planner, title: "Today", symbol: "checklist",
-        summary: "Your to-do list, what is up next, and a day plan.", category: .productivity,
+        id: .planner, title: String(localized: "Today", bundle: .tabbi), symbol: "checklist",
+        summary: String(localized: "Your to-do list, what is up next, and a day plan.", bundle: .tabbi), category: .productivity,
         accent: ModuleAccent(red: 0.66, green: 0.55, blue: 1.00), permissions: [.calendars, .notifications],
         // Plan my day and Wrap up ask the AI the user picks.
         network: AIProviderID.allNetworkAccess,

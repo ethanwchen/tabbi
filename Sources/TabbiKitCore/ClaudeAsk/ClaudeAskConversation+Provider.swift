@@ -56,10 +56,10 @@ extension ClaudeAskFailure {
     /// The setup screen's headline, shown before the first question.
     public var setupTitle: String {
         switch self {
-        case .noProvider: "Choose an AI to ask questions"
-        case .notInstalled(let id): "Set up \(id.assistantName) to ask questions"
-        case .needsKey(let id): "Add your \(id.displayName) key"
-        case .process: "Ask anything"
+        case .noProvider: String(localized: "Choose an AI to ask questions", bundle: .tabbi)
+        case .notInstalled(let id): String(localized: "Set up \(id.assistantName) to ask questions", bundle: .tabbi)
+        case .needsKey(let id): String(localized: "Add your \(id.displayName) key", bundle: .tabbi)
+        case .process: String(localized: "Ask anything", bundle: .tabbi)
         }
     }
 
@@ -67,11 +67,11 @@ extension ClaudeAskFailure {
     public var setupMessage: String {
         switch self {
         case .noProvider:
-            "Answers come from the AI you pick: Claude, ChatGPT, Gemini or a free model on this Mac."
+            String(localized: "Answers come from the AI you pick: Claude, ChatGPT, Gemini or a free model on this Mac.", bundle: .tabbi)
         case .notInstalled(let id):
-            "\(id.displayName) isn't on this Mac yet. Connections shows you how to add it."
+            String(localized: "\(id.displayName) isn't on this Mac yet. Connections shows you how to add it.", bundle: .tabbi)
         case .needsKey(let id):
-            "Paste a key in Connections to ask \(id.assistantName) questions. It stays in your Keychain."
+            String(localized: "Paste a key in Connections to ask \(id.assistantName) questions. It stays in your Keychain.", bundle: .tabbi)
         case .process(let detail):
             detail
         }
@@ -80,10 +80,10 @@ extension ClaudeAskFailure {
     /// The button that opens Connections.
     public var setupAction: String {
         switch self {
-        case .noProvider: "Choose AI"
-        case .notInstalled(let id): "Set up \(id.assistantName)"
-        case .needsKey: "Add key"
-        case .process: "Open Connections"
+        case .noProvider: String(localized: "Choose AI", bundle: .tabbi)
+        case .notInstalled(let id): String(localized: "Set up \(id.assistantName)", bundle: .tabbi)
+        case .needsKey: String(localized: "Add key", bundle: .tabbi)
+        case .process: String(localized: "Open Connections", bundle: .tabbi)
         }
     }
 }

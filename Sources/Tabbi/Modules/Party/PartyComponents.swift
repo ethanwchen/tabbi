@@ -152,7 +152,7 @@ struct PartyCopyCode: View {
                     .frame(width: 10)
                     .contentTransition(.symbolEffect(.replace))
                 if showsLabel {
-                    Text(copied ? "Copied" : "Copy")
+                    Text(copied ? String(localized: "Copied", bundle: .tabbi) : String(localized: "Copy", bundle: .tabbi))
                         .font(Theme.Typography.caption)
                         .foregroundStyle(copied ? Theme.Palette.success : PartyStyle.accent)
                         .contentTransition(.opacity)
@@ -166,7 +166,7 @@ struct PartyCopyCode: View {
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
-        .help(copied ? "Copied" : help)
+        .help(copied ? String(localized: "Copied", bundle: .tabbi) : help)
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: copied)
@@ -251,7 +251,7 @@ final class PartyInvitePicker: NSObject, @preconcurrency NSSharingServicePickerD
     /// Copy Invite Link, then what macOS proposes for the link.
     static func services(for invite: PartyInvite, proposed: [NSSharingService]) -> [NSSharingService] {
         let url = invite.webURL
-        let copy = NSSharingService(title: "Copy Invite Link",
+        let copy = NSSharingService(title: String(localized: "Copy Invite Link", bundle: .tabbi),
                                     image: NSImage(systemSymbolName: "link", accessibilityDescription: nil) ?? NSImage(),
                                     alternateImage: nil) {
             PartyInvitePicker.copy(url)
@@ -340,7 +340,7 @@ struct PartyCodeField: View {
                         .foregroundStyle(PartyStyle.accent)
                 }
                 .buttonStyle(.plain)
-                .help("Submit")
+                .help(String(localized: "Submit", bundle: .tabbi))
                 .transition(.opacity)
             }
         }
@@ -394,7 +394,7 @@ private struct PartyPasteButton: View {
 
     var body: some View {
         Button(action: action) {
-            Text("Paste")
+            Text("Paste", bundle: .tabbi)
                 .font(Theme.Typography.caption)
                 .foregroundStyle(hovering ? PartyStyle.accent : Theme.Palette.secondaryText)
                 .lineLimit(1)
@@ -405,7 +405,7 @@ private struct PartyPasteButton: View {
                 .contentShape(Capsule())
         }
         .buttonStyle(.plain)
-        .help("Paste a code you copied")
+        .help(String(localized: "Paste a code you copied", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }

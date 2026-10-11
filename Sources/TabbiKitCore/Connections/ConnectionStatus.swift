@@ -17,11 +17,11 @@ public enum ConnectionLight: String, CaseIterable, Hashable, Sendable {
     /// The words beside the light.
     public var title: String {
         switch self {
-        case .checking: "Checking"
-        case .connected: "Connected"
-        case .needsStep: "Needs one step"
-        case .notSetUp: "Not set up"
-        case .notInstalled: "Not installed"
+        case .checking: String(localized: "Checking", bundle: .tabbi)
+        case .connected: String(localized: "Connected", bundle: .tabbi)
+        case .needsStep: String(localized: "Needs one step", bundle: .tabbi)
+        case .notSetUp: String(localized: "Not set up", bundle: .tabbi)
+        case .notInstalled: String(localized: "Not installed", bundle: .tabbi)
         }
     }
 }
@@ -127,17 +127,17 @@ public enum ConnectionAction: Hashable, Sendable {
     /// The button's label.
     public var title: String {
         switch self {
-        case .download(let app): "Get \(app.name)"
-        case .openApp(let app): "Open \(app.name)"
-        case .showGuide(.googleCalendar): "Add Google Calendar"
-        case .showGuide: "Show me how"
-        case .askPermission: "Connect"
-        case .openSettings: "Open Settings"
-        case .checkAgain: "Check again"
-        case .setUp: "Set up"
-        case .copyFriendCode: "Copy friend code"
-        case .testDoNotDisturb: "Test it"
-        case .turnOnDoNotDisturb: "Turn on"
+        case .download(let app): String(localized: "Get \(app.name)", bundle: .tabbi)
+        case .openApp(let app): String(localized: "Open \(app.name)", bundle: .tabbi)
+        case .showGuide(.googleCalendar): String(localized: "Add Google Calendar", bundle: .tabbi)
+        case .showGuide: String(localized: "Show me how", bundle: .tabbi)
+        case .askPermission: String(localized: "Connect", bundle: .tabbi)
+        case .openSettings: String(localized: "Open Settings", bundle: .tabbi)
+        case .checkAgain: String(localized: "Check again", bundle: .tabbi)
+        case .setUp: String(localized: "Set up", bundle: .tabbi)
+        case .copyFriendCode: String(localized: "Copy friend code", bundle: .tabbi)
+        case .testDoNotDisturb: String(localized: "Test it", bundle: .tabbi)
+        case .turnOnDoNotDisturb: String(localized: "Turn on", bundle: .tabbi)
         }
     }
 }

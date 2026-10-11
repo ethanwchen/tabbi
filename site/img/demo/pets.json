@@ -320,6 +320,106 @@
       },
       "file" : "pet-laurel.png"
     },
+    "leo" : {
+      "clips" : {
+        "blink" : {
+          "durations" : [
+            140
+          ],
+          "loops" : false,
+          "row" : 1
+        },
+        "celebrate" : {
+          "durations" : [
+            80,
+            80,
+            160,
+            80,
+            100,
+            300,
+            400
+          ],
+          "loops" : false,
+          "row" : 2
+        },
+        "idle" : {
+          "durations" : [
+            1100,
+            900
+          ],
+          "loops" : true,
+          "row" : 0
+        },
+        "typing" : {
+          "durations" : [
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            700,
+            500
+          ],
+          "loops" : true,
+          "row" : 3
+        }
+      },
+      "file" : "pet-leo.png"
+    },
+    "maya" : {
+      "clips" : {
+        "blink" : {
+          "durations" : [
+            140
+          ],
+          "loops" : false,
+          "row" : 1
+        },
+        "celebrate" : {
+          "durations" : [
+            80,
+            80,
+            160,
+            80,
+            100,
+            300,
+            400
+          ],
+          "loops" : false,
+          "row" : 2
+        },
+        "idle" : {
+          "durations" : [
+            1100,
+            900
+          ],
+          "loops" : true,
+          "row" : 0
+        },
+        "typing" : {
+          "durations" : [
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            700,
+            500
+          ],
+          "loops" : true,
+          "row" : 3
+        }
+      },
+      "file" : "pet-maya.png"
+    },
     "medal" : {
       "clips" : {
         "blink" : {
@@ -419,6 +519,56 @@
         }
       },
       "file" : "pet-plain.png"
+    },
+    "priya" : {
+      "clips" : {
+        "blink" : {
+          "durations" : [
+            140
+          ],
+          "loops" : false,
+          "row" : 1
+        },
+        "celebrate" : {
+          "durations" : [
+            80,
+            80,
+            160,
+            80,
+            100,
+            300,
+            400
+          ],
+          "loops" : false,
+          "row" : 2
+        },
+        "idle" : {
+          "durations" : [
+            1100,
+            900
+          ],
+          "loops" : true,
+          "row" : 0
+        },
+        "typing" : {
+          "durations" : [
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            700,
+            500
+          ],
+          "loops" : true,
+          "row" : 3
+        }
+      },
+      "file" : "pet-priya.png"
     },
     "scholar" : {
       "clips" : {

@@ -91,7 +91,7 @@ struct ClaudeAskPanel: View {
         // level with the line being typed.
         HStack(alignment: .bottom, spacing: Theme.Spacing.s) {
             InputField(text: $draft, focused: $fieldFocused, accent: accent, maxLines: isLarge ? 6 : 3,
-                       placeholder: "Ask \(ai.assistantName) anything…", help: fieldHelp, onSubmit: { expand in send(draft, expand: expand) }) {
+                       placeholder: String(localized: "Ask \(ai.assistantName) anything…", bundle: .tabbi), help: fieldHelp, onSubmit: { expand in send(draft, expand: expand) }) {
                 PendingAttachments(session: session)
             } trailing: {
                 // Send lives inside the field, like any chat, so the row
@@ -104,13 +104,13 @@ struct ClaudeAskPanel: View {
             }
             if session.isShowingHistory || !session.savedChats.isEmpty {
                 IconButton(symbol: session.isShowingHistory ? "xmark" : "clock.arrow.circlepath", size: 32,
-                           help: session.isShowingHistory ? "Back to the chat" : "Chat history") {
+                           help: session.isShowingHistory ? String(localized: "Back to the chat", bundle: .tabbi) : String(localized: "Chat history", bundle: .tabbi)) {
                     session.isShowingHistory.toggle()
                 }
                 .transition(.motionPop)
             }
             if !conversation.isEmpty {
-                IconButton(symbol: "square.and.pencil", size: 32, help: "New chat") {
+                IconButton(symbol: "square.and.pencil", size: 32, help: String(localized: "New chat", bundle: .tabbi)) {
                     session.newChat()
                     draft = ""
                     fieldFocused = true
@@ -120,7 +120,7 @@ struct ClaudeAskPanel: View {
             if isLarge || (!conversation.isEmpty && largeView.offersExpand) {
                 IconButton(symbol: isLarge ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right",
                            size: 32,
-                           help: isLarge ? "Back to the notch (Esc)" : expandHelp) {
+                           help: isLarge ? String(localized: "Back to the notch (Esc)", bundle: .tabbi) : expandHelp) {
                     notch.requestOpenSize(isLarge ? nil : Self.largeSize)
                 }
                 .transition(.motionPop)
@@ -135,13 +135,13 @@ struct ClaudeAskPanel: View {
     private var largeView: ClaudeAskLargeView { session.preferences.largeView }
 
     private var expandHelp: String {
-        largeView == .always ? "Open in the large view" : "Open in the large view (Command-Return sends and expands)"
+        largeView == .always ? String(localized: "Open in the large view", bundle: .tabbi) : String(localized: "Open in the large view (Command-Return sends and expands)", bundle: .tabbi)
     }
 
     private var fieldHelp: String {
         largeView == .askEachTime && !isLarge
-            ? "Return to send, Command-Return to send in the large view, Shift-Return for a new line"
-            : "Return to send, Shift-Return for a new line"
+            ? String(localized: "Return to send, Command-Return to send in the large view, Shift-Return for a new line", bundle: .tabbi)
+            : String(localized: "Return to send, Shift-Return for a new line", bundle: .tabbi)
     }
 
     /// Sends `prompt`, growing the chat into the large view when the user's
@@ -262,7 +262,7 @@ private struct SendButton: View {
         }
         .buttonStyle(.plain)
         .disabled(!isActive)
-        .help(isStreaming ? "Stop answering" : "Send (Return)")
+        .help(isStreaming ? String(localized: "Stop answering", bundle: .tabbi) : String(localized: "Send (Return)", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: isActive)
         .motion(Theme.Motion.snappy, value: hovering)
@@ -341,7 +341,7 @@ private struct MessageList: View {
         case .assistant:
             if message.status == .failed {
                 FailureRow(failure: isLast ? session.conversation.failure : nil,
-                           assistant: message.provider?.assistantName ?? "The AI",
+                           assistant: message.provider?.assistantName ?? String(localized: "The AI", bundle: .tabbi),
                            onRetry: isLast ? { session.retry() } : nil)
             } else {
                 AssistantBubble(message: message, accent: accent)
@@ -406,7 +406,7 @@ private struct AssistantBubble: View {
                             .textSelection(.enabled)
                     }
                     if message.status == .stopped {
-                        Label("Stopped", systemImage: "stop.circle")
+                        Label(String(localized: "Stopped", bundle: .tabbi), systemImage: "stop.circle")
                             .font(Theme.Typography.caption)
                             .foregroundStyle(Theme.Palette.tertiaryText)
                     }
@@ -431,8 +431,8 @@ private struct AssistantBubble: View {
         if message.status == .streaming && message.text.isEmpty {
             // Claude often takes seconds to start; the paw trail says it's on its way.
             HStack(spacing: Theme.Spacing.s) {
-                Text("Thinking").foregroundStyle(Theme.Palette.tertiaryText)
-                PawLoader(tint: accent, size: 16, label: "Thinking")
+                Text("Thinking", bundle: .tabbi).foregroundStyle(Theme.Palette.tertiaryText)
+                PawLoader(tint: accent, size: 16, label: String(localized: "Thinking", bundle: .tabbi))
             }
         } else if message.status == .streaming {
             // Re-rendered on a timer so the caret blinks while text streams in.
@@ -442,7 +442,7 @@ private struct AssistantBubble: View {
                            caret: Text(" ▍").foregroundStyle(accent.opacity(visible ? 1 : 0.25)))
             }
         } else if message.text.isEmpty {
-            Text("No answer").foregroundStyle(Theme.Palette.tertiaryText)
+            Text("No answer", bundle: .tabbi).foregroundStyle(Theme.Palette.tertiaryText)
         } else {
             AnswerBody(text: message.text, caret: nil)
         }
@@ -500,12 +500,12 @@ private struct CodeBlock: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: Theme.Spacing.s) {
-                Text(language ?? "Code")
+                Text(language ?? String(localized: "Code", bundle: .tabbi))
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .lineLimit(1)
                 Spacer(minLength: Theme.Spacing.s)
-                CopyButton(text: code, help: "Copy code")
+                CopyButton(text: code, help: String(localized: "Copy code", bundle: .tabbi))
                     .opacity(canCopy ? 1 : 0)
                     .allowsHitTesting(canCopy)
             }
@@ -540,11 +540,11 @@ private struct CodeBlock: View {
 /// briefly after copying.
 private struct CopyButton: View {
     let text: String
-    var help = "Copy answer"
+    var help = String(localized: "Copy answer", bundle: .tabbi)
     @State private var copied = false
 
     var body: some View {
-        IconButton(symbol: copied ? "checkmark" : "doc.on.doc", size: 22, help: copied ? "Copied" : help) {
+        IconButton(symbol: copied ? "checkmark" : "doc.on.doc", size: 22, help: copied ? String(localized: "Copied", bundle: .tabbi) : help) {
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(text, forType: .string)
             copied = true
@@ -584,11 +584,11 @@ private struct FailureRow: View {
                 }
                 Spacer(minLength: Theme.Spacing.s)
                 if let failure, failure.needsSetup {
-                    PillButton(title: failure.setupAction, symbol: "link", help: "Open Connections to set up the AI") {
+                    PillButton(title: failure.setupAction, symbol: "link", help: String(localized: "Open Connections to set up the AI", bundle: .tabbi)) {
                         ConnectionsStore.shared.showHub()
                     }
                 } else if let onRetry {
-                    PillButton(title: "Retry", symbol: "arrow.clockwise", help: "Ask this question again", action: onRetry)
+                    PillButton(title: String(localized: "Retry", bundle: .tabbi), symbol: "arrow.clockwise", help: String(localized: "Ask this question again", bundle: .tabbi), action: onRetry)
                 }
             }
             .padding(.horizontal, Theme.Spacing.m)
@@ -614,10 +614,10 @@ private struct HistoryList: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             HStack(spacing: Theme.Spacing.s) {
-                Label("Chats stay on this Mac", systemImage: "lock.fill")
+                Label(String(localized: "Chats stay on this Mac", bundle: .tabbi), systemImage: "lock.fill")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
-                    .help("Saved chats are kept only on this Mac and never uploaded")
+                    .help(String(localized: "Saved chats are kept only on this Mac and never uploaded", bundle: .tabbi))
                 Spacer(minLength: Theme.Spacing.s)
                 if !session.savedChats.isEmpty {
                     ClearAllButton { session.deleteAllChats() }
@@ -627,8 +627,8 @@ private struct HistoryList: View {
             // As tall as Clear All, so the line stays put when it goes.
             .frame(height: 26)
             if session.savedChats.isEmpty {
-                StatusMessage(symbol: "clock.arrow.circlepath", tint: accent, title: "No saved chats",
-                              message: "Chats are saved here once you get an answer.")
+                StatusMessage(symbol: "clock.arrow.circlepath", tint: accent, title: String(localized: "No saved chats", bundle: .tabbi),
+                              message: String(localized: "Chats are saved here once you get an answer.", bundle: .tabbi))
                     .transition(.opacity)
             } else if ClaudeAskPanel.isSnapshot {
                 rows
@@ -690,8 +690,8 @@ private struct HistoryRow: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .help(isOpen ? "This chat is open" : "Open this chat and continue it")
-            IconButton(symbol: "trash", size: 22, help: "Delete this chat", action: delete)
+            .help(isOpen ? String(localized: "This chat is open", bundle: .tabbi) : String(localized: "Open this chat and continue it", bundle: .tabbi))
+            IconButton(symbol: "trash", size: 22, help: String(localized: "Delete this chat", bundle: .tabbi), action: delete)
                 .opacity(hovering ? 1 : 0)
                 .allowsHitTesting(hovering)
         }
@@ -714,9 +714,9 @@ private struct ClearAllButton: View {
     @State private var armed = false
 
     var body: some View {
-        PillButton(title: armed ? "Delete All Chats?" : "Clear All", symbol: armed ? "trash" : nil,
+        PillButton(title: armed ? String(localized: "Delete All Chats?", bundle: .tabbi) : String(localized: "Clear All", bundle: .tabbi), symbol: armed ? "trash" : nil,
                    tint: armed ? Theme.Palette.warning : nil,
-                   help: armed ? "Click again to delete every saved chat" : "Delete every saved chat") {
+                   help: armed ? String(localized: "Click again to delete every saved chat", bundle: .tabbi) : String(localized: "Delete every saved chat", bundle: .tabbi)) {
             if armed {
                 armed = false
                 action()
@@ -740,17 +740,17 @@ private struct EmptyChatView: View {
     let onPick: (String) -> Void
 
     private static let examples = [
-        "Quick dinner ideas",
-        "Write a polite reminder",
-        "Tips to focus better",
+        String(localized: "Quick dinner ideas", bundle: .tabbi),
+        String(localized: "Write a polite reminder", bundle: .tabbi),
+        String(localized: "Tips to focus better", bundle: .tabbi),
     ]
 
     var body: some View {
-        StatusMessage(symbol: "sparkles", tint: accent, title: "Ask \(assistant) anything",
-                      message: "Quick answers right here. \(assistant) can't see your files.") {
+        StatusMessage(symbol: "sparkles", tint: accent, title: String(localized: "Ask \(assistant) anything", bundle: .tabbi),
+                      message: String(localized: "Quick answers right here. \(assistant) can't see your files.", bundle: .tabbi)) {
             HStack(spacing: Theme.Spacing.s) {
                 ForEach(Self.examples, id: \.self) { prompt in
-                    PillButton(title: prompt, help: "Ask “\(prompt)”") { onPick(prompt) }
+                    PillButton(title: prompt, help: String(localized: "Ask “\(prompt)”", bundle: .tabbi)) { onPick(prompt) }
                 }
             }
         }
@@ -767,7 +767,7 @@ private struct SetupView: View {
     var body: some View {
         StatusMessage(symbol: "sparkles", tint: AskClaudeModule.descriptor.accentColor,
                       title: setup.setupTitle, message: setup.setupMessage) {
-            PillButton(title: setup.setupAction, symbol: "link", help: "Open Connections to set up the AI") {
+            PillButton(title: setup.setupAction, symbol: "link", help: String(localized: "Open Connections to set up the AI", bundle: .tabbi)) {
                 ConnectionsStore.shared.showHub()
             }
         }

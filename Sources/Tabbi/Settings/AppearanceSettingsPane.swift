@@ -18,11 +18,11 @@ struct AppearanceSettingsPane: View {
 
     var body: some View {
         Form {
-            family(.classic, title: "Classic")
-            family(.cozy, title: "Cozy", footer: footer)
+            family(.classic, title: String(localized: "Classic", bundle: .tabbi))
+            family(.cozy, title: String(localized: "Cozy", bundle: .tabbi), footer: footer)
             ResetToDefaultsRow(isAtDefaults: store.settings.themeID == store.defaultTheme,
-                               help: "Go back to \(ThemeCatalog.resolve(store.defaultTheme).name), the theme \(store.activeKit?.name ?? "Tabbi") starts with",
-                               title: "Reset to Default") {
+                               help: String(localized: "Go back to \(ThemeCatalog.resolve(store.defaultTheme).name), the theme \(store.activeKit?.name ?? Edition.current.name) starts with", bundle: .tabbi),
+                               title: String(localized: "Reset to Default", bundle: .tabbi)) {
                 store.settings.themeID = store.defaultTheme
             }
         }
@@ -57,9 +57,9 @@ struct AppearanceSettingsPane: View {
     }
 
     private var footer: String {
-        var text = "\(selected.summary) Themes style the open panel; the closed notch stays black."
+        var text = String(localized: "\(selected.summary) Themes style the open panel; the closed notch stays black.", bundle: .tabbi)
         if selected.controls == .glass {
-            text += " Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on."
+            text += " " + String(localized: "Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.", bundle: .tabbi)
         }
         return text
     }
@@ -99,7 +99,7 @@ private struct ThemeChoice: View {
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: isSelected)
-        .help("\(theme.name): \(theme.summary)")
+        .help(String(localized: "\(theme.name): \(theme.summary)", bundle: .tabbi))
         .accessibilityLabel(theme.name)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }

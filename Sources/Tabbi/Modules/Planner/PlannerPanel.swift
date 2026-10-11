@@ -60,14 +60,14 @@ struct PlannerPanel: View {
                             HStack(spacing: Theme.Spacing.s) {
                                 PlannerAddField(store: store, focus: $focus)
                                 if isEvening {
-                                    PlannerPillButton(title: "Wrap up", symbol: "moon.stars.fill", isProminent: true,
-                                                      height: 28, help: "Review today and see what carries over to tomorrow") {
+                                    PlannerPillButton(title: String(localized: "Wrap up", bundle: .tabbi), symbol: "moon.stars.fill", isProminent: true,
+                                                      height: 28, help: String(localized: "Review today and see what carries over to tomorrow", bundle: .tabbi)) {
                                         store.wrapUp()
                                     }
                                     .transition(.motionPop)
                                 } else if hasPlannableWork {
                                     // Nothing to schedule until there's an open task.
-                                    PlannerPillButton(title: "Plan my day", symbol: "sparkles", height: 28,
+                                    PlannerPillButton(title: String(localized: "Plan my day", bundle: .tabbi), symbol: "sparkles", height: 28,
                                                       help: store.planSettings.planMode.planHelp) {
                                         store.planMyDay()
                                     }
@@ -116,11 +116,19 @@ struct PlannerPanel: View {
             PlannerMessage(
                 symbol: "exclamationmark.triangle.fill",
                 tint: Theme.Palette.warning,
-                title: "Couldn't read \(store.viewing.title?.lowercased() ?? "today")'s list",
-                detail: "\(fileName) is damaged, so it's left untouched."
+                title: unreadableTitle,
+                detail: String(localized: "\(fileName) is damaged, so it's left untouched.", bundle: .tabbi)
             )
         } else {
             PlannerChecklist(store: store, providers: providers, focus: $focus, date: date)
+        }
+    }
+
+    private var unreadableTitle: String {
+        switch store.viewing {
+        case .yesterday: String(localized: "Couldn't read yesterday's list", bundle: .tabbi)
+        case .today: String(localized: "Couldn't read today's list", bundle: .tabbi)
+        case .tomorrow: String(localized: "Couldn't read tomorrow's list", bundle: .tabbi)
         }
     }
 }
@@ -131,11 +139,17 @@ extension TodayPlanSettings.PlanMode {
 
     /// What planning `day` does, for its tooltips.
     func planHelp(for day: PlannerViewedDay) -> String {
-        let calendar = day == .tomorrow ? "tomorrow's calendar" : "today's calendar"
+        let tomorrow = day == .tomorrow
         return switch self {
-        case .local: "Fit your open tasks, reviews and breaks around \(calendar)"
-        case .claude: "Let your AI fit your open tasks around \(calendar)"
-        case .study: "Fit reviews, study blocks and breaks around \(calendar)"
+        case .local: tomorrow
+            ? String(localized: "Fit your open tasks, reviews and breaks around tomorrow's calendar", bundle: .tabbi)
+            : String(localized: "Fit your open tasks, reviews and breaks around today's calendar", bundle: .tabbi)
+        case .claude: tomorrow
+            ? String(localized: "Let your AI fit your open tasks around tomorrow's calendar", bundle: .tabbi)
+            : String(localized: "Let your AI fit your open tasks around today's calendar", bundle: .tabbi)
+        case .study: tomorrow
+            ? String(localized: "Fit reviews, study blocks and breaks around tomorrow's calendar", bundle: .tabbi)
+            : String(localized: "Fit reviews, study blocks and breaks around today's calendar", bundle: .tabbi)
         }
     }
 }
@@ -160,22 +174,22 @@ private struct PlannerChecklist: View {
                 PlannerMessage(
                     symbol: "clock.arrow.circlepath",
                     tint: Theme.Palette.secondaryText,
-                    title: "Nothing listed yesterday",
-                    detail: "Each day's list shows up here the day after."
+                    title: String(localized: "Nothing listed yesterday", bundle: .tabbi),
+                    detail: String(localized: "Each day's list shows up here the day after.", bundle: .tabbi)
                 )
             case .today:
                 PlannerMessage(
                     symbol: "checklist",
                     tint: TodayModule.descriptor.accentColor,
-                    title: DisplayName.greeting(for: store.displayName, at: date) ?? "A fresh day",
-                    detail: "Add a few things you want to get done today."
+                    title: DisplayName.greeting(for: store.displayName, at: date) ?? String(localized: "A fresh day", bundle: .tabbi),
+                    detail: String(localized: "Add a few things you want to get done today.", bundle: .tabbi)
                 )
             case .tomorrow:
                 PlannerMessage(
                     symbol: "sunrise.fill",
                     tint: TodayModule.descriptor.accentColor,
-                    title: "Plan tomorrow",
-                    detail: "Add what you want to get done. Today's unfinished tasks join them in the morning."
+                    title: String(localized: "Plan tomorrow", bundle: .tabbi),
+                    detail: String(localized: "Add what you want to get done. Today's unfinished tasks join them in the morning.", bundle: .tabbi)
                 )
             }
         } else {
@@ -252,7 +266,7 @@ private struct PlannerHeader: View {
                 }
             }
             if store.shownDay.doneCount > 0, store.canEdit {
-                IconButton(symbol: "checkmark.circle.badge.xmark", size: 20, help: "Clear completed tasks") {
+                IconButton(symbol: "checkmark.circle.badge.xmark", size: 20, help: String(localized: "Clear completed tasks", bundle: .tabbi)) {
                     withMotion(Theme.Motion.snappy) { store.clearCompleted() }
                 }
                 .transition(.motionPop)
@@ -262,13 +276,13 @@ private struct PlannerHeader: View {
                 if isEvening {
                     if hasPlannableWork {
                         IconButton(symbol: "sparkles", size: 20,
-                                   help: "Plan my day: \(store.planSettings.planMode.planHelp.lowercased())") {
+                                   help: String(localized: "Plan my day: \(store.planSettings.planMode.planHelp.lowercased())", bundle: .tabbi)) {
                             store.planMyDay()
                         }
                     }
                 } else {
                     IconButton(symbol: "moon.stars", size: 20,
-                               help: "Wrap up: review today and see what carries over") {
+                               help: String(localized: "Wrap up: review today and see what carries over", bundle: .tabbi)) {
                         store.wrapUp()
                     }
                 }
@@ -314,11 +328,11 @@ private struct PlannerHeader: View {
             }
             Spacer(minLength: Theme.Spacing.s)
             if store.shownProblem == .saveFailed {
-                Label("Not saved", systemImage: "exclamationmark.triangle.fill")
+                Label(String(localized: "Not saved", bundle: .tabbi), systemImage: "exclamationmark.triangle.fill")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.warning)
                     .fixedSize()
-                    .help("The last change couldn't be written to disk")
+                    .help(String(localized: "The last change couldn't be written to disk", bundle: .tabbi))
             }
             Text(count)
                 .font(Theme.Typography.caption.monospacedDigit())
@@ -398,9 +412,9 @@ private struct PlannerAddField: View {
             ZStack(alignment: .leading) {
                 if text.isEmpty {
                     ViewThatFits(in: .horizontal) {
-                        if store.viewing == .tomorrow { Text("Add a task for tomorrow…") }
-                        Text("Add a task…")
-                        Text("Add…")
+                        if store.viewing == .tomorrow { Text("Add a task for tomorrow…", bundle: .tabbi) }
+                        Text("Add a task…", bundle: .tabbi)
+                        Text("Add…", bundle: .tabbi)
                     }
                     .font(Theme.Typography.body)
                     .foregroundStyle(Theme.Palette.tertiaryText)
@@ -437,7 +451,7 @@ private struct PlannerAddField: View {
         .contentShape(Rectangle())
         .onTapGesture { focus.wrappedValue = .add }
         .onHover { hovering = $0 }
-        .help("Type a task and press Return to add it; Esc clears")
+        .help(String(localized: "Type a task and press Return to add it; Esc clears", bundle: .tabbi))
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: isFocused)
     }

@@ -86,8 +86,8 @@ private struct MoreTabsButton: View {
                 .contentShape(Capsule())
         }
         .buttonStyle(.tactile)
-        .help("More tabs")
-        .accessibilityLabel("More tabs")
+        .help(Text("More tabs", bundle: .tabbi))
+        .accessibilityLabel(Text("More tabs", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: isOpen)
     }

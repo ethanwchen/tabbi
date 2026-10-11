@@ -51,43 +51,43 @@ public struct UpNextEmptyState: Hashable, Sendable {
         switch situation {
         case .notAsked:
             symbol = "calendar"
-            title = "See what's next"
+            title = String(localized: "See what's next", bundle: .tabbi)
             detail = "Today's \(upNextEvents). Google calendars show up once added in Internet Accounts."
             action = .requestAccess
-            actionTitle = "Show calendar"
+            actionTitle = String(localized: "Show calendar", bundle: .tabbi)
             actionHelp = "Allow \(appName) to read your calendars"
         case .denied:
             symbol = "calendar.badge.exclamationmark"
-            title = "Calendar access is off"
-            detail = "Allow \(appName) in Privacy & Security."
+            title = String(localized: "Calendar access is off", bundle: .tabbi)
+            detail = String(localized: "Allow \(appName) in Privacy & Security.", bundle: .tabbi)
             action = .openPrivacySettings
-            actionTitle = "Open Settings"
+            actionTitle = String(localized: "Open Settings", bundle: .tabbi)
             actionHelp = "Open Calendars privacy settings"
         case .unavailable:
             symbol = "calendar"
-            title = "Connect your calendar"
+            title = String(localized: "Connect your calendar", bundle: .tabbi)
             detail = "See your \(upNextEvents) here. It only takes a moment."
             action = .openConnections
-            actionTitle = "Connect calendar"
+            actionTitle = String(localized: "Connect calendar", bundle: .tabbi)
             actionHelp = "Open Connections to connect your calendar"
         case .noAccounts:
             symbol = "calendar.badge.plus"
-            title = "Add your calendar"
+            title = String(localized: "Add your calendar", bundle: .tabbi)
             detail = "Using Google? Add it in Internet Accounts to see your \(upNextEvents) here."
             action = .openInternetAccounts
-            actionTitle = "Internet Accounts"
+            actionTitle = String(localized: "Internet Accounts", bundle: .tabbi)
             actionHelp = "Open Internet Accounts to add a Google, Exchange or iCloud calendar"
         case .freeDay:
             symbol = "calendar.badge.checkmark"
-            title = "Nothing on today"
-            detail = "No events on your calendars today."
+            title = String(localized: "Nothing on today", bundle: .tabbi)
+            detail = String(localized: "No events on your calendars today.", bundle: .tabbi)
             action = nil
             actionTitle = ""
             actionHelp = ""
         case .dayDone:
             symbol = "calendar.badge.checkmark"
-            title = "No more events today"
-            detail = "The rest of the day is yours."
+            title = String(localized: "No more events today", bundle: .tabbi)
+            detail = String(localized: "The rest of the day is yours.", bundle: .tabbi)
             action = nil
             actionTitle = ""
             actionHelp = ""

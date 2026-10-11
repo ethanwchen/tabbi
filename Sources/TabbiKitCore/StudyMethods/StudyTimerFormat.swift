@@ -37,10 +37,10 @@ public enum StudyTimerFormat {
     /// Phase name, e.g. "Focus", "Timer", "Review", "Break", "Long break".
     public static func phaseName(_ phase: StudyPhaseKind, method: StudyMethod) -> String {
         switch phase {
-        case .focus: method.kind == .timer ? "Timer" : method.cardGoal == nil ? "Focus" : "Sprint"
-        case .review: "Review"
-        case .shortBreak: "Break"
-        case .longBreak: "Long break"
+        case .focus: method.kind == .timer ? String(localized: "Timer", bundle: .tabbi) : method.cardGoal == nil ? String(localized: "Focus", bundle: .tabbi) : String(localized: "Sprint", bundle: .tabbi)
+        case .review: String(localized: "Review", bundle: .tabbi)
+        case .shortBreak: String(localized: "Break", bundle: .tabbi)
+        case .longBreak: String(localized: "Long break", bundle: .tabbi)
         }
     }
 
@@ -48,21 +48,21 @@ public enum StudyTimerFormat {
     public static func readout(_ session: StudySession, at now: Date) -> StudyDialReadout {
         let phase = phaseName(session.phase, method: session.method)
         let paused = session.runState == .paused
-        func caption(_ base: String) -> String { paused ? "\(base) · Paused" : base }
+        func caption(_ base: String) -> String { paused ? String(localized: "\(base) · Paused", bundle: .tabbi) : base }
 
         if session.method.kind == .timer, let remaining = session.remaining(at: now) {
-            return StudyDialReadout(value: clock(remaining), caption: paused ? "Paused" : "", countsDown: true)
+            return StudyDialReadout(value: clock(remaining), caption: paused ? String(localized: "Paused", bundle: .tabbi) : "", countsDown: true)
         }
         if let remaining = session.remaining(at: now) {
             return StudyDialReadout(value: clock(remaining), caption: caption(phase), countsDown: true)
         }
         if let goal = session.method.cardGoal {
             return StudyDialReadout(value: "\(session.cardsDone)",
-                                    caption: caption("of \(goal) cards"), countsDown: false)
+                                    caption: caption(String(localized: "of \(goal) cards", bundle: .tabbi)), countsDown: false)
         }
         // Open-ended Flowtime focus counts up.
         return StudyDialReadout(value: clock(session.elapsed(at: now)),
-                                caption: caption(session.runState == .idle ? "Flow" : "In flow"),
+                                caption: caption(session.runState == .idle ? String(localized: "Flow", bundle: .tabbi) : String(localized: "In flow", bundle: .tabbi)),
                                 countsDown: false)
     }
 
@@ -76,27 +76,27 @@ public enum StudyTimerFormat {
         if let every = session.method.longBreak?.every {
             // Count the round in progress; after a long break start a new set.
             let round = session.phase == .focus ? done % every + 1 : (done - 1) % every + 1
-            return done == 0 && session.phase != .focus ? nil : "Round \(max(round, 1)) of \(every)"
+            return done == 0 && session.phase != .focus ? nil : String(localized: "Round \(max(round, 1)) of \(every)", bundle: .tabbi)
         }
         guard done > 0 else { return nil }
-        return done == 1 ? "1 round done" : "\(done) rounds done"
+        return String(localized: "\(done) rounds done", bundle: .tabbi)
     }
 
     /// Title of the primary button for the session's state.
     public static func primaryAction(_ session: StudySession) -> String {
         switch session.runState {
         case .running:
-            if session.phase == .focus, case .openEnded = session.method.focus { return "Take a break" }
-            return "Pause"
+            if session.phase == .focus, case .openEnded = session.method.focus { return String(localized: "Take a break", bundle: .tabbi) }
+            return String(localized: "Pause", bundle: .tabbi)
         case .paused:
-            return "Resume"
+            return String(localized: "Resume", bundle: .tabbi)
         case .idle:
             switch session.phase {
             case .focus:
-                if session.method.kind == .timer { return "Start timer" }
-                return session.method.cardGoal == nil ? "Start focus" : "Start sprint"
-            case .review: return "Start review"
-            case .shortBreak, .longBreak: return "Start break"
+                if session.method.kind == .timer { return String(localized: "Start timer", bundle: .tabbi) }
+                return session.method.cardGoal == nil ? String(localized: "Start focus", bundle: .tabbi) : String(localized: "Start sprint", bundle: .tabbi)
+            case .review: return String(localized: "Start review", bundle: .tabbi)
+            case .shortBreak, .longBreak: return String(localized: "Start break", bundle: .tabbi)
             }
         }
     }
@@ -116,7 +116,6 @@ public enum StudyTimerFormat {
     /// Points as a signed label for a day's tally: "+79 pts", "+1 pt", "0 pts".
     public static func points(_ points: Int) -> String {
         let points = max(points, 0)
-        let unit = points == 1 ? "pt" : "pts"
-        return points == 0 ? "0 pts" : "+\(points.formatted()) \(unit)"
+        return points == 0 ? String(localized: "0 pts", bundle: .tabbi) : String(localized: "+\(points) pts", bundle: .tabbi)
     }
 }

@@ -49,7 +49,7 @@ private struct FocusDial: View {
             .frame(width: 128, height: 128)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .help("\(FocusTimerFormat.phaseName(timer.phase)): \(FocusTimerFormat.clock(store.remaining)) left")
+        .help(String(localized: "\(FocusTimerFormat.phaseName(timer.phase)): \(FocusTimerFormat.clock(store.remaining)) left", bundle: .tabbi))
         // No spring on the once-a-second tick: animating it re-rendered the
         // digits' transition most of every second and kept the notch drawing.
         .motion(Theme.Motion.snappy, value: timer.phase)
@@ -57,7 +57,7 @@ private struct FocusDial: View {
 
     private var phaseLabel: String {
         let phase = FocusTimerFormat.phaseName(store.timer.phase)
-        return store.timer.isPaused ? "\(phase) · Paused" : phase
+        return store.timer.isPaused ? String(localized: "\(phase) · Paused", bundle: .tabbi) : phase
     }
 }
 
@@ -105,7 +105,7 @@ private struct FocusSessionCard: View {
                 .foregroundStyle(Theme.Palette.primaryText)
                 .lineLimit(1)
                 .truncationMode(.tail)
-                .help("Focusing on: \(linkedTitle)")
+                .help(String(localized: "Focusing on: \(linkedTitle)", bundle: .tabbi))
             } else {
                 Text(FocusTimerFormat.status(store.timer))
                     .font(Theme.Typography.title)
@@ -122,13 +122,13 @@ private struct FocusSessionCard: View {
     }
 
     private var heading: String {
-        guard store.timer.phase == .focus else { return "Break" }
-        return linkedTitle == nil ? "Focus session" : "Focusing on"
+        guard store.timer.phase == .focus else { return String(localized: "Break", bundle: .tabbi) }
+        return linkedTitle == nil ? String(localized: "Focus session", bundle: .tabbi) : String(localized: "Focusing on", bundle: .tabbi)
     }
 
     private var sessionsDone: String {
         let count = store.sessionsToday
-        return count == 1 ? "1 session today" : "\(count) sessions today"
+        return String(localized: "\(count) sessions today", bundle: .tabbi)
     }
 }
 
@@ -145,18 +145,18 @@ private struct FocusModeRow: View {
             HStack(spacing: Theme.Spacing.m) { items(showsTitles: false) }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .help(controller.offersDoNotDisturb ? "Change focus sound and Do Not Disturb in Settings > Tabs > Options"
-                                            : "Change focus sound in Settings > Tabs > Options")
+        .help(controller.offersDoNotDisturb ? String(localized: "Change focus sound and Do Not Disturb in Settings > Tabs > Options", bundle: .tabbi)
+                                            : String(localized: "Change focus sound in Settings > Tabs > Options", bundle: .tabbi))
     }
 
     @ViewBuilder
     private func items(showsTitles: Bool) -> some View {
         let settings = controller.settings
-        FocusModeItem(symbol: "waveform", name: "Sound", showsName: showsTitles,
+        FocusModeItem(symbol: "waveform", name: String(localized: "Sound", bundle: .tabbi), showsName: showsTitles,
                       value: settings.mix.summary, isOn: !settings.mix.isOff)
         if controller.offersDoNotDisturb {
-            FocusModeItem(symbol: "moon.fill", name: "Do Not Disturb", showsName: showsTitles,
-                          value: settings.doNotDisturb ? "On" : "Off", isOn: settings.doNotDisturb)
+            FocusModeItem(symbol: "moon.fill", name: String(localized: "Do Not Disturb", bundle: .tabbi), showsName: showsTitles,
+                          value: settings.doNotDisturb ? String(localized: "switch.on", defaultValue: "On", bundle: .tabbi) : String(localized: "Off", bundle: .tabbi), isOn: settings.doNotDisturb)
                 .fixedSize()
         }
     }
@@ -208,10 +208,10 @@ private struct FocusControls: View {
             }
             Spacer(minLength: 0)
             Group {
-                IconButton(symbol: "forward.end.fill", help: timer.phase == .focus ? "Skip to the break" : "Skip the break") {
+                IconButton(symbol: "forward.end.fill", help: timer.phase == .focus ? String(localized: "Skip to the break", bundle: .tabbi) : String(localized: "Skip the break", bundle: .tabbi)) {
                     withMotion(Theme.Motion.snappy) { store.skip() }
                 }
-                IconButton(symbol: "stop.fill", help: "Stop and keep the time focused so far") {
+                IconButton(symbol: "stop.fill", help: String(localized: "Stop and keep the time focused so far", bundle: .tabbi)) {
                     withMotion(Theme.Motion.snappy) { store.stop() }
                 }
             }
@@ -223,17 +223,17 @@ private struct FocusControls: View {
 
     private var primaryTitle: String {
         switch store.timer.runState {
-        case .running: "Pause"
-        case .paused: "Resume"
-        case .idle: store.timer.phase == .focus ? "Start focus" : "Start break"
+        case .running: String(localized: "Pause", bundle: .tabbi)
+        case .paused: String(localized: "Resume", bundle: .tabbi)
+        case .idle: store.timer.phase == .focus ? String(localized: "Start focus", bundle: .tabbi) : String(localized: "Start break", bundle: .tabbi)
         }
     }
 
     private var primaryHelp: String {
         switch store.timer.runState {
-        case .running: "Pause the timer"
-        case .paused: "Resume the timer"
-        case .idle: store.timer.phase == .focus ? "Start a focus session" : "Start the break"
+        case .running: String(localized: "Pause the timer", bundle: .tabbi)
+        case .paused: String(localized: "Resume the timer", bundle: .tabbi)
+        case .idle: store.timer.phase == .focus ? String(localized: "Start a focus session", bundle: .tabbi) : String(localized: "Start the break", bundle: .tabbi)
         }
     }
 }

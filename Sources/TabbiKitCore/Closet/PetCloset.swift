@@ -168,7 +168,12 @@ public struct PetCloset: Hashable, Sendable {
 
     /// The name shown for a swatch ("Caramel"), or nil for other colors.
     public static func name(ofSwatch color: PetColor) -> String? {
-        let names = ["Orange", "Caramel", "Chocolate", "Charcoal", "Silver", "Cream", "Lilac", "Sky"]
+        let names = [
+            String(localized: "Orange", bundle: .tabbi), String(localized: "Caramel", bundle: .tabbi),
+            String(localized: "Chocolate", bundle: .tabbi), String(localized: "Charcoal", bundle: .tabbi),
+            String(localized: "Silver", bundle: .tabbi), String(localized: "Cream", bundle: .tabbi),
+            String(localized: "Lilac", bundle: .tabbi), String(localized: "Sky", bundle: .tabbi),
+        ]
         return furSwatches.firstIndex(of: color).map { names[$0] }
     }
 
