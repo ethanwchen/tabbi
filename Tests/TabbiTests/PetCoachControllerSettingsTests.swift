@@ -28,11 +28,13 @@ final class PetCoachControllerSettingsTests: XCTestCase {
         try? FileManager.default.removeItem(at: folder)
     }
 
-    private func makeController(_ runMode: RunMode = .live) -> PetCoachController {
+    private func makeController(_ runMode: RunMode = .live,
+                                gift: @escaping (PetStudyAward) -> SurpriseGift? = { _ in nil }) -> PetCoachController {
         PetCoachController(
             storage: storage,
             runMode: runMode,
             profile: { PetProfile(name: "Waffles", breed: .corgi) },
+            gift: gift,
             screen: { [weak self] in
                 self?.screenRequests += 1
                 return nil
@@ -243,5 +245,22 @@ final class PetCoachControllerSettingsTests: XCTestCase {
         demo.start()
         demo.celebrate(award)
         XCTAssertEqual(screenRequests, 2, "Demo mode never shows the pet over the desktop")
+    }
+
+    func testOnlyAWatchedSessionRollsForAGift() {
+        let award = PetStudyAward(completedSessions: 1, minutes: 25, points: 35)
+        var rolls = 0
+        let coach = makeController(gift: { _ in
+            rolls += 1
+            return nil
+        })
+        coach.start()
+
+        coach.celebrate(award, watched: false)
+        XCTAssertEqual(screenRequests, 1, "A session settled at launch still earns its celebration")
+        XCTAssertEqual(rolls, 0, "but no gift on app open")
+
+        coach.celebrate(award)
+        XCTAssertEqual(rolls, 1)
     }
 }
