@@ -19,12 +19,22 @@
 	<string>%@ Themes style the open panel; the closed notch stays black.</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ Trying again in the background.</string>
+	<key>%@ and brought back %@</key>
+	<string>%@ and brought back %@</string>
+	<key>%@ brought back a shiny acorn</key>
+	<string>%@ brought back a shiny acorn</string>
 	<key>%@ by %@, plays in Spotify.</key>
 	<string>%@ by %@, plays in Spotify.</string>
 	<key>%@ can't control %@</key>
 	<string>%@ can't control %@</string>
+	<key>%@ chased a butterfly</key>
+	<string>%@ chased a butterfly</string>
 	<key>%@ checkup</key>
 	<string>%@ checkup</string>
+	<key>%@ climbed onto the rooftop</key>
+	<string>%@ climbed onto the rooftop</string>
+	<key>%@ collected a smooth pebble</key>
+	<string>%@ collected a smooth pebble</string>
 	<key>%@ could not be copied to Applications. %@</key>
 	<string>%@ could not be copied to Applications. %@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
@@ -35,8 +45,16 @@
 	<string>%@ didn't send back a usable plan. Try again in a moment.</string>
 	<key>%@ done for today. Open %@</key>
 	<string>%@ done for today. Open %@</string>
+	<key>%@ explored a cardboard box</key>
+	<string>%@ explored a cardboard box</string>
+	<key>%@ explored the bookshelf</key>
+	<string>%@ explored the bookshelf</string>
 	<key>%@ focused today</key>
 	<string>%@ focused today</string>
+	<key>%@ found a perfect leaf</key>
+	<string>%@ found a perfect leaf</string>
+	<key>%@ found a soft feather</key>
+	<string>%@ found a soft feather</string>
 	<key>%@ free</key>
 	<string>%@ free</string>
 	<key>%@ free this week</key>
@@ -75,6 +93,8 @@
 	<string>%@ is napping until your next session</string>
 	<key>%@ is now your friend</key>
 	<string>%@ is now your friend</string>
+	<key>%@ is off on a little adventure and will be back as your session ends</key>
+	<string>%@ is off on a little adventure and will be back as your session ends</string>
 	<key>%@ is on a break with you</key>
 	<string>%@ is on a break with you</string>
 	<key>%@ is ready in the Closet</key>
@@ -93,14 +113,20 @@
 	<string>%@ isn't on this Mac yet. Connections shows you how to add it.</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@ isn't set up yet</string>
+	<key>%@ learned a song from a bird</key>
+	<string>%@ learned a song from a bird</string>
 	<key>%@ left</key>
 	<string>%@ left</string>
 	<key>%@ level in the blend</key>
 	<string>%@ level in the blend</string>
+	<key>%@ made friends with a pigeon</key>
+	<string>%@ made friends with a pigeon</string>
 	<key>%@ misses you</key>
 	<string>%@ misses you</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%@ moved to position %lld of %lld</string>
+	<key>%@ napped on a sunny windowsill</key>
+	<string>%@ napped on a sunny windowsill</string>
 	<key>%@ naps until the timer runs</key>
 	<string>%@ naps until the timer runs</string>
 	<key>%@ not found</key>
@@ -111,12 +137,24 @@
 	<string>%@ of focus.</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>%@ opens in Music; press play there.</string>
+	<key>%@ raced a snail and let it win</key>
+	<string>%@ raced a snail and let it win</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
 	<string>%@ reads your events on this Mac and never uploads them</string>
+	<key>%@ rescued a lost sock</key>
+	<string>%@ rescued a lost sock</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
 	<string>%@ runs until %@. Next item, %@: %@ focused.</string>
 	<key>%@ settings</key>
 	<string>%@ settings</string>
+	<key>%@ sniffed every flower in the garden</key>
+	<string>%@ sniffed every flower in the garden</string>
+	<key>%@ snuck into the library</key>
+	<string>%@ snuck into the library</string>
+	<key>%@ splashed in a puddle</key>
+	<string>%@ splashed in a puddle</string>
+	<key>%@ spotted a tiny rainbow</key>
+	<string>%@ spotted a tiny rainbow</string>
 	<key>%@ started it for the party</key>
 	<string>%@ started it for the party</string>
 	<key>%@ studied</key>
@@ -135,6 +173,12 @@
 	<string>%@ unlocks after %@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%@ unlocks at %lld</string>
+	<key>%@ visited the bakery</key>
+	<string>%@ visited the bakery</string>
+	<key>%@ watched a cloud shaped like a fish</key>
+	<string>%@ watched a cloud shaped like a fish</string>
+	<key>%@ went around the park twice</key>
+	<string>%@ went around the park twice</string>
 	<key>%@ with %@</key>
 	<string>%@ with %@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -177,6 +221,8 @@
 	<string>%lld min left</string>
 	<key>%lld min on your own</key>
 	<string>%lld min on your own</string>
+	<key>%lld min toward the event</key>
+	<string>%lld min toward the event</string>
 	<key>%lld min, no distractions</key>
 	<string>%lld min, no distractions</string>
 	<key>%lld new, %lld learning, %lld review</key>
@@ -547,8 +593,12 @@
 	<string>Backwards Cap</string>
 	<key>Beanie</key>
 	<string>Beanie</string>
+	<key>Bell collar</key>
+	<string>Bell collar</string>
 	<key>Best day %@</key>
 	<string>Best day %@</string>
+	<key>Best friends</key>
+	<string>Best friends</string>
 	<key>Blend</key>
 	<string>Blend</string>
 	<key>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</key>
@@ -563,6 +613,14 @@
 	<string>Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>Blocks go to your calendar.</string>
+	<key>Bond %lld</key>
+	<string>Bond %lld</string>
+	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
+	<string>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld, which brings the %@. Every focused minute and every study day bring you closer.</key>
+	<string>Bond %lld of %lld: %@ to Bond %lld, which brings the %@. Every focused minute and every study day bring you closer.</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld. Every focused minute and every study day bring you closer.</key>
+	<string>Bond %lld of %lld: %@ to Bond %lld. Every focused minute and every study day bring you closer.</string>
 	<key>Bonus minutes toward this event's limited items</key>
 	<string>Bonus minutes toward this event's limited items</string>
 	<key>Bonus points from your pet, added to your balance</key>
@@ -1187,6 +1245,12 @@
 	<string>Focusing on</string>
 	<key>Focusing on: %@</key>
 	<string>Focusing on: %@</string>
+	<key>Forever friends</key>
+	<string>Forever friends</string>
+	<key>Found: %lld min toward the event</key>
+	<string>Found: %lld min toward the event</string>
+	<key>Found: the rare %@ fur</key>
+	<string>Found: the rare %@ fur</string>
 	<key>Free all day</key>
 	<string>Free all day</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1277,6 +1341,8 @@
 	<string>Go on without a name</string>
 	<key>Goals left today</key>
 	<string>Goals left today</string>
+	<key>Gold tag</key>
+	<string>Gold tag</string>
 	<key>Golden Laurel</key>
 	<string>Golden Laurel</string>
 	<key>Graduation Cap</key>
@@ -1289,6 +1355,8 @@
 	<string>Halloween</string>
 	<key>Halo</key>
 	<string>Halo</string>
+	<key>Happy wiggle</key>
+	<string>Happy wiggle</string>
 	<key>Haptic feedback</key>
 	<string>Haptic feedback</string>
 	<key>Harassment</key>
@@ -1377,6 +1445,8 @@
 	<string>Inappropriate name</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>Input, output, and cache tokens across all %@ sessions since midnight</string>
+	<key>Inseparable</key>
+	<string>Inseparable</string>
 	<key>Install</key>
 	<string>Install</string>
 	<key>Install %@ to plan with it.</key>
@@ -1451,6 +1521,8 @@
 	<string>Joining Party. This takes a second.</string>
 	<key>Joining the party server…</key>
 	<string>Joining the party server…</string>
+	<key>Just met</key>
+	<string>Just met</string>
 	<key>Keep at least one tab on</key>
 	<string>Keep at least one tab on</string>
 	<key>Keep the %@ kit</key>
@@ -1469,6 +1541,8 @@
 	<string>Keep this name</string>
 	<key>Keep your current kit and tabs</key>
 	<string>Keep your current kit and tabs</string>
+	<key>Kindred spirits</key>
+	<string>Kindred spirits</string>
 	<key>King's Cape</key>
 	<string>King's Cape</string>
 	<key>Kit</key>
@@ -1479,6 +1553,8 @@
 	<string>Last 7 days</string>
 	<key>Last synced %@</key>
 	<string>Last synced %@</string>
+	<key>Latest adventure: %@</key>
+	<string>Latest adventure: %@</string>
 	<key>Launch %@</key>
 	<string>Launch %@</string>
 	<key>Launch at login</key>
@@ -1645,6 +1721,8 @@
 	<string>New</string>
 	<key>New chat</key>
 	<string>New chat</string>
+	<key>New friends</key>
+	<string>New friends</string>
 	<key>New tabs may ask for %@.</key>
 	<string>New tabs may ask for %@.</string>
 	<key>Next meeting</key>
@@ -1665,6 +1743,8 @@
 	<string>No answer</string>
 	<key>No calendars yet</key>
 	<string>No calendars yet</string>
+	<key>No collar</key>
+	<string>No collar</string>
 	<key>No events</key>
 	<string>No events</string>
 	<key>No events on your calendars today.</key>
@@ -1999,8 +2079,12 @@
 	<string>Out of sight. Press %@ to open it.</string>
 	<key>Owned</key>
 	<string>Owned</string>
+	<key>Pals</key>
+	<string>Pals</string>
 	<key>Panel size</key>
 	<string>Panel size</string>
+	<key>Partners in focus</key>
+	<string>Partners in focus</string>
 	<key>Party</key>
 	<string>Party</string>
 	<key>Party Hat</key>
@@ -2119,6 +2203,8 @@
 	<string>Pink noise</string>
 	<key>Pirate Hat</key>
 	<string>Pirate Hat</string>
+	<key>Plain collar</key>
+	<string>Plain collar</string>
 	<key>Plan</key>
 	<string>Plan</string>
 	<key>Plan my day</key>
@@ -2563,10 +2649,14 @@
 	<string>Some is infinitely more than none. Rest. The board will be here.</string>
 	<key>Something not working?</key>
 	<string>Something not working?</string>
+	<key>Soulmates</key>
+	<string>Soulmates</string>
 	<key>Sound</key>
 	<string>Sound</string>
 	<key>Spam</key>
 	<string>Spam</string>
+	<key>Sparkle</key>
+	<string>Sparkle</string>
 	<key>Sparkle Trail</key>
 	<string>Sparkle Trail</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
@@ -2581,6 +2671,8 @@
 	<string>Springy, with a little bounce.</string>
 	<key>Sprint</key>
 	<string>Sprint</string>
+	<key>Star tag</key>
+	<string>Star tag</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>Stars don't rush. They just keep burning.</string>
 	<key>Start %@ automatically when you log in</key>
@@ -2687,6 +2779,8 @@
 	<string>Study Hoodie</string>
 	<key>Study block</key>
 	<string>Study block</string>
+	<key>Study buddies</key>
+	<string>Study buddies</string>
 	<key>Study parties</key>
 	<string>Study parties</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3343,6 +3437,8 @@
 	<string>Your party profile was reset. Reconnecting…</string>
 	<key>Your pet</key>
 	<string>Your pet</string>
+	<key>Your pet found this on its adventure. %@</key>
+	<string>Your pet found this on its adventure. %@</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>Your pet's name isn't allowed. Rename your pet in the Closet.</string>
 	<key>Your pet, today's streak and the running timer.</key>
@@ -3383,6 +3479,8 @@
 	<string>ending</string>
 	<key>events</key>
 	<string>events</string>
+	<key>exploring</key>
+	<string>exploring</string>
 	<key>focused</key>
 	<string>focused</string>
 	<key>in %@</key>
@@ -3435,6 +3533,8 @@
 	<string>tasks</string>
 	<key>the host</key>
 	<string>the host</string>
+	<key>the rare %@ fur</key>
+	<string>the rare %@ fur</string>
 	<key>today</key>
 	<string>today</string>
 	<key>tokens</key>

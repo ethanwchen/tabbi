@@ -53,9 +53,18 @@ public struct PetBond: Hashable, Sendable {
 
     /// The name for each level, from first meeting to lifelong friends.
     public static func tierName(forLevel level: Int) -> String {
-        let names = ["Just met", "New friends", "Pals", "Best friends", "Study buddies",
-                     "Partners in focus", "Inseparable", "Kindred spirits", "Soulmates", "Forever friends"]
-        return names[min(max(level, 1), maxLevel) - 1]
+        switch min(max(level, 1), maxLevel) {
+        case 1: String(localized: "Just met", bundle: .tabbi)
+        case 2: String(localized: "New friends", bundle: .tabbi)
+        case 3: String(localized: "Pals", bundle: .tabbi)
+        case 4: String(localized: "Best friends", bundle: .tabbi)
+        case 5: String(localized: "Study buddies", bundle: .tabbi)
+        case 6: String(localized: "Partners in focus", bundle: .tabbi)
+        case 7: String(localized: "Inseparable", bundle: .tabbi)
+        case 8: String(localized: "Kindred spirits", bundle: .tabbi)
+        case 9: String(localized: "Soulmates", bundle: .tabbi)
+        default: String(localized: "Forever friends", bundle: .tabbi)
+        }
     }
 
     /// Whether the bond is at the top level.
@@ -97,11 +106,11 @@ public enum PetCollar: String, CaseIterable, Comparable, Sendable {
 
     public var displayName: String {
         switch self {
-        case .none: "No collar"
-        case .plain: "Plain collar"
-        case .bell: "Bell collar"
-        case .star: "Star tag"
-        case .gold: "Gold tag"
+        case .none: String(localized: "No collar", bundle: .tabbi)
+        case .plain: String(localized: "Plain collar", bundle: .tabbi)
+        case .bell: String(localized: "Bell collar", bundle: .tabbi)
+        case .star: String(localized: "Star tag", bundle: .tabbi)
+        case .gold: String(localized: "Gold tag", bundle: .tabbi)
         }
     }
 
@@ -138,8 +147,8 @@ public struct PetBondLook: Hashable, Sendable {
         if let collar = PetCollar.allCases.first(where: { $0.unlockLevel == level && $0 != .none }) {
             return collar.displayName
         }
-        if level == happyIdleLevel { return "Happy wiggle" }
-        if level == sparkleLevel { return "Sparkle" }
+        if level == happyIdleLevel { return String(localized: "Happy wiggle", bundle: .tabbi) }
+        if level == sparkleLevel { return String(localized: "Sparkle", bundle: .tabbi) }
         return nil
     }
 }

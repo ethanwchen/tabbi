@@ -154,13 +154,15 @@ public struct PetJournal: Hashable, Codable, Sendable {
         /// The line with the pet's name, or nil for a line this build no
         /// longer knows.
         public func text(petName: String) -> String? {
-            PetJournal.phrase(for: line).map { "\(petName) \($0)" }
+            PetJournal.sentence(for: line, petName: petName)
         }
 
         /// The line with the gift it brought home, e.g. "Mochi found a
         /// perfect leaf and brought back 15 bonus points", for tooltips.
         public func detail(petName: String) -> String? {
-            text(petName: petName).map { sentence in gift.map { "\(sentence) and brought back \($0.name)" } ?? sentence }
+            text(petName: petName).map { sentence in
+                gift.map { String(localized: "\(sentence) and brought back \($0.name)", bundle: .tabbi) } ?? sentence
+            }
         }
 
         private enum CodingKeys: String, CodingKey { case line, date, gift }
@@ -257,6 +259,37 @@ public struct PetJournal: Hashable, Codable, Sendable {
 
     static func phrase(for id: String) -> String? {
         lines.first { $0.id == id }?.phrase
+    }
+
+    /// The line `id` as a whole sentence with the pet's name, in the
+    /// user's language ("Mochi found a perfect leaf"), or nil for a line
+    /// this build no longer knows. One key per line, so each language can
+    /// put the name where it reads best; in English it is the name and the
+    /// `lines` phrase.
+    public static func sentence(for id: String, petName: String) -> String? {
+        switch id {
+        case "bookshelf": String(localized: "\(petName) explored the bookshelf", bundle: .tabbi)
+        case "windowsill": String(localized: "\(petName) napped on a sunny windowsill", bundle: .tabbi)
+        case "butterfly": String(localized: "\(petName) chased a butterfly", bundle: .tabbi)
+        case "leaf": String(localized: "\(petName) found a perfect leaf", bundle: .tabbi)
+        case "pigeon": String(localized: "\(petName) made friends with a pigeon", bundle: .tabbi)
+        case "puddle": String(localized: "\(petName) splashed in a puddle", bundle: .tabbi)
+        case "cloud": String(localized: "\(petName) watched a cloud shaped like a fish", bundle: .tabbi)
+        case "garden": String(localized: "\(petName) sniffed every flower in the garden", bundle: .tabbi)
+        case "sock": String(localized: "\(petName) rescued a lost sock", bundle: .tabbi)
+        case "acorn": String(localized: "\(petName) brought back a shiny acorn", bundle: .tabbi)
+        case "library": String(localized: "\(petName) snuck into the library", bundle: .tabbi)
+        case "snail": String(localized: "\(petName) raced a snail and let it win", bundle: .tabbi)
+        case "pebble": String(localized: "\(petName) collected a smooth pebble", bundle: .tabbi)
+        case "rooftop": String(localized: "\(petName) climbed onto the rooftop", bundle: .tabbi)
+        case "bakery": String(localized: "\(petName) visited the bakery", bundle: .tabbi)
+        case "rainbow": String(localized: "\(petName) spotted a tiny rainbow", bundle: .tabbi)
+        case "box": String(localized: "\(petName) explored a cardboard box", bundle: .tabbi)
+        case "bird": String(localized: "\(petName) learned a song from a bird", bundle: .tabbi)
+        case "park": String(localized: "\(petName) went around the park twice", bundle: .tabbi)
+        case "feather": String(localized: "\(petName) found a soft feather", bundle: .tabbi)
+        default: nil
+        }
     }
 
     /// SplitMix64's finalizer: spreads a seed into well mixed bits.

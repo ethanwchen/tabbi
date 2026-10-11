@@ -134,26 +134,31 @@ private struct ClosetPetCard: View {
     }
 
     private func content(showsBreed: Bool) -> some View {
+        // Centered by its frame rather than by spacers, which would add the
+        // stack's spacing twice more and leave a two-line adventure no room.
         VStack(spacing: Theme.Spacing.xs) {
-            Spacer(minLength: 0)
             PetView(player: store.preview, pixelSize: 3)
                 .padding(.bottom, Theme.Spacing.xs)
-                .help(store.latestAdventureDetail.map { "Latest adventure: \($0)" } ?? "")
+                .help(store.latestAdventureDetail.map { String(localized: "Latest adventure: \($0)", bundle: .tabbi) } ?? "")
             nameRow
             if let subtitle = subtitle(showsBreed: showsBreed) {
+                // An adventure line may wrap onto a second line: a whole
+                // sentence, longer in some languages than the card is wide.
                 Text(subtitle)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(store.tryingOn == nil ? Theme.Palette.tertiaryText : accent)
-                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(subtitle == store.latestAdventure ? 2 : 1)
                     .truncationMode(.tail)
-                    .help(subtitle == store.latestAdventure ? "Latest adventure: \(store.latestAdventureDetail ?? subtitle)" : "")
+                    .help(subtitle == store.latestAdventure
+                          ? String(localized: "Latest adventure: \(store.latestAdventureDetail ?? subtitle)", bundle: .tabbi) : "")
                     .motion(Theme.Motion.snappy, value: subtitle)
             }
             if store.tryingOn == nil && (showsBreed || !isUnnamed) {
                 ClosetBondRow(bond: store.bond)
             }
-            Spacer(minLength: 0)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     /// A pet still called by its breed.
@@ -245,8 +250,8 @@ private struct ClosetBondRow: View {
         HStack(spacing: Theme.Spacing.xs) {
             ProgressRing(progress: bond.progressInLevel, tint: accent, lineWidth: 2)
                 .frame(width: 10, height: 10)
-            (Text("Bond \(bond.level)").foregroundStyle(Theme.Palette.secondaryText)
-                + Text(" · \(bond.tierName)").foregroundStyle(Theme.Palette.tertiaryText))
+            (Text("Bond \(bond.level)", bundle: .tabbi).foregroundStyle(Theme.Palette.secondaryText)
+                + Text(verbatim: " · \(bond.tierName)").foregroundStyle(Theme.Palette.tertiaryText))
                 .font(Theme.Typography.caption.monospacedDigit())
                 .lineLimit(1)
                 .truncationMode(.tail)
@@ -256,13 +261,17 @@ private struct ClosetBondRow: View {
     }
 
     private var help: String {
+        let (level, top) = (bond.level, PetBond.maxLevel)
         guard let missing = bond.pointsToNextLevel else {
-            return "Bond \(bond.level) of \(PetBond.maxLevel), as close as it gets. Every focused minute still counts."
+            return String(localized: "Bond \(level) of \(top), as close as it gets. Every focused minute still counts.",
+                          bundle: .tabbi)
         }
-        let next = bond.level + 1
-        let unlock = PetBondLook.unlock(atLevel: next).map { ", which brings the \($0.lowercased())" } ?? ""
-        return "Bond \(bond.level) of \(PetBond.maxLevel): \(missing) points to Bond \(next)\(unlock). "
-            + "Every focused minute and every study day bring you closer."
+        let next = level + 1
+        let points = String(localized: "\(missing) points", bundle: .tabbi)
+        guard let unlock = PetBondLook.unlock(atLevel: next) else {
+            return String(localized: "Bond \(level) of \(top): \(points) to Bond \(next). Every focused minute and every study day bring you closer.", bundle: .tabbi)
+        }
+        return String(localized: "Bond \(level) of \(top): \(points) to Bond \(next), which brings the \(unlock). Every focused minute and every study day bring you closer.", bundle: .tabbi)
     }
 }
 

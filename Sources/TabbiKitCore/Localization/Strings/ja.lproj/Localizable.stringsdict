@@ -17,6 +17,20 @@
 			<string>%lld件をカレンダーに追加</string>
 		</dict>
 	</dict>
+	<key>%lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>ボーナス%lldポイント</string>
+		</dict>
+	</dict>
 	<key>%lld cores</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -197,6 +211,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>計画ブロック %lld 件</string>
+		</dict>
+	</dict>
+	<key>%lld points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lldポイント</string>
 		</dict>
 	</dict>
 	<key>%lld pts</key>
@@ -491,6 +519,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>%2$@の期間中に%1$lld分集中しよう。</string>
+		</dict>
+	</dict>
+	<key>Found: %lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>おみやげ: ボーナス%lldポイント</string>
 		</dict>
 	</dict>
 	<key>Not every day is a checklist day. Tomorrow starts with %lld tasks ready to go.</key>

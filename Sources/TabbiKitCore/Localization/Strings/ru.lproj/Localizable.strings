@@ -19,12 +19,22 @@
 	<string>%@ Темы меняют открытую панель, закрытый вырез остается черным.</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ Повторяем в фоне.</string>
+	<key>%@ and brought back %@</key>
+	<string>%1$@. Находка: %2$@</string>
+	<key>%@ brought back a shiny acorn</key>
+	<string>%@ несет блестящий желудь</string>
 	<key>%@ by %@, plays in Spotify.</key>
 	<string>%@ от %@, играет в Spotify.</string>
 	<key>%@ can't control %@</key>
 	<string>%1$@ не может управлять %2$@</string>
+	<key>%@ chased a butterfly</key>
+	<string>%@ гоняется за бабочкой</string>
 	<key>%@ checkup</key>
 	<string>Проверка: %@</string>
+	<key>%@ climbed onto the rooftop</key>
+	<string>%@ забирается на крышу</string>
+	<key>%@ collected a smooth pebble</key>
+	<string>%@ собирает гладкий камешек</string>
 	<key>%@ could not be copied to Applications. %@</key>
 	<string>Не удалось скопировать %@ в Программы. %@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
@@ -35,8 +45,16 @@
 	<string>От %@ не пришло подходящего плана. Попробуй чуть позже.</string>
 	<key>%@ done for today. Open %@</key>
 	<string>%1$@: на сегодня готово. Открыть %2$@</string>
+	<key>%@ explored a cardboard box</key>
+	<string>%@ исследует картонную коробку</string>
+	<key>%@ explored the bookshelf</key>
+	<string>%@ исследует книжную полку</string>
 	<key>%@ focused today</key>
 	<string>Сегодня в фокусе: %@</string>
+	<key>%@ found a perfect leaf</key>
+	<string>%@ находит идеальный листик</string>
+	<key>%@ found a soft feather</key>
+	<string>%@ находит мягкое перышко</string>
 	<key>%@ free</key>
 	<string>Свободно: %@</string>
 	<key>%@ free this week</key>
@@ -75,6 +93,8 @@
 	<string>%@ спит до следующей сессии</string>
 	<key>%@ is now your friend</key>
 	<string>%@ теперь твой друг</string>
+	<key>%@ is off on a little adventure and will be back as your session ends</key>
+	<string>%@ отправляется в маленькое приключение и вернется к концу сессии</string>
 	<key>%@ is on a break with you</key>
 	<string>%@ отдыхает вместе с тобой</string>
 	<key>%@ is ready in the Closet</key>
@@ -93,14 +113,20 @@
 	<string>%@ еще нет на этом Mac. В разделе «Подключения» показано, как добавить.</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@: еще не настроено</string>
+	<key>%@ learned a song from a bird</key>
+	<string>%@ учит песенку у птички</string>
 	<key>%@ left</key>
 	<string>Осталось: %@</string>
 	<key>%@ level in the blend</key>
 	<string>Уровень звука «%@» в миксе</string>
+	<key>%@ made friends with a pigeon</key>
+	<string>%@ дружит с голубем</string>
 	<key>%@ misses you</key>
 	<string>%@ скучает по тебе</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@ теперь на позиции %2$lld из %3$lld</string>
+	<key>%@ napped on a sunny windowsill</key>
+	<string>%@ дремлет на солнечном подоконнике</string>
 	<key>%@ naps until the timer runs</key>
 	<string>%@ дремлет, пока не пойдет таймер</string>
 	<key>%@ not found</key>
@@ -111,12 +137,24 @@
 	<string>%@ фокуса.</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>%@ откроется в Музыке, включи его там.</string>
+	<key>%@ raced a snail and let it win</key>
+	<string>%@ соревнуется с улиткой и поддается ей</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
 	<string>%@ читает события на этом Mac и никуда их не загружает</string>
+	<key>%@ rescued a lost sock</key>
+	<string>%@ спасает потерянный носок</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
 	<string>%1$@ идет до %2$@. Следующий предмет, %3$@: %4$@ в фокусе.</string>
 	<key>%@ settings</key>
 	<string>Настройки: %@</string>
+	<key>%@ sniffed every flower in the garden</key>
+	<string>%@ нюхает каждый цветок в саду</string>
+	<key>%@ snuck into the library</key>
+	<string>%@ пробирается в библиотеку</string>
+	<key>%@ splashed in a puddle</key>
+	<string>%@ шлепает по луже</string>
+	<key>%@ spotted a tiny rainbow</key>
+	<string>%@ замечает крошечную радугу</string>
 	<key>%@ started it for the party</key>
 	<string>Запуск для пати: %@</string>
 	<key>%@ studied</key>
@@ -135,6 +173,12 @@
 	<string>%1$@: еще %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%1$@ с %2$lld</string>
+	<key>%@ visited the bakery</key>
+	<string>%@ заглядывает в пекарню</string>
+	<key>%@ watched a cloud shaped like a fish</key>
+	<string>%@ смотрит на облако-рыбку</string>
+	<key>%@ went around the park twice</key>
+	<string>%@ дважды обходит парк</string>
 	<key>%@ with %@</key>
 	<string>%1$@ и %2$@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -177,6 +221,8 @@
 	<string>Осталось %lld мин</string>
 	<key>%lld min on your own</key>
 	<string>%lld мин в одиночку</string>
+	<key>%lld min toward the event</key>
+	<string>%lld мин к событию</string>
 	<key>%lld min, no distractions</key>
 	<string>%lld мин без отвлечений</string>
 	<key>%lld new, %lld learning, %lld review</key>
@@ -547,8 +593,12 @@
 	<string>Кепка козырьком назад</string>
 	<key>Beanie</key>
 	<string>Шапка</string>
+	<key>Bell collar</key>
+	<string>Ошейник с колокольчиком</string>
 	<key>Best day %@</key>
 	<string>Лучший день: %@</string>
+	<key>Best friends</key>
+	<string>Лучшие друзья</string>
 	<key>Blend</key>
 	<string>Микс</string>
 	<key>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</key>
@@ -563,6 +613,14 @@
 	<string>Заблокированные не видят тебя и не могут добавить или войти в пати. Заблокировать или пожаловаться: правый клик в Party.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>Добавятся в календарь.</string>
+	<key>Bond %lld</key>
+	<string>Связь %lld</string>
+	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
+	<string>Связь %1$lld из %2$lld, ближе некуда. Каждая минута фокуса все равно на счету.</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld, which brings the %@. Every focused minute and every study day bring you closer.</key>
+	<string>Связь %1$lld из %2$lld: до связи %4$lld еще %3$@, а там: %5$@. Каждая минута фокуса и каждый день учебы сближают вас.</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld. Every focused minute and every study day bring you closer.</key>
+	<string>Связь %1$lld из %2$lld: до связи %4$lld еще %3$@. Каждая минута фокуса и каждый день учебы сближают вас.</string>
 	<key>Bonus minutes toward this event's limited items</key>
 	<string>Бонусные минуты для лимитированных предметов этого события</string>
 	<key>Bonus points from your pet, added to your balance</key>
@@ -1187,6 +1245,12 @@
 	<string>В фокусе</string>
 	<key>Focusing on: %@</key>
 	<string>В фокусе: %@</string>
+	<key>Forever friends</key>
+	<string>Навсегда</string>
+	<key>Found: %lld min toward the event</key>
+	<string>Находка: %lld мин к событию</string>
+	<key>Found: the rare %@ fur</key>
+	<string>Находка: редкий мех «%@»</string>
 	<key>Free all day</key>
 	<string>Весь день свободен</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1277,6 +1341,8 @@
 	<string>Продолжить без имени</string>
 	<key>Goals left today</key>
 	<string>Цели на сегодня</string>
+	<key>Gold tag</key>
+	<string>Золотой жетон</string>
 	<key>Golden Laurel</key>
 	<string>Золотой лавр</string>
 	<key>Graduation Cap</key>
@@ -1289,6 +1355,8 @@
 	<string>Хэллоуин</string>
 	<key>Halo</key>
 	<string>Нимб</string>
+	<key>Happy wiggle</key>
+	<string>Радостное виляние</string>
 	<key>Haptic feedback</key>
 	<string>Тактильный отклик</string>
 	<key>Harassment</key>
@@ -1377,6 +1445,8 @@
 	<string>Неприемлемое имя</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>Токены ввода, вывода и кэша во всех сессиях %@ с полуночи</string>
+	<key>Inseparable</key>
+	<string>Неразлучные</string>
 	<key>Install</key>
 	<string>Установить</string>
 	<key>Install %@ to plan with it.</key>
@@ -1451,6 +1521,8 @@
 	<string>Подключаемся к Party. Это займет секунду.</string>
 	<key>Joining the party server…</key>
 	<string>Подключение к серверу пати…</string>
+	<key>Just met</key>
+	<string>Знакомство</string>
 	<key>Keep at least one tab on</key>
 	<string>Хотя бы одна вкладка должна быть включена</string>
 	<key>Keep the %@ kit</key>
@@ -1469,6 +1541,8 @@
 	<string>Оставить это имя</string>
 	<key>Keep your current kit and tabs</key>
 	<string>Оставить текущий набор и вкладки</string>
+	<key>Kindred spirits</key>
+	<string>Родные души</string>
 	<key>King's Cape</key>
 	<string>Королевская мантия</string>
 	<key>Kit</key>
@@ -1479,6 +1553,8 @@
 	<string>Последние 7 дней</string>
 	<key>Last synced %@</key>
 	<string>Синхронизировано: %@</string>
+	<key>Latest adventure: %@</key>
+	<string>Последнее приключение: %@</string>
 	<key>Launch %@</key>
 	<string>Открыть %@</string>
 	<key>Launch at login</key>
@@ -1645,6 +1721,8 @@
 	<string>Новые</string>
 	<key>New chat</key>
 	<string>Новый чат</string>
+	<key>New friends</key>
+	<string>Новые друзья</string>
 	<key>New tabs may ask for %@.</key>
 	<string>Новые вкладки могут запросить: %@.</string>
 	<key>Next meeting</key>
@@ -1665,6 +1743,8 @@
 	<string>Нет ответа</string>
 	<key>No calendars yet</key>
 	<string>Календарей пока нет</string>
+	<key>No collar</key>
+	<string>Без ошейника</string>
 	<key>No events</key>
 	<string>Нет событий</string>
 	<key>No events on your calendars today.</key>
@@ -1999,8 +2079,12 @@
 	<string>Скрыт. Нажми %@, чтобы открыть.</string>
 	<key>Owned</key>
 	<string>Есть</string>
+	<key>Pals</key>
+	<string>Приятели</string>
 	<key>Panel size</key>
 	<string>Размер панели</string>
+	<key>Partners in focus</key>
+	<string>Команда</string>
 	<key>Party</key>
 	<string>Party</string>
 	<key>Party Hat</key>
@@ -2119,6 +2203,8 @@
 	<string>Розовый шум</string>
 	<key>Pirate Hat</key>
 	<string>Пиратская шляпа</string>
+	<key>Plain collar</key>
+	<string>Простой ошейник</string>
 	<key>Plan</key>
 	<string>Спланировать</string>
 	<key>Plan my day</key>
@@ -2563,10 +2649,14 @@
 	<string>Немного бесконечно больше, чем ничего. Отдохни. Доска никуда не денется.</string>
 	<key>Something not working?</key>
 	<string>Что-то не работает?</string>
+	<key>Soulmates</key>
+	<string>Половинки</string>
 	<key>Sound</key>
 	<string>Звук</string>
 	<key>Spam</key>
 	<string>Спам</string>
+	<key>Sparkle</key>
+	<string>Искорки</string>
 	<key>Sparkle Trail</key>
 	<string>Блестящий шлейф</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
@@ -2581,6 +2671,8 @@
 	<string>Пружинисто, с легким отскоком.</string>
 	<key>Sprint</key>
 	<string>Спринт</string>
+	<key>Star tag</key>
+	<string>Звездный жетон</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>Звезды не спешат. Они просто продолжают гореть.</string>
 	<key>Start %@ automatically when you log in</key>
@@ -2687,6 +2779,8 @@
 	<string>Худи для учебы</string>
 	<key>Study block</key>
 	<string>Учебный блок</string>
+	<key>Study buddies</key>
+	<string>Напарники</string>
 	<key>Study parties</key>
 	<string>Учеба с друзьями</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3343,6 +3437,8 @@
 	<string>Профиль Party сброшен. Переподключение…</string>
 	<key>Your pet</key>
 	<string>Твой питомец</string>
+	<key>Your pet found this on its adventure. %@</key>
+	<string>Питомец нашел это в приключении. %@</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>Имя питомца недопустимо. Переименуй питомца в Гардеробе.</string>
 	<key>Your pet, today's streak and the running timer.</key>
@@ -3383,6 +3479,8 @@
 	<string>скоро конец</string>
 	<key>events</key>
 	<string>события</string>
+	<key>exploring</key>
+	<string>гуляет</string>
 	<key>focused</key>
 	<string>в фокусе</string>
 	<key>in %@</key>
@@ -3435,6 +3533,8 @@
 	<string>задачи</string>
 	<key>the host</key>
 	<string>ведущий</string>
+	<key>the rare %@ fur</key>
+	<string>редкий мех «%@»</string>
 	<key>today</key>
 	<string>сегодня</string>
 	<key>tokens</key>

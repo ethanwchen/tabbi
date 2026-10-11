@@ -128,6 +128,15 @@ final class PetAdventureTests: XCTestCase {
         XCTAssertTrue(PetJournal.lines.allSatisfy { $0.phrase.count <= 36 }, "fits the Closet card")
     }
 
+    func testEveryLineIsAWholeLocalizedSentence() {
+        // In English each sentence is the name and the line's phrase, so the
+        // catalog keys and `lines` never drift apart.
+        for line in PetJournal.lines {
+            XCTAssertEqual(PetJournal.sentence(for: line.id, petName: "Mochi"), "Mochi \(line.phrase)", line.id)
+        }
+        XCTAssertNil(PetJournal.sentence(for: "moon", petName: "Mochi"))
+    }
+
     func testEntryReadsWithThePetsName() {
         var journal = PetJournal(seed: 7)
         let entry = journal.record(at: start)

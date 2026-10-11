@@ -423,7 +423,7 @@ private struct PetGiftLine: View {
     }
 
     private var help: String {
-        delivery.adventure == nil ? kindHelp : "Your pet found this on its adventure. \(kindHelp)"
+        delivery.adventure == nil ? kindHelp : String(localized: "Your pet found this on its adventure. \(kindHelp)", bundle: .tabbi)
     }
 
     private var kindHelp: String {
