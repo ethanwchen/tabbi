@@ -43,9 +43,10 @@ extension PetCoach {
     /// focus phase runs. The coach's shortest threshold is 30 s, so 5 s is
     /// plenty; outside focus the app does not sample at all.
     public static let sampleInterval: TimeInterval = 5
-    /// How long a celebration bubble stays up: shorter than a nudge, since
-    /// there is nothing to answer.
-    public static let celebrationDuration: TimeInterval = 6
+    /// How long a celebration bubble stays up: the end-of-session moment
+    /// (the points counting up, the bar filling) stays under about four
+    /// seconds, so it never stands between the user and their work.
+    public static let celebrationDuration: TimeInterval = 4
 }
 
 /// The coach's persisted state: its cooldowns and snooze (so a relaunch

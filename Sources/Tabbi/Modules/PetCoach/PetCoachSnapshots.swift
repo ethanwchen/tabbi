@@ -29,14 +29,21 @@ enum PetCoachSnapshots {
             let scene = PetCoachScene(profile: profile, stroll: stroll, nudge: nudge(kind, lines))
             shots.append(("coach-\(name(kind))", self.scene(scene, at: talking)))
         }
-        // Celebrations: mid-hop with the heart up, then a level-up bubble.
+        // The end-of-session moment: mid-hop with the heart up, then the
+        // settled bubble with the bar toward the next unlock, one where the
+        // session made an item affordable, and one with nothing left to unlock.
         let party = PetCoachStroll(startedAt: start, talkDuration: PetCoach.celebrationDuration)
-        let done = PetCoachScene(profile: profile, stroll: party,
-                                 line: .celebration(PetStudyAward(completedSessions: 1, minutes: 25, points: 35)))
+        let session = PetStudyAward(completedSessions: 1, minutes: 25, points: 35)
+        let toNext = UnlockProgress(balance: 40, earned: 35, ledger: PetPointsLedger(purchased: [.accessory(.beanie)]))
+        let done = PetCoachScene(profile: profile, stroll: party, line: .celebration(session, progress: toNext))
         shots.append(("coach-celebrate", scene(done, at: party.arrivesAt.addingTimeInterval(0.3))))
+        shots.append(("coach-session-end", scene(done, at: party.arrivesAt.addingTimeInterval(2))))
         let levelUp = PetCoachScene(profile: profile, stroll: party, line: .celebration(
-            PetStudyAward(completedSessions: 1, minutes: 50, points: 60, unlocked: [.outfit(.scrubs)])))
+            session, progress: UnlockProgress(balance: 40, earned: 35, ledger: PetPointsLedger())))
         shots.append(("coach-level-up", scene(levelUp, at: party.arrivesAt.addingTimeInterval(2))))
+        let allOwned = PetStudyAward(completedSessions: 1, minutes: 50, points: 60)
+        let complete = PetCoachScene(profile: profile, stroll: party, line: .celebration(allOwned, progress: nil))
+        shots.append(("coach-session-end-all-owned", scene(complete, at: party.arrivesAt.addingTimeInterval(2))))
         return shots
     }
 

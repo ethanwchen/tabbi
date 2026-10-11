@@ -4,9 +4,26 @@ import TabbiKitCore
 /// A generator whose every draw is the same fraction of its range, so a
 /// `Double.random(in: 0..<1)` returns about `fraction` and a random element
 /// is the one at `fraction` of the way through.
+///
+/// `Double.random` reads a draw's low 53 bits and an integer draw
+/// (`randomElement`) its high bits, so both carry `fraction`. The lowest
+/// bits also step on every call: integer draws reject some raw values and
+/// draw again, and a constant they reject would loop forever.
 struct FixedRandom: RandomNumberGenerator {
     var fraction: Double
-    mutating func next() -> UInt64 { UInt64(min(fraction, 0.999_999) * Double(UInt64.max)) }
+    private var calls: UInt64 = 0
+
+    init(fraction: Double) {
+        self.fraction = fraction
+    }
+
+    mutating func next() -> UInt64 {
+        calls &+= 1
+        let clamped = min(max(fraction, 0), 0.999_999)
+        let high = UInt64(clamped * 2048) << 53
+        let low = UInt64(clamped * 9_007_199_254_740_992) & ~UInt64(0x7FF)
+        return high | low | (calls % 0x7FF + 1)
+    }
 }
 
 /// Deterministic generator (SplitMix64) for statistical checks.
