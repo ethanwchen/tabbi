@@ -149,6 +149,9 @@ struct PetCoachOverlayView: View {
         // The window clips in the app; clip here too so the pet is hidden
         // under the notch in snapshots as well.
         .clipped()
+        // The window hangs to the right of the notch in every language, so
+        // the pet walks out the same way; the bubble's words follow the language.
+        .fixedLeftToRight()
     }
 
     @ViewBuilder
@@ -304,6 +307,7 @@ private struct PetCoachBubble: View {
                 }
             }
         }
+        .tabbiLayoutDirection()
         .padding(Theme.Spacing.m)
         .padding(.leading, PetCoachBubbleShape.tailLength)
         .background(PetCoachBubbleShape().fill(Theme.Palette.background))
@@ -484,6 +488,7 @@ private struct PetUnlockBar: View {
                 }
             }
             .frame(height: 4)
+            .fixedLeftToRight()
             Text(progress.line)
                 .font(Theme.Typography.caption)
                 .foregroundStyle(progress.isReady ? accent : Theme.Palette.secondaryText)

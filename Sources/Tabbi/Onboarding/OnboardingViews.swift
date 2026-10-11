@@ -176,7 +176,7 @@ private struct OnboardingFooter: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
             if flow.canGoBack {
-                FooterButton(title: String(localized: "Back", bundle: .tabbi), symbol: "chevron.left", help: String(localized: "Go back one step", bundle: .tabbi)) {
+                FooterButton(title: String(localized: "Back", bundle: .tabbi), symbol: "chevron.backward", help: String(localized: "Go back one step", bundle: .tabbi)) {
                     store.update { $0.back() }
                 }
             }
@@ -185,7 +185,7 @@ private struct OnboardingFooter: View {
                 .foregroundStyle(Theme.Palette.tertiaryText)
                 .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: flow.canGoBack ? .center : .leading)
-            FooterButton(title: forwardTitle, symbol: "chevron.right", isPrimary: forwardIsPrimary, help: forwardHelp) {
+            FooterButton(title: forwardTitle, symbol: "chevron.forward", isPrimary: forwardIsPrimary, help: forwardHelp) {
                 store.update { $0.next() }
             }
         }
@@ -251,9 +251,9 @@ private struct FooterButton: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: Theme.Spacing.xs) {
-                if symbol == "chevron.left" { Image(systemName: symbol) }
+                if symbol == "chevron.backward" { Image(systemName: symbol) }
                 Text(title)
-                if symbol != "chevron.left" { Image(systemName: symbol) }
+                if symbol != "chevron.backward" { Image(systemName: symbol) }
             }
             .font(Theme.Typography.caption)
             .foregroundStyle(isPrimary || hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)

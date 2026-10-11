@@ -185,6 +185,7 @@ private struct NotchUnlockHint: View {
                 .frame(width: NotchPreviewLayout.unlockHintWidth * max(0.15, min(1, fraction)))
         }
         .frame(width: NotchPreviewLayout.unlockHintWidth, height: NotchPreviewLayout.unlockHintHeight)
+        .fixedLeftToRight()
         .accessibilityHidden(true)
     }
 }

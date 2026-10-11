@@ -39,7 +39,7 @@ import sys
 
 SCRIPTS = pathlib.Path(__file__).resolve().parent
 CATALOG = SCRIPTS.parent / "Sources/TabbiKitCore/Localization/Localizable.xcstrings"
-LANGUAGES = ["en", "de", "es", "fr", "fil", "ja", "ko", "pt-BR", "ru", "zh-Hans", "zh-Hant"]
+LANGUAGES = ["en", "ar", "de", "es", "fr", "fil", "ja", "ko", "pt-BR", "ru", "zh-Hans", "zh-Hant"]
 
 
 def unit(value):

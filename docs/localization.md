@@ -1,6 +1,6 @@
 # Localization
 
-Tabbi ships in English, German, Spanish, French, Filipino, Japanese, Korean, Brazilian Portuguese, Russian, Simplified Chinese and Traditional Chinese.
+Tabbi ships in English, Arabic, German, Spanish, French, Filipino, Japanese, Korean, Brazilian Portuguese, Russian, Simplified Chinese and Traditional Chinese.
 This page covers how strings are looked up, how to add or change one, and how to add a language.
 
 ## How it works
@@ -53,6 +53,7 @@ German and French run long, so prefer the shorter of two good options and check 
 Follow each language's usual app conventions: informal "du" in German, "tu" in French and Spanish, "você" in Brazilian Portuguese, informal "ты" in Russian, and polite but plain wording in Japanese and Korean.
 Russian keeps verbs about the user gender-neutral, with "(а)" where a past tense cannot be avoided, and names the Party tab "Party".
 Filipino is the everyday Tagalog of Filipino apps: English loanwords where they are the norm ("timer", "task"), and macOS names (System Settings, Keychain, Do Not Disturb) in English, since macOS has no Filipino localization.
+Arabic is friendly Modern Standard Arabic, addresses the user in the masculine singular as macOS does, and fills all six plural forms (zero, one, two, few, many, other); `testArabicPluralsFillAllSixForms` checks 0, 1, 2, 3, 11 and 100.
 Traditional Chinese follows Taiwan's conventions and Apple's Taiwan terms, not a conversion of the Simplified Chinese.
 A string that names a label elsewhere in the app (a tab, a button, "None") uses that label's translation, word for word.
 The writing rules in AGENTS.md hold in every language: no emojis and no em dashes.
@@ -85,6 +86,28 @@ These stay English on purpose for now:
 - long help text and error details,
 - the bundled kits' names, summaries and questions,
 - the study method names and taglines and the theme names, which come from bundled JSON files that the Windows port reads too and need a localized field there first.
+
+## Right to left
+
+Arabic reads right to left, so Tabbi lays out mirrored in it.
+`L10n.isRightToLeft` says whether the chosen language does, and every root Tabbi hosts applies `.tabbiLayoutDirection()` (in `TabbiKit/Design`): the notch, each Settings pane, the pet coach's window and the snapshot renderers.
+They do not wait for AppKit, whose direction follows the main bundle's languages and so stays left to right under `swift run`; `--locale ar` also sets AppKit's own direction for that run, so Settings' toolbar mirrors too.
+SwiftUI then mirrors stacks, padding and alignment on its own: the tab row starts at the right, list rows put their icon on the right, and back and forward chevrons point the other way.
+Use `chevron.backward` and `chevron.forward` for those, never `chevron.left` and `chevron.right`, which keep pointing the same way in a hosting view.
+The notch window and its hover zones do not move: both are centered on the camera, and the closed notch's two wings are the same width, so a mirrored notch covers exactly the same area.
+
+Some things keep their direction, through `.fixedLeftToRight()`:
+
+- progress rings fill clockwise from twelve o'clock, like a clock face (`ProgressRing`, Today's shared checks),
+- progress bars and sliders fill from the left (Party's shared session, memory pressure, the study sound levels, the unlock bar in the pet's bubble and in the closed notch),
+- Now Playing's track bar and transport buttons, whose arrows are media symbols, not reading direction,
+- check marks, Ask AI's code blocks, and the pet coach's walk, which leaves the notch to the right on screen while its bubble's words read right to left.
+
+Pixel pets and other images never mirror on their own.
+The Closet's activity heatmap and System's charts do mirror: their time runs from right to left, newest at the left, as Arabic calendars and GitHub's Arabic heatmap read.
+Text made only of digits and signs takes the paragraph's direction, so a value such as Now Playing's "-2:21" starts with a left-to-right mark (U+200E) to keep its minus in front.
+Numbers follow the locale's formatters; with Arabic and the system's default numbering they are Western digits.
+Check a right-to-left change in the `--locale ar` snapshots against the English ones.
 
 ## Checking
 

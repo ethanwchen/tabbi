@@ -45,6 +45,8 @@ public struct ProgressRing<Content: View>: View {
                 .trim(from: 0, to: shown)
                 .stroke(tint, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                 .rotationEffect(.degrees(-90))
+                // Clockwise like a clock face, in every language.
+                .fixedLeftToRight()
             content
         }
         .onChange(of: progress) { old, new in

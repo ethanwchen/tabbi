@@ -407,6 +407,8 @@ private struct StudyLevelSlider: View {
             )
         }
         .frame(height: 10)
+        // Fills from the left in every language, as Tabbi's bars do.
+        .fixedLeftToRight()
         .help("\(help) \(Int((level * 100).rounded()))%")
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
