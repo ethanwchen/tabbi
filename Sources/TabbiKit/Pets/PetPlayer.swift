@@ -29,7 +29,7 @@ public final class PetPlayer: ObservableObject {
         clips = PetClipSet(profile: profile)
         animator = PetAnimator(durations: clips.durations, place: place, asleep: asleep, activity: activity,
                                activitySince: activitySince?.timeIntervalSinceReferenceDate,
-                               at: date.timeIntervalSinceReferenceDate, seed: seed)
+                               happy: profile.bondLook.happyIdle, at: date.timeIntervalSinceReferenceDate, seed: seed)
     }
 
     public var place: PetAnimator.Place { animator.place }
@@ -56,7 +56,7 @@ public final class PetPlayer: ObservableObject {
         // Durations can differ between looks, so restart in the same place.
         animator = PetAnimator(durations: clips.durations, place: animator.place,
                                asleep: animator.isAsleep, activity: animator.activity,
-                               activitySince: animator.activitySince, at: time, seed: .random(in: .min ... .max))
+                               activitySince: animator.activitySince, happy: profile.bondLook.happyIdle, at: time, seed: .random(in: .min ... .max))
     }
 
     /// The frame to draw at `date`, or nil while the pet is inside the notch.

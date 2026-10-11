@@ -59,7 +59,7 @@ public struct PetClipSet: Hashable, Sendable {
     /// `animator` must already be advanced to the time drawn.
     public func stillFrame(for animator: PetAnimator) -> PetFrame? {
         guard let playback = animator.playback else { return nil }
-        return self[playback.animation == .blink ? .idle : playback.animation].stillFrame
+        return self[PetAnimator.idleBeats.contains(playback.animation) ? .idle : playback.animation].stillFrame
     }
 
     /// The next moment after `time` when `stillFrame(for:)` can change: the
@@ -68,7 +68,8 @@ public struct PetClipSet: Hashable, Sendable {
     /// pet only changes on events. `animator` must already be advanced to
     /// `time`.
     public func nextStillChange(for animator: PetAnimator, after time: TimeInterval) -> TimeInterval? {
-        guard let playback = animator.playback, !playback.animation.loops, playback.animation != .blink
+        guard let playback = animator.playback, !playback.animation.loops,
+              !PetAnimator.idleBeats.contains(playback.animation)
         else { return nil }
         let end = playback.startedAt + self[playback.animation].duration
         return end > time ? end : nil
@@ -151,6 +152,16 @@ public struct PetAnimator: Hashable, Sendable {
         case activity(Activity)
     }
 
+    /// What an idling pet plays between rests: a blink, or for a happy pet
+    /// now and then a tail swish. Both yield to any event, and Reduce
+    /// Motion draws them as the idle pose they interrupt.
+    public static let idleBeats: Set<PetAnimation> = [.blink, .tailSwish]
+
+    /// A happy pet (`PetBondLook.happyIdle`) swishes its tail in place of
+    /// every this many blinks, so a grown bond shows as a little extra
+    /// contentment without the pet ever seeming restless.
+    public static let happyBeatEvery = 3
+
     /// The clip on screen and when it started.
     public struct Playback: Hashable, Sendable {
         public var animation: PetAnimation
@@ -175,6 +186,9 @@ public struct PetAnimator: Hashable, Sendable {
     public private(set) var place: Place
     public private(set) var isAsleep: Bool
     public private(set) var activity: Activity
+    /// Whether the idle is the happier one a grown bond unlocks (see
+    /// `happyBeatEvery`).
+    public let isHappy: Bool
     /// When the current activity started, so leaving a long focus stretch
     /// can be told from leaving a short one.
     public private(set) var activitySince: TimeInterval
@@ -190,14 +204,17 @@ public struct PetAnimator: Hashable, Sendable {
     /// A long focus stretch ended while another one-shot clip played; the
     /// pet yawns as soon as that clip ends.
     private var yawnsNext = false
+    /// Idle beats played so far, which picks a happy pet's tail swishes.
+    private var beats = 0
     private var random: SplitMix64
 
     public init(
         durations: [PetAnimation: TimeInterval], place: Place = .beside, asleep: Bool = false,
-        activity: Activity = .free, activitySince: TimeInterval? = nil,
+        activity: Activity = .free, activitySince: TimeInterval? = nil, happy: Bool = false,
         at time: TimeInterval = 0, seed: UInt64 = 0
     ) {
         self.durations = durations
+        self.isHappy = happy
         self.place = place
         self.isAsleep = asleep && place == .beside
         self.activity = activity
@@ -231,7 +248,9 @@ public struct PetAnimator: Hashable, Sendable {
             let animation = current.animation
             let end = current.startedAt + duration(animation)
             if animation == .idle, let blinkAt = nextBlinkAt, blinkAt <= time {
-                playback = Playback(animation: .blink, startedAt: blinkAt)
+                beats += 1
+                let swishes = isHappy && beats.isMultiple(of: Self.happyBeatEvery)
+                playback = Playback(animation: swishes ? .tailSwish : .blink, startedAt: blinkAt)
                 nextBlinkAt = nil
                 continue
             }

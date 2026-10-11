@@ -186,8 +186,9 @@ The pet grows with the bond (`PetBond`, from the activity log) instead of being 
 The collars are body items in `costume.json` (`bondCollarPlain`, `bondCollarBell`, `bondCollarStar`, `bondCollarGold`) on the shared neck anchors: a crimson band under the chin with an outlined gold tag, which read on every fur color.
 They go over the outfit, and a neck item (a scarf, a bow tie) is worn in their place.
 The sparkle is an aura item (`bondSparkle`): two soft white glints that twinkle in free air and never touch the pet.
+The happier idle is in `PetAnimator`: a happy pet (`happy:`, from `PetBondLook.happyIdle` through `PetPlayer`) swishes its tail in place of every third blink (`happyBeatEvery`), on the same random beat, so it never looks restless; like a blink it yields to any event, and Reduce Motion draws the idle pose.
 `PetProfile.bondLook` carries the look to every view that draws the pet, but it is never saved or synced: the Closet derives it from the bond.
-`--snapshot` writes `pets-bond.png`, every breed at each bond look, in an outfit, walking, stretching and curled up.
+`--snapshot` writes `pets-bond.png`, every breed at each bond look, in an outfit, walking, stretching and curled up, and `closed-pet-bond.png`, the closed-notch pet at the top bond with its neck item taken off so the gold tag shows.
 
 ### Adding a costume item
 

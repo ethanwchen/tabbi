@@ -129,6 +129,13 @@ enum SnapshotRenderer {
                     model.preview = .pet(TickerPet(profile: pet.profile, mood: .studying))
                     shots.append(Shot(name, model))
                 }
+                // A top bond: the gold tag (no neck item to hide it) and the sparkle.
+                var grown = pet.profile
+                for item in grown.accessories where item.slot == .neck { grown.takeOff(item) }
+                grown.bondLook = PetBondLook(level: PetBond.maxLevel)
+                let bonded = NotchViewModel(geometry: geometry, layout: layout)
+                bonded.preview = .pet(TickerPet(profile: grown, mood: .awake))
+                shots.append(Shot("closed-pet-bond", bonded))
             }
         }
         // The closed timer's ring part-way through a Pomodoro and a break,
