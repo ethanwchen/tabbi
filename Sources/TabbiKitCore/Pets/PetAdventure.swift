@@ -141,16 +141,36 @@ public struct PetJournal: Hashable, Codable, Sendable {
     public struct Entry: Hashable, Codable, Sendable {
         public let line: String
         public let date: Date
+        /// The surprise gift the pet carried home from this adventure, if
+        /// the session it ended brought one (`attach(_:to:)`).
+        public fileprivate(set) var gift: SurpriseGift?
 
-        public init(line: String, date: Date) {
+        public init(line: String, date: Date, gift: SurpriseGift? = nil) {
             self.line = line
             self.date = date
+            self.gift = gift
         }
 
         /// The line with the pet's name, or nil for a line this build no
         /// longer knows.
         public func text(petName: String) -> String? {
             PetJournal.phrase(for: line).map { "\(petName) \($0)" }
+        }
+
+        /// The line with the gift it brought home, e.g. "Mochi found a
+        /// perfect leaf and brought back 15 bonus points", for tooltips.
+        public func detail(petName: String) -> String? {
+            text(petName: petName).map { sentence in gift.map { "\(sentence) and brought back \($0.name)" } ?? sentence }
+        }
+
+        private enum CodingKeys: String, CodingKey { case line, date, gift }
+
+        // A gift this build doesn't know is dropped, so the entry still loads.
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            line = try container.decode(String.self, forKey: .line)
+            date = try container.decode(Date.self, forKey: .date)
+            gift = (try? container.decodeIfPresent(SurpriseGift.self, forKey: .gift)) ?? nil
         }
     }
 
@@ -223,6 +243,17 @@ public struct PetJournal: Hashable, Codable, Sendable {
 
     /// The newest adventure, for the Closet.
     public var latest: Entry? { entries.last }
+
+    /// Notes the surprise gift the pet carried home on `entry`, and returns
+    /// the entry with it. Nil when the entry is no longer kept or already
+    /// has a gift, so one adventure never brings two.
+    @discardableResult
+    public mutating func attach(_ gift: SurpriseGift, to entry: Entry) -> Entry? {
+        guard let index = entries.lastIndex(where: { $0.line == entry.line && $0.date == entry.date }),
+              entries[index].gift == nil else { return nil }
+        entries[index].gift = gift
+        return entries[index]
+    }
 
     static func phrase(for id: String) -> String? {
         lines.first { $0.id == id }?.phrase

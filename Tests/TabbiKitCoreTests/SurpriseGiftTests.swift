@@ -187,7 +187,28 @@ final class SurpriseGiftTests: XCTestCase {
             + RareFur.all.map { .rareFur($0) } + [.seasonMinutes(eventID: "halloween", minutes: 15)]
         for gift in gifts {
             XCTAssertLessThanOrEqual(gift.message.count, 40, gift.message)
+            XCTAssertLessThanOrEqual(gift.adventureMessage.count, gift.message.count,
+                                     "fits wherever the plain line fits: \(gift.adventureMessage)")
         }
+    }
+
+    func testADeliveryFromAnAdventureSaysThePetBroughtItBack() {
+        let gift = SurpriseGift.bonusPoints(15)
+        let date = Date(timeIntervalSinceReferenceDate: 0)
+        XCTAssertEqual(SurpriseGiftDelivery(gift: gift, date: date).message, "A gift: 15 bonus points")
+        let adventure = PetJournal.Entry(line: "leaf", date: date, gift: gift)
+        XCTAssertEqual(SurpriseGiftDelivery(gift: gift, date: date, adventure: adventure).message,
+                       "Found: 15 bonus points")
+    }
+
+    func testEveryGiftRoundTripsAsJSON() throws {
+        let gifts: [SurpriseGift] = [.bonusPoints(20), .rareFur(RareFur.all[2]),
+                                     .seasonMinutes(eventID: "lunar:new-year", minutes: 15)]
+        for gift in gifts {
+            XCTAssertEqual(try JSONDecoder().decode(SurpriseGift.self, from: JSONEncoder().encode(gift)), gift)
+        }
+        let unknown = Data(#"{"kind":"crown","value":"1"}"#.utf8)
+        XCTAssertThrowsError(try JSONDecoder().decode(SurpriseGift.self, from: unknown))
     }
 }
 

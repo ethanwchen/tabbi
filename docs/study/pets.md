@@ -405,7 +405,11 @@ To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.
   Snapshot runs render it away as `closed-pet-away.png` and half way back as `closed-pet-returning.png`.
   When the block runs out with the pet on its way home (`PetAdventure.finished`), the Closet writes a line into the pet's journal (`PetJournal`, "Mochi explored the bookshelf"), saved as `Pet/journal.json` beside the save but never synced.
   The Large Closet pet card shows the newest line in place of the breed, and hovering the pet shows it on any size.
-  `ClosetStore.adventureReturns` sends each journal entry as the pet comes back: it is the integration point where the end-of-session moment can hand over a gift the pet found.
+  `ClosetStore.adventureReturns` sends each journal entry as the pet comes back, and the `SurpriseGiftKeeper` follows it: when that session brings a surprise gift, the gift is what the pet carried home.
+  The coach's bubble then says "Found: 15 bonus points" in place of "A gift: ...", the gift is written onto that journal line, and the pet's tooltip reads "Mochi found a perfect leaf and brought back 15 bonus points".
+  The card's line stays the short journal line.
+- The closed notch's slot beside the pet's name holds one thing at a time: "zzz" while it dozes (by day or at night), "exploring" while it is away on an adventure, and otherwise, while it is awake between sessions, the slim progress bar when its next unlock is 2 sessions or less away (`TickerPet.unlockHint`).
+  The bar never shows during a focus block, a break, a doze or a sip, and the slot is measured for the widest of the three, so the wing never changes width.
   A block stopped or skipped early, or one under Reduce Motion, writes nothing.
 - `PetView(player:pixelSize:)` is a fixed square of 32 sprite pixels (32 pt at the default `pixelSize` of 1, 24 pt at 0.75).
   A `TimelineView` with `PetFrameSchedule` redraws exactly at each `nextChange`, so an idle pet redraws a few times a second and a hidden or hanging pet not at all.

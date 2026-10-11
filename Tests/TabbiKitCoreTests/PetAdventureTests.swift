@@ -137,6 +137,37 @@ final class PetAdventureTests: XCTestCase {
         XCTAssertEqual(journal.latest, entry)
     }
 
+    func testTheSurpriseGiftGoesOnTheAdventureItCameHomeFrom() throws {
+        var journal = PetJournal(seed: 7)
+        let first = journal.record(at: start)
+        let second = journal.record(at: start.addingTimeInterval(3600))
+        XCTAssertNil(second.gift)
+        XCTAssertEqual(second.detail(petName: "Mochi"), second.text(petName: "Mochi"), "no gift, no tail")
+
+        let fur = try XCTUnwrap(RareFur.named("mint"))
+        let carried = try XCTUnwrap(journal.attach(.rareFur(fur), to: second))
+        XCTAssertEqual(carried.gift, .rareFur(fur))
+        XCTAssertEqual(journal.latest, carried)
+        XCTAssertNil(journal.entries.first?.gift, "only that adventure")
+        let text = try XCTUnwrap(second.text(petName: "Mochi"))
+        XCTAssertEqual(carried.detail(petName: "Mochi"), "\(text) and brought back the rare Mint fur")
+        XCTAssertEqual(carried.text(petName: "Mochi"), text, "the card's line stays short")
+
+        XCTAssertNil(journal.attach(.bonusPoints(10), to: second), "one gift per adventure")
+        XCTAssertNil(journal.attach(.bonusPoints(10), to: PetJournal.Entry(line: first.line, date: .distantPast)),
+                     "an adventure no longer kept")
+        XCTAssertEqual(try PetJournal.decode(journal.encoded()), journal, "the gift is saved")
+    }
+
+    func testAnUnknownGiftIsDroppedAndTheEntryStillLoads() throws {
+        let json = #"{"line":"leaf","date":0,"gift":{"kind":"rareFur","value":"plaid"}}"#
+        let entry = try JSONDecoder().decode(PetJournal.Entry.self, from: Data(json.utf8))
+        XCTAssertEqual(entry.line, "leaf")
+        XCTAssertNil(entry.gift)
+        let plain = try JSONDecoder().decode(PetJournal.Entry.self, from: Data(#"{"line":"leaf","date":0}"#.utf8))
+        XCTAssertNil(plain.gift, "entries written before gifts load as before")
+    }
+
     func testNoRepeatsUntilEveryLineIsUsed() {
         var journal = PetJournal(seed: 42)
         let count = PetJournal.lines.count

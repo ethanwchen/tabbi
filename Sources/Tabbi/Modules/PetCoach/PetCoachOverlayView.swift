@@ -8,7 +8,7 @@ import TabbiKit
 /// notch's edge).
 enum PetCoachLine {
     case nudge(PetCoachNudge)
-    case celebration(PetStudyAward, progress: UnlockProgress?, wisdom: CatWisdomLine? = nil, gift: SurpriseGift? = nil)
+    case celebration(PetStudyAward, progress: UnlockProgress?, wisdom: CatWisdomLine? = nil, gift: SurpriseGiftDelivery? = nil)
     case glance(PetCoachGlance)
 
     /// The Cat wisdom line a celebration moves on to, if any.
@@ -336,7 +336,7 @@ private struct PetCoachBubble: View {
 private struct PetCelebrationText: View {
     let award: PetStudyAward
     let progress: UnlockProgress?
-    let gift: SurpriseGift?
+    let gift: SurpriseGiftDelivery?
     let accent: Color
     let animated: Bool
     /// False until the bubble is up, then springs to true: the count and
@@ -379,7 +379,7 @@ private struct PetCelebrationText: View {
                     .lineLimit(1)
             }
             if let gift {
-                PetGiftLine(gift: gift, accent: accent)
+                PetGiftLine(delivery: gift, accent: accent)
                     .padding(.top, Theme.Spacing.xxs)
             }
         }
@@ -394,17 +394,20 @@ private struct PetCelebrationText: View {
     }
 }
 
-/// The gift the cat brought back, under the bar. Bonus points are already
+/// The gift the cat brought back, under the bar ("Found: ..." when
+/// it carried the gift home from its adventure). Bonus points are already
 /// on the balance and a rare fur is waiting in the Closet's Look.
 private struct PetGiftLine: View {
-    let gift: SurpriseGift
+    let delivery: SurpriseGiftDelivery
     let accent: Color
+
+    private var gift: SurpriseGift { delivery.gift }
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs + 1) {
             Image(systemName: "gift.fill").font(.system(size: 9, weight: .semibold))
                 .foregroundStyle(accent)
-            Text(gift.message)
+            Text(delivery.message)
                 .foregroundStyle(Theme.Palette.primaryText)
                 .lineLimit(1)
             if case .rareFur(let fur) = gift {
@@ -420,6 +423,10 @@ private struct PetGiftLine: View {
     }
 
     private var help: String {
+        delivery.adventure == nil ? kindHelp : "Your pet found this on its adventure. \(kindHelp)"
+    }
+
+    private var kindHelp: String {
         switch gift {
         case .bonusPoints: String(localized: "Bonus points from your pet, added to your balance", bundle: .tabbi)
         case .rareFur: String(localized: "A rare fur color from your pet. Try it in the Closet under Look.", bundle: .tabbi)

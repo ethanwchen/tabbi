@@ -67,8 +67,9 @@ final class ClosetStore: ObservableObject {
 
     /// Gift integration point: one value each time the pet comes back from
     /// an adventure as a focus block ends, with the journal line it brought
-    /// back. The end-of-session moment can follow it to hand over a gift
-    /// the pet found; the Closet itself only writes the journal.
+    /// back. `SurpriseGiftKeeper` follows it, so a surprise gift rolled for
+    /// that session is the thing the pet carries home
+    /// (`recordGift(_:broughtBackFrom:)`).
     let adventureReturns = PassthroughSubject<PetJournal.Entry, Never>()
 
     /// Whether Reduce Motion is on, which keeps the pet home (and so out of
@@ -262,6 +263,23 @@ final class ClosetStore: ObservableObject {
     /// bookshelf"), or nil before its first adventure.
     var latestAdventure: String? {
         journal.latest?.text(petName: profile.name)
+    }
+
+    /// The newest journal line with the gift it brought home, if any, for
+    /// tooltips ("Mochi explored the bookshelf and brought back 15 bonus
+    /// points").
+    var latestAdventureDetail: String? {
+        journal.latest?.detail(petName: profile.name)
+    }
+
+    /// Writes a surprise gift onto the journal line of the adventure it was
+    /// carried home from, and returns that line. Nil when the line is gone
+    /// or already has a gift.
+    @discardableResult
+    func recordGift(_ gift: SurpriseGift, broughtBackFrom entry: PetJournal.Entry) -> PetJournal.Entry? {
+        guard let updated = journal.attach(gift, to: entry) else { return nil }
+        if let journalURL, !journalIsUnreadable { try? journal.write(to: journalURL) }
+        return updated
     }
 
     private func celebrate(_ award: PetStudyAward) {

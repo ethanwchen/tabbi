@@ -138,7 +138,7 @@ private struct ClosetPetCard: View {
             Spacer(minLength: 0)
             PetView(player: store.preview, pixelSize: 3)
                 .padding(.bottom, Theme.Spacing.xs)
-                .help(store.latestAdventure.map { "Latest adventure: \($0)" } ?? "")
+                .help(store.latestAdventureDetail.map { "Latest adventure: \($0)" } ?? "")
             nameRow
             if let subtitle = subtitle(showsBreed: showsBreed) {
                 Text(subtitle)
@@ -146,7 +146,7 @@ private struct ClosetPetCard: View {
                     .foregroundStyle(store.tryingOn == nil ? Theme.Palette.tertiaryText : accent)
                     .lineLimit(1)
                     .truncationMode(.tail)
-                    .help(subtitle == store.latestAdventure ? "Latest adventure: \(subtitle)" : "")
+                    .help(subtitle == store.latestAdventure ? "Latest adventure: \(store.latestAdventureDetail ?? subtitle)" : "")
                     .motion(Theme.Motion.snappy, value: subtitle)
             }
             if store.tryingOn == nil && (showsBreed || !isUnnamed) {
