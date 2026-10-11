@@ -3,17 +3,37 @@ import TabbiKitCore
 import TabbiKit
 
 /// What the pet comes out to say: a coach nudge, a celebration of points
-/// just earned, or nothing at all (a silent glance from the notch's edge).
+/// just earned (with the bar toward the next unlock, and now and then a Cat
+/// wisdom line after it), or nothing at all (a silent glance from the
+/// notch's edge).
 enum PetCoachLine {
     case nudge(PetCoachNudge)
-    case celebration(PetStudyAward)
+    case celebration(PetStudyAward, progress: UnlockProgress?, wisdom: CatWisdomLine? = nil, gift: SurpriseGift? = nil)
     case glance(PetCoachGlance)
 
+    /// The Cat wisdom line a celebration moves on to, if any.
+    var wisdom: CatWisdomLine? {
+        if case .celebration(_, _, let wisdom, _) = self { return wisdom }
+        return nil
+    }
+
+    /// How long the bubble talks: a celebration, plus its wisdom line.
+    var talkDuration: TimeInterval {
+        PetCoach.celebrationDuration + (wisdom == nil ? 0 : PetCoach.wisdomDuration)
+    }
+
+    /// Whether the bubble shows the wisdom line rather than the points
+    /// after `elapsed` seconds of talking (holds not counted).
+    func showsWisdom(afterTalking elapsed: TimeInterval) -> Bool {
+        wisdom != nil && elapsed >= PetCoach.celebrationDuration
+    }
+
+    /// The bubble's buttons. A celebration has none: a click anywhere on
+    /// the bubble sends the pet home, so the moment never asks for anything.
     var replies: [PetCoachReply] {
         switch self {
         case .nudge(let nudge): nudge.kind.replies
-        case .celebration: [.thanks]
-        case .glance: []
+        case .celebration, .glance: []
         }
     }
 
@@ -145,7 +165,8 @@ struct PetCoachOverlayView: View {
                     .offset(x: CGFloat(offset) - Self.petSide, y: Self.petTop)
             }
             if scene.line.hasBubble, stroll.showsBubble(at: date) {
-                PetCoachBubble(line: scene.line, onReply: onReply)
+                PetCoachBubble(line: scene.line, showsWisdom: scene.line.showsWisdom(afterTalking: stroll.talkElapsed(at: date)),
+                               animated: self.date == nil, onReply: onReply)
                     .frame(width: Self.bubbleWidth, alignment: .leading)
                     .background(GeometryReader { proxy in
                         // Placed by the offset below; only the size is measured.
@@ -222,7 +243,9 @@ private struct PetCoachSchedule: TimelineSchedule {
             case .glance(let glance):
                 next = glance.nextRedraw(after: date, clips: scene.clips)
             case .nudge, .celebration:
-                next = scene.stroll.nextRedraw(after: date, clips: scene.clips, arrival: scene.line.arrival)
+                let marks = scene.line.wisdom == nil ? []
+                    : [scene.stroll.date(afterTalking: PetCoach.celebrationDuration)].compactMap { $0 }
+                next = scene.stroll.nextRedraw(after: date, clips: scene.clips, arrival: scene.line.arrival, marks: marks)
             }
             return date
         }
@@ -242,7 +265,12 @@ struct PetCoachBubbleFrameKey: PreferenceKey {
 /// the notch so it reads as part of it, over any wallpaper.
 private struct PetCoachBubble: View {
     let line: PetCoachLine
+    /// True once a celebration has moved on to its Cat wisdom line.
+    let showsWisdom: Bool
+    /// False in snapshots, which show a celebration's count already settled.
+    let animated: Bool
     let onReply: (PetCoachReply) -> Void
+    @State private var hovering = false
 
     private static let accent = ClosetModule.descriptor.accentColor
 
@@ -255,35 +283,70 @@ private struct PetCoachBubble: View {
                     .foregroundStyle(Theme.Palette.primaryText)
                     .fixedSize(horizontal: false, vertical: true)
                     .lineLimit(2)
-            case .celebration(let award):
-                PetCelebrationText(award: award, accent: Self.accent)
+            case .celebration(let award, let progress, let wisdom, let gift):
+                if showsWisdom, let wisdom {
+                    PetWisdomText(line: wisdom, accent: Self.accent)
+                        .transition(.opacity)
+                } else {
+                    PetCelebrationText(award: award, progress: progress, gift: gift, accent: Self.accent,
+                                       animated: animated)
+                        .transition(.opacity)
+                }
             case .glance:
                 EmptyView()
             }
-            HStack(spacing: Theme.Spacing.xs) {
-                ForEach(line.replies, id: \.self) { reply in
-                    PetCoachReplyButton(reply: reply, isPrimary: reply == line.replies.first,
-                                        accent: Self.accent) { onReply(reply) }
+            if !line.replies.isEmpty {
+                HStack(spacing: Theme.Spacing.xs) {
+                    ForEach(line.replies, id: \.self) { reply in
+                        PetCoachReplyButton(reply: reply, isPrimary: reply == line.replies.first,
+                                            accent: Self.accent) { onReply(reply) }
+                    }
                 }
             }
         }
         .padding(Theme.Spacing.m)
         .padding(.leading, PetCoachBubbleShape.tailLength)
         .background(PetCoachBubbleShape().fill(Theme.Palette.background))
-        .overlay(PetCoachBubbleShape().stroke(Color.white.opacity(0.14), lineWidth: 0.5))
+        .overlay(PetCoachBubbleShape().stroke(Color.white.opacity(dismissesOnClick && hovering ? 0.28 : 0.14),
+                                              lineWidth: 0.5))
         .shadow(color: .black.opacity(0.35), radius: 10, y: 4)
+        .contentShape(PetCoachBubbleShape())
+        .onTapGesture { if dismissesOnClick { onReply(.thanks) } }
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.content, value: showsWisdom)
+        .help(dismissesOnClick ? "Click to send the pet home" : "")
         .accessibilityElement(children: .contain)
+        .accessibilityAction { if dismissesOnClick { onReply(.thanks) } }
     }
+
+    /// A bubble without buttons closes on a click anywhere on it.
+    private var dismissesOnClick: Bool { line.hasBubble && line.replies.isEmpty }
 }
 
 /// A celebration's words: the headline with the points pill beside it,
-/// and on a level-up the item that is now within reach.
+/// counting up from zero, then a bar filling toward the next unlock with
+/// what it still asks ("1 more session to Ninja Headband"). Without a goal
+/// left, a level-up names the item now within reach. A surprise gift gets
+/// one quiet line at the bottom.
 private struct PetCelebrationText: View {
     let award: PetStudyAward
+    let progress: UnlockProgress?
+    let gift: SurpriseGift?
     let accent: Color
+    let animated: Bool
+    /// False until the bubble is up, then springs to true: the count and
+    /// the bar animate from their before values to the earned ones.
+    @State private var settled = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// How long after the bubble appears the count and the bar start.
+    private static let countDelay = 0.25
+
+    private var shown: Bool { settled || !animated }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             HStack(spacing: Theme.Spacing.xs) {
                 Text(award.headline)
                     .font(Theme.Typography.bodyEmphasis)
@@ -292,7 +355,7 @@ private struct PetCelebrationText: View {
                     .layoutPriority(1)
                 HStack(spacing: Theme.Spacing.xxs) {
                     Image(systemName: "star.fill").font(.system(size: 8, weight: .bold))
-                    Text(award.pointsText).monospacedDigit()
+                    PetCountingPoints(value: Double(shown ? award.points : 0), total: award.points)
                 }
                 .font(Theme.Typography.caption.weight(.semibold))
                 .foregroundStyle(accent)
@@ -302,14 +365,132 @@ private struct PetCelebrationText: View {
                 .fixedSize()
                 .help("Points earned for this session")
             }
-            if let unlock = award.unlockLine {
+            if let progress {
+                PetUnlockBar(progress: progress, fraction: shown ? progress.fraction : progress.fractionBefore,
+                             accent: accent)
+            } else if let unlock = award.unlockLine {
                 Text(unlock)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .lineLimit(1)
             }
+            if let gift {
+                PetGiftLine(gift: gift, accent: accent)
+                    .padding(.top, Theme.Spacing.xxs)
+            }
         }
         .accessibilityElement(children: .combine)
+        .onAppear {
+            guard animated, !settled else { return }
+            withAnimation(TabbiKit.Motion.adapted(TabbiKit.Motion.content, reduceMotion: reduceMotion)
+                .delay(Self.countDelay)) {
+                settled = true
+            }
+        }
+    }
+}
+
+/// The gift the cat brought back, under the bar. Bonus points are already
+/// on the balance and a rare fur is waiting in the Closet's Look.
+private struct PetGiftLine: View {
+    let gift: SurpriseGift
+    let accent: Color
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xxs + 1) {
+            Image(systemName: "gift.fill").font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(accent)
+            Text(gift.message)
+                .foregroundStyle(Theme.Palette.primaryText)
+                .lineLimit(1)
+            if case .rareFur(let fur) = gift {
+                Circle()
+                    .fill(Color(red: Double(fur.color.red) / 255, green: Double(fur.color.green) / 255,
+                                blue: Double(fur.color.blue) / 255))
+                    .overlay(Circle().strokeBorder(Theme.Palette.stroke, lineWidth: 0.5))
+                    .frame(width: 10, height: 10)
+            }
+        }
+        .font(Theme.Typography.caption.weight(.medium))
+        .help(help)
+    }
+
+    private var help: String {
+        switch gift {
+        case .bonusPoints: "Bonus points from your pet, added to your balance"
+        case .rareFur: "A rare fur color from your pet. Try it in the Closet under Look."
+        case .seasonMinutes: "Bonus minutes toward this event's limited items"
+        }
+    }
+}
+
+/// A Cat wisdom line: a small label, then the line itself in up to three
+/// short lines. The bubble is the same width as the celebration's, so the
+/// pet does not jump when the words change.
+private struct PetWisdomText: View {
+    let line: CatWisdomLine
+    let accent: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+            HStack(spacing: Theme.Spacing.xxs) {
+                Image(systemName: "sparkle").font(.system(size: 8, weight: .bold)).foregroundStyle(accent)
+                Text("Cat wisdom")
+            }
+            .font(Theme.Typography.caption)
+            .foregroundStyle(Theme.Palette.tertiaryText)
+            Text(line.text)
+                .font(Theme.Typography.bodyEmphasis)
+                .foregroundStyle(Theme.Palette.primaryText)
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .accessibilityElement(children: .combine)
+        .help("A line from your pet. Hover to keep it, click to send the pet home. Turn it off in Settings › General.")
+    }
+}
+
+/// "+35", counting up as `value` animates. Clamped to the points earned,
+/// so a spring's overshoot never shows a number that wasn't earned.
+private struct PetCountingPoints: View, Animatable {
+    var value: Double
+    let total: Int
+
+    nonisolated var animatableData: Double {
+        get { value }
+        set { value = newValue }
+    }
+
+    var body: some View {
+        Text("+\(min(total, max(0, Int(value.rounded()))))").monospacedDigit()
+    }
+}
+
+/// A slim bar toward the next unlock, with the item and what it still asks
+/// below it.
+private struct PetUnlockBar: View {
+    let progress: UnlockProgress
+    let fraction: Double
+    let accent: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xxs + 1) {
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Theme.Palette.surface)
+                    Capsule().fill(accent)
+                        .frame(width: max(4, proxy.size.width * min(1, max(0, fraction))))
+                }
+            }
+            .frame(height: 4)
+            Text(progress.line)
+                .font(Theme.Typography.caption)
+                .foregroundStyle(progress.isReady ? accent : Theme.Palette.secondaryText)
+                .lineLimit(1)
+                .truncationMode(.middle)
+        }
+        .help(progress.isReady ? "\(progress.item.displayName) is ready in the Closet"
+              : "\(progress.missing) more points for \(progress.item.displayName)")
     }
 }
 

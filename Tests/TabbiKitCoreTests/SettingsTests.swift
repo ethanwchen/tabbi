@@ -331,6 +331,7 @@ final class SettingsRepositoryTests: XCTestCase {
             hapticsEnabled: false,
             celebrationSoundEnabled: false,
             weeklyRecapEnabled: false,
+            catWisdomEnabled: false,
             launchAtLogin: true,
             hotkey: Hotkey(keyCode: 40, modifiers: [.command, .shift]),
             claudePathOverride: "/opt/claude",

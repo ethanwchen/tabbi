@@ -21,7 +21,9 @@ extension PetCoachStroll {
     /// of the `arrival` clip and then the idle loop while talking, and the
     /// moments the pet sets off, arrives and turns back. Nil once the pet is
     /// home. `clips` must hold the pet's `.idle` and `arrival` clips.
-    public func nextRedraw(after date: Date, clips: PetClipSet, arrival: PetAnimation,
+    /// `marks` are other moments the bubble changes (a celebration moving
+    /// on to a Cat wisdom line), redrawn while talking.
+    public func nextRedraw(after date: Date, clips: PetClipSet, arrival: PetAnimation, marks: [Date] = [],
                            walkFrameRate: Double = PetCoachRedraw.walkFrameRate) -> Date? {
         let step = 1 / max(walkFrameRate, 1)
         // Still tucked under the notch before the start: nothing moves yet.
@@ -40,7 +42,8 @@ extension PetCoachStroll {
                     .map { $0 + arrivalClip.duration }
             }
             let frame = boundary.map { arrivesAt.addingTimeInterval($0 + PetCoachRedraw.lag) }
-            let turn = turnsBackAt.addingTimeInterval(PetCoachRedraw.lag)
+            let mark = marks.filter { $0 > date }.min().map { $0.addingTimeInterval(PetCoachRedraw.lag) }
+            let turn = [turnsBackAt.addingTimeInterval(PetCoachRedraw.lag), mark].compactMap { $0 }.min()!
             return frame.map { min($0, turn) } ?? turn
         case .walkingBack:
             return min(date.addingTimeInterval(step), endsAt.addingTimeInterval(PetCoachRedraw.lag))

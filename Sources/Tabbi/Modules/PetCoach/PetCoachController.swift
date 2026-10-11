@@ -24,6 +24,18 @@ import TabbiKit
 @MainActor
 final class PetCoachController: ObservableObject {
     private let profile: () -> PetProfile
+    /// The bar toward the next unlock right after an award was credited.
+    private let unlockProgress: (PetStudyAward) -> UnlockProgress?
+    /// Rolls for a surprise gift for the session behind an award and
+    /// applies it (`SurpriseGiftKeeper`).
+    private let gift: (PetStudyAward) -> SurpriseGift?
+    /// The pet's streak and focus totals, for Cat wisdom's milestones.
+    private let studyStats: () -> (streak: StudyStreak, progress: PetMilestoneProgress)?
+    /// Settings › General › Cat wisdom.
+    private let wisdomEnabled: () -> Bool
+    /// The pet's crown beside the closed notch, which pairs with the
+    /// last-square milestone line. Silent, as the session already chimed.
+    private let crown: () -> Void
     private let kitLines: () -> [PetCoachMessage]
     private let screen: () -> NSScreen?
     private let pauseTimer: () -> Void
@@ -45,6 +57,15 @@ final class PetCoachController: ObservableObject {
     private var isRunning = false
     private var focusSubscription: AnyCancellable?
     private var awardSubscription: AnyCancellable?
+    /// Whether the coach saw a focus phase run since the last award, so a
+    /// session settled at launch (it ran out while Tabbi was closed) brings
+    /// no wisdom line or gift: those belong right after watched work.
+    private var watchedFocus = false
+    /// When the Mac last began to sleep or Tabbi to quit. Both stop a
+    /// session under way, and its award then plays to no one, so it would
+    /// use up the day's wisdom line unseen.
+    private var interruptedAt: Date?
+    private var interruptionSubscription: AnyCancellable?
     private var sampler: Timer?
     private var overlay: PetCoachOverlayWindow?
     private var overlayCloser: Timer?
@@ -53,12 +74,22 @@ final class PetCoachController: ObservableObject {
         storage: EditionStorage,
         runMode: RunMode,
         profile: @escaping () -> PetProfile,
+        unlockProgress: @escaping (PetStudyAward) -> UnlockProgress? = { _ in nil },
+        gift: @escaping (PetStudyAward) -> SurpriseGift? = { _ in nil },
+        studyStats: @escaping () -> (streak: StudyStreak, progress: PetMilestoneProgress)? = { nil },
+        wisdomEnabled: @escaping () -> Bool = { true },
+        crown: @escaping () -> Void = {},
         lines: @escaping () -> [PetCoachMessage] = { PetCoachMessages.standard },
         screen: @escaping () -> NSScreen?,
         pauseTimer: @escaping () -> Void,
         resumeTimer: @escaping () -> Void
     ) {
         self.profile = profile
+        self.unlockProgress = unlockProgress
+        self.gift = gift
+        self.studyStats = studyStats
+        self.wisdomEnabled = wisdomEnabled
+        self.crown = crown
         kitLines = lines
         self.screen = screen
         self.pauseTimer = pauseTimer
@@ -105,7 +136,28 @@ final class PetCoachController: ObservableObject {
     /// Celebrates each study award the pet's closet credits.
     func follow(awards: AnyPublisher<PetStudyAward, Never>) {
         awardSubscription = awards.sink { [weak self] award in
-            MainActor.assumeIsolated { self?.celebrate(award) }
+            MainActor.assumeIsolated { self?.awarded(award) }
+        }
+        interruptionSubscription = NSWorkspace.shared.notificationCenter
+            .publisher(for: NSWorkspace.willSleepNotification)
+            .merge(with: NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification))
+            .sink { [weak self] _ in
+                MainActor.assumeIsolated { self?.interruptedAt = Date() }
+            }
+    }
+
+    /// Celebrates an award on the next turn of the main loop: sleep and quit
+    /// pay the award from inside their own notification, and by then the
+    /// coach has seen that notification too, whichever observer ran first.
+    private func awarded(_ award: PetStudyAward) {
+        let watched = watchedFocus
+        watchedFocus = PetCoachStudyState(timer) == .focusing
+        DispatchQueue.main.async { [weak self] in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                if let interruptedAt = self.interruptedAt, Date().timeIntervalSince(interruptedAt) < 5 { return }
+                self.celebrate(award, watched: watched)
+            }
         }
     }
 
@@ -120,8 +172,10 @@ final class PetCoachController: ObservableObject {
             present(PetCoachNudge(kind: .distraction, message: PetCoachMessages.messages(for: .distraction, in: lines).last!),
                     at: Date().addingTimeInterval(1))
         case "celebrate":
-            present(.celebration(PetStudyAward(completedSessions: 1, minutes: 25, points: 35, unlocked: [.accessory(.beanie)])),
-                    stroll: PetCoachStroll(startedAt: Date().addingTimeInterval(1), talkDuration: PetCoach.celebrationDuration))
+            let award = PetStudyAward(completedSessions: 1, minutes: 25, points: 35)
+            let line = PetCoachLine.celebration(award, progress: UnlockProgress(balance: 50, earned: 35, ledger: PetPointsLedger()),
+                                                wisdom: CatWisdomLine(kind: .firstOfDay, text: CatWisdom.daily[0]))
+            present(line, stroll: PetCoachStroll(startedAt: Date().addingTimeInterval(1), talkDuration: line.talkDuration))
         case "glance":
             glance(at: Date().addingTimeInterval(1))
         default:
@@ -169,6 +223,7 @@ final class PetCoachController: ObservableObject {
 
     private func focusChanged(_ timer: ProvidedFocus?) {
         self.timer = timer
+        if PetCoachStudyState(timer) == .focusing { watchedFocus = true }
         updateSampling()
     }
 
@@ -221,11 +276,36 @@ final class PetCoachController: ObservableObject {
     // MARK: Overlay
 
     /// Sends the pet out to celebrate points just earned: a happy hop with
-    /// a heart and the points, plus what they unlock on a level-up. Plays
-    /// whenever the coach is on, nudges or not, since it never interrupts.
-    func celebrate(_ award: PetStudyAward) {
+    /// a heart, the points counting up and a bar filling toward the next
+    /// unlock, now and then a surprise gift, then now and then a Cat wisdom
+    /// line. Plays whenever the coach is on, nudges or not, since it never
+    /// interrupts. The completion chime is the focus clock's own. Wisdom
+    /// and gifts only follow a session the coach `watched` run.
+    func celebrate(_ award: PetStudyAward, watched: Bool = true) {
         guard isRunning else { return }
-        present(.celebration(award), stroll: PetCoachStroll(startedAt: Date(), talkDuration: PetCoach.celebrationDuration))
+        // The bar first: it shows what the session earned, before a gift's
+        // bonus points land on the balance.
+        let progress = unlockProgress(award)
+        let line = PetCoachLine.celebration(award, progress: progress,
+                                            wisdom: watched ? wisdom(after: award, at: Date()) : nil,
+                                            gift: watched ? gift(award) : nil)
+        present(line, stroll: PetCoachStroll(startedAt: Date(), talkDuration: line.talkDuration))
+    }
+
+    /// The Cat wisdom line for the session behind `award`, if one is due
+    /// (`CatWisdomSchedule`), keeping the rotation and caps in the save.
+    /// Runs with the toggle off too, so milestones reached meanwhile are
+    /// marked seen and turning it back on brings no backlog.
+    private func wisdom(after award: PetStudyAward, at now: Date) -> CatWisdomLine? {
+        guard let stats = studyStats(),
+              let session = CatWisdomSession(award: award, at: now, lastCompletion: save.lastCompletion,
+                                             streak: stats.streak, progress: stats.progress) else { return nil }
+        var random = SystemRandomNumberGenerator()
+        let line = save.wisdom.line(for: session, enabled: wisdomEnabled(), using: &random)
+        if session.outcome == .completed { save.lastCompletion = now }
+        persist()
+        if line?.kind == .milestone(.lastSquare) { crown() }
+        return line
     }
 
     /// The silent look: the pet peeks out of the notch's edge and back.
@@ -248,9 +328,9 @@ final class PetCoachController: ObservableObject {
         closeOverlay()
         guard let screen = screen() else { return }
         let stroll = scene.stroll
-        let overlay = PetCoachOverlayWindow(scene: scene, geometry: .measure(screen)) { [weak self] reply in
-            self?.answer(reply)
-        }
+        let overlay = PetCoachOverlayWindow(scene: scene, geometry: .measure(screen),
+                                            onReply: { [weak self] reply in self?.answer(reply) },
+                                            onHover: { [weak self] over in self?.hover(over) })
         overlay.show()
         self.overlay = overlay
         scheduleClose(at: stroll.endsAt)
@@ -264,6 +344,14 @@ final class PetCoachController: ObservableObject {
         if reply.resumesTimer { resumeTimer() }
         overlay?.dismiss(at: now)
         if let endsAt = overlay?.stroll.endsAt { scheduleClose(at: endsAt) }
+    }
+
+    /// Hovering the bubble keeps it up; leaving lets it run out.
+    private func hover(_ over: Bool) {
+        guard let overlay else { return }
+        let now = Date()
+        if over { overlay.hold(at: now) } else { overlay.release(at: now) }
+        scheduleClose(at: overlay.stroll.endsAt)
     }
 
     /// Closes the overlay once the pet is back under the notch.

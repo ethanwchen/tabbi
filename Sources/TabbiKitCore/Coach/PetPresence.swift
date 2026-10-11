@@ -24,15 +24,20 @@ public struct PetPresence: Hashable, Sendable {
     public static let sleepAfter: TimeInterval = 20 * 60
 
     public var profile: PetProfile
+    /// Progress toward the next shop item, from the pet's real points, so
+    /// the closed notch can hint at an unlock that is near
+    /// (`TickerPet.unlock`); nil when everything is owned.
+    public var nextUnlock: UnlockProgress?
     /// When a session last ran, or when the pet came on screen.
     public private(set) var lastActive: Date
     /// Whether the last observed timer was mid-session, so the moment a
     /// session ends counts as activity too.
     private var sessionWasActive = false
 
-    public init(profile: PetProfile, lastActive: Date) {
+    public init(profile: PetProfile, lastActive: Date, nextUnlock: UnlockProgress? = nil) {
         self.profile = profile
         self.lastActive = lastActive
+        self.nextUnlock = nextUnlock
     }
 
     /// Records the shared focus clock at `now`. Running or paused sessions

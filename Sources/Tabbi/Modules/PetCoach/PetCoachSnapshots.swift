@@ -32,15 +32,50 @@ enum PetCoachSnapshots {
             let kindScene = PetCoachScene(profile: profile, stroll: stroll, nudge: nudge(kind, lines))
             shots.append(("coach-\(name(kind))", frozen(kindScene, talking)))
         }
-        // Celebrations: mid-hop with the heart up, then a level-up bubble.
+        // The end-of-session moment: mid-hop with the heart up, then the
+        // settled bubble with the bar toward the next unlock, one where the
+        // session made an item affordable, and one with nothing left to unlock.
         let party = PetCoachStroll(startedAt: start, talkDuration: PetCoach.celebrationDuration)
-        let done = PetCoachScene(profile: profile, stroll: party,
-                                 line: .celebration(PetStudyAward(completedSessions: 1, minutes: 25, points: 35)))
+        let session = PetStudyAward(completedSessions: 1, minutes: 25, points: 35)
+        let toNext = UnlockProgress(balance: 40, earned: 35, ledger: PetPointsLedger(purchased: [.accessory(.beanie)]))
+        let done = PetCoachScene(profile: profile, stroll: party, line: .celebration(session, progress: toNext))
         shots.append(("coach-celebrate", frozen(done, party.arrivesAt.addingTimeInterval(0.3))))
+        shots.append(("coach-session-end", frozen(done, party.arrivesAt.addingTimeInterval(2))))
         let levelUp = PetCoachScene(profile: profile, stroll: party, line: .celebration(
-            PetStudyAward(completedSessions: 1, minutes: 50, points: 60, unlocked: [.outfit(.scrubs)])))
+            session, progress: UnlockProgress(balance: 40, earned: 35, ledger: PetPointsLedger())))
         shots.append(("coach-level-up", frozen(levelUp, party.arrivesAt.addingTimeInterval(2))))
+        let allOwned = PetStudyAward(completedSessions: 1, minutes: 50, points: 60)
+        let complete = PetCoachScene(profile: profile, stroll: party, line: .celebration(allOwned, progress: nil))
+        shots.append(("coach-session-end-all-owned", frozen(complete, party.arrivesAt.addingTimeInterval(2))))
+        // A surprise gift under the bar: bonus points, and a rare fur.
+        let gifts: [(String, SurpriseGift)] = [("coach-gift", .bonusPoints(15)), ("coach-gift-fur", .rareFur(RareFur.all[0]))]
+        for (name, gift) in gifts {
+            let line = PetCoachScene(profile: profile, stroll: party,
+                                     line: .celebration(session, progress: toNext, gift: gift))
+            shots.append((name, frozen(line, party.arrivesAt.addingTimeInterval(2))))
+        }
+        // Cat wisdom after the celebration: an ordinary day's line, and the
+        // longest comeback and milestone lines, to check three lines fit.
+        let wisdoms: [(String, CatWisdomLine)] = [
+            ("coach-wisdom", CatWisdomLine(kind: .firstOfDay, text: CatWisdom.daily[1])),
+            ("coach-wisdom-comeback", CatWisdomLine(kind: .comeback, text: CatWisdom.comeback[1])),
+            ("coach-wisdom-milestone", CatWisdomLine(kind: .milestone(.lastSquare), text: CatWisdomMilestone.lastSquare.line)),
+        ]
+        for (name, wisdom) in wisdoms + (ProcessInfo.processInfo.environment["TABBI_WISDOM_ALL"] == nil ? [] : allWisdom) {
+            let line = PetCoachLine.celebration(session, progress: toNext, wisdom: wisdom)
+            let talk = PetCoachStroll(startedAt: start, talkDuration: line.talkDuration)
+            let shown = PetCoachScene(profile: profile, stroll: talk, line: line)
+            shots.append((name, frozen(shown, talk.arrivesAt.addingTimeInterval(PetCoach.celebrationDuration + 1))))
+        }
         return shots
+    }
+
+    /// Every Cat wisdom line, rendered only with `TABBI_WISDOM_ALL=1` to
+    /// check that each fits the bubble in three lines.
+    private static var allWisdom: [(String, CatWisdomLine)] {
+        let pools = CatWisdom.daily + CatWisdom.comeback + [CatWisdom.earlyStop, CatWisdom.lateNight]
+            + CatWisdomMilestone.allCases.map(\.line)
+        return pools.enumerated().map { ("coach-wisdom-all-\($0.offset)", CatWisdomLine(kind: .firstOfDay, text: $0.element)) }
     }
 
     /// A fixed line of `kind`, so snapshots are stable run to run.

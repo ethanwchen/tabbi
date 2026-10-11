@@ -143,4 +143,43 @@ final class PetPresenceTests: XCTestCase {
         XCTAssertEqual(snapshot.pet, first)
         XCTAssertNil(ProviderSnapshot([(.planner, ModuleProvision())]).pet)
     }
+    // MARK: Near-unlock hint
+
+    private func unlock(missing: Int) throws -> UnlockProgress {
+        let goal = try XCTUnwrap(UnlockProgress(balance: 0, ledger: PetPointsLedger()))
+        return try XCTUnwrap(UnlockProgress(balance: goal.cost - missing, ledger: PetPointsLedger(),
+                                            pointsPerSession: 10))
+    }
+
+    func testTickerCarriesOnlyAnUnlockThatIsNear() throws {
+        let near = try unlock(missing: 15)
+        let far = try unlock(missing: 25)
+        XCTAssertEqual(near.sessionsLeft, 2)
+        XCTAssertEqual(far.sessionsLeft, 3)
+        let shown = TickerSources(pet: PetPresence(profile: profile, lastActive: start, nextUnlock: near))
+        XCTAssertEqual(shown.items(at: minutes(1)), [.pet(TickerPet(profile: profile, mood: .awake, unlock: near))])
+        let hidden = TickerSources(pet: PetPresence(profile: profile, lastActive: start, nextUnlock: far))
+        XCTAssertEqual(hidden.items(at: minutes(1)), [.pet(TickerPet(profile: profile, mood: .awake))])
+    }
+
+    func testUnlockHintShowsOnlyWhileThePetIsAwakeBetweenSessions() throws {
+        let near = try unlock(missing: 5)
+        XCTAssertEqual(TickerPet(profile: profile, mood: .awake, unlock: near).unlockHint, near)
+        for mood in [PetMood.studying, .onBreak, .asleep] {
+            XCTAssertNil(TickerPet(profile: profile, mood: mood, unlock: near).unlockHint, "\(mood)")
+        }
+        let sipping = TickerPet(profile: profile, mood: .awake, cheer: PetCheer(kind: .sip, id: 1, startedAt: start),
+                                unlock: near)
+        XCTAssertNil(sipping.unlockHint)
+        XCTAssertNil(TickerPet(profile: profile, mood: .awake, unlock: try unlock(missing: 25)).unlockHint)
+    }
+
+    func testTooltipNamesTheNearUnlock() throws {
+        let near = try unlock(missing: 5)
+        let pet = TickerPet(profile: profile, mood: .awake, unlock: near)
+        XCTAssertEqual(TickerFormat.petSummary(pet),
+                       "\(profile.name) is keeping you company. 1 more session to \(near.item.displayName)")
+        XCTAssertEqual(TickerFormat.petSummary(TickerPet(profile: profile, mood: .asleep, unlock: near)),
+                       "\(profile.name) is napping until your next session")
+    }
 }

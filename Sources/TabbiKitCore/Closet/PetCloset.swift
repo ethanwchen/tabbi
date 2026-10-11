@@ -166,7 +166,8 @@ public struct PetCloset: Hashable, Sendable {
         "#F2A65A", "#C98B5B", "#8A5A3C", "#5E5856", "#A3A9B2", "#F3E2C4", "#B9A7D6", "#9EC3EC",
     ].compactMap(PetColor.init(hex:))
 
-    /// The name shown for a swatch ("Caramel"), or nil for other colors.
+    /// The name shown for a swatch ("Caramel") or a rare fur a surprise
+    /// gift brought ("Mint"), or nil for other colors.
     public static func name(ofSwatch color: PetColor) -> String? {
         let names = [
             String(localized: "Orange", bundle: .tabbi), String(localized: "Caramel", bundle: .tabbi),
@@ -174,7 +175,7 @@ public struct PetCloset: Hashable, Sendable {
             String(localized: "Silver", bundle: .tabbi), String(localized: "Cream", bundle: .tabbi),
             String(localized: "Lilac", bundle: .tabbi), String(localized: "Sky", bundle: .tabbi),
         ]
-        return furSwatches.firstIndex(of: color).map { names[$0] }
+        return furSwatches.firstIndex(of: color).map { names[$0] } ?? RareFur.all.first { $0.color == color }?.name
     }
 
     /// Swatches offered by earlier builds, paired with the swatch that took
@@ -196,6 +197,11 @@ public struct PetCloset: Hashable, Sendable {
     }
 
     // MARK: Points
+
+    /// Credits a surprise gift's bonus points.
+    public mutating func receiveGift(points: Int) {
+        save.ledger.recordGift(points: points)
+    }
 
     /// Credits a study session; see `PetPointsRules`.
     @discardableResult

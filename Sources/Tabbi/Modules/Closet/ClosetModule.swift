@@ -33,15 +33,23 @@ final class ClosetModule: NotchModule {
     let reminder: StudyReminderScheduler
     /// The pet's little dance when a seasonal event starts.
     let greeter: SeasonalEventGreeter
+    /// Surprise gifts after focus sessions; found rare furs show in Look.
+    let gifts: SurpriseGiftKeeper
 
     init(context: ModuleContext) {
         let settings = context.settings
         let store = context.studyPet
         let focus = context.focusTimer
+        let gifts = context.surpriseGifts
         coach = PetCoachController(
             storage: context.storage,
             runMode: context.runMode,
             profile: { [store] in store.profile },
+            unlockProgress: { [store] award in UnlockProgress(after: award, closet: store.closet) },
+            gift: { award in gifts.roll(after: award) },
+            studyStats: { [store] in (store.streak, store.milestones) },
+            wisdomEnabled: { settings.settings.catWisdomEnabled },
+            crown: { [celebrations = context.celebrations] in celebrations.cheer(.crown, hasOwnSound: true, waitsForClose: true) },
             lines: { PetCoachMessages.lines(kitSettings: settings.activeKit?.defaults.settings(for: .closet)) },
             screen: {
                 NotchGeometry.screen(for: settings.settings.preferredDisplay,
@@ -51,6 +59,7 @@ final class ClosetModule: NotchModule {
             resumeTimer: { focus.start() }
         )
         self.store = store
+        self.gifts = gifts
         reminder = StudyReminderScheduler(storage: context.storage, runMode: context.runMode, pet: store,
                                           progress: context.providers.$snapshot.map(\.progress).eraseToAnyPublisher())
         recaps = context.weeklyRecaps
@@ -80,7 +89,7 @@ final class ClosetModule: NotchModule {
     }
 
     func makePanel() -> AnyView {
-        AnyView(ClosetPanel(store: store, recaps: recaps))
+        AnyView(RareFursProvider(gifts: gifts, content: ClosetPanel(store: store, recaps: recaps)))
     }
 
     /// Onboarding's pet step: species, breed and name on the shared pet.

@@ -43,9 +43,13 @@ extension PetCoach {
     /// focus phase runs. The coach's shortest threshold is 30 s, so 5 s is
     /// plenty; outside focus the app does not sample at all.
     public static let sampleInterval: TimeInterval = 5
-    /// How long a celebration bubble stays up: shorter than a nudge, since
-    /// there is nothing to answer.
-    public static let celebrationDuration: TimeInterval = 6
+    /// How long a celebration bubble stays up: the end-of-session moment
+    /// (the points counting up, the bar filling) stays under about four
+    /// seconds, so it never stands between the user and their work.
+    public static let celebrationDuration: TimeInterval = 4
+    /// How long a Cat wisdom line stays up after the celebration, long
+    /// enough to read three short lines once.
+    public static let wisdomDuration: TimeInterval = 6
 }
 
 /// The coach's persisted state: its cooldowns and snooze (so a relaunch
@@ -61,23 +65,35 @@ public struct PetCoachSave: Hashable, Codable, Sendable {
     /// The user's Settings switch. Off means the app doesn't sample at all,
     /// so the pet never walks out.
     public var nudgesOn: Bool
+    /// The Cat wisdom rotation and caps, so a restart cannot repeat a line
+    /// or show a second one the same day.
+    public var wisdom: CatWisdomSchedule
+    /// When the last focus session ran to its end, for the comeback and
+    /// first-of-the-day lines.
+    public var lastCompletion: Date?
 
-    public init(coach: PetCoach = PetCoach(), apps: CoachAppList = CoachAppList(), nudgesOn: Bool = true) {
+    public init(coach: PetCoach = PetCoach(), apps: CoachAppList = CoachAppList(), nudgesOn: Bool = true,
+                wisdom: CatWisdomSchedule = CatWisdomSchedule(), lastCompletion: Date? = nil) {
         version = Self.currentVersion
         self.coach = coach
         self.apps = apps
         self.nudgesOn = nudgesOn
+        self.wisdom = wisdom
+        self.lastCompletion = lastCompletion
     }
 
-    private enum CodingKeys: String, CodingKey { case version, coach, apps, nudgesOn }
+    private enum CodingKeys: String, CodingKey { case version, coach, apps, nudgesOn, wisdom, lastCompletion }
 
-    /// Saves written before the switch existed read as nudges on.
+    /// Saves written before the switch existed read as nudges on, and
+    /// those from before Cat wisdom as a fresh rotation.
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         version = try container.decode(Int.self, forKey: .version)
         coach = try container.decode(PetCoach.self, forKey: .coach)
         apps = try container.decode(CoachAppList.self, forKey: .apps)
         nudgesOn = try container.decodeIfPresent(Bool.self, forKey: .nudgesOn) ?? true
+        wisdom = try container.decodeIfPresent(CatWisdomSchedule.self, forKey: .wisdom) ?? CatWisdomSchedule()
+        lastCompletion = try container.decodeIfPresent(Date.self, forKey: .lastCompletion)
     }
 
     public func encoded() throws -> Data {

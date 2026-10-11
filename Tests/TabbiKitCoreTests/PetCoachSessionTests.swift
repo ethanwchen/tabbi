@@ -109,4 +109,21 @@ final class PetCoachSessionTests: XCTestCase {
         let older = try JSONSerialization.data(withJSONObject: json)
         XCTAssertTrue(try PetCoachSave.decode(older).nudgesOn)
     }
+
+    func testSaveKeepsCatWisdomStateAndReadsOlderSavesAsFresh() throws {
+        var save = PetCoachSave()
+        var random = SystemRandomNumberGenerator()
+        let end = Date(timeIntervalSince1970: 1_800_000_000)
+        _ = save.wisdom.line(for: CatWisdomSession(outcome: .completed, end: end, previousCompletion: nil,
+                                                   streakDays: 8, totalFocusMinutes: 30), using: &random)
+        save.lastCompletion = end
+        let restored = try PetCoachSave.decode(save.encoded())
+        XCTAssertEqual(restored.wisdom, save.wisdom)
+        XCTAssertEqual(restored.lastCompletion, end)
+
+        let old = Data(#"{"version":1,"coach":\#(String(decoding: try JSONEncoder().encode(PetCoach()), as: UTF8.self)),"apps":\#(String(decoding: try JSONEncoder().encode(CoachAppList()), as: UTF8.self))}"#.utf8)
+        let fresh = try PetCoachSave.decode(old)
+        XCTAssertEqual(fresh.wisdom, CatWisdomSchedule())
+        XCTAssertNil(fresh.lastCompletion)
+    }
 }
