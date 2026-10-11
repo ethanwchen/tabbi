@@ -121,9 +121,10 @@ private struct ClosetPetCard: View {
         // The content is centered, so the slim padding changes nothing on a
         // roomy panel and keeps the 96 pt pet whole on a short one (Compact).
         Card(padding: Theme.Spacing.s) {
-            // Where there is room (Large), the breed and the bond both show;
-            // otherwise one line: the item tried on, the nudge to name the
-            // pet, or the bond. The Look section names the breed too.
+            // Where there is room (Large), the pet's latest adventure (or its
+            // breed before the first) and the bond both show; otherwise one
+            // line: the item tried on, the nudge to name the pet, or the
+            // bond. The Look section names the breed too.
             ViewThatFits(in: .vertical) {
                 content(showsBreed: true)
                 content(showsBreed: false)
@@ -137,6 +138,7 @@ private struct ClosetPetCard: View {
             Spacer(minLength: 0)
             PetView(player: store.preview, pixelSize: 3)
                 .padding(.bottom, Theme.Spacing.xs)
+                .help(store.latestAdventure.map { "Latest adventure: \($0)" } ?? "")
             nameRow
             if let subtitle = subtitle(showsBreed: showsBreed) {
                 Text(subtitle)
@@ -144,6 +146,7 @@ private struct ClosetPetCard: View {
                     .foregroundStyle(store.tryingOn == nil ? Theme.Palette.tertiaryText : accent)
                     .lineLimit(1)
                     .truncationMode(.tail)
+                    .help(subtitle == store.latestAdventure ? "Latest adventure: \(subtitle)" : "")
                     .motion(Theme.Motion.snappy, value: subtitle)
             }
             if store.tryingOn == nil && (showsBreed || !isUnnamed) {
@@ -164,7 +167,7 @@ private struct ClosetPetCard: View {
                 ? String(localized: "Give your cat a name", bundle: .tabbi)
                 : String(localized: "Give your dog a name", bundle: .tabbi)
         }
-        return showsBreed ? store.profile.breed.displayName : nil
+        return showsBreed ? store.latestAdventure ?? store.profile.breed.displayName : nil
     }
 
     @ViewBuilder private var nameRow: some View {

@@ -188,4 +188,70 @@ final class PetAdventureTests: XCTestCase {
         XCTAssertEqual(journal.decksFinished, 0)
         XCTAssertNotEqual(journal.nextLine, "bookshelf")
     }
+
+    // MARK: Finishing an adventure
+
+    private func running(_ minutes: Double, done: Int = 0) -> ProvidedFocus {
+        ProvidedFocus(source: .focus, phase: .focus, clock: .countdown(endsAt: start.addingTimeInterval(minutes * 60)),
+                      phaseLength: minutes * 60, completedFocusCount: done)
+    }
+
+    private func onBreak(done: Int, source: ModuleID = .focus) -> ProvidedFocus {
+        ProvidedFocus(source: source, phase: .rest, clock: .countdown(endsAt: start.addingTimeInterval(30 * 60)),
+                      phaseLength: 5 * 60, completedFocusCount: done)
+    }
+
+    func testABlockThatRunsOutBringsThePetBack() throws {
+        let end = start.addingTimeInterval(25 * 60)
+        let adventure = try XCTUnwrap(PetAdventure.finished(from: running(25), to: onBreak(done: 1), at: end,
+                                                            reduceMotion: false))
+        XCTAssertEqual(adventure, PetAdventure.plan(for: running(25), reduceMotion: false))
+        XCTAssertEqual(adventure.endsAt, end)
+        let later = end.addingTimeInterval(3600)
+        XCTAssertNotNil(PetAdventure.finished(from: running(25), to: onBreak(done: 1), at: later, reduceMotion: false),
+                        "noticed late, after the Mac slept through the end")
+    }
+
+    func testOnlyAFinishedLongBlockWithTheWalkHomeCounts() {
+        let end = start.addingTimeInterval(25 * 60)
+        let idle = ProvidedFocus(source: .focus, phase: .focus, clock: .idle, phaseLength: 25 * 60)
+        XCTAssertNil(PetAdventure.finished(from: running(25), to: idle, at: start.addingTimeInterval(600),
+                                           reduceMotion: false), "stopped early")
+        XCTAssertNil(PetAdventure.finished(from: running(25), to: onBreak(done: 1), at: start.addingTimeInterval(600),
+                                           reduceMotion: false), "skipped before the walk home")
+        XCTAssertNil(PetAdventure.finished(from: running(10), to: onBreak(done: 1), at: start.addingTimeInterval(600),
+                                           reduceMotion: false), "too short to leave")
+        XCTAssertNil(PetAdventure.finished(from: running(25), to: onBreak(done: 1), at: end, reduceMotion: true),
+                     "Reduce Motion: the pet stayed home")
+        XCTAssertNil(PetAdventure.finished(from: running(25), to: onBreak(done: 1, source: .study), at: end,
+                                           reduceMotion: false), "another clock")
+        XCTAssertNil(PetAdventure.finished(from: running(25), to: nil, at: end, reduceMotion: false), "clock gone")
+        XCTAssertNil(PetAdventure.finished(from: running(25, done: 1), to: running(25, done: 1), at: end,
+                                           reduceMotion: false), "nothing finished")
+    }
+
+    func testTheJournalFileIsVersionedAndRoundTrips() throws {
+        var journal = PetJournal(seed: .max)
+        for index in 0..<3 { journal.record(at: start.addingTimeInterval(Double(index) * 60)) }
+        let data = try journal.encoded()
+        XCTAssertEqual(VersionedJSON.version(of: data), PetJournal.schema.current)
+        XCTAssertEqual(try PetJournal.decode(data), journal)
+
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString).appendingPathComponent("journal.json")
+        defer { try? FileManager.default.removeItem(at: url.deletingLastPathComponent()) }
+        XCTAssertNil(try PetJournal.load(from: url), "no journal yet")
+        try journal.write(to: url)
+        XCTAssertEqual(try PetJournal.load(from: url), journal)
+        try Data("not json".utf8).write(to: url)
+        XCTAssertThrowsError(try PetJournal.load(from: url), "a corrupt file is reported, not replaced")
+    }
+
+    func testDemoJournalHasRecentVariedAdventures() throws {
+        let now = start
+        let journal = PetJournal.demo(now: now)
+        XCTAssertEqual(Set(journal.entries.map(\.line)).count, journal.entries.count)
+        XCTAssertEqual(try XCTUnwrap(journal.latest).date, now.addingTimeInterval(-3600))
+        XCTAssertEqual(journal, PetJournal.demo(now: now), "the same every run")
+    }
 }

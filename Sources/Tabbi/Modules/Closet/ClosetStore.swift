@@ -1,3 +1,4 @@
+import AppKit
 import Combine
 import Foundation
 import SwiftUI
@@ -60,12 +61,30 @@ final class ClosetStore: ObservableObject {
     /// coach can send the pet out to celebrate.
     let awards = PassthroughSubject<PetStudyAward, Never>()
 
+    /// The pet's adventure journal ("Mochi explored the bookshelf"), a line
+    /// for each focus block it went off exploring in (`PetAdventure`).
+    @Published private(set) var journal: PetJournal
+
+    /// Gift integration point: one value each time the pet comes back from
+    /// an adventure as a focus block ends, with the journal line it brought
+    /// back. The end-of-session moment can follow it to hand over a gift
+    /// the pet found; the Closet itself only writes the journal.
+    let adventureReturns = PassthroughSubject<PetJournal.Entry, Never>()
+
+    /// Whether Reduce Motion is on, which keeps the pet home (and so out of
+    /// the journal). Read when a block ends; tests replace it.
+    var reduceMotion: () -> Bool = { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
+
     private var focusSubscription: AnyCancellable?
     private var activitySubscription: AnyCancellable?
     private var kitSubscription: AnyCancellable?
     private var notchSubscription: AnyCancellable?
     private var lastFocus: ProvidedFocus?
     private let saveURL: URL?
+    private let journalURL: URL?
+    /// Set when the journal on disk could not be read, so it is never
+    /// overwritten.
+    private let journalIsUnreadable: Bool
     /// Plays a sparkle milestone over the panel when an item is bought or
     /// study points make a new one affordable (a level up).
     private let celebrations: CelebrationCenter?
@@ -105,6 +124,19 @@ final class ClosetStore: ObservableObject {
         }
         self.closet = closet
         saveURL = url
+        let journalURL = url.map { _ in ClosetStore.journalURL(in: storage) }
+        var journalUnreadable = false
+        var journal = isDemo ? PetJournal.demo(now: .now) : PetJournal(seed: .random(in: .min ... .max))
+        if let journalURL {
+            do {
+                if let saved = try PetJournal.load(from: journalURL) { journal = saved }
+            } catch {
+                journalUnreadable = true
+            }
+        }
+        self.journal = journal
+        self.journalURL = journalURL
+        journalIsUnreadable = journalUnreadable
         self.celebrations = celebrations
         saveIsUnreadable = unreadable
         hasSave = saved
@@ -201,6 +233,9 @@ final class ClosetStore: ObservableObject {
         presence.observe(timer, at: now)
         let old = lastFocus
         lastFocus = timer
+        if let adventure = PetAdventure.finished(from: old, to: timer, at: now, reduceMotion: reduceMotion()) {
+            adventureEnded(adventure)
+        }
         let before = closet.save
         let award = closet.credit(from: old, to: timer, at: now)
         // A starter pet that only saw an idle clock stays unsaved, so it
@@ -211,6 +246,20 @@ final class ClosetStore: ObservableObject {
         if hasSave ? closet.save != before : award != nil || timer?.isActive == true { persist() }
         guard let award else { return }
         celebrate(award)
+    }
+
+    /// The pet is back from its adventure: a line goes into the journal and
+    /// out to `adventureReturns`.
+    private func adventureEnded(_ adventure: PetAdventure) {
+        let entry = journal.record(at: adventure.endsAt)
+        if let journalURL, !journalIsUnreadable { try? journal.write(to: journalURL) }
+        adventureReturns.send(entry)
+    }
+
+    /// The newest journal line with the pet's name ("Mochi explored the
+    /// bookshelf"), or nil before its first adventure.
+    var latestAdventure: String? {
+        journal.latest?.text(petName: profile.name)
     }
 
     private func celebrate(_ award: PetStudyAward) {
@@ -239,6 +288,12 @@ final class ClosetStore: ObservableObject {
     /// `~/Library/Application Support/<edition>/Pet/pet.json`.
     static func saveURL(in storage: EditionStorage) -> URL {
         storage.file("pet.json", in: "Pet")
+    }
+
+    /// `~/Library/Application Support/<edition>/Pet/journal.json`, beside
+    /// the save but its own file, so it never syncs.
+    static func journalURL(in storage: EditionStorage) -> URL {
+        storage.file("journal.json", in: "Pet")
     }
 
     /// The pet as shown everywhere: the saved look plus what it has grown

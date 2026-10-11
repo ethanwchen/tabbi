@@ -101,6 +101,21 @@ public struct PetAdventure: Hashable, Sendable {
         [departsAt, departsAt.addingTimeInterval(Self.walkDuration), returnsAt, endsAt].first { $0 > now }
     }
 
+    /// The adventure that just came to its end as the focus clock moved from
+    /// `old` to `new`, or nil. It ends when `old` had one (`plan(for:)`) and
+    /// the same clock then finished that block (its finished count went up)
+    /// with the pet already on its way back. A block stopped or skipped
+    /// early, a paused one, or one under Reduce Motion had no adventure to
+    /// finish, so it writes nothing into the journal.
+    public static func finished(from old: ProvidedFocus?, to new: ProvidedFocus?, at now: Date,
+                                reduceMotion: Bool) -> PetAdventure? {
+        guard let old, let new, old.source == new.source,
+              new.completedFocusCount > old.completedFocusCount,
+              let adventure = plan(for: old, reduceMotion: reduceMotion),
+              now >= adventure.returnsAt else { return nil }
+        return adventure
+    }
+
     /// A stable fraction in `departureRange` for a block, from its end time,
     /// so the same block always leaves at the same moment across redraws.
     static func departureFraction(seed: Date) -> Double {
@@ -235,5 +250,45 @@ public struct PetJournal: Hashable, Codable, Sendable {
             .filter { known.contains($0) && seen.insert($0).inserted }
         if deck.count >= Self.lines.count { deck = [] }
         decksFinished = max(0, try container.decodeIfPresent(Int.self, forKey: .decksFinished) ?? 0)
+    }
+}
+
+// MARK: - Saving
+
+extension PetJournal {
+    /// The journal's file format. Version 1 is the first.
+    public static let schema = VersionedJSON(current: 1)
+
+    /// A short journal for demos: a few adventures over the last days, the
+    /// newest an hour before `now`.
+    public static func demo(now: Date) -> PetJournal {
+        var journal = PetJournal(seed: 5)
+        for hoursAgo in [50.0, 26, 1] {
+            journal.record(at: now.addingTimeInterval(-hoursAgo * 3600))
+        }
+        return journal
+    }
+
+    /// The journal at `url`, or nil when there is none yet. A corrupt file
+    /// throws so the caller can decide not to overwrite it.
+    public static func load(from url: URL) throws -> PetJournal? {
+        guard FileManager.default.fileExists(atPath: url.path) else { return nil }
+        return try decode(Data(contentsOf: url))
+    }
+
+    public static func decode(_ data: Data) throws -> PetJournal {
+        try schema.decode(PetJournal.self, from: data)
+    }
+
+    public func encoded() throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        return try Self.schema.encode(self, using: encoder)
+    }
+
+    /// Writes atomically, creating the parent folder if needed.
+    public func write(to url: URL) throws {
+        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try encoded().write(to: url, options: .atomic)
     }
 }

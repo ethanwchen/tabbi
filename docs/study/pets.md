@@ -402,6 +402,10 @@ To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.
   Partway through the block it trots into the notch, leaving a faint paw print and "exploring" beside its name, and it trots back out over the block's last 3 seconds, so its return is part of the finish.
   The timer keeps rotating through the closed notch while the pet is away, and under Reduce Motion the pet stays home.
   Snapshot runs render it away as `closed-pet-away.png` and half way back as `closed-pet-returning.png`.
+  When the block runs out with the pet on its way home (`PetAdventure.finished`), the Closet writes a line into the pet's journal (`PetJournal`, "Mochi explored the bookshelf"), saved as `Pet/journal.json` beside the save but never synced.
+  The Large Closet pet card shows the newest line in place of the breed, and hovering the pet shows it on any size.
+  `ClosetStore.adventureReturns` sends each journal entry as the pet comes back: it is the integration point where the end-of-session moment can hand over a gift the pet found.
+  A block stopped or skipped early, or one under Reduce Motion, writes nothing.
 - `PetView(player:pixelSize:)` is a fixed square of 32 sprite pixels (32 pt at the default `pixelSize` of 1, 24 pt at 0.75).
   A `TimelineView` with `PetFrameSchedule` redraws exactly at each `nextChange`, so an idle pet redraws a few times a second and a hidden or hanging pet not at all.
 - Frames are rendered at a whole number of device pixels per sprite pixel and drawn without interpolation; they are pixel-perfect whenever `pixelSize` times the display scale is a whole number.
