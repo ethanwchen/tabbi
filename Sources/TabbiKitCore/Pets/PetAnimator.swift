@@ -5,20 +5,23 @@ import Foundation
 public struct PetClipSet: Hashable, Sendable {
     public let clips: [PetAnimation: PetClip]
 
+    /// `ceiling` keeps every frame below that row, for a view that cuts off
+    /// the frame's top (see `PetComposer.clip`).
     public init(
-        breed: PetBreed, outfit: PetOutfit = .none, accessories: [PetAccessory] = [], bond: PetBondLook = .none
+        breed: PetBreed, outfit: PetOutfit = .none, accessories: [PetAccessory] = [], bond: PetBondLook = .none,
+        ceiling: Int? = nil
     ) {
         var clips: [PetAnimation: PetClip] = [:]
         for animation in PetAnimation.allCases {
             clips[animation] = PetComposer.clip(animation, for: breed, outfit: outfit, accessories: accessories,
-                                                bond: bond)
+                                                bond: bond, ceiling: ceiling)
         }
         self.clips = clips
     }
 
-    public init(profile: PetProfile) {
+    public init(profile: PetProfile, ceiling: Int? = nil) {
         self.init(breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories,
-                  bond: profile.bondLook)
+                  bond: profile.bondLook, ceiling: ceiling)
     }
 
     public subscript(animation: PetAnimation) -> PetClip {

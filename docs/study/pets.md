@@ -411,6 +411,10 @@ To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.
 - The closed notch's slot beside the pet's name holds one thing at a time: "zzz" while it dozes (by day or at night), "exploring" while it is away on an adventure, and otherwise, while it is awake between sessions, the slim progress bar when its next unlock is 2 sessions or less away (`TickerPet.unlockHint`).
   The bar never shows during a focus block, a break, a doze or a sip, and the slot is measured for the widest of the three, so the wing never changes width.
   A block stopped or skipped early, or one under Reduce Motion, writes nothing.
+- The closed notch's bar is only as tall as the sprite frame, so the closed-notch pet sits 1 pt off its bottom edge (`NotchPreviewLayout.petLift`) and plays clips built with a ceiling (`PetClipSet(profile:ceiling:)`, `NotchPreviewLayout.petCeilingRow`) that keep every pixel at least 1 pt inside the bar.
+  A frame whose pet or costume reaches higher (a tall hat in a celebration hop) moves down as far as the empty rows under it allow, an effect (a "z", a heart, a sparkle) rises no higher than the ceiling, and an aura particle (a cherry petal, a sparkle from the trail or the bond, the rain cloud) only shows once it is wholly below it, so petals and rain drift in from above the bar.
+  Nothing is ever drawn cut in half, and the Closet and every other view keep the full art.
+  `NotchPetBoundsTests` checks every frame of every animation, for every breed in every outfit, accessory and bond look.
 - `PetView(player:pixelSize:)` is a fixed square of 32 sprite pixels (32 pt at the default `pixelSize` of 1, 24 pt at 0.75).
   A `TimelineView` with `PetFrameSchedule` redraws exactly at each `nextChange`, so an idle pet redraws a few times a second and a hidden or hanging pet not at all.
 - Frames are rendered at a whole number of device pixels per sprite pixel and drawn without interpolation; they are pixel-perfect whenever `pixelSize` times the display scale is a whole number.

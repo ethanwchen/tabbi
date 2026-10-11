@@ -12,6 +12,9 @@ import TabbiKitCore
 public final class PetPlayer: ObservableObject {
     public private(set) var profile: PetProfile
     public private(set) var clips: PetClipSet
+    /// The row nothing may be drawn above, for a view that cuts off the
+    /// frame's top (the closed notch; see `PetComposer.clip`).
+    public let ceiling: Int?
     /// Deliberately not `@Published`: drawing advances it many times a
     /// second, and that must not invalidate views. Only events, which change
     /// the redraw schedule, notify observers.
@@ -23,10 +26,11 @@ public final class PetPlayer: ObservableObject {
     public init(
         profile: PetProfile, place: PetAnimator.Place = .beside, asleep: Bool = false,
         activity: PetAnimator.Activity = .free, activitySince: Date? = nil, at date: Date = .now,
-        seed: UInt64 = .random(in: .min ... .max)
+        seed: UInt64 = .random(in: .min ... .max), ceiling: Int? = nil
     ) {
         self.profile = profile
-        clips = PetClipSet(profile: profile)
+        self.ceiling = ceiling
+        clips = PetClipSet(profile: profile, ceiling: ceiling)
         animator = PetAnimator(durations: clips.durations, place: place, asleep: asleep, activity: activity,
                                activitySince: activitySince?.timeIntervalSinceReferenceDate,
                                happy: profile.bondLook.happyIdle, at: date.timeIntervalSinceReferenceDate, seed: seed)
@@ -52,7 +56,7 @@ public final class PetPlayer: ObservableObject {
         let time = date.timeIntervalSinceReferenceDate
         animator.advance(to: time)
         self.profile = profile
-        clips = PetClipSet(profile: profile)
+        clips = PetClipSet(profile: profile, ceiling: ceiling)
         // Durations can differ between looks, so restart in the same place.
         animator = PetAnimator(durations: clips.durations, place: animator.place,
                                asleep: animator.isAsleep, activity: animator.activity,

@@ -20,8 +20,9 @@ struct NotchPetWing: View {
     let pet: TickerPet
 
     /// Points per sprite pixel: whole device pixels on 2x displays keep the
-    /// art crisp, and the sitting pet (about 25 sprite pixels tall) fits the
-    /// 32 pt notch.
+    /// art crisp, and the sitting pet (about 25 sprite pixels tall, more in
+    /// a tall hat) fits the 32 pt notch. Its clips keep everything below
+    /// `NotchPreviewLayout.petCeilingRow`, so nothing is cut off at the top.
     static let pixelSize: CGFloat = 1
     static var side: CGFloat { CGFloat(PetComposer.frameSize) * pixelSize }
     /// When a cheer's second hop starts: as the first one lands.
@@ -41,7 +42,8 @@ struct NotchPetWing: View {
         _player = StateObject(wrappedValue: {
             let player = PetPlayer(
                 profile: pet.profile, asleep: pet.mood == .asleep, activity: PetAnimator.Activity(pet.mood),
-                activitySince: pet.moodSince, at: cheer?.startedAt ?? .now)
+                activitySince: pet.moodSince, at: cheer?.startedAt ?? .now,
+                ceiling: NotchPreviewLayout.petCeilingRow)
             if let cheer { player.send(.celebrate, at: cheer.startedAt) }
             return player
         }())

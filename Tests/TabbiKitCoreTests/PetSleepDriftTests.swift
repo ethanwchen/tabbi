@@ -67,9 +67,10 @@ final class PetSleepDriftTests: XCTestCase {
     }
 
     func testTheSleepZKeepsClearOfTheFramesTopRows() {
-        // The closed notch shows the frame from row 3 down
-        // (`NotchPreviewLayout.petRowTop`, checked in the app tests); the z
-        // stays two rows below that, so it is whole with room to spare.
+        // The closed notch draws nothing above a ceiling row a few rows
+        // down (`NotchPreviewLayout.petCeilingRow`, checked in the app
+        // tests); the z's own art stays below row 5 anyway, so the ceiling
+        // never has to move it and it reads the same in the Closet.
         for breed in PetBreed.allCases {
             for frame in PetComposer.clip(.sleep, for: breed).frames {
                 XCTAssertTrue(zPixels(in: frame.canvas).allSatisfy { $0.y >= 5 }, "\(breed)")

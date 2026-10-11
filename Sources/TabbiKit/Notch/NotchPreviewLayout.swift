@@ -23,8 +23,12 @@ public enum NotchPreviewLayout {
     /// menu bar): whatever the pet draws, its sleep "z"s too, stays inside.
     public static let barHeight: CGFloat = 32
     /// How far the closed-notch pet is lifted off the bar's bottom edge: its
-    /// paws sit on the sprite frame's bottom row, so this centers it optically.
-    public static let petLift: CGFloat = 3
+    /// paws sit on the sprite frame's bottom row. Kept small, so a tall hat
+    /// fits under the bar's top edge too.
+    public static let petLift: CGFloat = 1
+    /// The least room kept between anything the closed-notch pet draws (its
+    /// hat, a petal, a "z") and the bar's top and bottom edges.
+    public static let petMargin: CGFloat = 1
     /// The same lift for the party pets' row.
     public static let partyPetLift: CGFloat = Theme.Spacing.xxs
 
@@ -32,6 +36,12 @@ public enum NotchPreviewLayout {
     /// in points below the top of the bar. Rows above 0 are cut off.
     public static func petRowTop(_ row: Int) -> CGFloat {
         rowTop(row, pixelSize: NotchPetWing.pixelSize, lift: petLift)
+    }
+
+    /// The first row of the pet's sprite frame at least `petMargin` below
+    /// the bar's top edge: the closed-notch pet's clips draw nothing above it.
+    public static var petCeilingRow: Int {
+        Int(((petMargin - petRowTop(0)) / NotchPetWing.pixelSize).rounded(.up))
     }
 
     /// `petRowTop` for a party pet.
