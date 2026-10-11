@@ -86,18 +86,23 @@ let outputDirectory = URL(fileURLWithPath: arguments.first ?? "out", isDirectory
 try FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
 
 // App Store accents: `swift run PetGallery out/ accents` writes the demo pet
-// (Mochi in the demo Closet's look) as single transparent 32x32 frames,
+// (Mochi in the demo Closet's look, and in the other looks the store shots
+// dress it in) as single transparent 32x32 frames,
 // `accent-<look>-<animation>-<frame>-<tick>.png`, one per tick of its item
 // loop, for docs/appstore/make-media.swift to scale up with nearest neighbor.
 if arguments.dropFirst().first == "accents" {
     let profile = PetCloset.demo.profile
-    let looks: [(String, [PetAccessory])] = [
-        ("demo", profile.accessories),
-        ("headphones", profile.accessories + [.chunkyHeadphones]),
+    let looks: [(String, PetOutfit, [PetAccessory])] = [
+        ("demo", profile.outfit, profile.accessories),
+        ("headphones", .none, [.chunkyHeadphones, .coolSunglasses]),
+        ("party", .none, [.partyHat, .bowTie]),
+        ("flowers", .none, [.flowerCrown]),
+        ("dino", .dinosaurHoodie, []),
+        ("scholar", .none, [.graduationCap, .roundGlasses]),
     ]
-    for (look, accessories) in looks {
+    for (look, outfit, accessories) in looks {
         for animation in [PetAnimation.idle, .typing, .celebrate, .sleep, .coffee] {
-            let clip = PetComposer.clip(animation, for: profile.breed, outfit: profile.outfit, accessories: accessories)
+            let clip = PetComposer.clip(animation, for: profile.breed, outfit: outfit, accessories: PetAccessory.wearable(accessories))
             for (index, frame) in clip.frames.enumerated() {
                 for (tick, canvas) in (frame.itemFrames.isEmpty ? [frame.canvas] : frame.itemFrames).enumerated() {
                     guard let image = PetRenderer.shared.image(for: canvas, palette: profile.palette, scale: 1),
