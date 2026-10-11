@@ -121,32 +121,50 @@ private struct ClosetPetCard: View {
         // The content is centered, so the slim padding changes nothing on a
         // roomy panel and keeps the 96 pt pet whole on a short one (Compact).
         Card(padding: Theme.Spacing.s) {
-            VStack(spacing: Theme.Spacing.xs) {
-                Spacer(minLength: 0)
-                PetView(player: store.preview, pixelSize: 3)
-                    .padding(.bottom, Theme.Spacing.xs)
-                nameRow
+            // Where there is room (Large), the breed and the bond both show;
+            // otherwise one line: the item tried on, the nudge to name the
+            // pet, or the bond. The Look section names the breed too.
+            ViewThatFits(in: .vertical) {
+                content(showsBreed: true)
+                content(showsBreed: false)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    private func content(showsBreed: Bool) -> some View {
+        VStack(spacing: Theme.Spacing.xs) {
+            Spacer(minLength: 0)
+            PetView(player: store.preview, pixelSize: 3)
+                .padding(.bottom, Theme.Spacing.xs)
+            nameRow
+            if let subtitle = subtitle(showsBreed: showsBreed) {
                 Text(subtitle)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(store.tryingOn == nil ? Theme.Palette.tertiaryText : accent)
                     .lineLimit(1)
                     .truncationMode(.tail)
                     .motion(Theme.Motion.snappy, value: subtitle)
-                Spacer(minLength: 0)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            if store.tryingOn == nil && (showsBreed || !isUnnamed) {
+                ClosetBondRow(bond: store.bond)
+            }
+            Spacer(minLength: 0)
         }
     }
 
-    private var subtitle: String {
+    /// A pet still called by its breed.
+    private var isUnnamed: Bool { store.profile.name == store.profile.breed.displayName }
+
+    private func subtitle(showsBreed: Bool) -> String? {
         if let item = store.tryingOn { return String(localized: "Trying on \(item.displayName)", bundle: .tabbi) }
         // A pet still called by its breed would show the breed twice.
-        if store.profile.name == store.profile.breed.displayName {
+        if isUnnamed {
             return store.profile.species == .cat
                 ? String(localized: "Give your cat a name", bundle: .tabbi)
                 : String(localized: "Give your dog a name", bundle: .tabbi)
         }
-        return store.profile.breed.displayName
+        return showsBreed ? store.profile.breed.displayName : nil
     }
 
     @ViewBuilder private var nameRow: some View {
@@ -211,6 +229,37 @@ private struct ClosetNameButton: View {
         .help(String(localized: "Rename your pet", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// The bond level and its tier name beside a small ring that fills toward
+/// the next level ("Bond 4 · Best friends"). The tooltip says what the next
+/// level unlocks. The bond only ever grows, so there is nothing to lose here.
+private struct ClosetBondRow: View {
+    let bond: PetBond
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            ProgressRing(progress: bond.progressInLevel, tint: accent, lineWidth: 2)
+                .frame(width: 10, height: 10)
+            (Text("Bond \(bond.level)").foregroundStyle(Theme.Palette.secondaryText)
+                + Text(" · \(bond.tierName)").foregroundStyle(Theme.Palette.tertiaryText))
+                .font(Theme.Typography.caption.monospacedDigit())
+                .lineLimit(1)
+                .truncationMode(.tail)
+        }
+        .motion(Theme.Motion.content, value: bond.level)
+        .help(help)
+    }
+
+    private var help: String {
+        guard let missing = bond.pointsToNextLevel else {
+            return "Bond \(bond.level) of \(PetBond.maxLevel), as close as it gets. Every focused minute still counts."
+        }
+        let next = bond.level + 1
+        let unlock = PetBondLook.unlock(atLevel: next).map { ", which brings the \($0.lowercased())" } ?? ""
+        return "Bond \(bond.level) of \(PetBond.maxLevel): \(missing) points to Bond \(next)\(unlock). "
+            + "Every focused minute and every study day bring you closer."
     }
 }
 

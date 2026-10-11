@@ -225,6 +225,11 @@ final class ClosetStore: ObservableObject {
 
     var profile: PetProfile { closet.profile }
 
+    /// How close the pet and the user have grown (`PetBond`), from the same
+    /// focused minutes and study days as the milestones, so it follows new
+    /// study without tracking anything of its own.
+    var bond: PetBond { PetBond(progress: milestones) }
+
     /// The pet's look now and on every change, for modules that show it.
     var profiles: AnyPublisher<PetProfile, Never> {
         $closet.map(\.profile).removeDuplicates().eraseToAnyPublisher()
