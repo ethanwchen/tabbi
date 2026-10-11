@@ -249,6 +249,11 @@ else
     done
 fi
 
+# Files keep extended attributes when copied, and a provisioning profile
+# saved from a browser carries com.apple.quarantine, which App Store Connect
+# rejects (ITMS-91109). The bundle needs none of them, so clear them all.
+xattr -cr "$app"
+
 log "Signing ($($adhoc && echo ad-hoc || echo Apple Distribution))"
 # The widget extension first, with its own sandbox entitlements (docs/widget.md).
 if $adhoc; then
@@ -261,6 +266,9 @@ fi
 codesign --verify --strict --deep --verbose=2 "$app"
 codesign --display --entitlements - --xml "$app" 2>/dev/null | plutil -extract com\\.apple\\.security\\.app-sandbox raw -o - - | grep -qx true \
     || fail "$app is not sandboxed"
+
+quarantined=$(find "$app" -xattrname com.apple.quarantine)
+[ -z "$quarantined" ] || fail "these files carry com.apple.quarantine, which App Store Connect rejects: $quarantined"
 
 pkg="$out/$name-$version.pkg"
 log "Packaging $pkg"
