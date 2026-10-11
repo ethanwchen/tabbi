@@ -27,6 +27,30 @@
 			<string>أُضيفت %lld فترة إلى تقويمك</string>
 		</dict>
 	</dict>
+	<key>%lld cards</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld بطاقات</string>
+			<key>many</key>
+			<string>%lld بطاقةً</string>
+			<key>one</key>
+			<string>%lld بطاقة</string>
+			<key>other</key>
+			<string>%lld بطاقة</string>
+			<key>two</key>
+			<string>%lld بطاقتان</string>
+			<key>zero</key>
+			<string>%lld بطاقة</string>
+		</dict>
+	</dict>
 	<key>%lld cores</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

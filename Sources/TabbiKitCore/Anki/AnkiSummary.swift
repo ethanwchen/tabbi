@@ -193,8 +193,8 @@ extension AnkiSummary {
     /// without knowing it came from Anki. A click on it studies
     /// `studyDeck(favorite:)` (`studyAction(favorite:)`).
     public func progressItem(source: ModuleID = .anki, favorite: AnkiFavoriteDeck? = nil) -> ProgressItem {
-        ProgressItem(id: "reviews", source: source, title: "Anki reviews",
-                     completed: reviewedToday, target: reviewedToday + dueTotal, unit: "cards",
+        ProgressItem(id: "reviews", source: source, title: String(localized: "Anki reviews", bundle: .tabbi),
+                     completed: reviewedToday, target: reviewedToday + dueTotal, unit: DurationFormat.cardUnit,
                      action: studyAction(favorite: favorite))
     }
 

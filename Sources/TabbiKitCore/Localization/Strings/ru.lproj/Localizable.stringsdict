@@ -23,6 +23,26 @@
 			<string>%lld добавлено в календарь</string>
 		</dict>
 	</dict>
+	<key>%lld cards</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld карточки</string>
+			<key>many</key>
+			<string>%lld карточек</string>
+			<key>one</key>
+			<string>%lld карточка</string>
+			<key>other</key>
+			<string>%lld карточки</string>
+		</dict>
+	</dict>
 	<key>%lld cores</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

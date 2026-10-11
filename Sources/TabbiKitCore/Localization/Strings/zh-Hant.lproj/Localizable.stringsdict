@@ -17,6 +17,20 @@
 			<string>已將 %lld 個加入行事曆</string>
 		</dict>
 	</dict>
+	<key>%lld cards</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld 張卡片</string>
+		</dict>
+	</dict>
 	<key>%lld cores</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

@@ -459,6 +459,8 @@
 	<string>O Anki não está neste Mac</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>O Anki precisa de um complemento gratuito chamado AnkiConnect para o Tabbi contar seus cartões.</string>
+	<key>Anki reviews</key>
+	<string>Revisões do Anki</string>
 	<key>Anki said no to Tabbi</key>
 	<string>O Anki recusou o Tabbi</string>
 	<key>Anki wouldn't open</key>

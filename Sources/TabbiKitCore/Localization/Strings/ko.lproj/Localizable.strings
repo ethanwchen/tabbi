@@ -459,6 +459,8 @@
 	<string>이 Mac에 Anki 없음</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>Tabbi가 카드를 셀 수 있으려면 Anki에 무료 애드온 AnkiConnect가 필요해요.</string>
+	<key>Anki reviews</key>
+	<string>Anki 복습</string>
 	<key>Anki said no to Tabbi</key>
 	<string>Anki가 Tabbi를 거부했어요</string>
 	<key>Anki wouldn't open</key>

@@ -19,6 +19,22 @@
 			<string>%lld zum Kalender hinzugefügt</string>
 		</dict>
 	</dict>
+	<key>%lld cards</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Karte</string>
+			<key>other</key>
+			<string>%lld Karten</string>
+		</dict>
+	</dict>
 	<key>%lld cores</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

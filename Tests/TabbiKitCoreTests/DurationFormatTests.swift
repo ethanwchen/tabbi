@@ -34,6 +34,14 @@ final class DurationFormatTests: XCTestCase {
         XCTAssertEqual(DurationFormat.quantity(75, unit: DurationFormat.minuteUnit), "1h 15m")
         XCTAssertEqual(DurationFormat.quantity(30, unit: "min"), "30 min")
         XCTAssertEqual(DurationFormat.quantity(320, unit: "cards"), "320 cards")
+        XCTAssertEqual(DurationFormat.quantity(12, unit: "questions"), "12 questions")
+    }
+
+    /// Anki's cards are a translated plural, so one card never reads "1 cards".
+    func testQuantityCountsCardsAsAPlural() {
+        XCTAssertEqual(DurationFormat.quantity(1, unit: DurationFormat.cardUnit), "1 card")
+        XCTAssertEqual(DurationFormat.quantity(128, unit: DurationFormat.cardUnit), "128 cards")
+        XCTAssertEqual(AnkiSummary.demo().progressItem().amount(1), "1 card")
     }
 
     /// One label never mixes "min" with "h" ("0 min of 4h" read oddly).
