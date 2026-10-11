@@ -240,6 +240,7 @@ struct SectionFooter: View {
 struct MoreOptionsToggle: View {
     @Binding var isExpanded: Bool
     @State private var isHovering = false
+    @Environment(\.layoutDirection) private var layoutDirection
 
     var body: some View {
         Button {
@@ -248,9 +249,10 @@ struct MoreOptionsToggle: View {
             HStack {
                 Text("More options", bundle: .tabbi)
                 Spacer()
-                Image(systemName: "chevron.right")
+                // Points forward (left in Arabic) and turns down when open.
+                Image(systemName: "chevron.forward")
                     .font(.system(size: 11, weight: .semibold))
-                    .rotationEffect(.degrees(isExpanded ? 90 : 0))
+                    .rotationEffect(.degrees(isExpanded ? (layoutDirection == .rightToLeft ? -90 : 90) : 0))
             }
             .foregroundStyle(isHovering ? AnyShapeStyle(.primary) : AnyShapeStyle(.secondary))
             .contentShape(Rectangle())

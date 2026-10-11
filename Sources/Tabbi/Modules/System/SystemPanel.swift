@@ -237,6 +237,7 @@ private struct PressureBar: View {
                     }
                 }
                 .frame(height: 4)
+                .fixedLeftToRight()
                 Text(memory.pressure.title)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(color)

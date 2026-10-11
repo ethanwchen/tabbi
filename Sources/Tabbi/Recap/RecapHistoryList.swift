@@ -66,7 +66,7 @@ private struct RecapHistoryRow: View {
                     .font(Theme.Typography.caption.monospacedDigit())
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .lineLimit(1)
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.system(size: 9, weight: .bold))
                     .foregroundStyle(hovering ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
             }

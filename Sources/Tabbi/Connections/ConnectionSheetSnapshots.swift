@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import TabbiKit
 import TabbiKitCore
 
 extension SnapshotRenderer {
@@ -96,7 +97,7 @@ extension SnapshotRenderer {
         // The width of the Settings pane, so rows wrap as they do there.
         .frame(width: 500)
         .background(Color(nsColor: .windowBackgroundColor))
-        let host = NSHostingView(rootView: gallery)
+        let host = NSHostingView(rootView: gallery.tabbiLayoutDirection())
         host.frame = CGRect(origin: .zero, size: host.fittingSize)
         let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
         window.contentView = host
@@ -116,7 +117,7 @@ extension SnapshotRenderer {
     private static func render(_ content: some View) async -> Data? {
         let parent = Color.clear.frame(width: 600, height: 560)
             .sheet(isPresented: .constant(true)) { content }
-        let window = NSWindow(contentViewController: NSHostingController(rootView: parent))
+        let window = NSWindow(contentViewController: NSHostingController(rootView: parent.tabbiLayoutDirection()))
         window.isReleasedWhenClosed = false
         window.orderFront(nil)
         defer { window.orderOut(nil) }

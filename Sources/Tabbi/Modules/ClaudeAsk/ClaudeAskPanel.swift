@@ -533,6 +533,8 @@ private struct CodeBlock: View {
             RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
                 .strokeBorder(Theme.Palette.stroke, lineWidth: 0.5)
         )
+        // Code reads left to right in every language.
+        .fixedLeftToRight()
     }
 }
 

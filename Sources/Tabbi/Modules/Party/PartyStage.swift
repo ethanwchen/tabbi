@@ -282,6 +282,7 @@ private struct PartySessionBar: View {
                 }
             }
             .frame(minWidth: 32, maxWidth: .infinity, minHeight: 4, maxHeight: 4)
+            .fixedLeftToRight()
             .help(String(localized: "\(PartyRoster.minutesLeft(left)) in the party's shared session", bundle: .tabbi))
             if store.state.isHost {
                 PartyTextButton(title: String(localized: "End", bundle: .tabbi), isBusy: store.pending == .session,

@@ -71,6 +71,8 @@ public struct CheckGlyphFrame: View, Animatable {
                         style: StrokeStyle(lineWidth: size * 0.12, lineCap: .round, lineJoin: .round))
                 .scaleEffect(min(state.fillScale, 1))
                 .opacity(state.checkOpacity)
+                // A check mark keeps its shape in a right-to-left language.
+                .fixedLeftToRight()
         }
         .frame(width: size, height: size)
     }

@@ -239,6 +239,14 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(L10n.language(for: [], available: available), "en")
     }
 
+    /// Arabic is the one shipped language that lays out mirrored.
+    func testOnlyArabicReadsRightToLeft() {
+        XCTAssertEqual(L10n.languages.filter(L10n.isRightToLeft), ["ar"])
+        XCTAssertTrue(L10n.isRightToLeft("ar-SA"))
+        XCTAssertTrue(L10n.isRightToLeft("he"))
+        XCTAssertFalse(L10n.isRightToLeft("en"))
+    }
+
     // MARK: - The audit
 
     private func audit(_ json: String) throws -> StringCatalogAudit {

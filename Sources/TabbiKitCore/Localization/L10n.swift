@@ -34,13 +34,30 @@ public enum L10n {
             .flatMap { Bundle(url: $0.appendingPathComponent("\(language).lproj")) }
     }
 
+    /// The shipped language the strings show in: the user's best
+    /// translated one, or the source language.
+    public static let current: String = {
+        let available = languages.filter { strings(for: $0) != nil }
+        return language(for: Locale.preferredLanguages, available: available)
+    }()
+
     /// The bundle that holds the strings in the chosen language.
     public static let bundle: Bundle = {
-        let available = languages.filter { strings(for: $0) != nil }
-        let chosen = language(for: Locale.preferredLanguages, available: available)
         // Without any compiled strings the keys, which are the English, show.
-        return strings(for: chosen) ?? strings(for: sourceLanguage) ?? .main
+        strings(for: current) ?? strings(for: sourceLanguage) ?? .main
     }()
+
+    /// Whether the chosen language reads right to left (Arabic), so every
+    /// view Tabbi hosts lays out mirrored. Hosting views and `ImageRenderer`
+    /// take the direction from here rather than from AppKit, whose own
+    /// choice follows the main bundle, which has no languages under
+    /// `swift run`.
+    public static var isRightToLeft: Bool { isRightToLeft(current) }
+
+    /// Whether `language` (an `.lproj` name) is written right to left.
+    public static func isRightToLeft(_ language: String) -> Bool {
+        Locale.Language(identifier: language).characterDirection == .rightToLeft
+    }
 
     /// The argument that runs Tabbi in one language: `--locale de`.
     public static let localeFlag = "--locale"
@@ -56,6 +73,9 @@ public enum L10n {
         var arguments = defaults.volatileDomain(forName: UserDefaults.argumentDomain)
         arguments["AppleLanguages"] = [language]
         arguments["AppleLocale"] = language.replacingOccurrences(of: "-", with: "_")
+        // AppKit's own controls (Settings' toolbar, menus) mirror too.
+        arguments["AppleTextDirection"] = isRightToLeft(language)
+        arguments["NSForceRightToLeftWritingDirection"] = isRightToLeft(language)
         defaults.setVolatileDomain(arguments, forName: UserDefaults.argumentDomain)
     }
 

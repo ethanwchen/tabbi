@@ -126,6 +126,8 @@ enum PetCoachSnapshots {
             }
             .frame(width: width, height: menuBarHeight + backdrop.height + Theme.Spacing.s, alignment: .topLeading)
             .clipped()
+            // The screen itself doesn't mirror: the notch stays where the camera is.
+            .fixedLeftToRight()
         )
     }
 }
