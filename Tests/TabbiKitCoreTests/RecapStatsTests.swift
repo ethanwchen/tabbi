@@ -54,7 +54,17 @@ final class RecapStatsTests: XCTestCase {
     func testTitleNamesTheMonthOnceOrTwice() {
         XCTAssertEqual(week("2026-10-05").title(calendar: calendar, locale: locale), "Oct 5 - 11")
         XCTAssertEqual(week("2026-09-28").title(calendar: calendar, locale: locale), "Sep 28 - Oct 4")
-        XCTAssertEqual(week("2026-12-28").title(calendar: calendar, locale: locale), "Dec 28 - Jan 3")
+        XCTAssertEqual(week("2026-12-28").title(calendar: calendar, locale: locale), "Dec 28, 2026 - Jan 3, 2027",
+                       "A week across New Year names both years")
+    }
+
+    func testTitleFollowsTheLocaleWithPlainHyphens() {
+        func title(_ raw: String, _ identifier: String) -> String {
+            week(raw).title(calendar: calendar, locale: Locale(identifier: identifier))
+        }
+        XCTAssertEqual(title("2026-10-05", "de"), "5.-11. Okt.")
+        XCTAssertEqual(title("2026-10-05", "ja"), "10月5日～11日")
+        XCTAssertEqual(title("2026-09-28", "ru"), "28 сент. - 4 окт.", "Russian's em dash becomes a hyphen")
     }
 
     func testDayInitialsStartOnMondayWhateverTheFirstWeekday() {

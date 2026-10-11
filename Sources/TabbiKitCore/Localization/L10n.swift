@@ -49,7 +49,8 @@ public enum L10n {
     /// `pt-BR`) whatever the system is set to: strings, dates and numbers,
     /// for snapshots of every language. It sets the launch arguments'
     /// defaults (`-AppleLanguages`, `-AppleLocale`), so nothing is saved, and
-    /// must run before anything reads `bundle` or `Locale.current`.
+    /// must run before anything reads `bundle` or `Locale.current`, and
+    /// before `NSApplication.shared`, which fixes the locale for the process.
     public static func use(language: String) {
         let defaults = UserDefaults.standard
         var arguments = defaults.volatileDomain(forName: UserDefaults.argumentDomain)

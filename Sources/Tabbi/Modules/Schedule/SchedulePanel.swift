@@ -168,8 +168,7 @@ private struct ScheduleHeader: View {
               let last = Calendar.current.date(byAdding: .day, value: 6, to: now) else {
             return store.shownDay.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day())
         }
-        return now.formatted(.dateTime.month(.abbreviated).day()) + " - "
-            + last.formatted(.dateTime.month(.abbreviated).day())
+        return DateRangeFormat.days(from: now, to: last)
     }
 
     /// `free` words the duration ("2h free"), so each language orders it.

@@ -29,6 +29,7 @@ Interpolate values instead of joining strings, so a translation can move them: `
 The catalog key is then `%lld cards due`, with `%lld` for integers, `%@` for strings and `%f` for doubles.
 Plurals are variations in the catalog (`one`, `other`, and whatever forms a language needs), never `count == 1 ? ... : ...` in code.
 Format dates, times, numbers and durations with Foundation formatters (`.formatted()`, `Duration.formatted`, `Date.FormatStyle`), which follow the user's locale, never by gluing a number to a unit.
+Lengths of time go through `DurationFormat` ("45 min", "1h 15m", "in 12 min"), whose units are catalog strings, and spans of days through `DateRangeFormat` ("Oct 5 - 11", "5.-11. Okt.", "10月5日～11日").
 
 Add each new string to the catalog with a `comment` that says where it shows and anything a translator could misread (is "Look" a verb or a noun?).
 Mark it `"extractionState" : "manual"`, because SwiftPM does not extract keys from code the way Xcode does.
@@ -63,7 +64,6 @@ These stay English on purpose for now:
 - the AI provider setup hints in Settings > Connections,
 - the connection status headlines and details and the setup sheets in Settings > Connections,
 - the study method names and taglines and the theme names, which come from bundled JSON files that the Windows port reads too and need a localized field there first,
-- compact unit labels built in code, such as the "18m" and "1h 5m" durations,
 - the calendar card sentences that name the kit's word for events (a kit field, so it waits for localized kit text).
 
 ## Checking
@@ -78,6 +78,7 @@ TABBI_DEMO=1 swift run Tabbi --snapshot snapshots-ja --locale ja
 ```
 
 `--locale` sets the language and the region formats for that one run and saves nothing; it works for the live app too.
+It takes effect before `NSApplication.shared` is created, because AppKit fixes `Locale.current` for the process from then on: set any later, the strings would change language while dates and numbers stayed in the system's format.
 Look at the panels in every size the renderer draws (`open-compact-*`, `open-*` and the `-large` shots) and fix any truncation.
 
 ## Adding a language

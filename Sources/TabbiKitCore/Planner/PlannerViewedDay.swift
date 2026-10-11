@@ -24,9 +24,9 @@ public enum PlannerViewedDay: Int, CaseIterable, Hashable, Sendable {
     /// shows its date.
     public var title: String? {
         switch self {
-        case .yesterday: "Yesterday"
+        case .yesterday: String(localized: "Yesterday", bundle: .tabbi)
         case .today: nil
-        case .tomorrow: "Tomorrow"
+        case .tomorrow: String(localized: "Tomorrow", bundle: .tabbi)
         }
     }
 
@@ -53,9 +53,9 @@ public enum PlannerViewedDay: Int, CaseIterable, Hashable, Sendable {
     /// or the whole of the other day.
     public var calendarTitle: String {
         switch self {
-        case .yesterday: "Yesterday's calendar"
-        case .today: "Up next"
-        case .tomorrow: "Tomorrow's calendar"
+        case .yesterday: String(localized: "Yesterday's calendar", bundle: .tabbi)
+        case .today: String(localized: "Up next", bundle: .tabbi)
+        case .tomorrow: String(localized: "Tomorrow's calendar", bundle: .tabbi)
         }
     }
 
@@ -79,5 +79,7 @@ public enum PlannerViewedDay: Int, CaseIterable, Hashable, Sendable {
     }
 
     /// The Plan my day button's title for this day.
-    public var planTitle: String { self == .tomorrow ? "Plan tomorrow" : "Plan my day" }
+    public var planTitle: String {
+        self == .tomorrow ? String(localized: "Plan tomorrow", bundle: .tabbi) : String(localized: "Plan my day", bundle: .tabbi)
+    }
 }

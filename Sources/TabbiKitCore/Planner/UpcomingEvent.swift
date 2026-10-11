@@ -100,7 +100,7 @@ public enum UpcomingEventFormat {
     /// Badge text: "now", "in 12 min", "in 1h", "in 2h 5m".
     public static func badge(_ timing: EventTiming) -> String {
         switch timing {
-        case .now: "now"
+        case .now: String(localized: "now", bundle: .tabbi)
         case .startsIn(let minutes): DurationFormat.countdown(minutes: minutes)
         }
     }
@@ -128,6 +128,6 @@ public enum UpcomingEventFormat {
     /// Empty-title events (common for quick-adds) still need a readable row.
     public static func title(_ event: UpcomingEvent) -> String {
         let trimmed = event.title.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? "Untitled event" : trimmed
+        return trimmed.isEmpty ? String(localized: "Untitled event", bundle: .tabbi) : trimmed
     }
 }

@@ -19,6 +19,22 @@
 			<string>%lld núcleos</string>
 		</dict>
 	</dict>
+	<key>%lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld dia</string>
+			<key>other</key>
+			<string>%lld dias</string>
+		</dict>
+	</dict>
 	<key>%lld done</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -113,6 +129,22 @@
 			<string>%lld sessão hoje</string>
 			<key>other</key>
 			<string>%lld sessões hoje</string>
+		</dict>
+	</dict>
+	<key>%lld tasks left</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>falta %lld tarefa</string>
+			<key>other</key>
+			<string>faltam %lld tarefas</string>
 		</dict>
 	</dict>
 	<key>%lld tasks left unfinished</key>

@@ -3,11 +3,13 @@ import TabbiKitCore
 
 // Tabbi is a menu-bar-less accessory app: no Dock icon, no main window.
 MainActor.assumeIsolated {
-    let app = NSApplication.shared
     let arguments = CommandLine.arguments
+    // Before NSApplication.shared, which fixes Locale.current for the process:
+    // set later, the strings would change language but dates and numbers not.
     if let flag = arguments.firstIndex(of: L10n.localeFlag), arguments.indices.contains(flag + 1) {
         L10n.use(language: arguments[flag + 1])
     }
+    let app = NSApplication.shared
     if let flag = arguments.firstIndex(of: PreviewRecorder.flag) {
         let path = arguments.indices.contains(flag + 1) ? arguments[flag + 1] : "preview-frames"
         let partFlag = arguments.firstIndex(of: "--part")

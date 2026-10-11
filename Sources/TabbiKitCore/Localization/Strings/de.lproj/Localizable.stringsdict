@@ -19,6 +19,22 @@
 			<string>%lld Kerne</string>
 		</dict>
 	</dict>
+	<key>%lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Tag</string>
+			<key>other</key>
+			<string>%lld Tagen</string>
+		</dict>
+	</dict>
 	<key>%lld done</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -113,6 +129,22 @@
 			<string>%lld Sitzung heute</string>
 			<key>other</key>
 			<string>%lld Sitzungen heute</string>
+		</dict>
+	</dict>
+	<key>%lld tasks left</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>noch %lld Aufgabe</string>
+			<key>other</key>
+			<string>noch %lld Aufgaben</string>
 		</dict>
 	</dict>
 	<key>%lld tasks left unfinished</key>

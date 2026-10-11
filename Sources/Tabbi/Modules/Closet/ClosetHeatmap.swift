@@ -42,8 +42,8 @@ struct ClosetHeatmapSection: View {
                 Spacer(minLength: 0)
             } else if summary.bestDay == nil {
                 ViewThatFits(in: .horizontal) {
-                    Text("Every focused minute fills in today's square")
-                    Text("Focus to fill in today's square")
+                    Text("Every focused minute fills in today's square", bundle: .tabbi)
+                    Text("Focus to fill in today's square", bundle: .tabbi)
                 }
                     .font(Theme.Typography.bodyEmphasis)
                     .foregroundStyle(Theme.Palette.secondaryText)
@@ -53,15 +53,15 @@ struct ClosetHeatmapSection: View {
                     .font(Theme.Typography.bodyEmphasis.monospacedDigit())
                     .foregroundStyle(Theme.Palette.primaryText)
                     .contentTransition(.numericText())
-                Text("in the last 30 days")
+                Text("in the last 30 days", bundle: .tabbi)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.secondaryText)
                 Spacer(minLength: Theme.Spacing.s)
                 if let best = summary.bestDay {
-                    Text("Best day \(DurationFormat.minutes(best.minutes))")
+                    Text("Best day \(DurationFormat.minutes(best.minutes))", bundle: .tabbi)
                         .font(Theme.Typography.caption.monospacedDigit())
                         .foregroundStyle(Theme.Palette.tertiaryText)
-                        .help("Your most studied day: \(date(best.key, year: true))")
+                        .help(String(localized: "Your most studied day: \(date(best.key, year: true))", bundle: .tabbi))
                 }
             }
         }
@@ -86,12 +86,12 @@ struct ClosetHeatmapSection: View {
                 .fixedSize()
         }
         .frame(height: 12)
-        .help("Your study streak: days in a row with at least \(Int(PetMilestoneProgress.minutesForStudyDay)) focused minutes")
+        .help(String(localized: "Your study streak: days in a row with at least \(Int(PetMilestoneProgress.minutesForStudyDay)) focused minutes", bundle: .tabbi))
     }
 
     private func streakText(_ streak: StudyStreak) -> String {
-        guard streak.isActive else { return "No streak yet" }
-        return streak.length == 1 ? "1-day streak" : "\(streak.length)-day streak"
+        guard streak.isActive else { return String(localized: "No streak yet", bundle: .tabbi) }
+        return String(localized: "\(streak.length)-day streak", bundle: .tabbi)
     }
 
     private func date(_ key: PlannerDayKey, year: Bool = false) -> String {
@@ -251,9 +251,9 @@ private struct ClosetHeatmapGrid: View {
 
     private func weekLabel(_ week: StudyHeatmap.Week) -> String {
         let start = week.start.startDate().formatted(.dateTime.month(.wide).day())
-        guard week.minutes > 0 else { return "Week of \(start): no study" }
-        let days = week.studiedDays == 1 ? "1 day" : "\(week.studiedDays) days"
-        return "Week of \(start): \(DurationFormat.minutes(week.minutes)) studied over \(days)"
+        guard week.minutes > 0 else { return String(localized: "Week of \(start): no study", bundle: .tabbi) }
+        let days = String(localized: "\(week.studiedDays) days", bundle: .tabbi)
+        return String(localized: "Week of \(start): \(DurationFormat.minutes(week.minutes)) studied over \(days)", bundle: .tabbi)
     }
 }
 
@@ -314,19 +314,18 @@ private struct ClosetHeatmapLegend: View {
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs) {
-            Text("Less").padding(.trailing, Theme.Spacing.xxs)
+            Text("Less", bundle: .tabbi).padding(.trailing, Theme.Spacing.xxs)
             ForEach(0..<StudyHeatmap.levelCount, id: \.self) { level in
                 RoundedRectangle(cornerRadius: 2, style: .continuous)
                     .fill(ClosetHeatmapLevel.color(level))
                     .frame(width: ClosetHeatmapLegend.cell, height: ClosetHeatmapLegend.cell)
             }
-            Text("More").padding(.leading, Theme.Spacing.xxs)
+            Text("More", bundle: .tabbi).padding(.leading, Theme.Spacing.xxs)
         }
         .font(Theme.Typography.caption)
         .foregroundStyle(Theme.Palette.tertiaryText)
-        .help("No study, under \(StudyHeatmap.levelThresholds[0]) min, under \(StudyHeatmap.levelThresholds[1]) min, "
-              + "under \(StudyHeatmap.levelThresholds[2]) min, and \(StudyHeatmap.levelThresholds[2]) min or more")
+        .help(String(localized: "No study, under \(StudyHeatmap.levelThresholds[0]) min, under \(StudyHeatmap.levelThresholds[1]) min, under \(StudyHeatmap.levelThresholds[2]) min, and \(StudyHeatmap.levelThresholds[2]) min or more", bundle: .tabbi))
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Darker squares mean more time studied")
+        .accessibilityLabel(Text("Darker squares mean more time studied", bundle: .tabbi))
     }
 }

@@ -12,9 +12,10 @@ public enum DurationFormat {
     /// "0 min", "45 min", "2h", "1h 15m". Negative values read as "0 min".
     public static func minutes(_ minutes: Int) -> String {
         let minutes = max(minutes, 0)
-        guard minutes >= 60 else { return "\(minutes) min" }
+        guard minutes >= 60 else { return String(localized: "\(minutes) min", bundle: .tabbi) }
         let hours = minutes / 60, rest = minutes % 60
-        return rest == 0 ? "\(hours)h" : "\(hours)h \(rest)m"
+        return rest == 0 ? String(localized: "\(hours)h", bundle: .tabbi)
+            : String(localized: "\(hours)h \(rest)m", bundle: .tabbi)
     }
 
     /// Progress toward a length of time: "20 min of 45 min" under an hour,
@@ -28,20 +29,20 @@ public enum DurationFormat {
 
     /// "0m", "45m", "2h", "1h 15m": the hours form, also under an hour.
     private static func compact(_ minutes: Int) -> String {
-        guard minutes >= 60 else { return "\(minutes)m" }
+        guard minutes >= 60 else { return String(localized: "\(minutes)m", bundle: .tabbi) }
         return Self.minutes(minutes)
     }
 
     /// A span in seconds rounded up to the minute, with "<1 min" for less,
     /// so a countdown never claims nothing is left while something is.
     public static func seconds(_ seconds: TimeInterval) -> String {
-        guard seconds >= 60 else { return "<1 min" }
+        guard seconds >= 60 else { return String(localized: "<1 min", bundle: .tabbi) }
         return minutes(Int((seconds / 60).rounded(.up)))
     }
 
     /// "in 12 min", "in 1h", "in 1h 15m".
     public static func countdown(minutes value: Int) -> String {
-        "in " + minutes(value)
+        String(localized: "in \(minutes(value))", bundle: .tabbi)
     }
 
     /// A count in its own unit ("320 cards"), or a duration when the unit

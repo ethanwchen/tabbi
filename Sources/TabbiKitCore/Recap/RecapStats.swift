@@ -61,17 +61,12 @@ public extension WeeklyRecap {
 
 public extension RecapWeek {
     /// The week's dates for a card's corner: "Oct 5 - 11", or
-    /// "Sep 28 - Oct 4" when it spans two months.
+    /// "Sep 28 - Oct 4" when it spans two months (and both years across New
+    /// Year), in the locale's order.
     func title(calendar: Calendar = .current, locale: Locale = .current) -> String {
-        var style = Date.FormatStyle(date: .omitted, time: .omitted, locale: locale, calendar: calendar,
-                                     timeZone: calendar.timeZone)
-        style = style.month(.abbreviated).day()
-        let first = start.startDate(calendar: calendar)
-        let last = end(calendar: calendar).startDate(calendar: calendar)
-        let sameMonth = calendar.component(.month, from: first) == calendar.component(.month, from: last)
-        let lastText = sameMonth ? calendar.component(.day, from: last).formatted(.number.locale(locale))
-                                 : last.formatted(style)
-        return "\(first.formatted(style)) - \(lastText)"
+        DateRangeFormat.days(from: start.startDate(calendar: calendar),
+                             to: end(calendar: calendar).startDate(calendar: calendar),
+                             calendar: calendar, locale: locale)
     }
 
     /// One-letter weekday names, Monday first, for the card's day bars.
