@@ -62,23 +62,25 @@ public struct PawTrailFrame: View {
     private var stride: CGFloat { size * 0.52 }
 
     public var body: some View {
-        Canvas { context, canvas in
-            let calm = LoaderClock.breathingOpacity(at: time)
-            for step in 0..<PawTrail.stepCount {
+        let calm = LoaderClock.breathingOpacity(at: time)
+        let shape = UnitShape(path: CelebrationShapes.pawPrint)
+        ZStack(alignment: .topLeading) {
+            ForEach(0..<PawTrail.stepCount, id: \.self) { step in
                 let opacity = reduceMotion ? calm : PawTrail.opacity(ofStep: step, at: time)
-                guard opacity > 0 else { continue }
-                let scale = reduceMotion ? 1 : PawTrail.scale(ofStep: step, at: time)
-                let lane: CGFloat = PawTrail.isLeftFoot(step) ? -1 : 1
-                let center = CGPoint(x: printSize / 2 + CGFloat(step) * stride,
-                                     y: canvas.height / 2 + lane * size * 0.2)
-                let transform = CGAffineTransform(scaleX: printSize * scale, y: printSize * scale)
-                    .concatenating(CGAffineTransform(rotationAngle: .pi / 2)) // toes point along the trail
-                    .concatenating(CGAffineTransform(translationX: center.x, y: center.y))
-                context.fill(CelebrationShapes.pawPrint.applying(transform),
-                             with: .color(tint.opacity(opacity)))
+                if opacity > 0 {
+                    let side = printSize * (reduceMotion ? 1 : PawTrail.scale(ofStep: step, at: time))
+                    let lane: CGFloat = PawTrail.isLeftFoot(step) ? -1 : 1
+                    shape
+                        .fill(tint.opacity(opacity))
+                        .frame(width: side, height: side)
+                        .rotationEffect(.degrees(90)) // toes point along the trail
+                        .position(x: printSize / 2 + CGFloat(step) * stride, y: size / 2 + lane * size * 0.2)
+                }
             }
         }
         .frame(width: printSize + CGFloat(PawTrail.stepCount - 1) * stride, height: size)
+        // The trail runs left to right in every language, as it always has.
+        .environment(\.layoutDirection, .leftToRight)
     }
 }
 

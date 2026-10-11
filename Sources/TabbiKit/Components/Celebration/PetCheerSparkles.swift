@@ -45,34 +45,51 @@ struct PetCheerSparkles: View {
     var body: some View {
         let finished = Date().timeIntervalSince(startedAt) >= Self.duration
         TimelineView(.animation(minimumInterval: 1.0 / 30, paused: finished)) { context in
-            Canvas { canvas, size in
-                Self.draw(in: &canvas, size: size, elapsed: context.date.timeIntervalSince(startedAt))
+            GeometryReader { proxy in
+                let elapsed = context.date.timeIntervalSince(startedAt)
+                ForEach(Self.sparks.indices, id: \.self) { index in
+                    if let state = Self.state(of: Self.sparks[index], in: proxy.size, elapsed: elapsed) {
+                        UnitShape(path: CelebrationShapes.sparkle)
+                            .fill(Self.sparks[index].color)
+                            .frame(width: state.side, height: state.side)
+                            .rotationEffect(.degrees(state.rotation))
+                            .opacity(state.opacity)
+                            .position(state.center)
+                    }
+                }
             }
+            // Positions are measured from the top left, the way the burst
+            // was drawn, so right to left mirrors nothing.
+            .environment(\.layoutDirection, .leftToRight)
         }
         .allowsHitTesting(false)
         .accessibilityHidden(true)
     }
 
-    private static func draw(in canvas: inout GraphicsContext, size: CGSize, elapsed: TimeInterval) {
+    /// Where one sparkle is and how it looks, or nil before it pops out and
+    /// after it fades.
+    private struct SparkState {
+        let center: CGPoint
+        let side: Double
+        let rotation: Double
+        let opacity: Double
+    }
+
+    private static func state(of spark: Spark, in size: CGSize, elapsed: TimeInterval) -> SparkState? {
         // Around the pet's middle, a little above the frame's center since
         // the sprite sits low in its frame.
         let origin = CGPoint(x: size.width / 2, y: size.height * 0.5)
-        for spark in sparks {
-            let t = (elapsed - spark.delay) / lifetime
-            guard t >= 0, t < 1 else { continue }
-            // Ease out: a quick pop, then a slow drift as it fades.
-            let travel = 1 - (1 - t) * (1 - t)
-            let radians = spark.angle * .pi / 180
-            let x = origin.x + sin(radians) * (popRadius + spark.distance * travel)
-            let y = origin.y - cos(radians) * (popRadius + spark.distance * travel)
-            let scale = t < 0.2 ? 0.4 + 3 * t : 1 - 0.3 * (t - 0.2)
-            var layer = canvas
-            layer.opacity = t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4
-            layer.translateBy(x: x, y: y)
-            layer.rotate(by: .degrees(45 * t))
-            let side = spark.size * scale
-            layer.scaleBy(x: side, y: side)
-            layer.fill(CelebrationShapes.sparkle, with: .color(spark.color))
-        }
+        let t = (elapsed - spark.delay) / lifetime
+        guard t >= 0, t < 1 else { return nil }
+        // Ease out: a quick pop, then a slow drift as it fades.
+        let travel = 1 - (1 - t) * (1 - t)
+        let radians = spark.angle * .pi / 180
+        let scale = t < 0.2 ? 0.4 + 3 * t : 1 - 0.3 * (t - 0.2)
+        return SparkState(
+            center: CGPoint(x: origin.x + sin(radians) * (popRadius + spark.distance * travel),
+                            y: origin.y - cos(radians) * (popRadius + spark.distance * travel)),
+            side: spark.size * scale,
+            rotation: 45 * t,
+            opacity: t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4)
     }
 }

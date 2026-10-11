@@ -82,9 +82,17 @@ The rise during the tab cycles is SwiftUI and image caches filling once per tab;
 Leaks: 286-436 leaks of 14-24 KB in total in every run (after the tab cycles, after the focus session, after 30 minutes idle).
 All of them are root cycles of `NSXPCConnection`, `NSArray` and `NSSet` objects inside system frameworks (the `LNDaemonApplicationInterface` App Intents connection documented in `docs/performance.md`); none names a Tabbi type.
 
-Open item: when the pet coach's overlay window appears beside the notch (a nudge, a glance or the end-of-session moment), a release build sometimes holds about 250 MB of extra graphics memory ("owned unmapped (graphics)" in `vmmap`) for about two seconds, then gives it back (276 MB peak, back to 31-33 MB).
-It shows in release builds only, not every time, and it comes from putting the window on screen: the same window with empty content still shows it, and skipping `orderFrontRegardless()` makes it go away.
-A standalone app with the same panel setup does not reproduce it, so the cause is still open; it never stays, so steady state and the numbers above are unaffected.
+Fixed: the transient rise of about 250 MB of graphics memory ("owned unmapped (graphics)" in `vmmap`, 32 regions of 8 MB) was not the pet coach's window.
+It came from SwiftUI's `Canvas`, which renders through Metal (RenderBox); the first `Canvas` on screen made the renderer set up that memory for as long as one showed.
+Three views used one: the sparkles around the closed-notch pet when it cheers (about two seconds, which is why it looked tied to the coach, whose demo previews fire a cheer around the same time), the celebration burst in the open panel, and the paw loader, which held it for a whole Ask AI "Thinking" wait or Anki start.
+All three now draw the same paths as SwiftUI shapes; every English and Arabic snapshot is pixel-identical to the `Canvas` version.
+
+| Release build, demo data | Before | After |
+| --- | --- | --- |
+| Launch with the pet's cheer (peak footprint, `vmmap --summary`) | 274-281 MB in about half of the runs | 29.4-29.9 MB in 18 of 18 runs, with the cheer confirmed in the log in 8 of them |
+| Anki's "Starting Anki" paw loader held open (`TABBI_ANKI_STATE=starting TABBI_PERF_OPEN=anki`) | 269-272 MB for as long as it shows | 24 MB flat, 1.2-1.6% CPU |
+
+The earlier bisect that seemed to tie it to `orderFrontRegardless()` was noise: the cheer comes or doesn't from run to run, so a handful of runs per variant could not tell them apart.
 
 ### CPU and wakeups
 

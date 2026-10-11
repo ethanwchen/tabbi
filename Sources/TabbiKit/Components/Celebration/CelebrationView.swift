@@ -72,20 +72,25 @@ public struct CelebrationFrame: View {
     }
 
     public var body: some View {
-        Canvas { context, size in
-            let start = CGPoint(x: size.width * origin.x, y: size.height * origin.y)
-            let shape = CelebrationShapes.unitPath(for: burst.style)
-            for particle in burst.particles {
-                guard let state = CelebrationBurst.state(of: particle, at: elapsed) else { continue }
-                var layer = context
-                layer.opacity = state.opacity
-                layer.translateBy(x: start.x + state.x, y: start.y + state.y)
-                layer.rotate(by: .degrees(state.rotation))
-                let side = particle.size * state.scale
-                layer.scaleBy(x: side, y: side)
-                layer.fill(shape, with: .color(colors[particle.colorIndex % colors.count]))
+        GeometryReader { proxy in
+            let start = CGPoint(x: proxy.size.width * origin.x, y: proxy.size.height * origin.y)
+            let shape = UnitShape(path: CelebrationShapes.unitPath(for: burst.style))
+            ForEach(burst.particles.indices, id: \.self) { index in
+                let particle = burst.particles[index]
+                if let state = CelebrationBurst.state(of: particle, at: elapsed) {
+                    let side = particle.size * state.scale
+                    shape
+                        .fill(colors[particle.colorIndex % colors.count])
+                        .frame(width: side, height: side)
+                        .rotationEffect(.degrees(state.rotation))
+                        .opacity(state.opacity)
+                        .position(x: start.x + state.x, y: start.y + state.y)
+                }
             }
         }
+        // Particles fly by the burst's own physics, measured from the top
+        // left, so right to left mirrors nothing.
+        .environment(\.layoutDirection, .leftToRight)
         .allowsHitTesting(false)
         .accessibilityHidden(true)
     }
@@ -182,6 +187,20 @@ private struct CelebrationOverlay: ViewModifier {
                 guard !Task.isCancelled, playing?.start == start else { return }
                 playing = nil
             }
+    }
+}
+
+/// A path from `CelebrationShapes` stretched to fill its frame.
+///
+/// Particles, sparkles and paw prints are drawn as shapes rather than in a
+/// `Canvas`: a `Canvas` renders through Metal, and the first one on screen
+/// had the renderer set up about 250 MB of graphics memory for as long as
+/// it showed (a whole "Thinking" wait, in the paw loader's case).
+struct UnitShape: Shape {
+    let path: Path
+
+    func path(in rect: CGRect) -> Path {
+        path.applying(CGAffineTransform(translationX: rect.midX, y: rect.midY).scaledBy(x: rect.width, y: rect.height))
     }
 }
 
