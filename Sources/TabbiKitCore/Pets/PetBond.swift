@@ -13,7 +13,7 @@ public struct PetBond: Hashable, Sendable {
     public static let maxLevel = 10
 
     /// Bond points needed to reach each level, level 1 first. The steps grow
-    /// gently (100, 200, 300, ... 2000), so the first levels come within a
+    /// gently (100, 200, 300, 400, 600, 800, 1100, 1500, 2000), so the first levels come within a
     /// day or two and the last ones take a few months of a typical habit
     /// (`PetEconomy`: about 75 focused minutes a day, plus the day bonus).
     public static let thresholds: [Int] = [0, 100, 300, 600, 1000, 1600, 2400, 3500, 5000, 7000]

@@ -119,4 +119,14 @@ final class PetBondTests: XCTestCase {
         XCTAssertNil(PetBondLook.unlock(atLevel: 5))
         XCTAssertNil(PetBondLook.unlock(atLevel: 11))
     }
+
+    /// The widget's shared file never holds the bond look, so the state the
+    /// app builds for a grown pet equals the file and is not rewritten.
+    func testTheWidgetStateLeavesTheBondLookOut() throws {
+        var pet = PetProfile.starter(.cat)
+        pet.bondLook = PetBond(points: PetBond.thresholds[PetBond.maxLevel - 1]).look
+        let state = WidgetState(pet: pet, day: try XCTUnwrap(PlannerDayKey(rawValue: "2026-10-11")))
+        XCTAssertEqual(state.pet.bondLook, .none)
+        XCTAssertEqual(try WidgetState.decode(state.encoded()), state)
+    }
 }

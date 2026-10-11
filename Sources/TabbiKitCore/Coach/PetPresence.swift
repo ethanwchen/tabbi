@@ -61,7 +61,7 @@ public struct PetPresence: Hashable, Sendable {
         sessionWasActive = active
     }
 
-    /// Records that the user opened the notch at `now`: at night the pet
+    /// Records that the user opened or closed the notch at `now`: at night the pet
     /// wakes for a wake spell. By day it changes nothing, so a napping pet
     /// still waits for the next session.
     public mutating func wake(at now: Date) {

@@ -154,10 +154,12 @@ final class ClosetStore: ObservableObject {
                                night: runMode.isSnapshot ? nil : .standard)
     }
 
-    /// Follows the notch opening (one value each time it opens), which wakes a
-    /// pet dozing late at night (`PetPresence.wake(at:)`).
-    func follow(notchOpened: AnyPublisher<Void, Never>) {
-        notchSubscription = notchOpened
+    /// Follows the notch opening and closing (one value each time), which
+    /// wakes a pet dozing late at night (`PetPresence.wake(at:)`). Closing
+    /// counts too: the dozing pet only shows on the closed notch, so a wake
+    /// spell that started when the notch opened could run out unseen.
+    func follow(notchToggled: AnyPublisher<Void, Never>) {
+        notchSubscription = notchToggled
             .sink { [weak self] in
                 MainActor.assumeIsolated { self?.presence.wake(at: .now) }
             }

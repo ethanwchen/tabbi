@@ -20,24 +20,36 @@ final class ClosetNightAppTests: XCTestCase {
         XCTAssertNil(ClosetStore(storage: EditionStorage(root: root), runMode: RunMode(isDemo: false, isSnapshot: true)).presence.night)
     }
 
-    func testOpeningTheNotchWakesThePet() {
+    func testOpeningOrClosingTheNotchWakesThePet() throws {
         let store = ClosetStore(storage: EditionStorage(root: root), runMode: .live)
-        let opened = PassthroughSubject<Void, Never>()
-        store.follow(notchOpened: opened.eraseToAnyPublisher())
+        let toggled = PassthroughSubject<Void, Never>()
+        store.follow(notchToggled: toggled.eraseToAnyPublisher())
         XCTAssertNil(store.presence.lastWoken)
-        let before = Date()
-        opened.send()
-        XCTAssertGreaterThanOrEqual(try XCTUnwrap(store.presence.lastWoken), before)
+        let opened = Date()
+        toggled.send()
+        let wokenOnOpen = try XCTUnwrap(store.presence.lastWoken)
+        XCTAssertGreaterThanOrEqual(wokenOnOpen, opened)
+        Thread.sleep(forTimeInterval: 0.01)
+        toggled.send()
+        XCTAssertGreaterThan(try XCTUnwrap(store.presence.lastWoken), wokenOnOpen)
     }
 
-    func testOpeningTheNotchInTheAppWakesThePet() throws {
+    func testOpeningAndClosingTheNotchInTheAppWakeThePet() throws {
         let types: [any NotchModule.Type] = [ClosetModule.self]
         let settings = SettingsStore.ephemeral(catalog: ModuleList.catalog(of: types))
         let services = AppServices(settings: settings, moduleTypes: types,
                                    environment: ["TABBI_DEMO": "1"], arguments: [])
         let store = try XCTUnwrap(services.modules.module(ClosetModule.self)).store
-        XCTAssertNil(store.presence.lastWoken, "the notch starts closed")
+        // The ticker starting at launch counts as the notch closing.
+        let launched = store.presence.lastWoken ?? .distantPast
+        Thread.sleep(forTimeInterval: 0.01)
         services.ticker.setActive(false)
-        XCTAssertNotNil(store.presence.lastWoken, "the notch opened")
+        let wokenOnOpen = try XCTUnwrap(store.presence.lastWoken)
+        XCTAssertGreaterThan(wokenOnOpen, launched, "the notch opened")
+        // A long look at the open notch must not use up the wake spell: it
+        // starts again when the notch closes, where the pet shows.
+        Thread.sleep(forTimeInterval: 0.01)
+        services.ticker.setActive(true)
+        XCTAssertGreaterThan(try XCTUnwrap(store.presence.lastWoken), wokenOnOpen, "the notch closed")
     }
 }
