@@ -44,7 +44,7 @@ describe("parties", () => {
       host: a.code, session: null, maxMembers: catalog.limits.maxPartyMembers, expiresAt: party.lastActive + EXPIRY,
     });
     expect(party.members).toEqual([
-      { profile: a.profile, joinedAt: expect.any(Number), host: true, presence: null, online: false },
+      { profile: { ...a.profile, badges: [] }, joinedAt: expect.any(Number), host: true, presence: null, online: false },
     ]);
     expect((await call("GET", "/v1/party", undefined, a.token)).body.party).toEqual(party);
     expectError(await call("POST", "/v1/party", { name: "x" }, a.token), 400, "unknown_field");

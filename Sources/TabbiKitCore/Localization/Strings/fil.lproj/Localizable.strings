@@ -1251,6 +1251,14 @@
 	<string>Napulot: %lld min para sa event</string>
 	<key>Found: the rare %@ fur</key>
 	<string>Napulot: rare fur na %@</string>
+	<key>Founder's Pin</key>
+	<string>Pin ng Tagapagtatag</string>
+	<key>Founding Member</key>
+	<string>Kasaping Tagapagtatag</string>
+	<key>Founding Member: joined Tabbi in its first 100 days.</key>
+	<string>Kasaping Tagapagtatag: sumali sa Tabbi sa unang 100 araw nito.</string>
+	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
+	<string>Kasaping Tagapagtatag: sumali ka sa Tabbi sa unang 100 araw nito.</string>
 	<key>Free all day</key>
 	<string>Libre buong araw</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1325,6 +1333,8 @@
 	<string>Pangalanan ang pusa mo</string>
 	<key>Give your dog a name</key>
 	<string>Pangalanan ang aso mo</string>
+	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
+	<string>Para sa lahat ng mag-sign in sa Tabbi sa unang 100 araw nito.</string>
 	<key>Given to everyone who used Tabbi in its launch week.</key>
 	<string>Para sa lahat ng gumamit ng Tabbi sa launch week nito.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>

@@ -290,11 +290,12 @@ describe("schema step 11", () => {
     await runInDurableObject(stub, (_, state) => {
       const sql = state.storage.sql;
       sql.exec("DROP TABLE web_sign_ins");
+      sql.exec("DROP TABLE entitlements");
       sql.exec("ALTER TABLE apple_accounts DROP COLUMN client_id");
       sql.exec("UPDATE schema_version SET version = 10");
       sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, created_at) VALUES ('s', 'CCCCCCCC', 'r', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 11 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 12 }]);
       expect(sql.exec("SELECT apple_sub, refresh_token, client_id FROM apple_accounts").toArray())
         .toEqual([{ apple_sub: "s", refresh_token: "r", client_id: null }]);
       expect(sql.exec("SELECT * FROM web_sign_ins").toArray()).toEqual([]);

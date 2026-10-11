@@ -132,9 +132,12 @@ private struct PartyFriendRow: View {
         HStack(spacing: Theme.Spacing.xs) {
             PartyPet(profile: friend.profile, asleep: status == .offline)
             VStack(alignment: .leading, spacing: 0) {
-                Text(friend.profile.name)
-                    .font(Theme.Typography.bodyEmphasis)
-                    .foregroundStyle(status == .offline ? Theme.Palette.secondaryText : Theme.Palette.primaryText)
+                HStack(spacing: Theme.Spacing.xs) {
+                    Text(friend.profile.name)
+                        .font(Theme.Typography.bodyEmphasis)
+                        .foregroundStyle(status == .offline ? Theme.Palette.secondaryText : Theme.Palette.primaryText)
+                    if friend.profile.isFoundingMember { FoundingBadge(isMe: false) }
+                }
                 HStack(spacing: Theme.Spacing.xs) {
                     Circle()
                         .fill(PartyStyle.color(for: status))
@@ -186,6 +189,7 @@ private struct PartyFriendRow: View {
 
     private var help: String {
         var parts = [String(localized: "\(friend.profile.name) with \(friend.profile.petName)", bundle: .tabbi)]
+        if friend.profile.isFoundingMember { parts.append(String(localized: "Founding Member", bundle: .tabbi)) }
         if let presence = friend.presence, friend.online, presence.todayMinutes > 0 {
             let studied = PartyRoster.duration(minutes: presence.todayMinutes)
             parts.append(String(localized: "\(studied) studied today", bundle: .tabbi))

@@ -185,4 +185,5 @@ Please follow the [Code of Conduct](CODE_OF_CONDUCT.md) and report security issu
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE), code and artwork alike.
+Artwork added later for an optional supporter tier would be marked and licensed separately, as [ASSETS-LICENSE.md](ASSETS-LICENSE.md) explains; nothing shipped so far is affected.

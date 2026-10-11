@@ -26,6 +26,7 @@ Only if you choose to sign in with Apple, so your pet and progress follow you ac
 - one secret token per Mac you signed in on, and when it was made (stored as SHA-256 hashes; only about the 20 most recent sign-ins are kept, so a Mac you no longer use is dropped over time);
 - a SHA-256 hash of each Apple sign-in token, kept until shortly after that token expires (Apple's expiry plus about a minute, erased by the hourly cleanup) so it cannot be used twice;
 - when you sign in through the web page instead of the Mac's own sign-in, a pending sign-in (Apple's user id and refresh token, and hashes of a one-time code and of the app's random sign-in state) usable for two minutes; the app picks it up, or the hourly cleanup erases it within about an hour;
+- whether you are a Founding Member (you signed in during Tabbi's first 100 days), recorded with when that started, since it is free and stays with the account;
 - your sync document and when it last changed: the pet's look (species, breed, name, outfit), points earned and spent per Mac (each Mac is a random id), the ids of unlocked items, the calendar days you studied (at most 400) and your longest streak.
 
 Nothing else.
@@ -60,7 +61,7 @@ Only the maintainer reads it, to fix the crash, and deletes it when it is no lon
 
 ## Who can see it
 
-- **Friends** (friendship is mutual and needs your friend code) see your profile, your presence (shown as `offline` once heartbeats stop), whether you are in a party with its code and size, and your weekly study minutes on the leaderboard.
+- **Friends** (friendship is mutual and needs your friend code) see your profile (with a Founding badge if you are a Founding Member), your presence (shown as `offline` once heartbeats stop), whether you are in a party with its code and size, and your weekly study minutes on the leaderboard.
 - **Party members** see the profile and presence of everyone in the same party, including members who are not their friends.
   Anyone who has a party's code can join it while it has room, so share party codes only with people you want to study with.
 - There is no directory or search: nobody can find you without your friend code or a shared party code.
@@ -80,7 +81,7 @@ Leaving a party (`POST /v1/party/leave`) removes your membership; a party is del
 Removing a friend deletes the friendship in both directions.
 Unblocking someone deletes the block.
 A report stays until the account of the reporter or of the reported user is deleted.
-Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, sync document, Apple account link, blocks (yours, and others' blocks of you), reports by you or about you, any ban or replaced name, and your limited edition items, removes you from your friends' lists, and takes you out of your party.
+Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, sync document, Apple account link, blocks (yours, and others' blocks of you), reports by you or about you, any ban or replaced name, your limited edition items and your Founding Member record, removes you from your friends' lists, and takes you out of your party.
 If you signed in with Apple, it then revokes the app's Sign in with Apple grant with Apple.
 A pending web sign-in that was never picked up can still hold your Apple user id until the hourly cleanup erases it.
 Your secret token, and the token of every other Mac you signed in on, stops working at once.

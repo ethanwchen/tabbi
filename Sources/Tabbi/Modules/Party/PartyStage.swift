@@ -127,6 +127,7 @@ private struct PartyMemberView: View {
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.primaryText)
                     .minimumScaleFactor(roomy ? 1 : 0.8)
+                if member.profile.isFoundingMember && roomy { FoundingBadge(isMe: isMe) }
             }
             HStack(spacing: Theme.Spacing.xs) {
                 if roomy || shortStatus(status) == nil {
@@ -188,6 +189,7 @@ private struct PartyMemberView: View {
     private func help(_ status: PartyStatus) -> String {
         let name = isMe ? String(localized: "You", bundle: .tabbi) : member.profile.name
         var parts = [String(localized: "\(name) with \(member.profile.petName)", bundle: .tabbi)]
+        if member.profile.isFoundingMember { parts.append(String(localized: "Founding Member", bundle: .tabbi)) }
         parts.append(PartyRoster.statusLine(member.presence, online: member.online, at: now))
         if let minutes = member.presence?.todayMinutes, minutes > 0 {
             let studied = PartyRoster.duration(minutes: minutes)

@@ -276,6 +276,9 @@ extension CostumeArt {
 
     /// A gold medal with a glint, hung from a crimson ribbon around the neck.
     static let teamMedal = PetArt.costume.bodyItem("teamMedal")
+    /// A small outlined gold pin with two crimson ribbon tails, worn on the
+    /// chest beside the collar tag, a glint running down it now and then.
+    static let foundersPin = PetArt.costume.bodyItem("foundersPin")
 }
 
 // MARK: - Seasonal event items

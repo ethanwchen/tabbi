@@ -75,6 +75,9 @@ What friends and party members see of a user.
 | `points` | integer 0 to 100,000,000 | `0` |
 | `level` | integer 1 to 999 | `1` |
 
+Friends lists and party rosters add `badges` to each profile: the ids of the entitlements that user holds that show a badge, `["founding"]` for a Founding Member (see [the economy doc](../economy.md#founding-member)) and `[]` otherwise.
+The app cannot write it.
+
 When writing a profile, every field is optional.
 An omitted, `null` or empty-text field keeps its current value (so a name cannot be blanked).
 Changing `species` without a `breed` switches to the first breed of the new species.
@@ -503,7 +506,8 @@ Errors: `no_account` (403), `revision_required` (428, no `If-Match`), `invalid_r
 ### `GET /v1/grants`
 
 Any user, signed in with Apple or not, so a Party identity without an account gets its items too.
-`200 {"ok": true, "items": ["accessory.backwardsCap"]}`: the ids of the limited edition items the maintainer granted, oldest grant first (`[]` when there are none).
+`200 {"ok": true, "items": ["accessory.backwardsCap", "accessory.foundersPin"], "entitlements": ["founding"]}`: the ids of the limited edition items the maintainer granted, oldest grant first, then the items the caller's entitlements bring (`[]` when there are none), and the ids of the caller's entitlements.
+For a Sign in with Apple account that first signed in before the founding window ended (`FOUNDING_LAUNCH` plus 100 days, or any time while `FOUNDING_LAUNCH` is unset), this request also records Founding Member if it is not recorded yet.
 The app adds each id it knows to the Closet as a granted item and never takes one back, so a later revoke only stops new Macs from getting it.
 It asks once per launch, wake and identity (Party after it connects, sync after its first round when signed in), so a grant shows up on the next launch or wake.
 
@@ -629,7 +633,7 @@ The same `ADMIN_TOKEN` rules as the moderation routes apply.
 
 | Method and path | Purpose |
 | --- | --- |
-| `GET /v1/admin/users/{code}/grants` | the items a user holds: `{ok, grants}` |
+| `GET /v1/admin/users/{code}/grants` | the items the maintainer granted a user, and the user's entitlements: `{ok, grants, entitlements}` |
 | `POST /v1/admin/users/{code}/grants` | grant `{"item": id}` to one user: `{ok, granted, grants}` (`granted` is `false` if they already held it) |
 | `DELETE /v1/admin/users/{code}/grants/{item}` | undo a grant made by mistake: `{ok, revoked, grants}` |
 | `POST /v1/admin/grants` | grant `{"item", "registeredFrom", "registeredUntil"}` to every user whose friend code was created in `[registeredFrom, registeredUntil)` (unix seconds; the window must have started): `{ok, granted}` with the number of new grants |

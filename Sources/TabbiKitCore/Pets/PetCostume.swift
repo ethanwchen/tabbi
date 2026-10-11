@@ -112,6 +112,11 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     /// it now and then: the spring headline item. The shop's cherry petals
     /// fall all around the pet instead.
     case sakuraSprig
+    /// A small gold pin with two crimson ribbon tails, worn on the chest and
+    /// glinting now and then: the Founding Member item, given to everyone
+    /// who signs in during Tabbi's first 100 days. Unlike the Team Medal it
+    /// hangs from no ribbon around the neck.
+    case foundersPin
     // Animated shop items, each looping a few frames on the item clock.
     /// White feathered wings that flap behind the pet.
     case angelWings
@@ -128,7 +133,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
 
     public var slot: PetAccessorySlot {
         switch self {
-        case .stethoscope, .scarf, .bowTie, .teamMedal, .snowScarf: .neck
+        case .stethoscope, .scarf, .bowTie, .teamMedal, .snowScarf, .foundersPin: .neck
         case .roundGlasses, .coolSunglasses, .heartGlasses, .summerShades: .face
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
@@ -183,6 +188,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .summerShades: String(localized: "Sunset Shades", bundle: .tabbi)
         case .lionDanceHat: String(localized: "Lion Dance Hat", bundle: .tabbi)
         case .sakuraSprig: String(localized: "Sakura Sprig", bundle: .tabbi)
+        case .foundersPin: String(localized: "Founder's Pin", bundle: .tabbi)
         case .angelWings: String(localized: "Angel Wings", bundle: .tabbi)
         case .kingsCape: String(localized: "King's Cape", bundle: .tabbi)
         case .halo: String(localized: "Halo", bundle: .tabbi)
