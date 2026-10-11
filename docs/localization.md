@@ -65,7 +65,9 @@ The AI consent alert, the AI provider row in Settings > Connections and the age 
 The main controls of every tab's panel (Today, Focus, Now Playing, System, AI Usage, Ask AI, Study, Anki, Party and Schedule) are translated too, with the calendar card, the focus and study timer labels and the Ask AI setup screen.
 Today's Plan my day, Wrap-up and calendar onboarding step are translated as well; the summaries the AI writes there follow its English prompt, so they stay English.
 The bundled kits' words for calendar events ("meetings and calls") are looked up in the catalog like the seasonal events (`UpNextEmptyState.localizedEvents`), and a kit's own phrase stays as written.
-The modules' own Settings panes (the Options button in Settings > Tabs) and the module setup views follow pane by pane.
+The Focus and Now Playing Settings panes are translated, with the focus sound names and the Shortcuts test results; the other modules' own Settings panes (the Options button in Settings > Tabs) and the module setup views follow pane by pane.
+Those panes have a fixed height, so a translated footer must wrap to no more lines than the English one, or the last row is clipped: check them in `settings-tabs-<module>.png`.
+App names follow the name macOS gives them in each language (Musik, ミュージック, Быстрые команды), and `MediaSource.names` joins them with the language's own "or".
 Breed names stay English, because a pet that still goes by its breed is recognized by comparing its saved name to the breed's name.
 These stay English on purpose for now:
 

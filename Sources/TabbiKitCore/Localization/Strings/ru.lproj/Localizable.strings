@@ -17,6 +17,8 @@
 	<string>%@ Темы меняют открытую панель, закрытый вырез остается черным.</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ Повторяем в фоне.</string>
+	<key>%@ by %@, plays in Spotify.</key>
+	<string>%@ от %@, играет в Spotify.</string>
 	<key>%@ can't control %@</key>
 	<string>%1$@ не может управлять %2$@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
@@ -71,6 +73,8 @@
 	<string>%@: еще не настроено</string>
 	<key>%@ left</key>
 	<string>Осталось: %@</string>
+	<key>%@ level in the blend</key>
+	<string>Уровень звука «%@» в миксе</string>
 	<key>%@ misses you</key>
 	<string>%@ скучает по тебе</string>
 	<key>%@ moved to position %lld of %lld</key>
@@ -83,6 +87,8 @@
 	<string>%1$@ из %2$@</string>
 	<key>%@ of focus.</key>
 	<string>%@ фокуса.</string>
+	<key>%@ opens in Music; press play there.</key>
+	<string>%@ откроется в Музыке, включи его там.</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
 	<string>%@ читает события на этом Mac и никуда их не загружает</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
@@ -195,6 +201,8 @@
 	<string>&lt;1 мин</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
 	<string>Таймер Pomodoro, который чередует фокус и перерывы.</string>
+	<key>A Spotify link or URI, an Apple Music link, or the name of a playlist in your Music library</key>
+	<string>Ссылка или URI Spotify, ссылка Apple Music или название плейлиста в медиатеке Музыки</string>
 	<key>A button at the far right of the tab bar</key>
 	<string>Кнопка справа в панели вкладок</string>
 	<key>A card with your week in the notch every Sunday evening.</key>
@@ -281,6 +289,8 @@
 	<string>Добавить все блоки в календарь по умолчанию</string>
 	<key>Add every proposed block to your calendar</key>
 	<string>Добавить все предложенные блоки в календарь</string>
+	<key>Add it to your library and type its name to autoplay.</key>
+	<string>Добавь его в медиатеку и введи название, чтобы он включался сам.</string>
 	<key>Add key</key>
 	<string>Добавить ключ</string>
 	<key>Add more</key>
@@ -291,6 +301,8 @@
 	<string>Добавить этот блок в календарь</string>
 	<key>Add to Favorites</key>
 	<string>Добавить в Избранное</string>
+	<key>Add to the blend</key>
+	<string>Добавить в микс</string>
 	<key>Add what you want to get done. Today's unfinished tasks join them in the morning.</key>
 	<string>Добавь, что хочешь сделать. Невыполненное за сегодня добавится утром.</string>
 	<key>Add your %@ key</key>
@@ -337,6 +349,8 @@
 	<string>Разрешить снимки экрана</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>Показывать вырез не только на встроенном дисплее</string>
+	<key>Already playing: focus is running</key>
+	<string>Уже играет: идёт фокус</string>
 	<key>Always Visible</key>
 	<string>Всегда виден</string>
 	<key>Always drawn around the hardware notch.</key>
@@ -425,6 +439,8 @@
 	<string>Шапка</string>
 	<key>Best day %@</key>
 	<string>Лучший день: %@</string>
+	<key>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</key>
+	<string>До трёх звуков или тишина. Звук создаётся на твоём Mac, нарастает с фокусом и затихает в перерыв.</string>
 	<key>Blindfolded Sorcerer</key>
 	<string>Повязка мага</string>
 	<key>Blocks go to your calendar.</key>
@@ -439,6 +455,8 @@
 	<string>Порода</string>
 	<key>Bring %@ to the front</key>
 	<string>Вывести %@ на передний план</string>
+	<key>Brown noise</key>
+	<string>Бурый шум</string>
 	<key>Built-in display</key>
 	<string>Встроенный дисплей</string>
 	<key>Bunny Ears</key>
@@ -449,6 +467,8 @@
 	<string>Присоединяясь, ты принимаешь [Условия использования](%1$@) и [Политику конфиденциальности](%2$@).</string>
 	<key>By signing in you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
 	<string>Входя, ты принимаешь [Условия использования](%1$@) и [Политику конфиденциальности](%2$@).</string>
+	<key>Cafe murmur</key>
+	<string>Шум кафе</string>
 	<key>Calendar</key>
 	<string>Календарь</string>
 	<key>Calendar access</key>
@@ -783,6 +803,8 @@
 	<string>Заверши сессию в Party с друзьями.</string>
 	<key>Finish setup</key>
 	<string>Завершить настройку</string>
+	<key>Fireplace</key>
+	<string>Камин</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
 	<string>Разместить повторы, учебные блоки и перерывы вокруг календаря на сегодня</string>
 	<key>Fit reviews, study blocks and breaks around tomorrow's calendar</key>
@@ -823,6 +845,10 @@
 	<string>Фокус-сессия завершена</string>
 	<key>Focus sessions completed today</key>
 	<string>Фокус-сессии, завершенные сегодня</string>
+	<key>Focus sound</key>
+	<string>Звук фокуса</string>
+	<key>Focus sound volume</key>
+	<string>Громкость звука фокуса</string>
 	<key>Focus time</key>
 	<string>Время фокуса</string>
 	<key>Focus time today, out of your daily goal</key>
@@ -973,6 +999,8 @@
 	<string>В Anki выбери «Инструменты › Дополнения › AnkiConnect › Настройки»</string>
 	<key>In Anki, choose Tools › Add-ons › Get Add-ons…</key>
 	<string>В Anki выбери «Инструменты › Дополнения › Загрузить дополнения…»</string>
+	<key>In [Shortcuts](shortcuts://), make “%@” with the Set Focus action turning Do Not Disturb on, and “%@” turning it off. Then press Test.</key>
+	<string>Создай в [Быстрых командах](shortcuts://) «%@» (вкл. «Не беспокоить») и «%@» (выкл.), затем нажми «Проверить».</string>
 	<key>In development</key>
 	<string>В разработке</string>
 	<key>In flow</key>
@@ -1083,6 +1111,8 @@
 	<string>Лимитированные</string>
 	<key>Lion Dance Hat</key>
 	<string>Шапка льва</string>
+	<key>Listen to %@</key>
+	<string>Прослушать: %@</string>
 	<key>Live activity</key>
 	<string>Активность</string>
 	<key>Loading</key>
@@ -1155,6 +1185,8 @@
 	<string>Перенести на сегодня</string>
 	<key>Move up</key>
 	<string>Переместить вверх</string>
+	<key>Music</key>
+	<string>Музыка</string>
 	<key>Mute</key>
 	<string>Выключить звук</string>
 	<key>Name</key>
@@ -1201,6 +1233,8 @@
 	<string>Музыкальное приложение не открыто</string>
 	<key>No saved chats</key>
 	<string>Нет сохраненных чатов</string>
+	<key>No shortcut named “%@”. Check the name in Shortcuts.</key>
+	<string>Нет команды «%@». Проверь название в Быстрых командах.</string>
 	<key>No streak yet</key>
 	<string>Серии пока нет</string>
 	<key>No study</key>
@@ -1217,6 +1251,8 @@
 	<string>Пока нет</string>
 	<key>Not Now</key>
 	<string>Не сейчас</string>
+	<key>Not a Spotify or Apple Music link.</key>
+	<string>Это не ссылка Spotify или Apple Music.</string>
 	<key>Not added</key>
 	<string>Не добавлено</string>
 	<key>Not checked yet · refresh to load your live limits</key>
@@ -1359,6 +1395,8 @@
 	<string>Открывается %@…</string>
 	<key>Opening Anki…</key>
 	<string>Открывается Anki…</string>
+	<key>Opens in Music; press play there.</key>
+	<string>Откроется в Музыке, включи его там.</string>
 	<key>Opens on tabbinotch.com</key>
 	<string>Откроется на tabbinotch.com</string>
 	<key>Opens the %@ tab</key>
@@ -1429,14 +1467,20 @@
 	<string>Макс. %@  ·  Ср. %@</string>
 	<key>Pet</key>
 	<string>Питомец</string>
+	<key>Pet Coach</key>
+	<string>Питомец-тренер</string>
 	<key>Pick %@ again to allow it to receive your AI requests. %@ sends nothing until you do.</key>
 	<string>Выбери %1$@ снова, чтобы разрешить отправку твоих запросов к ИИ. До этого %2$@ ничего не отправляет.</string>
+	<key>Pick a cozy focus playlist</key>
+	<string>Выбери уютный плейлист для фокуса</string>
 	<key>Pick a kit</key>
 	<string>Выбери набор</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
 	<string>Заново выбрать набор, вкладки и их настройки в вырезе</string>
 	<key>Pick a month and a year first</key>
 	<string>Сначала выбери месяц и год</string>
+	<key>Pick a sound to preview it</key>
+	<string>Выбери звук, чтобы прослушать</string>
 	<key>Pick any that fit.</key>
 	<string>Выбери все подходящие.</string>
 	<key>Pick one to use Ask, Plan my day and Refine. %@ sends nothing until you do.</key>
@@ -1451,6 +1495,8 @@
 	<string>Сделать избранной колодой</string>
 	<key>Pin as favorite</key>
 	<string>Сделать избранной</string>
+	<key>Pink noise</key>
+	<string>Розовый шум</string>
 	<key>Pirate Hat</key>
 	<string>Пиратская шляпа</string>
 	<key>Plan</key>
@@ -1481,14 +1527,24 @@
 	<string>Воспроизведение, пауза и пропуск в Apple Music.</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>Воспроизведение, пауза и пропуск в Spotify.</string>
+	<key>Players</key>
+	<string>Плееры</string>
 	<key>Playing in %@</key>
 	<string>Играет в %@</string>
 	<key>Playlist</key>
 	<string>Плейлист</string>
+	<key>Plays in Spotify.</key>
+	<string>Играет в Spotify.</string>
+	<key>Plays “%@” from your Music library.</key>
+	<string>Играет «%@» из медиатеки Музыки.</string>
 	<key>Points earned today; spend them on your pet's wardrobe</key>
 	<string>Очки за сегодня: потрать их на гардероб питомца</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Для статистики Claude и ответов.</string>
+	<key>Presets</key>
+	<string>Подборки</string>
+	<key>Preview</key>
+	<string>Прослушать</string>
 	<key>Previous track</key>
 	<string>Предыдущий трек</string>
 	<key>Privacy</key>
@@ -1519,6 +1575,8 @@
 	<string>Завершить %@ и закрыть вырез до следующего запуска (⌘Q)</string>
 	<key>Quit Anki and open it again so it loads AnkiConnect</key>
 	<string>Закрыть Anki и открыть снова, чтобы загрузился AnkiConnect</string>
+	<key>Rain</key>
+	<string>Дождь</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Прочитать свежие журналы Codex (ничего не отправляет)</string>
 	<key>Reading %@ sessions…</key>
@@ -1565,6 +1623,8 @@
 	<string>Удалить набор</string>
 	<key>Remove from Favorites</key>
 	<string>Удалить из избранного</string>
+	<key>Remove from the blend</key>
+	<string>Убрать из микса</string>
 	<key>Remove this screenshot</key>
 	<string>Удалить этот снимок экрана</string>
 	<key>Removed %@.</key>
@@ -1635,6 +1695,10 @@
 	<string>Один раз запусти codex в Терминале, чтобы войти.</string>
 	<key>Run gemini in Terminal once to sign in with Google.</key>
 	<string>Один раз запусти gemini в Терминале, чтобы войти через Google.</string>
+	<key>Run your Focus shortcuts when the focus timer starts and stops</key>
+	<string>Запускать команды фокусирования, когда таймер фокуса стартует и останавливается</string>
+	<key>Run “%@” now</key>
+	<string>Запустить «%@» сейчас</string>
 	<key>Running in %@</key>
 	<string>Идет во вкладке %@</string>
 	<key>Runs on this Mac</key>
@@ -1705,12 +1769,20 @@
 	<string>Общий фокус: осталось %@</string>
 	<key>Shortcut</key>
 	<string>Сочетание клавиш</string>
+	<key>Shortcut name</key>
+	<string>Название команды</string>
+	<key>Shortcut ran.</key>
+	<string>Команда выполнена.</string>
 	<key>Show %@</key>
 	<string>Показать %@</string>
+	<key>Show SoundCloud from Safari or Chrome</key>
+	<string>Показывать SoundCloud из Safari или Chrome</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>Показывать итоги недели при первом открытии выреза после 18:00 в воскресенье</string>
 	<key>Show a small live preview beside the closed notch</key>
 	<string>Показывать небольшое живое превью рядом с закрытым вырезом</string>
+	<key>Show and control SoundCloud playing in a Safari or Chrome tab</key>
+	<string>Показывать SoundCloud во вкладке Safari или Chrome и управлять им</string>
 	<key>Show calendar</key>
 	<string>Показать календарь</string>
 	<key>Show every deck with cards due</key>
@@ -1797,6 +1869,10 @@
 	<string>Блестящий шлейф</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>Время страшилок! Фокусируйся и наряжай питомца.</string>
+	<key>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</key>
+	<string>Spotify и Apple Music показываются всегда. Для SoundCloud macOS попросит разрешить %@ управлять браузером, а в браузере нужно включить «Разрешить JavaScript из Apple Events».</string>
+	<key>Spotify link or Music playlist name</key>
+	<string>Ссылка Spotify или плейлист в Музыке</string>
 	<key>Spread your open tasks and reviews over the week's free time. Planned on this Mac, nothing is added until you say so</key>
 	<string>Распредели открытые задачи и повторения по свободному времени недели. План составляется на этом Mac, и без тебя ничего не добавится</string>
 	<key>Springy, with a little bounce.</key>
@@ -1847,6 +1923,8 @@
 	<string>Начать с этими вкладками</string>
 	<key>Starting Anki</key>
 	<string>Запуск Anki</string>
+	<key>Starts with focus unless music is already playing, and pauses at your break.</key>
+	<string>Звучит с фокусом, если ничего не играет, и стихает в перерыв.</string>
 	<key>Stays on this Mac</key>
 	<string>Только на этом Mac</string>
 	<key>Step %lld of %lld</key>
@@ -1867,6 +1945,8 @@
 	<string>Уходит в сторону, когда видео, игра или приложение во весь экран.</string>
 	<key>Stethoscope</key>
 	<string>Стетоскоп</string>
+	<key>Stop</key>
+	<string>Стоп</string>
 	<key>Stop and keep the time focused so far</key>
 	<string>Остановить и сохранить время фокуса</string>
 	<key>Stop and keep the time studied so far</key>
@@ -1877,6 +1957,8 @@
 	<string>Перестать фокусироваться на задаче</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>Остановить синхронизацию на этом Mac. Питомец и прогресс останутся здесь.</string>
+	<key>Stop the preview</key>
+	<string>Остановить прослушивание</string>
 	<key>Stopped</key>
 	<string>Остановлено</string>
 	<key>Streak</key>
@@ -1953,6 +2035,8 @@
 	<string>Задачи на сегодня</string>
 	<key>Team Medal</key>
 	<string>Командная медаль</string>
+	<key>Test</key>
+	<string>Проверить</string>
 	<key>Test it</key>
 	<string>Проверить</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
@@ -1963,10 +2047,14 @@
 	<string>ИИ для вопросов, плана дня и улучшения</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>Связке ключей не удалось сохранить ключ. Попробуй еще раз.</string>
+	<key>The Shortcuts command line tool isn't available on this Mac.</key>
+	<string>Инструмент командной строки Быстрых команд недоступен на этом Mac.</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>Все в цвету. Вырасти что-то свое.</string>
 	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
 	<string>Календарь не принял события. Проверь доступ к календарю и попробуй еще раз.</string>
+	<key>The exact name of the shortcut in the Shortcuts app</key>
+	<string>Точное название в приложении «Быстрые команды»</string>
 	<key>The focus timer is on this task</key>
 	<string>Таймер фокуса привязан к этой задаче</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1989,6 +2077,10 @@
 	<string>Не удалось сохранить итоги на диск. Нажми «Готово» еще раз.</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>Сессия идет для всей Party, пока не закончится или пока ты ее не завершишь</string>
+	<key>The shortcut failed.</key>
+	<string>Команда не сработала.</string>
+	<key>The shortcut took too long and was stopped.</key>
+	<string>Команда выполнялась слишком долго и была остановлена.</string>
 	<key>The tool's own default</key>
 	<string>По умолчанию в инструменте</string>
 	<key>The year you were born</key>
@@ -2063,6 +2155,8 @@
 	<string>Включить %@</string>
 	<key>Turn on</key>
 	<string>Включить</string>
+	<key>Turn on Do Not Disturb during focus</key>
+	<string>Включать «Не беспокоить» во время фокуса</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>Включи JavaScript для SoundCloud</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -2077,6 +2171,8 @@
 	<string>Выключить перемешивание</string>
 	<key>Turn shuffle on</key>
 	<string>Включить перемешивание</string>
+	<key>Type a shortcut name first</key>
+	<string>Сначала введи название команды</string>
 	<key>Type a task and press Return to add it; Esc clears</key>
 	<string>Введи задачу и нажми Return, чтобы добавить; Esc очищает</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
@@ -2167,12 +2263,18 @@
 	<string>Привет, я %@</string>
 	<key>What should we call you?</key>
 	<string>Как тебя зовут?</string>
+	<key>When focus ends</key>
+	<string>В конце фокуса</string>
+	<key>When focus starts</key>
+	<string>В начале фокуса</string>
 	<key>When off, the notch hides while the lid is closed.</key>
 	<string>Если выключено, вырез скрывается при закрытой крышке.</string>
 	<key>When were you born?</key>
 	<string>Твоя дата рождения?</string>
 	<key>White Coat</key>
 	<string>Белый халат</string>
+	<key>White noise</key>
+	<string>Белый шум</string>
 	<key>Winter Holidays</key>
 	<string>Зимние праздники</string>
 	<key>Witch Hat</key>

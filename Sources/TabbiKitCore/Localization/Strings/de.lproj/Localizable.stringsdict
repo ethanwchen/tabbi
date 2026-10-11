@@ -403,6 +403,22 @@
 			<string>Alle %lld erledigt</string>
 		</dict>
 	</dict>
+	<key>Blend up to %lld sounds; remove one first</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Bis zu %lld Klang mischbar; nimm zuerst einen heraus</string>
+			<key>other</key>
+			<string>Bis zu %lld Klänge mischbar; nimm zuerst einen heraus</string>
+		</dict>
+	</dict>
 	<key>Focus for %lld hours during %@.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

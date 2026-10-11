@@ -18,7 +18,7 @@ public struct FocusMixPreset: Codable, Equatable, Sendable {
     /// The name a fresh preset gets: its loudest sound, plus how many others
     /// play with it ("Rain +1"), so three presets still read apart at a glance.
     public static func defaultName(for mix: FocusMix) -> String {
-        guard let main = mix.layers.max(by: { $0.level < $1.level }) else { return "Off" }
+        guard let main = mix.layers.max(by: { $0.level < $1.level }) else { return String(localized: "Off", bundle: .tabbi) }
         let others = mix.layers.count - 1
         return others > 0 ? "\(main.sound.displayName) +\(others)" : main.sound.displayName
     }

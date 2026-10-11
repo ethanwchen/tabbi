@@ -7,7 +7,7 @@ import TabbiKit
 extension SettingsPane {
     /// Settings › Pet Coach, offered while the Closet (the pet's module) is on.
     @MainActor static func petCoach(_ coach: PetCoachController, reminder: StudyReminderScheduler) -> SettingsPane {
-        SettingsPane(id: "coach", title: "Pet Coach", symbol: "pawprint",
+        SettingsPane(id: "coach", title: String(localized: "Pet Coach", bundle: .tabbi), symbol: "pawprint",
                      view: AnyView(PetCoachSettingsPane(coach: coach, reminder: reminder)))
     }
 }

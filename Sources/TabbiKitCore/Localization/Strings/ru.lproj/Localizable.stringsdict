@@ -503,6 +503,26 @@
 			<string>Все готово: %lld</string>
 		</dict>
 	</dict>
+	<key>Blend up to %lld sounds; remove one first</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Можно смешать до %lld звуков, сначала убери один</string>
+			<key>many</key>
+			<string>Можно смешать до %lld звуков, сначала убери один</string>
+			<key>one</key>
+			<string>Можно смешать до %lld звука, сначала убери один</string>
+			<key>other</key>
+			<string>Можно смешать до %lld звука, сначала убери один</string>
+		</dict>
+	</dict>
 	<key>Focus for %lld hours during %@.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

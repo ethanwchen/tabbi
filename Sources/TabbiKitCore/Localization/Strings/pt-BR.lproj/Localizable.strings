@@ -17,6 +17,8 @@
 	<string>%@ Os temas mudam o painel aberto; o notch fechado continua preto.</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ Tentando de novo em segundo plano.</string>
+	<key>%@ by %@, plays in Spotify.</key>
+	<string>%@ de %@, toca no Spotify.</string>
 	<key>%@ can't control %@</key>
 	<string>O %1$@ não consegue controlar o %2$@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
@@ -71,6 +73,8 @@
 	<string>%@ ainda não está configurado</string>
 	<key>%@ left</key>
 	<string>faltam %@</string>
+	<key>%@ level in the blend</key>
+	<string>Nível de %@ na mistura</string>
 	<key>%@ misses you</key>
 	<string>%@ está com saudade</string>
 	<key>%@ moved to position %lld of %lld</key>
@@ -83,6 +87,8 @@
 	<string>%1$@ de %2$@</string>
 	<key>%@ of focus.</key>
 	<string>%@ de foco.</string>
+	<key>%@ opens in Music; press play there.</key>
+	<string>%@ abre na Música; dê play lá.</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
 	<string>O %@ lê seus eventos neste Mac e nunca os envia</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
@@ -195,6 +201,8 @@
 	<string>&lt;1 min</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
 	<string>Um timer Pomodoro que alterna foco e pausas.</string>
+	<key>A Spotify link or URI, an Apple Music link, or the name of a playlist in your Music library</key>
+	<string>Um link ou URI do Spotify, um link do Apple Music ou o nome de uma playlist da sua biblioteca da Música</string>
 	<key>A button at the far right of the tab bar</key>
 	<string>Um botão no canto direito da barra de abas</string>
 	<key>A card with your week in the notch every Sunday evening.</key>
@@ -281,6 +289,8 @@
 	<string>Adicione todos os blocos à sua agenda padrão</string>
 	<key>Add every proposed block to your calendar</key>
 	<string>Adicionar todos os blocos sugeridos à sua agenda</string>
+	<key>Add it to your library and type its name to autoplay.</key>
+	<string>Adicione à sua biblioteca e digite o nome para tocar sozinha.</string>
 	<key>Add key</key>
 	<string>Adicionar chave</string>
 	<key>Add more</key>
@@ -291,6 +301,8 @@
 	<string>Adicionar este bloco à sua agenda</string>
 	<key>Add to Favorites</key>
 	<string>Adicionar aos favoritos</string>
+	<key>Add to the blend</key>
+	<string>Adicionar à mistura</string>
 	<key>Add what you want to get done. Today's unfinished tasks join them in the morning.</key>
 	<string>Adicione o que você quer fazer. As tarefas pendentes de hoje entram de manhã.</string>
 	<key>Add your %@ key</key>
@@ -337,6 +349,8 @@
 	<string>Permitir capturas</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>Permite o notch em telas além da integrada</string>
+	<key>Already playing: focus is running</key>
+	<string>Já tocando: o foco está ativo</string>
 	<key>Always Visible</key>
 	<string>Sempre visível</string>
 	<key>Always drawn around the hardware notch.</key>
@@ -425,6 +439,8 @@
 	<string>Gorro</string>
 	<key>Best day %@</key>
 	<string>Melhor dia %@</string>
+	<key>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</key>
+	<string>Misture até três, ou nenhum para silêncio. Gerado no seu Mac; aumenta com o foco e some na pausa.</string>
 	<key>Blindfolded Sorcerer</key>
 	<string>Venda de feiticeiro</string>
 	<key>Blocks go to your calendar.</key>
@@ -439,6 +455,8 @@
 	<string>Raça</string>
 	<key>Bring %@ to the front</key>
 	<string>Trazer o %@ para a frente</string>
+	<key>Brown noise</key>
+	<string>Ruído marrom</string>
 	<key>Built-in display</key>
 	<string>Tela integrada</string>
 	<key>Bunny Ears</key>
@@ -449,6 +467,8 @@
 	<string>Ao entrar, você concorda com os [Termos de Uso](%1$@) e a [Política de Privacidade](%2$@).</string>
 	<key>By signing in you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
 	<string>Ao entrar, você concorda com os [Termos de Uso](%1$@) e a [Política de Privacidade](%2$@).</string>
+	<key>Cafe murmur</key>
+	<string>Som de café</string>
 	<key>Calendar</key>
 	<string>Calendário</string>
 	<key>Calendar access</key>
@@ -783,6 +803,8 @@
 	<string>Termine uma sessão de Grupo com amigos.</string>
 	<key>Finish setup</key>
 	<string>Concluir a configuração</string>
+	<key>Fireplace</key>
+	<string>Lareira</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
 	<string>Encaixe revisões, blocos de estudo e pausas na agenda de hoje</string>
 	<key>Fit reviews, study blocks and breaks around tomorrow's calendar</key>
@@ -823,6 +845,10 @@
 	<string>Sessão de foco concluída</string>
 	<key>Focus sessions completed today</key>
 	<string>Sessões de foco concluídas hoje</string>
+	<key>Focus sound</key>
+	<string>Som de foco</string>
+	<key>Focus sound volume</key>
+	<string>Volume do som de foco</string>
 	<key>Focus time</key>
 	<string>Tempo de foco</string>
 	<key>Focus time today, out of your daily goal</key>
@@ -973,6 +999,8 @@
 	<string>No Anki, escolha Ferramentas › Complementos › AnkiConnect › Configurar</string>
 	<key>In Anki, choose Tools › Add-ons › Get Add-ons…</key>
 	<string>No Anki, escolha Ferramentas › Complementos › Obter complementos…</string>
+	<key>In [Shortcuts](shortcuts://), make “%@” with the Set Focus action turning Do Not Disturb on, and “%@” turning it off. Then press Test.</key>
+	<string>No [Atalhos](shortcuts://), crie “%@” (Definir Foco: Não Perturbe ativado) e “%@” (desativado). Depois toque em Testar.</string>
 	<key>In development</key>
 	<string>Em desenvolvimento</string>
 	<key>In flow</key>
@@ -1083,6 +1111,8 @@
 	<string>Limitado</string>
 	<key>Lion Dance Hat</key>
 	<string>Chapéu da dança do leão</string>
+	<key>Listen to %@</key>
+	<string>Ouvir %@</string>
 	<key>Live activity</key>
 	<string>Atividade ao vivo</string>
 	<key>Loading</key>
@@ -1155,6 +1185,8 @@
 	<string>Mover para hoje</string>
 	<key>Move up</key>
 	<string>Mover para cima</string>
+	<key>Music</key>
+	<string>Música</string>
 	<key>Mute</key>
 	<string>Silenciar</string>
 	<key>Name</key>
@@ -1201,6 +1233,8 @@
 	<string>Nenhum app de música aberto</string>
 	<key>No saved chats</key>
 	<string>Nenhum chat salvo</string>
+	<key>No shortcut named “%@”. Check the name in Shortcuts.</key>
+	<string>Nenhum atalho chamado “%@”. Confira o nome em Atalhos.</string>
 	<key>No streak yet</key>
 	<string>Ainda sem sequência</string>
 	<key>No study</key>
@@ -1217,6 +1251,8 @@
 	<string>Nenhum ainda</string>
 	<key>Not Now</key>
 	<string>Agora não</string>
+	<key>Not a Spotify or Apple Music link.</key>
+	<string>Não é um link do Spotify ou do Apple Music.</string>
 	<key>Not added</key>
 	<string>Não adicionado</string>
 	<key>Not checked yet · refresh to load your live limits</key>
@@ -1359,6 +1395,8 @@
 	<string>Abrindo %@…</string>
 	<key>Opening Anki…</key>
 	<string>Abrindo o Anki…</string>
+	<key>Opens in Music; press play there.</key>
+	<string>Abre na Música; dê play lá.</string>
 	<key>Opens on tabbinotch.com</key>
 	<string>Abre em tabbinotch.com</string>
 	<key>Opens the %@ tab</key>
@@ -1429,14 +1467,20 @@
 	<string>Pico %@  ·  Média %@</string>
 	<key>Pet</key>
 	<string>Pet</string>
+	<key>Pet Coach</key>
+	<string>Pet coach</string>
 	<key>Pick %@ again to allow it to receive your AI requests. %@ sends nothing until you do.</key>
 	<string>Escolha %1$@ de novo para permitir que receba seus pedidos de IA. O %2$@ não envia nada até lá.</string>
+	<key>Pick a cozy focus playlist</key>
+	<string>Escolha uma playlist aconchegante para focar</string>
 	<key>Pick a kit</key>
 	<string>Escolha um kit</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
 	<string>Escolha de novo um kit, suas abas e o que elas precisam, no notch</string>
 	<key>Pick a month and a year first</key>
 	<string>Escolha um mês e um ano primeiro</string>
+	<key>Pick a sound to preview it</key>
+	<string>Escolha um som para ouvir</string>
 	<key>Pick any that fit.</key>
 	<string>Escolha as que combinam.</string>
 	<key>Pick one to use Ask, Plan my day and Refine. %@ sends nothing until you do.</key>
@@ -1451,6 +1495,8 @@
 	<string>Fixar como baralho favorito</string>
 	<key>Pin as favorite</key>
 	<string>Fixar como favorito</string>
+	<key>Pink noise</key>
+	<string>Ruído rosa</string>
 	<key>Pirate Hat</key>
 	<string>Chapéu de pirata</string>
 	<key>Plan</key>
@@ -1481,14 +1527,24 @@
 	<string>Toque, pause e pule faixas no Apple Music.</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>Toque, pause e pule faixas no Spotify.</string>
+	<key>Players</key>
+	<string>Players</string>
 	<key>Playing in %@</key>
 	<string>Tocando no %@</string>
 	<key>Playlist</key>
 	<string>Playlist</string>
+	<key>Plays in Spotify.</key>
+	<string>Toca no Spotify.</string>
+	<key>Plays “%@” from your Music library.</key>
+	<string>Toca “%@” da sua biblioteca da Música.</string>
 	<key>Points earned today; spend them on your pet's wardrobe</key>
 	<string>Pontos ganhos hoje; gaste no guarda-roupa do seu pet</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Alimenta o uso do Claude e as respostas.</string>
+	<key>Presets</key>
+	<string>Sugestões</string>
+	<key>Preview</key>
+	<string>Ouvir</string>
 	<key>Previous track</key>
 	<string>Faixa anterior</string>
 	<key>Privacy</key>
@@ -1519,6 +1575,8 @@
 	<string>Sair do %@ e fechar o notch até você abrir de novo (⌘Q)</string>
 	<key>Quit Anki and open it again so it loads AnkiConnect</key>
 	<string>Fechar e reabrir o Anki para carregar o AnkiConnect</string>
+	<key>Rain</key>
+	<string>Chuva</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Ler os logs mais recentes do Codex (não envia nada)</string>
 	<key>Reading %@ sessions…</key>
@@ -1565,6 +1623,8 @@
 	<string>Remover kit</string>
 	<key>Remove from Favorites</key>
 	<string>Remover dos favoritos</string>
+	<key>Remove from the blend</key>
+	<string>Tirar da mistura</string>
 	<key>Remove this screenshot</key>
 	<string>Remover esta captura</string>
 	<key>Removed %@.</key>
@@ -1635,6 +1695,10 @@
 	<string>Rode codex uma vez no Terminal para entrar.</string>
 	<key>Run gemini in Terminal once to sign in with Google.</key>
 	<string>Rode gemini uma vez no Terminal para entrar com o Google.</string>
+	<key>Run your Focus shortcuts when the focus timer starts and stops</key>
+	<string>Executa seus atalhos de Foco quando o timer começa e termina</string>
+	<key>Run “%@” now</key>
+	<string>Executar “%@” agora</string>
 	<key>Running in %@</key>
 	<string>Rodando em %@</string>
 	<key>Runs on this Mac</key>
@@ -1705,12 +1769,20 @@
 	<string>Foco compartilhado: faltam %@</string>
 	<key>Shortcut</key>
 	<string>Atalho</string>
+	<key>Shortcut name</key>
+	<string>Nome do atalho</string>
+	<key>Shortcut ran.</key>
+	<string>Atalho executado.</string>
 	<key>Show %@</key>
 	<string>Mostrar %@</string>
+	<key>Show SoundCloud from Safari or Chrome</key>
+	<string>Mostrar o SoundCloud do Safari ou Chrome</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>Mostrar um resumo da sua semana na primeira vez que você abrir o notch depois das 18h de domingo</string>
 	<key>Show a small live preview beside the closed notch</key>
 	<string>Mostra uma pequena prévia ao vivo ao lado do notch fechado</string>
+	<key>Show and control SoundCloud playing in a Safari or Chrome tab</key>
+	<string>Mostra e controla o SoundCloud tocando numa aba do Safari ou Chrome</string>
 	<key>Show calendar</key>
 	<string>Mostrar agenda</string>
 	<key>Show every deck with cards due</key>
@@ -1797,6 +1869,10 @@
 	<string>Rastro brilhante</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>Chegou a temporada de sustos. Fantasie seu pet.</string>
+	<key>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</key>
+	<string>Spotify e Apple Music sempre aparecem. Para o SoundCloud, o macOS pede para deixar o %@ controlar seu navegador, e o navegador precisa de Permitir JavaScript de Apple Events ativado.</string>
+	<key>Spotify link or Music playlist name</key>
+	<string>Link do Spotify ou playlist da Música</string>
 	<key>Spread your open tasks and reviews over the week's free time. Planned on this Mac, nothing is added until you say so</key>
 	<string>Distribua tarefas e revisões pelo tempo livre da semana. Planejado neste Mac, nada é adicionado sem você confirmar</string>
 	<key>Springy, with a little bounce.</key>
@@ -1847,6 +1923,8 @@
 	<string>Começar com estas abas</string>
 	<key>Starting Anki</key>
 	<string>Iniciando o Anki</string>
+	<key>Starts with focus unless music is already playing, and pauses at your break.</key>
+	<string>Começa com o foco se nada estiver tocando e pausa no seu intervalo.</string>
 	<key>Stays on this Mac</key>
 	<string>Fica neste Mac</string>
 	<key>Step %lld of %lld</key>
@@ -1867,6 +1945,8 @@
 	<string>Sai do caminho quando um vídeo, jogo ou app está em tela cheia.</string>
 	<key>Stethoscope</key>
 	<string>Estetoscópio</string>
+	<key>Stop</key>
+	<string>Parar</string>
 	<key>Stop and keep the time focused so far</key>
 	<string>Parar e manter o tempo focado até agora</string>
 	<key>Stop and keep the time studied so far</key>
@@ -1877,6 +1957,8 @@
 	<string>Parar de focar nesta tarefa</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>Para de sincronizar neste Mac. Seu pet e seu progresso ficam aqui.</string>
+	<key>Stop the preview</key>
+	<string>Parar de ouvir</string>
 	<key>Stopped</key>
 	<string>Interrompido</string>
 	<key>Streak</key>
@@ -1953,6 +2035,8 @@
 	<string>Tarefas restantes hoje</string>
 	<key>Team Medal</key>
 	<string>Medalha da equipe</string>
+	<key>Test</key>
+	<string>Testar</string>
 	<key>Test it</key>
 	<string>Testar</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
@@ -1963,10 +2047,14 @@
 	<string>A IA que responde em Pergunte à IA, Planejar meu dia e Refinar</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>As Chaves não salvaram a chave. Tente de novo.</string>
+	<key>The Shortcuts command line tool isn't available on this Mac.</key>
+	<string>A ferramenta de linha de comando do Atalhos não está disponível neste Mac.</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>As flores chegaram. Cultive algo seu.</string>
 	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
 	<string>A agenda não aceitou os eventos. Verifique o acesso à agenda e tente de novo.</string>
+	<key>The exact name of the shortcut in the Shortcuts app</key>
+	<string>O nome exato do atalho no app Atalhos</string>
 	<key>The focus timer is on this task</key>
 	<string>O timer de foco está nesta tarefa</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1989,6 +2077,10 @@
 	<string>Não deu para salvar o resumo no disco. Toque em Pronto de novo.</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>A sessão continua para toda a party até acabar ou você encerrar</string>
+	<key>The shortcut failed.</key>
+	<string>O atalho falhou.</string>
+	<key>The shortcut took too long and was stopped.</key>
+	<string>O atalho demorou demais e foi interrompido.</string>
 	<key>The tool's own default</key>
 	<string>O padrão da ferramenta</string>
 	<key>The year you were born</key>
@@ -2063,6 +2155,8 @@
 	<string>Ligar %@</string>
 	<key>Turn on</key>
 	<string>Ativar</string>
+	<key>Turn on Do Not Disturb during focus</key>
+	<string>Ativar Não Perturbe durante o foco</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>Ative o JavaScript para o SoundCloud</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -2077,6 +2171,8 @@
 	<string>Desativar aleatório</string>
 	<key>Turn shuffle on</key>
 	<string>Ativar aleatório</string>
+	<key>Type a shortcut name first</key>
+	<string>Digite um nome de atalho primeiro</string>
 	<key>Type a task and press Return to add it; Esc clears</key>
 	<string>Digite uma tarefa e pressione Return para adicionar; Esc limpa</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
@@ -2167,12 +2263,18 @@
 	<string>Oi, eu sou o %@</string>
 	<key>What should we call you?</key>
 	<string>Como podemos te chamar?</string>
+	<key>When focus ends</key>
+	<string>Quando o foco termina</string>
+	<key>When focus starts</key>
+	<string>Quando o foco começa</string>
 	<key>When off, the notch hides while the lid is closed.</key>
 	<string>Desativado, o notch some quando a tampa está fechada.</string>
 	<key>When were you born?</key>
 	<string>Quando você nasceu?</string>
 	<key>White Coat</key>
 	<string>Jaleco</string>
+	<key>White noise</key>
+	<string>Ruído branco</string>
 	<key>Winter Holidays</key>
 	<string>Festas de fim de ano</string>
 	<key>Witch Hat</key>

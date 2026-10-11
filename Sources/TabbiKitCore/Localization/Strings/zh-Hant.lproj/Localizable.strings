@@ -17,6 +17,8 @@
 	<string>%@ 主題會改變展開的面板，收起的瀏海仍維持黑色。</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ 正在背景重試。</string>
+	<key>%@ by %@, plays in Spotify.</key>
+	<string>%2$@ 的 %1$@，在 Spotify 播放。</string>
 	<key>%@ can't control %@</key>
 	<string>%1$@ 無法控制 %2$@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
@@ -71,6 +73,8 @@
 	<string>%@ 尚未設定</string>
 	<key>%@ left</key>
 	<string>還剩 %@</string>
+	<key>%@ level in the blend</key>
+	<string>%@在混音中的音量</string>
 	<key>%@ misses you</key>
 	<string>%@ 想你了</string>
 	<key>%@ moved to position %lld of %lld</key>
@@ -83,6 +87,8 @@
 	<string>%1$@ / %2$@</string>
 	<key>%@ of focus.</key>
 	<string>專注了 %@。</string>
+	<key>%@ opens in Music; press play there.</key>
+	<string>%@會在「音樂」中打開，請在那裡播放。</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
 	<string>%@ 在這台 Mac 上讀取你的行程，絕不上傳</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
@@ -195,6 +201,8 @@
 	<string>不到 1 分鐘</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
 	<string>在專注和休息之間切換的番茄鐘。</string>
+	<key>A Spotify link or URI, an Apple Music link, or the name of a playlist in your Music library</key>
+	<string>Spotify 連結或 URI、Apple Music 連結，或音樂資料庫中的播放列表名稱</string>
 	<key>A button at the far right of the tab bar</key>
 	<string>標籤列最右側的按鈕</string>
 	<key>A card with your week in the notch every Sunday evening.</key>
@@ -281,6 +289,8 @@
 	<string>把所有時段加入預設行事曆</string>
 	<key>Add every proposed block to your calendar</key>
 	<string>將所有建議時段加入行事曆</string>
+	<key>Add it to your library and type its name to autoplay.</key>
+	<string>加入資料庫並輸入名稱即可自動播放。</string>
 	<key>Add key</key>
 	<string>加入密鑰</string>
 	<key>Add more</key>
@@ -291,6 +301,8 @@
 	<string>將此時段加入行事曆</string>
 	<key>Add to Favorites</key>
 	<string>加入喜好項目</string>
+	<key>Add to the blend</key>
+	<string>加入混音</string>
 	<key>Add what you want to get done. Today's unfinished tasks join them in the morning.</key>
 	<string>加入想完成的事。今天未完成的任務會在早上加進來。</string>
 	<key>Add your %@ key</key>
@@ -337,6 +349,8 @@
 	<string>允許截圖</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>允許在內建顯示器以外的顯示器上顯示瀏海</string>
+	<key>Already playing: focus is running</key>
+	<string>正在播放：專注進行中</string>
 	<key>Always Visible</key>
 	<string>永遠顯示</string>
 	<key>Always drawn around the hardware notch.</key>
@@ -425,6 +439,8 @@
 	<string>毛線帽</string>
 	<key>Best day %@</key>
 	<string>最佳一天 %@</string>
+	<key>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</key>
+	<string>最多混合三種，不選則保持安靜。在你的 Mac 上產生，專注時淡入，休息時淡出。</string>
 	<key>Blindfolded Sorcerer</key>
 	<string>蒙眼術士</string>
 	<key>Blocks go to your calendar.</key>
@@ -439,6 +455,8 @@
 	<string>品種</string>
 	<key>Bring %@ to the front</key>
 	<string>將 %@ 移到最前面</string>
+	<key>Brown noise</key>
+	<string>棕色噪音</string>
 	<key>Built-in display</key>
 	<string>內建顯示器</string>
 	<key>Bunny Ears</key>
@@ -449,6 +467,8 @@
 	<string>加入即表示你同意[使用條款](%1$@)和[隱私權政策](%2$@)。</string>
 	<key>By signing in you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
 	<string>登入即表示你同意[使用條款](%1$@)和[隱私權政策](%2$@)。</string>
+	<key>Cafe murmur</key>
+	<string>咖啡廳人聲</string>
 	<key>Calendar</key>
 	<string>行事曆</string>
 	<key>Calendar access</key>
@@ -783,6 +803,8 @@
 	<string>和朋友完成一次派對共同專注。</string>
 	<key>Finish setup</key>
 	<string>完成設定</string>
+	<key>Fireplace</key>
+	<string>壁爐</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
 	<string>依今天的行事曆安排複習、學習時段和休息</string>
 	<key>Fit reviews, study blocks and breaks around tomorrow's calendar</key>
@@ -823,6 +845,10 @@
 	<string>專注時段完成</string>
 	<key>Focus sessions completed today</key>
 	<string>今天完成的專注時段</string>
+	<key>Focus sound</key>
+	<string>專注聲音</string>
+	<key>Focus sound volume</key>
+	<string>專注聲音音量</string>
 	<key>Focus time</key>
 	<string>專注時間</string>
 	<key>Focus time today, out of your daily goal</key>
@@ -973,6 +999,8 @@
 	<string>在 Anki 中選擇「工具 › 附加元件 › AnkiConnect › 設定」</string>
 	<key>In Anki, choose Tools › Add-ons › Get Add-ons…</key>
 	<string>在 Anki 中選擇「工具 › 附加元件 › 取得附加元件…」</string>
+	<key>In [Shortcuts](shortcuts://), make “%@” with the Set Focus action turning Do Not Disturb on, and “%@” turning it off. Then press Test.</key>
+	<string>在[捷徑](shortcuts://)中，用「設定專注模式」動作建立開啟勿擾模式的「%@」和關閉它的「%@」，然後按「測試」。</string>
 	<key>In development</key>
 	<string>開發中</string>
 	<key>In flow</key>
@@ -1083,6 +1111,8 @@
 	<string>限定</string>
 	<key>Lion Dance Hat</key>
 	<string>舞獅帽</string>
+	<key>Listen to %@</key>
+	<string>試聽%@</string>
 	<key>Live activity</key>
 	<string>即時動態</string>
 	<key>Loading</key>
@@ -1155,6 +1185,8 @@
 	<string>移到今天</string>
 	<key>Move up</key>
 	<string>上移</string>
+	<key>Music</key>
+	<string>音樂</string>
 	<key>Mute</key>
 	<string>靜音</string>
 	<key>Name</key>
@@ -1201,6 +1233,8 @@
 	<string>沒有開啟音樂 App</string>
 	<key>No saved chats</key>
 	<string>沒有儲存的聊天</string>
+	<key>No shortcut named “%@”. Check the name in Shortcuts.</key>
+	<string>沒有名為「%@」的捷徑。請在「捷徑」中確認名稱。</string>
 	<key>No streak yet</key>
 	<string>還沒有連續紀錄</string>
 	<key>No study</key>
@@ -1217,6 +1251,8 @@
 	<string>尚無</string>
 	<key>Not Now</key>
 	<string>以後再說</string>
+	<key>Not a Spotify or Apple Music link.</key>
+	<string>不是 Spotify 或 Apple Music 連結。</string>
 	<key>Not added</key>
 	<string>未加入</string>
 	<key>Not checked yet · refresh to load your live limits</key>
@@ -1359,6 +1395,8 @@
 	<string>正在打開 %@…</string>
 	<key>Opening Anki…</key>
 	<string>正在打開 Anki…</string>
+	<key>Opens in Music; press play there.</key>
+	<string>會在「音樂」中打開，請在那裡播放。</string>
 	<key>Opens on tabbinotch.com</key>
 	<string>在 tabbinotch.com 上開啟</string>
 	<key>Opens the %@ tab</key>
@@ -1429,14 +1467,20 @@
 	<string>峰值 %@  ·  平均 %@</string>
 	<key>Pet</key>
 	<string>寵物</string>
+	<key>Pet Coach</key>
+	<string>寵物教練</string>
 	<key>Pick %@ again to allow it to receive your AI requests. %@ sends nothing until you do.</key>
 	<string>再次選擇 %1$@，允許它接收你的 AI 請求。在此之前，%2$@ 不會傳送任何內容。</string>
+	<key>Pick a cozy focus playlist</key>
+	<string>選一個舒服的專注播放列表</string>
 	<key>Pick a kit</key>
 	<string>選一個套件</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
 	<string>在瀏海中重新選擇套件、標籤頁及所需設定</string>
 	<key>Pick a month and a year first</key>
 	<string>請先選擇月份和年份</string>
+	<key>Pick a sound to preview it</key>
+	<string>選一種聲音來試聽</string>
 	<key>Pick any that fit.</key>
 	<string>選出所有符合的。</string>
 	<key>Pick one to use Ask, Plan my day and Refine. %@ sends nothing until you do.</key>
@@ -1451,6 +1495,8 @@
 	<string>設為最愛牌組</string>
 	<key>Pin as favorite</key>
 	<string>設為最愛</string>
+	<key>Pink noise</key>
+	<string>粉紅噪音</string>
 	<key>Pirate Hat</key>
 	<string>海盜帽</string>
 	<key>Plan</key>
@@ -1481,14 +1527,24 @@
 	<string>在 Apple Music 中播放、暫停和跳過。</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>在 Spotify 中播放、暫停和跳過。</string>
+	<key>Players</key>
+	<string>播放器</string>
 	<key>Playing in %@</key>
 	<string>正在 %@ 中播放</string>
 	<key>Playlist</key>
 	<string>播放列表</string>
+	<key>Plays in Spotify.</key>
+	<string>在 Spotify 播放。</string>
+	<key>Plays “%@” from your Music library.</key>
+	<string>播放音樂資料庫中的「%@」。</string>
 	<key>Points earned today; spend them on your pet's wardrobe</key>
 	<string>今天賺到的點數，可以花在寵物的衣櫥上</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>用於 Claude 用量和回答。</string>
+	<key>Presets</key>
+	<string>推薦</string>
+	<key>Preview</key>
+	<string>試聽</string>
 	<key>Previous track</key>
 	<string>上一首</string>
 	<key>Privacy</key>
@@ -1519,6 +1575,8 @@
 	<string>結束 %@ 並關閉瀏海，直到你再次打開（⌘Q）</string>
 	<key>Quit Anki and open it again so it loads AnkiConnect</key>
 	<string>結束並重新打開 Anki，讓它載入 AnkiConnect</string>
+	<key>Rain</key>
+	<string>雨聲</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>讀取最新的 Codex 記錄（不會傳送任何內容）</string>
 	<key>Reading %@ sessions…</key>
@@ -1565,6 +1623,8 @@
 	<string>移除套件</string>
 	<key>Remove from Favorites</key>
 	<string>從喜好項目中移除</string>
+	<key>Remove from the blend</key>
+	<string>從混音中移除</string>
 	<key>Remove this screenshot</key>
 	<string>移除這張截圖</string>
 	<key>Removed %@.</key>
@@ -1635,6 +1695,10 @@
 	<string>在「終端機」中執行一次 codex 來登入。</string>
 	<key>Run gemini in Terminal once to sign in with Google.</key>
 	<string>在「終端機」中執行一次 gemini，以 Google 登入。</string>
+	<key>Run your Focus shortcuts when the focus timer starts and stops</key>
+	<string>專注計時器開始和結束時執行你的專注模式捷徑</string>
+	<key>Run “%@” now</key>
+	<string>立即執行「%@」</string>
 	<key>Running in %@</key>
 	<string>正在「%@」中進行</string>
 	<key>Runs on this Mac</key>
@@ -1705,12 +1769,20 @@
 	<string>共同專注：剩下 %@</string>
 	<key>Shortcut</key>
 	<string>快速鍵</string>
+	<key>Shortcut name</key>
+	<string>捷徑名稱</string>
+	<key>Shortcut ran.</key>
+	<string>捷徑已執行。</string>
 	<key>Show %@</key>
 	<string>顯示 %@</string>
+	<key>Show SoundCloud from Safari or Chrome</key>
+	<string>顯示 Safari 或 Chrome 中的 SoundCloud</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>週日下午 6 點後第一次打開瀏海時，顯示本週回顧</string>
 	<key>Show a small live preview beside the closed notch</key>
 	<string>在收合的瀏海旁顯示小型即時預覽</string>
+	<key>Show and control SoundCloud playing in a Safari or Chrome tab</key>
+	<string>顯示並控制 Safari 或 Chrome 分頁中播放的 SoundCloud</string>
 	<key>Show calendar</key>
 	<string>顯示行事曆</string>
 	<key>Show every deck with cards due</key>
@@ -1797,6 +1869,10 @@
 	<string>閃光拖尾</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>萬聖節到了。專注一下，幫寵物換裝吧。</string>
+	<key>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</key>
+	<string>Spotify 和 Apple Music 一律顯示。使用 SoundCloud 時，macOS 會詢問是否允許 %@ 控制你的瀏覽器，且瀏覽器需開啟「允許來自 Apple 事件的 JavaScript」。</string>
+	<key>Spotify link or Music playlist name</key>
+	<string>Spotify 連結或音樂播放列表名稱</string>
 	<key>Spread your open tasks and reviews over the week's free time. Planned on this Mac, nothing is added until you say so</key>
 	<string>把未完成的任務和複習分配到本週的空閒時間。在這台 Mac 上規劃，你確認前不會加入任何內容</string>
 	<key>Springy, with a little bounce.</key>
@@ -1847,6 +1923,8 @@
 	<string>用這些標籤頁開始</string>
 	<key>Starting Anki</key>
 	<string>正在啟動 Anki</string>
+	<key>Starts with focus unless music is already playing, and pauses at your break.</key>
+	<string>專注開始時播放（除非已在播放音樂），休息時暫停。</string>
 	<key>Stays on this Mac</key>
 	<string>只留在本機</string>
 	<key>Step %lld of %lld</key>
@@ -1867,6 +1945,8 @@
 	<string>影片、遊戲或 App 全螢幕時自動讓開。</string>
 	<key>Stethoscope</key>
 	<string>聽診器</string>
+	<key>Stop</key>
+	<string>停止</string>
 	<key>Stop and keep the time focused so far</key>
 	<string>停止並保留已專注的時間</string>
 	<key>Stop and keep the time studied so far</key>
@@ -1877,6 +1957,8 @@
 	<string>停止專注這項任務</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>在這台 Mac 上停止同步。你的寵物和進度會留在這裡。</string>
+	<key>Stop the preview</key>
+	<string>停止試聽</string>
 	<key>Stopped</key>
 	<string>已停止</string>
 	<key>Streak</key>
@@ -1953,6 +2035,8 @@
 	<string>今天剩下的任務</string>
 	<key>Team Medal</key>
 	<string>團隊獎牌</string>
+	<key>Test</key>
+	<string>測試</string>
 	<key>Test it</key>
 	<string>測試</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
@@ -1963,10 +2047,14 @@
 	<string>為「問 AI」、「規劃今天」和「優化」提供回答的 AI</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>鑰匙圈沒有儲存密鑰。請再試一次。</string>
+	<key>The Shortcuts command line tool isn't available on this Mac.</key>
+	<string>這台 Mac 上沒有捷徑命令列工具。</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>花開了。也讓你的努力開花吧。</string>
 	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
 	<string>行事曆未接受這些行程。請檢查行事曆取用權限後再試一次。</string>
+	<key>The exact name of the shortcut in the Shortcuts app</key>
+	<string>「捷徑」App 中的準確名稱</string>
 	<key>The focus timer is on this task</key>
 	<string>專注計時器正用於這項任務</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1989,6 +2077,10 @@
 	<string>回顧無法寫入磁碟。請再按一次「完成」。</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>這次專注會為整個派對進行，直到結束或你手動結束</string>
+	<key>The shortcut failed.</key>
+	<string>捷徑執行失敗。</string>
+	<key>The shortcut took too long and was stopped.</key>
+	<string>捷徑執行太久，已停止。</string>
 	<key>The tool's own default</key>
 	<string>工具本身的預設值</string>
 	<key>The year you were born</key>
@@ -2063,6 +2155,8 @@
 	<string>打開%@</string>
 	<key>Turn on</key>
 	<string>開啟</string>
+	<key>Turn on Do Not Disturb during focus</key>
+	<string>專注時開啟勿擾模式</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>為 SoundCloud 開啟 JavaScript</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -2077,6 +2171,8 @@
 	<string>關閉隨機播放</string>
 	<key>Turn shuffle on</key>
 	<string>開啟隨機播放</string>
+	<key>Type a shortcut name first</key>
+	<string>請先輸入捷徑名稱</string>
 	<key>Type a task and press Return to add it; Esc clears</key>
 	<string>輸入任務後按 Return 加入，按 Esc 清除</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
@@ -2167,12 +2263,18 @@
 	<string>歡迎使用 %@</string>
 	<key>What should we call you?</key>
 	<string>我們該怎麼稱呼你？</string>
+	<key>When focus ends</key>
+	<string>專注結束時</string>
+	<key>When focus starts</key>
+	<string>專注開始時</string>
 	<key>When off, the notch hides while the lid is closed.</key>
 	<string>關閉時，闔上螢幕後瀏海會隱藏。</string>
 	<key>When were you born?</key>
 	<string>你是什麼時候出生的？</string>
 	<key>White Coat</key>
 	<string>白袍</string>
+	<key>White noise</key>
+	<string>白噪音</string>
 	<key>Winter Holidays</key>
 	<string>冬日假期</string>
 	<key>Witch Hat</key>

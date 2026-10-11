@@ -231,8 +231,11 @@ final class MediaSourceTrackerTests: XCTestCase {
     }
 
     func testNamesReadAsASentence() {
-        XCTAssertEqual(MediaSource.names([.music]), "Music")
-        XCTAssertEqual(MediaSource.names([.spotify, .music]), "Spotify or Music")
-        XCTAssertEqual(MediaSource.names([]), "Spotify or Music", "no installed app falls back to every app")
+        let english = Locale(identifier: "en_US")
+        XCTAssertEqual(MediaSource.names([.music], locale: english), "Music")
+        XCTAssertEqual(MediaSource.names([.spotify, .music], locale: english), "Spotify or Music")
+        XCTAssertEqual(MediaSource.names([], locale: english), "Spotify or Music", "no installed app falls back to every app")
+        XCTAssertEqual(MediaSource.names([.spotify, .music], locale: Locale(identifier: "de")), "Spotify oder Music",
+                       "the conjunction follows the user's language")
     }
 }

@@ -6,7 +6,7 @@ extension SettingsPane {
     /// Settings › Ask AI: when answers open in the large view, and where
     /// chats are kept.
     @MainActor static func claudeAsk(_ session: ClaudeAskSession) -> SettingsPane {
-        SettingsPane(id: "claudeAsk", title: "Ask AI", symbol: "sparkles",
+        SettingsPane(id: "claudeAsk", title: String(localized: "Ask AI", bundle: .tabbi), symbol: "sparkles",
                      view: AnyView(ClaudeAskSettingsPane(session: session)))
     }
 }

@@ -17,6 +17,8 @@
 	<string>%@ Themes style the open panel; the closed notch stays black.</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ Trying again in the background.</string>
+	<key>%@ by %@, plays in Spotify.</key>
+	<string>%@ by %@, plays in Spotify.</string>
 	<key>%@ can't control %@</key>
 	<string>%@ can't control %@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
@@ -71,6 +73,8 @@
 	<string>%@ isn't set up yet</string>
 	<key>%@ left</key>
 	<string>%@ left</string>
+	<key>%@ level in the blend</key>
+	<string>%@ level in the blend</string>
 	<key>%@ misses you</key>
 	<string>%@ misses you</string>
 	<key>%@ moved to position %lld of %lld</key>
@@ -83,6 +87,8 @@
 	<string>%@ of %@</string>
 	<key>%@ of focus.</key>
 	<string>%@ of focus.</string>
+	<key>%@ opens in Music; press play there.</key>
+	<string>%@ opens in Music; press play there.</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
 	<string>%@ reads your events on this Mac and never uploads them</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
@@ -195,6 +201,8 @@
 	<string>&lt;1 min</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
 	<string>A Pomodoro timer that switches between focus and breaks.</string>
+	<key>A Spotify link or URI, an Apple Music link, or the name of a playlist in your Music library</key>
+	<string>A Spotify link or URI, an Apple Music link, or the name of a playlist in your Music library</string>
 	<key>A button at the far right of the tab bar</key>
 	<string>A button at the far right of the tab bar</string>
 	<key>A card with your week in the notch every Sunday evening.</key>
@@ -281,6 +289,8 @@
 	<string>Add every block to your default calendar</string>
 	<key>Add every proposed block to your calendar</key>
 	<string>Add every proposed block to your calendar</string>
+	<key>Add it to your library and type its name to autoplay.</key>
+	<string>Add it to your library and type its name to autoplay.</string>
 	<key>Add key</key>
 	<string>Add key</string>
 	<key>Add more</key>
@@ -291,6 +301,8 @@
 	<string>Add this block to your calendar</string>
 	<key>Add to Favorites</key>
 	<string>Add to Favorites</string>
+	<key>Add to the blend</key>
+	<string>Add to the blend</string>
 	<key>Add what you want to get done. Today's unfinished tasks join them in the morning.</key>
 	<string>Add what you want to get done. Today's unfinished tasks join them in the morning.</string>
 	<key>Add your %@ key</key>
@@ -337,6 +349,8 @@
 	<string>Allow screenshots</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>Allow the notch on displays other than the built-in one</string>
+	<key>Already playing: focus is running</key>
+	<string>Already playing: focus is running</string>
 	<key>Always Visible</key>
 	<string>Always Visible</string>
 	<key>Always drawn around the hardware notch.</key>
@@ -425,6 +439,8 @@
 	<string>Beanie</string>
 	<key>Best day %@</key>
 	<string>Best day %@</string>
+	<key>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</key>
+	<string>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</string>
 	<key>Blindfolded Sorcerer</key>
 	<string>Blindfolded Sorcerer</string>
 	<key>Blocks go to your calendar.</key>
@@ -439,6 +455,8 @@
 	<string>Breed</string>
 	<key>Bring %@ to the front</key>
 	<string>Bring %@ to the front</string>
+	<key>Brown noise</key>
+	<string>Brown noise</string>
 	<key>Built-in display</key>
 	<string>Built-in display</string>
 	<key>Bunny Ears</key>
@@ -449,6 +467,8 @@
 	<string>By joining you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</string>
 	<key>By signing in you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
 	<string>By signing in you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</string>
+	<key>Cafe murmur</key>
+	<string>Cafe murmur</string>
 	<key>Calendar</key>
 	<string>Calendar</string>
 	<key>Calendar access</key>
@@ -783,6 +803,8 @@
 	<string>Finish a Party session with friends.</string>
 	<key>Finish setup</key>
 	<string>Finish setup</string>
+	<key>Fireplace</key>
+	<string>Fireplace</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
 	<string>Fit reviews, study blocks and breaks around today's calendar</string>
 	<key>Fit reviews, study blocks and breaks around tomorrow's calendar</key>
@@ -823,6 +845,10 @@
 	<string>Focus session done</string>
 	<key>Focus sessions completed today</key>
 	<string>Focus sessions completed today</string>
+	<key>Focus sound</key>
+	<string>Focus sound</string>
+	<key>Focus sound volume</key>
+	<string>Focus sound volume</string>
 	<key>Focus time</key>
 	<string>Focus time</string>
 	<key>Focus time today, out of your daily goal</key>
@@ -973,6 +999,8 @@
 	<string>In Anki, choose Tools › Add-ons › AnkiConnect › Config</string>
 	<key>In Anki, choose Tools › Add-ons › Get Add-ons…</key>
 	<string>In Anki, choose Tools › Add-ons › Get Add-ons…</string>
+	<key>In [Shortcuts](shortcuts://), make “%@” with the Set Focus action turning Do Not Disturb on, and “%@” turning it off. Then press Test.</key>
+	<string>In [Shortcuts](shortcuts://), make “%@” with the Set Focus action turning Do Not Disturb on, and “%@” turning it off. Then press Test.</string>
 	<key>In development</key>
 	<string>In development</string>
 	<key>In flow</key>
@@ -1083,6 +1111,8 @@
 	<string>Limited</string>
 	<key>Lion Dance Hat</key>
 	<string>Lion Dance Hat</string>
+	<key>Listen to %@</key>
+	<string>Listen to %@</string>
 	<key>Live activity</key>
 	<string>Live activity</string>
 	<key>Loading</key>
@@ -1155,6 +1185,8 @@
 	<string>Move to today</string>
 	<key>Move up</key>
 	<string>Move up</string>
+	<key>Music</key>
+	<string>Music</string>
 	<key>Mute</key>
 	<string>Mute</string>
 	<key>Name</key>
@@ -1201,6 +1233,8 @@
 	<string>No music app is open</string>
 	<key>No saved chats</key>
 	<string>No saved chats</string>
+	<key>No shortcut named “%@”. Check the name in Shortcuts.</key>
+	<string>No shortcut named “%@”. Check the name in Shortcuts.</string>
 	<key>No streak yet</key>
 	<string>No streak yet</string>
 	<key>No study</key>
@@ -1217,6 +1251,8 @@
 	<string>None yet</string>
 	<key>Not Now</key>
 	<string>Not Now</string>
+	<key>Not a Spotify or Apple Music link.</key>
+	<string>Not a Spotify or Apple Music link.</string>
 	<key>Not added</key>
 	<string>Not added</string>
 	<key>Not checked yet · refresh to load your live limits</key>
@@ -1359,6 +1395,8 @@
 	<string>Opening %@…</string>
 	<key>Opening Anki…</key>
 	<string>Opening Anki…</string>
+	<key>Opens in Music; press play there.</key>
+	<string>Opens in Music; press play there.</string>
 	<key>Opens on tabbinotch.com</key>
 	<string>Opens on tabbinotch.com</string>
 	<key>Opens the %@ tab</key>
@@ -1429,14 +1467,20 @@
 	<string>Peak %@  ·  Avg %@</string>
 	<key>Pet</key>
 	<string>Pet</string>
+	<key>Pet Coach</key>
+	<string>Pet Coach</string>
 	<key>Pick %@ again to allow it to receive your AI requests. %@ sends nothing until you do.</key>
 	<string>Pick %@ again to allow it to receive your AI requests. %@ sends nothing until you do.</string>
+	<key>Pick a cozy focus playlist</key>
+	<string>Pick a cozy focus playlist</string>
 	<key>Pick a kit</key>
 	<string>Pick a kit</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
 	<string>Pick a kit, your tabs and what they need again, in the notch</string>
 	<key>Pick a month and a year first</key>
 	<string>Pick a month and a year first</string>
+	<key>Pick a sound to preview it</key>
+	<string>Pick a sound to preview it</string>
 	<key>Pick any that fit.</key>
 	<string>Pick any that fit.</string>
 	<key>Pick one to use Ask, Plan my day and Refine. %@ sends nothing until you do.</key>
@@ -1451,6 +1495,8 @@
 	<string>Pin as Favorite Deck</string>
 	<key>Pin as favorite</key>
 	<string>Pin as favorite</string>
+	<key>Pink noise</key>
+	<string>Pink noise</string>
 	<key>Pirate Hat</key>
 	<string>Pirate Hat</string>
 	<key>Plan</key>
@@ -1481,14 +1527,24 @@
 	<string>Play, pause and skip in Apple Music.</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>Play, pause and skip on Spotify.</string>
+	<key>Players</key>
+	<string>Players</string>
 	<key>Playing in %@</key>
 	<string>Playing in %@</string>
 	<key>Playlist</key>
 	<string>Playlist</string>
+	<key>Plays in Spotify.</key>
+	<string>Plays in Spotify.</string>
+	<key>Plays “%@” from your Music library.</key>
+	<string>Plays “%@” from your Music library.</string>
 	<key>Points earned today; spend them on your pet's wardrobe</key>
 	<string>Points earned today; spend them on your pet's wardrobe</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Powers Claude usage and answers.</string>
+	<key>Presets</key>
+	<string>Presets</string>
+	<key>Preview</key>
+	<string>Preview</string>
 	<key>Previous track</key>
 	<string>Previous track</string>
 	<key>Privacy</key>
@@ -1519,6 +1575,8 @@
 	<string>Quit %@ and close the notch until you open it again (⌘Q)</string>
 	<key>Quit Anki and open it again so it loads AnkiConnect</key>
 	<string>Quit Anki and open it again so it loads AnkiConnect</string>
+	<key>Rain</key>
+	<string>Rain</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Read the latest Codex logs (sends nothing)</string>
 	<key>Reading %@ sessions…</key>
@@ -1565,6 +1623,8 @@
 	<string>Remove Kit</string>
 	<key>Remove from Favorites</key>
 	<string>Remove from Favorites</string>
+	<key>Remove from the blend</key>
+	<string>Remove from the blend</string>
 	<key>Remove this screenshot</key>
 	<string>Remove this screenshot</string>
 	<key>Removed %@.</key>
@@ -1635,6 +1695,10 @@
 	<string>Run codex in Terminal once to sign in.</string>
 	<key>Run gemini in Terminal once to sign in with Google.</key>
 	<string>Run gemini in Terminal once to sign in with Google.</string>
+	<key>Run your Focus shortcuts when the focus timer starts and stops</key>
+	<string>Run your Focus shortcuts when the focus timer starts and stops</string>
+	<key>Run “%@” now</key>
+	<string>Run “%@” now</string>
 	<key>Running in %@</key>
 	<string>Running in %@</string>
 	<key>Runs on this Mac</key>
@@ -1705,12 +1769,20 @@
 	<string>Shared focus: %@ left</string>
 	<key>Shortcut</key>
 	<string>Shortcut</string>
+	<key>Shortcut name</key>
+	<string>Shortcut name</string>
+	<key>Shortcut ran.</key>
+	<string>Shortcut ran.</string>
 	<key>Show %@</key>
 	<string>Show %@</string>
+	<key>Show SoundCloud from Safari or Chrome</key>
+	<string>Show SoundCloud from Safari or Chrome</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>Show a recap of your week the first time you open the notch after Sunday 6 pm</string>
 	<key>Show a small live preview beside the closed notch</key>
 	<string>Show a small live preview beside the closed notch</string>
+	<key>Show and control SoundCloud playing in a Safari or Chrome tab</key>
+	<string>Show and control SoundCloud playing in a Safari or Chrome tab</string>
 	<key>Show calendar</key>
 	<string>Show calendar</string>
 	<key>Show every deck with cards due</key>
@@ -1797,6 +1869,10 @@
 	<string>Sparkle Trail</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>Spooky season is here. Focus to dress up your pet.</string>
+	<key>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</key>
+	<string>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</string>
+	<key>Spotify link or Music playlist name</key>
+	<string>Spotify link or Music playlist name</string>
 	<key>Spread your open tasks and reviews over the week's free time. Planned on this Mac, nothing is added until you say so</key>
 	<string>Spread your open tasks and reviews over the week's free time. Planned on this Mac, nothing is added until you say so</string>
 	<key>Springy, with a little bounce.</key>
@@ -1847,6 +1923,8 @@
 	<string>Start with these tabs</string>
 	<key>Starting Anki</key>
 	<string>Starting Anki</string>
+	<key>Starts with focus unless music is already playing, and pauses at your break.</key>
+	<string>Starts with focus unless music is already playing, and pauses at your break.</string>
 	<key>Stays on this Mac</key>
 	<string>Stays on this Mac</string>
 	<key>Step %lld of %lld</key>
@@ -1867,6 +1945,8 @@
 	<string>Steps aside while a video, game or app is fullscreen.</string>
 	<key>Stethoscope</key>
 	<string>Stethoscope</string>
+	<key>Stop</key>
+	<string>Stop</string>
 	<key>Stop and keep the time focused so far</key>
 	<string>Stop and keep the time focused so far</string>
 	<key>Stop and keep the time studied so far</key>
@@ -1877,6 +1957,8 @@
 	<string>Stop focusing on this task</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>Stop syncing on this Mac. Your pet and progress stay here.</string>
+	<key>Stop the preview</key>
+	<string>Stop the preview</string>
 	<key>Stopped</key>
 	<string>Stopped</string>
 	<key>Streak</key>
@@ -1953,6 +2035,8 @@
 	<string>Tasks left today</string>
 	<key>Team Medal</key>
 	<string>Team Medal</string>
+	<key>Test</key>
+	<string>Test</string>
 	<key>Test it</key>
 	<string>Test it</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
@@ -1963,10 +2047,14 @@
 	<string>The AI that answers Ask, Plan my day and Refine</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>The Keychain didn't save the key. Try again.</string>
+	<key>The Shortcuts command line tool isn't available on this Mac.</key>
+	<string>The Shortcuts command line tool isn't available on this Mac.</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>The blossoms are out. Grow something of your own.</string>
 	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
 	<string>The calendar didn't accept the events. Check Calendar access and try again.</string>
+	<key>The exact name of the shortcut in the Shortcuts app</key>
+	<string>The exact name of the shortcut in the Shortcuts app</string>
 	<key>The focus timer is on this task</key>
 	<string>The focus timer is on this task</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1989,6 +2077,10 @@
 	<string>The review couldn't be written to disk. Try Done again.</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>The session runs for the whole party until it ends or you end it</string>
+	<key>The shortcut failed.</key>
+	<string>The shortcut failed.</string>
+	<key>The shortcut took too long and was stopped.</key>
+	<string>The shortcut took too long and was stopped.</string>
 	<key>The tool's own default</key>
 	<string>The tool's own default</string>
 	<key>The year you were born</key>
@@ -2063,6 +2155,8 @@
 	<string>Turn %@ on</string>
 	<key>Turn on</key>
 	<string>Turn on</string>
+	<key>Turn on Do Not Disturb during focus</key>
+	<string>Turn on Do Not Disturb during focus</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>Turn on JavaScript for SoundCloud</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -2077,6 +2171,8 @@
 	<string>Turn shuffle off</string>
 	<key>Turn shuffle on</key>
 	<string>Turn shuffle on</string>
+	<key>Type a shortcut name first</key>
+	<string>Type a shortcut name first</string>
 	<key>Type a task and press Return to add it; Esc clears</key>
 	<string>Type a task and press Return to add it; Esc clears</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
@@ -2167,12 +2263,18 @@
 	<string>Welcome to %@</string>
 	<key>What should we call you?</key>
 	<string>What should we call you?</string>
+	<key>When focus ends</key>
+	<string>When focus ends</string>
+	<key>When focus starts</key>
+	<string>When focus starts</string>
 	<key>When off, the notch hides while the lid is closed.</key>
 	<string>When off, the notch hides while the lid is closed.</string>
 	<key>When were you born?</key>
 	<string>When were you born?</string>
 	<key>White Coat</key>
 	<string>White Coat</string>
+	<key>White noise</key>
+	<string>White noise</string>
 	<key>Winter Holidays</key>
 	<string>Winter Holidays</string>
 	<key>Witch Hat</key>

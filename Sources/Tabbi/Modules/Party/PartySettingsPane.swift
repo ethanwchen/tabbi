@@ -8,7 +8,7 @@ extension SettingsPane {
     /// friends server, and deleting the Party data. `account` is the Apple
     /// account, which owns that data once signed in.
     @MainActor static func party(store: PartyStore, account: SyncStore) -> SettingsPane {
-        SettingsPane(id: "party", title: "Party", symbol: "person.2",
+        SettingsPane(id: "party", title: String(localized: "Party", bundle: .tabbi), symbol: "person.2",
                      view: AnyView(PartySettingsPane(store: store, account: account)))
     }
 }

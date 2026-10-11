@@ -14,12 +14,12 @@ public enum FocusSound: String, CaseIterable, Codable, Sendable, Identifiable {
 
     public var displayName: String {
         switch self {
-        case .brown: "Brown noise"
-        case .pink: "Pink noise"
-        case .white: "White noise"
-        case .rain: "Rain"
-        case .fireplace: "Fireplace"
-        case .cafe: "Cafe murmur"
+        case .brown: String(localized: "Brown noise", bundle: .tabbi)
+        case .pink: String(localized: "Pink noise", bundle: .tabbi)
+        case .white: String(localized: "White noise", bundle: .tabbi)
+        case .rain: String(localized: "Rain", bundle: .tabbi)
+        case .fireplace: String(localized: "Fireplace", bundle: .tabbi)
+        case .cafe: String(localized: "Cafe murmur", bundle: .tabbi)
         }
     }
 

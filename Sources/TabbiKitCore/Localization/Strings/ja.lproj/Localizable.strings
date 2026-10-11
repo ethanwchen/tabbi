@@ -17,6 +17,8 @@
 	<string>%@ テーマは開いたパネルに適用され、閉じたノッチは黒のままです。</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ バックグラウンドで再試行しています。</string>
+	<key>%@ by %@, plays in Spotify.</key>
+	<string>%2$@の%1$@、Spotifyで再生します。</string>
 	<key>%@ can't control %@</key>
 	<string>%1$@は%2$@を操作できません</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
@@ -71,6 +73,8 @@
 	<string>%@ はまだ設定されていません</string>
 	<key>%@ left</key>
 	<string>残り%@</string>
+	<key>%@ level in the blend</key>
+	<string>ブレンド内の%@の音量</string>
 	<key>%@ misses you</key>
 	<string>%@がさみしがってるよ</string>
 	<key>%@ moved to position %lld of %lld</key>
@@ -83,6 +87,8 @@
 	<string>%1$@ / %2$@</string>
 	<key>%@ of focus.</key>
 	<string>%@ 集中しました。</string>
+	<key>%@ opens in Music; press play there.</key>
+	<string>%@はミュージックで開きます。そこで再生してください。</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
 	<string>%@ は予定をこの Mac 上で読み取り、アップロードすることはありません</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
@@ -195,6 +201,8 @@
 	<string>1分未満</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
 	<string>集中と休憩を切り替えるポモドーロタイマー。</string>
+	<key>A Spotify link or URI, an Apple Music link, or the name of a playlist in your Music library</key>
+	<string>SpotifyのリンクかURI、Apple Musicのリンク、またはミュージックライブラリのプレイリスト名</string>
 	<key>A button at the far right of the tab bar</key>
 	<string>タブバーの右端にあるボタン</string>
 	<key>A card with your week in the notch every Sunday evening.</key>
@@ -281,6 +289,8 @@
 	<string>すべてのブロックをデフォルトのカレンダーに追加</string>
 	<key>Add every proposed block to your calendar</key>
 	<string>提案されたブロックをすべてカレンダーに追加</string>
+	<key>Add it to your library and type its name to autoplay.</key>
+	<string>ライブラリに追加して名前を入力すると自動で再生します。</string>
 	<key>Add key</key>
 	<string>キーを追加</string>
 	<key>Add more</key>
@@ -291,6 +301,8 @@
 	<string>このブロックをカレンダーに追加</string>
 	<key>Add to Favorites</key>
 	<string>お気に入りに追加</string>
+	<key>Add to the blend</key>
+	<string>ブレンドに追加</string>
 	<key>Add what you want to get done. Today's unfinished tasks join them in the morning.</key>
 	<string>やりたいことを追加しましょう。今日の未完了タスクは朝に加わります。</string>
 	<key>Add your %@ key</key>
@@ -337,6 +349,8 @@
 	<string>スクリーンショットを許可</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>内蔵ディスプレイ以外にもノッチを表示します</string>
+	<key>Already playing: focus is running</key>
+	<string>再生中: 集中しています</string>
 	<key>Always Visible</key>
 	<string>常に表示</string>
 	<key>Always drawn around the hardware notch.</key>
@@ -425,6 +439,8 @@
 	<string>ニット帽</string>
 	<key>Best day %@</key>
 	<string>最高 %@</string>
+	<key>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</key>
+	<string>最大3つまで重ねられます。何も選ばなければ無音です。Mac上で生成し、集中の開始でフェードイン、休憩でフェードアウトします。</string>
 	<key>Blindfolded Sorcerer</key>
 	<string>目隠しの術師</string>
 	<key>Blocks go to your calendar.</key>
@@ -439,6 +455,8 @@
 	<string>品種</string>
 	<key>Bring %@ to the front</key>
 	<string>%@を前面に表示</string>
+	<key>Brown noise</key>
+	<string>ブラウンノイズ</string>
 	<key>Built-in display</key>
 	<string>内蔵ディスプレイ</string>
 	<key>Bunny Ears</key>
@@ -449,6 +467,8 @@
 	<string>参加すると、[利用規約](%1$@)と[プライバシーポリシー](%2$@)に同意したことになります。</string>
 	<key>By signing in you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
 	<string>サインインすると、[利用規約](%1$@)と[プライバシーポリシー](%2$@)に同意したことになります。</string>
+	<key>Cafe murmur</key>
+	<string>カフェの音</string>
 	<key>Calendar</key>
 	<string>カレンダー</string>
 	<key>Calendar access</key>
@@ -783,6 +803,8 @@
 	<string>友だちとパーティのセッションを1回終えよう。</string>
 	<key>Finish setup</key>
 	<string>セットアップを完了</string>
+	<key>Fireplace</key>
+	<string>暖炉</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
 	<string>復習、学習ブロック、休憩を今日の予定に合わせて配置</string>
 	<key>Fit reviews, study blocks and breaks around tomorrow's calendar</key>
@@ -823,6 +845,10 @@
 	<string>集中セッション完了</string>
 	<key>Focus sessions completed today</key>
 	<string>今日完了した集中セッション</string>
+	<key>Focus sound</key>
+	<string>集中サウンド</string>
+	<key>Focus sound volume</key>
+	<string>集中サウンドの音量</string>
 	<key>Focus time</key>
 	<string>集中時間</string>
 	<key>Focus time today, out of your daily goal</key>
@@ -973,6 +999,8 @@
 	<string>Anki で ツール › アドオン › AnkiConnect › 設定 を選ぶ</string>
 	<key>In Anki, choose Tools › Add-ons › Get Add-ons…</key>
 	<string>Anki で ツール › アドオン › アドオンを取得… を選ぶ</string>
+	<key>In [Shortcuts](shortcuts://), make “%@” with the Set Focus action turning Do Not Disturb on, and “%@” turning it off. Then press Test.</key>
+	<string>[ショートカット](shortcuts://)の「集中モードを設定」で、おやすみモードをオンにする「%@」とオフにする「%@」を作り、テストを押します。</string>
 	<key>In development</key>
 	<string>開発中</string>
 	<key>In flow</key>
@@ -1083,6 +1111,8 @@
 	<string>限定</string>
 	<key>Lion Dance Hat</key>
 	<string>獅子舞の帽子</string>
+	<key>Listen to %@</key>
+	<string>%@を試聴</string>
 	<key>Live activity</key>
 	<string>ライブアクティビティ</string>
 	<key>Loading</key>
@@ -1155,6 +1185,8 @@
 	<string>今日に移動</string>
 	<key>Move up</key>
 	<string>上へ移動</string>
+	<key>Music</key>
+	<string>ミュージック</string>
 	<key>Mute</key>
 	<string>ミュート</string>
 	<key>Name</key>
@@ -1201,6 +1233,8 @@
 	<string>音楽アプリが開いていません</string>
 	<key>No saved chats</key>
 	<string>保存したチャットはありません</string>
+	<key>No shortcut named “%@”. Check the name in Shortcuts.</key>
+	<string>「%@」というショートカットはありません。ショートカットAppで名前を確認してください。</string>
 	<key>No streak yet</key>
 	<string>まだ連続記録なし</string>
 	<key>No study</key>
@@ -1217,6 +1251,8 @@
 	<string>まだなし</string>
 	<key>Not Now</key>
 	<string>今はしない</string>
+	<key>Not a Spotify or Apple Music link.</key>
+	<string>SpotifyやApple Musicのリンクではありません。</string>
 	<key>Not added</key>
 	<string>未追加</string>
 	<key>Not checked yet · refresh to load your live limits</key>
@@ -1359,6 +1395,8 @@
 	<string>%@ を開いています…</string>
 	<key>Opening Anki…</key>
 	<string>Anki を開いています…</string>
+	<key>Opens in Music; press play there.</key>
+	<string>ミュージックで開きます。そこで再生してください。</string>
 	<key>Opens on tabbinotch.com</key>
 	<string>tabbinotch.comで開きます</string>
 	<key>Opens the %@ tab</key>
@@ -1429,14 +1467,20 @@
 	<string>最大 %@  ·  平均 %@</string>
 	<key>Pet</key>
 	<string>ペット</string>
+	<key>Pet Coach</key>
+	<string>ペットコーチ</string>
 	<key>Pick %@ again to allow it to receive your AI requests. %@ sends nothing until you do.</key>
 	<string>AIリクエストの受信を許可するには、もう一度%1$@を選んでください。それまで%2$@は何も送信しません。</string>
+	<key>Pick a cozy focus playlist</key>
+	<string>心地よい集中用プレイリストを選ぶ</string>
 	<key>Pick a kit</key>
 	<string>キットを選ぼう</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
 	<string>ノッチでキット、タブ、必要な設定をもう一度選びます</string>
 	<key>Pick a month and a year first</key>
 	<string>先に月と年を選んでください</string>
+	<key>Pick a sound to preview it</key>
+	<string>試聴するサウンドを選んでください</string>
 	<key>Pick any that fit.</key>
 	<string>当てはまるものをすべて選んでください。</string>
 	<key>Pick one to use Ask, Plan my day and Refine. %@ sends nothing until you do.</key>
@@ -1451,6 +1495,8 @@
 	<string>お気に入りデッキにする</string>
 	<key>Pin as favorite</key>
 	<string>お気に入りにする</string>
+	<key>Pink noise</key>
+	<string>ピンクノイズ</string>
 	<key>Pirate Hat</key>
 	<string>海賊帽</string>
 	<key>Plan</key>
@@ -1481,14 +1527,24 @@
 	<string>Apple Musicで再生、一時停止、スキップ。</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>Spotifyで再生、一時停止、スキップ。</string>
+	<key>Players</key>
+	<string>プレーヤー</string>
 	<key>Playing in %@</key>
 	<string>%@で再生中</string>
 	<key>Playlist</key>
 	<string>プレイリスト</string>
+	<key>Plays in Spotify.</key>
+	<string>Spotifyで再生します。</string>
+	<key>Plays “%@” from your Music library.</key>
+	<string>ミュージックライブラリの「%@」を再生します。</string>
 	<key>Points earned today; spend them on your pet's wardrobe</key>
 	<string>今日獲得したポイント。ペットの衣装に使えます</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Claudeの使用量表示と回答に使います。</string>
+	<key>Presets</key>
+	<string>おすすめ</string>
+	<key>Preview</key>
+	<string>試聴</string>
 	<key>Previous track</key>
 	<string>前の曲</string>
 	<key>Privacy</key>
@@ -1519,6 +1575,8 @@
 	<string>%@ を終了し、次に開くまでノッチを閉じます（⌘Q）</string>
 	<key>Quit Anki and open it again so it loads AnkiConnect</key>
 	<string>Anki を終了して開き直し、AnkiConnect を読み込みます</string>
+	<key>Rain</key>
+	<string>雨</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>最新のCodexログを読む（何も送信しません）</string>
 	<key>Reading %@ sessions…</key>
@@ -1565,6 +1623,8 @@
 	<string>キットを削除</string>
 	<key>Remove from Favorites</key>
 	<string>お気に入りから削除</string>
+	<key>Remove from the blend</key>
+	<string>ブレンドから外す</string>
 	<key>Remove this screenshot</key>
 	<string>このスクリーンショットを削除</string>
 	<key>Removed %@.</key>
@@ -1635,6 +1695,10 @@
 	<string>ターミナルで一度codexを実行してサインインしてください。</string>
 	<key>Run gemini in Terminal once to sign in with Google.</key>
 	<string>ターミナルで一度geminiを実行してGoogleでサインインしてください。</string>
+	<key>Run your Focus shortcuts when the focus timer starts and stops</key>
+	<string>集中タイマーの開始と終了で集中モードのショートカットを実行</string>
+	<key>Run “%@” now</key>
+	<string>「%@」を今すぐ実行</string>
 	<key>Running in %@</key>
 	<string>%@で実行中</string>
 	<key>Runs on this Mac</key>
@@ -1705,12 +1769,20 @@
 	<string>みんなで集中: 残り%@</string>
 	<key>Shortcut</key>
 	<string>ショートカット</string>
+	<key>Shortcut name</key>
+	<string>ショートカット名</string>
+	<key>Shortcut ran.</key>
+	<string>ショートカットを実行しました。</string>
 	<key>Show %@</key>
 	<string>%@を表示</string>
+	<key>Show SoundCloud from Safari or Chrome</key>
+	<string>SafariやChromeのSoundCloudを表示</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>日曜18時以降に初めてノッチを開いたとき、1週間のふりかえりを表示する</string>
 	<key>Show a small live preview beside the closed notch</key>
 	<string>閉じたノッチの横に小さなライブプレビューを表示します</string>
+	<key>Show and control SoundCloud playing in a Safari or Chrome tab</key>
+	<string>SafariやChromeのタブで再生中のSoundCloudを表示して操作</string>
 	<key>Show calendar</key>
 	<string>カレンダーを表示</string>
 	<key>Show every deck with cards due</key>
@@ -1797,6 +1869,10 @@
 	<string>キラキラの軌跡</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>ハロウィンの季節。集中してペットを仮装させよう。</string>
+	<key>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</key>
+	<string>SpotifyとApple Musicは常に表示されます。SoundCloudでは、macOSが%@によるブラウザの操作の許可を求めます。ブラウザで「AppleEventからのJavaScriptを許可」をオンにする必要があります。</string>
+	<key>Spotify link or Music playlist name</key>
+	<string>Spotifyのリンクかミュージックのプレイリスト名</string>
 	<key>Spread your open tasks and reviews over the week's free time. Planned on this Mac, nothing is added until you say so</key>
 	<string>未完了のタスクと復習を今週の空き時間に振り分けます。この Mac 上で計画し、許可するまで何も追加しません</string>
 	<key>Springy, with a little bounce.</key>
@@ -1847,6 +1923,8 @@
 	<string>このタブで始める</string>
 	<key>Starting Anki</key>
 	<string>Anki を起動中</string>
+	<key>Starts with focus unless music is already playing, and pauses at your break.</key>
+	<string>音楽が再生中でなければ集中と同時に始まり、休憩で一時停止します。</string>
 	<key>Stays on this Mac</key>
 	<string>この Mac 内のみ</string>
 	<key>Step %lld of %lld</key>
@@ -1867,6 +1945,8 @@
 	<string>動画やゲーム、アプリがフルスクリーンのときは控えます。</string>
 	<key>Stethoscope</key>
 	<string>聴診器</string>
+	<key>Stop</key>
+	<string>停止</string>
 	<key>Stop and keep the time focused so far</key>
 	<string>停止して、ここまでの集中時間を記録</string>
 	<key>Stop and keep the time studied so far</key>
@@ -1877,6 +1957,8 @@
 	<string>このタスクへの集中をやめる</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>このMacでの同期を停止します。ペットと進捗はこのMacに残ります。</string>
+	<key>Stop the preview</key>
+	<string>試聴を停止</string>
 	<key>Stopped</key>
 	<string>停止しました</string>
 	<key>Streak</key>
@@ -1953,6 +2035,8 @@
 	<string>今日の残りタスク</string>
 	<key>Team Medal</key>
 	<string>チームメダル</string>
+	<key>Test</key>
+	<string>テスト</string>
 	<key>Test it</key>
 	<string>テスト</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
@@ -1963,10 +2047,14 @@
 	<string>AIに質問、1日を計画、調整で答えるAI</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>キーチェーンにキーを保存できませんでした。もう一度お試しください。</string>
+	<key>The Shortcuts command line tool isn't available on this Mac.</key>
+	<string>このMacではショートカットのコマンドラインツールを使えません。</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>桜が咲きました。あなたも何かを育てよう。</string>
 	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
 	<string>カレンダーに予定を追加できませんでした。カレンダーへのアクセスを確認して、もう一度お試しください。</string>
+	<key>The exact name of the shortcut in the Shortcuts app</key>
+	<string>ショートカットAppでの正確な名前</string>
 	<key>The focus timer is on this task</key>
 	<string>集中タイマーはこのタスクに設定中</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1989,6 +2077,10 @@
 	<string>振り返りをディスクに保存できませんでした。もう一度「完了」を押してください。</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>セッションは終了するか、あなたが終えるまでパーティ全員で続きます</string>
+	<key>The shortcut failed.</key>
+	<string>ショートカットが失敗しました。</string>
+	<key>The shortcut took too long and was stopped.</key>
+	<string>ショートカットに時間がかかりすぎたため停止しました。</string>
 	<key>The tool's own default</key>
 	<string>ツールのデフォルト</string>
 	<key>The year you were born</key>
@@ -2063,6 +2155,8 @@
 	<string>%@をオンにする</string>
 	<key>Turn on</key>
 	<string>オンにする</string>
+	<key>Turn on Do Not Disturb during focus</key>
+	<string>集中中はおやすみモードをオン</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>SoundCloud用にJavaScriptをオンにしてください</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -2077,6 +2171,8 @@
 	<string>シャッフルをオフ</string>
 	<key>Turn shuffle on</key>
 	<string>シャッフルをオン</string>
+	<key>Type a shortcut name first</key>
+	<string>先にショートカット名を入力してください</string>
 	<key>Type a task and press Return to add it; Esc clears</key>
 	<string>タスクを入力してReturnで追加、Escで消去</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
@@ -2167,12 +2263,18 @@
 	<string>%@へようこそ</string>
 	<key>What should we call you?</key>
 	<string>なんて呼べばいい？</string>
+	<key>When focus ends</key>
+	<string>集中の終了時</string>
+	<key>When focus starts</key>
+	<string>集中の開始時</string>
 	<key>When off, the notch hides while the lid is closed.</key>
 	<string>オフのときは、蓋を閉じている間ノッチを隠します。</string>
 	<key>When were you born?</key>
 	<string>生まれた年月は?</string>
 	<key>White Coat</key>
 	<string>白衣</string>
+	<key>White noise</key>
+	<string>ホワイトノイズ</string>
 	<key>Winter Holidays</key>
 	<string>ウィンターホリデー</string>
 	<key>Witch Hat</key>
