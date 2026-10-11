@@ -6,24 +6,26 @@ private var accent: Color { ClosetModule.descriptor.accentColor }
 
 /// The Closet's first section: a GitHub-style chart of the days studied
 /// (`StudyHeatmap`), a column per week ending with today, with the last 30
-/// days' total and the best day above it, and the streak and a "Less ...
-/// More" legend below. Hovering a day swaps the summary for that day's date
-/// and time studied, at once and in place, so nothing flickers or clips.
+/// days' total and the streak above it and a "More ... Less" key beside it.
+/// The panel is wide but short, so everything but the chart shares one row
+/// or sits to its side, leaving the squares the height to reach GitHub's
+/// size. Hovering a day swaps the total for that day's date and time
+/// studied, at once and in place, so nothing flickers or clips.
 struct ClosetHeatmapSection: View {
     @ObservedObject var store: ClosetStore
     @State private var hovered: StudyHeatmap.Day?
 
     var body: some View {
         let summary = StudyHeatmap(minutesByDay: store.milestones.minutesByDay, weeks: 1, today: .now)
-        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-            // The month names are the grid's own caption, so they sit
-            // closer to the summary than the legend does to the grid.
-            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                header(summary)
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+            header(summary)
+            HStack(alignment: .top, spacing: Theme.Spacing.s) {
                 ClosetHeatmapGrid(minutesByDay: store.milestones.minutesByDay, animatesIn: !store.isSnapshot,
                                   hovered: $hovered)
+                ClosetHeatmapLegend()
+                    .fixedSize()
+                    .padding(.top, ClosetHeatmapGrid.monthRow + ClosetHeatmapGrid.monthGap)
             }
-            footer
         }
     }
 
@@ -56,21 +58,18 @@ struct ClosetHeatmapSection: View {
                 Text("in the last 30 days", bundle: .tabbi)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.secondaryText)
+                    .layoutPriority(-1)
                 Spacer(minLength: Theme.Spacing.s)
-                if let best = summary.bestDay {
-                    Text("Best day \(DurationFormat.minutes(best.minutes))", bundle: .tabbi)
-                        .font(Theme.Typography.caption.monospacedDigit())
-                        .foregroundStyle(Theme.Palette.tertiaryText)
-                        .help(String(localized: "Your most studied day: \(date(best.key, year: true))", bundle: .tabbi))
-                }
             }
+            streakLabel
         }
         .lineLimit(1)
         .frame(height: 16)
+        .help(bestDayHelp(summary))
         .accessibilityElement(children: .combine)
     }
 
-    private var footer: some View {
+    private var streakLabel: some View {
         let streak = store.streak
         return HStack(spacing: Theme.Spacing.xs) {
             Image(systemName: "flame.fill")
@@ -79,14 +78,16 @@ struct ClosetHeatmapSection: View {
             Text(streakText(streak))
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.secondaryText)
-                .lineLimit(1)
                 .monospacedDigit()
-            Spacer(minLength: Theme.Spacing.s)
-            ClosetHeatmapLegend()
-                .fixedSize()
         }
-        .frame(height: 12)
+        .fixedSize()
         .help(String(localized: "Your study streak: days in a row with at least \(Int(PetMilestoneProgress.minutesForStudyDay)) focused minutes", bundle: .tabbi))
+    }
+
+    private func bestDayHelp(_ summary: StudyHeatmap) -> String {
+        guard hovered == nil, let best = summary.bestDay else { return "" }
+        return String(localized: "Best day \(DurationFormat.minutes(best.minutes))", bundle: .tabbi) + " · "
+            + String(localized: "Your most studied day: \(date(best.key, year: true))", bundle: .tabbi)
     }
 
     private func streakText(_ streak: StudyStreak) -> String {
@@ -102,11 +103,11 @@ struct ClosetHeatmapSection: View {
 
 // MARK: - Grid
 
-/// The chart, laid out like GitHub's: small squares with tight, even gaps
-/// in one block, month names over the columns where a month starts and
-/// Monday, Wednesday and Friday beside their rows, both small and muted. As
-/// many weeks as fit the width, so a roomier panel shows more history, not
-/// bigger squares. Each column fades in a moment after the one before it
+/// The chart, laid out like GitHub's: squares a little taller than the
+/// labels with gaps three tenths of a square, month names over the columns
+/// where a month starts and Monday, Wednesday and Friday beside their rows,
+/// both small and muted. The squares take all the height there is, up to
+/// GitHub's proportions at most, and as many weeks as fit the width follow. Each column fades in a moment after the one before it
 /// when the section appears, and today's cell pulses when a session moves it
 /// up a level. Both stay still under Reduce Motion.
 private struct ClosetHeatmapGrid: View {
@@ -116,15 +117,16 @@ private struct ClosetHeatmapGrid: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var revealed = false
 
-    /// Room between cells. Columns may get up to `maxColumnGap` so the
-    /// grid fills its width exactly, with no ragged edge or loose gutter.
-    private let gap: CGFloat = 2
-    private let maxColumnGap: CGFloat = 3
-    /// The largest cell, so a roomy panel shows more weeks, not huge squares.
-    private let maxCell: CGFloat = 9
+    /// GitHub's gap, as a share of a cell (3 points beside a 10 point square).
+    private let gapRatio: CGFloat = 0.3
+    /// The largest cell, so the tallest panel still reads as GitHub's chart
+    /// rather than a board of tiles.
+    private let maxCell: CGFloat = 14
     /// The month names' row, and the space below it.
-    private let monthRow: CGFloat = 10
-    private let monthGap: CGFloat = 3
+    static let monthRow: CGFloat = 10
+    static let monthGap: CGFloat = 3
+    private var monthRow: CGFloat { Self.monthRow }
+    private var monthGap: CGFloat { Self.monthGap }
     /// The weekday names' column, and the space beside it. Left out when
     /// they would cost more than a few weeks.
     private let weekdayColumn: CGFloat = 20
@@ -133,13 +135,14 @@ private struct ClosetHeatmapGrid: View {
     var body: some View {
         GeometryReader { proxy in
             let size = proxy.size
-            let cell = min(maxCell, max(4, (size.height - monthRow - monthGap - 6 * gap) / 7))
-            let showsWeekdays = size.width >= 270
+            // Seven cells and six gaps of `gapRatio` fill the height, whole
+            // points only so every square draws crisp.
+            let cell = min(maxCell, max(4, ((size.height - monthRow - monthGap) / (7 + 6 * gapRatio)).rounded(.down)))
+            let gap = max(2, (cell * gapRatio).rounded())
+            let showsWeekdays = size.width >= 240
             let gridWidth = size.width - (showsWeekdays ? weekdayColumn + weekdayGap : 0)
             let count = max(1, Int((gridWidth + gap) / (cell + gap)))
-            let columnGap = count > 1
-                ? min(maxColumnGap, max(gap, (gridWidth - CGFloat(count) * cell) / CGFloat(count - 1))) : gap
-            let grid = Metrics(cell: cell, columnPitch: cell + columnGap, rowPitch: cell + gap)
+            let grid = Metrics(cell: cell, gap: gap)
             let heatmap = StudyHeatmap(minutesByDay: minutesByDay, weeks: count, today: .now)
             // With the weekday names on the left, the grid ends at the right
             // edge, so both edges line up with the summary and the legend.
@@ -154,24 +157,25 @@ private struct ClosetHeatmapGrid: View {
                     cells(heatmap, grid: grid)
                 }
             }
-            .frame(width: size.width, height: size.height, alignment: .leading)
+            .frame(width: size.width, height: size.height, alignment: .topLeading)
         }
         .frame(maxHeight: .infinity)
         .onAppear { revealed = true }
         .onDisappear { hovered = nil }
     }
 
-    /// A cell's side and the distance from one cell to the next.
+    /// A cell's side and the room between cells.
     private struct Metrics {
         let cell: CGFloat
-        let columnPitch: CGFloat
-        let rowPitch: CGFloat
+        let gap: CGFloat
+        var columnPitch: CGFloat { cell + gap }
+        var rowPitch: CGFloat { cell + gap }
     }
 
     private func cells(_ heatmap: StudyHeatmap, grid: Metrics) -> some View {
         HStack(alignment: .top, spacing: grid.columnPitch - grid.cell) {
             ForEach(Array(heatmap.weeks.enumerated()), id: \.element.id) { index, week in
-                column(week, cell: grid.cell)
+                column(week, grid: grid)
                     .opacity(revealed || !animatesIn ? 1 : 0)
                     .animation(entrance(index), value: revealed)
             }
@@ -219,8 +223,9 @@ private struct ClosetHeatmapGrid: View {
         .accessibilityHidden(true)
     }
 
-    private func column(_ week: StudyHeatmap.Week, cell: CGFloat) -> some View {
-        VStack(spacing: gap) {
+    private func column(_ week: StudyHeatmap.Week, grid: Metrics) -> some View {
+        let cell = grid.cell
+        return VStack(spacing: grid.gap) {
             ForEach(0..<7, id: \.self) { row in
                 if let day = week.days[row] {
                     ClosetHeatmapCell(day: day, size: cell, isHovered: hovered?.key == day.key)
@@ -307,22 +312,24 @@ private enum ClosetHeatmapLevel {
     }
 }
 
-/// "Less", a square of each shade, "More", like GitHub's key.
+/// GitHub's "Less ... More" key, stood on end beside the chart: "More" over
+/// the darkest square down to "Less" under the faintest, in the month
+/// names' small type.
 private struct ClosetHeatmapLegend: View {
-    /// The grid's own square, at the size most panels draw it.
-    static let cell: CGFloat = 9
+    static let cell: CGFloat = 8
 
     var body: some View {
-        HStack(spacing: Theme.Spacing.xxs) {
-            Text("Less", bundle: .tabbi).padding(.trailing, Theme.Spacing.xxs)
-            ForEach(0..<StudyHeatmap.levelCount, id: \.self) { level in
+        VStack(spacing: Theme.Spacing.xxs) {
+            Text("More", bundle: .tabbi).padding(.bottom, Theme.Spacing.xxs)
+            ForEach((0..<StudyHeatmap.levelCount).reversed(), id: \.self) { level in
                 RoundedRectangle(cornerRadius: 2, style: .continuous)
                     .fill(ClosetHeatmapLevel.color(level))
                     .frame(width: ClosetHeatmapLegend.cell, height: ClosetHeatmapLegend.cell)
             }
-            Text("More", bundle: .tabbi).padding(.leading, Theme.Spacing.xxs)
+            Text("Less", bundle: .tabbi).padding(.top, Theme.Spacing.xxs)
         }
-        .font(Theme.Typography.caption)
+        .font(ClosetHeatmapLabel.font)
+        .lineLimit(1)
         .foregroundStyle(Theme.Palette.tertiaryText)
         .help(String(localized: "No study, under \(StudyHeatmap.levelThresholds[0]) min, under \(StudyHeatmap.levelThresholds[1]) min, under \(StudyHeatmap.levelThresholds[2]) min, and \(StudyHeatmap.levelThresholds[2]) min or more", bundle: .tabbi))
         .accessibilityElement(children: .ignore)
