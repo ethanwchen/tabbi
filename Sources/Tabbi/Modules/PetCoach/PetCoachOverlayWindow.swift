@@ -29,6 +29,7 @@ private struct PetCoachOverlayRoot: View {
 
     var body: some View {
         PetCoachOverlayView(scene: model.scene, date: nil, onReply: onReply)
+            .tabbiLayoutDirection()
             .onPreferenceChange(PetCoachBubbleFrameKey.self) { frame in
                 MainActor.assumeIsolated { model.bubbleFrame = frame }
             }

@@ -365,11 +365,16 @@ private struct SpotifyScrubberBar: View {
             HStack {
                 Text(PlaybackTimeFormatter.string(shownPosition))
                 Spacer()
-                Text(PlaybackTimeFormatter.remaining(position: shownPosition, duration: duration))
+                // A left-to-right mark keeps the minus in front in an Arabic
+                // locale, where text made only of digits and signs reads right to left.
+                Text(verbatim: "\u{200E}" + PlaybackTimeFormatter.remaining(position: shownPosition, duration: duration))
             }
             .font(Theme.Typography.caption.monospacedDigit())
             .foregroundStyle(Theme.Palette.tertiaryText)
         }
+        // Time runs left to right on a track bar in every language, as the
+        // transport's arrows say.
+        .fixedLeftToRight()
     }
 }
 
@@ -407,6 +412,8 @@ private struct SpotifyTransport: View {
                                        action: controller.next)
             }
         }
+        // Media controls keep their order in a right-to-left language.
+        .fixedLeftToRight()
     }
 
     /// What the next click does, since repeat steps through several modes.

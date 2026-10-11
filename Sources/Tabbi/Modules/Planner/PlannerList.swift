@@ -263,7 +263,7 @@ private struct PlannerSharedRow: View {
                         .lineLimit(1)
                         .contentTransition(.numericText())
                 }
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.system(size: 9, weight: .bold))
                     .foregroundStyle(hovering ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
                     .frame(width: 12)
@@ -302,6 +302,7 @@ private struct PlannerSharedCheck: View {
                 .trim(from: 0, to: item.fraction ?? 0)
                 .stroke(accent, style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
                 .rotationEffect(.degrees(-90))
+                .fixedLeftToRight()
             Image(systemName: source.symbol)
                 .font(.system(size: 7, weight: .bold))
                 .foregroundStyle(accent)

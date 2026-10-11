@@ -20,7 +20,7 @@ public enum NotchPreviewLayout {
     /// Party pets overlap a little, since each sprite has empty room around it.
     public static let partyPetStep: CGFloat = 18
     /// The Join button beside a meeting about to start.
-    static let joinTitle = "Join"
+    static let joinTitle = String(localized: "Join", bundle: .tabbi)
     static let joinHeight: CGFloat = 16
     static let joinPadding: CGFloat = Theme.Spacing.s - Theme.Spacing.xxs
     /// The charging bolt beside "Charging" while the pet sips.

@@ -116,7 +116,7 @@ public final class SettingsWindowController: NSWindowController {
         for (index, pane) in wanted.enumerated() {
             let items = tabs.tabViewItems
             if index < items.count, items[index].identifier as? String == pane.id { continue }
-            let host = NSHostingController(rootView: FittedPane(content: pane.view, fit: fit))
+            let host = NSHostingController(rootView: FittedPane(content: pane.view, fit: fit).tabbiLayoutDirection())
             // The window follows each pane's natural size as the user switches tabs.
             host.sizingOptions = .preferredContentSize
             // The tab view controller shows the selected child's title in the title bar.

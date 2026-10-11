@@ -1212,7 +1212,7 @@ private struct ClosetLook: View {
             }
             row(String(localized: "Breed", bundle: .tabbi)) {
                 HStack(spacing: Theme.Spacing.s) {
-                    IconButton(symbol: "chevron.left", size: 22, help: "Previous breed") {
+                    IconButton(symbol: "chevron.backward", size: 22, help: "Previous breed") {
                         store.cycleBreed(by: -1)
                     }
                     Text(store.profile.breed.displayName)
@@ -1220,7 +1220,7 @@ private struct ClosetLook: View {
                         .foregroundStyle(Theme.Palette.primaryText)
                         .lineLimit(1)
                         .frame(width: 120)
-                    IconButton(symbol: "chevron.right", size: 22, help: "Next breed") {
+                    IconButton(symbol: "chevron.forward", size: 22, help: "Next breed") {
                         store.cycleBreed(by: 1)
                     }
                 }

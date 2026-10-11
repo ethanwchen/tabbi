@@ -54,6 +54,7 @@ public final class NotchController {
 
         let root = NotchView(content: content)
             .environmentObject(model)
+            .tabbiLayoutDirection()
         panel.contentView = NotchHostingView(rootView: root)
         displayID = screen?.displayID
         layoutPanel()

@@ -16,13 +16,13 @@ struct DayStepper<Title: View>: View {
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs) {
-            arrow("chevron.left", to: viewing.previous, help: yesterdayHelp)
+            arrow("chevron.backward", to: viewing.previous, help: yesterdayHelp)
             if viewing == .today {
                 title
             } else {
                 DayTitleButton(action: { step(to: .today) }, label: { title })
             }
-            arrow("chevron.right", to: viewing.next, help: tomorrowHelp)
+            arrow("chevron.forward", to: viewing.next, help: tomorrowHelp)
         }
     }
 
