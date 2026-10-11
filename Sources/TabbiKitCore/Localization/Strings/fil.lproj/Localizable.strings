@@ -25,6 +25,8 @@
 	<string>Hindi makontrol ng %1$@ ang %2$@</string>
 	<key>%@ checkup</key>
 	<string>Checkup: %@</string>
+	<key>%@ could not be copied to Applications. %@</key>
+	<string>Hindi makopya ang %@ sa Applications. %@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
 	<string>Hindi ito na-refine ng %@. Puwede pa rin ang planong ito.</string>
 	<key>%@ couldn't refine this plan</key>
@@ -45,6 +47,8 @@
 	<string>%@ sa shared session ng party</string>
 	<key>%@ is already used by another app. Record a different shortcut.</key>
 	<string>Ginagamit na ng ibang app ang %@. Mag-record ng ibang shortcut.</string>
+	<key>%@ is already your friend</key>
+	<string>Kaibigan mo na pala si %@</string>
 	<key>%@ is connected</key>
 	<string>Nakakonekta ang %@</string>
 	<key>%@ is damaged, so it's left untouched.</key>
@@ -65,6 +69,8 @@
 	<string>Sinusuri ng %@ ang planong ito…</string>
 	<key>%@ is napping until your next session</key>
 	<string>Natutulog si %@ hanggang sa susunod mong session</string>
+	<key>%@ is now your friend</key>
+	<string>Kaibigan mo na si %@</string>
 	<key>%@ is on a break with you</key>
 	<string>Nagbe-break si %@ kasama mo</string>
 	<key>%@ is studying with the party</key>
@@ -125,6 +131,8 @@
 	<string>Mabubuksan ang %1$@ sa %2$lld</string>
 	<key>%@ with %@</key>
 	<string>%1$@ kasama si %2$@</string>
+	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
+	<string>Mas maganda ang %@ kapag nasa Applications, kung saan puwede itong magbukas pag-log in mo at mag-update nang kusa. Kokopyahin nito ang sarili roon at magbubukas ulit.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · Naka-pause</string>
 	<key>%@, %lld extra</key>
@@ -299,12 +307,16 @@
 	<string>Magdagdag ng App…</string>
 	<key>Add Control or Option so the shortcut doesn't get in the way of typing.</key>
 	<string>Magdagdag ng Control o Option para hindi makaabala ang shortcut sa pagta-type.</string>
+	<key>Add Friend</key>
+	<string>Magdagdag ng Kaibigan</string>
 	<key>Add Google Calendar</key>
 	<string>Idagdag ang Google Calendar</string>
 	<key>Add a Distracting App</key>
 	<string>Magdagdag ng Nakaka-distract na App</string>
 	<key>Add a few things you want to get done today.</key>
 	<string>Magdagdag ng ilang bagay na gusto mong matapos ngayon.</string>
+	<key>Add a friend?</key>
+	<string>Magdagdag ng kaibigan?</string>
 	<key>Add a kit someone shared as a .json file; you see what it changes first</key>
 	<string>Magdagdag ng kit na ibinahagi bilang .json file; makikita mo muna kung ano ang babaguhin nito</string>
 	<key>Add a note (optional)</key>
@@ -325,6 +337,8 @@
 	<string>Idagdag ang key</string>
 	<key>Add more</key>
 	<string>Magdagdag pa</string>
+	<key>Add the Party tab and connect to the party server</key>
+	<string>Idagdag ang Party tab at kumonekta sa Party server</string>
 	<key>Add the unfinished tasks to the end of today's list</key>
 	<string>Idagdag ang mga hindi natapos na task sa dulo ng listahan ngayon</string>
 	<key>Add this block to your calendar</key>
@@ -639,6 +653,8 @@
 	<string>I-check kung naka-on ang Wi-Fi mo, tapos subukan ulit.</string>
 	<key>Check the party server</key>
 	<string>Suriin ang party server</string>
+	<key>Check the server in Party options.</key>
+	<string>Tingnan ang server sa Party options.</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>Suriin ang internet connection mo. Lalabas ang mga kaibigan at party kapag bumalik na ito.</string>
 	<key>Checking</key>
@@ -737,6 +753,10 @@
 	<string>Isara ang detalye</string>
 	<key>Close the checkup</key>
 	<string>Isara ang checkup</string>
+	<key>Close the invite</key>
+	<string>Isara ang imbitasyon</string>
+	<key>Close the invite without doing anything</key>
+	<string>Isara ang imbitasyon nang walang ginagawa</string>
 	<key>Close the plan</key>
 	<string>Isara ang plan</string>
 	<key>Close the plan without adding anything</key>
@@ -781,6 +801,8 @@
 	<string>Kumokonekta sa %@…</string>
 	<key>Connecting to Anki…</key>
 	<string>Kumokonekta sa Anki…</string>
+	<key>Connecting to Party</key>
+	<string>Kumokonekta sa Party</string>
 	<key>Connecting…</key>
 	<string>Kumokonekta…</string>
 	<key>Connection lost</key>
@@ -829,12 +851,16 @@
 	<string>Kopyahin ang friend code mo para i-share</string>
 	<key>Copy “%@” so you can paste it</key>
 	<string>Kopyahin ang “%@” para ma-paste mo</string>
+	<key>Couldn't add this friend</key>
+	<string>Hindi maidagdag ang kaibigang ito</string>
 	<key>Couldn't add to your calendar. Try again</key>
 	<string>Hindi maidagdag sa calendar mo. Subukan ulit</string>
 	<key>Couldn't check your shortcuts</key>
 	<string>Hindi ma-check ang shortcuts mo</string>
 	<key>Couldn't import %@: %@</key>
 	<string>Hindi ma-import ang %1$@: %2$@</string>
+	<key>Couldn't join this party</key>
+	<string>Hindi makasali sa party na ito</string>
 	<key>Couldn't plan your day</key>
 	<string>Hindi naplano ang araw mo</string>
 	<key>Couldn't reach the party server.</key>
@@ -973,6 +999,8 @@
 	<string>May calendar ba ang Mac mo?</string>
 	<key>Dog</key>
 	<string>Aso</string>
+	<key>Don't ask again</key>
+	<string>Huwag nang itanong ulit</string>
 	<key>Done</key>
 	<string>Tapos</string>
 	<key>Drag to reorder</key>
@@ -1141,6 +1169,8 @@
 	<string>Libreng oras ng trabaho sa susunod na pitong araw, may buffer sa paligid ng bawat event</string>
 	<key>Friend code</key>
 	<string>Friend code</string>
+	<key>Friend code %@. You'll see each other's pets and study time.</key>
+	<string>Friend code %@. Makikita ninyo ang pet at study time ng isa't isa.</string>
 	<key>Friend's code</key>
 	<string>Code ng kaibigan</string>
 	<key>Friends</key>
@@ -1369,6 +1399,10 @@
 	<string>Sumali sa party ni %@</string>
 	<key>Join Party</key>
 	<string>Sumali sa Party</string>
+	<key>Join this party now</key>
+	<string>Sumali na sa party na ito</string>
+	<key>Join this party?</key>
+	<string>Sumali sa party na ito?</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>Sumasali sa Party. Sandali lang ito.</string>
 	<key>Joining the party server…</key>
@@ -1529,8 +1563,12 @@
 	<string>Iba pang opsyon</string>
 	<key>More tabs</key>
 	<string>Iba pang tab</string>
+	<key>Move %@ to your Applications folder?</key>
+	<string>Ilipat ang %@ sa Applications folder mo?</string>
 	<key>Move down</key>
 	<string>Ibaba</string>
+	<key>Move to Applications</key>
+	<string>Ilipat sa Applications</string>
 	<key>Move to today</key>
 	<string>Ilipat sa ngayon</string>
 	<key>Move up</key>
@@ -1729,6 +1767,8 @@
 	<string>Walang plano</string>
 	<key>Nothing playing</key>
 	<string>Walang tumutugtog</string>
+	<key>Nothing to do.</key>
+	<string>Wala nang kailangang gawin.</string>
 	<key>Nothing was on your calendars yesterday.</key>
 	<string>Walang laman ang mga calendar mo kahapon.</string>
 	<key>Notifications</key>
@@ -1757,6 +1797,10 @@
 	<string>Isang add-on na lang</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>Isang kalmadong session sa bawat pagkakataon. Kaya mo 'to.</string>
+	<key>One moment.</key>
+	<string>Sandali lang.</string>
+	<key>One question first</key>
+	<string>Isang tanong muna</string>
 	<key>One shortcut left</key>
 	<string>Isang shortcut na lang</string>
 	<key>One song</key>
@@ -1819,6 +1863,8 @@
 	<string>Buksan ang Internet Accounts</string>
 	<key>Open Internet Accounts to add a Google, Exchange or iCloud calendar</key>
 	<string>Buksan ang Internet Accounts para magdagdag ng Google, Exchange o iCloud calendar</string>
+	<key>Open Party</key>
+	<string>Buksan ang Party</string>
 	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
 	<string>Buksan ang Privacy &amp; Security &gt; Screen Recording sa System Settings</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
@@ -1845,6 +1891,8 @@
 	<string>Buksan pag tinapatan</string>
 	<key>Open the %@ app to connect</key>
 	<string>Buksan ang %@ app para mag-connect</string>
+	<key>Open the Party tab to answer</key>
+	<string>Buksan ang Party tab para sumagot</string>
 	<key>Open the Party tab to join.</key>
 	<string>Buksan ang Party tab para sumali.</string>
 	<key>Open the notch after hovering it briefly</key>
@@ -1903,8 +1951,12 @@
 	<string>Hindi makakonekta ang Party</string>
 	<key>Party code</key>
 	<string>Party code</string>
+	<key>Party code %@. Study together with everyone in it.</key>
+	<string>Party code %@. Mag-aral kasama ang lahat ng nasa loob nito.</string>
+	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
+	<string>Party code %@. Mag-aral kasama ang lahat ng nasa loob nito. Aalis ka sa kasalukuyan mong party.</string>
 	<key>Party invite</key>
-	<string>Imbitasyon sa Party</string>
+	<string>Imbitasyon</string>
 	<key>Party is for people %lld and older.</key>
 	<string>Para sa edad %lld pataas ang Party.</string>
 	<key>Party is for people %lld and older. It opens here in %@.</key>
@@ -1921,6 +1973,10 @@
 	<string>Hindi pa available ang Party</string>
 	<key>Party isn't set up</key>
 	<string>Hindi pa naka-set up ang Party</string>
+	<key>Party lets you study beside friends. Turn it on to add this friend.</key>
+	<string>Sa Party, puwede kang mag-aral kasama ang mga kaibigan. I-on ito para idagdag ang kaibigang ito.</string>
+	<key>Party lets you study beside friends. Turn it on to join this party.</key>
+	<string>Sa Party, puwede kang mag-aral kasama ang mga kaibigan. I-on ito para sumali sa party na ito.</string>
 	<key>Party pets</key>
 	<string>Mga Party pet</string>
 	<key>Party session</key>
@@ -2287,6 +2343,8 @@
 	<string>Piliin ang AnkiConnect at i-click ang Check for Updates</string>
 	<key>Send (Return)</key>
 	<string>I-send (Return)</string>
+	<key>Send a friend request with this code</key>
+	<string>Magpadala ng friend request gamit ang code na ito</string>
 	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
 	<string>Ipadala ang code mo sa mga kaibigan para ma-add ka nila. Makikita nila ang pangalan, pet at study timer mo.</string>
 	<key>Send your AI requests to %@?</key>
@@ -2321,6 +2379,8 @@
 	<string>Mag-share ng invite link. Maidadagdag ka ng kaibigang magbubukas nito sa isang click.</string>
 	<key>Share an invite link. Friends who open it can join this party in one click.</key>
 	<string>Mag-share ng invite link. Makakasali sa party na ito sa isang click ang mga kaibigang magbubukas nito.</string>
+	<key>Share it with a friend so they can add you.</key>
+	<string>Ibahagi ito sa kaibigan para maidagdag ka nila.</string>
 	<key>Share your code above, or add theirs below.</key>
 	<string>I-share ang code mo sa itaas, o idagdag ang code nila sa ibaba.</string>
 	<key>Shared focus: %@ left</key>
@@ -2663,12 +2723,18 @@
 	<string>Hindi puwede ang pangalang iyan. Pumili ng iba.</string>
 	<key>That party has ended or the code is wrong.</key>
 	<string>Tapos na ang party na iyan o mali ang code.</string>
+	<key>That party has ended. Ask for a new link.</key>
+	<string>Tapos na ang party na iyan. Humingi ng bagong link.</string>
 	<key>That party is full.</key>
 	<string>Puno na ang party na iyan.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>Hindi puwede ang pangalang iyan para sa pet. Pumili ng iba.</string>
 	<key>That's your own code.</key>
 	<string>Sarili mong code iyan.</string>
+	<key>That's your own link</key>
+	<string>Sarili mong link iyan</string>
+	<key>That's your own link.</key>
+	<string>Sarili mong link iyan.</string>
 	<key>The AI</key>
 	<string>Ang AI</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
@@ -2677,6 +2743,8 @@
 	<string>Ipinapakita ng Anki tab ang mga due card mo, top decks at streak, at binibilang ng Ngayon ang reviews mo para sa araw.</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>Hindi na-save ng Keychain ang key. Subukan ulit.</string>
+	<key>The Party tab asks when you were born before you join. Then open the link again.</key>
+	<string>Itatanong muna ng Party tab kung kailan ka ipinanganak bago ka sumali. Pagkatapos, buksan ulit ang link.</string>
 	<key>The Shortcuts app didn't answer in time. Try again in a moment.</key>
 	<string>Hindi agad sumagot ang Shortcuts app. Subukan ulit mamaya.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
@@ -2769,6 +2837,8 @@
 	<string>Kadalasan sandali lang ito. Suriin ulit mamaya.</string>
 	<key>This is what needs fixing</key>
 	<string>Ito ang kailangang ayusin</string>
+	<key>This link doesn't match anyone now. Ask your friend for a new one.</key>
+	<string>Wala nang tumutugma sa link na ito. Humingi ng bago sa kaibigan mo.</string>
 	<key>This part works</key>
 	<string>Gumagana ang bahaging ito</string>
 	<key>This tab reads your decks through the free AnkiConnect add-on.</key>
@@ -2823,6 +2893,8 @@
 	<string>Calendar bukas</string>
 	<key>Too many requests. Trying again shortly.</key>
 	<string>Sobrang daming request. Susubukan ulit mamaya.</string>
+	<key>Too many tries for now. Wait a minute, then try again.</key>
+	<string>Masyadong maraming subok. Maghintay ng isang minuto, saka subukan ulit.</string>
 	<key>Took back the import of %@.</key>
 	<string>Binawi ang pag-import ng %@.</string>
 	<key>Top decks</key>
@@ -2831,8 +2903,12 @@
 	<string>Top model</string>
 	<key>Total CPU usage across all cores, last 60 seconds</key>
 	<string>Kabuuang CPU usage sa lahat ng core, huling 60 segundo</string>
+	<key>Try Again</key>
+	<string>Subukan Ulit</string>
 	<key>Try again</key>
 	<string>Subukan ulit</string>
+	<key>Try again now</key>
+	<string>Subukan ulit ngayon</string>
 	<key>Try the server again now</key>
 	<string>Subukan ulit ang server ngayon</string>
 	<key>Try to reach Party again now</key>
@@ -2847,6 +2923,8 @@
 	<string>I-on sandali ang %@, tapos i-off ulit</string>
 	<key>Turn Do Not Disturb on for a moment, then off again</key>
 	<string>I-on sandali ang Do Not Disturb, tapos i-off ulit</string>
+	<key>Turn On Party</key>
+	<string>I-on ang Party</string>
 	<key>Turn on</key>
 	<string>I-on</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
@@ -2857,6 +2935,8 @@
 	<string>I-on ang Do Not Disturb tuwing tumatakbo ang focus timer</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>I-on ang JavaScript para sa SoundCloud</string>
+	<key>Turn on Party?</key>
+	<string>I-on ang Party?</string>
 	<key>Turn on Tabbi under Calendars in System Settings.</key>
 	<string>I-on ang Tabbi sa ilalim ng Calendars sa System Settings.</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -2881,6 +2961,8 @@
 	<string>I-type o i-paste ang %lld-character na code ng kaibigan at pindutin ang Return</string>
 	<key>Unblock</key>
 	<string>I-unblock</string>
+	<key>Unblock them in Party options to add them again.</key>
+	<string>I-unblock sila sa Party options para maidagdag ulit.</string>
 	<key>Unblocking…</key>
 	<string>Ina-unblock…</string>
 	<key>Undo</key>
@@ -3059,6 +3141,8 @@
 	<string>Ikaw</string>
 	<key>You already have 50 friends.</key>
 	<string>May 50 kaibigan ka na.</string>
+	<key>You blocked %@</key>
+	<string>Na-block mo si %@</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
 	<string>Na-block mo sila. I-unblock muna sila sa Party options.</string>
 	<key>You can change it any time in Settings &gt; General.</key>
@@ -3077,14 +3161,22 @@
 	<string>Puwede mong i-off ang mga alerto kahit kailan sa System Settings.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>May isang libreng freeze ka bawat linggo, at puwede kang mag-ipon ng %lld pa.</string>
+	<key>You joined the party</key>
+	<string>Sumali ka na sa party</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>Nag-aral ka ng %@ ngayon. Magpahinga ka at magsimula ulit bukas.</string>
 	<key>You started it for the party</key>
 	<string>Ikaw ang nagsimula nito para sa party</string>
+	<key>You'll see %@ in your Party tab.</key>
+	<string>Makikita mo si %@ sa Party tab mo.</string>
+	<key>You're already in this party</key>
+	<string>Kasali ka na sa party na ito</string>
 	<key>You're in Party</key>
 	<string>Nasa Party ka na</string>
 	<key>You're not in a party anymore.</key>
 	<string>Wala ka na sa party.</string>
+	<key>You're the only one here for now.</key>
+	<string>Ikaw pa lang ang nandito sa ngayon.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>Sobrang dami na ng na-block mo. Mag-unblock muna ng isa.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
@@ -3173,8 +3265,16 @@
 	<string>Handa na ang linggo mo kasama ang Tabbi</string>
 	<key>all day: %@</key>
 	<string>buong araw: %@</string>
+	<key>best day</key>
+	<string>best na araw</string>
+	<key>card</key>
+	<string>card</string>
+	<key>cards</key>
+	<string>card</string>
 	<key>day</key>
 	<string>araw</string>
+	<key>day streak</key>
+	<string>araw na streak</string>
 	<key>days</key>
 	<string>araw</string>
 	<key>due</key>
@@ -3183,6 +3283,8 @@
 	<string>patapos na</string>
 	<key>events</key>
 	<string>event</string>
+	<key>focused</key>
+	<string>naka-focus</string>
 	<key>in %@</key>
 	<string>sa loob ng %@</string>
 	<key>in the last 30 days</key>
@@ -3195,6 +3297,8 @@
 	<string>Isang beses magtatanong ang macOS kung puwedeng gamitin ng Tabbi ang %@</string>
 	<key>meetings and calls</key>
 	<string>meeting at tawag</string>
+	<key>min</key>
+	<string>min</string>
 	<key>no free time</key>
 	<string>walang libreng oras</string>
 	<key>nothing yet; pick a sound</key>
@@ -3205,16 +3309,28 @@
 	<string>sa %@ GB</string>
 	<key>on your own</key>
 	<string>mag-isa</string>
+	<key>point</key>
+	<string>puntos</string>
+	<key>points</key>
+	<string>puntos</string>
 	<key>pts</key>
 	<string>pts</string>
 	<key>ready to unlock</key>
 	<string>puwede nang i-unlock</string>
+	<key>session</key>
+	<string>session</string>
+	<key>sessions</key>
+	<string>session</string>
 	<key>shared focus</key>
 	<string>sabay na focus</string>
 	<key>starts %@</key>
 	<string>simula %@</string>
 	<key>switch.on</key>
 	<string>Naka-on</string>
+	<key>task</key>
+	<string>task</string>
+	<key>tasks</key>
+	<string>task</string>
 	<key>the host</key>
 	<string>host</string>
 	<key>tokens</key>

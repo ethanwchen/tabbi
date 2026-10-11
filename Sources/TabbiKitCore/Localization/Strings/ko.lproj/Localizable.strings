@@ -25,6 +25,8 @@
 	<string>%1$@에서 %2$@을(를) 제어할 수 없어요</string>
 	<key>%@ checkup</key>
 	<string>%@ 점검</string>
+	<key>%@ could not be copied to Applications. %@</key>
+	<string>%@을(를) 응용 프로그램으로 복사할 수 없어요. %@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
 	<string>%@가 다듬지 못했어요. 이 계획도 괜찮아요.</string>
 	<key>%@ couldn't refine this plan</key>
@@ -45,6 +47,8 @@
 	<string>공유 세션: %@</string>
 	<key>%@ is already used by another app. Record a different shortcut.</key>
 	<string>%@ 키는 다른 앱에서 이미 쓰고 있어요. 다른 단축키를 입력해 주세요.</string>
+	<key>%@ is already your friend</key>
+	<string>%@ 님과 이미 친구예요</string>
 	<key>%@ is connected</key>
 	<string>%@ 연결됨</string>
 	<key>%@ is damaged, so it's left untouched.</key>
@@ -65,6 +69,8 @@
 	<string>%@가 계획을 살펴보는 중…</string>
 	<key>%@ is napping until your next session</key>
 	<string>%@는 다음 세션까지 낮잠 중</string>
+	<key>%@ is now your friend</key>
+	<string>이제 %@ 님과 친구예요</string>
 	<key>%@ is on a break with you</key>
 	<string>%@도 함께 쉬는 중</string>
 	<key>%@ is studying with the party</key>
@@ -125,6 +131,8 @@
 	<string>%2$lld점에 %1$@ 해제</string>
 	<key>%@ with %@</key>
 	<string>%1$@ 및 %2$@</string>
+	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
+	<string>%@은(는) 응용 프로그램 폴더에서 가장 잘 작동해요. 로그인할 때 열리고 스스로 업데이트할 수 있거든요. 그곳으로 복사한 뒤 다시 열려요.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · 일시정지</string>
 	<key>%@, %lld extra</key>
@@ -299,12 +307,16 @@
 	<string>앱 추가…</string>
 	<key>Add Control or Option so the shortcut doesn't get in the way of typing.</key>
 	<string>입력에 방해되지 않도록 Control이나 Option을 함께 눌러 주세요.</string>
+	<key>Add Friend</key>
+	<string>친구 추가</string>
 	<key>Add Google Calendar</key>
 	<string>Google 캘린더 추가</string>
 	<key>Add a Distracting App</key>
 	<string>방해되는 앱 추가</string>
 	<key>Add a few things you want to get done today.</key>
 	<string>오늘 하고 싶은 일을 추가해 보세요.</string>
+	<key>Add a friend?</key>
+	<string>친구를 추가할까요?</string>
 	<key>Add a kit someone shared as a .json file; you see what it changes first</key>
 	<string>누군가 공유한 .json 파일 키트를 추가해요. 먼저 무엇이 바뀌는지 볼 수 있어요</string>
 	<key>Add a note (optional)</key>
@@ -325,6 +337,8 @@
 	<string>키 추가</string>
 	<key>Add more</key>
 	<string>더 추가하기</string>
+	<key>Add the Party tab and connect to the party server</key>
+	<string>파티 탭을 추가하고 파티 서버에 연결해요</string>
 	<key>Add the unfinished tasks to the end of today's list</key>
 	<string>못 끝낸 할 일을 오늘 목록 끝에 추가해요</string>
 	<key>Add this block to your calendar</key>
@@ -639,6 +653,8 @@
 	<string>Wi-Fi가 켜져 있는지 확인한 다음 다시 시도해 주세요.</string>
 	<key>Check the party server</key>
 	<string>파티 서버를 확인하세요</string>
+	<key>Check the server in Party options.</key>
+	<string>파티 옵션에서 서버를 확인해 주세요.</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>인터넷 연결을 확인하세요. 연결되면 친구와 파티가 표시돼요.</string>
 	<key>Checking</key>
@@ -737,6 +753,10 @@
 	<string>세부 정보 닫기</string>
 	<key>Close the checkup</key>
 	<string>점검 닫기</string>
+	<key>Close the invite</key>
+	<string>초대 닫기</string>
+	<key>Close the invite without doing anything</key>
+	<string>아무것도 하지 않고 초대 닫기</string>
 	<key>Close the plan</key>
 	<string>계획 닫기</string>
 	<key>Close the plan without adding anything</key>
@@ -781,6 +801,8 @@
 	<string>%@에 연결 중…</string>
 	<key>Connecting to Anki…</key>
 	<string>Anki에 연결 중…</string>
+	<key>Connecting to Party</key>
+	<string>파티에 연결 중</string>
 	<key>Connecting…</key>
 	<string>연결 중…</string>
 	<key>Connection lost</key>
@@ -829,12 +851,16 @@
 	<string>친구 코드를 복사해서 공유하세요</string>
 	<key>Copy “%@” so you can paste it</key>
 	<string>붙여넣을 수 있도록 ‘%@’ 복사</string>
+	<key>Couldn't add this friend</key>
+	<string>친구를 추가할 수 없어요</string>
 	<key>Couldn't add to your calendar. Try again</key>
 	<string>캘린더에 추가하지 못했어요. 다시 시도해 주세요</string>
 	<key>Couldn't check your shortcuts</key>
 	<string>단축어를 확인하지 못했어요</string>
 	<key>Couldn't import %@: %@</key>
 	<string>%1$@ 키트를 가져오지 못했어요: %2$@</string>
+	<key>Couldn't join this party</key>
+	<string>이 파티에 참여할 수 없어요</string>
 	<key>Couldn't plan your day</key>
 	<string>하루를 계획하지 못했어요</string>
 	<key>Couldn't reach the party server.</key>
@@ -973,6 +999,8 @@
 	<string>Mac에 캘린더가 있나요?</string>
 	<key>Dog</key>
 	<string>강아지</string>
+	<key>Don't ask again</key>
+	<string>다시 묻지 않기</string>
 	<key>Done</key>
 	<string>완료</string>
 	<key>Drag to reorder</key>
@@ -1141,6 +1169,8 @@
 	<string>앞으로 7일간 근무 시간 중 여유 시간 (일정 앞뒤 여유 포함)</string>
 	<key>Friend code</key>
 	<string>친구 코드</string>
+	<key>Friend code %@. You'll see each other's pets and study time.</key>
+	<string>친구 코드 %@. 서로의 펫과 공부 시간을 볼 수 있어요.</string>
 	<key>Friend's code</key>
 	<string>친구 코드</string>
 	<key>Friends</key>
@@ -1369,6 +1399,10 @@
 	<string>%@ 님의 파티에 참가</string>
 	<key>Join Party</key>
 	<string>파티 참여</string>
+	<key>Join this party now</key>
+	<string>지금 이 파티에 참여</string>
+	<key>Join this party?</key>
+	<string>이 파티에 참여할까요?</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>파티에 참여하는 중이에요. 잠깐이면 돼요.</string>
 	<key>Joining the party server…</key>
@@ -1529,8 +1563,12 @@
 	<string>추가 옵션</string>
 	<key>More tabs</key>
 	<string>탭 더 보기</string>
+	<key>Move %@ to your Applications folder?</key>
+	<string>%@을(를) 응용 프로그램 폴더로 옮길까요?</string>
 	<key>Move down</key>
 	<string>아래로 이동</string>
+	<key>Move to Applications</key>
+	<string>응용 프로그램으로 이동</string>
 	<key>Move to today</key>
 	<string>오늘로 옮기기</string>
 	<key>Move up</key>
@@ -1729,6 +1767,8 @@
 	<string>계획 없음</string>
 	<key>Nothing playing</key>
 	<string>재생 중인 곡 없음</string>
+	<key>Nothing to do.</key>
+	<string>할 일이 없어요.</string>
 	<key>Nothing was on your calendars yesterday.</key>
 	<string>어제는 캘린더에 일정이 없었어요.</string>
 	<key>Notifications</key>
@@ -1757,6 +1797,10 @@
 	<string>애드온 하나 남음</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>한 번에 한 세션씩 차분하게. 할 수 있어요.</string>
+	<key>One moment.</key>
+	<string>잠시만요.</string>
+	<key>One question first</key>
+	<string>먼저 질문 하나</string>
 	<key>One shortcut left</key>
 	<string>단축어 하나 남음</string>
 	<key>One song</key>
@@ -1819,6 +1863,8 @@
 	<string>인터넷 계정 열기</string>
 	<key>Open Internet Accounts to add a Google, Exchange or iCloud calendar</key>
 	<string>인터넷 계정을 열어 Google, Exchange 또는 iCloud 캘린더 추가하기</string>
+	<key>Open Party</key>
+	<string>파티 열기</string>
 	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
 	<string>시스템 설정에서 개인정보 보호 및 보안 &gt; 화면 기록 열기</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
@@ -1845,6 +1891,8 @@
 	<string>마우스를 올리면 열기</string>
 	<key>Open the %@ app to connect</key>
 	<string>%@ 앱을 열어 연결하세요</string>
+	<key>Open the Party tab to answer</key>
+	<string>파티 탭을 열어 답하기</string>
 	<key>Open the Party tab to join.</key>
 	<string>파티 탭을 열어 참여하세요.</string>
 	<key>Open the notch after hovering it briefly</key>
@@ -1903,6 +1951,10 @@
 	<string>파티 연결 실패</string>
 	<key>Party code</key>
 	<string>파티 코드</string>
+	<key>Party code %@. Study together with everyone in it.</key>
+	<string>파티 코드 %@. 모두와 함께 공부해요.</string>
+	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
+	<string>파티 코드 %@. 모두와 함께 공부해요. 지금 있는 파티에서는 나가게 돼요.</string>
 	<key>Party invite</key>
 	<string>파티 초대</string>
 	<key>Party is for people %lld and older.</key>
@@ -1921,6 +1973,10 @@
 	<string>아직 파티를 이용할 수 없어요</string>
 	<key>Party isn't set up</key>
 	<string>파티 설정 안 됨</string>
+	<key>Party lets you study beside friends. Turn it on to add this friend.</key>
+	<string>파티에서는 친구와 함께 공부할 수 있어요. 켜고 이 친구를 추가해 보세요.</string>
+	<key>Party lets you study beside friends. Turn it on to join this party.</key>
+	<string>파티에서는 친구와 함께 공부할 수 있어요. 켜고 이 파티에 참여해 보세요.</string>
 	<key>Party pets</key>
 	<string>Party 펫</string>
 	<key>Party session</key>
@@ -2287,6 +2343,8 @@
 	<string>AnkiConnect를 선택하고 업데이트 확인 클릭</string>
 	<key>Send (Return)</key>
 	<string>보내기 (Return)</string>
+	<key>Send a friend request with this code</key>
+	<string>이 코드로 친구 요청 보내기</string>
 	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
 	<string>친구가 나를 추가할 수 있게 코드를 보내세요. 친구에게는 이름, 펫, 공부 타이머가 보여요.</string>
 	<key>Send your AI requests to %@?</key>
@@ -2321,6 +2379,8 @@
 	<string>초대 링크를 공유하세요. 친구가 열면 클릭 한 번으로 나를 추가할 수 있어요.</string>
 	<key>Share an invite link. Friends who open it can join this party in one click.</key>
 	<string>초대 링크를 공유하세요. 친구가 열면 클릭 한 번으로 이 파티에 참가해요.</string>
+	<key>Share it with a friend so they can add you.</key>
+	<string>친구에게 공유해서 나를 추가하게 해 보세요.</string>
 	<key>Share your code above, or add theirs below.</key>
 	<string>위의 내 코드를 공유하거나 아래에 친구 코드를 추가하세요.</string>
 	<key>Shared focus: %@ left</key>
@@ -2663,12 +2723,18 @@
 	<string>사용할 수 없는 이름이에요. 다른 이름을 골라 주세요.</string>
 	<key>That party has ended or the code is wrong.</key>
 	<string>파티가 끝났거나 코드가 잘못됐어요.</string>
+	<key>That party has ended. Ask for a new link.</key>
+	<string>파티가 끝났어요. 새 링크를 받아 보세요.</string>
 	<key>That party is full.</key>
 	<string>파티가 꽉 찼어요.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>사용할 수 없는 펫 이름이에요. 다른 이름을 골라 주세요.</string>
 	<key>That's your own code.</key>
 	<string>내 코드예요.</string>
+	<key>That's your own link</key>
+	<string>내 링크예요</string>
+	<key>That's your own link.</key>
+	<string>내 링크예요.</string>
 	<key>The AI</key>
 	<string>AI</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
@@ -2677,6 +2743,8 @@
 	<string>Anki 탭에는 복습할 카드, 주요 덱, 연속 기록이 보이고, 오늘 탭에서 복습이 하루 기록에 더해져요.</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>키체인에 키를 저장하지 못했어요. 다시 시도해 주세요.</string>
+	<key>The Party tab asks when you were born before you join. Then open the link again.</key>
+	<string>참여하기 전에 파티 탭에서 생년월을 물어봐요. 답한 뒤 링크를 다시 열어 주세요.</string>
 	<key>The Shortcuts app didn't answer in time. Try again in a moment.</key>
 	<string>단축어 앱이 제때 응답하지 않았어요. 잠시 후 다시 시도해 주세요.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
@@ -2769,6 +2837,8 @@
 	<string>보통 금방 풀려요. 잠시 후 다시 확인하세요.</string>
 	<key>This is what needs fixing</key>
 	<string>여기를 고쳐야 해요</string>
+	<key>This link doesn't match anyone now. Ask your friend for a new one.</key>
+	<string>이 링크는 지금 아무와도 연결되지 않아요. 친구에게 새 링크를 받아 보세요.</string>
 	<key>This part works</key>
 	<string>이 부분은 잘 돼요</string>
 	<key>This tab reads your decks through the free AnkiConnect add-on.</key>
@@ -2823,6 +2893,8 @@
 	<string>내일 일정</string>
 	<key>Too many requests. Trying again shortly.</key>
 	<string>요청이 너무 많아요. 잠시 후 다시 시도해요.</string>
+	<key>Too many tries for now. Wait a minute, then try again.</key>
+	<string>시도 횟수가 너무 많아요. 1분 정도 기다린 뒤 다시 시도하세요.</string>
 	<key>Took back the import of %@.</key>
 	<string>%@ 키트 가져오기를 취소했어요.</string>
 	<key>Top decks</key>
@@ -2831,8 +2903,12 @@
 	<string>주 모델</string>
 	<key>Total CPU usage across all cores, last 60 seconds</key>
 	<string>전체 코어의 CPU 사용량, 최근 60초</string>
+	<key>Try Again</key>
+	<string>다시 시도</string>
 	<key>Try again</key>
 	<string>다시 시도</string>
+	<key>Try again now</key>
+	<string>지금 다시 시도</string>
 	<key>Try the server again now</key>
 	<string>지금 서버에 다시 연결</string>
 	<key>Try to reach Party again now</key>
@@ -2847,6 +2923,8 @@
 	<string>%@ 잠깐 켰다가 다시 끄기</string>
 	<key>Turn Do Not Disturb on for a moment, then off again</key>
 	<string>방해금지 모드를 잠깐 켰다가 다시 끄기</string>
+	<key>Turn On Party</key>
+	<string>파티 켜기</string>
 	<key>Turn on</key>
 	<string>켜기</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
@@ -2857,6 +2935,8 @@
 	<string>집중 타이머가 돌아갈 때마다 방해금지 모드 켜기</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>SoundCloud용 JavaScript를 켜세요</string>
+	<key>Turn on Party?</key>
+	<string>파티를 켤까요?</string>
 	<key>Turn on Tabbi under Calendars in System Settings.</key>
 	<string>시스템 설정의 캘린더에서 Tabbi를 켜 주세요.</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -2881,6 +2961,8 @@
 	<string>친구의 %lld자리 코드를 입력하거나 붙여넣고 Return 키를 누르세요</string>
 	<key>Unblock</key>
 	<string>차단 해제</string>
+	<key>Unblock them in Party options to add them again.</key>
+	<string>다시 추가하려면 파티 옵션에서 차단을 해제하세요.</string>
 	<key>Unblocking…</key>
 	<string>차단 해제 중…</string>
 	<key>Undo</key>
@@ -3059,6 +3141,8 @@
 	<string>나</string>
 	<key>You already have 50 friends.</key>
 	<string>이미 친구가 50명이에요.</string>
+	<key>You blocked %@</key>
+	<string>%@ 님을 차단했어요</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
 	<string>차단한 사람이에요. 먼저 파티 옵션에서 차단을 해제하세요.</string>
 	<key>You can change it any time in Settings &gt; General.</key>
@@ -3077,14 +3161,22 @@
 	<string>알림은 시스템 설정에서 언제든 끌 수 있어요.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>매주 보호 하나를 무료로 받고, %lld개까지 더 가지고 있을 수 있어요.</string>
+	<key>You joined the party</key>
+	<string>파티에 참여했어요</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>오늘 %@ 공부했어요. 푹 쉬고 내일 새롭게 시작해요.</string>
 	<key>You started it for the party</key>
 	<string>내가 파티를 위해 시작했어요</string>
+	<key>You'll see %@ in your Party tab.</key>
+	<string>파티 탭에서 %@을(를) 볼 수 있어요.</string>
+	<key>You're already in this party</key>
+	<string>이미 이 파티에 있어요</string>
 	<key>You're in Party</key>
 	<string>파티에 참여했어요</string>
 	<key>You're not in a party anymore.</key>
 	<string>더 이상 파티에 있지 않아요.</string>
+	<key>You're the only one here for now.</key>
+	<string>지금은 혼자예요.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>너무 많은 사람을 차단했어요. 먼저 누군가를 차단 해제하세요.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
@@ -3173,8 +3265,16 @@
 	<string>Tabbi와 함께한 한 주가 준비됐어요</string>
 	<key>all day: %@</key>
 	<string>하루 종일: %@</string>
+	<key>best day</key>
+	<string>최고의 날</string>
+	<key>card</key>
+	<string>카드</string>
+	<key>cards</key>
+	<string>카드</string>
 	<key>day</key>
 	<string>일</string>
+	<key>day streak</key>
+	<string>일 연속</string>
 	<key>days</key>
 	<string>일</string>
 	<key>due</key>
@@ -3183,6 +3283,8 @@
 	<string>곧 끝나요</string>
 	<key>events</key>
 	<string>일정</string>
+	<key>focused</key>
+	<string>집중</string>
 	<key>in %@</key>
 	<string>%@ 후</string>
 	<key>in the last 30 days</key>
@@ -3195,6 +3297,8 @@
 	<string>macOS가 Tabbi의 사용 허용 여부를 한 번 물어요: %@</string>
 	<key>meetings and calls</key>
 	<string>회의와 통화</string>
+	<key>min</key>
+	<string>분</string>
 	<key>no free time</key>
 	<string>여유 시간 없음</string>
 	<key>nothing yet; pick a sound</key>
@@ -3205,16 +3309,28 @@
 	<string>/ %@GB</string>
 	<key>on your own</key>
 	<string>혼자서</string>
+	<key>point</key>
+	<string>포인트</string>
+	<key>points</key>
+	<string>포인트</string>
 	<key>pts</key>
 	<string>점</string>
 	<key>ready to unlock</key>
 	<string>해제 가능</string>
+	<key>session</key>
+	<string>세션</string>
+	<key>sessions</key>
+	<string>세션</string>
 	<key>shared focus</key>
 	<string>함께 집중 중</string>
 	<key>starts %@</key>
 	<string>%@ 시작</string>
 	<key>switch.on</key>
 	<string>켬</string>
+	<key>task</key>
+	<string>할 일</string>
+	<key>tasks</key>
+	<string>할 일</string>
 	<key>the host</key>
 	<string>호스트</string>
 	<key>tokens</key>

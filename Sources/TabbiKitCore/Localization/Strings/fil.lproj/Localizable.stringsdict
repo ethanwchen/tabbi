@@ -115,6 +115,22 @@
 			<string>%lld focus session</string>
 		</dict>
 	</dict>
+	<key>%lld friends are here with you.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld kaibigan ang kasama mo rito.</string>
+			<key>other</key>
+			<string>%lld kaibigan ang kasama mo rito.</string>
+		</dict>
+	</dict>
 	<key>%lld no longer fit</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

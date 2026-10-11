@@ -63,7 +63,7 @@ struct StudyCustomEditor: View {
                         .font(Theme.Typography.metric)
                         .foregroundStyle(Theme.Palette.primaryText)
                         .contentTransition(.numericText())
-                    Text("min")
+                    Text("min", bundle: .tabbi)
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.secondaryText)
                 }

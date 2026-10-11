@@ -112,11 +112,11 @@ private struct PartyInviteBody: View {
             }
             if flow.primaryTitle == nil {
                 // Nothing left but closing, so closing is the main button.
-                PartyPillButton(title: flow.dismissTitle, isProminent: true, help: "Close the invite") {
+                PartyPillButton(title: flow.dismissTitle, isProminent: true, help: String(localized: "Close the invite", bundle: .tabbi)) {
                     close(flow)
                 }
             } else {
-                PartyTextButton(title: flow.dismissTitle, help: "Close the invite without doing anything") {
+                PartyTextButton(title: flow.dismissTitle, help: String(localized: "Close the invite without doing anything", bundle: .tabbi)) {
                     close(flow)
                 }
             }
@@ -139,13 +139,13 @@ private struct PartyInviteBody: View {
 
     private func primaryHelp(_ flow: PartyInviteFlow) -> String {
         switch flow.stage {
-        case .needsParty: "Add the Party tab and connect to the party server"
-        case .unavailable, .refused: "Try again now"
-        case .ageCheck: "Open the Party tab to answer"
+        case .needsParty: String(localized: "Add the Party tab and connect to the party server", bundle: .tabbi)
+        case .unavailable, .refused: String(localized: "Try again now", bundle: .tabbi)
+        case .ageCheck: String(localized: "Open the Party tab to answer", bundle: .tabbi)
         default:
             switch flow.invite {
-            case .addFriend: "Send a friend request with this code"
-            case .joinParty: "Join this party now"
+            case .addFriend: String(localized: "Send a friend request with this code", bundle: .tabbi)
+            case .joinParty: String(localized: "Join this party now", bundle: .tabbi)
             }
         }
     }

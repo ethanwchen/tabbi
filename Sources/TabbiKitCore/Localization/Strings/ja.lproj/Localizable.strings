@@ -25,6 +25,8 @@
 	<string>%1$@は%2$@を操作できません</string>
 	<key>%@ checkup</key>
 	<string>チェック：%@</string>
+	<key>%@ could not be copied to Applications. %@</key>
+	<string>%@をアプリケーションにコピーできませんでした。%@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
 	<string>%@ は調整できませんでした。この計画のままで大丈夫です。</string>
 	<key>%@ couldn't refine this plan</key>
@@ -45,6 +47,8 @@
 	<string>共有セッション: %@</string>
 	<key>%@ is already used by another app. Record a different shortcut.</key>
 	<string>%@は別のアプリで使われています。別のショートカットを登録してください。</string>
+	<key>%@ is already your friend</key>
+	<string>%@はもうフレンドです</string>
 	<key>%@ is connected</key>
 	<string>%@に接続済み</string>
 	<key>%@ is damaged, so it's left untouched.</key>
@@ -65,6 +69,8 @@
 	<string>%@ が計画を確認中…</string>
 	<key>%@ is napping until your next session</key>
 	<string>%@は次のセッションまでお昼寝中</string>
+	<key>%@ is now your friend</key>
+	<string>%@とフレンドになりました</string>
 	<key>%@ is on a break with you</key>
 	<string>%@も一緒に休憩中</string>
 	<key>%@ is studying with the party</key>
@@ -125,6 +131,8 @@
 	<string>%2$lldで%1$@を解放</string>
 	<key>%@ with %@</key>
 	<string>%1$@と%2$@</string>
+	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
+	<string>%@はアプリケーションフォルダから使うのがおすすめです。ログイン時に自動で開き、自分でアップデートできます。自分をそこにコピーして、もう一度開きます。</string>
 	<key>%@ · Paused</key>
 	<string>%@ · 一時停止中</string>
 	<key>%@, %lld extra</key>
@@ -299,12 +307,16 @@
 	<string>アプリを追加…</string>
 	<key>Add Control or Option so the shortcut doesn't get in the way of typing.</key>
 	<string>入力の邪魔にならないよう、ControlかOptionを加えてください。</string>
+	<key>Add Friend</key>
+	<string>フレンドを追加</string>
 	<key>Add Google Calendar</key>
 	<string>Googleカレンダーを追加</string>
 	<key>Add a Distracting App</key>
 	<string>気が散るアプリを追加</string>
 	<key>Add a few things you want to get done today.</key>
 	<string>今日やりたいことを追加しましょう。</string>
+	<key>Add a friend?</key>
+	<string>フレンドを追加しますか？</string>
 	<key>Add a kit someone shared as a .json file; you see what it changes first</key>
 	<string>共有された .json ファイルのキットを追加します。先に変更内容を確認できます</string>
 	<key>Add a note (optional)</key>
@@ -325,6 +337,8 @@
 	<string>キーを追加</string>
 	<key>Add more</key>
 	<string>さらに追加</string>
+	<key>Add the Party tab and connect to the party server</key>
+	<string>パーティタブを追加して、パーティサーバに接続します</string>
 	<key>Add the unfinished tasks to the end of today's list</key>
 	<string>未完了のタスクを今日のリストの最後に追加</string>
 	<key>Add this block to your calendar</key>
@@ -639,6 +653,8 @@
 	<string>Wi-Fiがオンになっているか確認して、もう一度お試しください。</string>
 	<key>Check the party server</key>
 	<string>パーティサーバーを確認してください</string>
+	<key>Check the server in Party options.</key>
+	<string>パーティのオプションでサーバを確認してください。</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>インターネット接続を確認してください。接続が戻るとフレンドとパーティが表示されます。</string>
 	<key>Checking</key>
@@ -737,6 +753,10 @@
 	<string>詳細を閉じる</string>
 	<key>Close the checkup</key>
 	<string>チェックを閉じる</string>
+	<key>Close the invite</key>
+	<string>招待を閉じる</string>
+	<key>Close the invite without doing anything</key>
+	<string>何もせずに招待を閉じる</string>
 	<key>Close the plan</key>
 	<string>計画を閉じる</string>
 	<key>Close the plan without adding anything</key>
@@ -781,6 +801,8 @@
 	<string>%@に接続中…</string>
 	<key>Connecting to Anki…</key>
 	<string>Anki に接続中…</string>
+	<key>Connecting to Party</key>
+	<string>パーティに接続中</string>
 	<key>Connecting…</key>
 	<string>接続中…</string>
 	<key>Connection lost</key>
@@ -829,12 +851,16 @@
 	<string>フレンドコードをコピーして共有</string>
 	<key>Copy “%@” so you can paste it</key>
 	<string>「%@」をコピーしてペーストできるようにする</string>
+	<key>Couldn't add this friend</key>
+	<string>フレンドを追加できませんでした</string>
 	<key>Couldn't add to your calendar. Try again</key>
 	<string>カレンダーに追加できませんでした。もう一度お試しください</string>
 	<key>Couldn't check your shortcuts</key>
 	<string>ショートカットを確認できませんでした</string>
 	<key>Couldn't import %@: %@</key>
 	<string>%1$@を読み込めませんでした: %2$@</string>
+	<key>Couldn't join this party</key>
+	<string>このパーティに参加できませんでした</string>
 	<key>Couldn't plan your day</key>
 	<string>1日を計画できませんでした</string>
 	<key>Couldn't reach the party server.</key>
@@ -973,6 +999,8 @@
 	<string>Macにカレンダーはありますか？</string>
 	<key>Dog</key>
 	<string>イヌ</string>
+	<key>Don't ask again</key>
+	<string>今後確認しない</string>
 	<key>Done</key>
 	<string>完了</string>
 	<key>Drag to reorder</key>
@@ -1141,6 +1169,8 @@
 	<string>今後7日間の勤務時間の空き (予定の前後に余裕あり)</string>
 	<key>Friend code</key>
 	<string>フレンドコード</string>
+	<key>Friend code %@. You'll see each other's pets and study time.</key>
+	<string>フレンドコード %@。お互いのペットと勉強時間が見られます。</string>
 	<key>Friend's code</key>
 	<string>フレンドコード</string>
 	<key>Friends</key>
@@ -1369,6 +1399,10 @@
 	<string>%@のパーティに参加</string>
 	<key>Join Party</key>
 	<string>パーティに参加</string>
+	<key>Join this party now</key>
+	<string>今すぐこのパーティに参加</string>
+	<key>Join this party?</key>
+	<string>このパーティに参加しますか？</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>パーティに参加中です。少しお待ちください。</string>
 	<key>Joining the party server…</key>
@@ -1529,8 +1563,12 @@
 	<string>その他のオプション</string>
 	<key>More tabs</key>
 	<string>その他のタブ</string>
+	<key>Move %@ to your Applications folder?</key>
+	<string>%@をアプリケーションフォルダに移動しますか？</string>
 	<key>Move down</key>
 	<string>下へ移動</string>
+	<key>Move to Applications</key>
+	<string>アプリケーションに移動</string>
 	<key>Move to today</key>
 	<string>今日に移動</string>
 	<key>Move up</key>
@@ -1729,6 +1767,8 @@
 	<string>予定なし</string>
 	<key>Nothing playing</key>
 	<string>再生中の曲はありません</string>
+	<key>Nothing to do.</key>
+	<string>何もする必要はありません。</string>
 	<key>Nothing was on your calendars yesterday.</key>
 	<string>昨日はカレンダーに予定がありませんでした。</string>
 	<key>Notifications</key>
@@ -1757,6 +1797,10 @@
 	<string>アドオンがあと1つ</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>一回ずつ、落ち着いて。きっと大丈夫。</string>
+	<key>One moment.</key>
+	<string>少々お待ちください。</string>
+	<key>One question first</key>
+	<string>まずはひとつ質問</string>
 	<key>One shortcut left</key>
 	<string>ショートカットがあと1つ</string>
 	<key>One song</key>
@@ -1819,6 +1863,8 @@
 	<string>インターネットアカウントを開く</string>
 	<key>Open Internet Accounts to add a Google, Exchange or iCloud calendar</key>
 	<string>「インターネットアカウント」を開いて Google、Exchange、iCloud のカレンダーを追加</string>
+	<key>Open Party</key>
+	<string>パーティを開く</string>
 	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
 	<string>システム設定の「プライバシーとセキュリティ」&gt;「画面収録」を開く</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
@@ -1845,6 +1891,8 @@
 	<string>ポインタを置いて開く</string>
 	<key>Open the %@ app to connect</key>
 	<string>%@ アプリを開いて接続</string>
+	<key>Open the Party tab to answer</key>
+	<string>パーティタブを開いて答える</string>
 	<key>Open the Party tab to join.</key>
 	<string>パーティタブを開いて参加しましょう。</string>
 	<key>Open the notch after hovering it briefly</key>
@@ -1903,6 +1951,10 @@
 	<string>パーティに接続できません</string>
 	<key>Party code</key>
 	<string>パーティコード</string>
+	<key>Party code %@. Study together with everyone in it.</key>
+	<string>パーティコード %@。参加しているみんなと一緒に勉強しましょう。</string>
+	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
+	<string>パーティコード %@。参加しているみんなと一緒に勉強しましょう。今のパーティからは抜けます。</string>
 	<key>Party invite</key>
 	<string>パーティへの招待</string>
 	<key>Party is for people %lld and older.</key>
@@ -1921,6 +1973,10 @@
 	<string>パーティはまだ利用できません</string>
 	<key>Party isn't set up</key>
 	<string>パーティが未設定です</string>
+	<key>Party lets you study beside friends. Turn it on to add this friend.</key>
+	<string>パーティでは友達と一緒に勉強できます。オンにしてこのフレンドを追加しましょう。</string>
+	<key>Party lets you study beside friends. Turn it on to join this party.</key>
+	<string>パーティでは友達と一緒に勉強できます。オンにしてこのパーティに参加しましょう。</string>
 	<key>Party pets</key>
 	<string>Partyのペット</string>
 	<key>Party session</key>
@@ -2287,6 +2343,8 @@
 	<string>AnkiConnect を選んで アップデートを確認 をクリック</string>
 	<key>Send (Return)</key>
 	<string>送信(Return)</string>
+	<key>Send a friend request with this code</key>
+	<string>このコードでフレンド申請を送る</string>
 	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
 	<string>コードを友達に送って追加してもらいましょう。名前、ペット、勉強タイマーが友達に表示されます。</string>
 	<key>Send your AI requests to %@?</key>
@@ -2321,6 +2379,8 @@
 	<string>招待リンクを共有します。開いた友達はワンクリックであなたを追加できます。</string>
 	<key>Share an invite link. Friends who open it can join this party in one click.</key>
 	<string>招待リンクを共有します。開いた友達はワンクリックでこのパーティに参加できます。</string>
+	<key>Share it with a friend so they can add you.</key>
+	<string>友達に共有して、あなたを追加してもらいましょう。</string>
 	<key>Share your code above, or add theirs below.</key>
 	<string>上のコードを共有するか、下に相手のコードを入力しましょう。</string>
 	<key>Shared focus: %@ left</key>
@@ -2663,12 +2723,18 @@
 	<string>その名前は使えません。別の名前にしてください。</string>
 	<key>That party has ended or the code is wrong.</key>
 	<string>パーティが終了したか、コードが間違っています。</string>
+	<key>That party has ended. Ask for a new link.</key>
+	<string>このパーティは終了しました。新しいリンクをもらってください。</string>
 	<key>That party is full.</key>
 	<string>このパーティは満員です。</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>そのペットの名前は使えません。別の名前にしてください。</string>
 	<key>That's your own code.</key>
 	<string>それはあなた自身のコードです。</string>
+	<key>That's your own link</key>
+	<string>自分のリンクです</string>
+	<key>That's your own link.</key>
+	<string>これはあなた自身のリンクです。</string>
 	<key>The AI</key>
 	<string>AI</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
@@ -2677,6 +2743,8 @@
 	<string>Ankiタブには期限のカード、主なデッキ、連続記録が表示され、今日の画面で復習数がその日の分に加算されます。</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>キーチェーンにキーを保存できませんでした。もう一度お試しください。</string>
+	<key>The Party tab asks when you were born before you join. Then open the link again.</key>
+	<string>参加する前に、パーティタブで生年月日を聞かれます。答えたら、もう一度リンクを開いてください。</string>
 	<key>The Shortcuts app didn't answer in time. Try again in a moment.</key>
 	<string>ショートカットAppが時間内に応答しませんでした。少ししてからもう一度お試しください。</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
@@ -2769,6 +2837,8 @@
 	<string>たいていすぐに終わります。少ししてからもう一度確認してください。</string>
 	<key>This is what needs fixing</key>
 	<string>ここを直す必要があります</string>
+	<key>This link doesn't match anyone now. Ask your friend for a new one.</key>
+	<string>このリンクは今は誰にもつながっていません。友達に新しいリンクをもらってください。</string>
 	<key>This part works</key>
 	<string>この部分は問題ありません</string>
 	<key>This tab reads your decks through the free AnkiConnect add-on.</key>
@@ -2823,6 +2893,8 @@
 	<string>明日の予定</string>
 	<key>Too many requests. Trying again shortly.</key>
 	<string>リクエストが多すぎます。まもなく再試行します。</string>
+	<key>Too many tries for now. Wait a minute, then try again.</key>
+	<string>試行回数が多すぎます。少し待ってから、もう一度お試しください。</string>
 	<key>Took back the import of %@.</key>
 	<string>%@の読み込みを取り消しました。</string>
 	<key>Top decks</key>
@@ -2831,8 +2903,12 @@
 	<string>最多モデル</string>
 	<key>Total CPU usage across all cores, last 60 seconds</key>
 	<string>全コアのCPU使用率（直近60秒）</string>
+	<key>Try Again</key>
+	<string>再試行</string>
 	<key>Try again</key>
 	<string>再試行</string>
+	<key>Try again now</key>
+	<string>今すぐもう一度試す</string>
 	<key>Try the server again now</key>
 	<string>今すぐサーバーに再接続</string>
 	<key>Try to reach Party again now</key>
@@ -2847,6 +2923,8 @@
 	<string>%@ を一度オンにしてから、またオフにする</string>
 	<key>Turn Do Not Disturb on for a moment, then off again</key>
 	<string>おやすみモードを一度オンにしてから、オフに戻します</string>
+	<key>Turn On Party</key>
+	<string>パーティをオン</string>
 	<key>Turn on</key>
 	<string>オンにする</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
@@ -2857,6 +2935,8 @@
 	<string>集中タイマーの実行中はおやすみモードをオンにします</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>SoundCloud用にJavaScriptをオンにしてください</string>
+	<key>Turn on Party?</key>
+	<string>パーティをオンにしますか？</string>
 	<key>Turn on Tabbi under Calendars in System Settings.</key>
 	<string>システム設定の「カレンダー」で、Tabbiをオンにしてください。</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -2881,6 +2961,8 @@
 	<string>友達の%lld文字のコードを入力またはペーストしてReturnキーを押します</string>
 	<key>Unblock</key>
 	<string>ブロック解除</string>
+	<key>Unblock them in Party options to add them again.</key>
+	<string>もう一度追加するには、パーティのオプションでブロックを解除してください。</string>
 	<key>Unblocking…</key>
 	<string>ブロック解除中…</string>
 	<key>Undo</key>
@@ -3059,6 +3141,8 @@
 	<string>あなた</string>
 	<key>You already have 50 friends.</key>
 	<string>フレンドがすでに50人います。</string>
+	<key>You blocked %@</key>
+	<string>%@をブロックしています</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
 	<string>ブロック中の相手です。先にパーティのオプションでブロックを解除してください。</string>
 	<key>You can change it any time in Settings &gt; General.</key>
@@ -3077,14 +3161,22 @@
 	<string>通知はシステム設定でいつでもオフにできます。</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>毎週フリーズが1つ無料でもらえ、ほかに%lld個まで持てます。</string>
+	<key>You joined the party</key>
+	<string>パーティに参加しました</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>今日は%@勉強しました。ゆっくり休んで、明日また始めましょう。</string>
 	<key>You started it for the party</key>
 	<string>あなたがパーティ用に開始</string>
+	<key>You'll see %@ in your Party tab.</key>
+	<string>パーティタブに%@が表示されます。</string>
+	<key>You're already in this party</key>
+	<string>このパーティにはもう参加しています</string>
 	<key>You're in Party</key>
 	<string>パーティに参加中</string>
 	<key>You're not in a party anymore.</key>
 	<string>パーティに参加していません。</string>
+	<key>You're the only one here for now.</key>
+	<string>今はあなただけです。</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>ブロックした人が多すぎます。先に誰かのブロックを解除してください。</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
@@ -3173,8 +3265,16 @@
 	<string>Tabbiとの1週間をまとめました</string>
 	<key>all day: %@</key>
 	<string>終日: %@</string>
+	<key>best day</key>
+	<string>最高の日</string>
+	<key>card</key>
+	<string>カード</string>
+	<key>cards</key>
+	<string>カード</string>
 	<key>day</key>
 	<string>日</string>
+	<key>day streak</key>
+	<string>連続日数</string>
 	<key>days</key>
 	<string>日</string>
 	<key>due</key>
@@ -3183,6 +3283,8 @@
 	<string>まもなく終了</string>
 	<key>events</key>
 	<string>予定</string>
+	<key>focused</key>
+	<string>集中</string>
 	<key>in %@</key>
 	<string>%@後</string>
 	<key>in the last 30 days</key>
@@ -3195,6 +3297,8 @@
 	<string>Tabbiが%@を使用してよいか、macOSが一度だけ尋ねます</string>
 	<key>meetings and calls</key>
 	<string>会議や通話</string>
+	<key>min</key>
+	<string>分</string>
 	<key>no free time</key>
 	<string>空き時間なし</string>
 	<key>nothing yet; pick a sound</key>
@@ -3205,16 +3309,28 @@
 	<string>/ %@ GB</string>
 	<key>on your own</key>
 	<string>ひとりで</string>
+	<key>point</key>
+	<string>ポイント</string>
+	<key>points</key>
+	<string>ポイント</string>
 	<key>pts</key>
 	<string>pt</string>
 	<key>ready to unlock</key>
 	<string>解放できます</string>
+	<key>session</key>
+	<string>セッション</string>
+	<key>sessions</key>
+	<string>セッション</string>
 	<key>shared focus</key>
 	<string>みんなで集中</string>
 	<key>starts %@</key>
 	<string>%@から</string>
 	<key>switch.on</key>
 	<string>オン</string>
+	<key>task</key>
+	<string>タスク</string>
+	<key>tasks</key>
+	<string>タスク</string>
 	<key>the host</key>
 	<string>ホスト</string>
 	<key>tokens</key>

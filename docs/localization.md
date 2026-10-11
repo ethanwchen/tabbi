@@ -72,6 +72,8 @@ Settings > Connections shows each connection's status headline and detail, its t
 The troubleshooter's checks ("Something not working?"), the setup walkthroughs and the screens before a macOS permission prompt are translated too, and so are the support details copied from the troubleshooter, apart from their field labels and state code.
 Their steps name macOS and Anki menus and buttons as those apps show them in each language, and Terminal and Shortcuts by their macOS names (Kurzbefehle, ターミナル).
 The kit questions and import review in Settings, the weekly recap card and its history, the crash report and update rows, and the Party invite, onboarding and report sheets are translated as well.
+The recap card's stat captions ("sessions", "best day") sit under a number drawn on its own, so each is a caption with a singular and a plural key rather than a plural variation; Russian uses the nominative plural there, and the row drops its last stats when the captions run long, so keep them to one or two short words.
+The Party invite card (titles, messages, buttons and tooltips from `PartyInviteFlow`) and the "Move to Applications" alert are translated too, and the alert names the Applications folder as macOS does in each language (Programme, アプリケーション).
 Breed names stay English, because a pet that still goes by its breed is recognized by comparing its saved name to the breed's name.
 These stay English on purpose for now:
 

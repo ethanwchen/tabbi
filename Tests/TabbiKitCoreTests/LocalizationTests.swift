@@ -62,6 +62,9 @@ final class LocalizationTests: XCTestCase {
         let cores = russian.localizedString(forKey: "%lld cores", value: nil, table: nil)
         XCTAssertEqual([1, 2, 5, 21].map { String(format: cores, locale: locale, $0) },
                        ["1 ядро", "2 ядра", "5 ядер", "21 ядро"])
+        let friends = russian.localizedString(forKey: "%lld friends are here with you.", value: nil, table: nil)
+        XCTAssertEqual([1, 2, 5, 21].map { String(format: friends, locale: locale, $0) },
+                       ["С тобой 1 друг.", "С тобой 2 друга.", "С тобой 5 друзей.", "С тобой 21 друг."])
     }
 
     /// Seasonal event names and taglines live in events.json, in English,

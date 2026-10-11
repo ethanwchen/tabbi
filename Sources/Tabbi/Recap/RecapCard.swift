@@ -37,7 +37,7 @@ struct RecapCard: View {
                                 .font(Theme.Typography.metric)
                                 .foregroundStyle(accent)
                                 .lineLimit(1)
-                            Text("focused")
+                            Text("focused", bundle: .tabbi)
                                 .font(Theme.Typography.caption)
                                 .foregroundStyle(Theme.Palette.tertiaryText)
                         }
@@ -135,6 +135,7 @@ struct RecapDayBars: View {
                               : minutes > 0 ? accent.opacity(0.4) : Theme.Palette.stroke)
                         .frame(width: barWidth, height: height(minutes, best: best))
                     Text(initials[index])
+                        .fixedSize()
                         .font(.system(size: 9, weight: .semibold, design: Theme.Typography.design))
                         .foregroundStyle(isBest ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
                 }

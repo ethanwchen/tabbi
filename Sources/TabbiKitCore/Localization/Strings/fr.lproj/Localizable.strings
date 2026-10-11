@@ -25,6 +25,8 @@
 	<string>%1$@ ne peut pas contrôler %2$@</string>
 	<key>%@ checkup</key>
 	<string>Diagnostic : %@</string>
+	<key>%@ could not be copied to Applications. %@</key>
+	<string>Impossible de copier %@ dans Applications. %@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
 	<string>%@ n'a pas pu l'affiner. Ce plan reste valable.</string>
 	<key>%@ couldn't refine this plan</key>
@@ -45,6 +47,8 @@
 	<string>%@ dans la session partagée</string>
 	<key>%@ is already used by another app. Record a different shortcut.</key>
 	<string>%@ est déjà utilisé par une autre app. Enregistre un autre raccourci.</string>
+	<key>%@ is already your friend</key>
+	<string>%@ fait déjà partie de tes amis</string>
 	<key>%@ is connected</key>
 	<string>%@ est connecté</string>
 	<key>%@ is damaged, so it's left untouched.</key>
@@ -65,6 +69,8 @@
 	<string>%@ examine ce plan…</string>
 	<key>%@ is napping until your next session</key>
 	<string>%@ fait la sieste jusqu'à ta prochaine session</string>
+	<key>%@ is now your friend</key>
+	<string>%@ fait maintenant partie de tes amis</string>
 	<key>%@ is on a break with you</key>
 	<string>%@ fait une pause avec toi</string>
 	<key>%@ is studying with the party</key>
@@ -125,6 +131,8 @@
 	<string>%1$@ à %2$lld</string>
 	<key>%@ with %@</key>
 	<string>%1$@ avec %2$@</string>
+	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
+	<string>%@ fonctionne mieux depuis Applications, où l'app peut s'ouvrir à la connexion et se mettre à jour toute seule. Elle s'y copie puis se rouvre.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · En pause</string>
 	<key>%@, %lld extra</key>
@@ -299,12 +307,16 @@
 	<string>Ajouter une app…</string>
 	<key>Add Control or Option so the shortcut doesn't get in the way of typing.</key>
 	<string>Ajoute Contrôle ou Option pour que le raccourci ne gêne pas la saisie.</string>
+	<key>Add Friend</key>
+	<string>Ajouter un ami</string>
 	<key>Add Google Calendar</key>
 	<string>Ajouter Google Agenda</string>
 	<key>Add a Distracting App</key>
 	<string>Ajouter une app distrayante</string>
 	<key>Add a few things you want to get done today.</key>
 	<string>Ajoute quelques choses à faire aujourd'hui.</string>
+	<key>Add a friend?</key>
+	<string>Ajouter un ami ?</string>
 	<key>Add a kit someone shared as a .json file; you see what it changes first</key>
 	<string>Ajoute un kit partagé sous forme de fichier .json ; tu vois d'abord ce qu'il change</string>
 	<key>Add a note (optional)</key>
@@ -325,6 +337,8 @@
 	<string>Ajouter une clé</string>
 	<key>Add more</key>
 	<string>Ajouter</string>
+	<key>Add the Party tab and connect to the party server</key>
+	<string>Ajouter l'onglet Groupe et se connecter au serveur Groupe</string>
 	<key>Add the unfinished tasks to the end of today's list</key>
 	<string>Ajoute les tâches inachevées à la fin de la liste du jour</string>
 	<key>Add this block to your calendar</key>
@@ -639,6 +653,8 @@
 	<string>Vérifie que ton Wi-Fi est activé, puis réessaie.</string>
 	<key>Check the party server</key>
 	<string>Vérifie le serveur de groupes</string>
+	<key>Check the server in Party options.</key>
+	<string>Vérifie le serveur dans les options de Groupe.</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>Vérifie ta connexion internet. Amis et groupes s'afficheront dès son retour.</string>
 	<key>Checking</key>
@@ -737,6 +753,10 @@
 	<string>Fermer les détails</string>
 	<key>Close the checkup</key>
 	<string>Fermer le diagnostic</string>
+	<key>Close the invite</key>
+	<string>Fermer l'invitation</string>
+	<key>Close the invite without doing anything</key>
+	<string>Fermer l'invitation sans rien faire</string>
 	<key>Close the plan</key>
 	<string>Fermer le plan</string>
 	<key>Close the plan without adding anything</key>
@@ -781,6 +801,8 @@
 	<string>Connexion à %@…</string>
 	<key>Connecting to Anki…</key>
 	<string>Connexion à Anki…</string>
+	<key>Connecting to Party</key>
+	<string>Connexion à Groupe</string>
 	<key>Connecting…</key>
 	<string>Connexion…</string>
 	<key>Connection lost</key>
@@ -829,12 +851,16 @@
 	<string>Copie ton code ami pour le partager</string>
 	<key>Copy “%@” so you can paste it</key>
 	<string>Copier « %@ » pour le coller</string>
+	<key>Couldn't add this friend</key>
+	<string>Impossible d'ajouter cet ami</string>
 	<key>Couldn't add to your calendar. Try again</key>
 	<string>Impossible d'ajouter au calendrier. Réessaie</string>
 	<key>Couldn't check your shortcuts</key>
 	<string>Impossible de vérifier tes raccourcis</string>
 	<key>Couldn't import %@: %@</key>
 	<string>Impossible d'importer %1$@ : %2$@</string>
+	<key>Couldn't join this party</key>
+	<string>Impossible de rejoindre ce groupe</string>
 	<key>Couldn't plan your day</key>
 	<string>Impossible de planifier ta journée</string>
 	<key>Couldn't reach the party server.</key>
@@ -973,6 +999,8 @@
 	<string>Ton Mac a-t-il des calendriers ?</string>
 	<key>Dog</key>
 	<string>Chien</string>
+	<key>Don't ask again</key>
+	<string>Ne plus demander</string>
 	<key>Done</key>
 	<string>Terminé</string>
 	<key>Drag to reorder</key>
@@ -1141,6 +1169,8 @@
 	<string>Temps de travail libre sur les sept prochains jours, avec une marge autour de chaque événement</string>
 	<key>Friend code</key>
 	<string>Code ami</string>
+	<key>Friend code %@. You'll see each other's pets and study time.</key>
+	<string>Code ami %@. Vous verrez chacun le compagnon et le temps d'étude de l'autre.</string>
 	<key>Friend's code</key>
 	<string>Code d'un ami</string>
 	<key>Friends</key>
@@ -1369,6 +1399,10 @@
 	<string>Rejoindre le groupe de %@</string>
 	<key>Join Party</key>
 	<string>Rejoindre Groupe</string>
+	<key>Join this party now</key>
+	<string>Rejoindre ce groupe maintenant</string>
+	<key>Join this party?</key>
+	<string>Rejoindre ce groupe ?</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>Connexion à Groupe. Ça prend une seconde.</string>
 	<key>Joining the party server…</key>
@@ -1529,8 +1563,12 @@
 	<string>Plus d'options</string>
 	<key>More tabs</key>
 	<string>Plus d'onglets</string>
+	<key>Move %@ to your Applications folder?</key>
+	<string>Déplacer %@ dans ton dossier Applications ?</string>
 	<key>Move down</key>
 	<string>Descendre</string>
+	<key>Move to Applications</key>
+	<string>Déplacer dans Applications</string>
 	<key>Move to today</key>
 	<string>Reporter à aujourd'hui</string>
 	<key>Move up</key>
@@ -1729,6 +1767,8 @@
 	<string>Rien de prévu</string>
 	<key>Nothing playing</key>
 	<string>Rien en lecture</string>
+	<key>Nothing to do.</key>
+	<string>Rien à faire.</string>
 	<key>Nothing was on your calendars yesterday.</key>
 	<string>Rien dans tes calendriers hier.</string>
 	<key>Notifications</key>
@@ -1757,6 +1797,10 @@
 	<string>Plus qu'un module</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>Une session calme à la fois. Tu vas y arriver.</string>
+	<key>One moment.</key>
+	<string>Un instant.</string>
+	<key>One question first</key>
+	<string>D'abord une question</string>
 	<key>One shortcut left</key>
 	<string>Plus qu'un raccourci</string>
 	<key>One song</key>
@@ -1819,6 +1863,8 @@
 	<string>Ouvrir Comptes Internet</string>
 	<key>Open Internet Accounts to add a Google, Exchange or iCloud calendar</key>
 	<string>Ouvrir Comptes Internet pour ajouter un calendrier Google, Exchange ou iCloud</string>
+	<key>Open Party</key>
+	<string>Ouvrir Groupe</string>
 	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
 	<string>Ouvrir Confidentialité et sécurité &gt; Enregistrement de l'écran dans Réglages Système</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
@@ -1845,6 +1891,8 @@
 	<string>Ouvrir au survol</string>
 	<key>Open the %@ app to connect</key>
 	<string>Ouvre l'app %@ pour connecter le calendrier</string>
+	<key>Open the Party tab to answer</key>
+	<string>Ouvrir l'onglet Groupe pour répondre</string>
 	<key>Open the Party tab to join.</key>
 	<string>Ouvre l'onglet Groupe pour rejoindre.</string>
 	<key>Open the notch after hovering it briefly</key>
@@ -1903,6 +1951,10 @@
 	<string>Groupe ne peut pas se connecter</string>
 	<key>Party code</key>
 	<string>Code du groupe</string>
+	<key>Party code %@. Study together with everyone in it.</key>
+	<string>Code de groupe %@. Étudie avec tous ses membres.</string>
+	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
+	<string>Code de groupe %@. Étudie avec tous ses membres. Tu quitteras ton groupe actuel.</string>
 	<key>Party invite</key>
 	<string>Invitation au groupe</string>
 	<key>Party is for people %lld and older.</key>
@@ -1921,6 +1973,10 @@
 	<string>Groupe n'est pas encore disponible</string>
 	<key>Party isn't set up</key>
 	<string>Groupe n'est pas configuré</string>
+	<key>Party lets you study beside friends. Turn it on to add this friend.</key>
+	<string>Groupe te permet d'étudier aux côtés de tes amis. Active-le pour ajouter cet ami.</string>
+	<key>Party lets you study beside friends. Turn it on to join this party.</key>
+	<string>Groupe te permet d'étudier aux côtés de tes amis. Active-le pour rejoindre ce groupe.</string>
 	<key>Party pets</key>
 	<string>Compagnons de Groupe</string>
 	<key>Party session</key>
@@ -2287,6 +2343,8 @@
 	<string>Sélectionne AnkiConnect et clique sur Rechercher des mises à jour</string>
 	<key>Send (Return)</key>
 	<string>Envoyer (Retour)</string>
+	<key>Send a friend request with this code</key>
+	<string>Envoyer une demande d'ami avec ce code</string>
 	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
 	<string>Envoie ton code à tes amis pour qu'ils t'ajoutent. Ils voient ton nom, ton compagnon et ton minuteur d'étude.</string>
 	<key>Send your AI requests to %@?</key>
@@ -2321,6 +2379,8 @@
 	<string>Partage un lien d'invitation. Un ami qui l'ouvre peut t'ajouter en un clic.</string>
 	<key>Share an invite link. Friends who open it can join this party in one click.</key>
 	<string>Partage un lien d'invitation. Tes amis rejoignent ce groupe en un clic.</string>
+	<key>Share it with a friend so they can add you.</key>
+	<string>Partage-le avec un ami pour qu'il puisse t'ajouter.</string>
 	<key>Share your code above, or add theirs below.</key>
 	<string>Partage ton code en haut ou ajoute le leur en bas.</string>
 	<key>Shared focus: %@ left</key>
@@ -2663,12 +2723,18 @@
 	<string>Ce nom n'est pas autorisé. Choisis-en un autre.</string>
 	<key>That party has ended or the code is wrong.</key>
 	<string>Ce groupe est terminé ou le code est faux.</string>
+	<key>That party has ended. Ask for a new link.</key>
+	<string>Ce groupe est terminé. Demande un nouveau lien.</string>
 	<key>That party is full.</key>
 	<string>Ce groupe est complet.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>Ce nom de compagnon n'est pas autorisé. Choisis-en un autre.</string>
 	<key>That's your own code.</key>
 	<string>C'est ton propre code.</string>
+	<key>That's your own link</key>
+	<string>C'est ton propre lien</string>
+	<key>That's your own link.</key>
+	<string>C'est ton propre lien.</string>
 	<key>The AI</key>
 	<string>L'IA</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
@@ -2677,6 +2743,8 @@
 	<string>L'onglet Anki montre tes cartes à revoir, tes paquets principaux et ta série, et Aujourd'hui compte tes révisions dans ta journée.</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>Le trousseau n'a pas enregistré la clé. Réessaie.</string>
+	<key>The Party tab asks when you were born before you join. Then open the link again.</key>
+	<string>L'onglet Groupe te demande ta date de naissance avant de rejoindre. Rouvre ensuite le lien.</string>
 	<key>The Shortcuts app didn't answer in time. Try again in a moment.</key>
 	<string>L'app Raccourcis n'a pas répondu à temps. Réessaie dans un instant.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
@@ -2769,6 +2837,8 @@
 	<string>C'est souvent passager. Revérifie dans un instant.</string>
 	<key>This is what needs fixing</key>
 	<string>Voici ce qu'il faut régler</string>
+	<key>This link doesn't match anyone now. Ask your friend for a new one.</key>
+	<string>Ce lien ne correspond plus à personne. Demande-en un nouveau à ton ami.</string>
 	<key>This part works</key>
 	<string>Cette partie marche</string>
 	<key>This tab reads your decks through the free AnkiConnect add-on.</key>
@@ -2823,6 +2893,8 @@
 	<string>Agenda de demain</string>
 	<key>Too many requests. Trying again shortly.</key>
 	<string>Trop de requêtes. Nouvel essai dans un instant.</string>
+	<key>Too many tries for now. Wait a minute, then try again.</key>
+	<string>Trop d'essais pour l'instant. Attends une minute, puis réessaie.</string>
 	<key>Took back the import of %@.</key>
 	<string>Import de %@ annulé.</string>
 	<key>Top decks</key>
@@ -2831,8 +2903,12 @@
 	<string>Modèle principal</string>
 	<key>Total CPU usage across all cores, last 60 seconds</key>
 	<string>Utilisation CPU totale sur tous les cœurs, 60 dernières secondes</string>
+	<key>Try Again</key>
+	<string>Réessayer</string>
 	<key>Try again</key>
 	<string>Réessayer</string>
+	<key>Try again now</key>
+	<string>Réessayer maintenant</string>
 	<key>Try the server again now</key>
 	<string>Réessayer le serveur maintenant</string>
 	<key>Try to reach Party again now</key>
@@ -2847,6 +2923,8 @@
 	<string>Active %@ un instant, puis désactive-le</string>
 	<key>Turn Do Not Disturb on for a moment, then off again</key>
 	<string>Activer Ne pas déranger un instant, puis le désactiver</string>
+	<key>Turn On Party</key>
+	<string>Activer Groupe</string>
 	<key>Turn on</key>
 	<string>Activer</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
@@ -2857,6 +2935,8 @@
 	<string>Activer Ne pas déranger quand le minuteur de focus tourne</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>Active JavaScript pour SoundCloud</string>
+	<key>Turn on Party?</key>
+	<string>Activer Groupe ?</string>
 	<key>Turn on Tabbi under Calendars in System Settings.</key>
 	<string>Active Tabbi sous Calendriers dans Réglages Système.</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -2881,6 +2961,8 @@
 	<string>Tape ou colle le code à %lld caractères d'un ami et appuie sur Entrée</string>
 	<key>Unblock</key>
 	<string>Débloquer</string>
+	<key>Unblock them in Party options to add them again.</key>
+	<string>Débloque cette personne dans les options de Groupe pour l'ajouter à nouveau.</string>
 	<key>Unblocking…</key>
 	<string>Déblocage…</string>
 	<key>Undo</key>
@@ -3059,6 +3141,8 @@
 	<string>Toi</string>
 	<key>You already have 50 friends.</key>
 	<string>Tu as déjà 50 amis.</string>
+	<key>You blocked %@</key>
+	<string>Tu as bloqué %@</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
 	<string>Tu as bloqué cette personne. Débloque-la d'abord dans les options de Groupe.</string>
 	<key>You can change it any time in Settings &gt; General.</key>
@@ -3077,14 +3161,22 @@
 	<string>Tu peux couper les alertes à tout moment dans Réglages Système.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>Tu reçois un gel offert chaque semaine et peux en garder %lld de plus.</string>
+	<key>You joined the party</key>
+	<string>Tu as rejoint le groupe</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>Tu as étudié %@ aujourd'hui. Repose-toi et repars de plus belle demain.</string>
 	<key>You started it for the party</key>
 	<string>Tu l'as lancée pour la party</string>
+	<key>You'll see %@ in your Party tab.</key>
+	<string>Tu verras %@ dans ton onglet Groupe.</string>
+	<key>You're already in this party</key>
+	<string>Tu es déjà dans ce groupe</string>
 	<key>You're in Party</key>
 	<string>Tu es dans Groupe</string>
 	<key>You're not in a party anymore.</key>
 	<string>Tu n'es plus dans un groupe.</string>
+	<key>You're the only one here for now.</key>
+	<string>Il n'y a que toi ici pour l'instant.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>Tu as bloqué trop de personnes. Débloque quelqu'un d'abord.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
@@ -3173,8 +3265,16 @@
 	<string>Votre semaine avec Tabbi est prête</string>
 	<key>all day: %@</key>
 	<string>toute la journée : %@</string>
+	<key>best day</key>
+	<string>meilleur jour</string>
+	<key>card</key>
+	<string>carte</string>
+	<key>cards</key>
+	<string>cartes</string>
 	<key>day</key>
 	<string>jour</string>
+	<key>day streak</key>
+	<string>jours de suite</string>
 	<key>days</key>
 	<string>jours</string>
 	<key>due</key>
@@ -3183,6 +3283,8 @@
 	<string>se termine</string>
 	<key>events</key>
 	<string>événements</string>
+	<key>focused</key>
+	<string>de focus</string>
 	<key>in %@</key>
 	<string>dans %@</string>
 	<key>in the last 30 days</key>
@@ -3195,6 +3297,8 @@
 	<string>macOS demande une seule fois si Tabbi peut utiliser : %@</string>
 	<key>meetings and calls</key>
 	<string>réunions et appels</string>
+	<key>min</key>
+	<string>min</string>
 	<key>no free time</key>
 	<string>pas de temps libre</string>
 	<key>nothing yet; pick a sound</key>
@@ -3205,16 +3309,28 @@
 	<string>sur %@ Go</string>
 	<key>on your own</key>
 	<string>en solo</string>
+	<key>point</key>
+	<string>point</string>
+	<key>points</key>
+	<string>points</string>
 	<key>pts</key>
 	<string>pts</string>
 	<key>ready to unlock</key>
 	<string>prêt à débloquer</string>
+	<key>session</key>
+	<string>session</string>
+	<key>sessions</key>
+	<string>sessions</string>
 	<key>shared focus</key>
 	<string>focus partagé</string>
 	<key>starts %@</key>
 	<string>dès le %@</string>
 	<key>switch.on</key>
 	<string>Activé</string>
+	<key>task</key>
+	<string>tâche</string>
+	<key>tasks</key>
+	<string>tâches</string>
 	<key>the host</key>
 	<string>l'hôte</string>
 	<key>tokens</key>

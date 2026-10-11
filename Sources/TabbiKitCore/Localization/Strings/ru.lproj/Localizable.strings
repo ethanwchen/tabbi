@@ -25,6 +25,8 @@
 	<string>%1$@ не может управлять %2$@</string>
 	<key>%@ checkup</key>
 	<string>Проверка: %@</string>
+	<key>%@ could not be copied to Applications. %@</key>
+	<string>Не удалось скопировать %@ в Программы. %@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
 	<string>%@ не удалось улучшить план. Этот план тоже подойдет.</string>
 	<key>%@ couldn't refine this plan</key>
@@ -45,6 +47,8 @@
 	<string>%@ в общей сессии пати</string>
 	<key>%@ is already used by another app. Record a different shortcut.</key>
 	<string>%@ уже занято другим приложением. Запиши другое сочетание клавиш.</string>
+	<key>%@ is already your friend</key>
+	<string>%@ уже твой друг</string>
 	<key>%@ is connected</key>
 	<string>%@: подключено</string>
 	<key>%@ is damaged, so it's left untouched.</key>
@@ -65,6 +69,8 @@
 	<string>%@ изучает план…</string>
 	<key>%@ is napping until your next session</key>
 	<string>%@ спит до следующей сессии</string>
+	<key>%@ is now your friend</key>
+	<string>%@ теперь твой друг</string>
 	<key>%@ is on a break with you</key>
 	<string>%@ отдыхает вместе с тобой</string>
 	<key>%@ is studying with the party</key>
@@ -125,6 +131,8 @@
 	<string>%1$@ с %2$lld</string>
 	<key>%@ with %@</key>
 	<string>%1$@ и %2$@</string>
+	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
+	<string>%@ лучше всего работает из папки «Программы»: оттуда приложение открывается при входе в систему и само обновляется. Оно скопирует себя туда и откроется снова.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · Пауза</string>
 	<key>%@, %lld extra</key>
@@ -299,12 +307,16 @@
 	<string>Добавить…</string>
 	<key>Add Control or Option so the shortcut doesn't get in the way of typing.</key>
 	<string>Добавь Control или Option, чтобы сочетание не мешало набору текста.</string>
+	<key>Add Friend</key>
+	<string>Добавить друга</string>
 	<key>Add Google Calendar</key>
 	<string>Добавить Google Календарь</string>
 	<key>Add a Distracting App</key>
 	<string>Добавить отвлекающее приложение</string>
 	<key>Add a few things you want to get done today.</key>
 	<string>Добавь пару дел, которые хочешь сделать сегодня.</string>
+	<key>Add a friend?</key>
+	<string>Добавить друга?</string>
 	<key>Add a kit someone shared as a .json file; you see what it changes first</key>
 	<string>Добавить набор, которым поделились в файле .json. Сначала ты увидишь, что он изменит</string>
 	<key>Add a note (optional)</key>
@@ -325,6 +337,8 @@
 	<string>Добавить ключ</string>
 	<key>Add more</key>
 	<string>Добавить еще</string>
+	<key>Add the Party tab and connect to the party server</key>
+	<string>Добавить вкладку Party и подключиться к серверу Party</string>
 	<key>Add the unfinished tasks to the end of today's list</key>
 	<string>Добавить невыполненные задачи в конец списка на сегодня</string>
 	<key>Add this block to your calendar</key>
@@ -639,6 +653,8 @@
 	<string>Проверь, что Wi-Fi включен, и попробуй снова.</string>
 	<key>Check the party server</key>
 	<string>Проверь сервер пати</string>
+	<key>Check the server in Party options.</key>
+	<string>Проверь сервер в настройках Party.</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>Проверь подключение к интернету. Друзья и пати появятся, когда оно вернется.</string>
 	<key>Checking</key>
@@ -737,6 +753,10 @@
 	<string>Закрыть подробности</string>
 	<key>Close the checkup</key>
 	<string>Закрыть проверку</string>
+	<key>Close the invite</key>
+	<string>Закрыть приглашение</string>
+	<key>Close the invite without doing anything</key>
+	<string>Закрыть приглашение, ничего не делая</string>
 	<key>Close the plan</key>
 	<string>Закрыть план</string>
 	<key>Close the plan without adding anything</key>
@@ -781,6 +801,8 @@
 	<string>Подключение к %@…</string>
 	<key>Connecting to Anki…</key>
 	<string>Подключение к Anki…</string>
+	<key>Connecting to Party</key>
+	<string>Подключение к Party</string>
 	<key>Connecting…</key>
 	<string>Подключение…</string>
 	<key>Connection lost</key>
@@ -829,12 +851,16 @@
 	<string>Скопировать код друга, чтобы поделиться</string>
 	<key>Copy “%@” so you can paste it</key>
 	<string>Скопировать «%@», чтобы вставить</string>
+	<key>Couldn't add this friend</key>
+	<string>Не удалось добавить друга</string>
 	<key>Couldn't add to your calendar. Try again</key>
 	<string>Не удалось добавить в календарь. Попробуй еще раз</string>
 	<key>Couldn't check your shortcuts</key>
 	<string>Не удалось проверить команды</string>
 	<key>Couldn't import %@: %@</key>
 	<string>Не удалось импортировать %1$@: %2$@</string>
+	<key>Couldn't join this party</key>
+	<string>Не удалось присоединиться к группе</string>
 	<key>Couldn't plan your day</key>
 	<string>Не удалось спланировать день</string>
 	<key>Couldn't reach the party server.</key>
@@ -973,6 +999,8 @@
 	<string>На Mac есть календари?</string>
 	<key>Dog</key>
 	<string>Собака</string>
+	<key>Don't ask again</key>
+	<string>Больше не спрашивать</string>
 	<key>Done</key>
 	<string>Готово</string>
 	<key>Drag to reorder</key>
@@ -1141,6 +1169,8 @@
 	<string>Свободное рабочее время на ближайшие семь дней, с запасом вокруг каждого события</string>
 	<key>Friend code</key>
 	<string>Код друга</string>
+	<key>Friend code %@. You'll see each other's pets and study time.</key>
+	<string>Код друга %@. Вы будете видеть питомцев и время учёбы друг друга.</string>
 	<key>Friend's code</key>
 	<string>Код друга</string>
 	<key>Friends</key>
@@ -1369,6 +1399,10 @@
 	<string>Присоединиться к пати %@</string>
 	<key>Join Party</key>
 	<string>Присоединиться к Party</string>
+	<key>Join this party now</key>
+	<string>Присоединиться к этой группе сейчас</string>
+	<key>Join this party?</key>
+	<string>Присоединиться к группе?</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>Подключаемся к Party. Это займет секунду.</string>
 	<key>Joining the party server…</key>
@@ -1529,8 +1563,12 @@
 	<string>Другие параметры</string>
 	<key>More tabs</key>
 	<string>Другие вкладки</string>
+	<key>Move %@ to your Applications folder?</key>
+	<string>Переместить %@ в папку «Программы»?</string>
 	<key>Move down</key>
 	<string>Переместить вниз</string>
+	<key>Move to Applications</key>
+	<string>Переместить в Программы</string>
 	<key>Move to today</key>
 	<string>Перенести на сегодня</string>
 	<key>Move up</key>
@@ -1729,6 +1767,8 @@
 	<string>Ничего не запланировано</string>
 	<key>Nothing playing</key>
 	<string>Ничего не играет</string>
+	<key>Nothing to do.</key>
+	<string>Ничего делать не нужно.</string>
 	<key>Nothing was on your calendars yesterday.</key>
 	<string>Вчера в календарях было пусто.</string>
 	<key>Notifications</key>
@@ -1757,6 +1797,10 @@
 	<string>Остался один аддон</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>Спокойно, сессия за сессией. У тебя все получится.</string>
+	<key>One moment.</key>
+	<string>Секунду.</string>
+	<key>One question first</key>
+	<string>Сначала один вопрос</string>
 	<key>One shortcut left</key>
 	<string>Осталась одна команда</string>
 	<key>One song</key>
@@ -1819,6 +1863,8 @@
 	<string>Открыть «Учетные записи интернета»</string>
 	<key>Open Internet Accounts to add a Google, Exchange or iCloud calendar</key>
 	<string>Открыть «Учетные записи интернета», чтобы добавить календарь Google, Exchange или iCloud</string>
+	<key>Open Party</key>
+	<string>Открыть Party</string>
 	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
 	<string>Открыть «Конфиденциальность и безопасность» &gt; «Запись экрана» в Системных настройках</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
@@ -1845,6 +1891,8 @@
 	<string>Открывать при наведении</string>
 	<key>Open the %@ app to connect</key>
 	<string>Открой приложение %@, чтобы подключить</string>
+	<key>Open the Party tab to answer</key>
+	<string>Открой вкладку Party, чтобы ответить</string>
 	<key>Open the Party tab to join.</key>
 	<string>Открой вкладку Party, чтобы войти.</string>
 	<key>Open the notch after hovering it briefly</key>
@@ -1903,6 +1951,10 @@
 	<string>Party не подключается</string>
 	<key>Party code</key>
 	<string>Код Party</string>
+	<key>Party code %@. Study together with everyone in it.</key>
+	<string>Код группы %@. Учись вместе со всеми участниками.</string>
+	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
+	<string>Код группы %@. Учись вместе со всеми участниками. Ты выйдешь из текущей группы.</string>
 	<key>Party invite</key>
 	<string>Приглашение</string>
 	<key>Party is for people %lld and older.</key>
@@ -1921,6 +1973,10 @@
 	<string>Party пока недоступна</string>
 	<key>Party isn't set up</key>
 	<string>Party не настроена</string>
+	<key>Party lets you study beside friends. Turn it on to add this friend.</key>
+	<string>В Party можно учиться вместе с друзьями. Включи её, чтобы добавить этого друга.</string>
+	<key>Party lets you study beside friends. Turn it on to join this party.</key>
+	<string>В Party можно учиться вместе с друзьями. Включи её, чтобы присоединиться к группе.</string>
 	<key>Party pets</key>
 	<string>Питомцы Party</string>
 	<key>Party session</key>
@@ -2287,6 +2343,8 @@
 	<string>Выбери AnkiConnect и нажми «Проверить обновления»</string>
 	<key>Send (Return)</key>
 	<string>Отправить (Return)</string>
+	<key>Send a friend request with this code</key>
+	<string>Отправить запрос в друзья по этому коду</string>
 	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
 	<string>Отправь друзьям свой код, чтобы они тебя добавили. Они видят твое имя, питомца и таймер учебы.</string>
 	<key>Send your AI requests to %@?</key>
@@ -2321,6 +2379,8 @@
 	<string>Поделись ссылкой-приглашением. Друг, открывший ее, добавит тебя одним щелчком.</string>
 	<key>Share an invite link. Friends who open it can join this party in one click.</key>
 	<string>Поделись ссылкой-приглашением. Друзья, открывшие ее, присоединятся одним щелчком.</string>
+	<key>Share it with a friend so they can add you.</key>
+	<string>Поделись ею с другом, чтобы он мог тебя добавить.</string>
 	<key>Share your code above, or add theirs below.</key>
 	<string>Поделись своим кодом выше или введи код друга ниже.</string>
 	<key>Shared focus: %@ left</key>
@@ -2663,12 +2723,18 @@
 	<string>Это имя недопустимо. Выбери другое.</string>
 	<key>That party has ended or the code is wrong.</key>
 	<string>Пати закончилась или код неверный.</string>
+	<key>That party has ended. Ask for a new link.</key>
+	<string>Эта группа уже закончилась. Попроси новую ссылку.</string>
 	<key>That party is full.</key>
 	<string>В этой пати нет мест.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>Это имя питомца недопустимо. Выбери другое.</string>
 	<key>That's your own code.</key>
 	<string>Это твой собственный код.</string>
+	<key>That's your own link</key>
+	<string>Это твоя ссылка</string>
+	<key>That's your own link.</key>
+	<string>Это твоя ссылка.</string>
 	<key>The AI</key>
 	<string>ИИ</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
@@ -2677,6 +2743,8 @@
 	<string>Вкладка Anki показывает карточки к повторению, главные колоды и серию, а Сегодня засчитывает повторения в твой день.</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>Связке ключей не удалось сохранить ключ. Попробуй еще раз.</string>
+	<key>The Party tab asks when you were born before you join. Then open the link again.</key>
+	<string>Перед входом вкладка Party спросит, когда ты родился(ась). Потом открой ссылку ещё раз.</string>
 	<key>The Shortcuts app didn't answer in time. Try again in a moment.</key>
 	<string>Приложение «Быстрые команды» не ответило вовремя. Попробуй чуть позже.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
@@ -2769,6 +2837,8 @@
 	<string>Обычно это ненадолго. Проверь снова чуть позже.</string>
 	<key>This is what needs fixing</key>
 	<string>Вот что нужно исправить</string>
+	<key>This link doesn't match anyone now. Ask your friend for a new one.</key>
+	<string>Эта ссылка сейчас никому не принадлежит. Попроси у друга новую.</string>
 	<key>This part works</key>
 	<string>Эта часть работает</string>
 	<key>This tab reads your decks through the free AnkiConnect add-on.</key>
@@ -2823,6 +2893,8 @@
 	<string>Календарь на завтра</string>
 	<key>Too many requests. Trying again shortly.</key>
 	<string>Слишком много запросов. Скоро повторим.</string>
+	<key>Too many tries for now. Wait a minute, then try again.</key>
+	<string>Слишком много попыток. Подожди минуту и попробуй снова.</string>
 	<key>Took back the import of %@.</key>
 	<string>Импорт %@ отменен.</string>
 	<key>Top decks</key>
@@ -2831,8 +2903,12 @@
 	<string>Топ-модель</string>
 	<key>Total CPU usage across all cores, last 60 seconds</key>
 	<string>Общая загрузка ЦП по всем ядрам за 60 секунд</string>
+	<key>Try Again</key>
+	<string>Попробовать снова</string>
 	<key>Try again</key>
 	<string>Попробовать снова</string>
+	<key>Try again now</key>
+	<string>Попробовать снова сейчас</string>
 	<key>Try the server again now</key>
 	<string>Снова подключиться к серверу</string>
 	<key>Try to reach Party again now</key>
@@ -2847,6 +2923,8 @@
 	<string>Ненадолго включить %@, затем выключить</string>
 	<key>Turn Do Not Disturb on for a moment, then off again</key>
 	<string>Ненадолго включить «Не беспокоить» и снова выключить</string>
+	<key>Turn On Party</key>
+	<string>Включить Party</string>
 	<key>Turn on</key>
 	<string>Включить</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
@@ -2857,6 +2935,8 @@
 	<string>Включать «Не беспокоить», пока идет таймер фокуса</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>Включи JavaScript для SoundCloud</string>
+	<key>Turn on Party?</key>
+	<string>Включить Party?</string>
 	<key>Turn on Tabbi under Calendars in System Settings.</key>
 	<string>Включи Tabbi в разделе «Календари» в Системных настройках.</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -2881,6 +2961,8 @@
 	<string>Введи или вставь код друга из %lld символов и нажми Return</string>
 	<key>Unblock</key>
 	<string>Разблокировать</string>
+	<key>Unblock them in Party options to add them again.</key>
+	<string>Разблокируй человека в настройках Party, чтобы снова добавить.</string>
 	<key>Unblocking…</key>
 	<string>Разблокировка…</string>
 	<key>Undo</key>
@@ -3059,6 +3141,8 @@
 	<string>Ты</string>
 	<key>You already have 50 friends.</key>
 	<string>У тебя уже 50 друзей.</string>
+	<key>You blocked %@</key>
+	<string>Ты заблокировал(а) %@</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
 	<string>Человек заблокирован. Разблокируй в параметрах Party.</string>
 	<key>You can change it any time in Settings &gt; General.</key>
@@ -3077,14 +3161,22 @@
 	<string>Уведомления можно выключить в любой момент в Системных настройках.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>Каждую неделю дается одна бесплатная заморозка, и можно хранить еще %lld.</string>
+	<key>You joined the party</key>
+	<string>Ты в группе</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>Сегодня на учебу ушло %@. Отдохни, а завтра начнешь с новыми силами.</string>
 	<key>You started it for the party</key>
 	<string>Ты запустил(а) ее для Party</string>
+	<key>You'll see %@ in your Party tab.</key>
+	<string>%@ появится во вкладке Party.</string>
+	<key>You're already in this party</key>
+	<string>Ты уже в этой группе</string>
 	<key>You're in Party</key>
 	<string>Ты в Party</string>
 	<key>You're not in a party anymore.</key>
 	<string>Ты больше не в пати.</string>
+	<key>You're the only one here for now.</key>
+	<string>Пока ты здесь один(одна).</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>Слишком много блокировок. Сначала разблокируй кого-то.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
@@ -3173,8 +3265,16 @@
 	<string>Твоя неделя с Tabbi: итоги готовы</string>
 	<key>all day: %@</key>
 	<string>весь день: %@</string>
+	<key>best day</key>
+	<string>лучший день</string>
+	<key>card</key>
+	<string>карточка</string>
+	<key>cards</key>
+	<string>карточки</string>
 	<key>day</key>
 	<string>день</string>
+	<key>day streak</key>
+	<string>серия</string>
 	<key>days</key>
 	<string>дн.</string>
 	<key>due</key>
@@ -3183,6 +3283,8 @@
 	<string>скоро конец</string>
 	<key>events</key>
 	<string>события</string>
+	<key>focused</key>
+	<string>в фокусе</string>
 	<key>in %@</key>
 	<string>через %@</string>
 	<key>in the last 30 days</key>
@@ -3195,6 +3297,8 @@
 	<string>macOS один раз спросит, можно ли Tabbi использовать: %@</string>
 	<key>meetings and calls</key>
 	<string>встречи и звонки</string>
+	<key>min</key>
+	<string>мин</string>
 	<key>no free time</key>
 	<string>нет свободного времени</string>
 	<key>nothing yet; pick a sound</key>
@@ -3205,16 +3309,28 @@
 	<string>из %@ ГБ</string>
 	<key>on your own</key>
 	<string>в одиночку</string>
+	<key>point</key>
+	<string>балл</string>
+	<key>points</key>
+	<string>баллы</string>
 	<key>pts</key>
 	<string>оч.</string>
 	<key>ready to unlock</key>
 	<string>можно открыть</string>
+	<key>session</key>
+	<string>сессия</string>
+	<key>sessions</key>
+	<string>сессии</string>
 	<key>shared focus</key>
 	<string>общий фокус</string>
 	<key>starts %@</key>
 	<string>с %@</string>
 	<key>switch.on</key>
 	<string>Вкл.</string>
+	<key>task</key>
+	<string>задача</string>
+	<key>tasks</key>
+	<string>задачи</string>
 	<key>the host</key>
 	<string>ведущий</string>
 	<key>tokens</key>

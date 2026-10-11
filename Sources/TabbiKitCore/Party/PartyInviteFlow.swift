@@ -168,21 +168,21 @@ public struct PartyInviteFlow: Equatable, Sendable {
 
     public var title: String {
         switch stage {
-        case .needsParty: "Turn on Party?"
-        case .connecting: "Connecting to Party"
-        case .unavailable, .ageCheck(tooYoungUntil: .some): "Party isn't available"
-        case .ageCheck: "One question first"
+        case .needsParty: String(localized: "Turn on Party?", bundle: .tabbi)
+        case .connecting: String(localized: "Connecting to Party", bundle: .tabbi)
+        case .unavailable, .ageCheck(tooYoungUntil: .some): String(localized: "Party isn't available", bundle: .tabbi)
+        case .ageCheck: String(localized: "One question first", bundle: .tabbi)
         case .confirming, .working:
             switch invite {
-            case .addFriend: "Add a friend?"
-            case .joinParty: "Join this party?"
+            case .addFriend: String(localized: "Add a friend?", bundle: .tabbi)
+            case .joinParty: String(localized: "Join this party?", bundle: .tabbi)
             }
-        case .finished(.added(let profile)): "\(profile.name) is now your friend"
-        case .finished(.alreadyFriends(let profile)): "\(profile.name) is already your friend"
-        case .finished(.joined): "You joined the party"
-        case .finished(.alreadyInParty): "You're already in this party"
-        case .refused(.ownCode): "That's your own link"
-        case .refused(.blocked(let name)): "You blocked \(name)"
+        case .finished(.added(let profile)): String(localized: "\(profile.name) is now your friend", bundle: .tabbi)
+        case .finished(.alreadyFriends(let profile)): String(localized: "\(profile.name) is already your friend", bundle: .tabbi)
+        case .finished(.joined): String(localized: "You joined the party", bundle: .tabbi)
+        case .finished(.alreadyInParty): String(localized: "You're already in this party", bundle: .tabbi)
+        case .refused(.ownCode): String(localized: "That's your own link", bundle: .tabbi)
+        case .refused(.blocked(let name)): String(localized: "You blocked \(name)", bundle: .tabbi)
         case .refused(.failed): failedTitle
         }
     }
@@ -191,41 +191,40 @@ public struct PartyInviteFlow: Equatable, Sendable {
         switch stage {
         case .needsParty:
             switch invite {
-            case .addFriend: return "Party lets you study beside friends. Turn it on to add this friend."
-            case .joinParty: return "Party lets you study beside friends. Turn it on to join this party."
+            case .addFriend: return String(localized: "Party lets you study beside friends. Turn it on to add this friend.", bundle: .tabbi)
+            case .joinParty: return String(localized: "Party lets you study beside friends. Turn it on to join this party.", bundle: .tabbi)
             }
         case .connecting:
-            return "One moment."
+            return String(localized: "One moment.", bundle: .tabbi)
         case .ageCheck(.some):
-            return "Party is for people \(PartyAgeCheck.minimumAge) and older."
+            return String(localized: "Party is for people \(PartyAgeCheck.minimumAge) and older.", bundle: .tabbi)
         case .ageCheck:
-            return "The Party tab asks when you were born before you join. Then open the link again."
+            return String(localized: "The Party tab asks when you were born before you join. Then open the link again.", bundle: .tabbi)
         case .unavailable(let error):
-            if case .invalidRequest = error { return "Check the server in Party options." }
+            if case .invalidRequest = error { return String(localized: "Check the server in Party options.", bundle: .tabbi) }
             return error.message
         case .confirming, .working:
             switch invite {
             case .addFriend(let code):
-                return "Friend code \(Self.display(code)). You'll see each other's pets and study time."
+                return String(localized: "Friend code \(Self.display(code)). You'll see each other's pets and study time.", bundle: .tabbi)
             case .joinParty(let code):
-                let leaving = currentParty == nil ? "" : " You'll leave your current party."
-                return "Party code \(code). Study together with everyone in it.\(leaving)"
+                if currentParty == nil {
+                    return String(localized: "Party code \(code). Study together with everyone in it.", bundle: .tabbi)
+                }
+                return String(localized: "Party code \(code). Study together with everyone in it. You'll leave your current party.", bundle: .tabbi)
             }
         case .finished(.added(let profile)), .finished(.alreadyFriends(let profile)):
-            return "You'll see \(profile.petName) in your Party tab."
+            return String(localized: "You'll see \(profile.petName) in your Party tab.", bundle: .tabbi)
         case .finished(.joined(let party)):
             let others = party.members.count - 1
-            switch others {
-            case ..<1: return "You're the only one here for now."
-            case 1: return "1 friend is here with you."
-            default: return "\(others) friends are here with you."
-            }
+            if others < 1 { return String(localized: "You're the only one here for now.", bundle: .tabbi) }
+            return String(localized: "\(others) friends are here with you.", bundle: .tabbi)
         case .finished(.alreadyInParty):
-            return "Nothing to do."
+            return String(localized: "Nothing to do.", bundle: .tabbi)
         case .refused(.ownCode):
-            return "Share it with a friend so they can add you."
+            return String(localized: "Share it with a friend so they can add you.", bundle: .tabbi)
         case .refused(.blocked):
-            return "Unblock them in Party options to add them again."
+            return String(localized: "Unblock them in Party options to add them again.", bundle: .tabbi)
         case .refused(.failed(let error)):
             return failedMessage(error)
         }
@@ -234,26 +233,26 @@ public struct PartyInviteFlow: Equatable, Sendable {
     /// The main button, or `nil` when there is nothing to do but close.
     public var primaryTitle: String? {
         switch stage {
-        case .needsParty: return "Turn On Party"
-        case .unavailable(let error): return error.isTransient ? "Try Again" : nil
-        case .ageCheck(nil): return "Open Party"
+        case .needsParty: return String(localized: "Turn On Party", bundle: .tabbi)
+        case .unavailable(let error): return error.isTransient ? String(localized: "Try Again", bundle: .tabbi) : nil
+        case .ageCheck(nil): return String(localized: "Open Party", bundle: .tabbi)
         case .confirming, .working:
             switch invite {
-            case .addFriend: return "Add Friend"
-            case .joinParty: return "Join Party"
+            case .addFriend: return String(localized: "Add Friend", bundle: .tabbi)
+            case .joinParty: return String(localized: "Join Party", bundle: .tabbi)
             }
-        case .refused(.failed(let error)): return error.isTransient ? "Try Again" : nil
+        case .refused(.failed(let error)): return error.isTransient ? String(localized: "Try Again", bundle: .tabbi) : nil
         default: return nil
         }
     }
 
     /// The other button: "Not Now" while asking, "Done" once over.
-    public var dismissTitle: String { isDone ? "Done" : "Not Now" }
+    public var dismissTitle: String { isDone ? String(localized: "Done", bundle: .tabbi) : String(localized: "Not Now", bundle: .tabbi) }
 
     private var failedTitle: String {
         switch invite {
-        case .addFriend: "Couldn't add this friend"
-        case .joinParty: "Couldn't join this party"
+        case .addFriend: String(localized: "Couldn't add this friend", bundle: .tabbi)
+        case .joinParty: String(localized: "Couldn't join this party", bundle: .tabbi)
         }
     }
 
@@ -261,10 +260,10 @@ public struct PartyInviteFlow: Equatable, Sendable {
     /// rarely mistyped, so it most likely expired or was changed.
     private func failedMessage(_ error: PartyError) -> String {
         switch error {
-        case .unknownCode: "This link doesn't match anyone now. Ask your friend for a new one."
-        case .partyNotFound: "That party has ended. Ask for a new link."
-        case .rateLimited: "Too many tries for now. Wait a minute, then try again."
-        case .selfFriend: "That's your own link."
+        case .unknownCode: String(localized: "This link doesn't match anyone now. Ask your friend for a new one.", bundle: .tabbi)
+        case .partyNotFound: String(localized: "That party has ended. Ask for a new link.", bundle: .tabbi)
+        case .rateLimited: String(localized: "Too many tries for now. Wait a minute, then try again.", bundle: .tabbi)
+        case .selfFriend: String(localized: "That's your own link.", bundle: .tabbi)
         default: error.message
         }
     }

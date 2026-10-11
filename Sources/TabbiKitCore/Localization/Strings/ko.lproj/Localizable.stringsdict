@@ -101,6 +101,20 @@
 			<string>집중 %lld회</string>
 		</dict>
 	</dict>
+	<key>%lld friends are here with you.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>친구 %lld명이 함께하고 있어요.</string>
+		</dict>
+	</dict>
 	<key>%lld no longer fit</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

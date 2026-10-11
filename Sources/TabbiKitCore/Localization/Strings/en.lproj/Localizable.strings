@@ -25,6 +25,8 @@
 	<string>%@ can't control %@</string>
 	<key>%@ checkup</key>
 	<string>%@ checkup</string>
+	<key>%@ could not be copied to Applications. %@</key>
+	<string>%@ could not be copied to Applications. %@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
 	<string>%@ couldn't refine it. This plan still works.</string>
 	<key>%@ couldn't refine this plan</key>
@@ -45,6 +47,8 @@
 	<string>%@ in the party's shared session</string>
 	<key>%@ is already used by another app. Record a different shortcut.</key>
 	<string>%@ is already used by another app. Record a different shortcut.</string>
+	<key>%@ is already your friend</key>
+	<string>%@ is already your friend</string>
 	<key>%@ is connected</key>
 	<string>%@ is connected</string>
 	<key>%@ is damaged, so it's left untouched.</key>
@@ -65,6 +69,8 @@
 	<string>%@ is looking over this plan…</string>
 	<key>%@ is napping until your next session</key>
 	<string>%@ is napping until your next session</string>
+	<key>%@ is now your friend</key>
+	<string>%@ is now your friend</string>
 	<key>%@ is on a break with you</key>
 	<string>%@ is on a break with you</string>
 	<key>%@ is studying with the party</key>
@@ -125,6 +131,8 @@
 	<string>%@ unlocks at %lld</string>
 	<key>%@ with %@</key>
 	<string>%@ with %@</string>
+	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
+	<string>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · Paused</string>
 	<key>%@, %lld extra</key>
@@ -299,12 +307,16 @@
 	<string>Add App…</string>
 	<key>Add Control or Option so the shortcut doesn't get in the way of typing.</key>
 	<string>Add Control or Option so the shortcut doesn't get in the way of typing.</string>
+	<key>Add Friend</key>
+	<string>Add Friend</string>
 	<key>Add Google Calendar</key>
 	<string>Add Google Calendar</string>
 	<key>Add a Distracting App</key>
 	<string>Add a Distracting App</string>
 	<key>Add a few things you want to get done today.</key>
 	<string>Add a few things you want to get done today.</string>
+	<key>Add a friend?</key>
+	<string>Add a friend?</string>
 	<key>Add a kit someone shared as a .json file; you see what it changes first</key>
 	<string>Add a kit someone shared as a .json file; you see what it changes first</string>
 	<key>Add a note (optional)</key>
@@ -325,6 +337,8 @@
 	<string>Add key</string>
 	<key>Add more</key>
 	<string>Add more</string>
+	<key>Add the Party tab and connect to the party server</key>
+	<string>Add the Party tab and connect to the party server</string>
 	<key>Add the unfinished tasks to the end of today's list</key>
 	<string>Add the unfinished tasks to the end of today's list</string>
 	<key>Add this block to your calendar</key>
@@ -639,6 +653,8 @@
 	<string>Check that your Wi-Fi is on, then try again.</string>
 	<key>Check the party server</key>
 	<string>Check the party server</string>
+	<key>Check the server in Party options.</key>
+	<string>Check the server in Party options.</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>Check your internet connection. Friends and parties show up once it's back.</string>
 	<key>Checking</key>
@@ -737,6 +753,10 @@
 	<string>Close details</string>
 	<key>Close the checkup</key>
 	<string>Close the checkup</string>
+	<key>Close the invite</key>
+	<string>Close the invite</string>
+	<key>Close the invite without doing anything</key>
+	<string>Close the invite without doing anything</string>
 	<key>Close the plan</key>
 	<string>Close the plan</string>
 	<key>Close the plan without adding anything</key>
@@ -781,6 +801,8 @@
 	<string>Connecting to %@…</string>
 	<key>Connecting to Anki…</key>
 	<string>Connecting to Anki…</string>
+	<key>Connecting to Party</key>
+	<string>Connecting to Party</string>
 	<key>Connecting…</key>
 	<string>Connecting…</string>
 	<key>Connection lost</key>
@@ -829,12 +851,16 @@
 	<string>Copy your friend code to share it</string>
 	<key>Copy “%@” so you can paste it</key>
 	<string>Copy “%@” so you can paste it</string>
+	<key>Couldn't add this friend</key>
+	<string>Couldn't add this friend</string>
 	<key>Couldn't add to your calendar. Try again</key>
 	<string>Couldn't add to your calendar. Try again</string>
 	<key>Couldn't check your shortcuts</key>
 	<string>Couldn't check your shortcuts</string>
 	<key>Couldn't import %@: %@</key>
 	<string>Couldn't import %@: %@</string>
+	<key>Couldn't join this party</key>
+	<string>Couldn't join this party</string>
 	<key>Couldn't plan your day</key>
 	<string>Couldn't plan your day</string>
 	<key>Couldn't reach the party server.</key>
@@ -973,6 +999,8 @@
 	<string>Does your Mac have any calendars?</string>
 	<key>Dog</key>
 	<string>Dog</string>
+	<key>Don't ask again</key>
+	<string>Don't ask again</string>
 	<key>Done</key>
 	<string>Done</string>
 	<key>Drag to reorder</key>
@@ -1141,6 +1169,8 @@
 	<string>Free working time over the next seven days, with a buffer around each event</string>
 	<key>Friend code</key>
 	<string>Friend code</string>
+	<key>Friend code %@. You'll see each other's pets and study time.</key>
+	<string>Friend code %@. You'll see each other's pets and study time.</string>
 	<key>Friend's code</key>
 	<string>Friend's code</string>
 	<key>Friends</key>
@@ -1369,6 +1399,10 @@
 	<string>Join %@'s party</string>
 	<key>Join Party</key>
 	<string>Join Party</string>
+	<key>Join this party now</key>
+	<string>Join this party now</string>
+	<key>Join this party?</key>
+	<string>Join this party?</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>Joining Party. This takes a second.</string>
 	<key>Joining the party server…</key>
@@ -1529,8 +1563,12 @@
 	<string>More options</string>
 	<key>More tabs</key>
 	<string>More tabs</string>
+	<key>Move %@ to your Applications folder?</key>
+	<string>Move %@ to your Applications folder?</string>
 	<key>Move down</key>
 	<string>Move down</string>
+	<key>Move to Applications</key>
+	<string>Move to Applications</string>
 	<key>Move to today</key>
 	<string>Move to today</string>
 	<key>Move up</key>
@@ -1729,6 +1767,8 @@
 	<string>Nothing planned</string>
 	<key>Nothing playing</key>
 	<string>Nothing playing</string>
+	<key>Nothing to do.</key>
+	<string>Nothing to do.</string>
 	<key>Nothing was on your calendars yesterday.</key>
 	<string>Nothing was on your calendars yesterday.</string>
 	<key>Notifications</key>
@@ -1757,6 +1797,10 @@
 	<string>One add-on to go</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>One calm session at a time. You've got this.</string>
+	<key>One moment.</key>
+	<string>One moment.</string>
+	<key>One question first</key>
+	<string>One question first</string>
 	<key>One shortcut left</key>
 	<string>One shortcut left</string>
 	<key>One song</key>
@@ -1819,6 +1863,8 @@
 	<string>Open Internet Accounts</string>
 	<key>Open Internet Accounts to add a Google, Exchange or iCloud calendar</key>
 	<string>Open Internet Accounts to add a Google, Exchange or iCloud calendar</string>
+	<key>Open Party</key>
+	<string>Open Party</string>
 	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
 	<string>Open Privacy &amp; Security &gt; Screen Recording in System Settings</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
@@ -1845,6 +1891,8 @@
 	<string>Open on hover</string>
 	<key>Open the %@ app to connect</key>
 	<string>Open the %@ app to connect</string>
+	<key>Open the Party tab to answer</key>
+	<string>Open the Party tab to answer</string>
 	<key>Open the Party tab to join.</key>
 	<string>Open the Party tab to join.</string>
 	<key>Open the notch after hovering it briefly</key>
@@ -1903,6 +1951,10 @@
 	<string>Party can't connect</string>
 	<key>Party code</key>
 	<string>Party code</string>
+	<key>Party code %@. Study together with everyone in it.</key>
+	<string>Party code %@. Study together with everyone in it.</string>
+	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
+	<string>Party code %@. Study together with everyone in it. You'll leave your current party.</string>
 	<key>Party invite</key>
 	<string>Party invite</string>
 	<key>Party is for people %lld and older.</key>
@@ -1921,6 +1973,10 @@
 	<string>Party isn't available yet</string>
 	<key>Party isn't set up</key>
 	<string>Party isn't set up</string>
+	<key>Party lets you study beside friends. Turn it on to add this friend.</key>
+	<string>Party lets you study beside friends. Turn it on to add this friend.</string>
+	<key>Party lets you study beside friends. Turn it on to join this party.</key>
+	<string>Party lets you study beside friends. Turn it on to join this party.</string>
 	<key>Party pets</key>
 	<string>Party pets</string>
 	<key>Party session</key>
@@ -2287,6 +2343,8 @@
 	<string>Select AnkiConnect and click Check for Updates</string>
 	<key>Send (Return)</key>
 	<string>Send (Return)</string>
+	<key>Send a friend request with this code</key>
+	<string>Send a friend request with this code</string>
 	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
 	<string>Send friends your code so they can add you. They see your name, pet and study timer.</string>
 	<key>Send your AI requests to %@?</key>
@@ -2321,6 +2379,8 @@
 	<string>Share an invite link. A friend who opens it can add you in one click.</string>
 	<key>Share an invite link. Friends who open it can join this party in one click.</key>
 	<string>Share an invite link. Friends who open it can join this party in one click.</string>
+	<key>Share it with a friend so they can add you.</key>
+	<string>Share it with a friend so they can add you.</string>
 	<key>Share your code above, or add theirs below.</key>
 	<string>Share your code above, or add theirs below.</string>
 	<key>Shared focus: %@ left</key>
@@ -2663,12 +2723,18 @@
 	<string>That name isn't allowed. Please pick another.</string>
 	<key>That party has ended or the code is wrong.</key>
 	<string>That party has ended or the code is wrong.</string>
+	<key>That party has ended. Ask for a new link.</key>
+	<string>That party has ended. Ask for a new link.</string>
 	<key>That party is full.</key>
 	<string>That party is full.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>That pet name isn't allowed. Please pick another.</string>
 	<key>That's your own code.</key>
 	<string>That's your own code.</string>
+	<key>That's your own link</key>
+	<string>That's your own link</string>
+	<key>That's your own link.</key>
+	<string>That's your own link.</string>
 	<key>The AI</key>
 	<string>The AI</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
@@ -2677,6 +2743,8 @@
 	<string>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>The Keychain didn't save the key. Try again.</string>
+	<key>The Party tab asks when you were born before you join. Then open the link again.</key>
+	<string>The Party tab asks when you were born before you join. Then open the link again.</string>
 	<key>The Shortcuts app didn't answer in time. Try again in a moment.</key>
 	<string>The Shortcuts app didn't answer in time. Try again in a moment.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
@@ -2769,6 +2837,8 @@
 	<string>This is usually short. Check again in a moment.</string>
 	<key>This is what needs fixing</key>
 	<string>This is what needs fixing</string>
+	<key>This link doesn't match anyone now. Ask your friend for a new one.</key>
+	<string>This link doesn't match anyone now. Ask your friend for a new one.</string>
 	<key>This part works</key>
 	<string>This part works</string>
 	<key>This tab reads your decks through the free AnkiConnect add-on.</key>
@@ -2823,6 +2893,8 @@
 	<string>Tomorrow's calendar</string>
 	<key>Too many requests. Trying again shortly.</key>
 	<string>Too many requests. Trying again shortly.</string>
+	<key>Too many tries for now. Wait a minute, then try again.</key>
+	<string>Too many tries for now. Wait a minute, then try again.</string>
 	<key>Took back the import of %@.</key>
 	<string>Took back the import of %@.</string>
 	<key>Top decks</key>
@@ -2831,8 +2903,12 @@
 	<string>Top model</string>
 	<key>Total CPU usage across all cores, last 60 seconds</key>
 	<string>Total CPU usage across all cores, last 60 seconds</string>
+	<key>Try Again</key>
+	<string>Try Again</string>
 	<key>Try again</key>
 	<string>Try again</string>
+	<key>Try again now</key>
+	<string>Try again now</string>
 	<key>Try the server again now</key>
 	<string>Try the server again now</string>
 	<key>Try to reach Party again now</key>
@@ -2847,6 +2923,8 @@
 	<string>Turn %@ on for a moment, then off again</string>
 	<key>Turn Do Not Disturb on for a moment, then off again</key>
 	<string>Turn Do Not Disturb on for a moment, then off again</string>
+	<key>Turn On Party</key>
+	<string>Turn On Party</string>
 	<key>Turn on</key>
 	<string>Turn on</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
@@ -2857,6 +2935,8 @@
 	<string>Turn on Do Not Disturb whenever the focus timer runs</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>Turn on JavaScript for SoundCloud</string>
+	<key>Turn on Party?</key>
+	<string>Turn on Party?</string>
 	<key>Turn on Tabbi under Calendars in System Settings.</key>
 	<string>Turn on Tabbi under Calendars in System Settings.</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -2881,6 +2961,8 @@
 	<string>Type or paste a friend's %lld-character code and press Return</string>
 	<key>Unblock</key>
 	<string>Unblock</string>
+	<key>Unblock them in Party options to add them again.</key>
+	<string>Unblock them in Party options to add them again.</string>
 	<key>Unblocking…</key>
 	<string>Unblocking…</string>
 	<key>Undo</key>
@@ -3059,6 +3141,8 @@
 	<string>You</string>
 	<key>You already have 50 friends.</key>
 	<string>You already have 50 friends.</string>
+	<key>You blocked %@</key>
+	<string>You blocked %@</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
 	<string>You blocked them. Unblock them in Party options first.</string>
 	<key>You can change it any time in Settings &gt; General.</key>
@@ -3077,14 +3161,22 @@
 	<string>You can turn alerts off any time in System Settings.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>You get one free freeze each week, and can hold %lld extra.</string>
+	<key>You joined the party</key>
+	<string>You joined the party</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>You put in %@ of study today. Rest up and start fresh tomorrow.</string>
 	<key>You started it for the party</key>
 	<string>You started it for the party</string>
+	<key>You'll see %@ in your Party tab.</key>
+	<string>You'll see %@ in your Party tab.</string>
+	<key>You're already in this party</key>
+	<string>You're already in this party</string>
 	<key>You're in Party</key>
 	<string>You're in Party</string>
 	<key>You're not in a party anymore.</key>
 	<string>You're not in a party anymore.</string>
+	<key>You're the only one here for now.</key>
+	<string>You're the only one here for now.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>You've blocked too many people. Unblock someone first.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
@@ -3173,8 +3265,16 @@
 	<string>Your week with Tabbi is ready</string>
 	<key>all day: %@</key>
 	<string>all day: %@</string>
+	<key>best day</key>
+	<string>best day</string>
+	<key>card</key>
+	<string>card</string>
+	<key>cards</key>
+	<string>cards</string>
 	<key>day</key>
 	<string>day</string>
+	<key>day streak</key>
+	<string>day streak</string>
 	<key>days</key>
 	<string>days</string>
 	<key>due</key>
@@ -3183,6 +3283,8 @@
 	<string>ending</string>
 	<key>events</key>
 	<string>events</string>
+	<key>focused</key>
+	<string>focused</string>
 	<key>in %@</key>
 	<string>in %@</string>
 	<key>in the last 30 days</key>
@@ -3195,6 +3297,8 @@
 	<string>macOS asks once whether Tabbi may use %@</string>
 	<key>meetings and calls</key>
 	<string>meetings and calls</string>
+	<key>min</key>
+	<string>min</string>
 	<key>no free time</key>
 	<string>no free time</string>
 	<key>nothing yet; pick a sound</key>
@@ -3205,16 +3309,28 @@
 	<string>of %@ GB</string>
 	<key>on your own</key>
 	<string>on your own</string>
+	<key>point</key>
+	<string>point</string>
+	<key>points</key>
+	<string>points</string>
 	<key>pts</key>
 	<string>pts</string>
 	<key>ready to unlock</key>
 	<string>ready to unlock</string>
+	<key>session</key>
+	<string>session</string>
+	<key>sessions</key>
+	<string>sessions</string>
 	<key>shared focus</key>
 	<string>shared focus</string>
 	<key>starts %@</key>
 	<string>starts %@</string>
 	<key>switch.on</key>
 	<string>On</string>
+	<key>task</key>
+	<string>task</string>
+	<key>tasks</key>
+	<string>tasks</string>
 	<key>the host</key>
 	<string>the host</string>
 	<key>tokens</key>
