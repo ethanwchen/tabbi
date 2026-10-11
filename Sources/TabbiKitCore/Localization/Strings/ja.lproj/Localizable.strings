@@ -173,6 +173,8 @@
 	<string>%2$@で%1$@を解放</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%2$lldで%1$@を解放</string>
+	<key>%@ uses it to greet you.</key>
+	<string>%@のあいさつに使われます。</string>
 	<key>%@ visited the bakery</key>
 	<string>%@がパン屋さんに寄った</string>
 	<key>%@ watched a cloud shaped like a fish</key>
@@ -269,8 +271,18 @@
 	<string>10分だけどう？</string>
 	<key>10 minutes? That keeps your %lld-day streak going.</key>
 	<string>10分だけどう？%lld日連続記録がつながるよ。</string>
+	<key>25 min focus, 5 min break</key>
+	<string>集中25分、休憩5分</string>
+	<key>40 questions in 60 min, then review</key>
+	<string>60分で40問、その後見直し</string>
 	<key>5-hour</key>
 	<string>5時間</string>
+	<key>52 / 17</key>
+	<string>52 / 17</string>
+	<key>52 min focus, 17 min break</key>
+	<string>集中52分、休憩17分</string>
+	<key>90 min deep block, 20 min rest</key>
+	<string>深い集中90分、休息20分</string>
 	<key>&lt;1 min</key>
 	<string>1分未満</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
@@ -505,8 +517,12 @@
 	<string>AnkiがこのMacにありません</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>TabbiがカードをカウントするにはAnkiConnectという無料アドオンが必要です。</string>
+	<key>Anki reviews</key>
+	<string>Ankiの復習</string>
 	<key>Anki said no to Tabbi</key>
 	<string>AnkiがTabbiを拒否しました</string>
+	<key>Anki sprint</key>
+	<string>Ankiスプリント</string>
 	<key>Anki wouldn't open</key>
 	<string>Anki を開けませんでした</string>
 	<key>AnkiConnect blocked this app</key>
@@ -797,6 +813,8 @@
 	<string>「%@」を外す</string>
 	<key>Clear All</key>
 	<string>すべて消去</string>
+	<key>Clear a card goal, not a clock</key>
+	<string>時間ではなくカード数が目標</string>
 	<key>Clear completed tasks</key>
 	<string>完了したタスクを消去</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
@@ -1111,6 +1129,8 @@
 	<string>カスタムの集中時間と休憩時間を編集</string>
 	<key>Email Support</key>
 	<string>サポートにメール</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>バグやそのほか何でも%@チームにメールで連絡</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>バグやPartyのユーザー、そのほか何でも%@チームにメールで連絡</string>
 	<key>Email the %@ team about a person or a problem</key>
@@ -1201,6 +1221,8 @@
 	<string>フロー</string>
 	<key>Flower Crown</key>
 	<string>花かんむり</string>
+	<key>Flowtime</key>
+	<string>フロータイム</string>
 	<key>Focus</key>
 	<string>集中</string>
 	<key>Focus %lld min to start one</key>
@@ -1693,6 +1715,8 @@
 	<string>その他のタブ</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>多くの人は準備ができるのを待つ。あなたはもう始めた。それが違い。</string>
+	<key>Mostly convention</key>
+	<string>主に慣習</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>%@をアプリケーションフォルダに移動しますか？</string>
 	<key>Move down</key>
@@ -1937,6 +1961,8 @@
 	<string>アドオンがあと1つ</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>一回ずつ、落ち着いて。きっと大丈夫。</string>
+	<key>One countdown, no breaks</key>
+	<string>カウントダウン1回、休憩なし</string>
 	<key>One moment.</key>
 	<string>少々お待ちください。</string>
 	<key>One question first</key>
@@ -2253,6 +2279,8 @@
 	<string>今日獲得したポイント。ペットの衣装に使えます</string>
 	<key>Points: 1 for every focused minute, plus a bonus for finishing a session</key>
 	<string>ポイント: 集中1分ごとに1ポイント、セッションを終えるとボーナス</string>
+	<key>Pomodoro</key>
+	<string>ポモドーロ</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Claudeの使用量表示と回答に使います。</string>
 	<key>Preset %@</key>
@@ -2281,6 +2309,8 @@
 	<string>「一般」を新規インストール時の状態に戻します。「ログイン時に起動」はそのままです。</string>
 	<key>Put the recap away</key>
 	<string>ふりかえりをしまう</string>
+	<key>Question block</key>
+	<string>問題ブロック</string>
 	<key>Quick and crisp, with no bounce.</key>
 	<string>すばやく、きびきびと。バウンドなし。</string>
 	<key>Quick answers right here. %@ can't see your files.</key>
@@ -2645,6 +2675,8 @@
 	<string>なめらか</string>
 	<key>Snowy Scarf</key>
 	<string>雪のマフラー</string>
+	<key>Some evidence</key>
+	<string>一部根拠あり</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>少しでも、ゼロより限りなく大きい。休もう。盤はここで待ってる。</string>
 	<key>Something not working?</key>
@@ -2787,6 +2819,8 @@
 	<string>今日ためた勉強ポイント。ペットの衣装に使えます</string>
 	<key>Study together</key>
 	<string>一緒に勉強</string>
+	<key>Study until focus slips, break scales</key>
+	<string>集中が切れるまで、休憩は時間に比例</string>
 	<key>Study with a cat</key>
 	<string>ネコと勉強する</string>
 	<key>Study with a dog</key>
@@ -3145,6 +3179,8 @@
 	<string>タスクを入力してReturnで追加、Escで消去</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
 	<string>友達の%lld文字のコードを入力またはペーストしてReturnキーを押します</string>
+	<key>Ultradian</key>
+	<string>ウルトラディアン</string>
 	<key>Unblock</key>
 	<string>ブロック解除</string>
 	<key>Unblock them in Party options to add them again.</key>
@@ -3243,6 +3279,8 @@
 	<string>週</string>
 	<key>Welcome to %@</key>
 	<string>%@へようこそ</string>
+	<key>Well supported</key>
+	<string>十分な根拠あり</string>
 	<key>What happened when Tabbi ran your shortcuts</key>
 	<string>Tabbiがショートカットを実行したときの結果</string>
 	<key>What happened, in a sentence or two</key>
@@ -3433,6 +3471,8 @@
 	<string>名前</string>
 	<key>Your name, up to %lld characters</key>
 	<string>名前（%lld文字まで）</string>
+	<key>Your own focus and break lengths</key>
+	<string>集中と休憩の長さを自分で設定</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>パーティのプロフィールがリセットされました。再接続中…</string>
 	<key>Your pet</key>

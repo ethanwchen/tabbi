@@ -177,10 +177,11 @@ public struct ProvidedPartySession: Hashable, Sendable {
     /// Time left at `now`, never negative.
     public func remaining(at now: Date) -> TimeInterval { max(endsAt.timeIntervalSince(now), 0) }
 
-    /// The method's display name, e.g. "Pomodoro"; "Focus" for an id this
-    /// version doesn't know.
+    /// The method's display name in the user's language, e.g. "Pomodoro";
+    /// "Focus" for an id this version doesn't know.
     public var methodName: String {
-        StudyMethodKind(rawValue: method).map { StudyMethodInfo.info(for: $0).name } ?? "Focus"
+        StudyMethodKind(rawValue: method).map { StudyMethodInfo.info(for: $0).displayName }
+            ?? String(localized: "Focus", bundle: .tabbi)
     }
 
     /// "with 2 friends", "with 1 friend", or "on your own" once everyone

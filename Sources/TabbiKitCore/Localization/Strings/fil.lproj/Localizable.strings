@@ -173,6 +173,8 @@
 	<string>Mabubuksan ang %1$@ pagkatapos ng %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>Mabubuksan ang %1$@ sa %2$lld</string>
+	<key>%@ uses it to greet you.</key>
+	<string>Gagamitin ito ng %@ para batiin ka.</string>
 	<key>%@ visited the bakery</key>
 	<string>Dumalaw si %@ sa panaderya</string>
 	<key>%@ watched a cloud shaped like a fish</key>
@@ -269,8 +271,18 @@
 	<string>10 minuto?</string>
 	<key>10 minutes? That keeps your %lld-day streak going.</key>
 	<string>10 minuto? Para tuloy ang %lld-araw mong streak.</string>
+	<key>25 min focus, 5 min break</key>
+	<string>25 min focus, 5 min break</string>
+	<key>40 questions in 60 min, then review</key>
+	<string>40 tanong sa 60 min, saka review</string>
 	<key>5-hour</key>
 	<string>5-oras</string>
+	<key>52 / 17</key>
+	<string>52 / 17</string>
+	<key>52 min focus, 17 min break</key>
+	<string>52 min focus, 17 min break</string>
+	<key>90 min deep block, 20 min rest</key>
+	<string>90 min deep block, 20 min pahinga</string>
 	<key>&lt;1 min</key>
 	<string>&lt;1 min</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
@@ -505,8 +517,12 @@
 	<string>Wala ang Anki sa Mac na ito</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>Kailangan ng Anki ng libreng add-on na AnkiConnect para mabilang ng Tabbi ang mga card mo.</string>
+	<key>Anki reviews</key>
+	<string>Mga review sa Anki</string>
 	<key>Anki said no to Tabbi</key>
 	<string>Tinanggihan ng Anki ang Tabbi</string>
+	<key>Anki sprint</key>
+	<string>Anki sprint</string>
 	<key>Anki wouldn't open</key>
 	<string>Ayaw bumukas ng Anki</string>
 	<key>AnkiConnect blocked this app</key>
@@ -797,6 +813,8 @@
 	<string>Alisin ang "%@"</string>
 	<key>Clear All</key>
 	<string>Burahin Lahat</string>
+	<key>Clear a card goal, not a clock</key>
+	<string>Card goal, hindi orasan</string>
 	<key>Clear completed tasks</key>
 	<string>Alisin ang mga tapos na task</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
@@ -1111,6 +1129,8 @@
 	<string>I-edit ang haba ng focus at break ng Custom</string>
 	<key>Email Support</key>
 	<string>Mag-email sa Support</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>Mag-email sa %@ team tungkol sa bug o kahit ano</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>Mag-email sa %@ team tungkol sa bug, isang tao sa Party o kahit ano</string>
 	<key>Email the %@ team about a person or a problem</key>
@@ -1201,6 +1221,8 @@
 	<string>Flow</string>
 	<key>Flower Crown</key>
 	<string>Korona ng Bulaklak</string>
+	<key>Flowtime</key>
+	<string>Flowtime</string>
 	<key>Focus</key>
 	<string>Focus</string>
 	<key>Focus %lld min to start one</key>
@@ -1693,6 +1715,8 @@
 	<string>Iba pang tab</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>Karamihan, naghihintay munang maging handa. Ikaw, nagsimula na lang. Iyan ang pagkakaiba.</string>
+	<key>Mostly convention</key>
+	<string>Kadalasang kaugalian</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>Ilipat ang %@ sa Applications folder mo?</string>
 	<key>Move down</key>
@@ -1937,6 +1961,8 @@
 	<string>Isang add-on na lang</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>Isang kalmadong session sa bawat pagkakataon. Kaya mo 'to.</string>
+	<key>One countdown, no breaks</key>
+	<string>Isang countdown, walang break</string>
 	<key>One moment.</key>
 	<string>Sandali lang.</string>
 	<key>One question first</key>
@@ -2253,6 +2279,8 @@
 	<string>Points na nakuha ngayon; gamitin sa wardrobe ng pet mo</string>
 	<key>Points: 1 for every focused minute, plus a bonus for finishing a session</key>
 	<string>Points: 1 sa bawat minutong naka-focus, plus bonus kapag natapos mo ang session</string>
+	<key>Pomodoro</key>
+	<string>Pomodoro</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Para sa Claude usage at mga sagot.</string>
 	<key>Preset %@</key>
@@ -2281,6 +2309,8 @@
 	<string>Ibalik ang General sa ayos ng bagong install. Hindi babaguhin ang Launch at login.</string>
 	<key>Put the recap away</key>
 	<string>Itabi ang recap</string>
+	<key>Question block</key>
+	<string>Question block</string>
 	<key>Quick and crisp, with no bounce.</key>
 	<string>Mabilis at malinis, walang talbog.</string>
 	<key>Quick answers right here. %@ can't see your files.</key>
@@ -2645,6 +2675,8 @@
 	<string>Smooth</string>
 	<key>Snowy Scarf</key>
 	<string>Maniyebeng Scarf</string>
+	<key>Some evidence</key>
+	<string>May kaunting ebidensya</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>Ang kaunti ay higit na higit sa wala. Magpahinga ka. Nandito pa rin ang board.</string>
 	<key>Something not working?</key>
@@ -2787,6 +2819,8 @@
 	<string>Study points na nakuha ngayon, pambili ng outfit ng pet mo</string>
 	<key>Study together</key>
 	<string>Sabay mag-aral</string>
+	<key>Study until focus slips, break scales</key>
+	<string>Mag-aral hanggang humina ang focus, umaangkop ang break</string>
 	<key>Study with a cat</key>
 	<string>Mag-aral kasama ang pusa</string>
 	<key>Study with a dog</key>
@@ -3145,6 +3179,8 @@
 	<string>Mag-type ng task at pindutin ang Return para idagdag; Esc para burahin</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
 	<string>I-type o i-paste ang %lld-character na code ng kaibigan at pindutin ang Return</string>
+	<key>Ultradian</key>
+	<string>Ultradian</string>
 	<key>Unblock</key>
 	<string>I-unblock</string>
 	<key>Unblock them in Party options to add them again.</key>
@@ -3243,6 +3279,8 @@
 	<string>Mga Linggo</string>
 	<key>Welcome to %@</key>
 	<string>Welcome sa %@</string>
+	<key>Well supported</key>
+	<string>Matibay ang ebidensya</string>
 	<key>What happened when Tabbi ran your shortcuts</key>
 	<string>Ang nangyari nang patakbuhin ng Tabbi ang shortcuts mo</string>
 	<key>What happened, in a sentence or two</key>
@@ -3433,6 +3471,8 @@
 	<string>Pangalan mo</string>
 	<key>Your name, up to %lld characters</key>
 	<string>Pangalan mo, hanggang %lld character</string>
+	<key>Your own focus and break lengths</key>
+	<string>Sariling haba ng focus at break</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>Na-reset ang party profile mo. Kumokonekta ulit…</string>
 	<key>Your pet</key>

@@ -17,7 +17,7 @@ struct StudyMethodInfoView: View {
         let info = method.info
         VStack(alignment: .leading, spacing: Theme.Spacing.s) {
             HStack(spacing: Theme.Spacing.s) {
-                Text(info.name)
+                Text(info.displayName)
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
                 if !method.nameIsRhythm {
@@ -35,9 +35,9 @@ struct StudyMethodInfoView: View {
                     // badge leaves no room in a Compact panel, where the
                     // button just says "Use"; the name sits on its left.
                     ViewThatFits(in: .horizontal) {
-                        StudyCapsuleButton(title: "Use \(info.name)", help: "Start a fresh session with \(info.name)",
+                        StudyCapsuleButton(title: "Use \(info.displayName)", help: "Start a fresh session with \(info.displayName)",
                                            action: use)
-                        StudyCapsuleButton(title: "Use", help: "Start a fresh session with \(info.name)",
+                        StudyCapsuleButton(title: "Use", help: "Start a fresh session with \(info.displayName)",
                                            action: use)
                     }
                 }

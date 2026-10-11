@@ -56,7 +56,8 @@ final class ClosetModule: NotchModule {
                                      showOnExternalDisplays: settings.settings.showOnExternalDisplays)
             },
             pauseTimer: { focus.pause() },
-            resumeTimer: { focus.start() }
+            resumeTimer: { focus.start() },
+            celebrations: context.celebrations
         )
         self.store = store
         self.gifts = gifts

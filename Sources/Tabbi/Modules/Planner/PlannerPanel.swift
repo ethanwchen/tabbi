@@ -80,11 +80,7 @@ struct PlannerPanel: View {
             }
             VStack(spacing: Theme.Spacing.s) {
                 UpNextCard(store: store.upNext, upNextEvents: store.planSettings.upNextEvents)
-                if let owner = store.focusClockOwner {
-                    SharedFocusCard(owner: owner, providers: providers)
-                } else {
-                    FocusCard(store: store.focus, items: store.day.items)
-                }
+                TodayTimerCard(store: store, focus: store.focus, providers: providers)
             }
             .frame(width: Self.sideColumnWidth)
         }
@@ -150,6 +146,25 @@ extension TodayPlanSettings.PlanMode {
         case .study: tomorrow
             ? String(localized: "Fit reviews, study blocks and breaks around tomorrow's calendar", bundle: .tabbi)
             : String(localized: "Fit reviews, study blocks and breaks around today's calendar", bundle: .tabbi)
+        }
+    }
+}
+
+/// The side column's timer: the clock of a module that owns one (Timer in
+/// the bundled kits), so the layout has one timer, unless the Focus tab is
+/// on too and its Pomodoro is under way, which then keeps its own card
+/// rather than hiding behind "Start a timer". Observes the Pomodoro here so
+/// its ticks don't re-render the panel.
+private struct TodayTimerCard: View {
+    @ObservedObject var store: PlannerStore
+    @ObservedObject var focus: FocusStore
+    let providers: ProviderHub
+
+    var body: some View {
+        if let owner = store.focusClockOwner, !store.isFocusTabOn || focus.timer.runState == .idle {
+            SharedFocusCard(owner: owner, providers: providers)
+        } else {
+            FocusCard(store: focus, items: store.day.items)
         }
     }
 }

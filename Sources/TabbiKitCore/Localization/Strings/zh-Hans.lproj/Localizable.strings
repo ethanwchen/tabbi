@@ -173,6 +173,8 @@
 	<string>%2$@后解锁%1$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%2$lld 分解锁%1$@</string>
+	<key>%@ uses it to greet you.</key>
+	<string>%@ 会用它跟你打招呼。</string>
 	<key>%@ visited the bakery</key>
 	<string>%@ 去了面包店</string>
 	<key>%@ watched a cloud shaped like a fish</key>
@@ -269,8 +271,18 @@
 	<string>来 10 分钟？</string>
 	<key>10 minutes? That keeps your %lld-day streak going.</key>
 	<string>10 分钟？就能延续你 %lld 天的连续记录。</string>
+	<key>25 min focus, 5 min break</key>
+	<string>专注 25 分钟，休息 5 分钟</string>
+	<key>40 questions in 60 min, then review</key>
+	<string>60 分钟 40 题，然后复盘</string>
 	<key>5-hour</key>
 	<string>5 小时</string>
+	<key>52 / 17</key>
+	<string>52 / 17</string>
+	<key>52 min focus, 17 min break</key>
+	<string>专注 52 分钟，休息 17 分钟</string>
+	<key>90 min deep block, 20 min rest</key>
+	<string>深度专注 90 分钟，休息 20 分钟</string>
 	<key>&lt;1 min</key>
 	<string>不到 1 分钟</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
@@ -505,8 +517,12 @@
 	<string>这台 Mac 上没有 Anki</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>Anki 需要一个免费插件 AnkiConnect，Tabbi 才能统计你的卡片。</string>
+	<key>Anki reviews</key>
+	<string>Anki 复习</string>
 	<key>Anki said no to Tabbi</key>
 	<string>Anki 拒绝了 Tabbi</string>
+	<key>Anki sprint</key>
+	<string>Anki 冲刺</string>
 	<key>Anki wouldn't open</key>
 	<string>Anki 无法打开</string>
 	<key>AnkiConnect blocked this app</key>
@@ -797,6 +813,8 @@
 	<string>取消“%@”</string>
 	<key>Clear All</key>
 	<string>全部清除</string>
+	<key>Clear a card goal, not a clock</key>
+	<string>完成卡片目标，而不是计时</string>
 	<key>Clear completed tasks</key>
 	<string>清除已完成任务</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
@@ -1111,6 +1129,8 @@
 	<string>编辑“自定义”的专注和休息时长</string>
 	<key>Email Support</key>
 	<string>联系支持</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>就错误或其他任何事给 %@ 团队发邮件</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>就错误、Party 中的某个人或其他任何事给 %@ 团队发邮件</string>
 	<key>Email the %@ team about a person or a problem</key>
@@ -1201,6 +1221,8 @@
 	<string>心流</string>
 	<key>Flower Crown</key>
 	<string>花环</string>
+	<key>Flowtime</key>
+	<string>心流计时</string>
 	<key>Focus</key>
 	<string>专注</string>
 	<key>Focus %lld min to start one</key>
@@ -1693,6 +1715,8 @@
 	<string>更多标签页</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>多数人等到觉得准备好了才开始。你直接开始了。差别就在这里。</string>
+	<key>Mostly convention</key>
+	<string>多为惯例</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>要将 %@ 移到“应用程序”文件夹吗？</string>
 	<key>Move down</key>
@@ -1937,6 +1961,8 @@
 	<string>还差一个插件</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>一次一段,稳稳来。你可以的。</string>
+	<key>One countdown, no breaks</key>
+	<string>单次倒计时，不休息</string>
 	<key>One moment.</key>
 	<string>请稍候。</string>
 	<key>One question first</key>
@@ -2253,6 +2279,8 @@
 	<string>今日获得的积分，可用于宠物衣橱</string>
 	<key>Points: 1 for every focused minute, plus a bonus for finishing a session</key>
 	<string>积分：每专注 1 分钟得 1 分，完成一次专注还有奖励</string>
+	<key>Pomodoro</key>
+	<string>番茄钟</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>用于 Claude 用量和回答。</string>
 	<key>Preset %@</key>
@@ -2281,6 +2309,8 @@
 	<string>将“通用”恢复为全新安装时的样子，“登录时启动”保持不变。</string>
 	<key>Put the recap away</key>
 	<string>收起回顾</string>
+	<key>Question block</key>
+	<string>题目块</string>
 	<key>Quick and crisp, with no bounce.</key>
 	<string>快速利落，没有回弹。</string>
 	<key>Quick answers right here. %@ can't see your files.</key>
@@ -2645,6 +2675,8 @@
 	<string>流畅</string>
 	<key>Snowy Scarf</key>
 	<string>雪花围巾</string>
+	<key>Some evidence</key>
+	<string>有一定证据</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>做一点，远远胜过什么都不做。休息吧，棋盘会一直在这里。</string>
 	<key>Something not working?</key>
@@ -2787,6 +2819,8 @@
 	<string>今天获得的学习积分，可用来给宠物换装</string>
 	<key>Study together</key>
 	<string>一起学习</string>
+	<key>Study until focus slips, break scales</key>
+	<string>学到专注下降，休息随之调整</string>
 	<key>Study with a cat</key>
 	<string>和猫咪一起学习</string>
 	<key>Study with a dog</key>
@@ -3145,6 +3179,8 @@
 	<string>输入任务后按 Return 添加，Esc 清空</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
 	<string>输入或粘贴好友的 %lld 位代码，然后按回车键</string>
+	<key>Ultradian</key>
+	<string>超日节律</string>
 	<key>Unblock</key>
 	<string>取消屏蔽</string>
 	<key>Unblock them in Party options to add them again.</key>
@@ -3243,6 +3279,8 @@
 	<string>每周</string>
 	<key>Welcome to %@</key>
 	<string>欢迎使用 %@</string>
+	<key>Well supported</key>
+	<string>证据充分</string>
 	<key>What happened when Tabbi ran your shortcuts</key>
 	<string>Tabbi 运行快捷指令的结果</string>
 	<key>What happened, in a sentence or two</key>
@@ -3433,6 +3471,8 @@
 	<string>你的名字</string>
 	<key>Your name, up to %lld characters</key>
 	<string>你的名字，最多 %lld 个字符</string>
+	<key>Your own focus and break lengths</key>
+	<string>自定专注和休息时长</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>你的派对资料已重置。正在重新连接…</string>
 	<key>Your pet</key>
