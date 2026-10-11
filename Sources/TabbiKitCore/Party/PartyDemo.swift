@@ -3,8 +3,9 @@ import Foundation
 extension PartyState {
     /// Sample data for `TABBI_DEMO=1` and snapshots: I host a party
     /// with two friends on a shared session, one more friend is in another
-    /// party I could join, and the rest cover every status. Built relative
-    /// to `now` so countdowns always read sensibly.
+    /// party I could join, and the rest cover every status. Maya and I are
+    /// Founding Members, so the badge shows. Built relative to `now` so
+    /// countdowns always read sensibly.
     public static func demo(now: Date, calendar: Calendar = .current) -> PartyState {
         let day = PartyPresenceTracker.dayString(now, calendar: calendar)
         func presence(_ status: PartyStatus, minutesLeft: Double? = nil, today: Int = 0, streak: Int = 0) -> PartyPresence {
@@ -21,8 +22,10 @@ extension PartyState {
         }
         let since = now.addingTimeInterval(-14 * 86_400)
 
-        let me = profile(code: "K7QW2MZD", name: "Sam", pet: PetProfile(name: "Mochi", breed: .orangeTabby, accessories: [.scarf]))
-        let maya = profile(code: "M4YA8QRT", name: "Maya", pet: PetProfile(name: "Biscuit", breed: .goldenRetriever, accessories: [.roundGlasses]))
+        let me = profile(code: "K7QW2MZD", name: "Sam", pet: PetProfile(name: "Mochi", breed: .orangeTabby, accessories: [.scarf]),
+                         badges: [PartyBadge.founding])
+        let maya = profile(code: "M4YA8QRT", name: "Maya", pet: PetProfile(name: "Biscuit", breed: .goldenRetriever, accessories: [.roundGlasses]),
+                           badges: [PartyBadge.founding])
         let priya = profile(code: "PR1YA6KD", name: "Priya", pet: PetProfile(name: "Luna", breed: .siamese, outfit: .scrubs))
         let leo = profile(code: "LE0J9WXC", name: "Leo", pet: PetProfile(name: "Waffles", breed: .corgi, accessories: [.beanie]))
         let jonah = profile(code: "J0NAH2PF", name: "Jonah", pet: PetProfile(name: "Pepper", breed: .blackCat))
@@ -64,7 +67,7 @@ extension PartyState {
     }
 
     /// A profile as the server would return it for `pet`.
-    private static func profile(code: String, name: String, pet: PetProfile) -> PartyProfile {
+    private static func profile(code: String, name: String, pet: PetProfile, badges: [String] = []) -> PartyProfile {
         let update = PartyPetAppearance.update(for: pet)
         return PartyProfile(
             code: code,
@@ -76,7 +79,8 @@ extension PartyState {
             costume: update.costume ?? "none",
             accessories: update.accessories ?? [],
             points: 0,
-            level: 1
+            level: 1,
+            badges: badges
         )
     }
 }

@@ -199,6 +199,50 @@ final class PetLimitedTests: XCTestCase {
         XCTAssertEqual(closet.tap(pumpkin), .notEarnedYet)
     }
 
+    /// Founding Member's pin is an event item the server grants, worn on
+    /// the chest in the neck slot, and owning it is the Founding badge.
+    func testFoundersPinIsTheFoundingMemberGrant() {
+        let pin = PetItem.accessory(.foundersPin)
+        XCTAssertEqual(PetLimitedEdition.foundingMember.item, pin)
+        XCTAssertEqual(pin.limitedEdition?.source, .event(id: "founding"))
+        XCTAssertNil(pin.limitedEdition?.milestone)
+        XCTAssertEqual(PetAccessory.foundersPin.slot, .neck)
+        XCTAssertEqual(pin.effect, .sparkle)
+        XCTAssertEqual(pin.cost, 0)
+        XCTAssertFalse(pin.isNew)
+        XCTAssertEqual(PetLimitedEdition.foundingMember.howToEarn,
+                       "Given to everyone who signs in to Tabbi in its first 100 days.")
+
+        var closet = PetCloset(save: PetSave(profile: PetProfile(name: "Kit", breed: .tuxedo),
+                                             ledger: PetPointsLedger(earned: 5000)))
+        XCTAssertFalse(closet.save.isFoundingMember)
+        XCTAssertFalse(closet.save.ledger.canBuy(pin), "points never buy it")
+        XCTAssertEqual(closet.applyGrants(["accessory.foundersPin"]), [pin])
+        XCTAssertTrue(closet.save.isFoundingMember)
+        XCTAssertEqual(closet.tap(pin), .wore)
+        XCTAssertTrue(closet.profile.isWearing(pin))
+        XCTAssertTrue(PetCloset.demo.save.isFoundingMember, "demo shots show the badge")
+    }
+
+    /// Every entitlement the server can record brings only limited items,
+    /// and every badge it can show is one the app knows how to draw.
+    func testServerEntitlementsBringLimitedItemsAndKnownBadges() throws {
+        let url = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("backend/shared/entitlements.json")
+        struct Entitlement: Decodable { var id: String; var badge: Bool; var items: [String] }
+        struct File: Decodable { var entitlements: [Entitlement] }
+        let entitlements = try JSONDecoder().decode(File.self, from: Data(contentsOf: url)).entitlements
+        XCTAssertEqual(entitlements.map(\.id), [PartyBadge.founding])
+        for entitlement in entitlements {
+            for id in entitlement.items {
+                XCTAssertEqual(PetItem(id: id)?.isLimited, true, "\(entitlement.id) brings \(id)")
+            }
+        }
+        XCTAssertEqual(entitlements.first?.items, [PetLimitedEdition.foundingMember.item.id])
+        XCTAssertEqual(entitlements.filter(\.badge).map(\.id), [PartyBadge.founding])
+    }
+
     // MARK: Ledger and closet
 
     func testPointsCannotBuyALimitedItem() {

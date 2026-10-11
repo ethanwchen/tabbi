@@ -15,7 +15,8 @@ import sys
 import zipfile
 from html.parser import HTMLParser
 
-from _partials import page, download_button, PAW, DOWNLOAD, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, RELEASES_URL, SUGGESTIONS, SUPPORT_EMAIL
+from _partials import page, download_button, PAW, DOWNLOAD, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, RELEASES_URL, SUGGESTIONS, SUPPORT_EMAIL, SUPPORT_TABBI
+from _downloads import current_milestone, downloads_note
 from _releases import RELEASES, VERSION
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
 from _demo import DEMO, demo_data
@@ -59,18 +60,19 @@ FEATURES = [
     ('friends', ['maya', 'wizard'], 'Make focus a game',
      'Every session earns points for your cat\'s next outfit. Keep your streak alive with friends.'),
     ('plan', ['scholar'], 'Your day at a glance',
-     'Tasks, calendar and Anki flashcards right in your notch. Plan and review without switching apps.'),
+     'Tasks, calendar and the Anki cards due today, right in your notch. See your whole day at a glance.'),
     ('private', ['plain'], 'Private by design',
      'No ads, no tracking, no account needed. Everything stays on your Mac unless you sync.'),
 ]
 
 # The icon beside the line on wide screens, above it on narrow ones, then
 # the page's one download button. The notch demo right below is the show.
+# From 10,000 downloads the note under the button says so (_downloads.py).
 HOME_HERO = {
     'title': '<span class="ln">Focus with a cat</span> <span class="ln">in your <span class="hl">notch</span>.</span>',
     'subtitle': 'A cozy study timer with a pixel pet, for your Mac.',
     'cta': f'''<div class="cta">{download_button()}</div>
-        <p class="cta-note">Free, macOS 14+</p>''',
+        <p class="cta-note">Free, macOS 14+{downloads_note(current_milestone())}</p>''',
     'icon': '<img class="hero-icon" src="/img/icon-256.webp" width="256" height="256" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
 }
 
@@ -104,7 +106,7 @@ HOME = DEMO + f'''
             <span class="gh-text"><strong>Open source on GitHub</strong><span>Come say hi or leave a star.</span></span>
             <span class="gh-arrow" aria-hidden="true">&rarr;</span>
           </a>
-          <a class="gh-card coffee-card" href="https://buymeacoffee.com/ethanpolar">
+          <a class="gh-card coffee-card" href="''' + SUPPORT_TABBI + '''">
             <svg class="coffee-mark" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
               <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path class="steam s1" d="M11 4c-1.2 1.4 1.2 2.6 0 4"/>
@@ -114,7 +116,7 @@ HOME = DEMO + f'''
                 <path d="M25 14h1.5a3.5 3.5 0 0 1 0 7H25"/>
               </g>
             </svg>
-            <span class="gh-text"><strong>Buy me a coffee</strong><span>Tabbi is free. A coffee keeps it purring.</span></span>
+            <span class="gh-text"><strong>Support Tabbi</strong><span>Tabbi is free. Help keep it purring.</span></span>
             <span class="gh-arrow" aria-hidden="true">&rarr;</span>
           </a>
         </div>
@@ -214,6 +216,9 @@ SUPPORT = f'''
           <p><strong>Reporting</strong> sends us their current name and pet, a reason and an optional note, and offers to block them too. We review every report and can rename or ban an account. A banned account cannot change its name or join parties, and no one else sees it.</p>
           <p>For anything else, email <a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>.</p>""", 'party-safety')}
 
+{faq('Is Tabbi free?', f"""          <p>Yes. Tabbi is free. Optional extras may come later, and the core will stay free.
+            There are no ads and no tracking, and the code is open source on <a href="{GITHUB}">GitHub</a>.</p>""", 'price')}
+
 {faq('Do I need an account?', """          <p>No. Everything in Tabbi works without one.
             To sync your pet across Macs, choose <strong>Sign in with Apple</strong> in <strong>Settings &gt; General</strong> on each of them.
             Your pet, points, unlocked items and streaks then sync, and your Party friend code and friends follow you.</p>
@@ -266,10 +271,10 @@ ABOUT = f'''
         <img class="about-cat" src="/img/glyph.webp" width="96" height="96" alt="">
         <p class="about-lead">Hi, it&rsquo;s Ethan.</p>
         <p>I made Tabbi because I wanted my study tools in one cozy spot, right where I already look: the notch.</p>
-        <p>It&rsquo;s free and open source. No ads, no tracking, no account needed.</p>
-        <p>If Tabbi helps you focus, a&nbsp;star or a&nbsp;coffee means a lot.</p>
+        <p>Tabbi is free and open source. Optional extras may come later, and the core will stay free. No ads, no tracking, no account needed.</p>
+        <p>If Tabbi helps you focus, a&nbsp;star or a&nbsp;little support means a lot.</p>
         <div class="cta center">
-          <a class="btn" href="https://buymeacoffee.com/ethanpolar">Buy me a coffee</a>
+          <a class="btn" href="{SUPPORT_TABBI}">Support Tabbi</a>
           <a class="btn soft" href="{GITHUB}">Star on GitHub</a>
         </div>
         <div class="press" id="press">

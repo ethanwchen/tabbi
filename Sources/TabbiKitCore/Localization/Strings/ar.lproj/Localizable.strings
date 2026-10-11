@@ -173,6 +173,8 @@
 	<string>يُفتح %1$@ بعد %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>يُفتح %1$@ عند %2$lld</string>
+	<key>%@ uses it to greet you.</key>
+	<string>يستخدمه %@ لتحيتك.</string>
 	<key>%@ visited the bakery</key>
 	<string>%@ زار المخبز</string>
 	<key>%@ watched a cloud shaped like a fish</key>
@@ -261,8 +263,18 @@
 	<string>1 مجاني هذا الأسبوع</string>
 	<key>10 minutes?</key>
 	<string>10 دقائق؟</string>
+	<key>25 min focus, 5 min break</key>
+	<string>تركيز 25 د، استراحة 5 د</string>
+	<key>40 questions in 60 min, then review</key>
+	<string>40 سؤالًا في 60 د، ثم مراجعة</string>
 	<key>5-hour</key>
 	<string>5 ساعات</string>
+	<key>52 / 17</key>
+	<string>52/17</string>
+	<key>52 min focus, 17 min break</key>
+	<string>تركيز 52 د، استراحة 17 د</string>
+	<key>90 min deep block, 20 min rest</key>
+	<string>كتلة عميقة 90 د، راحة 20 د</string>
 	<key>&lt;1 min</key>
 	<string>&lt;1 د</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
@@ -495,8 +507,12 @@
 	<string>Anki غير موجود على هذا الـ Mac</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>يحتاج Anki إلى إضافة مجانية اسمها AnkiConnect كي يعدّ Tabbi بطاقاتك.</string>
+	<key>Anki reviews</key>
+	<string>مراجعات Anki</string>
 	<key>Anki said no to Tabbi</key>
 	<string>رفض Anki الاتصال بـ Tabbi</string>
+	<key>Anki sprint</key>
+	<string>دفعة Anki</string>
 	<key>Anki wouldn't open</key>
 	<string>تعذّر فتح Anki</string>
 	<key>AnkiConnect blocked this app</key>
@@ -785,6 +801,8 @@
 	<string>إزالة “%@”</string>
 	<key>Clear All</key>
 	<string>مسح الكل</string>
+	<key>Clear a card goal, not a clock</key>
+	<string>أنجز هدف بطاقات، لا وقتًا</string>
 	<key>Clear completed tasks</key>
 	<string>مسح المهام المكتملة</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
@@ -1099,6 +1117,8 @@
 	<string>تعديل مدد التركيز والاستراحة المخصّصة</string>
 	<key>Email Support</key>
 	<string>راسل الدعم</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>راسل فريق %@ بشأن خطأ أو أي شيء آخر</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>راسل فريق %@ بشأن خطأ أو شخص في المجموعة أو أي شيء آخر</string>
 	<key>Email the %@ team about a person or a problem</key>
@@ -1189,6 +1209,8 @@
 	<string>تدفّق</string>
 	<key>Flower Crown</key>
 	<string>تاج الزهور</string>
+	<key>Flowtime</key>
+	<string>وقت التدفق</string>
 	<key>Focus</key>
 	<string>التركيز</string>
 	<key>Focus %lld min to start one</key>
@@ -1239,6 +1261,14 @@
 	<string>لقية: %lld دقيقة نحو الفعالية</string>
 	<key>Found: the rare %@ fur</key>
 	<string>لقية: فرو %@ النادر</string>
+	<key>Founder's Pin</key>
+	<string>دبوس المؤسسين</string>
+	<key>Founding Member</key>
+	<string>عضو مؤسس</string>
+	<key>Founding Member: joined Tabbi in its first 100 days.</key>
+	<string>عضو مؤسس: انضم إلى Tabbi في أول 100 يوم.</string>
+	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
+	<string>عضو مؤسس: انضممت إلى Tabbi في أول 100 يوم.</string>
 	<key>Free all day</key>
 	<string>يوم حر بالكامل</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1313,6 +1343,8 @@
 	<string>امنح قطتك اسمًا</string>
 	<key>Give your dog a name</key>
 	<string>سمِّ كلبك</string>
+	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
+	<string>هدية لكل من يسجّل الدخول إلى Tabbi في أول 100 يوم.</string>
 	<key>Given to everyone who used Tabbi in its launch week.</key>
 	<string>هدية لكل من استخدم Tabbi في أسبوع إطلاقه.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
@@ -1677,6 +1709,8 @@
 	<string>مزيد من علامات التبويب</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>ينتظر معظم الناس أن يشعروا بالاستعداد. أنت بدأت فحسب. هذا هو الفرق.</string>
+	<key>Mostly convention</key>
+	<string>عُرف في الغالب</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>نقل %@ إلى مجلد التطبيقات؟</string>
 	<key>Move down</key>
@@ -1921,6 +1955,8 @@
 	<string>تبقّت إضافة واحدة</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>جلسة هادئة تلو الأخرى. النجاح قريب.</string>
+	<key>One countdown, no breaks</key>
+	<string>عدّ تنازلي واحد، بلا استراحات</string>
 	<key>One moment.</key>
 	<string>لحظة.</string>
 	<key>One question first</key>
@@ -2237,6 +2273,8 @@
 	<string>نقاط اليوم؛ أنفقها على خزانة رفيقك</string>
 	<key>Points: 1 for every focused minute, plus a bonus for finishing a session</key>
 	<string>النقاط: نقطة لكل دقيقة تركيز، ومكافأة عند إنهاء الجلسة</string>
+	<key>Pomodoro</key>
+	<string>بومودورو</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>يشغّل استخدام Claude والإجابات.</string>
 	<key>Preset %@</key>
@@ -2265,6 +2303,8 @@
 	<string>إعادة قسم عام كما في التثبيت الجديد. يبقى خيار الفتح عند تسجيل الدخول كما هو.</string>
 	<key>Put the recap away</key>
 	<string>إخفاء الملخص</string>
+	<key>Question block</key>
+	<string>كتلة أسئلة</string>
 	<key>Quick and crisp, with no bounce.</key>
 	<string>سريع وواضح، بلا ارتداد.</string>
 	<key>Quick answers right here. %@ can't see your files.</key>
@@ -2625,6 +2665,8 @@
 	<string>سلس</string>
 	<key>Snowy Scarf</key>
 	<string>وشاح الثلج</string>
+	<key>Some evidence</key>
+	<string>بعض الأدلة</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>القليل أكثر بكثير من لا شيء. استرح، فالرقعة باقية.</string>
 	<key>Something not working?</key>
@@ -2763,6 +2805,8 @@
 	<string>نقاط الدراسة المكتسبة اليوم، لتنفقها على أزياء رفيقك</string>
 	<key>Study together</key>
 	<string>ادرسوا معًا</string>
+	<key>Study until focus slips, break scales</key>
+	<string>ادرس حتى يتراجع تركيزك، والاستراحة تتناسب</string>
 	<key>Study with a cat</key>
 	<string>ادرس مع قطة</string>
 	<key>Study with a dog</key>
@@ -3111,6 +3155,8 @@
 	<string>اكتب اسم الاختصار أولًا</string>
 	<key>Type a task and press Return to add it; Esc clears</key>
 	<string>اكتب مهمة واضغط Return لإضافتها؛ Esc للمسح</string>
+	<key>Ultradian</key>
+	<string>ألتراديان</string>
 	<key>Unblock</key>
 	<string>إلغاء الحظر</string>
 	<key>Unblock them in Party options to add them again.</key>
@@ -3209,6 +3255,8 @@
 	<string>الأسابيع</string>
 	<key>Welcome to %@</key>
 	<string>مرحبًا بك في %@</string>
+	<key>Well supported</key>
+	<string>مدعوم جيدًا</string>
 	<key>What happened when Tabbi ran your shortcuts</key>
 	<string>ما حدث عندما شغّل Tabbi اختصاراتك</string>
 	<key>What happened, in a sentence or two</key>
@@ -3395,6 +3443,8 @@
 	<string>أكثر يوم درست فيه: %@</string>
 	<key>Your name</key>
 	<string>اسمك</string>
+	<key>Your own focus and break lengths</key>
+	<string>مدد التركيز والاستراحة الخاصة بك</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>أُعيد ضبط ملفك في المجموعة. جارٍ إعادة الاتصال…</string>
 	<key>Your pet</key>

@@ -34,7 +34,7 @@ The terminal needs Accessibility access for that.
 The notch tracks the pointer with a global monitor, so this is how a user moving the mouse all day looks to Tabbi.
 
 `--open <module id>` launches with `TABBI_PERF_OPEN` set, which opens the notch on that tab and pins it, so it stays open with no hand on the mouse.
-A module id that is not in the layout opens the first tab instead; the demo layout has `focus`, `study`, `planner`, `spotify` and more under the chevron.
+In a demo run a module id that is not in the layout (`system`, `anki`, `party`, `schedule`, ...) is added as a tab first, so the notch opens on the tab asked for; a `--live` run never changes the user's tabs, so there an id that is not a tab opens the first tab instead.
 
 `--cycle <seconds>` launches with `TABBI_PERF_CYCLE` set: every that many seconds the notch opens on the next enabled tab (including the ones under the chevron and the Closet) or closes again, so a long run shows whether memory grows with each open and close.
 
@@ -196,6 +196,16 @@ A new snapshot of the shared clock (start, pause, a phase change) brings a fresh
 The context switch counts here are mostly other activity on the Mac and too small to compare.
 While Study's session runs the card still ticks every second, and screenshots confirm it counts down (15:02 to 14:59 over three seconds).
 `ProvidedFocusClockTests` guards the schedule: an idle, paused or finished clock needs no redraw, and a running countdown or count-up wakes once per second, each time on a new face.
+
+The System tab drew its three sparklines with Swift Charts, and Charts kept about 225 MB of graphics memory (`footprint`'s "Owned physical footprint (graphics)") alive for as long as the tab was open, which `--open system` missed until it could open a tab the demo layout leaves out.
+The sparklines are now plain SwiftUI shapes along `HistorySeries.monotoneCurve`, the same monotone curve Charts drew, and look the same at every panel size.
+
+| Notch open on System, 30-60 s | CPU | Footprint |
+| --- | --- | --- |
+| Swift Charts | 0.94% | 263-279 MB |
+| Shapes | 0.28% | 29 MB, flat |
+
+`HistorySeriesTests` guards the curve: it passes through every reading and never overshoots one, so a spike to 100% stays inside the card.
 
 ### Memory over many opens
 

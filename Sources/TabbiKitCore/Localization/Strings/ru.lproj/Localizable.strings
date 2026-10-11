@@ -173,6 +173,8 @@
 	<string>%1$@: еще %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%1$@ с %2$lld</string>
+	<key>%@ uses it to greet you.</key>
+	<string>%@ будет так к тебе обращаться.</string>
 	<key>%@ visited the bakery</key>
 	<string>%@ заглядывает в пекарню</string>
 	<key>%@ watched a cloud shaped like a fish</key>
@@ -269,8 +271,18 @@
 	<string>10 минут?</string>
 	<key>10 minutes? That keeps your %lld-day streak going.</key>
 	<string>10 минут? Тогда серия дней (%lld) продолжится.</string>
+	<key>25 min focus, 5 min break</key>
+	<string>25 мин фокуса, 5 мин перерыва</string>
+	<key>40 questions in 60 min, then review</key>
+	<string>40 вопросов за 60 мин, затем разбор</string>
 	<key>5-hour</key>
 	<string>5 ч</string>
+	<key>52 / 17</key>
+	<string>52 / 17</string>
+	<key>52 min focus, 17 min break</key>
+	<string>52 мин фокуса, 17 мин перерыва</string>
+	<key>90 min deep block, 20 min rest</key>
+	<string>90 мин глубокой работы, 20 мин отдыха</string>
 	<key>&lt;1 min</key>
 	<string>&lt;1 мин</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
@@ -505,8 +517,12 @@
 	<string>Anki нет на этом Mac</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>Anki нужен бесплатный аддон AnkiConnect, чтобы Tabbi мог считать карточки.</string>
+	<key>Anki reviews</key>
+	<string>Повторения в Anki</string>
 	<key>Anki said no to Tabbi</key>
 	<string>Anki отказал Tabbi</string>
+	<key>Anki sprint</key>
+	<string>Спринт Anki</string>
 	<key>Anki wouldn't open</key>
 	<string>Не удалось открыть Anki</string>
 	<key>AnkiConnect blocked this app</key>
@@ -797,6 +813,8 @@
 	<string>Убрать «%@»</string>
 	<key>Clear All</key>
 	<string>Удалить все</string>
+	<key>Clear a card goal, not a clock</key>
+	<string>Цель в карточках, а не в минутах</string>
 	<key>Clear completed tasks</key>
 	<string>Убрать выполненные задачи</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
@@ -1111,6 +1129,8 @@
 	<string>Изменить длительность фокуса и перерывов для метода «Свой»</string>
 	<key>Email Support</key>
 	<string>Написать в поддержку</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>Написать команде %@ об ошибке или о чем-то еще</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>Написать команде %@ об ошибке, о человеке в Party или о чем-то еще</string>
 	<key>Email the %@ team about a person or a problem</key>
@@ -1201,6 +1221,8 @@
 	<string>Поток</string>
 	<key>Flower Crown</key>
 	<string>Венок из цветов</string>
+	<key>Flowtime</key>
+	<string>Flowtime</string>
 	<key>Focus</key>
 	<string>Фокус</string>
 	<key>Focus %lld min to start one</key>
@@ -1251,6 +1273,14 @@
 	<string>Находка: %lld мин к событию</string>
 	<key>Found: the rare %@ fur</key>
 	<string>Находка: редкий мех «%@»</string>
+	<key>Founder's Pin</key>
+	<string>Значок основателя</string>
+	<key>Founding Member</key>
+	<string>Участник-основатель</string>
+	<key>Founding Member: joined Tabbi in its first 100 days.</key>
+	<string>Участник-основатель: с Tabbi с первых 100 дней.</string>
+	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
+	<string>Участник-основатель: ты с Tabbi с первых 100 дней.</string>
 	<key>Free all day</key>
 	<string>Весь день свободен</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1325,6 +1355,8 @@
 	<string>Дай имя своей кошке</string>
 	<key>Give your dog a name</key>
 	<string>Дай имя своей собаке</string>
+	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
+	<string>Для всех, кто вошёл в Tabbi в первые 100 дней.</string>
 	<key>Given to everyone who used Tabbi in its launch week.</key>
 	<string>Для всех, кто пользовался Tabbi в неделю запуска.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
@@ -1693,6 +1725,8 @@
 	<string>Другие вкладки</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>Многие ждут, когда почувствуют готовность. А ты просто начинаешь. В этом разница.</string>
+	<key>Mostly convention</key>
+	<string>Скорее традиция</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>Переместить %@ в папку «Программы»?</string>
 	<key>Move down</key>
@@ -1937,6 +1971,8 @@
 	<string>Остался один аддон</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>Спокойно, сессия за сессией. У тебя все получится.</string>
+	<key>One countdown, no breaks</key>
+	<string>Один отсчёт, без перерывов</string>
 	<key>One moment.</key>
 	<string>Секунду.</string>
 	<key>One question first</key>
@@ -2253,6 +2289,8 @@
 	<string>Очки за сегодня: потрать их на гардероб питомца</string>
 	<key>Points: 1 for every focused minute, plus a bonus for finishing a session</key>
 	<string>Очки: 1 за каждую минуту фокуса и бонус за завершенную сессию</string>
+	<key>Pomodoro</key>
+	<string>Помодоро</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Для статистики Claude и ответов.</string>
 	<key>Preset %@</key>
@@ -2281,6 +2319,8 @@
 	<string>Вернуть «Основные» к исходному виду. «Открывать при входе» не меняется.</string>
 	<key>Put the recap away</key>
 	<string>Убрать итоги</string>
+	<key>Question block</key>
+	<string>Блок вопросов</string>
 	<key>Quick and crisp, with no bounce.</key>
 	<string>Быстро и четко, без отскока.</string>
 	<key>Quick answers right here. %@ can't see your files.</key>
@@ -2645,6 +2685,8 @@
 	<string>Плавно</string>
 	<key>Snowy Scarf</key>
 	<string>Снежный шарф</string>
+	<key>Some evidence</key>
+	<string>Есть данные</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>Немного бесконечно больше, чем ничего. Отдохни. Доска никуда не денется.</string>
 	<key>Something not working?</key>
@@ -2787,6 +2829,8 @@
 	<string>Очки за учебу сегодня: потрать их на наряды питомца</string>
 	<key>Study together</key>
 	<string>Учимся вместе</string>
+	<key>Study until focus slips, break scales</key>
+	<string>Учитесь, пока не устанете, перерыв по времени</string>
 	<key>Study with a cat</key>
 	<string>Учиться с котиком</string>
 	<key>Study with a dog</key>
@@ -3145,6 +3189,8 @@
 	<string>Введи задачу и нажми Return, чтобы добавить; Esc очищает</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
 	<string>Введи или вставь код друга из %lld символов и нажми Return</string>
+	<key>Ultradian</key>
+	<string>Ультрадиан</string>
 	<key>Unblock</key>
 	<string>Разблокировать</string>
 	<key>Unblock them in Party options to add them again.</key>
@@ -3243,6 +3289,8 @@
 	<string>Недели</string>
 	<key>Welcome to %@</key>
 	<string>Привет, я %@</string>
+	<key>Well supported</key>
+	<string>Хорошо доказано</string>
 	<key>What happened when Tabbi ran your shortcuts</key>
 	<string>Что произошло, когда Tabbi запустил твои команды</string>
 	<key>What happened, in a sentence or two</key>
@@ -3433,6 +3481,8 @@
 	<string>Твое имя</string>
 	<key>Your name, up to %lld characters</key>
 	<string>Твое имя, до %lld символов</string>
+	<key>Your own focus and break lengths</key>
+	<string>Свои длины фокуса и перерыва</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>Профиль Party сброшен. Переподключение…</string>
 	<key>Your pet</key>

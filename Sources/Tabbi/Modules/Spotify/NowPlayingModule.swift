@@ -6,6 +6,10 @@ import TabbiKitCore
 /// Now Playing: Spotify and Apple Music controls, and SoundCloud in Safari or
 /// Chrome once the user turns it on. `SpotifyController` keeps its own
 /// timers in step with the panel.
+///
+/// The players are read only while the tab is on and the user has picked
+/// their tabs: the first read asks macOS for Automation access, which must
+/// not pop up over first-run onboarding or for a tab that is off.
 @MainActor
 final class NowPlayingModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
@@ -17,9 +21,35 @@ final class NowPlayingModule: NotchModule {
     )
     /// Also drives the closed notch's music wings.
     let controller: SpotifyController
+    private var isOn = false
+    private var hasChosenTabs = false
+    private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
         controller = SpotifyController(runMode: context.runMode, allowsBrowsers: !context.edition.isAppStore)
+        // `$settings` emits before the new value is stored, so read the emission.
+        context.settings.$settings
+            .map(\.hasChosenKit)
+            .removeDuplicates()
+            .sink { [weak self] chosen in
+                self?.hasChosenTabs = chosen
+                self?.followPlayers()
+            }
+            .store(in: &cancellables)
+    }
+
+    func start() {
+        isOn = true
+        followPlayers()
+    }
+
+    func stop() {
+        isOn = false
+        followPlayers()
+    }
+
+    private func followPlayers() {
+        if isOn, hasChosenTabs { controller.start() } else { controller.stop() }
     }
 
     /// Shows a SoundCloud state in the panel for a snapshot run.

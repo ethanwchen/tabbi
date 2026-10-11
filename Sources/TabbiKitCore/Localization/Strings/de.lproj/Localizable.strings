@@ -173,6 +173,8 @@
 	<string>%1$@: noch %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%1$@ ab %2$lld</string>
+	<key>%@ uses it to greet you.</key>
+	<string>%@ begrüßt dich damit.</string>
 	<key>%@ visited the bakery</key>
 	<string>%@ hat die Bäckerei besucht</string>
 	<key>%@ watched a cloud shaped like a fish</key>
@@ -269,8 +271,18 @@
 	<string>10 Minuten?</string>
 	<key>10 minutes? That keeps your %lld-day streak going.</key>
 	<string>10 Minuten? Dann hält deine %lld-Tage-Serie.</string>
+	<key>25 min focus, 5 min break</key>
+	<string>25 Min. Fokus, 5 Min. Pause</string>
+	<key>40 questions in 60 min, then review</key>
+	<string>40 Fragen in 60 Min., dann Review</string>
 	<key>5-hour</key>
 	<string>5 Std.</string>
+	<key>52 / 17</key>
+	<string>52 / 17</string>
+	<key>52 min focus, 17 min break</key>
+	<string>52 Min. Fokus, 17 Min. Pause</string>
+	<key>90 min deep block, 20 min rest</key>
+	<string>90 Min. tiefer Block, 20 Min. Ruhe</string>
 	<key>&lt;1 min</key>
 	<string>&lt;1 min</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
@@ -505,8 +517,12 @@
 	<string>Anki fehlt auf diesem Mac</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>Anki braucht das kostenlose Add-on AnkiConnect, damit Tabbi deine Karten zählen kann.</string>
+	<key>Anki reviews</key>
+	<string>Anki-Wiederholungen</string>
 	<key>Anki said no to Tabbi</key>
 	<string>Anki hat Tabbi abgelehnt</string>
+	<key>Anki sprint</key>
+	<string>Anki-Sprint</string>
 	<key>Anki wouldn't open</key>
 	<string>Anki ließ sich nicht öffnen</string>
 	<key>AnkiConnect blocked this app</key>
@@ -797,6 +813,8 @@
 	<string>„%@“ abwählen</string>
 	<key>Clear All</key>
 	<string>Alle löschen</string>
+	<key>Clear a card goal, not a clock</key>
+	<string>Ein Kartenziel statt einer Uhr</string>
 	<key>Clear completed tasks</key>
 	<string>Erledigte Aufgaben entfernen</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
@@ -1111,6 +1129,8 @@
 	<string>Fokus- und Pausenlängen von Eigene bearbeiten</string>
 	<key>Email Support</key>
 	<string>Support schreiben</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>Schreib dem %@-Team eine E-Mail zu einem Fehler oder etwas anderem</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>Schreib dem %@-Team eine E-Mail zu einem Fehler, einer Person in Party oder etwas anderem</string>
 	<key>Email the %@ team about a person or a problem</key>
@@ -1201,6 +1221,8 @@
 	<string>Flow</string>
 	<key>Flower Crown</key>
 	<string>Blumenkranz</string>
+	<key>Flowtime</key>
+	<string>Flowtime</string>
 	<key>Focus</key>
 	<string>Fokus</string>
 	<key>Focus %lld min to start one</key>
@@ -1251,6 +1273,14 @@
 	<string>Gefunden: %lld min für das Event</string>
 	<key>Found: the rare %@ fur</key>
 	<string>Gefunden: seltenes Fell %@</string>
+	<key>Founder's Pin</key>
+	<string>Gründer-Anstecker</string>
+	<key>Founding Member</key>
+	<string>Gründungsmitglied</string>
+	<key>Founding Member: joined Tabbi in its first 100 days.</key>
+	<string>Gründungsmitglied: in den ersten 100 Tagen zu Tabbi gekommen.</string>
+	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
+	<string>Gründungsmitglied: Du warst in den ersten 100 Tagen bei Tabbi dabei.</string>
 	<key>Free all day</key>
 	<string>Ganztägig frei</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1325,6 +1355,8 @@
 	<string>Benenne deine Katze</string>
 	<key>Give your dog a name</key>
 	<string>Benenne deinen Hund</string>
+	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
+	<string>Für alle, die sich in den ersten 100 Tagen bei Tabbi anmelden.</string>
 	<key>Given to everyone who used Tabbi in its launch week.</key>
 	<string>Für alle, die Tabbi in der Startwoche genutzt haben.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
@@ -1693,6 +1725,8 @@
 	<string>Weitere Tabs</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>Die meisten warten, bis sie sich bereit fühlen. Du hast einfach angefangen. Das ist der Unterschied.</string>
+	<key>Mostly convention</key>
+	<string>Eher Konvention</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>%@ in den Ordner „Programme“ bewegen?</string>
 	<key>Move down</key>
@@ -1937,6 +1971,8 @@
 	<string>Noch ein Add-on</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>Immer eine ruhige Sitzung. Du schaffst das.</string>
+	<key>One countdown, no breaks</key>
+	<string>Ein Countdown, keine Pausen</string>
 	<key>One moment.</key>
 	<string>Einen Moment.</string>
 	<key>One question first</key>
@@ -2253,6 +2289,8 @@
 	<string>Heute verdiente Punkte; gib sie für die Garderobe deines Haustiers aus</string>
 	<key>Points: 1 for every focused minute, plus a bonus for finishing a session</key>
 	<string>Punkte: 1 pro Fokusminute, plus ein Bonus, wenn du eine Session beendest</string>
+	<key>Pomodoro</key>
+	<string>Pomodoro</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Für Claude-Nutzung und Antworten.</string>
 	<key>Preset %@</key>
@@ -2281,6 +2319,8 @@
 	<string>Setzt Allgemein auf den Stand einer Neuinstallation zurück. „Bei Anmeldung öffnen“ bleibt, wie es ist.</string>
 	<key>Put the recap away</key>
 	<string>Rückblick weglegen</string>
+	<key>Question block</key>
+	<string>Fragenblock</string>
 	<key>Quick and crisp, with no bounce.</key>
 	<string>Schnell und knackig, ohne Nachschwingen.</string>
 	<key>Quick answers right here. %@ can't see your files.</key>
@@ -2645,6 +2685,8 @@
 	<string>Weich</string>
 	<key>Snowy Scarf</key>
 	<string>Schneeschal</string>
+	<key>Some evidence</key>
+	<string>Teilweise belegt</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>Ein bisschen ist unendlich viel mehr als nichts. Ruh dich aus. Das Schachbrett läuft nicht weg.</string>
 	<key>Something not working?</key>
@@ -2787,6 +2829,8 @@
 	<string>Heute verdiente Lernpunkte, für Outfits deines Haustiers</string>
 	<key>Study together</key>
 	<string>Gemeinsam lernen</string>
+	<key>Study until focus slips, break scales</key>
+	<string>Lernen, bis der Fokus nachlässt, Pause passt sich an</string>
 	<key>Study with a cat</key>
 	<string>Mit einer Katze lernen</string>
 	<key>Study with a dog</key>
@@ -3145,6 +3189,8 @@
 	<string>Aufgabe tippen und mit Return hinzufügen; Esc leert</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
 	<string>Gib den %lld-stelligen Code eines Freundes ein oder füge ihn ein und drücke den Zeilenschalter</string>
+	<key>Ultradian</key>
+	<string>Ultradian</string>
 	<key>Unblock</key>
 	<string>Freigeben</string>
 	<key>Unblock them in Party options to add them again.</key>
@@ -3243,6 +3289,8 @@
 	<string>Wochen</string>
 	<key>Welcome to %@</key>
 	<string>Hi, ich bin %@</string>
+	<key>Well supported</key>
+	<string>Gut belegt</string>
 	<key>What happened when Tabbi ran your shortcuts</key>
 	<string>Was passiert ist, als Tabbi deine Kurzbefehle ausgeführt hat</string>
 	<key>What happened, in a sentence or two</key>
@@ -3433,6 +3481,8 @@
 	<string>Dein Name</string>
 	<key>Your name, up to %lld characters</key>
 	<string>Dein Name, bis zu %lld Zeichen</string>
+	<key>Your own focus and break lengths</key>
+	<string>Eigene Fokus- und Pausenlängen</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>Dein Party-Profil wurde zurückgesetzt. Verbinde neu…</string>
 	<key>Your pet</key>

@@ -64,6 +64,10 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
     case lunarNewYearLion
     case springSakura
     case examHoodie
+    /// Founding Member: granted by the Tabbi server to every Sign in with
+    /// Apple account made in the first 100 days after launch (and to the
+    /// beta testers before it), through `GET /v1/grants`.
+    case foundingMember
 
     public var item: PetItem {
         switch self {
@@ -80,6 +84,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .lunarNewYearLion: .accessory(.lionDanceHat)
         case .springSakura: .accessory(.sakuraSprig)
         case .examHoodie: .outfit(.studyHoodie)
+        case .foundingMember: .accessory(.foundersPin)
         }
     }
 
@@ -101,6 +106,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .lunarNewYearLion: .season(id: "lunar-new-year")
         case .springSakura: .season(id: "spring")
         case .examHoodie: .season(id: "exam-season")
+        case .foundingMember: .event(id: "founding")
         }
     }
 
@@ -118,6 +124,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .streakFlame: String(localized: "Study 7 days in a row.", bundle: .tabbi)
         case .focusLaurel: String(localized: "Focus for 50 hours in total.", bundle: .tabbi)
         case .partyMedal: String(localized: "Finish a Party session with friends.", bundle: .tabbi)
+        case .foundingMember: String(localized: "Given to everyone who signs in to Tabbi in its first 100 days.", bundle: .tabbi)
         default: seasonalHowToEarn
         }
     }
@@ -157,8 +164,16 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .lunarNewYearLion: .sparkle
         case .springSakura: .drift
         case .examHoodie: .shimmer
+        case .foundingMember: .sparkle
         }
     }
+}
+
+extension PetSave {
+    /// Whether this pet holds the Founder's Pin, which only the Founding
+    /// Member entitlement grants, so it stands for the badge on the user's
+    /// own account: it is saved, synced and works offline.
+    public var isFoundingMember: Bool { ledger.owns(PetLimitedEdition.foundingMember.item) }
 }
 
 extension PetItem {

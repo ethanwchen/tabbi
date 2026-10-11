@@ -223,7 +223,7 @@
 .ring { display: block; width: 100%; height: 100%; rotate: -90deg; }
 .demo .ring-track, .demo .ring-arc { fill: none; }
 .ring-track { stroke: rgba(255, 158, 66, 0.2); }
-.ring-arc { stroke: var(--timer); stroke-linecap: round; stroke-dasharray: 100 100; stroke-dashoffset: 0; }
+.ring-arc { stroke: var(--timer); stroke-linecap: round; stroke-dasharray: 100 100; }
 .mini-ring .ring-track { stroke: rgba(255, 158, 66, 0.25); }
 .mini-ring { rotate: -90deg; }
 .mini-ring .ring-arc { stroke: var(--timer); stroke-linecap: round; stroke-dasharray: 100 100; }
@@ -629,7 +629,7 @@
 .pill-btn:hover { background: rgba(255, 107, 158, 0.26); }
 .demo .pill-main { width: 6.4em; height: 2.8em; padding: 0; background: color-mix(in srgb, var(--party) 88%, transparent); color: #000; font-size: 1.1em; }
 .demo .pill-main:hover { background: var(--party); }
-.pill-btn:active, .grade:active, .seg:active { transform: scale(0.96); }
+.pill-btn:active, .seg:active { transform: scale(0.96); }
 .demo .pill-btn[data-sent] { background: var(--n-surface); color: var(--n-text-2); cursor: default; }
 
 /* The round's end: a banner in the app's words, over the round's bar so
@@ -649,7 +649,6 @@
 .banner-text b { font-size: 1.4em; font-weight: 700; color: var(--n-text); }
 .banner-text span { font-size: 1.1em; font-weight: 600; color: var(--party); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .stage .confetti { top: 40%; left: 50%; }
-.flashcard .confetti { top: 40%; left: 50%; z-index: 2; }
 
 .friends { display: flex; flex-direction: column; gap: 0.6em; min-width: 0; min-height: 0; padding: 1.2em 1.2em 0.8em; overflow: hidden; }
 .friends-head { justify-content: space-between; }
@@ -716,66 +715,107 @@
 @keyframes spin { to { rotate: 360deg; } }
 
 /* --- Anki ---------------------------------------------------------------- */
-/* The deck and what is due on the left; the card to review on the right,
-   with the grades under it. */
-.pane-anki { grid-template-columns: 17.6em minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: 1.2em; }
-.deck { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2em; min-width: 0; padding: 1.2em; }
-.deck-dial { position: relative; width: 8.8em; height: 8.8em; margin-bottom: 0.6em; }
-.deck-ring { display: block; width: 100%; height: 100%; rotate: -90deg; }
-.deck-ring .ring-track { stroke: rgba(92, 158, 255, 0.2); }
-.deck-ring .ring-arc { stroke: var(--anki); stroke-linecap: round; stroke-dasharray: 100 100; stroke-dashoffset: 0; transition: stroke-dashoffset 490ms var(--snappy); }
-.deck-read { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.deck-due { font-size: 2.8em; font-weight: 600; line-height: 1.05; color: var(--n-text); font-variant-numeric: tabular-nums; }
-.deck-cap { font-size: 1.05em; font-weight: 500; color: var(--n-text-3); }
-.demo .deck-name { font-size: 1.3em; font-weight: 600; color: var(--n-text); white-space: nowrap; }
-.deck-streak { display: flex; align-items: center; gap: 0.3em; font-size: 1.05em; font-weight: 600; color: var(--n-text-2); white-space: nowrap; }
-.deck-streak .ico { width: 1em; height: 1em; color: var(--timer); }
+/* What is due today in a 92 pt ring beside its new / learning / review
+   split, the top decks in the rest of the row, and a 28 pt footer with the
+   streak, the last ten days, Sync and the favorite deck's Study button.
+   The queues wear Anki's own colors: new blue, learning red, review green. */
+.pane-anki {
+  --q-new: var(--anki); --q-learn: var(--danger); --q-review: var(--success);
+  grid-template-columns: 24em minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 2.8em; gap: 0.8em;
+}
+.due-card { display: flex; align-items: center; gap: 1.2em; min-width: 0; padding: 1.2em; }
+.due-dial { position: relative; flex: none; width: 9.2em; height: 9.2em; }
+.due-ring { display: block; width: 100%; height: 100%; rotate: -90deg; }
+.due-ring .ring-track { stroke: rgba(92, 158, 255, 0.2); }
+.due-ring .ring-arc { stroke: var(--anki); transition: stroke-dashoffset 490ms var(--snappy), stroke 335ms var(--snappy); }
+.due-card[data-done] .due-ring .ring-arc { stroke: var(--success); }
+.due-read { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.due-n { font-size: 2.2em; font-weight: 600; line-height: 1.15; color: var(--n-text); font-variant-numeric: tabular-nums; }
+.due-cap { font-size: 1.05em; font-weight: 500; color: var(--n-text-3); }
+.due-all { display: none; gap: 0.2em; }
+.due-dial .due-check { width: 2em; height: 2em; color: var(--success); }
+.due-card[data-done] .due-read:not(.due-all) { display: none; }
+.due-card[data-done] .due-all { display: flex; }
+.due-card .confetti { top: 50%; left: 4.6em; z-index: 2; }
+.queues { display: flex; flex-direction: column; gap: 0.4em; flex: 1; min-width: 0; }
+.queue { display: flex; align-items: center; gap: 0.4em; font-size: 1.2em; line-height: 1.35; white-space: nowrap; }
+.queue::before { content: ''; flex: none; width: 0.5em; height: 0.5em; border-radius: 50%; background: var(--q); }
+.queue[data-tone='new'], .deck-n[data-tone='new'] { --q: var(--q-new); }
+.queue[data-tone='learn'], .deck-n[data-tone='learn'] { --q: var(--q-learn); }
+.queue[data-tone='review'], .deck-n[data-tone='review'] { --q: var(--q-review); }
+.queue-name { color: var(--n-text-2); }
+.queue-n, .queue-done span:last-child { margin-left: auto; color: var(--n-text); font-variant-numeric: tabular-nums; }
+.queue-n[data-zero] { color: var(--n-text-3); }
+.queue-done {
+  display: flex; padding-top: 0.6em; border-top: 0.05em solid var(--n-stroke);
+  font-size: 1.05em; font-weight: 500; color: var(--n-text-3); white-space: nowrap;
+}
+.queue-done span:last-child { color: var(--n-text-2); }
 
-.review { display: flex; flex-direction: column; gap: 0.8em; min-width: 0; min-height: 0; }
-/* The card turns over in 3D like a real one, its faces trading places at
-   the halfway mark (WebKit draws a back face through a button otherwise);
-   reduced motion swaps them without the turn. */
-.flashcard {
-  position: relative; flex: 1; min-height: 0; width: 100%; padding: 0; border: 0; background: none;
-  perspective: 80em; cursor: pointer; text-align: center;
+/* 24 pt rows like Anki's deck list; a row opens its deck in Anki. */
+.decks { display: flex; flex-direction: column; gap: 0.2em; min-width: 0; min-height: 0; padding: 0.8em; overflow: hidden; }
+.decks-head {
+  display: flex; align-items: center; gap: 0.4em; flex: none; height: 1.8em; padding: 0 0.4em; min-width: 0;
+  font-size: 1.05em; font-weight: 500; color: var(--n-text-3); white-space: nowrap;
 }
-.card-inner {
-  position: absolute; inset: 0; display: block; transform-style: preserve-3d;
-  transition: rotate 575ms var(--open), scale 180ms var(--snappy);
+.decks-note { overflow: hidden; text-overflow: ellipsis; }
+.decks-head[data-note] { color: var(--n-text-2); }
+/* One of the spinner and the two icons shows with a note, none with "Top decks". */
+.decks-head .ico { display: none; flex: none; width: 1.1em; height: 1.1em; color: var(--anki); }
+.decks-head .note-done { color: var(--success); }
+.decks-spin { display: none; flex: none; width: 1em; height: 1em; border: 0.15em solid rgba(92, 158, 255, 0.25); border-top-color: var(--anki); border-radius: 50%; }
+.decks-head[data-note='opening'] .decks-spin, .decks-head[data-note='review'] .note-review, .decks-head[data-note='done'] .note-done { display: block; }
+@media (prefers-reduced-motion: no-preference) {
+  .decks-spin { animation: spin 700ms linear infinite; }
 }
-.flashcard[data-flipped] .card-inner { rotate: y 180deg; }
-.flashcard:active .card-inner { scale: 0.985; }
-.face {
-  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6em;
-  padding: 1.2em 2em; border-radius: 1em; background: var(--n-surface); box-shadow: inset 0 0 0 0.05em var(--n-stroke);
-  transition: background-color 335ms var(--snappy), opacity 0s 140ms;
+.deck-rows { display: flex; flex-direction: column; gap: 0.2em; margin: 0; padding: 0; list-style: none; }
+.demo .deck-rows li { margin: 0; }
+.deck-row {
+  display: flex; align-items: center; gap: 0.8em; width: 100%; height: 2.4em; padding: 0 0.4em;
+  border: 0; border-radius: 0.6em; background: none; text-align: left; cursor: pointer;
+  transition: background-color 335ms var(--snappy);
 }
-.flashcard:hover .face { background: var(--n-hover); }
-.face-back { rotate: y 180deg; opacity: 0; }
-.flashcard[data-flipped] .face-front { opacity: 0; }
-.flashcard[data-flipped] .face-back { opacity: 1; }
-.card-q { font-size: 1.6em; font-weight: 600; line-height: 1.25; color: var(--n-text); text-wrap: balance; }
-.card-hint { font-size: 1.05em; font-weight: 500; color: var(--n-text-3); }
-.card-q-small { font-size: 1.1em; font-weight: 500; color: var(--n-text-3); }
-.card-a { font-size: 2.8em; font-weight: 700; line-height: 1.1; color: var(--anki); }
-.flashcard[data-done] { cursor: default; }
-.flashcard[data-done] .card-a { font-size: 2em; color: var(--n-text); }
+.deck-row:hover:not(:disabled) { background: var(--n-hover); }
+.demo .deck-name { flex: 1; min-width: 0; font-size: 1.2em; font-weight: 500; color: var(--n-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.deck-star { display: grid; place-items: center; flex: none; width: 1.6em; color: var(--anki); }
+.deck-star .ico { width: 1.1em; height: 1.1em; }
+.deck-row .deck-play { flex: none; width: 0.9em; height: 0.9em; margin-left: -0.4em; color: var(--anki); opacity: 0; transition: opacity 335ms var(--snappy); }
+.deck-row:hover:not(:disabled) .deck-play, .deck-row:focus-visible .deck-play { opacity: 1; }
+.deck-n {
+  flex: none; width: 2.5em; margin-left: -0.6em; text-align: right;
+  font-size: 1.05em; font-weight: 500; color: var(--q); font-variant-numeric: tabular-nums;
+}
+.deck-n[data-zero] { color: var(--n-text-3); }
 
-.grades { display: flex; gap: 0.8em; flex: none; height: 2.8em; }
-.grade {
-  display: inline-flex; align-items: center; justify-content: center; gap: 0.5em; flex: 1; height: 100%; padding: 0 0.8em;
-  border: 0; border-radius: 999px; background: var(--n-surface); color: var(--n-text); cursor: pointer;
-  font-size: 1.15em; font-weight: 600;
+.anki-foot { grid-column: 1 / -1; display: flex; align-items: center; gap: 0.8em; min-width: 0; }
+.streak { display: flex; align-items: center; gap: 0.4em; flex: none; font-size: 1.05em; font-weight: 500; color: var(--n-text-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.streak .ico { width: 1.2em; height: 1.2em; color: var(--warning); }
+/* The app's heatmap: a 12 pt cell per day in four shades of the accent. */
+.heatmap { display: flex; gap: 0.3em; flex: none; margin-left: 0.4em !important; }
+.heat { width: 1.2em; height: 1.2em; border-radius: 0.25em; background: var(--n-surface); transition: background-color 335ms var(--snappy); }
+.heat[data-level='1'] { background: rgba(92, 158, 255, 0.44); }
+.heat[data-level='2'] { background: rgba(92, 158, 255, 0.63); }
+.heat[data-level='3'] { background: rgba(92, 158, 255, 0.81); }
+.heat[data-level='4'] { background: var(--anki); }
+.heat[data-today] { box-shadow: inset 0 0 0 0.1em rgba(255, 255, 255, 0.7); }
+.anki-foot .icon-btn { margin-left: auto; }
+@media (prefers-reduced-motion: no-preference) {
+  .anki-foot[data-busy] .icon-btn .ico { animation: spin 700ms var(--snappy); }
+}
+.study {
+  display: inline-flex; align-items: center; gap: 0.4em; flex: 0 1 auto; min-width: 0; height: 2.8em; padding: 0 1.2em;
+  border: 0; border-radius: 999px; background: color-mix(in srgb, var(--anki) 88%, transparent); color: #000; cursor: pointer;
   transition: background-color 335ms var(--snappy), transform 180ms var(--snappy);
 }
-.grade[hidden] { display: none; }
-.grade span { font-size: 0.85em; font-weight: 500; color: var(--n-text-3); font-variant-numeric: tabular-nums; }
-.grade:hover { background: var(--n-hover); }
-.grade[data-tone='again'] { color: var(--danger); }
-.grade[data-tone='good'] { color: var(--success); }
-.grade[data-tone='easy'] { color: var(--anki); }
-.demo .grade-show { background: color-mix(in srgb, var(--anki) 88%, transparent); color: #000; }
-.demo .grade-show:hover { background: var(--anki); }
+.study:hover { background: var(--anki); }
+.study:active { transform: scale(0.94); }
+.study > .ico { flex: none; width: 1em; height: 1em; }
+.study-label { min-width: 0; font-size: 1.2em; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.study-n {
+  flex: none; min-width: 1.6em; padding: 0 0.4em; border-radius: 999px; background: rgba(0, 0, 0, 0.18);
+  font-size: 1.05em; font-weight: 700; line-height: 1.6em; text-align: center; font-variant-numeric: tabular-nums;
+}
+.study-n[hidden] { display: none; }
 
 /* --- the pet ------------------------------------------------------------- */
 /* The app's own sprites: one atlas per look, a row per animation and a
@@ -836,6 +876,7 @@
 
 /* The tabs to try, as quiet chips under the scene. Each opens its tab. */
 .try { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 18px !important; }
+.try-note { margin: 10px 0 0 !important; text-align: center; font-size: 14px; color: var(--on-ground-2); }
 .try-cap { margin-right: 2px; font-size: 15px; font-weight: 600; color: var(--on-ground-2); }
 .try-chip {
   padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(251, 247, 240, 0.14);
@@ -877,7 +918,7 @@
   .pane-music { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; align-content: center; justify-items: center; gap: 2em; }
   .music-main { width: 100%; height: auto; gap: 1.2em; }
   /* Party stacks the stage over the friends; AI Usage the rings over the
-     card; Anki the deck, small, over the card. */
+     card. */
   .pane-party { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; gap: 0.8em; }
   .stage { padding: 1.2em 1.2em 1em; }
   .demo .member { flex-basis: 7.2em; }
@@ -891,13 +932,16 @@
   .ai-row { margin-top: 0.4em !important; }
   .demo .ai-model { grid-template-columns: 6.4em minmax(0, 1fr) 3.6em; }
   .ai-foot { padding-left: 0; }
-  .pane-anki { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 0.8em; }
-  .deck { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 1.2em; justify-items: start; align-items: center; padding: 1em 1.2em; }
-  .deck-dial { grid-row: span 2; width: 6em; height: 6em; margin: 0; }
-  .deck-due { font-size: 2.2em; }
-  .deck-name { align-self: end; }
-  .deck-streak { align-self: start; }
-  .face { padding: 1.2em; }
+  /* Anki keeps its ring card on top, then the decks, and its footer
+     takes two rows: the streak and the days, then Sync and Study. */
+  .pane-anki { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; }
+  /* Taller deck rows fill the stacked card and make roomier tap targets. */
+  .deck-row { height: 3em; }
+  .anki-foot { display: grid; grid-template-columns: 2.8em minmax(0, 1fr); }
+  .streak { grid-area: 1 / 1 / 2 / 3; justify-self: start; }
+  .heatmap { grid-area: 1 / 2; justify-self: end; }
+  .anki-foot .icon-btn { margin-left: 0; }
+  .study { width: 100%; justify-content: center; }
   /* The sprite's empty top rows give way, so two rows of tiles keep their bars.
      No margins on the sprite: WebKit resolves a margin on a zoomed element
      differently after a restyle, which nudged a tapped tile. */
@@ -915,6 +959,8 @@
   .ai-source { margin-left: auto; }
   /* Shuffle and repeat would touch the centered three buttons. */
   .trio { gap: 0.4em; }
+  /* Anki shows the last seven days, as the app does on a narrow panel. */
+  .heat:nth-child(-n+3) { display: none; }
   .modes { gap: 0; }
 }
 
@@ -923,10 +969,8 @@
   .m-btn, .like .ico, .mode::after,
   .check, .task input:checked + .check, .check-ring, .task-title, .task-label, .day-ring .ring-arc, .day-step, .add-task, .focus-card, .sec, .tile, .pet-sub,
   .notch[data-state] .panel, .notch[data-state] .notch-face, .demo[data-cheer] .burst-pts,
-  .pill-btn, .party-banner, .seg, .usage .ring-arc, .ai-bar .bar-fill, .deck-ring .ring-arc,
-  .card-inner, .face, .grade, .try-chip { transition: none !important; }
-  .flashcard[data-flipped] .card-inner { rotate: none; }
-  .face-back { rotate: none; }
-  .pill-btn:active, .grade:active, .seg:active, .flashcard:active .card-inner { transform: none; scale: none; }
+  .pill-btn, .party-banner, .seg, .usage .ring-arc, .ai-bar .bar-fill, .due-ring .ring-arc,
+  .deck-row, .deck-play, .heat, .study, .try-chip { transition: none !important; }
+  .pill-btn:active, .seg:active, .study:active { transform: none; }
   .primary:active, .icon-btn:active, .capsule:active, .m-btn:active, .demo .play:hover { transform: none; }
 }

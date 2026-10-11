@@ -53,7 +53,10 @@ To turn on the operator endpoints (reading website suggestions and crash reports
 openssl rand -hex 32 | npx wrangler secret put ADMIN_TOKEN
 ```
 
-Until it is set, the admin routes answer 404. How to read reports and act on them is in [the API doc](../docs/study/backend-api.md#moderation-maintainer).
+Until it is set, the admin routes answer 404.
+
+At launch, set `FOUNDING_LAUNCH` under `[vars]` in `wrangler.toml` (and under `[env.staging.vars]` for staging) to the launch day, then deploy.
+It starts the 100-day window in which every account that signs in with Apple becomes a Founding Member; until it is set, every account does ([docs/economy.md](../docs/economy.md#founding-member)). How to read reports and act on them is in [the API doc](../docs/study/backend-api.md#moderation-maintainer).
 
 The tables in that storage are versioned in `src/hub.ts` (`MIGRATIONS`, recorded in a `schema_version` table): the Hub applies missing steps when it starts, so a deploy upgrades the database by itself.
 Add a schema change as a new step at the end and never edit a deployed one.
@@ -68,6 +71,7 @@ Add a schema change as a new step at the end and never edit a deployed one.
 - **Rollback:** `npx wrangler rollback` returns to the previous version (code only). Rolling back past a deploy that changed a table's shape (schema step 6 rebuilt `name_holds`) also needs a storage restore to just before that deploy.
 - **Deletions after a restore:** a restore brings back accounts deleted since the chosen moment; re-delete them with `DELETE /v1/admin/users/{code}` (the docs show how to find them).
 - **Usage:** `TABBI_ADMIN_TOKEN=... npm run stats` prints the aggregate counts from `GET /v1/admin/stats` (users, sign-ins, daily, weekly and monthly active users, sign-ups per day) and the GitHub release download counts; see [`../docs/ops.md`](../docs/ops.md#product-metrics).
+- **Download count:** `GET /v1/public/downloads` (no token) returns the website's rounded download figure, GitHub's DMG downloads plus the App Store units the maintainer stores with `PUT /v1/admin/downloads/app-store`, counted at most every 6 hours; an optional `GITHUB_TOKEN` secret (`npx wrangler secret put GITHUB_TOKEN`, any token with no scopes) keeps GitHub's per-IP limit out of the way. See [the API doc](../docs/study/backend-api.md#downloads-maintainer).
 - **Public badge:** `GET /v1/public/stats` (no token, `?metric=week` or `total`) returns a [shields.io endpoint badge](https://shields.io/badges/endpoint-badge) with one rounded count, recounted at most once an hour and rate limited per IP; the repository README shows it.
 - **Capacity:** `npm run loadtest` simulates 10,000 to 50,000 users against `wrangler dev` (never production) and reports throughput, latency and SQLite rows per request; see [`../docs/ops.md`](../docs/ops.md#load-test).
 - **End to end:** `npm run e2e -- --url http://localhost:8787` walks two simulated users through befriending, a shared party session and a block against `wrangler dev` (never production), then deletes both accounts; `test/e2e-script.test.ts` runs the same scenario in `npm test`.

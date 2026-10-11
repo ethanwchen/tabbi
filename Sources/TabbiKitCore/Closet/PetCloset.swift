@@ -268,8 +268,9 @@ extension PetCloset {
     /// well-stocked wardrobe weeks in. Every Study shelf item but the two
     /// showpieces is owned (the shelf that opens in view), the animated
     /// King's Cape is worn, about 240 points are left with the next item
-    /// ready to unlock, and the launch week cap is granted (with the
-    /// milestones part of the way, `PetMilestoneProgress.demo`).
+    /// ready to unlock, and the launch week cap and the Founder's Pin are
+    /// granted (with the milestones part of the way,
+    /// `PetMilestoneProgress.demo`).
     public static var demo: PetCloset {
         let purchased: [PetItem] = [
             .accessory(.beanie), .accessory(.roundGlasses), .outfit(.scrubs), .accessory(.stethoscope),
@@ -280,7 +281,7 @@ extension PetCloset {
         let ledger = PetPointsLedger(
             earned: spent + 240, spent: spent,
             purchased: Set(purchased),
-            granted: [PetLimitedEdition.launchWeekCap.item]
+            granted: [PetLimitedEdition.launchWeekCap.item, PetLimitedEdition.foundingMember.item]
         )
         let profile = PetProfile(name: "Mochi", breed: .britishShorthair, accessories: [.kingsCape, .roundGlasses])
         return PetCloset(save: PetSave(profile: profile, ledger: ledger))

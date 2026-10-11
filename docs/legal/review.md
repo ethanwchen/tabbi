@@ -68,7 +68,7 @@ Severity scale:
 | L1 | Abandoned web sign-ins keep Apple's user id and an unrevoked refresh token for up to about an hour. | **Disclosed accurately**; the code fix (delete on read, revoke) is still advisable. |
 | L2 | The server's crash report check matches only case-sensitive `/Users/` and `/home/` in frames. | **Disclosed accurately**; widening it to thread names and case is still advisable. The app already strips home paths before sending. |
 | L3 | Terms section 3 said the app bundles fonts (it bundles none) and named ChatGPT instead of the providers actually used. | **Fixed.** |
-| L4 | "Free forever" is a promise about the future. | **Fixed.** The site's sticker now says "Free to download", and no page, the README or the listing promises Tabbi will always be free. |
+| L4 | A promise of permanent free use is a promise about the future. | **Fixed.** The home page now says "Free, macOS 14+", and no page, the README or the listing promises everything in Tabbi will always be free. Where price comes up, the copy says "Tabbi is free. Optional extras may come later, and the core will stay free." |
 | L5 | The app icon art is AI-generated (the source carries an OpenAI C2PA manifest), so its US copyright protection is weak. | **Noted.** Trademark rights in the icon are unaffected. |
 | L6 | A settings migration had silently picked Claude Code as the AI provider for people who used Tabbi before AI providers existed. | **Fixed** by C1: such a choice sends nothing until the user picks it again and allows it. Those users see "None" once, which is the right privacy result. |
 | L7 | The birth month and year pickers used the Mac's own calendar, so someone whose system calendar is Japanese, Hebrew, Islamic or Persian got years (and, for Hebrew, 13 months) the age check could not read, and could never pass it. | **Fixed.** The question is always asked in the Gregorian calendar (`PartyAgeCheck.birthCalendar`), with month names in the user's language. |
@@ -84,6 +84,7 @@ Severity scale:
 - **No arbitration and no class waiver.** New York law and New York County courts, a small-claims option and a 30-day informal step. Consumers outside the US keep their home courts. The reasons (cost to the operator, mass-arbitration risk, weak enforceability against EU and UK consumers and minors, small exposure) are in `terms-memo.md`.
 - **Liability** is capped at 50 US dollars, with carve-outs for death, injury, fraud, intent and gross negligence and savings for EU and UK consumers, so a court is less likely to strike the whole clause.
 - **MIT License vs the service.** The code is MIT. The Terms govern the website, the friends service and the App Store copy (which also falls under Apple's Standard EULA). The Terms never restrict what the MIT License allows.
+- **Paid artwork.** `ASSETS-LICENSE.md` keeps the code and all artwork shipped so far under MIT and reserves only artwork added later inside a directory named `Plus`, for an optional supporter tier that is not built yet. Founding Member, the first entitlement, is free (`docs/economy.md`).
 - **Copyright complaints** follow the 512(c)(3) elements, but the Terms do not claim DMCA safe harbor, because no agent is registered.
 - **CCPA/CPRA and the other state laws** probably do not apply (no revenue, far below the volume thresholds), but the policy offers the same rights to everyone, so nothing depends on that conclusion.
 
@@ -109,3 +110,4 @@ Severity scale:
 8. **Export.** Whether the export and sanctions paragraph is enough for free open source software (EAR 734.7) with a US-run service on Cloudflare.
 9. **Account deletion.** Confirm that the Apple revocation secrets are set in production, so Delete Account fully revokes Sign in with Apple as the reviewer notes promise.
 10. **Icon.** Whether the AI-generated icon art needs any further protection, such as registering the icon as a trademark once in use.
+11. **Asset license.** Review `ASSETS-LICENSE.md` before any paid artwork ships: whether all-rights-reserved files in an otherwise MIT repository are enforceable as drafted, whether the directory rule marks them clearly enough, whether the personal-use allowance for building from source is wise, and how the Terms and Apple's Standard EULA should refer to paid items.

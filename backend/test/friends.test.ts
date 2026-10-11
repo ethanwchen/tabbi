@@ -17,7 +17,7 @@ describe("friends", () => {
     const mine = await call("GET", "/v1/friends", undefined, a.token);
     expect(mine.status).toBe(200);
     expect(mine.body.friends.map((f: { profile: { name: string } }) => f.profile.name)).toEqual(["amy", "Ben"]);
-    expect(mine.body.friends[1].profile).toEqual(b.profile);
+    expect(mine.body.friends[1].profile).toEqual({ ...b.profile, badges: [] });
     expect(typeof mine.body.friends[1].since).toBe("number");
 
     const theirs = await call("GET", "/v1/friends", undefined, b.token);

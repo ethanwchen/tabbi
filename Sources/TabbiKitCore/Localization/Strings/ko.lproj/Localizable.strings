@@ -173,6 +173,8 @@
 	<string>%2$@ 후 %1$@ 해제</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%2$lld점에 %1$@ 해제</string>
+	<key>%@ uses it to greet you.</key>
+	<string>%@가 인사할 때 불러요.</string>
 	<key>%@ visited the bakery</key>
 	<string>%@가 빵집에 들렀어요</string>
 	<key>%@ watched a cloud shaped like a fish</key>
@@ -269,8 +271,18 @@
 	<string>10분 어때요?</string>
 	<key>10 minutes? That keeps your %lld-day streak going.</key>
 	<string>10분 어때요? %lld일 연속 기록을 이어가요.</string>
+	<key>25 min focus, 5 min break</key>
+	<string>집중 25분, 휴식 5분</string>
+	<key>40 questions in 60 min, then review</key>
+	<string>60분에 40문제, 그다음 복습</string>
 	<key>5-hour</key>
 	<string>5시간</string>
+	<key>52 / 17</key>
+	<string>52 / 17</string>
+	<key>52 min focus, 17 min break</key>
+	<string>집중 52분, 휴식 17분</string>
+	<key>90 min deep block, 20 min rest</key>
+	<string>깊은 집중 90분, 휴식 20분</string>
 	<key>&lt;1 min</key>
 	<string>1분 미만</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
@@ -505,8 +517,12 @@
 	<string>이 Mac에 Anki 없음</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>Tabbi가 카드를 셀 수 있으려면 Anki에 무료 애드온 AnkiConnect가 필요해요.</string>
+	<key>Anki reviews</key>
+	<string>Anki 복습</string>
 	<key>Anki said no to Tabbi</key>
 	<string>Anki가 Tabbi를 거부했어요</string>
+	<key>Anki sprint</key>
+	<string>Anki 스프린트</string>
 	<key>Anki wouldn't open</key>
 	<string>Anki를 열 수 없어요</string>
 	<key>AnkiConnect blocked this app</key>
@@ -797,6 +813,8 @@
 	<string>'%@' 선택 해제</string>
 	<key>Clear All</key>
 	<string>모두 지우기</string>
+	<key>Clear a card goal, not a clock</key>
+	<string>시간이 아닌 카드 목표 달성</string>
 	<key>Clear completed tasks</key>
 	<string>완료한 할 일 지우기</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
@@ -1111,6 +1129,8 @@
 	<string>사용자 지정의 집중 및 휴식 시간 편집</string>
 	<key>Email Support</key>
 	<string>지원팀에 이메일</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>버그 또는 그 밖의 무엇이든 %@ 팀에 이메일 보내기</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>버그, Party의 사용자 또는 그 밖의 무엇이든 %@ 팀에 이메일 보내기</string>
 	<key>Email the %@ team about a person or a problem</key>
@@ -1201,6 +1221,8 @@
 	<string>몰입</string>
 	<key>Flower Crown</key>
 	<string>꽃왕관</string>
+	<key>Flowtime</key>
+	<string>플로타임</string>
 	<key>Focus</key>
 	<string>집중</string>
 	<key>Focus %lld min to start one</key>
@@ -1251,6 +1273,14 @@
 	<string>발견: 이벤트에 %lld분</string>
 	<key>Found: the rare %@ fur</key>
 	<string>발견: 희귀 털색 '%@'</string>
+	<key>Founder's Pin</key>
+	<string>창립 멤버 핀</string>
+	<key>Founding Member</key>
+	<string>창립 멤버</string>
+	<key>Founding Member: joined Tabbi in its first 100 days.</key>
+	<string>창립 멤버: Tabbi의 첫 100일 안에 함께했어요.</string>
+	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
+	<string>창립 멤버: Tabbi의 첫 100일 안에 함께했어요.</string>
 	<key>Free all day</key>
 	<string>하루 종일 비어 있어요</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1325,6 +1355,8 @@
 	<string>고양이에게 이름을 지어 주세요</string>
 	<key>Give your dog a name</key>
 	<string>강아지에게 이름을 지어 주세요</string>
+	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
+	<string>Tabbi 출시 후 100일 안에 로그인한 모든 분께 드려요.</string>
 	<key>Given to everyone who used Tabbi in its launch week.</key>
 	<string>출시 주간에 Tabbi를 쓴 모든 분께 드려요.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
@@ -1693,6 +1725,8 @@
 	<string>탭 더 보기</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>대부분은 준비될 때까지 기다려요. 그냥 시작했다는 것, 그게 차이예요.</string>
+	<key>Mostly convention</key>
+	<string>대체로 관례</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>%@을(를) 응용 프로그램 폴더로 옮길까요?</string>
 	<key>Move down</key>
@@ -1937,6 +1971,8 @@
 	<string>애드온 하나 남음</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>한 번에 한 세션씩 차분하게. 할 수 있어요.</string>
+	<key>One countdown, no breaks</key>
+	<string>카운트다운 한 번, 휴식 없음</string>
 	<key>One moment.</key>
 	<string>잠시만요.</string>
 	<key>One question first</key>
@@ -2253,6 +2289,8 @@
 	<string>오늘 얻은 포인트, 펫 옷장에 쓸 수 있어요</string>
 	<key>Points: 1 for every focused minute, plus a bonus for finishing a session</key>
 	<string>포인트: 집중한 1분마다 1점, 세션을 끝내면 보너스</string>
+	<key>Pomodoro</key>
+	<string>뽀모도로</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Claude 사용량과 답변에 쓰여요.</string>
 	<key>Preset %@</key>
@@ -2281,6 +2319,8 @@
 	<string>일반을 새로 설치했을 때처럼 되돌려요. 로그인 시 실행은 그대로예요.</string>
 	<key>Put the recap away</key>
 	<string>돌아보기 치우기</string>
+	<key>Question block</key>
+	<string>문제 블록</string>
 	<key>Quick and crisp, with no bounce.</key>
 	<string>빠르고 깔끔하게, 바운스 없이.</string>
 	<key>Quick answers right here. %@ can't see your files.</key>
@@ -2645,6 +2685,8 @@
 	<string>부드럽게</string>
 	<key>Snowy Scarf</key>
 	<string>눈송이 목도리</string>
+	<key>Some evidence</key>
+	<string>일부 근거 있음</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>조금이라도 한 건 안 한 것보다 훨씬 커요. 쉬어요. 판은 여기 그대로 있을 거예요.</string>
 	<key>Something not working?</key>
@@ -2787,6 +2829,8 @@
 	<string>오늘 모은 공부 포인트, 펫 옷에 쓸 수 있어요</string>
 	<key>Study together</key>
 	<string>함께 공부해요</string>
+	<key>Study until focus slips, break scales</key>
+	<string>집중이 흐려질 때까지, 휴식은 비례해서</string>
 	<key>Study with a cat</key>
 	<string>고양이와 공부하기</string>
 	<key>Study with a dog</key>
@@ -3145,6 +3189,8 @@
 	<string>할 일을 입력하고 Return으로 추가, Esc로 지우기</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
 	<string>친구의 %lld자리 코드를 입력하거나 붙여넣고 Return 키를 누르세요</string>
+	<key>Ultradian</key>
+	<string>울트라디안</string>
 	<key>Unblock</key>
 	<string>차단 해제</string>
 	<key>Unblock them in Party options to add them again.</key>
@@ -3243,6 +3289,8 @@
 	<string>주간</string>
 	<key>Welcome to %@</key>
 	<string>%@에 어서 오세요</string>
+	<key>Well supported</key>
+	<string>근거 충분</string>
 	<key>What happened when Tabbi ran your shortcuts</key>
 	<string>Tabbi가 단축어를 실행했을 때의 결과</string>
 	<key>What happened, in a sentence or two</key>
@@ -3433,6 +3481,8 @@
 	<string>이름</string>
 	<key>Your name, up to %lld characters</key>
 	<string>이름, 최대 %lld자</string>
+	<key>Your own focus and break lengths</key>
+	<string>집중과 휴식 시간을 직접 설정</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>파티 프로필이 초기화됐어요. 다시 연결 중…</string>
 	<key>Your pet</key>

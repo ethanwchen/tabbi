@@ -80,12 +80,14 @@ Its streak count uses the key `%lld streak days` (English "12 days"), because `%
 The end-of-session moment is translated too: the headline and points, the bar toward the next unlock, the surprise gift lines and the rare fur names, the closed notch's unlock hint and the Cat wisdom toggle in Settings > General.
 Cat wisdom lines are approved English copy in `CatWisdom`, which the schedule hands out by text, so `CatWisdomLine.displayText` looks each one up in the catalog by that English, as the seasonal events are, and `LocalizationTests` fails when a line lacks a language.
 A wisdom line shows in at most three lines in the pet's bubble, so check a new translation in the `coach-wisdom-all-*` snapshots, which `TABBI_WISDOM_ALL=1` adds to a `--snapshot` run.
+Study method names, taglines and evidence badges stay English in `study-methods.json`, which the Windows port reads too; `StudyMethodInfo.displayName`, `displayTagline` and `StudyEvidenceLevel.label` look them up in the catalog by that English, and `LocalizationTests` fails when one lacks a language.
+Arabic writes "52 / 17" as "52/17", since a right-to-left line shows the spaced form as "17 / 52".
 Breed names stay English, because a pet that still goes by its breed is recognized by comparing its saved name to the breed's name.
 These stay English on purpose for now:
 
 - long help text and error details,
 - the bundled kits' names, summaries and questions,
-- the study method names and taglines and the theme names, which come from bundled JSON files that the Windows port reads too and need a localized field there first.
+- the study methods' how-to and evidence notes and the theme names, which come from bundled JSON files that the Windows port reads too.
 
 ## Right to left
 

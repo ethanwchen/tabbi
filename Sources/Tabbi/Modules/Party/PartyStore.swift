@@ -68,7 +68,8 @@ final class PartyStore: ObservableObject {
     private let credentials: any PartyCredentialStore
     /// Replaces HTTPS in tests; nil talks to the server.
     private let transport: (any PartyTransport)?
-    private let defaults = UserDefaults.standard
+    /// Holds the presence and Party settings; tests pass their own.
+    private let defaults: UserDefaults
     private var account: PartyAccount?
     private var tracker: PartyPresenceTracker
     private var heartbeats = PartyHeartbeatSchedule()
@@ -123,10 +124,13 @@ final class PartyStore: ObservableObject {
     ///   `TABBI_PARTY_PREVIEW` and a local `TABBI_PARTY_SERVER`.
     ///   `transport` replaces HTTPS (tests), and `workspace` is where sleep
     ///   and wake are announced (tests post them on their own center).
+    ///   `defaults` keeps the presence and Party settings.
     init(runMode: RunMode, environment: [String: String] = ProcessInfo.processInfo.environment,
          transport: (any PartyTransport)? = nil,
-         workspace: NotificationCenter = NSWorkspace.shared.notificationCenter) {
+         workspace: NotificationCenter = NSWorkspace.shared.notificationCenter,
+         defaults: UserDefaults = .standard) {
         isDemo = runMode.isDemo
+        self.defaults = defaults
         self.transport = transport
         self.workspace = workspace
         isSnapshot = runMode.isSnapshot
@@ -163,7 +167,7 @@ final class PartyStore: ObservableObject {
             tracker = PartyPresenceTracker()
             return
         }
-        let repository = PartySettingsRepository()
+        let repository = PartySettingsRepository(defaults: defaults)
         self.repository = repository
         credentials = isSnapshot
             ? InMemoryPartyCredentialStore()

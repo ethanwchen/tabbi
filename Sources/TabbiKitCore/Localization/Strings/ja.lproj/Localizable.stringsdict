@@ -31,6 +31,20 @@
 			<string>ボーナス%lldポイント</string>
 		</dict>
 	</dict>
+	<key>%lld cards</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld枚</string>
+		</dict>
+	</dict>
 	<key>%lld cores</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

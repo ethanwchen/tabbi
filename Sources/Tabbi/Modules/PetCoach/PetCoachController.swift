@@ -40,6 +40,9 @@ final class PetCoachController: ObservableObject {
     private let screen: () -> NSScreen?
     private let pauseTimer: () -> Void
     private let resumeTimer: () -> Void
+    /// Tells whether a panel is open, which would cover the overlay beside
+    /// the closed notch; nil in tests.
+    private let celebrations: CelebrationCenter?
     private let isDemo: Bool
     private let saveURL: URL?
     /// Set when the save on disk could not be read: run on defaults, but
@@ -69,6 +72,11 @@ final class PetCoachController: ObservableObject {
     private var sampler: Timer?
     private var overlay: PetCoachOverlayWindow?
     private var overlayCloser: Timer?
+    /// An award line earned while a panel was open, played once the notch
+    /// closes (within `CelebrationCenter.waitLimit`), since the open panel
+    /// would hide the pet and its bubble.
+    private var waitingLine: (line: PetCoachLine, since: Date)?
+    private var notchClosedSubscription: AnyCancellable?
 
     init(
         storage: EditionStorage,
@@ -82,7 +90,8 @@ final class PetCoachController: ObservableObject {
         lines: @escaping () -> [PetCoachMessage] = { PetCoachMessages.standard },
         screen: @escaping () -> NSScreen?,
         pauseTimer: @escaping () -> Void,
-        resumeTimer: @escaping () -> Void
+        resumeTimer: @escaping () -> Void,
+        celebrations: CelebrationCenter? = nil
     ) {
         self.profile = profile
         self.unlockProgress = unlockProgress
@@ -94,6 +103,7 @@ final class PetCoachController: ObservableObject {
         self.screen = screen
         self.pauseTimer = pauseTimer
         self.resumeTimer = resumeTimer
+        self.celebrations = celebrations
         isDemo = runMode.isDemo
         saveURL = isDemo ? nil : Self.saveURL(in: storage)
         var unreadable = false
@@ -113,6 +123,9 @@ final class PetCoachController: ObservableObject {
         }
         self.save = save
         saveIsUnreadable = unreadable
+        notchClosedSubscription = celebrations?.notchClosed.sink { [weak self] in
+            MainActor.assumeIsolated { self?.playWaitingLine() }
+        }
     }
 
     /// What the pet can say: the standard lines plus the active kit's.
@@ -190,6 +203,7 @@ final class PetCoachController: ObservableObject {
     func stop() {
         guard isRunning else { return }
         isRunning = false
+        waitingLine = nil
         updateSampling()
         closeOverlay()
     }
@@ -289,7 +303,21 @@ final class PetCoachController: ObservableObject {
         let line = PetCoachLine.celebration(award, progress: progress,
                                             wisdom: watched ? wisdom(after: award, at: Date()) : nil,
                                             gift: watched ? gift(award) : nil)
+        if celebrations?.isShowing == true {
+            waitingLine = (line, Date())
+            return
+        }
+        waitingLine = nil
         present(line, stroll: PetCoachStroll(startedAt: Date(), talkDuration: line.talkDuration))
+    }
+
+    /// Plays the award line held while a panel was open, unless it got old.
+    private func playWaitingLine() {
+        guard let waiting = waitingLine else { return }
+        waitingLine = nil
+        let now = Date()
+        guard isRunning, now.timeIntervalSince(waiting.since) < CelebrationCenter.waitLimit else { return }
+        present(waiting.line, stroll: PetCoachStroll(startedAt: now, talkDuration: waiting.line.talkDuration))
     }
 
     /// The Cat wisdom line for the session behind `award`, if one is due

@@ -1231,6 +1231,7 @@ struct ClaudeLocationSection: View {
 
 struct AboutSettingsPane: View {
     private static let repository = URL(string: "https://github.com/ethanwchen/tabbi")!
+    @Environment(\.moduleCatalog) private var catalog
 
     var body: some View {
         VStack(spacing: 0) {
@@ -1260,7 +1261,9 @@ struct AboutSettingsPane: View {
             Link(destination: SupportContact.mailURL) {
                 Label(SupportContact.reportLine, systemImage: "envelope")
             }
-            .help(String(localized: "Email the \(Edition.current.name) team about a bug, a person in Party or anything else", bundle: .tabbi))
+            .help(catalog.contains(PartyModule.descriptor.id)
+                  ? String(localized: "Email the \(Edition.current.name) team about a bug, a person in Party or anything else", bundle: .tabbi)
+                  : String(localized: "Email the \(Edition.current.name) team about a bug or anything else", bundle: .tabbi))
             .padding(.top, 8)
             Link(destination: Feedback.url) {
                 Label(FeedbackLink.title, systemImage: "lightbulb")

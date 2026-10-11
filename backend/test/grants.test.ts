@@ -28,6 +28,8 @@ describe("limited edition grants", () => {
       "accessory.moonlitWitchHat", "accessory.pumpkinHat", "accessory.reindeerAntlers", "accessory.snowScarf",
       "accessory.heartGlasses", "accessory.summerShades", "accessory.lionDanceHat", "accessory.sakuraSprig",
       "outfit.studyHoodie",
+      // Founding Member (entitlements.ts).
+      "accessory.foundersPin",
     ]);
   });
 
@@ -36,12 +38,14 @@ describe("limited edition grants", () => {
     const account = await register();
     await linkAppleAccount(account.code);
     expect(await items(anon.token)).toEqual([]);
+    // The helper's account dates from 1970, inside the founding window, so it holds the Founder's Pin too.
+    const founding = ["accessory.foundersPin"];
 
-    for (const user of [anon, account]) {
+    for (const [user, extra] of [[anon, []], [account, founding]] as const) {
       const r = await grant(user.code, CAP);
       expect(r.status).toBe(200);
       expect(r.body).toEqual({ ok: true, granted: true, grants: [CAP] });
-      expect(await items(user.token)).toEqual([CAP]);
+      expect(await items(user.token)).toEqual([CAP, ...extra]);
     }
   });
 

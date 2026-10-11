@@ -173,6 +173,8 @@
 	<string>%2$@後解鎖 %1$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%2$lld 點解鎖 %1$@</string>
+	<key>%@ uses it to greet you.</key>
+	<string>%@ 會用它跟你打招呼。</string>
 	<key>%@ visited the bakery</key>
 	<string>%@ 去了麵包店</string>
 	<key>%@ watched a cloud shaped like a fish</key>
@@ -269,8 +271,18 @@
 	<string>來個 10 分鐘？</string>
 	<key>10 minutes? That keeps your %lld-day streak going.</key>
 	<string>10 分鐘？就能延續你連續 %lld 天的紀錄。</string>
+	<key>25 min focus, 5 min break</key>
+	<string>專注 25 分鐘，休息 5 分鐘</string>
+	<key>40 questions in 60 min, then review</key>
+	<string>60 分鐘 40 題，然後檢討</string>
 	<key>5-hour</key>
 	<string>5 小時</string>
+	<key>52 / 17</key>
+	<string>52 / 17</string>
+	<key>52 min focus, 17 min break</key>
+	<string>專注 52 分鐘，休息 17 分鐘</string>
+	<key>90 min deep block, 20 min rest</key>
+	<string>深度專注 90 分鐘，休息 20 分鐘</string>
 	<key>&lt;1 min</key>
 	<string>不到 1 分鐘</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
@@ -505,8 +517,12 @@
 	<string>這台 Mac 上沒有 Anki</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>Anki 需要安裝免費的 AnkiConnect 附加元件，Tabbi 才能計算你的卡片。</string>
+	<key>Anki reviews</key>
+	<string>Anki 複習</string>
 	<key>Anki said no to Tabbi</key>
 	<string>Anki 拒絕了 Tabbi</string>
+	<key>Anki sprint</key>
+	<string>Anki 衝刺</string>
 	<key>Anki wouldn't open</key>
 	<string>Anki 無法打開</string>
 	<key>AnkiConnect blocked this app</key>
@@ -797,6 +813,8 @@
 	<string>清除「%@」</string>
 	<key>Clear All</key>
 	<string>全部清除</string>
+	<key>Clear a card goal, not a clock</key>
+	<string>完成卡片目標，而不是計時</string>
 	<key>Clear completed tasks</key>
 	<string>清除已完成的任務</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
@@ -1111,6 +1129,8 @@
 	<string>編輯「自訂」的專注與休息時間</string>
 	<key>Email Support</key>
 	<string>寄電子郵件給支援團隊</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>寄電子郵件給 %@ 團隊，回報錯誤或其他任何事</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>寄電子郵件給 %@ 團隊，回報錯誤、派對中的某個人或其他任何事</string>
 	<key>Email the %@ team about a person or a problem</key>
@@ -1201,6 +1221,8 @@
 	<string>心流</string>
 	<key>Flower Crown</key>
 	<string>花冠</string>
+	<key>Flowtime</key>
+	<string>心流計時</string>
 	<key>Focus</key>
 	<string>專注</string>
 	<key>Focus %lld min to start one</key>
@@ -1251,6 +1273,14 @@
 	<string>帶回：活動進度 %lld 分鐘</string>
 	<key>Found: the rare %@ fur</key>
 	<string>帶回：稀有毛色「%@」</string>
+	<key>Founder's Pin</key>
+	<string>創始徽章</string>
+	<key>Founding Member</key>
+	<string>創始成員</string>
+	<key>Founding Member: joined Tabbi in its first 100 days.</key>
+	<string>創始成員：在 Tabbi 最初 100 天內加入。</string>
+	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
+	<string>創始成員：你在 Tabbi 最初 100 天內加入。</string>
 	<key>Free all day</key>
 	<string>整天有空</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1325,6 +1355,8 @@
 	<string>幫你的貓取個名字</string>
 	<key>Give your dog a name</key>
 	<string>幫你的狗取個名字</string>
+	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
+	<string>送給在 Tabbi 最初 100 天內登入的每個人。</string>
 	<key>Given to everyone who used Tabbi in its launch week.</key>
 	<string>送給在推出週使用 Tabbi 的每個人。</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
@@ -1693,6 +1725,8 @@
 	<string>更多標籤頁</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>多數人等到覺得準備好了才開始。你直接開始了。差別就在這裡。</string>
+	<key>Mostly convention</key>
+	<string>多為慣例</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>要將 %@ 移到「應用程式」檔案夾嗎？</string>
 	<key>Move down</key>
@@ -1937,6 +1971,8 @@
 	<string>還差一個附加元件</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>一次一段，穩穩來。你可以的。</string>
+	<key>One countdown, no breaks</key>
+	<string>單次倒數，不休息</string>
 	<key>One moment.</key>
 	<string>請稍候。</string>
 	<key>One question first</key>
@@ -2253,6 +2289,8 @@
 	<string>今天賺到的點數，可以花在寵物的衣櫥上</string>
 	<key>Points: 1 for every focused minute, plus a bonus for finishing a session</key>
 	<string>點數：每專注 1 分鐘得 1 點，完成一段專注再加碼</string>
+	<key>Pomodoro</key>
+	<string>番茄鐘</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>用於 Claude 用量和回答。</string>
 	<key>Preset %@</key>
@@ -2281,6 +2319,8 @@
 	<string>將「一般」恢復成全新安裝時的樣子，「登入時啟動」維持不變。</string>
 	<key>Put the recap away</key>
 	<string>收起回顧</string>
+	<key>Question block</key>
+	<string>題目區塊</string>
 	<key>Quick and crisp, with no bounce.</key>
 	<string>快速俐落，沒有回彈。</string>
 	<key>Quick answers right here. %@ can't see your files.</key>
@@ -2645,6 +2685,8 @@
 	<string>流暢</string>
 	<key>Snowy Scarf</key>
 	<string>雪花圍巾</string>
+	<key>Some evidence</key>
+	<string>有一定證據</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>做一點，遠遠勝過什麼都不做。休息吧，棋盤會一直在這裡。</string>
 	<key>Something not working?</key>
@@ -2787,6 +2829,8 @@
 	<string>今天賺到的學習點數，可以幫寵物換裝</string>
 	<key>Study together</key>
 	<string>一起學習</string>
+	<key>Study until focus slips, break scales</key>
+	<string>讀到專注下降，休息隨之調整</string>
 	<key>Study with a cat</key>
 	<string>和貓咪一起讀書</string>
 	<key>Study with a dog</key>
@@ -3145,6 +3189,8 @@
 	<string>輸入任務後按 Return 加入，按 Esc 清除</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
 	<string>輸入或貼上好友的 %lld 位代碼，然後按 Return</string>
+	<key>Ultradian</key>
+	<string>超日節律</string>
 	<key>Unblock</key>
 	<string>解除封鎖</string>
 	<key>Unblock them in Party options to add them again.</key>
@@ -3243,6 +3289,8 @@
 	<string>每週</string>
 	<key>Welcome to %@</key>
 	<string>歡迎使用 %@</string>
+	<key>Well supported</key>
+	<string>證據充分</string>
 	<key>What happened when Tabbi ran your shortcuts</key>
 	<string>Tabbi 執行你的捷徑時發生了什麼</string>
 	<key>What happened, in a sentence or two</key>
@@ -3433,6 +3481,8 @@
 	<string>你的名字</string>
 	<key>Your name, up to %lld characters</key>
 	<string>你的名字，最多 %lld 個字元</string>
+	<key>Your own focus and break lengths</key>
+	<string>自訂專注和休息時長</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>你的派對個人檔案已重設。重新連線中…</string>
 	<key>Your pet</key>

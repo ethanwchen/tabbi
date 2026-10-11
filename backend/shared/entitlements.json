@@ -1,0 +1,5 @@
+{
+  "entitlements": [
+    { "id": "founding", "badge": true, "items": ["accessory.foundersPin"] }
+  ]
+}

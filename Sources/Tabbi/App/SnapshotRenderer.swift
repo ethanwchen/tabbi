@@ -225,6 +225,10 @@ enum SnapshotRenderer {
             let animated = NotchViewModel(geometry: geometry, layout: withCloset)
             animated.open(.closet)
             shots.append(Shot("open-closet-animated", animated))
+            // The Founder's Pin tried on in the Limited section.
+            let founding = NotchViewModel(geometry: geometry, layout: withCloset)
+            founding.open(.closet)
+            shots.append(Shot("open-closet-founding", founding))
             // The pet's paw at the far right of the header while another tab is open.
             let withPaw = NotchViewModel(geometry: geometry, layout: withCloset)
             withPaw.open(withCloset.tabs.first)
@@ -606,10 +610,11 @@ enum SnapshotRenderer {
             if let firstSection {
                 closet?.store.section = name.hasSuffix("closet-wardrobe") ? .wardrobe
                     : name == "open-closet-look" ? .look
-                    : name == "open-closet-limited" ? .limited
+                    : name == "open-closet-limited" || name == "open-closet-founding" ? .limited
                     : name == "open-closet-streak" ? .streak : name == "open-closet-weeks" ? .weeks : firstSection
             }
-            closet?.store.tryOn(name == "open-closet-animated" ? .accessory(.angelWings) : nil)
+            closet?.store.tryOn(name == "open-closet-animated" ? .accessory(.angelWings)
+                : name == "open-closet-founding" ? .accessory(.foundersPin) : nil)
             model.themeID = Theme.current.id
             if name == "closed-pet-cheer", case .pet(var pet) = model.preview {
                 // Mid first hop, with the sparkles out.

@@ -1,5 +1,6 @@
 import AuthenticationServices
 import SwiftUI
+import TabbiKit
 import TabbiKitCore
 
 /// The Account row in Settings > General: Sign in with Apple when signed
@@ -18,7 +19,10 @@ struct AccountSettingsRow: View {
         LabeledContent {
             controls
         } label: {
-            Text(title)
+            HStack(spacing: 6) {
+                Text(title)
+                if showsFoundingBadge { FoundingBadge(.label, isMe: true) }
+            }
             Text(caption)
                 .foregroundStyle(account.notice == nil ? .secondary : Color.orange)
             if showsAgreement {
@@ -81,6 +85,11 @@ struct AccountSettingsRow: View {
         case .signedOut, .signingIn: String(localized: "Account", bundle: .tabbi)
         case .signedIn, .deleting: account.name ?? String(localized: "Signed in with Apple", bundle: .tabbi)
         }
+    }
+
+    /// Only on a signed-in account: the badge is about the account.
+    private var showsFoundingBadge: Bool {
+        account.isFoundingMember && (account.phase == .signedIn || account.phase == .deleting)
     }
 
     private var showsAgreement: Bool {

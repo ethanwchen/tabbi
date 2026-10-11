@@ -8,6 +8,9 @@ import Foundation
 public enum DurationFormat {
     /// The unit `ProgressItem`s count minutes in, which `quantity` writes as a duration.
     public static let minuteUnit = "min"
+    /// The unit Anki's review goal counts flashcards in, which `quantity`
+    /// writes as a translated plural ("1 card", "128 cards").
+    public static let cardUnit = "cards"
 
     /// "0 min", "45 min", "2h", "1h 15m". Negative values read as "0 min".
     public static func minutes(_ minutes: Int) -> String {
@@ -46,8 +49,13 @@ public enum DurationFormat {
     }
 
     /// A count in its own unit ("320 cards"), or a duration when the unit
-    /// is `minuteUnit` ("1h 15m" rather than "75 min").
+    /// is `minuteUnit` ("1h 15m" rather than "75 min"). Tabbi's own units
+    /// are translated plurals; any other unit is a module's own text.
     public static func quantity(_ value: Int, unit: String) -> String {
-        unit == minuteUnit ? minutes(value) : "\(value.formatted()) \(unit)"
+        switch unit {
+        case minuteUnit: minutes(value)
+        case cardUnit: String(localized: "\(value) cards", bundle: .tabbi)
+        default: "\(value.formatted()) \(unit)"
+        }
     }
 }

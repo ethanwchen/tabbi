@@ -73,6 +73,11 @@ Until then, new modules are added by pull request, where they get reviewed like 
 
 These are options under consideration, not decisions.
 
+The model the maintainer has settled on is a free core plus, one day, an optional supporter tier, Tabbi Plus, in the spirit of Discord Nitro: cosmetics and Party hosting perks only, with no premium currency, no loot boxes, no paid streak freezes and nothing pay-to-win.
+Plus is not being built yet and nothing is sold.
+Everything shipped before it stays free for good.
+The groundwork is in place: Founding Member for everyone who signs in during the first 100 days, a server-side entitlements model a purchase from either edition could plug into ([economy.md](economy.md#entitlements)), and [ASSETS-LICENSE.md](../ASSETS-LICENSE.md) for future paid art.
+
 The code stays MIT licensed and free, including every module and kit in this repository.
 Possible paid layers on top:
 
