@@ -21,7 +21,7 @@ public enum L10n {
     /// The languages Tabbi ships, as `.lproj` names. Resources/Info.plist
     /// lists the same ones in `CFBundleLocalizations`, so AppKit's own
     /// controls follow the user into them too.
-    public static let languages = ["en", "de", "es", "fr", "ja", "ko", "pt-BR", "zh-Hans"]
+    public static let languages = ["en", "de", "es", "fr", "fil", "ja", "ko", "pt-BR", "ru", "zh-Hans", "zh-Hant"]
 
     /// The folder in the resource bundle that holds one `<language>.lproj`
     /// per language (`Localization/Strings` in the sources).
@@ -49,7 +49,8 @@ public enum L10n {
     /// `pt-BR`) whatever the system is set to: strings, dates and numbers,
     /// for snapshots of every language. It sets the launch arguments'
     /// defaults (`-AppleLanguages`, `-AppleLocale`), so nothing is saved, and
-    /// must run before anything reads `bundle` or `Locale.current`.
+    /// must run before anything reads `bundle` or `Locale.current`, and
+    /// before `NSApplication.shared`, which fixes the locale for the process.
     public static func use(language: String) {
         let defaults = UserDefaults.standard
         var arguments = defaults.volatileDomain(forName: UserDefaults.argumentDomain)

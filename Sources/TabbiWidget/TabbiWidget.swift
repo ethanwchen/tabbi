@@ -20,7 +20,7 @@ struct TabbiPetWidget: Widget {
             PetWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Tabbi")
-        .description("Your pet, today's streak and the running timer.")
+        .description(Text("Your pet, today's streak and the running timer.", bundle: .tabbi))
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

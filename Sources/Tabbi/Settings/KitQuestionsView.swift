@@ -53,9 +53,9 @@ struct KitQuestionsView: View {
                     .foregroundStyle(.white)
                     .frame(width: 56, height: 56)
                     .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(tint.gradient))
-                Text("Set up \(kit.name)")
+                Text("Set up \(kit.name)", bundle: .tabbi)
                     .font(.system(.title, design: .rounded, weight: .bold))
-                Text("A few quick questions so your tabs and starter tasks fit you. Skip any you like.")
+                Text("A few quick questions so your tabs and starter tasks fit you. Skip any you like.", bundle: .tabbi)
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -75,7 +75,7 @@ struct KitQuestionsView: View {
             .padding(.top, 24)
 
             HStack(spacing: 8) {
-                Text("Your tabs")
+                Text("Your tabs", bundle: .tabbi)
                     .font(.callout)
                     .foregroundStyle(.secondary)
                 TabIcons(modules: tabs)
@@ -83,19 +83,20 @@ struct KitQuestionsView: View {
             }
             .padding(.horizontal, 24)
             .padding(.top, 20)
-            .help("The tabs \(kit.name) starts with: \(tabs.map { catalog.descriptor(for: $0).title }.joined(separator: ", "))")
+            .help(String(localized: "The tabs \(kit.name) starts with: \(tabs.map { catalog.descriptor(for: $0).title }.formatted(.list(type: .and)))",
+                         bundle: .tabbi))
 
             HStack {
-                Button("Cancel", action: cancel)
+                Button(String(localized: "Cancel", bundle: .tabbi), action: cancel)
                     .keyboardShortcut(.cancelAction)
                     .controlSize(.large)
-                    .help("Keep your current kit and tabs")
+                    .help(String(localized: "Keep your current kit and tabs", bundle: .tabbi))
                 Spacer()
-                Button("Switch Kit") { start(answers) }
+                Button(String(localized: "Switch Kit", bundle: .tabbi)) { start(answers) }
                     .keyboardShortcut(.defaultAction)
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
-                    .help("Switch to \(kit.name) with these answers")
+                    .help(String(localized: "Switch to \(kit.name) with these answers", bundle: .tabbi))
             }
             .padding(.horizontal, 24)
             .padding(.top, 20)
@@ -117,7 +118,7 @@ private struct QuestionSection: View {
                 Text(question.prompt)
                     .font(.headline)
                 if question.allowsMultiple {
-                    Text("Pick any")
+                    Text("Pick any", bundle: .tabbi)
                         .font(.callout)
                         .foregroundStyle(.tertiary)
                 }

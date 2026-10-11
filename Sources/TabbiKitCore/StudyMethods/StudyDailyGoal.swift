@@ -60,7 +60,7 @@ public struct StudyDailyGoal: Codable, Hashable, Sendable {
     /// Shown by Today as e.g. "Focus time, 1h 15m left", and beside the
     /// closed notch only once the day's first minutes are in.
     public func progressItem(for day: StudyDayTally, source: ModuleID = .study) -> ProgressItem {
-        ProgressItem(id: Self.progressID, source: source, title: "Focus time",
+        ProgressItem(id: Self.progressID, source: source, title: String(localized: "Focus time", bundle: .tabbi),
                      completed: max(day.minutes, 0), target: minutes, unit: Self.unit, waitsForStart: true)
     }
 }

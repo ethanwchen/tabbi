@@ -32,7 +32,7 @@ private struct TodayCalendarSetupContent: View {
                             .background(Circle().fill(accent.opacity(0.16)))
                             .contentTransition(.symbolEffect(.replace))
                         VStack(alignment: .leading, spacing: 0) {
-                            Text("Today's calendar")
+                            Text("Today's calendar", bundle: .tabbi)
                                 .font(Theme.Typography.bodyEmphasis)
                                 .foregroundStyle(Theme.Palette.primaryText)
                             Text(statusText)
@@ -42,7 +42,8 @@ private struct TodayCalendarSetupContent: View {
                         }
                         .lineLimit(1)
                     }
-                    Text("Up next shows your \(settings.upNextEvents) as the day goes, and Plan my day fits work around them.")
+                    Text("Up next shows your \(UpNextEmptyState.localizedEvents(settings.upNextEvents)) as the day goes, and Plan my day fits work around them.",
+                         bundle: .tabbi)
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.secondaryText)
                         .lineLimit(3)
@@ -51,12 +52,12 @@ private struct TodayCalendarSetupContent: View {
                     HStack(spacing: Theme.Spacing.s) {
                         action
                         Spacer(minLength: 0)
-                        Label("Stays on this Mac", systemImage: "lock.fill")
+                        Label(String(localized: "Stays on this Mac", bundle: .tabbi), systemImage: "lock.fill")
                             .font(Theme.Typography.caption)
                             .foregroundStyle(Theme.Palette.tertiaryText)
                             .labelStyle(TodayCalendarSetupLabelStyle())
                             .lineLimit(1)
-                            .help("\(Edition.current.name) reads your events on this Mac and never uploads them")
+                            .help(Text("\(Edition.current.name) reads your events on this Mac and never uploads them", bundle: .tabbi))
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -65,18 +66,18 @@ private struct TodayCalendarSetupContent: View {
             Card(padding: Theme.Spacing.s) {
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                     HStack(spacing: Theme.Spacing.xs) {
-                        Text("Up next")
+                        Text("Up next", bundle: .tabbi)
                             .font(Theme.Typography.caption)
                             .foregroundStyle(Theme.Palette.tertiaryText)
                         Spacer(minLength: 0)
                         if !showsRealDay {
-                            Text("Example")
+                            Text("Example", bundle: .tabbi)
                                 .font(Theme.Typography.caption)
                                 .foregroundStyle(Theme.Palette.tertiaryText)
                                 .padding(.horizontal, Theme.Spacing.xs + Theme.Spacing.xxs)
                                 .frame(height: 16)
                                 .background(Capsule().fill(Theme.Palette.surface))
-                                .help("A sample day. Your own events show here once the calendar is connected.")
+                                .help(Text("A sample day. Your own events show here once the calendar is connected.", bundle: .tabbi))
                         }
                     }
                     .frame(height: 16)
@@ -139,18 +140,20 @@ private struct TodayCalendarSetupContent: View {
     @ViewBuilder private var action: some View {
         switch upNext.access {
         case .notDetermined:
-            PlannerPillButton(title: "Allow Access", symbol: "calendar", isProminent: true, height: 24,
-                              help: "Allow \(Edition.current.name) to read your calendars. macOS asks once.") {
+            PlannerPillButton(title: String(localized: "Allow Access", bundle: .tabbi), symbol: "calendar", isProminent: true, height: 24,
+                              help: String(localized: "Allow \(Edition.current.name) to read your calendars. macOS asks once.",
+                                           bundle: .tabbi)) {
                 Task { _ = await upNext.ensureAccess() }
             }
         case .denied:
-            PlannerPillButton(title: "Open Settings", symbol: "gear", height: 24,
-                              help: "Open Calendars privacy settings to turn access on") {
+            PlannerPillButton(title: String(localized: "Open Settings", bundle: .tabbi), symbol: "gear", height: 24,
+                              help: String(localized: "Open Calendars privacy settings to turn access on", bundle: .tabbi)) {
                 upNext.openPrivacySettings()
             }
         case .granted where upNext.emptySituation == .noAccounts:
-            PlannerPillButton(title: "Internet Accounts", symbol: "person.crop.circle.badge.plus", height: 24,
-                              help: "Open Internet Accounts to add a Google, Exchange or iCloud calendar") {
+            PlannerPillButton(title: String(localized: "Internet Accounts", bundle: .tabbi), symbol: "person.crop.circle.badge.plus",
+                              height: 24,
+                              help: String(localized: "Open Internet Accounts to add a Google, Exchange or iCloud calendar", bundle: .tabbi)) {
                 upNext.openInternetAccounts()
             }
         case .granted, .unavailable:
@@ -168,10 +171,10 @@ private struct TodayCalendarSetupContent: View {
 
     private var statusText: String {
         switch upNext.access {
-        case .notDetermined: "Not connected"
-        case .granted: "Connected"
-        case .denied: "Access is off"
-        case .unavailable: "Open the \(Edition.current.name) app to connect"
+        case .notDetermined: String(localized: "Not connected", bundle: .tabbi)
+        case .granted: String(localized: "Connected", bundle: .tabbi)
+        case .denied: String(localized: "Access is off", bundle: .tabbi)
+        case .unavailable: String(localized: "Open the \(Edition.current.name) app to connect", bundle: .tabbi)
         }
     }
 }

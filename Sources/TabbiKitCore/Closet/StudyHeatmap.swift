@@ -22,7 +22,8 @@ public struct StudyHeatmap: Hashable, Sendable {
         /// "No study", "25 min studied" or "1h 25m studied", the tooltip's
         /// exact value, so the levels never rely on color alone.
         public var studiedLabel: String {
-            minutes > 0 ? "\(DurationFormat.minutes(minutes)) studied" : "No study"
+            minutes > 0 ? String(localized: "\(DurationFormat.minutes(minutes)) studied", bundle: .tabbi)
+                : String(localized: "No study", bundle: .tabbi)
         }
     }
 

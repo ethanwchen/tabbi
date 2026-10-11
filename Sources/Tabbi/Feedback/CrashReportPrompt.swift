@@ -47,7 +47,7 @@ enum CrashReportPrompt {
         textView.textColor = .secondaryLabelColor
         textView.textContainerInset = NSSize(width: 4, height: 4)
         textView.string = text
-        textView.setAccessibilityLabel("Crash report contents")
+        textView.setAccessibilityLabel(String(localized: "Crash report contents", bundle: .tabbi))
         return scroll
     }
 

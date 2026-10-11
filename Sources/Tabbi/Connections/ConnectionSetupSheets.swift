@@ -113,24 +113,24 @@ struct ConnectionWalkthroughView: View {
 
             HStack(spacing: 12) {
                 if let learnMore = walkthrough.learnMore, !isFinished {
-                    Link("More help", destination: learnMore)
-                        .help("Open the official setup page")
+                    Link(String(localized: "More help", bundle: .tabbi), destination: learnMore)
+                        .help(String(localized: "Open the official setup page", bundle: .tabbi))
                 }
                 Spacer(minLength: 8)
                 if isFinished {
                     if let runTest {
-                        Button("Test it", action: runTest)
+                        Button(String(localized: "Test it", bundle: .tabbi), action: runTest)
                             .disabled(test?.isRunning == true)
-                            .help("Turn \(kind.title) on for a moment, then off again")
+                            .help(String(localized: "Turn \(kind.title) on for a moment, then off again", bundle: .tabbi))
                     }
-                    Button("Done", action: close)
+                    Button(String(localized: "Done", bundle: .tabbi), action: close)
                         .buttonStyle(.borderedProminent)
                         .keyboardShortcut(.defaultAction)
-                        .help("Close this guide")
+                        .help(String(localized: "Close this guide", bundle: .tabbi))
                 } else {
-                    Button("Not now", action: close)
+                    Button(String(localized: "Not now", bundle: .tabbi), action: close)
                         .keyboardShortcut(.cancelAction)
-                        .help("Close this guide. You can come back any time.")
+                        .help(String(localized: "Close this guide. You can come back any time.", bundle: .tabbi))
                     Button(walkthrough.start.title) { start(walkthrough.start) }
                         .buttonStyle(.borderedProminent)
                         .keyboardShortcut(.defaultAction)
@@ -218,12 +218,13 @@ struct CopyableValue: View {
                     copied = false
                 }
             } label: {
-                Label(copied ? "Copied" : "Copy", systemImage: copied ? "checkmark" : "doc.on.doc")
+                Label(copied ? String(localized: "Copied", bundle: .tabbi) : String(localized: "Copy", bundle: .tabbi),
+                      systemImage: copied ? "checkmark" : "doc.on.doc")
                     .frame(minWidth: 64)
             }
             .controlSize(.small)
             .fixedSize()
-            .help("Copy \u{201C}\(value)\u{201D} so you can paste it")
+            .help(String(localized: "Copy \u{201C}\(value)\u{201D} so you can paste it", bundle: .tabbi))
         }
     }
 }
@@ -253,11 +254,13 @@ struct ConnectionPrimingView: View {
                 Button(priming.button, action: proceed)
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
-                    .help("Your Mac asks next")
+                    .help(String(localized: "Your Mac asks next", bundle: .tabbi))
             }
         }
         .padding(24)
         .frame(width: 460)
+        // Lets a translated message wrap instead of truncating.
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -279,9 +282,9 @@ struct ConnectionTroubleshootView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            ConnectionSheetHeader(kind: kind, light: light, title: "\(kind.title) checkup",
+            ConnectionSheetHeader(kind: kind, light: light, title: String(localized: "\(kind.title) checkup", bundle: .tabbi),
                                   message: isChecking || diagnosis == nil
-                                      ? "Tabbi is checking \(kind.title) right now. This takes a second."
+                                      ? String(localized: "Tabbi is checking \(kind.title) right now. This takes a second.", bundle: .tabbi)
                                       : diagnosis?.verdict ?? "")
 
             if let diagnosis {
@@ -304,29 +307,30 @@ struct ConnectionTroubleshootView: View {
                         copied = false
                     }
                 } label: {
-                    Label(copied ? "Copied" : "Copy details", systemImage: copied ? "checkmark" : "doc.on.doc")
+                    Label(copied ? String(localized: "Copied", bundle: .tabbi) : String(localized: "Copy details", bundle: .tabbi),
+                      systemImage: copied ? "checkmark" : "doc.on.doc")
                 }
                 .disabled(diagnosis == nil)
-                .help("Copy what Tabbi found, to paste into a message if you ask someone for help")
+                .help(String(localized: "Copy what Tabbi found, to paste into a message if you ask someone for help", bundle: .tabbi))
 
                 Spacer(minLength: 8)
 
                 if let fix = diagnosis?.status.action, !isChecking {
-                    Button("Not now", action: close)
+                    Button(String(localized: "Not now", bundle: .tabbi), action: close)
                         .keyboardShortcut(.cancelAction)
-                        .help("Close the checkup")
+                        .help(String(localized: "Close the checkup", bundle: .tabbi))
                     Button(fix.title) { perform(fix) }
                         .buttonStyle(.borderedProminent)
                         .keyboardShortcut(.defaultAction)
                         .help(fix.help(for: kind))
                 } else {
-                    Button("Check again", action: checkAgain)
+                    Button(String(localized: "Check again", bundle: .tabbi), action: checkAgain)
                         .disabled(isChecking)
-                        .help("Run the checks for \(kind.title) again")
-                    Button("Done", action: close)
+                        .help(String(localized: "Run the checks for \(kind.title) again", bundle: .tabbi))
+                    Button(String(localized: "Done", bundle: .tabbi), action: close)
                         .buttonStyle(.borderedProminent)
                         .keyboardShortcut(.defaultAction)
-                        .help("Close the checkup")
+                        .help(String(localized: "Close the checkup", bundle: .tabbi))
                 }
             }
         }
@@ -381,10 +385,10 @@ extension ConnectionCheck.Outcome {
 
     var help: String {
         switch self {
-        case .passed: "This part works"
-        case .failed: "This is what needs fixing"
-        case .skipped: "Not checked yet"
-        case .note: "Optional"
+        case .passed: String(localized: "This part works", bundle: .tabbi)
+        case .failed: String(localized: "This is what needs fixing", bundle: .tabbi)
+        case .skipped: String(localized: "Not checked yet", bundle: .tabbi)
+        case .note: String(localized: "Optional", bundle: .tabbi)
         }
     }
 }
@@ -420,9 +424,9 @@ extension ConnectionStepAction {
     /// The start button's tooltip.
     var help: String {
         switch self {
-        case .copyAndOpen(_, let app): "Copy what you need to paste, then open \(app.name)"
-        case .openApp(let app): "Open \(app.name)"
-        case .openSettings: "Open the right page in System Settings"
+        case .copyAndOpen(_, let app): String(localized: "Copy what you need to paste, then open \(app.displayName)", bundle: .tabbi)
+        case .openApp(let app): String(localized: "Open \(app.displayName)", bundle: .tabbi)
+        case .openSettings: String(localized: "Open the right page in System Settings", bundle: .tabbi)
         }
     }
 }

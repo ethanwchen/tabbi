@@ -17,7 +17,7 @@ enum AppMover {
 
         var errorDescription: String? {
             switch self {
-            case .copyFailed(let reason): "\(Edition.current.name) could not be copied to Applications. \(reason)"
+            case .copyFailed(let reason): String(localized: "\(Edition.current.name) could not be copied to Applications. \(reason)", bundle: .tabbi)
             }
         }
     }
@@ -27,12 +27,12 @@ enum AppMover {
     static func offerMove(location: InstallLocation, record: inout InstallRecord) -> Bool {
         let name = Edition.current.name
         let alert = NSAlert()
-        alert.messageText = "Move \(name) to your Applications folder?"
-        alert.informativeText = "\(name) works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again."
-        alert.addButton(withTitle: "Move to Applications")
-        alert.addButton(withTitle: "Not Now")
+        alert.messageText = String(localized: "Move \(name) to your Applications folder?", bundle: .tabbi)
+        alert.informativeText = String(localized: "\(name) works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.", bundle: .tabbi)
+        alert.addButton(withTitle: String(localized: "Move to Applications", bundle: .tabbi))
+        alert.addButton(withTitle: String(localized: "Not Now", bundle: .tabbi))
         alert.showsSuppressionButton = true
-        alert.suppressionButton?.title = "Don't ask again"
+        alert.suppressionButton?.title = String(localized: "Don't ask again", bundle: .tabbi)
         NSApp.activate()
         let response = alert.runModal()
         if alert.suppressionButton?.state == .on {

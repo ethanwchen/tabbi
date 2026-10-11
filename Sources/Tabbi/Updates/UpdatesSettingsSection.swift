@@ -9,14 +9,14 @@ struct UpdatesSettingsSection: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            Button("Check for Updates…", action: updater.checkForUpdates)
+            Button(String(localized: "Check for Updates…", bundle: .tabbi), action: updater.checkForUpdates)
                 .disabled(!updater.canCheckForUpdates && !updater.policy.isPreview)
                 .help(updater.policy.explanation(appName: Edition.current.name)
                       ?? "Look for a newer version of \(Edition.current.name) now")
             if updater.isAvailable || updater.policy.isPreview {
-                Toggle("Check for updates automatically", isOn: $updater.automaticallyChecksForUpdates)
+                Toggle(String(localized: "Check for updates automatically", bundle: .tabbi), isOn: $updater.automaticallyChecksForUpdates)
                     .toggleStyle(.checkbox)
-                    .help("Check once a day and offer new versions as they come out")
+                    .help(String(localized: "Check once a day and offer new versions as they come out", bundle: .tabbi))
             } else if let explanation = updater.policy.explanation(appName: Edition.current.name) {
                 Text(explanation)
                     .font(.caption)

@@ -1,6 +1,6 @@
 # Localization
 
-Tabbi ships in English, German, Spanish, French, Japanese, Korean, Brazilian Portuguese and Simplified Chinese.
+Tabbi ships in English, German, Spanish, French, Filipino, Japanese, Korean, Brazilian Portuguese, Russian, Simplified Chinese and Traditional Chinese.
 This page covers how strings are looked up, how to add or change one, and how to add a language.
 
 ## How it works
@@ -29,6 +29,9 @@ Interpolate values instead of joining strings, so a translation can move them: `
 The catalog key is then `%lld cards due`, with `%lld` for integers, `%@` for strings and `%f` for doubles.
 Plurals are variations in the catalog (`one`, `other`, and whatever forms a language needs), never `count == 1 ? ... : ...` in code.
 Format dates, times, numbers and durations with Foundation formatters (`.formatted()`, `Duration.formatted`, `Date.FormatStyle`), which follow the user's locale, never by gluing a number to a unit.
+Lengths of time go through `DurationFormat` ("45 min", "1h 15m", "in 12 min"), whose units are catalog strings, and spans of days through `DateRangeFormat` ("Oct 5 - 11", "5.-11. Okt.", "10月5日～11日").
+When a paragraph is built from several translated sentences, join them with `Sentences.join`, which adds no space after a Japanese or Chinese full stop ("。").
+Seasonal event names and taglines stay in English in `events.json`, which the Windows port reads too; `SeasonalEvent.displayName` and `displayTagline` look the translation up in the catalog by that English text, and `LocalizationTests` fails when an event lacks one.
 
 Add each new string to the catalog with a `comment` that says where it shows and anything a translator could misread (is "Look" a verb or a noun?).
 Mark it `"extractionState" : "manual"`, because SwiftPM does not extract keys from code the way Xcode does.
@@ -41,30 +44,47 @@ After any change to the catalog, run `scripts/compile-strings.sh` and commit the
 
 `scripts/l10n-add.py strings.json` writes entries for you: it takes the English keys with a comment and one translation per language (an object of plural forms for a plural), adds them with that state, rewrites the catalog sorted, in Xcode's layout, and runs `scripts/compile-strings.sh`.
 The script's header shows the input format.
+With `--merge`, it sets only the languages given on strings already in the catalog and keeps everything else, which is how a new language goes in at once.
 
 ## Tone
 
 Keep translations short, natural and friendly, the way a cozy app talks to a friend.
 German and French run long, so prefer the shorter of two good options and check the panel snapshots.
-Follow each language's usual app conventions: informal "du" in German, "tu" in French and Spanish, "você" in Brazilian Portuguese, and polite but plain wording in Japanese and Korean.
+Follow each language's usual app conventions: informal "du" in German, "tu" in French and Spanish, "você" in Brazilian Portuguese, informal "ты" in Russian, and polite but plain wording in Japanese and Korean.
+Russian keeps verbs about the user gender-neutral, with "(а)" where a past tense cannot be avoided, and names the Party tab "Party".
+Filipino is the everyday Tagalog of Filipino apps: English loanwords where they are the norm ("timer", "task"), and macOS names (System Settings, Keychain, Do Not Disturb) in English, since macOS has no Filipino localization.
+Traditional Chinese follows Taiwan's conventions and Apple's Taiwan terms, not a conversion of the Simplified Chinese.
+A string that names a label elsewhere in the app (a tab, a button, "None") uses that label's translation, word for word.
 The writing rules in AGENTS.md hold in every language: no emojis and no em dashes.
 
 ## Not translated yet
 
 The onboarding, the tab titles and module summaries, the notch's context menu and header controls, and Settings (General, Tabs, Look, Connections, About and the Account row) are translated.
-So are the notifications (focus timer, weekly recap, study reminder, Party), the recap's cheer lines, the Party celebration, and the Closet: its sections and labels, every outfit, accessory, theme, species and fur color name.
+So are the notifications (focus timer, weekly recap, study reminder, Party), the recap's cheer lines, the Party celebration, and the Closet: its sections and labels, every outfit, accessory, theme, species and fur color name, and the seasonal events and limited items.
+The AI consent alert, the AI provider row in Settings > Connections and the age check before Party and Sign in with Apple are translated too; their legal meaning must stay exact.
 The main controls of every tab's panel (Today, Focus, Now Playing, System, AI Usage, Ask AI, Study, Anki, Party and Schedule) are translated too, with the calendar card, the focus and study timer labels and the Ask AI setup screen.
-The modules' own Settings panes (the Options button in Settings > Tabs) and the module setup views follow pane by pane.
+Today's Plan my day, Wrap-up and calendar onboarding step are translated as well; the summaries the AI writes there follow its English prompt, so they stay English.
+The bundled kits' words for calendar events ("meetings and calls") are looked up in the catalog like the seasonal events (`UpNextEmptyState.localizedEvents`), and a kit's own phrase stays as written.
+The modules' own Settings panes (the Options button in Settings > Tabs) are translated: Focus, with the focus sound names and the Shortcuts test results, Now Playing, Ask AI, Pet Coach with the daily study reminder, and Party with its server and moderation messages.
+Those panes have a fixed height, so a translated footer must wrap to no more lines than the English one, or the last row is clipped: check them in `settings-tabs-<module>.png`.
+App names follow the name macOS gives them in each language (Musik, ミュージック, Быстрые команды), and `MediaSource.names` joins them with the language's own "or".
+Settings > Connections shows each connection's status headline and detail, its tooltips and the Party setup sheet in the user's language, and calls Apple's Music app Apple Music there, as its connection row does (`ConnectionApp.displayName`), so no sentence has to decline a translated app name.
+The troubleshooter's checks ("Something not working?"), the setup walkthroughs and the screens before a macOS permission prompt are translated too, and so are the support details copied from the troubleshooter, apart from their field labels and state code.
+Their steps name macOS and Anki menus and buttons as those apps show them in each language, and Terminal and Shortcuts by their macOS names (Kurzbefehle, ターミナル).
+The kit questions and import review in Settings, the weekly recap card and its history, the crash report and update rows, and the Party invite, onboarding and report sheets are translated as well.
+The recap card's stat captions ("sessions", "best day") sit under a number drawn on its own, so each is a caption with a singular and a plural key rather than a plural variation; Russian uses the nominative plural there, and the row drops its last stats when the captions run long, so keep them to one or two short words.
+The Party invite card (titles, messages, buttons and tooltips from `PartyInviteFlow`) and the "Move to Applications" alert are translated too, and the alert names the Applications folder as macOS does in each language (Programme, アプリケーション).
+The desktop widget is translated too: the extension reads the same strings from its own copy of `Tabbi_TabbiKitCore.bundle`, and `scripts/assemble.sh` gives its `Info.plist` the app's `CFBundleLocalizations`.
+Its streak count uses the key `%lld streak days` (English "12 days"), because `%lld days` is the Closet chart's dative phrase.
+The end-of-session moment is translated too: the headline and points, the bar toward the next unlock, the surprise gift lines and the rare fur names, the closed notch's unlock hint and the Cat wisdom toggle in Settings > General.
+Cat wisdom lines are approved English copy in `CatWisdom`, which the schedule hands out by text, so `CatWisdomLine.displayText` looks each one up in the catalog by that English, as the seasonal events are, and `LocalizationTests` fails when a line lacks a language.
+A wisdom line shows in at most three lines in the pet's bubble, so check a new translation in the `coach-wisdom-all-*` snapshots, which `TABBI_WISDOM_ALL=1` adds to a `--snapshot` run.
 Breed names stay English, because a pet that still goes by its breed is recognized by comparing its saved name to the breed's name.
 These stay English on purpose for now:
 
 - long help text and error details,
 - the bundled kits' names, summaries and questions,
-- the AI provider setup hints in Settings > Connections,
-- the connection status headlines and details and the setup sheets in Settings > Connections,
-- the study method names and taglines and the theme names, which come from bundled JSON files that the Windows port reads too and need a localized field there first,
-- compact unit labels built in code, such as the "18m" and "1h 5m" durations,
-- the calendar card sentences that name the kit's word for events (a kit field, so it waits for localized kit text).
+- the study method names and taglines and the theme names, which come from bundled JSON files that the Windows port reads too and need a localized field there first.
 
 ## Checking
 
@@ -78,12 +98,15 @@ TABBI_DEMO=1 swift run Tabbi --snapshot snapshots-ja --locale ja
 ```
 
 `--locale` sets the language and the region formats for that one run and saves nothing; it works for the live app too.
+It takes effect before `NSApplication.shared` is created, because AppKit fixes `Locale.current` for the process from then on: set any later, the strings would change language while dates and numbers stayed in the system's format.
 Look at the panels in every size the renderer draws (`open-compact-*`, `open-*` and the `-large` shots) and fix any truncation.
 
 ## Adding a language
 
-1. Add its `.lproj` name (such as `it` or `zh-Hant`) to `L10n.languages` and to `CFBundleLocalizations` in `Resources/Info.plist`.
-2. Add a translation of every string in `Localizable.xcstrings`, including each plural form the language uses.
+1. Add its `.lproj` name (such as `it`) to `L10n.languages` and to `CFBundleLocalizations` in `Resources/Info.plist`.
+2. Add a translation of every string in `Localizable.xcstrings`, including each plural form the language uses, with `scripts/l10n-add.py --merge` (add the language to its `LANGUAGES` too).
+   Split across translators, give each one the same glossary (tab names, Party, kit, streak, how to address the user) so the halves agree.
 3. Run `scripts/compile-strings.sh`, which writes the language's `.lproj` folder.
 4. Run `swift test`; `LocalizationTests` lists every string still missing.
+   For a language with more plural forms than English (Russian has one, few and many), add a test that formats a few counts with that locale, as `testRussianPluralsFollowTheLastDigits` does: plural rules follow the formatting locale, not the bundle.
 5. Render snapshots with `--locale <language>` and fix whatever is cut off or reads awkwardly.

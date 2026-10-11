@@ -16,16 +16,16 @@ public enum MediaSource: String, CaseIterable, Equatable, Hashable, Sendable {
     public var displayName: String {
         switch self {
         case .spotify: "Spotify"
-        case .music: "Music"
+        case .music: String(localized: "Music", bundle: .tabbi)
         }
     }
 
-    /// Display names joined for a sentence: "Spotify", "Spotify or Music".
+    /// Display names joined for a sentence in the user's language:
+    /// "Spotify", "Spotify or Music", "Spotify oder Music".
     /// Falls back to every known app when `sources` is empty.
-    public static func names(_ sources: [MediaSource]) -> String {
-        let names = (sources.isEmpty ? allCases : sources).map(\.displayName)
-        guard let last = names.last, names.count > 1 else { return names.first ?? "" }
-        return names.dropLast().joined(separator: ", ") + " or " + last
+    public static func names(_ sources: [MediaSource], locale: Locale = .autoupdatingCurrent) -> String {
+        (sources.isEmpty ? allCases : sources).map(\.displayName)
+            .formatted(.list(type: .or).locale(locale))
     }
 
     /// The script that returns the app's state as one separated record.

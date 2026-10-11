@@ -21,10 +21,10 @@ struct DayReviewView: View {
                 .padding(.horizontal, Theme.Spacing.s)
                 .frame(maxHeight: .infinity, alignment: .top)
                 HStack(alignment: .top, spacing: Theme.Spacing.m) {
-                    DayReviewList(title: "Done", titles: review.done, isDone: true,
-                                  emptyText: "Nothing checked off")
-                    DayReviewList(title: "Tomorrow", titles: review.carryingOver, isDone: false,
-                                  emptyText: "Nothing carries over")
+                    DayReviewList(title: String(localized: "Done", bundle: .tabbi), titles: review.done, isDone: true,
+                                  emptyText: String(localized: "Nothing checked off", bundle: .tabbi))
+                    DayReviewList(title: String(localized: "Tomorrow", bundle: .tabbi), titles: review.carryingOver,
+                                  isDone: false, emptyText: String(localized: "Nothing carries over", bundle: .tabbi))
                 }
                 .padding(.horizontal, Theme.Spacing.s)
             }
@@ -66,21 +66,21 @@ private struct DayReviewHeader: View {
                 .foregroundStyle(TodayModule.descriptor.accentColor)
                 .symbolEffect(.pulse, isActive: store.isSummarizing)
                 .frame(width: 20)
-            Text("Wrap-up")
+            Text("Wrap-up", bundle: .tabbi)
                 .font(Theme.Typography.title)
                 .foregroundStyle(Theme.Palette.primaryText)
                 .lineLimit(1)
                 .fixedSize()
             Spacer(minLength: Theme.Spacing.s)
             if store.saveFailed {
-                Label("Not saved", systemImage: "exclamationmark.triangle.fill")
+                Label(String(localized: "Not saved", bundle: .tabbi), systemImage: "exclamationmark.triangle.fill")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.warning)
                     .lineLimit(1)
-                    .help("The review couldn't be written to disk. Try Done again.")
+                    .help(String(localized: "The review couldn't be written to disk. Try Done again.", bundle: .tabbi))
             }
-            PlannerPillButton(title: "Done", isProminent: true,
-                              help: "Save today's review and show the checklist") {
+            PlannerPillButton(title: String(localized: "Done", bundle: .tabbi), isProminent: true,
+                              help: String(localized: "Save today's review and show the checklist", bundle: .tabbi)) {
                 store.done()
             }
         }
@@ -105,7 +105,7 @@ private struct DayReviewList: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             HStack(spacing: Theme.Spacing.xs) {
                 Text(title)
-                Text("\(titles.count)").monospacedDigit()
+                Text(titles.count.formatted()).monospacedDigit()
             }
             .font(Theme.Typography.caption)
             .foregroundStyle(Theme.Palette.tertiaryText)
@@ -130,7 +130,7 @@ private struct DayReviewList: View {
                     }
                 }
                 if hidden > 0 {
-                    Text("+\(hidden) more")
+                    Text("+\(hidden) more", bundle: .tabbi)
                         .font(Theme.Typography.caption.monospacedDigit())
                         .foregroundStyle(Theme.Palette.tertiaryText)
                         .padding(.leading, 12 + Theme.Spacing.xs + Theme.Spacing.xxs)
@@ -190,7 +190,7 @@ private struct DayReviewShimmer: View {
         .padding(.top, Theme.Spacing.xs)
         .shimmering()
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Writing a summary")
-        .help("Writing a short summary of your day")
+        .accessibilityLabel(Text("Writing a summary", bundle: .tabbi))
+        .help(Text("Writing a short summary of your day", bundle: .tabbi))
     }
 }

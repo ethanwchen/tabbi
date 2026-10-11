@@ -59,7 +59,7 @@ private struct RecapHistoryRow: View {
                     Image(systemName: "star.fill")
                         .font(.system(size: 9, weight: .bold))
                         .foregroundStyle(Theme.Palette.accent(RecapCard.accent))
-                        .help("Your best week")
+                        .help(String(localized: "Your best week", bundle: .tabbi))
                 }
                 Spacer(minLength: Theme.Spacing.s)
                 Text(DurationFormat.minutes(recap.focusMinutes))
@@ -77,7 +77,7 @@ private struct RecapHistoryRow: View {
             .contentShape(RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous))
         }
         .buttonStyle(.plain)
-        .help("Open your recap for \(title)")
+        .help(String(localized: "Open your recap for \(title)", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -90,11 +90,11 @@ private struct RecapHistoryEmpty: View {
             Image(systemName: "calendar")
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(Theme.Palette.accent(RecapCard.accent))
-            Text("Your first recap arrives Sunday evening.")
+            Text("Your first recap arrives Sunday evening.", bundle: .tabbi)
                 .font(Theme.Typography.bodyEmphasis)
                 .foregroundStyle(Theme.Palette.secondaryText)
                 .multilineTextAlignment(.center)
-            Text("Each week you focus shows up here.")
+            Text("Each week you focus shows up here.", bundle: .tabbi)
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.tertiaryText)
                 .multilineTextAlignment(.center)

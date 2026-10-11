@@ -48,35 +48,37 @@ public struct UpNextEmptyState: Hashable, Sendable {
     public var actionHelp: String
 
     public init(_ situation: Situation, upNextEvents: String, appName: String) {
+        let upNextEvents = Self.localizedEvents(upNextEvents)
         switch situation {
         case .notAsked:
             symbol = "calendar"
             title = String(localized: "See what's next", bundle: .tabbi)
-            detail = "Today's \(upNextEvents). Google calendars show up once added in Internet Accounts."
+            detail = String(localized: "Today's \(upNextEvents). Google calendars show up once added in Internet Accounts.",
+                            bundle: .tabbi)
             action = .requestAccess
             actionTitle = String(localized: "Show calendar", bundle: .tabbi)
-            actionHelp = "Allow \(appName) to read your calendars"
+            actionHelp = String(localized: "Allow \(appName) to read your calendars", bundle: .tabbi)
         case .denied:
             symbol = "calendar.badge.exclamationmark"
             title = String(localized: "Calendar access is off", bundle: .tabbi)
             detail = String(localized: "Allow \(appName) in Privacy & Security.", bundle: .tabbi)
             action = .openPrivacySettings
             actionTitle = String(localized: "Open Settings", bundle: .tabbi)
-            actionHelp = "Open Calendars privacy settings"
+            actionHelp = String(localized: "Open Calendars privacy settings", bundle: .tabbi)
         case .unavailable:
             symbol = "calendar"
             title = String(localized: "Connect your calendar", bundle: .tabbi)
-            detail = "See your \(upNextEvents) here. It only takes a moment."
+            detail = String(localized: "See your \(upNextEvents) here. It only takes a moment.", bundle: .tabbi)
             action = .openConnections
             actionTitle = String(localized: "Connect calendar", bundle: .tabbi)
-            actionHelp = "Open Connections to connect your calendar"
+            actionHelp = String(localized: "Open Connections to connect your calendar", bundle: .tabbi)
         case .noAccounts:
             symbol = "calendar.badge.plus"
             title = String(localized: "Add your calendar", bundle: .tabbi)
-            detail = "Using Google? Add it in Internet Accounts to see your \(upNextEvents) here."
+            detail = String(localized: "Using Google? Add it in Internet Accounts to see your \(upNextEvents) here.", bundle: .tabbi)
             action = .openInternetAccounts
             actionTitle = String(localized: "Internet Accounts", bundle: .tabbi)
-            actionHelp = "Open Internet Accounts to add a Google, Exchange or iCloud calendar"
+            actionHelp = String(localized: "Open Internet Accounts to add a Google, Exchange or iCloud calendar", bundle: .tabbi)
         case .freeDay:
             symbol = "calendar.badge.checkmark"
             title = String(localized: "Nothing on today", bundle: .tabbi)
@@ -93,15 +95,15 @@ public struct UpNextEmptyState: Hashable, Sendable {
             actionHelp = ""
         case .freeTomorrow:
             symbol = "calendar.badge.checkmark"
-            title = "Free all day"
-            detail = "Nothing on your calendars tomorrow."
+            title = String(localized: "Free all day", bundle: .tabbi)
+            detail = String(localized: "Nothing on your calendars tomorrow.", bundle: .tabbi)
             action = nil
             actionTitle = ""
             actionHelp = ""
         case .freeYesterday:
             symbol = "calendar"
-            title = "A free day"
-            detail = "Nothing was on your calendars yesterday."
+            title = String(localized: "A free day", bundle: .tabbi)
+            detail = String(localized: "Nothing was on your calendars yesterday.", bundle: .tabbi)
             action = nil
             actionTitle = ""
             actionHelp = ""
@@ -134,5 +136,12 @@ public struct UpNextEmptyState: Hashable, Sendable {
             guard hasAccounts else { return .noAccounts }
             return day == .tomorrow ? .freeTomorrow : .freeYesterday
         }
+    }
+
+    /// The kit's phrase for what the calendar holds, in the user's language
+    /// when it is one the app ships ("meetings and calls"); a kit's own
+    /// phrase stays as written.
+    public static func localizedEvents(_ phrase: String) -> String {
+        Bundle.tabbi.localizedString(forKey: phrase, value: phrase, table: nil)
     }
 }

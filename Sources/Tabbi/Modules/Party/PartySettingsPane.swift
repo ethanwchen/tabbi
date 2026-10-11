@@ -8,7 +8,7 @@ extension SettingsPane {
     /// friends server, and deleting the Party data. `account` is the Apple
     /// account, which owns that data once signed in.
     @MainActor static func party(store: PartyStore, account: SyncStore) -> SettingsPane {
-        SettingsPane(id: "party", title: "Party", symbol: "person.2",
+        SettingsPane(id: "party", title: String(localized: "Party", bundle: .tabbi), symbol: "person.2",
                      view: AnyView(PartySettingsPane(store: store, account: account)))
     }
 }
@@ -70,29 +70,29 @@ struct PartySettingsPane: View {
 
     private var profileSection: some View {
         Section {
-            LabeledContent("Name") {
-                TextField("Name", text: $name, prompt: Text(store.state.profile?.name ?? "Your name"))
+            LabeledContent(String(localized: "Name", bundle: .tabbi)) {
+                TextField(String(localized: "Name", bundle: .tabbi), text: $name, prompt: Text(store.state.profile?.name ?? String(localized: "Your name", bundle: .tabbi)))
                     .labelsHidden()
                     .textFieldStyle(.roundedBorder)
                     .multilineTextAlignment(.leading)
                     .frame(width: fieldWidth)
                     .focused($focused, equals: .name)
                     .onSubmit(commitName)
-                    .help("The name friends see, up to \(PartySettings.maxNameLength) characters")
+                    .help(String(localized: "The name friends see, up to \(PartySettings.maxNameLength) characters", bundle: .tabbi))
             }
-            LabeledContent("Friend code") {
+            LabeledContent(String(localized: "Friend code", bundle: .tabbi)) {
                 HStack(spacing: 8) {
                     Text(friendCodeText)
                         .font(store.state.friendCode == nil ? .body : .body.monospaced())
                         .foregroundStyle(store.state.friendCode == nil ? .secondary : .primary)
                         .textSelection(.enabled)
-                    Button("Copy", action: copyFriendCode)
+                    Button(String(localized: "Copy", bundle: .tabbi), action: copyFriendCode)
                         .disabled(store.state.friendCode == nil)
-                        .help("Copy your friend code to share it")
+                        .help(String(localized: "Copy your friend code to share it", bundle: .tabbi))
                 }
             }
         } header: {
-            Text("Profile")
+            Text("Profile", bundle: .tabbi)
         } footer: {
             if let issue = nameIssue {
                 Label(issue, systemImage: "exclamationmark.triangle.fill")
@@ -102,7 +102,7 @@ struct PartySettingsPane: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, 10)
             } else {
-                SectionFooter("Friends see this name and the pet you dress in the Closet. Share your code so they can add you.")
+                SectionFooter(String(localized: "Friends see this name and the pet you dress in the Closet. Share your code so they can add you.", bundle: .tabbi))
             }
         }
     }
@@ -120,7 +120,7 @@ struct PartySettingsPane: View {
     }
 
     private var friendCodeText: String {
-        store.state.friendCode.map { PartyStyle.display(code: $0) } ?? "Not connected yet"
+        store.state.friendCode.map { PartyStyle.display(code: $0) } ?? String(localized: "Not connected yet", bundle: .tabbi)
     }
 
     private func commitName() {
@@ -141,14 +141,14 @@ struct PartySettingsPane: View {
     private var privacySection: some View {
         Section {
             Toggle(isOn: invisible) {
-                Text("Go invisible")
-                Text("Friends see you as offline. Your study minutes still count.")
+                Text("Go invisible", bundle: .tabbi)
+                Text("Friends see you as offline. Your study minutes still count.", bundle: .tabbi)
             }
-            .help("Hide your status from friends")
+            .help(String(localized: "Hide your status from friends", bundle: .tabbi))
         } header: {
-            Text("Privacy")
+            Text("Privacy", bundle: .tabbi)
         } footer: {
-            SectionFooter("Only your name, pet, study status and minutes are shared. Nothing about your cards, decks or what you study ever leaves your Mac.")
+            SectionFooter(String(localized: "Only your name, pet, study status and minutes are shared. Nothing about your cards, decks or what you study ever leaves your Mac.", bundle: .tabbi))
         }
     }
 
@@ -175,32 +175,32 @@ struct PartySettingsPane: View {
                     }
                 }
             } else {
-                Text(store.blocked == nil ? emptyBlockedText : "No one is blocked.")
+                Text(store.blocked == nil ? emptyBlockedText : String(localized: "No one is blocked.", bundle: .tabbi))
                     .foregroundStyle(.secondary)
             }
         } header: {
-            Text("Blocked")
+            Text("Blocked", bundle: .tabbi)
         } footer: {
             VStack(alignment: .leading, spacing: 8) {
-                SectionFooter("Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.")
+                SectionFooter(String(localized: "Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.", bundle: .tabbi))
                 Link(SupportContact.reportLine, destination: SupportContact.mailURL)
                     .font(.callout)
-                    .help("Email the \(Edition.current.name) team about a person or a problem")
+                    .help(String(localized: "Email the \(Edition.current.name) team about a person or a problem", bundle: .tabbi))
             }
         }
     }
 
     /// Before the list arrives: still connecting, or offline.
     private var emptyBlockedText: String {
-        if case .connected = store.state.connection { return "Loading…" }
-        return "Connect to the friends server to see who you blocked."
+        if case .connected = store.state.connection { return String(localized: "Loading…", bundle: .tabbi) }
+        return String(localized: "Connect to the friends server to see who you blocked.", bundle: .tabbi)
     }
 
     // MARK: Server
 
     private var serverSection: some View {
         Section {
-            LabeledContent("Server") {
+            LabeledContent(String(localized: "Server", bundle: .tabbi)) {
                 HStack(spacing: 8) {
                     if !store.settings.usesDefaultServer {
                         Button {
@@ -210,29 +210,29 @@ struct PartySettingsPane: View {
                             Image(systemName: "arrow.counterclockwise")
                         }
                         .buttonStyle(.borderless)
-                        .help("Use the default \(Edition.current.name) server")
+                        .help(String(localized: "Use the default \(Edition.current.name) server", bundle: .tabbi))
                     }
-                    TextField("Server", text: $server, prompt: Text("Default server"))
+                    TextField(String(localized: "Server", bundle: .tabbi), text: $server, prompt: Text("Default server", bundle: .tabbi))
                         .labelsHidden()
                         .textFieldStyle(.roundedBorder)
                         .multilineTextAlignment(.leading)
                         .frame(width: fieldWidth)
                         .focused($focused, equals: .server)
                         .onSubmit(commitServer)
-                        .help("A friends server address. Leave empty for \(PartyServer.productionURL.host ?? "the default server").")
+                        .help(String(localized: "A friends server address. Leave empty for \(PartyServer.productionURL.host ?? "tabbinotch.com").", bundle: .tabbi))
                 }
             }
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 statusView
                 Spacer(minLength: 8)
-                Button("Reconnect") { store.retry() }
+                Button(String(localized: "Reconnect", bundle: .tabbi)) { store.retry() }
                     .disabled(!canReconnect)
-                    .help("Try the server again now")
+                    .help(String(localized: "Try the server again now", bundle: .tabbi))
             }
         } header: {
-            Text("Friends server")
+            Text("Friends server", bundle: .tabbi)
         } footer: {
-            SectionFooter("Friends only see each other on the same server. Change it only to run your own.")
+            SectionFooter(String(localized: "Friends only see each other on the same server. Change it only to run your own.", bundle: .tabbi))
         }
     }
 
@@ -271,23 +271,23 @@ struct PartySettingsPane: View {
         let host = store.settings.serverURL?.host ?? ""
         switch store.state.connection {
         case .invalidServer(let message):
-            return ("Can't use this server", message, "exclamationmark.triangle.fill", .orange)
+            return (String(localized: "Can't use this server", bundle: .tabbi), message, "exclamationmark.triangle.fill", .orange)
         case .ageCheck(nil):
-            return ("Not joined yet", "Open the Party tab to join.", "person.crop.circle.badge.questionmark", .secondary)
+            return (String(localized: "Not joined yet", bundle: .tabbi), String(localized: "Open the Party tab to join.", bundle: .tabbi), "person.crop.circle.badge.questionmark", .secondary)
         case .ageCheck(let until?):
-            return ("Not available", "Party is for people \(PartyAgeCheck.minimumAge) and older. It opens in \(PartyAgeCheck.opensText(until)).",
+            return (String(localized: "Not available", bundle: .tabbi), String(localized: "Party is for people \(PartyAgeCheck.minimumAge) and older. It opens in \(PartyAgeCheck.opensText(until)).", bundle: .tabbi),
                     "hand.raised.fill", .secondary)
         case .connecting:
-            return ("Connecting…", host, "", .secondary)
+            return (String(localized: "Connecting…", bundle: .tabbi), host, "", .secondary)
         case .unreachable(.banned):
-            return ("Not available", PartyError.banned.message, "hand.raised.fill", .secondary)
+            return (String(localized: "Not available", bundle: .tabbi), PartyError.banned.message, "hand.raised.fill", .secondary)
         case .unreachable(let error):
-            return ("Can't reach the server", error.message, "wifi.slash", .orange)
+            return (String(localized: "Can't reach the server", bundle: .tabbi), error.message, "wifi.slash", .orange)
         case .connected:
             if let error = store.state.staleError {
-                return ("Connection lost", error.message, "wifi.slash", .orange)
+                return (String(localized: "Connection lost", bundle: .tabbi), error.message, "wifi.slash", .orange)
             }
-            return ("Connected", host, "checkmark.circle.fill", .green)
+            return (String(localized: "Connected", bundle: .tabbi), host, "checkmark.circle.fill", .green)
         }
     }
 
@@ -302,33 +302,33 @@ struct PartySettingsPane: View {
                 LabeledContent {
                     EmptyView()
                 } label: {
-                    Text("Your Party data")
-                    Text("It belongs to your Apple Account. Delete Account in General removes it.")
+                    Text("Your Party data", bundle: .tabbi)
+                    Text("It belongs to your Apple Account. Delete Account in General removes it.", bundle: .tabbi)
                 }
             } else {
                 LabeledContent {
-                    Button("Delete…", role: .destructive) { confirmsDelete = true }
+                    Button(String(localized: "Delete…", bundle: .tabbi), role: .destructive) { confirmsDelete = true }
                         .disabled(store.pending != nil || store.isDemo)
-                        .help("Delete your friend code, friends and parties from the friends server")
+                        .help(String(localized: "Delete your friend code, friends and parties from the friends server", bundle: .tabbi))
                 } label: {
-                    Text("Delete my Party data")
-                    Text(store.pending == .deleteData ? "Deleting…" : store.deletionNotice
-                        ?? "Removes your profile, friends and parties from the server.")
+                    Text("Delete my Party data", bundle: .tabbi)
+                    Text(store.pending == .deleteData ? String(localized: "Deleting…", bundle: .tabbi) : store.deletionNotice
+                        ?? String(localized: "Removes your profile, friends and parties from the server.", bundle: .tabbi))
                 }
             }
         } header: {
-            Text("Your data")
+            Text("Your data", bundle: .tabbi)
         }
-        .confirmationDialog("Delete your Party data?", isPresented: $confirmsDelete) {
-            Button("Delete", role: .destructive, action: store.deletePartyData)
-                .help("Delete your Party data from the friends server")
-            Button("Cancel", role: .cancel) {}
+        .confirmationDialog(String(localized: "Delete your Party data?", bundle: .tabbi), isPresented: $confirmsDelete) {
+            Button(String(localized: "Delete", bundle: .tabbi), role: .destructive, action: store.deletePartyData)
+                .help(String(localized: "Delete your Party data from the friends server", bundle: .tabbi))
+            Button(String(localized: "Cancel", bundle: .tabbi), role: .cancel) {}
         } message: {
             Text(Self.deleteMessage)
         }
     }
 
-    static let deleteMessage = "This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code."
+    static var deleteMessage: String { String(localized: "This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.", bundle: .tabbi) }
 
     private func commitServer() {
         var settings = store.settings
@@ -347,9 +347,9 @@ private struct BlockedRow: View {
 
     var body: some View {
         LabeledContent {
-            Button(isUnblocking ? "Unblocking…" : "Unblock", action: unblock)
+            Button(isUnblocking ? String(localized: "Unblocking…", bundle: .tabbi) : String(localized: "Unblock", bundle: .tabbi), action: unblock)
                 .disabled(!isEnabled)
-                .help("Let \(user.name) find you again. You won't be friends until one of you adds the other.")
+                .help(String(localized: "Let \(user.name) find you again. You won't be friends until one of you adds the other.", bundle: .tabbi))
         } label: {
             Text(user.name)
             Text(detail)
@@ -357,7 +357,7 @@ private struct BlockedRow: View {
     }
 
     private var detail: String {
-        guard let since = user.since else { return "With \(user.petName)" }
-        return "With \(user.petName), blocked \(since.formatted(.relative(presentation: .named)))"
+        guard let since = user.since else { return String(localized: "With \(user.petName)", bundle: .tabbi) }
+        return String(localized: "With \(user.petName), blocked \(since.formatted(.relative(presentation: .named)))", bundle: .tabbi)
     }
 }

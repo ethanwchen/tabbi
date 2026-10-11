@@ -42,6 +42,21 @@ public struct ConnectionApp: Hashable, Sendable {
         self.downloadPage = downloadPage
     }
 
+    /// The name to show in sentences. Apple's Music app goes by its brand
+    /// name, Apple Music, as on its connection row, so the sentence never
+    /// has to decline a translated app name. `name` is how scripts address
+    /// the app.
+    /// Terminal and Shortcuts go by the names macOS gives them in the
+    /// user's language (Kurzbefehle, ターミナル).
+    public var displayName: String {
+        switch self {
+        case .music: "Apple Music"
+        case .terminal: String(localized: "Terminal", bundle: .tabbi, comment: "The Terminal app, named as macOS names it.")
+        case .shortcuts: String(localized: "Shortcuts", bundle: .tabbi, comment: "The Shortcuts app, named as macOS names it.")
+        default: name
+        }
+    }
+
     public static let anki = ConnectionApp(
         name: "Anki", bundleIDs: ["net.ankiweb.dtop", "net.ankiweb.anki"],
         downloadPage: URL(string: "https://apps.ankiweb.net")
@@ -127,8 +142,8 @@ public enum ConnectionAction: Hashable, Sendable {
     /// The button's label.
     public var title: String {
         switch self {
-        case .download(let app): String(localized: "Get \(app.name)", bundle: .tabbi)
-        case .openApp(let app): String(localized: "Open \(app.name)", bundle: .tabbi)
+        case .download(let app): String(localized: "Get \(app.displayName)", bundle: .tabbi)
+        case .openApp(let app): String(localized: "Open \(app.displayName)", bundle: .tabbi)
         case .showGuide(.googleCalendar): String(localized: "Add Google Calendar", bundle: .tabbi)
         case .showGuide: String(localized: "Show me how", bundle: .tabbi)
         case .askPermission: String(localized: "Connect", bundle: .tabbi)

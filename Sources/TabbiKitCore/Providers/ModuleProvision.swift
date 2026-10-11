@@ -76,7 +76,7 @@ public struct ProgressItem: Identifiable, Hashable, Sendable {
 
     public var remaining: Int { max(target - completed, 0) }
     /// What is left, e.g. "84 cards left" or "1h 15m left".
-    public var remainingText: String { "\(amount(remaining)) left" }
+    public var remainingText: String { String(localized: "\(amount(remaining)) left", bundle: .tabbi) }
 
     /// A count in this goal's unit through `DurationFormat.quantity`, e.g.
     /// "320 cards". Minutes read as a duration ("45 min", "2h", "1h 15m"),

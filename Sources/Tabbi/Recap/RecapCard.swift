@@ -37,7 +37,7 @@ struct RecapCard: View {
                                 .font(Theme.Typography.metric)
                                 .foregroundStyle(accent)
                                 .lineLimit(1)
-                            Text("focused")
+                            Text("focused", bundle: .tabbi)
                                 .font(Theme.Typography.caption)
                                 .foregroundStyle(Theme.Palette.tertiaryText)
                         }
@@ -135,6 +135,7 @@ struct RecapDayBars: View {
                               : minutes > 0 ? accent.opacity(0.4) : Theme.Palette.stroke)
                         .frame(width: barWidth, height: height(minutes, best: best))
                     Text(initials[index])
+                        .fixedSize()
                         .font(.system(size: 9, weight: .semibold, design: Theme.Typography.design))
                         .foregroundStyle(isBest ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
                 }
@@ -207,7 +208,7 @@ private struct RecapTitle: View {
             Image(systemName: "sparkles")
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(Theme.Palette.accent(RecapCard.accent))
-            Text("Your week")
+            Text("Your week", bundle: .tabbi)
                 .font(Theme.Typography.title)
                 .foregroundStyle(Theme.Palette.primaryText)
                 .lineLimit(1)
@@ -221,7 +222,7 @@ private struct RecapDoneButton: View {
 
     var body: some View {
         Button(action: action) {
-            Text("Done")
+            Text("Done", bundle: .tabbi)
                 .font(Theme.Typography.caption)
                 .foregroundStyle(hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
                 .lineLimit(1)
@@ -229,7 +230,7 @@ private struct RecapDoneButton: View {
         }
         .buttonStyle(.plain)
         .onHover { hovering = $0 }
-        .help("Put the recap away")
+        .help(String(localized: "Put the recap away", bundle: .tabbi))
     }
 }
 

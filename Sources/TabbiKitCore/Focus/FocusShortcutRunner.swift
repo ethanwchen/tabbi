@@ -17,11 +17,12 @@ public enum FocusShortcutResult: Equatable, Sendable {
     /// One short sentence for the user.
     public var message: String {
         switch self {
-        case .succeeded: "Shortcut ran."
-        case .notFound(let name): "No shortcut named \u{201C}\(name)\u{201D}. Check the name in Shortcuts."
-        case .unavailable: "The Shortcuts command line tool isn't available on this Mac."
-        case .timedOut: "The shortcut took too long and was stopped."
-        case .failed(let message): message.isEmpty ? "The shortcut failed." : message
+        case .succeeded: String(localized: "Shortcut ran.", bundle: .tabbi)
+        case .notFound(let name):
+            String(localized: "No shortcut named \u{201C}\(name)\u{201D}. Check the name in Shortcuts.", bundle: .tabbi)
+        case .unavailable: String(localized: "The Shortcuts command line tool isn't available on this Mac.", bundle: .tabbi)
+        case .timedOut: String(localized: "The shortcut took too long and was stopped.", bundle: .tabbi)
+        case .failed(let message): message.isEmpty ? String(localized: "The shortcut failed.", bundle: .tabbi) : message
         }
     }
 

@@ -9,13 +9,14 @@ struct CrashReportSettingsSection: View {
     @AppStorage(CrashReportConsentStore.key) private var consent: CrashReportConsent = .ask
 
     var body: some View {
-        Picker("Crash reports", selection: $consent) {
+        Picker(String(localized: "Crash reports", bundle: .tabbi), selection: $consent) {
             ForEach(CrashReportConsent.allCases, id: \.self) { choice in
                 Text(choice.title).tag(choice)
             }
         }
         .pickerStyle(.menu)
         .fixedSize()
-        .help("After \(Edition.current.name) closes unexpectedly, ask before sending a crash report, send it without asking, or never send one")
+        .help(String(localized: "After \(Edition.current.name) closes unexpectedly, ask before sending a crash report, send it without asking, or never send one",
+                             bundle: .tabbi))
     }
 }

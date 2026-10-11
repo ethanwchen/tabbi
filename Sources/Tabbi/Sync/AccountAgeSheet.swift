@@ -21,9 +21,9 @@ struct AccountAgeSheet<SignInButton: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("Sign in with Apple")
+                Text("Sign in with Apple", bundle: .tabbi)
                     .font(.title3.weight(.semibold))
-                Text("Sync your pet, points and streaks across your Macs.")
+                Text("Sync your pet, points and streaks across your Macs.", bundle: .tabbi)
                     .foregroundStyle(.secondary)
             }
             switch status {
@@ -44,24 +44,24 @@ struct AccountAgeSheet<SignInButton: View>: View {
                 Text(PartySetup.birthLabel)
                     .fontWeight(.medium)
                 HStack(spacing: 8) {
-                    Picker("Month", selection: $birthMonth) {
-                        Text("Month").tag(0)
+                    Picker(String(localized: "Month", bundle: .tabbi), selection: $birthMonth) {
+                        Text("Month", bundle: .tabbi).tag(0)
                         ForEach(Array(PartyAgeCheck.monthNames().enumerated()), id: \.offset) { index, month in
                             Text(month).tag(index + 1)
                         }
                     }
                     .labelsHidden()
                     .frame(width: 140)
-                    .help("The month you were born")
-                    Picker("Year", selection: $birthYear) {
-                        Text("Year").tag(0)
+                    .help(String(localized: "The month you were born", bundle: .tabbi))
+                    Picker(String(localized: "Year", bundle: .tabbi), selection: $birthYear) {
+                        Text("Year", bundle: .tabbi).tag(0)
                         ForEach(PartyAgeCheck.birthYears(at: Date()), id: \.self) { year in
                             Text(String(year)).tag(year)
                         }
                     }
                     .labelsHidden()
                     .frame(width: 100)
-                    .help("The year you were born")
+                    .help(String(localized: "The year you were born", bundle: .tabbi))
                 }
                 Text(PartySetup.birthNote)
                     .font(.callout)
@@ -69,16 +69,17 @@ struct AccountAgeSheet<SignInButton: View>: View {
             }
             HStack(spacing: 12) {
                 Spacer(minLength: 8)
-                Button("Cancel", action: close)
+                Button(String(localized: "Cancel", bundle: .tabbi), action: close)
                     .keyboardShortcut(.cancelAction)
-                    .help("Close this. You can sign in any time.")
-                Button("Continue") {
+                    .help(String(localized: "Close this. You can sign in any time.", bundle: .tabbi))
+                Button(String(localized: "Continue", bundle: .tabbi)) {
                     if let birth { answer(birth) }
                 }
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
                 .disabled(birth == nil)
-                .help(birth == nil ? "Pick the month and year you were born" : "Continue to Sign in with Apple")
+                .help(birth == nil ? String(localized: "Pick the month and year you were born", bundle: .tabbi)
+                      : String(localized: "Continue to Sign in with Apple", bundle: .tabbi))
             }
         }
     }
@@ -88,17 +89,17 @@ struct AccountAgeSheet<SignInButton: View>: View {
             VStack(alignment: .leading, spacing: 8) {
                 signInButton()
                     .frame(width: 200, height: 32)
-                    .help("Sign in with your Apple Account to sync your pet across your Macs")
+                    .help(String(localized: "Sign in with your Apple Account to sync your pet across your Macs", bundle: .tabbi))
                 Text(LocalizedStringKey(AccountAgeText.agreement))
                     .font(.callout)
                     .foregroundStyle(.secondary)
-                    .help("Opens on tabbinotch.com")
+                    .help(String(localized: "Opens on tabbinotch.com", bundle: .tabbi))
             }
             HStack {
                 Spacer()
-                Button("Cancel", action: close)
+                Button(String(localized: "Cancel", bundle: .tabbi), action: close)
                     .keyboardShortcut(.cancelAction)
-                    .help("Close this. You can sign in any time.")
+                    .help(String(localized: "Close this. You can sign in any time.", bundle: .tabbi))
             }
         }
     }
@@ -109,9 +110,9 @@ struct AccountAgeSheet<SignInButton: View>: View {
                 .font(.callout)
             HStack {
                 Spacer()
-                Button("Close", action: close)
+                Button(String(localized: "Close", bundle: .tabbi), action: close)
                     .keyboardShortcut(.defaultAction)
-                    .help("Close this")
+                    .help(String(localized: "Close this", bundle: .tabbi))
             }
         }
     }
@@ -121,12 +122,11 @@ struct AccountAgeSheet<SignInButton: View>: View {
 enum AccountAgeText {
     /// The links the user agrees to by signing in, as Markdown.
     static var agreement: String {
-        "By signing in you agree to the [Terms of Use](\(SupportContact.termsURL.absoluteString))"
-            + " and the [Privacy Policy](\(SupportContact.privacyURL.absoluteString))."
+        String(localized: "By signing in you agree to the [Terms of Use](\(SupportContact.termsURL.absoluteString)) and the [Privacy Policy](\(SupportContact.privacyURL.absoluteString)).", bundle: .tabbi)
     }
 
     /// What the account row and this sheet say to someone too young.
     static func tooYoung(until date: Date) -> String {
-        "Accounts are for people \(PartyAgeCheck.minimumAge) and older. Signing in opens in \(PartyAgeCheck.opensText(date))."
+        String(localized: "Accounts are for people \(PartyAgeCheck.minimumAge) and older. Signing in opens in \(PartyAgeCheck.opensText(date)).", bundle: .tabbi)
     }
 }

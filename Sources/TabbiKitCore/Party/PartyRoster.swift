@@ -40,7 +40,7 @@ public enum PartyRoster {
     public static func compactStatusLine(_ presence: PartyPresence?, online: Bool, at now: Date) -> String {
         let status = status(presence, online: online)
         let minutes = timeLeft(presence, online: online, at: now).map { Int(($0 / 60).rounded(.up)) } ?? 0
-        let left = minutes > 0 ? " · \(minutes)m" : ""
+        let left = minutes > 0 ? " · " + String(localized: "\(minutes)m", bundle: .tabbi) : ""
         switch status {
         case .studying: return String(localized: "Studying", bundle: .tabbi) + left
         case .onBreak: return String(localized: "Break", bundle: .tabbi) + left

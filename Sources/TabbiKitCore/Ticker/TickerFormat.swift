@@ -16,7 +16,7 @@ public enum TickerFormat {
 
     /// "3 tasks left", "1 task left".
     public static func tasksLeft(_ count: Int) -> String {
-        count == 1 ? "1 task left" : "\(count) tasks left"
+        String(localized: "\(count) tasks left", bundle: .tabbi)
     }
 
     /// "84 cards left" or "1h 15m left": what remains of a shared goal, in its own unit.
@@ -32,24 +32,29 @@ public enum TickerFormat {
     /// The focus line for tooltips and accessibility, e.g. "Focus 18:42",
     /// "Review 3:10 (paused)" or "Focus 12:05 so far" for a clock counting up.
     public static func focusSummary(_ focus: TickerFocus) -> String {
-        let clock = focusClock(focus.time) + (focus.countsUp ? " so far" : "")
-        return "\(focus.label) \(clock)\(focus.isRunning ? "" : " (paused)")"
+        let clock = focusClock(focus.time)
+        let line = focus.countsUp ? String(localized: "\(focus.label) \(clock) so far", bundle: .tabbi)
+            : "\(focus.label) \(clock)"
+        return focus.isRunning ? line : String(localized: "\(line) (paused)", bundle: .tabbi)
     }
 
     /// Party size, e.g. "4 in party".
     public static func partySize(_ count: Int) -> String {
-        "\(count) in party"
+        String(localized: "\(count) in party", bundle: .tabbi)
     }
 
     /// The pet's line for tooltips and accessibility, e.g. "Mochi is napping".
     public static func petSummary(_ pet: TickerPet) -> String {
-        if pet.isSipping { return "Your Mac is charging, and \(pet.profile.name) is having a sip" }
-        if let unlock = pet.unlockHint { return "\(pet.profile.name) is keeping you company. \(unlock.line)" }
+        let name = pet.profile.name
+        if pet.isSipping { return String(localized: "Your Mac is charging, and \(name) is having a sip", bundle: .tabbi) }
+        if let unlock = pet.unlockHint {
+            return String(localized: "\(name) is keeping you company. \(unlock.line)", bundle: .tabbi)
+        }
         return switch pet.mood {
-        case .studying: "\(pet.profile.name) is studying with you"
-        case .onBreak: "\(pet.profile.name) is on a break with you"
-        case .awake: "\(pet.profile.name) is keeping you company"
-        case .asleep: "\(pet.profile.name) is napping until your next session"
+        case .studying: String(localized: "\(name) is studying with you", bundle: .tabbi)
+        case .onBreak: String(localized: "\(name) is on a break with you", bundle: .tabbi)
+        case .awake: String(localized: "\(name) is keeping you company", bundle: .tabbi)
+        case .asleep: String(localized: "\(name) is napping until your next session", bundle: .tabbi)
         }
     }
 
@@ -62,7 +67,7 @@ public enum TickerFormat {
     }
 
     /// Shown beside the pet while it sips because the Mac started charging.
-    public static let charging = "Charging"
+    public static var charging: String { String(localized: "Charging", bundle: .tabbi) }
 
     /// Shown after the name while the pet sleeps.
     public static let petSleeping = "zzz"

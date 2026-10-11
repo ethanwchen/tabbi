@@ -916,10 +916,11 @@ struct FeedbackSection: View {
             }
             .help(String(localized: "Show a recap of your week the first time you open the notch after Sunday 6 pm", bundle: .tabbi))
             Toggle(isOn: $store.settings.catWisdomEnabled) {
-                Text("Cat wisdom")
-                Text("Now and then, a short line from your pet after a focus session.")
+                Text("Cat wisdom", bundle: .tabbi)
+                Text("Now and then, a short line from your pet after a focus session.", bundle: .tabbi)
             }
-            .help("Let your pet say a rare encouraging line right after a focus session ends, at most once a day")
+            .help(Text("Let your pet say a rare encouraging line right after a focus session ends, at most once a day",
+                        bundle: .tabbi))
             Picker(selection: $store.settings.motionPace) {
                 ForEach(MotionPace.allCases, id: \.self) { pace in
                     Text(pace.title).tag(pace)
@@ -1275,9 +1276,9 @@ struct AboutSettingsPane: View {
                 .foregroundStyle(.tertiary)
                 .padding(.top, 20)
             HStack(spacing: 12) {
-                Link("Privacy Policy", destination: SupportContact.privacyURL)
+                Link(String(localized: "Privacy Policy", bundle: .tabbi), destination: SupportContact.privacyURL)
                     .help(SupportContact.privacyURL.absoluteString)
-                Link("Terms of Use", destination: SupportContact.termsURL)
+                Link(String(localized: "Terms of Use", bundle: .tabbi), destination: SupportContact.termsURL)
                     .help(SupportContact.termsURL.absoluteString)
             }
             .font(.caption)

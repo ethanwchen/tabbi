@@ -13,11 +13,11 @@ public enum ConnectionStepAction: Hashable, Sendable {
     /// The button's label.
     public var title: String {
         switch self {
-        case .copyAndOpen(_, let app) where app == .anki: "Copy code and open Anki"
-        case .copyAndOpen(_, let app): "Copy and open \(app.name)"
-        case .openApp(let app): "Open \(app.name)"
-        case .openSettings(.internetAccounts): "Open Internet Accounts"
-        case .openSettings: "Open System Settings"
+        case .copyAndOpen(_, let app) where app == .anki: String(localized: "Copy code and open Anki", bundle: .tabbi)
+        case .copyAndOpen(_, let app): String(localized: "Copy and open \(app.displayName)", bundle: .tabbi)
+        case .openApp(let app): String(localized: "Open \(app.displayName)", bundle: .tabbi)
+        case .openSettings(.internetAccounts): String(localized: "Open Internet Accounts", bundle: .tabbi)
+        case .openSettings: String(localized: "Open System Settings", bundle: .tabbi)
         }
     }
 }
@@ -66,7 +66,7 @@ public struct ConnectionWalkthrough: Hashable, Sendable {
     }
 
     /// What the sheet says while Tabbi waits for the steps to work.
-    public static let waiting = "Tabbi checks by itself and turns green when it works."
+    public static let waiting = String(localized: "Tabbi checks by itself and turns green when it works.", bundle: .tabbi)
 }
 
 extension ConnectionGuide {
@@ -86,19 +86,19 @@ extension ConnectionGuide {
                             offShortcut: String = FocusSettings.suggestedOffShortcut) -> ConnectionWalkthrough {
         let code = AnkiConnectClient.addOnCode
         let reopenAnki = ConnectionWalkthrough.Step(
-            symbol: "arrow.clockwise", text: "Quit Anki and open it again. Tabbi notices by itself."
+            symbol: "arrow.clockwise", text: String(localized: "Quit Anki and open it again. Tabbi notices by itself.", bundle: .tabbi)
         )
         switch self {
         case .ankiAddOn:
             // A guide, not an automatic install: Anki installs and updates
             // its own add-ons, and Tabbi never writes into Anki's folders.
             return ConnectionWalkthrough(
-                title: "Add AnkiConnect to Anki",
-                intro: "AnkiConnect is a free add-on that lets Tabbi count your due cards. It takes about a minute.",
+                title: String(localized: "Add AnkiConnect to Anki", bundle: .tabbi),
+                intro: String(localized: "AnkiConnect is a free add-on that lets Tabbi count your due cards. It takes about a minute.", bundle: .tabbi),
                 steps: [
-                    .init(symbol: "menubar.rectangle", text: "In Anki's menu bar, click Tools, then Add-ons."),
+                    .init(symbol: "menubar.rectangle", text: String(localized: "In Anki's menu bar, click Tools, then Add-ons.", bundle: .tabbi)),
                     .init(symbol: "doc.on.clipboard",
-                          text: "Click Get Add-ons, paste this code, then click OK.", copyable: code),
+                          text: String(localized: "Click Get Add-ons, paste this code, then click OK.", bundle: .tabbi), copyable: code),
                     reopenAnki,
                 ],
                 start: .copyAndOpen(text: code, app: .anki),
@@ -106,53 +106,53 @@ extension ConnectionGuide {
             )
         case .ankiAddOnUpdate:
             return ConnectionWalkthrough(
-                title: "Update AnkiConnect",
-                intro: "Your copy of AnkiConnect is too old for Tabbi. Anki can update it in a few clicks.",
+                title: String(localized: "Update AnkiConnect", bundle: .tabbi),
+                intro: String(localized: "Your copy of AnkiConnect is too old for Tabbi. Anki can update it in a few clicks.", bundle: .tabbi),
                 steps: [
-                    .init(symbol: "menubar.rectangle", text: "In Anki's menu bar, click Tools, then Add-ons."),
+                    .init(symbol: "menubar.rectangle", text: String(localized: "In Anki's menu bar, click Tools, then Add-ons.", bundle: .tabbi)),
                     .init(symbol: "arrow.triangle.2.circlepath",
-                          text: "Click AnkiConnect in the list, then click Check for Updates."),
+                          text: String(localized: "Click AnkiConnect in the list, then click Check for Updates.", bundle: .tabbi)),
                     reopenAnki,
                 ],
                 start: .openApp(.anki)
             )
         case .ankiAccess:
             return ConnectionWalkthrough(
-                title: "Let Tabbi into Anki",
-                intro: "AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.",
+                title: String(localized: "Let Tabbi into Anki", bundle: .tabbi),
+                intro: String(localized: "AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.", bundle: .tabbi),
                 steps: [
                     .init(symbol: "menubar.rectangle",
-                          text: "In Anki, click Tools, then Add-ons. Click AnkiConnect, then Config."),
-                    .init(symbol: "arrow.uturn.backward", text: "Click Restore Defaults, then OK."),
+                          text: String(localized: "In Anki, click Tools, then Add-ons. Click AnkiConnect, then Config.", bundle: .tabbi)),
+                    .init(symbol: "arrow.uturn.backward", text: String(localized: "Click Restore Defaults, then OK.", bundle: .tabbi)),
                     .init(symbol: "checkmark.circle",
-                          text: "Quit Anki and open it again. If it asks about Tabbi, click Yes."),
+                          text: String(localized: "Quit Anki and open it again. If it asks about Tabbi, click Yes.", bundle: .tabbi)),
                 ],
                 start: .openApp(.anki)
             )
         case .googleCalendar:
             return ConnectionWalkthrough(
-                title: "Add your Google Calendar",
-                intro: "Tabbi shows the calendars your Mac knows about. Add your Google account once and its events show up.",
+                title: String(localized: "Add your Google Calendar", bundle: .tabbi),
+                intro: String(localized: "Tabbi shows the calendars your Mac knows about. Add your Google account once and its events show up.", bundle: .tabbi),
                 steps: [
                     .init(symbol: "plus.circle",
-                          text: "In Internet Accounts, click Add Account, then Google, and sign in."),
-                    .init(symbol: "calendar", text: "Make sure Calendars is turned on for that account."),
+                          text: String(localized: "In Internet Accounts, click Add Account, then Google, and sign in.", bundle: .tabbi)),
+                    .init(symbol: "calendar", text: String(localized: "Make sure Calendars is turned on for that account.", bundle: .tabbi)),
                 ],
                 start: .openSettings(.internetAccounts)
             )
         case .claudeInstall:
             let command = ClaudeConnectionState.installCommand
             return ConnectionWalkthrough(
-                title: "Set up Claude",
-                intro: "Claude is an AI helper. Tabbi uses it to plan your day and answer questions. It's optional: everything else works without it.",
+                title: String(localized: "Set up Claude", bundle: .tabbi),
+                intro: String(localized: "Claude is an AI helper. Tabbi uses it to plan your day and answer questions. It's optional: everything else works without it.", bundle: .tabbi),
                 steps: [
                     .init(symbol: "terminal",
-                          text: "Click the button below. It copies the setup line and opens Terminal, an app that comes with your Mac."),
+                          text: String(localized: "Click the button below. It copies the setup line and opens Terminal, an app that comes with your Mac.", bundle: .tabbi)),
                     .init(symbol: "doc.on.clipboard",
-                          text: "Click in the Terminal window, press Command-V to paste, then press Return.",
+                          text: String(localized: "Click in the Terminal window, press Command-V to paste, then press Return.", bundle: .tabbi),
                           copyable: command),
                     .init(symbol: "person.crop.circle.badge.checkmark",
-                          text: "When it's done, sign in with your Claude account. Tabbi notices by itself."),
+                          text: String(localized: "When it's done, sign in with your Claude account. Tabbi notices by itself.", bundle: .tabbi)),
                 ],
                 start: .copyAndOpen(text: command, app: .terminal),
                 learnMore: ClaudeConnectionState.installPage
@@ -160,30 +160,30 @@ extension ConnectionGuide {
         case .claudeSignIn:
             let command = ClaudeConnectionState.signInCommand
             return ConnectionWalkthrough(
-                title: "Sign in to Claude",
-                intro: "Claude is on your Mac. Sign in once and Tabbi can use it.",
+                title: String(localized: "Sign in to Claude", bundle: .tabbi),
+                intro: String(localized: "Claude is on your Mac. Sign in once and Tabbi can use it.", bundle: .tabbi),
                 steps: [
                     .init(symbol: "terminal",
-                          text: "Click the button below. It copies the sign-in line and opens Terminal."),
+                          text: String(localized: "Click the button below. It copies the sign-in line and opens Terminal.", bundle: .tabbi)),
                     .init(symbol: "doc.on.clipboard",
-                          text: "Click in the Terminal window, press Command-V to paste, then press Return.",
+                          text: String(localized: "Click in the Terminal window, press Command-V to paste, then press Return.", bundle: .tabbi),
                           copyable: command),
-                    .init(symbol: "safari", text: "Sign in on the page that opens. Tabbi notices by itself."),
+                    .init(symbol: "safari", text: String(localized: "Sign in on the page that opens. Tabbi notices by itself.", bundle: .tabbi)),
                 ],
                 start: .copyAndOpen(text: command, app: .terminal),
                 learnMore: ClaudeConnectionState.installPage
             )
         case .focusShortcuts:
             return ConnectionWalkthrough(
-                title: "Set up Do Not Disturb",
-                intro: "Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.",
+                title: String(localized: "Set up Do Not Disturb", bundle: .tabbi),
+                intro: String(localized: "Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.", bundle: .tabbi),
                 steps: [
                     .init(symbol: "plus.square",
-                          text: "In Shortcuts, click the + button and name the new shortcut:", copyable: onShortcut),
+                          text: String(localized: "In Shortcuts, click the + button and name the new shortcut:", bundle: .tabbi), copyable: onShortcut),
                     .init(symbol: "moon.fill",
-                          text: "Search for Set Focus, add it, and pick Do Not Disturb, turned On."),
+                          text: String(localized: "Search for Set Focus, add it, and pick Do Not Disturb, turned On.", bundle: .tabbi)),
                     .init(symbol: "moon",
-                          text: "Make one more the same way, turned Off, and name it:", copyable: offShortcut),
+                          text: String(localized: "Make one more the same way, turned Off, and name it:", bundle: .tabbi), copyable: offShortcut),
                 ],
                 start: .openApp(.shortcuts)
             )
@@ -213,7 +213,7 @@ public struct ConnectionPriming: Hashable, Sendable {
     /// Short reassurances: what Tabbi does and doesn't do with it.
     public var points: [String]
     /// Always "Continue": the button leads to the prompt, it doesn't grant.
-    public let button = "Continue"
+    public let button = String(localized: "Continue", bundle: .tabbi)
 }
 
 extension ConnectionPermission {
@@ -222,26 +222,26 @@ extension ConnectionPermission {
         case .calendar:
             ConnectionPriming(
                 symbol: "calendar",
-                title: "Show your calendar in Tabbi",
-                message: "Next, your Mac asks if Tabbi can use your calendar. Click Allow.",
-                points: ["Tabbi only reads events to show today's plan.",
-                         "Claude only sees your events when you ask it to plan your day."]
+                title: String(localized: "Show your calendar in Tabbi", bundle: .tabbi),
+                message: String(localized: "Next, your Mac asks if Tabbi can use your calendar. Click Allow.", bundle: .tabbi),
+                points: [String(localized: "Tabbi only reads events to show today's plan.", bundle: .tabbi),
+                         String(localized: "Claude only sees your events when you ask it to plan your day.", bundle: .tabbi)]
             )
         case .notifications:
             ConnectionPriming(
                 symbol: "bell.badge.fill",
-                title: "Get a heads-up when time's up",
-                message: "Next, your Mac asks if Tabbi can send alerts. Click Allow.",
-                points: ["Tabbi only alerts you when a focus block or break ends.",
-                         "You can turn alerts off any time in System Settings."]
+                title: String(localized: "Get a heads-up when time's up", bundle: .tabbi),
+                message: String(localized: "Next, your Mac asks if Tabbi can send alerts. Click Allow.", bundle: .tabbi),
+                points: [String(localized: "Tabbi only alerts you when a focus block or break ends.", bundle: .tabbi),
+                         String(localized: "You can turn alerts off any time in System Settings.", bundle: .tabbi)]
             )
         case .automation(let app):
             ConnectionPriming(
                 symbol: "music.note",
-                title: "Control \(app.name) from the notch",
-                message: "Next, your Mac asks if Tabbi can control \(app.name). Click Allow.",
-                points: ["Tabbi only plays, pauses, skips and shows what's playing.",
-                         "If \(app.name) isn't open, Tabbi opens it first so your Mac can ask."]
+                title: String(localized: "Control \(app.displayName) from the notch", bundle: .tabbi),
+                message: String(localized: "Next, your Mac asks if Tabbi can control \(app.displayName). Click Allow.", bundle: .tabbi),
+                points: [String(localized: "Tabbi only plays, pauses, skips and shows what's playing.", bundle: .tabbi),
+                         String(localized: "If \(app.displayName) isn't open, Tabbi opens it first so your Mac can ask.", bundle: .tabbi)]
             )
         }
     }

@@ -23,6 +23,18 @@ public struct RareFur: Hashable, Sendable, Identifiable {
     ]
 
     public static func named(_ id: String) -> RareFur? { all.first { $0.id == id } }
+
+    /// The name in the user's language; `name` is the English, a rare fur
+    /// the catalog lacks shows that.
+    public var displayName: String {
+        switch id {
+        case "mint": String(localized: "Mint", bundle: .tabbi)
+        case "honey": String(localized: "Honey", bundle: .tabbi)
+        case "midnight": String(localized: "Midnight", bundle: .tabbi)
+        case "moonstone": String(localized: "Moonstone", bundle: .tabbi)
+        default: name
+        }
+    }
 }
 
 /// What the cat brings back. Gifts are earned by finishing focus sessions
@@ -38,9 +50,9 @@ public enum SurpriseGift: Hashable, Sendable {
     /// What the gift is, short enough for one line in the coach's bubble.
     public var message: String {
         switch self {
-        case .bonusPoints(let points): "A gift: \(points) bonus points"
-        case .rareFur(let fur): "A gift: the rare \(fur.name) fur"
-        case .seasonMinutes(_, let minutes): "A gift: \(minutes) min toward the event"
+        case .bonusPoints(let points): String(localized: "A gift: \(points) bonus points", bundle: .tabbi)
+        case .rareFur(let fur): String(localized: "A gift: the rare \(fur.displayName) fur", bundle: .tabbi)
+        case .seasonMinutes(_, let minutes): String(localized: "A gift: \(minutes) min toward the event", bundle: .tabbi)
         }
     }
 }

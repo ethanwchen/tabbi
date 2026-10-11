@@ -27,10 +27,10 @@ struct PartyAgeCheckView: View {
                 .background(RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
                     .fill(PartyStyle.accent.opacity(0.16)))
             VStack(spacing: Theme.Spacing.xxs) {
-                Text("Party isn't available yet")
+                Text("Party isn't available yet", bundle: .tabbi)
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
-                Text("Party is for people \(PartyAgeCheck.minimumAge) and older. It opens here in \(PartyAgeCheck.opensText(date)).")
+                Text("Party is for people \(PartyAgeCheck.minimumAge) and older. It opens here in \(PartyAgeCheck.opensText(date)).", bundle: .tabbi)
                     .font(Theme.Typography.body)
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .multilineTextAlignment(.center)
@@ -54,30 +54,31 @@ private struct PartyAgeQuestion: View {
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
             VStack(spacing: Theme.Spacing.xxs) {
-                Text("When were you born?")
+                Text(PartySetup.birthLabel)
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
-                Text("Party asks once before you join. Your answer stays on this Mac.")
+                Text("Party asks once before you join. Your answer stays on this Mac.", bundle: .tabbi)
                     .font(Theme.Typography.body)
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .multilineTextAlignment(.center)
             }
             HStack(spacing: Theme.Spacing.s) {
-                PartyAgeMenu(title: month.map { Self.months[$0 - 1] } ?? "Month", isPlaceholder: month == nil, width: 112,
-                             help: "The month you were born") {
+                PartyAgeMenu(title: month.map { Self.months[$0 - 1] } ?? String(localized: "Month", bundle: .tabbi), isPlaceholder: month == nil, width: 112,
+                             help: String(localized: "The month you were born", bundle: .tabbi)) {
                     ForEach(Array(Self.months.enumerated()), id: \.offset) { index, name in
                         Button(name) { month = index + 1 }
                     }
                 }
-                PartyAgeMenu(title: year.map(String.init) ?? "Year", isPlaceholder: year == nil, width: 72,
-                             help: "The year you were born") {
+                PartyAgeMenu(title: year.map(String.init) ?? String(localized: "Year", bundle: .tabbi), isPlaceholder: year == nil, width: 72,
+                             help: String(localized: "The year you were born", bundle: .tabbi)) {
                     ForEach(PartyAgeCheck.birthYears(at: Date()), id: \.self) { value in
                         Button(String(value)) { year = value }
                     }
                 }
                 // Quiet until both are picked; prominent once it can join.
-                PartyPillButton(title: "Continue", isProminent: month != nil && year != nil,
-                                help: month == nil || year == nil ? "Pick a month and a year first" : "Join Party") {
+                PartyPillButton(title: String(localized: "Continue", bundle: .tabbi), isProminent: month != nil && year != nil,
+                                help: month == nil || year == nil ? String(localized: "Pick a month and a year first", bundle: .tabbi)
+                                    : String(localized: "Join Party", bundle: .tabbi)) {
                     guard let month, let year else { return }
                     store.answerAge(birthMonth: month, year: year)
                 }
@@ -86,7 +87,7 @@ private struct PartyAgeQuestion: View {
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.tertiaryText)
                 .tint(PartyStyle.accent)
-                .help("Opens on tabbinotch.com")
+                .help(String(localized: "Opens on tabbinotch.com", bundle: .tabbi))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

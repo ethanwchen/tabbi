@@ -76,13 +76,14 @@ public struct PetWidgetView: View {
                 headline
                 Spacer(minLength: 8)
                 HStack(spacing: 8) {
-                    StatChip(symbol: "flame.fill", value: streakText, caption: "streak",
+                    StatChip(symbol: "flame.fill", value: streakText, caption: String(localized: "streak", bundle: .tabbi),
                              tint: streak > 0 ? WidgetPalette.accent : WidgetPalette.secondaryText,
-                             accessibilityText: streak == 0 ? "No streak yet" : "\(streakText) streak")
+                             accessibilityText: streak == 0 ? String(localized: "No streak yet", bundle: .tabbi)
+                                 : String(localized: "\(streak)-day streak", bundle: .tabbi))
                     if timer != nil {
-                        StatChip(symbol: "clock.fill", value: minutesText, caption: "today",
+                        StatChip(symbol: "clock.fill", value: minutesText, caption: String(localized: "today", bundle: .tabbi),
                                  tint: WidgetPalette.secondaryText,
-                                 accessibilityText: "\(minutesText) focused today")
+                                 accessibilityText: String(localized: "\(minutesText) focused today", bundle: .tabbi))
                     }
                 }
             }
@@ -94,7 +95,7 @@ public struct PetWidgetView: View {
     @ViewBuilder private var headline: some View {
         VStack(alignment: .leading, spacing: 2) {
             if let timer {
-                Label(isPaused ? "\(timer.label) paused" : timer.label, systemImage: symbol(for: timer))
+                Label(isPaused ? String(localized: "\(timer.label) (paused)", bundle: .tabbi) : timer.label, systemImage: symbol(for: timer))
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
                     .foregroundStyle(tint(for: timer))
                     .lineLimit(1)
@@ -102,7 +103,7 @@ public struct PetWidgetView: View {
                     .font(.system(size: size == .small ? 28 : 34, weight: .semibold, design: .rounded))
                     .monospacedDigit()
             } else {
-                Text("Today")
+                Text("Today", bundle: .tabbi)
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
                     .foregroundStyle(WidgetPalette.secondaryText)
                 Text(minutesText)
@@ -110,7 +111,7 @@ public struct PetWidgetView: View {
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
-                Text(minutes == 0 ? "No focus yet" : "focused")
+                Text(minutes == 0 ? String(localized: "No focus yet", bundle: .tabbi) : String(localized: "focused", bundle: .tabbi))
                     .font(.system(size: 11, weight: .medium, design: .rounded))
                     .foregroundStyle(WidgetPalette.secondaryText)
             }
@@ -125,11 +126,10 @@ public struct PetWidgetView: View {
     private var streak: Int { state.streak(at: date) }
     private var minutesText: String { DurationFormat.minutes(minutes) }
     private var streakText: String {
-        switch streak {
-        case 0: "Start today"
-        case 1: "1 day"
-        default: "\(streak) days"
-        }
+        // "%lld days" is taken by a dative phrase in the Closet chart, so
+        // the widget's count has a key of its own; its English is "12 days".
+        streak == 0 ? String(localized: "Start today", bundle: .tabbi)
+            : String(localized: "\(streak) streak days", bundle: .tabbi)
     }
 
     private var isPaused: Bool {
@@ -204,7 +204,7 @@ private struct StreakBadge: View {
         .padding(.vertical, 4)
         .background(WidgetPalette.surface, in: Capsule())
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(days == 1 ? "1 day streak" : "\(days) day streak")
+        .accessibilityLabel(String(localized: "\(days)-day streak", bundle: .tabbi))
     }
 }
 

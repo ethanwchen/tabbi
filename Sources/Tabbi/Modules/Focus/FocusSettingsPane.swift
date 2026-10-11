@@ -7,7 +7,7 @@ extension SettingsPane {
     /// Settings › Focus. Today and the Focus tab both offer it, since either
     /// can run the timer; the Settings window shows it once.
     @MainActor static func focus(_ controller: FocusController) -> SettingsPane {
-        SettingsPane(id: "focus", title: "Focus", symbol: "moon",
+        SettingsPane(id: "focus", title: String(localized: "Focus", bundle: .tabbi), symbol: "moon",
                      view: AnyView(FocusSettingsPane(controller: controller)))
     }
 }
@@ -67,7 +67,7 @@ struct FocusSettingsPane: View {
                                 .foregroundStyle(.secondary)
                                 .frame(width: 16)
                             Slider(value: levelBinding(for: layer.sound), in: 0...1)
-                                .help("How loud \(layer.sound.displayName.lowercased()) is in the blend")
+                                .help(String(localized: "\(layer.sound.displayName) level in the blend", bundle: .tabbi))
                         }
                         .font(.callout)
                         .frame(width: sliderWidth)
@@ -75,25 +75,25 @@ struct FocusSettingsPane: View {
                 }
             }
 
-            LabeledContent("Volume") {
+            LabeledContent(String(localized: "Volume", bundle: .tabbi)) {
                 HStack(spacing: 8) {
                     Image(systemName: "speaker.wave.2.fill")
                         .foregroundStyle(.secondary)
                         .frame(width: 16)
                     Slider(value: volumeBinding, in: 0...1)
-                        .help("Focus sound volume")
+                        .help(String(localized: "Focus sound volume", bundle: .tabbi))
                 }
                 .font(.callout)
                 .frame(width: sliderWidth)
             }
         } header: {
             HStack(alignment: .firstTextBaseline) {
-                Text("Focus sound")
+                Text("Focus sound", bundle: .tabbi)
                 Spacer()
                 Button {
                     controller.setPreviewing(!controller.isPreviewing)
                 } label: {
-                    Label(controller.isPreviewing ? "Stop" : "Preview",
+                    Label(controller.isPreviewing ? String(localized: "Stop", bundle: .tabbi) : String(localized: "Preview", bundle: .tabbi),
                           systemImage: controller.isPreviewing ? "stop.fill" : "play.fill")
                 }
                 .controlSize(.small)
@@ -101,7 +101,7 @@ struct FocusSettingsPane: View {
                 .help(previewHelp)
             }
         } footer: {
-            SectionFooter("Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.")
+            SectionFooter(String(localized: "Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.", bundle: .tabbi))
         }
     }
 
@@ -112,9 +112,10 @@ struct FocusSettingsPane: View {
     private let sliderWidth: CGFloat = 240
 
     private var previewHelp: String {
-        if controller.isFocusing { return "Already playing: focus is running" }
-        if mix.isOff { return "Pick a sound to preview it" }
-        return controller.isPreviewing ? "Stop the preview" : "Listen to \(mix.summary)"
+        if controller.isFocusing { return String(localized: "Already playing: focus is running", bundle: .tabbi) }
+        if mix.isOff { return String(localized: "Pick a sound to preview it", bundle: .tabbi) }
+        return controller.isPreviewing ? String(localized: "Stop the preview", bundle: .tabbi)
+            : String(localized: "Listen to \(mix.summary)", bundle: .tabbi)
     }
 
     private var volumeBinding: Binding<Double> {
@@ -133,16 +134,16 @@ struct FocusSettingsPane: View {
         Section {
             LabeledContent {
                 HStack(spacing: 8) {
-                    TextField("Playlist", text: $controller.settings.playlistText,
-                              prompt: Text("Spotify link or Music playlist name"))
+                    TextField(String(localized: "Playlist", bundle: .tabbi), text: $controller.settings.playlistText,
+                              prompt: Text("Spotify link or Music playlist name", bundle: .tabbi))
                         .labelsHidden()
                         .textFieldStyle(.roundedBorder)
                         .multilineTextAlignment(.leading)
                         .frame(width: sliderWidth)
-                        .help("A Spotify link or URI, an Apple Music link, or the name of a playlist in your Music library")
+                        .help(String(localized: "A Spotify link or URI, an Apple Music link, or the name of a playlist in your Music library", bundle: .tabbi))
                     Menu {
                         ForEach(MediaSource.allCases, id: \.self) { source in
-                            Section(source == .spotify ? "Spotify" : "Apple Music") {
+                            Section(source == .spotify ? "Spotify" : "Apple Music" as String) {
                                 ForEach(FocusPlaylistPreset.all.filter { $0.source == source }) { preset in
                                     Button("\(preset.name) · \(preset.curator)") {
                                         controller.settings.playlistText = preset.link
@@ -152,16 +153,16 @@ struct FocusSettingsPane: View {
                         }
                         if !controller.settings.playlistText.isEmpty {
                             Divider()
-                            Button("None") { controller.settings.playlistText = "" }
+                            Button(String(localized: "None", bundle: .tabbi)) { controller.settings.playlistText = "" }
                         }
                     } label: {
-                        Text("Presets")
+                        Text("Presets", bundle: .tabbi)
                     }
                     .fixedSize()
-                    .help("Pick a cozy focus playlist")
+                    .help(String(localized: "Pick a cozy focus playlist", bundle: .tabbi))
                 }
             } label: {
-                Text("Playlist")
+                Text("Playlist", bundle: .tabbi)
             }
             if let status = playlistStatus {
                 Label {
@@ -177,9 +178,9 @@ struct FocusSettingsPane: View {
                 .help(status.text)
             }
         } header: {
-            Text("Music")
+            Text("Music", bundle: .tabbi)
         } footer: {
-            SectionFooter("Starts with focus unless music is already playing, and pauses at your break.")
+            SectionFooter(String(localized: "Starts with focus unless music is already playing, and pauses at your break.", bundle: .tabbi))
         }
     }
 
@@ -187,19 +188,21 @@ struct FocusSettingsPane: View {
         let text = controller.settings.playlistText
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
         guard let playlist = FocusPlaylist(text) else {
-            return ("Not a Spotify or Apple Music link.", "exclamationmark.triangle.fill", true)
+            return (String(localized: "Not a Spotify or Apple Music link.", bundle: .tabbi), "exclamationmark.triangle.fill", true)
         }
         let preset = FocusPlaylistPreset.matching(text)
         switch playlist {
         case .spotify:
-            return (preset.map { "\($0.name) by \($0.curator), plays in Spotify." } ?? "Plays in Spotify.",
+            return (preset.map { String(localized: "\($0.name) by \($0.curator), plays in Spotify.", bundle: .tabbi) }
+                        ?? String(localized: "Plays in Spotify.", bundle: .tabbi),
                     "checkmark.circle.fill", false)
         case .appleMusicLink:
-            let name = preset.map { "\($0.name) opens" } ?? "Opens"
-            return ("\(name) in Music; press play there. Add it to your library and type its name to autoplay.",
+            let opens = preset.map { String(localized: "\($0.name) opens in Music; press play there.", bundle: .tabbi) }
+                ?? String(localized: "Opens in Music; press play there.", bundle: .tabbi)
+            return (Sentences.join([opens, String(localized: "Add it to your library and type its name to autoplay.", bundle: .tabbi)]),
                     "info.circle.fill", false)
         case .musicLibrary(let name):
-            return ("Plays \u{201C}\(name)\u{201D} from your Music library.", "checkmark.circle.fill", false)
+            return (String(localized: "Plays \u{201C}\(name)\u{201D} from your Music library.", bundle: .tabbi), "checkmark.circle.fill", false)
         }
     }
 
@@ -210,8 +213,8 @@ struct FocusSettingsPane: View {
 
     private var doNotDisturbSection: some View {
         Section {
-            Toggle("Turn on Do Not Disturb during focus", isOn: $controller.settings.doNotDisturb)
-            .help("Run your Focus shortcuts when the focus timer starts and stops")
+            Toggle(String(localized: "Turn on Do Not Disturb during focus", bundle: .tabbi), isOn: $controller.settings.doNotDisturb)
+            .help(String(localized: "Run your Focus shortcuts when the focus timer starts and stops", bundle: .tabbi))
             shortcutRow(.on)
             shortcutRow(.off)
             if let testResult {
@@ -226,7 +229,7 @@ struct FocusSettingsPane: View {
                 .foregroundStyle(.secondary)
             }
         } header: {
-            Text("Do Not Disturb")
+            Text("Do Not Disturb", bundle: .tabbi)
         } footer: {
             SectionFooter(guide)
         }
@@ -235,14 +238,14 @@ struct FocusSettingsPane: View {
     private func shortcutRow(_ kind: ShortcutKind) -> some View {
         let binding = kind == .on ? $controller.settings.onShortcut : $controller.settings.offShortcut
         let name = binding.wrappedValue.trimmingCharacters(in: .whitespacesAndNewlines)
-        return LabeledContent(kind == .on ? "When focus starts" : "When focus ends") {
+        return LabeledContent(kind == .on ? String(localized: "When focus starts", bundle: .tabbi) : String(localized: "When focus ends", bundle: .tabbi)) {
             HStack(spacing: 8) {
-                TextField("Shortcut name", text: binding, prompt: Text(kind.suggestedName))
+                TextField(String(localized: "Shortcut name", bundle: .tabbi), text: binding, prompt: Text(kind.suggestedName))
                     .labelsHidden()
                     .textFieldStyle(.roundedBorder)
                     .multilineTextAlignment(.leading)
                     .frame(width: 180)
-                    .help("The exact name of the shortcut in the Shortcuts app")
+                    .help(String(localized: "The exact name of the shortcut in the Shortcuts app", bundle: .tabbi))
                 Button {
                     test(kind, name: name)
                 } label: {
@@ -250,11 +253,12 @@ struct FocusSettingsPane: View {
                         Spinner()
                             .frame(minWidth: 36)
                     } else {
-                        Text("Test").frame(minWidth: 36)
+                        Text("Test", bundle: .tabbi).frame(minWidth: 36)
                     }
                 }
                 .disabled(name.isEmpty || testing != nil)
-                .help(name.isEmpty ? "Type a shortcut name first" : "Run \u{201C}\(name)\u{201D} now")
+                .help(name.isEmpty ? String(localized: "Type a shortcut name first", bundle: .tabbi)
+                      : String(localized: "Run \u{201C}\(name)\u{201D} now", bundle: .tabbi))
             }
         }
         .disabled(!controller.settings.doNotDisturb)
@@ -282,7 +286,7 @@ struct FocusSettingsPane: View {
     /// shortcuts do the switching; the link opens the Shortcuts app.
     private var guide: AttributedString {
         let on = shortcutName(.on), off = shortcutName(.off)
-        let markdown = "In [Shortcuts](shortcuts://), make \u{201C}\(on)\u{201D} with the Set Focus action turning Do Not Disturb on, and \u{201C}\(off)\u{201D} turning it off. Then press Test."
+        let markdown = String(localized: "In [Shortcuts](shortcuts://), make \u{201C}\(on)\u{201D} with the Set Focus action turning Do Not Disturb on, and \u{201C}\(off)\u{201D} turning it off. Then press Test.", bundle: .tabbi)
         return (try? AttributedString(markdown: markdown)) ?? AttributedString(markdown)
     }
 
@@ -342,8 +346,8 @@ private struct SoundChip: View {
     }
 
     private var help: String {
-        if isOn { return "Remove \(sound.displayName.lowercased()) from the blend" }
-        if !isEnabled { return "Blend up to \(FocusMix.maxLayers) sounds; remove one first" }
-        return "Add \(sound.displayName.lowercased())"
+        if isOn { return String(localized: "Remove from the blend", bundle: .tabbi) }
+        if !isEnabled { return String(localized: "Blend up to \(FocusMix.maxLayers) sounds; remove one first", bundle: .tabbi) }
+        return String(localized: "Add to the blend", bundle: .tabbi)
     }
 }

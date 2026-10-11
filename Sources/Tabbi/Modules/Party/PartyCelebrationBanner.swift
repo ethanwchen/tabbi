@@ -44,7 +44,7 @@ struct PartyCelebrationBanner: View {
         .contentShape(Rectangle())
         .onTapGesture(perform: onDismiss)
         .onHover { hovering = $0 }
-        .help("The shared session is done. Click to dismiss.")
+        .help(String(localized: "The shared session is done. Click to dismiss.", bundle: .tabbi))
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isButton)
     }

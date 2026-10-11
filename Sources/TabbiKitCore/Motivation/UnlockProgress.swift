@@ -70,11 +70,9 @@ public struct UnlockProgress: Hashable, Sendable {
 
     /// The line under the bar, e.g. "1 more session to Ninja Headband".
     public var line: String {
-        switch sessionsLeft {
-        case 0: "Enough for the \(item.displayName) now"
-        case 1: "1 more session to \(item.displayName)"
-        default: "\(sessionsLeft) more sessions to \(item.displayName)"
-        }
+        sessionsLeft == 0
+            ? String(localized: "Enough for the \(item.displayName) now", bundle: .tabbi)
+            : String(localized: "\(sessionsLeft) more sessions to \(item.displayName)", bundle: .tabbi)
     }
 
     private static func fraction(_ points: Int, of cost: Int) -> Double {

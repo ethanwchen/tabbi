@@ -21,25 +21,25 @@ struct AIProviderSection: View {
 
     var body: some View {
         Section {
-            Picker("Answers from", selection: choice) {
-                Text("None").tag(AIProviderID?.none)
+            Picker(String(localized: "Answers from", bundle: .tabbi), selection: choice) {
+                Text("None", bundle: .tabbi).tag(AIProviderID?.none)
                 ForEach(ai.availableProviders, id: \.self) { provider in
                     Text(provider.displayName).tag(Optional(provider))
                 }
             }
-            .help("The AI that answers Ask, Plan my day and Refine")
+            .help(String(localized: "The AI that answers Ask, Plan my day and Refine", bundle: .tabbi))
             if let provider = ai.setupState.provider {
                 AIProviderStatusRow(ai: ai, provider: provider)
                     .id(provider)
             }
         } header: {
-            Text("AI")
+            Text("AI", bundle: .tabbi)
         } footer: {
             SectionFooter(footer)
         }
         .alert(pendingConsent?.consentTitle ?? "", isPresented: isAskingConsent, presenting: pendingConsent) { provider in
-            Button("Allow") { settings.settings.ai.choose(provider) }
-            Button("Cancel", role: .cancel) {}
+            Button(String(localized: "Allow", bundle: .tabbi)) { settings.settings.ai.choose(provider) }
+            Button(String(localized: "Cancel", bundle: .tabbi), role: .cancel) {}
         } message: { provider in
             Text(provider.consentMessage(appName: Edition.current.name))
         }
@@ -67,14 +67,14 @@ struct AIProviderSection: View {
             // until the user picks it again.
             if let saved = settings.settings.ai.provider, ai.availableProviders.contains(saved),
                settings.settings.ai.needsConsent(for: saved) {
-                return "Pick \(saved.displayName) again to allow it to receive your AI requests. \(Edition.current.name) sends nothing until you do."
+                return String(localized: "Pick \(saved.displayName) again to allow it to receive your AI requests. \(Edition.current.name) sends nothing until you do.", bundle: .tabbi)
             }
-            return "Pick one to use Ask, Plan my day and Refine. \(Edition.current.name) sends nothing until you do."
+            return String(localized: "Pick one to use Ask, Plan my day and Refine. \(Edition.current.name) sends nothing until you do.", bundle: .tabbi)
         }
-        let hint = provider.requiresAPIKey ? "Your key stays in your Keychain."
+        let hint = provider.requiresAPIKey ? String(localized: "Your key stays in your Keychain.", bundle: .tabbi)
             : provider.setupHint(model: settings.settings.ai.model(for: provider)) ?? ""
-        let recipient = provider.vendorName.map { " Sends what you ask to \($0)." } ?? ""
-        return "\(provider.setupSummary)\(recipient) \(hint)"
+        let recipient = provider.vendorName.map { String(localized: "Sends what you ask to \($0).", bundle: .tabbi) } ?? ""
+        return Sentences.join([provider.setupSummary, recipient, hint])
     }
 }
 
@@ -100,33 +100,33 @@ private struct AIProviderStatusRow: View {
     @ViewBuilder
     private var keyRow: some View {
         if ai.hasKey(for: provider) {
-            LabeledContent("API key") {
+            LabeledContent(String(localized: "API key", bundle: .tabbi)) {
                 HStack(spacing: 8) {
-                    Label("Saved in your Keychain", systemImage: "checkmark.circle.fill")
+                    Label(String(localized: "Saved in your Keychain", bundle: .tabbi), systemImage: "checkmark.circle.fill")
                         .foregroundStyle(.secondary)
                         .labelStyle(StatusLabelStyle(tint: .green))
-                    Button("Remove") { save(nil) }
-                        .help("Delete this key from your Keychain")
+                    Button(String(localized: "Remove", bundle: .tabbi)) { save(nil) }
+                        .help(String(localized: "Delete this key from your Keychain", bundle: .tabbi))
                 }
             }
         } else {
-            LabeledContent("API key") {
+            LabeledContent(String(localized: "API key", bundle: .tabbi)) {
                 HStack(spacing: 8) {
-                    SecureField("API key", text: $draft, prompt: Text("Paste your key"))
+                    SecureField(String(localized: "API key", bundle: .tabbi), text: $draft, prompt: Text("Paste your key", bundle: .tabbi))
                         .labelsHidden()
                         .textFieldStyle(.roundedBorder)
                         .multilineTextAlignment(.leading)
-                        .frame(width: 180)
+                        .frame(minWidth: 120, maxWidth: 180)
                         .onSubmit { save(draft) }
-                        .help("Your \(provider.displayName) key. It is kept in your Keychain.")
-                    Button("Save") { save(draft) }
+                        .help(String(localized: "Your \(provider.displayName) key. It is kept in your Keychain.", bundle: .tabbi))
+                    Button(String(localized: "Save", bundle: .tabbi)) { save(draft) }
                         .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                        .help("Save this key in your Keychain")
+                        .help(String(localized: "Save this key in your Keychain", bundle: .tabbi))
                     pageButton
                 }
             }
             if saveFailed {
-                Label("The Keychain didn't save the key. Try again.", systemImage: "exclamationmark.triangle.fill")
+                Label(String(localized: "The Keychain didn't save the key. Try again.", bundle: .tabbi), systemImage: "exclamationmark.triangle.fill")
                     .labelStyle(StatusLabelStyle(tint: .orange))
                     .font(.callout)
             }
@@ -135,27 +135,27 @@ private struct AIProviderStatusRow: View {
 
     @ViewBuilder
     private var toolRow: some View {
-        LabeledContent(provider.isCommandLineTool ? "Command" : "App") {
+        LabeledContent(provider.isCommandLineTool ? String(localized: "Command", bundle: .tabbi) : String(localized: "App", bundle: .tabbi)) {
             HStack(spacing: 8) {
                 if !provider.isCommandLineTool {
                     // Ollama: whether it runs shows only when it answers.
-                    Text("Runs on this Mac")
+                    Text("Runs on this Mac", bundle: .tabbi)
                         .foregroundStyle(.secondary)
                     pageButton
                 } else if let isInstalled {
                     if isInstalled {
-                        Label("Installed", systemImage: "checkmark.circle.fill")
+                        Label(String(localized: "Installed", bundle: .tabbi), systemImage: "checkmark.circle.fill")
                             .labelStyle(StatusLabelStyle(tint: .green))
                             .foregroundStyle(.secondary)
                     } else {
-                        Label("Not found on this Mac", systemImage: "exclamationmark.circle.fill")
+                        Label(String(localized: "Not found on this Mac", bundle: .tabbi), systemImage: "exclamationmark.circle.fill")
                             .labelStyle(StatusLabelStyle(tint: .orange))
                             .foregroundStyle(.secondary)
                         pageButton
                     }
                 } else {
                     ProgressView().controlSize(.small)
-                    Text("Looking for it")
+                    Text("Looking for it", bundle: .tabbi)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -164,7 +164,8 @@ private struct AIProviderStatusRow: View {
 
     private var pageButton: some View {
         Button(provider.setupPageTitle) { NSWorkspace.shared.open(provider.setupPage) }
-            .help("Open \(provider.setupPage.host() ?? "the official page") in your browser")
+            .help(provider.setupPage.host().map { String(localized: "Open \($0) in your browser", bundle: .tabbi) }
+                  ?? String(localized: "Open the official page in your browser", bundle: .tabbi))
     }
 
     private func save(_ key: String?) {
@@ -200,20 +201,20 @@ struct AIModelSection: View {
 
     var body: some View {
         Section {
-            LabeledContent("Model") {
-                TextField("Model", text: $draft, prompt: Text(placeholder))
+            LabeledContent(String(localized: "Model", bundle: .tabbi)) {
+                TextField(String(localized: "Model", bundle: .tabbi), text: $draft, prompt: Text(placeholder))
                     .labelsHidden()
                     .textFieldStyle(.roundedBorder)
                     .multilineTextAlignment(.leading)
                     .frame(width: 240)
                     .focused($fieldFocused)
                     .onSubmit(commit)
-                    .help("The model \(provider.displayName) uses. Leave empty for the default.")
+                    .help(String(localized: "The model \(provider.displayName) uses. Leave empty for the default.", bundle: .tabbi))
             }
         } header: {
-            Text("AI model")
+            Text("AI model", bundle: .tabbi)
         } footer: {
-            SectionFooter("Leave empty for the default, which is quick and inexpensive.")
+            SectionFooter(String(localized: "Leave empty for the default, which is quick and inexpensive.", bundle: .tabbi))
         }
         .onAppear { draft = settings.settings.ai.models[provider] ?? "" }
         .onChange(of: fieldFocused) { _, focused in
@@ -222,7 +223,7 @@ struct AIModelSection: View {
     }
 
     private var placeholder: String {
-        provider.defaultModel.isEmpty ? "The tool's own default" : provider.defaultModel
+        provider.defaultModel.isEmpty ? String(localized: "The tool's own default", bundle: .tabbi) : provider.defaultModel
     }
 
     private func commit() {

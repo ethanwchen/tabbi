@@ -64,7 +64,7 @@ private struct PartySetupProfileCard: View {
                         .lineLimit(3)
                         .fixedSize(horizontal: false, vertical: true)
                 } else {
-                    Text("Friends see your name, your pet and when you're studying. Nothing about your cards or decks leaves your Mac.")
+                    Text("Friends see your name, your pet and when you're studying. Nothing about your cards or decks leaves your Mac.", bundle: .tabbi)
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.secondaryText)
                         .lineLimit(3)
@@ -189,7 +189,7 @@ private struct PartySetupNameButton: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .help("The name friends see, up to \(PartySettings.maxNameLength) characters. Click to change it.")
+        .help(String(localized: "The name friends see, up to \(PartySettings.maxNameLength) characters. Click to change it.", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -239,7 +239,7 @@ private struct PartySetupFriendsCard: View {
         Card(padding: Theme.Spacing.s) {
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 HStack(spacing: Theme.Spacing.xs) {
-                    Text("Your code")
+                    Text("Your code", bundle: .tabbi)
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.tertiaryText)
                     Spacer(minLength: Theme.Spacing.xs)

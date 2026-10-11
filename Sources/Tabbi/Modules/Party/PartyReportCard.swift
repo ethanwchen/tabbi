@@ -36,10 +36,10 @@ struct PartyReportCard: View {
         HStack(spacing: Theme.Spacing.s) {
             PartyPet(profile: profile)
             VStack(alignment: .leading, spacing: 0) {
-                Text("Report \(profile.name)")
+                Text("Report \(profile.name)", bundle: .tabbi)
                     .font(Theme.Typography.bodyEmphasis)
                     .foregroundStyle(Theme.Palette.primaryText)
-                Text("The Tabbi team reviews it. \(profile.name) isn't told.")
+                Text("The Tabbi team reviews it. \(profile.name) isn't told.", bundle: .tabbi)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.secondaryText)
             }
@@ -85,7 +85,7 @@ private struct PartyNoteField: View {
         let isFocused = focus.wrappedValue == .reportNote
         ZStack(alignment: .leading) {
             if text.isEmpty {
-                Text("Add a note (optional)")
+                Text("Add a note (optional)", bundle: .tabbi)
                     .font(Theme.Typography.body)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .lineLimit(1)
@@ -117,7 +117,7 @@ private struct PartyNoteField: View {
         .contentShape(Rectangle())
         .onTapGesture { focus.wrappedValue = .reportNote }
         .onHover { hovering = $0 }
-        .help("What happened, in a sentence or two")
+        .help(String(localized: "What happened, in a sentence or two", bundle: .tabbi))
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: isFocused)
     }
@@ -190,7 +190,7 @@ struct PartyModerationMenu: View {
 
     var body: some View {
         Divider()
-        Button("Report \(profile.name)…") { store.beginReport(profile) }
-        Button("Block \(profile.name)", role: .destructive) { store.block(profile) }
+        Button(String(localized: "Report \(profile.name)…", bundle: .tabbi)) { store.beginReport(profile) }
+        Button(String(localized: "Block \(profile.name)", bundle: .tabbi), role: .destructive) { store.block(profile) }
     }
 }

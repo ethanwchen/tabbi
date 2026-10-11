@@ -9,7 +9,7 @@ public struct RecapStat: Hashable, Sendable, Identifiable {
     public let kind: Kind
     /// The number or day, drawn large: "18", "Thu", "1,240".
     public let value: String
-    /// What it counts, drawn small beneath: "sessions", "best day".
+    /// What it counts, drawn small beneath: String(localized: "sessions", bundle: .tabbi), String(localized: "best day", bundle: .tabbi).
     public let label: String
 
     public var id: Kind { kind }
@@ -29,23 +29,23 @@ public extension WeeklyRecap {
         var stats: [RecapStat] = []
         func count(_ value: Int) -> String { value.formatted(.number.locale(locale)) }
         if sessions > 0 {
-            stats.append(RecapStat(kind: .sessions, value: count(sessions), label: sessions == 1 ? "session" : "sessions"))
+            stats.append(RecapStat(kind: .sessions, value: count(sessions), label: sessions == 1 ? String(localized: "session", bundle: .tabbi) : String(localized: "sessions", bundle: .tabbi)))
         }
         if let best = bestDay(calendar: calendar) {
             stats.append(RecapStat(kind: .bestDay, value: Self.weekdayName(best.day, calendar: calendar, locale: locale),
-                                   label: "best day"))
+                                   label: String(localized: "best day", bundle: .tabbi)))
         }
         if longestStreak >= 2 {
-            stats.append(RecapStat(kind: .streak, value: count(longestStreak), label: "day streak"))
+            stats.append(RecapStat(kind: .streak, value: count(longestStreak), label: String(localized: "day streak", bundle: .tabbi)))
         }
         if cardsReviewed > 0 {
-            stats.append(RecapStat(kind: .cards, value: count(cardsReviewed), label: cardsReviewed == 1 ? "card" : "cards"))
+            stats.append(RecapStat(kind: .cards, value: count(cardsReviewed), label: cardsReviewed == 1 ? String(localized: "card", bundle: .tabbi) : String(localized: "cards", bundle: .tabbi)))
         }
         if tasksDone > 0 {
-            stats.append(RecapStat(kind: .tasks, value: count(tasksDone), label: tasksDone == 1 ? "task" : "tasks"))
+            stats.append(RecapStat(kind: .tasks, value: count(tasksDone), label: tasksDone == 1 ? String(localized: "task", bundle: .tabbi) : String(localized: "tasks", bundle: .tabbi)))
         }
         if points > 0 {
-            stats.append(RecapStat(kind: .points, value: count(points), label: points == 1 ? "point" : "points"))
+            stats.append(RecapStat(kind: .points, value: count(points), label: points == 1 ? String(localized: "point", bundle: .tabbi) : String(localized: "points", bundle: .tabbi)))
         }
         return stats
     }
@@ -61,17 +61,12 @@ public extension WeeklyRecap {
 
 public extension RecapWeek {
     /// The week's dates for a card's corner: "Oct 5 - 11", or
-    /// "Sep 28 - Oct 4" when it spans two months.
+    /// "Sep 28 - Oct 4" when it spans two months (and both years across New
+    /// Year), in the locale's order.
     func title(calendar: Calendar = .current, locale: Locale = .current) -> String {
-        var style = Date.FormatStyle(date: .omitted, time: .omitted, locale: locale, calendar: calendar,
-                                     timeZone: calendar.timeZone)
-        style = style.month(.abbreviated).day()
-        let first = start.startDate(calendar: calendar)
-        let last = end(calendar: calendar).startDate(calendar: calendar)
-        let sameMonth = calendar.component(.month, from: first) == calendar.component(.month, from: last)
-        let lastText = sameMonth ? calendar.component(.day, from: last).formatted(.number.locale(locale))
-                                 : last.formatted(style)
-        return "\(first.formatted(style)) - \(lastText)"
+        DateRangeFormat.days(from: start.startDate(calendar: calendar),
+                             to: end(calendar: calendar).startDate(calendar: calendar),
+                             calendar: calendar, locale: locale)
     }
 
     /// One-letter weekday names, Monday first, for the card's day bars.

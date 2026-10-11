@@ -50,19 +50,19 @@ public enum ClaudeConnectionState: Hashable, Sendable {
     public var connectionStatus: ConnectionStatus {
         switch self {
         case .checking:
-            return ConnectionStatus(light: .checking, headline: "Looking for Claude",
-                                    detail: "This takes a second.")
+            return ConnectionStatus(light: .checking, headline: String(localized: "Looking for Claude", bundle: .tabbi),
+                                    detail: String(localized: "This takes a second.", bundle: .tabbi))
         case .notInstalled:
-            return ConnectionStatus(light: .notInstalled, headline: "Claude is optional",
-                                    detail: "It's an AI helper that can plan your day and answer questions. Everything else works without it.",
+            return ConnectionStatus(light: .notInstalled, headline: String(localized: "Claude is optional", bundle: .tabbi),
+                                    detail: String(localized: "It's an AI helper that can plan your day and answer questions. Everything else works without it.", bundle: .tabbi),
                                     action: .showGuide(.claudeInstall))
         case .signedOut:
-            return ConnectionStatus(light: .needsStep, headline: "Sign in to Claude",
-                                    detail: "Claude is installed. Sign in once and Tabbi can use it.",
+            return ConnectionStatus(light: .needsStep, headline: String(localized: "Sign in to Claude", bundle: .tabbi),
+                                    detail: String(localized: "Claude is installed. Sign in once and Tabbi can use it.", bundle: .tabbi),
                                     action: .showGuide(.claudeSignIn))
         case .ready:
-            return ConnectionStatus(light: .connected, headline: "Claude is ready",
-                                    detail: "Plan my day and Ask AI can use it.")
+            return ConnectionStatus(light: .connected, headline: String(localized: "Claude is ready", bundle: .tabbi),
+                                    detail: String(localized: "Plan my day and Ask AI can use it.", bundle: .tabbi))
         }
     }
 }

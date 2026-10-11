@@ -6,7 +6,7 @@ extension SettingsPane {
     /// Settings › Ask AI: when answers open in the large view, and where
     /// chats are kept.
     @MainActor static func claudeAsk(_ session: ClaudeAskSession) -> SettingsPane {
-        SettingsPane(id: "claudeAsk", title: "Ask AI", symbol: "sparkles",
+        SettingsPane(id: "claudeAsk", title: String(localized: "Ask AI", bundle: .tabbi), symbol: "sparkles",
                      view: AnyView(ClaudeAskSettingsPane(session: session)))
     }
 }
@@ -19,27 +19,27 @@ struct ClaudeAskSettingsPane: View {
     var body: some View {
         Form {
             Section {
-                Picker("Open answers in the large view", selection: $session.preferences.largeView) {
+                Picker(String(localized: "Open answers in the large view", bundle: .tabbi), selection: $session.preferences.largeView) {
                     ForEach(ClaudeAskLargeView.allCases, id: \.self) { mode in
                         Text(mode.title).tag(mode)
                     }
                 }
-                .help("Whether a question grows the notch into the larger chat view")
+                .help(String(localized: "Whether a question grows the notch into the larger chat view", bundle: .tabbi))
             } header: {
-                Text("Answers")
+                Text("Answers", bundle: .tabbi)
             } footer: {
                 SectionFooter(footer)
             }
 
             Section {
-                LabeledContent("Saved chats") {
+                LabeledContent(String(localized: "Saved chats", bundle: .tabbi)) {
                     Text(session.savedChats.count, format: .number)
                         .monospacedDigit()
                 }
             } header: {
-                Text("History")
+                Text("History", bundle: .tabbi)
             } footer: {
-                SectionFooter("Chats stay on this Mac, in \(Edition.current.name)'s own folder. Delete them from History in the Ask AI tab.")
+                SectionFooter(String(localized: "Chats stay on this Mac, in \(Edition.current.name)'s own folder. Delete them from History in the Ask AI tab.", bundle: .tabbi))
             }
         }
         .formStyle(.grouped)
@@ -49,9 +49,9 @@ struct ClaudeAskSettingsPane: View {
 
     private var footer: String {
         switch session.preferences.largeView {
-        case .askEachTime: "Answers stay in the notch. Press Command-Return to send and expand, or click Expand on a chat."
-        case .always: "Every question opens a larger chat view under the notch. Press Esc to go back."
-        case .never: "Chats always stay in the notch."
+        case .askEachTime: String(localized: "Answers stay in the notch. Press Command-Return to send and expand, or click Expand on a chat.", bundle: .tabbi)
+        case .always: String(localized: "Every question opens a larger chat view under the notch. Press Esc to go back.", bundle: .tabbi)
+        case .never: String(localized: "Chats always stay in the notch.", bundle: .tabbi)
         }
     }
 }

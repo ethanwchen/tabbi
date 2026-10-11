@@ -88,34 +88,34 @@ public enum PartyError: Error, Hashable, Sendable {
     /// One short sentence for the UI.
     public var message: String {
         switch self {
-        case .unreachable: return "Can't reach the party server."
-        case .timedOut: return "The party server didn't answer in time."
-        case .unauthorized: return "Your party profile was reset. Reconnecting…"
-        case .rateLimited: return "Too many requests. Trying again shortly."
-        case .serverUnavailable: return "The party server is busy. Trying again shortly."
-        case .invalidRequest: return "The server didn't accept that."
-        case .selfFriend: return "That's your own code."
-        case .unknownCode: return "No one has that friend code."
-        case .friendLimit: return "You already have 50 friends."
-        case .theirFriendLimit: return "They already have 50 friends."
-        case .partyNotFound: return "That party has ended or the code is wrong."
-        case .notFriend: return "You can only join a friend's party."
-        case .friendOffline: return "Your friend just went offline."
-        case .friendNotInParty: return "Your friend left their party."
-        case .partyFull: return "That party is full."
-        case .notInParty: return "You're not in a party anymore."
-        case .notHost: return "Only the host can change the session."
-        case .nameNotAllowed: return "That name isn't allowed. Please pick another."
-        case .petNameNotAllowed: return "That pet name isn't allowed. Please pick another."
-        case .selfBlock: return "That's your own code."
-        case .blockLimit: return "You've blocked too many people. Unblock someone first."
-        case .blocked: return "You blocked them. Unblock them in Party options first."
-        case .selfReport: return "That's your own code."
-        case .reportLimit: return "You've sent a lot of reports today. Try again tomorrow."
-        case .banned: return "Party is no longer available for this account."
-        case .server: return "The party server reported a problem."
-        case .invalidResponse: return "Unexpected reply from the party server."
-        case .transport: return "Couldn't reach the party server."
+        case .unreachable: return String(localized: "Can't reach the party server.", bundle: .tabbi)
+        case .timedOut: return String(localized: "The party server didn't answer in time.", bundle: .tabbi)
+        case .unauthorized: return String(localized: "Your party profile was reset. Reconnecting…", bundle: .tabbi)
+        case .rateLimited: return String(localized: "Too many requests. Trying again shortly.", bundle: .tabbi)
+        case .serverUnavailable: return String(localized: "The party server is busy. Trying again shortly.", bundle: .tabbi)
+        case .invalidRequest: return String(localized: "The server didn't accept that.", bundle: .tabbi)
+        case .selfFriend: return String(localized: "That's your own code.", bundle: .tabbi)
+        case .unknownCode: return String(localized: "No one has that friend code.", bundle: .tabbi)
+        case .friendLimit: return String(localized: "You already have 50 friends.", bundle: .tabbi)
+        case .theirFriendLimit: return String(localized: "They already have 50 friends.", bundle: .tabbi)
+        case .partyNotFound: return String(localized: "That party has ended or the code is wrong.", bundle: .tabbi)
+        case .notFriend: return String(localized: "You can only join a friend's party.", bundle: .tabbi)
+        case .friendOffline: return String(localized: "Your friend just went offline.", bundle: .tabbi)
+        case .friendNotInParty: return String(localized: "Your friend left their party.", bundle: .tabbi)
+        case .partyFull: return String(localized: "That party is full.", bundle: .tabbi)
+        case .notInParty: return String(localized: "You're not in a party anymore.", bundle: .tabbi)
+        case .notHost: return String(localized: "Only the host can change the session.", bundle: .tabbi)
+        case .nameNotAllowed: return String(localized: "That name isn't allowed. Please pick another.", bundle: .tabbi)
+        case .petNameNotAllowed: return String(localized: "That pet name isn't allowed. Please pick another.", bundle: .tabbi)
+        case .selfBlock: return String(localized: "That's your own code.", bundle: .tabbi)
+        case .blockLimit: return String(localized: "You've blocked too many people. Unblock someone first.", bundle: .tabbi)
+        case .blocked: return String(localized: "You blocked them. Unblock them in Party options first.", bundle: .tabbi)
+        case .selfReport: return String(localized: "That's your own code.", bundle: .tabbi)
+        case .reportLimit: return String(localized: "You've sent a lot of reports today. Try again tomorrow.", bundle: .tabbi)
+        case .banned: return String(localized: "Party is no longer available for this account.", bundle: .tabbi)
+        case .server: return String(localized: "The party server reported a problem.", bundle: .tabbi)
+        case .invalidResponse: return String(localized: "Unexpected reply from the party server.", bundle: .tabbi)
+        case .transport: return String(localized: "Couldn't reach the party server.", bundle: .tabbi)
         }
     }
 }

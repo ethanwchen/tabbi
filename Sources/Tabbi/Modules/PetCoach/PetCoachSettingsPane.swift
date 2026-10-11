@@ -7,7 +7,7 @@ import TabbiKit
 extension SettingsPane {
     /// Settings › Pet Coach, offered while the Closet (the pet's module) is on.
     @MainActor static func petCoach(_ coach: PetCoachController, reminder: StudyReminderScheduler) -> SettingsPane {
-        SettingsPane(id: "coach", title: "Pet Coach", symbol: "pawprint",
+        SettingsPane(id: "coach", title: String(localized: "Pet Coach", bundle: .tabbi), symbol: "pawprint",
                      view: AnyView(PetCoachSettingsPane(coach: coach, reminder: reminder)))
     }
 }
@@ -45,12 +45,12 @@ struct PetCoachSettingsPane: View {
 
     private var nudgesSection: some View {
         Section {
-            Toggle("Nudge me during focus", isOn: Binding(get: { coach.nudgesOn }, set: { coach.setNudgesOn($0) }))
-                .help("Let your pet walk out of the notch when you drift during a focus phase")
+            Toggle(String(localized: "Nudge me during focus", bundle: .tabbi), isOn: Binding(get: { coach.nudgesOn }, set: { coach.setNudgesOn($0) }))
+                .help(String(localized: "Let your pet walk out of the notch when you drift during a focus phase", bundle: .tabbi))
         } header: {
-            Text("Nudges")
+            Text("Nudges", bundle: .tabbi)
         } footer: {
-            SectionFooter("Only while a focus phase runs, at most a few times an hour. Your pet checks how long since you last typed or moved the pointer, and which app is in front. Nothing else, and no permissions.")
+            SectionFooter(String(localized: "Only while a focus phase runs, at most a few times an hour. Your pet checks how long since you last typed or moved the pointer, and which app is in front. Nothing else, and no permissions.", bundle: .tabbi))
         }
     }
 
@@ -73,26 +73,26 @@ struct PetCoachSettingsPane: View {
             }
         } header: {
             HStack(alignment: .firstTextBaseline) {
-                Text("Distracting apps")
+                Text("Distracting apps", bundle: .tabbi)
                 Spacer()
                 Button {
                     chooseApp()
                 } label: {
-                    Label("Add App…", systemImage: "plus")
+                    Label(String(localized: "Add App…", bundle: .tabbi), systemImage: "plus")
                 }
                 .controlSize(.small)
-                .help("Pick any app from your Applications folder")
+                .help(String(localized: "Pick any app from your Applications folder", bundle: .tabbi))
             }
         } footer: {
-            SectionFooter("Time in these apps counts as drifting. Websites can't be told apart, since that would need Screen Recording, so pick apps rather than sites.")
+            SectionFooter(String(localized: "Time in these apps counts as drifting. Websites can't be told apart, since that would need Screen Recording, so pick apps rather than sites.", bundle: .tabbi))
         }
         .disabled(!coach.nudgesOn)
     }
 
     private func chooseApp() {
         let panel = NSOpenPanel()
-        panel.title = "Add a Distracting App"
-        panel.prompt = "Add"
+        panel.title = String(localized: "Add a Distracting App", bundle: .tabbi)
+        panel.prompt = String(localized: "Add", bundle: .tabbi)
         panel.allowedContentTypes = [.application]
         panel.allowsMultipleSelection = true
         panel.directoryURL = URL(fileURLWithPath: "/Applications")
@@ -160,7 +160,8 @@ private struct AppChip: View {
         .onHover { isHovered = $0 }
         .motion(Motion.snappy, value: isOn)
         .motion(Motion.hover, value: isHovered)
-        .help(isOn ? "Stop counting \(name) as distracting" : "Count time in \(name) as drifting")
+        .help(isOn ? String(localized: "Stop counting \(name) as distracting", bundle: .tabbi)
+                    : String(localized: "Count time in \(name) as drifting", bundle: .tabbi))
     }
 }
 
@@ -183,7 +184,7 @@ private struct AddedAppRow: View {
                     .foregroundStyle(.secondary)
             }
             .buttonStyle(.borderless)
-            .help("Stop counting \(app.name) as distracting")
+            .help(String(localized: "Stop counting \(app.name) as distracting", bundle: .tabbi))
         }
     }
 }

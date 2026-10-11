@@ -17,26 +17,26 @@ struct StudyReminderSettingsSection: View {
 
     var body: some View {
         Section {
-            Toggle("Remind me to study", isOn: Binding(get: { reminder.isEnabled },
+            Toggle(String(localized: "Remind me to study", bundle: .tabbi), isOn: Binding(get: { reminder.isEnabled },
                                                        set: { reminder.setEnabled($0) }))
-                .help("A gentle nudge from \(name) on days you haven't studied yet")
-            DatePicker("Time", selection: $reminder.time, displayedComponents: .hourAndMinute)
+                .help(String(localized: "A gentle nudge from \(name) on days you haven't studied yet", bundle: .tabbi))
+            DatePicker(String(localized: "Time", bundle: .tabbi), selection: $reminder.time, displayedComponents: .hourAndMinute)
                 .disabled(!reminder.isEnabled)
-                .help("When the reminder can come, in your Mac's time zone")
+                .help(String(localized: "When the reminder can come, in your Mac's time zone", bundle: .tabbi))
             if reminder.isBlocked {
                 HStack {
-                    Label("Notifications are off for Tabbi", systemImage: "bell.slash")
+                    Label(String(localized: "Notifications are off for Tabbi", bundle: .tabbi), systemImage: "bell.slash")
                         .foregroundStyle(.secondary)
                     Spacer()
-                    Button("Open System Settings") { reminder.openNotificationSettings() }
+                    Button(String(localized: "Open System Settings", bundle: .tabbi)) { reminder.openNotificationSettings() }
                         .controlSize(.small)
-                        .help("Allow Tabbi's notifications in System Settings")
+                        .help(String(localized: "Allow Tabbi's notifications in System Settings", bundle: .tabbi))
                 }
             }
         } header: {
-            Text("Daily reminder")
+            Text("Daily reminder", bundle: .tabbi)
         } footer: {
-            SectionFooter("\"\(name) misses you. 10 minutes?\" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.")
+            SectionFooter(String(localized: "\"\(name) misses you. 10 minutes?\" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.", bundle: .tabbi))
         }
     }
 

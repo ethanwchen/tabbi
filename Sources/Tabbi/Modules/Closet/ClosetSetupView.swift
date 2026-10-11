@@ -132,7 +132,7 @@ private struct ClosetSetupPetCard: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .help("Name your pet")
+            .help(String(localized: "Name your pet", bundle: .tabbi))
         }
     }
 
@@ -166,7 +166,7 @@ private struct ClosetSetupSpeciesPill: View {
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
-        .help("Pick a \(species.displayName.lowercased())")
+        .help(String(localized: "Pick \(species.displayName)", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }

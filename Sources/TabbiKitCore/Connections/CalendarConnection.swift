@@ -48,31 +48,31 @@ public struct CalendarConnectionState: Hashable, Sendable {
         // Only a development build gets here (the app bundle always has the
         // usage description), so it has no button and no gallery entry.
         case .notDetermined where !canAsk:
-            return ConnectionStatus(light: .needsStep, headline: "This copy can't use the calendar",
-                                    detail: "Open Tabbi from your Applications folder to connect your calendar.")
+            return ConnectionStatus(light: .needsStep, headline: String(localized: "This copy can't use the calendar", bundle: .tabbi),
+                                    detail: String(localized: "Open Tabbi from your Applications folder to connect your calendar.", bundle: .tabbi))
         case .notDetermined:
-            return ConnectionStatus(light: .notSetUp, headline: "Calendar isn't connected",
-                                    detail: "Click Connect, then Allow when your Mac asks. It only asks once.",
+            return ConnectionStatus(light: .notSetUp, headline: String(localized: "Calendar isn't connected", bundle: .tabbi),
+                                    detail: String(localized: "Click Connect, then Allow when your Mac asks. It only asks once.", bundle: .tabbi),
                                     action: .askPermission(.calendar))
         case .denied:
-            return ConnectionStatus(light: .needsStep, headline: "Calendar access is off",
-                                    detail: "Turn on Tabbi under Calendars in System Settings.",
+            return ConnectionStatus(light: .needsStep, headline: String(localized: "Calendar access is off", bundle: .tabbi),
+                                    detail: String(localized: "Turn on Tabbi under Calendars in System Settings.", bundle: .tabbi),
                                     action: .openSettings(.calendarPrivacy))
         case .restricted:
-            return ConnectionStatus(light: .needsStep, headline: "This Mac blocks calendar access",
-                                    detail: "A school or work setting may block it. You can check in System Settings.",
+            return ConnectionStatus(light: .needsStep, headline: String(localized: "This Mac blocks calendar access", bundle: .tabbi),
+                                    detail: String(localized: "A school or work setting may block it. You can check in System Settings.", bundle: .tabbi),
                                     action: .openSettings(.calendarPrivacy))
         case .writeOnly:
-            return ConnectionStatus(light: .needsStep, headline: "Tabbi can't read your calendar",
-                                    detail: "In System Settings, set Tabbi to Full Access under Calendars.",
+            return ConnectionStatus(light: .needsStep, headline: String(localized: "Tabbi can't read your calendar", bundle: .tabbi),
+                                    detail: String(localized: "In System Settings, set Tabbi to Full Access under Calendars.", bundle: .tabbi),
                                     action: .openSettings(.calendarPrivacy))
         case .fullAccess where accounts.isEmpty:
-            return ConnectionStatus(light: .needsStep, headline: "No calendars yet",
-                                    detail: "Add your Google or school account to see its events here.",
+            return ConnectionStatus(light: .needsStep, headline: String(localized: "No calendars yet", bundle: .tabbi),
+                                    detail: String(localized: "Add your Google or school account to see its events here.", bundle: .tabbi),
                                     action: .showGuide(.googleCalendar))
         case .fullAccess:
-            return ConnectionStatus(light: .connected, headline: "Calendar is connected",
-                                    detail: "Today's events show up in Tabbi.",
+            return ConnectionStatus(light: .connected, headline: String(localized: "Calendar is connected", bundle: .tabbi),
+                                    detail: String(localized: "Today's events show up in Tabbi.", bundle: .tabbi),
                                     suggestion: hasGoogleAccount ? nil : .showGuide(.googleCalendar))
         }
     }

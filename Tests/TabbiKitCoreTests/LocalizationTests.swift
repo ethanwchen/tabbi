@@ -49,6 +49,101 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(String.localizedStringWithFormat(friends, 1), "with 1 friend")
     }
 
+    /// Russian picks one of three forms by the last digits (1 and 21 are
+    /// "one", 2 to 4 "few", 5 to 20 "many"), so every Russian plural needs
+    /// all of them. The rules follow the formatting locale, which in the app
+    /// is the user's, so this passes Russian explicitly.
+    func testRussianPluralsFollowTheLastDigits() throws {
+        let russian = try XCTUnwrap(L10n.strings(for: "ru"))
+        let locale = Locale(identifier: "ru")
+        let days = russian.localizedString(forKey: "%lld days", value: nil, table: nil)
+        XCTAssertEqual([1, 2, 5, 11, 21, 22, 25].map { String(format: days, locale: locale, $0) },
+                       ["1 день", "2 дня", "5 дней", "11 дней", "21 день", "22 дня", "25 дней"])
+        let cores = russian.localizedString(forKey: "%lld cores", value: nil, table: nil)
+        XCTAssertEqual([1, 2, 5, 21].map { String(format: cores, locale: locale, $0) },
+                       ["1 ядро", "2 ядра", "5 ядер", "21 ядро"])
+        let friends = russian.localizedString(forKey: "%lld friends are here with you.", value: nil, table: nil)
+        XCTAssertEqual([1, 2, 5, 21].map { String(format: friends, locale: locale, $0) },
+                       ["С тобой 1 друг.", "С тобой 2 друга.", "С тобой 5 друзей.", "С тобой 21 друг."])
+    }
+
+    /// The widget's streak count has a key of its own ("%lld days" is the
+    /// Closet chart's dative phrase), with an English plural, so English
+    /// reads "12 days" and German the nominative "12 Tage".
+    func testWidgetStreakDaysReadAsAPlainCount() throws {
+        let key = "%lld streak days"
+        let cases: [(language: String, expected: [String])] = [
+            ("en", ["1 day", "2 days", "5 days", "21 days"]),
+            ("de", ["1 Tag", "2 Tage", "5 Tage", "21 Tage"]),
+            ("ru", ["1 день", "2 дня", "5 дней", "21 день"]),
+        ]
+        for (language, expected) in cases {
+            let format = try XCTUnwrap(L10n.strings(for: language)).localizedString(forKey: key, value: nil, table: nil)
+            XCTAssertEqual([1, 2, 5, 21].map { String(format: format, locale: Locale(identifier: language), $0) },
+                           expected, language)
+        }
+    }
+
+    /// Seasonal event names and taglines live in events.json, in English,
+    /// and are looked up in the catalog by that text, so a new event or a
+    /// reworded line needs its translations added with it.
+    func testEverySeasonalEventIsTranslated() throws {
+        let missing = "\u{0}missing"
+        for language in L10n.languages where language != L10n.sourceLanguage {
+            let bundle = try XCTUnwrap(L10n.strings(for: language))
+            for event in SeasonalEventCatalog.bundled.events {
+                for text in [event.name, event.tagline] {
+                    XCTAssertNotEqual(bundle.localizedString(forKey: text, value: missing, table: nil), missing,
+                                      "\(language) lacks \"\(text)\"")
+                }
+            }
+        }
+        let german = try XCTUnwrap(L10n.strings(for: "de"))
+        let pumpkin = german.localizedString(forKey: "Focus for %lld hours during %@.", value: nil, table: nil)
+        XCTAssertEqual(String.localizedStringWithFormat(pumpkin, 5, "Halloween"),
+                       "Konzentrier dich 5 Stunden während Halloween.")
+        let japanese = try XCTUnwrap(L10n.strings(for: "ja"))
+        let hat = japanese.localizedString(forKey: "Focus for %lld minutes during %@.", value: nil, table: nil)
+        XCTAssertEqual(String.localizedStringWithFormat(hat, 90, "ハロウィン"), "ハロウィンの期間中に90分集中しよう。")
+    }
+
+    /// The calendar sentences name each bundled kit's word for events
+    /// ("lectures, labs, and shifts"), looked up in the catalog like the
+    /// seasonal events, so every language needs each phrase.
+    func testEveryBundledKitsEventWordIsTranslated() throws {
+        let phrases = Set(KitLibrary.bundled.kits.map { TodayPlanSettings(kit: $0.defaults).upNextEvents } + ["events"])
+        let missing = "\u{0}missing"
+        for language in L10n.languages where language != L10n.sourceLanguage {
+            let bundle = try XCTUnwrap(L10n.strings(for: language))
+            for phrase in phrases {
+                XCTAssertNotEqual(bundle.localizedString(forKey: phrase, value: missing, table: nil), missing,
+                                  "\(language) lacks \"\(phrase)\"")
+            }
+        }
+        XCTAssertEqual(UpNextEmptyState.localizedEvents("gigs and rehearsals"), "gigs and rehearsals")
+    }
+
+    /// Cat wisdom lines are approved English copy that the schedule hands
+    /// out by text, and `CatWisdomLine.displayText` looks the translation up
+    /// by it, so a new or reworded line needs its translations added with it.
+    func testEveryCatWisdomLineIsTranslated() throws {
+        let lines = CatWisdom.daily + CatWisdom.comeback + [CatWisdom.earlyStop, CatWisdom.lateNight]
+            + CatWisdomMilestone.allCases.map(\.line)
+        let missing = "\u{0}missing"
+        for language in L10n.languages where language != L10n.sourceLanguage {
+            let bundle = try XCTUnwrap(L10n.strings(for: language))
+            for line in lines {
+                XCTAssertNotEqual(bundle.localizedString(forKey: line, value: missing, table: nil), missing,
+                                  "\(language) lacks \"\(line)\"")
+            }
+        }
+        XCTAssertEqual(CatWisdomLine(kind: .firstOfDay, text: "Not a catalog line.").displayText, "Not a catalog line.")
+        let russian = try XCTUnwrap(L10n.strings(for: "ru"))
+        let sessions = russian.localizedString(forKey: "%lld more sessions to %@", value: nil, table: nil)
+        XCTAssertEqual([1, 2, 5].map { String(format: sessions, locale: Locale(identifier: "ru"), $0, "Шапка") },
+                       ["Еще 1 сессия до «Шапка»", "Еще 2 сессии до «Шапка»", "Еще 5 сессий до «Шапка»"])
+    }
+
     /// The .lproj folders that ship are compiled from the catalog by
     /// scripts/compile-strings.sh, and committed. This re-derives what each
     /// language's files must hold (every string and every plural form) and
@@ -115,6 +210,9 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(L10n.language(for: ["de-DE", "en-US"], available: available), "de")
         XCTAssertEqual(L10n.language(for: ["pt-BR"], available: available), "pt-BR")
         XCTAssertEqual(L10n.language(for: ["zh-Hans-CN"], available: available), "zh-Hans")
+        XCTAssertEqual(L10n.language(for: ["zh-Hant-TW"], available: available), "zh-Hant")
+        XCTAssertEqual(L10n.language(for: ["ru-RU"], available: available), "ru")
+        XCTAssertEqual(L10n.language(for: ["fil-PH"], available: available), "fil")
         XCTAssertEqual(L10n.language(for: ["ja-JP"], available: available), "ja")
         XCTAssertEqual(L10n.language(for: ["it-IT", "fr-FR"], available: available), "fr")
         XCTAssertEqual(L10n.language(for: ["it-IT"], available: available), "en")

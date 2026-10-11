@@ -80,7 +80,7 @@ struct PartySetupView: View {
                     .textFieldStyle(.roundedBorder)
                     .focused($nameFocused)
                     .onSubmit(submit)
-                    .help("The name friends see, up to \(PartySettings.maxNameLength) letters")
+                    .help(String(localized: "The name friends see, up to \(PartySettings.maxNameLength) letters", bundle: .tabbi))
             }
 
             VStack(alignment: .leading, spacing: 6) {
@@ -100,15 +100,16 @@ struct PartySetupView: View {
 
             HStack(spacing: 12) {
                 Spacer(minLength: 8)
-                Button("Not now", action: close)
+                Button(String(localized: "Not now", bundle: .tabbi), action: close)
                     .keyboardShortcut(.cancelAction)
-                    .help("Close this. You can set up Party any time.")
+                    .help(String(localized: "Close this. You can set up Party any time.", bundle: .tabbi))
                 Button(PartySetup.start, action: submit)
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
                     .disabled(!canStart)
-                    .help(canStart ? "Save your name and pet and join Party"
-                          : PartySetup.name(from: name) == nil ? "Type a name first" : "Pick the month and year you were born")
+                    .help(canStart ? String(localized: "Save your name and pet and join Party", bundle: .tabbi)
+                          : PartySetup.name(from: name) == nil ? String(localized: "Type a name first", bundle: .tabbi)
+                          : String(localized: "Pick the month and year you were born", bundle: .tabbi))
             }
         }
         .onAppear { nameFocused = true }
@@ -121,24 +122,24 @@ struct PartySetupView: View {
             Text(PartySetup.birthLabel)
                 .fontWeight(.medium)
             HStack(spacing: 8) {
-                Picker("Month", selection: $birthMonth) {
-                    Text("Month").tag(0)
+                Picker(String(localized: "Month", bundle: .tabbi), selection: $birthMonth) {
+                    Text("Month", bundle: .tabbi).tag(0)
                     ForEach(Array(PartyAgeCheck.monthNames().enumerated()), id: \.offset) { index, month in
                         Text(month).tag(index + 1)
                     }
                 }
                 .labelsHidden()
                 .frame(width: 140)
-                .help("The month you were born")
-                Picker("Year", selection: $birthYear) {
-                    Text("Year").tag(0)
+                .help(String(localized: "The month you were born", bundle: .tabbi))
+                Picker(String(localized: "Year", bundle: .tabbi), selection: $birthYear) {
+                    Text("Year", bundle: .tabbi).tag(0)
                     ForEach(PartyAgeCheck.birthYears(at: Date()), id: \.self) { year in
                         Text(String(year)).tag(year)
                     }
                 }
                 .labelsHidden()
                 .frame(width: 100)
-                .help("The year you were born")
+                .help(String(localized: "The year you were born", bundle: .tabbi))
             }
             Text(PartySetup.birthNote)
                 .font(.callout)
@@ -146,7 +147,7 @@ struct PartySetupView: View {
             Text(LocalizedStringKey(PartySetup.agreement))
                 .font(.callout)
                 .foregroundStyle(.secondary)
-                .help("Opens on tabbinotch.com")
+                .help(String(localized: "Opens on tabbinotch.com", bundle: .tabbi))
         }
     }
 
@@ -165,17 +166,17 @@ struct PartySetupView: View {
             FriendCodeCard(code: code, copy: copy)
             footer(done: true)
         case .offline:
-            Label("\(status.headline). \(status.detail)", systemImage: "wifi.exclamationmark")
+            Label(String(localized: "\(status.headline). \(status.detail)", bundle: .tabbi, comment: "A headline, then the detail sentence."), systemImage: "wifi.exclamationmark")
                 .font(.callout)
             HStack(spacing: 12) {
                 Spacer()
-                Button("Close", action: close)
+                Button(String(localized: "Close", bundle: .tabbi), action: close)
                     .keyboardShortcut(.cancelAction)
-                    .help("Close this. Party keeps trying by itself.")
-                Button("Try again", action: retry)
+                    .help(String(localized: "Close this. Party keeps trying by itself.", bundle: .tabbi))
+                Button(String(localized: "Try again", bundle: .tabbi), action: retry)
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
-                    .help("Try to reach Party again now")
+                    .help(String(localized: "Try to reach Party again now", bundle: .tabbi))
             }
         case .ageCheck:
             // Party asks the age question in its tab before it sends anything.
@@ -184,7 +185,7 @@ struct PartySetupView: View {
             footer(done: false)
         case .connecting, .notSetUp:
             Label {
-                Text("Joining Party. This takes a second.")
+                Text("Joining Party. This takes a second.", bundle: .tabbi)
                     .foregroundStyle(.secondary)
             } icon: {
                 ProgressView().controlSize(.small)
@@ -197,10 +198,10 @@ struct PartySetupView: View {
     private func footer(done: Bool) -> some View {
         HStack {
             Spacer()
-            Button(done ? "Done" : "Close", action: close)
+            Button(done ? String(localized: "Done", bundle: .tabbi) : String(localized: "Close", bundle: .tabbi), action: close)
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
-                .help(done ? "Close this" : "Close this. Party keeps trying by itself.")
+                .help(done ? String(localized: "Close this", bundle: .tabbi) : String(localized: "Close this. Party keeps trying by itself.", bundle: .tabbi))
         }
     }
 }
@@ -237,7 +238,7 @@ private struct PetChoice: View {
         .buttonStyle(.plain)
         .onHover { hovering = $0 }
         .animation(.spring(duration: 0.25), value: isSelected)
-        .help("Study with a \(species.displayName.lowercased())")
+        .help(species == .cat ? String(localized: "Study with a cat", bundle: .tabbi) : String(localized: "Study with a dog", bundle: .tabbi))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
@@ -251,7 +252,7 @@ struct FriendCodeCard: View {
     var body: some View {
         HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Your friend code")
+                Text("Your friend code", bundle: .tabbi)
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.secondary)
                 Text(code)
@@ -268,11 +269,11 @@ struct FriendCodeCard: View {
                     copied = false
                 }
             } label: {
-                Label(copied ? "Copied" : "Copy code", systemImage: copied ? "checkmark" : "doc.on.doc")
+                Label(copied ? String(localized: "Copied", bundle: .tabbi) : String(localized: "Copy code", bundle: .tabbi), systemImage: copied ? "checkmark" : "doc.on.doc")
                     .frame(minWidth: 96)
             }
             .controlSize(.large)
-            .help("Copy your friend code to send to a friend")
+            .help(String(localized: "Copy your friend code to send to a friend", bundle: .tabbi))
         }
         .padding(16)
         .background(.quaternary.opacity(0.6), in: RoundedRectangle(cornerRadius: 12, style: .continuous))

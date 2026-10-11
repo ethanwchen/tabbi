@@ -136,9 +136,14 @@ private struct PartyMemberView: View {
                 }
                 if let text = shortStatus(status) {
                     // Narrow columns drop the dot and color the countdown instead.
-                    Text(text)
-                        .font(Theme.Typography.caption.monospacedDigit())
-                        .foregroundStyle(roomy ? Theme.Palette.tertiaryText : PartyStyle.color(for: status))
+                    // A countdown too long for the column in the user's language
+                    // ("noch 19 Min.") falls back to the short one ("19m").
+                    ViewThatFits(in: .horizontal) {
+                        Text(text)
+                        if let countdown = countdown, countdown != text { Text(countdown) }
+                    }
+                    .font(Theme.Typography.caption.monospacedDigit())
+                    .foregroundStyle(roomy ? Theme.Palette.tertiaryText : PartyStyle.color(for: status))
                 }
             }
             .frame(height: 13)
@@ -158,16 +163,20 @@ private struct PartyMemberView: View {
             .foregroundStyle(Theme.Palette.warning)
     }
 
+    /// The phase's minutes left in the fewest characters ("18m"), or nil
+    /// when no phase is running.
+    private var countdown: String? {
+        PartyRoster.timeLeft(member.presence, online: member.online, at: now).map { seconds in
+            let minutes = Int((seconds / 60).rounded(.up))
+            return String(localized: "\(minutes)m", bundle: .tabbi)
+        }
+    }
+
     /// Fits under a pet: the countdown while studying, otherwise the
     /// status; in a narrow column only a countdown, or nil for just the dot.
     private func shortStatus(_ status: PartyStatus) -> String? {
         let left = PartyRoster.timeLeft(member.presence, online: member.online, at: now)
-        guard roomy else {
-            return left.map { seconds in
-                let minutes = Int((seconds / 60).rounded(.up))
-                return String(localized: "\(minutes)m", bundle: .tabbi)
-            }
-        }
+        guard roomy else { return countdown }
         switch status {
         case .studying: return left.map { PartyRoster.minutesLeft($0) } ?? String(localized: "Studying", bundle: .tabbi)
         case .onBreak: return String(localized: "Break", bundle: .tabbi)

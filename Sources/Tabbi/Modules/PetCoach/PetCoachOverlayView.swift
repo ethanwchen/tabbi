@@ -315,7 +315,7 @@ private struct PetCoachBubble: View {
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.content, value: showsWisdom)
-        .help(dismissesOnClick ? "Click to send the pet home" : "")
+        .help(dismissesOnClick ? String(localized: "Click to send the pet home", bundle: .tabbi) : "")
         .accessibilityElement(children: .contain)
         .accessibilityAction { if dismissesOnClick { onReply(.thanks) } }
     }
@@ -363,7 +363,7 @@ private struct PetCelebrationText: View {
                 .frame(height: 18)
                 .background(Capsule().fill(accent.opacity(0.16)))
                 .fixedSize()
-                .help("Points earned for this session")
+                .help(String(localized: "Points earned for this session", bundle: .tabbi))
             }
             if let progress {
                 PetUnlockBar(progress: progress, fraction: shown ? progress.fraction : progress.fractionBefore,
@@ -417,9 +417,9 @@ private struct PetGiftLine: View {
 
     private var help: String {
         switch gift {
-        case .bonusPoints: "Bonus points from your pet, added to your balance"
-        case .rareFur: "A rare fur color from your pet. Try it in the Closet under Look."
-        case .seasonMinutes: "Bonus minutes toward this event's limited items"
+        case .bonusPoints: String(localized: "Bonus points from your pet, added to your balance", bundle: .tabbi)
+        case .rareFur: String(localized: "A rare fur color from your pet. Try it in the Closet under Look.", bundle: .tabbi)
+        case .seasonMinutes: String(localized: "Bonus minutes toward this event's limited items", bundle: .tabbi)
         }
     }
 }
@@ -435,18 +435,19 @@ private struct PetWisdomText: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
             HStack(spacing: Theme.Spacing.xxs) {
                 Image(systemName: "sparkle").font(.system(size: 8, weight: .bold)).foregroundStyle(accent)
-                Text("Cat wisdom")
+                Text("Cat wisdom", bundle: .tabbi)
             }
             .font(Theme.Typography.caption)
             .foregroundStyle(Theme.Palette.tertiaryText)
-            Text(line.text)
+            Text(line.displayText)
                 .font(Theme.Typography.bodyEmphasis)
                 .foregroundStyle(Theme.Palette.primaryText)
                 .lineLimit(3)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .accessibilityElement(children: .combine)
-        .help("A line from your pet. Hover to keep it, click to send the pet home. Turn it off in Settings › General.")
+        .help(Text("A line from your pet. Hover to keep it, click to send the pet home. Turn it off in Settings › General.",
+                    bundle: .tabbi))
     }
 }
 
@@ -489,8 +490,8 @@ private struct PetUnlockBar: View {
                 .lineLimit(1)
                 .truncationMode(.middle)
         }
-        .help(progress.isReady ? "\(progress.item.displayName) is ready in the Closet"
-              : "\(progress.missing) more points for \(progress.item.displayName)")
+        .help(progress.isReady ? String(localized: "\(progress.item.displayName) is ready in the Closet", bundle: .tabbi)
+              : String(localized: "\(progress.missing) more points for \(progress.item.displayName)", bundle: .tabbi))
     }
 }
 

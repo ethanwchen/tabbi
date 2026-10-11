@@ -48,8 +48,10 @@ final class ConnectionsStore: ObservableObject {
 
     /// The status to show: the latest answer, or "checking" before the first.
     func status(of kind: ConnectionKind) -> ConnectionStatus {
-        diagnoses[kind]?.status ?? ConnectionStatus(light: .checking, headline: "Checking \(kind.title)",
-                                                    detail: "This takes a second.")
+        diagnoses[kind]?.status ?? ConnectionStatus(
+            light: .checking, headline: String(localized: "Checking \(kind.title)", bundle: .tabbi),
+            detail: String(localized: "This takes a second.", bundle: .tabbi)
+        )
     }
 
     /// The troubleshooter's checks, or nil before the first check finishes.

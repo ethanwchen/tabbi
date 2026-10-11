@@ -24,9 +24,8 @@ struct DayPlanView: View {
         case .idle:
             EmptyView()
         case .planning:
-            DayPlanShimmer(help: plan.settings.planMode == .claude
-                           ? "\(plan.assistantName) is fitting your tasks around \(plan.target.eventsName)"
-                           : "Fitting your work and breaks around \(plan.target.eventsName)")
+            DayPlanShimmer(help: DayPlanFormat.planningHelp(byAI: plan.settings.planMode == .claude,
+                                                         assistant: plan.assistantName, target: plan.target))
                 .transition(.opacity)
         case .proposal(let proposal):
             VStack(alignment: .leading, spacing: 0) {
@@ -43,26 +42,30 @@ struct DayPlanView: View {
             }
         case .noFreeTime:
             PlannerMessage(symbol: "moon.stars.fill", tint: TodayModule.descriptor.accentColor,
-                           title: "Nothing left to plan",
+                           title: String(localized: "Nothing left to plan", bundle: .tabbi),
                            detail: plan.target == .tomorrow
-                               ? "Tomorrow has no free time worth a block before the evening."
-                               : "There's no free time worth a block before the evening.")
+                               ? String(localized: "Tomorrow has no free time worth a block before the evening.", bundle: .tabbi)
+                               : String(localized: "There's no free time worth a block before the evening.", bundle: .tabbi))
                 .frame(maxHeight: .infinity)
         case .failed(let failure):
             PlannerMessage(symbol: "exclamationmark.triangle.fill", tint: Theme.Palette.warning,
                            title: failure.title, detail: failure.detail) {
                 if failure.canRetry {
-                    PlannerPillButton(title: "Retry", symbol: "arrow.clockwise", help: "Ask \(plan.assistantName) again") {
+                    PlannerPillButton(title: String(localized: "Retry", bundle: .tabbi), symbol: "arrow.clockwise",
+                                      help: String(localized: "Ask \(plan.assistantName) again", bundle: .tabbi)) {
                         plan.retry()
                     }
                 } else if failure.opensConnections {
-                    PlannerPillButton(title: failure == .calendarUnavailable ? "Connect calendar" : "Set up AI",
-                                      symbol: "link", help: "Open Connections to finish setting this up") {
+                    PlannerPillButton(title: failure == .calendarUnavailable
+                                          ? String(localized: "Connect calendar", bundle: .tabbi)
+                                          : String(localized: "Set up AI", bundle: .tabbi),
+                                      symbol: "link",
+                                      help: String(localized: "Open Connections to finish setting this up", bundle: .tabbi)) {
                         ConnectionsStore.shared.showHub()
                     }
                 } else if failure == .calendarOff {
-                    PlannerPillButton(title: "Open Settings", symbol: "gearshape",
-                                      help: "Open Privacy & Security to allow Calendar access") {
+                    PlannerPillButton(title: String(localized: "Open Settings", bundle: .tabbi), symbol: "gearshape",
+                                      help: String(localized: "Open Privacy & Security to allow Calendar access", bundle: .tabbi)) {
                         plan.openPrivacySettings()
                     }
                 }
@@ -70,11 +73,6 @@ struct DayPlanView: View {
             .frame(maxHeight: .infinity)
         }
     }
-}
-
-private extension PlannerViewedDay {
-    /// The planned day's calendar, for the shimmer's tooltip.
-    var eventsName: String { self == .tomorrow ? "tomorrow's events" : "today's events" }
 }
 
 // MARK: Header
@@ -111,19 +109,20 @@ private struct DayPlanHeader: View {
             }
             Spacer(minLength: spacing)
             if plan.writeFailed {
-                Label("Not added", systemImage: "exclamationmark.triangle.fill")
+                Label(String(localized: "Not added", bundle: .tabbi), systemImage: "exclamationmark.triangle.fill")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.warning)
                     .lineLimit(1)
-                    .help("The calendar didn't accept the events. Check Calendar access and try again.")
+                    .help(String(localized: "The calendar didn't accept the events. Check Calendar access and try again.", bundle: .tabbi))
             }
-            PlannerTextButton(title: isFinal ? "Done" : "Cancel",
-                              help: isFinal ? "Back to the checklist" : "Discard the plan and show the checklist") {
+            PlannerTextButton(title: isFinal ? String(localized: "Done", bundle: .tabbi) : String(localized: "Cancel", bundle: .tabbi),
+                              help: isFinal ? String(localized: "Back to the checklist", bundle: .tabbi)
+                                  : String(localized: "Discard the plan and show the checklist", bundle: .tabbi)) {
                 plan.cancel()
             }
             if case .proposal = plan.phase {
-                PlannerPillButton(title: "Add all", symbol: addAllSymbol, isProminent: true,
-                                  help: "Add every block to your default calendar") {
+                PlannerPillButton(title: String(localized: "Add all", bundle: .tabbi), symbol: addAllSymbol, isProminent: true,
+                                  help: String(localized: "Add every block to your default calendar", bundle: .tabbi)) {
                     withMotion(Theme.Motion.snappy) { plan.add() }
                 }
                 .disabled(plan.isRefining)
@@ -135,8 +134,10 @@ private struct DayPlanHeader: View {
 
     private var title: String {
         switch plan.phase {
-        case .planning: plan.target == .tomorrow ? "Planning tomorrow…" : "Planning your day…"
-        case .proposal: plan.target == .tomorrow ? "Tomorrow" : "Your plan"
+        case .planning: plan.target == .tomorrow ? String(localized: "Planning tomorrow…", bundle: .tabbi)
+            : String(localized: "Planning your day…", bundle: .tabbi)
+        case .proposal: plan.target == .tomorrow ? String(localized: "Tomorrow", bundle: .tabbi)
+            : String(localized: "Your plan", bundle: .tabbi)
         default: plan.target.planTitle
         }
     }
@@ -162,8 +163,9 @@ private struct DayPlanFooter: View {
                 .contentTransition(.numericText())
                 .frame(maxWidth: .infinity, alignment: .leading)
             if showsRefine {
-                PlannerPillButton(title: "Refine", symbol: "wand.and.stars",
-                                  help: "Refine with \(plan.assistantName): ask for suggestions on this plan (optional)") {
+                PlannerPillButton(title: String(localized: "Refine", bundle: .tabbi), symbol: "wand.and.stars",
+                                  help: String(localized: "Refine with \(plan.assistantName): ask for suggestions on this plan (optional)",
+                                               bundle: .tabbi)) {
                     plan.refine()
                 }
                 .transition(.opacity)
@@ -176,8 +178,10 @@ private struct DayPlanFooter: View {
     }
 
     private var caption: String {
-        if plan.isRefining { return "\(plan.assistantName) is looking over this plan…" }
-        if plan.refineFailed { return "\(plan.assistantName) couldn't refine it. This plan still works." }
+        if plan.isRefining { return String(localized: "\(plan.assistantName) is looking over this plan…", bundle: .tabbi) }
+        if plan.refineFailed {
+            return String(localized: "\(plan.assistantName) couldn't refine it. This plan still works.", bundle: .tabbi)
+        }
         return DayPlanFormat.footer(proposal, assistant: plan.assistantName)
     }
 
@@ -219,9 +223,9 @@ private struct DayPlanBlockRow: View {
             }
             HStack(spacing: Theme.Spacing.xxs) {
                 DayPlanRowButton(symbol: "checkmark", tint: TodayModule.descriptor.accentColor, isTinted: true,
-                                 help: "Add this block to your calendar", action: add)
+                                 help: String(localized: "Add this block to your calendar", bundle: .tabbi), action: add)
                 DayPlanRowButton(symbol: "xmark", tint: Theme.Palette.danger,
-                                 help: "Leave this block out", action: dismiss)
+                                 help: String(localized: "Leave this block out", bundle: .tabbi), action: dismiss)
             }
         }
         .padding(.horizontal, Theme.Spacing.s)
@@ -247,7 +251,7 @@ private struct DayPlanKindMarker: View {
             if let symbol = DayPlanFormat.symbol(for: kind) {
                 Image(systemName: symbol)
                     .font(.system(size: 10, weight: .semibold))
-                    .help(kind == .reviews ? "Review block" : "Study block")
+                    .help(kind == .reviews ? String(localized: "Review block", bundle: .tabbi) : String(localized: "Study block", bundle: .tabbi))
             } else {
                 Capsule().frame(width: 3, height: 14)
             }
@@ -271,7 +275,7 @@ private struct DayPlanBreakLabel: View {
         .foregroundStyle(Theme.Palette.tertiaryText)
         .lineLimit(1)
         .fixedSize()
-        .help("Then a break until \(UpcomingEventFormat.startTime(rest.end))")
+        .help(String(localized: "Then a break until \(UpcomingEventFormat.startTime(rest.end))", bundle: .tabbi))
     }
 }
 
@@ -321,7 +325,7 @@ private struct DayPlanShimmer: View {
         }
         .shimmering()
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Planning")
+        .accessibilityLabel(Text("Planning", bundle: .tabbi))
         .help(help)
     }
 }
@@ -353,13 +357,27 @@ enum DayPlanFormat {
     /// the ones accepted so far, including any that no longer fit.
     static func footer(_ proposal: DayPlanProposal, assistant: String) -> String {
         var parts: [String] = []
-        if proposal.addedCount > 0 { parts.append("\(proposal.addedCount) added to your calendar") }
-        if proposal.skippedCount > 0 { parts.append("\(proposal.skippedCount) no longer fit") }
+        if proposal.addedCount > 0 {
+            parts.append(String(localized: "\(proposal.addedCount) added to your calendar", bundle: .tabbi))
+        }
+        if proposal.skippedCount > 0 {
+            parts.append(String(localized: "\(proposal.skippedCount) no longer fit", bundle: .tabbi))
+        }
         guard parts.isEmpty else { return parts.joined(separator: " · ") }
         switch proposal.refinement {
-        case .changed: return "Refined with \(assistant)."
-        case .unchanged: return "\(assistant) suggests no changes."
-        case nil: return "Blocks go to your calendar."
+        case .changed: return String(localized: "Refined with \(assistant).", bundle: .tabbi)
+        case .unchanged: return String(localized: "\(assistant) suggests no changes.", bundle: .tabbi)
+        case nil: return String(localized: "Blocks go to your calendar.", bundle: .tabbi)
+        }
+    }
+
+    /// The planning shimmer's tooltip: who plans, around which day's events.
+    static func planningHelp(byAI: Bool, assistant: String, target: PlannerViewedDay) -> String {
+        switch (byAI, target == .tomorrow) {
+        case (true, true): String(localized: "\(assistant) is fitting your tasks around tomorrow's events", bundle: .tabbi)
+        case (true, false): String(localized: "\(assistant) is fitting your tasks around today's events", bundle: .tabbi)
+        case (false, true): String(localized: "Fitting your work and breaks around tomorrow's events", bundle: .tabbi)
+        case (false, false): String(localized: "Fitting your work and breaks around today's events", bundle: .tabbi)
         }
     }
 }

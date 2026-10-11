@@ -85,7 +85,7 @@ struct StudyEvidenceBadge: View {
             .padding(.horizontal, Theme.Spacing.s)
             .frame(height: 18)
             .background(Capsule().fill(tint.opacity(0.14)))
-            .help("Evidence: \(level.label.lowercased())")
+            .help(String(localized: "Evidence: \(level.label)", bundle: .tabbi))
     }
 
     private var tint: Color {
@@ -113,7 +113,7 @@ struct StudyInfoButton: View {
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .help("How \(StudyMethodInfo.info(for: method).name) works")
+        .help(String(localized: "How \(StudyMethodInfo.info(for: method).name) works", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }

@@ -72,7 +72,7 @@ public struct FocusMix: Codable, Equatable, Sendable {
 
     /// Short label for pickers and tooltips, e.g. "Rain + Fireplace".
     public var summary: String {
-        isOff ? "Off" : layers.map(\.sound.displayName).joined(separator: " + ")
+        isOff ? String(localized: "Off", bundle: .tabbi) : layers.map(\.sound.displayName).joined(separator: " + ")
     }
 
     /// Linear gain for each sound in the mix.

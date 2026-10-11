@@ -82,7 +82,7 @@ struct StudySoundMixer: View {
 
     private var header: some View {
         HStack(spacing: Theme.Spacing.s) {
-            Text("Focus sound")
+            Text("Focus sound", bundle: .tabbi)
                 .foregroundStyle(Theme.Palette.tertiaryText)
             Text(mix.summary)
                 .foregroundStyle(Theme.Palette.secondaryText)
@@ -135,7 +135,7 @@ struct StudySoundMixer: View {
     private var blend: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             HStack(spacing: Theme.Spacing.s) {
-                Text("Blend")
+                Text("Blend", bundle: .tabbi)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                 Spacer(minLength: 0)
@@ -270,15 +270,15 @@ private struct StudyMixPresetChip: View {
             .onTapGesture(perform: apply)
             .onLongPressGesture(minimumDuration: 0.5, perform: rename)
             .contextMenu {
-                Button("Rename", action: rename)
-                Button("Delete", role: .destructive, action: delete)
+                Button(String(localized: "Rename", bundle: .tabbi), action: rename)
+                Button(String(localized: "Delete", bundle: .tabbi), role: .destructive, action: delete)
             }
             .help(help)
             .onHover { hovering = $0 }
             .motion(Theme.Motion.snappy, value: hovering)
             .motion(Theme.Motion.snappy, value: isOn)
             .accessibilityElement()
-            .accessibilityLabel("Preset \(name)")
+            .accessibilityLabel(String(localized: "Preset \(name)", bundle: .tabbi))
             .accessibilityAddTraits(isOn ? [.isButton, .isSelected] : .isButton)
             .accessibilityAction(.default, apply)
             .accessibilityAction(named: "Rename", rename)
@@ -433,7 +433,7 @@ private struct StudyPlaylistList: View {
         let current = FocusPlaylistPreset.matching(text)
         let hasCustom = current == nil && focus.settings.playlist != nil
         VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-            Text("Playlist")
+            Text("Playlist", bundle: .tabbi)
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.tertiaryText)
                 .padding(.bottom, Theme.Spacing.xxs)

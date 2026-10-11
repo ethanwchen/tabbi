@@ -65,13 +65,13 @@ public enum AIProviderID: String, Codable, CaseIterable, Hashable, Sendable {
     /// A one-line note for the provider picker on cost and setup.
     public var setupSummary: String {
         switch self {
-        case .claudeCLI: "Uses your Claude subscription through the claude command."
-        case .codexCLI: "Uses your ChatGPT plan through the codex command."
-        case .geminiCLI: "Free with a Google account through the gemini command."
-        case .anthropic: "Pay as you go with an Anthropic API key."
-        case .openAI: "Pay as you go with an OpenAI API key."
-        case .gemini: "Free tier with a Google AI Studio key."
-        case .ollama: "Free and offline: runs a model on this Mac."
+        case .claudeCLI: String(localized: "Uses your Claude subscription through the claude command.", bundle: .tabbi)
+        case .codexCLI: String(localized: "Uses your ChatGPT plan through the codex command.", bundle: .tabbi)
+        case .geminiCLI: String(localized: "Free with a Google account through the gemini command.", bundle: .tabbi)
+        case .anthropic: String(localized: "Pay as you go with an Anthropic API key.", bundle: .tabbi)
+        case .openAI: String(localized: "Pay as you go with an OpenAI API key.", bundle: .tabbi)
+        case .gemini: String(localized: "Free tier with a Google AI Studio key.", bundle: .tabbi)
+        case .ollama: String(localized: "Free and offline: runs a model on this Mac.", bundle: .tabbi)
         }
     }
 
@@ -92,18 +92,18 @@ public enum AIProviderID: String, Codable, CaseIterable, Hashable, Sendable {
     }
 
     /// The button that opens `setupPage`.
-    public var setupPageTitle: String { requiresAPIKey ? "Get a Key" : "Install" }
+    public var setupPageTitle: String { requiresAPIKey ? String(localized: "Get a Key", bundle: .tabbi) : String(localized: "Install", bundle: .tabbi) }
 
     /// What to do once installed, for the providers whose setup is more
     /// than an install or a key: the CLIs sign in on first run, and Ollama
     /// needs the model downloaded once. `model` is the one Tabbi will ask for.
     public func setupHint(model: String) -> String? {
         switch self {
-        case .claudeCLI: "Run claude in Terminal once to sign in."
-        case .codexCLI: "Run codex in Terminal once to sign in."
-        case .geminiCLI: "Run gemini in Terminal once to sign in with Google."
+        case .claudeCLI: String(localized: "Run claude in Terminal once to sign in.", bundle: .tabbi)
+        case .codexCLI: String(localized: "Run codex in Terminal once to sign in.", bundle: .tabbi)
+        case .geminiCLI: String(localized: "Run gemini in Terminal once to sign in with Google.", bundle: .tabbi)
         case .anthropic, .openAI, .gemini: nil
-        case .ollama: "With Ollama open, run ollama pull \(model) in Terminal once."
+        case .ollama: String(localized: "With Ollama open, run ollama pull \(model) in Terminal once.", bundle: .tabbi)
         }
     }
 

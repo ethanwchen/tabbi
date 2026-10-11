@@ -6,7 +6,7 @@ extension SettingsPane {
     /// Settings > Now Playing: whether the panel also follows SoundCloud in
     /// a browser.
     @MainActor static func nowPlaying(_ controller: SpotifyController) -> SettingsPane {
-        SettingsPane(id: "nowPlaying", title: "Now Playing", symbol: NowPlayingModule.descriptor.symbol,
+        SettingsPane(id: "nowPlaying", title: String(localized: "Now Playing", bundle: .tabbi), symbol: NowPlayingModule.descriptor.symbol,
                      view: AnyView(NowPlayingSettingsPane(controller: controller)))
     }
 }
@@ -19,10 +19,10 @@ struct NowPlayingSettingsPane: View {
     var body: some View {
         Form {
             Section {
-                Toggle("Show SoundCloud from Safari or Chrome", isOn: $controller.preferences.showsSoundCloud)
-                    .help("Show and control SoundCloud playing in a Safari or Chrome tab")
+                Toggle(String(localized: "Show SoundCloud from Safari or Chrome", bundle: .tabbi), isOn: $controller.preferences.showsSoundCloud)
+                    .help(String(localized: "Show and control SoundCloud playing in a Safari or Chrome tab", bundle: .tabbi))
             } header: {
-                Text("Players")
+                Text("Players", bundle: .tabbi)
             } footer: {
                 Text(footer)
                     .font(.callout)
@@ -38,7 +38,6 @@ struct NowPlayingSettingsPane: View {
     }
 
     private var footer: String {
-        "Spotify and Apple Music always show. For SoundCloud, macOS asks to let \(Edition.current.name) "
-            + "control your browser, and the browser needs Allow JavaScript from Apple Events turned on."
+        String(localized: "Spotify and Apple Music always show. For SoundCloud, macOS asks to let \(Edition.current.name) control your browser, and the browser needs Allow JavaScript from Apple Events turned on.", bundle: .tabbi)
     }
 }

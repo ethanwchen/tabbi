@@ -232,8 +232,8 @@ struct DoNotDisturbTestLine: View {
             }
         }
         .font(.callout)
-        .help(test.isFailure ? "Fix the shortcut in the Shortcuts app, then test again"
-                             : "What happened when Tabbi ran your shortcuts")
+        .help(test.isFailure ? String(localized: "Fix the shortcut in the Shortcuts app, then test again", bundle: .tabbi)
+                             : String(localized: "What happened when Tabbi ran your shortcuts", bundle: .tabbi))
     }
 }
 
@@ -275,11 +275,11 @@ extension ConnectionLight {
 
     var help: String {
         switch self {
-        case .checking: "Tabbi is checking this right now"
-        case .connected: "This works. Nothing to do."
-        case .needsStep: "Almost there: one thing left to do"
-        case .notSetUp: "Not connected to Tabbi yet"
-        case .notInstalled: "The app this needs isn't on this Mac"
+        case .checking: String(localized: "Tabbi is checking this right now", bundle: .tabbi)
+        case .connected: String(localized: "This works. Nothing to do.", bundle: .tabbi)
+        case .needsStep: String(localized: "Almost there: one thing left to do", bundle: .tabbi)
+        case .notSetUp: String(localized: "Not connected to Tabbi yet", bundle: .tabbi)
+        case .notInstalled: String(localized: "The app this needs isn't on this Mac", bundle: .tabbi)
         }
     }
 }
@@ -288,16 +288,16 @@ extension ConnectionAction {
     /// The button's tooltip: what pressing it does.
     func help(for kind: ConnectionKind) -> String {
         switch self {
-        case .download(let app): "Open the official page to download \(app.name)"
-        case .openApp(let app): "Open \(app.name), then Tabbi checks again"
-        case .showGuide: "Walk through the steps to connect \(kind.title)"
-        case .askPermission: "macOS asks once whether Tabbi may use \(kind.title)"
-        case .openSettings: "Open the right page in System Settings"
-        case .checkAgain: "Check \(kind.title) again"
-        case .setUp: "Set up \(kind.title)"
-        case .copyFriendCode: "Copy your friend code to send to a friend"
-        case .testDoNotDisturb: "Turn Do Not Disturb on for a moment, then off again"
-        case .turnOnDoNotDisturb: "Turn on Do Not Disturb whenever the focus timer runs"
+        case .download(let app): String(localized: "Open the official page to download \(app.displayName)", bundle: .tabbi)
+        case .openApp(let app): String(localized: "Open \(app.displayName), then Tabbi checks again", bundle: .tabbi)
+        case .showGuide: String(localized: "Walk through the steps to connect \(kind.title)", bundle: .tabbi)
+        case .askPermission: String(localized: "macOS asks once whether Tabbi may use \(kind.title)", bundle: .tabbi)
+        case .openSettings: String(localized: "Open the right page in System Settings", bundle: .tabbi)
+        case .checkAgain: String(localized: "Check \(kind.title) again", bundle: .tabbi)
+        case .setUp: String(localized: "Set up \(kind.title)", bundle: .tabbi)
+        case .copyFriendCode: String(localized: "Copy your friend code to send to a friend", bundle: .tabbi)
+        case .testDoNotDisturb: String(localized: "Turn Do Not Disturb on for a moment, then off again", bundle: .tabbi)
+        case .turnOnDoNotDisturb: String(localized: "Turn on Do Not Disturb whenever the focus timer runs", bundle: .tabbi)
         }
     }
 }
