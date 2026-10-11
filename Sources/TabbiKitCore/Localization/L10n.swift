@@ -21,7 +21,7 @@ public enum L10n {
     /// The languages Tabbi ships, as `.lproj` names. Resources/Info.plist
     /// lists the same ones in `CFBundleLocalizations`, so AppKit's own
     /// controls follow the user into them too.
-    public static let languages = ["en", "de", "es", "fr", "fil", "ja", "ko", "pt-BR", "ru", "zh-Hans", "zh-Hant"]
+    public static let languages = ["en", "ar", "de", "es", "fr", "fil", "ja", "ko", "pt-BR", "ru", "zh-Hans", "zh-Hant"]
 
     /// The folder in the resource bundle that holds one `<language>.lproj`
     /// per language (`Localization/Strings` in the sources).

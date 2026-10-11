@@ -67,6 +67,25 @@ final class LocalizationTests: XCTestCase {
                        ["С тобой 1 друг.", "С тобой 2 друга.", "С тобой 5 друзей.", "С тобой 21 друг."])
     }
 
+    /// Arabic has six plural forms: 0 is "zero", 1 "one", 2 "two", 3 to 10
+    /// "few", 11 to 99 "many" and 100 "other", so every Arabic plural fills
+    /// all of them. Arabic formats with Western digits here, as the locale's
+    /// default numbering system says.
+    func testArabicPluralsFillAllSixForms() throws {
+        let arabic = try XCTUnwrap(L10n.strings(for: "ar"))
+        let locale = Locale(identifier: "ar")
+        let counts = [0, 1, 2, 3, 11, 100]
+        let days = arabic.localizedString(forKey: "%lld streak days", value: nil, table: nil)
+        XCTAssertEqual(counts.map { String(format: days, locale: locale, $0) },
+                       ["0 يوم", "1 يوم", "2 يومان", "3 أيام", "11 يومًا", "100 يوم"])
+        let sessions = arabic.localizedString(forKey: "%lld sessions", value: nil, table: nil)
+        XCTAssertEqual(counts.map { String(format: sessions, locale: locale, $0) },
+                       ["0 جلسة", "1 جلسة", "2 جلستان", "3 جلسات", "11 جلسةً", "100 جلسة"])
+        let cores = arabic.localizedString(forKey: "%lld cores", value: nil, table: nil)
+        XCTAssertEqual(counts.map { String(format: cores, locale: locale, $0) },
+                       ["0 نواة", "1 نواة", "2 نواتان", "3 أنوية", "11 نواةً", "100 نواة"])
+    }
+
     /// The widget's streak count has a key of its own ("%lld days" is the
     /// Closet chart's dative phrase), with an English plural, so English
     /// reads "12 days" and German the nominative "12 Tage".
@@ -211,6 +230,7 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(L10n.language(for: ["pt-BR"], available: available), "pt-BR")
         XCTAssertEqual(L10n.language(for: ["zh-Hans-CN"], available: available), "zh-Hans")
         XCTAssertEqual(L10n.language(for: ["zh-Hant-TW"], available: available), "zh-Hant")
+        XCTAssertEqual(L10n.language(for: ["ar-SA"], available: available), "ar")
         XCTAssertEqual(L10n.language(for: ["ru-RU"], available: available), "ru")
         XCTAssertEqual(L10n.language(for: ["fil-PH"], available: available), "fil")
         XCTAssertEqual(L10n.language(for: ["ja-JP"], available: available), "ja")
