@@ -16,7 +16,7 @@ struct ConnectionProbes: Sendable {
         switch kind {
         case .anki: await Self.anki().diagnosis
         case .calendar: Self.calendar().diagnosis
-        case .claude: await Self.claude().diagnosis
+        case .claude: await Self.claude()
         case .spotify: await Self.music(.spotify, remembers: remembers).diagnosis
         case .music: await Self.music(.music, remembers: remembers).diagnosis
         case .notifications: await Self.notifications().diagnosis
@@ -102,12 +102,14 @@ struct ConnectionProbes: Sendable {
     // MARK: Claude
 
     /// Finds `claude`, then asks it (with a tiny, private probe) whether
-    /// someone is signed in.
-    private static func claude() async -> ClaudeConnectionState {
+    /// someone is signed in. The diagnosis keeps where it was found, so the
+    /// sign-in walkthrough can run that file by its full path.
+    private static func claude() async -> ConnectionDiagnosis {
         await Task.detached(priority: .userInitiated) {
-            guard let executable = ClaudeCLI.locate() else { return ClaudeConnectionState.notInstalled }
+            guard let executable = ClaudeCLI.locate() else { return ClaudeConnectionState.notInstalled.diagnosis }
             let output = run(executable, ClaudeConnectionState.probeArguments) ?? ""
-            return .resolve(isInstalled: true, signIn: ClaudeSignIn.parse(authStatusOutput: output))
+            let state = ClaudeConnectionState.resolve(isInstalled: true, signIn: ClaudeSignIn.parse(authStatusOutput: output))
+            return state.diagnosis(executable: executable)
         }.value
     }
 

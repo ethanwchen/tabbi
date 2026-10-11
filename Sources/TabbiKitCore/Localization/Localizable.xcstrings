@@ -37963,6 +37963,78 @@
         }
       }
     },
+    "Click %@ for the official steps, then come back here." : {
+      "comment" : "Setup hint in Settings > Connections > AI when the chosen command line tool (Codex or Gemini) is not installed. The argument is the Install button's title.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انقر على %@ لرؤية الخطوات الرسمية، ثم عد إلى هنا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke auf %@ für die offiziellen Schritte und komm dann hierher zurück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en %@ para ver los pasos oficiales y luego vuelve aquí."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-click ang %@ para sa opisyal na mga hakbang, saka bumalik dito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique sur %@ pour les étapes officielles, puis reviens ici."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をクリックして公式の手順を確認し、ここに戻ってきてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@를 클릭해 공식 안내를 확인한 다음 여기로 돌아오세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique em %@ para ver os passos oficiais e depois volte aqui."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми %@, чтобы увидеть официальные шаги, и вернись сюда."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点按“%@”查看官方步骤，然后回到这里。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按一下「%@」查看官方步驟，然後回到這裡。"
+          }
+        }
+      }
+    },
     "Click AnkiConnect in the list, then click Check for Updates." : {
       "comment" : "Setup walkthrough or permission priming sheet in Settings > Connections.",
       "extractionState" : "manual",
@@ -64118,6 +64190,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "資料屬於你的 Apple 帳號。在「一般」中「刪除帳號」即可移除。"
+          }
+        }
+      }
+    },
+    "It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself." : {
+      "comment" : "Setup walkthrough in Settings > Connections: what the pasted Claude setup line does next.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يثبّت Claude، ثم يفتح صفحة تسجيل الدخول في متصفحك. سجّل الدخول هناك وسيلاحظ Tabbi ذلك تلقائيًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es installiert Claude und öffnet dann eine Anmeldeseite in deinem Browser. Melde dich dort an, Tabbi merkt das von selbst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instala Claude y luego abre una página de inicio de sesión en tu navegador. Inicia sesión ahí y Tabbi lo notará solo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ini-install nito ang Claude, saka magbubukas ng sign-in page sa browser mo. Mag-sign in doon at kusang mapapansin ito ng Tabbi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ça installe Claude, puis ouvre une page de connexion dans ton navigateur. Connecte-toi là et Tabbi le remarque tout seul."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claudeがインストールされ、ブラウザでサインインページが開きます。そこでサインインすると、Tabbiが自動で気づきます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude가 설치된 다음 브라우저에 로그인 페이지가 열려요. 거기서 로그인하면 Tabbi가 알아서 알아차려요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ele instala o Claude e depois abre uma página de login no seu navegador. Entre lá e o Tabbi percebe sozinho."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Команда установит Claude и откроет страницу входа в браузере. Войди там, и Tabbi заметит это автоматически."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "它会安装 Claude，然后在浏览器中打开登录页面。在那里登录，Tabbi 会自动发现。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "它會安裝 Claude，然後在瀏覽器中打開登入頁面。在那裡登入，Tabbi 會自動偵測到。"
           }
         }
       }
@@ -98975,222 +99119,6 @@
         }
       }
     },
-    "Run claude in Terminal once to sign in." : {
-      "comment" : "Setup hint. Keep 'claude' (a command) and use the localized name of macOS Terminal.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "شغّل claude في Terminal مرة واحدة لتسجيل الدخول."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Führe claude einmal im Terminal aus, um dich anzumelden."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ejecuta claude una vez en Terminal para iniciar sesión."
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Patakbuhin ang claude sa Terminal minsan para mag-sign in."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lance claude une fois dans Terminal pour te connecter."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ターミナルで一度claudeを実行してサインインしてください。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "터미널에서 claude를 한 번 실행해 로그인하세요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rode claude uma vez no Terminal para entrar."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Один раз запусти claude в Терминале, чтобы войти."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在“终端”中运行一次 claude 以登录。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在「終端機」中執行一次 claude 來登入。"
-          }
-        }
-      }
-    },
-    "Run codex in Terminal once to sign in." : {
-      "comment" : "Setup hint. Keep 'codex' (a command).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "شغّل codex في Terminal مرة واحدة لتسجيل الدخول."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Führe codex einmal im Terminal aus, um dich anzumelden."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ejecuta codex una vez en Terminal para iniciar sesión."
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Patakbuhin ang codex sa Terminal minsan para mag-sign in."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lance codex une fois dans Terminal pour te connecter."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ターミナルで一度codexを実行してサインインしてください。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "터미널에서 codex를 한 번 실행해 로그인하세요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rode codex uma vez no Terminal para entrar."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Один раз запусти codex в Терминале, чтобы войти."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在“终端”中运行一次 codex 以登录。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在「終端機」中執行一次 codex 來登入。"
-          }
-        }
-      }
-    },
-    "Run gemini in Terminal once to sign in with Google." : {
-      "comment" : "Setup hint. Keep 'gemini' (a command).",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "شغّل gemini في Terminal مرة واحدة لتسجيل الدخول باستخدام Google."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Führe gemini einmal im Terminal aus, um dich mit Google anzumelden."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ejecuta gemini una vez en Terminal para iniciar sesión con Google."
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Patakbuhin ang gemini sa Terminal minsan para mag-sign in gamit ang Google."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lance gemini une fois dans Terminal pour te connecter avec Google."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ターミナルで一度geminiを実行してGoogleでサインインしてください。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "터미널에서 gemini를 한 번 실행해 Google로 로그인하세요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rode gemini uma vez no Terminal para entrar com o Google."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Один раз запусти gemini в Терминале, чтобы войти через Google."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在“终端”中运行一次 gemini 以使用 Google 登录。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在「終端機」中執行一次 gemini，以 Google 登入。"
-          }
-        }
-      }
-    },
     "Run the checks for %@ again" : {
       "comment" : "Setup or troubleshooter sheet in Settings > Connections.",
       "extractionState" : "manual",
@@ -116474,6 +116402,78 @@
         }
       }
     },
+    "The Claude row below shows how to sign in, if you still need to." : {
+      "comment" : "Setup hint in Settings > Connections > AI when Claude Code is installed.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يوضح صف Claude أدناه كيفية تسجيل الدخول إن كنت لا تزال بحاجة إلى ذلك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Zeile Claude unten zeigt, wie du dich anmeldest, falls nötig."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fila de Claude de abajo muestra cómo iniciar sesión, si aún lo necesitas."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ipinapakita ng row ng Claude sa ibaba kung paano mag-sign in, kung kailangan mo pa."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La ligne Claude ci-dessous montre comment te connecter, si tu dois encore le faire."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まだサインインしていない場合は、下のClaudeの行に手順が表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 로그인하지 않았다면 아래 Claude 줄에서 방법을 확인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A linha do Claude abaixo mostra como entrar, se você ainda precisar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Строка Claude ниже покажет, как войти, если это еще нужно."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果你还没登录，下方的 Claude 一行会告诉你怎么做。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果你還沒登入，下方的 Claude 一列會告訴你怎麼做。"
+          }
+        }
+      }
+    },
     "The Keychain didn't save the key. Try again." : {
       "comment" : "Error under the API key field.",
       "extractionState" : "manual",
@@ -121726,6 +121726,222 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "若要附加螢幕畫面，請在「螢幕與系統錄音」中打開 Tabbi。截圖只會隨你的問題傳送給 %@。"
+          }
+        }
+      }
+    },
+    "To install it, click %@ on the Claude row below." : {
+      "comment" : "Setup hint in Settings > Connections > AI when Claude Code is not installed. The argument is the Show me how button's title.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لتثبيته، انقر على %@ في صف Claude أدناه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zum Installieren klicke unten in der Zeile Claude auf %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para instalarlo, haz clic en %@ en la fila de Claude de abajo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para i-install ito, i-click ang %@ sa row ng Claude sa ibaba."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour l'installer, clique sur %@ dans la ligne Claude ci-dessous."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストールするには、下のClaudeの行で%@をクリックしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설치하려면 아래 Claude 줄에서 %@을 클릭하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para instalar, clique em %@ na linha do Claude abaixo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы установить, нажми %@ в строке Claude ниже."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要安装，请点按下方 Claude 一行中的“%@”。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要安裝，請按一下下方 Claude 一列中的「%@」。"
+          }
+        }
+      }
+    },
+    "To sign in with Google, run %@ in Terminal once." : {
+      "comment" : "Setup hint in Settings > Connections > AI for Gemini CLI. The argument is a command line (the tool's full path); keep it as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لتسجيل الدخول باستخدام Google، شغّل %@ في Terminal مرة واحدة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zum Anmelden mit Google führe einmal %@ im Terminal aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para iniciar sesión con Google, ejecuta %@ una vez en Terminal."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para mag-sign in gamit ang Google, patakbuhin ang %@ sa Terminal minsan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour te connecter avec Google, lance %@ une fois dans Terminal."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Googleでサインインするには、ターミナルで一度%@を実行してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google로 로그인하려면 터미널에서 %@를 한 번 실행하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para entrar com o Google, rode %@ uma vez no Terminal."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы войти через Google, один раз выполни %@ в Терминале."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要使用 Google 登录，请在“终端”中运行一次 %@。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要以 Google 登入，請在「終端機」中執行一次 %@。"
+          }
+        }
+      }
+    },
+    "To sign in, run %@ in Terminal once." : {
+      "comment" : "Setup hint in Settings > Connections > AI. The argument is a command line (the tool's full path and arguments); keep it as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لتسجيل الدخول، شغّل %@ في Terminal مرة واحدة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zum Anmelden führe einmal %@ im Terminal aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para iniciar sesión, ejecuta %@ una vez en Terminal."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para mag-sign in, patakbuhin ang %@ sa Terminal minsan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour te connecter, lance %@ une fois dans Terminal."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインインするには、ターミナルで一度%@を実行してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인하려면 터미널에서 %@를 한 번 실행하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para entrar, rode %@ uma vez no Terminal."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы войти, один раз выполни %@ в Терминале."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要登录，请在“终端”中运行一次 %@。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要登入，請在「終端機」中執行一次 %@。"
           }
         }
       }
@@ -129036,78 +129252,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "專注開始時"
-          }
-        }
-      }
-    },
-    "When it's done, sign in with your Claude account. Tabbi notices by itself." : {
-      "comment" : "Setup walkthrough or permission priming sheet in Settings > Connections.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "عند الانتهاء، سجّل الدخول بحساب Claude. سيلاحظ Tabbi ذلك تلقائيًا."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wenn es fertig ist, melde dich mit deinem Claude-Account an. Tabbi merkt das von selbst."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuando termine, inicia sesión con tu cuenta de Claude. Tabbi lo notará solo."
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kapag tapos na, mag-sign in gamit ang Claude account mo. Kusang mapapansin ito ng Tabbi."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une fois fini, connecte-toi avec ton compte Claude. Tabbi le remarque tout seul."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完了したら、Claudeアカウントでサインインします。Tabbiが自動で気づきます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "끝나면 Claude 계정으로 로그인하세요. Tabbi가 알아서 알아차려요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quando terminar, entre com sua conta do Claude. O Tabbi percebe sozinho."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Когда все будет готово, войди в свой аккаунт Claude. Tabbi заметит это автоматически."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完成后，用你的 Claude 账户登录。Tabbi 会自动发现。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完成後，用你的 Claude 帳號登入。Tabbi 會自動偵測到。"
           }
         }
       }

@@ -817,6 +817,8 @@
 	<string>Uma meta de cartões, não de tempo</string>
 	<key>Clear completed tasks</key>
 	<string>Limpar tarefas concluídas</string>
+	<key>Click %@ for the official steps, then come back here.</key>
+	<string>Clique em %@ para ver os passos oficiais e depois volte aqui.</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
 	<string>Clique em AnkiConnect na lista e depois em Verificar Atualizações.</string>
 	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
@@ -1523,6 +1525,8 @@
 	<string>O atalho “%@” existe?</string>
 	<key>It belongs to your Apple Account. Delete Account in General removes it.</key>
 	<string>Pertencem à sua Conta Apple. Apagar conta, em Geral, os remove.</string>
+	<key>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</key>
+	<string>Ele instala o Claude e depois abre uma página de login no seu navegador. Entre lá e o Tabbi percebe sozinho.</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
 	<string>É um app gratuito de flashcards. Instale e depois volte aqui.</string>
 	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
@@ -2475,12 +2479,6 @@
 	<string>Refazer configuração</string>
 	<key>Run a checkup on %@ and see what's wrong, in plain words</key>
 	<string>Verifique %@ e veja o que há de errado, em palavras simples</string>
-	<key>Run claude in Terminal once to sign in.</key>
-	<string>Rode claude uma vez no Terminal para entrar.</string>
-	<key>Run codex in Terminal once to sign in.</key>
-	<string>Rode codex uma vez no Terminal para entrar.</string>
-	<key>Run gemini in Terminal once to sign in with Google.</key>
-	<string>Rode gemini uma vez no Terminal para entrar com o Google.</string>
 	<key>Run the checks for %@ again</key>
 	<string>Verificar %@ de novo</string>
 	<key>Run your Focus shortcuts when the focus timer starts and stops</key>
@@ -2959,6 +2957,8 @@
 	<string>A IA que responde em Pergunte à IA, Planejar meu dia e Refinar</string>
 	<key>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</key>
 	<string>A aba Anki mostra seus cards pendentes, seus principais baralhos e sua sequência, e Hoje conta suas revisões no dia.</string>
+	<key>The Claude row below shows how to sign in, if you still need to.</key>
+	<string>A linha do Claude abaixo mostra como entrar, se você ainda precisar.</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>As Chaves não salvaram a chave. Tente de novo.</string>
 	<key>The Party tab asks when you were born before you join. Then open the link again.</key>
@@ -3101,6 +3101,12 @@
 	<string>Dicas para focar melhor</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
 	<string>Para anexar sua tela, ative o Tabbi em Gravação de Tela. A captura vai só para o %@ com sua pergunta.</string>
+	<key>To install it, click %@ on the Claude row below.</key>
+	<string>Para instalar, clique em %@ na linha do Claude abaixo.</string>
+	<key>To sign in with Google, run %@ in Terminal once.</key>
+	<string>Para entrar com o Google, rode %@ uma vez no Terminal.</string>
+	<key>To sign in, run %@ in Terminal once.</key>
+	<string>Para entrar, rode %@ uma vez no Terminal.</string>
 	<key>Today</key>
 	<string>Hoje</string>
 	<key>Today in %@</key>
@@ -3303,8 +3309,6 @@
 	<string>Quando o foco termina</string>
 	<key>When focus starts</key>
 	<string>Quando o foco começa</string>
-	<key>When it's done, sign in with your Claude account. Tabbi notices by itself.</key>
-	<string>Quando terminar, entre com sua conta do Claude. O Tabbi percebe sozinho.</string>
 	<key>When off, the notch hides while the lid is closed.</key>
 	<string>Desativado, o notch some quando a tampa está fechada.</string>
 	<key>When the reminder can come, in your Mac's time zone</key>

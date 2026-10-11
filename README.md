@@ -65,6 +65,21 @@ It needs macOS 14 Sonoma or later, and a Mac without a notch gets a small virtua
 Right-click the notch for **Settings** and **Quit Tabbi**.
 [docs/install.md](docs/install.md) covers Homebrew, updates, troubleshooting and uninstalling.
 
+### Set up Claude (optional)
+
+Ask AI, Plan my day, Wrap up and Refine can use Claude through Claude Code, Anthropic's `claude` command, on your own Claude plan.
+It is optional: everything else works without it, and the App Store edition uses your own API key or Ollama instead.
+In the direct download, open **Terminal**, paste this line and press Return:
+
+```sh
+curl -fsSL https://claude.ai/install.sh | bash && ~/.local/bin/claude auth login
+```
+
+It installs Claude Code, then opens a sign-in page in your browser.
+Sign in there, then pick **Claude Code** in **Settings > Connections > AI**.
+If Terminal later says `command not found: claude`, the folder the installer uses is not on your PATH yet: open a new Terminal window, or type `~/.local/bin/claude` instead of `claude`.
+**Settings > Connections** can walk you through the same steps, and [Claude Code's setup guide](https://code.claude.com/docs/en/setup) has other ways to install it.
+
 ## Tabs
 
 Essentials opens with four tabs, plus a paw for your pet.

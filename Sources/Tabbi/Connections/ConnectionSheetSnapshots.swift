@@ -7,9 +7,11 @@ extension SnapshotRenderer {
     /// Every Connections walkthrough while it waits, one after it worked,
     /// and every priming screen, so each can be reviewed for clarity.
     static func renderConnectionSheets(to outputDirectory: URL) async {
+        let claude = ConnectionKind.claude.demoDiagnosis.executable
         var shots: [(String, ConnectionWalkthroughView)] = ConnectionGuide.allCases.map { guide in
             ("connections-guide-\(guide.rawValue)",
-             ConnectionWalkthroughView(kind: guide.kind, walkthrough: guide.walkthrough(), light: .notSetUp, isFinished: false,
+             ConnectionWalkthroughView(kind: guide.kind, walkthrough: guide.walkthrough(claudeExecutable: claude),
+                                       light: .notSetUp, isFinished: false,
                                        start: { _ in }, copy: { _ in }, close: {}))
         }
         let done = ConnectionGuide.ankiAddOn

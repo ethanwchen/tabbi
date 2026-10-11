@@ -59,12 +59,19 @@ public struct ConnectionDiagnosis: Hashable, Sendable {
     /// support can tell similar-looking cases apart. Never shown in the UI
     /// and never holds personal details (no account names or addresses).
     public var technical: String
+    /// The command line tool the check found (Claude's), so a walkthrough
+    /// can offer a line that runs it by its full path. Never shown as is
+    /// and never put in the support details, since it names the user's
+    /// home folder.
+    public var executable: URL?
 
-    public init(kind: ConnectionKind, status: ConnectionStatus, checks: [ConnectionCheck], technical: String) {
+    public init(kind: ConnectionKind, status: ConnectionStatus, checks: [ConnectionCheck], technical: String,
+                executable: URL? = nil) {
         self.kind = kind
         self.status = status
         self.checks = checks
         self.technical = technical
+        self.executable = executable
     }
 
     /// The first check that failed, which is what the row's button fixes.
@@ -214,7 +221,11 @@ extension CalendarConnectionState {
 }
 
 extension ClaudeConnectionState {
-    public var diagnosis: ConnectionDiagnosis {
+    public var diagnosis: ConnectionDiagnosis { diagnosis(executable: nil) }
+
+    /// The diagnosis, carrying where `claude` was found for the sign-in
+    /// walkthrough's line.
+    public func diagnosis(executable: URL?) -> ConnectionDiagnosis {
         let installed: ConnectionCheck.Outcome? = switch self {
         case .checking: nil
         case .notInstalled: .failed
@@ -227,7 +238,8 @@ extension ClaudeConnectionState {
              self == .signedOut ? String(localized: "No. Sign in once and Tabbi can use it.", bundle: .tabbi) : String(localized: "Yes.", bundle: .tabbi)),
         ])
         return ConnectionDiagnosis(kind: .claude, status: connectionStatus, checks: checks,
-                                   technical: "claude.\(String(describing: self))")
+                                   technical: "claude.\(String(describing: self))",
+                                   executable: self == .notInstalled ? nil : executable)
     }
 }
 

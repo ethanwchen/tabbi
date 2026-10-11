@@ -54,6 +54,45 @@ final class ConnectionWalkthroughTests: XCTestCase {
         XCTAssertEqual(signIn.start, .copyAndOpen(text: "claude auth login", app: .terminal))
     }
 
+    /// The installer puts claude in ~/.local/bin, which a fresh Terminal
+    /// window often lacks on PATH, so the pasted line signs in by that
+    /// path, and only once the install worked.
+    func testClaudeInstallLineSignsInByThePathTheInstallerWrites() {
+        XCTAssertEqual(ClaudeConnectionState.installCommand,
+                       "curl -fsSL https://claude.ai/install.sh | bash && ~/.local/bin/claude auth login")
+        let install = ConnectionGuide.claudeInstall.walkthrough()
+        for step in install.steps {
+            XCTAssertFalse(step.text.localizedCaseInsensitiveContains("type claude"), step.text)
+        }
+        XCTAssertTrue(install.steps.last?.text.contains("sign-in page") == true)
+    }
+
+    func testClaudeSignInRunsTheClaudeTabbiFoundByItsFullPath() {
+        let local = URL(fileURLWithPath: "/Users/ana/.local/bin/claude")
+        let signIn = ConnectionGuide.claudeSignIn.walkthrough(claudeExecutable: local)
+        XCTAssertEqual(signIn.start, .copyAndOpen(text: "/Users/ana/.local/bin/claude auth login", app: .terminal))
+        XCTAssertTrue(signIn.steps.contains { $0.copyable == "/Users/ana/.local/bin/claude auth login" })
+        // Other guides don't change with it.
+        XCTAssertEqual(ConnectionGuide.claudeInstall.walkthrough(claudeExecutable: local), ConnectionGuide.claudeInstall.walkthrough())
+    }
+
+    func testClaudeSignInQuotesPathsTheShellWouldSplit() {
+        XCTAssertEqual(ClaudeConnectionState.signInCommand(executable: URL(fileURLWithPath: "/Users/Ana Lee/.local/bin/claude")),
+                       "'/Users/Ana Lee/.local/bin/claude' auth login")
+        XCTAssertEqual(ClaudeConnectionState.signInCommand(executable: URL(fileURLWithPath: "/Users/o'neil/.local/bin/claude")),
+                       #"'/Users/o'\''neil/.local/bin/claude' auth login"#)
+        XCTAssertEqual(ClaudeConnectionState.signInCommand(executable: nil), "claude auth login")
+    }
+
+    func testClaudeDiagnosisKeepsWhereClaudeIsOutOfTheSupportDetails() {
+        let path = URL(fileURLWithPath: "/Users/ana/.local/bin/claude")
+        let diagnosis = ClaudeConnectionState.signedOut.diagnosis(executable: path)
+        XCTAssertEqual(diagnosis.executable, path)
+        XCTAssertFalse(diagnosis.technical.contains("ana"))
+        XCTAssertFalse(diagnosis.details(appVersion: "1", systemVersion: "26.0", checkedAt: Date()).contains("/Users/ana"))
+        XCTAssertNil(ClaudeConnectionState.notInstalled.diagnosis(executable: path).executable)
+    }
+
     func testFocusShortcutsNameTheUsersOwnShortcuts() {
         let suggested = ConnectionGuide.focusShortcuts.walkthrough()
         XCTAssertEqual(suggested.steps.compactMap(\.copyable), ["Tabbi Focus On", "Tabbi Focus Off"])

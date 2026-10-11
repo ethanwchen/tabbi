@@ -817,6 +817,8 @@
 	<string>Ein Kartenziel statt einer Uhr</string>
 	<key>Clear completed tasks</key>
 	<string>Erledigte Aufgaben entfernen</string>
+	<key>Click %@ for the official steps, then come back here.</key>
+	<string>Klicke auf %@ für die offiziellen Schritte und komm dann hierher zurück.</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
 	<string>Klicke in der Liste auf AnkiConnect, dann auf Nach Updates suchen.</string>
 	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
@@ -1523,6 +1525,8 @@
 	<string>Gibt es den Kurzbefehl „%@“?</string>
 	<key>It belongs to your Apple Account. Delete Account in General removes it.</key>
 	<string>Sie gehören zu deinem Apple Account. Konto löschen in Allgemein entfernt sie.</string>
+	<key>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</key>
+	<string>Es installiert Claude und öffnet dann eine Anmeldeseite in deinem Browser. Melde dich dort an, Tabbi merkt das von selbst.</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
 	<string>Eine kostenlose Karteikarten-App. Hol sie dir und komm dann zurück.</string>
 	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
@@ -2475,12 +2479,6 @@
 	<string>Einrichtung erneut starten</string>
 	<key>Run a checkup on %@ and see what's wrong, in plain words</key>
 	<string>%@ prüfen und in einfachen Worten sehen, was nicht stimmt</string>
-	<key>Run claude in Terminal once to sign in.</key>
-	<string>Führe claude einmal im Terminal aus, um dich anzumelden.</string>
-	<key>Run codex in Terminal once to sign in.</key>
-	<string>Führe codex einmal im Terminal aus, um dich anzumelden.</string>
-	<key>Run gemini in Terminal once to sign in with Google.</key>
-	<string>Führe gemini einmal im Terminal aus, um dich mit Google anzumelden.</string>
 	<key>Run the checks for %@ again</key>
 	<string>%@ erneut prüfen</string>
 	<key>Run your Focus shortcuts when the focus timer starts and stops</key>
@@ -2959,6 +2957,8 @@
 	<string>Die KI hinter KI fragen, Tag planen und Verfeinern</string>
 	<key>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</key>
 	<string>Der Anki-Tab zeigt deine fälligen Karten, Top-Stapel und deine Serie, und Heute zählt deine Wiederholungen zum Tag.</string>
+	<key>The Claude row below shows how to sign in, if you still need to.</key>
+	<string>Die Zeile Claude unten zeigt, wie du dich anmeldest, falls nötig.</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>Der Schlüsselbund hat den Schlüssel nicht gesichert. Versuch es noch einmal.</string>
 	<key>The Party tab asks when you were born before you join. Then open the link again.</key>
@@ -3101,6 +3101,12 @@
 	<string>Tipps für bessere Konzentration</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
 	<string>Um deinen Bildschirm anzuhängen, aktiviere Tabbi unter Bildschirmaufnahme. Der Screenshot geht nur mit deiner Frage an %@.</string>
+	<key>To install it, click %@ on the Claude row below.</key>
+	<string>Zum Installieren klicke unten in der Zeile Claude auf %@.</string>
+	<key>To sign in with Google, run %@ in Terminal once.</key>
+	<string>Zum Anmelden mit Google führe einmal %@ im Terminal aus.</string>
+	<key>To sign in, run %@ in Terminal once.</key>
+	<string>Zum Anmelden führe einmal %@ im Terminal aus.</string>
 	<key>Today</key>
 	<string>Heute</string>
 	<key>Today in %@</key>
@@ -3303,8 +3309,6 @@
 	<string>Wenn der Fokus endet</string>
 	<key>When focus starts</key>
 	<string>Wenn der Fokus startet</string>
-	<key>When it's done, sign in with your Claude account. Tabbi notices by itself.</key>
-	<string>Wenn es fertig ist, melde dich mit deinem Claude-Account an. Tabbi merkt das von selbst.</string>
 	<key>When off, the notch hides while the lid is closed.</key>
 	<string>Wenn aus, wird die Notch bei geschlossenem Deckel ausgeblendet.</string>
 	<key>When the reminder can come, in your Mac's time zone</key>
