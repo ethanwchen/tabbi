@@ -49,6 +49,29 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(String.localizedStringWithFormat(friends, 1), "with 1 friend")
     }
 
+    /// Seasonal event names and taglines live in events.json, in English,
+    /// and are looked up in the catalog by that text, so a new event or a
+    /// reworded line needs its translations added with it.
+    func testEverySeasonalEventIsTranslated() throws {
+        let missing = "\u{0}missing"
+        for language in L10n.languages where language != L10n.sourceLanguage {
+            let bundle = try XCTUnwrap(L10n.strings(for: language))
+            for event in SeasonalEventCatalog.bundled.events {
+                for text in [event.name, event.tagline] {
+                    XCTAssertNotEqual(bundle.localizedString(forKey: text, value: missing, table: nil), missing,
+                                      "\(language) lacks \"\(text)\"")
+                }
+            }
+        }
+        let german = try XCTUnwrap(L10n.strings(for: "de"))
+        let pumpkin = german.localizedString(forKey: "Focus for %lld hours during %@.", value: nil, table: nil)
+        XCTAssertEqual(String.localizedStringWithFormat(pumpkin, 5, "Halloween"),
+                       "Konzentrier dich 5 Stunden während Halloween.")
+        let japanese = try XCTUnwrap(L10n.strings(for: "ja"))
+        let hat = japanese.localizedString(forKey: "Focus for %lld minutes during %@.", value: nil, table: nil)
+        XCTAssertEqual(String.localizedStringWithFormat(hat, 90, "ハロウィン"), "ハロウィンの期間中に90分集中しよう。")
+    }
+
     /// The .lproj folders that ship are compiled from the catalog by
     /// scripts/compile-strings.sh, and committed. This re-derives what each
     /// language's files must hold (every string and every plural form) and

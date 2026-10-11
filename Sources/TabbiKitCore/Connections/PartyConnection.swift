@@ -68,10 +68,12 @@ public enum PartySetup {
     public static let petLabel = "Your pet"
     public static let petNote = "You can dress your pet up later in the Closet tab."
     public static let start = "Start Party"
-    public static let birthLabel = "When were you born?"
-    public static let birthNote = "Asked once. Your answer stays on this Mac."
+    public static var birthLabel: String { String(localized: "When were you born?", bundle: .tabbi) }
+    public static var birthNote: String { String(localized: "Asked once. Your answer stays on this Mac.", bundle: .tabbi) }
     /// The agreement under the age check, as Markdown with both links.
-    public static let agreement = "By joining you agree to the [Terms of Use](\(SupportContact.termsURL.absoluteString)) and the [Privacy Policy](\(SupportContact.privacyURL.absoluteString))."
+    public static var agreement: String {
+        String(localized: "By joining you agree to the [Terms of Use](\(SupportContact.termsURL.absoluteString)) and the [Privacy Policy](\(SupportContact.privacyURL.absoluteString)).", bundle: .tabbi)
+    }
     /// The header once Party is ready.
     public static let readyTitle = "You're in Party"
     public static let readyIntro = "Send friends your code so they can add you. They see your name, pet and study timer."

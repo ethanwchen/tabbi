@@ -114,17 +114,11 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
     /// always says what the event asks for.
     public var howToEarn: String {
         switch self {
-        case .launchWeekCap: "Given to everyone who used Tabbi in its launch week."
-        case .streakFlame: "Study 7 days in a row."
-        case .focusLaurel: "Focus for 50 hours in total."
-        case .partyMedal: "Finish a Party session with friends."
-        case .halloweenWitchHat, .halloweenPumpkin: seasonalHowToEarn(during: "Halloween")
-        case .winterAntlers, .winterScarf: seasonalHowToEarn(during: "the winter holidays")
-        case .valentinesGlasses: seasonalHowToEarn(during: "Valentine's week")
-        case .summerShades: seasonalHowToEarn(during: "the summer event")
-        case .lunarNewYearLion: seasonalHowToEarn(during: "Lunar New Year")
-        case .springSakura: seasonalHowToEarn(during: "cherry blossom season")
-        case .examHoodie: seasonalHowToEarn(during: "exam season")
+        case .launchWeekCap: String(localized: "Given to everyone who used Tabbi in its launch week.", bundle: .tabbi)
+        case .streakFlame: String(localized: "Study 7 days in a row.", bundle: .tabbi)
+        case .focusLaurel: String(localized: "Focus for 50 hours in total.", bundle: .tabbi)
+        case .partyMedal: String(localized: "Finish a Party session with friends.", bundle: .tabbi)
+        default: seasonalHowToEarn
         }
     }
 
@@ -134,10 +128,18 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         return SeasonalEventCatalog.bundled.event(id: id)?.rewards.first { $0.item == item }
     }
 
-    private func seasonalHowToEarn(during season: String) -> String {
-        guard let minutes = seasonalReward?.focusMinutes else { return "Focus during \(season)." }
-        let goal = minutes < SeasonalEventProgress.hourLabelMinutes ? "\(minutes) minutes" : "\(minutes / 60) hours"
-        return "Focus for \(goal) during \(season)."
+    /// "Focus for 90 minutes during Halloween.", with the event's name and
+    /// goal from the events catalog.
+    private var seasonalHowToEarn: String {
+        guard case .season(let id) = source, let event = SeasonalEventCatalog.bundled.event(id: id) else {
+            return String(localized: "Focus while its event runs.", bundle: .tabbi)
+        }
+        guard let minutes = seasonalReward?.focusMinutes else {
+            return String(localized: "Focus during \(event.displayName).", bundle: .tabbi)
+        }
+        return minutes < SeasonalEventProgress.hourLabelMinutes
+            ? String(localized: "Focus for \(minutes) minutes during \(event.displayName).", bundle: .tabbi)
+            : String(localized: "Focus for \(minutes / 60) hours during \(event.displayName).", bundle: .tabbi)
     }
 
     public var effect: PetItemEffect? {
@@ -316,9 +318,9 @@ extension PetMilestone {
     public func progress(value: Int) -> PetLimitedProgress {
         let value = max(0, min(value, goal))
         let label = switch self {
-        case .weekStreak: "\(value)/\(goal) days"
-        case .fiftyHours: "\(value / 60)/\(goal / 60) h"
-        case .firstParty: "\(value)/\(goal) session"
+        case .weekStreak: String(localized: "\(value)/\(goal) days", bundle: .tabbi)
+        case .fiftyHours: String(localized: "\(value / 60)/\(goal / 60) h", bundle: .tabbi)
+        case .firstParty: String(localized: "\(value)/\(goal) session", bundle: .tabbi)
         }
         return PetLimitedProgress(value: value, goal: goal, label: label)
     }

@@ -579,6 +579,54 @@
         }
       }
     },
+    "%@ handles them under its own terms and privacy policy. %@'s AI features send nothing else, and nothing until you allow it. You can switch to None in Connections at any time." : {
+      "comment" : "AI consent alert, last line. Arguments: the company (Anthropic), the app name (Tabbi). 'None' and 'Connections' must match the Settings labels.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ verarbeitet sie nach eigenen Nutzungsbedingungen und eigener Datenschutzerklärung. Die KI-Funktionen von %2$@ senden nichts anderes, und nichts, bevor du es erlaubst. Du kannst jederzeit unter Verbindungen zu Keins wechseln."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ los trata según sus propios términos y política de privacidad. Las funciones de IA de %2$@ no envían nada más, y nada hasta que lo permitas. Puedes cambiar a Ninguno en Conexiones cuando quieras."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ les traite selon ses propres conditions et sa politique de confidentialité. Les fonctions d'IA de %2$@ n'envoient rien d'autre, et rien tant que tu ne l'as pas autorisé. Tu peux passer à Aucun dans Connexions à tout moment."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@は独自の利用規約とプライバシーポリシーに基づいてこれを扱います。%2$@のAI機能はこれ以外は何も送信せず、許可するまでは何も送信しません。「接続」でいつでも「なし」に切り替えられます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@은(는) 자체 약관과 개인정보 처리방침에 따라 이를 처리합니다. %2$@의 AI 기능은 이 외에는 아무것도 보내지 않으며, 허용하기 전에는 아무것도 보내지 않습니다. 언제든지 연결에서 없음으로 바꿀 수 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A %1$@ trata esses dados conforme os próprios termos e política de privacidade. Os recursos de IA do %2$@ não enviam mais nada, e nada até você permitir. Você pode mudar para Nenhum em Conexões a qualquer momento."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 会按照其自己的条款和隐私政策处理这些内容。%2$@ 的 AI 功能不会发送其他任何内容,在你允许之前也不会发送任何内容。你可以随时在“连接”中切换为“无”。"
+          }
+        }
+      }
+    },
     "%@ in %@" : {
       "comment" : "Tooltip of a row another module shares on Today. First %@ is the action (e.g. 'Study deck'), second the module's name (e.g. 'Anki').",
       "extractionState" : "manual",
@@ -1587,6 +1635,54 @@
         }
       }
     },
+    "%@ runs until %@. Next item, %@: %@ focused." : {
+      "comment" : "Seasonal event banner tooltip. Arguments: the event name, its last day (Oct 31), the next item's name, the progress (45/90 min).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ läuft bis %2$@. Nächstes Item, %3$@: %4$@ konzentriert."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ dura hasta el %2$@. Siguiente artículo, %3$@: %4$@ de enfoque."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ dure jusqu'au %2$@. Prochain objet, %3$@ : %4$@ de concentration."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@は%2$@まで。次のアイテム「%3$@」: 集中 %4$@。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@은(는) %2$@까지예요. 다음 아이템 %3$@: %4$@ 집중함."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ vai até %2$@. Próximo item, %3$@: %4$@ de foco."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@持续至 %2$@。下一个物品「%3$@」:已专注 %4$@。"
+          }
+        }
+      }
+    },
     "%@ settings" : {
       "comment" : "Tooltip on the Options button in Settings > Tabs; %@ is the module name.",
       "extractionState" : "manual",
@@ -2163,6 +2259,199 @@
         }
       }
     },
+    "%@, limited edition: %@" : {
+      "comment" : "Tooltip of an unearned limited item. Arguments: the item name, how to earn it (a sentence).",
+      "extractionState" : "manual",
+      "generatesSymbol" : false,
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, limitierte Edition: %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, edición limitada: %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, édition limitée : %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@(限定): %2$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, 한정판: %2$@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, edição limitada: %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@,限定款:%2$@"
+          }
+        }
+      }
+    },
+    "%@, limited edition: %@ Its event starts %@." : {
+      "comment" : "Tooltip of an unearned limited item. Arguments: the item name, how to earn it (a sentence), the day its event starts (October 17).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, limitierte Edition: %2$@ Das Event beginnt am %3$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, edición limitada: %2$@ Su evento empieza el %3$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, édition limitée : %2$@ Son événement commence le %3$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@(限定): %2$@ イベントは%3$@に始まります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, 한정판: %2$@ 이벤트는 %3$@에 시작해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, edição limitada: %2$@ O evento começa em %3$@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@,限定款:%2$@ 活动于 %3$@ 开始。"
+          }
+        }
+      }
+    },
+    "%@, limited edition: click to take off" : {
+      "comment" : "Tooltip of a worn limited item. The argument is the item name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, limitierte Edition: Klicke zum Ablegen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, edición limitada: haz clic para quitártelo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, édition limitée : clique pour l'enlever"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@(限定): クリックで外す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, 한정판: 클릭해서 벗기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, edição limitada: clique para tirar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@,限定款:点按即可取下"
+          }
+        }
+      }
+    },
+    "%@, limited edition: click to wear" : {
+      "comment" : "Tooltip of an owned limited item. The argument is the item name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, limitierte Edition: Klicke zum Anziehen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, edición limitada: haz clic para ponértelo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, édition limitée : clique pour le porter"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@(限定): クリックで着る"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, 한정판: 클릭해서 입기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, edição limitada: clique para usar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@,限定款:点按即可穿戴"
+          }
+        }
+      }
+    },
     "%@. %@" : {
       "comment" : "Settings > Connections: a connection's status headline, then its detail sentence.",
       "extractionState" : "manual",
@@ -2305,6 +2594,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@：剩余 %@"
+          }
+        }
+      }
+    },
+    "%@: you earned every item. They stay yours after the event." : {
+      "comment" : "Seasonal event banner tooltip. The argument is the event name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: Du hast alle Items verdient. Sie bleiben auch nach dem Event deine."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: ganaste todos los artículos. Seguirán siendo tuyos después del evento."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ : tu as gagné tous les objets. Ils restent à toi après l'événement."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: すべてのアイテムを獲得しました。イベント後もずっとあなたのものです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: 모든 아이템을 획득했어요. 이벤트가 끝나도 계속 내 거예요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: você conquistou todos os itens. Eles continuam seus depois do evento."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@:你已获得所有物品。活动结束后它们依然属于你。"
           }
         }
       }
@@ -2965,6 +3302,54 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "%lld h" : {
+      "comment" : "A whole number of hours, e.g. 5 h, as a seasonal event's focus goal.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld h"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld h"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld h"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld時間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld시간"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld h"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 小时"
           }
         }
       }
@@ -4337,6 +4722,198 @@
         }
       }
     },
+    "%lld/%lld days" : {
+      "comment" : "Progress toward a streak milestone, e.g. 4/7 days.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld Tage"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld días"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld jours"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld日"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld일"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld dias"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld 天"
+          }
+        }
+      }
+    },
+    "%lld/%lld h" : {
+      "comment" : "Progress toward a goal in hours, e.g. 3/5 h.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld h"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld h"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld h"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld時間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld시간"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld h"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld 小时"
+          }
+        }
+      }
+    },
+    "%lld/%lld min" : {
+      "comment" : "Progress toward a focus goal in minutes, e.g. 45/90 min.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld min"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld min"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld min"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld分"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld분"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld min"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld 分钟"
+          }
+        }
+      }
+    },
+    "%lld/%lld session" : {
+      "comment" : "Progress toward the first Party session milestone, e.g. 0/1 session.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld Sitzung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld sesión"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld session"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lldセッション"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld세션"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld sessão"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld 次"
+          }
+        }
+      }
+    },
     "%lldh" : {
       "comment" : "A whole number of hours in compact form, e.g. 2h.",
       "extractionState" : "manual",
@@ -5552,6 +6129,54 @@
         }
       }
     },
+    "A fresh start for the new year. Focus a little each day." : {
+      "comment" : "Seasonal event tagline (Lunar New Year).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neues Jahr, neuer Start. Täglich etwas Fokus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Año nuevo, nuevo comienzo. Un poco de foco al día."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouvelle année, nouveau départ. Un peu par jour."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新しい年の新しいスタート。毎日少しずつ集中しよう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새해의 새로운 시작. 매일 조금씩 집중해 봐요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ano novo, novo começo. Um pouco de foco por dia."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新年新开始。每天专注一点点。"
+          }
+        }
+      }
+    },
     "A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today." : {
       "comment" : "Footer in Settings > Tabs. Today is a module name.",
       "extractionState" : "manual",
@@ -6128,6 +6753,54 @@
         }
       }
     },
+    "AI model" : {
+      "comment" : "Settings > Connections > More options: section header.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KI-Modell"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modelo de IA"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modèle d'IA"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIモデル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 모델"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modelo de IA"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 模型"
+          }
+        }
+      }
+    },
     "AI usage above 80%" : {
       "comment" : "Settings toggle: show a line beside the closed notch when AI plan usage passes 80 percent.",
       "extractionState" : "manual",
@@ -6172,6 +6845,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AI 用量超过 80%"
+          }
+        }
+      }
+    },
+    "API key" : {
+      "comment" : "Settings > Connections: label of the API key field.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API-Schlüssel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clave de API"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clé d'API"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "APIキー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 키"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chave de API"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 密钥"
           }
         }
       }
@@ -6268,6 +6989,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "账户"
+          }
+        }
+      }
+    },
+    "Accounts are for people %lld and older. Signing in opens in %@." : {
+      "comment" : "Account sheet for someone under the minimum age. Arguments: the age (13), a month and year (May 2028). Keep the legal meaning exact.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konten gibt es ab %1$lld Jahren. Die Anmeldung ist ab %2$@ möglich."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las cuentas son para personas de %1$lld años o más. Podrás iniciar sesión en %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les comptes sont réservés aux personnes de %1$lld ans et plus. La connexion sera possible en %2$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アカウントは%1$lld歳以上の方が対象です。%2$@からサインインできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정은 만 %1$lld세 이상만 만들 수 있어요. %2$@부터 로그인할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contas são para pessoas com %1$lld anos ou mais. O login abre em %2$@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "账户仅面向 %1$lld 岁及以上的用户。%2$@起可以登录。"
           }
         }
       }
@@ -7618,6 +8387,54 @@
         }
       }
     },
+    "All earned" : {
+      "comment" : "Seasonal event banner once every item is earned.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alles verdient"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo ganado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout gagné"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべて獲得"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모두 획득"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo conquistado"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已全部获得"
+          }
+        }
+      }
+    },
     "All optional. Nothing to do now." : {
       "comment" : "Onboarding hint on the extras step.",
       "extractionState" : "manual",
@@ -7662,6 +8479,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "都是可选的，现在无需操作。"
+          }
+        }
+      }
+    },
+    "Allow" : {
+      "comment" : "Button in the AI consent alert.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlauben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoriser"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "許可"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "허용"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允许"
           }
         }
       }
@@ -8482,6 +9347,102 @@
         }
       }
     },
+    "Answers from" : {
+      "comment" : "Settings > Connections: label of the AI provider picker.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antworten von"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respuestas de"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réponses de"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回答元"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "답변 제공"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respostas de"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回答来自"
+          }
+        }
+      }
+    },
+    "App" : {
+      "comment" : "Settings > Connections: label of the row for Ollama, an app.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用"
+          }
+        }
+      }
+    },
     "Appears when the pointer reaches the top center." : {
       "comment" : "Description of the hover notch mode in Settings > General.",
       "extractionState" : "manual",
@@ -8724,6 +9685,54 @@
         }
       }
     },
+    "Ask AI: your questions, the chat so far and any screenshot you attach." : {
+      "comment" : "AI consent alert: what the Ask AI tab sends.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KI fragen: deine Fragen, den bisherigen Chat und angehängte Screenshots."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pregunta a la IA: tus preguntas, el chat hasta ahora y las capturas que adjuntes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demander à l'IA : tes questions, la conversation en cours et les captures d'écran que tu joins."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIに質問: 質問内容、これまでのチャット、添付したスクリーンショット。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI에게 묻기: 질문, 지금까지의 대화, 첨부한 스크린샷."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pergunte à IA: suas perguntas, a conversa até agora e as capturas de tela que você anexar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "问 AI:你的问题、目前的对话以及你附上的截图。"
+          }
+        }
+      }
+    },
     "Ask Anki again" : {
       "comment" : "Anki panel: tooltip of Try again.",
       "extractionState" : "manual",
@@ -8960,6 +9969,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "提问“%@”"
+          }
+        }
+      }
+    },
+    "Asked once. Your answer stays on this Mac." : {
+      "comment" : "Age check note.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird nur einmal gefragt. Deine Antwort bleibt auf diesem Mac."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo se pregunta una vez. Tu respuesta se queda en este Mac."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demandé une seule fois. Ta réponse reste sur ce Mac."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "質問は一度だけ。回答はこのMacに保存されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 번만 물어봐요. 답은 이 Mac에만 남아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perguntado só uma vez. Sua resposta fica neste Mac."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只问一次。你的回答只保存在这台 Mac 上。"
           }
         }
       }
@@ -10160,6 +11217,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "购买冻结"
+          }
+        }
+      }
+    },
+    "By joining you agree to the [Terms of Use](%@) and the [Privacy Policy](%@)." : {
+      "comment" : "Party age check agreement, Markdown. Keep both links and their URLs (the arguments).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit dem Beitritt stimmst du den [Nutzungsbedingungen](%1$@) und der [Datenschutzerklärung](%2$@) zu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al unirte aceptas los [Términos de uso](%1$@) y la [Política de privacidad](%2$@)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En rejoignant, tu acceptes les [Conditions d'utilisation](%1$@) et la [Politique de confidentialité](%2$@)."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "参加すると、[利用規約](%1$@)と[プライバシーポリシー](%2$@)に同意したことになります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "참여하면 [이용약관](%1$@) 및 [개인정보 처리방침](%2$@)에 동의하게 됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ao entrar, você concorda com os [Termos de Uso](%1$@) e a [Política de Privacidade](%2$@)."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入即表示你同意[使用条款](%1$@)和[隐私政策](%2$@)。"
+          }
+        }
+      }
+    },
+    "By signing in you agree to the [Terms of Use](%@) and the [Privacy Policy](%@)." : {
+      "comment" : "Sign in with Apple agreement, Markdown. Keep both links and their URLs (the arguments).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit der Anmeldung stimmst du den [Nutzungsbedingungen](%1$@) und der [Datenschutzerklärung](%2$@) zu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al iniciar sesión aceptas los [Términos de uso](%1$@) y la [Política de privacidad](%2$@)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En te connectant, tu acceptes les [Conditions d'utilisation](%1$@) et la [Politique de confidentialité](%2$@)."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインインすると、[利用規約](%1$@)と[プライバシーポリシー](%2$@)に同意したことになります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인하면 [이용약관](%1$@) 및 [개인정보 처리방침](%2$@)에 동의하게 됩니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ao entrar, você concorda com os [Termos de Uso](%1$@) e a [Política de Privacidade](%2$@)."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登录即表示你同意[使用条款](%1$@)和[隐私政策](%2$@)。"
           }
         }
       }
@@ -11653,6 +12806,54 @@
         }
       }
     },
+    "Cherry Blossom Season" : {
+      "comment" : "Seasonal event name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kirschblütenzeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temporada de cerezos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saison des cerisiers"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お花見シーズン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "벚꽃 시즌"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Época das cerejeiras"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "樱花季"
+          }
+        }
+      }
+    },
     "Cherry Petals" : {
       "comment" : "Closet: name of a pet accessory.",
       "extractionState" : "manual",
@@ -12901,6 +14102,102 @@
         }
       }
     },
+    "Close this" : {
+      "comment" : "Tooltip of Close in the account sheet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "閉じる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "닫기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fechar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
+        }
+      }
+    },
+    "Close this. You can sign in any time." : {
+      "comment" : "Tooltip of Cancel in the account sheet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließen. Du kannst dich jederzeit anmelden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar. Puedes iniciar sesión cuando quieras."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer. Tu peux te connecter à tout moment."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "閉じます。いつでもサインインできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "닫기. 언제든지 로그인할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fechar. Você pode entrar quando quiser."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭。你可以随时登录。"
+          }
+        }
+      }
+    },
     "Closet" : {
       "comment" : "Tab title of the pet's wardrobe, where you name your pet and dress it. Keep it short: it sits in the open notch's header.",
       "extractionState" : "manual",
@@ -12993,6 +14290,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "代码"
+          }
+        }
+      }
+    },
+    "Command" : {
+      "comment" : "Settings > Connections: label of the row that says whether a command line tool is installed.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Befehl"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comando"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Commande"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コマンド"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "명령"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comando"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "命令"
           }
         }
       }
@@ -13521,6 +14866,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "继续"
+          }
+        }
+      }
+    },
+    "Continue to Sign in with Apple" : {
+      "comment" : "Tooltip of Continue in the account sheet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter zu „Mit Apple anmelden“"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar con Iniciar sesión con Apple"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuer vers Se connecter avec Apple"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「Appleでサインイン」に進む"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple로 로그인으로 계속"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar para Iniciar sessão com a Apple"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续通过 Apple 登录"
           }
         }
       }
@@ -14581,6 +15974,54 @@
         }
       }
     },
+    "Cozy days and quiet focus before the new year." : {
+      "comment" : "Seasonal event tagline (Winter Holidays).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemütliche Tage, ruhiger Fokus vor Neujahr."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Días acogedores y calma antes del año nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des jours douillets et du calme avant l'an neuf."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新年までの、ぬくぬくした日と静かな集中。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새해 전, 포근한 날들과 조용한 집중."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dias aconchegantes e foco calmo até o ano novo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新年前,温暖的日子和安静的专注。"
+          }
+        }
+      }
+    },
     "Cream" : {
       "comment" : "Closet: a fur color.",
       "extractionState" : "manual",
@@ -14866,6 +16307,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "日"
+          }
+        }
+      }
+    },
+    "Day review: today's focus and study minutes, sessions and points, your goal counts and the titles of the tasks you finished or are carrying over." : {
+      "comment" : "AI consent alert: what the day review sends.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tagesrückblick: heutige Fokus- und Lernminuten, Sitzungen und Punkte, deine Zielzahlen und die Titel der Aufgaben, die du erledigt hast oder mitnimmst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumen del día: los minutos de enfoque y estudio de hoy, sesiones y puntos, el recuento de tus metas y los títulos de las tareas que terminaste o pasas al día siguiente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilan de la journée : les minutes de concentration et d'étude du jour, les sessions et points, le compte de tes objectifs et les titres des tâches terminées ou reportées."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1日の振り返り: 今日の集中・学習時間、セッション数とポイント、目標の達成数、完了または持ち越したタスクのタイトル。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하루 돌아보기: 오늘의 집중 및 공부 시간, 세션과 포인트, 목표 개수, 끝냈거나 넘기는 할 일의 제목."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumo do dia: minutos de foco e estudo de hoje, sessões e pontos, a contagem das suas metas e os títulos das tarefas que você concluiu ou vai levar adiante."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每日回顾:今天的专注和学习分钟数、次数和积分、目标数量,以及你完成或顺延的任务标题。"
           }
         }
       }
@@ -15442,6 +16931,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "删除这个导入的套件并恢复默认套件"
+          }
+        }
+      }
+    },
+    "Delete this key from your Keychain" : {
+      "comment" : "Tooltip of Remove.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diesen Schlüssel aus dem Schlüsselbund löschen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar esta clave de tu llavero"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer cette clé de ton trousseau"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このキーをキーチェーンから削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키체인에서 이 키 삭제"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar esta chave das suas Chaves"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从钥匙串中删除此密钥"
           }
         }
       }
@@ -16262,6 +17799,54 @@
         }
       }
     },
+    "Earned by reaching study milestones" : {
+      "comment" : "Tooltip of the Milestones shelf.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdient durch Lern-Meilensteine"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se ganan al alcanzar hitos de estudio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagnés en atteignant des étapes d'étude"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "学習のマイルストーン達成で獲得"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공부 마일스톤을 달성하면 획득해요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conquistados ao atingir marcos de estudo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "达成学习里程碑即可获得"
+          }
+        }
+      }
+    },
     "Earned by studying, never sold" : {
       "comment" : "Closet Limited section caption.",
       "extractionState" : "manual",
@@ -16306,6 +17891,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "靠学习获得，从不出售"
+          }
+        }
+      }
+    },
+    "Earned. Click to take off." : {
+      "comment" : "Closet footer for a worn limited item.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdient. Klicke zum Ablegen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ganado. Haz clic para quitártelo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagné. Clique pour l'enlever."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "獲得済み。クリックで外す。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "획득함. 클릭해서 벗기."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conquistado. Clique para tirar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已获得。点按即可取下。"
+          }
+        }
+      }
+    },
+    "Earned. Click to wear." : {
+      "comment" : "Closet footer for an owned limited item.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdient. Klicke zum Anziehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ganado. Haz clic para ponértelo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagné. Clique pour le porter."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "獲得済み。クリックで着る。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "획득함. 클릭해서 입기."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conquistado. Clique para usar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已获得。点按即可穿戴。"
           }
         }
       }
@@ -17030,6 +18711,54 @@
         }
       }
     },
+    "Exam Season" : {
+      "comment" : "Seasonal event name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfungszeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Época de exámenes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Période d'examens"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "試験シーズン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시험 기간"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Época de provas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "考试季"
+          }
+        }
+      }
+    },
     "Fantasy" : {
       "comment" : "Closet: a theme that groups pet items.",
       "extractionState" : "manual",
@@ -17314,6 +19043,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用未完成的任务和复习填满明天的空闲时间。在这台 Mac 上规划，未经你确认不会添加任何内容"
+          }
+        }
+      }
+    },
+    "Finish a Party session with friends." : {
+      "comment" : "How to earn the Party milestone item.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließ eine Party-Sitzung mit Freunden ab."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termina una sesión de Grupo con amigos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termine une session de Groupe avec des amis."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だちとパーティのセッションを1回終えよう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구들과 파티 세션을 끝내세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termine uma sessão de Grupo com amigos."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "和朋友完成一次派对专注。"
           }
         }
       }
@@ -17942,6 +19719,366 @@
         }
       }
     },
+    "Focus during %@." : {
+      "comment" : "How to earn a seasonal item. The argument is the event name, e.g. Halloween.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konzentrier dich während %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concéntrate durante %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concentre-toi pendant %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の期間中に集中しよう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 기간에 집중하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foque durante %@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在%@期间专注。"
+          }
+        }
+      }
+    },
+    "Focus for %lld hours during %@." : {
+      "comment" : "How to earn a seasonal item. Arguments: the hours, the event name (e.g. Halloween).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Konzentrier dich %lld Stunde während %@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Konzentrier dich %lld Stunden während %@."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Focus for %lld hour during %@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Focus for %lld hours during %@."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Concéntrate %lld hora durante %@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Concéntrate %lld horas durante %@."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Concentre-toi %lld heure pendant %@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Concentre-toi %lld heures pendant %@."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%2$@の期間中に%1$lld時間集中しよう。"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%2$@ 기간에 %1$lld시간 집중하세요."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Foque %lld hora durante %@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Foque %lld horas durante %@."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "在%2$@期间专注 %1$lld 小时。"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Focus for %lld minutes during %@." : {
+      "comment" : "How to earn a seasonal item. Arguments: the minutes, the event name (e.g. Halloween).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Konzentrier dich %lld Minute während %@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Konzentrier dich %lld Minuten während %@."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Focus for %lld minute during %@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Focus for %lld minutes during %@."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Concéntrate %lld minuto durante %@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Concéntrate %lld minutos durante %@."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Concentre-toi %lld minute pendant %@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Concentre-toi %lld minutes pendant %@."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%2$@の期間中に%1$lld分集中しよう。"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%2$@ 기간에 %1$lld분 집중하세요."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Foque %lld minuto durante %@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Foque %lld minutos durante %@."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "在%2$@期间专注 %1$lld 分钟。"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Focus for 50 hours in total." : {
+      "comment" : "How to earn the focus milestone item.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konzentrier dich insgesamt 50 Stunden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concéntrate 50 horas en total."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concentre-toi 50 heures au total."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "合計50時間集中しよう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "총 50시간 집중하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foque 50 horas no total."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "累计专注 50 小时。"
+          }
+        }
+      }
+    },
     "Focus on this task" : {
       "comment" : "Tooltip of a Today row's button that links the focus timer to the task.",
       "extractionState" : "manual",
@@ -18422,6 +20559,54 @@
         }
       }
     },
+    "Focus while its event runs." : {
+      "comment" : "How to earn a seasonal item, when its event is unknown.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konzentrier dich, während das Event läuft."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concéntrate mientras dure su evento."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concentre-toi pendant son événement."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "イベント期間中に集中しよう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이벤트 기간에 집중하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foque enquanto o evento estiver rolando."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在活动期间专注。"
+          }
+        }
+      }
+    },
     "Focusing on" : {
       "comment" : "Focus tab card heading above the linked task's title.",
       "extractionState" : "manual",
@@ -18518,6 +20703,54 @@
         }
       }
     },
+    "Free and offline: runs a model on this Mac." : {
+      "comment" : "AI provider summary for Ollama.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kostenlos und offline: Ein Modell läuft auf diesem Mac."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis y sin conexión: ejecuta un modelo en este Mac."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratuit et hors ligne : un modèle tourne sur ce Mac."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料・オフライン: このMacでモデルを動かします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무료, 오프라인: 이 Mac에서 모델을 실행해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grátis e offline: roda um modelo neste Mac."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费且离线:在这台 Mac 上运行模型。"
+          }
+        }
+      }
+    },
     "Free freeze used" : {
       "comment" : "Streak freezes: the free weekly freeze is used.",
       "extractionState" : "manual",
@@ -18562,6 +20795,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "免费冻结已用"
+          }
+        }
+      }
+    },
+    "Free tier with a Google AI Studio key." : {
+      "comment" : "AI provider summary. Google AI Studio is a product name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kostenloses Kontingent mit einem Google-AI-Studio-Schlüssel."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nivel gratuito con una clave de Google AI Studio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offre gratuite avec une clé Google AI Studio."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google AI Studioのキーで無料枠を使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google AI Studio 키로 무료 등급을 사용해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nível gratuito com uma chave do Google AI Studio."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 Google AI Studio 密钥享受免费额度。"
           }
         }
       }
@@ -18706,6 +20987,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "免费已用"
+          }
+        }
+      }
+    },
+    "Free with a Google account through the gemini command." : {
+      "comment" : "AI provider summary. Keep 'gemini' (a command) as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kostenlos mit einem Google-Konto über den Befehl gemini."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis con una cuenta de Google mediante el comando gemini."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratuit avec un compte Google via la commande gemini."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "geminiコマンドとGoogleアカウントで無料で使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gemini 명령과 Google 계정으로 무료로 사용해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grátis com uma conta Google pelo comando gemini."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过 gemini 命令使用 Google 账号免费使用。"
           }
         }
       }
@@ -19430,6 +21759,54 @@
         }
       }
     },
+    "Get a Key" : {
+      "comment" : "Button that opens the provider's API key page.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlüssel holen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtener clave"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenir une clé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キーを取得"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키 받기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obter chave"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "获取密钥"
+          }
+        }
+      }
+    },
     "Get an alert when a timer ends." : {
       "comment" : "One-line summary of the Alerts connection in Settings > Connections.",
       "extractionState" : "manual",
@@ -19570,6 +21947,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "给你的狗取个名字"
+          }
+        }
+      }
+    },
+    "Given to everyone who used Tabbi in its launch week." : {
+      "comment" : "How to earn the launch week cap.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für alle, die Tabbi in der Startwoche genutzt haben."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para todos los que usaron Tabbi en su semana de lanzamiento."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offert à tous ceux qui ont utilisé Tabbi pendant sa semaine de lancement."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リリース週にTabbiを使ったすべての人に贈られます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "출시 주간에 Tabbi를 쓴 모든 분께 드려요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para todos que usaram o Tabbi na semana de lançamento."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送给在发布周使用 Tabbi 的每个人。"
           }
         }
       }
@@ -20050,6 +22475,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "大家干得好！"
+          }
+        }
+      }
+    },
+    "Halloween" : {
+      "comment" : "Seasonal event name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halloween"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halloween"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halloween"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ハロウィン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "핼러윈"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halloween"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "万圣节"
           }
         }
       }
@@ -21494,6 +23967,54 @@
         }
       }
     },
+    "Install" : {
+      "comment" : "Button that opens the provider's install page.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설치"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装"
+          }
+        }
+      }
+    },
     "Install Claude Code and sign in to see your live 5-hour and weekly limits." : {
       "comment" : "AI Usage card text when the claude CLI is missing.",
       "extractionState" : "manual",
@@ -21734,6 +24255,54 @@
         }
       }
     },
+    "Installed" : {
+      "comment" : "Settings > Connections: the command line tool is installed.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストール済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설치됨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalado"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已安装"
+          }
+        }
+      }
+    },
     "Installed elsewhere? Set %@ to its path." : {
       "comment" : "AI Usage hint under the Claude Code missing card. %@ is an environment variable name shown in monospace.",
       "extractionState" : "manual",
@@ -21922,6 +24491,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "邀请链接"
+          }
+        }
+      }
+    },
+    "Items from the year's other events, earned by focusing while each one runs" : {
+      "comment" : "Tooltip of the More events shelf.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Items aus den anderen Events des Jahres, verdient durch Fokus, während sie laufen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Artículos de los demás eventos del año, que se ganan concentrándote mientras duran"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objets des autres événements de l'année, gagnés en te concentrant pendant chacun"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今年のほかのイベントのアイテム。各イベント期間中に集中すると獲得できます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "올해 다른 이벤트의 아이템이에요. 각 이벤트 기간에 집중하면 얻어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Itens dos outros eventos do ano, conquistados com foco enquanto cada um acontece"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今年其他活动的物品,在各活动期间专注即可获得"
           }
         }
       }
@@ -22210,6 +24827,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "加入 %@ 的派对"
+          }
+        }
+      }
+    },
+    "Join Party" : {
+      "comment" : "Tooltip and title for joining Party.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party beitreten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unirse a Grupo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rejoindre Groupe"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パーティに参加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파티 참여"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrar no Grupo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入派对"
           }
         }
       }
@@ -23078,6 +25743,54 @@
         }
       }
     },
+    "Leave empty for the default, which is quick and inexpensive." : {
+      "comment" : "Footer of the AI model section.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leer lassen für den Standard, der schnell und günstig ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déjalo vacío para usar el predeterminado, que es rápido y económico."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laisse vide pour celui par défaut, rapide et peu coûteux."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空欄なら、速くて安価なデフォルトを使います。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비워 두면 빠르고 저렴한 기본값을 써요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixe vazio para o padrão, que é rápido e barato."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "留空则使用默认模型,快速且便宜。"
+          }
+        }
+      }
+    },
     "Leave the party" : {
       "comment" : "Party: tooltip on Leave.",
       "extractionState" : "manual",
@@ -23798,6 +26511,54 @@
         }
       }
     },
+    "Long days, light focus. Keep a little rhythm going." : {
+      "comment" : "Seasonal event tagline (Summer).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lange Tage, leichter Fokus. Bleib im Rhythmus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Días largos, foco ligero. Mantén un poco de ritmo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Longues journées, focus léger. Garde le rythme."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "長い日、軽めの集中。少しずつリズムを保とう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "긴 하루, 가벼운 집중. 작은 리듬을 이어가요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dias longos, foco leve. Mantenha um pouco o ritmo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "白天长,专注轻。保持一点节奏。"
+          }
+        }
+      }
+    },
     "Look" : {
       "comment" : "Settings section: theme and appearance.",
       "extractionState" : "manual",
@@ -23938,6 +26699,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在查找 Anki…"
+          }
+        }
+      }
+    },
+    "Looking for it" : {
+      "comment" : "Settings > Connections: looking for the command line tool.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird gesucht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確認中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "찾는 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Procurando"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在查找"
+          }
+        }
+      }
+    },
+    "Lunar New Year" : {
+      "comment" : "Seasonal event name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mondneujahr"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Año Nuevo Lunar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouvel An lunaire"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "旧正月"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설날"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ano-Novo Lunar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "春节"
           }
         }
       }
@@ -24614,6 +27471,150 @@
         }
       }
     },
+    "Milestones" : {
+      "comment" : "Closet Limited shelf title for milestone items.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meilensteine"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hitos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Étapes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マイルストーン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마일스톤"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "里程碑"
+          }
+        }
+      }
+    },
+    "Model" : {
+      "comment" : "Settings > Connections > More options: the AI model field.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modell"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modelo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modèle"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모델"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modelo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模型"
+          }
+        }
+      }
+    },
+    "Month" : {
+      "comment" : "Placeholder of the birth month menu in the age check.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monat"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mois"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "월"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mês"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月份"
+          }
+        }
+      }
+    },
     "Moonlit Witch Hat" : {
       "comment" : "Closet: name of a pet accessory.",
       "extractionState" : "manual",
@@ -24706,6 +27707,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "多"
+          }
+        }
+      }
+    },
+    "More events" : {
+      "comment" : "Closet Limited shelf title for the other seasonal events.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weitere Events"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más eventos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autres événements"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ほかのイベント"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 이벤트"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais eventos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多活动"
           }
         }
       }
@@ -26487,6 +29536,54 @@
         }
       }
     },
+    "Not found on this Mac" : {
+      "comment" : "Settings > Connections: the command line tool is missing.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht auf diesem Mac gefunden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró en este Mac"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introuvable sur ce Mac"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このMacに見つかりません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 Mac에서 찾을 수 없음"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não encontrado neste Mac"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在这台 Mac 上未找到"
+          }
+        }
+      }
+    },
     "Not installed" : {
       "comment" : "Connection status in Settings > Connections: the app is not installed.",
       "extractionState" : "manual",
@@ -27399,6 +30496,54 @@
         }
       }
     },
+    "One calm session at a time. You've got this." : {
+      "comment" : "Seasonal event tagline (Exam Season).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Immer eine ruhige Sitzung. Du schaffst das."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una sesión tranquila a la vez. Tú puedes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une session calme à la fois. Tu vas y arriver."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一回ずつ、落ち着いて。きっと大丈夫。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 번에 한 세션씩 차분하게. 할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma sessão tranquila de cada vez. Você consegue."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一次一段,稳稳来。你可以的。"
+          }
+        }
+      }
+    },
     "One song" : {
       "comment" : "VoiceOver value of the repeat toggle: repeating one song.",
       "extractionState" : "manual",
@@ -27779,6 +30924,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 Anki 中打开 %@。今天没有待复习的卡片。"
+          }
+        }
+      }
+    },
+    "Open %@ in your browser" : {
+      "comment" : "Tooltip of Get a Key or Install. The argument is a web host.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ im Browser öffnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir %@ en tu navegador"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir %@ dans ton navigateur"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をブラウザで開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "브라우저에서 %@ 열기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir %@ no navegador"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在浏览器中打开 %@"
           }
         }
       }
@@ -28743,6 +31936,54 @@
         }
       }
     },
+    "Open the official page in your browser" : {
+      "comment" : "Tooltip of Get a Key or Install.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die offizielle Seite im Browser öffnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir la página oficial en tu navegador"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir la page officielle dans ton navigateur"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "公式ページをブラウザで開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "브라우저에서 공식 페이지 열기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir a página oficial no navegador"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在浏览器中打开官方页面"
+          }
+        }
+      }
+    },
     "Open this chat and continue it" : {
       "comment" : "Ask AI: tooltip on a saved chat in history.",
       "extractionState" : "manual",
@@ -28883,6 +32124,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在打开 Anki…"
+          }
+        }
+      }
+    },
+    "Opens on tabbinotch.com" : {
+      "comment" : "Tooltip of the Terms and Privacy links.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnet sich auf tabbinotch.com"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se abre en tabbinotch.com"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S'ouvre sur tabbinotch.com"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tabbinotch.comで開きます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tabbinotch.com에서 열려요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre em tabbinotch.com"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 tabbinotch.com 上打开"
           }
         }
       }
@@ -29415,6 +32704,54 @@
         }
       }
     },
+    "Party asks once before you join. Your answer stays on this Mac." : {
+      "comment" : "Party age check note.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party fragt einmal vor dem Beitritt. Deine Antwort bleibt auf diesem Mac."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupo lo pregunta una vez antes de unirte. Tu respuesta se queda en este Mac."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groupe le demande une fois avant que tu le rejoignes. Ta réponse reste sur ce Mac."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "参加前に一度だけ確認します。回答はこのMacに保存されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "참여 전에 한 번만 물어봐요. 답은 이 Mac에만 남아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Grupo pergunta uma vez antes de você entrar. Sua resposta fica neste Mac."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入前只问一次。你的回答只保存在这台 Mac 上。"
+          }
+        }
+      }
+    },
     "Party code" : {
       "comment" : "Party: placeholder of the field where you type a party code to join.",
       "extractionState" : "manual",
@@ -29463,6 +32800,54 @@
         }
       }
     },
+    "Party is for people %lld and older. It opens here in %@." : {
+      "comment" : "Party, for someone under the minimum age. Arguments: the age (13), a month and year (May 2028). Keep the legal meaning exact.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party gibt es ab %1$lld Jahren. Sie öffnet sich hier ab %2$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupo es para personas de %1$lld años o más. Se abrirá aquí en %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groupe est réservé aux personnes de %1$lld ans et plus. Il s'ouvrira ici en %2$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パーティは%1$lld歳以上の方が対象です。%2$@からここで利用できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파티는 만 %1$lld세 이상만 이용할 수 있어요. %2$@부터 여기서 열려요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupo é para pessoas com %1$lld anos ou mais. Ele abre aqui em %2$@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "派对仅面向 %1$lld 岁及以上的用户。%2$@起将在这里开放。"
+          }
+        }
+      }
+    },
     "Party isn't available" : {
       "comment" : "Party: title when the account is banned from Party.",
       "extractionState" : "manual",
@@ -29507,6 +32892,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "派对不可用"
+          }
+        }
+      }
+    },
+    "Party isn't available yet" : {
+      "comment" : "Party title for someone under the minimum age.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party ist noch nicht verfügbar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupo aún no está disponible"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groupe n'est pas encore disponible"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パーティはまだ利用できません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 파티를 이용할 수 없어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupo ainda não está disponível"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "派对暂不可用"
           }
         }
       }
@@ -29847,6 +33280,54 @@
         }
       }
     },
+    "Paste your key" : {
+      "comment" : "Placeholder of the API key field.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlüssel einfügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pega tu clave"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colle ta clé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キーを貼り付け"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키 붙여넣기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cole sua chave"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴你的密钥"
+          }
+        }
+      }
+    },
     "Path" : {
       "comment" : "Label of a file path text field (e.g. the claude CLI path).",
       "extractionState" : "manual",
@@ -30135,6 +33616,102 @@
         }
       }
     },
+    "Pay as you go with an Anthropic API key." : {
+      "comment" : "AI provider summary.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bezahlung nach Nutzung mit einem Anthropic-API-Schlüssel."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pago por uso con una clave de API de Anthropic."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paiement à l'usage avec une clé d'API Anthropic."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnthropicのAPIキーで使った分だけ支払い。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anthropic API 키로 쓴 만큼 결제해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pague pelo uso com uma chave de API da Anthropic."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 Anthropic API 密钥按量付费。"
+          }
+        }
+      }
+    },
+    "Pay as you go with an OpenAI API key." : {
+      "comment" : "AI provider summary.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bezahlung nach Nutzung mit einem OpenAI-API-Schlüssel."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pago por uso con una clave de API de OpenAI."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paiement à l'usage avec une clé d'API OpenAI."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAIのAPIキーで使った分だけ支払い。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI API 키로 쓴 만큼 결제해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pague pelo uso com uma chave de API da OpenAI."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 OpenAI API 密钥按量付费。"
+          }
+        }
+      }
+    },
     "Peak %@  ·  Avg %@" : {
       "comment" : "System panel GPU card footer. Each %@ is a percentage, e.g. '42%'. Avg is short for average. Must stay short.",
       "extractionState" : "manual",
@@ -30227,6 +33804,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "宠物"
+          }
+        }
+      }
+    },
+    "Pick %@ again to allow it to receive your AI requests. %@ sends nothing until you do." : {
+      "comment" : "Settings > Connections footer. Arguments: the provider (Claude API), the app name (Tabbi).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle %1$@ erneut, damit es deine KI-Anfragen erhalten darf. %2$@ sendet nichts, bevor du das tust."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuelve a elegir %1$@ para permitir que reciba tus solicitudes de IA. %2$@ no envía nada hasta entonces."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis à nouveau %1$@ pour l'autoriser à recevoir tes demandes d'IA. %2$@ n'envoie rien d'ici là."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIリクエストの受信を許可するには、もう一度%1$@を選んでください。それまで%2$@は何も送信しません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 요청을 받도록 허용하려면 %1$@을(를) 다시 고르세요. 그 전까지 %2$@은(는) 아무것도 보내지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha %1$@ de novo para permitir que receba seus pedidos de IA. O %2$@ não envia nada até lá."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再次选择 %1$@ 以允许它接收你的 AI 请求。在此之前 %2$@ 不会发送任何内容。"
           }
         }
       }
@@ -30327,6 +33952,54 @@
         }
       }
     },
+    "Pick a month and a year first" : {
+      "comment" : "Tooltip of a disabled Continue in the Party age check.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle zuerst Monat und Jahr"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige primero un mes y un año"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis d'abord un mois et une année"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先に月と年を選んでください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "먼저 월과 연도를 고르세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um mês e um ano primeiro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请先选择月份和年份"
+          }
+        }
+      }
+    },
     "Pick any that fit." : {
       "comment" : "Onboarding hint on a question that allows several answers.",
       "extractionState" : "manual",
@@ -30375,6 +34048,54 @@
         }
       }
     },
+    "Pick one to use Ask, Plan my day and Refine. %@ sends nothing until you do." : {
+      "comment" : "Settings > Connections footer. The argument is the app name (Tabbi).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle eine aus, um KI fragen, Tag planen und Verfeinern zu nutzen. %@ sendet nichts, bevor du das tust."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige una para usar Pregunta a la IA, Planear mi día y Mejorar. %@ no envía nada hasta entonces."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis-en une pour utiliser Demander à l'IA, Planifier ma journée et Affiner. %@ n'envoie rien d'ici là."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIに質問、1日を計画、調整を使うには1つ選んでください。それまで%@は何も送信しません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI에게 묻기, 하루 계획, 다듬기를 쓰려면 하나를 고르세요. 그 전까지 %@은(는) 아무것도 보내지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha uma para usar Pergunte à IA, Planejar meu dia e Refinar. O %@ não envia nada até lá."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择一个即可使用问 AI、规划今天和优化。在此之前 %@ 不会发送任何内容。"
+          }
+        }
+      }
+    },
     "Pick the claude binary in Finder" : {
       "comment" : "Tooltip on the Choose button in Settings > Connections; claude stays lowercase.",
       "extractionState" : "manual",
@@ -30419,6 +34140,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在访达中选择 claude 可执行文件"
+          }
+        }
+      }
+    },
+    "Pick the month and year you were born" : {
+      "comment" : "Tooltip of a disabled Continue in the account sheet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle deinen Geburtsmonat und dein Geburtsjahr"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige el mes y el año en que naciste"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis ton mois et ton année de naissance"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生まれた月と年を選んでください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "태어난 달과 연도를 고르세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha o mês e o ano em que você nasceu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择你出生的月份和年份"
           }
         }
       }
@@ -32295,6 +36064,54 @@
         }
       }
     },
+    "Refine and AI day plans: your calendar event titles and times, tasks, goals and the plan." : {
+      "comment" : "AI consent alert: what Refine and Plan my day send.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verfeinern und KI-Tagespläne: Titel und Zeiten deiner Kalendertermine, Aufgaben, Ziele und den Plan."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mejorar y planes del día con IA: los títulos y horas de tus eventos del calendario, tareas, metas y el plan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiner et plans de journée par IA : les titres et horaires de tes événements, tes tâches, tes objectifs et le plan."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "調整とAIの1日プラン: カレンダーの予定のタイトルと時刻、タスク、目標、プラン。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다듬기와 AI 하루 계획: 캘린더 일정의 제목과 시간, 할 일, 목표, 계획."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refinar e planos do dia com IA: títulos e horários dos eventos da sua agenda, tarefas, metas e o plano."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "优化和 AI 日程规划:你的日历事件标题和时间、任务、目标以及计划。"
+          }
+        }
+      }
+    },
     "Refine with %@: suggest a better order or lengths for this plan" : {
       "comment" : "Schedule panel: tooltip of Refine; %@ is the AI assistant's name.",
       "extractionState" : "manual",
@@ -32675,6 +36492,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "提醒事项"
+          }
+        }
+      }
+    },
+    "Remove" : {
+      "comment" : "Button that deletes the saved API key.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除"
           }
         }
       }
@@ -34491,6 +38356,150 @@
         }
       }
     },
+    "Run claude in Terminal once to sign in." : {
+      "comment" : "Setup hint. Keep 'claude' (a command) and use the localized name of macOS Terminal.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Führe claude einmal im Terminal aus, um dich anzumelden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecuta claude una vez en Terminal para iniciar sesión."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lance claude une fois dans Terminal pour te connecter."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ターミナルで一度claudeを実行してサインインしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "터미널에서 claude를 한 번 실행해 로그인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rode claude uma vez no Terminal para entrar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在“终端”中运行一次 claude 以登录。"
+          }
+        }
+      }
+    },
+    "Run codex in Terminal once to sign in." : {
+      "comment" : "Setup hint. Keep 'codex' (a command).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Führe codex einmal im Terminal aus, um dich anzumelden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecuta codex una vez en Terminal para iniciar sesión."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lance codex une fois dans Terminal pour te connecter."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ターミナルで一度codexを実行してサインインしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "터미널에서 codex를 한 번 실행해 로그인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rode codex uma vez no Terminal para entrar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在“终端”中运行一次 codex 以登录。"
+          }
+        }
+      }
+    },
+    "Run gemini in Terminal once to sign in with Google." : {
+      "comment" : "Setup hint. Keep 'gemini' (a command).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Führe gemini einmal im Terminal aus, um dich mit Google anzumelden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecuta gemini una vez en Terminal para iniciar sesión con Google."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lance gemini une fois dans Terminal pour te connecter avec Google."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ターミナルで一度geminiを実行してGoogleでサインインしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "터미널에서 gemini를 한 번 실행해 Google로 로그인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rode gemini uma vez no Terminal para entrar com o Google."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在“终端”中运行一次 gemini 以使用 Google 登录。"
+          }
+        }
+      }
+    },
     "Running in %@" : {
       "comment" : "Today's mirrored timer card while running. %@ is the module running the timer.",
       "extractionState" : "manual",
@@ -34535,6 +38544,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在 %@ 中运行"
+          }
+        }
+      }
+    },
+    "Runs on this Mac" : {
+      "comment" : "Settings > Connections: Ollama runs locally.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Läuft auf diesem Mac"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se ejecuta en este Mac"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonctionne sur ce Mac"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このMacで動作"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 Mac에서 실행"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Roda neste Mac"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在这台 Mac 上运行"
           }
         }
       }
@@ -34587,6 +38644,102 @@
         }
       }
     },
+    "Save" : {
+      "comment" : "Button that saves the API key.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sichern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存"
+          }
+        }
+      }
+    },
+    "Save this key in your Keychain" : {
+      "comment" : "Tooltip of Save.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diesen Schlüssel im Schlüsselbund sichern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar esta clave en tu llavero"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer cette clé dans ton trousseau"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このキーをキーチェーンに保存"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 키를 키체인에 저장"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvar esta chave nas suas Chaves"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将此密钥存入钥匙串"
+          }
+        }
+      }
+    },
     "Saved chats are kept only on this Mac and never uploaded" : {
       "comment" : "Ask AI: tooltip on 'Chats stay on this Mac'.",
       "extractionState" : "manual",
@@ -34631,6 +38784,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "保存的聊天只留在这台 Mac 上,绝不会上传"
+          }
+        }
+      }
+    },
+    "Saved in your Keychain" : {
+      "comment" : "Settings > Connections: the API key is saved.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Schlüsselbund gesichert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardada en tu llavero"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrée dans ton trousseau"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キーチェーンに保存済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키체인에 저장됨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salva nas suas Chaves"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已存入钥匙串"
           }
         }
       }
@@ -35111,6 +39312,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "发送(Return)"
+          }
+        }
+      }
+    },
+    "Send your AI requests to %@?" : {
+      "comment" : "Title of the one-time AI consent alert. The argument is a company (Anthropic, OpenAI, Google); keep it untranslated.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine KI-Anfragen an %@ senden?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Enviar tus solicitudes de IA a %@?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer tes demandes d'IA à %@ ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIへのリクエストを%@に送信しますか?"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 요청을 %@에 보낼까요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar seus pedidos de IA para %@?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将你的 AI 请求发送给 %@?"
+          }
+        }
+      }
+    },
+    "Sends what you ask to %@." : {
+      "comment" : "Settings > Connections footer. The argument is a company (Anthropic, OpenAI, Google).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sendet deine Anfragen an %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envía lo que preguntas a %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoie tes demandes à %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "質問内容は%@に送信されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "질문한 내용은 %@에 보내져요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envia o que você pergunta para a %@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "会将你的提问发送给 %@。"
           }
         }
       }
@@ -36555,6 +40852,54 @@
         }
       }
     },
+    "Show your studies some love this week." : {
+      "comment" : "Seasonal event tagline (Valentine's Week).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schenk deinem Lernen diese Woche etwas Liebe."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dale un poco de amor a tus estudios esta semana."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montre un peu d'amour à tes études cette semaine."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今週は勉強にちょっぴり愛を。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주엔 공부에 사랑을 조금 나눠 줘요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dê um pouco de amor aos seus estudos esta semana."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这周给学习一点爱吧。"
+          }
+        }
+      }
+    },
     "Showing local stats only" : {
       "comment" : "AI Usage footer when the CLI is missing, so only local usage shows.",
       "extractionState" : "manual",
@@ -36840,6 +41185,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "退出登录"
+          }
+        }
+      }
+    },
+    "Sign in with Apple" : {
+      "comment" : "Title of the account sheet. Apple's feature name; use Apple's official localized name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Apple anmelden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar sesión con Apple"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se connecter avec Apple"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appleでサインイン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple로 로그인"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar sessão com a Apple"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过 Apple 登录"
           }
         }
       }
@@ -37800,6 +42193,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "闪光拖尾"
+          }
+        }
+      }
+    },
+    "Spooky season is here. Focus to dress up your pet." : {
+      "comment" : "Seasonal event tagline (Halloween).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gruselzeit! Mit Fokus verkleidest du dein Tier."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Sustos! Concéntrate y disfraza a tu mascota."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frissons ! Concentre-toi pour déguiser ton ami."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ハロウィンの季節。集中してペットを仮装させよう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "으스스한 시즌이 왔어요. 집중해서 펫을 꾸며 봐요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chegou a temporada de sustos. Fantasie seu pet."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "万圣节来啦。专注一下,给宠物换装吧。"
           }
         }
       }
@@ -39916,6 +44357,54 @@
         }
       }
     },
+    "Study 7 days in a row." : {
+      "comment" : "How to earn the streak milestone item.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lerne 7 Tage am Stück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estudia 7 días seguidos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Étudie 7 jours d'affilée."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7日連続で学習しよう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7일 연속 공부하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estude 7 dias seguidos."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连续学习 7 天。"
+          }
+        }
+      }
+    },
     "Study Hoodie" : {
       "comment" : "Closet: name of a pet outfit.",
       "extractionState" : "manual",
@@ -40296,6 +44785,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "建议功能或报告问题"
+          }
+        }
+      }
+    },
+    "Summer" : {
+      "comment" : "Seasonal event name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sommer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verano"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Été"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "夏"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "여름"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verão"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "夏日"
           }
         }
       }
@@ -40733,19 +45270,19 @@
       }
     },
     "Sync your pet, points and streaks across your Macs." : {
-      "comment" : "Caption of the Account row in Settings > General when signed out.",
+      "comment" : "Account sheet subtitle.",
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Synchronisiere Haustier, Punkte und Serien auf deinen Macs."
+            "value" : "Synchronisiere dein Haustier, deine Punkte und Serien auf deinen Macs."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sincroniza tu mascota, puntos y rachas en tus Mac."
+            "value" : "Sincroniza tu mascota, tus puntos y rachas entre tus Mac."
           }
         },
         "fr" : {
@@ -40757,13 +45294,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ペット、ポイント、連続記録をすべてのMacで同期します。"
+            "value" : "ペット、ポイント、連続記録をすべてのMacで同期。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "펫, 포인트, 연속 기록을 모든 Mac에서 동기화해요."
+            "value" : "펫, 포인트, 연속 기록을 내 Mac들에서 동기화해요."
           }
         },
         "pt-BR" : {
@@ -40775,7 +45312,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在各台 Mac 间同步宠物、积分和连续记录。"
+            "value" : "在你的各台 Mac 之间同步宠物、积分和连续记录。"
           }
         }
       }
@@ -41452,6 +45989,150 @@
         }
       }
     },
+    "The AI that answers Ask, Plan my day and Refine" : {
+      "comment" : "Tooltip of the AI provider picker.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die KI hinter KI fragen, Tag planen und Verfeinern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La IA que responde en Pregunta a la IA, Planear mi día y Mejorar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'IA qui répond dans Demander à l'IA, Planifier ma journée et Affiner"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIに質問、1日を計画、調整で答えるAI"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI에게 묻기, 하루 계획, 다듬기에 답하는 AI"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A IA que responde em Pergunte à IA, Planejar meu dia e Refinar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为问 AI、规划今天和优化提供回答的 AI"
+          }
+        }
+      }
+    },
+    "The Keychain didn't save the key. Try again." : {
+      "comment" : "Error under the API key field.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Schlüsselbund hat den Schlüssel nicht gesichert. Versuch es noch einmal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El llavero no guardó la clave. Inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le trousseau n'a pas enregistré la clé. Réessaie."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キーチェーンにキーを保存できませんでした。もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키체인에 키를 저장하지 못했어요. 다시 시도해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As Chaves não salvaram a chave. Tente de novo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "钥匙串未能保存密钥。请重试。"
+          }
+        }
+      }
+    },
+    "The blossoms are out. Grow something of your own." : {
+      "comment" : "Seasonal event tagline (Cherry Blossom Season).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Blüten sind da. Lass Eigenes wachsen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los cerezos florecen. Haz crecer algo tuyo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les fleurs sont là. Fais grandir ton projet."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "桜が咲きました。あなたも何かを育てよう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "꽃이 피었어요. 나만의 무언가를 키워 봐요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As flores chegaram. Cultive algo seu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "樱花开了。也让你的努力开花吧。"
+          }
+        }
+      }
+    },
     "The focus timer is on this task" : {
       "comment" : "Tooltip of the scope glyph on the Today row the focus timer is linked to.",
       "extractionState" : "manual",
@@ -41644,6 +46325,102 @@
         }
       }
     },
+    "The model %@ uses. Leave empty for the default." : {
+      "comment" : "Tooltip of the model field. The argument is the provider.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Modell, das %@ nutzt. Leer lassen für den Standard."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El modelo que usa %@. Déjalo vacío para usar el predeterminado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le modèle utilisé par %@. Laisse vide pour celui par défaut."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@が使うモデル。空欄ならデフォルトを使います。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@이(가) 쓰는 모델. 비워 두면 기본값을 써요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O modelo que %@ usa. Deixe vazio para o padrão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 使用的模型。留空则使用默认模型。"
+          }
+        }
+      }
+    },
+    "The month you were born" : {
+      "comment" : "Tooltip of the birth month menu.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Geburtsmonat"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El mes en que naciste"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton mois de naissance"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生まれた月"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "태어난 달"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O mês em que você nasceu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你出生的月份"
+          }
+        }
+      }
+    },
     "The next seven days at a glance" : {
       "comment" : "Schedule panel: tooltip of the Week pill.",
       "extractionState" : "manual",
@@ -41832,6 +46609,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "这场专注会为整个派对持续，直到结束或你手动结束"
+          }
+        }
+      }
+    },
+    "The tool's own default" : {
+      "comment" : "Placeholder of the model field for a command line tool.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standard des Tools"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El predeterminado de la herramienta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Celui par défaut de l'outil"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ツールのデフォルト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "도구 기본값"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O padrão da ferramenta"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "工具自身的默认值"
+          }
+        }
+      }
+    },
+    "The year you were born" : {
+      "comment" : "Tooltip of the birth year menu.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Geburtsjahr"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El año en que naciste"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton année de naissance"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生まれた年"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "태어난 연도"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O ano em que você nasceu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你出生的年份"
           }
         }
       }
@@ -44380,6 +49253,102 @@
         }
       }
     },
+    "Uses your ChatGPT plan through the codex command." : {
+      "comment" : "AI provider summary. Keep 'codex' (a command) as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzt deinen ChatGPT-Tarif über den Befehl codex."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa tu plan de ChatGPT con el comando codex."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilise ton forfait ChatGPT via la commande codex."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "codexコマンドでChatGPTのプランを使います。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "codex 명령으로 ChatGPT 요금제를 사용해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa seu plano do ChatGPT pelo comando codex."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过 codex 命令使用你的 ChatGPT 套餐。"
+          }
+        }
+      }
+    },
+    "Uses your Claude subscription through the claude command." : {
+      "comment" : "AI provider summary. Keep 'claude' (a command) as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzt dein Claude-Abo über den Befehl claude."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa tu suscripción de Claude con el comando claude."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilise ton abonnement Claude via la commande claude."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "claudeコマンドでClaudeのサブスクリプションを使います。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "claude 명령으로 Claude 구독을 사용해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa sua assinatura do Claude pelo comando claude."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过 claude 命令使用你的 Claude 订阅。"
+          }
+        }
+      }
+    },
     "Using a copy outside Applications? Just open it." : {
       "comment" : "Anki panel: hint beside Get Anki.",
       "extractionState" : "manual",
@@ -44424,6 +49393,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Anki 在其他位置？直接打开即可。"
+          }
+        }
+      }
+    },
+    "Valentine's Week" : {
+      "comment" : "Seasonal event name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valentinswoche"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana de San Valentín"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semaine de la Saint-Valentin"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バレンタインウィーク"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "밸런타인 주간"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana de São Valentim"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "情人节周"
           }
         }
       }
@@ -45532,6 +50549,54 @@
         }
       }
     },
+    "When were you born?" : {
+      "comment" : "Age check question before Party or signing in.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wann bist du geboren?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Cuándo naciste?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand es-tu né(e) ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生まれた年月は?"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "언제 태어났나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando você nasceu?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你是什么时候出生的?"
+          }
+        }
+      }
+    },
     "White Coat" : {
       "comment" : "Closet: name of a pet outfit.",
       "extractionState" : "manual",
@@ -45576,6 +50641,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "白大褂"
+          }
+        }
+      }
+    },
+    "Winter Holidays" : {
+      "comment" : "Seasonal event name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Winterferien"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fiestas de invierno"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fêtes d'hiver"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウィンターホリデー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "겨울 연휴"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Festas de fim de ano"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "冬日假期"
           }
         }
       }
@@ -45628,6 +50741,102 @@
         }
       }
     },
+    "With %@, %@ sends these to %@ through the %@ command you signed in to when you use an AI feature:" : {
+      "comment" : "AI consent alert, first line for a command line tool. Arguments: the provider (Claude Code), the app name (Tabbi), the company (Anthropic), the provider again. Keep names untranslated.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit %1$@ sendet %2$@ Folgendes an %3$@, über den %4$@-Befehl, bei dem du angemeldet bist, wenn du eine KI-Funktion nutzt:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con %1$@, %2$@ envía esto a %3$@ a través del comando %4$@ en el que iniciaste sesión cuando usas una función de IA:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avec %1$@, %2$@ envoie ceci à %3$@ via la commande %4$@ à laquelle tu t'es connecté quand tu utilises une fonction d'IA :"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@を使うと、AI機能を使ったときに%2$@はサインイン済みの%4$@コマンドを通じて次の内容を%3$@に送信します:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@을(를) 사용하면 AI 기능을 쓸 때 %2$@이(가) 로그인한 %4$@ 명령을 통해 다음 내용을 %3$@에 보냅니다:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com %1$@, o %2$@ envia isto para a %3$@ pelo comando %4$@ em que você entrou quando você usa um recurso de IA:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 %1$@ 时,当你使用 AI 功能,%2$@ 会通过你已登录的 %4$@ 命令将以下内容发送给 %3$@:"
+          }
+        }
+      }
+    },
+    "With %@, %@ sends these to %@ with your API key when you use an AI feature:" : {
+      "comment" : "AI consent alert, first line for an API provider. Arguments: the provider (Claude API), the app name (Tabbi), the company (Anthropic). Keep names untranslated.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit %1$@ sendet %2$@ Folgendes mit deinem API-Schlüssel an %3$@, wenn du eine KI-Funktion nutzt:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con %1$@, %2$@ envía esto a %3$@ con tu clave de API cuando usas una función de IA:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avec %1$@, %2$@ envoie ceci à %3$@ avec ta clé d'API quand tu utilises une fonction d'IA :"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@を使うと、AI機能を使ったときに%2$@はあなたのAPIキーで次の内容を%3$@に送信します:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@을(를) 사용하면 AI 기능을 쓸 때 %2$@이(가) 내 API 키로 다음 내용을 %3$@에 보냅니다:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com %1$@, o %2$@ envia isto para a %3$@ com sua chave de API quando você usa um recurso de IA:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 %1$@ 时,当你使用 AI 功能,%2$@ 会用你的 API 密钥将以下内容发送给 %3$@:"
+          }
+        }
+      }
+    },
     "With Claude Code as your AI, Ask AI and AI Usage run your own signed-in claude CLI; %@ never reads your credentials. Set this only if claude isn't found automatically." : {
       "comment" : "Settings > Connections footer under Claude location; %@ is the app name (Tabbi), claude stays lowercase.",
       "extractionState" : "manual",
@@ -45672,6 +50881,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "将 Claude Code 设为 AI 时，“问 AI”和“AI 用量”会运行你已登录的 claude CLI；%@ 从不读取你的凭据。只有在无法自动找到 claude 时才需要设置。"
+          }
+        }
+      }
+    },
+    "With Ollama open, run ollama pull %@ in Terminal once." : {
+      "comment" : "Setup hint. Keep 'ollama pull' and the model (the argument) as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Führe bei geöffnetem Ollama einmal ollama pull %@ im Terminal aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con Ollama abierto, ejecuta ollama pull %@ una vez en Terminal."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama ouvert, lance ollama pull %@ une fois dans Terminal."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollamaを開いた状態で、ターミナルで一度ollama pull %@を実行してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama를 연 상태로 터미널에서 ollama pull %@를 한 번 실행하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com o Ollama aberto, rode ollama pull %@ uma vez no Terminal."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 Ollama 后,在“终端”中运行一次 ollama pull %@。"
           }
         }
       }
@@ -46008,6 +51265,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "写信至 %@"
+          }
+        }
+      }
+    },
+    "Year" : {
+      "comment" : "Placeholder of the birth year menu in the age check.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jahr"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Año"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Année"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연도"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ano"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年份"
           }
         }
       }
@@ -46392,6 +51697,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你为派对发起"
+          }
+        }
+      }
+    },
+    "Your %@ key. It is kept in your Keychain." : {
+      "comment" : "Tooltip of the API key field. The argument is the provider (Claude API).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein %@-Schlüssel. Er bleibt in deinem Schlüsselbund."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu clave de %@. Se guarda en tu llavero."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta clé %@. Elle reste dans ton trousseau."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のキー。キーチェーンに保存されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 키. 키체인에 보관돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua chave da %@. Ela fica nas suas Chaves."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的 %@ 密钥,保存在钥匙串中。"
           }
         }
       }
@@ -46824,6 +52177,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的好友码：%@"
+          }
+        }
+      }
+    },
+    "Your key stays in your Keychain." : {
+      "comment" : "Settings > Connections footer for an API provider.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Schlüssel bleibt in deinem Schlüsselbund."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu clave se queda en tu llavero."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta clé reste dans ton trousseau."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キーはキーチェーンに保存されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키는 키체인에 보관돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua chave fica nas suas Chaves."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的密钥保存在钥匙串中。"
           }
         }
       }
@@ -48474,6 +53875,54 @@
         }
       }
     },
+    "starts %@" : {
+      "comment" : "When the next seasonal event starts, after its name, e.g. starts Dec 14.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ab %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "empieza el %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "dès le %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@から"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 시작"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "começa em %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 开始"
+          }
+        }
+      }
+    },
     "switch.on" : {
       "comment" : "Value of a setting or toggle that is switched on (shuffle, Do Not Disturb, like). Pairs with 'Off'.",
       "extractionState" : "manual",
@@ -48621,6 +54070,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Token"
+          }
+        }
+      }
+    },
+    "until %@" : {
+      "comment" : "When a seasonal event ends, after its name, e.g. until Oct 31.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bis %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hasta el %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "jusqu'au %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@まで"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@까지"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "até %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "至 %@"
           }
         }
       }

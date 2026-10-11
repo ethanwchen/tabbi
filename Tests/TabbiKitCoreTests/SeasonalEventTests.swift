@@ -403,7 +403,7 @@ final class SeasonalEventTests: XCTestCase {
     func testSeasonalCopyStatesTheCatalogGoal() {
         XCTAssertEqual(PetLimitedEdition.halloweenWitchHat.howToEarn, "Focus for 90 minutes during Halloween.")
         XCTAssertEqual(PetLimitedEdition.halloweenPumpkin.howToEarn, "Focus for 5 hours during Halloween.")
-        XCTAssertEqual(PetLimitedEdition.valentinesGlasses.howToEarn, "Focus for 3 hours during Valentine's week.")
+        XCTAssertEqual(PetLimitedEdition.valentinesGlasses.howToEarn, "Focus for 3 hours during Valentine's Week.")
     }
 
     /// The schema accepts every id and calendar the bundled file and Swift

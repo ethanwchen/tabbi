@@ -27,6 +27,8 @@
 	<string>%@ de libre</string>
 	<key>%@ free this week</key>
 	<string>%@ de libre cette semaine</string>
+	<key>%@ handles them under its own terms and privacy policy. %@'s AI features send nothing else, and nothing until you allow it. You can switch to None in Connections at any time.</key>
+	<string>%1$@ les traite selon ses propres conditions et sa politique de confidentialité. Les fonctions d'IA de %2$@ n'envoient rien d'autre, et rien tant que tu ne l'as pas autorisé. Tu peux passer à Aucun dans Connexions à tout moment.</string>
 	<key>%@ in %@</key>
 	<string>%1$@ dans %2$@</string>
 	<key>%@ in the party's shared session</key>
@@ -69,6 +71,8 @@
 	<string>%1$@ sur %2$@</string>
 	<key>%@ of focus.</key>
 	<string>%@ de concentration.</string>
+	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
+	<string>%1$@ dure jusqu'au %2$@. Prochain objet, %3$@ : %4$@ de concentration.</string>
 	<key>%@ settings</key>
 	<string>Réglages de %@</string>
 	<key>%@ started it for the party</key>
@@ -93,12 +97,24 @@
 	<string>%@ · En pause</string>
 	<key>%@, %lld extra</key>
 	<string>%@, %lld en plus</string>
+	<key>%@, limited edition: %@</key>
+	<string>%1$@, édition limitée : %2$@</string>
+	<key>%@, limited edition: %@ Its event starts %@.</key>
+	<string>%1$@, édition limitée : %2$@ Son événement commence le %3$@.</string>
+	<key>%@, limited edition: click to take off</key>
+	<string>%@, édition limitée : clique pour l'enlever</string>
+	<key>%@, limited edition: click to wear</key>
+	<string>%@, édition limitée : clique pour le porter</string>
 	<key>%@. %@</key>
 	<string>%@. %@</string>
 	<key>%@: %@</key>
 	<string>%@ : %@</string>
 	<key>%@: %@ left</key>
 	<string>%@ : %@ restantes</string>
+	<key>%@: you earned every item. They stay yours after the event.</key>
+	<string>%@ : tu as gagné tous les objets. Ils restent à toi après l'événement.</string>
+	<key>%lld h</key>
+	<string>%lld h</string>
 	<key>%lld in party</key>
 	<string>%lld dans la fête</string>
 	<key>%lld min</key>
@@ -123,6 +139,14 @@
 	<string>%1$lld pts, encore %2$@</string>
 	<key>%lld sounds</key>
 	<string>%lld sons</string>
+	<key>%lld/%lld days</key>
+	<string>%lld/%lld jours</string>
+	<key>%lld/%lld h</key>
+	<string>%lld/%lld h</string>
+	<key>%lld/%lld min</key>
+	<string>%lld/%lld min</string>
+	<key>%lld/%lld session</key>
+	<string>%lld/%lld session</string>
 	<key>%lldh</key>
 	<string>%lld h</string>
 	<key>%lldh %lldm</key>
@@ -157,6 +181,8 @@
 	<string>Quelques extras</string>
 	<key>A fresh day</key>
 	<string>Une nouvelle journée</string>
+	<key>A fresh start for the new year. Focus a little each day.</key>
+	<string>Nouvelle année, nouveau départ. Un peu par jour.</string>
 	<key>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</key>
 	<string>Un kit, c'est un ensemble d'onglets prêt à l'emploi. En changer remplace tes onglets et ajoute ses tâches de départ à Aujourd'hui.</string>
 	<key>A kit is a set of tabs. You can change them any time.</key>
@@ -181,12 +207,18 @@
 	<string>IA</string>
 	<key>AI Usage</key>
 	<string>Usage IA</string>
+	<key>AI model</key>
+	<string>Modèle d'IA</string>
 	<key>AI usage above 80%</key>
 	<string>Usage IA au-delà de 80 %</string>
+	<key>API key</key>
+	<string>Clé d'API</string>
 	<key>About</key>
 	<string>À propos</string>
 	<key>Account</key>
 	<string>Compte</string>
+	<key>Accounts are for people %lld and older. Signing in opens in %@.</key>
+	<string>Les comptes sont réservés aux personnes de %1$lld ans et plus. La connexion sera possible en %2$@.</string>
 	<key>Activity</key>
 	<string>Activité</string>
 	<key>Add</key>
@@ -243,8 +275,12 @@
 	<string>Paquets avec cartes à revoir</string>
 	<key>All done</key>
 	<string>Tout est fait</string>
+	<key>All earned</key>
+	<string>Tout gagné</string>
 	<key>All optional. Nothing to do now.</key>
 	<string>Tout est facultatif. Rien à faire pour l'instant.</string>
+	<key>Allow</key>
+	<string>Autoriser</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
 	<string>Autorise %@ dans Confidentialité et sécurité.</string>
 	<key>Allow %@ in System Settings › General › Login Items.</key>
@@ -279,6 +315,10 @@
 	<string>Encore une semaine régulière. On garde le cap, tranquille.</string>
 	<key>Answers come from the AI you pick: Claude, ChatGPT, Gemini or a free model on this Mac.</key>
 	<string>Les réponses viennent de l'IA choisie : Claude, ChatGPT, Gemini ou un modèle gratuit sur ce Mac.</string>
+	<key>Answers from</key>
+	<string>Réponses de</string>
+	<key>App</key>
+	<string>App</string>
 	<key>Appears when the pointer reaches the top center.</key>
 	<string>Apparaît quand le pointeur atteint le haut, au centre.</string>
 	<key>Apps and permissions</key>
@@ -289,6 +329,8 @@
 	<string>Demande ce que tu veux à %@…</string>
 	<key>Ask AI</key>
 	<string>Demander à l'IA</string>
+	<key>Ask AI: your questions, the chat so far and any screenshot you attach.</key>
+	<string>Demander à l'IA : tes questions, la conversation en cours et les captures d'écran que tu joins.</string>
 	<key>Ask Anki again</key>
 	<string>Redemander à Anki</string>
 	<key>Ask Claude, Gemini or another AI a quick question.</key>
@@ -299,6 +341,8 @@
 	<string>Reposer cette question</string>
 	<key>Ask “%@”</key>
 	<string>Demander « %@ »</string>
+	<key>Asked once. Your answer stays on this Mac.</key>
+	<string>Demandé une seule fois. Ta réponse reste sur ce Mac.</string>
 	<key>Asking Anki to open the deck for review.</key>
 	<string>Anki ouvre le paquet pour la révision.</string>
 	<key>Astronaut Helmet</key>
@@ -349,6 +393,10 @@
 	<string>Oreilles de lapin</string>
 	<key>Buy freeze</key>
 	<string>Acheter un gel</string>
+	<key>By joining you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
+	<string>En rejoignant, tu acceptes les [Conditions d'utilisation](%1$@) et la [Politique de confidentialité](%2$@).</string>
+	<key>By signing in you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
+	<string>En te connectant, tu acceptes les [Conditions d'utilisation](%1$@) et la [Politique de confidentialité](%2$@).</string>
 	<key>Calendar</key>
 	<string>Calendrier</string>
 	<key>Calendar access</key>
@@ -411,6 +459,8 @@
 	<string>Se coche toute seule une fois finie. Ouvrir %@</string>
 	<key>Chef Hat</key>
 	<string>Toque de chef</string>
+	<key>Cherry Blossom Season</key>
+	<string>Saison des cerisiers</string>
 	<key>Cherry Petals</key>
 	<string>Pétales de cerisier</string>
 	<key>Chocolate</key>
@@ -463,10 +513,16 @@
 	<string>Fermer le plan</string>
 	<key>Close the plan without adding anything</key>
 	<string>Fermer le plan sans rien ajouter</string>
+	<key>Close this</key>
+	<string>Fermer</string>
+	<key>Close this. You can sign in any time.</key>
+	<string>Fermer. Tu peux te connecter à tout moment.</string>
 	<key>Closet</key>
 	<string>Garde-robe</string>
 	<key>Code</key>
 	<string>Code</string>
+	<key>Command</key>
+	<string>Commande</string>
 	<key>Compact</key>
 	<string>Compact</string>
 	<key>Connect</key>
@@ -489,6 +545,8 @@
 	<string>Connexions</string>
 	<key>Continue</key>
 	<string>Continuer</string>
+	<key>Continue to Sign in with Apple</key>
+	<string>Continuer vers Se connecter avec Apple</string>
 	<key>Control Spotify or Apple Music from the notch.</key>
 	<string>Contrôle Spotify ou Apple Music depuis l'encoche.</string>
 	<key>Cool Sunglasses</key>
@@ -533,6 +591,8 @@
 	<string>Sweat douillet</string>
 	<key>Cozy Scarf</key>
 	<string>Écharpe douillette</string>
+	<key>Cozy days and quiet focus before the new year.</key>
+	<string>Des jours douillets et du calme avant l'an neuf.</string>
 	<key>Cream</key>
 	<string>Crème</string>
 	<key>Create a party and get a code to share</key>
@@ -545,6 +605,8 @@
 	<string>Plus la case est foncée, plus tu as étudié</string>
 	<key>Day</key>
 	<string>Jour</string>
+	<key>Day review: today's focus and study minutes, sessions and points, your goal counts and the titles of the tasks you finished or are carrying over.</key>
+	<string>Bilan de la journée : les minutes de concentration et d'étude du jour, les sessions et points, le compte de tes objectifs et les titres des tâches terminées ou reportées.</string>
 	<key>Days in a row with at least one review</key>
 	<string>Jours d'affilée avec au moins une révision</string>
 	<key>Deep</key>
@@ -569,6 +631,8 @@
 	<string>Supprimer ce chat</string>
 	<key>Delete this imported kit and go back to the default kit</key>
 	<string>Supprime ce kit importé et revient au kit par défaut</string>
+	<key>Delete this key from your Keychain</key>
+	<string>Supprimer cette clé de ton trousseau</string>
 	<key>Delete your %@ account?</key>
 	<string>Supprimer ton compte %@ ?</string>
 	<key>Deleting your account…</key>
@@ -603,8 +667,14 @@
 	<string>Fais glisser pour te déplacer</string>
 	<key>Each day's list shows up here the day after.</key>
 	<string>La liste de chaque jour apparaît ici le lendemain.</string>
+	<key>Earned by reaching study milestones</key>
+	<string>Gagnés en atteignant des étapes d'étude</string>
 	<key>Earned by studying, never sold</key>
 	<string>Gagné en étudiant, jamais vendu</string>
+	<key>Earned. Click to take off.</key>
+	<string>Gagné. Clique pour l'enlever.</string>
+	<key>Earned. Click to wear.</key>
+	<string>Gagné. Clique pour le porter.</string>
 	<key>Email Support</key>
 	<string>Écrire au support</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
@@ -635,6 +705,8 @@
 	<string>Tout ce qui reste est sur aujourd'hui</string>
 	<key>Everything unlocked. Dress up as you like.</key>
 	<string>Tout est débloqué. Habille-le comme tu veux.</string>
+	<key>Exam Season</key>
+	<string>Période d'examens</string>
 	<key>Fantasy</key>
 	<string>Fantaisie</string>
 	<key>Fast</key>
@@ -647,6 +719,8 @@
 	<string>Remplis le temps libre du jour avec tes tâches et révisions. Planifié sur ce Mac, rien n'est ajouté sans ton accord</string>
 	<key>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</key>
 	<string>Remplis le temps libre de demain avec tes tâches et révisions. Planifié sur ce Mac, rien n'est ajouté sans ton accord</string>
+	<key>Finish a Party session with friends.</key>
+	<string>Termine une session de Groupe avec des amis.</string>
 	<key>Finish setup</key>
 	<string>Terminer la configuration</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
@@ -673,6 +747,10 @@
 	<string>Se concentrer à nouveau</string>
 	<key>Focus blocks finished today</key>
 	<string>Blocs de concentration finis aujourd'hui</string>
+	<key>Focus during %@.</key>
+	<string>Concentre-toi pendant %@.</string>
+	<key>Focus for 50 hours in total.</key>
+	<string>Concentre-toi 50 heures au total.</string>
 	<key>Focus on this task</key>
 	<string>Te concentrer sur cette tâche</string>
 	<key>Focus session</key>
@@ -693,18 +771,26 @@
 	<string>Concentre-toi aujourd'hui pour la garder</string>
 	<key>Focus together</key>
 	<string>Concentrez-vous ensemble</string>
+	<key>Focus while its event runs.</key>
+	<string>Concentre-toi pendant son événement.</string>
 	<key>Focusing on</key>
 	<string>Concentré sur</string>
 	<key>Focusing on: %@</key>
 	<string>Concentré sur : %@</string>
+	<key>Free and offline: runs a model on this Mac.</key>
+	<string>Gratuit et hors ligne : un modèle tourne sur ce Mac.</string>
 	<key>Free freeze used</key>
 	<string>Gel offert utilisé</string>
+	<key>Free tier with a Google AI Studio key.</key>
+	<string>Offre gratuite avec une clé Google AI Studio.</string>
 	<key>Free time in tomorrow's working day, with a buffer around each event</key>
 	<string>Temps libre dans ta journée de demain, avec une marge autour de chaque événement</string>
 	<key>Free time left in your working day, with a buffer around each event</key>
 	<string>Temps libre restant dans ta journée, avec une marge autour de chaque événement</string>
 	<key>Free used</key>
 	<string>Offert utilisé</string>
+	<key>Free with a Google account through the gemini command.</key>
+	<string>Gratuit avec un compte Google via la commande gemini.</string>
 	<key>Free working time over the next seven days, with a buffer around each event</key>
 	<string>Temps de travail libre sur les sept prochains jours, avec une marge autour de chaque événement</string>
 	<key>Friend's code</key>
@@ -735,12 +821,16 @@
 	<string>Obtenir %@</string>
 	<key>Get Anki</key>
 	<string>Obtenir Anki</string>
+	<key>Get a Key</key>
+	<string>Obtenir une clé</string>
 	<key>Get an alert when a timer ends.</key>
 	<string>Reçois une alerte quand un minuteur se termine.</string>
 	<key>Give your cat a name</key>
 	<string>Donne un nom à ton chat</string>
 	<key>Give your dog a name</key>
 	<string>Donne un nom à ton chien</string>
+	<key>Given to everyone who used Tabbi in its launch week.</key>
+	<string>Offert à tous ceux qui ont utilisé Tabbi pendant sa semaine de lancement.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>Les commandes en verre nécessitent macOS 26 et deviennent opaques quand « Réduire la transparence » est activé.</string>
 	<key>Go back one step</key>
@@ -761,6 +851,8 @@
 	<string>Bravo !</string>
 	<key>Great job, team!</key>
 	<string>Bravo, l'équipe !</string>
+	<key>Halloween</key>
+	<string>Halloween</string>
 	<key>Halo</key>
 	<string>Auréole</string>
 	<key>Haptic feedback</key>
@@ -821,6 +913,8 @@
 	<string>Encoche ouverte : les flèches ou un balayage à deux doigts changent d'onglet, 1-9 va à un onglet, Échap ou un balayage vers le haut ferme. Encoche fermée : balaie vers le bas ou fais un clic du milieu pour voir l'activité en direct suivante.</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>Jetons d'entrée, de sortie et de cache de toutes les sessions %@ depuis minuit</string>
+	<key>Install</key>
+	<string>Installer</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Installe Claude Code et connecte-toi pour voir tes limites de 5 heures et hebdomadaires en direct.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -831,6 +925,8 @@
 	<string>Installe l'extension AnkiConnect pour ouvrir les paquets directement.</string>
 	<key>Install the free Anki desktop app to see your due cards, decks and streak here.</key>
 	<string>Installe l'app gratuite Anki pour voir ici tes cartes, paquets et série.</string>
+	<key>Installed</key>
+	<string>Installé</string>
 	<key>Installed elsewhere? Set %@ to its path.</key>
 	<string>Installé ailleurs ? Mets son chemin dans %@.</string>
 	<key>Instant</key>
@@ -839,6 +935,8 @@
 	<string>Comptes Internet</string>
 	<key>Invite links</key>
 	<string>Liens d'invitation</string>
+	<key>Items from the year's other events, earned by focusing while each one runs</key>
+	<string>Objets des autres événements de l'année, gagnés en te concentrant pendant chacun</string>
 	<key>Items with nothing to show are skipped.</key>
 	<string>Les éléments sans rien à afficher sont ignorés.</string>
 	<key>Its config sets an API key, which this tab doesn't send.</key>
@@ -851,6 +949,8 @@
 	<string>Rejoindre l'appel %@</string>
 	<key>Join %@'s party</key>
 	<string>Rejoindre le groupe de %@</string>
+	<key>Join Party</key>
+	<string>Rejoindre Groupe</string>
 	<key>Joining the party server…</key>
 	<string>Connexion au serveur de groupes…</string>
 	<key>Keep at least one tab on</key>
@@ -887,6 +987,8 @@
 	<string>Apprentissage</string>
 	<key>Leave</key>
 	<string>Quitter</string>
+	<key>Leave empty for the default, which is quick and inexpensive.</key>
+	<string>Laisse vide pour celui par défaut, rapide et peu coûteux.</string>
 	<key>Leave the party</key>
 	<string>Quitter le groupe</string>
 	<key>Leave the party; the next member becomes host</key>
@@ -917,12 +1019,18 @@
 	<string>Emplacement</string>
 	<key>Long break</key>
 	<string>Longue pause</string>
+	<key>Long days, light focus. Keep a little rhythm going.</key>
+	<string>Longues journées, focus léger. Garde le rythme.</string>
 	<key>Look</key>
 	<string>Apparence</string>
 	<key>Looking for %@…</key>
 	<string>Recherche de %@…</string>
 	<key>Looking for Anki…</key>
 	<string>Recherche d'Anki…</string>
+	<key>Looking for it</key>
+	<string>Recherche</string>
+	<key>Lunar New Year</key>
+	<string>Nouvel An lunaire</string>
 	<key>Main display</key>
 	<string>Écran principal</string>
 	<key>Mark as done</key>
@@ -951,10 +1059,18 @@
 	<string>Messages</string>
 	<key>Method</key>
 	<string>Méthode</string>
+	<key>Milestones</key>
+	<string>Étapes</string>
+	<key>Model</key>
+	<string>Modèle</string>
+	<key>Month</key>
+	<string>Mois</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Chapeau de sorcière lunaire</string>
 	<key>More</key>
 	<string>Plus</string>
+	<key>More events</key>
+	<string>Autres événements</string>
 	<key>More focus than last week. Nice climb!</key>
 	<string>Plus concentré que la semaine dernière. Belle progression !</string>
 	<key>More options</key>
@@ -1029,6 +1145,8 @@
 	<string>Pas encore vérifié · actualise pour voir tes limites</string>
 	<key>Not done</key>
 	<string>Non fait</string>
+	<key>Not found on this Mac</key>
+	<string>Introuvable sur ce Mac</string>
 	<key>Not installed</key>
 	<string>Non installé</string>
 	<key>Not reported by this Mac</key>
@@ -1067,6 +1185,8 @@
 	<string>En pause</string>
 	<key>On today</key>
 	<string>Sur aujourd'hui</string>
+	<key>One calm session at a time. You've got this.</key>
+	<string>Une session calme à la fois. Tu vas y arriver.</string>
 	<key>One song</key>
 	<string>Un titre</string>
 	<key>One step to open decks from here</key>
@@ -1083,6 +1203,8 @@
 	<string>Ouvrir %@ dans Anki pour réviser</string>
 	<key>Open %@ in Anki. Nothing is due there today.</key>
 	<string>Ouvrir %@ dans Anki. Rien à revoir aujourd'hui.</string>
+	<key>Open %@ in your browser</key>
+	<string>Ouvrir %@ dans ton navigateur</string>
 	<key>Open %@ to see and control what's playing.</key>
 	<string>Ouvre %@ pour voir et contrôler la lecture.</string>
 	<key>Open %@ to start, pause or skip</key>
@@ -1123,12 +1245,16 @@
 	<string>Ouvre l'encoche après un bref survol</string>
 	<key>Open the notch to see your recap.</key>
 	<string>Ouvrez l'encoche pour voir votre bilan.</string>
+	<key>Open the official page in your browser</key>
+	<string>Ouvrir la page officielle dans ton navigateur</string>
 	<key>Open this chat and continue it</key>
 	<string>Ouvrir ce chat et le continuer</string>
 	<key>Opening %@…</key>
 	<string>Ouverture de %@…</string>
 	<key>Opening Anki…</key>
 	<string>Ouverture d'Anki…</string>
+	<key>Opens on tabbinotch.com</key>
+	<string>S'ouvre sur tabbinotch.com</string>
 	<key>Opens the %@ tab</key>
 	<string>Ouvre l'onglet %@</string>
 	<key>Opens the Suggest page with your app version, macOS version and edition filled in</key>
@@ -1151,10 +1277,16 @@
 	<string>Groupe</string>
 	<key>Party Hat</key>
 	<string>Chapeau de fête</string>
+	<key>Party asks once before you join. Your answer stays on this Mac.</key>
+	<string>Groupe le demande une fois avant que tu le rejoignes. Ta réponse reste sur ce Mac.</string>
 	<key>Party code</key>
 	<string>Code du groupe</string>
+	<key>Party is for people %lld and older. It opens here in %@.</key>
+	<string>Groupe est réservé aux personnes de %1$lld ans et plus. Il s'ouvrira ici en %2$@.</string>
 	<key>Party isn't available</key>
 	<string>Groupe n'est pas disponible</string>
+	<key>Party isn't available yet</key>
+	<string>Groupe n'est pas encore disponible</string>
 	<key>Party pets</key>
 	<string>Compagnons de Groupe</string>
 	<key>Party session</key>
@@ -1169,6 +1301,8 @@
 	<string>Colle le code %@ (copié) et clique sur OK</string>
 	<key>Paste the code %@ and click OK</key>
 	<string>Colle le code %@ et clique sur OK</string>
+	<key>Paste your key</key>
+	<string>Colle ta clé</string>
 	<key>Path</key>
 	<string>Chemin</string>
 	<key>Pause</key>
@@ -1181,18 +1315,30 @@
 	<string>En pause</string>
 	<key>Paused in %@</key>
 	<string>En pause dans %@</string>
+	<key>Pay as you go with an Anthropic API key.</key>
+	<string>Paiement à l'usage avec une clé d'API Anthropic.</string>
+	<key>Pay as you go with an OpenAI API key.</key>
+	<string>Paiement à l'usage avec une clé d'API OpenAI.</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>Max %@  ·  Moy %@</string>
 	<key>Pet</key>
 	<string>Compagnon</string>
+	<key>Pick %@ again to allow it to receive your AI requests. %@ sends nothing until you do.</key>
+	<string>Choisis à nouveau %1$@ pour l'autoriser à recevoir tes demandes d'IA. %2$@ n'envoie rien d'ici là.</string>
 	<key>Pick a kit</key>
 	<string>Choisis un kit</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
 	<string>Choisis à nouveau un kit, tes onglets et ce dont ils ont besoin, dans l'encoche</string>
+	<key>Pick a month and a year first</key>
+	<string>Choisis d'abord un mois et une année</string>
 	<key>Pick any that fit.</key>
 	<string>Choisis tout ce qui te va.</string>
+	<key>Pick one to use Ask, Plan my day and Refine. %@ sends nothing until you do.</key>
+	<string>Choisis-en une pour utiliser Demander à l'IA, Planifier ma journée et Affiner. %@ n'envoie rien d'ici là.</string>
 	<key>Pick the claude binary in Finder</key>
 	<string>Choisir le binaire claude dans le Finder</string>
+	<key>Pick the month and year you were born</key>
+	<string>Choisis ton mois et ton année de naissance</string>
 	<key>Pin %@ to the Study button</key>
 	<string>Épingler %@ au bouton Étudier</string>
 	<key>Pin as Favorite Deck</key>
@@ -1271,6 +1417,8 @@
 	<string>« Réduire les animations » est activé : les changements s'estompent au lieu de bouger.</string>
 	<key>Refine</key>
 	<string>Affiner</string>
+	<key>Refine and AI day plans: your calendar event titles and times, tasks, goals and the plan.</key>
+	<string>Affiner et plans de journée par IA : les titres et horaires de tes événements, tes tâches, tes objectifs et le plan.</string>
 	<key>Refine with %@: suggest a better order or lengths for this plan</key>
 	<string>Affiner avec %@ : proposer un meilleur ordre ou de meilleures durées</string>
 	<key>Refined with %@: %@</key>
@@ -1287,6 +1435,8 @@
 	<string>Publié sous licence MIT.</string>
 	<key>Reminders</key>
 	<string>Rappels</string>
+	<key>Remove</key>
+	<string>Supprimer</string>
 	<key>Remove %@</key>
 	<string>Retirer %@</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
@@ -1357,12 +1507,26 @@
 	<string>Relancer la configuration</string>
 	<key>Run a checkup on %@ and see what's wrong, in plain words</key>
 	<string>Vérifie %@ et vois ce qui cloche, en termes simples</string>
+	<key>Run claude in Terminal once to sign in.</key>
+	<string>Lance claude une fois dans Terminal pour te connecter.</string>
+	<key>Run codex in Terminal once to sign in.</key>
+	<string>Lance codex une fois dans Terminal pour te connecter.</string>
+	<key>Run gemini in Terminal once to sign in with Google.</key>
+	<string>Lance gemini une fois dans Terminal pour te connecter avec Google.</string>
 	<key>Running in %@</key>
 	<string>En cours dans %@</string>
+	<key>Runs on this Mac</key>
+	<string>Fonctionne sur ce Mac</string>
 	<key>Sakura Sprig</key>
 	<string>Brin de sakura</string>
+	<key>Save</key>
+	<string>Enregistrer</string>
+	<key>Save this key in your Keychain</key>
+	<string>Enregistrer cette clé dans ton trousseau</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
 	<string>Les chats enregistrés restent sur ce Mac et ne sont jamais envoyés</string>
+	<key>Saved in your Keychain</key>
+	<string>Enregistrée dans ton trousseau</string>
 	<key>Schedule</key>
 	<string>Agenda</string>
 	<key>Screenshot sent with this question</key>
@@ -1383,6 +1547,10 @@
 	<string>Sélectionne AnkiConnect et clique sur Rechercher des mises à jour</string>
 	<key>Send (Return)</key>
 	<string>Envoyer (Retour)</string>
+	<key>Send your AI requests to %@?</key>
+	<string>Envoyer tes demandes d'IA à %@ ?</string>
+	<key>Sends what you ask to %@.</key>
+	<string>Envoie tes demandes à %@.</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>Mets "apiKey" à null, puis clique sur OK</string>
 	<key>Set this up later from its tab</key>
@@ -1443,6 +1611,8 @@
 	<string>Voir le calendrier d'hier</string>
 	<key>Show yesterday's list</key>
 	<string>Voir la liste d'hier</string>
+	<key>Show your studies some love this week.</key>
+	<string>Montre un peu d'amour à tes études cette semaine.</string>
 	<key>Showing local stats only</key>
 	<string>Statistiques locales uniquement</string>
 	<key>Shown to friends in Party and used to greet you.</key>
@@ -1455,6 +1625,8 @@
 	<string>Connexion…</string>
 	<key>Sign Out</key>
 	<string>Se déconnecter</string>
+	<key>Sign in with Apple</key>
+	<string>Se connecter avec Apple</string>
 	<key>Sign in with your Apple Account to sync your pet across your Macs</key>
 	<string>Connecte-toi avec ton compte Apple pour synchroniser ton compagnon sur tes Mac</string>
 	<key>Signed in</key>
@@ -1495,6 +1667,8 @@
 	<string>Son</string>
 	<key>Sparkle Trail</key>
 	<string>Traînée scintillante</string>
+	<key>Spooky season is here. Focus to dress up your pet.</key>
+	<string>Frissons ! Concentre-toi pour déguiser ton ami.</string>
 	<key>Spread your open tasks and reviews over the week's free time. Planned on this Mac, nothing is added until you say so</key>
 	<string>Répartis tes tâches et révisions sur le temps libre de la semaine. Planifié sur ce Mac, rien n'est ajouté sans ton accord</string>
 	<key>Springy, with a little bounce.</key>
@@ -1583,6 +1757,8 @@
 	<string>Études</string>
 	<key>Study %@</key>
 	<string>Étudier %@</string>
+	<key>Study 7 days in a row.</key>
+	<string>Étudie 7 jours d'affilée.</string>
 	<key>Study Hoodie</key>
 	<string>Sweat d'étude</string>
 	<key>Study parties</key>
@@ -1599,6 +1775,8 @@
 	<string>Valider</string>
 	<key>Suggest a Feature or Report a Bug</key>
 	<string>Suggérer une idée ou signaler un bug</string>
+	<key>Summer</key>
+	<string>Été</string>
 	<key>Sunset Shades</key>
 	<string>Lunettes coucher de soleil</string>
 	<key>Superhero Cape</key>
@@ -1647,6 +1825,12 @@
 	<string>Cette touche ne peut pas faire partie d'un raccourci. Essaie une lettre, un chiffre ou Espace.</string>
 	<key>The AI</key>
 	<string>L'IA</string>
+	<key>The AI that answers Ask, Plan my day and Refine</key>
+	<string>L'IA qui répond dans Demander à l'IA, Planifier ma journée et Affiner</string>
+	<key>The Keychain didn't save the key. Try again.</key>
+	<string>Le trousseau n'a pas enregistré la clé. Réessaie.</string>
+	<key>The blossoms are out. Grow something of your own.</key>
+	<string>Les fleurs sont là. Fais grandir ton projet.</string>
 	<key>The focus timer is on this task</key>
 	<string>Le minuteur est sur cette tâche</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1655,6 +1839,10 @@
 	<string>Le kit</string>
 	<key>The last change couldn't be written to disk</key>
 	<string>La dernière modification n'a pas pu être enregistrée</string>
+	<key>The model %@ uses. Leave empty for the default.</key>
+	<string>Le modèle utilisé par %@. Laisse vide pour celui par défaut.</string>
+	<key>The month you were born</key>
+	<string>Ton mois de naissance</string>
 	<key>The next seven days at a glance</key>
 	<string>Les sept prochains jours en un coup d'œil</string>
 	<key>The party code. Click to copy it, then send it to friends.</key>
@@ -1663,6 +1851,10 @@
 	<string>Le reste de la journée est à toi.</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>La session continue pour toute la party jusqu'à sa fin ou jusqu'à ce que tu l'arrêtes</string>
+	<key>The tool's own default</key>
+	<string>Celui par défaut de l'outil</string>
+	<key>The year you were born</key>
+	<string>Ton année de naissance</string>
 	<key>Thermal state: %@</key>
 	<string>État thermique : %@</string>
 	<key>Thinking</key>
@@ -1769,8 +1961,14 @@
 	<string>Utilisation de ta limite hebdomadaire</string>
 	<key>Used to greet you.</key>
 	<string>Utilisé pour te saluer.</string>
+	<key>Uses your ChatGPT plan through the codex command.</key>
+	<string>Utilise ton forfait ChatGPT via la commande codex.</string>
+	<key>Uses your Claude subscription through the claude command.</key>
+	<string>Utilise ton abonnement Claude via la commande claude.</string>
 	<key>Using a copy outside Applications? Just open it.</key>
 	<string>Anki est ailleurs ? Ouvre-le.</string>
+	<key>Valentine's Week</key>
+	<string>Semaine de la Saint-Valentin</string>
 	<key>Validate</key>
 	<string>Vérifier</string>
 	<key>Version %@</key>
@@ -1817,12 +2015,22 @@
 	<string>Comment t'appelles-tu ?</string>
 	<key>When off, the notch hides while the lid is closed.</key>
 	<string>Désactivé, l'encoche se masque quand l'écran est rabattu.</string>
+	<key>When were you born?</key>
+	<string>Quand es-tu né(e) ?</string>
 	<key>White Coat</key>
 	<string>Blouse blanche</string>
+	<key>Winter Holidays</key>
+	<string>Fêtes d'hiver</string>
 	<key>Witch Hat</key>
 	<string>Chapeau de sorcière</string>
+	<key>With %@, %@ sends these to %@ through the %@ command you signed in to when you use an AI feature:</key>
+	<string>Avec %1$@, %2$@ envoie ceci à %3$@ via la commande %4$@ à laquelle tu t'es connecté quand tu utilises une fonction d'IA :</string>
+	<key>With %@, %@ sends these to %@ with your API key when you use an AI feature:</key>
+	<string>Avec %1$@, %2$@ envoie ceci à %3$@ avec ta clé d'API quand tu utilises une fonction d'IA :</string>
 	<key>With Claude Code as your AI, Ask AI and AI Usage run your own signed-in claude CLI; %@ never reads your credentials. Set this only if claude isn't found automatically.</key>
 	<string>Avec Claude Code comme IA, Demander à l'IA et Usage IA utilisent ton CLI claude connecté ; %@ ne lit jamais tes identifiants. Ne règle ceci que si claude n'est pas trouvé automatiquement.</string>
+	<key>With Ollama open, run ollama pull %@ in Terminal once.</key>
+	<string>Ollama ouvert, lance ollama pull %@ une fois dans Terminal.</string>
 	<key>Wizard Hat</key>
 	<string>Chapeau de magicien</string>
 	<key>Wizard Robe</key>
@@ -1837,6 +2045,8 @@
 	<string>Écris un rappel poli</string>
 	<key>Write to %@</key>
 	<string>Écrire à %@</string>
+	<key>Year</key>
+	<string>Année</string>
 	<key>Yesterday</key>
 	<string>Hier</string>
 	<key>Yesterday's calendar</key>
@@ -1853,6 +2063,8 @@
 	<string>Tu peux le configurer à tout moment dans l'onglet %@.</string>
 	<key>You started it for the party</key>
 	<string>Tu l'as lancée pour la party</string>
+	<key>Your %@ key. It is kept in your Keychain.</key>
+	<string>Ta clé %@. Elle reste dans ton trousseau.</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Ton Mac charge, et %@ boit une gorgée</string>
 	<key>Your Mac's CPU, GPU and memory use at a glance.</key>
@@ -1871,6 +2083,8 @@
 	<string>Ton code ami. Copie-le et envoie-le à un ami.</string>
 	<key>Your friend code: %@</key>
 	<string>Ton code ami : %@</string>
+	<key>Your key stays in your Keychain.</key>
+	<string>Ta clé reste dans ton trousseau.</string>
 	<key>Your most studied day: %@</key>
 	<string>Ton jour le plus studieux : %@</string>
 	<key>Your name</key>
@@ -1923,12 +2137,16 @@
 	<string>prêt à débloquer</string>
 	<key>shared focus</key>
 	<string>focus partagé</string>
+	<key>starts %@</key>
+	<string>dès le %@</string>
 	<key>switch.on</key>
 	<string>Activé</string>
 	<key>the host</key>
 	<string>l'hôte</string>
 	<key>tokens</key>
 	<string>jetons</string>
+	<key>until %@</key>
+	<string>jusqu'au %@</string>
 	<key>your kit</key>
 	<string>ton kit</string>
 	<key>your playlist</key>

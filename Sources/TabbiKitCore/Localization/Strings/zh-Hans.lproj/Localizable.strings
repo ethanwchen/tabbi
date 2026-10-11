@@ -27,6 +27,8 @@
 	<string>空闲 %@</string>
 	<key>%@ free this week</key>
 	<string>本周空闲 %@</string>
+	<key>%@ handles them under its own terms and privacy policy. %@'s AI features send nothing else, and nothing until you allow it. You can switch to None in Connections at any time.</key>
+	<string>%1$@ 会按照其自己的条款和隐私政策处理这些内容。%2$@ 的 AI 功能不会发送其他任何内容,在你允许之前也不会发送任何内容。你可以随时在“连接”中切换为“无”。</string>
 	<key>%@ in %@</key>
 	<string>在 %2$@ 中%1$@</string>
 	<key>%@ in the party's shared session</key>
@@ -69,6 +71,8 @@
 	<string>%1$@ / %2$@</string>
 	<key>%@ of focus.</key>
 	<string>专注了 %@。</string>
+	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
+	<string>%1$@持续至 %2$@。下一个物品「%3$@」:已专注 %4$@。</string>
 	<key>%@ settings</key>
 	<string>%@ 设置</string>
 	<key>%@ started it for the party</key>
@@ -93,12 +97,24 @@
 	<string>%@ · 已暂停</string>
 	<key>%@, %lld extra</key>
 	<string>%@，额外 %lld 次</string>
+	<key>%@, limited edition: %@</key>
+	<string>%1$@,限定款:%2$@</string>
+	<key>%@, limited edition: %@ Its event starts %@.</key>
+	<string>%1$@,限定款:%2$@ 活动于 %3$@ 开始。</string>
+	<key>%@, limited edition: click to take off</key>
+	<string>%@,限定款:点按即可取下</string>
+	<key>%@, limited edition: click to wear</key>
+	<string>%@,限定款:点按即可穿戴</string>
 	<key>%@. %@</key>
 	<string>%@。%@</string>
 	<key>%@: %@</key>
 	<string>%@：%@</string>
 	<key>%@: %@ left</key>
 	<string>%@：剩余 %@</string>
+	<key>%@: you earned every item. They stay yours after the event.</key>
+	<string>%@:你已获得所有物品。活动结束后它们依然属于你。</string>
+	<key>%lld h</key>
+	<string>%lld 小时</string>
 	<key>%lld in party</key>
 	<string>派对中 %lld 人</string>
 	<key>%lld min</key>
@@ -123,6 +139,14 @@
 	<string>还差 %1$lld 分（%2$@）</string>
 	<key>%lld sounds</key>
 	<string>%lld 种声音</string>
+	<key>%lld/%lld days</key>
+	<string>%lld/%lld 天</string>
+	<key>%lld/%lld h</key>
+	<string>%lld/%lld 小时</string>
+	<key>%lld/%lld min</key>
+	<string>%lld/%lld 分钟</string>
+	<key>%lld/%lld session</key>
+	<string>%lld/%lld 次</string>
 	<key>%lldh</key>
 	<string>%lld 小时</string>
 	<key>%lldh %lldm</key>
@@ -157,6 +181,8 @@
 	<string>一些小功能</string>
 	<key>A fresh day</key>
 	<string>崭新的一天</string>
+	<key>A fresh start for the new year. Focus a little each day.</key>
+	<string>新年新开始。每天专注一点点。</string>
 	<key>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</key>
 	<string>套件是一组现成的标签页。切换后会替换你的标签页，并把它的初始任务添加到“今天”。</string>
 	<key>A kit is a set of tabs. You can change them any time.</key>
@@ -181,12 +207,18 @@
 	<string>AI</string>
 	<key>AI Usage</key>
 	<string>AI 用量</string>
+	<key>AI model</key>
+	<string>AI 模型</string>
 	<key>AI usage above 80%</key>
 	<string>AI 用量超过 80%</string>
+	<key>API key</key>
+	<string>API 密钥</string>
 	<key>About</key>
 	<string>关于</string>
 	<key>Account</key>
 	<string>账户</string>
+	<key>Accounts are for people %lld and older. Signing in opens in %@.</key>
+	<string>账户仅面向 %1$lld 岁及以上的用户。%2$@起可以登录。</string>
 	<key>Activity</key>
 	<string>活动</string>
 	<key>Add</key>
@@ -243,8 +275,12 @@
 	<string>所有待复习的牌组</string>
 	<key>All done</key>
 	<string>全部完成</string>
+	<key>All earned</key>
+	<string>已全部获得</string>
 	<key>All optional. Nothing to do now.</key>
 	<string>都是可选的，现在无需操作。</string>
+	<key>Allow</key>
+	<string>允许</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
 	<string>请在“隐私与安全性”中允许 %@。</string>
 	<key>Allow %@ in System Settings › General › Login Items.</key>
@@ -279,6 +315,10 @@
 	<string>又是稳稳的一周，继续保持惬意。</string>
 	<key>Answers come from the AI you pick: Claude, ChatGPT, Gemini or a free model on this Mac.</key>
 	<string>回答来自你选择的 AI：Claude、ChatGPT、Gemini，或这台 Mac 上的免费模型。</string>
+	<key>Answers from</key>
+	<string>回答来自</string>
+	<key>App</key>
+	<string>应用</string>
 	<key>Appears when the pointer reaches the top center.</key>
 	<string>指针移到屏幕顶部中央时出现。</string>
 	<key>Apps and permissions</key>
@@ -289,6 +329,8 @@
 	<string>向 %@ 随便问点什么…</string>
 	<key>Ask AI</key>
 	<string>问 AI</string>
+	<key>Ask AI: your questions, the chat so far and any screenshot you attach.</key>
+	<string>问 AI:你的问题、目前的对话以及你附上的截图。</string>
 	<key>Ask Anki again</key>
 	<string>再次询问 Anki</string>
 	<key>Ask Claude, Gemini or another AI a quick question.</key>
@@ -299,6 +341,8 @@
 	<string>重新提问</string>
 	<key>Ask “%@”</key>
 	<string>提问“%@”</string>
+	<key>Asked once. Your answer stays on this Mac.</key>
+	<string>只问一次。你的回答只保存在这台 Mac 上。</string>
 	<key>Asking Anki to open the deck for review.</key>
 	<string>正在让 Anki 打开牌组。</string>
 	<key>Astronaut Helmet</key>
@@ -349,6 +393,10 @@
 	<string>兔耳朵</string>
 	<key>Buy freeze</key>
 	<string>购买冻结</string>
+	<key>By joining you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
+	<string>加入即表示你同意[使用条款](%1$@)和[隐私政策](%2$@)。</string>
+	<key>By signing in you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
+	<string>登录即表示你同意[使用条款](%1$@)和[隐私政策](%2$@)。</string>
 	<key>Calendar</key>
 	<string>日历</string>
 	<key>Calendar access</key>
@@ -411,6 +459,8 @@
 	<string>完成后自动勾选。打开 %@</string>
 	<key>Chef Hat</key>
 	<string>厨师帽</string>
+	<key>Cherry Blossom Season</key>
+	<string>樱花季</string>
 	<key>Cherry Petals</key>
 	<string>樱花瓣</string>
 	<key>Chocolate</key>
@@ -463,10 +513,16 @@
 	<string>关闭计划</string>
 	<key>Close the plan without adding anything</key>
 	<string>关闭计划，不添加任何内容</string>
+	<key>Close this</key>
+	<string>关闭</string>
+	<key>Close this. You can sign in any time.</key>
+	<string>关闭。你可以随时登录。</string>
 	<key>Closet</key>
 	<string>衣橱</string>
 	<key>Code</key>
 	<string>代码</string>
+	<key>Command</key>
+	<string>命令</string>
 	<key>Compact</key>
 	<string>紧凑</string>
 	<key>Connect</key>
@@ -489,6 +545,8 @@
 	<string>连接</string>
 	<key>Continue</key>
 	<string>继续</string>
+	<key>Continue to Sign in with Apple</key>
+	<string>继续通过 Apple 登录</string>
 	<key>Control Spotify or Apple Music from the notch.</key>
 	<string>在刘海里控制 Spotify 或 Apple Music。</string>
 	<key>Cool Sunglasses</key>
@@ -533,6 +591,8 @@
 	<string>舒适卫衣</string>
 	<key>Cozy Scarf</key>
 	<string>暖暖围巾</string>
+	<key>Cozy days and quiet focus before the new year.</key>
+	<string>新年前,温暖的日子和安静的专注。</string>
 	<key>Cream</key>
 	<string>奶油色</string>
 	<key>Create a party and get a code to share</key>
@@ -545,6 +605,8 @@
 	<string>颜色越深，学习时间越长</string>
 	<key>Day</key>
 	<string>日</string>
+	<key>Day review: today's focus and study minutes, sessions and points, your goal counts and the titles of the tasks you finished or are carrying over.</key>
+	<string>每日回顾:今天的专注和学习分钟数、次数和积分、目标数量,以及你完成或顺延的任务标题。</string>
 	<key>Days in a row with at least one review</key>
 	<string>至少复习一次的连续天数</string>
 	<key>Deep</key>
@@ -569,6 +631,8 @@
 	<string>删除此聊天</string>
 	<key>Delete this imported kit and go back to the default kit</key>
 	<string>删除这个导入的套件并恢复默认套件</string>
+	<key>Delete this key from your Keychain</key>
+	<string>从钥匙串中删除此密钥</string>
 	<key>Delete your %@ account?</key>
 	<string>要删除你的 %@ 账户吗？</string>
 	<key>Deleting your account…</key>
@@ -603,8 +667,14 @@
 	<string>拖动以跳转</string>
 	<key>Each day's list shows up here the day after.</key>
 	<string>每天的清单会在第二天显示在这里。</string>
+	<key>Earned by reaching study milestones</key>
+	<string>达成学习里程碑即可获得</string>
 	<key>Earned by studying, never sold</key>
 	<string>靠学习获得，从不出售</string>
+	<key>Earned. Click to take off.</key>
+	<string>已获得。点按即可取下。</string>
+	<key>Earned. Click to wear.</key>
+	<string>已获得。点按即可穿戴。</string>
 	<key>Email Support</key>
 	<string>联系支持</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
@@ -635,6 +705,8 @@
 	<string>未完成的都已移到今天</string>
 	<key>Everything unlocked. Dress up as you like.</key>
 	<string>已全部解锁。随心打扮吧。</string>
+	<key>Exam Season</key>
+	<string>考试季</string>
 	<key>Fantasy</key>
 	<string>奇幻</string>
 	<key>Fast</key>
@@ -647,6 +719,8 @@
 	<string>用未完成的任务和复习填满今天的空闲时间。在这台 Mac 上规划，未经你确认不会添加任何内容</string>
 	<key>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</key>
 	<string>用未完成的任务和复习填满明天的空闲时间。在这台 Mac 上规划，未经你确认不会添加任何内容</string>
+	<key>Finish a Party session with friends.</key>
+	<string>和朋友完成一次派对专注。</string>
 	<key>Finish setup</key>
 	<string>完成设置</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
@@ -673,6 +747,10 @@
 	<string>再次专注</string>
 	<key>Focus blocks finished today</key>
 	<string>今日完成的专注时段</string>
+	<key>Focus during %@.</key>
+	<string>在%@期间专注。</string>
+	<key>Focus for 50 hours in total.</key>
+	<string>累计专注 50 小时。</string>
 	<key>Focus on this task</key>
 	<string>专注此任务</string>
 	<key>Focus session</key>
@@ -693,18 +771,26 @@
 	<string>今天专注一下，保持下去</string>
 	<key>Focus together</key>
 	<string>一起专注</string>
+	<key>Focus while its event runs.</key>
+	<string>在活动期间专注。</string>
 	<key>Focusing on</key>
 	<string>正在专注</string>
 	<key>Focusing on: %@</key>
 	<string>正在专注：%@</string>
+	<key>Free and offline: runs a model on this Mac.</key>
+	<string>免费且离线:在这台 Mac 上运行模型。</string>
 	<key>Free freeze used</key>
 	<string>免费冻结已用</string>
+	<key>Free tier with a Google AI Studio key.</key>
+	<string>使用 Google AI Studio 密钥享受免费额度。</string>
 	<key>Free time in tomorrow's working day, with a buffer around each event</key>
 	<string>明天工作时间内的空闲时间（每个日程前后留有缓冲）</string>
 	<key>Free time left in your working day, with a buffer around each event</key>
 	<string>今天工作时间内剩余的空闲时间（每个日程前后留有缓冲）</string>
 	<key>Free used</key>
 	<string>免费已用</string>
+	<key>Free with a Google account through the gemini command.</key>
+	<string>通过 gemini 命令使用 Google 账号免费使用。</string>
 	<key>Free working time over the next seven days, with a buffer around each event</key>
 	<string>未来七天工作时间内的空闲时间（每个日程前后留有缓冲）</string>
 	<key>Friend's code</key>
@@ -735,12 +821,16 @@
 	<string>获取 %@</string>
 	<key>Get Anki</key>
 	<string>获取 Anki</string>
+	<key>Get a Key</key>
+	<string>获取密钥</string>
 	<key>Get an alert when a timer ends.</key>
 	<string>计时器结束时提醒你。</string>
 	<key>Give your cat a name</key>
 	<string>给你的猫取个名字</string>
 	<key>Give your dog a name</key>
 	<string>给你的狗取个名字</string>
+	<key>Given to everyone who used Tabbi in its launch week.</key>
+	<string>送给在发布周使用 Tabbi 的每个人。</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>玻璃控件需要 macOS 26，开启“降低透明度”时会改为不透明样式。</string>
 	<key>Go back one step</key>
@@ -761,6 +851,8 @@
 	<string>干得好！</string>
 	<key>Great job, team!</key>
 	<string>大家干得好！</string>
+	<key>Halloween</key>
+	<string>万圣节</string>
 	<key>Halo</key>
 	<string>光环</string>
 	<key>Haptic feedback</key>
@@ -821,6 +913,8 @@
 	<string>刘海打开时，用方向键或双指轻扫切换标签页，按 1-9 跳到某个标签页，按 Esc 或向上轻扫关闭。刘海收起时，向下轻扫或点按鼠标中键可查看下一个实时活动。</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>自午夜以来所有 %@ 会话的输入、输出和缓存 Token</string>
+	<key>Install</key>
+	<string>安装</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>安装 Claude Code 并登录，即可实时查看 5 小时和每周限额。</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -831,6 +925,8 @@
 	<string>安装 AnkiConnect 插件即可直接打开牌组。</string>
 	<key>Install the free Anki desktop app to see your due cards, decks and streak here.</key>
 	<string>安装免费的 Anki 桌面应用，即可在此查看卡片、牌组和连续记录。</string>
+	<key>Installed</key>
+	<string>已安装</string>
 	<key>Installed elsewhere? Set %@ to its path.</key>
 	<string>安装在别处？请将 %@ 设为其路径。</string>
 	<key>Instant</key>
@@ -839,6 +935,8 @@
 	<string>互联网账户</string>
 	<key>Invite links</key>
 	<string>邀请链接</string>
+	<key>Items from the year's other events, earned by focusing while each one runs</key>
+	<string>今年其他活动的物品,在各活动期间专注即可获得</string>
 	<key>Items with nothing to show are skipped.</key>
 	<string>没有内容的项目会被跳过。</string>
 	<key>Its config sets an API key, which this tab doesn't send.</key>
@@ -851,6 +949,8 @@
 	<string>加入 %@ 通话</string>
 	<key>Join %@'s party</key>
 	<string>加入 %@ 的派对</string>
+	<key>Join Party</key>
+	<string>加入派对</string>
 	<key>Joining the party server…</key>
 	<string>正在连接派对服务器…</string>
 	<key>Keep at least one tab on</key>
@@ -887,6 +987,8 @@
 	<string>学习中</string>
 	<key>Leave</key>
 	<string>退出</string>
+	<key>Leave empty for the default, which is quick and inexpensive.</key>
+	<string>留空则使用默认模型,快速且便宜。</string>
 	<key>Leave the party</key>
 	<string>退出派对</string>
 	<key>Leave the party; the next member becomes host</key>
@@ -917,12 +1019,18 @@
 	<string>位置</string>
 	<key>Long break</key>
 	<string>长休息</string>
+	<key>Long days, light focus. Keep a little rhythm going.</key>
+	<string>白天长,专注轻。保持一点节奏。</string>
 	<key>Look</key>
 	<string>外观</string>
 	<key>Looking for %@…</key>
 	<string>正在查找 %@…</string>
 	<key>Looking for Anki…</key>
 	<string>正在查找 Anki…</string>
+	<key>Looking for it</key>
+	<string>正在查找</string>
+	<key>Lunar New Year</key>
+	<string>春节</string>
 	<key>Main display</key>
 	<string>主显示器</string>
 	<key>Mark as done</key>
@@ -951,10 +1059,18 @@
 	<string>消息</string>
 	<key>Method</key>
 	<string>方法</string>
+	<key>Milestones</key>
+	<string>里程碑</string>
+	<key>Model</key>
+	<string>模型</string>
+	<key>Month</key>
+	<string>月份</string>
 	<key>Moonlit Witch Hat</key>
 	<string>月光女巫帽</string>
 	<key>More</key>
 	<string>多</string>
+	<key>More events</key>
+	<string>更多活动</string>
 	<key>More focus than last week. Nice climb!</key>
 	<string>比上周更专注了，进步真棒！</string>
 	<key>More options</key>
@@ -1029,6 +1145,8 @@
 	<string>尚未检查 · 刷新以加载实时限额</string>
 	<key>Not done</key>
 	<string>未完成</string>
+	<key>Not found on this Mac</key>
+	<string>在这台 Mac 上未找到</string>
 	<key>Not installed</key>
 	<string>未安装</string>
 	<key>Not reported by this Mac</key>
@@ -1067,6 +1185,8 @@
 	<string>休息中</string>
 	<key>On today</key>
 	<string>已在今天</string>
+	<key>One calm session at a time. You've got this.</key>
+	<string>一次一段,稳稳来。你可以的。</string>
 	<key>One song</key>
 	<string>单曲</string>
 	<key>One step to open decks from here</key>
@@ -1083,6 +1203,8 @@
 	<string>在 Anki 中打开 %@ 复习</string>
 	<key>Open %@ in Anki. Nothing is due there today.</key>
 	<string>在 Anki 中打开 %@。今天没有待复习的卡片。</string>
+	<key>Open %@ in your browser</key>
+	<string>在浏览器中打开 %@</string>
 	<key>Open %@ to see and control what's playing.</key>
 	<string>打开 %@ 即可查看和控制正在播放的内容。</string>
 	<key>Open %@ to start, pause or skip</key>
@@ -1123,12 +1245,16 @@
 	<string>悬停片刻后打开刘海</string>
 	<key>Open the notch to see your recap.</key>
 	<string>打开刘海查看你的回顾。</string>
+	<key>Open the official page in your browser</key>
+	<string>在浏览器中打开官方页面</string>
 	<key>Open this chat and continue it</key>
 	<string>打开并继续此聊天</string>
 	<key>Opening %@…</key>
 	<string>正在打开 %@…</string>
 	<key>Opening Anki…</key>
 	<string>正在打开 Anki…</string>
+	<key>Opens on tabbinotch.com</key>
+	<string>在 tabbinotch.com 上打开</string>
 	<key>Opens the %@ tab</key>
 	<string>打开 %@ 标签页</string>
 	<key>Opens the Suggest page with your app version, macOS version and edition filled in</key>
@@ -1151,10 +1277,16 @@
 	<string>派对</string>
 	<key>Party Hat</key>
 	<string>派对帽</string>
+	<key>Party asks once before you join. Your answer stays on this Mac.</key>
+	<string>加入前只问一次。你的回答只保存在这台 Mac 上。</string>
 	<key>Party code</key>
 	<string>派对代码</string>
+	<key>Party is for people %lld and older. It opens here in %@.</key>
+	<string>派对仅面向 %1$lld 岁及以上的用户。%2$@起将在这里开放。</string>
 	<key>Party isn't available</key>
 	<string>派对不可用</string>
+	<key>Party isn't available yet</key>
+	<string>派对暂不可用</string>
 	<key>Party pets</key>
 	<string>Party 宠物</string>
 	<key>Party session</key>
@@ -1169,6 +1301,8 @@
 	<string>粘贴代码 %@（已复制）并点按 OK</string>
 	<key>Paste the code %@ and click OK</key>
 	<string>粘贴代码 %@ 并点按 OK</string>
+	<key>Paste your key</key>
+	<string>粘贴你的密钥</string>
 	<key>Path</key>
 	<string>路径</string>
 	<key>Pause</key>
@@ -1181,18 +1315,30 @@
 	<string>已暂停</string>
 	<key>Paused in %@</key>
 	<string>已在 %@ 中暂停</string>
+	<key>Pay as you go with an Anthropic API key.</key>
+	<string>使用 Anthropic API 密钥按量付费。</string>
+	<key>Pay as you go with an OpenAI API key.</key>
+	<string>使用 OpenAI API 密钥按量付费。</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>峰值 %@  ·  平均 %@</string>
 	<key>Pet</key>
 	<string>宠物</string>
+	<key>Pick %@ again to allow it to receive your AI requests. %@ sends nothing until you do.</key>
+	<string>再次选择 %1$@ 以允许它接收你的 AI 请求。在此之前 %2$@ 不会发送任何内容。</string>
 	<key>Pick a kit</key>
 	<string>选一个套件</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
 	<string>在刘海中重新选择套件、标签页及其所需设置</string>
+	<key>Pick a month and a year first</key>
+	<string>请先选择月份和年份</string>
 	<key>Pick any that fit.</key>
 	<string>选出所有符合的。</string>
+	<key>Pick one to use Ask, Plan my day and Refine. %@ sends nothing until you do.</key>
+	<string>选择一个即可使用问 AI、规划今天和优化。在此之前 %@ 不会发送任何内容。</string>
 	<key>Pick the claude binary in Finder</key>
 	<string>在访达中选择 claude 可执行文件</string>
+	<key>Pick the month and year you were born</key>
+	<string>选择你出生的月份和年份</string>
 	<key>Pin %@ to the Study button</key>
 	<string>将 %@ 固定到学习按钮</string>
 	<key>Pin as Favorite Deck</key>
@@ -1271,6 +1417,8 @@
 	<string>“减弱动态效果”已开启，变化会淡入淡出而不是移动。</string>
 	<key>Refine</key>
 	<string>优化</string>
+	<key>Refine and AI day plans: your calendar event titles and times, tasks, goals and the plan.</key>
+	<string>优化和 AI 日程规划:你的日历事件标题和时间、任务、目标以及计划。</string>
 	<key>Refine with %@: suggest a better order or lengths for this plan</key>
 	<string>用 %@ 优化：为此计划建议更好的顺序或时长</string>
 	<key>Refined with %@: %@</key>
@@ -1287,6 +1435,8 @@
 	<string>基于 MIT 许可证发布。</string>
 	<key>Reminders</key>
 	<string>提醒事项</string>
+	<key>Remove</key>
+	<string>移除</string>
 	<key>Remove %@</key>
 	<string>移除 %@</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
@@ -1357,12 +1507,26 @@
 	<string>重新设置</string>
 	<key>Run a checkup on %@ and see what's wrong, in plain words</key>
 	<string>检查 %@，用简单的话告诉你哪里出了问题</string>
+	<key>Run claude in Terminal once to sign in.</key>
+	<string>在“终端”中运行一次 claude 以登录。</string>
+	<key>Run codex in Terminal once to sign in.</key>
+	<string>在“终端”中运行一次 codex 以登录。</string>
+	<key>Run gemini in Terminal once to sign in with Google.</key>
+	<string>在“终端”中运行一次 gemini 以使用 Google 登录。</string>
 	<key>Running in %@</key>
 	<string>正在 %@ 中运行</string>
+	<key>Runs on this Mac</key>
+	<string>在这台 Mac 上运行</string>
 	<key>Sakura Sprig</key>
 	<string>樱花枝</string>
+	<key>Save</key>
+	<string>保存</string>
+	<key>Save this key in your Keychain</key>
+	<string>将此密钥存入钥匙串</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
 	<string>保存的聊天只留在这台 Mac 上,绝不会上传</string>
+	<key>Saved in your Keychain</key>
+	<string>已存入钥匙串</string>
 	<key>Schedule</key>
 	<string>日程</string>
 	<key>Screenshot sent with this question</key>
@@ -1383,6 +1547,10 @@
 	<string>选择 AnkiConnect 并点按 检查更新</string>
 	<key>Send (Return)</key>
 	<string>发送(Return)</string>
+	<key>Send your AI requests to %@?</key>
+	<string>将你的 AI 请求发送给 %@?</string>
+	<key>Sends what you ask to %@.</key>
+	<string>会将你的提问发送给 %@。</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>将 "apiKey" 设为 null，然后点按 OK</string>
 	<key>Set this up later from its tab</key>
@@ -1443,6 +1611,8 @@
 	<string>显示昨天的日历</string>
 	<key>Show yesterday's list</key>
 	<string>查看昨天的清单</string>
+	<key>Show your studies some love this week.</key>
+	<string>这周给学习一点爱吧。</string>
 	<key>Showing local stats only</key>
 	<string>仅显示本地统计</string>
 	<key>Shown to friends in Party and used to greet you.</key>
@@ -1455,6 +1625,8 @@
 	<string>登录…</string>
 	<key>Sign Out</key>
 	<string>退出登录</string>
+	<key>Sign in with Apple</key>
+	<string>通过 Apple 登录</string>
 	<key>Sign in with your Apple Account to sync your pet across your Macs</key>
 	<string>使用你的 Apple 账户登录，在各台 Mac 间同步宠物</string>
 	<key>Signed in</key>
@@ -1495,6 +1667,8 @@
 	<string>声音</string>
 	<key>Sparkle Trail</key>
 	<string>闪光拖尾</string>
+	<key>Spooky season is here. Focus to dress up your pet.</key>
+	<string>万圣节来啦。专注一下,给宠物换装吧。</string>
 	<key>Spread your open tasks and reviews over the week's free time. Planned on this Mac, nothing is added until you say so</key>
 	<string>把未完成的任务和复习分配到本周的空闲时间。在这台 Mac 上规划，未经你确认不会添加任何内容</string>
 	<key>Springy, with a little bounce.</key>
@@ -1583,6 +1757,8 @@
 	<string>学习</string>
 	<key>Study %@</key>
 	<string>学习 %@</string>
+	<key>Study 7 days in a row.</key>
+	<string>连续学习 7 天。</string>
 	<key>Study Hoodie</key>
 	<string>学习卫衣</string>
 	<key>Study parties</key>
@@ -1599,6 +1775,8 @@
 	<string>提交</string>
 	<key>Suggest a Feature or Report a Bug</key>
 	<string>建议功能或报告问题</string>
+	<key>Summer</key>
+	<string>夏日</string>
 	<key>Sunset Shades</key>
 	<string>日落墨镜</string>
 	<key>Superhero Cape</key>
@@ -1618,7 +1796,7 @@
 	<key>Sync your pet</key>
 	<string>同步宠物</string>
 	<key>Sync your pet, points and streaks across your Macs.</key>
-	<string>在各台 Mac 间同步宠物、积分和连续记录。</string>
+	<string>在你的各台 Mac 之间同步宠物、积分和连续记录。</string>
 	<key>Syncing with AnkiWeb…</key>
 	<string>正在与 AnkiWeb 同步…</string>
 	<key>Syncing…</key>
@@ -1647,6 +1825,12 @@
 	<string>这个键不能用于快捷键。试试字母、数字或空格键。</string>
 	<key>The AI</key>
 	<string>AI</string>
+	<key>The AI that answers Ask, Plan my day and Refine</key>
+	<string>为问 AI、规划今天和优化提供回答的 AI</string>
+	<key>The Keychain didn't save the key. Try again.</key>
+	<string>钥匙串未能保存密钥。请重试。</string>
+	<key>The blossoms are out. Grow something of your own.</key>
+	<string>樱花开了。也让你的努力开花吧。</string>
 	<key>The focus timer is on this task</key>
 	<string>专注计时器正用于此任务</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1655,6 +1839,10 @@
 	<string>该套件</string>
 	<key>The last change couldn't be written to disk</key>
 	<string>最近的更改无法写入磁盘</string>
+	<key>The model %@ uses. Leave empty for the default.</key>
+	<string>%@ 使用的模型。留空则使用默认模型。</string>
+	<key>The month you were born</key>
+	<string>你出生的月份</string>
 	<key>The next seven days at a glance</key>
 	<string>一览未来七天</string>
 	<key>The party code. Click to copy it, then send it to friends.</key>
@@ -1663,6 +1851,10 @@
 	<string>今天剩下的时间都属于你。</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>这场专注会为整个派对持续，直到结束或你手动结束</string>
+	<key>The tool's own default</key>
+	<string>工具自身的默认值</string>
+	<key>The year you were born</key>
+	<string>你出生的年份</string>
 	<key>Thermal state: %@</key>
 	<string>温度状态：%@</string>
 	<key>Thinking</key>
@@ -1769,8 +1961,14 @@
 	<string>每周限额的使用量</string>
 	<key>Used to greet you.</key>
 	<string>用来和你打招呼。</string>
+	<key>Uses your ChatGPT plan through the codex command.</key>
+	<string>通过 codex 命令使用你的 ChatGPT 套餐。</string>
+	<key>Uses your Claude subscription through the claude command.</key>
+	<string>通过 claude 命令使用你的 Claude 订阅。</string>
 	<key>Using a copy outside Applications? Just open it.</key>
 	<string>Anki 在其他位置？直接打开即可。</string>
+	<key>Valentine's Week</key>
+	<string>情人节周</string>
 	<key>Validate</key>
 	<string>验证</string>
 	<key>Version %@</key>
@@ -1817,12 +2015,22 @@
 	<string>我们该怎么称呼你？</string>
 	<key>When off, the notch hides while the lid is closed.</key>
 	<string>关闭时，合上屏幕后刘海会隐藏。</string>
+	<key>When were you born?</key>
+	<string>你是什么时候出生的?</string>
 	<key>White Coat</key>
 	<string>白大褂</string>
+	<key>Winter Holidays</key>
+	<string>冬日假期</string>
 	<key>Witch Hat</key>
 	<string>女巫帽</string>
+	<key>With %@, %@ sends these to %@ through the %@ command you signed in to when you use an AI feature:</key>
+	<string>使用 %1$@ 时,当你使用 AI 功能,%2$@ 会通过你已登录的 %4$@ 命令将以下内容发送给 %3$@:</string>
+	<key>With %@, %@ sends these to %@ with your API key when you use an AI feature:</key>
+	<string>使用 %1$@ 时,当你使用 AI 功能,%2$@ 会用你的 API 密钥将以下内容发送给 %3$@:</string>
 	<key>With Claude Code as your AI, Ask AI and AI Usage run your own signed-in claude CLI; %@ never reads your credentials. Set this only if claude isn't found automatically.</key>
 	<string>将 Claude Code 设为 AI 时，“问 AI”和“AI 用量”会运行你已登录的 claude CLI；%@ 从不读取你的凭据。只有在无法自动找到 claude 时才需要设置。</string>
+	<key>With Ollama open, run ollama pull %@ in Terminal once.</key>
+	<string>打开 Ollama 后,在“终端”中运行一次 ollama pull %@。</string>
 	<key>Wizard Hat</key>
 	<string>巫师帽</string>
 	<key>Wizard Robe</key>
@@ -1837,6 +2045,8 @@
 	<string>写一条礼貌的提醒</string>
 	<key>Write to %@</key>
 	<string>写信至 %@</string>
+	<key>Year</key>
+	<string>年份</string>
 	<key>Yesterday</key>
 	<string>昨天</string>
 	<key>Yesterday's calendar</key>
@@ -1853,6 +2063,8 @@
 	<string>可随时在“%@”标签页中设置。</string>
 	<key>You started it for the party</key>
 	<string>你为派对发起</string>
+	<key>Your %@ key. It is kept in your Keychain.</key>
+	<string>你的 %@ 密钥,保存在钥匙串中。</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Mac 正在充电，%@ 也在喝一小口</string>
 	<key>Your Mac's CPU, GPU and memory use at a glance.</key>
@@ -1871,6 +2083,8 @@
 	<string>你的好友代码。复制后发给好友。</string>
 	<key>Your friend code: %@</key>
 	<string>你的好友码：%@</string>
+	<key>Your key stays in your Keychain.</key>
+	<string>你的密钥保存在钥匙串中。</string>
 	<key>Your most studied day: %@</key>
 	<string>学习最多的一天：%@</string>
 	<key>Your name</key>
@@ -1923,12 +2137,16 @@
 	<string>可以解锁</string>
 	<key>shared focus</key>
 	<string>共同专注</string>
+	<key>starts %@</key>
+	<string>%@ 开始</string>
 	<key>switch.on</key>
 	<string>开</string>
 	<key>the host</key>
 	<string>房主</string>
 	<key>tokens</key>
 	<string>Token</string>
+	<key>until %@</key>
+	<string>至 %@</string>
 	<key>your kit</key>
 	<string>你的套件</string>
 	<key>your playlist</key>

@@ -49,7 +49,9 @@ public struct SeasonalEventReward: Hashable, Sendable {
     /// The goal as a short label, in the same units as its progress
     /// (`SeasonalEventProgress.progress(of:)`): "90 min" or "5 h".
     public var goalLabel: String {
-        focusMinutes < SeasonalEventProgress.hourLabelMinutes ? "\(focusMinutes) min" : "\(focusMinutes / 60) h"
+        focusMinutes < SeasonalEventProgress.hourLabelMinutes
+            ? String(localized: "\(focusMinutes) min", bundle: .tabbi)
+            : String(localized: "\(focusMinutes / 60) h", bundle: .tabbi)
     }
 }
 
@@ -80,6 +82,18 @@ public struct SeasonalEvent: Hashable, Sendable, Identifiable {
         self.start = start
         self.end = end
         self.rewards = rewards
+    }
+
+    /// The name in the user's language. `events.json` holds the English,
+    /// which the Windows port reads too, so the translation is looked up by
+    /// that text; a name the catalog lacks shows as written.
+    public var displayName: String { Self.localized(name) }
+
+    /// The tagline in the user's language, looked up like `displayName`.
+    public var displayTagline: String { Self.localized(tagline) }
+
+    private static func localized(_ text: String) -> String {
+        Bundle.tabbi.localizedString(forKey: text, value: text, table: nil)
     }
 
     /// The event's headline item, the one with a subtle effect.
@@ -170,7 +184,9 @@ public struct SeasonalEventProgress: Hashable, Sendable {
     public func progress(of reward: SeasonalEventReward) -> PetLimitedProgress {
         let goal = reward.focusMinutes
         let value = max(0, min(Int(focusMinutes), goal))
-        let label = goal < Self.hourLabelMinutes ? "\(value)/\(goal) min" : "\(value / 60)/\(goal / 60) h"
+        let label = goal < Self.hourLabelMinutes
+            ? String(localized: "\(value)/\(goal) min", bundle: .tabbi)
+            : String(localized: "\(value / 60)/\(goal / 60) h", bundle: .tabbi)
         return PetLimitedProgress(value: value, goal: goal, label: label)
     }
 

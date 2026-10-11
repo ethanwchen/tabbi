@@ -27,6 +27,8 @@
 	<string>空き %@</string>
 	<key>%@ free this week</key>
 	<string>今週の空き %@</string>
+	<key>%@ handles them under its own terms and privacy policy. %@'s AI features send nothing else, and nothing until you allow it. You can switch to None in Connections at any time.</key>
+	<string>%1$@は独自の利用規約とプライバシーポリシーに基づいてこれを扱います。%2$@のAI機能はこれ以外は何も送信せず、許可するまでは何も送信しません。「接続」でいつでも「なし」に切り替えられます。</string>
 	<key>%@ in %@</key>
 	<string>%2$@で%1$@</string>
 	<key>%@ in the party's shared session</key>
@@ -69,6 +71,8 @@
 	<string>%1$@ / %2$@</string>
 	<key>%@ of focus.</key>
 	<string>%@ 集中しました。</string>
+	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
+	<string>%1$@は%2$@まで。次のアイテム「%3$@」: 集中 %4$@。</string>
 	<key>%@ settings</key>
 	<string>%@の設定</string>
 	<key>%@ started it for the party</key>
@@ -93,12 +97,24 @@
 	<string>%@ · 一時停止中</string>
 	<key>%@, %lld extra</key>
 	<string>%@、追加%lld</string>
+	<key>%@, limited edition: %@</key>
+	<string>%1$@(限定): %2$@</string>
+	<key>%@, limited edition: %@ Its event starts %@.</key>
+	<string>%1$@(限定): %2$@ イベントは%3$@に始まります。</string>
+	<key>%@, limited edition: click to take off</key>
+	<string>%@(限定): クリックで外す</string>
+	<key>%@, limited edition: click to wear</key>
+	<string>%@(限定): クリックで着る</string>
 	<key>%@. %@</key>
 	<string>%@。%@</string>
 	<key>%@: %@</key>
 	<string>%@：%@</string>
 	<key>%@: %@ left</key>
 	<string>%@: 残り %@</string>
+	<key>%@: you earned every item. They stay yours after the event.</key>
+	<string>%@: すべてのアイテムを獲得しました。イベント後もずっとあなたのものです。</string>
+	<key>%lld h</key>
+	<string>%lld時間</string>
 	<key>%lld in party</key>
 	<string>パーティーに%lld人</string>
 	<key>%lld min</key>
@@ -123,6 +139,14 @@
 	<string>あと%1$lldpt（%2$@）</string>
 	<key>%lld sounds</key>
 	<string>サウンド %lld 個</string>
+	<key>%lld/%lld days</key>
+	<string>%lld/%lld日</string>
+	<key>%lld/%lld h</key>
+	<string>%lld/%lld時間</string>
+	<key>%lld/%lld min</key>
+	<string>%lld/%lld分</string>
+	<key>%lld/%lld session</key>
+	<string>%lld/%lldセッション</string>
 	<key>%lldh</key>
 	<string>%lld時間</string>
 	<key>%lldh %lldm</key>
@@ -157,6 +181,8 @@
 	<string>おまけ機能</string>
 	<key>A fresh day</key>
 	<string>新しい1日</string>
+	<key>A fresh start for the new year. Focus a little each day.</key>
+	<string>新しい年の新しいスタート。毎日少しずつ集中しよう。</string>
 	<key>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</key>
 	<string>キットはすぐ使えるタブのセットです。切り替えるとタブが置き換わり、最初のタスクが「今日」に追加されます。</string>
 	<key>A kit is a set of tabs. You can change them any time.</key>
@@ -181,12 +207,18 @@
 	<string>AI</string>
 	<key>AI Usage</key>
 	<string>AI使用量</string>
+	<key>AI model</key>
+	<string>AIモデル</string>
 	<key>AI usage above 80%</key>
 	<string>AI使用量が80%超</string>
+	<key>API key</key>
+	<string>APIキー</string>
 	<key>About</key>
 	<string>情報</string>
 	<key>Account</key>
 	<string>アカウント</string>
+	<key>Accounts are for people %lld and older. Signing in opens in %@.</key>
+	<string>アカウントは%1$lld歳以上の方が対象です。%2$@からサインインできます。</string>
 	<key>Activity</key>
 	<string>アクティビティ</string>
 	<key>Add</key>
@@ -243,8 +275,12 @@
 	<string>カードがあるすべてのデッキ</string>
 	<key>All done</key>
 	<string>すべて完了</string>
+	<key>All earned</key>
+	<string>すべて獲得</string>
 	<key>All optional. Nothing to do now.</key>
 	<string>どれも任意です。今は何もしなくて大丈夫。</string>
+	<key>Allow</key>
+	<string>許可</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
 	<string>「プライバシーとセキュリティ」で %@ を許可してください。</string>
 	<key>Allow %@ in System Settings › General › Login Items.</key>
@@ -279,6 +315,10 @@
 	<string>今週もコツコツ。この調子でのんびりね。</string>
 	<key>Answers come from the AI you pick: Claude, ChatGPT, Gemini or a free model on this Mac.</key>
 	<string>回答は選んだ AI から届きます：Claude、ChatGPT、Gemini、またはこの Mac の無料モデル。</string>
+	<key>Answers from</key>
+	<string>回答元</string>
+	<key>App</key>
+	<string>アプリ</string>
 	<key>Appears when the pointer reaches the top center.</key>
 	<string>ポインタが画面上部の中央に来ると表示されます。</string>
 	<key>Apps and permissions</key>
@@ -289,6 +329,8 @@
 	<string>%@に何でも聞いてみよう…</string>
 	<key>Ask AI</key>
 	<string>AIに質問</string>
+	<key>Ask AI: your questions, the chat so far and any screenshot you attach.</key>
+	<string>AIに質問: 質問内容、これまでのチャット、添付したスクリーンショット。</string>
 	<key>Ask Anki again</key>
 	<string>Anki にもう一度問い合わせる</string>
 	<key>Ask Claude, Gemini or another AI a quick question.</key>
@@ -299,6 +341,8 @@
 	<string>この質問をもう一度する</string>
 	<key>Ask “%@”</key>
 	<string>「%@」と聞く</string>
+	<key>Asked once. Your answer stays on this Mac.</key>
+	<string>質問は一度だけ。回答はこのMacに保存されます。</string>
 	<key>Asking Anki to open the deck for review.</key>
 	<string>Anki にデッキを開くよう依頼しています。</string>
 	<key>Astronaut Helmet</key>
@@ -349,6 +393,10 @@
 	<string>うさみみ</string>
 	<key>Buy freeze</key>
 	<string>フリーズを購入</string>
+	<key>By joining you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
+	<string>参加すると、[利用規約](%1$@)と[プライバシーポリシー](%2$@)に同意したことになります。</string>
+	<key>By signing in you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
+	<string>サインインすると、[利用規約](%1$@)と[プライバシーポリシー](%2$@)に同意したことになります。</string>
 	<key>Calendar</key>
 	<string>カレンダー</string>
 	<key>Calendar access</key>
@@ -411,6 +459,8 @@
 	<string>完了すると自動でチェック。%@を開く</string>
 	<key>Chef Hat</key>
 	<string>コック帽</string>
+	<key>Cherry Blossom Season</key>
+	<string>お花見シーズン</string>
 	<key>Cherry Petals</key>
 	<string>桜の花びら</string>
 	<key>Chocolate</key>
@@ -463,10 +513,16 @@
 	<string>計画を閉じる</string>
 	<key>Close the plan without adding anything</key>
 	<string>何も追加せずに計画を閉じる</string>
+	<key>Close this</key>
+	<string>閉じる</string>
+	<key>Close this. You can sign in any time.</key>
+	<string>閉じます。いつでもサインインできます。</string>
 	<key>Closet</key>
 	<string>クローゼット</string>
 	<key>Code</key>
 	<string>コード</string>
+	<key>Command</key>
+	<string>コマンド</string>
 	<key>Compact</key>
 	<string>コンパクト</string>
 	<key>Connect</key>
@@ -489,6 +545,8 @@
 	<string>接続</string>
 	<key>Continue</key>
 	<string>続ける</string>
+	<key>Continue to Sign in with Apple</key>
+	<string>「Appleでサインイン」に進む</string>
 	<key>Control Spotify or Apple Music from the notch.</key>
 	<string>ノッチから Spotify や Apple Music を操作。</string>
 	<key>Cool Sunglasses</key>
@@ -533,6 +591,8 @@
 	<string>もこもこパーカー</string>
 	<key>Cozy Scarf</key>
 	<string>ぬくぬくマフラー</string>
+	<key>Cozy days and quiet focus before the new year.</key>
+	<string>新年までの、ぬくぬくした日と静かな集中。</string>
 	<key>Cream</key>
 	<string>クリーム</string>
 	<key>Create a party and get a code to share</key>
@@ -545,6 +605,8 @@
 	<string>色が濃いほど長く勉強した日です</string>
 	<key>Day</key>
 	<string>日</string>
+	<key>Day review: today's focus and study minutes, sessions and points, your goal counts and the titles of the tasks you finished or are carrying over.</key>
+	<string>1日の振り返り: 今日の集中・学習時間、セッション数とポイント、目標の達成数、完了または持ち越したタスクのタイトル。</string>
 	<key>Days in a row with at least one review</key>
 	<string>1回以上復習した連続日数</string>
 	<key>Deep</key>
@@ -569,6 +631,8 @@
 	<string>このチャットを削除</string>
 	<key>Delete this imported kit and go back to the default kit</key>
 	<string>読み込んだキットを削除して、デフォルトのキットに戻します</string>
+	<key>Delete this key from your Keychain</key>
+	<string>このキーをキーチェーンから削除</string>
 	<key>Delete your %@ account?</key>
 	<string>%@アカウントを削除しますか？</string>
 	<key>Deleting your account…</key>
@@ -603,8 +667,14 @@
 	<string>ドラッグして移動</string>
 	<key>Each day's list shows up here the day after.</key>
 	<string>各日のリストは翌日ここに表示されます。</string>
+	<key>Earned by reaching study milestones</key>
+	<string>学習のマイルストーン達成で獲得</string>
 	<key>Earned by studying, never sold</key>
 	<string>勉強で手に入る、非売品</string>
+	<key>Earned. Click to take off.</key>
+	<string>獲得済み。クリックで外す。</string>
+	<key>Earned. Click to wear.</key>
+	<string>獲得済み。クリックで着る。</string>
 	<key>Email Support</key>
 	<string>サポートにメール</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
@@ -635,6 +705,8 @@
 	<string>未完了のものはすべて今日に移動済み</string>
 	<key>Everything unlocked. Dress up as you like.</key>
 	<string>すべて解放済み。好きなだけおしゃれしよう。</string>
+	<key>Exam Season</key>
+	<string>試験シーズン</string>
 	<key>Fantasy</key>
 	<string>ファンタジー</string>
 	<key>Fast</key>
@@ -647,6 +719,8 @@
 	<string>今日の空き時間を未完了のタスクと復習で埋めます。この Mac 上で計画し、許可するまで何も追加しません</string>
 	<key>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</key>
 	<string>明日の空き時間を未完了のタスクと復習で埋めます。この Mac 上で計画し、許可するまで何も追加しません</string>
+	<key>Finish a Party session with friends.</key>
+	<string>友だちとパーティのセッションを1回終えよう。</string>
 	<key>Finish setup</key>
 	<string>セットアップを完了</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
@@ -673,6 +747,10 @@
 	<string>もう一度集中</string>
 	<key>Focus blocks finished today</key>
 	<string>今日完了した集中ブロック</string>
+	<key>Focus during %@.</key>
+	<string>%@の期間中に集中しよう。</string>
+	<key>Focus for 50 hours in total.</key>
+	<string>合計50時間集中しよう。</string>
 	<key>Focus on this task</key>
 	<string>このタスクに集中</string>
 	<key>Focus session</key>
@@ -693,18 +771,26 @@
 	<string>今日も集中して記録をつなごう</string>
 	<key>Focus together</key>
 	<string>一緒に集中</string>
+	<key>Focus while its event runs.</key>
+	<string>イベント期間中に集中しよう。</string>
 	<key>Focusing on</key>
 	<string>集中中</string>
 	<key>Focusing on: %@</key>
 	<string>集中中: %@</string>
+	<key>Free and offline: runs a model on this Mac.</key>
+	<string>無料・オフライン: このMacでモデルを動かします。</string>
 	<key>Free freeze used</key>
 	<string>無料フリーズ使用済み</string>
+	<key>Free tier with a Google AI Studio key.</key>
+	<string>Google AI Studioのキーで無料枠を使えます。</string>
 	<key>Free time in tomorrow's working day, with a buffer around each event</key>
 	<string>明日の勤務時間の空き時間 (予定の前後に余裕あり)</string>
 	<key>Free time left in your working day, with a buffer around each event</key>
 	<string>今日の勤務時間の残りの空き時間 (予定の前後に余裕あり)</string>
 	<key>Free used</key>
 	<string>無料分使用済み</string>
+	<key>Free with a Google account through the gemini command.</key>
+	<string>geminiコマンドとGoogleアカウントで無料で使えます。</string>
 	<key>Free working time over the next seven days, with a buffer around each event</key>
 	<string>今後7日間の勤務時間の空き (予定の前後に余裕あり)</string>
 	<key>Friend's code</key>
@@ -735,12 +821,16 @@
 	<string>%@を入手</string>
 	<key>Get Anki</key>
 	<string>Anki を入手</string>
+	<key>Get a Key</key>
+	<string>キーを取得</string>
 	<key>Get an alert when a timer ends.</key>
 	<string>タイマーが終わったら通知します。</string>
 	<key>Give your cat a name</key>
 	<string>ネコに名前をつけよう</string>
 	<key>Give your dog a name</key>
 	<string>イヌに名前をつけよう</string>
+	<key>Given to everyone who used Tabbi in its launch week.</key>
+	<string>リリース週にTabbiを使ったすべての人に贈られます。</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>ガラスのコントロールには macOS 26 が必要です。「透明度を下げる」がオンのときは不透明な表示になります。</string>
 	<key>Go back one step</key>
@@ -761,6 +851,8 @@
 	<string>よくがんばったね！</string>
 	<key>Great job, team!</key>
 	<string>チームのみんな、よくがんばったね！</string>
+	<key>Halloween</key>
+	<string>ハロウィン</string>
 	<key>Halo</key>
 	<string>天使の輪</string>
 	<key>Haptic feedback</key>
@@ -821,6 +913,8 @@
 	<string>ノッチを開いているときは、矢印キーか2本指スワイプでタブを切り替え、1-9でタブへ移動、Escか上スワイプで閉じます。閉じたノッチでは、下スワイプか中クリックで次のライブアクティビティを表示します。</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>深夜0時以降のすべての%@セッションの入力・出力・キャッシュトークン</string>
+	<key>Install</key>
+	<string>インストール</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Claude Codeをインストールしてサインインすると、5時間と週間の上限をリアルタイムで確認できます。</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -831,6 +925,8 @@
 	<string>AnkiConnect アドオンを入れるとデッキを直接開けます。</string>
 	<key>Install the free Anki desktop app to see your due cards, decks and streak here.</key>
 	<string>無料の Anki デスクトップアプリを入れると、カードやデッキ、連続記録がここに表示されます。</string>
+	<key>Installed</key>
+	<string>インストール済み</string>
 	<key>Installed elsewhere? Set %@ to its path.</key>
 	<string>別の場所にある場合は、%@にパスを設定してください。</string>
 	<key>Instant</key>
@@ -839,6 +935,8 @@
 	<string>インターネットアカウント</string>
 	<key>Invite links</key>
 	<string>招待リンク</string>
+	<key>Items from the year's other events, earned by focusing while each one runs</key>
+	<string>今年のほかのイベントのアイテム。各イベント期間中に集中すると獲得できます</string>
 	<key>Items with nothing to show are skipped.</key>
 	<string>表示する内容がない項目はスキップされます。</string>
 	<key>Its config sets an API key, which this tab doesn't send.</key>
@@ -851,6 +949,8 @@
 	<string>%@ の通話に参加</string>
 	<key>Join %@'s party</key>
 	<string>%@のパーティに参加</string>
+	<key>Join Party</key>
+	<string>パーティに参加</string>
 	<key>Joining the party server…</key>
 	<string>パーティサーバーに接続中…</string>
 	<key>Keep at least one tab on</key>
@@ -887,6 +987,8 @@
 	<string>学習中</string>
 	<key>Leave</key>
 	<string>退出</string>
+	<key>Leave empty for the default, which is quick and inexpensive.</key>
+	<string>空欄なら、速くて安価なデフォルトを使います。</string>
 	<key>Leave the party</key>
 	<string>パーティを退出</string>
 	<key>Leave the party; the next member becomes host</key>
@@ -917,12 +1019,18 @@
 	<string>場所</string>
 	<key>Long break</key>
 	<string>長い休憩</string>
+	<key>Long days, light focus. Keep a little rhythm going.</key>
+	<string>長い日、軽めの集中。少しずつリズムを保とう。</string>
 	<key>Look</key>
 	<string>外観</string>
 	<key>Looking for %@…</key>
 	<string>%@を探しています…</string>
 	<key>Looking for Anki…</key>
 	<string>Anki を探しています…</string>
+	<key>Looking for it</key>
+	<string>確認中</string>
+	<key>Lunar New Year</key>
+	<string>旧正月</string>
 	<key>Main display</key>
 	<string>メインディスプレイ</string>
 	<key>Mark as done</key>
@@ -951,10 +1059,18 @@
 	<string>メッセージ</string>
 	<key>Method</key>
 	<string>メソッド</string>
+	<key>Milestones</key>
+	<string>マイルストーン</string>
+	<key>Model</key>
+	<string>モデル</string>
+	<key>Month</key>
+	<string>月</string>
 	<key>Moonlit Witch Hat</key>
 	<string>月夜の魔女の帽子</string>
 	<key>More</key>
 	<string>多</string>
+	<key>More events</key>
+	<string>ほかのイベント</string>
 	<key>More focus than last week. Nice climb!</key>
 	<string>先週より集中できたね。いい調子！</string>
 	<key>More options</key>
@@ -1029,6 +1145,8 @@
 	<string>未確認 · 更新すると上限を読み込みます</string>
 	<key>Not done</key>
 	<string>未完了</string>
+	<key>Not found on this Mac</key>
+	<string>このMacに見つかりません</string>
 	<key>Not installed</key>
 	<string>未インストール</string>
 	<key>Not reported by this Mac</key>
@@ -1067,6 +1185,8 @@
 	<string>休憩中</string>
 	<key>On today</key>
 	<string>今日に追加済み</string>
+	<key>One calm session at a time. You've got this.</key>
+	<string>一回ずつ、落ち着いて。きっと大丈夫。</string>
 	<key>One song</key>
 	<string>1曲</string>
 	<key>One step to open decks from here</key>
@@ -1083,6 +1203,8 @@
 	<string>Anki で %@ を開いて復習</string>
 	<key>Open %@ in Anki. Nothing is due there today.</key>
 	<string>Anki で %@ を開く。今日の復習はありません。</string>
+	<key>Open %@ in your browser</key>
+	<string>%@をブラウザで開く</string>
 	<key>Open %@ to see and control what's playing.</key>
 	<string>%@を開くと、再生中の曲を確認・操作できます。</string>
 	<key>Open %@ to start, pause or skip</key>
@@ -1123,12 +1245,16 @@
 	<string>少しポインタを置くとノッチを開きます</string>
 	<key>Open the notch to see your recap.</key>
 	<string>ノッチを開いて振り返りを見てね。</string>
+	<key>Open the official page in your browser</key>
+	<string>公式ページをブラウザで開く</string>
 	<key>Open this chat and continue it</key>
 	<string>このチャットを開いて続ける</string>
 	<key>Opening %@…</key>
 	<string>%@ を開いています…</string>
 	<key>Opening Anki…</key>
 	<string>Anki を開いています…</string>
+	<key>Opens on tabbinotch.com</key>
+	<string>tabbinotch.comで開きます</string>
 	<key>Opens the %@ tab</key>
 	<string>%@タブを開きます</string>
 	<key>Opens the Suggest page with your app version, macOS version and edition filled in</key>
@@ -1151,10 +1277,16 @@
 	<string>パーティ</string>
 	<key>Party Hat</key>
 	<string>パーティー帽</string>
+	<key>Party asks once before you join. Your answer stays on this Mac.</key>
+	<string>参加前に一度だけ確認します。回答はこのMacに保存されます。</string>
 	<key>Party code</key>
 	<string>パーティコード</string>
+	<key>Party is for people %lld and older. It opens here in %@.</key>
+	<string>パーティは%1$lld歳以上の方が対象です。%2$@からここで利用できます。</string>
 	<key>Party isn't available</key>
 	<string>パーティは利用できません</string>
+	<key>Party isn't available yet</key>
+	<string>パーティはまだ利用できません</string>
 	<key>Party pets</key>
 	<string>Partyのペット</string>
 	<key>Party session</key>
@@ -1169,6 +1301,8 @@
 	<string>コード %@ (コピー済み) を貼り付けて OK をクリック</string>
 	<key>Paste the code %@ and click OK</key>
 	<string>コード %@ を貼り付けて OK をクリック</string>
+	<key>Paste your key</key>
+	<string>キーを貼り付け</string>
 	<key>Path</key>
 	<string>パス</string>
 	<key>Pause</key>
@@ -1181,18 +1315,30 @@
 	<string>一時停止中</string>
 	<key>Paused in %@</key>
 	<string>%@で一時停止中</string>
+	<key>Pay as you go with an Anthropic API key.</key>
+	<string>AnthropicのAPIキーで使った分だけ支払い。</string>
+	<key>Pay as you go with an OpenAI API key.</key>
+	<string>OpenAIのAPIキーで使った分だけ支払い。</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>最大 %@  ·  平均 %@</string>
 	<key>Pet</key>
 	<string>ペット</string>
+	<key>Pick %@ again to allow it to receive your AI requests. %@ sends nothing until you do.</key>
+	<string>AIリクエストの受信を許可するには、もう一度%1$@を選んでください。それまで%2$@は何も送信しません。</string>
 	<key>Pick a kit</key>
 	<string>キットを選ぼう</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
 	<string>ノッチでキット、タブ、必要な設定をもう一度選びます</string>
+	<key>Pick a month and a year first</key>
+	<string>先に月と年を選んでください</string>
 	<key>Pick any that fit.</key>
 	<string>当てはまるものをすべて選んでください。</string>
+	<key>Pick one to use Ask, Plan my day and Refine. %@ sends nothing until you do.</key>
+	<string>AIに質問、1日を計画、調整を使うには1つ選んでください。それまで%@は何も送信しません。</string>
 	<key>Pick the claude binary in Finder</key>
 	<string>Finderでclaudeバイナリを選ぶ</string>
+	<key>Pick the month and year you were born</key>
+	<string>生まれた月と年を選んでください</string>
 	<key>Pin %@ to the Study button</key>
 	<string>%@ を学習ボタンに固定</string>
 	<key>Pin as Favorite Deck</key>
@@ -1271,6 +1417,8 @@
 	<string>「視差効果を減らす」がオンのため、動く代わりにフェードします。</string>
 	<key>Refine</key>
 	<string>調整</string>
+	<key>Refine and AI day plans: your calendar event titles and times, tasks, goals and the plan.</key>
+	<string>調整とAIの1日プラン: カレンダーの予定のタイトルと時刻、タスク、目標、プラン。</string>
 	<key>Refine with %@: suggest a better order or lengths for this plan</key>
 	<string>%@ で調整: より良い順番や長さを提案</string>
 	<key>Refined with %@: %@</key>
@@ -1287,6 +1435,8 @@
 	<string>MITライセンスで公開しています。</string>
 	<key>Reminders</key>
 	<string>リマインダー</string>
+	<key>Remove</key>
+	<string>削除</string>
 	<key>Remove %@</key>
 	<string>%@を削除</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
@@ -1357,12 +1507,26 @@
 	<string>セットアップをやり直す</string>
 	<key>Run a checkup on %@ and see what's wrong, in plain words</key>
 	<string>%@ をチェックして、問題をわかりやすく表示します</string>
+	<key>Run claude in Terminal once to sign in.</key>
+	<string>ターミナルで一度claudeを実行してサインインしてください。</string>
+	<key>Run codex in Terminal once to sign in.</key>
+	<string>ターミナルで一度codexを実行してサインインしてください。</string>
+	<key>Run gemini in Terminal once to sign in with Google.</key>
+	<string>ターミナルで一度geminiを実行してGoogleでサインインしてください。</string>
 	<key>Running in %@</key>
 	<string>%@で実行中</string>
+	<key>Runs on this Mac</key>
+	<string>このMacで動作</string>
 	<key>Sakura Sprig</key>
 	<string>桜のひと枝</string>
+	<key>Save</key>
+	<string>保存</string>
+	<key>Save this key in your Keychain</key>
+	<string>このキーをキーチェーンに保存</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
 	<string>保存したチャットはこのMacにだけ残り、アップロードされません</string>
+	<key>Saved in your Keychain</key>
+	<string>キーチェーンに保存済み</string>
 	<key>Schedule</key>
 	<string>スケジュール</string>
 	<key>Screenshot sent with this question</key>
@@ -1383,6 +1547,10 @@
 	<string>AnkiConnect を選んで アップデートを確認 をクリック</string>
 	<key>Send (Return)</key>
 	<string>送信(Return)</string>
+	<key>Send your AI requests to %@?</key>
+	<string>AIへのリクエストを%@に送信しますか?</string>
+	<key>Sends what you ask to %@.</key>
+	<string>質問内容は%@に送信されます。</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>"apiKey" を null にして OK をクリック</string>
 	<key>Set this up later from its tab</key>
@@ -1443,6 +1611,8 @@
 	<string>昨日のカレンダーを表示</string>
 	<key>Show yesterday's list</key>
 	<string>昨日のリストを表示</string>
+	<key>Show your studies some love this week.</key>
+	<string>今週は勉強にちょっぴり愛を。</string>
 	<key>Showing local stats only</key>
 	<string>ローカルの統計のみ表示</string>
 	<key>Shown to friends in Party and used to greet you.</key>
@@ -1455,6 +1625,8 @@
 	<string>サインイン…</string>
 	<key>Sign Out</key>
 	<string>サインアウト</string>
+	<key>Sign in with Apple</key>
+	<string>Appleでサインイン</string>
 	<key>Sign in with your Apple Account to sync your pet across your Macs</key>
 	<string>Apple Accountでサインインすると、ペットをすべてのMacで同期できます</string>
 	<key>Signed in</key>
@@ -1495,6 +1667,8 @@
 	<string>サウンド</string>
 	<key>Sparkle Trail</key>
 	<string>キラキラの軌跡</string>
+	<key>Spooky season is here. Focus to dress up your pet.</key>
+	<string>ハロウィンの季節。集中してペットを仮装させよう。</string>
 	<key>Spread your open tasks and reviews over the week's free time. Planned on this Mac, nothing is added until you say so</key>
 	<string>未完了のタスクと復習を今週の空き時間に振り分けます。この Mac 上で計画し、許可するまで何も追加しません</string>
 	<key>Springy, with a little bounce.</key>
@@ -1583,6 +1757,8 @@
 	<string>勉強</string>
 	<key>Study %@</key>
 	<string>%@ を学習</string>
+	<key>Study 7 days in a row.</key>
+	<string>7日連続で学習しよう。</string>
 	<key>Study Hoodie</key>
 	<string>勉強パーカー</string>
 	<key>Study parties</key>
@@ -1599,6 +1775,8 @@
 	<string>送信</string>
 	<key>Suggest a Feature or Report a Bug</key>
 	<string>機能の提案・不具合の報告</string>
+	<key>Summer</key>
+	<string>夏</string>
 	<key>Sunset Shades</key>
 	<string>サンセットサングラス</string>
 	<key>Superhero Cape</key>
@@ -1618,7 +1796,7 @@
 	<key>Sync your pet</key>
 	<string>ペットを同期</string>
 	<key>Sync your pet, points and streaks across your Macs.</key>
-	<string>ペット、ポイント、連続記録をすべてのMacで同期します。</string>
+	<string>ペット、ポイント、連続記録をすべてのMacで同期。</string>
 	<key>Syncing with AnkiWeb…</key>
 	<string>AnkiWeb と同期中…</string>
 	<key>Syncing…</key>
@@ -1647,6 +1825,12 @@
 	<string>そのキーはショートカットに使えません。文字、数字、またはスペースを試してください。</string>
 	<key>The AI</key>
 	<string>AI</string>
+	<key>The AI that answers Ask, Plan my day and Refine</key>
+	<string>AIに質問、1日を計画、調整で答えるAI</string>
+	<key>The Keychain didn't save the key. Try again.</key>
+	<string>キーチェーンにキーを保存できませんでした。もう一度お試しください。</string>
+	<key>The blossoms are out. Grow something of your own.</key>
+	<string>桜が咲きました。あなたも何かを育てよう。</string>
 	<key>The focus timer is on this task</key>
 	<string>集中タイマーはこのタスクに設定中</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1655,6 +1839,10 @@
 	<string>キット</string>
 	<key>The last change couldn't be written to disk</key>
 	<string>最後の変更をディスクに保存できませんでした</string>
+	<key>The model %@ uses. Leave empty for the default.</key>
+	<string>%@が使うモデル。空欄ならデフォルトを使います。</string>
+	<key>The month you were born</key>
+	<string>生まれた月</string>
 	<key>The next seven days at a glance</key>
 	<string>今後7日間をひと目で</string>
 	<key>The party code. Click to copy it, then send it to friends.</key>
@@ -1663,6 +1851,10 @@
 	<string>残りの時間は自由に使おう。</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>セッションは終了するか、あなたが終えるまでパーティ全員で続きます</string>
+	<key>The tool's own default</key>
+	<string>ツールのデフォルト</string>
+	<key>The year you were born</key>
+	<string>生まれた年</string>
 	<key>Thermal state: %@</key>
 	<string>温度状態：%@</string>
 	<key>Thinking</key>
@@ -1769,8 +1961,14 @@
 	<string>週間上限の使用量</string>
 	<key>Used to greet you.</key>
 	<string>あいさつに使われます。</string>
+	<key>Uses your ChatGPT plan through the codex command.</key>
+	<string>codexコマンドでChatGPTのプランを使います。</string>
+	<key>Uses your Claude subscription through the claude command.</key>
+	<string>claudeコマンドでClaudeのサブスクリプションを使います。</string>
 	<key>Using a copy outside Applications? Just open it.</key>
 	<string>別の場所の Anki? そのまま開いてください。</string>
+	<key>Valentine's Week</key>
+	<string>バレンタインウィーク</string>
 	<key>Validate</key>
 	<string>確認</string>
 	<key>Version %@</key>
@@ -1817,12 +2015,22 @@
 	<string>なんて呼べばいい？</string>
 	<key>When off, the notch hides while the lid is closed.</key>
 	<string>オフのときは、蓋を閉じている間ノッチを隠します。</string>
+	<key>When were you born?</key>
+	<string>生まれた年月は?</string>
 	<key>White Coat</key>
 	<string>白衣</string>
+	<key>Winter Holidays</key>
+	<string>ウィンターホリデー</string>
 	<key>Witch Hat</key>
 	<string>魔女の帽子</string>
+	<key>With %@, %@ sends these to %@ through the %@ command you signed in to when you use an AI feature:</key>
+	<string>%1$@を使うと、AI機能を使ったときに%2$@はサインイン済みの%4$@コマンドを通じて次の内容を%3$@に送信します:</string>
+	<key>With %@, %@ sends these to %@ with your API key when you use an AI feature:</key>
+	<string>%1$@を使うと、AI機能を使ったときに%2$@はあなたのAPIキーで次の内容を%3$@に送信します:</string>
 	<key>With Claude Code as your AI, Ask AI and AI Usage run your own signed-in claude CLI; %@ never reads your credentials. Set this only if claude isn't found automatically.</key>
 	<string>Claude CodeをAIにすると、「AIに質問」と「AI使用量」はサインイン済みのclaude CLIを使います。%@が認証情報を読むことはありません。claudeが自動で見つからない場合だけ設定してください。</string>
+	<key>With Ollama open, run ollama pull %@ in Terminal once.</key>
+	<string>Ollamaを開いた状態で、ターミナルで一度ollama pull %@を実行してください。</string>
 	<key>Wizard Hat</key>
 	<string>魔法使いの帽子</string>
 	<key>Wizard Robe</key>
@@ -1837,6 +2045,8 @@
 	<string>丁寧なリマインダーを書いて</string>
 	<key>Write to %@</key>
 	<string>%@にメール</string>
+	<key>Year</key>
+	<string>年</string>
 	<key>Yesterday</key>
 	<string>昨日</string>
 	<key>Yesterday's calendar</key>
@@ -1853,6 +2063,8 @@
 	<string>「%@」タブでいつでも設定できます。</string>
 	<key>You started it for the party</key>
 	<string>あなたがパーティ用に開始</string>
+	<key>Your %@ key. It is kept in your Keychain.</key>
+	<string>%@のキー。キーチェーンに保存されます。</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Macを充電中、%@もひと休みで一口</string>
 	<key>Your Mac's CPU, GPU and memory use at a glance.</key>
@@ -1871,6 +2083,8 @@
 	<string>あなたのフレンドコードです。コピーして友達に送りましょう。</string>
 	<key>Your friend code: %@</key>
 	<string>フレンドコード: %@</string>
+	<key>Your key stays in your Keychain.</key>
+	<string>キーはキーチェーンに保存されます。</string>
 	<key>Your most studied day: %@</key>
 	<string>いちばん勉強した日: %@</string>
 	<key>Your name</key>
@@ -1923,12 +2137,16 @@
 	<string>解放できます</string>
 	<key>shared focus</key>
 	<string>みんなで集中</string>
+	<key>starts %@</key>
+	<string>%@から</string>
 	<key>switch.on</key>
 	<string>オン</string>
 	<key>the host</key>
 	<string>ホスト</string>
 	<key>tokens</key>
 	<string>トークン</string>
+	<key>until %@</key>
+	<string>%@まで</string>
 	<key>your kit</key>
 	<string>キット</string>
 	<key>your playlist</key>

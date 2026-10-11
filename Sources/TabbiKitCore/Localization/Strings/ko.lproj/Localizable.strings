@@ -27,6 +27,8 @@
 	<string>%@ 여유</string>
 	<key>%@ free this week</key>
 	<string>이번 주 %@ 여유</string>
+	<key>%@ handles them under its own terms and privacy policy. %@'s AI features send nothing else, and nothing until you allow it. You can switch to None in Connections at any time.</key>
+	<string>%1$@은(는) 자체 약관과 개인정보 처리방침에 따라 이를 처리합니다. %2$@의 AI 기능은 이 외에는 아무것도 보내지 않으며, 허용하기 전에는 아무것도 보내지 않습니다. 언제든지 연결에서 없음으로 바꿀 수 있습니다.</string>
 	<key>%@ in %@</key>
 	<string>%2$@에서 %1$@</string>
 	<key>%@ in the party's shared session</key>
@@ -69,6 +71,8 @@
 	<string>%1$@ / %2$@</string>
 	<key>%@ of focus.</key>
 	<string>%@ 집중했어요.</string>
+	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
+	<string>%1$@은(는) %2$@까지예요. 다음 아이템 %3$@: %4$@ 집중함.</string>
 	<key>%@ settings</key>
 	<string>%@ 설정</string>
 	<key>%@ started it for the party</key>
@@ -93,12 +97,24 @@
 	<string>%@ · 일시정지</string>
 	<key>%@, %lld extra</key>
 	<string>%@, 추가 %lld개</string>
+	<key>%@, limited edition: %@</key>
+	<string>%1$@, 한정판: %2$@</string>
+	<key>%@, limited edition: %@ Its event starts %@.</key>
+	<string>%1$@, 한정판: %2$@ 이벤트는 %3$@에 시작해요.</string>
+	<key>%@, limited edition: click to take off</key>
+	<string>%@, 한정판: 클릭해서 벗기</string>
+	<key>%@, limited edition: click to wear</key>
+	<string>%@, 한정판: 클릭해서 입기</string>
 	<key>%@. %@</key>
 	<string>%@. %@</string>
 	<key>%@: %@</key>
 	<string>%@: %@</string>
 	<key>%@: %@ left</key>
 	<string>%@: %@ 남음</string>
+	<key>%@: you earned every item. They stay yours after the event.</key>
+	<string>%@: 모든 아이템을 획득했어요. 이벤트가 끝나도 계속 내 거예요.</string>
+	<key>%lld h</key>
+	<string>%lld시간</string>
 	<key>%lld in party</key>
 	<string>파티에 %lld명</string>
 	<key>%lld min</key>
@@ -123,6 +139,14 @@
 	<string>%1$lld점, %2$@ 남음</string>
 	<key>%lld sounds</key>
 	<string>사운드 %lld개</string>
+	<key>%lld/%lld days</key>
+	<string>%lld/%lld일</string>
+	<key>%lld/%lld h</key>
+	<string>%lld/%lld시간</string>
+	<key>%lld/%lld min</key>
+	<string>%lld/%lld분</string>
+	<key>%lld/%lld session</key>
+	<string>%lld/%lld세션</string>
 	<key>%lldh</key>
 	<string>%lld시간</string>
 	<key>%lldh %lldm</key>
@@ -157,6 +181,8 @@
 	<string>추가 기능</string>
 	<key>A fresh day</key>
 	<string>새로운 하루</string>
+	<key>A fresh start for the new year. Focus a little each day.</key>
+	<string>새해의 새로운 시작. 매일 조금씩 집중해 봐요.</string>
 	<key>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</key>
 	<string>키트는 미리 준비된 탭 묶음이에요. 바꾸면 탭이 바뀌고 시작 할 일이 오늘에 추가돼요.</string>
 	<key>A kit is a set of tabs. You can change them any time.</key>
@@ -181,12 +207,18 @@
 	<string>AI</string>
 	<key>AI Usage</key>
 	<string>AI 사용량</string>
+	<key>AI model</key>
+	<string>AI 모델</string>
 	<key>AI usage above 80%</key>
 	<string>AI 사용량 80% 초과</string>
+	<key>API key</key>
+	<string>API 키</string>
 	<key>About</key>
 	<string>정보</string>
 	<key>Account</key>
 	<string>계정</string>
+	<key>Accounts are for people %lld and older. Signing in opens in %@.</key>
+	<string>계정은 만 %1$lld세 이상만 만들 수 있어요. %2$@부터 로그인할 수 있어요.</string>
 	<key>Activity</key>
 	<string>활동</string>
 	<key>Add</key>
@@ -243,8 +275,12 @@
 	<string>카드가 남은 모든 덱</string>
 	<key>All done</key>
 	<string>모두 완료</string>
+	<key>All earned</key>
+	<string>모두 획득</string>
 	<key>All optional. Nothing to do now.</key>
 	<string>모두 선택 사항이에요. 지금은 할 일이 없어요.</string>
+	<key>Allow</key>
+	<string>허용</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
 	<string>개인정보 보호 및 보안에서 %@를 허용해 주세요.</string>
 	<key>Allow %@ in System Settings › General › Login Items.</key>
@@ -279,6 +315,10 @@
 	<string>이번 주도 꾸준했어요. 포근하게 이어가요.</string>
 	<key>Answers come from the AI you pick: Claude, ChatGPT, Gemini or a free model on this Mac.</key>
 	<string>고른 AI가 답해요: Claude, ChatGPT, Gemini 또는 이 Mac의 무료 모델.</string>
+	<key>Answers from</key>
+	<string>답변 제공</string>
+	<key>App</key>
+	<string>앱</string>
 	<key>Appears when the pointer reaches the top center.</key>
 	<string>포인터가 화면 위쪽 가운데에 닿으면 나타나요.</string>
 	<key>Apps and permissions</key>
@@ -289,6 +329,8 @@
 	<string>%@에게 무엇이든 물어보세요…</string>
 	<key>Ask AI</key>
 	<string>AI에게 묻기</string>
+	<key>Ask AI: your questions, the chat so far and any screenshot you attach.</key>
+	<string>AI에게 묻기: 질문, 지금까지의 대화, 첨부한 스크린샷.</string>
 	<key>Ask Anki again</key>
 	<string>Anki에 다시 요청</string>
 	<key>Ask Claude, Gemini or another AI a quick question.</key>
@@ -299,6 +341,8 @@
 	<string>이 질문 다시 하기</string>
 	<key>Ask “%@”</key>
 	<string>“%@” 물어보기</string>
+	<key>Asked once. Your answer stays on this Mac.</key>
+	<string>한 번만 물어봐요. 답은 이 Mac에만 남아요.</string>
 	<key>Asking Anki to open the deck for review.</key>
 	<string>Anki에 덱을 열어 달라고 요청 중이에요.</string>
 	<key>Astronaut Helmet</key>
@@ -349,6 +393,10 @@
 	<string>토끼 귀</string>
 	<key>Buy freeze</key>
 	<string>보호 구매</string>
+	<key>By joining you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
+	<string>참여하면 [이용약관](%1$@) 및 [개인정보 처리방침](%2$@)에 동의하게 됩니다.</string>
+	<key>By signing in you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
+	<string>로그인하면 [이용약관](%1$@) 및 [개인정보 처리방침](%2$@)에 동의하게 됩니다.</string>
 	<key>Calendar</key>
 	<string>캘린더</string>
 	<key>Calendar access</key>
@@ -411,6 +459,8 @@
 	<string>끝나면 자동으로 체크돼요. %@ 열기</string>
 	<key>Chef Hat</key>
 	<string>요리사 모자</string>
+	<key>Cherry Blossom Season</key>
+	<string>벚꽃 시즌</string>
 	<key>Cherry Petals</key>
 	<string>벚꽃잎</string>
 	<key>Chocolate</key>
@@ -463,10 +513,16 @@
 	<string>계획 닫기</string>
 	<key>Close the plan without adding anything</key>
 	<string>아무것도 추가하지 않고 계획 닫기</string>
+	<key>Close this</key>
+	<string>닫기</string>
+	<key>Close this. You can sign in any time.</key>
+	<string>닫기. 언제든지 로그인할 수 있어요.</string>
 	<key>Closet</key>
 	<string>옷장</string>
 	<key>Code</key>
 	<string>코드</string>
+	<key>Command</key>
+	<string>명령</string>
 	<key>Compact</key>
 	<string>작게</string>
 	<key>Connect</key>
@@ -489,6 +545,8 @@
 	<string>연결</string>
 	<key>Continue</key>
 	<string>계속</string>
+	<key>Continue to Sign in with Apple</key>
+	<string>Apple로 로그인으로 계속</string>
 	<key>Control Spotify or Apple Music from the notch.</key>
 	<string>노치에서 Spotify나 Apple Music을 조작해요.</string>
 	<key>Cool Sunglasses</key>
@@ -533,6 +591,8 @@
 	<string>포근한 후드티</string>
 	<key>Cozy Scarf</key>
 	<string>포근한 목도리</string>
+	<key>Cozy days and quiet focus before the new year.</key>
+	<string>새해 전, 포근한 날들과 조용한 집중.</string>
 	<key>Cream</key>
 	<string>크림</string>
 	<key>Create a party and get a code to share</key>
@@ -545,6 +605,8 @@
 	<string>색이 진할수록 오래 공부한 날이에요</string>
 	<key>Day</key>
 	<string>일</string>
+	<key>Day review: today's focus and study minutes, sessions and points, your goal counts and the titles of the tasks you finished or are carrying over.</key>
+	<string>하루 돌아보기: 오늘의 집중 및 공부 시간, 세션과 포인트, 목표 개수, 끝냈거나 넘기는 할 일의 제목.</string>
 	<key>Days in a row with at least one review</key>
 	<string>하루 한 번 이상 복습한 연속 일수</string>
 	<key>Deep</key>
@@ -569,6 +631,8 @@
 	<string>이 채팅 삭제</string>
 	<key>Delete this imported kit and go back to the default kit</key>
 	<string>가져온 키트를 삭제하고 기본 키트로 돌아가요</string>
+	<key>Delete this key from your Keychain</key>
+	<string>키체인에서 이 키 삭제</string>
 	<key>Delete your %@ account?</key>
 	<string>%@ 계정을 삭제할까요?</string>
 	<key>Deleting your account…</key>
@@ -603,8 +667,14 @@
 	<string>드래그해서 이동</string>
 	<key>Each day's list shows up here the day after.</key>
 	<string>하루의 목록은 다음 날 여기에 표시돼요.</string>
+	<key>Earned by reaching study milestones</key>
+	<string>공부 마일스톤을 달성하면 획득해요</string>
 	<key>Earned by studying, never sold</key>
 	<string>공부로만 얻을 수 있어요, 판매하지 않아요</string>
+	<key>Earned. Click to take off.</key>
+	<string>획득함. 클릭해서 벗기.</string>
+	<key>Earned. Click to wear.</key>
+	<string>획득함. 클릭해서 입기.</string>
 	<key>Email Support</key>
 	<string>지원팀에 이메일</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
@@ -635,6 +705,8 @@
 	<string>못 끝낸 일은 모두 오늘로 옮겼어요</string>
 	<key>Everything unlocked. Dress up as you like.</key>
 	<string>모두 잠금 해제됐어요. 마음껏 꾸며 보세요.</string>
+	<key>Exam Season</key>
+	<string>시험 기간</string>
 	<key>Fantasy</key>
 	<string>판타지</string>
 	<key>Fast</key>
@@ -647,6 +719,8 @@
 	<string>오늘 여유 시간을 할 일과 복습으로 채워요. 이 Mac에서 계획하며, 허락 전엔 아무것도 추가하지 않아요</string>
 	<key>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</key>
 	<string>내일 여유 시간을 할 일과 복습으로 채워요. 이 Mac에서 계획하며, 허락 전엔 아무것도 추가하지 않아요</string>
+	<key>Finish a Party session with friends.</key>
+	<string>친구들과 파티 세션을 끝내세요.</string>
 	<key>Finish setup</key>
 	<string>설정 완료</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
@@ -673,6 +747,10 @@
 	<string>다시 집중</string>
 	<key>Focus blocks finished today</key>
 	<string>오늘 끝낸 집중 블록</string>
+	<key>Focus during %@.</key>
+	<string>%@ 기간에 집중하세요.</string>
+	<key>Focus for 50 hours in total.</key>
+	<string>총 50시간 집중하세요.</string>
 	<key>Focus on this task</key>
 	<string>이 할 일에 집중</string>
 	<key>Focus session</key>
@@ -693,18 +771,26 @@
 	<string>오늘도 집중해서 이어 가세요</string>
 	<key>Focus together</key>
 	<string>함께 집중</string>
+	<key>Focus while its event runs.</key>
+	<string>이벤트 기간에 집중하세요.</string>
 	<key>Focusing on</key>
 	<string>집중 중</string>
 	<key>Focusing on: %@</key>
 	<string>집중 중: %@</string>
+	<key>Free and offline: runs a model on this Mac.</key>
+	<string>무료, 오프라인: 이 Mac에서 모델을 실행해요.</string>
 	<key>Free freeze used</key>
 	<string>무료 보호 사용함</string>
+	<key>Free tier with a Google AI Studio key.</key>
+	<string>Google AI Studio 키로 무료 등급을 사용해요.</string>
 	<key>Free time in tomorrow's working day, with a buffer around each event</key>
 	<string>내일 근무 시간 중 여유 시간 (일정 앞뒤 여유 포함)</string>
 	<key>Free time left in your working day, with a buffer around each event</key>
 	<string>오늘 남은 근무 시간 중 여유 시간 (일정 앞뒤 여유 포함)</string>
 	<key>Free used</key>
 	<string>무료 사용함</string>
+	<key>Free with a Google account through the gemini command.</key>
+	<string>gemini 명령과 Google 계정으로 무료로 사용해요.</string>
 	<key>Free working time over the next seven days, with a buffer around each event</key>
 	<string>앞으로 7일간 근무 시간 중 여유 시간 (일정 앞뒤 여유 포함)</string>
 	<key>Friend's code</key>
@@ -735,12 +821,16 @@
 	<string>%@ 받기</string>
 	<key>Get Anki</key>
 	<string>Anki 받기</string>
+	<key>Get a Key</key>
+	<string>키 받기</string>
 	<key>Get an alert when a timer ends.</key>
 	<string>타이머가 끝나면 알려줘요.</string>
 	<key>Give your cat a name</key>
 	<string>고양이에게 이름을 지어 주세요</string>
 	<key>Give your dog a name</key>
 	<string>강아지에게 이름을 지어 주세요</string>
+	<key>Given to everyone who used Tabbi in its launch week.</key>
+	<string>출시 주간에 Tabbi를 쓴 모든 분께 드려요.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>유리 컨트롤은 macOS 26이 필요하고, '투명도 줄이기'가 켜져 있으면 불투명하게 표시돼요.</string>
 	<key>Go back one step</key>
@@ -761,6 +851,8 @@
 	<string>잘했어요!</string>
 	<key>Great job, team!</key>
 	<string>팀 모두 수고했어요!</string>
+	<key>Halloween</key>
+	<string>핼러윈</string>
 	<key>Halo</key>
 	<string>후광</string>
 	<key>Haptic feedback</key>
@@ -821,6 +913,8 @@
 	<string>노치가 열려 있을 땐 화살표 키나 두 손가락 쓸기로 탭을 바꾸고, 1-9로 탭에 바로 가고, Esc나 위로 쓸기로 닫아요. 닫힌 노치에서는 아래로 쓸거나 가운데 클릭하면 다음 실시간 현황을 볼 수 있어요.</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>자정 이후 모든 %@ 세션의 입력, 출력, 캐시 토큰</string>
+	<key>Install</key>
+	<string>설치</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Claude Code를 설치하고 로그인하면 5시간 및 주간 한도를 실시간으로 볼 수 있어요.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -831,6 +925,8 @@
 	<string>AnkiConnect 부가 기능을 설치하면 덱을 바로 열 수 있어요.</string>
 	<key>Install the free Anki desktop app to see your due cards, decks and streak here.</key>
 	<string>무료 Anki 데스크톱 앱을 설치하면 카드, 덱, 연속 기록이 여기 보여요.</string>
+	<key>Installed</key>
+	<string>설치됨</string>
 	<key>Installed elsewhere? Set %@ to its path.</key>
 	<string>다른 곳에 설치했나요? %@에 경로를 지정하세요.</string>
 	<key>Instant</key>
@@ -839,6 +935,8 @@
 	<string>인터넷 계정</string>
 	<key>Invite links</key>
 	<string>초대 링크</string>
+	<key>Items from the year's other events, earned by focusing while each one runs</key>
+	<string>올해 다른 이벤트의 아이템이에요. 각 이벤트 기간에 집중하면 얻어요</string>
 	<key>Items with nothing to show are skipped.</key>
 	<string>보여 줄 내용이 없는 항목은 건너뛰어요.</string>
 	<key>Its config sets an API key, which this tab doesn't send.</key>
@@ -851,6 +949,8 @@
 	<string>%@ 통화 참여</string>
 	<key>Join %@'s party</key>
 	<string>%@ 님의 파티에 참가</string>
+	<key>Join Party</key>
+	<string>파티 참여</string>
 	<key>Joining the party server…</key>
 	<string>파티 서버에 연결 중…</string>
 	<key>Keep at least one tab on</key>
@@ -887,6 +987,8 @@
 	<string>학습 중</string>
 	<key>Leave</key>
 	<string>나가기</string>
+	<key>Leave empty for the default, which is quick and inexpensive.</key>
+	<string>비워 두면 빠르고 저렴한 기본값을 써요.</string>
 	<key>Leave the party</key>
 	<string>파티에서 나가기</string>
 	<key>Leave the party; the next member becomes host</key>
@@ -917,12 +1019,18 @@
 	<string>위치</string>
 	<key>Long break</key>
 	<string>긴 휴식</string>
+	<key>Long days, light focus. Keep a little rhythm going.</key>
+	<string>긴 하루, 가벼운 집중. 작은 리듬을 이어가요.</string>
 	<key>Look</key>
 	<string>모양</string>
 	<key>Looking for %@…</key>
 	<string>%@ 찾는 중…</string>
 	<key>Looking for Anki…</key>
 	<string>Anki 찾는 중…</string>
+	<key>Looking for it</key>
+	<string>찾는 중</string>
+	<key>Lunar New Year</key>
+	<string>설날</string>
 	<key>Main display</key>
 	<string>주 디스플레이</string>
 	<key>Mark as done</key>
@@ -951,10 +1059,18 @@
 	<string>메시지</string>
 	<key>Method</key>
 	<string>방법</string>
+	<key>Milestones</key>
+	<string>마일스톤</string>
+	<key>Model</key>
+	<string>모델</string>
+	<key>Month</key>
+	<string>월</string>
 	<key>Moonlit Witch Hat</key>
 	<string>달빛 마녀 모자</string>
 	<key>More</key>
 	<string>많음</string>
+	<key>More events</key>
+	<string>다른 이벤트</string>
 	<key>More focus than last week. Nice climb!</key>
 	<string>지난주보다 더 집중했어요. 멋진 성장이에요!</string>
 	<key>More options</key>
@@ -1029,6 +1145,8 @@
 	<string>아직 확인 안 함 · 새로고침해서 한도 불러오기</string>
 	<key>Not done</key>
 	<string>미완료</string>
+	<key>Not found on this Mac</key>
+	<string>이 Mac에서 찾을 수 없음</string>
 	<key>Not installed</key>
 	<string>설치 안 됨</string>
 	<key>Not reported by this Mac</key>
@@ -1067,6 +1185,8 @@
 	<string>쉬는 중</string>
 	<key>On today</key>
 	<string>오늘에 있음</string>
+	<key>One calm session at a time. You've got this.</key>
+	<string>한 번에 한 세션씩 차분하게. 할 수 있어요.</string>
 	<key>One song</key>
 	<string>한 곡</string>
 	<key>One step to open decks from here</key>
@@ -1083,6 +1203,8 @@
 	<string>Anki에서 %@ 열어 복습</string>
 	<key>Open %@ in Anki. Nothing is due there today.</key>
 	<string>Anki에서 %@ 열기. 오늘은 복습할 카드가 없어요.</string>
+	<key>Open %@ in your browser</key>
+	<string>브라우저에서 %@ 열기</string>
 	<key>Open %@ to see and control what's playing.</key>
 	<string>%@을(를) 열면 재생 중인 곡을 보고 제어할 수 있어요.</string>
 	<key>Open %@ to start, pause or skip</key>
@@ -1123,12 +1245,16 @@
 	<string>잠깐 마우스를 올리면 노치를 열어요</string>
 	<key>Open the notch to see your recap.</key>
 	<string>노치를 열어 요약을 확인하세요.</string>
+	<key>Open the official page in your browser</key>
+	<string>브라우저에서 공식 페이지 열기</string>
 	<key>Open this chat and continue it</key>
 	<string>이 채팅을 열고 이어가기</string>
 	<key>Opening %@…</key>
 	<string>%@ 여는 중…</string>
 	<key>Opening Anki…</key>
 	<string>Anki 여는 중…</string>
+	<key>Opens on tabbinotch.com</key>
+	<string>tabbinotch.com에서 열려요</string>
 	<key>Opens the %@ tab</key>
 	<string>%@ 탭을 열어요</string>
 	<key>Opens the Suggest page with your app version, macOS version and edition filled in</key>
@@ -1151,10 +1277,16 @@
 	<string>파티</string>
 	<key>Party Hat</key>
 	<string>파티 모자</string>
+	<key>Party asks once before you join. Your answer stays on this Mac.</key>
+	<string>참여 전에 한 번만 물어봐요. 답은 이 Mac에만 남아요.</string>
 	<key>Party code</key>
 	<string>파티 코드</string>
+	<key>Party is for people %lld and older. It opens here in %@.</key>
+	<string>파티는 만 %1$lld세 이상만 이용할 수 있어요. %2$@부터 여기서 열려요.</string>
 	<key>Party isn't available</key>
 	<string>파티를 사용할 수 없어요</string>
+	<key>Party isn't available yet</key>
+	<string>아직 파티를 이용할 수 없어요</string>
 	<key>Party pets</key>
 	<string>Party 펫</string>
 	<key>Party session</key>
@@ -1169,6 +1301,8 @@
 	<string>코드 %@ (복사됨)를 붙여 넣고 OK 클릭</string>
 	<key>Paste the code %@ and click OK</key>
 	<string>코드 %@를 붙여 넣고 OK 클릭</string>
+	<key>Paste your key</key>
+	<string>키 붙여넣기</string>
 	<key>Path</key>
 	<string>경로</string>
 	<key>Pause</key>
@@ -1181,18 +1315,30 @@
 	<string>일시정지됨</string>
 	<key>Paused in %@</key>
 	<string>%@에서 일시정지됨</string>
+	<key>Pay as you go with an Anthropic API key.</key>
+	<string>Anthropic API 키로 쓴 만큼 결제해요.</string>
+	<key>Pay as you go with an OpenAI API key.</key>
+	<string>OpenAI API 키로 쓴 만큼 결제해요.</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>최대 %@  ·  평균 %@</string>
 	<key>Pet</key>
 	<string>펫</string>
+	<key>Pick %@ again to allow it to receive your AI requests. %@ sends nothing until you do.</key>
+	<string>AI 요청을 받도록 허용하려면 %1$@을(를) 다시 고르세요. 그 전까지 %2$@은(는) 아무것도 보내지 않아요.</string>
 	<key>Pick a kit</key>
 	<string>키트를 골라 주세요</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
 	<string>노치에서 키트와 탭, 필요한 설정을 다시 골라요</string>
+	<key>Pick a month and a year first</key>
+	<string>먼저 월과 연도를 고르세요</string>
 	<key>Pick any that fit.</key>
 	<string>해당하는 걸 모두 골라 주세요.</string>
+	<key>Pick one to use Ask, Plan my day and Refine. %@ sends nothing until you do.</key>
+	<string>AI에게 묻기, 하루 계획, 다듬기를 쓰려면 하나를 고르세요. 그 전까지 %@은(는) 아무것도 보내지 않아요.</string>
 	<key>Pick the claude binary in Finder</key>
 	<string>Finder에서 claude 실행 파일 고르기</string>
+	<key>Pick the month and year you were born</key>
+	<string>태어난 달과 연도를 고르세요</string>
 	<key>Pin %@ to the Study button</key>
 	<string>학습 버튼에 %@ 고정</string>
 	<key>Pin as Favorite Deck</key>
@@ -1271,6 +1417,8 @@
 	<string>동작 줄이기가 켜져 있어서 움직이는 대신 서서히 바뀌어요.</string>
 	<key>Refine</key>
 	<string>다듬기</string>
+	<key>Refine and AI day plans: your calendar event titles and times, tasks, goals and the plan.</key>
+	<string>다듬기와 AI 하루 계획: 캘린더 일정의 제목과 시간, 할 일, 목표, 계획.</string>
 	<key>Refine with %@: suggest a better order or lengths for this plan</key>
 	<string>%@로 다듬기: 더 나은 순서나 길이를 제안해요</string>
 	<key>Refined with %@: %@</key>
@@ -1287,6 +1435,8 @@
 	<string>MIT 라이선스로 배포됩니다.</string>
 	<key>Reminders</key>
 	<string>미리 알림</string>
+	<key>Remove</key>
+	<string>삭제</string>
 	<key>Remove %@</key>
 	<string>%@ 제거</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
@@ -1357,12 +1507,26 @@
 	<string>설정 다시 하기</string>
 	<key>Run a checkup on %@ and see what's wrong, in plain words</key>
 	<string>%@을(를) 점검하고 무엇이 문제인지 쉽게 알아봐요</string>
+	<key>Run claude in Terminal once to sign in.</key>
+	<string>터미널에서 claude를 한 번 실행해 로그인하세요.</string>
+	<key>Run codex in Terminal once to sign in.</key>
+	<string>터미널에서 codex를 한 번 실행해 로그인하세요.</string>
+	<key>Run gemini in Terminal once to sign in with Google.</key>
+	<string>터미널에서 gemini를 한 번 실행해 Google로 로그인하세요.</string>
 	<key>Running in %@</key>
 	<string>%@에서 진행 중</string>
+	<key>Runs on this Mac</key>
+	<string>이 Mac에서 실행</string>
 	<key>Sakura Sprig</key>
 	<string>벚꽃 가지</string>
+	<key>Save</key>
+	<string>저장</string>
+	<key>Save this key in your Keychain</key>
+	<string>이 키를 키체인에 저장</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
 	<string>저장된 채팅은 이 Mac에만 보관되고 업로드되지 않아요</string>
+	<key>Saved in your Keychain</key>
+	<string>키체인에 저장됨</string>
 	<key>Schedule</key>
 	<string>일정</string>
 	<key>Screenshot sent with this question</key>
@@ -1383,6 +1547,10 @@
 	<string>AnkiConnect를 선택하고 업데이트 확인 클릭</string>
 	<key>Send (Return)</key>
 	<string>보내기 (Return)</string>
+	<key>Send your AI requests to %@?</key>
+	<string>AI 요청을 %@에 보낼까요?</string>
+	<key>Sends what you ask to %@.</key>
+	<string>질문한 내용은 %@에 보내져요.</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>"apiKey"를 null로 바꾸고 OK 클릭</string>
 	<key>Set this up later from its tab</key>
@@ -1443,6 +1611,8 @@
 	<string>어제 캘린더 보기</string>
 	<key>Show yesterday's list</key>
 	<string>어제 목록 보기</string>
+	<key>Show your studies some love this week.</key>
+	<string>이번 주엔 공부에 사랑을 조금 나눠 줘요.</string>
 	<key>Showing local stats only</key>
 	<string>로컬 통계만 표시 중</string>
 	<key>Shown to friends in Party and used to greet you.</key>
@@ -1455,6 +1625,8 @@
 	<string>로그인…</string>
 	<key>Sign Out</key>
 	<string>로그아웃</string>
+	<key>Sign in with Apple</key>
+	<string>Apple로 로그인</string>
 	<key>Sign in with your Apple Account to sync your pet across your Macs</key>
 	<string>Apple 계정으로 로그인하면 모든 Mac에서 펫을 동기화할 수 있어요</string>
 	<key>Signed in</key>
@@ -1495,6 +1667,8 @@
 	<string>사운드</string>
 	<key>Sparkle Trail</key>
 	<string>반짝이 꼬리</string>
+	<key>Spooky season is here. Focus to dress up your pet.</key>
+	<string>으스스한 시즌이 왔어요. 집중해서 펫을 꾸며 봐요.</string>
 	<key>Spread your open tasks and reviews over the week's free time. Planned on this Mac, nothing is added until you say so</key>
 	<string>할 일과 복습을 이번 주 여유 시간에 나눠 배치해요. 이 Mac에서 계획하며, 허락 전엔 아무것도 추가하지 않아요</string>
 	<key>Springy, with a little bounce.</key>
@@ -1583,6 +1757,8 @@
 	<string>공부</string>
 	<key>Study %@</key>
 	<string>%@ 학습</string>
+	<key>Study 7 days in a row.</key>
+	<string>7일 연속 공부하세요.</string>
 	<key>Study Hoodie</key>
 	<string>공부 후드티</string>
 	<key>Study parties</key>
@@ -1599,6 +1775,8 @@
 	<string>제출</string>
 	<key>Suggest a Feature or Report a Bug</key>
 	<string>기능 제안 또는 버그 신고</string>
+	<key>Summer</key>
+	<string>여름</string>
 	<key>Sunset Shades</key>
 	<string>노을 선글라스</string>
 	<key>Superhero Cape</key>
@@ -1618,7 +1796,7 @@
 	<key>Sync your pet</key>
 	<string>펫 동기화</string>
 	<key>Sync your pet, points and streaks across your Macs.</key>
-	<string>펫, 포인트, 연속 기록을 모든 Mac에서 동기화해요.</string>
+	<string>펫, 포인트, 연속 기록을 내 Mac들에서 동기화해요.</string>
 	<key>Syncing with AnkiWeb…</key>
 	<string>AnkiWeb과 동기화 중…</string>
 	<key>Syncing…</key>
@@ -1647,6 +1825,12 @@
 	<string>그 키는 단축키에 쓸 수 없어요. 글자, 숫자 또는 Space를 써 보세요.</string>
 	<key>The AI</key>
 	<string>AI</string>
+	<key>The AI that answers Ask, Plan my day and Refine</key>
+	<string>AI에게 묻기, 하루 계획, 다듬기에 답하는 AI</string>
+	<key>The Keychain didn't save the key. Try again.</key>
+	<string>키체인에 키를 저장하지 못했어요. 다시 시도해 주세요.</string>
+	<key>The blossoms are out. Grow something of your own.</key>
+	<string>꽃이 피었어요. 나만의 무언가를 키워 봐요.</string>
 	<key>The focus timer is on this task</key>
 	<string>집중 타이머가 이 할 일에 맞춰져 있어요</string>
 	<key>The installed AnkiConnect is too old for this tab.</key>
@@ -1655,6 +1839,10 @@
 	<string>키트</string>
 	<key>The last change couldn't be written to disk</key>
 	<string>마지막 변경 사항을 디스크에 저장하지 못했어요</string>
+	<key>The model %@ uses. Leave empty for the default.</key>
+	<string>%@이(가) 쓰는 모델. 비워 두면 기본값을 써요.</string>
+	<key>The month you were born</key>
+	<string>태어난 달</string>
 	<key>The next seven days at a glance</key>
 	<string>앞으로 7일을 한눈에</string>
 	<key>The party code. Click to copy it, then send it to friends.</key>
@@ -1663,6 +1851,10 @@
 	<string>남은 하루는 온전히 당신 거예요.</string>
 	<key>The session runs for the whole party until it ends or you end it</key>
 	<string>세션은 끝나거나 직접 끝낼 때까지 파티 전체에서 계속돼요</string>
+	<key>The tool's own default</key>
+	<string>도구 기본값</string>
+	<key>The year you were born</key>
+	<string>태어난 연도</string>
 	<key>Thermal state: %@</key>
 	<string>발열 상태: %@</string>
 	<key>Thinking</key>
@@ -1769,8 +1961,14 @@
 	<string>주간 한도 사용량</string>
 	<key>Used to greet you.</key>
 	<string>인사할 때 쓰여요.</string>
+	<key>Uses your ChatGPT plan through the codex command.</key>
+	<string>codex 명령으로 ChatGPT 요금제를 사용해요.</string>
+	<key>Uses your Claude subscription through the claude command.</key>
+	<string>claude 명령으로 Claude 구독을 사용해요.</string>
 	<key>Using a copy outside Applications? Just open it.</key>
 	<string>다른 위치에 있나요? 그냥 열어 주세요.</string>
+	<key>Valentine's Week</key>
+	<string>밸런타인 주간</string>
 	<key>Validate</key>
 	<string>확인</string>
 	<key>Version %@</key>
@@ -1817,12 +2015,22 @@
 	<string>뭐라고 부를까요?</string>
 	<key>When off, the notch hides while the lid is closed.</key>
 	<string>끄면 덮개를 닫았을 때 노치가 숨겨져요.</string>
+	<key>When were you born?</key>
+	<string>언제 태어났나요?</string>
 	<key>White Coat</key>
 	<string>흰 가운</string>
+	<key>Winter Holidays</key>
+	<string>겨울 연휴</string>
 	<key>Witch Hat</key>
 	<string>마녀 모자</string>
+	<key>With %@, %@ sends these to %@ through the %@ command you signed in to when you use an AI feature:</key>
+	<string>%1$@을(를) 사용하면 AI 기능을 쓸 때 %2$@이(가) 로그인한 %4$@ 명령을 통해 다음 내용을 %3$@에 보냅니다:</string>
+	<key>With %@, %@ sends these to %@ with your API key when you use an AI feature:</key>
+	<string>%1$@을(를) 사용하면 AI 기능을 쓸 때 %2$@이(가) 내 API 키로 다음 내용을 %3$@에 보냅니다:</string>
 	<key>With Claude Code as your AI, Ask AI and AI Usage run your own signed-in claude CLI; %@ never reads your credentials. Set this only if claude isn't found automatically.</key>
 	<string>Claude Code를 AI로 쓰면 AI에게 묻기와 AI 사용량이 로그인된 내 claude CLI를 실행해요. %@는 자격 증명을 절대 읽지 않아요. claude를 자동으로 찾지 못할 때만 설정하세요.</string>
+	<key>With Ollama open, run ollama pull %@ in Terminal once.</key>
+	<string>Ollama를 연 상태로 터미널에서 ollama pull %@를 한 번 실행하세요.</string>
 	<key>Wizard Hat</key>
 	<string>마법사 모자</string>
 	<key>Wizard Robe</key>
@@ -1837,6 +2045,8 @@
 	<string>정중한 리마인더 써 줘</string>
 	<key>Write to %@</key>
 	<string>%@(으)로 이메일 보내기</string>
+	<key>Year</key>
+	<string>연도</string>
 	<key>Yesterday</key>
 	<string>어제</string>
 	<key>Yesterday's calendar</key>
@@ -1853,6 +2063,8 @@
 	<string>%@ 탭에서 언제든 설정할 수 있어요.</string>
 	<key>You started it for the party</key>
 	<string>내가 파티를 위해 시작했어요</string>
+	<key>Your %@ key. It is kept in your Keychain.</key>
+	<string>%@ 키. 키체인에 보관돼요.</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Mac이 충전 중이고, %@도 한 모금 마시는 중</string>
 	<key>Your Mac's CPU, GPU and memory use at a glance.</key>
@@ -1871,6 +2083,8 @@
 	<string>내 친구 코드입니다. 복사해서 친구에게 보내세요.</string>
 	<key>Your friend code: %@</key>
 	<string>내 친구 코드: %@</string>
+	<key>Your key stays in your Keychain.</key>
+	<string>키는 키체인에 보관돼요.</string>
 	<key>Your most studied day: %@</key>
 	<string>가장 많이 공부한 날: %@</string>
 	<key>Your name</key>
@@ -1923,12 +2137,16 @@
 	<string>해제 가능</string>
 	<key>shared focus</key>
 	<string>함께 집중 중</string>
+	<key>starts %@</key>
+	<string>%@ 시작</string>
 	<key>switch.on</key>
 	<string>켬</string>
 	<key>the host</key>
 	<string>호스트</string>
 	<key>tokens</key>
 	<string>토큰</string>
+	<key>until %@</key>
+	<string>%@까지</string>
 	<key>your kit</key>
 	<string>키트</string>
 	<key>your playlist</key>

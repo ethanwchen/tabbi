@@ -227,6 +227,38 @@
 			<string>+%lld Pkt.</string>
 		</dict>
 	</dict>
+	<key>Focus for %lld hours during %@.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Konzentrier dich %lld Stunde während %@.</string>
+			<key>other</key>
+			<string>Konzentrier dich %lld Stunden während %@.</string>
+		</dict>
+	</dict>
+	<key>Focus for %lld minutes during %@.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Konzentrier dich %lld Minute während %@.</string>
+			<key>other</key>
+			<string>Konzentrier dich %lld Minuten während %@.</string>
+		</dict>
+	</dict>
 	<key>Review today to keep your %lld-day streak</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

@@ -726,8 +726,7 @@ private struct ClosetLimited: View {
         HStack(spacing: Theme.Spacing.xs) {
             if let hovered, let edition = hovered.limitedEdition {
                 Text(hovered.displayName).foregroundStyle(Theme.Palette.secondaryText)
-                Text(store.closet.state(of: hovered).isOwned ? "Earned. Click to \(hint(for: hovered))."
-                     : edition.howToEarn)
+                Text(store.closet.state(of: hovered).isOwned ? hint(for: hovered) : edition.howToEarn)
                     .foregroundStyle(Theme.Palette.tertiaryText)
             } else {
                 Text("Earned by studying, never sold", bundle: .tabbi).foregroundStyle(Theme.Palette.secondaryText)
@@ -747,7 +746,9 @@ private struct ClosetLimited: View {
     }
 
     private func hint(for item: PetItem) -> String {
-        store.closet.state(of: item) == .wearing ? "take off" : "wear"
+        store.closet.state(of: item) == .wearing
+            ? String(localized: "Earned. Click to take off.", bundle: .tabbi)
+            : String(localized: "Earned. Click to wear.", bundle: .tabbi)
     }
 }
 
@@ -764,16 +765,16 @@ private struct ClosetEventBanner: View {
                 .foregroundStyle(accent)
             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                 HStack(spacing: Theme.Spacing.xs) {
-                    Text(run.occurrence.event.name)
+                    Text(run.occurrence.event.displayName)
                         .font(.system(size: 10, weight: .semibold, design: .rounded))
                         .foregroundStyle(Theme.Palette.primaryText)
-                    Text("until \(lastDay)")
+                    Text("until \(lastDay)", bundle: .tabbi)
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.tertiaryText)
                     Spacer(minLength: Theme.Spacing.s)
                     goal
                 }
-                Text(run.occurrence.event.tagline)
+                Text(run.occurrence.event.displayTagline)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .truncationMode(.tail)
@@ -813,7 +814,7 @@ private struct ClosetEventBanner: View {
                     .frame(width: 32, height: 3)
             }
         } else {
-            Label("All earned", systemImage: "checkmark")
+            Label(String(localized: "All earned", bundle: .tabbi), systemImage: "checkmark")
                 .font(.system(size: 10, weight: .semibold, design: .rounded))
                 .labelStyle(ClosetTightLabelStyle())
                 .foregroundStyle(accent)
@@ -822,10 +823,9 @@ private struct ClosetEventBanner: View {
 
     private var help: String {
         guard let reward = run.nextReward else {
-            return "\(run.occurrence.event.name): you earned every item. They stay yours after the event."
+            return String(localized: "\(run.occurrence.event.displayName): you earned every item. They stay yours after the event.", bundle: .tabbi)
         }
-        return "\(run.occurrence.event.name) runs until \(lastDay). Next item, \(reward.item.displayName): "
-            + "\(run.progress(of: reward).label) focused."
+        return String(localized: "\(run.occurrence.event.displayName) runs until \(lastDay). Next item, \(reward.item.displayName): \(run.progress(of: reward).label) focused.", bundle: .tabbi)
     }
 
     /// The run's end is the midnight after its last day.
@@ -843,13 +843,14 @@ private struct ClosetLimitedShelfTitle: View {
         HStack(spacing: Theme.Spacing.xs) {
             switch kind {
             case .event(let run, let isActive):
-                Text(run.event.name).foregroundStyle(isActive ? accent : Theme.Palette.secondaryText)
-                Text(isActive ? "until \(day(lastDay(of: run)))" : "starts \(day(run.start))")
+                Text(run.event.displayName).foregroundStyle(isActive ? accent : Theme.Palette.secondaryText)
+                Text(isActive ? String(localized: "until \(day(lastDay(of: run)))", bundle: .tabbi)
+                     : String(localized: "starts \(day(run.start))", bundle: .tabbi))
                     .foregroundStyle(Theme.Palette.tertiaryText)
             case .milestones:
-                Text("Milestones").foregroundStyle(Theme.Palette.secondaryText)
+                Text("Milestones", bundle: .tabbi).foregroundStyle(Theme.Palette.secondaryText)
             case .laterEvents:
-                Text("More events").foregroundStyle(Theme.Palette.secondaryText)
+                Text("More events", bundle: .tabbi).foregroundStyle(Theme.Palette.secondaryText)
             }
         }
         .font(.system(size: 10, weight: .semibold, design: .rounded))
@@ -861,9 +862,9 @@ private struct ClosetLimitedShelfTitle: View {
 
     private var help: String {
         switch kind {
-        case .event(let run, _): run.event.tagline
-        case .milestones: "Earned by reaching study milestones"
-        case .laterEvents: "Items from the year's other events, earned by focusing while each one runs"
+        case .event(let run, _): run.event.displayTagline
+        case .milestones: String(localized: "Earned by reaching study milestones", bundle: .tabbi)
+        case .laterEvents: String(localized: "Items from the year's other events, earned by focusing while each one runs", bundle: .tabbi)
         }
     }
 
@@ -988,14 +989,13 @@ private struct ClosetLimitedTile: View {
     private var help: String {
         let howToEarn = item.limitedEdition?.howToEarn ?? ""
         return switch state {
-        case .wearing: "\(item.displayName), limited edition: click to take off"
-        case .owned: "\(item.displayName), limited edition: click to wear"
+        case .wearing: String(localized: "\(item.displayName), limited edition: click to take off", bundle: .tabbi)
+        case .owned: String(localized: "\(item.displayName), limited edition: click to wear", bundle: .tabbi)
         default:
             if progress == nil, case .returns(let day) = waiting {
-                "\(item.displayName), limited edition: \(howToEarn) Its event starts "
-                    + day.formatted(.dateTime.month(.wide).day()) + "."
+                String(localized: "\(item.displayName), limited edition: \(howToEarn) Its event starts \(day.formatted(.dateTime.month(.wide).day())).", bundle: .tabbi)
             } else {
-                "\(item.displayName), limited edition: \(howToEarn)"
+                String(localized: "\(item.displayName), limited edition: \(howToEarn)", bundle: .tabbi)
             }
         }
     }

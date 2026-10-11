@@ -30,6 +30,8 @@ The catalog key is then `%lld cards due`, with `%lld` for integers, `%@` for str
 Plurals are variations in the catalog (`one`, `other`, and whatever forms a language needs), never `count == 1 ? ... : ...` in code.
 Format dates, times, numbers and durations with Foundation formatters (`.formatted()`, `Duration.formatted`, `Date.FormatStyle`), which follow the user's locale, never by gluing a number to a unit.
 Lengths of time go through `DurationFormat` ("45 min", "1h 15m", "in 12 min"), whose units are catalog strings, and spans of days through `DateRangeFormat` ("Oct 5 - 11", "5.-11. Okt.", "10月5日～11日").
+When a paragraph is built from several translated sentences, join them with `Sentences.join`, which adds no space after a Japanese or Chinese full stop ("。").
+Seasonal event names and taglines stay in English in `events.json`, which the Windows port reads too; `SeasonalEvent.displayName` and `displayTagline` look the translation up in the catalog by that English text, and `LocalizationTests` fails when an event lacks one.
 
 Add each new string to the catalog with a `comment` that says where it shows and anything a translator could misread (is "Look" a verb or a noun?).
 Mark it `"extractionState" : "manual"`, because SwiftPM does not extract keys from code the way Xcode does.
@@ -53,7 +55,8 @@ The writing rules in AGENTS.md hold in every language: no emojis and no em dashe
 ## Not translated yet
 
 The onboarding, the tab titles and module summaries, the notch's context menu and header controls, and Settings (General, Tabs, Look, Connections, About and the Account row) are translated.
-So are the notifications (focus timer, weekly recap, study reminder, Party), the recap's cheer lines, the Party celebration, and the Closet: its sections and labels, every outfit, accessory, theme, species and fur color name.
+So are the notifications (focus timer, weekly recap, study reminder, Party), the recap's cheer lines, the Party celebration, and the Closet: its sections and labels, every outfit, accessory, theme, species and fur color name, and the seasonal events and limited items.
+The AI consent alert, the AI provider row in Settings > Connections and the age check before Party and Sign in with Apple are translated too; their legal meaning must stay exact.
 The main controls of every tab's panel (Today, Focus, Now Playing, System, AI Usage, Ask AI, Study, Anki, Party and Schedule) are translated too, with the calendar card, the focus and study timer labels and the Ask AI setup screen.
 The modules' own Settings panes (the Options button in Settings > Tabs) and the module setup views follow pane by pane.
 Breed names stay English, because a pet that still goes by its breed is recognized by comparing its saved name to the breed's name.
@@ -61,7 +64,6 @@ These stay English on purpose for now:
 
 - long help text and error details,
 - the bundled kits' names, summaries and questions,
-- the AI provider setup hints in Settings > Connections,
 - the connection status headlines and details and the setup sheets in Settings > Connections,
 - the study method names and taglines and the theme names, which come from bundled JSON files that the Windows port reads too and need a localized field there first,
 - the calendar card sentences that name the kit's word for events (a kit field, so it waits for localized kit text).
