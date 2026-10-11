@@ -8,30 +8,22 @@ import TabbiKitCore
 @MainActor
 final class PartySnapshotTraceTests: XCTestCase {
     private let key = "party.presence"
-
-    override func setUp() {
-        super.setUp()
-        UserDefaults.standard.removeObject(forKey: key)
-    }
-
-    override func tearDown() {
-        UserDefaults.standard.removeObject(forKey: key)
-        super.tearDown()
-    }
+    /// Each test keeps its own presence, so parallel runs never share it.
+    private let defaults = InMemoryDefaults()
 
     func testASnapshotRunSavesNoPresence() {
-        let store = PartyStore(runMode: RunMode(isSnapshot: true), environment: [:])
+        let store = PartyStore(runMode: RunMode(isSnapshot: true), environment: [:], defaults: defaults)
         let focus = ProvidedFocus(source: ModuleID("focus"), phase: .focus,
                                   clock: .countdown(endsAt: Date().addingTimeInterval(1500)), phaseLength: 1500)
         store.followFocus(from: Just(focus).eraseToAnyPublisher())
-        XCTAssertNil(UserDefaults.standard.data(forKey: key))
+        XCTAssertNil(defaults.data(forKey: key))
     }
 
     func testALiveRunKeepsItsPresence() {
-        let store = PartyStore(runMode: .live, environment: [:])
+        let store = PartyStore(runMode: .live, environment: [:], defaults: defaults)
         let focus = ProvidedFocus(source: ModuleID("focus"), phase: .focus,
                                   clock: .countdown(endsAt: Date().addingTimeInterval(1500)), phaseLength: 1500)
         store.followFocus(from: Just(focus).eraseToAnyPublisher())
-        XCTAssertNotNil(UserDefaults.standard.data(forKey: key))
+        XCTAssertNotNil(defaults.data(forKey: key))
     }
 }

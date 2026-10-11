@@ -6,15 +6,15 @@ The QA history behind these numbers is in `docs/qa-log.md`.
 
 ## Ship gate
 
-Checked on `gnhf/qa-final` at 71343a06 (main at bfd327ad, the last feature merge, plus the QA fixes).
+Checked on `gnhf/qa-final` after 4fb344ab (main at bfd327ad, the last feature merge, plus the QA fixes); the test runs include the `PartyStore` defaults fix.
 `origin/main` had no newer commits when this section was written.
 
 ### Tests and checks
 
 | Check | Result |
 | --- | --- |
-| `swift build` | no warnings (checked in the previous pass on the same code) |
-| `swift test`, three full runs in a row | pending: the three runs did not finish in this pass and are to be repeated on the final commit |
+| `swift build` | no warnings |
+| `swift test --parallel` (as CI runs it), three full runs in a row | all three pass: 3009 XCTest tests (TabbiKitCoreTests and TabbiTests) and 52 Swift Testing tests each, exit code 0, no `with N failure` line, 8-9 minutes per run. A first set of three found one flaky test (`PartySnapshotTraceTests` sharing `UserDefaults.standard` between parallel processes), now fixed (see `docs/qa-log.md`), and these runs were on the fix. The two skips are `PartyLiveServerTests`, which need `PARTY_TEST_SERVER` set |
 | `scripts/check-style.sh` | passes |
 | `backend`: `npm test` and `npm run typecheck` | 395 tests in 23 files pass, typecheck clean |
 | `python3 site/build.py` and `node --test 'site/test/*.test.mjs'` | builds all 12 pages, 14 tests pass |
