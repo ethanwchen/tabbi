@@ -339,7 +339,8 @@ enum SnapshotRenderer {
         }
 
         // Every costume on every body shape, and every pet animation frame by frame.
-        for (name, gallery) in [("pets-costumes", PetGallery.costumes()), ("pets-animations", PetGallery.animations())] {
+        for (name, gallery) in [("pets-costumes", PetGallery.costumes()), ("pets-animations", PetGallery.animations()),
+                                 ("pets-bond", PetGallery.bondLooks())] {
             guard let png = gallery.png(scale: 2) else { continue }
             let url = outputDirectory.appendingPathComponent("\(name).png")
             try? png.write(to: url)

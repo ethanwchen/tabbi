@@ -179,6 +179,16 @@ The Tiny Rain Cloud is one particle, a white cloud with two puffs and a grey und
 Its drops fall a row a tick over an 8-tick loop, and each drop goes away as it reaches the pet, so the rain seems to land on it.
 The dachshund sits side-on with its head where other pets leave air, so an aura item may give it a loop of its own (`longDog`); the cloud uses one to hang over its back.
 
+### Bond growth
+
+The pet grows with the bond (`PetBond`, from the activity log) instead of being redrawn per breed.
+`PetBondLook` says what a bond level shows: a collar from level 2 that upgrades to a bell at 4, a star tag at 6 and gold studs with a gold tag at 8, a happier idle from level 3, and a soft sparkle from level 9.
+The collars are body items in `costume.json` (`bondCollarPlain`, `bondCollarBell`, `bondCollarStar`, `bondCollarGold`) on the shared neck anchors: a crimson band under the chin with an outlined gold tag, which read on every fur color.
+They go over the outfit, and a neck item (a scarf, a bow tie) is worn in their place.
+The sparkle is an aura item (`bondSparkle`): two soft white glints that twinkle in free air and never touch the pet.
+`PetProfile.bondLook` carries the look to every view that draws the pet, but it is never saved or synced: the Closet derives it from the bond.
+`--snapshot` writes `pets-bond.png`, every breed at each bond look, in an outfit, walking, stretching and curled up.
+
 ### Adding a costume item
 
 1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`), and give it a price in `PetItem.cost`, a Closet shelf in `PetItem.theme` (Study, Cozy, Fantasy, Seasonal or Silly) and the catalog `release` that adds it.

@@ -290,14 +290,14 @@ extension PetComposer {
     /// rebuilding it every frame.
     public static func clip(
         _ animation: PetAnimation, for breed: PetBreed,
-        outfit: PetOutfit = .none, accessories: [PetAccessory] = []
+        outfit: PetOutfit = .none, accessories: [PetAccessory] = [], bond: PetBondLook = .none
     ) -> PetClip {
         let timeline = animation.timeline
-        let loop = itemLoopLength(outfit: outfit, accessories: accessories)
+        let loop = itemLoopLength(outfit: outfit, accessories: accessories, bond: bond)
         // One composed frame per tick of the item loop, so animated costume
         // items stay anchored to every pose.
         let phases = timeline.frames.map { step in
-            (0..<loop).map { compose(breed, pose: step.pose, outfit: outfit, accessories: accessories,
+            (0..<loop).map { compose(breed, pose: step.pose, outfit: outfit, accessories: accessories, bond: bond,
                                      stance: step.stance, phase: $0) }
         }
         // Effects placed by the head follow the clip's first frame, so a

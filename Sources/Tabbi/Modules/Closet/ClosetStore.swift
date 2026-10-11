@@ -42,7 +42,9 @@ final class ClosetStore: ObservableObject {
 
     /// Progress toward the limited edition milestones, from the whole
     /// activity log (`follow(activity:history:)`).
-    @Published private(set) var milestones: PetMilestoneProgress
+    @Published private(set) var milestones: PetMilestoneProgress {
+        didSet { bondMayHaveGrown() }
+    }
 
     /// Focus logged during each seasonal event run, which earns that
     /// event's limited items (`follow(activity:history:)`).
@@ -105,12 +107,15 @@ final class ClosetStore: ObservableObject {
         self.celebrations = celebrations
         saveIsUnreadable = unreadable
         hasSave = saved
-        milestones = isDemo ? .demo(today: .now) : PetMilestoneProgress()
+        let progress = isDemo ? PetMilestoneProgress.demo(today: .now) : PetMilestoneProgress()
+        milestones = progress
         let demoSeason = isDemo ? SeasonalEventDemo(today: .now) : nil
         pinnedSeasonMoment = demoSeason?.moment
         if let demoSeason { seasons = demoSeason.tally }
-        preview = PetPlayer(profile: closet.profile)
-        presence = PetPresence(profile: closet.profile, lastActive: .now, nextUnlock: UnlockProgress(closet: closet))
+        var grown = closet.profile
+        grown.bondLook = PetBond(progress: progress).look
+        preview = PetPlayer(profile: grown)
+        presence = PetPresence(profile: grown, lastActive: .now, nextUnlock: UnlockProgress(closet: closet))
     }
 
     /// Follows the shared focus timer, so the notch pet stays awake through
@@ -223,7 +228,23 @@ final class ClosetStore: ObservableObject {
         storage.file("pet.json", in: "Pet")
     }
 
-    var profile: PetProfile { closet.profile }
+    /// The pet as shown everywhere: the saved look plus what it has grown
+    /// into with the bond (`PetBondLook`), which is never saved.
+    var profile: PetProfile { grown(closet.profile) }
+
+    private func grown(_ profile: PetProfile) -> PetProfile {
+        var copy = profile
+        copy.bondLook = bond.look
+        return copy
+    }
+
+    /// Puts on a collar or sparkle the bond just unlocked, on the Closet
+    /// preview and the closed notch's pet.
+    private func bondMayHaveGrown() {
+        guard presence.profile.bondLook != bond.look else { return }
+        presence.profile = profile
+        refreshPreview()
+    }
 
     /// How close the pet and the user have grown (`PetBond`), from the same
     /// focused minutes and study days as the milestones, so it follows new
@@ -232,7 +253,13 @@ final class ClosetStore: ObservableObject {
 
     /// The pet's look now and on every change, for modules that show it.
     var profiles: AnyPublisher<PetProfile, Never> {
-        $closet.map(\.profile).removeDuplicates().eraseToAnyPublisher()
+        $closet.combineLatest($milestones)
+            .map { closet, milestones in
+                var profile = closet.profile
+                profile.bondLook = PetBond(progress: milestones).look
+                return profile
+            }
+            .removeDuplicates().eraseToAnyPublisher()
     }
 
     // MARK: Streak
@@ -292,14 +319,14 @@ final class ClosetStore: ObservableObject {
         let before = closet.profile
         let result = change(&closet)
         if closet.profile != before { lookChangedAt = .now }
-        if presence.profile != closet.profile { presence.profile = closet.profile }
+        if presence.profile != profile { presence.profile = profile }
         refreshPreview()
         persist()
         return result
     }
 
     private func refreshPreview() {
-        let shown = tryingOn.map { PetCloset.wearing($0, on: closet.profile) } ?? closet.profile
+        let shown = tryingOn.map { PetCloset.wearing($0, on: profile) } ?? profile
         preview.update(profile: shown)
     }
 
@@ -315,7 +342,7 @@ final class ClosetStore: ObservableObject {
         save.creditedFocusCount = closet.save.creditedFocusCount
         save.creditedFocusSource = closet.save.creditedFocusSource
         closet = PetCloset(save: save)
-        presence.profile = starter
+        presence.profile = profile
         refreshPreview()
     }
 
@@ -329,7 +356,7 @@ final class ClosetStore: ObservableObject {
     func adoptSynced(_ save: PetSave) {
         guard save != closet.save else { return }
         closet = PetCloset(save: save)
-        if presence.profile != closet.profile { presence.profile = closet.profile }
+        if presence.profile != profile { presence.profile = profile }
         refreshPreview()
         persist()
     }

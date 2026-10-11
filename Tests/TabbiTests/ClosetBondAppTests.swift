@@ -47,3 +47,38 @@ final class ClosetBondAppTests: XCTestCase {
         XCTAssertLessThan(store.bond.level, PetBond.maxLevel, "and a ring still filling")
     }
 }
+
+/// The pet everyone sees wears what its bond has grown into.
+@MainActor
+final class ClosetBondLookAppTests: XCTestCase {
+    private let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+
+    override func tearDown() async throws {
+        try? FileManager.default.removeItem(at: root)
+    }
+
+    func testTheShownPetGrowsItsCollarWithTheBond() {
+        let store = ClosetStore(storage: EditionStorage(root: root), runMode: .live)
+        var shown: [PetBondLook] = []
+        let subscription = store.profiles.sink { shown.append($0.bondLook) }
+        XCTAssertEqual(store.profile.bondLook.collar, .none)
+
+        let log = ActivityLog(repository: nil)
+        store.follow(activity: log.recorded)
+        log.record(ActivityRecord(source: "focus", kind: .focusCompleted, start: .now.addingTimeInterval(-7200),
+                                  end: .now, quantity: 120, unit: .minutes))
+        XCTAssertEqual(store.bond.level, 2)
+        XCTAssertEqual(store.profile.bondLook.collar, .plain)
+        XCTAssertEqual(store.presence.profile.bondLook.collar, .plain, "the closed notch's pet")
+        XCTAssertEqual(store.preview.profile.bondLook.collar, .plain, "the Closet's preview")
+        XCTAssertEqual(shown.last?.collar, .plain, "Study and Party")
+        XCTAssertEqual(store.closet.save.profile.bondLook, .none, "the save keeps only what the user chose")
+        subscription.cancel()
+    }
+
+    func testDemoPetWearsAGoldTag() {
+        let store = ClosetStore(storage: EditionStorage(root: root), runMode: .demo)
+        XCTAssertEqual(store.profile.bondLook, store.bond.look)
+        XCTAssertEqual(store.preview.profile.bondLook.collar, .gold)
+    }
+}

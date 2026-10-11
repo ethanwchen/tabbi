@@ -5,16 +5,20 @@ import Foundation
 public struct PetClipSet: Hashable, Sendable {
     public let clips: [PetAnimation: PetClip]
 
-    public init(breed: PetBreed, outfit: PetOutfit = .none, accessories: [PetAccessory] = []) {
+    public init(
+        breed: PetBreed, outfit: PetOutfit = .none, accessories: [PetAccessory] = [], bond: PetBondLook = .none
+    ) {
         var clips: [PetAnimation: PetClip] = [:]
         for animation in PetAnimation.allCases {
-            clips[animation] = PetComposer.clip(animation, for: breed, outfit: outfit, accessories: accessories)
+            clips[animation] = PetComposer.clip(animation, for: breed, outfit: outfit, accessories: accessories,
+                                                bond: bond)
         }
         self.clips = clips
     }
 
     public init(profile: PetProfile) {
-        self.init(breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories)
+        self.init(breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories,
+                  bond: profile.bondLook)
     }
 
     public subscript(animation: PetAnimation) -> PetClip {

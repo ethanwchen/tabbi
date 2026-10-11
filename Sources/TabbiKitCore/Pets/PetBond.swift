@@ -123,6 +123,9 @@ public struct PetBondLook: Hashable, Sendable {
     public let happyIdle: Bool
     public let sparkle: Bool
 
+    /// A pet that has just met its owner: nothing grown in yet.
+    public static let none = PetBondLook(level: 1)
+
     public init(level: Int) {
         collar = PetCollar.allCases.last { level >= $0.unlockLevel } ?? .none
         happyIdle = level >= Self.happyIdleLevel

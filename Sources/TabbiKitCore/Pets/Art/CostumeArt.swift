@@ -354,3 +354,31 @@ extension CostumeArt {
     /// goes away before it would land on the pet.
     static let rainCloud = PetArt.costume.auraItem("rainCloud")
 }
+
+// MARK: - Bond growth
+
+extension CostumeArt {
+    /// The collar a pet grows into with its bond (`PetCollar`): a crimson
+    /// band under the chin, then a gold bell, a star tag, and finally gold
+    /// studs with a gold tag. Crimson and gold read on every fur color, and
+    /// the art only uses the shared neck anchors, so it fits all breeds.
+    static func bondCollar(_ collar: PetCollar) -> BodyItem? {
+        switch collar {
+        case .none: nil
+        case .plain: bondCollarPlain
+        case .bell: bondCollarBell
+        case .star: bondCollarStar
+        case .gold: bondCollarGold
+        }
+    }
+
+    private static let bondCollarPlain = PetArt.costume.bodyItem("bondCollarPlain")
+    private static let bondCollarBell = PetArt.costume.bodyItem("bondCollarBell")
+    private static let bondCollarStar = PetArt.costume.bodyItem("bondCollarStar")
+    private static let bondCollarGold = PetArt.costume.bodyItem("bondCollarGold")
+
+    /// A few soft white glints that twinkle in the air around a pet with a
+    /// very deep bond (`PetBondLook.sparkle`): quieter than the shop's gold
+    /// sparkle trail, two at a time.
+    static let bondSparkle = PetArt.costume.auraItem("bondSparkle")
+}
