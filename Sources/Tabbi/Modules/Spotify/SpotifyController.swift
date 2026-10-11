@@ -7,6 +7,9 @@ import TabbiKitCore
 /// Both apps are found through `NSRunningApplication` and are never launched
 /// implicitly: AppleScript (which would launch them) only runs after a
 /// running check. `MediaSourceTracker` decides which app the panel follows.
+/// Nothing is read before `start()` (the module's switch, once the user has
+/// picked their tabs), since the first read is what asks macOS for
+/// Automation access to a player.
 /// Updates come from each app's distributed notification; while the panel is
 /// visible the position ticks locally every second and is re-synced with a
 /// 5 s read. With `TABBI_DEMO=1` it shows `SpotifyPlayback.demo` and
@@ -59,6 +62,8 @@ final class SpotifyController: NSObject, ObservableObject {
     /// Per app, so a read of one app never re-anchors the other's position.
     private var clocks: [NowPlayingSource: SpotifyPlaybackClock] = [:]
     private var isPanelVisible = false
+    /// Between `start()` and `stop()`: only then are players read and followed.
+    private(set) var isStarted = false
     private var tickTimer: Timer?
     private var pollTimer: Timer?
     /// The interval `pollTimer` runs at, so it is rebuilt when that changes.
@@ -92,8 +97,37 @@ final class SpotifyController: NSObject, ObservableObject {
             record(.music, .connected(.demo))
             return
         }
+        releasePlayers()
+    }
+
+    /// Reads the running players and follows them from now on.
+    func start() {
+        guard !isDemo, !isStarted else { return }
+        isStarted = true
         if host.observesSystem { observeSystem() }
         refresh()
+    }
+
+    /// Stops reading and following the players and lets go of them, so the
+    /// closed notch's music wings go away with the tab.
+    func stop() {
+        guard isStarted else { return }
+        isStarted = false
+        if host.observesSystem {
+            NSWorkspace.shared.notificationCenter.removeObserver(self)
+            DistributedNotificationCenter.default().removeObserver(self)
+        }
+        releasePlayers()
+    }
+
+    /// Shows every followed player as not running (or not installed) without
+    /// reading it, superseding any read still in flight. The empty state
+    /// still offers to open the installed players.
+    private func releasePlayers() {
+        for source in sources {
+            bumpGeneration(source)
+            record(source, host.isInstalled(source) ? .notRunning : .notInstalled)
+        }
     }
 
     /// Follows app launches and quits and the players' own notifications.
@@ -262,7 +296,7 @@ final class SpotifyController: NSObject, ObservableObject {
 
     /// Reads every running player's state now.
     func refresh() {
-        guard !isDemo else { return }
+        guard isStarted else { return }
         for source in sources { refresh(source) }
     }
 
@@ -271,7 +305,7 @@ final class SpotifyController: NSObject, ObservableObject {
     /// user's click). A player no longer followed reads as not running,
     /// so the panel lets go of it at once.
     private func followedSourcesChanged() {
-        guard !isDemo else { return }
+        guard isStarted else { return }
         let followed = sources
         for source in NowPlayingSource.all where !followed.contains(source) && tracker.statuses[source] != nil {
             bumpGeneration(source)
@@ -428,7 +462,7 @@ final class SpotifyController: NSObject, ObservableObject {
     /// while the panel shows, otherwise only SoundCloud (when followed and
     /// its browser runs), whose tab posts no notifications.
     private var pollInterval: TimeInterval? {
-        guard !isDemo else { return nil }
+        guard isStarted else { return nil }
         let running = sources.filter(host.isRunning)
         if isPanelVisible, !running.isEmpty { return Self.pollInterval }
         if running.contains(where: { $0.app == nil }) { return Self.browserPollInterval }
@@ -464,6 +498,7 @@ final class SpotifyController: NSObject, ObservableObject {
     /// An app launched or quit: re-reads the players it hosts, or lets go
     /// of them at once when it quit.
     func applicationChanged(bundleIdentifier: String?, terminated: Bool) {
+        guard isStarted else { return }
         // A browser hosts one SoundCloud source, but match every source
         // so the rule doesn't depend on that.
         for source in sources where source.bundleIdentifier == bundleIdentifier {
@@ -477,6 +512,7 @@ final class SpotifyController: NSObject, ObservableObject {
     }
 
     @objc func playbackStateChanged(_ notification: Notification) {
+        guard isStarted else { return }
         guard let source = Self.notifications.first(where: { $0.value == notification.name })?.key else { return }
         refresh(source)
     }
