@@ -39,7 +39,6 @@ final class FocusAmbienceTests: XCTestCase {
             var a = FocusSoundGenerator(sound: sound, sampleRate: Analysis.sampleRate, seed: 9)
             var b = FocusSoundGenerator(sound: sound, sampleRate: Analysis.sampleRate, seed: 9)
             var c = FocusSoundGenerator(sound: sound, sampleRate: Analysis.sampleRate, seed: 10)
-            // Long enough for the cafe's talkers to start speaking.
             let first = (0..<96_000).map { _ in a.next() }
             XCTAssertEqual(first, (0..<96_000).map { _ in b.next() }, "\(sound)")
             XCTAssertNotEqual(first, (0..<96_000).map { _ in c.next() }, "\(sound)")
@@ -78,32 +77,72 @@ final class FocusAmbienceTests: XCTestCase {
             3 * Analysis.levelVariation(samples(.pink), windowSeconds: 1))
     }
 
-    func testCafeMurmurSitsInTheVoiceBandAndEbbs() {
-        let cafe = samples(.cafe)
-        // Distant voices: energy around vowel formants, much less above them,
-        // but a consonant hiss keeps it from sounding muffled or underwater.
-        let tilt = tilt(cafe, from: 500, to: 4000)
-        XCTAssertGreaterThan(tilt, 20)
-        XCTAssertLessThan(tilt, 45)
-        // Talkers start and stop, so the level ebbs and flows.
-        XCTAssertGreaterThan(
-            Analysis.levelVariation(cafe, windowSeconds: 1),
-            3 * Analysis.levelVariation(samples(.pink), windowSeconds: 1))
+    // MARK: - Cafe (a recording)
+
+    private func cafeRecording() throws -> FocusRecording {
+        try XCTUnwrap(FocusRecording.named(.cafe), "cafe.m4a ships in the resource bundle and decodes")
     }
 
-    /// The old cafe sounded demonic: a few buzzy low voices whose pitch
-    /// growled under the murmur. Voices now sit above their fundamental, so
-    /// the band of a low male pitch stays below the vowel band.
-    func testCafeVoicesCarryNoLowGrowl() {
-        let cafe = samples(.cafe)
-        XCTAssertGreaterThan(tilt(cafe, from: 500, to: 120), 2)
+    func testCafeRecordingShipsAsAOneToThreeMinuteLoop() throws {
+        let recording = try cafeRecording()
+        XCTAssertEqual(recording.sampleRate, 48_000, "the mixer's rate, so it plays without resampling")
+        XCTAssertGreaterThanOrEqual(recording.duration, 60)
+        XCTAssertLessThanOrEqual(recording.duration, 180)
+        XCTAssertEqual(FocusSound.cafe.recording, .cafe)
+        XCTAssertNil(FocusSound.rain.recording)
     }
 
-    /// A crowd that happens to sit close, or a lull when everyone pauses,
-    /// must not make one cafe noticeably louder than another.
-    func testCafeLevelIsSteadyWhoeverSitsNearby() {
+    /// The loop's end must flow into its start: the step across the seam is
+    /// no bigger than the recording's ordinary sample-to-sample steps, and
+    /// the room is just as loud on both sides of it.
+    func testCafeLoopHasNoSeam() throws {
+        let samples = try cafeRecording().samples.map { Float($0) / Float(Int16.max) }
+        let steps = zip(samples.dropFirst(), samples).map { abs($0 - $1) }.sorted()
+        let seamStep = abs(samples[0] - samples[samples.count - 1])
+        XCTAssertLessThanOrEqual(seamStep, steps[steps.count * 999 / 1000], "no click at the loop point")
+        let side = Int(Analysis.sampleRate * 2)
+        let before = Analysis.rms(Array(samples.suffix(side)))
+        let after = Analysis.rms(Array(samples.prefix(side)))
+        XCTAssertEqual(Analysis.decibels(Double(after * after) / Double(before * before)), 0, accuracy: 3, "no jump in level")
+    }
+
+    /// The old synthesized cafe was a few robotic voices that dropped out
+    /// into near silence (the room fell by 16 dB) and muffled everything
+    /// above 1 kHz, which made it sound ghostly. The recording keeps a steady
+    /// room and no clatter stands out of it.
+    func testCafeIsASteadyRoomWithNoSuddenClatter() throws {
+        let cafe = Array(try cafeRecording().samples.map { Float($0) / Float(Int16.max) })
+        let second = Int(Analysis.sampleRate)
+        let levels = stride(from: 0, to: cafe.count - second, by: second).map {
+            20 * log10(Double(Analysis.rms(Array(cafe[$0 ..< $0 + second]))))
+        }.sorted()
+        let median = levels[levels.count / 2]
+        XCTAssertLessThan(levels.last! - median, 6, "no second is much louder than the room")
+        XCTAssertGreaterThan(levels.first! - median, -8, "the room never falls silent")
+        // Voices, not a muffled rumble: the speech band carries real energy.
+        let x = samples(.cafe, seconds: 30)
+        XCTAssertLessThan(tilt(x, from: 500, to: 2000), 25)
+    }
+
+    func testCafeEveryStartAndRatePlaysAtTheSharedLevel() {
         for seed: UInt64 in [1, 7, 99] {
             XCTAssertEqual(Analysis.rms(samples(.cafe, seed: seed)), NoiseGenerator.targetRMS, accuracy: 0.03, "seed \(seed)")
         }
+        // Another output rate resamples on the fly, at the same level.
+        var generator = FocusSoundGenerator(sound: .cafe, sampleRate: 44_100, seed: 3)
+        var buffer = [Float](repeating: 0, count: 44_100 * 10)
+        generator.fill(&buffer)
+        XCTAssertEqual(Analysis.rms(buffer), NoiseGenerator.targetRMS, accuracy: 0.03)
+    }
+
+    /// The mixer builds every generator up front but must not decode a
+    /// recording nobody picked; it stays silent until prepared.
+    func testARecordedSoundWaitsToBePrepared() {
+        var generator = FocusSoundGenerator(sound: .cafe, sampleRate: 48_000, loadsRecording: false)
+        XCTAssertEqual((0..<1_000).map { _ in generator.next() }.allSatisfy { $0 == 0 }, true)
+        generator.prepareRecording()
+        var buffer = [Float](repeating: 0, count: 48_000)
+        generator.fill(&buffer)
+        XCTAssertGreaterThan(Analysis.rms(buffer), 0.05)
     }
 }

@@ -126,6 +126,9 @@ appex="$app/Contents/PlugIns/TabbiWidget.appex"
 mkdir -p "$appex/Contents/MacOS" "$appex/Contents/Resources"
 cp "$widget_bin" "$appex/Contents/MacOS/TabbiWidget"
 cp -R "$app/Contents/Resources/Tabbi_TabbiKitCore.bundle" "$appex/Contents/Resources/"
+# The widget plays no focus sounds, so it leaves their recordings out.
+rm -rf "$appex/Contents/Resources/Tabbi_TabbiKitCore.bundle/FocusRecordings" \
+    "$appex/Contents/Resources/Tabbi_TabbiKitCore.bundle/Contents/Resources/FocusRecordings"
 if $app_store; then
     # Every bundle in an upload needs its own id.
     plutil -replace CFBundleIdentifier -string "$bundle_id.Widget.Tabbi-TabbiKitCore" \
