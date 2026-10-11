@@ -272,7 +272,7 @@ When the row under the nose carries nose-colored mouth corners (most dogs), a ro
 | idle | Head nods down 1 px and back, 1.1 s + 0.9 s, so the pet breathes slowly |
 | blink | One closed-eye frame, 140 ms, played now and then over idle |
 | sit | The plain sitting frame, held |
-| sleep | Sleepy eyes, a closed mouth, head sinking 1-2 px, a small "z" by the ear and a larger one drifting up |
+| sleep | Sleepy eyes, a closed mouth, head sinking 1-2 px, and one "z" at a time drifting up and right from the head: large, then small, then faded (`effectFaint`), then gone. It stays below the frame's top 5 rows, so it is always whole inside the closed notch; Reduce Motion holds the small bright one |
 | peekIn / peekOut | The pet dangles from the notch by its front paws: the head lowers into view from beyond the top edge, bounces 1 px, and rests with its chin on row 20; peekOut is the same frames reversed |
 | alert | Two hops (2 px, then 1 px) and a hold; every frame has a `bubbleAnchor` at the top-right of the head for the app's speech bubble |
 | celebrate | Happy eyes, a 3 px hop, a heart floating up beside the head, and sparkles |
@@ -288,7 +288,7 @@ When the row under the nose carries nose-colored mouth corners (most dogs), a ro
 | walk | Four 150 ms steps of a trot, side-on (see below) |
 | stretch | A side-on play bow: down in three steps, a held bow with happy eyes and a tail wag, then back up (see below) |
 
-Effects (the "z", heart, and sparkles) use the `effect` and `heart` roles and are painted after outlining and only into transparent pixels, so they float free of the pet and never hide part of a hat.
+Effects (the "z", heart, and sparkles) use the `effect`, `effectFaint` (the fading "z", `effect` at 40% opacity) and `heart` roles and are painted after outlining and only into transparent pixels, so they float free of the pet and never hide part of a hat.
 The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the breed's paw zone.
 
 ![Every animation frame for the orange tabby](images/animations-cat.png)

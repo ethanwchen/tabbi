@@ -204,6 +204,8 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
     case metal
     /// Light effect pixels: sleep "z", sparkles, speech bubble fill.
     case effect
+    /// `effect` at partial opacity: a sleep "z" fading out as it drifts off.
+    case effectFaint
     /// Celebration heart.
     case heart
     /// Leafy green: the frog hat, flower crown leaves.
@@ -242,6 +244,8 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
         case .gold: "Y"
         case .metal: "M"
         case .effect: "Z"
+        // Lowercase like `pupil`: the faded "z". `z` is not a zone.
+        case .effectFaint: "z"
         case .heart: "H"
         case .leaf: "F"
         case .leather: "I"

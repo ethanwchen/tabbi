@@ -239,7 +239,7 @@ private struct NotchPartyPets: View {
         .frame(height: side)
         // Paws sit at the bottom of the sprite frame, above headroom for
         // hops, so lift the row to center the pets optically.
-        .offset(y: -Theme.Spacing.xxs)
+        .offset(y: -NotchPreviewLayout.partyPetLift)
     }
 
     private var side: CGFloat { CGFloat(PetComposer.frameSize) * NotchPreviewLayout.partyPetPixelSize }

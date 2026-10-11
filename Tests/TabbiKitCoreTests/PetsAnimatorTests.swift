@@ -327,9 +327,10 @@ final class PetAnimatorTests: XCTestCase {
             let clip = clips[animation]
             switch animation {
             case .sleep, .nap:
-                XCTAssertEqual(clip.stillFrame, clip.frames[2], "\(animation) holds the frame with both z's")
+                XCTAssertEqual(clip.stillFrame, clip.frames[1], "\(animation) holds a bright z drifting up")
+                // The same pose as the last frame, which has no z.
                 XCTAssertGreaterThan(clip.stillFrame.canvas.pixels.compactMap { $0 }.count,
-                                     clip.frames[0].canvas.pixels.compactMap { $0 }.count)
+                                     clip.frames[3].canvas.pixels.compactMap { $0 }.count)
             default:
                 XCTAssertEqual(clip.stillFrame, animation.loops ? clip.frames.first : clip.frames.last,
                                "\(animation)")
@@ -358,7 +359,7 @@ final class PetAnimatorTests: XCTestCase {
         pet.send(.activity(.onBreak), at: 21)
         XCTAssertEqual(clips.stillFrame(for: pet), clips[.coffee].frames[0])
         pet.send(.sleep, at: 22)
-        XCTAssertEqual(clips.stillFrame(for: pet), clips[.sleep].frames[2])
+        XCTAssertEqual(clips.stillFrame(for: pet), clips[.sleep].frames[1])
         XCTAssertNil(clips.stillFrame(for: animator(.hidden)), "nothing to draw inside the notch")
         XCTAssertEqual(clips.stillFrame(for: animator(.hanging)), clips[.peekIn].frames.last)
     }

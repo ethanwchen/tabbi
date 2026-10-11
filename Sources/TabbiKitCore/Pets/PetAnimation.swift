@@ -252,7 +252,8 @@ public struct PetClip: Hashable, Sendable {
     /// The one frame a still pet shows for this clip under Reduce Motion: a
     /// one-shot clip's last frame, where it settles (the alert keeps its
     /// bubble, celebrate its heart), and a loop's first, except that sleep
-    /// and nap hold the frame with both "z"s, so a frozen pet reads as asleep.
+    /// and nap hold a frame with a bright "z" drifting up, so a frozen pet
+    /// reads as asleep.
     public var stillFrame: PetFrame {
         frames[min(animation.timeline.stillIndex, frames.count - 1)]
     }

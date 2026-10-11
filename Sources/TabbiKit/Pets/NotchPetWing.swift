@@ -84,7 +84,7 @@ struct NotchPetWing: View {
         return PetSpriteView(canvas: frame.canvas, palette: player.palette, pixelSize: Self.pixelSize)
             .scaleEffect(x: leaving ? -1 : 1, y: 1)
             .opacity(1 - phase.distance)
-            .offset(x: offset - 3, y: -3)
+            .offset(x: offset - 3, y: -NotchPreviewLayout.petLift)
             .accessibilityLabel(pet.profile.name)
     }
 
@@ -100,7 +100,7 @@ struct NotchPetWing: View {
             // The frame's paws sit on its bottom row and its sides are a few
             // pixels empty, so lift the pet off the notch's bottom edge and
             // line its fur up with the inset the trailing text keeps.
-            .offset(x: -3, y: -3)
+            .offset(x: -3, y: -NotchPreviewLayout.petLift)
     }
 
     /// Plays the cheer's hops: two for a dance, one for a crown or a sip, and only

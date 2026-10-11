@@ -19,6 +19,30 @@ public enum NotchPreviewLayout {
     public static let partyPetPixelSize: CGFloat = 0.75
     /// Party pets overlap a little, since each sprite has empty room around it.
     public static let partyPetStep: CGFloat = 18
+    /// The closed notch's height without a taller hardware notch (a 32 pt
+    /// menu bar): whatever the pet draws, its sleep "z"s too, stays inside.
+    public static let barHeight: CGFloat = 32
+    /// How far the closed-notch pet is lifted off the bar's bottom edge: its
+    /// paws sit on the sprite frame's bottom row, so this centers it optically.
+    public static let petLift: CGFloat = 3
+    /// The same lift for the party pets' row.
+    public static let partyPetLift: CGFloat = Theme.Spacing.xxs
+
+    /// Where the top of `row` of the closed-notch pet's sprite frame sits,
+    /// in points below the top of the bar. Rows above 0 are cut off.
+    public static func petRowTop(_ row: Int) -> CGFloat {
+        rowTop(row, pixelSize: NotchPetWing.pixelSize, lift: petLift)
+    }
+
+    /// `petRowTop` for a party pet.
+    public static func partyPetRowTop(_ row: Int) -> CGFloat {
+        rowTop(row, pixelSize: partyPetPixelSize, lift: partyPetLift)
+    }
+
+    /// A sprite frame is centered on the bar's height, then lifted.
+    private static func rowTop(_ row: Int, pixelSize: CGFloat, lift: CGFloat) -> CGFloat {
+        (barHeight - CGFloat(PetComposer.frameSize) * pixelSize) / 2 - lift + CGFloat(row) * pixelSize
+    }
     /// The Join button beside a meeting about to start.
     static let joinTitle = String(localized: "Join", bundle: .tabbi)
     static let joinHeight: CGFloat = 16

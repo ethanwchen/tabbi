@@ -51,3 +51,42 @@ final class NotchPreviewLayoutTests: XCTestCase {
         XCTAssertLessThan(wing, NotchPreviewLayout.maxWingWidth, "never truncated")
     }
 }
+
+/// A dozing pet's drifting "z"s stay whole inside the closed notch: every z
+/// pixel of every frame of the sleep loop, for every breed and in the
+/// still frame Reduce Motion holds, lands at least 2 pt below the bar's top
+/// edge, for the user's pet and for party pets alike.
+@MainActor
+final class NotchSleepZBoundsTests: XCTestCase {
+    private static let margin: CGFloat = 2
+
+    private func zRows(_ canvas: PetCanvas) -> [Int] {
+        (0..<canvas.height).filter { y in
+            (0..<canvas.width).contains { canvas[$0, y] == .effect || canvas[$0, y] == .effectFaint }
+        }
+    }
+
+    func testEveryZOfTheSleepLoopIsInsideTheBar() {
+        for breed in PetBreed.allCases {
+            let clip = PetComposer.clip(.sleep, for: breed)
+            for (index, frame) in (clip.frames + [clip.stillFrame]).enumerated() {
+                for row in zRows(frame.canvas) {
+                    for (who, top, size) in [("pet", NotchPreviewLayout.petRowTop(row), CGFloat(1)),
+                                             ("party pet", NotchPreviewLayout.partyPetRowTop(row),
+                                              NotchPreviewLayout.partyPetPixelSize)] {
+                        XCTAssertGreaterThanOrEqual(top, Self.margin, "\(breed) \(who) frame \(index) row \(row)")
+                        XCTAssertLessThanOrEqual(top + size, NotchPreviewLayout.barHeight,
+                                                 "\(breed) \(who) frame \(index) row \(row)")
+                    }
+                }
+            }
+        }
+    }
+
+    func testTheBarShowsThePetFromRowThreeDown() {
+        // The snapshot's pet: the frame's bottom row sits 3 pt above the
+        // bar's bottom edge, so row 3 is the first one inside the bar.
+        XCTAssertEqual(NotchPreviewLayout.petRowTop(3), 0)
+        XCTAssertEqual(NotchPreviewLayout.petRowTop(PetComposer.frameSize), NotchPreviewLayout.barHeight - 3)
+    }
+}

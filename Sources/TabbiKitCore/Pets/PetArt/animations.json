@@ -22,15 +22,15 @@
     },
     "sleep": {
       "loops": true,
-      "still": 2,
+      "still": 1,
       "frames": [
-        { "duration": 0.8, "pose": { "eyes": "sleepy", "headDrop": 2 } },
-        { "duration": 0.8, "pose": { "eyes": "sleepy", "headDrop": 1 },
-          "effects": [{ "grid": "zSmall", "x": { "head": 3 }, "y": { "head": -2 } }] },
         { "duration": 0.8, "pose": { "eyes": "sleepy", "headDrop": 2 },
-          "effects": [{ "grid": "zSmall", "x": { "head": 3 }, "y": { "head": -2 } }, { "grid": "zLarge", "x": 28, "y": { "head": -9 } }] },
+          "effects": [{ "grid": "zLarge", "x": { "head": 2 }, "y": 9 }] },
         { "duration": 0.8, "pose": { "eyes": "sleepy", "headDrop": 1 },
-          "effects": [{ "grid": "zLarge", "x": 28, "y": { "head": -9 } }] }
+          "effects": [{ "grid": "zSmall", "x": { "head": 3 }, "y": 6 }] },
+        { "duration": 0.8, "pose": { "eyes": "sleepy", "headDrop": 2 },
+          "effects": [{ "grid": "zFaint", "x": { "head": 4 }, "y": 5 }] },
+        { "duration": 0.8, "pose": { "eyes": "sleepy", "headDrop": 1 } }
       ]
     },
     "walk": {
@@ -207,15 +207,15 @@
     },
     "nap": {
       "loops": true,
-      "still": 2,
+      "still": 1,
       "frames": [
-        { "duration": 1, "pose": { "eyes": "sleepy" }, "stance": { "kind": "curled", "breath": 0 } },
-        { "duration": 1, "pose": { "eyes": "sleepy" }, "stance": { "kind": "curled", "breath": 1 },
-          "effects": [{ "grid": "zSmall", "x": { "head": 3 }, "y": { "head": -2 } }] },
         { "duration": 1, "pose": { "eyes": "sleepy" }, "stance": { "kind": "curled", "breath": 0 },
-          "effects": [{ "grid": "zSmall", "x": { "head": 3 }, "y": { "head": -2 } }, { "grid": "zLarge", "x": 28, "y": { "head": -9 } }] },
+          "effects": [{ "grid": "zLarge", "x": { "head": 2 }, "y": { "head": -3 } }] },
         { "duration": 1, "pose": { "eyes": "sleepy" }, "stance": { "kind": "curled", "breath": 1 },
-          "effects": [{ "grid": "zLarge", "x": 28, "y": { "head": -9 } }] }
+          "effects": [{ "grid": "zSmall", "x": { "head": 3 }, "y": { "head": -6 } }] },
+        { "duration": 1, "pose": { "eyes": "sleepy" }, "stance": { "kind": "curled", "breath": 0 },
+          "effects": [{ "grid": "zFaint", "x": { "head": 4 }, "y": { "head": -7 } }] },
+        { "duration": 1, "pose": { "eyes": "sleepy" }, "stance": { "kind": "curled", "breath": 1 } }
       ]
     },
     "play": {

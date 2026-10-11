@@ -24,6 +24,7 @@
     "gold": "#F2C14E",
     "metal": "#C9D3DD",
     "effect": "#F4F1FF",
+    "effectFaint": "#F4F1FF66",
     "heart": "#FF5C7A",
     "leaf": "#6CC46A",
     "leather": "#A8683A",
