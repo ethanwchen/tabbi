@@ -13,9 +13,9 @@ class_name = "Hub"
 [vars]
 APPLE_SERVICES_ID = "dev.tabbi.Tabbi.signin"
 # The launch day, which starts the 100-day Founding Member window (src/entitlements.ts), as unix seconds or
-# an ISO 8601 date ("2026-11-03" is midnight UTC). Leave it unset until launch: until then every account
-# that signs in is a Founding Member. Set it once, at launch, and never move it later.
-# FOUNDING_LAUNCH = "2026-11-03"
+# an ISO 8601 date (midnight UTC). Set once, at the 1.0 release, and never moved: the window runs to
+# 2027-01-19 (exclusive), and accounts made before launch (the beta) count too.
+FOUNDING_LAUNCH = "2026-10-11"
 
 # Workers Logs keeps the structured lines from src/log.ts (every 5xx, slow requests and a 1% sample)
 # for search and alerts in the dashboard. Invocation logs are off: they would store every request's
@@ -43,4 +43,4 @@ class_name = "Hub"
 
 [env.staging.vars]
 APPLE_SERVICES_ID = "dev.tabbi.Tabbi.signin"
-# FOUNDING_LAUNCH = "2026-11-03"
+FOUNDING_LAUNCH = "2026-10-11"
