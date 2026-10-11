@@ -9,6 +9,7 @@ The QA history behind these numbers is in `docs/qa-log.md`.
 Checked on `gnhf/qa-final` after 4fb344ab (main at bfd327ad, the last feature merge, plus the QA fixes); the test runs include the `PartyStore` defaults fix.
 `origin/main` had no newer commits when this section was written.
 A final pass after the Canvas fix (95dd01c9) and a merge of main at a19e46df (a site-only change) repeated the build, one full `swift test --parallel` run, the style check and the site build and tests: all pass, with the same counts as below.
+A merge of main at 0cfa65db (#118: backend download count, site and docs copy, no Swift changes) was checked with the backend tests and typecheck, the site build and tests, and the style check, which all pass with the counts below.
 
 ### Tests and checks
 
@@ -17,8 +18,8 @@ A final pass after the Canvas fix (95dd01c9) and a merge of main at a19e46df (a 
 | `swift build` | no warnings |
 | `swift test --parallel` (as CI runs it), three full runs in a row | all three pass: 3009 XCTest tests (TabbiKitCoreTests and TabbiTests) and 52 Swift Testing tests each, exit code 0, no `with N failure` line, 8-9 minutes per run. A first set of three found one flaky test (`PartySnapshotTraceTests` sharing `UserDefaults.standard` between parallel processes), now fixed (see `docs/qa-log.md`), and these runs were on the fix. The two skips are `PartyLiveServerTests`, which need `PARTY_TEST_SERVER` set |
 | `scripts/check-style.sh` | passes |
-| `backend`: `npm test` and `npm run typecheck` | 395 tests in 23 files pass, typecheck clean |
-| `python3 site/build.py` and `node --test 'site/test/*.test.mjs'` | builds all 12 pages, 14 tests pass |
+| `backend`: `npm test` and `npm run typecheck` | 405 tests in 24 files pass, typecheck clean (after #118) |
+| `python3 site/build.py` and `node --test 'site/test/*.test.mjs'` | builds all 12 pages, 19 tests pass (after #118) |
 
 Each test log was searched as a whole for `with [1-9][0-9]* failure`, not only its last summary line, so a failure in any bundle (TabbiKitCoreTests, TabbiTests, the Swift Testing tests) would show.
 The `CoreData: XPC: sendMessage: failed` lines the logs print come from the test host's environment, not from a test.

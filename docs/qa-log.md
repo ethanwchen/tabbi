@@ -22,7 +22,7 @@ What was fixed: everything listed below, the most visible being a frozen first l
 Known issues, none blocking:
 - The native Sign in with Apple sheet needs the App Store provisioning profile, so only the web flow was run; check the native sheet once on the signed TestFlight build.
 - With the optional Focus tab added beside the Timer tab, Today's "Focus time" goal and the Timer tab count only the Timer tab's minutes, not the Focus tab's Pomodoros (no bundled kit has both tabs).
-- tabbinotch.com's footer links to "Buy me a coffee", which App Review could read as an outside payment under guideline 3.1.1; the maintainer may drop it from the pages the app links to.
+- tabbinotch.com's footer links to the Buy me a coffee page (labeled "Support Tabbi" since #118), which App Review could read as an outside payment under guideline 3.1.1; the maintainer may drop it from the pages the app links to.
 
 ## Findings
 
