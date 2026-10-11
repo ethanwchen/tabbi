@@ -43,6 +43,8 @@
 	<string>共同专注：%@</string>
 	<key>%@ is already used by another app. Record a different shortcut.</key>
 	<string>%@ 已被其他 App 占用，请录制其他快捷键。</string>
+	<key>%@ is connected</key>
+	<string>%@ 已连接</string>
 	<key>%@ is damaged, so it's left untouched.</key>
 	<string>%@ 已损坏，因此保持原样。</string>
 	<key>%@ is fitting your tasks around today's events</key>
@@ -69,6 +71,10 @@
 	<string>%@ 正陪你学习</string>
 	<key>%@ is taking the break with you</key>
 	<string>%@ 正和你一起休息</string>
+	<key>%@ isn't connected</key>
+	<string>%@ 未连接</string>
+	<key>%@ isn't on this Mac</key>
+	<string>这台 Mac 上没有 %@</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
 	<string>这台 Mac 上还没有 %@。“连接”会告诉你如何添加。</string>
 	<key>%@ isn't set up yet</key>
@@ -131,6 +137,8 @@
 	<string>%@,限定款:点按即可穿戴</string>
 	<key>%@. %@</key>
 	<string>%@。%@</string>
+	<key>%@.fontWeight(.medium)). %@</key>
+	<string>%@.fontWeight(.medium))。%@</string>
 	<key>%@: %@</key>
 	<string>%@：%@</string>
 	<key>%@: %@ done today</key>
@@ -245,6 +253,8 @@
 	<string>休息的一周，新的开始在等你。</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
 	<string>示例日程。连接日历后，这里会显示你自己的日程。</string>
+	<key>A school or work setting may block it. You can check in System Settings.</key>
+	<string>可能是学校或工作单位的设置所致，可以在系统设置中查看。</string>
 	<key>A shorter timer</key>
 	<string>缩短计时</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
@@ -319,12 +329,22 @@
 	<string>添加你的 %@ 密钥</string>
 	<key>Add your %@ key in Settings.</key>
 	<string>请在设置中添加你的 %@ 密钥。</string>
+	<key>Add your Google or school account to see its events here.</key>
+	<string>添加 Google 或学校账户，就能在这里看到日程。</string>
 	<key>Add your calendar</key>
 	<string>添加你的日历</string>
 	<key>Add…</key>
 	<string>添加…</string>
 	<key>Alerts</key>
 	<string>提醒</string>
+	<key>Alerts are blocked</key>
+	<string>提醒被阻止</string>
+	<key>Alerts are off</key>
+	<string>提醒已关闭</string>
+	<key>Alerts are on</key>
+	<string>提醒已打开</string>
+	<key>Alerts go quiet while you focus.</key>
+	<string>专注时通知会保持安静。</string>
 	<key>All</key>
 	<string>全部</string>
 	<key>All %lld</key>
@@ -361,6 +381,8 @@
 	<string>允许截图</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>允许在内建显示器以外的显示器上显示刘海</string>
+	<key>Almost there: one thing left to do</key>
+	<string>快好了：还差一步</string>
 	<key>Already playing: focus is running</key>
 	<string>正在播放：专注进行中</string>
 	<key>Always</key>
@@ -373,16 +395,36 @@
 	<string>天使之翼</string>
 	<key>Animations</key>
 	<string>动画</string>
+	<key>Anki didn't answer</key>
+	<string>Anki 没有响应</string>
+	<key>Anki has a password on</key>
+	<string>Anki 设置了密码</string>
+	<key>Anki is busy</key>
+	<string>Anki 正忙</string>
 	<key>Anki is closed</key>
 	<string>Anki 未运行</string>
+	<key>Anki is connected</key>
+	<string>Anki 已连接</string>
+	<key>Anki is starting</key>
+	<string>Anki 正在启动</string>
 	<key>Anki is starting. The deck opens for review as soon as it's ready.</key>
 	<string>Anki 正在启动，准备好后会打开牌组。</string>
+	<key>Anki is waiting for you to choose whose cards to open.</key>
+	<string>Anki 正在等你选择要打开谁的卡片。</string>
 	<key>Anki isn't installed</key>
 	<string>未安装 Anki</string>
+	<key>Anki isn't on this Mac</key>
+	<string>这台 Mac 上没有 Anki</string>
+	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
+	<string>Anki 需要一个免费插件 AnkiConnect，Tabbi 才能统计你的卡片。</string>
+	<key>Anki said no to Tabbi</key>
+	<string>Anki 拒绝了 Tabbi</string>
 	<key>Anki wouldn't open</key>
 	<string>Anki 无法打开</string>
 	<key>AnkiConnect blocked this app</key>
 	<string>AnkiConnect 阻止了此应用</string>
+	<key>AnkiConnect is set to ask for a key. Turning that off takes a minute.</key>
+	<string>AnkiConnect 设置了需要密钥。关掉它只需一分钟。</string>
 	<key>AnkiConnect wants an API key</key>
 	<string>AnkiConnect 需要 API 密钥</string>
 	<key>Another steady week. Keep it cozy.</key>
@@ -499,6 +541,10 @@
 	<string>日历访问权限</string>
 	<key>Calendar access is off</key>
 	<string>日历访问已关闭</string>
+	<key>Calendar is connected</key>
+	<string>日历已连接</string>
+	<key>Calendar isn't connected</key>
+	<string>日历未连接</string>
 	<key>Calendars</key>
 	<string>日历</string>
 	<key>Can't reach the party server</key>
@@ -543,6 +589,8 @@
 	<string>聊天只保存在这台 Mac 上</string>
 	<key>Chats stay on this Mac, in %@'s own folder. Delete them from History in the Ask AI tab.</key>
 	<string>聊天保存在这台 Mac 上 %@ 自己的文件夹中。可在“问 AI”标签页的历史记录中删除。</string>
+	<key>Check %@ again</key>
+	<string>重新检查：%@</string>
 	<key>Check again</key>
 	<string>重新检查</string>
 	<key>Check for Updates…</key>
@@ -551,6 +599,8 @@
 	<string>检查实时限额（通过你的 claude CLI 发送一个极小的请求）</string>
 	<key>Check that this claude runs and report its version</key>
 	<string>检查此 claude 能否运行并显示其版本</string>
+	<key>Check that your Wi-Fi is on, then try again.</key>
+	<string>请确认 Wi-Fi 已打开，然后重试。</string>
 	<key>Check the party server</key>
 	<string>请检查派对服务器</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
@@ -593,6 +643,12 @@
 	<string>大号耳机</string>
 	<key>Classic</key>
 	<string>经典</string>
+	<key>Claude is installed. Sign in once and Tabbi can use it.</key>
+	<string>Claude 已安装。登录一次，Tabbi 就能使用它。</string>
+	<key>Claude is optional</key>
+	<string>Claude 是可选的</string>
+	<key>Claude is ready</key>
+	<string>Claude 已就绪</string>
 	<key>Claude location</key>
 	<string>Claude 位置</string>
 	<key>Clear "%@"</key>
@@ -601,6 +657,10 @@
 	<string>全部清除</string>
 	<key>Clear completed tasks</key>
 	<string>清除已完成任务</string>
+	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
+	<string>点按“连接”，当 Mac 询问 Tabbi 能否控制 %@ 时，点按“允许”。</string>
+	<key>Click Connect, then Allow when your Mac asks. It only asks once.</key>
+	<string>点按“连接”，Mac 询问时点按“允许”。只会问一次。</string>
 	<key>Click Restore Defaults, then OK</key>
 	<string>点按 恢复默认设置，然后点按 OK</string>
 	<key>Click a block to add or skip just that one</key>
@@ -615,6 +675,8 @@
 	<string>关闭</string>
 	<key>Close %@ settings</key>
 	<string>关闭 %@ 设置</string>
+	<key>Close any open window inside Anki, then check again.</key>
+	<string>关闭 Anki 中打开的窗口，然后重新检查。</string>
 	<key>Close details</key>
 	<string>关闭详情</string>
 	<key>Close the plan</key>
@@ -623,6 +685,10 @@
 	<string>关闭计划，不添加任何内容</string>
 	<key>Close this</key>
 	<string>关闭</string>
+	<key>Close this. Party keeps trying by itself.</key>
+	<string>关闭。派对会自动继续尝试。</string>
+	<key>Close this. You can set up Party any time.</key>
+	<string>关闭。随时都可以设置派对。</string>
 	<key>Close this. You can sign in any time.</key>
 	<string>关闭。你可以随时登录。</string>
 	<key>Closet</key>
@@ -647,6 +713,8 @@
 	<string>连接你的日历</string>
 	<key>Connected</key>
 	<string>已连接</string>
+	<key>Connecting</key>
+	<string>正在连接</string>
 	<key>Connecting to %@…</key>
 	<string>正在连接 %@…</string>
 	<key>Connecting to Anki…</key>
@@ -681,10 +749,14 @@
 	<string>复制好友代码</string>
 	<key>Copy the AnkiConnect add-on code to paste into Anki</key>
 	<string>复制 AnkiConnect 插件代码以粘贴到 Anki</string>
+	<key>Copy your friend code to send to a friend</key>
+	<string>复制好友码发给朋友</string>
 	<key>Copy your friend code to share it</key>
 	<string>复制你的好友代码来分享</string>
 	<key>Couldn't add to your calendar. Try again</key>
 	<string>无法添加到日历，请重试</string>
+	<key>Couldn't check your shortcuts</key>
+	<string>无法检查快捷指令</string>
 	<key>Couldn't import %@: %@</key>
 	<string>无法导入 %1$@：%2$@</string>
 	<key>Couldn't plan your day</key>
@@ -797,6 +869,12 @@
 	<string>分心 App</string>
 	<key>Do Not Disturb</key>
 	<string>勿扰模式</string>
+	<key>Do Not Disturb is off</key>
+	<string>勿扰模式已关闭</string>
+	<key>Do Not Disturb is ready</key>
+	<string>勿扰模式已就绪</string>
+	<key>Do Not Disturb isn't set up</key>
+	<string>勿扰模式未设置</string>
 	<key>Dog</key>
 	<string>狗</string>
 	<key>Done</key>
@@ -885,6 +963,8 @@
 	<string>正在按今天的日程安排工作和休息</string>
 	<key>Fitting your work and breaks around tomorrow's events</key>
 	<string>正在按明天的日程安排工作和休息</string>
+	<key>Fix the shortcut in the Shortcuts app, then test again</key>
+	<string>在“快捷指令”App 中修好快捷指令，然后再测试</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
 	<string>在其他应用里修好了？回到这里，指示灯会自动更新。</string>
 	<key>Flame Headband</key>
@@ -991,6 +1071,8 @@
 	<string>通用</string>
 	<key>Get %@</key>
 	<string>获取 %@</string>
+	<key>Get %@ to control your music from the notch.</key>
+	<string>安装 %@，就能在刘海里控制音乐。</string>
 	<key>Get Anki</key>
 	<string>获取 Anki</string>
 	<key>Get a Key</key>
@@ -1085,6 +1167,10 @@
 	<string>在 Anki 中选择 工具 › 插件 › AnkiConnect › 配置</string>
 	<key>In Anki, choose Tools › Add-ons › Get Add-ons…</key>
 	<string>在 Anki 中选择 工具 › 插件 › 获取插件…</string>
+	<key>In System Settings, set Tabbi to Full Access under Calendars.</key>
+	<string>在系统设置的“日历”中，将 Tabbi 设为“完全访问权限”。</string>
+	<key>In System Settings, turn on %@ under Tabbi.</key>
+	<string>在系统设置中，打开 Tabbi 下的 %@。</string>
 	<key>In [Shortcuts](shortcuts://), make “%@” with the Set Focus action turning Do Not Disturb on, and “%@” turning it off. Then press Test.</key>
 	<string>在[快捷指令](shortcuts://)中，用“设定专注模式”操作创建打开勿扰模式的“%@”和关闭它的“%@”，然后点按测试。</string>
 	<key>In development</key>
@@ -1123,6 +1209,12 @@
 	<string>邀请链接</string>
 	<key>It belongs to your Apple Account. Delete Account in General removes it.</key>
 	<string>它属于你的 Apple 账户。在“通用”中“删除账户”会将其移除。</string>
+	<key>It's a free flashcard app. Get it, then come back here.</key>
+	<string>这是一款免费的记忆卡 App。安装后再回到这里。</string>
+	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
+	<string>它是能帮你规划一天、回答问题的 AI 助手。没有它，其他功能也都能用。</string>
+	<key>It's for people %lld and older.</key>
+	<string>仅限 %lld 岁及以上用户。</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>今年其他活动的物品,在各活动期间专注即可获得</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -1139,6 +1231,8 @@
 	<string>加入 %@ 的派对</string>
 	<key>Join Party</key>
 	<string>加入派对</string>
+	<key>Joining Party. This takes a second.</key>
+	<string>正在加入派对，马上就好。</string>
 	<key>Joining the party server…</key>
 	<string>正在连接派对服务器…</string>
 	<key>Keep at least one tab on</key>
@@ -1199,6 +1293,8 @@
 	<string>专注阶段走神时，让宠物从刘海里走出来</string>
 	<key>Like</key>
 	<string>点赞</string>
+	<key>Like Sam or Dr. Sam</key>
+	<string>例如小明或王医生</string>
 	<key>Lilac</key>
 	<string>淡紫色</string>
 	<key>Limited</key>
@@ -1223,14 +1319,24 @@
 	<string>外观</string>
 	<key>Looking for %@…</key>
 	<string>正在查找 %@…</string>
+	<key>Looking for Anki</key>
+	<string>正在查找 Anki</string>
 	<key>Looking for Anki…</key>
 	<string>正在查找 Anki…</string>
+	<key>Looking for Claude</key>
+	<string>正在查找 Claude</string>
 	<key>Looking for it</key>
 	<string>正在查找</string>
+	<key>Looking for your shortcuts</key>
+	<string>正在查找快捷指令</string>
 	<key>Lunar New Year</key>
 	<string>春节</string>
 	<key>Main display</key>
 	<string>主显示器</string>
+	<key>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</key>
+	<string>在“快捷指令”App 中创建两个简单的快捷指令，大约两分钟。</string>
+	<key>Make “%@” so Tabbi can switch Do Not Disturb both ways.</key>
+	<string>创建「%@」，Tabbi 就能打开和关闭勿扰模式。</string>
 	<key>Mark as done</key>
 	<string>标记为已完成</string>
 	<key>Mark as not done</key>
@@ -1307,6 +1413,8 @@
 	<string>忍者头带</string>
 	<key>No answer</key>
 	<string>没有回答</string>
+	<key>No calendars yet</key>
+	<string>还没有日历</string>
 	<key>No events</key>
 	<string>没有日程</string>
 	<key>No events on your calendars today.</key>
@@ -1363,6 +1471,8 @@
 	<string>尚未检查 · 刷新以加载实时限额</string>
 	<key>Not connected</key>
 	<string>未连接</string>
+	<key>Not connected to Tabbi yet</key>
+	<string>尚未连接到 Tabbi</string>
 	<key>Not connected yet</key>
 	<string>尚未连接</string>
 	<key>Not done</key>
@@ -1373,6 +1483,8 @@
 	<string>未安装</string>
 	<key>Not joined yet</key>
 	<string>尚未加入</string>
+	<key>Not now</key>
+	<string>以后再说</string>
 	<key>Not reported by this Mac</key>
 	<string>此 Mac 未提供</string>
 	<key>Not saved</key>
@@ -1427,8 +1539,12 @@
 	<string>休息中</string>
 	<key>On today</key>
 	<string>已在今天</string>
+	<key>One add-on to go</key>
+	<string>还差一个插件</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>一次一段,稳稳来。你可以的。</string>
+	<key>One shortcut left</key>
+	<string>还差一个快捷指令</string>
 	<key>One song</key>
 	<string>单曲</string>
 	<key>One step to open decks from here</key>
@@ -1457,8 +1573,12 @@
 	<string>打开 %@ 即可查看和控制正在播放的内容。</string>
 	<key>Open %@ to start, pause or skip</key>
 	<string>打开 %@ 以开始、暂停或跳过</string>
+	<key>Open %@, then Tabbi checks again</key>
+	<string>打开 %@，Tabbi 会重新检查</string>
 	<key>Open Anki</key>
 	<string>打开 Anki</string>
+	<key>Open Anki so Tabbi can see your cards.</key>
+	<string>打开 Anki，Tabbi 才能看到你的卡片。</string>
 	<key>Open Anki straight into %@</key>
 	<string>直接在 Anki 中打开 %@</string>
 	<key>Open Anki to see today's due cards. This tab connects as soon as it's running.</key>
@@ -1491,6 +1611,8 @@
 	<string>打开设置 &gt; 通用，通过 Apple 登录</string>
 	<key>Open System Settings</key>
 	<string>打开系统设置</string>
+	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
+	<string>从“应用程序”文件夹打开 Tabbi 来连接日历。</string>
 	<key>Open and close the notch</key>
 	<string>打开和关闭刘海</string>
 	<key>Open answers in the large view</key>
@@ -1513,6 +1635,10 @@
 	<string>打开刘海查看你的回顾。</string>
 	<key>Open the official page in your browser</key>
 	<string>在浏览器中打开官方页面</string>
+	<key>Open the official page to download %@</key>
+	<string>打开官方页面下载 %@</string>
+	<key>Open the right page in System Settings</key>
+	<string>打开系统设置中的相应页面</string>
 	<key>Open this chat and continue it</key>
 	<string>打开并继续此聊天</string>
 	<key>Opening %@…</key>
@@ -1549,6 +1675,8 @@
 	<string>派对帽</string>
 	<key>Party asks once before you join. Your answer stays on this Mac.</key>
 	<string>加入前只问一次。你的回答只保存在这台 Mac 上。</string>
+	<key>Party can't connect</key>
+	<string>派对无法连接</string>
 	<key>Party code</key>
 	<string>派对代码</string>
 	<key>Party is for people %lld and older. It opens here in %@.</key>
@@ -1557,10 +1685,14 @@
 	<string>派对面向 %lld 岁及以上的用户，将于%@开放。</string>
 	<key>Party is no longer available for this account.</key>
 	<string>此账户已无法使用派对。</string>
+	<key>Party is ready</key>
+	<string>派对已就绪</string>
 	<key>Party isn't available</key>
 	<string>派对不可用</string>
 	<key>Party isn't available yet</key>
 	<string>派对暂不可用</string>
+	<key>Party isn't set up</key>
+	<string>派对未设置</string>
 	<key>Party pets</key>
 	<string>Party 宠物</string>
 	<key>Party session</key>
@@ -1609,6 +1741,10 @@
 	<string>在刘海中重新选择套件、标签页及其所需设置</string>
 	<key>Pick a month and a year first</key>
 	<string>请先选择月份和年份</string>
+	<key>Pick a name and a pet to start. No account needed.</key>
+	<string>选个名字和宠物就能开始，无需账户。</string>
+	<key>Pick a name and a pet, and say when you were born.</key>
+	<string>选个名字和宠物，再填写出生年月。</string>
 	<key>Pick a sound to preview it</key>
 	<string>选择一种声音来试听</string>
 	<key>Pick any app from your Applications folder</key>
@@ -1621,6 +1757,10 @@
 	<string>在访达中选择 claude 可执行文件</string>
 	<key>Pick the month and year you were born</key>
 	<string>选择你出生的月份和年份</string>
+	<key>Pick the name and pet your friends will see. No account or password needed.</key>
+	<string>选择朋友会看到的名字和宠物，无需账户或密码。</string>
+	<key>Pick your profile in Anki</key>
+	<string>在 Anki 中选择用户</string>
 	<key>Pin %@ to the Study button</key>
 	<string>将 %@ 固定到学习按钮</string>
 	<key>Pin as Favorite Deck</key>
@@ -1635,6 +1775,8 @@
 	<string>规划</string>
 	<key>Plan my day</key>
 	<string>规划今天</string>
+	<key>Plan my day and Ask AI can use it.</key>
+	<string>“规划今天”和“问 AI”可以使用它。</string>
 	<key>Plan my day asks the AI you pick in Settings.</key>
 	<string>“规划今天”会使用你在设置中选择的 AI。</string>
 	<key>Plan my day fits your plan around your calendar.</key>
@@ -1659,6 +1801,8 @@
 	<string>在 Apple Music 中播放、暂停和跳过。</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>在 Spotify 中播放、暂停和跳过。</string>
+	<key>Play, pause and skip songs from the notch.</key>
+	<string>在刘海里播放、暂停和切歌。</string>
 	<key>Players</key>
 	<string>播放器</string>
 	<key>Playing in %@</key>
@@ -1853,6 +1997,8 @@
 	<string>将此密钥存入钥匙串</string>
 	<key>Save today's review and show the checklist</key>
 	<string>保存今天的回顾并显示清单</string>
+	<key>Save your name and pet and join Party</key>
+	<string>保存名字和宠物，加入派对</string>
 	<key>Saved chats</key>
 	<string>保存的聊天</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
@@ -1881,6 +2027,8 @@
 	<string>选择 AnkiConnect 并点按 检查更新</string>
 	<key>Send (Return)</key>
 	<string>发送(Return)</string>
+	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
+	<string>把好友码发给朋友，他们就能加你。他们会看到你的名字、宠物和学习计时。</string>
 	<key>Send your AI requests to %@?</key>
 	<string>将你的 AI 请求发送给 %@?</string>
 	<key>Sends what you ask to %@.</key>
@@ -1971,6 +2119,8 @@
 	<string>登录…</string>
 	<key>Sign Out</key>
 	<string>退出登录</string>
+	<key>Sign in to Claude</key>
+	<string>登录 Claude</string>
 	<key>Sign in with Apple</key>
 	<string>通过 Apple 登录</string>
 	<key>Sign in with your Apple Account to sync your pet across your Macs</key>
@@ -2029,6 +2179,8 @@
 	<string>冲刺</string>
 	<key>Start %@ automatically when you log in</key>
 	<string>登录时自动启动 %@</string>
+	<key>Start Party</key>
+	<string>开始派对</string>
 	<key>Start a %lld minute countdown</key>
 	<string>开始 %lld 分钟倒计时</string>
 	<key>Start a %lld-minute focus session for everyone in the party</key>
@@ -2131,6 +2283,10 @@
 	<string>今天获得的学习积分，可用来给宠物换装</string>
 	<key>Study together</key>
 	<string>一起学习</string>
+	<key>Study with a cat</key>
+	<string>和猫咪一起学习</string>
+	<key>Study with a dog</key>
+	<string>和狗狗一起学习</string>
 	<key>Study with friends and see who is focusing now.</key>
 	<string>和朋友一起学习，看看谁正在专注。</string>
 	<key>Study with friends, see their timers.</key>
@@ -2169,8 +2325,18 @@
 	<string>正在同步…</string>
 	<key>System</key>
 	<string>系统</string>
+	<key>Tabbi can't control %@</key>
+	<string>Tabbi 无法控制 %@</string>
+	<key>Tabbi can't read your calendar</key>
+	<string>Tabbi 无法读取日历</string>
+	<key>Tabbi is checking this right now</key>
+	<string>Tabbi 正在检查</string>
+	<key>Tabbi leaves your alerts alone until you turn it on.</key>
+	<string>打开之前，Tabbi 不会改动你的通知。</string>
 	<key>Tabbi reads %@ and sends nothing.</key>
 	<string>Tabbi 只读取 %@，不会发送任何内容。</string>
+	<key>Tabbi tells you when a focus block or break ends.</key>
+	<string>专注时段或休息结束时，Tabbi 会提醒你。</string>
 	<key>Tabs</key>
 	<string>标签页</string>
 	<key>Take a break</key>
@@ -2209,8 +2375,12 @@
 	<string>为问 AI、规划今天和优化提供回答的 AI</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>钥匙串未能保存密钥。请重试。</string>
+	<key>The Shortcuts app didn't answer in time. Try again in a moment.</key>
+	<string>“快捷指令”App 没有及时响应。请稍后再试。</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
 	<string>此 Mac 上没有快捷指令命令行工具。</string>
+	<key>The app this needs isn't on this Mac</key>
+	<string>这台 Mac 上没有所需的 App</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>樱花开了。也让你的努力开花吧。</string>
 	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
@@ -2231,6 +2401,8 @@
 	<string>你出生的月份</string>
 	<key>The name friends see, up to %lld characters</key>
 	<string>好友看到的名字，最多 %lld 个字符</string>
+	<key>The name friends see, up to %lld letters</key>
+	<string>朋友看到的名字，最多 %lld 个字</string>
 	<key>The next seven days at a glance</key>
 	<string>一览未来七天</string>
 	<key>The party code. Click to copy it, then send it to friends.</key>
@@ -2267,20 +2439,32 @@
 	<string>对方已经有 50 位好友了。</string>
 	<key>Thinking</key>
 	<string>思考中</string>
+	<key>This Mac blocks calendar access</key>
+	<string>这台 Mac 禁止访问日历</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>此账户已无法使用派对。如果你认为这是误判，请写信至 %@。</string>
 	<key>This chat is open</key>
 	<string>此聊天已打开</string>
+	<key>This copy can't use the calendar</key>
+	<string>此副本无法使用日历</string>
 	<key>This deletes your account and everything the server keeps for it: the synced copy of your pet and points, your friend code, friends and parties. Your pet stays on this Mac. This can't be undone.</key>
 	<string>这会删除你的账户以及服务器为其保存的所有内容：同步的宠物和积分副本、好友代码、好友和派对。你的宠物会保留在这台 Mac 上。此操作无法撤销。</string>
 	<key>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</key>
 	<string>这会从好友服务器删除你的好友代码、好友看到的个人资料和宠物、好友列表、加入的派对以及学习连续记录。好友将不再看到你。你的宠物和积分会保留在这台 Mac 上。如果派对保持开启，你会获得新的好友代码。</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>这是演示，没有删除任何内容。</string>
+	<key>This is usually short. Check again in a moment.</key>
+	<string>通常很快就好，稍后重新检查。</string>
 	<key>This tab reads your decks through the free AnkiConnect add-on.</key>
 	<string>此标签页通过免费的 AnkiConnect 插件读取牌组。</string>
+	<key>This takes a few seconds.</key>
+	<string>需要几秒钟。</string>
+	<key>This takes a second.</key>
+	<string>马上就好。</string>
 	<key>This task is on today's list</key>
 	<string>此任务已在今天的清单中</string>
+	<key>This works. Nothing to do.</key>
+	<string>一切正常，无需操作。</string>
 	<key>Time</key>
 	<string>时间</string>
 	<key>Time for a %lld-minute break.</key>
@@ -2313,6 +2497,8 @@
 	<string>今天的日历</string>
 	<key>Today's events and the free time between them. Google calendars show up once added in Internet Accounts.</key>
 	<string>今天的日程及其间的空闲时间。Google 日历在“互联网账户”中添加后即会显示。</string>
+	<key>Today's events show up in Tabbi.</key>
+	<string>今天的日程会显示在 Tabbi 中。</string>
 	<key>Tomorrow</key>
 	<string>明天</string>
 	<key>Tomorrow has no free time worth a block before the evening.</key>
@@ -2333,18 +2519,28 @@
 	<string>重试</string>
 	<key>Try the server again now</key>
 	<string>立即重试服务器</string>
+	<key>Try to reach Party again now</key>
+	<string>立即重新连接派对</string>
 	<key>Trying on %@</key>
 	<string>正在试穿%@</string>
 	<key>Turn %@ off</key>
 	<string>关闭%@</string>
 	<key>Turn %@ on</key>
 	<string>打开%@</string>
+	<key>Turn Do Not Disturb on for a moment, then off again</key>
+	<string>短暂打开勿扰模式，然后再关闭</string>
 	<key>Turn on</key>
 	<string>打开</string>
+	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
+	<string>在系统设置中为 Tabbi 打开“允许通知”。</string>
 	<key>Turn on Do Not Disturb during focus</key>
 	<string>专注时打开勿扰模式</string>
+	<key>Turn on Do Not Disturb whenever the focus timer runs</key>
+	<string>专注计时运行时打开勿扰模式</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>为 SoundCloud 开启 JavaScript</string>
+	<key>Turn on Tabbi under Calendars in System Settings.</key>
+	<string>在系统设置的“日历”中打开 Tabbi。</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
 	<string>开启深度专注：专注时段会开启%@</string>
 	<key>Turn on the Anki tab with Anki open so the sprint can count your cards</key>
@@ -2357,6 +2553,8 @@
 	<string>关闭随机播放</string>
 	<key>Turn shuffle on</key>
 	<string>开启随机播放</string>
+	<key>Type a name first</key>
+	<string>请先输入名字</string>
 	<key>Type a shortcut name first</key>
 	<string>请先输入快捷指令名称</string>
 	<key>Type a task and press Return to add it; Esc clears</key>
@@ -2437,6 +2635,8 @@
 	<string>等待 Anki 启动</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>等待 Anki 启动，然后打开 %@</string>
+	<key>Walk through the steps to connect %@</key>
+	<string>按步骤连接：%@</string>
 	<key>Wardrobe</key>
 	<string>衣橱</string>
 	<key>Wearing</key>
@@ -2455,8 +2655,12 @@
 	<string>每周</string>
 	<key>Welcome to %@</key>
 	<string>欢迎使用 %@</string>
+	<key>What happened when Tabbi ran your shortcuts</key>
+	<string>Tabbi 运行快捷指令的结果</string>
 	<key>What should we call you?</key>
 	<string>我们该怎么称呼你？</string>
+	<key>When Anki asked whether to let Tabbi in, the answer was no.</key>
+	<string>Anki 询问是否允许 Tabbi 访问时，选择了拒绝。</string>
 	<key>When focus ends</key>
 	<string>专注结束时</string>
 	<key>When focus starts</key>
@@ -2525,6 +2729,8 @@
 	<string>可随时在设置 &gt; 通用中更改。</string>
 	<key>You can change this later in the %@ tab.</key>
 	<string>之后可在“%@”标签页中更改。</string>
+	<key>You can dress your pet up later in the Closet tab.</key>
+	<string>之后可以在“衣橱”标签里打扮宠物。</string>
 	<key>You can only join a friend's party.</key>
 	<string>你只能加入好友的派对。</string>
 	<key>You can set this up any time in Settings.</key>
@@ -2535,6 +2741,8 @@
 	<string>今天学习了 %@。好好休息，明天重新出发。</string>
 	<key>You started it for the party</key>
 	<string>你为派对发起</string>
+	<key>You're in Party</key>
+	<string>你已加入派对</string>
 	<key>You're not in a party anymore.</key>
 	<string>你已不在派对中。</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
@@ -2557,16 +2765,26 @@
 	<string>今天待复习的卡片会显示在这里。</string>
 	<key>Your cat</key>
 	<string>你的猫</string>
+	<key>Your copy of the AnkiConnect add-on is too old for Tabbi.</key>
+	<string>你的 AnkiConnect 插件版本太旧，Tabbi 无法使用。</string>
 	<key>Your data</key>
 	<string>你的数据</string>
 	<key>Your day on a timeline, with the free time in between.</key>
 	<string>用时间线看一天，空闲时间一目了然。</string>
 	<key>Your dog</key>
 	<string>你的狗</string>
+	<key>Your due cards show up in Tabbi.</key>
+	<string>到期的卡片会显示在 Tabbi 中。</string>
+	<key>Your friend code</key>
+	<string>你的好友码</string>
+	<key>Your friend code is %@. Share it so friends can add you.</key>
+	<string>你的好友码是 %@。分享给朋友，他们就能加你。</string>
 	<key>Your friend code. Copy it and send it to a friend.</key>
 	<string>你的好友代码。复制后发给好友。</string>
 	<key>Your friend code: %@</key>
 	<string>你的好友码：%@</string>
+	<key>Your friend code: %@.fontWeight(.semibold).monospacedDigit())</key>
+	<string>你的好友码：%@.fontWeight(.semibold).monospacedDigit())</string>
 	<key>Your friend just went offline.</key>
 	<string>你的好友刚刚离线了。</string>
 	<key>Your friend left their party.</key>
@@ -2619,6 +2837,8 @@
 	<string>刚刚</string>
 	<key>lectures, labs, and shifts</key>
 	<string>讲座、实验和值班</string>
+	<key>macOS asks once whether Tabbi may use %@</key>
+	<string>macOS 会询问一次是否允许 Tabbi 使用：%@</string>
 	<key>meetings and calls</key>
 	<string>会议和通话</string>
 	<key>no free time</key>

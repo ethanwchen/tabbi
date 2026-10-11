@@ -42,7 +42,7 @@ final class ConnectionStatusTests: XCTestCase {
                 XCTAssertNotNil(status.action, "\(status.headline) needs a next button")
             case .notInstalled:
                 // Apple Music ships with macOS, so it can't be offered for download.
-                if status.headline != "Music isn't on this Mac" {
+                if status.headline != "Apple Music isn't on this Mac" {
                     XCTAssertNotNil(status.action, "\(status.headline) needs a next button")
                 }
             }

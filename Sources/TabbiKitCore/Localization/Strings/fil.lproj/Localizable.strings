@@ -43,6 +43,8 @@
 	<string>%@ sa shared session ng party</string>
 	<key>%@ is already used by another app. Record a different shortcut.</key>
 	<string>Ginagamit na ng ibang app ang %@. Mag-record ng ibang shortcut.</string>
+	<key>%@ is connected</key>
+	<string>Nakakonekta ang %@</string>
 	<key>%@ is damaged, so it's left untouched.</key>
 	<string>Sira ang %@, kaya hindi ito ginalaw.</string>
 	<key>%@ is fitting your tasks around today's events</key>
@@ -69,6 +71,10 @@
 	<string>Nag-aaral si %@ kasama mo</string>
 	<key>%@ is taking the break with you</key>
 	<string>Nagbe-break si %@ kasama mo</string>
+	<key>%@ isn't connected</key>
+	<string>Hindi nakakonekta ang %@</string>
+	<key>%@ isn't on this Mac</key>
+	<string>Wala ang %@ sa Mac na ito</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
 	<string>Wala pa ang %@ sa Mac na ito. Ipapakita ng Connections kung paano ito idagdag.</string>
 	<key>%@ isn't set up yet</key>
@@ -131,6 +137,8 @@
 	<string>%@, limited edition: i-click para isuot</string>
 	<key>%@. %@</key>
 	<string>%@. %@</string>
+	<key>%@.fontWeight(.medium)). %@</key>
+	<string>%@.fontWeight(.medium)). %@</string>
 	<key>%@: %@</key>
 	<string>%@: %@</string>
 	<key>%@: %@ done today</key>
@@ -245,6 +253,8 @@
 	<string>Isang linggo ng pahinga. May bagong simulang naghihintay.</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
 	<string>Halimbawang araw. Lalabas dito ang sarili mong mga event kapag naka-connect na ang calendar.</string>
+	<key>A school or work setting may block it. You can check in System Settings.</key>
+	<string>Baka bina-block ito ng setting ng school o trabaho. Puwede mong i-check sa System Settings.</string>
 	<key>A shorter timer</key>
 	<string>Mas maikling timer</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
@@ -319,12 +329,22 @@
 	<string>Idagdag ang %@ key mo</string>
 	<key>Add your %@ key in Settings.</key>
 	<string>Idagdag ang %@ key mo sa Settings.</string>
+	<key>Add your Google or school account to see its events here.</key>
+	<string>Idagdag ang Google o school account mo para makita rito ang mga event nito.</string>
 	<key>Add your calendar</key>
 	<string>Idagdag ang calendar mo</string>
 	<key>Add…</key>
 	<string>Idagdag…</string>
 	<key>Alerts</key>
 	<string>Mga alerto</string>
+	<key>Alerts are blocked</key>
+	<string>Naka-block ang mga alerto</string>
+	<key>Alerts are off</key>
+	<string>Naka-off ang mga alerto</string>
+	<key>Alerts are on</key>
+	<string>Naka-on ang mga alerto</string>
+	<key>Alerts go quiet while you focus.</key>
+	<string>Tahimik ang mga alerto habang nagfo-focus ka.</string>
 	<key>All</key>
 	<string>Lahat</string>
 	<key>All %lld</key>
@@ -361,6 +381,8 @@
 	<string>Payagan ang mga screenshot</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>Payagan ang notch sa mga display bukod sa built-in</string>
+	<key>Almost there: one thing left to do</key>
+	<string>Malapit na: isang bagay na lang</string>
 	<key>Already playing: focus is running</key>
 	<string>Tumutugtog na: tumatakbo ang focus</string>
 	<key>Always</key>
@@ -373,16 +395,36 @@
 	<string>Pakpak ng Anghel</string>
 	<key>Animations</key>
 	<string>Mga animation</string>
+	<key>Anki didn't answer</key>
+	<string>Hindi sumagot ang Anki</string>
+	<key>Anki has a password on</key>
+	<string>May password ang Anki</string>
+	<key>Anki is busy</key>
+	<string>Busy ang Anki</string>
 	<key>Anki is closed</key>
 	<string>Nakasara ang Anki</string>
+	<key>Anki is connected</key>
+	<string>Nakakonekta ang Anki</string>
+	<key>Anki is starting</key>
+	<string>Nagbubukas ang Anki</string>
 	<key>Anki is starting. The deck opens for review as soon as it's ready.</key>
 	<string>Nagbubukas ang Anki. Bubuksan ang deck para sa review kapag handa na.</string>
+	<key>Anki is waiting for you to choose whose cards to open.</key>
+	<string>Hinihintay ng Anki na piliin mo kung kaninong cards ang bubuksan.</string>
 	<key>Anki isn't installed</key>
 	<string>Hindi naka-install ang Anki</string>
+	<key>Anki isn't on this Mac</key>
+	<string>Wala ang Anki sa Mac na ito</string>
+	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
+	<string>Kailangan ng Anki ng libreng add-on na AnkiConnect para mabilang ng Tabbi ang mga card mo.</string>
+	<key>Anki said no to Tabbi</key>
+	<string>Tinanggihan ng Anki ang Tabbi</string>
 	<key>Anki wouldn't open</key>
 	<string>Ayaw bumukas ng Anki</string>
 	<key>AnkiConnect blocked this app</key>
 	<string>Hinarang ng AnkiConnect ang app na ito</string>
+	<key>AnkiConnect is set to ask for a key. Turning that off takes a minute.</key>
+	<string>Naka-set ang AnkiConnect na humingi ng key. Isang minuto lang para i-off iyon.</string>
 	<key>AnkiConnect wants an API key</key>
 	<string>Humihingi ng API key ang AnkiConnect</string>
 	<key>Another steady week. Keep it cozy.</key>
@@ -499,6 +541,10 @@
 	<string>Calendar</string>
 	<key>Calendar access is off</key>
 	<string>Naka-off ang access sa calendar</string>
+	<key>Calendar is connected</key>
+	<string>Nakakonekta ang Calendar</string>
+	<key>Calendar isn't connected</key>
+	<string>Hindi nakakonekta ang Calendar</string>
 	<key>Calendars</key>
 	<string>Mga Calendar</string>
 	<key>Can't reach the party server</key>
@@ -543,6 +589,8 @@
 	<string>Nananatili ang mga chat sa Mac na ito</string>
 	<key>Chats stay on this Mac, in %@'s own folder. Delete them from History in the Ask AI tab.</key>
 	<string>Nasa Mac na ito ang mga chat, sa sariling folder ng %@. Burahin sa History ng Ask AI tab.</string>
+	<key>Check %@ again</key>
+	<string>Suriin ulit: %@</string>
 	<key>Check again</key>
 	<string>Suriin ulit</string>
 	<key>Check for Updates…</key>
@@ -551,6 +599,8 @@
 	<string>Tingnan ang live na limit (nagpapadala ng maliit na request gamit ang claude CLI mo)</string>
 	<key>Check that this claude runs and report its version</key>
 	<string>Tingnan kung tumatakbo ang claude na ito at ipakita ang version nito</string>
+	<key>Check that your Wi-Fi is on, then try again.</key>
+	<string>I-check kung naka-on ang Wi-Fi mo, tapos subukan ulit.</string>
 	<key>Check the party server</key>
 	<string>Suriin ang party server</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
@@ -593,6 +643,12 @@
 	<string>Malaking Headphones</string>
 	<key>Classic</key>
 	<string>Classic</string>
+	<key>Claude is installed. Sign in once and Tabbi can use it.</key>
+	<string>Naka-install na si Claude. Mag-sign in nang isang beses at magagamit na ito ng Tabbi.</string>
+	<key>Claude is optional</key>
+	<string>Optional si Claude</string>
+	<key>Claude is ready</key>
+	<string>Handa na si Claude</string>
 	<key>Claude location</key>
 	<string>Lokasyon ng Claude</string>
 	<key>Clear "%@"</key>
@@ -601,6 +657,10 @@
 	<string>Burahin Lahat</string>
 	<key>Clear completed tasks</key>
 	<string>Alisin ang mga tapos na task</string>
+	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
+	<string>I-click ang Ikonekta, tapos Allow kapag tinanong ng Mac mo kung puwedeng kontrolin ng Tabbi ang %@.</string>
+	<key>Click Connect, then Allow when your Mac asks. It only asks once.</key>
+	<string>I-click ang Ikonekta, tapos Allow kapag nagtanong ang Mac mo. Isang beses lang itong magtatanong.</string>
 	<key>Click Restore Defaults, then OK</key>
 	<string>I-click ang Restore Defaults, tapos OK</string>
 	<key>Click a block to add or skip just that one</key>
@@ -615,6 +675,8 @@
 	<string>Isara</string>
 	<key>Close %@ settings</key>
 	<string>Isara ang settings ng %@</string>
+	<key>Close any open window inside Anki, then check again.</key>
+	<string>Isara ang anumang bukas na window sa Anki, tapos suriin ulit.</string>
 	<key>Close details</key>
 	<string>Isara ang detalye</string>
 	<key>Close the plan</key>
@@ -623,6 +685,10 @@
 	<string>Isara ang plan nang walang idinadagdag</string>
 	<key>Close this</key>
 	<string>Isara ito</string>
+	<key>Close this. Party keeps trying by itself.</key>
+	<string>Isara ito. Patuloy na susubok ang Party nang kusa.</string>
+	<key>Close this. You can set up Party any time.</key>
+	<string>Isara ito. Puwede mong i-set up ang Party kahit kailan.</string>
 	<key>Close this. You can sign in any time.</key>
 	<string>Isara ito. Puwede kang mag-sign in anumang oras.</string>
 	<key>Closet</key>
@@ -647,6 +713,8 @@
 	<string>Ikonekta ang calendar mo</string>
 	<key>Connected</key>
 	<string>Nakakonekta</string>
+	<key>Connecting</key>
+	<string>Kumokonekta</string>
 	<key>Connecting to %@…</key>
 	<string>Kumokonekta sa %@…</string>
 	<key>Connecting to Anki…</key>
@@ -681,10 +749,14 @@
 	<string>Kopyahin ang friend code</string>
 	<key>Copy the AnkiConnect add-on code to paste into Anki</key>
 	<string>Kopyahin ang code ng AnkiConnect add-on para i-paste sa Anki</string>
+	<key>Copy your friend code to send to a friend</key>
+	<string>Kopyahin ang friend code mo para ipadala sa kaibigan</string>
 	<key>Copy your friend code to share it</key>
 	<string>Kopyahin ang friend code mo para i-share</string>
 	<key>Couldn't add to your calendar. Try again</key>
 	<string>Hindi maidagdag sa calendar mo. Subukan ulit</string>
+	<key>Couldn't check your shortcuts</key>
+	<string>Hindi ma-check ang shortcuts mo</string>
 	<key>Couldn't import %@: %@</key>
 	<string>Hindi ma-import ang %1$@: %2$@</string>
 	<key>Couldn't plan your day</key>
@@ -797,6 +869,12 @@
 	<string>Mga nakaka-distract na app</string>
 	<key>Do Not Disturb</key>
 	<string>Do Not Disturb</string>
+	<key>Do Not Disturb is off</key>
+	<string>Naka-off ang Do Not Disturb</string>
+	<key>Do Not Disturb is ready</key>
+	<string>Handa na ang Do Not Disturb</string>
+	<key>Do Not Disturb isn't set up</key>
+	<string>Hindi pa naka-set up ang Do Not Disturb</string>
 	<key>Dog</key>
 	<string>Aso</string>
 	<key>Done</key>
@@ -885,6 +963,8 @@
 	<string>Inaayos ang trabaho at break mo sa paligid ng mga event ngayon</string>
 	<key>Fitting your work and breaks around tomorrow's events</key>
 	<string>Inaayos ang trabaho at break mo sa paligid ng mga event bukas</string>
+	<key>Fix the shortcut in the Shortcuts app, then test again</key>
+	<string>Ayusin ang shortcut sa Shortcuts app, tapos subukan ulit</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
 	<string>May inayos sa ibang app? Bumalik dito at kusang mag-a-update ang ilaw.</string>
 	<key>Flame Headband</key>
@@ -991,6 +1071,8 @@
 	<string>General</string>
 	<key>Get %@</key>
 	<string>Kunin ang %@</string>
+	<key>Get %@ to control your music from the notch.</key>
+	<string>I-install ang %@ para makontrol ang music mo mula sa notch.</string>
 	<key>Get Anki</key>
 	<string>Kunin ang Anki</string>
 	<key>Get a Key</key>
@@ -1085,6 +1167,10 @@
 	<string>Sa Anki, piliin ang Tools › Add-ons › AnkiConnect › Config</string>
 	<key>In Anki, choose Tools › Add-ons › Get Add-ons…</key>
 	<string>Sa Anki, piliin ang Tools › Add-ons › Get Add-ons…</string>
+	<key>In System Settings, set Tabbi to Full Access under Calendars.</key>
+	<string>Sa System Settings, gawing Full Access ang Tabbi sa ilalim ng Calendars.</string>
+	<key>In System Settings, turn on %@ under Tabbi.</key>
+	<string>Sa System Settings, i-on ang %@ sa ilalim ng Tabbi.</string>
 	<key>In [Shortcuts](shortcuts://), make “%@” with the Set Focus action turning Do Not Disturb on, and “%@” turning it off. Then press Test.</key>
 	<string>Sa [Shortcuts](shortcuts://), gumawa ng “%@” (Set Focus: Do Not Disturb on) at “%@” (off). Pagkatapos, pindutin ang Subukan.</string>
 	<key>In development</key>
@@ -1123,6 +1209,12 @@
 	<string>Mga invite link</string>
 	<key>It belongs to your Apple Account. Delete Account in General removes it.</key>
 	<string>Nakatali ito sa Apple Account mo. Buburahin ito ng Burahin ang Account sa General.</string>
+	<key>It's a free flashcard app. Get it, then come back here.</key>
+	<string>Libreng flashcard app ito. I-download ito, tapos bumalik dito.</string>
+	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
+	<string>AI helper ito na kayang magplano ng araw mo at sumagot sa mga tanong. Gumagana ang lahat ng iba kahit wala ito.</string>
+	<key>It's for people %lld and older.</key>
+	<string>Para ito sa edad %lld pataas.</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>Mga item mula sa ibang event ng taon, nakukuha sa pag-focus habang tumatakbo ang bawat isa</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -1139,6 +1231,8 @@
 	<string>Sumali sa party ni %@</string>
 	<key>Join Party</key>
 	<string>Sumali sa Party</string>
+	<key>Joining Party. This takes a second.</key>
+	<string>Sumasali sa Party. Sandali lang ito.</string>
 	<key>Joining the party server…</key>
 	<string>Kumokonekta sa party server…</string>
 	<key>Keep at least one tab on</key>
@@ -1199,6 +1293,8 @@
 	<string>Hayaang lumabas ang pet sa notch kapag nalilihis ka sa focus</string>
 	<key>Like</key>
 	<string>Like</string>
+	<key>Like Sam or Dr. Sam</key>
+	<string>Gaya ng Migs o Dr. Migs</string>
 	<key>Lilac</key>
 	<string>Lilac</string>
 	<key>Limited</key>
@@ -1223,14 +1319,24 @@
 	<string>Look</string>
 	<key>Looking for %@…</key>
 	<string>Hinahanap ang %@…</string>
+	<key>Looking for Anki</key>
+	<string>Hinahanap ang Anki</string>
 	<key>Looking for Anki…</key>
 	<string>Hinahanap ang Anki…</string>
+	<key>Looking for Claude</key>
+	<string>Hinahanap si Claude</string>
 	<key>Looking for it</key>
 	<string>Hinahanap</string>
+	<key>Looking for your shortcuts</key>
+	<string>Hinahanap ang shortcuts mo</string>
 	<key>Lunar New Year</key>
 	<string>Lunar New Year</string>
 	<key>Main display</key>
 	<string>Pangunahing display</string>
+	<key>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</key>
+	<string>Gumawa ng dalawang mabilis na shortcut sa Shortcuts app. Mga dalawang minuto lang ito.</string>
+	<key>Make “%@” so Tabbi can switch Do Not Disturb both ways.</key>
+	<string>Gawin ang "%@" para ma-on at ma-off ng Tabbi ang Do Not Disturb.</string>
 	<key>Mark as done</key>
 	<string>Markahang tapos</string>
 	<key>Mark as not done</key>
@@ -1307,6 +1413,8 @@
 	<string>Headband ng Ninja</string>
 	<key>No answer</key>
 	<string>Walang sagot</string>
+	<key>No calendars yet</key>
+	<string>Wala pang calendar</string>
 	<key>No events</key>
 	<string>Walang event</string>
 	<key>No events on your calendars today.</key>
@@ -1363,6 +1471,8 @@
 	<string>Hindi pa nasusuri · i-refresh para makita ang live limits mo</string>
 	<key>Not connected</key>
 	<string>Hindi naka-connect</string>
+	<key>Not connected to Tabbi yet</key>
+	<string>Hindi pa nakakonekta sa Tabbi</string>
 	<key>Not connected yet</key>
 	<string>Hindi pa nakakonekta</string>
 	<key>Not done</key>
@@ -1373,6 +1483,8 @@
 	<string>Hindi naka-install</string>
 	<key>Not joined yet</key>
 	<string>Hindi pa sumasali</string>
+	<key>Not now</key>
+	<string>Hindi muna</string>
 	<key>Not reported by this Mac</key>
 	<string>Hindi iniulat ng Mac na ito</string>
 	<key>Not saved</key>
@@ -1427,8 +1539,12 @@
 	<string>Naka-break</string>
 	<key>On today</key>
 	<string>Nasa ngayon na</string>
+	<key>One add-on to go</key>
+	<string>Isang add-on na lang</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>Isang kalmadong session sa bawat pagkakataon. Kaya mo 'to.</string>
+	<key>One shortcut left</key>
+	<string>Isang shortcut na lang</string>
 	<key>One song</key>
 	<string>Isang kanta</string>
 	<key>One step to open decks from here</key>
@@ -1457,8 +1573,12 @@
 	<string>Buksan ang %@ para makita at makontrol ang tumutugtog.</string>
 	<key>Open %@ to start, pause or skip</key>
 	<string>Buksan ang %@ para mag-start, mag-pause o mag-skip</string>
+	<key>Open %@, then Tabbi checks again</key>
+	<string>Buksan ang %@, tapos susuriin ulit ng Tabbi</string>
 	<key>Open Anki</key>
 	<string>Buksan ang Anki</string>
+	<key>Open Anki so Tabbi can see your cards.</key>
+	<string>Buksan ang Anki para makita ng Tabbi ang mga card mo.</string>
 	<key>Open Anki straight into %@</key>
 	<string>Buksan ang Anki diretso sa %@</string>
 	<key>Open Anki to see today's due cards. This tab connects as soon as it's running.</key>
@@ -1491,6 +1611,8 @@
 	<string>Buksan ang Settings &gt; General para mag-sign in with Apple</string>
 	<key>Open System Settings</key>
 	<string>Buksan ang System Settings</string>
+	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
+	<string>Buksan ang Tabbi mula sa Applications folder para ikonekta ang calendar mo.</string>
 	<key>Open and close the notch</key>
 	<string>Buksan at isara ang notch</string>
 	<key>Open answers in the large view</key>
@@ -1513,6 +1635,10 @@
 	<string>Buksan ang notch para makita ang recap mo.</string>
 	<key>Open the official page in your browser</key>
 	<string>Buksan ang opisyal na page sa browser mo</string>
+	<key>Open the official page to download %@</key>
+	<string>Buksan ang official page para i-download ang %@</string>
+	<key>Open the right page in System Settings</key>
+	<string>Buksan ang tamang page sa System Settings</string>
 	<key>Open this chat and continue it</key>
 	<string>Buksan at ituloy ang chat na ito</string>
 	<key>Opening %@…</key>
@@ -1549,6 +1675,8 @@
 	<string>Sombrero ng Party</string>
 	<key>Party asks once before you join. Your answer stays on this Mac.</key>
 	<string>Isang beses lang magtatanong ang Party bago ka sumali. Mananatili sa Mac na ito ang sagot mo.</string>
+	<key>Party can't connect</key>
+	<string>Hindi makakonekta ang Party</string>
 	<key>Party code</key>
 	<string>Party code</string>
 	<key>Party is for people %lld and older. It opens here in %@.</key>
@@ -1557,10 +1685,14 @@
 	<string>Para sa edad %lld pataas ang Party. Magbubukas ito sa %@.</string>
 	<key>Party is no longer available for this account.</key>
 	<string>Hindi na available ang Party para sa account na ito.</string>
+	<key>Party is ready</key>
+	<string>Handa na ang Party</string>
 	<key>Party isn't available</key>
 	<string>Hindi available ang Party</string>
 	<key>Party isn't available yet</key>
 	<string>Hindi pa available ang Party</string>
+	<key>Party isn't set up</key>
+	<string>Hindi pa naka-set up ang Party</string>
 	<key>Party pets</key>
 	<string>Mga Party pet</string>
 	<key>Party session</key>
@@ -1609,6 +1741,10 @@
 	<string>Piliin ulit sa notch ang kit, mga tab mo at ang kailangan nila</string>
 	<key>Pick a month and a year first</key>
 	<string>Pumili muna ng buwan at taon</string>
+	<key>Pick a name and a pet to start. No account needed.</key>
+	<string>Pumili ng pangalan at pet para magsimula. Walang account na kailangan.</string>
+	<key>Pick a name and a pet, and say when you were born.</key>
+	<string>Pumili ng pangalan at pet, at sabihin kung kailan ka ipinanganak.</string>
 	<key>Pick a sound to preview it</key>
 	<string>Pumili ng sound para i-preview</string>
 	<key>Pick any app from your Applications folder</key>
@@ -1621,6 +1757,10 @@
 	<string>Piliin ang claude binary sa Finder</string>
 	<key>Pick the month and year you were born</key>
 	<string>Piliin ang buwan at taon ng kapanganakan mo</string>
+	<key>Pick the name and pet your friends will see. No account or password needed.</key>
+	<string>Pumili ng pangalan at pet na makikita ng mga kaibigan mo. Walang account o password na kailangan.</string>
+	<key>Pick your profile in Anki</key>
+	<string>Piliin ang profile mo sa Anki</string>
 	<key>Pin %@ to the Study button</key>
 	<string>I-pin ang %@ sa Study button</string>
 	<key>Pin as Favorite Deck</key>
@@ -1635,6 +1775,8 @@
 	<string>Planuhin</string>
 	<key>Plan my day</key>
 	<string>Planuhin ang araw</string>
+	<key>Plan my day and Ask AI can use it.</key>
+	<string>Magagamit na ito ng Planuhin ang araw at Ask AI.</string>
 	<key>Plan my day asks the AI you pick in Settings.</key>
 	<string>Ginagamit ng Planuhin ang araw ang AI na pinili mo sa Settings.</string>
 	<key>Plan my day fits your plan around your calendar.</key>
@@ -1659,6 +1801,8 @@
 	<string>Mag-play, mag-pause at mag-skip sa Apple Music.</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>Mag-play, mag-pause at mag-skip sa Spotify.</string>
+	<key>Play, pause and skip songs from the notch.</key>
+	<string>Mag-play, mag-pause at mag-skip ng kanta mula sa notch.</string>
 	<key>Players</key>
 	<string>Mga player</string>
 	<key>Playing in %@</key>
@@ -1853,6 +1997,8 @@
 	<string>I-save ang key na ito sa Keychain mo</string>
 	<key>Save today's review and show the checklist</key>
 	<string>I-save ang review ngayon at ipakita ang checklist</string>
+	<key>Save your name and pet and join Party</key>
+	<string>I-save ang pangalan at pet mo at sumali sa Party</string>
 	<key>Saved chats</key>
 	<string>Mga naka-save na chat</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
@@ -1881,6 +2027,8 @@
 	<string>Piliin ang AnkiConnect at i-click ang Check for Updates</string>
 	<key>Send (Return)</key>
 	<string>I-send (Return)</string>
+	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
+	<string>Ipadala ang code mo sa mga kaibigan para ma-add ka nila. Makikita nila ang pangalan, pet at study timer mo.</string>
 	<key>Send your AI requests to %@?</key>
 	<string>Ipadala ang mga AI request mo sa %@?</string>
 	<key>Sends what you ask to %@.</key>
@@ -1971,6 +2119,8 @@
 	<string>Mag-sign In…</string>
 	<key>Sign Out</key>
 	<string>Mag-sign Out</string>
+	<key>Sign in to Claude</key>
+	<string>Mag-sign in kay Claude</string>
 	<key>Sign in with Apple</key>
 	<string>Sign in with Apple</string>
 	<key>Sign in with your Apple Account to sync your pet across your Macs</key>
@@ -2029,6 +2179,8 @@
 	<string>Sprint</string>
 	<key>Start %@ automatically when you log in</key>
 	<string>Awtomatikong simulan ang %@ pag nag-log in ka</string>
+	<key>Start Party</key>
+	<string>Simulan ang Party</string>
 	<key>Start a %lld minute countdown</key>
 	<string>Simulan ang %lld minutong countdown</string>
 	<key>Start a %lld-minute focus session for everyone in the party</key>
@@ -2131,6 +2283,10 @@
 	<string>Study points na nakuha ngayon, pambili ng outfit ng pet mo</string>
 	<key>Study together</key>
 	<string>Sabay mag-aral</string>
+	<key>Study with a cat</key>
+	<string>Mag-aral kasama ang pusa</string>
+	<key>Study with a dog</key>
+	<string>Mag-aral kasama ang aso</string>
 	<key>Study with friends and see who is focusing now.</key>
 	<string>Mag-aral kasama ang mga kaibigan at tingnan kung sino ang nagfo-focus ngayon.</string>
 	<key>Study with friends, see their timers.</key>
@@ -2169,8 +2325,18 @@
 	<string>Nagsi-sync…</string>
 	<key>System</key>
 	<string>System</string>
+	<key>Tabbi can't control %@</key>
+	<string>Hindi makontrol ng Tabbi ang %@</string>
+	<key>Tabbi can't read your calendar</key>
+	<string>Hindi mabasa ng Tabbi ang calendar mo</string>
+	<key>Tabbi is checking this right now</key>
+	<string>Chine-check ito ng Tabbi ngayon</string>
+	<key>Tabbi leaves your alerts alone until you turn it on.</key>
+	<string>Hindi gagalawin ng Tabbi ang mga alerto mo hangga't hindi mo ito ino-on.</string>
 	<key>Tabbi reads %@ and sends nothing.</key>
 	<string>Binabasa ng Tabbi ang %@ at walang ipinapadala.</string>
+	<key>Tabbi tells you when a focus block or break ends.</key>
+	<string>Sasabihan ka ng Tabbi kapag tapos na ang focus block o break.</string>
 	<key>Tabs</key>
 	<string>Mga Tab</string>
 	<key>Take a break</key>
@@ -2209,8 +2375,12 @@
 	<string>Ang AI na sumasagot sa Ask, Planuhin ang araw at Refine</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>Hindi na-save ng Keychain ang key. Subukan ulit.</string>
+	<key>The Shortcuts app didn't answer in time. Try again in a moment.</key>
+	<string>Hindi agad sumagot ang Shortcuts app. Subukan ulit mamaya.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
 	<string>Walang Shortcuts command line tool sa Mac na ito.</string>
+	<key>The app this needs isn't on this Mac</key>
+	<string>Wala sa Mac na ito ang app na kailangan nito</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>Namumulaklak na. Magpalago ka rin ng sarili mo.</string>
 	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
@@ -2231,6 +2401,8 @@
 	<string>Buwan ng kapanganakan mo</string>
 	<key>The name friends see, up to %lld characters</key>
 	<string>Pangalang makikita ng kaibigan, hanggang %lld character</string>
+	<key>The name friends see, up to %lld letters</key>
+	<string>Ang pangalang makikita ng mga kaibigan, hanggang %lld letra</string>
 	<key>The next seven days at a glance</key>
 	<string>Ang susunod na pitong araw sa isang tingin</string>
 	<key>The party code. Click to copy it, then send it to friends.</key>
@@ -2267,20 +2439,32 @@
 	<string>May 50 kaibigan na sila.</string>
 	<key>Thinking</key>
 	<string>Nag-iisip</string>
+	<key>This Mac blocks calendar access</key>
+	<string>Bina-block ng Mac na ito ang calendar</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>Hindi na puwedeng gamitin ng account na ito ang Party. Kung sa tingin mo ay mali ito, sumulat sa %@.</string>
 	<key>This chat is open</key>
 	<string>Bukas ang chat na ito</string>
+	<key>This copy can't use the calendar</key>
+	<string>Hindi magamit ng kopyang ito ang calendar</string>
 	<key>This deletes your account and everything the server keeps for it: the synced copy of your pet and points, your friend code, friends and parties. Your pet stays on this Mac. This can't be undone.</key>
 	<string>Buburahin nito ang account mo at lahat ng itinatago ng server para dito: ang naka-sync na kopya ng pet at points mo, ang friend code mo, mga kaibigan at party. Mananatili sa Mac na ito ang pet mo. Hindi na ito maibabalik.</string>
 	<key>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</key>
 	<string>Buburahin nito sa friends server ang friend code mo, ang profile at pet mo na nakikita ng kaibigan, ang friends list, mga party na sinalihan mo at ang study streak mo. Hindi ka na makikita ng kaibigan. Mananatili sa Mac na ito ang pet at points mo. Kung naka-on pa ang Party, bagong friend code ang makukuha mo.</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>Demo ito. Walang binura.</string>
+	<key>This is usually short. Check again in a moment.</key>
+	<string>Kadalasan sandali lang ito. Suriin ulit mamaya.</string>
 	<key>This tab reads your decks through the free AnkiConnect add-on.</key>
 	<string>Binabasa ng tab na ito ang mga deck mo gamit ang libreng AnkiConnect add-on.</string>
+	<key>This takes a few seconds.</key>
+	<string>Ilang segundo lang ito.</string>
+	<key>This takes a second.</key>
+	<string>Sandali lang ito.</string>
 	<key>This task is on today's list</key>
 	<string>Nasa listahan ngayon ang task na ito</string>
+	<key>This works. Nothing to do.</key>
+	<string>Gumagana ito. Wala ka nang gagawin.</string>
 	<key>Time</key>
 	<string>Oras</string>
 	<key>Time for a %lld-minute break.</key>
@@ -2313,6 +2497,8 @@
 	<string>Calendar ngayon</string>
 	<key>Today's events and the free time between them. Google calendars show up once added in Internet Accounts.</key>
 	<string>Mga event ngayon at ang libreng oras sa pagitan nila. Lalabas ang mga Google calendar pag naidagdag na sa Internet Accounts.</string>
+	<key>Today's events show up in Tabbi.</key>
+	<string>Lumalabas sa Tabbi ang mga event ngayong araw.</string>
 	<key>Tomorrow</key>
 	<string>Bukas</string>
 	<key>Tomorrow has no free time worth a block before the evening.</key>
@@ -2333,18 +2519,28 @@
 	<string>Subukan ulit</string>
 	<key>Try the server again now</key>
 	<string>Subukan ulit ang server ngayon</string>
+	<key>Try to reach Party again now</key>
+	<string>Subukang abutin ulit ang Party ngayon</string>
 	<key>Trying on %@</key>
 	<string>Sinusubukan ang %@</string>
 	<key>Turn %@ off</key>
 	<string>I-off ang %@</string>
 	<key>Turn %@ on</key>
 	<string>I-on ang %@</string>
+	<key>Turn Do Not Disturb on for a moment, then off again</key>
+	<string>I-on sandali ang Do Not Disturb, tapos i-off ulit</string>
 	<key>Turn on</key>
 	<string>I-on</string>
+	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
+	<string>I-on ang Allow Notifications para sa Tabbi sa System Settings.</string>
 	<key>Turn on Do Not Disturb during focus</key>
 	<string>I-on ang Do Not Disturb habang naka-focus</string>
+	<key>Turn on Do Not Disturb whenever the focus timer runs</key>
+	<string>I-on ang Do Not Disturb tuwing tumatakbo ang focus timer</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>I-on ang JavaScript para sa SoundCloud</string>
+	<key>Turn on Tabbi under Calendars in System Settings.</key>
+	<string>I-on ang Tabbi sa ilalim ng Calendars sa System Settings.</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
 	<string>I-on ang deep focus: may kasamang %@ ang mga focus block</string>
 	<key>Turn on the Anki tab with Anki open so the sprint can count your cards</key>
@@ -2357,6 +2553,8 @@
 	<string>I-off ang shuffle</string>
 	<key>Turn shuffle on</key>
 	<string>I-on ang shuffle</string>
+	<key>Type a name first</key>
+	<string>Mag-type muna ng pangalan</string>
 	<key>Type a shortcut name first</key>
 	<string>Mag-type muna ng pangalan ng shortcut</string>
 	<key>Type a task and press Return to add it; Esc clears</key>
@@ -2437,6 +2635,8 @@
 	<string>Hinihintay magsimula ang Anki</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>Hinihintay magsimula ang Anki, tapos bubuksan ang %@</string>
+	<key>Walk through the steps to connect %@</key>
+	<string>Sundan ang mga hakbang para ikonekta ang %@</string>
 	<key>Wardrobe</key>
 	<string>Wardrobe</string>
 	<key>Wearing</key>
@@ -2455,8 +2655,12 @@
 	<string>Mga Linggo</string>
 	<key>Welcome to %@</key>
 	<string>Welcome sa %@</string>
+	<key>What happened when Tabbi ran your shortcuts</key>
+	<string>Ang nangyari nang patakbuhin ng Tabbi ang shortcuts mo</string>
 	<key>What should we call you?</key>
 	<string>Ano'ng itatawag namin sa iyo?</string>
+	<key>When Anki asked whether to let Tabbi in, the answer was no.</key>
+	<string>Nang tanungin ng Anki kung papapasukin ang Tabbi, hindi ang sagot.</string>
 	<key>When focus ends</key>
 	<string>Pagtapos ng focus</string>
 	<key>When focus starts</key>
@@ -2525,6 +2729,8 @@
 	<string>Mapapalitan mo ito anumang oras sa Settings &gt; General.</string>
 	<key>You can change this later in the %@ tab.</key>
 	<string>Mapapalitan mo ito mamaya sa tab na %@.</string>
+	<key>You can dress your pet up later in the Closet tab.</key>
+	<string>Puwede mong bihisan ang pet mo mamaya sa Closet tab.</string>
 	<key>You can only join a friend's party.</key>
 	<string>Sa party lang ng kaibigan ka puwedeng sumali.</string>
 	<key>You can set this up any time in Settings.</key>
@@ -2535,6 +2741,8 @@
 	<string>Nag-aral ka ng %@ ngayon. Magpahinga ka at magsimula ulit bukas.</string>
 	<key>You started it for the party</key>
 	<string>Ikaw ang nagsimula nito para sa party</string>
+	<key>You're in Party</key>
+	<string>Nasa Party ka na</string>
 	<key>You're not in a party anymore.</key>
 	<string>Wala ka na sa party.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
@@ -2557,16 +2765,26 @@
 	<string>Lalabas dito ang mga card mong due ngayon.</string>
 	<key>Your cat</key>
 	<string>Ang pusa mo</string>
+	<key>Your copy of the AnkiConnect add-on is too old for Tabbi.</key>
+	<string>Masyadong luma para sa Tabbi ang AnkiConnect add-on mo.</string>
 	<key>Your data</key>
 	<string>Data mo</string>
 	<key>Your day on a timeline, with the free time in between.</key>
 	<string>Ang araw mo sa timeline, kasama ang libreng oras sa pagitan.</string>
 	<key>Your dog</key>
 	<string>Ang aso mo</string>
+	<key>Your due cards show up in Tabbi.</key>
+	<string>Lumalabas sa Tabbi ang mga due card mo.</string>
+	<key>Your friend code</key>
+	<string>Friend code mo</string>
+	<key>Your friend code is %@. Share it so friends can add you.</key>
+	<string>%@ ang friend code mo. I-share ito para ma-add ka ng mga kaibigan mo.</string>
 	<key>Your friend code. Copy it and send it to a friend.</key>
 	<string>Ang friend code mo. Kopyahin at ipadala sa kaibigan.</string>
 	<key>Your friend code: %@</key>
 	<string>Friend code mo: %@</string>
+	<key>Your friend code: %@.fontWeight(.semibold).monospacedDigit())</key>
+	<string>Friend code mo: %@.fontWeight(.semibold).monospacedDigit())</string>
 	<key>Your friend just went offline.</key>
 	<string>Nag-offline ang kaibigan mo.</string>
 	<key>Your friend left their party.</key>
@@ -2619,6 +2837,8 @@
 	<string>ngayon lang</string>
 	<key>lectures, labs, and shifts</key>
 	<string>lecture, lab at shift</string>
+	<key>macOS asks once whether Tabbi may use %@</key>
+	<string>Isang beses magtatanong ang macOS kung puwedeng gamitin ng Tabbi ang %@</string>
 	<key>meetings and calls</key>
 	<string>meeting at tawag</string>
 	<key>no free time</key>

@@ -43,6 +43,8 @@
 	<string>공유 세션: %@</string>
 	<key>%@ is already used by another app. Record a different shortcut.</key>
 	<string>%@ 키는 다른 앱에서 이미 쓰고 있어요. 다른 단축키를 입력해 주세요.</string>
+	<key>%@ is connected</key>
+	<string>%@ 연결됨</string>
 	<key>%@ is damaged, so it's left untouched.</key>
 	<string>%@ 파일이 손상되어 그대로 두었어요.</string>
 	<key>%@ is fitting your tasks around today's events</key>
@@ -69,6 +71,10 @@
 	<string>%@가 함께 공부 중</string>
 	<key>%@ is taking the break with you</key>
 	<string>%@도 함께 쉬는 중</string>
+	<key>%@ isn't connected</key>
+	<string>%@ 연결 안 됨</string>
+	<key>%@ isn't on this Mac</key>
+	<string>이 Mac에 %@ 없음</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
 	<string>이 Mac에 아직 %@가 없어요. 연결에서 추가하는 방법을 알려 드려요.</string>
 	<key>%@ isn't set up yet</key>
@@ -131,6 +137,8 @@
 	<string>%@, 한정판: 클릭해서 입기</string>
 	<key>%@. %@</key>
 	<string>%@. %@</string>
+	<key>%@.fontWeight(.medium)). %@</key>
+	<string>%@.fontWeight(.medium)). %@</string>
 	<key>%@: %@</key>
 	<string>%@: %@</string>
 	<key>%@: %@ done today</key>
@@ -245,6 +253,8 @@
 	<string>푹 쉰 한 주였어요. 새로운 시작이 기다려요.</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
 	<string>샘플 하루예요. 캘린더를 연결하면 내 일정이 여기에 표시돼요.</string>
+	<key>A school or work setting may block it. You can check in System Settings.</key>
+	<string>학교나 회사 설정 때문일 수 있어요. 시스템 설정에서 확인할 수 있어요.</string>
 	<key>A shorter timer</key>
 	<string>타이머 줄이기</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
@@ -319,12 +329,22 @@
 	<string>%@ 키를 추가해요</string>
 	<key>Add your %@ key in Settings.</key>
 	<string>설정에서 %@ 키를 추가해 주세요.</string>
+	<key>Add your Google or school account to see its events here.</key>
+	<string>Google 또는 학교 계정을 추가하면 여기서 일정을 볼 수 있어요.</string>
 	<key>Add your calendar</key>
 	<string>캘린더를 추가해요</string>
 	<key>Add…</key>
 	<string>추가…</string>
 	<key>Alerts</key>
 	<string>알림</string>
+	<key>Alerts are blocked</key>
+	<string>알림 차단됨</string>
+	<key>Alerts are off</key>
+	<string>알림 꺼짐</string>
+	<key>Alerts are on</key>
+	<string>알림 켜짐</string>
+	<key>Alerts go quiet while you focus.</key>
+	<string>집중하는 동안 알림이 조용해져요.</string>
 	<key>All</key>
 	<string>전체</string>
 	<key>All %lld</key>
@@ -361,6 +381,8 @@
 	<string>스크린샷 허용</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>내장 디스플레이가 아닌 화면에서도 노치를 허용해요</string>
+	<key>Almost there: one thing left to do</key>
+	<string>거의 다 됐어요: 하나만 더 하면 돼요</string>
 	<key>Already playing: focus is running</key>
 	<string>이미 재생 중: 집중 중입니다</string>
 	<key>Always</key>
@@ -373,16 +395,36 @@
 	<string>천사 날개</string>
 	<key>Animations</key>
 	<string>애니메이션</string>
+	<key>Anki didn't answer</key>
+	<string>Anki 응답 없음</string>
+	<key>Anki has a password on</key>
+	<string>Anki에 암호가 설정됨</string>
+	<key>Anki is busy</key>
+	<string>Anki 사용 중</string>
 	<key>Anki is closed</key>
 	<string>Anki가 닫혀 있어요</string>
+	<key>Anki is connected</key>
+	<string>Anki 연결됨</string>
+	<key>Anki is starting</key>
+	<string>Anki 시작 중</string>
 	<key>Anki is starting. The deck opens for review as soon as it's ready.</key>
 	<string>Anki가 시작되는 중이에요. 준비되면 덱이 열려요.</string>
+	<key>Anki is waiting for you to choose whose cards to open.</key>
+	<string>Anki가 어떤 프로필의 카드를 열지 선택하기를 기다리고 있어요.</string>
 	<key>Anki isn't installed</key>
 	<string>Anki가 설치되어 있지 않아요</string>
+	<key>Anki isn't on this Mac</key>
+	<string>이 Mac에 Anki 없음</string>
+	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
+	<string>Tabbi가 카드를 셀 수 있으려면 Anki에 무료 애드온 AnkiConnect가 필요해요.</string>
+	<key>Anki said no to Tabbi</key>
+	<string>Anki가 Tabbi를 거부했어요</string>
 	<key>Anki wouldn't open</key>
 	<string>Anki를 열 수 없어요</string>
 	<key>AnkiConnect blocked this app</key>
 	<string>AnkiConnect가 이 앱을 차단했어요</string>
+	<key>AnkiConnect is set to ask for a key. Turning that off takes a minute.</key>
+	<string>AnkiConnect가 키를 요구하도록 설정되어 있어요. 끄는 데 1분이면 돼요.</string>
 	<key>AnkiConnect wants an API key</key>
 	<string>AnkiConnect가 API 키를 요구해요</string>
 	<key>Another steady week. Keep it cozy.</key>
@@ -499,6 +541,10 @@
 	<string>캘린더 접근</string>
 	<key>Calendar access is off</key>
 	<string>캘린더 접근이 꺼져 있어요</string>
+	<key>Calendar is connected</key>
+	<string>캘린더 연결됨</string>
+	<key>Calendar isn't connected</key>
+	<string>캘린더 연결 안 됨</string>
 	<key>Calendars</key>
 	<string>캘린더</string>
 	<key>Can't reach the party server</key>
@@ -543,6 +589,8 @@
 	<string>채팅은 이 Mac에만 저장돼요</string>
 	<key>Chats stay on this Mac, in %@'s own folder. Delete them from History in the Ask AI tab.</key>
 	<string>채팅은 이 Mac의 %@ 폴더에만 저장돼요. AI에게 묻기 탭의 기록에서 삭제할 수 있어요.</string>
+	<key>Check %@ again</key>
+	<string>다시 확인: %@</string>
 	<key>Check again</key>
 	<string>다시 확인</string>
 	<key>Check for Updates…</key>
@@ -551,6 +599,8 @@
 	<string>실시간 한도 확인 (claude CLI로 아주 작은 요청을 보내요)</string>
 	<key>Check that this claude runs and report its version</key>
 	<string>이 claude가 실행되는지 확인하고 버전을 알려 줘요</string>
+	<key>Check that your Wi-Fi is on, then try again.</key>
+	<string>Wi-Fi가 켜져 있는지 확인한 다음 다시 시도해 주세요.</string>
 	<key>Check the party server</key>
 	<string>파티 서버를 확인하세요</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
@@ -593,6 +643,12 @@
 	<string>큼직한 헤드폰</string>
 	<key>Classic</key>
 	<string>클래식</string>
+	<key>Claude is installed. Sign in once and Tabbi can use it.</key>
+	<string>Claude가 설치되어 있어요. 한 번 로그인하면 Tabbi가 사용할 수 있어요.</string>
+	<key>Claude is optional</key>
+	<string>Claude는 선택 사항이에요</string>
+	<key>Claude is ready</key>
+	<string>Claude 준비 완료</string>
 	<key>Claude location</key>
 	<string>Claude 위치</string>
 	<key>Clear "%@"</key>
@@ -601,6 +657,10 @@
 	<string>모두 지우기</string>
 	<key>Clear completed tasks</key>
 	<string>완료한 할 일 지우기</string>
+	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
+	<string>연결을 클릭한 다음, Tabbi가 %@ 앱을 제어해도 되는지 Mac이 물으면 허용을 클릭하세요.</string>
+	<key>Click Connect, then Allow when your Mac asks. It only asks once.</key>
+	<string>연결을 클릭한 다음, Mac이 물으면 허용을 클릭하세요. 한 번만 물어요.</string>
 	<key>Click Restore Defaults, then OK</key>
 	<string>기본값 복원을 누른 뒤 OK 클릭</string>
 	<key>Click a block to add or skip just that one</key>
@@ -615,6 +675,8 @@
 	<string>닫기</string>
 	<key>Close %@ settings</key>
 	<string>%@ 설정 닫기</string>
+	<key>Close any open window inside Anki, then check again.</key>
+	<string>Anki 안에 열린 창을 모두 닫은 다음 다시 확인하세요.</string>
 	<key>Close details</key>
 	<string>세부 정보 닫기</string>
 	<key>Close the plan</key>
@@ -623,6 +685,10 @@
 	<string>아무것도 추가하지 않고 계획 닫기</string>
 	<key>Close this</key>
 	<string>닫기</string>
+	<key>Close this. Party keeps trying by itself.</key>
+	<string>닫기. 파티가 알아서 계속 연결을 시도해요.</string>
+	<key>Close this. You can set up Party any time.</key>
+	<string>닫기. 파티는 언제든 설정할 수 있어요.</string>
 	<key>Close this. You can sign in any time.</key>
 	<string>닫기. 언제든지 로그인할 수 있어요.</string>
 	<key>Closet</key>
@@ -647,6 +713,8 @@
 	<string>캘린더를 연결해요</string>
 	<key>Connected</key>
 	<string>연결됨</string>
+	<key>Connecting</key>
+	<string>연결 중</string>
 	<key>Connecting to %@…</key>
 	<string>%@에 연결 중…</string>
 	<key>Connecting to Anki…</key>
@@ -681,10 +749,14 @@
 	<string>친구 코드 복사</string>
 	<key>Copy the AnkiConnect add-on code to paste into Anki</key>
 	<string>Anki에 붙여 넣을 AnkiConnect 코드 복사</string>
+	<key>Copy your friend code to send to a friend</key>
+	<string>친구에게 보낼 친구 코드 복사</string>
 	<key>Copy your friend code to share it</key>
 	<string>친구 코드를 복사해서 공유하세요</string>
 	<key>Couldn't add to your calendar. Try again</key>
 	<string>캘린더에 추가하지 못했어요. 다시 시도해 주세요</string>
+	<key>Couldn't check your shortcuts</key>
+	<string>단축어를 확인하지 못했어요</string>
 	<key>Couldn't import %@: %@</key>
 	<string>%1$@ 키트를 가져오지 못했어요: %2$@</string>
 	<key>Couldn't plan your day</key>
@@ -797,6 +869,12 @@
 	<string>방해되는 앱</string>
 	<key>Do Not Disturb</key>
 	<string>방해금지 모드</string>
+	<key>Do Not Disturb is off</key>
+	<string>방해금지 모드 꺼짐</string>
+	<key>Do Not Disturb is ready</key>
+	<string>방해금지 모드 준비 완료</string>
+	<key>Do Not Disturb isn't set up</key>
+	<string>방해금지 모드 설정 안 됨</string>
 	<key>Dog</key>
 	<string>강아지</string>
 	<key>Done</key>
@@ -885,6 +963,8 @@
 	<string>오늘 일정에 맞춰 작업과 휴식을 배치하는 중</string>
 	<key>Fitting your work and breaks around tomorrow's events</key>
 	<string>내일 일정에 맞춰 작업과 휴식을 배치하는 중</string>
+	<key>Fix the shortcut in the Shortcuts app, then test again</key>
+	<string>단축어 앱에서 단축어를 고친 다음 다시 테스트하세요</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
 	<string>다른 앱에서 고쳤나요? 여기로 돌아오면 표시등이 알아서 바뀌어요.</string>
 	<key>Flame Headband</key>
@@ -991,6 +1071,8 @@
 	<string>일반</string>
 	<key>Get %@</key>
 	<string>%@ 받기</string>
+	<key>Get %@ to control your music from the notch.</key>
+	<string>노치에서 음악을 제어하려면 %@ 앱을 설치하세요.</string>
 	<key>Get Anki</key>
 	<string>Anki 받기</string>
 	<key>Get a Key</key>
@@ -1085,6 +1167,10 @@
 	<string>Anki에서 도구 › 부가 기능 › AnkiConnect › 설정 선택</string>
 	<key>In Anki, choose Tools › Add-ons › Get Add-ons…</key>
 	<string>Anki에서 도구 › 부가 기능 › 부가 기능 받기… 선택</string>
+	<key>In System Settings, set Tabbi to Full Access under Calendars.</key>
+	<string>시스템 설정의 캘린더에서 Tabbi를 전체 접근으로 설정하세요.</string>
+	<key>In System Settings, turn on %@ under Tabbi.</key>
+	<string>시스템 설정에서 Tabbi 아래의 %@ 항목을 켜 주세요.</string>
 	<key>In [Shortcuts](shortcuts://), make “%@” with the Set Focus action turning Do Not Disturb on, and “%@” turning it off. Then press Test.</key>
 	<string>[단축어](shortcuts://)에서 ‘집중 모드 설정’ 동작으로 방해금지 모드를 켜는 “%@”와 끄는 “%@”를 만든 다음 테스트를 누르세요.</string>
 	<key>In development</key>
@@ -1123,6 +1209,12 @@
 	<string>초대 링크</string>
 	<key>It belongs to your Apple Account. Delete Account in General removes it.</key>
 	<string>Apple 계정에 연결돼 있어요. 일반의 계정 삭제로 지울 수 있어요.</string>
+	<key>It's a free flashcard app. Get it, then come back here.</key>
+	<string>무료 플래시카드 앱이에요. 설치한 다음 여기로 돌아오세요.</string>
+	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
+	<string>하루를 계획하고 질문에 답해 주는 AI 도우미예요. 다른 기능은 없어도 모두 작동해요.</string>
+	<key>It's for people %lld and older.</key>
+	<string>만 %lld세 이상만 이용할 수 있어요.</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>올해 다른 이벤트의 아이템이에요. 각 이벤트 기간에 집중하면 얻어요</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -1139,6 +1231,8 @@
 	<string>%@ 님의 파티에 참가</string>
 	<key>Join Party</key>
 	<string>파티 참여</string>
+	<key>Joining Party. This takes a second.</key>
+	<string>파티에 참여하는 중이에요. 잠깐이면 돼요.</string>
 	<key>Joining the party server…</key>
 	<string>파티 서버에 연결 중…</string>
 	<key>Keep at least one tab on</key>
@@ -1199,6 +1293,8 @@
 	<string>집중 시간에 딴짓하면 펫이 노치에서 걸어 나와요</string>
 	<key>Like</key>
 	<string>좋아요</string>
+	<key>Like Sam or Dr. Sam</key>
+	<string>예: 민준 또는 김 박사</string>
 	<key>Lilac</key>
 	<string>라일락</string>
 	<key>Limited</key>
@@ -1223,14 +1319,24 @@
 	<string>모양</string>
 	<key>Looking for %@…</key>
 	<string>%@ 찾는 중…</string>
+	<key>Looking for Anki</key>
+	<string>Anki 찾는 중</string>
 	<key>Looking for Anki…</key>
 	<string>Anki 찾는 중…</string>
+	<key>Looking for Claude</key>
+	<string>Claude 찾는 중</string>
 	<key>Looking for it</key>
 	<string>찾는 중</string>
+	<key>Looking for your shortcuts</key>
+	<string>단축어 찾는 중</string>
 	<key>Lunar New Year</key>
 	<string>설날</string>
 	<key>Main display</key>
 	<string>주 디스플레이</string>
+	<key>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</key>
+	<string>단축어 앱에서 간단한 단축어 두 개를 만들어 주세요. 2분 정도 걸려요.</string>
+	<key>Make “%@” so Tabbi can switch Do Not Disturb both ways.</key>
+	<string>Tabbi가 방해금지 모드를 켜고 끌 수 있도록 ‘%@’ 단축어를 만들어 주세요.</string>
 	<key>Mark as done</key>
 	<string>완료로 표시</string>
 	<key>Mark as not done</key>
@@ -1307,6 +1413,8 @@
 	<string>닌자 머리띠</string>
 	<key>No answer</key>
 	<string>답변 없음</string>
+	<key>No calendars yet</key>
+	<string>아직 캘린더 없음</string>
 	<key>No events</key>
 	<string>일정 없음</string>
 	<key>No events on your calendars today.</key>
@@ -1363,6 +1471,8 @@
 	<string>아직 확인 안 함 · 새로고침해서 한도 불러오기</string>
 	<key>Not connected</key>
 	<string>연결 안 됨</string>
+	<key>Not connected to Tabbi yet</key>
+	<string>아직 Tabbi에 연결되지 않음</string>
 	<key>Not connected yet</key>
 	<string>아직 연결되지 않음</string>
 	<key>Not done</key>
@@ -1373,6 +1483,8 @@
 	<string>설치 안 됨</string>
 	<key>Not joined yet</key>
 	<string>아직 참여하지 않음</string>
+	<key>Not now</key>
+	<string>나중에</string>
 	<key>Not reported by this Mac</key>
 	<string>이 Mac에서 제공 안 됨</string>
 	<key>Not saved</key>
@@ -1427,8 +1539,12 @@
 	<string>쉬는 중</string>
 	<key>On today</key>
 	<string>오늘에 있음</string>
+	<key>One add-on to go</key>
+	<string>애드온 하나 남음</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>한 번에 한 세션씩 차분하게. 할 수 있어요.</string>
+	<key>One shortcut left</key>
+	<string>단축어 하나 남음</string>
 	<key>One song</key>
 	<string>한 곡</string>
 	<key>One step to open decks from here</key>
@@ -1457,8 +1573,12 @@
 	<string>%@을(를) 열면 재생 중인 곡을 보고 제어할 수 있어요.</string>
 	<key>Open %@ to start, pause or skip</key>
 	<string>%@에서 시작, 일시정지, 건너뛰기</string>
+	<key>Open %@, then Tabbi checks again</key>
+	<string>%@ 앱을 열면 Tabbi가 다시 확인해요</string>
 	<key>Open Anki</key>
 	<string>Anki 열기</string>
+	<key>Open Anki so Tabbi can see your cards.</key>
+	<string>Tabbi가 카드를 볼 수 있게 Anki를 열어 주세요.</string>
 	<key>Open Anki straight into %@</key>
 	<string>Anki에서 바로 %@ 열기</string>
 	<key>Open Anki to see today's due cards. This tab connects as soon as it's running.</key>
@@ -1491,6 +1611,8 @@
 	<string>설정 &gt; 일반에서 Apple로 로그인</string>
 	<key>Open System Settings</key>
 	<string>시스템 설정 열기</string>
+	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
+	<string>캘린더를 연결하려면 응용 프로그램 폴더에서 Tabbi를 여세요.</string>
 	<key>Open and close the notch</key>
 	<string>노치 열기 및 닫기</string>
 	<key>Open answers in the large view</key>
@@ -1513,6 +1635,10 @@
 	<string>노치를 열어 요약을 확인하세요.</string>
 	<key>Open the official page in your browser</key>
 	<string>브라우저에서 공식 페이지 열기</string>
+	<key>Open the official page to download %@</key>
+	<string>공식 페이지를 열어 %@ 다운로드</string>
+	<key>Open the right page in System Settings</key>
+	<string>시스템 설정에서 해당 페이지 열기</string>
 	<key>Open this chat and continue it</key>
 	<string>이 채팅을 열고 이어가기</string>
 	<key>Opening %@…</key>
@@ -1549,6 +1675,8 @@
 	<string>파티 모자</string>
 	<key>Party asks once before you join. Your answer stays on this Mac.</key>
 	<string>참여 전에 한 번만 물어봐요. 답은 이 Mac에만 남아요.</string>
+	<key>Party can't connect</key>
+	<string>파티 연결 실패</string>
 	<key>Party code</key>
 	<string>파티 코드</string>
 	<key>Party is for people %lld and older. It opens here in %@.</key>
@@ -1557,10 +1685,14 @@
 	<string>파티는 만 %lld세 이상만 이용할 수 있어요. %@에 열려요.</string>
 	<key>Party is no longer available for this account.</key>
 	<string>이 계정은 더 이상 파티를 이용할 수 없어요.</string>
+	<key>Party is ready</key>
+	<string>파티 준비 완료</string>
 	<key>Party isn't available</key>
 	<string>파티를 사용할 수 없어요</string>
 	<key>Party isn't available yet</key>
 	<string>아직 파티를 이용할 수 없어요</string>
+	<key>Party isn't set up</key>
+	<string>파티 설정 안 됨</string>
 	<key>Party pets</key>
 	<string>Party 펫</string>
 	<key>Party session</key>
@@ -1609,6 +1741,10 @@
 	<string>노치에서 키트와 탭, 필요한 설정을 다시 골라요</string>
 	<key>Pick a month and a year first</key>
 	<string>먼저 월과 연도를 고르세요</string>
+	<key>Pick a name and a pet to start. No account needed.</key>
+	<string>이름과 펫을 골라 시작하세요. 계정은 필요 없어요.</string>
+	<key>Pick a name and a pet, and say when you were born.</key>
+	<string>이름과 펫을 고르고 생년월을 알려 주세요.</string>
 	<key>Pick a sound to preview it</key>
 	<string>미리 들을 사운드를 고르세요</string>
 	<key>Pick any app from your Applications folder</key>
@@ -1621,6 +1757,10 @@
 	<string>Finder에서 claude 실행 파일 고르기</string>
 	<key>Pick the month and year you were born</key>
 	<string>태어난 달과 연도를 고르세요</string>
+	<key>Pick the name and pet your friends will see. No account or password needed.</key>
+	<string>친구에게 보일 이름과 펫을 고르세요. 계정이나 암호는 필요 없어요.</string>
+	<key>Pick your profile in Anki</key>
+	<string>Anki에서 프로필 선택</string>
 	<key>Pin %@ to the Study button</key>
 	<string>학습 버튼에 %@ 고정</string>
 	<key>Pin as Favorite Deck</key>
@@ -1635,6 +1775,8 @@
 	<string>계획</string>
 	<key>Plan my day</key>
 	<string>하루 계획</string>
+	<key>Plan my day and Ask AI can use it.</key>
+	<string>하루 계획과 AI에게 묻기에서 사용할 수 있어요.</string>
 	<key>Plan my day asks the AI you pick in Settings.</key>
 	<string>하루 계획은 설정에서 고른 AI에게 요청해요.</string>
 	<key>Plan my day fits your plan around your calendar.</key>
@@ -1659,6 +1801,8 @@
 	<string>Apple Music에서 재생, 일시정지, 건너뛰기.</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>Spotify에서 재생, 일시정지, 건너뛰기.</string>
+	<key>Play, pause and skip songs from the notch.</key>
+	<string>노치에서 노래를 재생, 일시정지, 건너뛸 수 있어요.</string>
 	<key>Players</key>
 	<string>플레이어</string>
 	<key>Playing in %@</key>
@@ -1853,6 +1997,8 @@
 	<string>이 키를 키체인에 저장</string>
 	<key>Save today's review and show the checklist</key>
 	<string>오늘의 마무리를 저장하고 체크리스트 보기</string>
+	<key>Save your name and pet and join Party</key>
+	<string>이름과 펫을 저장하고 파티에 참여</string>
 	<key>Saved chats</key>
 	<string>저장된 채팅</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
@@ -1881,6 +2027,8 @@
 	<string>AnkiConnect를 선택하고 업데이트 확인 클릭</string>
 	<key>Send (Return)</key>
 	<string>보내기 (Return)</string>
+	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
+	<string>친구가 나를 추가할 수 있게 코드를 보내세요. 친구에게는 이름, 펫, 공부 타이머가 보여요.</string>
 	<key>Send your AI requests to %@?</key>
 	<string>AI 요청을 %@에 보낼까요?</string>
 	<key>Sends what you ask to %@.</key>
@@ -1971,6 +2119,8 @@
 	<string>로그인…</string>
 	<key>Sign Out</key>
 	<string>로그아웃</string>
+	<key>Sign in to Claude</key>
+	<string>Claude에 로그인</string>
 	<key>Sign in with Apple</key>
 	<string>Apple로 로그인</string>
 	<key>Sign in with your Apple Account to sync your pet across your Macs</key>
@@ -2029,6 +2179,8 @@
 	<string>스프린트</string>
 	<key>Start %@ automatically when you log in</key>
 	<string>로그인할 때 %@을(를) 자동으로 실행해요</string>
+	<key>Start Party</key>
+	<string>파티 시작</string>
 	<key>Start a %lld minute countdown</key>
 	<string>%lld분 카운트다운 시작</string>
 	<key>Start a %lld-minute focus session for everyone in the party</key>
@@ -2131,6 +2283,10 @@
 	<string>오늘 모은 공부 포인트, 펫 옷에 쓸 수 있어요</string>
 	<key>Study together</key>
 	<string>함께 공부해요</string>
+	<key>Study with a cat</key>
+	<string>고양이와 공부하기</string>
+	<key>Study with a dog</key>
+	<string>강아지와 공부하기</string>
 	<key>Study with friends and see who is focusing now.</key>
 	<string>친구와 함께 공부하고 지금 누가 집중 중인지 봐요.</string>
 	<key>Study with friends, see their timers.</key>
@@ -2169,8 +2325,18 @@
 	<string>동기화 중…</string>
 	<key>System</key>
 	<string>시스템</string>
+	<key>Tabbi can't control %@</key>
+	<string>Tabbi가 %@ 제어 불가</string>
+	<key>Tabbi can't read your calendar</key>
+	<string>Tabbi가 캘린더를 못 읽어요</string>
+	<key>Tabbi is checking this right now</key>
+	<string>Tabbi가 지금 확인하는 중이에요</string>
+	<key>Tabbi leaves your alerts alone until you turn it on.</key>
+	<string>켜기 전까지 Tabbi는 알림을 건드리지 않아요.</string>
 	<key>Tabbi reads %@ and sends nothing.</key>
 	<string>Tabbi는 %@만 읽고 아무것도 보내지 않아요.</string>
+	<key>Tabbi tells you when a focus block or break ends.</key>
+	<string>집중 시간이나 휴식이 끝나면 Tabbi가 알려 줘요.</string>
 	<key>Tabs</key>
 	<string>탭</string>
 	<key>Take a break</key>
@@ -2209,8 +2375,12 @@
 	<string>AI에게 묻기, 하루 계획, 다듬기에 답하는 AI</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>키체인에 키를 저장하지 못했어요. 다시 시도해 주세요.</string>
+	<key>The Shortcuts app didn't answer in time. Try again in a moment.</key>
+	<string>단축어 앱이 제때 응답하지 않았어요. 잠시 후 다시 시도해 주세요.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
 	<string>이 Mac에서는 단축어 명령줄 도구를 사용할 수 없습니다.</string>
+	<key>The app this needs isn't on this Mac</key>
+	<string>필요한 앱이 이 Mac에 없어요</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>꽃이 피었어요. 나만의 무언가를 키워 봐요.</string>
 	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
@@ -2231,6 +2401,8 @@
 	<string>태어난 달</string>
 	<key>The name friends see, up to %lld characters</key>
 	<string>친구에게 보이는 이름, 최대 %lld자</string>
+	<key>The name friends see, up to %lld letters</key>
+	<string>친구에게 보일 이름, 최대 %lld자</string>
 	<key>The next seven days at a glance</key>
 	<string>앞으로 7일을 한눈에</string>
 	<key>The party code. Click to copy it, then send it to friends.</key>
@@ -2267,20 +2439,32 @@
 	<string>상대방의 친구가 이미 50명이에요.</string>
 	<key>Thinking</key>
 	<string>생각 중</string>
+	<key>This Mac blocks calendar access</key>
+	<string>이 Mac은 캘린더 접근을 막아요</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>이 계정은 더 이상 파티를 사용할 수 없어요. 잘못된 것 같다면 %@(으)로 문의하세요.</string>
 	<key>This chat is open</key>
 	<string>이 채팅이 열려 있어요</string>
+	<key>This copy can't use the calendar</key>
+	<string>이 사본은 캘린더를 쓸 수 없어요</string>
 	<key>This deletes your account and everything the server keeps for it: the synced copy of your pet and points, your friend code, friends and parties. Your pet stays on this Mac. This can't be undone.</key>
 	<string>계정과 서버에 보관된 모든 데이터(동기화된 펫과 포인트 사본, 친구 코드, 친구, 파티)가 삭제돼요. 펫은 이 Mac에 남아요. 이 작업은 되돌릴 수 없어요.</string>
 	<key>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</key>
 	<string>친구 서버에서 친구 코드, 친구에게 보이는 프로필과 펫, 친구 목록, 파티 참여 정보, 공부 연속 기록이 삭제돼요. 친구에게 더 이상 보이지 않아요. 펫과 포인트는 이 Mac에 남아요. 파티를 계속 켜 두면 새 친구 코드를 받아요.</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>데모예요. 아무것도 삭제되지 않았어요.</string>
+	<key>This is usually short. Check again in a moment.</key>
+	<string>보통 금방 풀려요. 잠시 후 다시 확인하세요.</string>
 	<key>This tab reads your decks through the free AnkiConnect add-on.</key>
 	<string>이 탭은 무료 AnkiConnect 부가 기능으로 덱을 읽어요.</string>
+	<key>This takes a few seconds.</key>
+	<string>몇 초 걸려요.</string>
+	<key>This takes a second.</key>
+	<string>잠깐이면 돼요.</string>
 	<key>This task is on today's list</key>
 	<string>이 할 일은 오늘 목록에 있어요</string>
+	<key>This works. Nothing to do.</key>
+	<string>잘 작동해요. 할 일이 없어요.</string>
 	<key>Time</key>
 	<string>시간</string>
 	<key>Time for a %lld-minute break.</key>
@@ -2313,6 +2497,8 @@
 	<string>오늘의 캘린더</string>
 	<key>Today's events and the free time between them. Google calendars show up once added in Internet Accounts.</key>
 	<string>오늘 일정과 그 사이 여유 시간. Google 캘린더는 인터넷 계정에 추가하면 보여요.</string>
+	<key>Today's events show up in Tabbi.</key>
+	<string>오늘의 일정이 Tabbi에 표시돼요.</string>
 	<key>Tomorrow</key>
 	<string>내일</string>
 	<key>Tomorrow has no free time worth a block before the evening.</key>
@@ -2333,18 +2519,28 @@
 	<string>다시 시도</string>
 	<key>Try the server again now</key>
 	<string>지금 서버에 다시 연결</string>
+	<key>Try to reach Party again now</key>
+	<string>지금 파티에 다시 연결 시도</string>
 	<key>Trying on %@</key>
 	<string>%@ 입어 보는 중</string>
 	<key>Turn %@ off</key>
 	<string>%@ 끄기</string>
 	<key>Turn %@ on</key>
 	<string>%@ 켜기</string>
+	<key>Turn Do Not Disturb on for a moment, then off again</key>
+	<string>방해금지 모드를 잠깐 켰다가 다시 끄기</string>
 	<key>Turn on</key>
 	<string>켜기</string>
+	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
+	<string>시스템 설정에서 Tabbi의 알림 허용을 켜 주세요.</string>
 	<key>Turn on Do Not Disturb during focus</key>
 	<string>집중하는 동안 방해금지 모드 켜기</string>
+	<key>Turn on Do Not Disturb whenever the focus timer runs</key>
+	<string>집중 타이머가 돌아갈 때마다 방해금지 모드 켜기</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>SoundCloud용 JavaScript를 켜세요</string>
+	<key>Turn on Tabbi under Calendars in System Settings.</key>
+	<string>시스템 설정의 캘린더에서 Tabbi를 켜 주세요.</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
 	<string>딥 포커스 켜기: 집중 블록에 %@</string>
 	<key>Turn on the Anki tab with Anki open so the sprint can count your cards</key>
@@ -2357,6 +2553,8 @@
 	<string>셔플 끄기</string>
 	<key>Turn shuffle on</key>
 	<string>셔플 켜기</string>
+	<key>Type a name first</key>
+	<string>먼저 이름을 입력하세요</string>
 	<key>Type a shortcut name first</key>
 	<string>먼저 단축어 이름을 입력하세요</string>
 	<key>Type a task and press Return to add it; Esc clears</key>
@@ -2437,6 +2635,8 @@
 	<string>Anki가 켜지길 기다리는 중</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>Anki가 켜지면 %@ 덱을 열어요</string>
+	<key>Walk through the steps to connect %@</key>
+	<string>단계별로 연결하기: %@</string>
 	<key>Wardrobe</key>
 	<string>옷장</string>
 	<key>Wearing</key>
@@ -2455,8 +2655,12 @@
 	<string>주간</string>
 	<key>Welcome to %@</key>
 	<string>%@에 어서 오세요</string>
+	<key>What happened when Tabbi ran your shortcuts</key>
+	<string>Tabbi가 단축어를 실행했을 때의 결과</string>
 	<key>What should we call you?</key>
 	<string>뭐라고 부를까요?</string>
+	<key>When Anki asked whether to let Tabbi in, the answer was no.</key>
+	<string>Anki가 Tabbi 접근 허용 여부를 물었을 때 거부를 선택했어요.</string>
 	<key>When focus ends</key>
 	<string>집중 종료 시</string>
 	<key>When focus starts</key>
@@ -2525,6 +2729,8 @@
 	<string>설정 &gt; 일반에서 언제든 바꿀 수 있어요.</string>
 	<key>You can change this later in the %@ tab.</key>
 	<string>나중에 %@ 탭에서 바꿀 수 있어요.</string>
+	<key>You can dress your pet up later in the Closet tab.</key>
+	<string>펫 꾸미기는 나중에 옷장 탭에서 할 수 있어요.</string>
 	<key>You can only join a friend's party.</key>
 	<string>친구의 파티에만 참여할 수 있어요.</string>
 	<key>You can set this up any time in Settings.</key>
@@ -2535,6 +2741,8 @@
 	<string>오늘 %@ 공부했어요. 푹 쉬고 내일 새롭게 시작해요.</string>
 	<key>You started it for the party</key>
 	<string>내가 파티를 위해 시작했어요</string>
+	<key>You're in Party</key>
+	<string>파티에 참여했어요</string>
 	<key>You're not in a party anymore.</key>
 	<string>더 이상 파티에 있지 않아요.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
@@ -2557,16 +2765,26 @@
 	<string>오늘 복습할 카드가 여기 표시돼요.</string>
 	<key>Your cat</key>
 	<string>너의 고양이</string>
+	<key>Your copy of the AnkiConnect add-on is too old for Tabbi.</key>
+	<string>설치된 AnkiConnect 애드온이 너무 오래되어 Tabbi에서 쓸 수 없어요.</string>
 	<key>Your data</key>
 	<string>내 데이터</string>
 	<key>Your day on a timeline, with the free time in between.</key>
 	<string>하루를 타임라인으로, 빈 시간까지 한눈에.</string>
 	<key>Your dog</key>
 	<string>너의 강아지</string>
+	<key>Your due cards show up in Tabbi.</key>
+	<string>복습할 카드가 Tabbi에 표시돼요.</string>
+	<key>Your friend code</key>
+	<string>내 친구 코드</string>
+	<key>Your friend code is %@. Share it so friends can add you.</key>
+	<string>내 친구 코드는 %@예요. 친구가 나를 추가할 수 있게 공유하세요.</string>
 	<key>Your friend code. Copy it and send it to a friend.</key>
 	<string>내 친구 코드입니다. 복사해서 친구에게 보내세요.</string>
 	<key>Your friend code: %@</key>
 	<string>내 친구 코드: %@</string>
+	<key>Your friend code: %@.fontWeight(.semibold).monospacedDigit())</key>
+	<string>내 친구 코드: %@.fontWeight(.semibold).monospacedDigit())</string>
 	<key>Your friend just went offline.</key>
 	<string>친구가 방금 오프라인이 됐어요.</string>
 	<key>Your friend left their party.</key>
@@ -2619,6 +2837,8 @@
 	<string>방금</string>
 	<key>lectures, labs, and shifts</key>
 	<string>강의, 실습, 근무</string>
+	<key>macOS asks once whether Tabbi may use %@</key>
+	<string>macOS가 Tabbi의 사용 허용 여부를 한 번 물어요: %@</string>
 	<key>meetings and calls</key>
 	<string>회의와 통화</string>
 	<key>no free time</key>

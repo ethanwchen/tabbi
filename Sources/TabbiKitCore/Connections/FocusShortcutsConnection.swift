@@ -43,31 +43,31 @@ public struct FocusShortcutsState: Hashable, Sendable {
 
     public var connectionStatus: ConnectionStatus {
         guard isTurnedOn else {
-            return ConnectionStatus(light: .notSetUp, headline: "Do Not Disturb is off",
-                                    detail: "Tabbi leaves your alerts alone until you turn it on.",
+            return ConnectionStatus(light: .notSetUp, headline: String(localized: "Do Not Disturb is off", bundle: .tabbi),
+                                    detail: String(localized: "Tabbi leaves your alerts alone until you turn it on.", bundle: .tabbi),
                                     action: .turnOnDoNotDisturb)
         }
         if couldNotList {
-            return ConnectionStatus(light: .needsStep, headline: "Couldn't check your shortcuts",
-                                    detail: "The Shortcuts app didn't answer in time. Try again in a moment.",
+            return ConnectionStatus(light: .needsStep, headline: String(localized: "Couldn't check your shortcuts", bundle: .tabbi),
+                                    detail: String(localized: "The Shortcuts app didn't answer in time. Try again in a moment.", bundle: .tabbi),
                                     action: .checkAgain)
         }
         guard installed != nil else {
-            return ConnectionStatus(light: .checking, headline: "Looking for your shortcuts",
-                                    detail: "This takes a second.")
+            return ConnectionStatus(light: .checking, headline: String(localized: "Looking for your shortcuts", bundle: .tabbi),
+                                    detail: String(localized: "This takes a second.", bundle: .tabbi))
         }
         switch missing.count {
         case 0:
-            return ConnectionStatus(light: .connected, headline: "Do Not Disturb is ready",
-                                    detail: "Alerts go quiet while you focus.",
+            return ConnectionStatus(light: .connected, headline: String(localized: "Do Not Disturb is ready", bundle: .tabbi),
+                                    detail: String(localized: "Alerts go quiet while you focus.", bundle: .tabbi),
                                     suggestion: .testDoNotDisturb)
         case 1:
-            return ConnectionStatus(light: .needsStep, headline: "One shortcut left",
-                                    detail: "Make \u{201C}\(missing[0])\u{201D} so Tabbi can switch Do Not Disturb both ways.",
+            return ConnectionStatus(light: .needsStep, headline: String(localized: "One shortcut left", bundle: .tabbi),
+                                    detail: String(localized: "Make \u{201C}\(missing[0])\u{201D} so Tabbi can switch Do Not Disturb both ways.", bundle: .tabbi),
                                     action: .showGuide(.focusShortcuts))
         default:
-            return ConnectionStatus(light: .notSetUp, headline: "Do Not Disturb isn't set up",
-                                    detail: "Make two quick shortcuts in the Shortcuts app. It takes about two minutes.",
+            return ConnectionStatus(light: .notSetUp, headline: String(localized: "Do Not Disturb isn't set up", bundle: .tabbi),
+                                    detail: String(localized: "Make two quick shortcuts in the Shortcuts app. It takes about two minutes.", bundle: .tabbi),
                                     action: .showGuide(.focusShortcuts))
         }
     }

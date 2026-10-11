@@ -14,8 +14,8 @@ public enum ConnectionStepAction: Hashable, Sendable {
     public var title: String {
         switch self {
         case .copyAndOpen(_, let app) where app == .anki: "Copy code and open Anki"
-        case .copyAndOpen(_, let app): "Copy and open \(app.name)"
-        case .openApp(let app): "Open \(app.name)"
+        case .copyAndOpen(_, let app): "Copy and open \(app.displayName)"
+        case .openApp(let app): "Open \(app.displayName)"
         case .openSettings(.internetAccounts): "Open Internet Accounts"
         case .openSettings: "Open System Settings"
         }
@@ -238,10 +238,10 @@ extension ConnectionPermission {
         case .automation(let app):
             ConnectionPriming(
                 symbol: "music.note",
-                title: "Control \(app.name) from the notch",
-                message: "Next, your Mac asks if Tabbi can control \(app.name). Click Allow.",
+                title: "Control \(app.displayName) from the notch",
+                message: "Next, your Mac asks if Tabbi can control \(app.displayName). Click Allow.",
                 points: ["Tabbi only plays, pauses, skips and shows what's playing.",
-                         "If \(app.name) isn't open, Tabbi opens it first so your Mac can ask."]
+                         "If \(app.displayName) isn't open, Tabbi opens it first so your Mac can ask."]
             )
         }
     }

@@ -420,8 +420,8 @@ extension ConnectionStepAction {
     /// The start button's tooltip.
     var help: String {
         switch self {
-        case .copyAndOpen(_, let app): "Copy what you need to paste, then open \(app.name)"
-        case .openApp(let app): "Open \(app.name)"
+        case .copyAndOpen(_, let app): "Copy what you need to paste, then open \(app.displayName)"
+        case .openApp(let app): "Open \(app.displayName)"
         case .openSettings: "Open the right page in System Settings"
         }
     }

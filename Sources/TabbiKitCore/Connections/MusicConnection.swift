@@ -27,26 +27,26 @@ public struct MusicConnectionState: Hashable, Sendable {
     }
 
     public var connectionStatus: ConnectionStatus {
-        let name = app.name
+        let name = app.displayName
         guard isInstalled else {
-            return ConnectionStatus(light: .notInstalled, headline: "\(name) isn't on this Mac",
-                                    detail: "Get \(name) to control your music from the notch.",
+            return ConnectionStatus(light: .notInstalled, headline: String(localized: "\(name) isn't on this Mac", bundle: .tabbi),
+                                    detail: String(localized: "Get \(name) to control your music from the notch.", bundle: .tabbi),
                                     action: app.downloadPage == nil ? nil : .download(app))
         }
         switch permission {
         case .granted:
-            return ConnectionStatus(light: .connected, headline: "\(name) is connected",
-                                    detail: "Play, pause and skip songs from the notch.")
+            return ConnectionStatus(light: .connected, headline: String(localized: "\(name) is connected", bundle: .tabbi),
+                                    detail: String(localized: "Play, pause and skip songs from the notch.", bundle: .tabbi))
         case .appClosed where grantedBefore:
-            return ConnectionStatus(light: .connected, headline: "\(name) is connected",
-                                    detail: "Play, pause and skip songs from the notch.")
+            return ConnectionStatus(light: .connected, headline: String(localized: "\(name) is connected", bundle: .tabbi),
+                                    detail: String(localized: "Play, pause and skip songs from the notch.", bundle: .tabbi))
         case .denied:
-            return ConnectionStatus(light: .needsStep, headline: "Tabbi can't control \(name)",
-                                    detail: "In System Settings, turn on \(name) under Tabbi.",
+            return ConnectionStatus(light: .needsStep, headline: String(localized: "Tabbi can't control \(name)", bundle: .tabbi),
+                                    detail: String(localized: "In System Settings, turn on \(name) under Tabbi.", bundle: .tabbi),
                                     action: .openSettings(.automationPrivacy))
         case .notAsked, .appClosed:
-            return ConnectionStatus(light: .notSetUp, headline: "\(name) isn't connected",
-                                    detail: "Click Connect, then Allow when your Mac asks if Tabbi can control \(name).",
+            return ConnectionStatus(light: .notSetUp, headline: String(localized: "\(name) isn't connected", bundle: .tabbi),
+                                    detail: String(localized: "Click Connect, then Allow when your Mac asks if Tabbi can control \(name).", bundle: .tabbi),
                                     action: .askPermission(.automation(app)))
         }
     }

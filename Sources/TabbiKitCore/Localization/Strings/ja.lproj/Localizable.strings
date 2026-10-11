@@ -43,6 +43,8 @@
 	<string>共有セッション: %@</string>
 	<key>%@ is already used by another app. Record a different shortcut.</key>
 	<string>%@は別のアプリで使われています。別のショートカットを登録してください。</string>
+	<key>%@ is connected</key>
+	<string>%@に接続済み</string>
 	<key>%@ is damaged, so it's left untouched.</key>
 	<string>%@ が破損しているため、そのままにしています。</string>
 	<key>%@ is fitting your tasks around today's events</key>
@@ -69,6 +71,10 @@
 	<string>%@が一緒に勉強中</string>
 	<key>%@ is taking the break with you</key>
 	<string>%@もいっしょに休憩中</string>
+	<key>%@ isn't connected</key>
+	<string>%@は未接続です</string>
+	<key>%@ isn't on this Mac</key>
+	<string>%@がこのMacにありません</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
 	<string>%@ はまだこの Mac にありません。追加方法は「接続」で確認できます。</string>
 	<key>%@ isn't set up yet</key>
@@ -131,6 +137,8 @@
 	<string>%@(限定): クリックで着る</string>
 	<key>%@. %@</key>
 	<string>%@。%@</string>
+	<key>%@.fontWeight(.medium)). %@</key>
+	<string>%@.fontWeight(.medium))。%@</string>
 	<key>%@: %@</key>
 	<string>%@：%@</string>
 	<key>%@: %@ done today</key>
@@ -245,6 +253,8 @@
 	<string>ひと休みの1週間。新しいスタートが待ってるよ。</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
 	<string>サンプルの1日です。カレンダーを接続すると、あなたの予定がここに表示されます。</string>
+	<key>A school or work setting may block it. You can check in System Settings.</key>
+	<string>学校や職場の設定でブロックされている場合があります。システム設定で確認できます。</string>
 	<key>A shorter timer</key>
 	<string>タイマーを短く</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
@@ -319,12 +329,22 @@
 	<string>%@ のキーを追加</string>
 	<key>Add your %@ key in Settings.</key>
 	<string>設定で %@ のキーを追加してください。</string>
+	<key>Add your Google or school account to see its events here.</key>
+	<string>Googleや学校のアカウントを追加すると、その予定がここに表示されます。</string>
 	<key>Add your calendar</key>
 	<string>カレンダーを追加しよう</string>
 	<key>Add…</key>
 	<string>追加…</string>
 	<key>Alerts</key>
 	<string>通知</string>
+	<key>Alerts are blocked</key>
+	<string>通知がブロックされています</string>
+	<key>Alerts are off</key>
+	<string>通知はオフです</string>
+	<key>Alerts are on</key>
+	<string>通知はオンです</string>
+	<key>Alerts go quiet while you focus.</key>
+	<string>集中している間は通知が静かになります。</string>
 	<key>All</key>
 	<string>すべて</string>
 	<key>All %lld</key>
@@ -361,6 +381,8 @@
 	<string>スクリーンショットを許可</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>内蔵ディスプレイ以外にもノッチを表示します</string>
+	<key>Almost there: one thing left to do</key>
+	<string>あと少し：残りは1ステップです</string>
 	<key>Already playing: focus is running</key>
 	<string>再生中: 集中しています</string>
 	<key>Always</key>
@@ -373,16 +395,36 @@
 	<string>天使の羽</string>
 	<key>Animations</key>
 	<string>アニメーション</string>
+	<key>Anki didn't answer</key>
+	<string>Ankiが応答しませんでした</string>
+	<key>Anki has a password on</key>
+	<string>Ankiにパスワードが設定されています</string>
+	<key>Anki is busy</key>
+	<string>Ankiは処理中です</string>
 	<key>Anki is closed</key>
 	<string>Anki が閉じています</string>
+	<key>Anki is connected</key>
+	<string>Ankiに接続済み</string>
+	<key>Anki is starting</key>
+	<string>Ankiを起動中</string>
 	<key>Anki is starting. The deck opens for review as soon as it's ready.</key>
 	<string>Anki を起動中です。準備ができたらデッキが開きます。</string>
+	<key>Anki is waiting for you to choose whose cards to open.</key>
+	<string>Ankiは、どのプロファイルのカードを開くか選ばれるのを待っています。</string>
 	<key>Anki isn't installed</key>
 	<string>Anki がインストールされていません</string>
+	<key>Anki isn't on this Mac</key>
+	<string>AnkiがこのMacにありません</string>
+	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
+	<string>TabbiがカードをカウントするにはAnkiConnectという無料アドオンが必要です。</string>
+	<key>Anki said no to Tabbi</key>
+	<string>AnkiがTabbiを拒否しました</string>
 	<key>Anki wouldn't open</key>
 	<string>Anki を開けませんでした</string>
 	<key>AnkiConnect blocked this app</key>
 	<string>AnkiConnect がこのアプリをブロックしました</string>
+	<key>AnkiConnect is set to ask for a key. Turning that off takes a minute.</key>
+	<string>AnkiConnectがキーを求める設定になっています。オフにするのは1分ほどです。</string>
 	<key>AnkiConnect wants an API key</key>
 	<string>AnkiConnect が API キーを求めています</string>
 	<key>Another steady week. Keep it cozy.</key>
@@ -499,6 +541,10 @@
 	<string>カレンダー連携</string>
 	<key>Calendar access is off</key>
 	<string>カレンダーへのアクセスがオフです</string>
+	<key>Calendar is connected</key>
+	<string>カレンダーに接続済み</string>
+	<key>Calendar isn't connected</key>
+	<string>カレンダーは未接続です</string>
 	<key>Calendars</key>
 	<string>カレンダー</string>
 	<key>Can't reach the party server</key>
@@ -543,6 +589,8 @@
 	<string>チャットはこのMacにだけ保存</string>
 	<key>Chats stay on this Mac, in %@'s own folder. Delete them from History in the Ask AI tab.</key>
 	<string>チャットはこのMacの%@専用フォルダに保存されます。「AIに質問」タブの履歴から削除できます。</string>
+	<key>Check %@ again</key>
+	<string>%@をもう一度確認</string>
 	<key>Check again</key>
 	<string>もう一度確認</string>
 	<key>Check for Updates…</key>
@@ -551,6 +599,8 @@
 	<string>上限をリアルタイムで確認（claude CLIでごく小さなリクエストを送信）</string>
 	<key>Check that this claude runs and report its version</key>
 	<string>このclaudeが動くか確認し、バージョンを表示する</string>
+	<key>Check that your Wi-Fi is on, then try again.</key>
+	<string>Wi-Fiがオンになっているか確認して、もう一度お試しください。</string>
 	<key>Check the party server</key>
 	<string>パーティサーバーを確認してください</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
@@ -593,6 +643,12 @@
 	<string>もこもこヘッドホン</string>
 	<key>Classic</key>
 	<string>クラシック</string>
+	<key>Claude is installed. Sign in once and Tabbi can use it.</key>
+	<string>Claudeはインストール済みです。一度サインインすればTabbiで使えます。</string>
+	<key>Claude is optional</key>
+	<string>Claudeは任意です</string>
+	<key>Claude is ready</key>
+	<string>Claudeの準備OK</string>
 	<key>Claude location</key>
 	<string>Claudeの場所</string>
 	<key>Clear "%@"</key>
@@ -601,6 +657,10 @@
 	<string>すべて消去</string>
 	<key>Clear completed tasks</key>
 	<string>完了したタスクを消去</string>
+	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
+	<string>「接続」をクリックし、Tabbiが%@を操作してよいか尋ねられたら「許可」を選んでください。</string>
+	<key>Click Connect, then Allow when your Mac asks. It only asks once.</key>
+	<string>「接続」をクリックし、Macに尋ねられたら「許可」を選んでください。確認は一度だけです。</string>
 	<key>Click Restore Defaults, then OK</key>
 	<string>初期設定に戻す をクリックしてから OK</string>
 	<key>Click a block to add or skip just that one</key>
@@ -615,6 +675,8 @@
 	<string>閉じる</string>
 	<key>Close %@ settings</key>
 	<string>%@ の設定を閉じる</string>
+	<key>Close any open window inside Anki, then check again.</key>
+	<string>Anki内で開いているウインドウを閉じてから、もう一度確認してください。</string>
 	<key>Close details</key>
 	<string>詳細を閉じる</string>
 	<key>Close the plan</key>
@@ -623,6 +685,10 @@
 	<string>何も追加せずに計画を閉じる</string>
 	<key>Close this</key>
 	<string>閉じる</string>
+	<key>Close this. Party keeps trying by itself.</key>
+	<string>閉じます。パーティは自動で接続を続けます。</string>
+	<key>Close this. You can set up Party any time.</key>
+	<string>閉じます。パーティはいつでも設定できます。</string>
 	<key>Close this. You can sign in any time.</key>
 	<string>閉じます。いつでもサインインできます。</string>
 	<key>Closet</key>
@@ -647,6 +713,8 @@
 	<string>カレンダーをつなごう</string>
 	<key>Connected</key>
 	<string>接続済み</string>
+	<key>Connecting</key>
+	<string>接続中</string>
 	<key>Connecting to %@…</key>
 	<string>%@に接続中…</string>
 	<key>Connecting to Anki…</key>
@@ -681,10 +749,14 @@
 	<string>フレンドコードをコピー</string>
 	<key>Copy the AnkiConnect add-on code to paste into Anki</key>
 	<string>Anki に貼り付ける AnkiConnect のコードをコピー</string>
+	<key>Copy your friend code to send to a friend</key>
+	<string>フレンドコードをコピーして友達に送る</string>
 	<key>Copy your friend code to share it</key>
 	<string>フレンドコードをコピーして共有</string>
 	<key>Couldn't add to your calendar. Try again</key>
 	<string>カレンダーに追加できませんでした。もう一度お試しください</string>
+	<key>Couldn't check your shortcuts</key>
+	<string>ショートカットを確認できませんでした</string>
 	<key>Couldn't import %@: %@</key>
 	<string>%1$@を読み込めませんでした: %2$@</string>
 	<key>Couldn't plan your day</key>
@@ -797,6 +869,12 @@
 	<string>気が散るアプリ</string>
 	<key>Do Not Disturb</key>
 	<string>おやすみモード</string>
+	<key>Do Not Disturb is off</key>
+	<string>おやすみモードはオフです</string>
+	<key>Do Not Disturb is ready</key>
+	<string>おやすみモードの準備OK</string>
+	<key>Do Not Disturb isn't set up</key>
+	<string>おやすみモードが未設定です</string>
 	<key>Dog</key>
 	<string>イヌ</string>
 	<key>Done</key>
@@ -885,6 +963,8 @@
 	<string>今日の予定に合わせて作業と休憩を配置しています</string>
 	<key>Fitting your work and breaks around tomorrow's events</key>
 	<string>明日の予定に合わせて作業と休憩を配置しています</string>
+	<key>Fix the shortcut in the Shortcuts app, then test again</key>
+	<string>ショートカットAppでショートカットを修正してから、もう一度テストしてください</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
 	<string>別のアプリで直したら、ここに戻ってきてください。ランプは自動で更新されます。</string>
 	<key>Flame Headband</key>
@@ -991,6 +1071,8 @@
 	<string>一般</string>
 	<key>Get %@</key>
 	<string>%@を入手</string>
+	<key>Get %@ to control your music from the notch.</key>
+	<string>%@を入手すると、ノッチから音楽を操作できます。</string>
 	<key>Get Anki</key>
 	<string>Anki を入手</string>
 	<key>Get a Key</key>
@@ -1085,6 +1167,10 @@
 	<string>Anki で ツール › アドオン › AnkiConnect › 設定 を選ぶ</string>
 	<key>In Anki, choose Tools › Add-ons › Get Add-ons…</key>
 	<string>Anki で ツール › アドオン › アドオンを取得… を選ぶ</string>
+	<key>In System Settings, set Tabbi to Full Access under Calendars.</key>
+	<string>システム設定の「カレンダー」で、Tabbiを「フルアクセス」に設定してください。</string>
+	<key>In System Settings, turn on %@ under Tabbi.</key>
+	<string>システム設定で、Tabbiの下にある%@をオンにしてください。</string>
 	<key>In [Shortcuts](shortcuts://), make “%@” with the Set Focus action turning Do Not Disturb on, and “%@” turning it off. Then press Test.</key>
 	<string>[ショートカット](shortcuts://)の「集中モードを設定」で、おやすみモードをオンにする「%@」とオフにする「%@」を作り、テストを押します。</string>
 	<key>In development</key>
@@ -1123,6 +1209,12 @@
 	<string>招待リンク</string>
 	<key>It belongs to your Apple Account. Delete Account in General removes it.</key>
 	<string>Appleアカウントに紐づいています。「一般」の「アカウントを削除」で削除されます。</string>
+	<key>It's a free flashcard app. Get it, then come back here.</key>
+	<string>無料の単語カードアプリです。入手したら、ここに戻ってきてください。</string>
+	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
+	<string>1日の計画や質問への回答を手伝うAIです。それ以外の機能はClaudeなしで使えます。</string>
+	<key>It's for people %lld and older.</key>
+	<string>%lld歳以上の方が対象です。</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>今年のほかのイベントのアイテム。各イベント期間中に集中すると獲得できます</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -1139,6 +1231,8 @@
 	<string>%@のパーティに参加</string>
 	<key>Join Party</key>
 	<string>パーティに参加</string>
+	<key>Joining Party. This takes a second.</key>
+	<string>パーティに参加中です。少しお待ちください。</string>
 	<key>Joining the party server…</key>
 	<string>パーティサーバーに接続中…</string>
 	<key>Keep at least one tab on</key>
@@ -1199,6 +1293,8 @@
 	<string>集中フェーズ中に気がそれたら、ペットがノッチから出てきます</string>
 	<key>Like</key>
 	<string>いいね</string>
+	<key>Like Sam or Dr. Sam</key>
+	<string>例：さくら、さくら先生</string>
 	<key>Lilac</key>
 	<string>ライラック</string>
 	<key>Limited</key>
@@ -1223,14 +1319,24 @@
 	<string>外観</string>
 	<key>Looking for %@…</key>
 	<string>%@を探しています…</string>
+	<key>Looking for Anki</key>
+	<string>Ankiを探しています</string>
 	<key>Looking for Anki…</key>
 	<string>Anki を探しています…</string>
+	<key>Looking for Claude</key>
+	<string>Claudeを探しています</string>
 	<key>Looking for it</key>
 	<string>確認中</string>
+	<key>Looking for your shortcuts</key>
+	<string>ショートカットを探しています</string>
 	<key>Lunar New Year</key>
 	<string>旧正月</string>
 	<key>Main display</key>
 	<string>メインディスプレイ</string>
+	<key>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</key>
+	<string>ショートカットAppで簡単なショートカットを2つ作成してください。2分ほどで終わります。</string>
+	<key>Make “%@” so Tabbi can switch Do Not Disturb both ways.</key>
+	<string>Tabbiがおやすみモードをオン・オフできるよう、「%@」を作成してください。</string>
 	<key>Mark as done</key>
 	<string>完了にする</string>
 	<key>Mark as not done</key>
@@ -1307,6 +1413,8 @@
 	<string>忍者のはちまき</string>
 	<key>No answer</key>
 	<string>回答なし</string>
+	<key>No calendars yet</key>
+	<string>カレンダーがまだありません</string>
 	<key>No events</key>
 	<string>予定なし</string>
 	<key>No events on your calendars today.</key>
@@ -1363,6 +1471,8 @@
 	<string>未確認 · 更新すると上限を読み込みます</string>
 	<key>Not connected</key>
 	<string>未接続</string>
+	<key>Not connected to Tabbi yet</key>
+	<string>まだTabbiに接続されていません</string>
 	<key>Not connected yet</key>
 	<string>未接続</string>
 	<key>Not done</key>
@@ -1373,6 +1483,8 @@
 	<string>未インストール</string>
 	<key>Not joined yet</key>
 	<string>まだ参加していません</string>
+	<key>Not now</key>
+	<string>今はしない</string>
 	<key>Not reported by this Mac</key>
 	<string>このMacでは取得不可</string>
 	<key>Not saved</key>
@@ -1427,8 +1539,12 @@
 	<string>休憩中</string>
 	<key>On today</key>
 	<string>今日に追加済み</string>
+	<key>One add-on to go</key>
+	<string>アドオンがあと1つ</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>一回ずつ、落ち着いて。きっと大丈夫。</string>
+	<key>One shortcut left</key>
+	<string>ショートカットがあと1つ</string>
 	<key>One song</key>
 	<string>1曲</string>
 	<key>One step to open decks from here</key>
@@ -1457,8 +1573,12 @@
 	<string>%@を開くと、再生中の曲を確認・操作できます。</string>
 	<key>Open %@ to start, pause or skip</key>
 	<string>%@を開いて開始、一時停止、スキップ</string>
+	<key>Open %@, then Tabbi checks again</key>
+	<string>%@を開くと、Tabbiがもう一度確認します</string>
 	<key>Open Anki</key>
 	<string>Anki を開く</string>
+	<key>Open Anki so Tabbi can see your cards.</key>
+	<string>Tabbiがカードを読み取れるよう、Ankiを開いてください。</string>
 	<key>Open Anki straight into %@</key>
 	<string>Anki で %@ を直接開く</string>
 	<key>Open Anki to see today's due cards. This tab connects as soon as it's running.</key>
@@ -1491,6 +1611,8 @@
 	<string>設定 &gt; 一般を開いてAppleでサインイン</string>
 	<key>Open System Settings</key>
 	<string>システム設定を開く</string>
+	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
+	<string>カレンダーに接続するには、「アプリケーション」フォルダからTabbiを開いてください。</string>
 	<key>Open and close the notch</key>
 	<string>ノッチを開閉</string>
 	<key>Open answers in the large view</key>
@@ -1513,6 +1635,10 @@
 	<string>ノッチを開いて振り返りを見てね。</string>
 	<key>Open the official page in your browser</key>
 	<string>公式ページをブラウザで開く</string>
+	<key>Open the official page to download %@</key>
+	<string>%@の公式ダウンロードページを開く</string>
+	<key>Open the right page in System Settings</key>
+	<string>システム設定の該当ページを開く</string>
 	<key>Open this chat and continue it</key>
 	<string>このチャットを開いて続ける</string>
 	<key>Opening %@…</key>
@@ -1549,6 +1675,8 @@
 	<string>パーティー帽</string>
 	<key>Party asks once before you join. Your answer stays on this Mac.</key>
 	<string>参加前に一度だけ確認します。回答はこのMacに保存されます。</string>
+	<key>Party can't connect</key>
+	<string>パーティに接続できません</string>
 	<key>Party code</key>
 	<string>パーティコード</string>
 	<key>Party is for people %lld and older. It opens here in %@.</key>
@@ -1557,10 +1685,14 @@
 	<string>パーティは%lld歳以上向けです。%@に利用可能になります。</string>
 	<key>Party is no longer available for this account.</key>
 	<string>このアカウントではパーティを利用できなくなりました。</string>
+	<key>Party is ready</key>
+	<string>パーティの準備OK</string>
 	<key>Party isn't available</key>
 	<string>パーティは利用できません</string>
 	<key>Party isn't available yet</key>
 	<string>パーティはまだ利用できません</string>
+	<key>Party isn't set up</key>
+	<string>パーティが未設定です</string>
 	<key>Party pets</key>
 	<string>Partyのペット</string>
 	<key>Party session</key>
@@ -1609,6 +1741,10 @@
 	<string>ノッチでキット、タブ、必要な設定をもう一度選びます</string>
 	<key>Pick a month and a year first</key>
 	<string>先に月と年を選んでください</string>
+	<key>Pick a name and a pet to start. No account needed.</key>
+	<string>名前とペットを選んで始めましょう。アカウントは不要です。</string>
+	<key>Pick a name and a pet, and say when you were born.</key>
+	<string>名前とペットを選び、生年月日を入力してください。</string>
 	<key>Pick a sound to preview it</key>
 	<string>試聴するサウンドを選んでください</string>
 	<key>Pick any app from your Applications folder</key>
@@ -1621,6 +1757,10 @@
 	<string>Finderでclaudeバイナリを選ぶ</string>
 	<key>Pick the month and year you were born</key>
 	<string>生まれた月と年を選んでください</string>
+	<key>Pick the name and pet your friends will see. No account or password needed.</key>
+	<string>友達に表示される名前とペットを選んでください。アカウントもパスワードも不要です。</string>
+	<key>Pick your profile in Anki</key>
+	<string>Ankiでプロファイルを選択</string>
 	<key>Pin %@ to the Study button</key>
 	<string>%@ を学習ボタンに固定</string>
 	<key>Pin as Favorite Deck</key>
@@ -1635,6 +1775,8 @@
 	<string>計画</string>
 	<key>Plan my day</key>
 	<string>1日を計画</string>
+	<key>Plan my day and Ask AI can use it.</key>
+	<string>「1日を計画」と「AIに質問」で使えます。</string>
 	<key>Plan my day asks the AI you pick in Settings.</key>
 	<string>「1日を計画」は設定で選んだ AI に依頼します。</string>
 	<key>Plan my day fits your plan around your calendar.</key>
@@ -1659,6 +1801,8 @@
 	<string>Apple Musicで再生、一時停止、スキップ。</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>Spotifyで再生、一時停止、スキップ。</string>
+	<key>Play, pause and skip songs from the notch.</key>
+	<string>ノッチから再生、一時停止、スキップができます。</string>
 	<key>Players</key>
 	<string>プレーヤー</string>
 	<key>Playing in %@</key>
@@ -1853,6 +1997,8 @@
 	<string>このキーをキーチェーンに保存</string>
 	<key>Save today's review and show the checklist</key>
 	<string>今日の振り返りを保存してチェックリストを表示</string>
+	<key>Save your name and pet and join Party</key>
+	<string>名前とペットを保存してパーティに参加</string>
 	<key>Saved chats</key>
 	<string>保存したチャット</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
@@ -1881,6 +2027,8 @@
 	<string>AnkiConnect を選んで アップデートを確認 をクリック</string>
 	<key>Send (Return)</key>
 	<string>送信(Return)</string>
+	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
+	<string>コードを友達に送って追加してもらいましょう。名前、ペット、勉強タイマーが友達に表示されます。</string>
 	<key>Send your AI requests to %@?</key>
 	<string>AIへのリクエストを%@に送信しますか?</string>
 	<key>Sends what you ask to %@.</key>
@@ -1971,6 +2119,8 @@
 	<string>サインイン…</string>
 	<key>Sign Out</key>
 	<string>サインアウト</string>
+	<key>Sign in to Claude</key>
+	<string>Claudeにサインイン</string>
 	<key>Sign in with Apple</key>
 	<string>Appleでサインイン</string>
 	<key>Sign in with your Apple Account to sync your pet across your Macs</key>
@@ -2029,6 +2179,8 @@
 	<string>スプリント</string>
 	<key>Start %@ automatically when you log in</key>
 	<string>ログイン時に %@ を自動で起動します</string>
+	<key>Start Party</key>
+	<string>パーティを始める</string>
 	<key>Start a %lld minute countdown</key>
 	<string>%lld分のカウントダウンを開始</string>
 	<key>Start a %lld-minute focus session for everyone in the party</key>
@@ -2131,6 +2283,10 @@
 	<string>今日ためた勉強ポイント。ペットの衣装に使えます</string>
 	<key>Study together</key>
 	<string>一緒に勉強</string>
+	<key>Study with a cat</key>
+	<string>ネコと勉強する</string>
+	<key>Study with a dog</key>
+	<string>イヌと勉強する</string>
 	<key>Study with friends and see who is focusing now.</key>
 	<string>友だちと勉強して、今だれが集中しているか確認。</string>
 	<key>Study with friends, see their timers.</key>
@@ -2169,8 +2325,18 @@
 	<string>同期中…</string>
 	<key>System</key>
 	<string>システム</string>
+	<key>Tabbi can't control %@</key>
+	<string>Tabbiは%@を操作できません</string>
+	<key>Tabbi can't read your calendar</key>
+	<string>Tabbiはカレンダーを読めません</string>
+	<key>Tabbi is checking this right now</key>
+	<string>Tabbiが今確認しています</string>
+	<key>Tabbi leaves your alerts alone until you turn it on.</key>
+	<string>オンにするまで、Tabbiは通知に触れません。</string>
 	<key>Tabbi reads %@ and sends nothing.</key>
 	<string>Tabbiは%@を読み取るだけで、何も送信しません。</string>
+	<key>Tabbi tells you when a focus block or break ends.</key>
+	<string>集中ブロックや休憩が終わるとTabbiがお知らせします。</string>
 	<key>Tabs</key>
 	<string>タブ</string>
 	<key>Take a break</key>
@@ -2209,8 +2375,12 @@
 	<string>AIに質問、1日を計画、調整で答えるAI</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>キーチェーンにキーを保存できませんでした。もう一度お試しください。</string>
+	<key>The Shortcuts app didn't answer in time. Try again in a moment.</key>
+	<string>ショートカットAppが時間内に応答しませんでした。少ししてからもう一度お試しください。</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
 	<string>このMacではショートカットのコマンドラインツールを使えません。</string>
+	<key>The app this needs isn't on this Mac</key>
+	<string>必要なAppがこのMacにありません</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>桜が咲きました。あなたも何かを育てよう。</string>
 	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
@@ -2231,6 +2401,8 @@
 	<string>生まれた月</string>
 	<key>The name friends see, up to %lld characters</key>
 	<string>フレンドに表示される名前(最大%lld文字)</string>
+	<key>The name friends see, up to %lld letters</key>
+	<string>友達に表示される名前（%lld文字まで）</string>
 	<key>The next seven days at a glance</key>
 	<string>今後7日間をひと目で</string>
 	<key>The party code. Click to copy it, then send it to friends.</key>
@@ -2267,20 +2439,32 @@
 	<string>相手のフレンドがすでに50人います。</string>
 	<key>Thinking</key>
 	<string>考え中</string>
+	<key>This Mac blocks calendar access</key>
+	<string>このMacはカレンダーへのアクセスをブロックしています</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>このアカウントはパーティを利用できなくなりました。誤りだと思う場合は%@までご連絡ください。</string>
 	<key>This chat is open</key>
 	<string>このチャットを表示中</string>
+	<key>This copy can't use the calendar</key>
+	<string>このコピーではカレンダーを使えません</string>
 	<key>This deletes your account and everything the server keeps for it: the synced copy of your pet and points, your friend code, friends and parties. Your pet stays on this Mac. This can't be undone.</key>
 	<string>アカウントと、サーバーに保存されているすべてのデータ（同期されたペットとポイント、フレンドコード、フレンド、パーティ）が削除されます。ペットはこのMacに残ります。この操作は取り消せません。</string>
 	<key>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</key>
 	<string>フレンドコード、フレンドに見えるプロフィールとペット、フレンドリスト、参加中のパーティ、勉強の連続記録がフレンドサーバーから削除されます。フレンドからは見えなくなります。ペットとポイントはこのMacに残ります。パーティをオンのままにすると新しいフレンドコードが発行されます。</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>これはデモです。何も削除されていません。</string>
+	<key>This is usually short. Check again in a moment.</key>
+	<string>たいていすぐに終わります。少ししてからもう一度確認してください。</string>
 	<key>This tab reads your decks through the free AnkiConnect add-on.</key>
 	<string>このタブは無料の AnkiConnect アドオンでデッキを読み込みます。</string>
+	<key>This takes a few seconds.</key>
+	<string>数秒かかります。</string>
+	<key>This takes a second.</key>
+	<string>少しお待ちください。</string>
 	<key>This task is on today's list</key>
 	<string>このタスクは今日のリストにあります</string>
+	<key>This works. Nothing to do.</key>
+	<string>正常に動作しています。操作は不要です。</string>
 	<key>Time</key>
 	<string>時刻</string>
 	<key>Time for a %lld-minute break.</key>
@@ -2313,6 +2497,8 @@
 	<string>今日のカレンダー</string>
 	<key>Today's events and the free time between them. Google calendars show up once added in Internet Accounts.</key>
 	<string>今日の予定とその間の空き時間。Google カレンダーはインターネットアカウントに追加すると表示されます。</string>
+	<key>Today's events show up in Tabbi.</key>
+	<string>今日の予定がTabbiに表示されます。</string>
 	<key>Tomorrow</key>
 	<string>明日</string>
 	<key>Tomorrow has no free time worth a block before the evening.</key>
@@ -2333,18 +2519,28 @@
 	<string>再試行</string>
 	<key>Try the server again now</key>
 	<string>今すぐサーバーに再接続</string>
+	<key>Try to reach Party again now</key>
+	<string>今すぐパーティに再接続</string>
 	<key>Trying on %@</key>
 	<string>%@を試着中</string>
 	<key>Turn %@ off</key>
 	<string>%@をオフにする</string>
 	<key>Turn %@ on</key>
 	<string>%@をオンにする</string>
+	<key>Turn Do Not Disturb on for a moment, then off again</key>
+	<string>おやすみモードを一度オンにしてから、オフに戻します</string>
 	<key>Turn on</key>
 	<string>オンにする</string>
+	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
+	<string>システム設定で、Tabbiの「通知を許可」をオンにしてください。</string>
 	<key>Turn on Do Not Disturb during focus</key>
 	<string>集中中はおやすみモードをオン</string>
+	<key>Turn on Do Not Disturb whenever the focus timer runs</key>
+	<string>集中タイマーの実行中はおやすみモードをオンにします</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>SoundCloud用にJavaScriptをオンにしてください</string>
+	<key>Turn on Tabbi under Calendars in System Settings.</key>
+	<string>システム設定の「カレンダー」で、Tabbiをオンにしてください。</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
 	<string>ディープフォーカスをオン: 集中ブロックで%@</string>
 	<key>Turn on the Anki tab with Anki open so the sprint can count your cards</key>
@@ -2357,6 +2553,8 @@
 	<string>シャッフルをオフ</string>
 	<key>Turn shuffle on</key>
 	<string>シャッフルをオン</string>
+	<key>Type a name first</key>
+	<string>先に名前を入力してください</string>
 	<key>Type a shortcut name first</key>
 	<string>先にショートカット名を入力してください</string>
 	<key>Type a task and press Return to add it; Esc clears</key>
@@ -2437,6 +2635,8 @@
 	<string>Anki の起動を待っています</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>Anki の起動を待って %@ を開きます</string>
+	<key>Walk through the steps to connect %@</key>
+	<string>%@に接続する手順を見る</string>
 	<key>Wardrobe</key>
 	<string>ワードローブ</string>
 	<key>Wearing</key>
@@ -2455,8 +2655,12 @@
 	<string>週</string>
 	<key>Welcome to %@</key>
 	<string>%@へようこそ</string>
+	<key>What happened when Tabbi ran your shortcuts</key>
+	<string>Tabbiがショートカットを実行したときの結果</string>
 	<key>What should we call you?</key>
 	<string>なんて呼べばいい？</string>
+	<key>When Anki asked whether to let Tabbi in, the answer was no.</key>
+	<string>AnkiがTabbiの接続を許可するか尋ねたとき、「いいえ」が選ばれました。</string>
 	<key>When focus ends</key>
 	<string>集中の終了時</string>
 	<key>When focus starts</key>
@@ -2525,6 +2729,8 @@
 	<string>設定 &gt; 一般でいつでも変更できます。</string>
 	<key>You can change this later in the %@ tab.</key>
 	<string>あとで「%@」タブで変更できます。</string>
+	<key>You can dress your pet up later in the Closet tab.</key>
+	<string>ペットの着せ替えは、あとで「クローゼット」タブでできます。</string>
 	<key>You can only join a friend's party.</key>
 	<string>参加できるのはフレンドのパーティだけです。</string>
 	<key>You can set this up any time in Settings.</key>
@@ -2535,6 +2741,8 @@
 	<string>今日は%@勉強しました。ゆっくり休んで、明日また始めましょう。</string>
 	<key>You started it for the party</key>
 	<string>あなたがパーティ用に開始</string>
+	<key>You're in Party</key>
+	<string>パーティに参加中</string>
 	<key>You're not in a party anymore.</key>
 	<string>パーティに参加していません。</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
@@ -2557,16 +2765,26 @@
 	<string>今日復習するカードがここに表示されます。</string>
 	<key>Your cat</key>
 	<string>あなたのネコ</string>
+	<key>Your copy of the AnkiConnect add-on is too old for Tabbi.</key>
+	<string>お使いのAnkiConnectアドオンは古すぎてTabbiで使えません。</string>
 	<key>Your data</key>
 	<string>あなたのデータ</string>
 	<key>Your day on a timeline, with the free time in between.</key>
 	<string>1日をタイムラインで、空き時間も一目で。</string>
 	<key>Your dog</key>
 	<string>あなたのイヌ</string>
+	<key>Your due cards show up in Tabbi.</key>
+	<string>期限のカードがTabbiに表示されます。</string>
+	<key>Your friend code</key>
+	<string>あなたのフレンドコード</string>
+	<key>Your friend code is %@. Share it so friends can add you.</key>
+	<string>フレンドコードは%@です。共有すると友達があなたを追加できます。</string>
 	<key>Your friend code. Copy it and send it to a friend.</key>
 	<string>あなたのフレンドコードです。コピーして友達に送りましょう。</string>
 	<key>Your friend code: %@</key>
 	<string>フレンドコード: %@</string>
+	<key>Your friend code: %@.fontWeight(.semibold).monospacedDigit())</key>
+	<string>フレンドコード：%@.fontWeight(.semibold).monospacedDigit())</string>
 	<key>Your friend just went offline.</key>
 	<string>フレンドがオフラインになりました。</string>
 	<key>Your friend left their party.</key>
@@ -2619,6 +2837,8 @@
 	<string>たった今</string>
 	<key>lectures, labs, and shifts</key>
 	<string>講義、実習、シフト</string>
+	<key>macOS asks once whether Tabbi may use %@</key>
+	<string>Tabbiが%@を使用してよいか、macOSが一度だけ尋ねます</string>
 	<key>meetings and calls</key>
 	<string>会議や通話</string>
 	<key>no free time</key>

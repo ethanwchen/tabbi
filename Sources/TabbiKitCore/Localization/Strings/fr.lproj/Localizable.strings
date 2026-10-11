@@ -43,6 +43,8 @@
 	<string>%@ dans la session partagée</string>
 	<key>%@ is already used by another app. Record a different shortcut.</key>
 	<string>%@ est déjà utilisé par une autre app. Enregistre un autre raccourci.</string>
+	<key>%@ is connected</key>
+	<string>%@ est connecté</string>
 	<key>%@ is damaged, so it's left untouched.</key>
 	<string>%@ est endommagé, il reste intact.</string>
 	<key>%@ is fitting your tasks around today's events</key>
@@ -69,6 +71,10 @@
 	<string>%@ étudie avec toi</string>
 	<key>%@ is taking the break with you</key>
 	<string>%@ fait la pause avec toi</string>
+	<key>%@ isn't connected</key>
+	<string>%@ n'est pas connecté</string>
+	<key>%@ isn't on this Mac</key>
+	<string>%@ n'est pas sur ce Mac</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
 	<string>%@ n'est pas encore sur ce Mac. Connexions t'explique comment l'ajouter.</string>
 	<key>%@ isn't set up yet</key>
@@ -131,6 +137,8 @@
 	<string>%@, édition limitée : clique pour le porter</string>
 	<key>%@. %@</key>
 	<string>%@. %@</string>
+	<key>%@.fontWeight(.medium)). %@</key>
+	<string>%@.fontWeight(.medium)). %@</string>
 	<key>%@: %@</key>
 	<string>%@ : %@</string>
 	<key>%@: %@ done today</key>
@@ -245,6 +253,8 @@
 	<string>Une semaine reposante. Un nouveau départ vous attend.</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
 	<string>Une journée d'exemple. Tes événements s'afficheront ici une fois le calendrier connecté.</string>
+	<key>A school or work setting may block it. You can check in System Settings.</key>
+	<string>Un réglage de ton école ou de ton travail peut le bloquer. Tu peux vérifier dans Réglages Système.</string>
 	<key>A shorter timer</key>
 	<string>Minuteur plus court</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
@@ -319,12 +329,22 @@
 	<string>Ajoute ta clé %@</string>
 	<key>Add your %@ key in Settings.</key>
 	<string>Ajoute ta clé %@ dans les Réglages.</string>
+	<key>Add your Google or school account to see its events here.</key>
+	<string>Ajoute ton compte Google ou de ton école pour voir ses événements ici.</string>
 	<key>Add your calendar</key>
 	<string>Ajoute ton calendrier</string>
 	<key>Add…</key>
 	<string>Ajouter…</string>
 	<key>Alerts</key>
 	<string>Alertes</string>
+	<key>Alerts are blocked</key>
+	<string>Alertes bloquées</string>
+	<key>Alerts are off</key>
+	<string>Alertes désactivées</string>
+	<key>Alerts are on</key>
+	<string>Alertes activées</string>
+	<key>Alerts go quiet while you focus.</key>
+	<string>Les alertes se taisent pendant que tu te concentres.</string>
 	<key>All</key>
 	<string>Tout</string>
 	<key>All %lld</key>
@@ -361,6 +381,8 @@
 	<string>Autoriser les captures</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>Autorise l'encoche sur d'autres écrans que l'écran intégré</string>
+	<key>Almost there: one thing left to do</key>
+	<string>Presque fini : il reste une chose à faire</string>
 	<key>Already playing: focus is running</key>
 	<string>Déjà en cours : le focus tourne</string>
 	<key>Always</key>
@@ -373,16 +395,36 @@
 	<string>Ailes d'ange</string>
 	<key>Animations</key>
 	<string>Animations</string>
+	<key>Anki didn't answer</key>
+	<string>Anki n'a pas répondu</string>
+	<key>Anki has a password on</key>
+	<string>Anki demande une clé</string>
+	<key>Anki is busy</key>
+	<string>Anki est occupé</string>
 	<key>Anki is closed</key>
 	<string>Anki est fermé</string>
+	<key>Anki is connected</key>
+	<string>Anki est connecté</string>
+	<key>Anki is starting</key>
+	<string>Anki démarre</string>
 	<key>Anki is starting. The deck opens for review as soon as it's ready.</key>
 	<string>Anki démarre. Le paquet s'ouvre dès qu'il est prêt.</string>
+	<key>Anki is waiting for you to choose whose cards to open.</key>
+	<string>Anki attend que tu choisisses quel profil ouvrir.</string>
 	<key>Anki isn't installed</key>
 	<string>Anki n'est pas installé</string>
+	<key>Anki isn't on this Mac</key>
+	<string>Anki n'est pas sur ce Mac</string>
+	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
+	<string>Anki a besoin d'un module gratuit, AnkiConnect, pour que Tabbi compte tes cartes.</string>
+	<key>Anki said no to Tabbi</key>
+	<string>Anki a refusé Tabbi</string>
 	<key>Anki wouldn't open</key>
 	<string>Anki ne s'est pas ouvert</string>
 	<key>AnkiConnect blocked this app</key>
 	<string>AnkiConnect a bloqué cette app</string>
+	<key>AnkiConnect is set to ask for a key. Turning that off takes a minute.</key>
+	<string>AnkiConnect est réglé pour demander une clé. La désactiver prend une minute.</string>
 	<key>AnkiConnect wants an API key</key>
 	<string>AnkiConnect demande une clé API</string>
 	<key>Another steady week. Keep it cozy.</key>
@@ -499,6 +541,10 @@
 	<string>Calendrier</string>
 	<key>Calendar access is off</key>
 	<string>L'accès au calendrier est désactivé</string>
+	<key>Calendar is connected</key>
+	<string>Calendrier connecté</string>
+	<key>Calendar isn't connected</key>
+	<string>Calendrier non connecté</string>
 	<key>Calendars</key>
 	<string>Calendriers</string>
 	<key>Can't reach the party server</key>
@@ -543,6 +589,8 @@
 	<string>Les chats restent sur ce Mac</string>
 	<key>Chats stay on this Mac, in %@'s own folder. Delete them from History in the Ask AI tab.</key>
 	<string>Les chats restent sur ce Mac, dans le dossier de %@. Supprime-les dans l'Historique de Demander à l'IA.</string>
+	<key>Check %@ again</key>
+	<string>Revérifier : %@</string>
 	<key>Check again</key>
 	<string>Revérifier</string>
 	<key>Check for Updates…</key>
@@ -551,6 +599,8 @@
 	<string>Vérifier les limites en direct (envoie une toute petite requête via ta CLI claude)</string>
 	<key>Check that this claude runs and report its version</key>
 	<string>Vérifier que ce claude fonctionne et afficher sa version</string>
+	<key>Check that your Wi-Fi is on, then try again.</key>
+	<string>Vérifie que ton Wi-Fi est activé, puis réessaie.</string>
 	<key>Check the party server</key>
 	<string>Vérifie le serveur de groupes</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
@@ -593,6 +643,12 @@
 	<string>Gros casque audio</string>
 	<key>Classic</key>
 	<string>Classique</string>
+	<key>Claude is installed. Sign in once and Tabbi can use it.</key>
+	<string>Claude est installé. Connecte-toi une fois et Tabbi pourra l'utiliser.</string>
+	<key>Claude is optional</key>
+	<string>Claude est facultatif</string>
+	<key>Claude is ready</key>
+	<string>Claude est prêt</string>
 	<key>Claude location</key>
 	<string>Emplacement de Claude</string>
 	<key>Clear "%@"</key>
@@ -601,6 +657,10 @@
 	<string>Tout effacer</string>
 	<key>Clear completed tasks</key>
 	<string>Effacer les tâches terminées</string>
+	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
+	<string>Clique sur Connecter, puis sur Autoriser quand ton Mac demande si Tabbi peut contrôler %@.</string>
+	<key>Click Connect, then Allow when your Mac asks. It only asks once.</key>
+	<string>Clique sur Connecter, puis sur Autoriser quand ton Mac le demande. Il ne demande qu'une fois.</string>
 	<key>Click Restore Defaults, then OK</key>
 	<string>Clique sur Restaurer les valeurs par défaut, puis sur OK</string>
 	<key>Click a block to add or skip just that one</key>
@@ -615,6 +675,8 @@
 	<string>Fermer</string>
 	<key>Close %@ settings</key>
 	<string>Fermer les réglages de %@</string>
+	<key>Close any open window inside Anki, then check again.</key>
+	<string>Ferme les fenêtres ouvertes dans Anki, puis revérifie.</string>
 	<key>Close details</key>
 	<string>Fermer les détails</string>
 	<key>Close the plan</key>
@@ -623,6 +685,10 @@
 	<string>Fermer le plan sans rien ajouter</string>
 	<key>Close this</key>
 	<string>Fermer</string>
+	<key>Close this. Party keeps trying by itself.</key>
+	<string>Fermer. Groupe continue d'essayer tout seul.</string>
+	<key>Close this. You can set up Party any time.</key>
+	<string>Fermer. Tu peux configurer Groupe à tout moment.</string>
 	<key>Close this. You can sign in any time.</key>
 	<string>Fermer. Tu peux te connecter à tout moment.</string>
 	<key>Closet</key>
@@ -647,6 +713,8 @@
 	<string>Connecte ton calendrier</string>
 	<key>Connected</key>
 	<string>Connecté</string>
+	<key>Connecting</key>
+	<string>Connexion</string>
 	<key>Connecting to %@…</key>
 	<string>Connexion à %@…</string>
 	<key>Connecting to Anki…</key>
@@ -681,10 +749,14 @@
 	<string>Copier le code ami</string>
 	<key>Copy the AnkiConnect add-on code to paste into Anki</key>
 	<string>Copie le code AnkiConnect à coller dans Anki</string>
+	<key>Copy your friend code to send to a friend</key>
+	<string>Copier ton code ami pour l'envoyer à un ami</string>
 	<key>Copy your friend code to share it</key>
 	<string>Copie ton code ami pour le partager</string>
 	<key>Couldn't add to your calendar. Try again</key>
 	<string>Impossible d'ajouter au calendrier. Réessaie</string>
+	<key>Couldn't check your shortcuts</key>
+	<string>Impossible de vérifier tes raccourcis</string>
 	<key>Couldn't import %@: %@</key>
 	<string>Impossible d'importer %1$@ : %2$@</string>
 	<key>Couldn't plan your day</key>
@@ -797,6 +869,12 @@
 	<string>Apps distrayantes</string>
 	<key>Do Not Disturb</key>
 	<string>Ne pas déranger</string>
+	<key>Do Not Disturb is off</key>
+	<string>Ne pas déranger est désactivé</string>
+	<key>Do Not Disturb is ready</key>
+	<string>Ne pas déranger est prêt</string>
+	<key>Do Not Disturb isn't set up</key>
+	<string>Ne pas déranger n'est pas configuré</string>
 	<key>Dog</key>
 	<string>Chien</string>
 	<key>Done</key>
@@ -885,6 +963,8 @@
 	<string>Répartition du travail et des pauses autour des événements du jour</string>
 	<key>Fitting your work and breaks around tomorrow's events</key>
 	<string>Répartition du travail et des pauses autour des événements de demain</string>
+	<key>Fix the shortcut in the Shortcuts app, then test again</key>
+	<string>Corrige le raccourci dans l'app Raccourcis, puis reteste</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
 	<string>Tu as réglé quelque chose dans une autre app ? Reviens ici, le voyant se met à jour tout seul.</string>
 	<key>Flame Headband</key>
@@ -991,6 +1071,8 @@
 	<string>Général</string>
 	<key>Get %@</key>
 	<string>Obtenir %@</string>
+	<key>Get %@ to control your music from the notch.</key>
+	<string>Installe %@ pour contrôler ta musique depuis l'encoche.</string>
 	<key>Get Anki</key>
 	<string>Obtenir Anki</string>
 	<key>Get a Key</key>
@@ -1085,6 +1167,10 @@
 	<string>Dans Anki, choisis Outils › Extensions › AnkiConnect › Configuration</string>
 	<key>In Anki, choose Tools › Add-ons › Get Add-ons…</key>
 	<string>Dans Anki, choisis Outils › Extensions › Obtenir des extensions…</string>
+	<key>In System Settings, set Tabbi to Full Access under Calendars.</key>
+	<string>Dans Réglages Système, donne à Tabbi l'Accès complet sous Calendriers.</string>
+	<key>In System Settings, turn on %@ under Tabbi.</key>
+	<string>Dans Réglages Système, active %@ sous Tabbi.</string>
 	<key>In [Shortcuts](shortcuts://), make “%@” with the Set Focus action turning Do Not Disturb on, and “%@” turning it off. Then press Test.</key>
 	<string>Dans [Raccourcis](shortcuts://), crée « %@ » (Définir la concentration : Ne pas déranger activé) et « %@ » (désactivé). Puis touche Tester.</string>
 	<key>In development</key>
@@ -1123,6 +1209,12 @@
 	<string>Liens d'invitation</string>
 	<key>It belongs to your Apple Account. Delete Account in General removes it.</key>
 	<string>Elles sont liées à ton compte Apple. Supprimer le compte dans Général les efface.</string>
+	<key>It's a free flashcard app. Get it, then come back here.</key>
+	<string>C'est une app de cartes mémoire gratuite. Installe-la, puis reviens ici.</string>
+	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
+	<string>C'est un assistant IA qui peut planifier ta journée et répondre à tes questions. Tout le reste marche sans lui.</string>
+	<key>It's for people %lld and older.</key>
+	<string>C'est pour les personnes de %lld ans et plus.</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>Objets des autres événements de l'année, gagnés en te concentrant pendant chacun</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -1139,6 +1231,8 @@
 	<string>Rejoindre le groupe de %@</string>
 	<key>Join Party</key>
 	<string>Rejoindre Groupe</string>
+	<key>Joining Party. This takes a second.</key>
+	<string>Connexion à Groupe. Ça prend une seconde.</string>
 	<key>Joining the party server…</key>
 	<string>Connexion au serveur de groupes…</string>
 	<key>Keep at least one tab on</key>
@@ -1199,6 +1293,8 @@
 	<string>Ton compagnon sort de l'encoche si tu décroches pendant une phase de concentration</string>
 	<key>Like</key>
 	<string>J'aime</string>
+	<key>Like Sam or Dr. Sam</key>
+	<string>Par exemple Léa ou Dr Léa</string>
 	<key>Lilac</key>
 	<string>Lilas</string>
 	<key>Limited</key>
@@ -1223,14 +1319,24 @@
 	<string>Apparence</string>
 	<key>Looking for %@…</key>
 	<string>Recherche de %@…</string>
+	<key>Looking for Anki</key>
+	<string>Recherche d'Anki</string>
 	<key>Looking for Anki…</key>
 	<string>Recherche d'Anki…</string>
+	<key>Looking for Claude</key>
+	<string>Recherche de Claude</string>
 	<key>Looking for it</key>
 	<string>Recherche</string>
+	<key>Looking for your shortcuts</key>
+	<string>Recherche de tes raccourcis</string>
 	<key>Lunar New Year</key>
 	<string>Nouvel An lunaire</string>
 	<key>Main display</key>
 	<string>Écran principal</string>
+	<key>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</key>
+	<string>Crée deux raccourcis rapides dans l'app Raccourcis. Ça prend environ deux minutes.</string>
+	<key>Make “%@” so Tabbi can switch Do Not Disturb both ways.</key>
+	<string>Crée « %@ » pour que Tabbi puisse activer et désactiver Ne pas déranger.</string>
 	<key>Mark as done</key>
 	<string>Marquer comme fait</string>
 	<key>Mark as not done</key>
@@ -1307,6 +1413,8 @@
 	<string>Bandeau ninja</string>
 	<key>No answer</key>
 	<string>Pas de réponse</string>
+	<key>No calendars yet</key>
+	<string>Pas encore de calendrier</string>
 	<key>No events</key>
 	<string>Aucun événement</string>
 	<key>No events on your calendars today.</key>
@@ -1363,6 +1471,8 @@
 	<string>Pas encore vérifié · actualise pour voir tes limites</string>
 	<key>Not connected</key>
 	<string>Non connecté</string>
+	<key>Not connected to Tabbi yet</key>
+	<string>Pas encore connecté à Tabbi</string>
 	<key>Not connected yet</key>
 	<string>Pas encore connecté</string>
 	<key>Not done</key>
@@ -1373,6 +1483,8 @@
 	<string>Non installé</string>
 	<key>Not joined yet</key>
 	<string>Pas encore rejoint</string>
+	<key>Not now</key>
+	<string>Pas maintenant</string>
 	<key>Not reported by this Mac</key>
 	<string>Non fourni par ce Mac</string>
 	<key>Not saved</key>
@@ -1427,8 +1539,12 @@
 	<string>En pause</string>
 	<key>On today</key>
 	<string>Sur aujourd'hui</string>
+	<key>One add-on to go</key>
+	<string>Plus qu'un module</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>Une session calme à la fois. Tu vas y arriver.</string>
+	<key>One shortcut left</key>
+	<string>Plus qu'un raccourci</string>
 	<key>One song</key>
 	<string>Un titre</string>
 	<key>One step to open decks from here</key>
@@ -1457,8 +1573,12 @@
 	<string>Ouvre %@ pour voir et contrôler la lecture.</string>
 	<key>Open %@ to start, pause or skip</key>
 	<string>Ouvre %@ pour lancer, mettre en pause ou passer</string>
+	<key>Open %@, then Tabbi checks again</key>
+	<string>Ouvre %@, puis Tabbi revérifie</string>
 	<key>Open Anki</key>
 	<string>Ouvrir Anki</string>
+	<key>Open Anki so Tabbi can see your cards.</key>
+	<string>Ouvre Anki pour que Tabbi voie tes cartes.</string>
 	<key>Open Anki straight into %@</key>
 	<string>Ouvrir Anki directement sur %@</string>
 	<key>Open Anki to see today's due cards. This tab connects as soon as it's running.</key>
@@ -1491,6 +1611,8 @@
 	<string>Ouvre Réglages &gt; Général pour te connecter avec Apple</string>
 	<key>Open System Settings</key>
 	<string>Ouvrir Réglages Système</string>
+	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
+	<string>Ouvre Tabbi depuis ton dossier Applications pour connecter ton calendrier.</string>
 	<key>Open and close the notch</key>
 	<string>Ouvrir et fermer l'encoche</string>
 	<key>Open answers in the large view</key>
@@ -1513,6 +1635,10 @@
 	<string>Ouvrez l'encoche pour voir votre bilan.</string>
 	<key>Open the official page in your browser</key>
 	<string>Ouvrir la page officielle dans ton navigateur</string>
+	<key>Open the official page to download %@</key>
+	<string>Ouvrir la page officielle pour télécharger %@</string>
+	<key>Open the right page in System Settings</key>
+	<string>Ouvrir la bonne page dans Réglages Système</string>
 	<key>Open this chat and continue it</key>
 	<string>Ouvrir ce chat et le continuer</string>
 	<key>Opening %@…</key>
@@ -1549,6 +1675,8 @@
 	<string>Chapeau de fête</string>
 	<key>Party asks once before you join. Your answer stays on this Mac.</key>
 	<string>Groupe le demande une fois avant que tu le rejoignes. Ta réponse reste sur ce Mac.</string>
+	<key>Party can't connect</key>
+	<string>Groupe ne peut pas se connecter</string>
 	<key>Party code</key>
 	<string>Code du groupe</string>
 	<key>Party is for people %lld and older. It opens here in %@.</key>
@@ -1557,10 +1685,14 @@
 	<string>Groupe est réservé aux %1$lld ans et plus. Il s'ouvrira dans %2$@.</string>
 	<key>Party is no longer available for this account.</key>
 	<string>Groupe n'est plus disponible pour ce compte.</string>
+	<key>Party is ready</key>
+	<string>Groupe est prêt</string>
 	<key>Party isn't available</key>
 	<string>Groupe n'est pas disponible</string>
 	<key>Party isn't available yet</key>
 	<string>Groupe n'est pas encore disponible</string>
+	<key>Party isn't set up</key>
+	<string>Groupe n'est pas configuré</string>
 	<key>Party pets</key>
 	<string>Compagnons de Groupe</string>
 	<key>Party session</key>
@@ -1609,6 +1741,10 @@
 	<string>Choisis à nouveau un kit, tes onglets et ce dont ils ont besoin, dans l'encoche</string>
 	<key>Pick a month and a year first</key>
 	<string>Choisis d'abord un mois et une année</string>
+	<key>Pick a name and a pet to start. No account needed.</key>
+	<string>Choisis un nom et un compagnon pour commencer. Pas besoin de compte.</string>
+	<key>Pick a name and a pet, and say when you were born.</key>
+	<string>Choisis un nom et un compagnon, et indique ta date de naissance.</string>
 	<key>Pick a sound to preview it</key>
 	<string>Choisis un son pour l'écouter</string>
 	<key>Pick any app from your Applications folder</key>
@@ -1621,6 +1757,10 @@
 	<string>Choisir le binaire claude dans le Finder</string>
 	<key>Pick the month and year you were born</key>
 	<string>Choisis ton mois et ton année de naissance</string>
+	<key>Pick the name and pet your friends will see. No account or password needed.</key>
+	<string>Choisis le nom et le compagnon que verront tes amis. Pas besoin de compte ni de mot de passe.</string>
+	<key>Pick your profile in Anki</key>
+	<string>Choisis ton profil dans Anki</string>
 	<key>Pin %@ to the Study button</key>
 	<string>Épingler %@ au bouton Étudier</string>
 	<key>Pin as Favorite Deck</key>
@@ -1635,6 +1775,8 @@
 	<string>Planifier</string>
 	<key>Plan my day</key>
 	<string>Planifier ma journée</string>
+	<key>Plan my day and Ask AI can use it.</key>
+	<string>Planifier ma journée et Demander à l'IA peuvent l'utiliser.</string>
 	<key>Plan my day asks the AI you pick in Settings.</key>
 	<string>Planifier ma journée interroge l'IA choisie dans les Réglages.</string>
 	<key>Plan my day fits your plan around your calendar.</key>
@@ -1659,6 +1801,8 @@
 	<string>Lecture, pause et saut dans Apple Music.</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>Lecture, pause et saut dans Spotify.</string>
+	<key>Play, pause and skip songs from the notch.</key>
+	<string>Lance, mets en pause et passe des morceaux depuis l'encoche.</string>
 	<key>Players</key>
 	<string>Lecteurs</string>
 	<key>Playing in %@</key>
@@ -1853,6 +1997,8 @@
 	<string>Enregistrer cette clé dans ton trousseau</string>
 	<key>Save today's review and show the checklist</key>
 	<string>Enregistrer le bilan du jour et afficher la liste</string>
+	<key>Save your name and pet and join Party</key>
+	<string>Enregistrer ton nom et ton compagnon et rejoindre Groupe</string>
 	<key>Saved chats</key>
 	<string>Chats enregistrés</string>
 	<key>Saved chats are kept only on this Mac and never uploaded</key>
@@ -1881,6 +2027,8 @@
 	<string>Sélectionne AnkiConnect et clique sur Rechercher des mises à jour</string>
 	<key>Send (Return)</key>
 	<string>Envoyer (Retour)</string>
+	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
+	<string>Envoie ton code à tes amis pour qu'ils t'ajoutent. Ils voient ton nom, ton compagnon et ton minuteur d'étude.</string>
 	<key>Send your AI requests to %@?</key>
 	<string>Envoyer tes demandes d'IA à %@ ?</string>
 	<key>Sends what you ask to %@.</key>
@@ -1971,6 +2119,8 @@
 	<string>Connexion…</string>
 	<key>Sign Out</key>
 	<string>Se déconnecter</string>
+	<key>Sign in to Claude</key>
+	<string>Connecte-toi à Claude</string>
 	<key>Sign in with Apple</key>
 	<string>Se connecter avec Apple</string>
 	<key>Sign in with your Apple Account to sync your pet across your Macs</key>
@@ -2029,6 +2179,8 @@
 	<string>Sprint</string>
 	<key>Start %@ automatically when you log in</key>
 	<string>Lancer %@ automatiquement à la connexion</string>
+	<key>Start Party</key>
+	<string>Lancer Groupe</string>
 	<key>Start a %lld minute countdown</key>
 	<string>Lancer un compte à rebours de %lld minutes</string>
 	<key>Start a %lld-minute focus session for everyone in the party</key>
@@ -2131,6 +2283,10 @@
 	<string>Points d'étude gagnés aujourd'hui, à dépenser en tenues pour ton compagnon</string>
 	<key>Study together</key>
 	<string>Étudiez ensemble</string>
+	<key>Study with a cat</key>
+	<string>Étudier avec un chat</string>
+	<key>Study with a dog</key>
+	<string>Étudier avec un chien</string>
 	<key>Study with friends and see who is focusing now.</key>
 	<string>Révise avec tes amis et vois qui est concentré.</string>
 	<key>Study with friends, see their timers.</key>
@@ -2169,8 +2325,18 @@
 	<string>Synchronisation…</string>
 	<key>System</key>
 	<string>Système</string>
+	<key>Tabbi can't control %@</key>
+	<string>Tabbi ne peut pas contrôler %@</string>
+	<key>Tabbi can't read your calendar</key>
+	<string>Tabbi ne peut pas lire ton calendrier</string>
+	<key>Tabbi is checking this right now</key>
+	<string>Tabbi vérifie en ce moment</string>
+	<key>Tabbi leaves your alerts alone until you turn it on.</key>
+	<string>Tabbi ne touche pas à tes alertes tant que tu ne l'actives pas.</string>
 	<key>Tabbi reads %@ and sends nothing.</key>
 	<string>Tabbi lit %@ et n'envoie rien.</string>
+	<key>Tabbi tells you when a focus block or break ends.</key>
+	<string>Tabbi te prévient quand un bloc de focus ou une pause se termine.</string>
 	<key>Tabs</key>
 	<string>Onglets</string>
 	<key>Take a break</key>
@@ -2209,8 +2375,12 @@
 	<string>L'IA qui répond dans Demander à l'IA, Planifier ma journée et Affiner</string>
 	<key>The Keychain didn't save the key. Try again.</key>
 	<string>Le trousseau n'a pas enregistré la clé. Réessaie.</string>
+	<key>The Shortcuts app didn't answer in time. Try again in a moment.</key>
+	<string>L'app Raccourcis n'a pas répondu à temps. Réessaie dans un instant.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
 	<string>L'outil en ligne de commande de Raccourcis n'est pas disponible sur ce Mac.</string>
+	<key>The app this needs isn't on this Mac</key>
+	<string>L'app nécessaire n'est pas sur ce Mac</string>
 	<key>The blossoms are out. Grow something of your own.</key>
 	<string>Les fleurs sont là. Fais grandir ton projet.</string>
 	<key>The calendar didn't accept the events. Check Calendar access and try again.</key>
@@ -2231,6 +2401,8 @@
 	<string>Ton mois de naissance</string>
 	<key>The name friends see, up to %lld characters</key>
 	<string>Le nom que voient tes amis, %lld caractères max.</string>
+	<key>The name friends see, up to %lld letters</key>
+	<string>Le nom que voient tes amis, jusqu'à %lld lettres</string>
 	<key>The next seven days at a glance</key>
 	<string>Les sept prochains jours en un coup d'œil</string>
 	<key>The party code. Click to copy it, then send it to friends.</key>
@@ -2267,20 +2439,32 @@
 	<string>Cette personne a déjà 50 amis.</string>
 	<key>Thinking</key>
 	<string>Réflexion</string>
+	<key>This Mac blocks calendar access</key>
+	<string>Ce Mac bloque l'accès au calendrier</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>Ce compte ne peut plus utiliser Groupe. Si tu penses que c'est une erreur, écris à %@.</string>
 	<key>This chat is open</key>
 	<string>Ce chat est ouvert</string>
+	<key>This copy can't use the calendar</key>
+	<string>Cette copie n'a pas accès au calendrier</string>
 	<key>This deletes your account and everything the server keeps for it: the synced copy of your pet and points, your friend code, friends and parties. Your pet stays on this Mac. This can't be undone.</key>
 	<string>Cela supprime ton compte et tout ce que le serveur conserve pour lui : la copie synchronisée de ton compagnon et de tes points, ton code ami, tes amis et tes groupes. Ton compagnon reste sur ce Mac. Cette action est irréversible.</string>
 	<key>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</key>
 	<string>Cela supprime du serveur d'amis ton code ami, ton profil et ton compagnon tels que tes amis les voient, ta liste d'amis, tes groupes et ta série d'étude. Tes amis ne te verront plus. Ton compagnon et tes points restent sur ce Mac. Si Groupe reste activé, tu reçois un nouveau code ami.</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>C'est une démo. Rien n'a été supprimé.</string>
+	<key>This is usually short. Check again in a moment.</key>
+	<string>C'est souvent passager. Revérifie dans un instant.</string>
 	<key>This tab reads your decks through the free AnkiConnect add-on.</key>
 	<string>Cet onglet lit tes paquets via l'extension gratuite AnkiConnect.</string>
+	<key>This takes a few seconds.</key>
+	<string>Ça prend quelques secondes.</string>
+	<key>This takes a second.</key>
+	<string>Ça prend une seconde.</string>
 	<key>This task is on today's list</key>
 	<string>Cette tâche est sur la liste du jour</string>
+	<key>This works. Nothing to do.</key>
+	<string>Ça marche. Rien à faire.</string>
 	<key>Time</key>
 	<string>Heure</string>
 	<key>Time for a %lld-minute break.</key>
@@ -2313,6 +2497,8 @@
 	<string>Calendrier du jour</string>
 	<key>Today's events and the free time between them. Google calendars show up once added in Internet Accounts.</key>
 	<string>Les événements du jour et le temps libre entre eux. Les calendriers Google s'affichent une fois ajoutés dans Comptes Internet.</string>
+	<key>Today's events show up in Tabbi.</key>
+	<string>Les événements du jour s'affichent dans Tabbi.</string>
 	<key>Tomorrow</key>
 	<string>Demain</string>
 	<key>Tomorrow has no free time worth a block before the evening.</key>
@@ -2333,18 +2519,28 @@
 	<string>Réessayer</string>
 	<key>Try the server again now</key>
 	<string>Réessayer le serveur maintenant</string>
+	<key>Try to reach Party again now</key>
+	<string>Réessayer de joindre Groupe maintenant</string>
 	<key>Trying on %@</key>
 	<string>Essayage : %@</string>
 	<key>Turn %@ off</key>
 	<string>Désactiver %@</string>
 	<key>Turn %@ on</key>
 	<string>Activer %@</string>
+	<key>Turn Do Not Disturb on for a moment, then off again</key>
+	<string>Activer Ne pas déranger un instant, puis le désactiver</string>
 	<key>Turn on</key>
 	<string>Activer</string>
+	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
+	<string>Active Autoriser les notifications pour Tabbi dans Réglages Système.</string>
 	<key>Turn on Do Not Disturb during focus</key>
 	<string>Activer Ne pas déranger pendant le focus</string>
+	<key>Turn on Do Not Disturb whenever the focus timer runs</key>
+	<string>Activer Ne pas déranger quand le minuteur de focus tourne</string>
 	<key>Turn on JavaScript for SoundCloud</key>
 	<string>Active JavaScript pour SoundCloud</string>
+	<key>Turn on Tabbi under Calendars in System Settings.</key>
+	<string>Active Tabbi sous Calendriers dans Réglages Système.</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
 	<string>Active la concentration : les blocs apportent %@</string>
 	<key>Turn on the Anki tab with Anki open so the sprint can count your cards</key>
@@ -2357,6 +2553,8 @@
 	<string>Désactiver l'aléatoire</string>
 	<key>Turn shuffle on</key>
 	<string>Activer l'aléatoire</string>
+	<key>Type a name first</key>
+	<string>Saisis d'abord un nom</string>
 	<key>Type a shortcut name first</key>
 	<string>Tape d'abord un nom de raccourci</string>
 	<key>Type a task and press Return to add it; Esc clears</key>
@@ -2437,6 +2635,8 @@
 	<string>En attente du démarrage d'Anki</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>En attente d'Anki, puis ouverture de %@</string>
+	<key>Walk through the steps to connect %@</key>
+	<string>Suivre les étapes de connexion : %@</string>
 	<key>Wardrobe</key>
 	<string>Garde-robe</string>
 	<key>Wearing</key>
@@ -2455,8 +2655,12 @@
 	<string>Semaines</string>
 	<key>Welcome to %@</key>
 	<string>Coucou, c'est %@</string>
+	<key>What happened when Tabbi ran your shortcuts</key>
+	<string>Ce qui s'est passé quand Tabbi a lancé tes raccourcis</string>
 	<key>What should we call you?</key>
 	<string>Comment t'appelles-tu ?</string>
+	<key>When Anki asked whether to let Tabbi in, the answer was no.</key>
+	<string>Quand Anki a demandé s'il fallait laisser entrer Tabbi, la réponse était non.</string>
 	<key>When focus ends</key>
 	<string>À la fin du focus</string>
 	<key>When focus starts</key>
@@ -2525,6 +2729,8 @@
 	<string>Modifiable dans Réglages &gt; Général.</string>
 	<key>You can change this later in the %@ tab.</key>
 	<string>Modifiable plus tard dans l'onglet %@.</string>
+	<key>You can dress your pet up later in the Closet tab.</key>
+	<string>Tu pourras habiller ton compagnon plus tard dans l'onglet Garde-robe.</string>
 	<key>You can only join a friend's party.</key>
 	<string>Tu ne peux rejoindre que le groupe d'un ami.</string>
 	<key>You can set this up any time in Settings.</key>
@@ -2535,6 +2741,8 @@
 	<string>Tu as étudié %@ aujourd'hui. Repose-toi et repars de plus belle demain.</string>
 	<key>You started it for the party</key>
 	<string>Tu l'as lancée pour la party</string>
+	<key>You're in Party</key>
+	<string>Tu es dans Groupe</string>
 	<key>You're not in a party anymore.</key>
 	<string>Tu n'es plus dans un groupe.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
@@ -2557,16 +2765,26 @@
 	<string>Tes cartes du jour s'affichent ici.</string>
 	<key>Your cat</key>
 	<string>Ton chat</string>
+	<key>Your copy of the AnkiConnect add-on is too old for Tabbi.</key>
+	<string>Ta version du module AnkiConnect est trop ancienne pour Tabbi.</string>
 	<key>Your data</key>
 	<string>Tes données</string>
 	<key>Your day on a timeline, with the free time in between.</key>
 	<string>Ta journée sur une frise, avec le temps libre entre deux.</string>
 	<key>Your dog</key>
 	<string>Ton chien</string>
+	<key>Your due cards show up in Tabbi.</key>
+	<string>Tes cartes à réviser s'affichent dans Tabbi.</string>
+	<key>Your friend code</key>
+	<string>Ton code ami</string>
+	<key>Your friend code is %@. Share it so friends can add you.</key>
+	<string>Ton code ami est %@. Partage-le pour que tes amis puissent t'ajouter.</string>
 	<key>Your friend code. Copy it and send it to a friend.</key>
 	<string>Ton code ami. Copie-le et envoie-le à un ami.</string>
 	<key>Your friend code: %@</key>
 	<string>Ton code ami : %@</string>
+	<key>Your friend code: %@.fontWeight(.semibold).monospacedDigit())</key>
+	<string>Ton code ami : %@.fontWeight(.semibold).monospacedDigit())</string>
 	<key>Your friend just went offline.</key>
 	<string>Ton ami vient de passer hors ligne.</string>
 	<key>Your friend left their party.</key>
@@ -2619,6 +2837,8 @@
 	<string>à l'instant</string>
 	<key>lectures, labs, and shifts</key>
 	<string>cours, TP et gardes</string>
+	<key>macOS asks once whether Tabbi may use %@</key>
+	<string>macOS demande une seule fois si Tabbi peut utiliser : %@</string>
 	<key>meetings and calls</key>
 	<string>réunions et appels</string>
 	<key>no free time</key>

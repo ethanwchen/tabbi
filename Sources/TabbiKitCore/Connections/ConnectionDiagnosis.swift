@@ -228,7 +228,7 @@ extension ClaudeConnectionState {
 
 extension MusicConnectionState {
     public var diagnosis: ConnectionDiagnosis {
-        let name = app.name
+        let name = app.displayName
         let allowed: ConnectionCheck.Outcome
         let answer: String
         switch permission {
