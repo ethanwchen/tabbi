@@ -14,7 +14,13 @@ import TabbiKit
 /// so demos and snapshots can't touch a real save.
 @MainActor
 final class ClosetStore: ObservableObject {
-    @Published private(set) var closet: PetCloset
+    @Published private(set) var closet: PetCloset {
+        // Points and unlocks change the closed notch's near-unlock hint.
+        didSet {
+            let unlock = UnlockProgress(closet: closet)
+            if presence.nextUnlock != unlock { presence.nextUnlock = unlock }
+        }
+    }
     /// An item the pointer rests on, shown on the big preview ("try it on")
     /// without changing the save.
     @Published private(set) var tryingOn: PetItem?
@@ -104,7 +110,7 @@ final class ClosetStore: ObservableObject {
         pinnedSeasonMoment = demoSeason?.moment
         if let demoSeason { seasons = demoSeason.tally }
         preview = PetPlayer(profile: closet.profile)
-        presence = PetPresence(profile: closet.profile, lastActive: .now)
+        presence = PetPresence(profile: closet.profile, lastActive: .now, nextUnlock: UnlockProgress(closet: closet))
     }
 
     /// Follows the shared focus timer, so the notch pet stays awake through

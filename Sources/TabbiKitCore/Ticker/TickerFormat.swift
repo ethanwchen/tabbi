@@ -44,6 +44,7 @@ public enum TickerFormat {
     /// The pet's line for tooltips and accessibility, e.g. "Mochi is napping".
     public static func petSummary(_ pet: TickerPet) -> String {
         if pet.isSipping { return "Your Mac is charging, and \(pet.profile.name) is having a sip" }
+        if let unlock = pet.unlockHint { return "\(pet.profile.name) is keeping you company. \(unlock.line)" }
         return switch pet.mood {
         case .studying: "\(pet.profile.name) is studying with you"
         case .onBreak: "\(pet.profile.name) is on a break with you"

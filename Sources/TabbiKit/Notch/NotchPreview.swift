@@ -153,15 +153,39 @@ struct NotchPreview: View {
                         .foregroundStyle(Theme.Palette.tertiaryText)
                         .fixedSize()
                         .transition(.opacity)
+                } else if let unlock = pet.unlockHint {
+                    NotchUnlockHint(fraction: unlock.fraction, tint: accent)
+                        .transition(.opacity)
                 }
             }
             .previewText()
             .motion(Theme.Motion.content, value: pet.mood)
+            .motion(Theme.Motion.content, value: pet.unlockHint)
         case .party(let party):
             Text(TickerFormat.partySize(party.memberCount))
                 .foregroundStyle(accent)
                 .previewText()
         }
+    }
+}
+
+/// A slim bar beside the pet when its next unlock is a session or two
+/// away: a quiet nudge (the tooltip names the item), drawn in the pet
+/// module's accent and sized like "zzz" so the wing never changes width.
+private struct NotchUnlockHint: View {
+    let fraction: Double
+    let tint: Color
+
+    var body: some View {
+        ZStack(alignment: .leading) {
+            Capsule(style: .continuous)
+                .fill(Theme.Palette.tertiaryText.opacity(0.35))
+            Capsule(style: .continuous)
+                .fill(tint)
+                .frame(width: NotchPreviewLayout.unlockHintWidth * max(0.15, min(1, fraction)))
+        }
+        .frame(width: NotchPreviewLayout.unlockHintWidth, height: NotchPreviewLayout.unlockHintHeight)
+        .accessibilityHidden(true)
     }
 }
 
