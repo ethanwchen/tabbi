@@ -23,7 +23,7 @@ Re-read each sidebar on the day, since rules change.
 
 Hi, I'm Ethan, the developer.
 Full disclosure: I made this app.
-It's free and open source (MIT), and I don't make money from it.
+Tabbi is free and open source (MIT). Optional extras may come later, and the core will stay free.
 
 **Problem**
 
@@ -45,9 +45,9 @@ Tabbi turns it into a small clickable panel of tabs:
 
 **Pricing**
 
-Free.
-No account needed, no ads, no analytics, no telemetry, no in-app purchase.
-There is an optional Buy me a coffee link on the website.
+Tabbi is free. Optional extras may come later, and the core will stay free.
+No account needed, no ads, no analytics, no telemetry.
+There is an optional Support Tabbi link on the website.
 
 **Trust**
 
@@ -76,7 +76,8 @@ Subject: Can I share a free, open source study app I made?
 
 Hi mods, I'm Ethan.
 I made a free, open source Mac app for studying called Tabbi: a focus timer, to-do list, Anki and a little pet cat that live in the laptop notch.
-It has no ads, no account and no paid tier, and the code is public at https://github.com/ethanwchen/tabbi.
+It is free, with no ads and no account, and the code is public at https://github.com/ethanwchen/tabbi.
+Optional extras may come later, and the core will stay free.
 I know self-promotion isn't allowed here, so I wanted to ask first.
 Would a single post about how I built my study setup around it be OK, or is there a thread where it fits better?
 If not, no worries at all, and thank you for keeping the sub useful.

@@ -14,7 +14,8 @@ The only JavaScript in the browser is the home page's notch demo, one self-hoste
 - `build.py` - the home, about, support, what's new, suggest, thank-you and 404 pages, the build and its checks.
   The home page is deliberately short: the icon beside one line, the page's one download button, the interactive notch demo, then a few cards and stickers.
   A page has one big Download button at most (the build checks it); the header's Download is a quiet nav link.
-- `_partials.py` - the shared head, header and footer, plus the download and GitHub links.
+- `_partials.py` - the shared head, header and footer, plus the download, GitHub and Support Tabbi links.
+- `_downloads.py` - the home page's "10,000+ downloads" line, read from the backend when the site builds (see Download count).
 - `_releases.py` - the version beside the logo, read from `Resources/Info.plist`, and the What's New page's one sentence per release.
   The build stops when the newest release listed there is not the app's version, so a version bump adds its line first.
 - `_demo.py`, `demo.css` and `js/demo.js` - the home page's interactive notch demo (see Notch demo).
@@ -26,6 +27,7 @@ The only JavaScript in the browser is the home page's notch demo, one self-hoste
 - `press/` - the press kit files; the build zips them into `/press/tabbi-press-kit.zip`, linked from the About page.
 - `_social-card.html` - the source of the Open Graph and Twitter card (not part of the site).
 - `_pet_sprites.swift` and `_pet_sprites.sh` - export the interactive demo's pet sprites from the app's pet renderer (see Demo pet sprites).
+- `test/downloads.test.mjs` - tests `_downloads.py` (it runs python3).
 - `functions/suggest.js` and `_suggest_prefill.mjs` - the Pages Function that fills the Suggest form's app facts; `test/` tests it.
 - `functions/add/[code].js`, `functions/join/[code].js` and `_invite.mjs` - the Pages Functions that serve Party invite links (see Party invites); `test/` tests them.
 - `deploy.sh` - builds and deploys to the Cloudflare Pages project `tabbi`.
@@ -51,6 +53,30 @@ The build stops with an error when:
 - a page has a `<video>` or `<audio>` (the CSP allows no media);
 - a page has more than one big Download button;
 - any output file is over 20 MB (Cloudflare Pages refuses files over 25 MB).
+
+## Download count
+
+From 10,000 downloads the note under the home page's Download button adds the total, rounded down to a friendly figure: "Free, macOS 14+ &middot; 10,000+ downloads", then 25,000+, 50,000+, 100,000+, 250,000+ and so on.
+Below 10,000 nothing shows.
+The figure is GitHub's DMG downloads (installs, not Sparkle's update zips) plus the App Store units the maintainer stores, added up by the friends backend, which answers `GET /v1/public/downloads` with only the rounded milestone ([the API doc](../docs/study/backend-api.md#downloads-maintainer) says how the App Store number is updated).
+
+`_downloads.py` asks for it once, when the site builds, and writes the line into the page.
+Visitors' browsers fetch nothing: the CSP keeps `connect-src` at `'none'`, the home page keeps its one script, and the privacy policy needs no change.
+The figure moves in big steps, so refreshing it with each deploy is enough; deploy the site again after updating the App Store units.
+When the backend cannot be reached or answers oddly, the build prints a note and leaves the line out.
+
+To preview the line, force a total (rounded the same way) or skip the request:
+
+```sh
+TABBI_DOWNLOADS=12345 python3 site/build.py --serve   # shows "10,000+ downloads"
+TABBI_DOWNLOADS=off python3 site/build.py             # no request, no line
+```
+
+## Support Tabbi
+
+The footer on every page, a card on the home page and the About page link to the Buy Me a Coffee page as "Support Tabbi" (`SUPPORT_TABBI` in `_partials.py`), for optional tips.
+The app itself has no tip or payment link, so the Mac App Store edition stays within App Store Review Guideline 3.1.1.
+Where the site talks about price it says: "Tabbi is free. Optional extras may come later, and the core will stay free."
 
 ## Suggestions
 
