@@ -26,30 +26,26 @@ final class WidgetStateWriterTests: XCTestCase {
         }
     }
 
-    /// Lets the writer's coalesced write run.
-    private func settle() async {
-        await withCheckedContinuation { continuation in DispatchQueue.main.async { continuation.resume() } }
-    }
-
     private var shared: WidgetState? { WidgetStateFile(folder: folder).read() }
 
     func testWritesOnLaunchAndReloadsOnlyOnChanges() async throws {
         let writer = makeWriter()
-        await settle()
+        await writer.settle()
         XCTAssertEqual(reloads, 1)
         XCTAssertEqual(shared?.focusMinutes, 0)
         XCTAssertNil(shared?.timer)
-        XCTAssertFalse(writer.write(), "nothing changed")
-        XCTAssertEqual(reloads, 1)
+        writer.write()
+        await writer.settle()
+        XCTAssertEqual(reloads, 1, "nothing changed")
     }
 
     func testSessionStartAndEndReachTheWidgetAsOneWriteEach() async throws {
         let writer = makeWriter()
-        await settle()
+        await writer.settle()
         let end = Date().addingTimeInterval(1500)
         focus.send(ProvidedFocus(source: .focus, phase: .focus, label: "Focus", clock: .countdown(endsAt: end),
                                  phaseLength: 1500))
-        await settle()
+        await writer.settle()
         XCTAssertEqual(reloads, 2)
         XCTAssertEqual(shared?.timer?.label, "Focus")
 
@@ -57,7 +53,7 @@ final class WidgetStateWriterTests: XCTestCase {
         focus.send(nil)
         log.record(ActivityRecord(source: .focus, kind: .focusCompleted, start: Date().addingTimeInterval(-1500),
                                   end: Date(), quantity: 25, unit: .minutes))
-        await settle()
+        await writer.settle()
         XCTAssertEqual(reloads, 3, "one write for both changes")
         XCTAssertNil(shared?.timer)
         XCTAssertEqual(shared?.focusMinutes, 25)
@@ -66,7 +62,7 @@ final class WidgetStateWriterTests: XCTestCase {
 
         // A break logged afterwards changes nothing the widget shows.
         log.record(ActivityRecord(source: .focus, kind: .breakTaken, start: Date(), quantity: 5, unit: .minutes))
-        await settle()
+        await writer.settle()
         XCTAssertEqual(reloads, 3)
         withExtendedLifetime(writer) {}
     }

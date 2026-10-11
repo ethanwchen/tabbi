@@ -49,7 +49,7 @@ private struct StudyMethodSummaryCard: View {
         Card {
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 HStack(spacing: Theme.Spacing.xs) {
-                    Text(info.name)
+                    Text(info.displayName)
                         .foregroundStyle(Theme.Palette.primaryText)
                     if !method.nameIsRhythm {
                         Text(method.rhythmLabel)
@@ -60,7 +60,7 @@ private struct StudyMethodSummaryCard: View {
                     if isCurrent {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundStyle(studyAccent)
-                            .help(String(localized: "The timer starts with \(info.name)", bundle: .tabbi))
+                            .help(String(localized: "The timer starts with \(info.displayName)", bundle: .tabbi))
                     }
                 }
                 .font(Theme.Typography.bodyEmphasis)

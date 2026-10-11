@@ -293,7 +293,7 @@ private struct StudyMethodCard: View {
                 Button(action: choose) {
                     VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                         HStack(spacing: Theme.Spacing.xs) {
-                            Text(methodInfo.name)
+                            Text(methodInfo.displayName)
                                 .foregroundStyle(Theme.Palette.primaryText)
                             // The Timer's length row already shows its length.
                             if !session.method.nameIsRhythm, session.method.kind != .timer {
@@ -308,7 +308,7 @@ private struct StudyMethodCard: View {
                         }
                         .font(Theme.Typography.title)
                         if session.method.kind != .timer {
-                            Text(methodInfo.tagline)
+                            Text(methodInfo.displayTagline)
                                 .font(Theme.Typography.caption)
                                 .foregroundStyle(Theme.Palette.secondaryText)
                                 .lineLimit(1)
@@ -573,7 +573,7 @@ struct StudyMethodTile: View {
     private var tile: some View {
         Button(action: action) {
             HStack(spacing: Theme.Spacing.xs) {
-                Text(method.info.name)
+                Text(method.info.displayName)
                     .foregroundStyle(isCurrent ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
                     .lineLimit(1)
                 Spacer(minLength: Theme.Spacing.xs)
@@ -598,7 +598,7 @@ struct StudyMethodTile: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.tactile(.pill))
-        .help(isCurrent ? String(localized: "\(method.info.name) is in use", bundle: .tabbi) : String(localized: "Switch to \(method.info.name): \(method.info.tagline)", bundle: .tabbi))
+        .help(isCurrent ? String(localized: "\(method.info.displayName) is in use", bundle: .tabbi) : String(localized: "Switch to \(method.info.displayName): \(method.info.displayTagline)", bundle: .tabbi))
         .onHover { hovering = $0; hovered($0) }
         .motion(Theme.Motion.snappy, value: hovering)
     }

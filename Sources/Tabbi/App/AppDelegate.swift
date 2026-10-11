@@ -56,6 +56,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // a tab, so its cost can be measured with no hand on the mouse.
         if let tab = ProcessInfo.processInfo.environment["TABBI_PERF_OPEN"], let notch {
             if let recap = services.recaps.store.unseen { services.recaps.store.markSeen(recap.week) }
+            // A demo run keeps its settings in memory, so it can add a tab the
+            // demo layout leaves out (System, Anki, ...); without this the
+            // notch would open on the first tab and measure the wrong one.
+            if RunMode.current.isDemo { settings.settings.modules.add(ModuleID(tab)) }
             notch.model.open(ModuleID(tab))
             notch.model.isPinned = true
         }

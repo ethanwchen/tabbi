@@ -221,6 +221,24 @@ final class CelebrationCenterTests: XCTestCase {
         XCTAssertNil(center.cheer)
     }
 
+    func testNotchClosedFiresOnlyWhenTheLastPanelGoesAway() {
+        let center = center()
+        var closes = 0
+        let subscription = center.notchClosed.sink { closes += 1 }
+        center.stageAppeared()
+
+        // Switching tabs: one stage leaves as the next arrives.
+        center.stageDisappeared()
+        center.stageAppeared()
+        drainMainQueue()
+        XCTAssertEqual(closes, 0, "the panel never closed")
+
+        center.stageDisappeared()
+        drainMainQueue()
+        XCTAssertEqual(closes, 1)
+        subscription.cancel()
+    }
+
     private func drainMainQueue() {
         let drained = expectation(description: "main queue")
         DispatchQueue.main.async { drained.fulfill() }

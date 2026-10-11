@@ -173,6 +173,8 @@
 	<string>%1$@ após %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%1$@ com %2$lld</string>
+	<key>%@ uses it to greet you.</key>
+	<string>O %@ usa para te cumprimentar.</string>
 	<key>%@ visited the bakery</key>
 	<string>%@ visitou a padaria</string>
 	<key>%@ watched a cloud shaped like a fish</key>
@@ -269,8 +271,18 @@
 	<string>10 minutos?</string>
 	<key>10 minutes? That keeps your %lld-day streak going.</key>
 	<string>10 minutos? Assim você mantém sua sequência de %lld dias.</string>
+	<key>25 min focus, 5 min break</key>
+	<string>25 min de foco, 5 min de pausa</string>
+	<key>40 questions in 60 min, then review</key>
+	<string>40 questões em 60 min, depois revisão</string>
 	<key>5-hour</key>
 	<string>5 horas</string>
+	<key>52 / 17</key>
+	<string>52 / 17</string>
+	<key>52 min focus, 17 min break</key>
+	<string>52 min de foco, 17 min de pausa</string>
+	<key>90 min deep block, 20 min rest</key>
+	<string>Bloco profundo de 90 min, 20 min de descanso</string>
 	<key>&lt;1 min</key>
 	<string>&lt;1 min</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
@@ -505,8 +517,12 @@
 	<string>O Anki não está neste Mac</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>O Anki precisa de um complemento gratuito chamado AnkiConnect para o Tabbi contar seus cartões.</string>
+	<key>Anki reviews</key>
+	<string>Revisões do Anki</string>
 	<key>Anki said no to Tabbi</key>
 	<string>O Anki recusou o Tabbi</string>
+	<key>Anki sprint</key>
+	<string>Sprint de Anki</string>
 	<key>Anki wouldn't open</key>
 	<string>O Anki não abriu</string>
 	<key>AnkiConnect blocked this app</key>
@@ -797,6 +813,8 @@
 	<string>Desmarcar "%@"</string>
 	<key>Clear All</key>
 	<string>Limpar tudo</string>
+	<key>Clear a card goal, not a clock</key>
+	<string>Uma meta de cartões, não de tempo</string>
 	<key>Clear completed tasks</key>
 	<string>Limpar tarefas concluídas</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
@@ -1111,6 +1129,8 @@
 	<string>Editar a duração do foco e das pausas do Personalizado</string>
 	<key>Email Support</key>
 	<string>Falar com o suporte</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>Envie um e-mail à equipe do %@ sobre um bug ou qualquer outra coisa</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>Envie um e-mail à equipe do %@ sobre um bug, uma pessoa no Grupo ou qualquer outra coisa</string>
 	<key>Email the %@ team about a person or a problem</key>
@@ -1201,6 +1221,8 @@
 	<string>Flow</string>
 	<key>Flower Crown</key>
 	<string>Coroa de flores</string>
+	<key>Flowtime</key>
+	<string>Flowtime</string>
 	<key>Focus</key>
 	<string>Foco</string>
 	<key>Focus %lld min to start one</key>
@@ -1703,6 +1725,8 @@
 	<string>Mais abas</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>A maioria espera se sentir pronta. Você simplesmente começou. Essa é a diferença.</string>
+	<key>Mostly convention</key>
+	<string>Mais convenção</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>Mover o %@ para a pasta Aplicativos?</string>
 	<key>Move down</key>
@@ -1947,6 +1971,8 @@
 	<string>Falta um complemento</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>Uma sessão tranquila de cada vez. Você consegue.</string>
+	<key>One countdown, no breaks</key>
+	<string>Uma contagem regressiva, sem pausas</string>
 	<key>One moment.</key>
 	<string>Um momento.</string>
 	<key>One question first</key>
@@ -2263,6 +2289,8 @@
 	<string>Pontos ganhos hoje; gaste no guarda-roupa do seu pet</string>
 	<key>Points: 1 for every focused minute, plus a bonus for finishing a session</key>
 	<string>Pontos: 1 por minuto de foco, mais um bônus ao terminar uma sessão</string>
+	<key>Pomodoro</key>
+	<string>Pomodoro</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Alimenta o uso do Claude e as respostas.</string>
 	<key>Preset %@</key>
@@ -2291,6 +2319,8 @@
 	<string>Deixa Geral como numa instalação nova. "Abrir ao iniciar sessão" continua igual.</string>
 	<key>Put the recap away</key>
 	<string>Guardar o resumo</string>
+	<key>Question block</key>
+	<string>Bloco de questões</string>
 	<key>Quick and crisp, with no bounce.</key>
 	<string>Rápido e preciso, sem quique.</string>
 	<key>Quick answers right here. %@ can't see your files.</key>
@@ -2655,6 +2685,8 @@
 	<string>Suave</string>
 	<key>Snowy Scarf</key>
 	<string>Cachecol nevado</string>
+	<key>Some evidence</key>
+	<string>Alguma evidência</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>Um pouco é infinitamente mais que nada. Descanse. O tabuleiro vai estar aqui.</string>
 	<key>Something not working?</key>
@@ -2797,6 +2829,8 @@
 	<string>Pontos de estudo ganhos hoje, para gastar nas roupas do seu pet</string>
 	<key>Study together</key>
 	<string>Estudem juntos</string>
+	<key>Study until focus slips, break scales</key>
+	<string>Estude até perder o foco, a pausa se ajusta</string>
 	<key>Study with a cat</key>
 	<string>Estudar com um gato</string>
 	<key>Study with a dog</key>
@@ -3155,6 +3189,8 @@
 	<string>Digite uma tarefa e pressione Return para adicionar; Esc limpa</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
 	<string>Digite ou cole o código de %lld caracteres de um amigo e pressione Return</string>
+	<key>Ultradian</key>
+	<string>Ultradiano</string>
 	<key>Unblock</key>
 	<string>Desbloquear</string>
 	<key>Unblock them in Party options to add them again.</key>
@@ -3253,6 +3289,8 @@
 	<string>Semanas</string>
 	<key>Welcome to %@</key>
 	<string>Oi, eu sou o %@</string>
+	<key>Well supported</key>
+	<string>Bem respaldado</string>
 	<key>What happened when Tabbi ran your shortcuts</key>
 	<string>O que aconteceu quando o Tabbi rodou seus atalhos</string>
 	<key>What happened, in a sentence or two</key>
@@ -3443,6 +3481,8 @@
 	<string>Seu nome</string>
 	<key>Your name, up to %lld characters</key>
 	<string>Seu nome, até %lld caracteres</string>
+	<key>Your own focus and break lengths</key>
+	<string>Seus próprios tempos de foco e pausa</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>Seu perfil de grupo foi redefinido. Reconectando…</string>
 	<key>Your pet</key>

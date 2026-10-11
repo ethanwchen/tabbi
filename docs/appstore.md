@@ -228,7 +228,7 @@ Why nothing else is declared:
 
 - Name and Email Address: the app asks Apple only for the name, keeps it on the Mac, and the server never stores a name or an email.
 - Calendar events, tasks, focus history, study tallies, the activity log and AI chats stay on the Mac in the app's container.
-- Album artwork is loaded from the music service's image host (`i.scdn.co`) with no identifier of the user.
+- Album artwork is loaded from the address the player reports (Spotify's `i.scdn.co`, SoundCloud's `i1.sndcdn.com`) with no identifier of the user.
 - AnkiConnect and Ollama are reached on `localhost` only.
 - Ask AI, Plan my day, Refine and Wrap up send text only to the AI provider the user picks, with the user's own key (Anthropic, OpenAI or Google), or to Ollama on the Mac.
   The request goes straight from the Mac to that provider under its own terms; there is no Tabbi server in between and no partner SDK in the app, so Tabbi does not collect it.

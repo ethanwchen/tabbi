@@ -11,6 +11,11 @@ import WidgetKit
 ///
 /// Demo and snapshot runs write nothing, so they never show sample data in
 /// the real widget.
+///
+/// The file itself is read and written on a background queue: macOS can
+/// hold an open in the App Group container until the user answers its
+/// "access data from other apps" prompt (an ad-hoc signed build always
+/// asks), and that wait must never freeze the notch.
 @MainActor
 final class WidgetStateWriter {
     private let file: WidgetStateFile
@@ -20,6 +25,7 @@ final class WidgetStateWriter {
     private let reload: () -> Void
     private var focus: WidgetState.Timer?
     private var isScheduled = false
+    private let io = DispatchQueue(label: "dev.tabbi.widget-state", qos: .utility)
     private var cancellables: Set<AnyCancellable> = []
 
     /// Writes into `folder` and calls `reload` after each change.
@@ -79,17 +85,30 @@ final class WidgetStateWriter {
         }
     }
 
-    /// Writes the current state now; returns whether the file changed.
-    @discardableResult
-    func write(now: Date = Date()) -> Bool {
+    /// Saves the current state off the main thread and reloads the widget
+    /// once the file changed.
+    func write(now: Date = Date()) {
         let today = PlannerDayKey(date: now, calendar: calendar)
         let focusDays = WidgetState.focusDays(endingOn: today, calendar: calendar) { [activityLog] day in
             activityLog.records(on: day)
         }
         let state = WidgetState(pet: pet.profile, timer: focus, todayRecords: activityLog.records(on: today),
                                 focusDays: focusDays, now: now, calendar: calendar)
-        guard (try? file.write(state)) == true else { return false }
-        reload()
-        return true
+        let file = self.file
+        io.async { [weak self] in
+            guard (try? file.write(state)) == true else { return }
+            DispatchQueue.main.async { [weak self] in
+                MainActor.assumeIsolated { self?.reload() }
+            }
+        }
+    }
+
+    /// Returns once every write asked for so far has finished and reloaded
+    /// the widget, for tests.
+    func settle() async {
+        await withCheckedContinuation { continuation in DispatchQueue.main.async { continuation.resume() } }
+        await withCheckedContinuation { continuation in
+            io.async { DispatchQueue.main.async { continuation.resume() } }
+        }
     }
 }

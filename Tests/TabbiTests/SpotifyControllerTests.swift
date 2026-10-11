@@ -26,11 +26,14 @@ final class SpotifyControllerTests: XCTestCase {
         defaults = nil
     }
 
+    /// A controller for `players`, started as the module does when its tab
+    /// is on, unless `started` is false.
     private func makeController(_ players: FakePlayers, runMode: RunMode = .live,
-                                allowsBrowsers: Bool = true) -> SpotifyController {
+                                allowsBrowsers: Bool = true, started: Bool = true) -> SpotifyController {
         let controller = SpotifyController(runMode: runMode, allowsBrowsers: allowsBrowsers,
                                            host: players.host, defaults: defaults)
         controllers.append(controller)
+        if started { controller.start() }
         return controller
     }
 
@@ -71,6 +74,36 @@ final class SpotifyControllerTests: XCTestCase {
         XCTAssertEqual(playback.volume, 60)
         XCTAssertTrue(controller.showsCompactActivity)
         XCTAssertEqual(players.reads(of: .music), 0, "Music isn't running, so it is never scripted")
+    }
+
+    func testPlayersAreReadOnlyWhileStarted() async throws {
+        let players = FakePlayers()
+        players.running = [.spotify]
+        players.reads[.spotify] = .success(spotifyRead())
+        let controller = makeController(players, started: false)
+        controller.setPanelVisible(true)
+        controller.playbackStateChanged(Notification(name: Notification.Name("com.spotify.client.PlaybackStateChanged")))
+        controller.applicationChanged(bundleIdentifier: SpotifyScript.bundleIdentifier, terminated: false)
+        controller.preferences.showsSoundCloud = true
+        await settle()
+        XCTAssertTrue(players.log.isEmpty, "the first read asks macOS for Automation access")
+        XCTAssertNil(controller.pollTimerInterval)
+        XCTAssertFalse(controller.showsCompactActivity)
+        XCTAssertEqual(controller.installedSources, [.spotify, .music], "the empty state still offers to open them")
+
+        controller.start()
+        try await waitUntil { controller.status.isPlaying }
+        XCTAssertEqual(controller.pollTimerInterval, 5)
+
+        controller.stop()
+        XCTAssertEqual(controller.status, .notRunning)
+        XCTAssertFalse(controller.showsCompactActivity, "the closed notch's music wings go away with the tab")
+        XCTAssertNil(controller.pollTimerInterval)
+        let reads = players.reads(of: .spotify)
+        controller.playbackStateChanged(Notification(name: Notification.Name("com.spotify.client.PlaybackStateChanged")))
+        controller.refresh()
+        await settle()
+        XCTAssertEqual(players.reads(of: .spotify), reads)
     }
 
     func testTheAppThatStartedPlayingLastIsFollowed() async throws {
