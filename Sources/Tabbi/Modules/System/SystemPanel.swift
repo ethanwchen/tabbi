@@ -1,4 +1,3 @@
-import Charts
 import SwiftUI
 import TabbiKitCore
 import TabbiKit
@@ -157,30 +156,49 @@ private struct Sparkline: View {
                     .frame(height: 1)
             }
         } else {
-            Chart {
+            ZStack {
                 // Faint 50% rule gives low readings a sense of scale.
-                RuleMark(y: .value("Half", 0.5))
-                    .foregroundStyle(Theme.Palette.stroke)
-                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [2, 3]))
-                ForEach(series.points, id: \.x) { point in
-                    AreaMark(x: .value("Time", point.x), y: .value("Usage", point.y))
-                        .interpolationMethod(.monotone)
-                        .foregroundStyle(LinearGradient(
-                            colors: [accent.opacity(0.32), accent.opacity(0.02)],
-                            startPoint: .top, endPoint: .bottom
-                        ))
-                    LineMark(x: .value("Time", point.x), y: .value("Usage", point.y))
-                        .interpolationMethod(.monotone)
-                        .foregroundStyle(accent)
-                        .lineStyle(StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
-                }
+                Line()
+                    .stroke(Theme.Palette.stroke, style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
+                SparklineShape(series: series, closed: true)
+                    .fill(LinearGradient(
+                        colors: [accent.opacity(0.32), accent.opacity(0.02)],
+                        startPoint: .top, endPoint: .bottom
+                    ))
+                SparklineShape(series: series, closed: false)
+                    .stroke(accent, style: StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
             }
-            .chartXScale(domain: 0...(series.capacity - 1))
-            .chartYScale(domain: 0...1)
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            .chartLegend(.hidden)
-            .chartPlotStyle { $0.clipped() }
+            .clipped()
+        }
+    }
+}
+
+/// The series' monotone curve on a 0-100% scale, as a line or, closed down
+/// to the baseline, as the area under it. A plain shape rather than Swift
+/// Charts, which held about 250 MB of graphics memory for three sparklines.
+private struct SparklineShape: Shape {
+    let series: HistorySeries
+    let closed: Bool
+
+    func path(in rect: CGRect) -> Path {
+        let span = Double(max(series.capacity - 1, 1))
+        func point(x: Double, y: Double) -> CGPoint {
+            CGPoint(x: rect.minX + x / span * rect.width, y: rect.maxY - y * rect.height)
+        }
+        return Path { path in
+            guard let first = series.points.first else { return }
+            let start = point(x: Double(first.x), y: first.y)
+            path.move(to: start)
+            for segment in series.monotoneCurve {
+                path.addCurve(to: point(x: segment.end.x, y: segment.end.y),
+                              control1: point(x: segment.control1.x, y: segment.control1.y),
+                              control2: point(x: segment.control2.x, y: segment.control2.y))
+            }
+            if closed, let last = series.points.last {
+                path.addLine(to: point(x: Double(last.x), y: 0))
+                path.addLine(to: point(x: Double(first.x), y: 0))
+                path.closeSubpath()
+            }
         }
     }
 }
