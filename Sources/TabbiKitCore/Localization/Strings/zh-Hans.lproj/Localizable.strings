@@ -135,6 +135,8 @@
 	<string>%2$@后解锁%1$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%2$lld 分解锁%1$@</string>
+	<key>%@ uses it to greet you.</key>
+	<string>%@ 会用它跟你打招呼。</string>
 	<key>%@ with %@</key>
 	<string>%1$@ 和 %2$@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -1055,6 +1057,8 @@
 	<string>编辑“自定义”的专注和休息时长</string>
 	<key>Email Support</key>
 	<string>联系支持</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>就错误或其他任何事给 %@ 团队发邮件</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>就错误、Party 中的某个人或其他任何事给 %@ 团队发邮件</string>
 	<key>Email the %@ team about a person or a problem</key>

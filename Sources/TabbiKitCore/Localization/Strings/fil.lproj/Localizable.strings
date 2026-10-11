@@ -135,6 +135,8 @@
 	<string>Mabubuksan ang %1$@ pagkatapos ng %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>Mabubuksan ang %1$@ sa %2$lld</string>
+	<key>%@ uses it to greet you.</key>
+	<string>Gagamitin ito ng %@ para batiin ka.</string>
 	<key>%@ with %@</key>
 	<string>%1$@ kasama si %2$@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -1055,6 +1057,8 @@
 	<string>I-edit ang haba ng focus at break ng Custom</string>
 	<key>Email Support</key>
 	<string>Mag-email sa Support</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>Mag-email sa %@ team tungkol sa bug o kahit ano</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>Mag-email sa %@ team tungkol sa bug, isang tao sa Party o kahit ano</string>
 	<key>Email the %@ team about a person or a problem</key>

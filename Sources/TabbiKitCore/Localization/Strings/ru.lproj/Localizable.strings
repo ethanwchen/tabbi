@@ -135,6 +135,8 @@
 	<string>%1$@: еще %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%1$@ с %2$lld</string>
+	<key>%@ uses it to greet you.</key>
+	<string>%@ будет так к тебе обращаться.</string>
 	<key>%@ with %@</key>
 	<string>%1$@ и %2$@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -1055,6 +1057,8 @@
 	<string>Изменить длительность фокуса и перерывов для метода «Свой»</string>
 	<key>Email Support</key>
 	<string>Написать в поддержку</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>Написать команде %@ об ошибке или о чем-то еще</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>Написать команде %@ об ошибке, о человеке в Party или о чем-то еще</string>
 	<key>Email the %@ team about a person or a problem</key>

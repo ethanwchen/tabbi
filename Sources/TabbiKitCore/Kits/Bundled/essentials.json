@@ -3,7 +3,7 @@
   "id": "essentials",
   "pickerOrder": 1,
   "name": "Essentials",
-  "summary": "A focus timer, your to-do list, music, and Claude. Add more tabs any time.",
+  "summary": "A focus timer, your to-do list, music, and an AI helper. Add more tabs any time.",
   "symbol": "square.grid.2x2.fill",
   "accent": "planner",
   "modules": ["study", "planner", "spotify", "claudeAsk", "closet"],

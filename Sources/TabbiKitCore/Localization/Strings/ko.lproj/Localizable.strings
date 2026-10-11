@@ -135,6 +135,8 @@
 	<string>%2$@ 후 %1$@ 해제</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%2$lld점에 %1$@ 해제</string>
+	<key>%@ uses it to greet you.</key>
+	<string>%@가 인사할 때 불러요.</string>
 	<key>%@ with %@</key>
 	<string>%1$@ 및 %2$@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -1055,6 +1057,8 @@
 	<string>사용자 지정의 집중 및 휴식 시간 편집</string>
 	<key>Email Support</key>
 	<string>지원팀에 이메일</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>버그 또는 그 밖의 무엇이든 %@ 팀에 이메일 보내기</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>버그, Party의 사용자 또는 그 밖의 무엇이든 %@ 팀에 이메일 보내기</string>
 	<key>Email the %@ team about a person or a problem</key>

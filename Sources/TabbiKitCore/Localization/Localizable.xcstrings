@@ -4755,6 +4755,78 @@
         }
       }
     },
+    "%@ uses it to greet you." : {
+      "comment" : "Onboarding line under the name question in editions without Party (the App Store). The argument is the app name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستخدمه %@ لتحيتك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ begrüßt dich damit."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ lo usa para saludarte."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagamitin ito ng %@ para batiin ka."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ s'en sert pour te saluer."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のあいさつに使われます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@가 인사할 때 불러요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O %@ usa para te cumprimentar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ будет так к тебе обращаться."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 会用它跟你打招呼。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 會用它跟你打招呼。"
+          }
+        }
+      }
+    },
     "%@ with %@" : {
       "comment" : "Party: tooltip line on a member or friend; first %@ is the person's name (or You), second is their pet's name.",
       "extractionState" : "manual",
@@ -46062,6 +46134,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "寄電子郵件給支援團隊"
+          }
+        }
+      }
+    },
+    "Email the %@ team about a bug or anything else" : {
+      "comment" : "Tooltip on the contact button in Settings > About in editions without Party (the App Store); %@ is the app name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "راسل فريق %@ بشأن خطأ أو أي شيء آخر"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schreib dem %@-Team eine E-Mail zu einem Fehler oder etwas anderem"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribe al equipo de %@ sobre un error o cualquier otra cosa"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mag-email sa %@ team tungkol sa bug o kahit ano"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écris à l'équipe %@ à propos d'un bug ou de tout autre sujet"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バグやそのほか何でも%@チームにメールで連絡"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "버그 또는 그 밖의 무엇이든 %@ 팀에 이메일 보내기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envie um e-mail à equipe do %@ sobre um bug ou qualquer outra coisa"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Написать команде %@ об ошибке или о чем-то еще"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "就错误或其他任何事给 %@ 团队发邮件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "寄電子郵件給 %@ 團隊，回報錯誤或其他任何事"
           }
         }
       }

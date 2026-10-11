@@ -135,6 +135,8 @@
 	<string>%2$@で%1$@を解放</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%2$lldで%1$@を解放</string>
+	<key>%@ uses it to greet you.</key>
+	<string>%@のあいさつに使われます。</string>
 	<key>%@ with %@</key>
 	<string>%1$@と%2$@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -1055,6 +1057,8 @@
 	<string>カスタムの集中時間と休憩時間を編集</string>
 	<key>Email Support</key>
 	<string>サポートにメール</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>バグやそのほか何でも%@チームにメールで連絡</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>バグやPartyのユーザー、そのほか何でも%@チームにメールで連絡</string>
 	<key>Email the %@ team about a person or a problem</key>

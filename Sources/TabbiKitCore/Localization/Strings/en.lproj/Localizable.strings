@@ -135,6 +135,8 @@
 	<string>%@ unlocks after %@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%@ unlocks at %lld</string>
+	<key>%@ uses it to greet you.</key>
+	<string>%@ uses it to greet you.</string>
 	<key>%@ with %@</key>
 	<string>%@ with %@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -1055,6 +1057,8 @@
 	<string>Edit the Custom focus and break lengths</string>
 	<key>Email Support</key>
 	<string>Email Support</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>Email the %@ team about a bug or anything else</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>Email the %@ team about a bug, a person in Party or anything else</string>
 	<key>Email the %@ team about a person or a problem</key>

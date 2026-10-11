@@ -135,6 +135,8 @@
 	<string>%1$@ après %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%1$@ à %2$lld</string>
+	<key>%@ uses it to greet you.</key>
+	<string>%@ s'en sert pour te saluer.</string>
 	<key>%@ with %@</key>
 	<string>%1$@ avec %2$@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -1055,6 +1057,8 @@
 	<string>Modifier les durées de focus et de pause de Perso</string>
 	<key>Email Support</key>
 	<string>Écrire au support</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>Écris à l'équipe %@ à propos d'un bug ou de tout autre sujet</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>Écris à l'équipe %@ à propos d'un bug, d'une personne dans Groupe ou de tout autre sujet</string>
 	<key>Email the %@ team about a person or a problem</key>

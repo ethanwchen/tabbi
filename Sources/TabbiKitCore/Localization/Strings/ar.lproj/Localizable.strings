@@ -135,6 +135,8 @@
 	<string>يُفتح %1$@ بعد %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>يُفتح %1$@ عند %2$lld</string>
+	<key>%@ uses it to greet you.</key>
+	<string>يستخدمه %@ لتحيتك.</string>
 	<key>%@ with %@</key>
 	<string>%1$@ مع %2$@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -1043,6 +1045,8 @@
 	<string>تعديل مدد التركيز والاستراحة المخصّصة</string>
 	<key>Email Support</key>
 	<string>راسل الدعم</string>
+	<key>Email the %@ team about a bug or anything else</key>
+	<string>راسل فريق %@ بشأن خطأ أو أي شيء آخر</string>
 	<key>Email the %@ team about a bug, a person in Party or anything else</key>
 	<string>راسل فريق %@ بشأن خطأ أو شخص في المجموعة أو أي شيء آخر</string>
 	<key>Email the %@ team about a person or a problem</key>

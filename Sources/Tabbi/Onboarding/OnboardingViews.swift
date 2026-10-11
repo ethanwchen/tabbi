@@ -138,7 +138,7 @@ private struct OnboardingBody: View {
     private func step(_ flow: OnboardingFlow, setup: AnyView?) -> some View {
         switch flow.stage {
         case .name:
-            NameStep { store.update { $0.next() } }
+            NameStep(offersParty: flow.catalog.contains(PartyModule.descriptor.id)) { store.update { $0.next() } }
         case .kit, .finished:
             KitStep(flow: flow)
         case .question:
@@ -311,6 +311,8 @@ private struct OnboardingTile<Label: View>: View {
 private struct NameStep: View {
     @EnvironmentObject private var settings: SettingsStore
     @Environment(\.statusPet) private var pet
+    /// Editions without Party (the App Store) only greet with the name.
+    let offersParty: Bool
     let submit: () -> Void
     @FocusState private var focused: Bool
 
@@ -323,7 +325,9 @@ private struct NameStep: View {
                         Text("What should we call you?", bundle: .tabbi)
                             .font(Theme.Typography.title)
                             .foregroundStyle(Theme.Palette.primaryText)
-                        Text("Friends see it in Party, and \(Edition.current.name) uses it to greet you.", bundle: .tabbi)
+                        Text(offersParty
+                             ? String(localized: "Friends see it in Party, and \(Edition.current.name) uses it to greet you.", bundle: .tabbi)
+                             : String(localized: "\(Edition.current.name) uses it to greet you.", bundle: .tabbi))
                             .font(Theme.Typography.caption)
                             .foregroundStyle(Theme.Palette.secondaryText)
                             .lineLimit(1)
@@ -502,11 +506,13 @@ private struct QuestionStep: View {
                                 .font(.system(size: 16, weight: .semibold))
                                 .foregroundStyle(isPicked ? tint : Theme.Palette.secondaryText)
                                 .frame(height: 20)
+                            // Two lines kept for every label, so the
+                            // symbols line up across one- and two-line tiles.
                             Text(option.label)
                                 .font(Theme.Typography.body)
                                 .foregroundStyle(Theme.Palette.primaryText)
                                 .multilineTextAlignment(.center)
-                                .lineLimit(2)
+                                .lineLimit(2, reservesSpace: true)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
