@@ -8,6 +8,7 @@ The QA history behind these numbers is in `docs/qa-log.md`.
 
 Checked on `gnhf/qa-final` after 4fb344ab (main at bfd327ad, the last feature merge, plus the QA fixes); the test runs include the `PartyStore` defaults fix.
 `origin/main` had no newer commits when this section was written.
+A final pass after the Canvas fix (95dd01c9) and a merge of main at a19e46df (a site-only change) repeated the build, one full `swift test --parallel` run, the style check and the site build and tests: all pass, with the same counts as below.
 
 ### Tests and checks
 
