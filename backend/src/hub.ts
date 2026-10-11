@@ -47,7 +47,7 @@ import {
 } from "./stats";
 import {
   APP_STORE_UNITS_MAX, DOWNLOADS_PER_MIN, DOWNLOADS_REPO, DOWNLOADS_RETRY_S, DOWNLOADS_TTL_S, Downloads, DownloadsSecrets,
-  RELEASE_PAGES_MAX, StoredCount, countDownloads, downloadMilestone, fetchReleases,
+  RELEASE_PAGES_MAX, StoredCount, countDownloads, downloadsBadge, downloadMilestone, fetchReleases,
 } from "./downloads";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
@@ -587,6 +587,7 @@ export class Hub extends DurableObject<Env> {
     if (path.startsWith("/v1/admin/")) return await this.admin(req, path, method, now);
     if (path === "/v1/public/stats" && method === "GET") return this.publicStats(req, now);
     if (path === "/v1/public/downloads" && method === "GET") return await this.publicDownloads(req, now);
+    if (path === "/v1/public/downloads/badge" && method === "GET") return await this.downloadsBadge(req, now);
 
     const caller = await this.authenticate(req, now);
 
@@ -839,7 +840,7 @@ export class Hub extends DurableObject<Env> {
 
   /**
    * GET /v1/public/downloads: the website's download figure (see downloads.ts). It needs no token and
-   * returns only `milestone`, the total rounded down to a friendly step (0 below 10,000), never the sum.
+   * returns only `milestone`, the total rounded down to a friendly step (0 below 10,000); the README badge has the exact sum.
    */
   private async publicDownloads(req: Request, now: number): Promise<Response> {
     this.rateLimit("downloads:" + clientKey(req), DOWNLOADS_PER_MIN, now);
@@ -847,6 +848,18 @@ export class Hub extends DurableObject<Env> {
     const total = (github.downloads?.installs ?? 0) + (this.appStoreUnits()?.units ?? 0);
     const maxAge = Math.max(0, this.githubCounts!.nextCheck - now);
     return json({ ok: true, milestone: downloadMilestone(total), at: github.at }, 200, { "Cache-Control": `public, max-age=${maxAge}` });
+  }
+
+  /**
+   * GET /v1/public/downloads/badge: a shields.io endpoint badge for the README with the exact total
+   * (DMG installs plus App Store units), which the maintainer chose to show from the first download.
+   */
+  private async downloadsBadge(req: Request, now: number): Promise<Response> {
+    this.rateLimit("downloads:" + clientKey(req), DOWNLOADS_PER_MIN, now);
+    const github = await this.githubDownloads(now);
+    const total = (github.downloads?.installs ?? 0) + (this.appStoreUnits()?.units ?? 0);
+    const maxAge = Math.max(0, this.githubCounts!.nextCheck - now);
+    return json(downloadsBadge(total), 200, { "Cache-Control": `public, max-age=${maxAge}` });
   }
 
   /** GET /v1/admin/downloads: the exact counts behind the public milestone. */
