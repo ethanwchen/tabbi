@@ -145,6 +145,8 @@ Snapshots in English, Arabic, Japanese and German (and French, Spanish, Filipino
 Fixed: the heatmap's summary row cut its caption off in longer languages ("in den letzten 30 Tag...", "en los últi...", "sa huling 30..."), since #117 moved the streak into that row; the streak now shortens to its flame and count when the row is short, and only then would the caption step aside, so every language reads in full and English is unchanged.
 Known, snapshot tool only: `--snapshot --locale ar` stops with an AppKit "more Update Constraints in Window passes than there are views" exception while rendering the off-screen Settings sheets (privacy and feedback sections, then the age check sheet), so those Arabic sheet renders are missing; the notch shots before them all render.
 The real app's General pane gives its Form a fixed size and was not affected in earlier Arabic checks, but the Sign In age sheet in Arabic deserves one manual look in the bundled app.
+That look was done in a probe test: the age sheet presented with `.sheet` from an on-screen window, as Settings does, with the process in Arabic (its strings loaded) and right to left, in all three states (asked, passed, too young), and again in Spanish, Portuguese and Russian.
+Every case showed the sheet (420 by 183 to 223 points) with no exception, so the crash belongs to the snapshot tool's off-screen sheet rendering, not to the app.
 
 ### Real launches
 
