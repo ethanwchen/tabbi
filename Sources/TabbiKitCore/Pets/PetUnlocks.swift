@@ -236,6 +236,12 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
         return points
     }
 
+    /// Credits a surprise gift's bonus points (`SurpriseGift.bonusPoints`),
+    /// which the cat brings after a focus session. Earned, never bought.
+    public mutating func recordGift(points: Int) {
+        earned += max(0, points)
+    }
+
     /// Credits a stay in a Party shared session (`PetPointsRules.sharedPoints`)
     /// and returns the points it earned.
     @discardableResult

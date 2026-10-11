@@ -8,12 +8,12 @@ import TabbiKit
 /// notch's edge).
 enum PetCoachLine {
     case nudge(PetCoachNudge)
-    case celebration(PetStudyAward, progress: UnlockProgress?, wisdom: CatWisdomLine? = nil)
+    case celebration(PetStudyAward, progress: UnlockProgress?, wisdom: CatWisdomLine? = nil, gift: SurpriseGift? = nil)
     case glance(PetCoachGlance)
 
     /// The Cat wisdom line a celebration moves on to, if any.
     var wisdom: CatWisdomLine? {
-        if case .celebration(_, _, let wisdom) = self { return wisdom }
+        if case .celebration(_, _, let wisdom, _) = self { return wisdom }
         return nil
     }
 
@@ -283,12 +283,13 @@ private struct PetCoachBubble: View {
                     .foregroundStyle(Theme.Palette.primaryText)
                     .fixedSize(horizontal: false, vertical: true)
                     .lineLimit(2)
-            case .celebration(let award, let progress, let wisdom):
+            case .celebration(let award, let progress, let wisdom, let gift):
                 if showsWisdom, let wisdom {
                     PetWisdomText(line: wisdom, accent: Self.accent)
                         .transition(.opacity)
                 } else {
-                    PetCelebrationText(award: award, progress: progress, accent: Self.accent, animated: animated)
+                    PetCelebrationText(award: award, progress: progress, gift: gift, accent: Self.accent,
+                                       animated: animated)
                         .transition(.opacity)
                 }
             case .glance:
@@ -326,10 +327,12 @@ private struct PetCoachBubble: View {
 /// A celebration's words: the headline with the points pill beside it,
 /// counting up from zero, then a bar filling toward the next unlock with
 /// what it still asks ("1 more session to Ninja Headband"). Without a goal
-/// left, a level-up names the item now within reach.
+/// left, a level-up names the item now within reach. A surprise gift gets
+/// one quiet line at the bottom.
 private struct PetCelebrationText: View {
     let award: PetStudyAward
     let progress: UnlockProgress?
+    let gift: SurpriseGift?
     let accent: Color
     let animated: Bool
     /// False until the bubble is up, then springs to true: the count and
@@ -371,6 +374,10 @@ private struct PetCelebrationText: View {
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .lineLimit(1)
             }
+            if let gift {
+                PetGiftLine(gift: gift, accent: accent)
+                    .padding(.top, Theme.Spacing.xxs)
+            }
         }
         .accessibilityElement(children: .combine)
         .onAppear {
@@ -379,6 +386,40 @@ private struct PetCelebrationText: View {
                 .delay(Self.countDelay)) {
                 settled = true
             }
+        }
+    }
+}
+
+/// The gift the cat brought back, under the bar. Bonus points are already
+/// on the balance and a rare fur is waiting in the Closet's Look.
+private struct PetGiftLine: View {
+    let gift: SurpriseGift
+    let accent: Color
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xxs + 1) {
+            Image(systemName: "gift.fill").font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(accent)
+            Text(gift.message)
+                .foregroundStyle(Theme.Palette.primaryText)
+                .lineLimit(1)
+            if case .rareFur(let fur) = gift {
+                Circle()
+                    .fill(Color(red: Double(fur.color.red) / 255, green: Double(fur.color.green) / 255,
+                                blue: Double(fur.color.blue) / 255))
+                    .overlay(Circle().strokeBorder(Theme.Palette.stroke, lineWidth: 0.5))
+                    .frame(width: 10, height: 10)
+            }
+        }
+        .font(Theme.Typography.caption.weight(.medium))
+        .help(help)
+    }
+
+    private var help: String {
+        switch gift {
+        case .bonusPoints: "Bonus points from your pet, added to your balance"
+        case .rareFur: "A rare fur color from your pet. Try it in the Closet under Look."
+        case .seasonMinutes: "Bonus minutes toward this event's limited items"
         }
     }
 }
