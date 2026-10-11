@@ -885,7 +885,10 @@
   .pane-ai { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) 2.4em; gap: 0.8em; }
   .ai-rings { justify-content: center; }
   .ai-ring { width: auto; flex: 1; min-width: 0; }
-  .ai-card { padding: 1.2em; }
+  /* The stacked card is taller than its rows, so they sit centered
+     instead of leaving a gap above the week total. */
+  .ai-card { justify-content: center; padding: 1.2em; }
+  .ai-row { margin-top: 0.4em !important; }
   .demo .ai-model { grid-template-columns: 6.4em minmax(0, 1fr) 3.6em; }
   .ai-foot { padding-left: 0; }
   .pane-anki { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 0.8em; }
