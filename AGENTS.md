@@ -13,6 +13,7 @@ swift test                                   # TabbiKitCore and Tabbi (app wirin
 swift run Tabbi --snapshot snapshots         # render every notch state to PNG
 swift run Tabbi --snapshot snapshots-medicine --kit medicine  # same, for another kit's tabs
 swift run Tabbi --snapshot snapshots-themes --theme all     # every notch shot once per theme, in subfolders
+swift run Tabbi --snapshot snapshots-de --locale de         # same, in another language (docs/localization.md)
 scripts/run.sh [edition]                     # bundle + launch the real app (or an edition)
 scripts/bundle.sh                            # build/Tabbi.app
 scripts/check-style.sh                       # no em dashes or emojis (swift test runs it too)
@@ -228,6 +229,13 @@ If a module seems to need one, the provider protocols are missing something: ext
   input data writes it as an escape (`"\u{1F3A7}"`).
 - The product is called Tabbi. NotchDeck and StudyNotch are old names; the
   StudyNotch edition is now the Med School kit.
+
+- User-facing text is localized: write `Text("Done", bundle: .tabbi)` or
+  `String(localized: "Done", bundle: .tabbi)` and add the string with its
+  translations to `Localizable.xcstrings`, then run
+  `scripts/compile-strings.sh` to regenerate the shipped `.lproj` folders;
+  `swift test` fails until every string there is translated and compiled.
+  Logs, ids and kit ids stay plain. See docs/localization.md.
 
 ## Design rules
 

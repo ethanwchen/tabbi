@@ -33,6 +33,9 @@ let appStoreExcludedSources = [
 
 let package = Package(
     name: "Tabbi",
+    // Strings are written in English; translations live in TabbiKitCore's
+    // String Catalog (docs/localization.md).
+    defaultLocalization: "en",
     platforms: [.macOS(.v14)],
     products: [
         .executable(name: "Tabbi", targets: ["Tabbi"]),
@@ -51,11 +54,19 @@ let package = Package(
             // Kit manifests, edition files, pet art, themes and seasonal
             // events ship as human-editable JSON (see docs/kits.md,
             // Edition.swift, PetArt.swift, ThemeCatalog.swift and
-            // SeasonalEventCatalog.swift).
+            // SeasonalEventCatalog.swift). The String Catalog holds every
+            // user-facing string and its translations (L10n.swift), and
+            // scripts/compile-strings.sh compiles it into the committed
+            // Localization/Strings/<language>.lproj folders, which ship
+            // copied as is. SwiftPM never sees the catalog: whether it
+            // compiles one, and how it names the .lproj folders, depends on
+            // its version.
+            exclude: ["Localization/Localizable.xcstrings"],
             resources: [
                 .copy("Kits/Bundled"), .copy("Editions/BundledEditions"), .copy("Pets/PetArt"),
                 .copy("Themes/themes.json"), .copy("StudyMethods/study-methods.json"),
                 .copy("Events/events.json"),
+                .copy("Localization/Strings"),
             ],
             swiftSettings: coreSettings
         ),

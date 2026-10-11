@@ -11,11 +11,11 @@ enum AppSettingsPane: String, CaseIterable {
 
     var title: String {
         switch self {
-        case .general: "General"
-        case .tabs: "Tabs"
-        case .look: "Look"
-        case .connections: "Connections"
-        case .about: "About"
+        case .general: String(localized: "General", bundle: .tabbi)
+        case .tabs: String(localized: "Tabs", bundle: .tabbi)
+        case .look: String(localized: "Look", bundle: .tabbi)
+        case .connections: String(localized: "Connections", bundle: .tabbi)
+        case .about: String(localized: "About", bundle: .tabbi)
         }
     }
 

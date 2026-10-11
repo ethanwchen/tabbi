@@ -43,7 +43,7 @@ struct FocusCard: View {
                         IconButton(symbol: "forward.end.fill", size: 20, help: skipHelp) {
                             withMotion(Theme.Motion.snappy) { store.skip() }
                         }
-                        IconButton(symbol: "stop.fill", size: 20, help: "Stop and keep the time focused so far") {
+                        IconButton(symbol: "stop.fill", size: 20, help: String(localized: "Stop and keep the time focused so far", bundle: .tabbi)) {
                             withMotion(Theme.Motion.snappy) { store.stop() }
                         }
                     }
@@ -78,7 +78,7 @@ struct FocusCard: View {
                 Image(systemName: "scope").imageScale(.small).foregroundStyle(accent)
             }
             .labelStyle(FocusDetailLabelStyle())
-            .help("Focusing on: \(linkedTitle)")
+            .help(String(localized: "Focusing on: \(linkedTitle)", bundle: .tabbi))
         } else {
             Text(FocusTimerFormat.status(store.timer))
         }
@@ -86,14 +86,14 @@ struct FocusCard: View {
 
     private var toggleHelp: String {
         switch store.timer.runState {
-        case .running: "Pause"
-        case .paused: "Resume"
-        case .idle: store.timer.phase == .focus ? "Start a focus session" : "Start the break"
+        case .running: String(localized: "Pause", bundle: .tabbi)
+        case .paused: String(localized: "Resume", bundle: .tabbi)
+        case .idle: store.timer.phase == .focus ? String(localized: "Start a focus session", bundle: .tabbi) : String(localized: "Start the break", bundle: .tabbi)
         }
     }
 
     private var skipHelp: String {
-        store.timer.phase == .focus ? "Skip to the break" : "Skip the break"
+        store.timer.phase == .focus ? String(localized: "Skip to the break", bundle: .tabbi) : String(localized: "Skip the break", bundle: .tabbi)
     }
 }
 

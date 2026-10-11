@@ -17,9 +17,9 @@ struct PartyFriendsCard: View {
                     .padding(.leading, Theme.Spacing.xs)
                 list
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                PartyCodeField(placeholder: "Friend's code", symbol: "person.badge.plus",
+                PartyCodeField(placeholder: String(localized: "Friend's code", bundle: .tabbi), symbol: "person.badge.plus",
                                length: PartyCode.friendCodeLength, field: .friendCode, focus: focus,
-                               help: "Type or paste a friend's \(PartyCode.friendCodeLength)-character code and press Return") {
+                               help: String(localized: "Type or paste a friend's \(PartyCode.friendCodeLength)-character code and press Return", bundle: .tabbi)) {
                     store.addFriend(code: $0)
                 }
             }
@@ -28,7 +28,7 @@ struct PartyFriendsCard: View {
 
     private var header: some View {
         HStack(spacing: Theme.Spacing.xs) {
-            Text("Friends")
+            Text("Friends", bundle: .tabbi)
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.tertiaryText)
                 .fixedSize()
@@ -39,7 +39,7 @@ struct PartyFriendsCard: View {
                         .foregroundStyle(Theme.Palette.warning)
                 }
                 .buttonStyle(.plain)
-                .help("\(error.message) Showing the last known status. Click to retry.")
+                .help(String(localized: "\(error.message) Showing the last known status. Click to retry.", bundle: .tabbi))
             }
             Spacer(minLength: Theme.Spacing.xs)
             if let code = state.friendCode {
@@ -55,9 +55,9 @@ struct PartyFriendsCard: View {
     private func shareCode(_ code: String, showsLabel: Bool) -> some View {
         HStack(spacing: Theme.Spacing.xs) {
             PartyCopyCode(code: code, showsLabel: showsLabel,
-                          help: "Your friend code. Copy it and send it to a friend.")
+                          help: String(localized: "Your friend code. Copy it and send it to a friend.", bundle: .tabbi))
             PartyShareInvite(invite: .addFriend(code: code),
-                             help: "Share an invite link. A friend who opens it can add you in one click.")
+                             help: String(localized: "Share an invite link. A friend who opens it can add you in one click.", bundle: .tabbi))
         }
         .fixedSize()
     }
@@ -108,10 +108,10 @@ struct PartyFriendsCard: View {
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(PartyStyle.accent)
                 .padding(.bottom, Theme.Spacing.xxs)
-            Text("No friends yet")
+            Text("No friends yet", bundle: .tabbi)
                 .font(Theme.Typography.bodyEmphasis)
                 .foregroundStyle(Theme.Palette.primaryText)
-            Text("Share your code above, or add theirs below.")
+            Text("Share your code above, or add theirs below.", bundle: .tabbi)
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.secondaryText)
                 .multilineTextAlignment(.center)
@@ -159,7 +159,7 @@ private struct PartyFriendRow: View {
         .motion(Theme.Motion.snappy, value: hovering)
         .help(help)
         .contextMenu {
-            Button("Remove \(friend.profile.name)", role: .destructive) {
+            Button(String(localized: "Remove \(friend.profile.name)", bundle: .tabbi), role: .destructive) {
                 store.removeFriend(code: friend.profile.code)
             }
             PartyModerationMenu(profile: friend.profile, store: store)
@@ -173,25 +173,26 @@ private struct PartyFriendRow: View {
                 .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(PartyStyle.accent.opacity(0.7))
                 .frame(width: 20)
-                .help("\(friend.profile.name) is in your party")
+                .help(String(localized: "\(friend.profile.name) is in your party", bundle: .tabbi))
         } else if friend.canJoin {
-            PartyPillButton(title: "Join", isBusy: store.pending == .joinFriend(friend.profile.code), height: 20,
-                            help: "Join \(friend.profile.name)'s party") {
+            PartyPillButton(title: String(localized: "Join", bundle: .tabbi), isBusy: store.pending == .joinFriend(friend.profile.code), height: 20,
+                            help: String(localized: "Join \(friend.profile.name)'s party", bundle: .tabbi)) {
                 store.join(friend: friend.profile.code)
             }
             // The row's own tooltip hides this one from VoiceOver, so name whose party.
-            .accessibilityLabel("Join \(friend.profile.name)'s party")
+            .accessibilityLabel(String(localized: "Join \(friend.profile.name)'s party", bundle: .tabbi))
         }
     }
 
     private var help: String {
-        var parts = ["\(friend.profile.name) with \(friend.profile.petName)"]
+        var parts = [String(localized: "\(friend.profile.name) with \(friend.profile.petName)", bundle: .tabbi)]
         if let presence = friend.presence, friend.online, presence.todayMinutes > 0 {
-            parts.append("\(PartyRoster.duration(minutes: presence.todayMinutes)) studied today")
+            let studied = PartyRoster.duration(minutes: presence.todayMinutes)
+            parts.append(String(localized: "\(studied) studied today", bundle: .tabbi))
         }
         if let presence = friend.presence, presence.streakDays > 1 {
-            parts.append("\(presence.streakDays)-day streak")
+            parts.append(String(localized: "\(presence.streakDays)-day streak", bundle: .tabbi))
         }
-        return parts.joined(separator: " · ") + ". Right-click to remove, report or block."
+        return parts.joined(separator: " · ") + ". " + String(localized: "Right-click to remove, report or block.", bundle: .tabbi)
     }
 }

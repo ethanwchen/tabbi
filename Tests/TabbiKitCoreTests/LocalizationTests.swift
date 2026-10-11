@@ -1,0 +1,194 @@
+import Foundation
+import XCTest
+@testable import TabbiKitCore
+
+/// Tabbi's String Catalog ships complete: every string in every language,
+/// with the same format specifiers as the English, and the compiled
+/// translations load from the resource bundle.
+final class LocalizationTests: XCTestCase {
+    private var repositoryRoot: URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+    }
+
+    private func catalog() throws -> StringCatalogAudit {
+        let url = repositoryRoot.appendingPathComponent("Sources/TabbiKitCore/Localization/Localizable.xcstrings")
+        return try StringCatalogAudit(data: Data(contentsOf: url))
+    }
+
+    func testEveryStringIsTranslatedIntoEveryLanguage() throws {
+        let catalog = try catalog()
+        XCTAssertEqual(catalog.sourceLanguage, L10n.sourceLanguage)
+        XCTAssertFalse(catalog.keys.isEmpty)
+        let issues = catalog.issues(languages: L10n.languages)
+        XCTAssertTrue(issues.isEmpty, "Fix in Localizable.xcstrings (docs/localization.md):\n"
+            + issues.map(\.description).joined(separator: "\n"))
+    }
+
+    func testInfoPlistDeclaresTheShippedLanguages() throws {
+        let url = repositoryRoot.appendingPathComponent("Resources/Info.plist")
+        let plist = try XCTUnwrap(NSDictionary(contentsOf: url))
+        XCTAssertEqual(plist["CFBundleLocalizations"] as? [String], L10n.languages)
+        XCTAssertEqual(plist["CFBundleDevelopmentRegion"] as? String, L10n.sourceLanguage)
+    }
+
+    func testEveryLanguageLoadsFromTheResourceBundle() throws {
+        for language in L10n.languages {
+            XCTAssertNotNil(L10n.strings(for: language), "\(language).lproj is missing from the resource bundle")
+        }
+        let german = try XCTUnwrap(L10n.strings(for: "de"))
+        XCTAssertEqual(String(localized: "General", bundle: german), "Allgemein")
+        // Plurals come from the .stringsdict beside the .strings.
+        let cores = german.localizedString(forKey: "%lld cores", value: nil, table: nil)
+        XCTAssertEqual(String.localizedStringWithFormat(cores, 1), "1 Kern")
+        XCTAssertEqual(String.localizedStringWithFormat(cores, 4), "4 Kerne")
+        let english = try XCTUnwrap(L10n.strings(for: "en"))
+        let friends = english.localizedString(forKey: "with %lld friends", value: nil, table: nil)
+        XCTAssertEqual(String.localizedStringWithFormat(friends, 1), "with 1 friend")
+    }
+
+    /// The .lproj folders that ship are compiled from the catalog by
+    /// scripts/compile-strings.sh, and committed. This re-derives what each
+    /// language's files must hold (every string and every plural form) and
+    /// fails when someone edited the catalog without running the script.
+    func testCompiledStringsMatchTheCatalog() throws {
+        let catalogURL = repositoryRoot.appendingPathComponent("Sources/TabbiKitCore/Localization/Localizable.xcstrings")
+        let catalog = try JSONDecoder().decode(CompiledCatalog.self, from: Data(contentsOf: catalogURL))
+        let folder = repositoryRoot.appendingPathComponent("Sources/TabbiKitCore/Localization/Strings")
+        let shipped = try FileManager.default.contentsOfDirectory(atPath: folder.path)
+            .filter { $0.hasSuffix(".lproj") }.map { String($0.dropLast(".lproj".count)) }
+        XCTAssertEqual(Set(shipped), Set(L10n.languages), "Run scripts/compile-strings.sh")
+
+        var problems: [String] = []
+        for language in L10n.languages {
+            let lproj = folder.appendingPathComponent("\(language).lproj")
+            let strings = try plist(lproj.appendingPathComponent("Localizable.strings")) as? [String: String] ?? [:]
+            let plurals = try plist(lproj.appendingPathComponent("Localizable.stringsdict")) as? [String: Any] ?? [:]
+            for key in Set(strings.keys).union(plurals.keys).subtracting(catalog.strings.keys).sorted() {
+                problems.append("\(language): \"\(key)\" is no longer in the catalog")
+            }
+            for (key, entry) in catalog.strings.sorted(by: { $0.key < $1.key }) {
+                let localization = entry.localizations?[language]
+                if let forms = localization?.variations?.plural {
+                    let expected = forms.compactMapValues(\.stringUnit?.value)
+                    if Self.pluralForms(plurals[key]) != expected {
+                        problems.append("\(language): plural \"\(key)\" differs")
+                    }
+                } else if plurals[key] != nil {
+                    // A plural wins over the plain string of the same key.
+                    problems.append("\(language): \"\(key)\" is no longer a plural")
+                } else if let value = localization?.stringUnit?.value {
+                    if strings[key] != value { problems.append("\(language): \"\(key)\" differs") }
+                } else if let compiled = strings[key], compiled != key {
+                    // A string without text of its own in this language
+                    // (English, or one marked "Don't translate") shows its
+                    // key, the English.
+                    problems.append("\(language): \"\(key)\" differs")
+                } else if language == catalog.sourceLanguage, strings[key] == nil {
+                    problems.append("\(language): \"\(key)\" is missing")
+                }
+            }
+        }
+        XCTAssertTrue(problems.isEmpty, "The compiled strings are out of date; run scripts/compile-strings.sh:\n"
+            + problems.prefix(20).joined(separator: "\n"))
+    }
+
+    private func plist(_ url: URL) throws -> Any? {
+        guard FileManager.default.fileExists(atPath: url.path) else { return nil }
+        return try PropertyListSerialization.propertyList(from: Data(contentsOf: url), format: nil)
+    }
+
+    /// The plural forms (`one`, `other`, ...) of a compiled .stringsdict entry.
+    private static func pluralForms(_ entry: Any?) -> [String: String]? {
+        guard let entry = entry as? [String: Any] else { return nil }
+        for case let rule as [String: Any] in entry.values
+        where rule["NSStringFormatSpecTypeKey"] as? String == "NSStringPluralRuleType" {
+            return rule.filter { !$0.key.hasPrefix("NSString") }.compactMapValues { $0 as? String }
+        }
+        return nil
+    }
+
+    func testPicksTheUsersBestTranslatedLanguage() {
+        let available = L10n.languages
+        XCTAssertEqual(L10n.language(for: ["de-DE", "en-US"], available: available), "de")
+        XCTAssertEqual(L10n.language(for: ["pt-BR"], available: available), "pt-BR")
+        XCTAssertEqual(L10n.language(for: ["zh-Hans-CN"], available: available), "zh-Hans")
+        XCTAssertEqual(L10n.language(for: ["ja-JP"], available: available), "ja")
+        XCTAssertEqual(L10n.language(for: ["it-IT", "fr-FR"], available: available), "fr")
+        XCTAssertEqual(L10n.language(for: ["it-IT"], available: available), "en")
+        XCTAssertEqual(L10n.language(for: [], available: available), "en")
+    }
+
+    // MARK: - The audit
+
+    private func audit(_ json: String) throws -> StringCatalogAudit {
+        try StringCatalogAudit(data: Data(json.utf8))
+    }
+
+    private func unit(_ value: String, state: String = "translated") -> String {
+        #"{ "stringUnit" : { "state" : "\#(state)", "value" : "\#(value)" } }"#
+    }
+
+    func testReportsMissingAndUnfinishedTranslations() throws {
+        let catalog = try audit(#"""
+        { "sourceLanguage" : "en", "version" : "1.0", "strings" : {
+          "Done" : { "localizations" : { "de" : \#(unit("Fertig")), "fr" : \#(unit("Fini", state: "needs_review")) } },
+          "Tabbi" : { "shouldTranslate" : false }
+        } }
+        """#)
+        XCTAssertEqual(catalog.issues(languages: ["en", "de", "fr", "ja"]).map(\.description), [
+            #""Done": fr translation is needs_review"#,
+            #""Done": no ja translation"#,
+        ])
+    }
+
+    func testReportsSpecifierMismatchesInEveryPluralForm() throws {
+        let catalog = try audit(#"""
+        { "sourceLanguage" : "en", "version" : "1.0", "strings" : {
+          "%lld cards" : { "localizations" : {
+            "en" : { "variations" : { "plural" : { "one" : \#(unit("%lld card")), "other" : \#(unit("%lld cards")) } } },
+            "de" : { "variations" : { "plural" : { "one" : \#(unit("eine Karte")), "other" : \#(unit("%lld Karten")) } } }
+          } },
+          "%@ of %@" : { "localizations" : { "de" : \#(unit("%2$@ von %1$@")), "fr" : \#(unit("%@ sur %d")) } }
+        } }
+        """#)
+        XCTAssertEqual(catalog.issues(languages: ["en", "de", "fr"]), [
+            .init(key: "%@ of %@", language: "fr", kind: .specifierMismatch(expected: ["@", "@"], found: ["@", "d"])),
+            .init(key: "%lld cards", language: "de", form: "one",
+                  kind: .specifierMismatch(expected: ["lld"], found: [])),
+            .init(key: "%lld cards", language: "fr", kind: .missing),
+        ])
+    }
+
+    func testReadsSpecifiersInArgumentOrder() {
+        XCTAssertEqual(StringCatalogAudit.specifiers(in: "%2$@ at %1$lld%%"), ["lld", "@"])
+        XCTAssertEqual(StringCatalogAudit.specifiers(in: "%.1f h, %@"), ["f", "@"])
+        XCTAssertEqual(StringCatalogAudit.specifiers(in: "100%% done"), [])
+    }
+}
+
+// MARK: - The catalog, as far as the compiled files need it
+
+private struct CompiledCatalog: Decodable {
+    struct Entry: Decodable {
+        var localizations: [String: Localization]?
+    }
+
+    struct Localization: Decodable {
+        var stringUnit: Unit?
+        var variations: Variations?
+    }
+
+    struct Variations: Decodable {
+        var plural: [String: Localization]?
+    }
+
+    struct Unit: Decodable {
+        var value: String?
+    }
+
+    var sourceLanguage: String
+    var strings: [String: Entry]
+}

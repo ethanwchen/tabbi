@@ -39,9 +39,9 @@ public enum PanelSize: String, CaseIterable, Sendable {
     /// The name Settings shows.
     public var title: String {
         switch self {
-        case .compact: "Compact"
-        case .regular: "Regular"
-        case .large: "Large"
+        case .compact: String(localized: "Compact", bundle: .tabbi)
+        case .regular: String(localized: "Regular", bundle: .tabbi)
+        case .large: String(localized: "Large", bundle: .tabbi)
         }
     }
 }

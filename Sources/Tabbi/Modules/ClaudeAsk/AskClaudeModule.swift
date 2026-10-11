@@ -8,8 +8,8 @@ import TabbiKit
 @MainActor
 final class AskClaudeModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
-        id: .claudeAsk, title: "Ask AI", symbol: "sparkles",
-        summary: "Ask Claude, Gemini or another AI a quick question.", category: .ai,
+        id: .claudeAsk, title: String(localized: "Ask AI", bundle: .tabbi), symbol: "sparkles",
+        summary: String(localized: "Ask Claude, Gemini or another AI a quick question.", bundle: .tabbi), category: .ai,
         accent: .claude, permissions: [],
         network: AIProviderID.allNetworkAccess
     )

@@ -35,7 +35,7 @@ struct SharedFocusCard: View {
             .contentShape(RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous))
         }
         .buttonStyle(.plain)
-        .help("Open \(descriptor.title) to start, pause or skip")
+        .help(String(localized: "Open \(descriptor.title) to start, pause or skip", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: focus)
@@ -57,16 +57,16 @@ struct SharedFocusCard: View {
                             .foregroundStyle(focus.phase == .rest ? accent : Theme.Palette.tertiaryText)
                             .lineLimit(1)
                     }
-                    Text(focus.isPaused ? "Paused in \(descriptor.title)" : "Running in \(descriptor.title)")
+                    Text(focus.isPaused ? String(localized: "Paused in \(descriptor.title)", bundle: .tabbi) : String(localized: "Running in \(descriptor.title)", bundle: .tabbi))
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.secondaryText)
                         .lineLimit(1)
                 } else {
-                    Text("Start a timer")
+                    Text("Start a timer", bundle: .tabbi)
                         .font(Theme.Typography.metricSmall)
                         .foregroundStyle(Theme.Palette.secondaryText)
                         .lineLimit(1)
-                    Text("Opens the \(descriptor.title) tab")
+                    Text("Opens the \(descriptor.title) tab", bundle: .tabbi)
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.tertiaryText)
                         .lineLimit(1)

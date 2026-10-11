@@ -18,9 +18,9 @@ public enum NotchMode: String, CaseIterable, Sendable {
     /// The name Settings and the notch's right-click menu show.
     public var title: String {
         switch self {
-        case .alwaysVisible: "Always Visible"
-        case .showOnHover: "Show on Hover"
-        case .hidden: "Hidden"
+        case .alwaysVisible: String(localized: "Always Visible", bundle: .tabbi)
+        case .showOnHover: String(localized: "Show on Hover", bundle: .tabbi)
+        case .hidden: String(localized: "Hidden", bundle: .tabbi)
         }
     }
 }

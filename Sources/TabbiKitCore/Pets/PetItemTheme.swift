@@ -16,11 +16,11 @@ public enum PetItemTheme: String, CaseIterable, Codable, Sendable {
 
     public var displayName: String {
         switch self {
-        case .study: "Study"
-        case .cozy: "Cozy"
-        case .fantasy: "Fantasy"
-        case .seasonal: "Seasonal"
-        case .silly: "Silly"
+        case .study: String(localized: "Study", bundle: .tabbi)
+        case .cozy: String(localized: "Cozy", bundle: .tabbi)
+        case .fantasy: String(localized: "Fantasy", bundle: .tabbi)
+        case .seasonal: String(localized: "Seasonal", bundle: .tabbi)
+        case .silly: String(localized: "Silly", bundle: .tabbi)
         }
     }
 

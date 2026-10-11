@@ -81,28 +81,28 @@ private struct ScheduleHeader: View {
                 if store.mode == .day {
                     // Yesterday is over: its line under the timeline says what it held.
                     if store.viewing != .yesterday {
-                        let day = store.viewing == .today ? "today" : "tomorrow"
-                        freeTime(layout.freeMinutes, suffix: "free",
-                                 none: store.viewing == .today ? "No free time left" : "No free time",
+                        freeTime(layout.freeMinutes, free: { String(localized: "\($0) free", bundle: .tabbi) },
+                                 none: store.viewing == .today ? String(localized: "No free time left", bundle: .tabbi) : String(localized: "No free time", bundle: .tabbi),
                                  help: store.viewing == .today
-                                     ? "Free time left in your working day, with a buffer around each event"
-                                     : "Free time in tomorrow's working day, with a buffer around each event")
+                                     ? String(localized: "Free time left in your working day, with a buffer around each event", bundle: .tabbi)
+                                     : String(localized: "Free time in tomorrow's working day, with a buffer around each event", bundle: .tabbi))
                         if store.draft == nil, layout.freeMinutes > 0 {
-                            SchedulePillButton(title: "Plan", symbol: "wand.and.stars", isProminent: true,
-                                               help: "Fill \(day)'s free time with your open tasks and reviews. "
-                                                   + "Planned on this Mac, nothing is added until you say so") {
+                            SchedulePillButton(title: String(localized: "Plan", bundle: .tabbi), symbol: "wand.and.stars", isProminent: true,
+                                               help: store.viewing == .today
+                                                   ? String(localized: "Fill today's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so", bundle: .tabbi)
+                                                   : String(localized: "Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so", bundle: .tabbi)) {
                                 store.planDay()
                             }
                         }
                     }
                 } else {
                     let freeMinutes = store.weekLayout.freeMinutes
-                    freeTime(freeMinutes, suffix: "free this week", none: "No free time this week",
-                             help: "Free working time over the next seven days, with a buffer around each event")
+                    freeTime(freeMinutes, free: { String(localized: "\($0) free this week", bundle: .tabbi) },
+                             none: String(localized: "No free time this week", bundle: .tabbi),
+                             help: String(localized: "Free working time over the next seven days, with a buffer around each event", bundle: .tabbi))
                     if store.draft == nil, freeMinutes > 0 {
-                        SchedulePillButton(title: "Plan", symbol: "wand.and.stars", isProminent: true,
-                                           help: "Spread your open tasks and reviews over the week's free time. "
-                                               + "Planned on this Mac, nothing is added until you say so") {
+                        SchedulePillButton(title: String(localized: "Plan", bundle: .tabbi), symbol: "wand.and.stars", isProminent: true,
+                                           help: String(localized: "Spread your open tasks and reviews over the week's free time. Planned on this Mac, nothing is added until you say so", bundle: .tabbi)) {
                             store.planWeek()
                         }
                     }
@@ -115,8 +115,8 @@ private struct ScheduleHeader: View {
     private func dateAndAllDay(_ date: String?, showsAllDay: Bool) -> some View {
         HStack(spacing: Theme.Spacing.s) {
             if store.mode == .day, store.emptySituation == nil {
-                DayStepper(viewing: store.viewing, yesterdayHelp: "Show yesterday's calendar",
-                           tomorrowHelp: "Show tomorrow's calendar", show: { store.show($0) }) {
+                DayStepper(viewing: store.viewing, yesterdayHelp: String(localized: "Show yesterday's calendar", bundle: .tabbi),
+                           tomorrowHelp: String(localized: "Show tomorrow's calendar", bundle: .tabbi), show: { store.show($0) }) {
                     dateLabel(date)
                 }
             } else {
@@ -130,7 +130,7 @@ private struct ScheduleHeader: View {
                         .foregroundStyle(Theme.Palette.secondaryText)
                         .lineLimit(1)
                         .fixedSize()
-                        .help("All day: \(ScheduleFormat.title(item))")
+                        .help(String(localized: "All day: \(ScheduleFormat.title(item))", bundle: .tabbi))
                 }
             }
         }
@@ -172,8 +172,9 @@ private struct ScheduleHeader: View {
             + last.formatted(.dateTime.month(.abbreviated).day())
     }
 
-    private func freeTime(_ minutes: Int, suffix: String, none: String, help: String) -> some View {
-        Text(minutes > 0 ? "\(ScheduleFormat.duration(minutes: minutes)) \(suffix)" : none)
+    /// `free` words the duration ("2h free"), so each language orders it.
+    private func freeTime(_ minutes: Int, free: (String) -> String, none: String, help: String) -> some View {
+        Text(minutes > 0 ? free(ScheduleFormat.duration(minutes: minutes)) : none)
             .font(Theme.Typography.caption.monospacedDigit())
             .foregroundStyle(minutes > 0 ? accent : Theme.Palette.tertiaryText)
             .lineLimit(1)
@@ -190,8 +191,8 @@ private struct ScheduleModePicker: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs) {
             ForEach(ScheduleStore.Mode.allCases, id: \.self) { mode in
-                ScheduleModePill(title: mode.rawValue, isSelected: selection == mode,
-                                 help: mode == .day ? "Today on a timeline" : "The next seven days at a glance") {
+                ScheduleModePill(title: mode == .day ? String(localized: "Day", bundle: .tabbi) : String(localized: "Week", bundle: .tabbi), isSelected: selection == mode,
+                                 help: mode == .day ? String(localized: "Today on a timeline", bundle: .tabbi) : String(localized: "The next seven days at a glance", bundle: .tabbi)) {
                     select(mode)
                 }
             }
@@ -315,7 +316,7 @@ private struct ScheduleWeekRow: View {
                 .lineLimit(1)
                 .frame(width: labelWidth, alignment: .leading)
             track
-            Text(day.freeMinutes > 0 ? ScheduleFormat.duration(minutes: day.freeMinutes) : "Full")
+            Text(day.freeMinutes > 0 ? ScheduleFormat.duration(minutes: day.freeMinutes) : String(localized: "Full", bundle: .tabbi))
                 .font(Theme.Typography.caption.monospacedDigit())
                 .foregroundStyle(day.freeMinutes > 0 ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
                 .lineLimit(1)
@@ -366,17 +367,22 @@ private struct ScheduleWeekRow: View {
     }
 
     private var dayName: String {
-        day.isToday ? "Today" : day.date.formatted(.dateTime.weekday(.abbreviated).day())
+        day.isToday ? String(localized: "Today", bundle: .tabbi) : day.date.formatted(.dateTime.weekday(.abbreviated).day())
     }
 
     private var summary: String {
         var parts: [String] = []
         let events = day.eventCount, planned = day.plannedCount
-        parts.append(events == 0 ? "No events" : events == 1 ? "1 event" : "\(events) events")
-        if planned > 0 { parts.append(planned == 1 ? "1 planned block" : "\(planned) planned blocks") }
-        if let allDay = day.allDay.first { parts.append("all day: \(ScheduleFormat.title(allDay))") }
-        parts.append(day.freeMinutes > 0 ? "\(ScheduleFormat.duration(minutes: day.freeMinutes)) free"
-                                         : "no free time")
+        parts.append(events == 0 ? String(localized: "No events", bundle: .tabbi)
+                                 : String(localized: "\(events) events", bundle: .tabbi))
+        if planned > 0 { parts.append(String(localized: "\(planned) planned blocks", bundle: .tabbi)) }
+        if let allDay = day.allDay.first {
+            let title = ScheduleFormat.title(allDay)
+            parts.append(String(localized: "all day: \(title)", bundle: .tabbi))
+        }
+        let free = ScheduleFormat.duration(minutes: day.freeMinutes)
+        parts.append(day.freeMinutes > 0 ? String(localized: "\(free) free", bundle: .tabbi)
+                                         : String(localized: "no free time", bundle: .tabbi))
         let name = day.date.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())
         return "\(name): " + parts.joined(separator: ", ")
     }
@@ -410,8 +416,7 @@ private struct ScheduleWeekBlock: View {
                 .buttonStyle(.plain)
                 .onHover { hovering = $0 }
                 .motion(Theme.Motion.snappy, value: hovering)
-                .help("Proposed: \(ScheduleFormat.title(item)), \(ScheduleFormat.range(item.start, item.end)). "
-                    + "Click to add or skip it")
+                .help(String(localized: "Proposed: \(ScheduleFormat.title(item)), \(ScheduleFormat.range(item.start, item.end)). Click to add or skip it", bundle: .tabbi))
         } else {
             block
         }
@@ -583,7 +588,7 @@ private struct ScheduleBlock: View {
 
     private var help: String {
         let text = "\(ScheduleFormat.title(item)), \(ScheduleFormat.range(item.start, item.end))"
-        return item.kind == .proposed ? "Proposed: \(text). Click to add or skip it" : text
+        return item.kind == .proposed ? String(localized: "Proposed: \(text). Click to add or skip it", bundle: .tabbi) : text
     }
 
     private var color: Color {
@@ -678,11 +683,11 @@ private struct ScheduleDetailStrip: View {
         .lineLimit(1)
         .frame(maxWidth: .infinity, alignment: .leading)
         if let link = item.meetingLink {
-            SchedulePillButton(title: "Join", symbol: "video.fill", help: "Join \(link.provider.displayName) call") {
+            SchedulePillButton(title: String(localized: "Join", bundle: .tabbi), symbol: "video.fill", help: String(localized: "Join \(link.provider.displayName) call", bundle: .tabbi)) {
                 join(link)
             }
         }
-        IconButton(symbol: "xmark", size: 22, help: "Close details", action: close)
+        IconButton(symbol: "xmark", size: 22, help: String(localized: "Close details", bundle: .tabbi), action: close)
     }
 
     /// What is on now, or on another day what that day holds.
@@ -702,7 +707,7 @@ private struct ScheduleDetailStrip: View {
                 .truncationMode(.middle)
             Spacer(minLength: 0)
             if layout.placed.isEmpty, viewing == .today {
-                Text("Nothing on your calendar today")
+                Text("Nothing on your calendar today", bundle: .tabbi)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .lineLimit(1)
@@ -721,7 +726,7 @@ private struct ScheduleDetailStrip: View {
 
     private func detailLine(_ item: ScheduleItem) -> String {
         var parts = [ScheduleFormat.range(item.start, item.end), ScheduleFormat.duration(minutes: item.minutes)]
-        if item.kind != .event { parts.append(item.reason ?? "Planned with \(Edition.current.name)") }
+        if item.kind != .event { parts.append(item.reason ?? String(localized: "Planned with \(Edition.current.name)", bundle: .tabbi)) }
         return parts.joined(separator: ", ")
     }
 
@@ -781,9 +786,9 @@ private struct SchedulePlanStrip: View {
         }
         .lineLimit(1)
         .frame(maxWidth: .infinity, alignment: .leading)
-        SchedulePillButton(title: "Skip", help: "Leave this block out of the plan") { store.skip(item.id) }
-        SchedulePillButton(title: "Add", symbol: "plus", isProminent: true,
-                           help: "Add this block to your calendar") { store.add(item.id) }
+        SchedulePillButton(title: String(localized: "Skip", bundle: .tabbi), help: String(localized: "Leave this block out of the plan", bundle: .tabbi)) { store.skip(item.id) }
+        SchedulePillButton(title: String(localized: "Add", bundle: .tabbi), symbol: "plus", isProminent: true,
+                           help: String(localized: "Add this block to your calendar", bundle: .tabbi)) { store.add(item.id) }
     }
 
     @ViewBuilder
@@ -798,20 +803,20 @@ private struct SchedulePlanStrip: View {
             .lineLimit(1)
             .truncationMode(.tail)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .help(draft.unplacedDetail ?? "Click a block to add or skip just that one")
+            .help(draft.unplacedDetail ?? String(localized: "Click a block to add or skip just that one", bundle: .tabbi))
         if draft.isEmpty {
-            SchedulePillButton(title: "OK", help: "Close the plan") { store.discardPlan() }
+            SchedulePillButton(title: String(localized: "OK", bundle: .tabbi), help: String(localized: "Close the plan", bundle: .tabbi)) { store.discardPlan() }
         } else {
             if store.canRefine || store.isRefining {
-                SchedulePillButton(title: "Refine", symbol: "wand.and.stars",
-                                   help: "Refine with \(store.assistantName): suggest a better order or lengths for this plan") {
+                SchedulePillButton(title: String(localized: "Refine", bundle: .tabbi), symbol: "wand.and.stars",
+                                   help: String(localized: "Refine with \(store.assistantName): suggest a better order or lengths for this plan", bundle: .tabbi)) {
                     store.refine()
                 }
                 .disabled(store.isRefining)
             }
-            SchedulePillButton(title: "Discard", help: "Close the plan without adding anything") { store.discardPlan() }
-            SchedulePillButton(title: "Add all", symbol: "plus", isProminent: true,
-                               help: "Add every proposed block to your calendar") { store.add() }
+            SchedulePillButton(title: String(localized: "Discard", bundle: .tabbi), help: String(localized: "Close the plan without adding anything", bundle: .tabbi)) { store.discardPlan() }
+            SchedulePillButton(title: String(localized: "Add all", bundle: .tabbi), symbol: "plus", isProminent: true,
+                               help: String(localized: "Add every proposed block to your calendar", bundle: .tabbi)) { store.add() }
                 .disabled(store.isRefining)
         }
     }
@@ -819,11 +824,11 @@ private struct SchedulePlanStrip: View {
     /// The summary, or where Refine stands.
     private var overviewText: String {
         let assistant = store.assistantName
-        if store.isRefining { return "\(assistant) is looking over this plan..." }
-        if store.refineFailed { return "\(assistant) couldn't refine this plan" }
+        if store.isRefining { return String(localized: "\(assistant) is looking over this plan...", bundle: .tabbi) }
+        if store.refineFailed { return String(localized: "\(assistant) couldn't refine this plan", bundle: .tabbi) }
         return switch draft.refinement {
-        case .changed: "Refined with \(assistant): \(draft.summary)"
-        case .unchanged: "\(assistant) suggests no changes"
+        case .changed: String(localized: "Refined with \(assistant): \(draft.summary)", bundle: .tabbi)
+        case .unchanged: String(localized: "\(assistant) suggests no changes", bundle: .tabbi)
         case nil: draft.summary
         }
     }
@@ -835,7 +840,7 @@ private struct SchedulePlanStrip: View {
     }
 
     private func failureOr(_ text: String) -> String {
-        writeFailed ? "Couldn't add to your calendar. Try again" : text
+        writeFailed ? String(localized: "Couldn't add to your calendar. Try again", bundle: .tabbi) : text
     }
 }
 
@@ -907,9 +912,8 @@ private struct ScheduleAccessMessage: View {
     private static func state(for situation: UpNextEmptyState.Situation) -> UpNextEmptyState {
         var state = UpNextEmptyState(situation, upNextEvents: "events", appName: Edition.current.name)
         if situation == .notAsked {
-            state.title = "See your day at a glance"
-            state.detail = "Today's events and the free time between them. "
-                + "Google calendars show up once added in Internet Accounts."
+            state.title = String(localized: "See your day at a glance", bundle: .tabbi)
+            state.detail = String(localized: "Today's events and the free time between them. Google calendars show up once added in Internet Accounts.", bundle: .tabbi)
         }
         return state
     }

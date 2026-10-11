@@ -82,6 +82,17 @@ enum ClosetSection: String, CaseIterable {
         }
     }
 
+    var title: String {
+        switch self {
+        case .activity: String(localized: "Activity", bundle: .tabbi)
+        case .wardrobe: String(localized: "Wardrobe", bundle: .tabbi)
+        case .limited: String(localized: "Limited", bundle: .tabbi)
+        case .streak: String(localized: "Streak", bundle: .tabbi)
+        case .look: String(localized: "Look", bundle: .tabbi)
+        case .weeks: String(localized: "Weeks", bundle: .tabbi)
+        }
+    }
+
     var help: String {
         switch self {
         case .activity: "Your study day by day, with the time studied on each"
@@ -128,17 +139,19 @@ private struct ClosetPetCard: View {
     }
 
     private var subtitle: String {
-        if let item = store.tryingOn { return "Trying on \(item.displayName)" }
+        if let item = store.tryingOn { return String(localized: "Trying on \(item.displayName)", bundle: .tabbi) }
         // A pet still called by its breed would show the breed twice.
         if store.profile.name == store.profile.breed.displayName {
-            return "Give your \(store.profile.species.displayName.lowercased()) a name"
+            return store.profile.species == .cat
+                ? String(localized: "Give your cat a name", bundle: .tabbi)
+                : String(localized: "Give your dog a name", bundle: .tabbi)
         }
         return store.profile.breed.displayName
     }
 
     @ViewBuilder private var nameRow: some View {
         if isRenaming {
-            TextField("Name", text: $draft)
+            TextField(String(localized: "Name", bundle: .tabbi), text: $draft)
                 .textFieldStyle(.plain)
                 .font(Theme.Typography.title)
                 .foregroundStyle(Theme.Palette.primaryText)
@@ -218,7 +231,7 @@ private struct ClosetSectionPicker: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs) {
             ForEach(sections, id: \.self) { section in
-                ClosetPill(title: section.rawValue, symbol: section.symbol,
+                ClosetPill(title: section.title, symbol: section.symbol,
                            showsTitle: titlesAll || (titlesOpen && selection == section),
                            isSelected: selection == section,
                            isTight: isTight,
@@ -288,7 +301,7 @@ private struct ClosetPointsChip: View {
                 .foregroundStyle(Theme.Palette.primaryText)
                 .contentTransition(.numericText())
             if showsUnit {
-                Text("pts")
+                Text("pts", bundle: .tabbi)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
             }
@@ -396,11 +409,11 @@ private struct ClosetWardrobe: View {
                 Text(detail(for: hovered)).foregroundStyle(Theme.Palette.tertiaryText)
             } else if let next = store.closet.nextUnlock, store.closet.save.ledger.earned == 0 {
                 // A brand-new pet: explain where points come from.
-                Text("Focus to earn points").foregroundStyle(Theme.Palette.secondaryText)
+                Text("Focus to earn points", bundle: .tabbi).foregroundStyle(Theme.Palette.secondaryText)
                 showButton(next.item) {
                     ViewThatFits(in: .horizontal) {
-                        Text("\(next.item.displayName) unlocks after \(PetEconomy.studyToEarn(next.item.cost))")
-                        Text("\(next.item.displayName) unlocks at \(next.item.cost)")
+                        Text("\(next.item.displayName) unlocks after \(PetEconomy.studyToEarn(next.item.cost))", bundle: .tabbi)
+                        Text("\(next.item.displayName) unlocks at \(next.item.cost)", bundle: .tabbi)
                     }
                     .foregroundStyle(Theme.Palette.tertiaryText)
                 }
@@ -415,7 +428,7 @@ private struct ClosetWardrobe: View {
                     }
                 }
             } else {
-                Text("Everything unlocked. Dress up as you like.").foregroundStyle(Theme.Palette.tertiaryText)
+                Text("Everything unlocked. Dress up as you like.", bundle: .tabbi).foregroundStyle(Theme.Palette.tertiaryText)
             }
         }
         .font(Theme.Typography.caption)
@@ -438,15 +451,15 @@ private struct ClosetWardrobe: View {
     private func nextUnlock(_ next: (item: PetItem, missing: Int), labeled: Bool,
                             inStudyTime: Bool) -> some View {
         HStack(spacing: Theme.Spacing.xs) {
-            if labeled { Text("Next unlock").foregroundStyle(Theme.Palette.tertiaryText) }
+            if labeled { Text("Next unlock", bundle: .tabbi).foregroundStyle(Theme.Palette.tertiaryText) }
             Text(next.item.displayName).foregroundStyle(Theme.Palette.secondaryText)
             Group {
                 if next.missing == 0 {
-                    Text("ready to unlock")
+                    Text("ready to unlock", bundle: .tabbi)
                 } else if inStudyTime {
-                    Text("\(next.missing) pts, \(PetEconomy.studyToEarn(next.missing)) to go")
+                    Text("\(next.missing) pts, \(PetEconomy.studyToEarn(next.missing)) to go", bundle: .tabbi)
                 } else {
-                    Text("\(next.missing) pts to go")
+                    Text("\(next.missing) pts to go", bundle: .tabbi)
                 }
             }
             .foregroundStyle(next.missing == 0 ? accent : Theme.Palette.tertiaryText)
@@ -552,15 +565,15 @@ private struct ClosetItemTile: View {
         Group {
             switch state {
             case .wearing:
-                Label("On", systemImage: "checkmark").foregroundStyle(accent)
+                Label(String(localized: "On", bundle: .tabbi), systemImage: "checkmark").foregroundStyle(accent)
             case .owned:
-                Text("Owned").foregroundStyle(Theme.Palette.tertiaryText)
+                Text("Owned", bundle: .tabbi).foregroundStyle(Theme.Palette.tertiaryText)
             case .affordable:
                 Label("\(item.cost)", systemImage: "star.fill").foregroundStyle(accent)
             case .locked:
                 Label("\(item.cost)", systemImage: "lock.fill").foregroundStyle(Theme.Palette.tertiaryText)
             case .unearned:
-                Label("Limited", systemImage: "lock.fill").foregroundStyle(Theme.Palette.tertiaryText)
+                Label(String(localized: "Limited", bundle: .tabbi), systemImage: "lock.fill").foregroundStyle(Theme.Palette.tertiaryText)
             }
         }
         .font(.system(size: 10, weight: .semibold, design: .rounded).monospacedDigit())
@@ -570,8 +583,8 @@ private struct ClosetItemTile: View {
 
     private var accessibilityState: String {
         switch state {
-        case .wearing: "Wearing"
-        case .owned: "Owned"
+        case .wearing: String(localized: "Wearing", bundle: .tabbi)
+        case .owned: String(localized: "Owned", bundle: .tabbi)
         case .affordable: "\(isNew ? "New, " : "")unlock for \(item.cost) points"
         case .locked(let missing): "\(isNew ? "New, " : "")\(item.cost) points, \(missing) more to go"
         case .unearned: "Limited edition, not earned yet. \(item.limitedEdition?.howToEarn ?? "")"
@@ -717,8 +730,8 @@ private struct ClosetLimited: View {
                      : edition.howToEarn)
                     .foregroundStyle(Theme.Palette.tertiaryText)
             } else {
-                Text("Earned by studying, never sold").foregroundStyle(Theme.Palette.secondaryText)
-                Text("\(earnedCount) of \(PetCloset.limitedShelf.count) earned")
+                Text("Earned by studying, never sold", bundle: .tabbi).foregroundStyle(Theme.Palette.secondaryText)
+                Text("\(earnedCount) of \(PetCloset.limitedShelf.count) earned", bundle: .tabbi)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .monospacedDigit()
             }
@@ -935,9 +948,9 @@ private struct ClosetLimitedTile: View {
         Group {
             switch state {
             case .wearing:
-                Label("On", systemImage: "checkmark").foregroundStyle(accent)
+                Label(String(localized: "On", bundle: .tabbi), systemImage: "checkmark").foregroundStyle(accent)
             case .owned:
-                Text("Owned").foregroundStyle(Theme.Palette.secondaryText)
+                Text("Owned", bundle: .tabbi).foregroundStyle(Theme.Palette.secondaryText)
             default:
                 if let progress {
                     Text(progress.label).foregroundStyle(Theme.Palette.secondaryText)
@@ -947,7 +960,7 @@ private struct ClosetLimitedTile: View {
                     Label(day.formatted(.dateTime.month(.abbreviated).day()), systemImage: "calendar")
                         .foregroundStyle(Theme.Palette.tertiaryText)
                 } else {
-                    Label("Event", systemImage: "calendar").foregroundStyle(Theme.Palette.tertiaryText)
+                    Label(String(localized: "Event", bundle: .tabbi), systemImage: "calendar").foregroundStyle(Theme.Palette.tertiaryText)
                 }
             }
         }
@@ -1015,7 +1028,7 @@ private struct ClosetStreak: View {
                 .font(Theme.Typography.metric)
                 .foregroundStyle(streak.isActive ? Theme.Palette.primaryText : Theme.Palette.tertiaryText)
                 .contentTransition(.numericText())
-            Text(streak.length == 1 ? "day" : "days")
+            Text(streak.length == 1 ? "day" : "days", bundle: .tabbi)
                 .font(Theme.Typography.bodyEmphasis)
                 .foregroundStyle(Theme.Palette.secondaryText)
             Text(status(streak))
@@ -1029,9 +1042,9 @@ private struct ClosetStreak: View {
     }
 
     private func status(_ streak: StudyStreak) -> String {
-        if streak.studiedToday { return "Studied today" }
-        if streak.isActive { return "Focus today to keep it going" }
-        return "Focus \(Int(PetMilestoneProgress.minutesForStudyDay)) min to start one"
+        if streak.studiedToday { return String(localized: "Studied today", bundle: .tabbi) }
+        if streak.isActive { return String(localized: "Focus today to keep it going", bundle: .tabbi) }
+        return String(localized: "Focus \(Int(PetMilestoneProgress.minutesForStudyDay)) min to start one", bundle: .tabbi)
     }
 
     private func footer(_ streak: StudyStreak) -> some View {
@@ -1057,9 +1070,11 @@ private struct ClosetStreak: View {
     }
 
     private func freezes(_ streak: StudyStreak, short: Bool) -> String {
-        let free = streak.freeFreezeAvailable ? (short ? "1 free" : "1 free this week") : (short ? "Free used" : "Free freeze used")
+        let free = streak.freeFreezeAvailable
+            ? (short ? String(localized: "1 free", bundle: .tabbi) : String(localized: "1 free this week", bundle: .tabbi))
+            : (short ? String(localized: "Free used", bundle: .tabbi) : String(localized: "Free freeze used", bundle: .tabbi))
         guard streak.extraFreezes > 0 else { return free }
-        return "\(free), \(streak.extraFreezes) extra"
+        return String(localized: "\(free), \(streak.extraFreezes) extra", bundle: .tabbi)
     }
 }
 
@@ -1136,7 +1151,7 @@ private struct ClosetBuyFreezeButton: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: Theme.Spacing.xs) {
-                Text("Buy freeze")
+                Text("Buy freeze", bundle: .tabbi)
                 HStack(spacing: Theme.Spacing.xxs) {
                     Image(systemName: "star.fill").font(.system(size: 8, weight: .bold))
                     Text("\(StreakFreezeRules.price)").monospacedDigit()
@@ -1179,7 +1194,7 @@ private struct ClosetLook: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
-            row("Pet") {
+            row(String(localized: "Pet", bundle: .tabbi)) {
                 HStack(spacing: Theme.Spacing.xxs) {
                     ForEach(PetSpecies.allCases, id: \.self) { species in
                         ClosetPill(title: species.displayName,
@@ -1191,7 +1206,7 @@ private struct ClosetLook: View {
                     }
                 }
             }
-            row("Breed") {
+            row(String(localized: "Breed", bundle: .tabbi)) {
                 HStack(spacing: Theme.Spacing.s) {
                     IconButton(symbol: "chevron.left", size: 22, help: "Previous breed") {
                         store.cycleBreed(by: -1)
@@ -1206,7 +1221,7 @@ private struct ClosetLook: View {
                     }
                 }
             }
-            row("Fur") {
+            row(String(localized: "Fur", bundle: .tabbi)) {
                 HStack(spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
                     ClosetSwatch(color: nil, isSelected: store.closet.furTint == nil) {
                         store.tintFur(nil)

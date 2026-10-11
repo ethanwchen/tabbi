@@ -23,16 +23,16 @@ public struct StudySoundLabel: Equatable, Sendable {
         let hasPlaylist = settings.playlist != nil
         switch layers.count {
         case 0 where hasPlaylist:
-            title = "Playlist"
+            title = String(localized: "Playlist", bundle: .tabbi)
             symbolName = "music.note.list"
         case 0:
-            title = "Sound"
+            title = String(localized: "Sound", bundle: .tabbi)
             symbolName = "speaker.slash"
         case 1:
             title = layers[0].sound.displayName
             symbolName = layers[0].sound.symbolName
         default:
-            title = "\(layers.count) sounds"
+            title = String(localized: "\(layers.count) sounds", bundle: .tabbi)
             symbolName = "slider.horizontal.3"
         }
         isOn = !layers.isEmpty || hasPlaylist

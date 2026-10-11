@@ -25,9 +25,9 @@ struct ConnectionsSettingsPane: View {
             Section {
                 ConnectionsList(kinds: kinds)
             } header: {
-                Text("Apps and permissions")
+                Text("Apps and permissions", bundle: .tabbi)
             } footer: {
-                SectionFooter("Fixed something in another app? Come back here and the light updates by itself.")
+                SectionFooter(String(localized: "Fixed something in another app? Come back here and the light updates by itself.", bundle: .tabbi))
             }
             // The advanced settings here: the AI model and where claude lives.
             if kinds.contains(.claude) || model != nil {
@@ -64,7 +64,7 @@ struct ConnectionsList: View {
 
     var body: some View {
         if kinds.isEmpty {
-            Text("None of your tabs need another app right now.")
+            Text("None of your tabs need another app right now.", bundle: .tabbi)
                 .foregroundStyle(.secondary)
         } else {
             ForEach(kinds) { kind in
@@ -175,11 +175,11 @@ struct ConnectionRow: View {
                     .font(.callout)
                     .foregroundStyle(.secondary)
                 if !status.isConnected {
-                    Text("\(Text(status.headline).fontWeight(.medium)). \(status.detail)")
+                    Text("\(Text(status.headline).fontWeight(.medium)). \(status.detail)", bundle: .tabbi)
                         .font(.callout)
                         .padding(.top, 2)
                 } else if case .copyFriendCode(let code) = status.suggestion {
-                    Text("Your friend code: \(Text(code).fontWeight(.semibold).monospacedDigit())")
+                    Text("Your friend code: \(Text(code).fontWeight(.semibold).monospacedDigit())", bundle: .tabbi)
                         .font(.callout)
                         .textSelection(.enabled)
                         .padding(.top, 2)
@@ -188,11 +188,11 @@ struct ConnectionRow: View {
                     DoNotDisturbTestLine(test: test)
                         .padding(.top, 2)
                 }
-                Button("Something not working?", action: troubleshoot)
+                Button(String(localized: "Something not working?", bundle: .tabbi), action: troubleshoot)
                     .buttonStyle(.link)
                     .font(.caption)
                     .padding(.top, 2)
-                    .help("Run a checkup on \(kind.title) and see what's wrong, in plain words")
+                    .help(String(localized: "Run a checkup on \(kind.title) and see what's wrong, in plain words", bundle: .tabbi))
             }
             .fixedSize(horizontal: false, vertical: true)
 
