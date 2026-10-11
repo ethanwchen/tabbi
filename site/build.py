@@ -59,7 +59,7 @@ FEATURES = [
     ('friends', ['maya', 'wizard'], 'Make focus a game',
      'Every session earns points for your cat\'s next outfit. Keep your streak alive with friends.'),
     ('plan', ['scholar'], 'Your day at a glance',
-     'Tasks, calendar and Anki flashcards right in your notch. Plan and review without switching apps.'),
+     'Tasks, calendar and the Anki cards due today, right in your notch. See your whole day at a glance.'),
     ('private', ['plain'], 'Private by design',
      'No ads, no tracking, no account needed. Everything stays on your Mac unless you sync.'),
 ]
