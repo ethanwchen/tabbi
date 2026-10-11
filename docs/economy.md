@@ -122,6 +122,7 @@ The badge shows on the Account row in Settings > General, and friends and party 
 It is free, permanent and never sold, like every limited item.
 
 The window is server configuration: the Worker variable `FOUNDING_LAUNCH` (unix seconds or an ISO 8601 date such as `2026-11-03`, which means midnight UTC) starts it, and it ends 100 days later.
+It is set to `2026-10-11`, the 1.0 release, so the window closes at midnight UTC on 2027-01-19.
 Until `FOUNDING_LAUNCH` is set, nobody is left out, so every account is founding.
 A value the server cannot read grants nothing new rather than everything, since a founding grant cannot be taken back.
 What counts is when the account first signed in with Apple (`apple_accounts.created_at`), not when its Party friend code was made, and a Party identity that never signed in is not founding.
