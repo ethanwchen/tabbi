@@ -23,6 +23,26 @@
 			<string>%lld добавлено в календарь</string>
 		</dict>
 	</dict>
+	<key>%lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld бонусных очка</string>
+			<key>many</key>
+			<string>%lld бонусных очков</string>
+			<key>one</key>
+			<string>%lld бонусное очко</string>
+			<key>other</key>
+			<string>%lld бонусного очка</string>
+		</dict>
+	</dict>
 	<key>%lld cards</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -301,6 +321,26 @@
 			<string>%lld запланированный блок</string>
 			<key>other</key>
 			<string>%lld запланированного блока</string>
+		</dict>
+	</dict>
+	<key>%lld points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld очка</string>
+			<key>many</key>
+			<string>%lld очков</string>
+			<key>one</key>
+			<string>%lld очко</string>
+			<key>other</key>
+			<string>%lld очка</string>
 		</dict>
 	</dict>
 	<key>%lld pts</key>
@@ -721,6 +761,26 @@
 			<string>Фокусируйся %lld минуту во время события «%@».</string>
 			<key>other</key>
 			<string>Фокусируйся %lld минуты во время события «%@».</string>
+		</dict>
+	</dict>
+	<key>Found: %lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Находка: %lld бонусных очка</string>
+			<key>many</key>
+			<string>Находка: %lld бонусных очков</string>
+			<key>one</key>
+			<string>Находка: %lld бонусное очко</string>
+			<key>other</key>
+			<string>Находка: %lld бонусного очка</string>
 		</dict>
 	</dict>
 	<key>Not every day is a checklist day. Tomorrow starts with %lld tasks ready to go.</key>

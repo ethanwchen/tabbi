@@ -27,6 +27,30 @@
 			<string>أُضيفت %lld فترة إلى تقويمك</string>
 		</dict>
 	</dict>
+	<key>%lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld نقاط إضافية</string>
+			<key>many</key>
+			<string>%lld نقطةً إضافية</string>
+			<key>one</key>
+			<string>%lld نقطة إضافية</string>
+			<key>other</key>
+			<string>%lld نقطة إضافية</string>
+			<key>two</key>
+			<string>%lld نقطتان إضافيتان</string>
+			<key>zero</key>
+			<string>%lld نقطة إضافية</string>
+		</dict>
+	</dict>
 	<key>%lld cards</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -361,6 +385,30 @@
 			<string>%lld فترتان مخططتان</string>
 			<key>zero</key>
 			<string>%lld فترة مخططة</string>
+		</dict>
+	</dict>
+	<key>%lld points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld نقاط</string>
+			<key>many</key>
+			<string>%lld نقطةً</string>
+			<key>one</key>
+			<string>%lld نقطة</string>
+			<key>other</key>
+			<string>%lld نقطة</string>
+			<key>two</key>
+			<string>%lld نقطتان</string>
+			<key>zero</key>
+			<string>%lld نقطة</string>
 		</dict>
 	</dict>
 	<key>%lld pts</key>
@@ -1009,6 +1057,30 @@
 			<string>ركّز %lld دقيقتين خلال %@.</string>
 			<key>zero</key>
 			<string>ركّز %lld دقيقة خلال %@.</string>
+		</dict>
+	</dict>
+	<key>Found: %lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>لقية: %lld نقاط إضافية</string>
+			<key>many</key>
+			<string>لقية: %lld نقطةً إضافية</string>
+			<key>one</key>
+			<string>لقية: %lld نقطة إضافية</string>
+			<key>other</key>
+			<string>لقية: %lld نقطة إضافية</string>
+			<key>two</key>
+			<string>لقية: %lld نقطتان إضافيتان</string>
+			<key>zero</key>
+			<string>لقية: %lld نقطة إضافية</string>
 		</dict>
 	</dict>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>

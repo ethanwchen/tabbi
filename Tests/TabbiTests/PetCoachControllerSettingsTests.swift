@@ -29,7 +29,7 @@ final class PetCoachControllerSettingsTests: XCTestCase {
     }
 
     private func makeController(_ runMode: RunMode = .live,
-                                gift: @escaping (PetStudyAward) -> SurpriseGift? = { _ in nil }) -> PetCoachController {
+                                gift: @escaping (PetStudyAward) -> SurpriseGiftDelivery? = { _ in nil }) -> PetCoachController {
         PetCoachController(
             storage: storage,
             runMode: runMode,

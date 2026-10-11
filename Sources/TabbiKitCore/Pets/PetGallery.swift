@@ -5,7 +5,7 @@ import UniformTypeIdentifiers
 
 /// Contact sheets of every pet costume and animation, for reviewing pet art
 /// changes without running the app (`--snapshot` writes them as
-/// `pets-costumes.png` and `pets-animations.png`).
+/// `pets-costumes.png`, `pets-animations.png` and `pets-bond.png`).
 ///
 /// A sheet is plain data (rows of cells) so its layout can be tested, and
 /// `render(scale:)` draws it with nearest-neighbor pixels on a dark ground
@@ -82,6 +82,30 @@ public struct PetGallery: Hashable, Sendable {
             }
         }
         return PetGallery(rows: rows, groupSize: dressedLooks.count)
+    }
+
+    /// The bond levels whose look adds something (`PetBondLook`), shown
+    /// as the bond sheet's sitting columns.
+    public static let bondLevels = [2, 3, 4, 6, 8, 9]
+
+    /// Every breed (a row each) grown into each bond look: sitting at each
+    /// of `bondLevels`, then at the top level in an outfit, walking,
+    /// stretching and curled up, so the breed-agnostic collar and sparkle
+    /// can be checked on every silhouette and stance.
+    public static func bondLooks() -> PetGallery {
+        let top = PetBondLook(level: PetBond.maxLevel)
+        let stances: [PetComposer.Stance] = [.walking(step: 0), .stretching(depth: 2, wag: 0), .curled(breath: 0)]
+        return PetGallery(rows: PetBreed.allCases.map { breed in
+            let sitting = bondLevels.map { level in
+                PetComposer.sitting(breed, bond: PetBondLook(level: level))
+            }
+            let dressed = PetComposer.sitting(breed, outfit: .scrubs, bond: top)
+            let moving = stances.map { stance in
+                PetComposer.compose(breed, pose: PetPose(), outfit: .none, accessories: [], bond: top,
+                                    stance: stance).picture
+            }
+            return (sitting + [dressed] + moving).map { Cell(canvas: $0, palette: breed.palette) }
+        })
     }
 
     // MARK: Drawing

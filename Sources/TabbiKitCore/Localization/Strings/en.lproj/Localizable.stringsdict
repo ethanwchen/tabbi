@@ -19,6 +19,22 @@
 			<string>%lld added to your calendar</string>
 		</dict>
 	</dict>
+	<key>%lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld bonus point</string>
+			<key>other</key>
+			<string>%lld bonus points</string>
+		</dict>
+	</dict>
 	<key>%lld cards</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -241,6 +257,22 @@
 			<string>%lld planned block</string>
 			<key>other</key>
 			<string>%lld planned blocks</string>
+		</dict>
+	</dict>
+	<key>%lld points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld point</string>
+			<key>other</key>
+			<string>%lld points</string>
 		</dict>
 	</dict>
 	<key>%lld pts</key>
@@ -577,6 +609,22 @@
 			<string>Focus for %lld minute during %@.</string>
 			<key>other</key>
 			<string>Focus for %lld minutes during %@.</string>
+		</dict>
+	</dict>
+	<key>Found: %lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Found: %lld bonus point</string>
+			<key>other</key>
+			<string>Found: %lld bonus points</string>
 		</dict>
 	</dict>
 	<key>Not every day is a checklist day. Tomorrow starts with %lld tasks ready to go.</key>

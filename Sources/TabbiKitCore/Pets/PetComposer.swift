@@ -9,18 +9,20 @@ public enum PetComposer {
 
     /// The pet sitting, facing the viewer, optionally dressed. Accessories
     /// are filtered through `PetAccessory.wearable`, so any list is safe.
+    /// `bond` adds what the pet has grown into (a collar, a sparkle).
     public static func sitting(
-        _ breed: PetBreed, outfit: PetOutfit = .none, accessories: [PetAccessory] = []
+        _ breed: PetBreed, outfit: PetOutfit = .none, accessories: [PetAccessory] = [], bond: PetBondLook = .none
     ) -> PetCanvas {
-        compose(breed, pose: PetPose(), outfit: outfit, accessories: accessories).picture
+        compose(breed, pose: PetPose(), outfit: outfit, accessories: accessories, bond: bond).picture
     }
 
     /// The sitting pet in `pose`: an eye state, a head nod, and a hop, all
     /// relative to the plain sitting frame so costumes stay anchored.
     public static func sitting(
-        _ breed: PetBreed, pose: PetPose, outfit: PetOutfit = .none, accessories: [PetAccessory] = []
+        _ breed: PetBreed, pose: PetPose, outfit: PetOutfit = .none, accessories: [PetAccessory] = [],
+        bond: PetBondLook = .none
     ) -> PetCanvas {
-        compose(breed, pose: pose, outfit: outfit, accessories: accessories).picture
+        compose(breed, pose: pose, outfit: outfit, accessories: accessories, bond: bond).picture
     }
 
     /// A composed, outlined frame plus where the head ended up, so effects
@@ -67,9 +69,10 @@ public enum PetComposer {
 
     /// `phase` is the tick of the item clock (`itemLoopLength`): animated
     /// costume items draw that frame of their loop, and 0 is their still.
+    /// `bond` adds the collar and sparkle of the pet's bond level.
     static func compose(
-        _ breed: PetBreed, pose: PetPose, outfit: PetOutfit, accessories: [PetAccessory], stance: Stance = .sitting,
-        phase: Int = 0
+        _ breed: PetBreed, pose: PetPose, outfit: PetOutfit, accessories: [PetAccessory], bond: PetBondLook = .none,
+        stance: Stance = .sitting, phase: Int = 0
     ) -> Composed {
         let layout = SitLayout(breed.bodyShape)
         let pattern = breed.pattern
@@ -132,7 +135,8 @@ public enum PetComposer {
                 canvas.stamp(WalkArt.leg(height: walk.legHeight, lean: lean, far: far), x: x, y: legY, pattern: pattern)
             }
             // The tail sways once per half cycle, not every step, so it doesn't flicker.
-            canvas.lay(walkingTorso(breed, walk, outfit: outfit, accessories: accessories, wag: index / 2, phase: phase)) { _ in sink }
+            canvas.lay(walkingTorso(breed, walk, outfit: outfit, accessories: accessories, bond: bond, wag: index / 2,
+                                   phase: phase)) { _ in sink }
             back.lay(walkingBack(behind, walk, phase: phase)) { _ in sink }
             bodyItem = { _ in nil }
             headX = walk.headX
@@ -150,7 +154,8 @@ public enum PetComposer {
                 canvas.stamp(WalkArt.leg(height: walk.legHeight, lean: .under, far: far), x: x, y: legY, pattern: pattern)
             }
             // Bow the torso: columns toward the chest sink, the rump stays put.
-            let torso = walkingTorso(breed, walk, outfit: outfit, accessories: accessories, wag: wag, phase: phase)
+            let torso = walkingTorso(breed, walk, outfit: outfit, accessories: accessories, bond: bond, wag: wag,
+                                     phase: phase)
             let pivot = walk.torsoX + walk.torso.width * 2 / 3
             let bow = { (x: Int) in
                 x >= pivot ? 0 : min(depth, Int((Double(depth * (pivot - x)) / Double(pivot - walk.torsoX)).rounded()))
@@ -169,7 +174,8 @@ public enum PetComposer {
             let walk = WalkLayout(breed.bodyShape, layout.family)
             // The torso drops onto the floor where the legs were; on a
             // breath the middle of the back swells up a pixel.
-            let torso = walkingTorso(breed, walk, outfit: outfit, accessories: accessories, wag: nil, phase: phase)
+            let torso = walkingTorso(breed, walk, outfit: outfit, accessories: accessories, bond: bond, wag: nil,
+                                     phase: phase)
             let floor = walk.legHeight
             canvas.lay(torso) { _ in floor }
             back.lay(walkingBack(behind, walk, phase: phase)) { _ in floor }
@@ -212,6 +218,10 @@ public enum PetComposer {
         if let hood = outfitHood(outfit) {
             stampHead(hood)
         }
+        // The bond collar goes over the outfit, under any neck item.
+        if let collar = collarArt(bond, accessories), let (grid, x, y) = bodyItem(collar) {
+            canvas.stamp(grid, x: x, y: y)
+        }
         for accessory in PetAccessory.wearable(accessories) {
             switch accessoryArt(accessory) {
             case .body(let item):
@@ -239,7 +249,7 @@ public enum PetComposer {
         // Aura items float in the air, so they are placed in the frame and
         // follow the view (front, the side-on dachshund, or side), not the body.
         var aura: PetCanvas?
-        let floating = auraItems(accessories)
+        let floating = auraItems(accessories, bond: bond)
         if !floating.isEmpty, stance != .hanging {
             var layer = PetCanvas(width: frameSize, height: frameSize)
             for item in floating {
@@ -348,7 +358,8 @@ public enum PetComposer {
     /// canvas so a stance can bend it before laying it over the legs. The
     /// torso is behind the head, so torso costumes go on here, before it.
     private static func walkingTorso(
-        _ breed: PetBreed, _ walk: WalkLayout, outfit: PetOutfit, accessories: [PetAccessory], wag: Int?, phase: Int
+        _ breed: PetBreed, _ walk: WalkLayout, outfit: PetOutfit, accessories: [PetAccessory], bond: PetBondLook,
+        wag: Int?, phase: Int
     ) -> PetCanvas {
         var canvas = PetCanvas(width: frameSize, height: frameSize)
         canvas.stamp(walk.torso, x: walk.torsoX, y: walk.torsoY, pattern: breed.pattern)
@@ -356,7 +367,7 @@ public enum PetComposer {
             let tail = walk.tails[wag % walk.tails.count]
             canvas.stamp(tail, x: walk.tailX, y: walk.torsoY - tail.height, pattern: breed.pattern)
         }
-        for item in bodyItems(outfit: outfit, accessories: accessories) {
+        for item in bodyItems(outfit: outfit, accessories: accessories, bond: bond) {
             canvas.stamp(walk.pick(item.frame(phase)), x: walk.torsoX, y: walk.torsoY - item.rise)
         }
         return canvas
@@ -380,25 +391,37 @@ public enum PetComposer {
         }
     }
 
-    /// The aura items worn (petals), in drawing order.
-    private static func auraItems(_ accessories: [PetAccessory]) -> [CostumeArt.AuraItem] {
-        PetAccessory.wearable(accessories).compactMap { accessory in
+    /// The aura items worn (petals), in drawing order, then the bond's
+    /// sparkle.
+    private static func auraItems(_ accessories: [PetAccessory], bond: PetBondLook) -> [CostumeArt.AuraItem] {
+        let worn = PetAccessory.wearable(accessories).compactMap { accessory -> CostumeArt.AuraItem? in
             if case .aura(let item) = accessoryArt(accessory) { item } else { nil }
         }
+        return worn + (bond.sparkle ? [CostumeArt.bondSparkle] : [])
     }
 
-    /// The outfit and neck items worn, in drawing order.
-    private static func bodyItems(outfit: PetOutfit, accessories: [PetAccessory]) -> [CostumeArt.BodyItem] {
+    /// The outfit, bond collar and neck items worn, in drawing order.
+    private static func bodyItems(
+        outfit: PetOutfit, accessories: [PetAccessory], bond: PetBondLook
+    ) -> [CostumeArt.BodyItem] {
         let neck = PetAccessory.wearable(accessories).compactMap { accessory -> CostumeArt.BodyItem? in
             if case .body(let item) = accessoryArt(accessory) { item } else { nil }
         }
-        return (outfitArt(outfit).map { [$0] } ?? []) + neck
+        return [outfitArt(outfit), collarArt(bond, accessories)].compactMap { $0 } + neck
+    }
+
+    /// The bond collar to draw, or nil when there is none yet or a neck
+    /// item (a scarf, a bow tie) is worn in its place.
+    private static func collarArt(_ bond: PetBondLook, _ accessories: [PetAccessory]) -> CostumeArt.BodyItem? {
+        guard !accessories.contains(where: { $0.slot == .neck }) else { return nil }
+        return CostumeArt.bondCollar(bond.collar)
     }
 
     /// Ticks of the item clock before every animated item worn is back on
     /// its first frame together: 1 when nothing worn animates.
-    static func itemLoopLength(outfit: PetOutfit, accessories: [PetAccessory]) -> Int {
-        var counts = [outfitArt(outfit)?.frameCount, outfitHood(outfit)?.frameCount]
+    static func itemLoopLength(outfit: PetOutfit, accessories: [PetAccessory], bond: PetBondLook = .none) -> Int {
+        var counts = [outfitArt(outfit)?.frameCount, outfitHood(outfit)?.frameCount,
+                      bond.sparkle ? CostumeArt.bondSparkle.frameCount : nil]
         for accessory in PetAccessory.wearable(accessories) {
             switch accessoryArt(accessory) {
             case .body(let item): counts.append(item.frameCount)

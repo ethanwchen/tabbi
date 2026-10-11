@@ -19,12 +19,22 @@
 	<string>%@ 主题会改变展开的面板，收起的刘海保持黑色。</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ 正在后台重试。</string>
+	<key>%@ and brought back %@</key>
+	<string>%1$@，还带回了%2$@</string>
+	<key>%@ brought back a shiny acorn</key>
+	<string>%@ 带回一颗亮晶晶的橡果</string>
 	<key>%@ by %@, plays in Spotify.</key>
 	<string>%2$@ 的 %1$@，在 Spotify 中播放。</string>
 	<key>%@ can't control %@</key>
 	<string>%1$@ 无法控制 %2$@</string>
+	<key>%@ chased a butterfly</key>
+	<string>%@ 追了一只蝴蝶</string>
 	<key>%@ checkup</key>
 	<string>检查：%@</string>
+	<key>%@ climbed onto the rooftop</key>
+	<string>%@ 爬上了屋顶</string>
+	<key>%@ collected a smooth pebble</key>
+	<string>%@ 捡了一颗光滑的小石子</string>
 	<key>%@ could not be copied to Applications. %@</key>
 	<string>无法将 %@ 拷贝到“应用程序”。%@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
@@ -35,8 +45,16 @@
 	<string>%@ 没有返回可用的计划。请稍后再试。</string>
 	<key>%@ done for today. Open %@</key>
 	<string>%1$@今天已完成。打开 %2$@</string>
+	<key>%@ explored a cardboard box</key>
+	<string>%@ 探索了一个纸箱</string>
+	<key>%@ explored the bookshelf</key>
+	<string>%@ 探索了书架</string>
 	<key>%@ focused today</key>
 	<string>今天专注 %@</string>
+	<key>%@ found a perfect leaf</key>
+	<string>%@ 找到一片完美的叶子</string>
+	<key>%@ found a soft feather</key>
+	<string>%@ 找到一根软软的羽毛</string>
 	<key>%@ free</key>
 	<string>空闲 %@</string>
 	<key>%@ free this week</key>
@@ -75,6 +93,8 @@
 	<string>%@ 在小睡，等你下次开始</string>
 	<key>%@ is now your friend</key>
 	<string>%@ 已成为你的好友</string>
+	<key>%@ is off on a little adventure and will be back as your session ends</key>
+	<string>%@ 去小小探险了，会在专注结束时回来</string>
 	<key>%@ is on a break with you</key>
 	<string>%@ 正陪你休息</string>
 	<key>%@ is ready in the Closet</key>
@@ -93,14 +113,20 @@
 	<string>这台 Mac 上还没有 %@。“连接”会告诉你如何添加。</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@ 尚未设置</string>
+	<key>%@ learned a song from a bird</key>
+	<string>%@ 跟小鸟学了一首歌</string>
 	<key>%@ left</key>
 	<string>还剩 %@</string>
 	<key>%@ level in the blend</key>
 	<string>%@在混音中的音量</string>
+	<key>%@ made friends with a pigeon</key>
+	<string>%@ 和一只鸽子交了朋友</string>
 	<key>%@ misses you</key>
 	<string>%@ 想你了</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@ 已移到第 %2$lld 位，共 %3$lld 个</string>
+	<key>%@ napped on a sunny windowsill</key>
+	<string>%@ 在洒满阳光的窗台打盹</string>
 	<key>%@ naps until the timer runs</key>
 	<string>%@ 在计时开始前打个盹</string>
 	<key>%@ not found</key>
@@ -111,12 +137,24 @@
 	<string>专注了 %@。</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>%@会在音乐中打开，请在那里播放。</string>
+	<key>%@ raced a snail and let it win</key>
+	<string>%@ 和蜗牛赛跑，让它赢了</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
 	<string>%@ 在这台 Mac 上读取你的日程，绝不上传</string>
+	<key>%@ rescued a lost sock</key>
+	<string>%@ 救回了一只走失的袜子</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
 	<string>%1$@持续至 %2$@。下一个物品「%3$@」:已专注 %4$@。</string>
 	<key>%@ settings</key>
 	<string>%@ 设置</string>
+	<key>%@ sniffed every flower in the garden</key>
+	<string>%@ 闻遍了花园里的花</string>
+	<key>%@ snuck into the library</key>
+	<string>%@ 偷偷溜进了图书馆</string>
+	<key>%@ splashed in a puddle</key>
+	<string>%@ 在水坑里踩水</string>
+	<key>%@ spotted a tiny rainbow</key>
+	<string>%@ 发现了一道小彩虹</string>
 	<key>%@ started it for the party</key>
 	<string>%@ 为派对发起</string>
 	<key>%@ studied</key>
@@ -137,6 +175,12 @@
 	<string>%2$lld 分解锁%1$@</string>
 	<key>%@ uses it to greet you.</key>
 	<string>%@ 会用它跟你打招呼。</string>
+	<key>%@ visited the bakery</key>
+	<string>%@ 去了面包店</string>
+	<key>%@ watched a cloud shaped like a fish</key>
+	<string>%@ 看到一朵像鱼的云</string>
+	<key>%@ went around the park twice</key>
+	<string>%@ 绕公园走了两圈</string>
 	<key>%@ with %@</key>
 	<string>%1$@ 和 %2$@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -179,6 +223,8 @@
 	<string>还剩 %lld 分钟</string>
 	<key>%lld min on your own</key>
 	<string>独自学习 %lld 分钟</string>
+	<key>%lld min toward the event</key>
+	<string>活动进度 %lld 分钟</string>
 	<key>%lld min, no distractions</key>
 	<string>%lld 分钟，专心无扰</string>
 	<key>%lld new, %lld learning, %lld review</key>
@@ -225,8 +271,18 @@
 	<string>来 10 分钟？</string>
 	<key>10 minutes? That keeps your %lld-day streak going.</key>
 	<string>10 分钟？就能延续你 %lld 天的连续记录。</string>
+	<key>25 min focus, 5 min break</key>
+	<string>专注 25 分钟，休息 5 分钟</string>
+	<key>40 questions in 60 min, then review</key>
+	<string>60 分钟 40 题，然后复盘</string>
 	<key>5-hour</key>
 	<string>5 小时</string>
+	<key>52 / 17</key>
+	<string>52 / 17</string>
+	<key>52 min focus, 17 min break</key>
+	<string>专注 52 分钟，休息 17 分钟</string>
+	<key>90 min deep block, 20 min rest</key>
+	<string>深度专注 90 分钟，休息 20 分钟</string>
 	<key>&lt;1 min</key>
 	<string>不到 1 分钟</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
@@ -465,6 +521,8 @@
 	<string>Anki 复习</string>
 	<key>Anki said no to Tabbi</key>
 	<string>Anki 拒绝了 Tabbi</string>
+	<key>Anki sprint</key>
+	<string>Anki 冲刺</string>
 	<key>Anki wouldn't open</key>
 	<string>Anki 无法打开</string>
 	<key>AnkiConnect blocked this app</key>
@@ -551,8 +609,12 @@
 	<string>反戴棒球帽</string>
 	<key>Beanie</key>
 	<string>毛线帽</string>
+	<key>Bell collar</key>
+	<string>铃铛项圈</string>
 	<key>Best day %@</key>
 	<string>最佳 %@</string>
+	<key>Best friends</key>
+	<string>好朋友</string>
 	<key>Blend</key>
 	<string>混音</string>
 	<key>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</key>
@@ -567,6 +629,14 @@
 	<string>被屏蔽的人无法看到你、添加你或加入你的派对。要屏蔽或举报某人，请在派对中右键点按对方。</string>
 	<key>Blocks go to your calendar.</key>
 	<string>时段会添加到你的日历。</string>
+	<key>Bond %lld</key>
+	<string>羁绊 %lld</string>
+	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
+	<string>羁绊 %1$lld/%2$lld，已经亲密无间。每一分钟专注依然算数。</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld, which brings the %@. Every focused minute and every study day bring you closer.</key>
+	<string>羁绊 %1$lld/%2$lld：距离羁绊 %4$lld（%5$@）还差 %3$@。每一分钟专注、每一天学习都让你们更亲近。</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld. Every focused minute and every study day bring you closer.</key>
+	<string>羁绊 %1$lld/%2$lld：距离羁绊 %4$lld 还差 %3$@。每一分钟专注、每一天学习都让你们更亲近。</string>
 	<key>Bonus minutes toward this event's limited items</key>
 	<string>计入本次活动限定物品的额外分钟数</string>
 	<key>Bonus points from your pet, added to your balance</key>
@@ -743,6 +813,8 @@
 	<string>取消“%@”</string>
 	<key>Clear All</key>
 	<string>全部清除</string>
+	<key>Clear a card goal, not a clock</key>
+	<string>完成卡片目标，而不是计时</string>
 	<key>Clear completed tasks</key>
 	<string>清除已完成任务</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
@@ -1149,6 +1221,8 @@
 	<string>心流</string>
 	<key>Flower Crown</key>
 	<string>花环</string>
+	<key>Flowtime</key>
+	<string>心流计时</string>
 	<key>Focus</key>
 	<string>专注</string>
 	<key>Focus %lld min to start one</key>
@@ -1193,6 +1267,12 @@
 	<string>正在专注</string>
 	<key>Focusing on: %@</key>
 	<string>正在专注：%@</string>
+	<key>Forever friends</key>
+	<string>永远的朋友</string>
+	<key>Found: %lld min toward the event</key>
+	<string>带回：活动进度 %lld 分钟</string>
+	<key>Found: the rare %@ fur</key>
+	<string>带回：稀有毛色「%@」</string>
 	<key>Free all day</key>
 	<string>全天空闲</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1283,6 +1363,8 @@
 	<string>不填名字继续</string>
 	<key>Goals left today</key>
 	<string>今天剩余目标</string>
+	<key>Gold tag</key>
+	<string>金色吊牌</string>
 	<key>Golden Laurel</key>
 	<string>金色桂冠</string>
 	<key>Graduation Cap</key>
@@ -1295,6 +1377,8 @@
 	<string>万圣节</string>
 	<key>Halo</key>
 	<string>光环</string>
+	<key>Happy wiggle</key>
+	<string>开心摇尾巴</string>
 	<key>Haptic feedback</key>
 	<string>触觉反馈</string>
 	<key>Harassment</key>
@@ -1383,6 +1467,8 @@
 	<string>名字不当</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>自午夜以来所有 %@ 会话的输入、输出和缓存 Token</string>
+	<key>Inseparable</key>
+	<string>形影不离</string>
 	<key>Install</key>
 	<string>安装</string>
 	<key>Install %@ to plan with it.</key>
@@ -1457,6 +1543,8 @@
 	<string>正在加入派对，马上就好。</string>
 	<key>Joining the party server…</key>
 	<string>正在连接派对服务器…</string>
+	<key>Just met</key>
+	<string>初次见面</string>
 	<key>Keep at least one tab on</key>
 	<string>至少保留一个标签页</string>
 	<key>Keep the %@ kit</key>
@@ -1475,6 +1563,8 @@
 	<string>就用这个名字</string>
 	<key>Keep your current kit and tabs</key>
 	<string>保留当前的套件和标签页</string>
+	<key>Kindred spirits</key>
+	<string>心有灵犀</string>
 	<key>King's Cape</key>
 	<string>国王披风</string>
 	<key>Kit</key>
@@ -1485,6 +1575,8 @@
 	<string>最近 7 天</string>
 	<key>Last synced %@</key>
 	<string>上次同步：%@</string>
+	<key>Latest adventure: %@</key>
+	<string>最近的探险：%@</string>
 	<key>Launch %@</key>
 	<string>启动 %@</string>
 	<key>Launch at login</key>
@@ -1623,6 +1715,8 @@
 	<string>更多标签页</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>多数人等到觉得准备好了才开始。你直接开始了。差别就在这里。</string>
+	<key>Mostly convention</key>
+	<string>多为惯例</string>
 	<key>Move %@ to your Applications folder?</key>
 	<string>要将 %@ 移到“应用程序”文件夹吗？</string>
 	<key>Move down</key>
@@ -1651,6 +1745,8 @@
 	<string>新卡片</string>
 	<key>New chat</key>
 	<string>新聊天</string>
+	<key>New friends</key>
+	<string>新朋友</string>
 	<key>New tabs may ask for %@.</key>
 	<string>新标签页可能会请求%@。</string>
 	<key>Next meeting</key>
@@ -1671,6 +1767,8 @@
 	<string>没有回答</string>
 	<key>No calendars yet</key>
 	<string>还没有日历</string>
+	<key>No collar</key>
+	<string>无项圈</string>
 	<key>No events</key>
 	<string>没有日程</string>
 	<key>No events on your calendars today.</key>
@@ -1863,6 +1961,8 @@
 	<string>还差一个插件</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>一次一段,稳稳来。你可以的。</string>
+	<key>One countdown, no breaks</key>
+	<string>单次倒计时，不休息</string>
 	<key>One moment.</key>
 	<string>请稍候。</string>
 	<key>One question first</key>
@@ -2005,8 +2105,12 @@
 	<string>不显示。按 %@ 打开。</string>
 	<key>Owned</key>
 	<string>已拥有</string>
+	<key>Pals</key>
+	<string>好伙伴</string>
 	<key>Panel size</key>
 	<string>面板大小</string>
+	<key>Partners in focus</key>
+	<string>专注搭档</string>
 	<key>Party</key>
 	<string>派对</string>
 	<key>Party Hat</key>
@@ -2125,6 +2229,8 @@
 	<string>粉红噪音</string>
 	<key>Pirate Hat</key>
 	<string>海盗帽</string>
+	<key>Plain collar</key>
+	<string>素色项圈</string>
 	<key>Plan</key>
 	<string>规划</string>
 	<key>Plan my day</key>
@@ -2173,6 +2279,8 @@
 	<string>今日获得的积分，可用于宠物衣橱</string>
 	<key>Points: 1 for every focused minute, plus a bonus for finishing a session</key>
 	<string>积分：每专注 1 分钟得 1 分，完成一次专注还有奖励</string>
+	<key>Pomodoro</key>
+	<string>番茄钟</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>用于 Claude 用量和回答。</string>
 	<key>Preset %@</key>
@@ -2201,6 +2309,8 @@
 	<string>将“通用”恢复为全新安装时的样子，“登录时启动”保持不变。</string>
 	<key>Put the recap away</key>
 	<string>收起回顾</string>
+	<key>Question block</key>
+	<string>题目块</string>
 	<key>Quick and crisp, with no bounce.</key>
 	<string>快速利落，没有回弹。</string>
 	<key>Quick answers right here. %@ can't see your files.</key>
@@ -2565,14 +2675,20 @@
 	<string>流畅</string>
 	<key>Snowy Scarf</key>
 	<string>雪花围巾</string>
+	<key>Some evidence</key>
+	<string>有一定证据</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>做一点，远远胜过什么都不做。休息吧，棋盘会一直在这里。</string>
 	<key>Something not working?</key>
 	<string>遇到问题了？</string>
+	<key>Soulmates</key>
+	<string>灵魂伴侣</string>
 	<key>Sound</key>
 	<string>声音</string>
 	<key>Spam</key>
 	<string>垃圾信息</string>
+	<key>Sparkle</key>
+	<string>闪闪发光</string>
 	<key>Sparkle Trail</key>
 	<string>闪光拖尾</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
@@ -2587,6 +2703,8 @@
 	<string>富有弹性，轻轻回弹。</string>
 	<key>Sprint</key>
 	<string>冲刺</string>
+	<key>Star tag</key>
+	<string>星星吊牌</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>星星从不着急。它们只是持续燃烧。</string>
 	<key>Start %@ automatically when you log in</key>
@@ -2693,12 +2811,16 @@
 	<string>学习卫衣</string>
 	<key>Study block</key>
 	<string>学习时段</string>
+	<key>Study buddies</key>
+	<string>学习搭子</string>
 	<key>Study parties</key>
 	<string>学习派对</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
 	<string>今天获得的学习积分，可用来给宠物换装</string>
 	<key>Study together</key>
 	<string>一起学习</string>
+	<key>Study until focus slips, break scales</key>
+	<string>学到专注下降，休息随之调整</string>
 	<key>Study with a cat</key>
 	<string>和猫咪一起学习</string>
 	<key>Study with a dog</key>
@@ -3057,6 +3179,8 @@
 	<string>输入任务后按 Return 添加，Esc 清空</string>
 	<key>Type or paste a friend's %lld-character code and press Return</key>
 	<string>输入或粘贴好友的 %lld 位代码，然后按回车键</string>
+	<key>Ultradian</key>
+	<string>超日节律</string>
 	<key>Unblock</key>
 	<string>取消屏蔽</string>
 	<key>Unblock them in Party options to add them again.</key>
@@ -3155,6 +3279,8 @@
 	<string>每周</string>
 	<key>Welcome to %@</key>
 	<string>欢迎使用 %@</string>
+	<key>Well supported</key>
+	<string>证据充分</string>
 	<key>What happened when Tabbi ran your shortcuts</key>
 	<string>Tabbi 运行快捷指令的结果</string>
 	<key>What happened, in a sentence or two</key>
@@ -3345,10 +3471,14 @@
 	<string>你的名字</string>
 	<key>Your name, up to %lld characters</key>
 	<string>你的名字，最多 %lld 个字符</string>
+	<key>Your own focus and break lengths</key>
+	<string>自定专注和休息时长</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>你的派对资料已重置。正在重新连接…</string>
 	<key>Your pet</key>
 	<string>你的宠物</string>
+	<key>Your pet found this on its adventure. %@</key>
+	<string>这是你的宠物在探险中找到的。%@</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>你的宠物名字不可用，请在衣橱中重命名。</string>
 	<key>Your pet, today's streak and the running timer.</key>
@@ -3389,6 +3519,8 @@
 	<string>即将结束</string>
 	<key>events</key>
 	<string>日程</string>
+	<key>exploring</key>
+	<string>探险中</string>
 	<key>focused</key>
 	<string>专注</string>
 	<key>in %@</key>
@@ -3441,6 +3573,8 @@
 	<string>项任务</string>
 	<key>the host</key>
 	<string>房主</string>
+	<key>the rare %@ fur</key>
+	<string>稀有毛色「%@」</string>
 	<key>today</key>
 	<string>今天</string>
 	<key>tokens</key>

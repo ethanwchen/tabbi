@@ -12,8 +12,9 @@ public enum StudyEvidenceLevel: String, Codable, CaseIterable, Hashable, Sendabl
     /// Mostly convention or correlational data.
     case weak
 
-    /// The badge text, from `study-methods.json`.
-    public var label: String { StudyMethodDefinitions.file.evidenceLevels[self] ?? rawValue }
+    /// The badge text in the user's language, looked up in the catalog by
+    /// the English text in `study-methods.json`.
+    public var label: String { StudyMethodInfo.localized(StudyMethodDefinitions.file.evidenceLevels[self] ?? rawValue) }
 }
 
 /// Copy for a study method's info popover: what it is, how to do it, and an
@@ -34,6 +35,18 @@ public struct StudyMethodInfo: Hashable, Sendable {
     /// The badge rating, or nil for a plain tool that is not a study method
     /// (the Timer), which shows no rating or evidence note at all.
     public let evidenceLevel: StudyEvidenceLevel?
+
+    /// The name in the user's language. `study-methods.json` stays English,
+    /// since the Windows port reads it too, so the translation is looked up
+    /// in the catalog by that English text, as seasonal events are.
+    public var displayName: String { Self.localized(name) }
+
+    /// The tagline in the user's language, looked up like `displayName`.
+    public var displayTagline: String { Self.localized(tagline) }
+
+    static func localized(_ text: String) -> String {
+        Bundle.tabbi.localizedString(forKey: text, value: text, table: nil)
+    }
 
     /// Shared footnote under every popover.
     public static let footnote = StudyMethodDefinitions.file.footnote

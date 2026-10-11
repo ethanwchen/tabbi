@@ -17,6 +17,20 @@
 			<string>캘린더에 %lld개 추가됨</string>
 		</dict>
 	</dict>
+	<key>%lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>보너스 %lld포인트</string>
+		</dict>
+	</dict>
 	<key>%lld cards</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -211,6 +225,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>계획된 블록 %lld개</string>
+		</dict>
+	</dict>
+	<key>%lld points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld포인트</string>
 		</dict>
 	</dict>
 	<key>%lld pts</key>
@@ -505,6 +533,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>%2$@ 기간에 %1$lld분 집중하세요.</string>
+		</dict>
+	</dict>
+	<key>Found: %lld bonus points</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>발견: 보너스 %lld포인트</string>
 		</dict>
 	</dict>
 	<key>Not every day is a checklist day. Tomorrow starts with %lld tasks ready to go.</key>

@@ -28,7 +28,7 @@ final class PetCoachController: ObservableObject {
     private let unlockProgress: (PetStudyAward) -> UnlockProgress?
     /// Rolls for a surprise gift for the session behind an award and
     /// applies it (`SurpriseGiftKeeper`).
-    private let gift: (PetStudyAward) -> SurpriseGift?
+    private let gift: (PetStudyAward) -> SurpriseGiftDelivery?
     /// The pet's streak and focus totals, for Cat wisdom's milestones.
     private let studyStats: () -> (streak: StudyStreak, progress: PetMilestoneProgress)?
     /// Settings › General › Cat wisdom.
@@ -83,7 +83,7 @@ final class PetCoachController: ObservableObject {
         runMode: RunMode,
         profile: @escaping () -> PetProfile,
         unlockProgress: @escaping (PetStudyAward) -> UnlockProgress? = { _ in nil },
-        gift: @escaping (PetStudyAward) -> SurpriseGift? = { _ in nil },
+        gift: @escaping (PetStudyAward) -> SurpriseGiftDelivery? = { _ in nil },
         studyStats: @escaping () -> (streak: StudyStreak, progress: PetMilestoneProgress)? = { nil },
         wisdomEnabled: @escaping () -> Bool = { true },
         crown: @escaping () -> Void = {},

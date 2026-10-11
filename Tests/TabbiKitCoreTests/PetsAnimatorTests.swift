@@ -327,9 +327,10 @@ final class PetAnimatorTests: XCTestCase {
             let clip = clips[animation]
             switch animation {
             case .sleep, .nap:
-                XCTAssertEqual(clip.stillFrame, clip.frames[2], "\(animation) holds the frame with both z's")
+                XCTAssertEqual(clip.stillFrame, clip.frames[1], "\(animation) holds a bright z drifting up")
+                // The same pose as the last frame, which has no z.
                 XCTAssertGreaterThan(clip.stillFrame.canvas.pixels.compactMap { $0 }.count,
-                                     clip.frames[0].canvas.pixels.compactMap { $0 }.count)
+                                     clip.frames[3].canvas.pixels.compactMap { $0 }.count)
             default:
                 XCTAssertEqual(clip.stillFrame, animation.loops ? clip.frames.first : clip.frames.last,
                                "\(animation)")
@@ -358,7 +359,7 @@ final class PetAnimatorTests: XCTestCase {
         pet.send(.activity(.onBreak), at: 21)
         XCTAssertEqual(clips.stillFrame(for: pet), clips[.coffee].frames[0])
         pet.send(.sleep, at: 22)
-        XCTAssertEqual(clips.stillFrame(for: pet), clips[.sleep].frames[2])
+        XCTAssertEqual(clips.stillFrame(for: pet), clips[.sleep].frames[1])
         XCTAssertNil(clips.stillFrame(for: animator(.hidden)), "nothing to draw inside the notch")
         XCTAssertEqual(clips.stillFrame(for: animator(.hanging)), clips[.peekIn].frames.last)
     }
@@ -374,5 +375,61 @@ final class PetAnimatorTests: XCTestCase {
         pet.advance(to: end)
         XCTAssertEqual(clips.stillFrame(for: pet), clips[.idle].frames[0], "the nudge woke the pet")
         XCTAssertNil(clips.nextStillChange(for: pet, after: end))
+    }
+
+    /// The idle beats (blinks and tail swishes) an idling pet starts in its
+    /// first `seconds`, sampled at 30 fps.
+    private func idleBeats(happy: Bool, seconds: TimeInterval = 120, seed: UInt64 = 7)
+        -> [PetAnimator.Playback] {
+        var pet = PetAnimator(durations: durations, happy: happy, at: 0, seed: seed)
+        var beats: [PetAnimator.Playback] = []
+        var time: TimeInterval = 0
+        while time < seconds {
+            time += 1.0 / 30
+            pet.advance(to: time)
+            if let playback = pet.playback, playback.animation != .idle, beats.last != playback {
+                beats.append(playback)
+            }
+        }
+        return beats
+    }
+
+    func testAHappyPetSwishesItsTailInPlaceOfEveryThirdBlink() {
+        let plain = idleBeats(happy: false)
+        XCTAssertTrue(plain.allSatisfy { $0.animation == .blink }, "before the bond grows the pet only blinks")
+
+        let happy = idleBeats(happy: true)
+        XCTAssertGreaterThan(happy.count, 2 * PetAnimator.happyBeatEvery)
+        for (index, beat) in happy.enumerated() {
+            let swishes = (index + 1).isMultiple(of: PetAnimator.happyBeatEvery)
+            XCTAssertEqual(beat.animation, swishes ? .tailSwish : .blink, "beat \(index + 1)")
+        }
+        // The swish replaces a blink on the same random beat, then the pet
+        // rests again exactly when it ends and waits a whole blink interval.
+        let swish = happy[PetAnimator.happyBeatEvery - 1]
+        let next = happy[PetAnimator.happyBeatEvery]
+        let gap = next.startedAt - (swish.startedAt + clips[.tailSwish].duration)
+        XCTAssertTrue(PetAnimator.blinkInterval.contains(gap), "gap \(gap)")
+        XCTAssertEqual(Array(happy.prefix(PetAnimator.happyBeatEvery - 1)),
+                       Array(plain.prefix(PetAnimator.happyBeatEvery - 1)), "the same seed blinks on the same beat")
+    }
+
+    func testAHappyPetIdlesWithBlinksAloneWhileStudyingOrAsleepAndHoldsStillUnderReduceMotion() throws {
+        var pet = PetAnimator(durations: durations, happy: true, at: 0, seed: 7)
+        let swish = try XCTUnwrap(idleBeats(happy: true).first { $0.animation == .tailSwish })
+        pet.advance(to: swish.startedAt + 0.01)
+        XCTAssertEqual(pet.playback, swish)
+        XCTAssertEqual(clips.stillFrame(for: pet), clips[.idle].frames[0], "Reduce Motion shows the idle pose")
+        XCTAssertNil(clips.nextStillChange(for: pet, after: swish.startedAt + 0.01))
+        XCTAssertNotNil(clips.nextChange(for: pet, after: swish.startedAt + 0.01), "the swish animates")
+
+        // Any event cuts the swish short, like a blink.
+        pet.send(.activity(.studying), at: swish.startedAt + 0.1)
+        XCTAssertEqual(pet.playback, .init(animation: .typing, startedAt: swish.startedAt + 0.1))
+        pet.advance(to: swish.startedAt + 300)
+        XCTAssertEqual(pet.playback?.animation, .typing, "no idle beats on the laptop")
+        pet.send(.sleep, at: swish.startedAt + 301)
+        pet.advance(to: swish.startedAt + 600)
+        XCTAssertEqual(pet.playback?.animation, .sleep, "a dozing pet does not swish")
     }
 }

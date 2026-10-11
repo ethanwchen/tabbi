@@ -142,6 +142,27 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(UpNextEmptyState.localizedEvents("gigs and rehearsals"), "gigs and rehearsals")
     }
 
+    /// Study method names, taglines and evidence badges stay English in
+    /// `study-methods.json` and are looked up in the catalog by that text,
+    /// so a new or reworded method needs its translations added with it.
+    /// Arabic writes "52 / 17" without spaces, or a right-to-left line shows
+    /// it as "17 / 52".
+    func testEveryStudyMethodNameAndTaglineIsTranslated() throws {
+        let texts = StudyMethodInfo.all.map(\.name) + StudyMethodInfo.all.map(\.tagline)
+            + StudyEvidenceLevel.allCases.map { StudyMethodDefinitions.file.evidenceLevels[$0] ?? $0.rawValue }
+        let missing = "\u{0}missing"
+        for language in L10n.languages where language != L10n.sourceLanguage {
+            let bundle = try XCTUnwrap(L10n.strings(for: language))
+            for text in texts {
+                XCTAssertNotEqual(bundle.localizedString(forKey: text, value: missing, table: nil), missing,
+                                  "\(language) lacks \"\(text)\"")
+            }
+        }
+        XCTAssertEqual(StudyMethodInfo.info(for: .pomodoro).displayTagline, "25 min focus, 5 min break")
+        let arabic = try XCTUnwrap(L10n.strings(for: "ar"))
+        XCTAssertEqual(arabic.localizedString(forKey: "52 / 17", value: nil, table: nil), "52/17")
+    }
+
     /// Cat wisdom lines are approved English copy that the schedule hands
     /// out by text, and `CatWisdomLine.displayText` looks the translation up
     /// by it, so a new or reworded line needs its translations added with it.

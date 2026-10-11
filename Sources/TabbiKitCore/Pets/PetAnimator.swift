@@ -1,21 +1,57 @@
 import Foundation
+import os
 
 /// Every clip for one dressed pet, built once so a player never composes
 /// frames while animating.
 public struct PetClipSet: Hashable, Sendable {
     public let clips: [PetAnimation: PetClip]
 
-    public init(breed: PetBreed, outfit: PetOutfit = .none, accessories: [PetAccessory] = []) {
+    /// `ceiling` keeps every frame below that row, for a view that cuts off
+    /// the frame's top (see `PetComposer.clip`).
+    public init(
+        breed: PetBreed, outfit: PetOutfit = .none, accessories: [PetAccessory] = [], bond: PetBondLook = .none,
+        ceiling: Int? = nil
+    ) {
         var clips: [PetAnimation: PetClip] = [:]
         for animation in PetAnimation.allCases {
-            clips[animation] = PetComposer.clip(animation, for: breed, outfit: outfit, accessories: accessories)
+            clips[animation] = PetComposer.clip(animation, for: breed, outfit: outfit, accessories: accessories,
+                                                bond: bond, ceiling: ceiling)
         }
         self.clips = clips
     }
 
-    public init(profile: PetProfile) {
-        self.init(breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories)
+    public init(profile: PetProfile, ceiling: Int? = nil) {
+        self.init(breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories,
+                  bond: profile.bondLook, ceiling: ceiling)
     }
+
+    /// The clips for `profile`, composed once and kept for the next view
+    /// that shows the same look: the closed notch draws its pet anew each
+    /// time the ticker comes back to it, and composing every clip takes a
+    /// noticeable moment. A handful of looks are kept, newest last.
+    public static func cached(profile: PetProfile, ceiling: Int? = nil) -> PetClipSet {
+        let key = CacheKey(breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories,
+                           bond: profile.bondLook, ceiling: ceiling)
+        if let hit = cache.withLock({ $0.first { $0.key == key }?.clips }) { return hit }
+        let clips = PetClipSet(profile: profile, ceiling: ceiling)
+        cache.withLock { entries in
+            entries.removeAll { $0.key == key }
+            entries.append((key, clips))
+            if entries.count > cacheSize { entries.removeFirst(entries.count - cacheSize) }
+        }
+        return clips
+    }
+
+    private struct CacheKey: Hashable, Sendable {
+        let breed: PetBreed
+        let outfit: PetOutfit
+        let accessories: [PetAccessory]
+        let bond: PetBondLook
+        let ceiling: Int?
+    }
+
+    private static let cacheSize = 6
+    private static let cache = OSAllocatedUnfairLock<[(key: CacheKey, clips: PetClipSet)]>(initialState: [])
 
     public subscript(animation: PetAnimation) -> PetClip {
         // Every case is built in init, so the lookup always succeeds.
@@ -55,7 +91,7 @@ public struct PetClipSet: Hashable, Sendable {
     /// `animator` must already be advanced to the time drawn.
     public func stillFrame(for animator: PetAnimator) -> PetFrame? {
         guard let playback = animator.playback else { return nil }
-        return self[playback.animation == .blink ? .idle : playback.animation].stillFrame
+        return self[PetAnimator.idleBeats.contains(playback.animation) ? .idle : playback.animation].stillFrame
     }
 
     /// The next moment after `time` when `stillFrame(for:)` can change: the
@@ -64,7 +100,8 @@ public struct PetClipSet: Hashable, Sendable {
     /// pet only changes on events. `animator` must already be advanced to
     /// `time`.
     public func nextStillChange(for animator: PetAnimator, after time: TimeInterval) -> TimeInterval? {
-        guard let playback = animator.playback, !playback.animation.loops, playback.animation != .blink
+        guard let playback = animator.playback, !playback.animation.loops,
+              !PetAnimator.idleBeats.contains(playback.animation)
         else { return nil }
         let end = playback.startedAt + self[playback.animation].duration
         return end > time ? end : nil
@@ -147,6 +184,16 @@ public struct PetAnimator: Hashable, Sendable {
         case activity(Activity)
     }
 
+    /// What an idling pet plays between rests: a blink, or for a happy pet
+    /// now and then a tail swish. Both yield to any event, and Reduce
+    /// Motion draws them as the idle pose they interrupt.
+    public static let idleBeats: Set<PetAnimation> = [.blink, .tailSwish]
+
+    /// A happy pet (`PetBondLook.happyIdle`) swishes its tail in place of
+    /// every this many blinks, so a grown bond shows as a little extra
+    /// contentment without the pet ever seeming restless.
+    public static let happyBeatEvery = 3
+
     /// The clip on screen and when it started.
     public struct Playback: Hashable, Sendable {
         public var animation: PetAnimation
@@ -171,6 +218,9 @@ public struct PetAnimator: Hashable, Sendable {
     public private(set) var place: Place
     public private(set) var isAsleep: Bool
     public private(set) var activity: Activity
+    /// Whether the idle is the happier one a grown bond unlocks (see
+    /// `happyBeatEvery`).
+    public let isHappy: Bool
     /// When the current activity started, so leaving a long focus stretch
     /// can be told from leaving a short one.
     public private(set) var activitySince: TimeInterval
@@ -186,14 +236,17 @@ public struct PetAnimator: Hashable, Sendable {
     /// A long focus stretch ended while another one-shot clip played; the
     /// pet yawns as soon as that clip ends.
     private var yawnsNext = false
+    /// Idle beats played so far, which picks a happy pet's tail swishes.
+    private var beats = 0
     private var random: SplitMix64
 
     public init(
         durations: [PetAnimation: TimeInterval], place: Place = .beside, asleep: Bool = false,
-        activity: Activity = .free, activitySince: TimeInterval? = nil,
+        activity: Activity = .free, activitySince: TimeInterval? = nil, happy: Bool = false,
         at time: TimeInterval = 0, seed: UInt64 = 0
     ) {
         self.durations = durations
+        self.isHappy = happy
         self.place = place
         self.isAsleep = asleep && place == .beside
         self.activity = activity
@@ -227,7 +280,9 @@ public struct PetAnimator: Hashable, Sendable {
             let animation = current.animation
             let end = current.startedAt + duration(animation)
             if animation == .idle, let blinkAt = nextBlinkAt, blinkAt <= time {
-                playback = Playback(animation: .blink, startedAt: blinkAt)
+                beats += 1
+                let swishes = isHappy && beats.isMultiple(of: Self.happyBeatEvery)
+                playback = Playback(animation: swishes ? .tailSwish : .blink, startedAt: blinkAt)
                 nextBlinkAt = nil
                 continue
             }
