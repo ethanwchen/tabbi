@@ -54,14 +54,14 @@ def unobfuscate(html):
 # these say what they are for. Each card wears a pet from the app's own
 # sprites (the demo's atlases, already cached), the last one with a lock.
 FEATURES = [
-    ('focus', ['hoodie'], 'Focus that works',
-     'Timers built on popular methods like Pomodoro, calming focus sounds and a cat who cheers you on.'),
-    ('friends', ['maya', 'wizard'], 'Study with friends',
-     'Focus together in Party and earn points to unlock outfits for your pixel pet.'),
-    ('plan', ['scholar'], 'Plan your day',
-     'Your tasks and calendar side by side, with a gentle plan for the day.'),
+    ('focus', ['hoodie'], 'Focus that flows',
+     'Pomodoro, 52/17 and deep focus timers with soft sounds. Press start, find your flow.'),
+    ('friends', ['maya', 'wizard'], 'Make focus a game',
+     'Every session earns points for your cat\'s next outfit. Keep your streak alive with friends.'),
+    ('plan', ['scholar'], 'Your day at a glance',
+     'Tasks, calendar and Anki flashcards right in your notch. Plan and review without switching apps.'),
     ('private', ['plain'], 'Private by design',
-     'No ads, no tracking and no account needed. Your data stays on your Mac.'),
+     'No ads, no tracking, no account needed. Everything stays on your Mac unless you sync.'),
 ]
 
 # The icon beside the line on wide screens, above it on narrow ones, then
