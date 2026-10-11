@@ -30,6 +30,18 @@ final class NotchPreviewLayoutTests: XCTestCase {
         XCTAssertEqual(wing, NotchPreviewLayout.maxWingWidth)
     }
 
+    func testTheWingHasRoomForExploringInABlockWithAnAdventure() {
+        var profile = PetProfile.starter(.cat)
+        profile.rename("Mochi")
+        let home = TickerPet(profile: profile, mood: .studying)
+        var adventurous = home
+        let now = Date()
+        adventurous.adventure = PetAdventure(departsAt: now, returnsAt: now.addingTimeInterval(600),
+                                             endsAt: now.addingTimeInterval(603))
+        XCTAssertGreaterThan(NotchPreviewLayout.wingWidth(for: .pet(adventurous)),
+                             NotchPreviewLayout.wingWidth(for: .pet(home)), "room for Mochi exploring")
+    }
+
     func testTheChargingLineFitsBesideTheSippingPet() {
         let pet = TickerPet(profile: .starter(.cat), mood: .onBreak)
         var sipping = pet

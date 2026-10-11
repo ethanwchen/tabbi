@@ -74,6 +74,50 @@ final class PetAdventureTests: XCTestCase {
         XCTAssertNil(plan.nextChange(after: plan.endsAt))
     }
 
+    func testDistanceAndExploringFollowTheWalk() throws {
+        let plan = try XCTUnwrap(PetAdventure.plan(for: focus(minutes: 25), reduceMotion: false))
+        let walk = PetAdventure.walkDuration
+        XCTAssertEqual(PetAdventure.Phase.home.distance, 0)
+        XCTAssertEqual(PetAdventure.Phase.leaving(progress: 0.25).distance, 0.25)
+        XCTAssertEqual(PetAdventure.Phase.away.distance, 1)
+        XCTAssertEqual(PetAdventure.Phase.returning(progress: 0.25).distance, 0.75)
+        XCTAssertFalse(plan.isExploring(at: plan.departsAt.addingTimeInterval(-1)))
+        XCTAssertTrue(plan.isExploring(at: plan.departsAt), "the label shows as it sets off")
+        XCTAssertTrue(plan.isExploring(at: plan.departsAt.addingTimeInterval(walk + 60)))
+        XCTAssertFalse(plan.isExploring(at: plan.returnsAt), "coming back reads as the finish")
+        XCTAssertFalse(plan.isExploring(at: plan.endsAt))
+    }
+
+    // MARK: Closed notch
+
+    func testTheTickerPetCarriesTheBlocksAdventure() throws {
+        let profile = PetProfile.starter(.cat)
+        let presence = PetPresence(profile: profile, lastActive: start)
+        let long = focus(minutes: 25)
+        let plan = try XCTUnwrap(PetAdventure.plan(for: long, reduceMotion: false))
+        for date in [start, plan.departsAt.addingTimeInterval(60), plan.returnsAt] {
+            let item = TickerSources(focus: long, pet: presence).items(at: date, enabled: [.pet]).first
+            guard case .pet(let pet) = item else { return XCTFail("no pet at \(date)") }
+            XCTAssertEqual(pet.adventure, plan, "one value for the whole block, so the item stays put")
+        }
+        for clock in [focus(minutes: 10), focus(minutes: 25, phase: .rest)] {
+            let item = TickerSources(focus: clock, pet: presence).items(at: start, enabled: [.pet]).first
+            guard case .pet(let pet) = item else { return XCTFail("no pet") }
+            XCTAssertNil(pet.adventure, "short blocks and breaks keep the pet home")
+        }
+    }
+
+    func testTheTooltipSaysThePetIsOutExploring() throws {
+        var profile = PetProfile.starter(.cat)
+        profile.rename("Mochi")
+        let plan = try XCTUnwrap(PetAdventure.plan(for: focus(minutes: 25), reduceMotion: false))
+        let pet = TickerPet(profile: profile, mood: .studying, adventure: plan)
+        XCTAssertEqual(TickerFormat.petSummary(pet, at: start), "Mochi is studying with you")
+        XCTAssertEqual(TickerFormat.petSummary(pet, at: plan.departsAt.addingTimeInterval(60)),
+                       "Mochi is off on a little adventure and will be back as your session ends")
+        XCTAssertEqual(TickerFormat.petSummary(pet, at: plan.returnsAt), "Mochi is studying with you")
+    }
+
     // MARK: Journal
 
     func testJournalHasAboutTwentyDistinctShortLines() {

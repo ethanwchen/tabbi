@@ -58,10 +58,14 @@ public enum NotchPreviewLayout {
         case .pet(let pet) where pet.isSipping:
             content = max(chargingSymbolSize + Theme.Spacing.xxs + textWidth(TickerFormat.charging), NotchPetWing.side)
         case .pet(let pet):
-            // Measured asleep too, so the wing doesn't jump when the pet dozes off.
+            // Measured asleep (or out exploring, in a block with an
+            // adventure) too, so the wing doesn't jump when the pet dozes off
+            // or trots away.
             let name = TickerFormat.petLabel(pet).map { textWidth($0) + Theme.Spacing.xs } ?? 0
-            // The unlock bar takes the same slot, so it never widens the wing either.
-            let tail = max(textWidth(TickerFormat.petSleeping), unlockHintWidth)
+            // The unlock bar takes the same slot as "zzz" (or "exploring"),
+            // so it never widens the wing either.
+            let state = pet.adventure == nil ? TickerFormat.petSleeping : TickerFormat.petExploring
+            let tail = max(textWidth(state), unlockHintWidth)
             content = max(name + tail, NotchPetWing.side)
         case .party(let party):
             content = max(partyPetsWidth(count: party.pets.count), textWidth(TickerFormat.partySize(party.memberCount)))

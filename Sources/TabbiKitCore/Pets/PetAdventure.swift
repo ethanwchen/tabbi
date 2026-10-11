@@ -34,6 +34,25 @@ public struct PetAdventure: Hashable, Sendable {
 
         /// Whether the pet is out of its usual spot (walking or away).
         public var isOut: Bool { self != .home }
+
+        /// How far along the path out the pet is: 0 at home, 1 out of
+        /// sight, in between while it walks.
+        public var distance: Double {
+            switch self {
+            case .home: 0
+            case .leaving(let progress): progress
+            case .away: 1
+            case .returning(let progress): 1 - progress
+            }
+        }
+    }
+
+    /// An adventure at these moments: for snapshots and tests. `plan(for:)`
+    /// is how the app gets one.
+    public init(departsAt: Date, returnsAt: Date, endsAt: Date) {
+        self.departsAt = departsAt
+        self.returnsAt = returnsAt
+        self.endsAt = endsAt
     }
 
     /// The adventure for a focus clock, or nil when the pet stays home: not
@@ -64,6 +83,16 @@ public struct PetAdventure: Hashable, Sendable {
         }
         if now < returnsAt { return .away }
         return .returning(progress: min(1, now.timeIntervalSince(returnsAt) / walk))
+    }
+
+    /// Whether the closed notch says the pet is out exploring at `now`:
+    /// from the moment it sets off until it starts back, so its return
+    /// reads as part of the finish.
+    public func isExploring(at now: Date) -> Bool {
+        switch phase(at: now) {
+        case .leaving, .away: true
+        case .home, .returning: false
+        }
     }
 
     /// The next moment the phase changes after `now`, so a view can schedule

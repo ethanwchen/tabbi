@@ -142,25 +142,7 @@ struct NotchPreview: View {
             .foregroundStyle(Theme.Palette.success)
             .previewText()
         case .pet(let pet):
-            HStack(spacing: Theme.Spacing.xs) {
-                if let name = TickerFormat.petLabel(pet) {
-                    Text(name)
-                        .foregroundStyle(pet.mood == .asleep ? Theme.Palette.secondaryText : Theme.Palette.primaryText)
-                        .truncationMode(.tail)
-                }
-                if pet.mood == .asleep {
-                    Text(TickerFormat.petSleeping)
-                        .foregroundStyle(Theme.Palette.tertiaryText)
-                        .fixedSize()
-                        .transition(.opacity)
-                } else if let unlock = pet.unlockHint {
-                    NotchUnlockHint(fraction: unlock.fraction, tint: accent)
-                        .transition(.opacity)
-                }
-            }
-            .previewText()
-            .motion(Theme.Motion.content, value: pet.mood)
-            .motion(Theme.Motion.content, value: pet.unlockHint)
+            NotchPetLabel(pet: pet, accent: accent)
         case .party(let party):
             Text(TickerFormat.partySize(party.memberCount))
                 .foregroundStyle(accent)
@@ -172,7 +154,7 @@ struct NotchPreview: View {
 /// A slim bar beside the pet when its next unlock is a session or two
 /// away: a quiet nudge (the tooltip names the item), drawn in the pet
 /// module's accent and sized like "zzz" so the wing never changes width.
-private struct NotchUnlockHint: View {
+struct NotchUnlockHint: View {
     let fraction: Double
     let tint: Color
 
@@ -279,7 +261,8 @@ private struct NotchPartyPet: View {
     }
 }
 
-private extension View {
+extension View {
+    /// The closed notch's caption type, shared by its wings.
     func previewText() -> some View {
         font(Theme.Typography.caption)
             .monospacedDigit()

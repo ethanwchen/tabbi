@@ -397,7 +397,11 @@ To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.
   Late at night (11 PM to 6 AM local time, `PetNightRhythm`) the Closet's `PetPresence` lets the pet doze after a 10 minute quiet spell instead of 20, with its drifting "z"s.
   Opening the notch or starting a session wakes it, and Reduce Motion holds the doze still.
   Snapshot runs leave the night out, so a shot looks the same at any hour.
-  Snapshot runs render it as `closed-pet-studying.png`, `closed-pet-break.png` and `closed-pet-asleep.png` (whichever differ from the pet's current mood in `closed-pet.png`).
+  Snapshot runs render it as `closed-pet-studying.png`, `closed-pet-break.png` and `closed-pet-asleep.png` (whichever differ from the pet's current mood in `closed-pet.png`, all drawn at home).
+- In a running focus block of 15 minutes or more, the closed-notch pet goes on a little adventure (`PetAdventure`, carried on `TickerPet.adventure`).
+  Partway through the block it trots into the notch, leaving a faint paw print and "exploring" beside its name, and it trots back out over the block's last 3 seconds, so its return is part of the finish.
+  The timer keeps rotating through the closed notch while the pet is away, and under Reduce Motion the pet stays home.
+  Snapshot runs render it away as `closed-pet-away.png` and half way back as `closed-pet-returning.png`.
 - `PetView(player:pixelSize:)` is a fixed square of 32 sprite pixels (32 pt at the default `pixelSize` of 1, 24 pt at 0.75).
   A `TimelineView` with `PetFrameSchedule` redraws exactly at each `nextChange`, so an idle pet redraws a few times a second and a hidden or hanging pet not at all.
 - Frames are rendered at a whole number of device pixels per sprite pixel and drawn without interpolation; they are pixel-perfect whenever `pixelSize` times the display scale is a whole number.
