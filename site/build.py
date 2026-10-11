@@ -50,12 +50,18 @@ def unobfuscate(html):
 # Home
 # --------------------------------------------------------------------------
 
-# The tabs and features the notch demo above does not show, one line each.
-MORE = [
-    ('Party', 'Study with friends, pets side by side. Invite them with a link.'),
-    ('Recap', 'A Sunday look back at your week. Streak freezes cover days off.'),
-    ('Widget', 'Your pet, your streak and the timer on your desktop.'),
-    ('Ask AI', 'Ask the AI you already use, even one that runs on your Mac.'),
+# Why Tabbi, one benefit per card. The notch demo above shows the screens;
+# these say what they are for. Each card wears a pet from the app's own
+# sprites (the demo's atlases, already cached), the last one with a lock.
+FEATURES = [
+    ('focus', ['hoodie'], 'Focus that flows',
+     'Pomodoro, 52/17 and deep focus timers with soft sounds. Press start, find your flow.'),
+    ('friends', ['maya', 'wizard'], 'Make focus a game',
+     'Every session earns points for your cat\'s next outfit. Keep your streak alive with friends.'),
+    ('plan', ['scholar'], 'Your day at a glance',
+     'Tasks, calendar and Anki flashcards right in your notch. Plan and review without switching apps.'),
+    ('private', ['plain'], 'Private by design',
+     'No ads, no tracking, no account needed. Everything stays on your Mac unless you sync.'),
 ]
 
 # The icon beside the line on wide screens, above it on narrow ones, then
@@ -68,34 +74,27 @@ HOME_HERO = {
     'icon': '<img class="hero-icon" src="/img/icon-256.webp" width="256" height="256" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
 }
 
-# The trust stickers' little line icons, drawn like the paw: one stroke
-# weight, round ends, colored by the card.
-def sticker_icon(paths):
-    return ('<svg class="trust-mark" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">'
-            '<g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'
-            + paths + '</g></svg>')
+# The privacy card's lock, drawn like the paw: one stroke weight, round ends.
+LOCK = ('<svg class="feature-lock" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">'
+        '<g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">'
+        '<rect x="5" y="10.5" width="14" height="10" rx="3"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></g></svg>')
 
 
-HEART = sticker_icon('<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>')
-CODE = sticker_icon('<path d="M8.5 7 3.5 12l5 5M15.5 7l5 5-5 5"/>')
-LOCK = sticker_icon('<rect x="5" y="10.5" width="14" height="10" rx="3"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>')
-FEATHER = sticker_icon('<path d="M19 5c-7 0-12 4.5-12 12v2M7 17c5 0 9-3 10.5-8.5M10.5 13.5H15"/>')
+def feature_card(key, looks, title, line):
+    pets = ''.join(f'<span class="pet feature-pet" data-look="{look}"></span>' for look in looks)
+    badge = LOCK if key == 'private' else ''
+    return (f'          <li class="feature-card" data-feature="{key}">'
+            f'<span class="feature-art" aria-hidden="true">{pets}{badge}</span>'
+            f'<h3>{title}</h3><p>{line}</p></li>')
+
 
 HOME = DEMO + f'''
-      <section class="tabs" aria-labelledby="tabs-title">
-        <h2 id="tabs-title" class="tabs-title">{PAW}<span>More inside</span></h2>
-        <ul class="tab-row">
-''' + '\n'.join(f'''          <li class="tab-card"><span class="tab-label">{label}</span>{line}</li>''' for label, line in MORE) + f'''
+      <section class="features" aria-labelledby="features-title">
+        <h2 id="features-title" class="features-title">{PAW}<span>Why you'll love Tabbi</span></h2>
+        <ul class="feature-row">
+''' + '\n'.join(feature_card(*feature) for feature in FEATURES) + f'''
         </ul>
-        <p class="more">Plus seasonal outfits, SoundCloud and more. Missing a tab? <a href="/suggest">Suggest one</a>.</p>
-      </section>
-      <section class="trust" aria-label="Good to know">
-        <ul class="trust-row">
-          <li class="trust-card">{HEART}<span>Free to download</span></li>
-          <li class="trust-card">{CODE}<span>Open source (MIT)</span></li>
-          <li class="trust-card">{LOCK}<span>No account or tracking</span></li>
-          <li class="trust-card">{FEATHER}<span>A tiny native app</span></li>
-        </ul>
+        <p class="more">Got an idea for Tabbi? <a href="/suggest">Suggest a feature</a>.</p>
       </section>
       <section class="thanks" aria-label="Say hi">
         <div class="card-pair">

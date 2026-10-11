@@ -2,14 +2,16 @@
 // springs open, the Timer counts down a short focus round, and the pet
 // cheers beside the closed notch when it is done. Today keeps a checklist
 // for yesterday, today and tomorrow, Now Playing plays made-up songs
-// (silently), and the Closet dresses the pet.
+// (silently), Party runs a shared round with made-up friends, AI Usage
+// counts made-up tokens, Anki reviews four cards, and the Closet dresses
+// the pet.
 //
 // The page already holds the whole panel as HTML, open, with tabs that
 // switch through radio buttons, so it works as a showcase without this
 // file. This script closes it, opens it the way the app does and makes the
 // controls work. It runs no strings as code, builds markup only from the
 // page's own templates and talks to no server: the pet's frames, the
-// days' lists and the songs come from JSON data blocks.
+// days' lists, the songs and the cards come from JSON data blocks.
 (() => {
   'use strict';
 
@@ -17,7 +19,8 @@
   const data = document.getElementById('demo-pets');
   const daysData = document.getElementById('demo-days');
   const tracksData = document.getElementById('demo-tracks');
-  if (!demo || !data || !daysData || !tracksData) return;
+  const cardsData = document.getElementById('demo-cards');
+  if (!demo || !data || !daysData || !tracksData || !cardsData) return;
 
   const notch = demo.querySelector('.notch');
   const face = notch.querySelector('.notch-face');
@@ -136,6 +139,7 @@
     face.setAttribute('aria-expanded', String(open));
     panel.inert = !open;
     if (open) demo.dataset.tried = '';
+    paneChanged();
   }
 
   const isOpen = () => notch.dataset.state === 'open';
@@ -494,6 +498,8 @@
     restyle(closetPet, shown ? shown.dataset.look : 'plain');
     restyle(players.notch, worn);
     restyle(players.dial, worn);
+    restyle(players['party-me'], worn);
+    restyle(players.anki, worn);
     if (trying) petSub.dataset.trying = '';
     else delete petSub.dataset.trying;
     petSub.textContent = trying ? `Trying on ${trying.dataset.name}` : 'British Shorthair';
@@ -715,10 +721,382 @@
     });
   });
 
+
+  // --- Party -------------------------------------------------------------
+
+  // A pretend party: Start runs a shared 25 minute round sped up to a few
+  // seconds, everyone's status follows it, and at the end the pets cheer
+  // under a banner and confetti. Invite brings Leo in from the friends
+  // list, with a hop. No server is involved.
+  const partyPane = demo.querySelector('.pane-party');
+  const stage = partyPane.querySelector('.stage');
+  const partyButton = demo.querySelector('[data-action="party"]');
+  const inviteButton = demo.querySelector('[data-action="invite"]');
+  const partyTime = demo.querySelector('[data-party-time]');
+  const partyCap = demo.querySelector('[data-party-cap]');
+  const partyBar = demo.querySelector('[data-party-bar]');
+  const partyCount = demo.querySelector('[data-party-count]');
+  const banner = demo.querySelector('[data-party-banner]');
+  const PARTY_ROUND = 25 * 60;
+  // The demo's round plays 25 minutes in 8 seconds.
+  const PARTY_PLAYS = 8000;
+  const party = { run: 'idle', frame: 0, startedAt: 0, banner: 0, members: ['me', 'maya', 'priya'] };
+  // Each status as the page drew it, to go back to when a round ends early.
+  const firstStatus = new Map();
+  demo.querySelectorAll('[data-status-of]').forEach((el) => firstStatus.set(el, [el.textContent, el.dataset.tone]));
+
+  /** Sets a member's status: the stage's short words (columns are
+      narrow) and the friends list's longer ones. */
+  function setStatus(who, staged, listed, tone) {
+    demo.querySelectorAll(`[data-status-of="${who}"]`).forEach((el) => {
+      el.textContent = el.closest('.members') ? staged : listed;
+      el.dataset.tone = tone;
+    });
+  }
+
+  function hop(el) {
+    el.removeAttribute('data-hop');
+    void el.offsetWidth;
+    el.dataset.hop = '';
+    window.setTimeout(() => el.removeAttribute('data-hop'), 600);
+  }
+
+  function partyTick() {
+    const played = Math.min(1, (performance.now() - party.startedAt) / PARTY_PLAYS);
+    const left = Math.ceil(PARTY_ROUND * (1 - played));
+    partyTime.textContent = mmss(left);
+    partyBar.style.strokeDashoffset = String(100 - 100 * played);
+    const minutes = Math.max(1, Math.ceil(left / 60));
+    party.members.forEach((who) => setStatus(who, `${minutes}m left`, `${minutes} min left`, 'study'));
+    if (played >= 1) partyFinish();
+    else party.frame = window.requestAnimationFrame(partyTick);
+  }
+
+  function partyStart() {
+    window.clearTimeout(party.banner);
+    hideBanner();
+    party.run = 'running';
+    party.startedAt = performance.now();
+    partyPane.dataset.running = '';
+    partyCap.textContent = 'shared focus';
+    partyButton.textContent = 'End';
+    partyButton.title = 'End the shared round';
+    party.members.forEach((who) => players[`party-${who}`].play('typing'));
+    announce('Shared focus started with your party, sped up for this demo.');
+    partyTick();
+  }
+
+  function partyReset(finished) {
+    window.cancelAnimationFrame(party.frame);
+    party.run = 'idle';
+    delete partyPane.dataset.running;
+    partyTime.textContent = mmss(PARTY_ROUND);
+    partyCap.textContent = 'focus together';
+    partyBar.style.strokeDashoffset = '100';
+    partyButton.textContent = finished ? 'Again' : 'Start';
+    partyButton.title = 'Start a shared focus round, sped up for this demo';
+    party.members.forEach((who) => {
+      if (finished) {
+        setStatus(who, 'Done', 'Done \u00b7 25m', 'done');
+      } else {
+        demo.querySelectorAll(`[data-status-of="${who}"]`).forEach((el) => {
+          [el.textContent, el.dataset.tone] = firstStatus.get(el);
+        });
+      }
+      players[`party-${who}`].idle();
+    });
+  }
+
+  function hideBanner() {
+    delete banner.dataset.shown;
+    banner.hidden = true;
+  }
+
+  function partyFinish() {
+    partyReset(true);
+    banner.hidden = false;
+    void banner.offsetWidth;
+    banner.dataset.shown = '';
+    party.members.forEach((who, i) => {
+      const pet = players[`party-${who}`];
+      window.setTimeout(() => pet.play('celebrate', () => pet.play('celebrate', () => pet.idle())), i * 90);
+    });
+    confetti(stage, 26);
+    party.banner = window.setTimeout(hideBanner, 4200);
+    announce(`Great job, team! Plus 45 points for ${PET}.`);
+  }
+
+  partyButton.addEventListener('click', () => {
+    if (party.run === 'running') {
+      partyReset();
+      announce('Shared round ended.');
+    } else {
+      partyStart();
+    }
+  });
+  banner.addEventListener('click', hideBanner);
+
+  inviteButton.addEventListener('click', () => {
+    const leo = demo.querySelector('[data-member="leo"]');
+    leo.hidden = false;
+    party.members.push('leo');
+    partyCount.textContent = `${party.members.length} of 8`;
+    if (party.run === 'running') {
+      players['party-leo'].play('typing');
+    } else {
+      demo.querySelector('.members [data-status-of="leo"]').dataset.tone = 'idle';
+      wakePets();
+    }
+    hop(leo);
+    // The row stays, now saying he is in, so the list does not jump.
+    inviteButton.textContent = 'Joined';
+    inviteButton.dataset.sent = '';
+    inviteButton.disabled = true;
+    inviteButton.title = 'Leo is in your party';
+    partyButton.focus();
+    announce('Leo joined your party.');
+  });
+
+  // --- AI Usage ------------------------------------------------------------
+
+  // Made-up usage from the app's own demo figures, for Claude Code or
+  // Codex (`week` is the six days before today). While the tab is open the tokens tick up a little every couple
+  // of seconds and the limits follow, like a session at work.
+  const AI = {
+    claude: { tool: 'Claude Code', week: 10_476_000, five: 42, weekly: 76,
+      models: [['Opus 5.5', 1_969_200], ['Haiku 4.5', 197_900]] },
+    codex: { tool: 'Codex', week: 7_602_000, five: 31, weekly: 58,
+      models: [['GPT-5 Codex', 1_438_600]] },
+  };
+  const aiPane = demo.querySelector('.pane-ai');
+  const aiTool = demo.querySelector('[data-ai-tool]');
+  const aiTotal = demo.querySelector('[data-ai-total]');
+  const aiWeek = demo.querySelector('[data-ai-week]');
+  const aiModels = demo.querySelector('[data-ai-models]');
+  const aiModelTemplate = demo.querySelector('[data-ai-model]').content.firstElementChild;
+  const aiUpdated = demo.querySelector('[data-ai-updated]');
+  const aiFoot = aiPane.querySelector('.ai-foot');
+  const ai = { source: 'claude', timer: 0, updatedAt: performance.now() };
+
+  const compact = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n / 1e3)}K`);
+
+  /** The limits' level, as the app colors them: warning from 70%, critical past 90%. */
+  const level = (pct) => (pct < 70 ? 'normal' : pct <= 90 ? 'warning' : 'critical');
+
+  function renderAI(rebuild) {
+    const usage = AI[ai.source];
+    aiTool.textContent = usage.tool;
+    const total = usage.models.reduce((sum, [, n]) => sum + n, 0);
+    aiTotal.textContent = compact(total);
+    aiWeek.textContent = `${compact(usage.week + total)} tokens`;
+    if (rebuild) aiModels.replaceChildren(...usage.models.map(() => aiModelTemplate.cloneNode(true)));
+    const top = Math.max(...usage.models.map(([, n]) => n));
+    [...aiModels.children].forEach((row, i) => {
+      const [name, n] = usage.models[i];
+      row.querySelector('.ai-model-name').textContent = name;
+      row.querySelector('.ai-model-n').textContent = compact(n);
+      row.querySelector('.bar-fill').style.strokeDashoffset = String(100 - (100 * n) / top);
+    });
+    [['five', usage.five], ['week', usage.weekly]].forEach(([key, pct]) => {
+      const shown = Math.round(pct);
+      demo.querySelector(`[data-ai-pct="${key}"]`).textContent = `${shown}%`;
+      const dialEl = demo.querySelector(`[data-ai-dial="${key}"]`);
+      dialEl.dataset.tone = level(shown);
+      dialEl.querySelector('.ring-arc').style.strokeDashoffset = String(100 - pct);
+    });
+  }
+
+  function renderUpdated() {
+    const seconds = Math.round((performance.now() - ai.updatedAt) / 1000);
+    aiUpdated.textContent = seconds < 10 ? 'Updated just now' : `Updated ${seconds}s ago`;
+  }
+
+  /** A little more work done: the top model's tokens grow most. */
+  function aiTick() {
+    const usage = AI[ai.source];
+    usage.models.forEach((model, i) => { model[1] += Math.round((i === 0 ? 9000 : 1800) * (0.5 + Math.random())); });
+    usage.five = Math.min(88, usage.five + 0.25 + Math.random() * 0.35);
+    usage.weekly = Math.min(94, usage.weekly + 0.05 + Math.random() * 0.06);
+    ai.updatedAt = performance.now();
+    renderAI(false);
+    renderUpdated();
+  }
+
+  /** Ticks only while the tab can be seen. */
+  function aiLive(on) {
+    if (on && !ai.timer) {
+      ai.timer = window.setInterval(aiTick, 2200);
+    } else if (!on && ai.timer) {
+      window.clearInterval(ai.timer);
+      ai.timer = 0;
+    }
+  }
+
+  demo.querySelectorAll('input[name="ai-source"]').forEach((input) => {
+    input.addEventListener('change', () => {
+      ai.source = input.value;
+      renderAI(true);
+      announce(`Usage from ${AI[ai.source].tool}.`);
+    });
+  });
+  demo.querySelector('[data-action="ai-refresh"]').addEventListener('click', () => {
+    aiFoot.removeAttribute('data-busy');
+    void aiFoot.offsetWidth;
+    aiFoot.dataset.busy = '';
+    window.setTimeout(() => aiFoot.removeAttribute('data-busy'), 720);
+    aiTick();
+    announce(`${AI[ai.source].tool}: ${aiTotal.textContent} tokens today.`);
+  });
+
+  // --- Anki -----------------------------------------------------------------
+
+  // Four cards: the front asks, a click or Space turns it over, and the
+  // grades move on. Again puts the card at the back of the queue, like
+  // Anki's learning step; Good and Easy make the pet hop. 1, 2 and 3 grade
+  // from the keyboard too.
+  const cards = JSON.parse(cardsData.textContent);
+  const flashcard = demo.querySelector('[data-card]');
+  const cardQ = demo.querySelector('[data-card-q]');
+  const cardQ2 = demo.querySelector('[data-card-q2]');
+  const cardA = demo.querySelector('[data-card-a]');
+  const cardHint = flashcard.querySelector('.card-hint');
+  const due = demo.querySelector('[data-due]');
+  const deckArc = demo.querySelector('.deck-ring .ring-arc');
+  const grade = {};
+  demo.querySelectorAll('[data-grade]').forEach((button) => { grade[button.dataset.grade] = button; });
+  const anki = { queue: cards.map((_, i) => i), flipped: false };
+
+  function renderCard() {
+    const left = anki.queue.length;
+    due.textContent = String(left);
+    deckArc.style.strokeDashoffset = String(100 - (100 * left) / cards.length);
+    const finished = left === 0;
+    flashcard.toggleAttribute('data-done', finished);
+    flashcard.toggleAttribute('data-flipped', anki.flipped || finished);
+    if (finished) {
+      cardQ2.textContent = `${cards.length} cards reviewed`;
+      cardA.textContent = 'All caught up!';
+      flashcard.title = `All caught up. ${PET} is proud of you`;
+      flashcard.setAttribute('aria-label', 'All caught up');
+    } else {
+      const [question, answer] = cards[anki.queue[0]];
+      // The front changes only while it is hidden, so the turn never shows it.
+      if (!anki.flipped) {
+        cardQ.textContent = question;
+        cardQ2.textContent = question;
+        cardA.textContent = answer;
+      }
+      flashcard.title = anki.flipped ? `${question} ${answer}` : 'Click or press Space to flip';
+      flashcard.setAttribute('aria-label', anki.flipped ? `Answer: ${answer}` : `${question} Flip the card`);
+    }
+    grade.show.hidden = anki.flipped || finished;
+    ['again', 'good', 'easy'].forEach((key) => { grade[key].hidden = !anki.flipped || finished; });
+    grade['again-deck'].hidden = !finished;
+  }
+
+  function flip() {
+    if (anki.flipped || !anki.queue.length) return;
+    anki.flipped = true;
+    renderCard();
+    announce(`Answer: ${cards[anki.queue[0]][1]}.`);
+  }
+
+  function answer(key) {
+    if (!anki.flipped || !anki.queue.length) return;
+    const card = anki.queue.shift();
+    if (key === 'again') anki.queue.push(card);
+    anki.flipped = false;
+    // The card turns back first, then shows the next question.
+    flashcard.removeAttribute('data-flipped');
+    const wait = reduceMotion.matches ? 0 : 260;
+    window.setTimeout(renderCard, wait);
+    grade.show.hidden = false;
+    ['again', 'good', 'easy'].forEach((k) => { grade[k].hidden = true; });
+    if (key !== 'again') hop(players.anki.el);
+    if (!anki.queue.length) {
+      window.setTimeout(() => {
+        players.anki.play('celebrate', () => players.anki.play('celebrate', () => players.anki.idle()));
+        confetti(flashcard, 18);
+      }, wait);
+      announce(`All caught up. ${PET} cheers.`);
+    } else {
+      announce(key === 'again' ? 'Again: it comes back at the end.' : `${anki.queue.length} left.`);
+    }
+    if (grade.show.contains(document.activeElement) || Object.values(grade).includes(document.activeElement)) {
+      (anki.queue.length ? grade.show : grade['again-deck']).focus();
+    }
+  }
+
+  flashcard.addEventListener('click', flip);
+  grade.show.addEventListener('click', () => { flip(); grade.good.focus(); });
+  ['again', 'good', 'easy'].forEach((key) => grade[key].addEventListener('click', () => answer(key)));
+  grade['again-deck'].addEventListener('click', () => {
+    anki.queue = cards.map((_, i) => i);
+    anki.flipped = false;
+    renderCard();
+    grade.show.focus();
+    announce(`${cards.length} cards due.`);
+  });
+
+  // Space flips and grades Good, 1 to 3 grade, while Anki is the open tab.
+  document.addEventListener('keydown', (event) => {
+    if (!isOpen() || shownPane() !== 'anki' || event.metaKey || event.ctrlKey || event.altKey) return;
+    const target = event.target;
+    if (target.matches && target.matches('input[type="text"], button')) return;
+    const keys = { 1: 'again', 2: 'good', 3: 'easy' };
+    if (event.key === ' ') {
+      event.preventDefault();
+      if (anki.flipped) answer('good');
+      else flip();
+    } else if (keys[event.key]) {
+      answer(keys[event.key]);
+    }
+  });
+
+  // --- tabs and the chips under the scene ---------------------------------
+
+  const shownPane = () => panel.querySelector('input[name="demo-tab"]:checked').value;
+
+  /** Starts and stops what only runs while its tab can be seen. */
+  function paneChanged() {
+    aiLive(isOpen() && onScreen && shownPane() === 'ai');
+  }
+
+  demo.querySelectorAll('.try-chip').forEach((chip) => {
+    chip.addEventListener('click', (event) => {
+      event.preventDefault();
+      const input = document.getElementById(chip.htmlFor);
+      input.checked = true;
+      open(false);
+      wakePets();
+      paneChanged();
+      announce(`${input.getAttribute('aria-label')} is open.`);
+    });
+  });
+
   // --- the celebration ------------------------------------------------------
 
   const CONFETTI = ['#FF9E42', '#F4D57E', '#F2A0A6', '#A88CFF', '#7FD6C2', '#FBF7F0'];
   let cheerTimer = 0;
+
+  /** Throws `count` pieces of confetti from a container's .confetti spot,
+      out and down. Nothing flies under reduced motion. */
+  function confetti(container, count) {
+    if (reduceMotion.matches) return;
+    for (let i = 0; i < count; i += 1) {
+      const piece = document.createElement('span');
+      piece.className = 'confetti';
+      const angle = (Math.PI * (0.15 + 1.7 * Math.random())) - Math.PI * 0.9;
+      const reach = 50 + Math.random() * 70;
+      piece.style.setProperty('--dx', `${Math.cos(angle) * reach}px`);
+      piece.style.setProperty('--dy', `${Math.abs(Math.sin(angle)) * reach + 30}px`);
+      piece.style.setProperty('--spin', `${Math.round(Math.random() * 720 - 360)}deg`);
+      piece.style.setProperty('--delay', `${Math.round(Math.random() * 120)}ms`);
+      piece.style.background = CONFETTI[i % CONFETTI.length];
+      container.append(piece);
+    }
+    window.setTimeout(() => container.querySelectorAll(':scope > .confetti').forEach((piece) => piece.remove()), 1600);
+  }
 
   /** The pet's cheer dance in the closed notch, confetti beside it and
       the points it earned. Reduced motion keeps the points and drops the
@@ -732,20 +1110,7 @@
     demo.dataset.cheer = '';
     const pet = players.notch;
     pet.play('celebrate', () => pet.play('celebrate', () => pet.idle()));
-    if (!reduceMotion.matches) {
-      for (let i = 0; i < 22; i += 1) {
-        const piece = document.createElement('span');
-        piece.className = 'confetti';
-        const angle = (Math.PI * (0.15 + 1.7 * Math.random())) - Math.PI * 0.9;
-        const reach = 50 + Math.random() * 70;
-        piece.style.setProperty('--dx', `${Math.cos(angle) * reach}px`);
-        piece.style.setProperty('--dy', `${Math.abs(Math.sin(angle)) * reach + 30}px`);
-        piece.style.setProperty('--spin', `${Math.round(Math.random() * 720 - 360)}deg`);
-        piece.style.setProperty('--delay', `${Math.round(Math.random() * 120)}ms`);
-        piece.style.background = CONFETTI[i % CONFETTI.length];
-        burst.append(piece);
-      }
-    }
+    confetti(burst, 22);
     cheerTimer = window.setTimeout(() => {
       delete demo.dataset.cheer;
       burst.querySelectorAll('.confetti').forEach((piece) => piece.remove());
@@ -759,16 +1124,23 @@
     onScreen = entry.isIntersecting;
     if (onScreen) wakePets();
     else allPets().forEach((pet) => pet.stop());
+    paneChanged();
   });
   watcher.observe(scene);
   // A tab or Closet section shows other pets.
-  demo.addEventListener('change', (event) => { if (event.target.type === 'radio') wakePets(); });
+  demo.addEventListener('change', (event) => {
+    if (event.target.type !== 'radio') return;
+    wakePets();
+    paneChanged();
+  });
 
   demo.querySelectorAll('button:disabled, input:disabled').forEach((control) => { control.disabled = false; });
   renderDay();
   renderSong();
   renderPlaying();
   renderCloset();
+  renderAI(true);
+  renderCard();
   render();
   renderControls();
   setState('closed');

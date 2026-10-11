@@ -211,55 +211,48 @@ nav.site a[aria-current='page'] { background: var(--ink); color: var(--btn-ink);
 main { padding: 0 0 64px; }
 main.home .wrap { max-width: 1120px; }
 
-.tabs-title {
+.features-title {
   display: flex; align-items: center; justify-content: center; gap: 10px;
-  font-size: clamp(1.4rem, 3vw, 1.75rem); margin: 0 0 24px; color: var(--on-ground);
+  font-size: clamp(1.4rem, 3vw, 1.75rem); margin: 0 0 28px; color: var(--on-ground);
 }
 .paw { color: var(--pink); flex-shrink: 0; }
-/* Sticker cards: a pink tab pill on top, a slight tilt each way,
-   straightening up on hover. */
-.tab-row {
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 20px;
+/* Feature cards: a pet from the app's sprites sits on top of each one,
+   with a slight tilt each way that straightens up on hover. */
+.feature-row {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px;
   list-style: none; margin: 0; padding: 0;
 }
-main .tab-row li { margin: 0; }
-.tab-card {
-  position: relative; background: var(--card); border-radius: 24px; padding: 26px 20px 20px;
+main .feature-row li { margin: 0; }
+.feature-card {
+  background: var(--card); border-radius: 24px; padding: 8px 20px 22px;
   border: 1px solid rgba(251, 247, 240, 0.06); box-shadow: var(--shadow);
-  color: var(--ink-2); font-size: 15.5px; line-height: 1.45;
-  transform: rotate(1.2deg);
+  transform: rotate(0.8deg);
 }
-.tab-card:nth-child(even) { transform: rotate(-1.2deg); }
+.feature-card:nth-child(even) { transform: rotate(-0.8deg); }
+.feature-card h3 {
+  margin: 10px 0 6px; font-family: var(--head); font-weight: 600; font-size: 19px; line-height: 1.25; color: var(--ink);
+}
+.feature-card p { margin: 0; font-size: 15.5px; line-height: 1.45; color: var(--ink-2); text-wrap: pretty; }
+/* The demo's 32 px sprite frames drawn at 2x, so each sprite pixel stays
+   crisp. The frames carry headroom above the pet, hence the card's short top. */
+.feature-art { position: relative; display: flex; align-items: flex-end; height: 64px; }
+.feature-pet.pet { width: 64px; height: 64px; background-size: 704px 256px; }
+.feature-pet + .feature-pet { margin-left: -12px; }
+.feature-lock {
+  position: absolute; left: 50px; bottom: 2px; box-sizing: content-box; padding: 5px;
+  border-radius: 999px; background: var(--link); color: var(--btn-ink);
+}
 @media (prefers-reduced-motion: no-preference) {
-  .tab-card { transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1); }
-  .tab-card:hover, .tab-card:nth-child(even):hover { transform: translateY(-4px) rotate(0deg); }
+  .feature-card { transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .feature-card:hover, .feature-card:nth-child(even):hover { transform: translateY(-4px) rotate(0deg); }
+  .feature-pet { transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .feature-card:hover .feature-pet { transform: translateY(-6px); }
+  .feature-card:hover .feature-pet + .feature-pet { transition-delay: 60ms; }
 }
-.tab-label {
-  position: absolute; z-index: 1; top: -13px; left: 18px;
-  padding: 2px 14px; border-radius: 999px; background: var(--pink); color: var(--btn-ink);
-  font-family: var(--head); font-weight: 600; font-size: 16px; line-height: 1.5;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-}
-.more { text-align: center; color: var(--on-ground-2); font-weight: 600; font-size: 15.5px; margin: 28px auto 0; max-width: 60ch; }
+.more { text-align: center; color: var(--on-ground-2); font-weight: 600; font-size: 15.5px; margin: 32px auto 0; max-width: 60ch; }
 .more a { color: var(--on-ground); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--taupe); }
 
-/* The stickers and the GitHub and coffee cards. */
-.trust, .thanks { margin-top: 64px; }
-
-.trust-row {
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;
-  list-style: none; margin: 0; padding: 0;
-}
-main .trust-row li { margin: 0; }
-.trust-card {
-  display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 64px;
-  padding: 12px 16px; border-radius: 22px; background: var(--card-2);
-  font-family: var(--head); font-weight: 600; font-size: 17px; line-height: 1.25; color: var(--ink);
-  transform: rotate(-0.6deg);
-}
-.trust-card:nth-child(even) { transform: rotate(0.6deg); }
-.trust-mark { flex: none; color: var(--pink); }
-.trust-card:nth-child(even) .trust-mark { color: var(--link); }
+.thanks { margin-top: 64px; }
 
 /* The GitHub and coffee cards: quiet dark cards, so the Download button
    stays the page's only yellow call to action. */
@@ -427,10 +420,7 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
 
 /* --- responsive -------------------------------------------------------- */
 @media (max-width: 1000px) {
-  .tab-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 760px) {
-  .trust-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .feature-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 600px) {
@@ -448,10 +438,8 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
   .hero-home .lede { font-size: 18px; }
   .hero-home .cta { margin-top: 28px; }
   .btn { width: 100%; min-height: 58px; font-size: 20px; padding: 0 24px; }
-  .tab-row { grid-template-columns: 1fr; gap: 30px; }
-  .trust, .thanks { margin-top: 48px; }
-  .trust-row { gap: 12px; }
-  .trust-card { font-size: 15.5px; padding: 10px 12px; gap: 8px; }
+  .feature-row { grid-template-columns: 1fr; gap: 16px; }
+  .thanks { margin-top: 48px; }
   /* Cards nest inside the sheet, so their padding adds up twice: keep it
      tight to leave a readable line for the text inside. */
   .sheet { padding: 26px 16px 28px; border-radius: 28px; }
@@ -500,8 +488,10 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
 
 @media (max-width: 350px) {
   .hero-home h1 { font-size: 2.1rem; }
-  .trust-card { font-size: 14.5px; padding: 10px; gap: 6px; }
-  .trust-mark { width: 22px; height: 22px; }
+  /* Keep "Open source on GitHub" on one line beside the mark and arrow. */
+  .gh-card { gap: 10px; padding: 14px 14px 14px 12px; }
+  .gh-text strong { font-size: 16.5px; }
+  .gh-arrow { margin-left: 0; }
   nav.site a { padding: 0 8px; font-size: 14px; }
   footer.site nav { gap: 0; }
   footer.site nav a { padding: 0 8px; font-size: 14px; }

@@ -6,7 +6,8 @@
 //   site/_pet_sprites.sh
 //
 // Writes site/img/demo/pet-<look>.png and site/img/demo/pets.json.
-// Each look is the starter British Shorthair in one outfit: one PNG atlas,
+// Each look is the starter British Shorthair in one outfit (or, for the
+// Party tab's friends, another breed as it is): one PNG atlas,
 // one row per animation, frames left to right, each a 32 px sprite scaled
 // by an integer factor with every sprite pixel an exact square block
 // (nearest-neighbor). pets.json says where each animation's row is and
@@ -21,7 +22,6 @@ import Foundation
 import TabbiKitCore
 
 let scale = 1
-let breed = PetBreed.britishShorthair
 let animations: [PetAnimation] = [.idle, .blink, .celebrate, .typing]
 /// How long one flicker step lasts, in seconds.
 let flickerStep: TimeInterval = 0.16
@@ -31,6 +31,7 @@ struct Look {
     let outfit: PetOutfit
     let accessories: [PetAccessory]
     var flickers = false
+    var breed = PetBreed.britishShorthair
 }
 
 let looks: [Look] = [
@@ -44,6 +45,10 @@ let looks: [Look] = [
     Look(id: "laurel", outfit: .none, accessories: [.goldenLaurel]),
     Look(id: "cap", outfit: .none, accessories: [.backwardsCap]),
     Look(id: "medal", outfit: .none, accessories: [.teamMedal]),
+    // Party's friends, as the app's PartyDemo dresses them.
+    Look(id: "maya", outfit: .none, accessories: [.roundGlasses], breed: .goldenRetriever),
+    Look(id: "priya", outfit: .scrubs, accessories: [], breed: .siamese),
+    Look(id: "leo", outfit: .none, accessories: [.beanie], breed: .corgi),
 ]
 
 enum ExportError: Error { case context, encode(String) }
@@ -151,6 +156,7 @@ func export(to folder: URL) throws {
     let side = PetComposer.frameSize * scale
     var manifestLooks: [String: Any] = [:]
     for look in looks {
+        let breed = look.breed
         let profile = PetProfile(name: "Mochi", breed: breed, outfit: look.outfit, accessories: look.accessories)
         let rows = animations.map { animation in
             let clip = PetComposer.clip(animation, for: breed, outfit: look.outfit, accessories: look.accessories)

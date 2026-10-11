@@ -40,6 +40,12 @@ ICONS = {
     'forward': '<path fill="currentColor" d="M12.6 6.7c0-.8.9-1.3 1.6-.8l6.9 5.3c.6.4.6 1.2 0 1.6l-6.9 5.3c-.7.5-1.6 0-1.6-.8zm-10 0c0-.8.9-1.3 1.6-.8l6.9 5.3c.6.4.6 1.2 0 1.6l-6.9 5.3c-.7.5-1.6 0-1.6-.8z"/>',
     'shuffle': '<path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M3 7h3.4c2 0 3.2.9 4.3 2.6l2.6 4.8c1 1.7 2.3 2.6 4.3 2.6H21M3 17h3.4c1.6 0 2.7-.6 3.6-1.7M14 8.7c.9-1.1 2-1.7 3.6-1.7H21M18.4 4.4 21 7l-2.6 2.6M18.4 14.4 21 17l-2.6 2.6"/>',
     'repeat': '<path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M4 11.4V10a3 3 0 0 1 3-3h13M17.4 4.4 20 7l-2.6 2.6M20 12.6V14a3 3 0 0 1-3 3H4M6.6 19.6 4 17l2.6-2.6"/>',
+    'party': '<g fill="currentColor"><circle cx="12" cy="7.4" r="3.2"/><circle cx="5.2" cy="9" r="2.4"/><circle cx="18.8" cy="9" r="2.4"/><path d="M6.6 19.2c0-3.4 2.4-6 5.4-6s5.4 2.6 5.4 6c0 .6-.4 1-1 1H7.6c-.6 0-1-.4-1-1z"/><path d="M5 19.8H2.6c-.6 0-1-.4-1-1 0-2.6 1.6-4.6 3.6-4.6.6 0 1.1.1 1.6.4A7.8 7.8 0 0 0 5 19.8zM19 19.8h2.4c.6 0 1-.4 1-1 0-2.6-1.6-4.6-3.6-4.6-.6 0-1.1.1-1.6.4.9 1.4 1.6 3.2 1.8 5.2z"/></g>',
+    'gauge': '<g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="8.8"/><path d="M12 12l3.6-3.8"/><path d="M7.4 14.6h.01M6.8 11h.01M8.6 7.8h.01M12 6.6h.01" stroke-width="2.6"/></g>',
+    'cards': '<g fill="currentColor"><rect x="7" y="2.6" width="10" height="2" rx="1"/><rect x="5" y="5.8" width="14" height="2.2" rx="1.1"/><rect x="3.4" y="9.2" width="17.2" height="12.2" rx="3"/></g>',
+    'refresh': '<g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 12a7.4 7.4 0 1 1-2.2-5.3"/><path d="M18 3.2v4.2h-4.2"/></g>',
+    'flame': '<path fill="currentColor" d="M12.6 2.6c.4 3-1.6 4.6-3.2 6.6-1.4 1.7-2.6 3.6-2.6 6.1A5.2 5.2 0 0 0 12 20.6a5.2 5.2 0 0 0 5.2-5.3c0-2.2-1-3.6-2-4.8-.2 1.3-.9 2.3-1.9 2.6.6-3.6-.2-7.6-.7-10.5z"/>',
+    'crown': '<path fill="currentColor" d="M3.2 7.6l4.6 3.6L12 4.6l4.2 6.6 4.6-3.6-1.8 10.2c-.1.6-.6 1-1.2 1H6.2c-.6 0-1.1-.4-1.2-1z"/>',
     'updown': '<path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M8 9.5l4-4 4 4M8 14.5l4 4 4-4"/>',
 }
 
@@ -313,17 +319,174 @@ MUSIC_PANE = f'''
                 </div>
               </div>'''
 
+# Party, as the app's demo party has it: Mochi (you, the host) with Maya and
+# Priya, and Leo among the friends, studying on his own. Start runs a
+# shared focus round, sped up so it ends in seconds, and the party cheers;
+# Invite brings Leo in. Nothing here talks to a server. (slot, look, name,
+# status on the stage, status in the friends list, tone): the tone colors
+# the status dot.
+PARTY = [
+    ('me', 'plain', 'You', 'Ready', '', 'idle'),
+    ('maya', 'maya', 'Maya', '19m left', 'Studying · 19m', 'study'),
+    ('priya', 'priya', 'Priya', 'Break', 'Break · 4m', 'break'),
+    ('leo', 'leo', 'Leo', 'Ready', 'Studying · 41m', 'study'),
+]
+PARTY_CODE = 'Q4RT8M'
+FRIEND_CODE = 'K7QW-2MZD'
+
+
+def member(slot, look, name, status, _listed, tone):
+    crown = icon('crown', 'ico crown') if slot == 'me' else ''
+    hidden = ' hidden' if slot == 'leo' else ''
+    return (f'<li class="member" data-member="{slot}"{hidden}><span class="pet pet-party" data-pet="party-{slot}" data-look="{look}"></span>'
+            f'<span class="member-name">{crown}{name}</span>'
+            f'<span class="member-status" data-tone="{tone}" data-status-of="{slot}">{status}</span></li>')
+
+
+def friend(slot, look, name, _staged, status, tone):
+    action = (f'<button type="button" class="pill-btn" data-action="invite" title="Invite Leo to your party" disabled>Invite</button>'
+              if slot == 'leo' else f'<span class="friend-in" title="In your party">{icon("party")}</span>')
+    return (f'<li class="friend" data-friend="{slot}"><span class="pet" data-pet="friend-{slot}" data-look="{look}"></span>'
+            f'<span class="friend-text"><span class="friend-name">{name}</span>'
+            f'<span class="member-status" data-tone="{tone}" data-status-of="{slot}">{status}</span></span>{action}</li>')
+
+
+PARTY_PANE = f"""
+              <div class="pane pane-party" data-pane="party">
+                <div class="n-card stage">
+                  <div class="stage-head">
+                    <p class="stage-title">Party</p>
+                    <span class="code-chip" title="The party code. Friends join with it (this one is made up)">{PARTY_CODE}</span>
+                    <span class="stage-count" data-party-count title="Members in this party">3 of 8</span>
+                  </div>
+                  <ul class="members" aria-label="Party members">{''.join(member(*m) for m in PARTY)}</ul>
+                  <div class="session">
+                    <span class="session-icon">{icon('timer')}</span>
+                    <p class="session-text"><span class="session-time" data-party-time>25:00</span><span class="session-cap" data-party-cap>focus together</span></p>
+                    <svg class="session-bar" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden="true"><line x1="2" y1="2" x2="98" y2="2"/><line class="bar-fill" x1="2" y1="2" x2="98" y2="2" pathLength="100" data-party-bar/></svg>
+                    <button type="button" class="pill-btn pill-main" data-action="party" title="Start a shared focus round, sped up for this demo" disabled>Start</button>
+                  </div>
+                  <div class="party-banner" data-party-banner hidden>
+                    <span class="banner-icon">{icon('party')}</span>
+                    <p class="banner-text"><b>Great job, team!</b><span>+45 points for Mochi</span></p>
+                  </div>
+                </div>
+                <div class="n-card friends">
+                  <div class="friends-head">
+                    <p class="friends-cap">Friends</p>
+                    <span class="code-chip" title="Your friend code: friends add you with it (this one is made up)">{FRIEND_CODE}</span>
+                  </div>
+                  <ul class="friend-rows" aria-label="Friends">{''.join(friend(*m) for m in PARTY[1:])}</ul>
+                </div>
+              </div>"""
+
+# AI Usage, as the app's demo shows it: the live 5-hour and weekly limits as
+# rings and today's tokens by model, read from Claude Code or Codex on the
+# Mac. demo.js lets the numbers tick up while the tab is open and swaps the
+# figures when the source switches; the page shows Claude Code's.
+AI_MODELS = [('Opus 5.5', 1_969_200, 'claude'), ('Haiku 4.5', 197_900, 'claude')]
+
+
+def tokens(n):
+    return f'{n / 1e6:.1f}M' if n >= 1e6 else f'{round(n / 1e3)}K'
+
+
+def ai_ring(key, title, pct, reset, tone, help_text):
+    return (f'<div class="ai-ring" title="{help_text}">'
+            f'<div class="ai-dial" data-tone="{tone}" data-ai-dial="{key}">{ring("usage", 80, 7)}<p class="ai-pct" data-ai-pct="{key}">{pct}%</p></div>'
+            f'<p class="ai-label">{title}</p><p class="ai-reset" data-ai-reset="{key}">{reset}</p></div>')
+
+
+def ai_model(name, count, top):
+    return (f'<li class="ai-model"><span class="ai-model-name">{name}</span>'
+            f'<svg class="ai-bar" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden="true"><line x1="2" y1="2" x2="98" y2="2"/>'
+            f'<line class="bar-fill" x1="2" y1="2" x2="98" y2="2" pathLength="100" stroke-dashoffset="{100 - 100 * count / top:.1f}"/></svg>'
+            f'<span class="ai-model-n">{tokens(count)}</span></li>')
+
+
+AI_TOTAL = sum(n for _, n, _ in AI_MODELS)
+
+AI_PANE = f"""
+              <div class="pane pane-ai" data-pane="ai">
+                <div class="ai-rings">
+                  {ai_ring('five', '5-hour', 42, 'resets in 2h 14m', 'normal', 'Usage of your rolling 5-hour limit')}
+                  {ai_ring('week', 'Weekly', 76, 'resets Thu 9:00 AM', 'warning', 'Usage of your weekly limit')}
+                </div>
+                <div class="n-card ai-card">
+                  <p class="ai-cap">Today in <span data-ai-tool>Claude Code</span></p>
+                  <p class="ai-total" title="Input, output and cache tokens across all sessions since midnight"><span class="ai-metric" data-ai-total>{tokens(AI_TOTAL)}</span><span>tokens</span></p>
+                  <ul class="ai-models" data-ai-models aria-label="Tokens by model">{''.join(ai_model(name, n, AI_MODELS[0][1]) for name, n, _ in AI_MODELS)}</ul>
+                  <template data-ai-model>{ai_model('', 0, 1)}</template>
+                  <p class="ai-row"><span>Last 7 days</span><b data-ai-week>12.6M tokens</b></p>
+                </div>
+                <div class="ai-foot">
+                  <p data-ai-updated>Updated just now</p>
+                  <div class="ai-source" role="radiogroup" aria-label="Read usage from">
+                    <label class="seg" title="Usage from Claude Code"><input type="radio" name="ai-source" value="claude" checked disabled><span>Claude Code</span></label>
+                    <label class="seg" title="Usage from Codex"><input type="radio" name="ai-source" value="codex" disabled><span>Codex</span></label>
+                  </div>
+                  <button type="button" class="icon-btn" data-action="ai-refresh" title="Refresh now" aria-label="Refresh" disabled>{icon('refresh')}</button>
+                </div>
+              </div>"""
+
+# A tiny Anki review: one friendly deck, a card that flips on a click or
+# Space, and the grades that move on. In the app this is your own Anki,
+# through AnkiConnect; here the four cards ride in a data block.
+CARDS = [
+    ['What is the capital of Japan?', 'Tokyo'],
+    ['What is the capital of Canada?', 'Ottawa'],
+    ['What is the capital of Australia?', 'Canberra'],
+    ['What is the capital of Kenya?', 'Nairobi'],
+]
+
+ANKI_PANE = f"""
+              <div class="pane pane-anki" data-pane="anki">
+                <div class="n-card deck">
+                  <div class="deck-dial" title="Cards due today">
+                    {ring('deck-ring', 80, 7)}
+                    <p class="deck-read"><span class="deck-due" data-due>{len(CARDS)}</span><span class="deck-cap">due</span></p>
+                  </div>
+                  <p class="deck-name">World Capitals</p>
+                  <p class="deck-streak" title="Days in a row with your reviews done">{icon('flame')}<span>12-day streak</span></p>
+                  <span class="pet pet-corner" data-pet="anki" data-look="plain" title="Mochi cheers you on"></span>
+                </div>
+                <div class="review">
+                  <button type="button" class="flashcard" data-card aria-label="Flip the card" title="Click or press Space to flip" disabled>
+                    <span class="card-inner">
+                      <span class="face face-front"><span class="card-q" data-card-q>{CARDS[0][0]}</span><span class="card-hint">Click or press Space</span></span>
+                      <span class="face face-back"><span class="card-q-small" data-card-q2>{CARDS[0][0]}</span><span class="card-a" data-card-a>{CARDS[0][1]}</span></span>
+                    </span>
+                  </button>
+                  <div class="grades" data-grades>
+                    <button type="button" class="grade grade-show" data-grade="show" title="Show the answer (Space)" disabled>Show answer</button>
+                    <button type="button" class="grade" data-grade="again" data-tone="again" title="Again: see it once more today (1)" hidden disabled>Again<span>1m</span></button>
+                    <button type="button" class="grade" data-grade="good" data-tone="good" title="Good: next time tomorrow (2 or Space)" hidden disabled>Good<span>1d</span></button>
+                    <button type="button" class="grade" data-grade="easy" data-tone="easy" title="Easy: next time in 4 days (3)" hidden disabled>Easy<span>4d</span></button>
+                    <button type="button" class="grade grade-show" data-grade="again-deck" title="Review the four cards again" hidden disabled>Review again</button>
+                  </div>
+                </div>
+              </div>"""
+
 # (id, title, icon). The tab bar left of the camera, like the app's.
 TABS = [
     ('timer', 'Timer', 'timer'),
     ('today', 'Today', 'checklist'),
     ('music', 'Now Playing', 'note'),
+    ('party', 'Party', 'party'),
+    ('ai', 'AI Usage', 'gauge'),
+    ('anki', 'Anki', 'cards'),
 ]
+
+
+# The chips under the demo: each opens the notch on its tab. They are
+# labels for the tabs' radio buttons, so they switch tabs without the script
+# too.
+TRY = [('timer', 'Timer'), ('today', 'Today'), ('music', 'Music'), ('party', 'Party'), ('ai', 'AI Usage'), ('anki', 'Flashcards')]
 
 
 def tab(tab_id, title, symbol, checked):
     return (f'<label class="tab tab-{tab_id}" title="{title}">'
-            f'<input type="radio" name="demo-tab" value="{tab_id}" aria-label="{title}"{" checked" if checked else ""}>'
+            f'<input type="radio" name="demo-tab" id="demo-tab-{tab_id}" value="{tab_id}" aria-label="{title}"{" checked" if checked else ""}>'
             f'{icon(symbol)}</label>')
 
 
@@ -346,12 +509,15 @@ DEMO = f'''
                 <div class="tab-bar">
                   {''.join(tab(t, title, symbol, i == 0) for i, (t, title, symbol) in enumerate(TABS))}
                 </div>
-                <p class="head-title"><span class="title-timer">Timer</span><span class="title-today">Today</span><span class="title-music">Now Playing</span><span class="title-closet">Closet</span></p>
+                <p class="head-title"><span class="title-timer">Timer</span><span class="title-today">Today</span><span class="title-music">Now Playing</span><span class="title-party">Party</span><span class="title-ai">AI Usage</span><span class="title-anki">Anki</span><span class="title-closet">Closet</span></p>
                 {tab('closet', 'Closet: your pet', 'paw', False)}
               </div>
 {TIMER_PANE}
 {TODAY_PANE}
 {MUSIC_PANE}
+{PARTY_PANE}
+{AI_PANE}
+{ANKI_PANE}
 {CLOSET_PANE}
              </div>
             </div>
@@ -359,6 +525,7 @@ DEMO = f'''
           <p class="hint" aria-hidden="true"><svg viewBox="0 0 40 32" width="40" height="32"><path d="M36 28C24 28 12 22 7 6m0 0L3 13m4-7 6 5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Psst... try it</p>
           <p class="burst" aria-hidden="true"><span class="burst-pts">+35 pts</span></p>
         </div>
+        <p class="try"><span class="try-cap">Try</span>{''.join(f'<label class="try-chip" for="demo-tab-{t}">{name}</label>' for t, name in TRY)}</p>
         <p class="sr-only" aria-live="polite" data-status></p>
       </section>
 '''
@@ -370,9 +537,10 @@ def data_block(block_id, data):
 
 
 def demo_data():
-    """pets.json, Today's days and Now Playing's songs, minified, as data blocks for demo.js. The
+    """pets.json, Today's days, Now Playing's songs and the Anki cards, minified, as data blocks for demo.js. The
     CSP lets the page load nothing but its own files, and a data block is
     never run, so they ride along in the page instead of a fetch the CSP
     would stop."""
     pets = json.loads((HERE / 'img' / 'demo' / 'pets.json').read_text())
-    return data_block('demo-pets', pets) + data_block('demo-days', DAYS) + data_block('demo-tracks', TRACKS)
+    return (data_block('demo-pets', pets) + data_block('demo-days', DAYS) + data_block('demo-tracks', TRACKS)
+            + data_block('demo-cards', CARDS))
