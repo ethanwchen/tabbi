@@ -33,6 +33,9 @@ final class PetCoachController: ObservableObject {
     private let studyStats: () -> (streak: StudyStreak, progress: PetMilestoneProgress)?
     /// Settings › General › Cat wisdom.
     private let wisdomEnabled: () -> Bool
+    /// The pet's crown beside the closed notch, which pairs with the
+    /// last-square milestone line. Silent, as the session already chimed.
+    private let crown: () -> Void
     private let kitLines: () -> [PetCoachMessage]
     private let screen: () -> NSScreen?
     private let pauseTimer: () -> Void
@@ -66,6 +69,7 @@ final class PetCoachController: ObservableObject {
         gift: @escaping (PetStudyAward) -> SurpriseGift? = { _ in nil },
         studyStats: @escaping () -> (streak: StudyStreak, progress: PetMilestoneProgress)? = { nil },
         wisdomEnabled: @escaping () -> Bool = { true },
+        crown: @escaping () -> Void = {},
         lines: @escaping () -> [PetCoachMessage] = { PetCoachMessages.standard },
         screen: @escaping () -> NSScreen?,
         pauseTimer: @escaping () -> Void,
@@ -76,6 +80,7 @@ final class PetCoachController: ObservableObject {
         self.gift = gift
         self.studyStats = studyStats
         self.wisdomEnabled = wisdomEnabled
+        self.crown = crown
         kitLines = lines
         self.screen = screen
         self.pauseTimer = pauseTimer
@@ -266,6 +271,7 @@ final class PetCoachController: ObservableObject {
         let line = save.wisdom.line(for: session, enabled: wisdomEnabled(), using: &random)
         if session.outcome == .completed { save.lastCompletion = now }
         persist()
+        if line?.kind == .milestone(.lastSquare) { crown() }
         return line
     }
 

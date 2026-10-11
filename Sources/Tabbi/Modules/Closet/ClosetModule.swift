@@ -49,6 +49,7 @@ final class ClosetModule: NotchModule {
             gift: { award in gifts.roll(after: award) },
             studyStats: { [store] in (store.streak, store.milestones) },
             wisdomEnabled: { settings.settings.catWisdomEnabled },
+            crown: { [celebrations = context.celebrations] in celebrations.cheer(.crown, hasOwnSound: true, waitsForClose: true) },
             lines: { PetCoachMessages.lines(kitSettings: settings.activeKit?.defaults.settings(for: .closet)) },
             screen: {
                 NotchGeometry.screen(for: settings.settings.preferredDisplay,
