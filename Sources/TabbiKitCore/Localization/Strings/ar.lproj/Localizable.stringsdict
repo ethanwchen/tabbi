@@ -1395,6 +1395,30 @@
 			<string>اكتب أو الصق رمز صديقك المكوّن من %lld حرف واضغط Return</string>
 		</dict>
 	</dict>
+	<key>Unlock for %lld pts</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>افتحه بـ %lld نقاط</string>
+			<key>many</key>
+			<string>افتحه بـ %lld نقطةً</string>
+			<key>one</key>
+			<string>افتحه بـ %lld نقطة</string>
+			<key>other</key>
+			<string>افتحه بـ %lld نقطة</string>
+			<key>two</key>
+			<string>افتحه بـ %lld نقطتين</string>
+			<key>zero</key>
+			<string>افتحه بـ %lld نقطة</string>
+		</dict>
+	</dict>
 	<key>Yes, from %lld accounts.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

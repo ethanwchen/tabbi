@@ -865,6 +865,10 @@
 	<string>클릭하여 닫기</string>
 	<key>Click to send the pet home</key>
 	<string>클릭하면 펫이 집으로 돌아가요</string>
+	<key>Click to take off</key>
+	<string>클릭해서 벗기</string>
+	<key>Click to wear</key>
+	<string>클릭해서 입기</string>
 	<key>Close</key>
 	<string>닫기</string>
 	<key>Close %@ settings</key>
@@ -1291,6 +1295,10 @@
 	<string>집중 중</string>
 	<key>Focusing on: %@</key>
 	<string>집중 중: %@</string>
+	<key>For signing in during Tabbi's first 100 days.</key>
+	<string>출시 후 100일 안에 로그인한 분께.</string>
+	<key>For using Tabbi in its launch week.</key>
+	<string>출시 주에 Tabbi를 쓴 분께.</string>
 	<key>Forever friends</key>
 	<string>영원한 친구</string>
 	<key>Found: %lld min toward the event</key>
@@ -1379,10 +1387,6 @@
 	<string>고양이에게 이름을 지어 주세요</string>
 	<key>Give your dog a name</key>
 	<string>강아지에게 이름을 지어 주세요</string>
-	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
-	<string>Tabbi 출시 후 100일 안에 로그인한 모든 분께 드려요.</string>
-	<key>Given to everyone who used Tabbi in its launch week.</key>
-	<string>출시 주간에 Tabbi를 쓴 모든 분께 드려요.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>유리 컨트롤은 macOS 26이 필요하고, '투명도 줄이기'가 켜져 있으면 불투명하게 표시돼요.</string>
 	<key>Go back one step</key>
@@ -1659,6 +1663,8 @@
 	<string>라일락</string>
 	<key>Limited</key>
 	<string>한정</string>
+	<key>Limited edition</key>
+	<string>한정판</string>
 	<key>Lion Dance Hat</key>
 	<string>사자춤 모자</string>
 	<key>Listen to %@</key>
@@ -3259,6 +3265,8 @@
 	<string>알 수 없는 곡</string>
 	<key>Unlike</key>
 	<string>좋아요 취소</string>
+	<key>Unlock for %lld pts</key>
+	<string>%lld점으로 잠금 해제</string>
 	<key>Unmute</key>
 	<string>음소거 해제</string>
 	<key>Unpin %@ from the Study button</key>

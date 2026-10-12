@@ -865,6 +865,10 @@
 	<string>Zum Schließen klicken</string>
 	<key>Click to send the pet home</key>
 	<string>Klicke, um dein Haustier heimzuschicken</string>
+	<key>Click to take off</key>
+	<string>Klicke zum Ablegen</string>
+	<key>Click to wear</key>
+	<string>Klicke zum Anziehen</string>
 	<key>Close</key>
 	<string>Schließen</string>
 	<key>Close %@ settings</key>
@@ -1291,6 +1295,10 @@
 	<string>Fokus auf</string>
 	<key>Focusing on: %@</key>
 	<string>Fokus auf: %@</string>
+	<key>For signing in during Tabbi's first 100 days.</key>
+	<string>Fürs Anmelden in Tabbis ersten 100 Tagen.</string>
+	<key>For using Tabbi in its launch week.</key>
+	<string>Fürs Mitmachen in der Startwoche.</string>
 	<key>Forever friends</key>
 	<string>Für immer</string>
 	<key>Found: %lld min toward the event</key>
@@ -1379,10 +1387,6 @@
 	<string>Benenne deine Katze</string>
 	<key>Give your dog a name</key>
 	<string>Benenne deinen Hund</string>
-	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
-	<string>Für alle, die sich in den ersten 100 Tagen bei Tabbi anmelden.</string>
-	<key>Given to everyone who used Tabbi in its launch week.</key>
-	<string>Für alle, die Tabbi in der Startwoche genutzt haben.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>Glas-Bedienelemente brauchen macOS 26 und werden deckend, wenn „Transparenz reduzieren“ aktiv ist.</string>
 	<key>Go back one step</key>
@@ -1659,6 +1663,8 @@
 	<string>Flieder</string>
 	<key>Limited</key>
 	<string>Limitiert</string>
+	<key>Limited edition</key>
+	<string>Limitierte Edition</string>
 	<key>Lion Dance Hat</key>
 	<string>Löwentanz-Mütze</string>
 	<key>Listen to %@</key>
@@ -2144,7 +2150,7 @@
 	<key>Out of sight. Press %@ to open it.</key>
 	<string>Unsichtbar. Drück %@, um sie zu öffnen.</string>
 	<key>Owned</key>
-	<string>Im Besitz</string>
+	<string>Deins</string>
 	<key>Pals</key>
 	<string>Kumpels</string>
 	<key>Panel size</key>
@@ -3194,7 +3200,7 @@
 	<key>Try to reach Party again now</key>
 	<string>Party jetzt nochmal erreichen</string>
 	<key>Trying on %@</key>
-	<string>%@ anprobieren</string>
+	<string>Anprobe: %@</string>
 	<key>Turn %@ off</key>
 	<string>%@ ausschalten</string>
 	<key>Turn %@ on</key>
@@ -3259,6 +3265,8 @@
 	<string>Unbekannter Titel</string>
 	<key>Unlike</key>
 	<string>Gefällt mir nicht mehr</string>
+	<key>Unlock for %lld pts</key>
+	<string>Für %lld Pkt. freischalten</string>
 	<key>Unmute</key>
 	<string>Ton an</string>
 	<key>Unpin %@ from the Study button</key>

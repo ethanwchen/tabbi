@@ -865,6 +865,10 @@
 	<string>Clique para fechar</string>
 	<key>Click to send the pet home</key>
 	<string>Clique para mandar seu pet para casa</string>
+	<key>Click to take off</key>
+	<string>Clique para tirar</string>
+	<key>Click to wear</key>
+	<string>Clique para usar</string>
 	<key>Close</key>
 	<string>Fechar</string>
 	<key>Close %@ settings</key>
@@ -1291,6 +1295,10 @@
 	<string>Focando em</string>
 	<key>Focusing on: %@</key>
 	<string>Focando em: %@</string>
+	<key>For signing in during Tabbi's first 100 days.</key>
+	<string>Por entrar nos primeiros 100 dias.</string>
+	<key>For using Tabbi in its launch week.</key>
+	<string>Por usar o Tabbi na semana de estreia.</string>
 	<key>Forever friends</key>
 	<string>Para sempre</string>
 	<key>Found: %lld min toward the event</key>
@@ -1379,10 +1387,6 @@
 	<string>Dê um nome ao seu gato</string>
 	<key>Give your dog a name</key>
 	<string>Dê um nome ao seu cachorro</string>
-	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
-	<string>Para todos que entrarem no Tabbi nos primeiros 100 dias.</string>
-	<key>Given to everyone who used Tabbi in its launch week.</key>
-	<string>Para todos que usaram o Tabbi na semana de lançamento.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>Os controles de vidro precisam do macOS 26 e ficam sólidos quando "Reduzir transparência" está ativado.</string>
 	<key>Go back one step</key>
@@ -1659,6 +1663,8 @@
 	<string>Lilás</string>
 	<key>Limited</key>
 	<string>Limitado</string>
+	<key>Limited edition</key>
+	<string>Edição limitada</string>
 	<key>Lion Dance Hat</key>
 	<string>Chapéu da dança do leão</string>
 	<key>Listen to %@</key>
@@ -3259,6 +3265,8 @@
 	<string>Faixa desconhecida</string>
 	<key>Unlike</key>
 	<string>Descurtir</string>
+	<key>Unlock for %lld pts</key>
+	<string>Desbloquear por %lld pts</string>
 	<key>Unmute</key>
 	<string>Ativar som</string>
 	<key>Unpin %@ from the Study button</key>

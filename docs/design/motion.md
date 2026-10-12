@@ -56,6 +56,16 @@ Drive them with the animation the state change already uses (usually `Theme.Moti
 Today, Ask Claude, Anki, Party and the Focus and pet coach Settings panes use them in place of ad hoc `.scale` and `.move(edge:)` transitions.
 `motion-transitions.png` samples each one along the snappy spring, plus its Reduce Motion fade.
 
+## Text that doesn't fit
+
+- `MarqueeText(_:help:)` (`Sources/TabbiKit/Components/MarqueeText.swift`) is the one line of text that scrolls to show what does not fit, and `Marquee(_:help:content:)` is the same for a line built from several styled pieces.
+  A line that fits shows as a plain `Text`, with no timer or animation.
+- One that overflows rests 2 s at its start, eases across at 30 pt/s until its end is in view, rests 1.6 s, then fades out and back in at the start over 0.3 s each (`MarqueeMotion`).
+  It draws from a `TimelineView` capped at 60 fps that exists only while the line overflows and the panel is open.
+- An edge where text is cut off fades over 12 pt, the pointer resting on the line pauses it, its tooltip and VoiceOver label carry the full text, and right-to-left text scrolls the other way.
+- Shorten copy first; use it for what can still run long, such as a pet's name, an item's name or how to earn a limited item.
+  `--snapshot` renders the Closet's long lines at rest and part way through (`open-closet-founding-unearned-scrolling.png`, `open-closet-long-name-scrolling.png`) through `\.marqueeScrolled`.
+
 ## Loading
 
 - `Spinner(tint:size:lineWidth:)` (`Sources/TabbiKit/Components/Loading/`) is the one spinner: an arc in the module accent that turns once a second.
@@ -147,7 +157,7 @@ Every animation has a calm fallback.
 In a view, read `@Environment(\.accessibilityReduceMotion)` and pass it to `Motion.adapted`, `Motion.staggered` or the shared transitions, or use `.motion(_:value:)`, which reads it for you.
 Outside a view, `withMotion` reads `NSWorkspace.shared.accessibilityDisplayShouldReduceMotion`.
 Under Reduce Motion there is no scale, stretch, slide or particle: things crossfade in 180 ms.
-Text that would scroll stays put: the Now Playing title marquee keeps its truncated line under Reduce Motion, and the tooltip carries the full title.
+Text that would scroll stays put: the Now Playing title marquee and `MarqueeText` keep their truncated line under Reduce Motion, and the tooltip carries the full text.
 Module panels, the Settings window and the Welcome window animate only through `.motion(_:value:)` and `withMotion`, never plain `.animation(_:value:)` or `withAnimation`, so every hover, toggle, list change and pane resize crossfades under Reduce Motion.
 
 ## Rules

@@ -197,38 +197,42 @@ enum SnapshotRenderer {
         }
 
         // The Closet's other sections, rendered after the others because
-        // the open section is store state.
+        // the open section is store state, at every panel size.
         if layout.order.contains(.closet) {
             var withCloset = layout
             _ = withCloset.setEnabled(.closet, true)
-            let wardrobe = NotchViewModel(geometry: geometry, layout: withCloset)
-            wardrobe.open(.closet)
-            shots.append(Shot("open-closet-wardrobe", wardrobe))
-            // The Wardrobe at the Large size too, the App Store's Closet shot.
-            let largeWardrobe = NotchViewModel(geometry: geometry, layout: withCloset)
-            largeWardrobe.panelSize = .large
-            largeWardrobe.open(.closet)
-            shots.append(Shot("open-large-closet-wardrobe", largeWardrobe))
-            let model = NotchViewModel(geometry: geometry, layout: withCloset)
-            model.open(.closet)
-            shots.append(Shot("open-closet-look", model))
-            let limited = NotchViewModel(geometry: geometry, layout: withCloset)
-            limited.open(.closet)
-            shots.append(Shot("open-closet-limited", limited))
-            let streak = NotchViewModel(geometry: geometry, layout: withCloset)
-            streak.open(.closet)
-            shots.append(Shot("open-closet-streak", streak))
-            let weeks = NotchViewModel(geometry: geometry, layout: withCloset)
-            weeks.open(.closet)
-            shots.append(Shot("open-closet-weeks", weeks))
+            for size in PanelSize.allCases {
+                let prefix = size == .default ? "open-closet" : "open-\(size.rawValue)-closet"
+                func addClosetShot(_ suffix: String, _ closetShot: ClosetShot) {
+                    let model = NotchViewModel(geometry: geometry, layout: withCloset)
+                    model.panelSize = size
+                    model.open(.closet)
+                    shots.append(Shot("\(prefix)-\(suffix)", model, closet: closetShot))
+                }
+                // Every section but the first, which the per-tab shots show.
+                // The Large Wardrobe is also the App Store's Closet shot.
+                for section in ClosetSection.allCases where section != .activity {
+                    addClosetShot(section.rawValue.lowercased(), ClosetShot(section: section))
+                }
+                // The Founder's Pin tried on in the Limited section, whose
+                // footer says what it is, then as someone who has not got it
+                // (its longest line), at rest and part way through its
+                // scroll. Then a pet with a name as long as names go.
+                let pin = PetItem.accessory(.foundersPin)
+                addClosetShot("founding", ClosetShot(section: .limited, tryingOn: pin))
+                addClosetShot("founding-unearned", ClosetShot(section: .limited, tryingOn: pin, foundingMember: false))
+                addClosetShot("founding-unearned-scrolling",
+                              ClosetShot(section: .limited, tryingOn: pin, foundingMember: false, scrolled: 0.6))
+                let headphones = PetItem.accessory(.chunkyHeadphones)
+                addClosetShot("long-name", ClosetShot(section: .wardrobe, tryingOn: headphones, name: "Wolfgang Wombats"))
+                addClosetShot("long-name-scrolling", ClosetShot(section: .wardrobe, tryingOn: headphones,
+                                                                name: "Wolfgang Wombats", scrolled: 0.6))
+            }
             // An animated item (the flapping angel wings) on the big pet.
             let animated = NotchViewModel(geometry: geometry, layout: withCloset)
             animated.open(.closet)
-            shots.append(Shot("open-closet-animated", animated))
-            // The Founder's Pin tried on in the Limited section.
-            let founding = NotchViewModel(geometry: geometry, layout: withCloset)
-            founding.open(.closet)
-            shots.append(Shot("open-closet-founding", founding))
+            shots.append(Shot("open-closet-animated", animated,
+                              closet: ClosetShot(section: .activity, tryingOn: .accessory(.angelWings))))
             // The pet's paw at the far right of the header while another tab is open.
             let withPaw = NotchViewModel(geometry: geometry, layout: withCloset)
             withPaw.open(withCloset.tabs.first)
@@ -489,15 +493,31 @@ enum SnapshotRenderer {
         var recap: (WeeklyRecap, RecapCheer)?
         /// The Party invite link's confirmation showing in it, if any.
         var invite: PartyInviteFlow?
+        /// The Closet's section and pet in it, if it shows one other than
+        /// the first section with nothing tried on.
+        var closet: ClosetShot?
 
         init(_ name: String, _ model: NotchViewModel, onboarding: OnboardingFlow? = nil,
-             recap: (WeeklyRecap, RecapCheer)? = nil, invite: PartyInviteFlow? = nil) {
+             recap: (WeeklyRecap, RecapCheer)? = nil, invite: PartyInviteFlow? = nil, closet: ClosetShot? = nil) {
             self.name = name
             self.model = model
             self.onboarding = onboarding
             self.recap = recap
             self.invite = invite
+            self.closet = closet
         }
+    }
+
+    /// What a Closet shot shows: the open section, the item tried on, and
+    /// the pet as someone without the Founder's Pin or under a long name.
+    /// `scrolled` stills any line too long for its room part of the way
+    /// through its scroll (`MarqueeText`), so the marquee can be reviewed.
+    private struct ClosetShot {
+        var section: ClosetSection
+        var tryingOn: PetItem?
+        var foundingMember = true
+        var name: String?
+        var scrolled: Double?
     }
 
     /// The weekly recap card in a heavy week (the demo's best yet) and a
@@ -607,14 +627,9 @@ enum SnapshotRenderer {
                 planning: name == "open-schedule-tomorrow-plan")
             nowPlaying?.showForSnapshot(name == "open-spotify-soundcloud" ? .soundCloud
                 : name == "open-spotify-soundcloud-javascript-off" ? .soundCloudJavaScriptOff : .players)
-            if let firstSection {
-                closet?.store.section = name.hasSuffix("closet-wardrobe") ? .wardrobe
-                    : name == "open-closet-look" ? .look
-                    : name == "open-closet-limited" || name == "open-closet-founding" ? .limited
-                    : name == "open-closet-streak" ? .streak : name == "open-closet-weeks" ? .weeks : firstSection
-            }
-            closet?.store.tryOn(name == "open-closet-animated" ? .accessory(.angelWings)
-                : name == "open-closet-founding" ? .accessory(.foundersPin) : nil)
+            if let firstSection { closet?.store.section = shot.closet?.section ?? firstSection }
+            closet?.store.showForSnapshot(foundingMember: shot.closet?.foundingMember ?? true, name: shot.closet?.name)
+            closet?.store.tryOn(shot.closet?.tryingOn)
             model.themeID = Theme.current.id
             if name == "closed-pet-cheer", case .pet(var pet) = model.preview {
                 // Mid first hop, with the sparkles out.
@@ -651,6 +666,7 @@ enum SnapshotRenderer {
                 .environmentObject(model)
                 .environment(\.drawsLiquidGlass, false)
                 .environment(\.loaderRevealDelay, 0) // rendered the moment it appears
+                .environment(\.marqueeScrolled, shot.closet?.scrolled)
                 .frame(width: model.openSize.width + 40,
                        height: model.openSize.height + 24, alignment: .top)
                 .background(style.transparent ? Color.clear : Color(white: 0.16)) // stand-in for a desktop

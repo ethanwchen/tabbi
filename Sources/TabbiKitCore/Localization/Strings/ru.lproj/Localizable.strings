@@ -865,6 +865,10 @@
 	<string>Нажми, чтобы закрыть</string>
 	<key>Click to send the pet home</key>
 	<string>Нажми, чтобы отправить питомца домой</string>
+	<key>Click to take off</key>
+	<string>Нажми, чтобы снять</string>
+	<key>Click to wear</key>
+	<string>Нажми, чтобы надеть</string>
 	<key>Close</key>
 	<string>Закрыть</string>
 	<key>Close %@ settings</key>
@@ -1291,6 +1295,10 @@
 	<string>В фокусе</string>
 	<key>Focusing on: %@</key>
 	<string>В фокусе: %@</string>
+	<key>For signing in during Tabbi's first 100 days.</key>
+	<string>За вход в первые 100 дней Tabbi.</string>
+	<key>For using Tabbi in its launch week.</key>
+	<string>За вход в неделю запуска.</string>
 	<key>Forever friends</key>
 	<string>Навсегда</string>
 	<key>Found: %lld min toward the event</key>
@@ -1379,10 +1387,6 @@
 	<string>Дай имя своей кошке</string>
 	<key>Give your dog a name</key>
 	<string>Дай имя своей собаке</string>
-	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
-	<string>Для всех, кто вошёл в Tabbi в первые 100 дней.</string>
-	<key>Given to everyone who used Tabbi in its launch week.</key>
-	<string>Для всех, кто пользовался Tabbi в неделю запуска.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>Стеклянным элементам нужна macOS 26. При включенном «Понижении прозрачности» они становятся непрозрачными.</string>
 	<key>Go back one step</key>
@@ -1659,6 +1663,8 @@
 	<string>Сиреневый</string>
 	<key>Limited</key>
 	<string>Лимитированные</string>
+	<key>Limited edition</key>
+	<string>Лимитированная серия</string>
 	<key>Lion Dance Hat</key>
 	<string>Шапка льва</string>
 	<key>Listen to %@</key>
@@ -3259,6 +3265,8 @@
 	<string>Неизвестный трек</string>
 	<key>Unlike</key>
 	<string>Убрать лайк</string>
+	<key>Unlock for %lld pts</key>
+	<string>Открыть за %lld очк.</string>
 	<key>Unmute</key>
 	<string>Включить звук</string>
 	<key>Unpin %@ from the Study button</key>

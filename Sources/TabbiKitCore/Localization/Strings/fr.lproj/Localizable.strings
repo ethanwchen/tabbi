@@ -865,6 +865,10 @@
 	<string>Clique pour fermer</string>
 	<key>Click to send the pet home</key>
 	<string>Clique pour renvoyer ton compagnon à la maison</string>
+	<key>Click to take off</key>
+	<string>Clique pour l'enlever</string>
+	<key>Click to wear</key>
+	<string>Clique pour le porter</string>
 	<key>Close</key>
 	<string>Fermer</string>
 	<key>Close %@ settings</key>
@@ -1291,6 +1295,10 @@
 	<string>Concentré sur</string>
 	<key>Focusing on: %@</key>
 	<string>Concentré sur : %@</string>
+	<key>For signing in during Tabbi's first 100 days.</key>
+	<string>Connecté pendant les 100 premiers jours.</string>
+	<key>For using Tabbi in its launch week.</key>
+	<string>Pour Tabbi pendant sa semaine de lancement.</string>
 	<key>Forever friends</key>
 	<string>Amis pour la vie</string>
 	<key>Found: %lld min toward the event</key>
@@ -1379,10 +1387,6 @@
 	<string>Donne un nom à ton chat</string>
 	<key>Give your dog a name</key>
 	<string>Donne un nom à ton chien</string>
-	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
-	<string>Offert à tous ceux qui se connectent à Tabbi pendant ses 100 premiers jours.</string>
-	<key>Given to everyone who used Tabbi in its launch week.</key>
-	<string>Offert à tous ceux qui ont utilisé Tabbi pendant sa semaine de lancement.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>Les commandes en verre nécessitent macOS 26 et deviennent opaques quand « Réduire la transparence » est activé.</string>
 	<key>Go back one step</key>
@@ -1659,6 +1663,8 @@
 	<string>Lilas</string>
 	<key>Limited</key>
 	<string>Limité</string>
+	<key>Limited edition</key>
+	<string>Édition limitée</string>
 	<key>Lion Dance Hat</key>
 	<string>Chapeau de danse du lion</string>
 	<key>Listen to %@</key>
@@ -2144,7 +2150,7 @@
 	<key>Out of sight. Press %@ to open it.</key>
 	<string>Invisible. Appuie sur %@ pour l'ouvrir.</string>
 	<key>Owned</key>
-	<string>Possédé</string>
+	<string>À toi</string>
 	<key>Pals</key>
 	<string>Copains</string>
 	<key>Panel size</key>
@@ -3259,6 +3265,8 @@
 	<string>Titre inconnu</string>
 	<key>Unlike</key>
 	<string>Je n'aime plus</string>
+	<key>Unlock for %lld pts</key>
+	<string>Débloquer pour %lld pts</string>
 	<key>Unmute</key>
 	<string>Réactiver le son</string>
 	<key>Unpin %@ from the Study button</key>

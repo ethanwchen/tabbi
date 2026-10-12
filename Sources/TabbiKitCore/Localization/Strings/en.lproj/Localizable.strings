@@ -865,6 +865,10 @@
 	<string>Click to dismiss</string>
 	<key>Click to send the pet home</key>
 	<string>Click to send the pet home</string>
+	<key>Click to take off</key>
+	<string>Click to take off</string>
+	<key>Click to wear</key>
+	<string>Click to wear</string>
 	<key>Close</key>
 	<string>Close</string>
 	<key>Close %@ settings</key>
@@ -1291,6 +1295,10 @@
 	<string>Focusing on</string>
 	<key>Focusing on: %@</key>
 	<string>Focusing on: %@</string>
+	<key>For signing in during Tabbi's first 100 days.</key>
+	<string>For signing in during Tabbi's first 100 days.</string>
+	<key>For using Tabbi in its launch week.</key>
+	<string>For using Tabbi in its launch week.</string>
 	<key>Forever friends</key>
 	<string>Forever friends</string>
 	<key>Found: %lld min toward the event</key>
@@ -1379,10 +1387,6 @@
 	<string>Give your cat a name</string>
 	<key>Give your dog a name</key>
 	<string>Give your dog a name</string>
-	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
-	<string>Given to everyone who signs in to Tabbi in its first 100 days.</string>
-	<key>Given to everyone who used Tabbi in its launch week.</key>
-	<string>Given to everyone who used Tabbi in its launch week.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</string>
 	<key>Go back one step</key>
@@ -1659,6 +1663,8 @@
 	<string>Lilac</string>
 	<key>Limited</key>
 	<string>Limited</string>
+	<key>Limited edition</key>
+	<string>Limited edition</string>
 	<key>Lion Dance Hat</key>
 	<string>Lion Dance Hat</string>
 	<key>Listen to %@</key>
@@ -3259,6 +3265,8 @@
 	<string>Unknown track</string>
 	<key>Unlike</key>
 	<string>Unlike</string>
+	<key>Unlock for %lld pts</key>
+	<string>Unlock for %lld pts</string>
 	<key>Unmute</key>
 	<string>Unmute</string>
 	<key>Unpin %@ from the Study button</key>

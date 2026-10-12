@@ -25,6 +25,9 @@ final class ClosetStore: ObservableObject {
     /// An item the pointer rests on, shown on the big preview ("try it on")
     /// without changing the save.
     @Published private(set) var tryingOn: PetItem?
+    /// The closet a snapshot run started with, while `showForSnapshot`
+    /// shows another.
+    private var snapshotBase: PetCloset?
     /// The Closet tab's open section, kept while the notch closes.
     @Published var section: ClosetSection = .activity
     /// The large preview in the Closet tab.
@@ -400,6 +403,26 @@ final class ClosetStore: ObservableObject {
     func tryOn(_ item: PetItem?) {
         guard tryingOn != item else { return }
         tryingOn = item
+        refreshPreview()
+    }
+
+    /// Snapshot runs only: shows the pet as someone who never got the
+    /// Founder's Pin, or under another name, so the Closet's longest lines
+    /// can be reviewed; the defaults put the starting closet back.
+    func showForSnapshot(foundingMember: Bool = true, name: String? = nil) {
+        guard isSnapshot else { return }
+        let base = snapshotBase ?? closet
+        snapshotBase = base
+        var save = base.save
+        if !foundingMember {
+            let ledger = save.ledger
+            save.ledger = PetPointsLedger(earned: ledger.earned, spent: ledger.spent, purchased: ledger.purchased,
+                                          granted: ledger.granted.subtracting([PetLimitedEdition.foundingMember.item]),
+                                          streakFreezes: ledger.streakFreezes)
+        }
+        if let name { save.profile.rename(name) }
+        guard save != closet.save else { return }
+        closet = PetCloset(save: save)
         refreshPreview()
     }
 

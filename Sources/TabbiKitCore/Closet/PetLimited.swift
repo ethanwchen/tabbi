@@ -120,11 +120,11 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
     /// always says what the event asks for.
     public var howToEarn: String {
         switch self {
-        case .launchWeekCap: String(localized: "Given to everyone who used Tabbi in its launch week.", bundle: .tabbi)
+        case .launchWeekCap: String(localized: "For using Tabbi in its launch week.", bundle: .tabbi)
         case .streakFlame: String(localized: "Study 7 days in a row.", bundle: .tabbi)
         case .focusLaurel: String(localized: "Focus for 50 hours in total.", bundle: .tabbi)
         case .partyMedal: String(localized: "Finish a Party session with friends.", bundle: .tabbi)
-        case .foundingMember: String(localized: "Given to everyone who signs in to Tabbi in its first 100 days.", bundle: .tabbi)
+        case .foundingMember: String(localized: "For signing in during Tabbi's first 100 days.", bundle: .tabbi)
         default: seasonalHowToEarn
         }
     }

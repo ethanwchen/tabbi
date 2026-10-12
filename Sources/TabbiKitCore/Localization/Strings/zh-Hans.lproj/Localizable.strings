@@ -865,6 +865,10 @@
 	<string>点按以关闭</string>
 	<key>Click to send the pet home</key>
 	<string>点按让宠物回家</string>
+	<key>Click to take off</key>
+	<string>点按即可取下</string>
+	<key>Click to wear</key>
+	<string>点按即可穿戴</string>
 	<key>Close</key>
 	<string>关闭</string>
 	<key>Close %@ settings</key>
@@ -1291,6 +1295,10 @@
 	<string>正在专注</string>
 	<key>Focusing on: %@</key>
 	<string>正在专注：%@</string>
+	<key>For signing in during Tabbi's first 100 days.</key>
+	<string>在 Tabbi 最初 100 天内登录即可获得。</string>
+	<key>For using Tabbi in its launch week.</key>
+	<string>在 Tabbi 发布周使用即可获得。</string>
 	<key>Forever friends</key>
 	<string>永远的朋友</string>
 	<key>Found: %lld min toward the event</key>
@@ -1379,10 +1387,6 @@
 	<string>给你的猫取个名字</string>
 	<key>Give your dog a name</key>
 	<string>给你的狗取个名字</string>
-	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
-	<string>送给在 Tabbi 最初 100 天内登录的每个人。</string>
-	<key>Given to everyone who used Tabbi in its launch week.</key>
-	<string>送给在发布周使用 Tabbi 的每个人。</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>玻璃控件需要 macOS 26，开启“降低透明度”时会改为不透明样式。</string>
 	<key>Go back one step</key>
@@ -1659,6 +1663,8 @@
 	<string>淡紫色</string>
 	<key>Limited</key>
 	<string>限定</string>
+	<key>Limited edition</key>
+	<string>限定款</string>
 	<key>Lion Dance Hat</key>
 	<string>舞狮帽</string>
 	<key>Listen to %@</key>
@@ -3259,6 +3265,8 @@
 	<string>未知曲目</string>
 	<key>Unlike</key>
 	<string>取消点赞</string>
+	<key>Unlock for %lld pts</key>
+	<string>用 %lld 分解锁</string>
 	<key>Unmute</key>
 	<string>取消静音</string>
 	<key>Unpin %@ from the Study button</key>
