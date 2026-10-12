@@ -2156,7 +2156,7 @@
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
 	<string>رمز المجموعة %@. ادرس مع جميع أعضائها. ستغادر مجموعتك الحالية.</string>
 	<key>Party invite</key>
-	<string>دعوة إلى المجموعة</string>
+	<string>دعوة</string>
 	<key>Party is for people %lld and older.</key>
 	<string>المجموعة لمن هم في سن %lld فما فوق.</string>
 	<key>Party is for people %lld and older. It opens here in %@.</key>

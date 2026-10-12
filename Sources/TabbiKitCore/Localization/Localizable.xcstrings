@@ -4234,7 +4234,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Осталось: %@"
+            "value" : "ещё %@"
           }
         },
         "zh-Hans" : {
@@ -87731,7 +87731,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "دعوة إلى المجموعة"
+            "value" : "دعوة"
           }
         },
         "de" : {
@@ -87743,7 +87743,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Invitación al grupo"
+            "value" : "Invitación"
           }
         },
         "fil" : {
@@ -87755,7 +87755,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Invitation au groupe"
+            "value" : "Invitation"
           }
         },
         "ja" : {
@@ -87773,7 +87773,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Convite para o grupo"
+            "value" : "Convite"
           }
         },
         "ru" : {

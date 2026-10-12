@@ -142,9 +142,15 @@ private struct PartyFriendRow: View {
                     Circle()
                         .fill(PartyStyle.color(for: status))
                         .frame(width: 5, height: 5)
-                    Text(PartyRoster.compactStatusLine(friend.presence, online: friend.online, at: store.now))
-                        .font(Theme.Typography.caption.monospacedDigit())
-                        .foregroundStyle(Theme.Palette.tertiaryText)
+                    // Beside a Join button the count can't always fit; it
+                    // goes before the status word is cut.
+                    ViewThatFits(in: .horizontal) {
+                        Text(PartyRoster.compactStatusLine(friend.presence, online: friend.online, at: store.now))
+                            .fixedSize()
+                        Text(PartyRoster.compactStatusWord(friend.presence, online: friend.online))
+                    }
+                    .font(Theme.Typography.caption.monospacedDigit())
+                    .foregroundStyle(Theme.Palette.tertiaryText)
                 }
             }
             .lineLimit(1)

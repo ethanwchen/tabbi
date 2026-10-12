@@ -120,7 +120,7 @@
 	<key>%@ learned a song from a bird</key>
 	<string>%@ учит песенку у птички</string>
 	<key>%@ left</key>
-	<string>Осталось: %@</string>
+	<string>ещё %@</string>
 	<key>%@ level</key>
 	<string>Уровень: %@</string>
 	<key>%@ level %@</key>

@@ -2172,7 +2172,7 @@
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
 	<string>Código do grupo %@. Estude junto com todo mundo nele. Você vai sair do seu grupo atual.</string>
 	<key>Party invite</key>
-	<string>Convite para o grupo</string>
+	<string>Convite</string>
 	<key>Party is for people %lld and older.</key>
 	<string>O Grupo é para maiores de %lld anos.</string>
 	<key>Party is for people %lld and older. It opens here in %@.</key>

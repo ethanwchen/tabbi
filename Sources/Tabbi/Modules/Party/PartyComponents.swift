@@ -310,15 +310,8 @@ struct PartyCodeField: View {
                 .foregroundStyle(isFocused ? PartyStyle.accent : Theme.Palette.tertiaryText)
                 .frame(width: 12)
             ZStack(alignment: .leading) {
-                if text.isEmpty {
-                    Text(placeholder)
-                        .font(Theme.Typography.body)
-                        .foregroundStyle(Theme.Palette.tertiaryText)
-                        .lineLimit(1)
-                        .allowsHitTesting(false)
-                }
                 // Hidden until used: AppKit-backed fields don't render in
-                // snapshots, and the placeholder above stands in for them.
+                // snapshots, and the placeholder below stands in for them.
                 TextField("", text: $text)
                     .textFieldStyle(.plain)
                     .font(.system(size: 12, weight: .medium, design: .monospaced))
@@ -329,11 +322,17 @@ struct PartyCodeField: View {
                     .onExitCommand {
                         if text.isEmpty { focus.wrappedValue = nil } else { text = "" }
                     }
-            }
-            if text.isEmpty {
-                PartyPasteButton(action: paste)
+                if text.isEmpty {
+                    // Paste shrinks to its icon before the placeholder is cut.
+                    ViewThatFits(in: .horizontal) {
+                        emptyRow(placeholderFits: true, pasteIconOnly: false)
+                        emptyRow(placeholderFits: true, pasteIconOnly: true)
+                        emptyRow(placeholderFits: false, pasteIconOnly: true)
+                    }
                     .transition(.opacity)
-            } else {
+                }
+            }
+            if !text.isEmpty {
                 Button(action: send) {
                     Image(systemName: "arrow.right.circle.fill")
                         .font(.system(size: 14))
@@ -365,6 +364,19 @@ struct PartyCodeField: View {
         .motion(Theme.Motion.snappy, value: text.isEmpty)
     }
 
+    private func emptyRow(placeholderFits: Bool, pasteIconOnly: Bool) -> some View {
+        HStack(spacing: Theme.Spacing.s) {
+            Text(placeholder)
+                .font(Theme.Typography.body)
+                .foregroundStyle(Theme.Palette.tertiaryText)
+                .lineLimit(1)
+                .fixedSize(horizontal: placeholderFits, vertical: false)
+                .allowsHitTesting(false)
+            Spacer(minLength: 0)
+            PartyPasteButton(iconOnly: pasteIconOnly, action: paste)
+        }
+    }
+
     /// Fills the field from the clipboard: the code it finds, grouped as
     /// it is shown elsewhere, or the raw text so Return can explain what is
     /// wrong with it.
@@ -389,20 +401,31 @@ struct PartyCodeField: View {
 
 /// The quiet "Paste" capsule inside an empty code field.
 private struct PartyPasteButton: View {
+    /// A clipboard icon in place of the word, for a narrow field.
+    var iconOnly = false
     let action: () -> Void
     @State private var hovering = false
 
     var body: some View {
         Button(action: action) {
-            Text("Paste", bundle: .tabbi)
-                .font(Theme.Typography.caption)
-                .foregroundStyle(hovering ? PartyStyle.accent : Theme.Palette.secondaryText)
-                .lineLimit(1)
-                .fixedSize()
-                .padding(.horizontal, Theme.Spacing.s)
-                .frame(height: 16)
-                .background(Capsule().fill(hovering ? PartyStyle.accent.opacity(0.16) : Theme.Palette.surface))
-                .contentShape(Capsule())
+            Group {
+                if iconOnly {
+                    Image(systemName: "doc.on.clipboard").font(.system(size: 9, weight: .semibold))
+                } else {
+                    Text("Paste", bundle: .tabbi)
+                }
+            }
+            .font(Theme.Typography.caption)
+            .foregroundStyle(hovering ? PartyStyle.accent : Theme.Palette.secondaryText)
+            .lineLimit(1)
+            .fixedSize()
+            .padding(.horizontal, Theme.Spacing.s)
+            .frame(height: 16)
+            .background(Capsule().fill(hovering ? PartyStyle.accent.opacity(0.16) : Theme.Palette.surface))
+            // The capsule stays slim inside the field; clicks count across
+            // the field's full height.
+            .padding(.vertical, Theme.Spacing.xxs)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .help(String(localized: "Paste a code you copied", bundle: .tabbi))
