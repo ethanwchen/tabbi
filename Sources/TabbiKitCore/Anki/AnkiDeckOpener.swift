@@ -196,11 +196,11 @@ extension AnkiOpenOutcome {
     public var title: String? {
         switch self {
         case .opened, .openedApp: return nil
-        case .addOnMissing: return "AnkiConnect needed"
-        case .deckNotFound: return "Deck not found"
+        case .addOnMissing: return String(localized: "AnkiConnect needed", bundle: .tabbi)
+        case .deckNotFound: return String(localized: "Deck not found", bundle: .tabbi)
         case .failed(let error): return error.title
-        case .notInstalled: return "Anki isn't installed"
-        case .launchFailed: return "Anki wouldn't open"
+        case .notInstalled: return String(localized: "Anki isn't installed", bundle: .tabbi)
+        case .launchFailed: return String(localized: "Anki wouldn't open", bundle: .tabbi)
         }
     }
 
@@ -209,12 +209,12 @@ extension AnkiOpenOutcome {
         switch self {
         case .opened, .openedApp: return nil
         case .addOnMissing:
-            return "Install the AnkiConnect add-on to open decks directly: in Anki, choose Tools › Add-ons › Get Add-ons, paste the code \(AnkiConnectClient.addOnCode), then restart Anki."
+            return String(localized: "Install the AnkiConnect add-on to open decks directly: in Anki, choose Tools › Add-ons › Get Add-ons, paste the code \(AnkiConnectClient.addOnCode), then restart Anki.", bundle: .tabbi)
         case .deckNotFound(let name):
-            return "Anki has no deck called \(name). It may have been renamed or deleted."
+            return String(localized: "Anki has no deck called \(name). It may have been renamed or deleted.", bundle: .tabbi)
         case .failed(let error): return error.suggestion
-        case .notInstalled: return "Get the free Anki app from apps.ankiweb.net."
-        case .launchFailed: return "Open Anki from your Applications folder, then try again."
+        case .notInstalled: return String(localized: "Get the free Anki app from apps.ankiweb.net.", bundle: .tabbi)
+        case .launchFailed: return String(localized: "Open Anki from your Applications folder, then try again.", bundle: .tabbi)
         }
     }
 

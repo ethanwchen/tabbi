@@ -39,12 +39,20 @@ extension AnkiConnectionState {
             return ConnectionStatus(light: .connected, headline: String(localized: "Anki is connected", bundle: .tabbi),
                                     detail: String(localized: "Your due cards show up in Tabbi.", bundle: .tabbi))
         case .problem(.collectionUnavailable):
-            return ConnectionStatus(light: .needsStep, headline: String(localized: "Pick your profile in Anki", bundle: .tabbi),
-                                    detail: String(localized: "Anki is waiting for you to choose whose cards to open.", bundle: .tabbi),
+            // AnkiConnect can't tell the profile list from a profile whose
+            // collection is closed for a moment, so say both, likeliest first.
+            return ConnectionStatus(light: .needsStep, headline: String(localized: "Waiting for Anki", bundle: .tabbi),
+                                    detail: String(localized: "Anki may be syncing or on its profile list. Tabbi reconnects by itself.", bundle: .tabbi,
+                                                   comment: "Settings > Connections: the Anki row while Anki has no cards open."),
                                     action: .openApp(.anki))
         case .problem(.timeout):
             return ConnectionStatus(light: .needsStep, headline: String(localized: "Anki is busy", bundle: .tabbi),
                                     detail: String(localized: "Close any open window inside Anki, then check again.", bundle: .tabbi),
+                                    action: .checkAgain)
+        case .problem(let error) where error.isUnexplained:
+            // The row has room for the likeliest fix; Anki's own words are
+            // in the troubleshooter's checks and the copied details.
+            return ConnectionStatus(light: .needsStep, headline: error.title, detail: AnkiConnectError.addOnReminderWithCode,
                                     action: .checkAgain)
         case .problem:
             return ConnectionStatus(light: .needsStep, headline: String(localized: "Anki didn't answer", bundle: .tabbi),

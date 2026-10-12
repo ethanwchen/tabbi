@@ -25807,6 +25807,78 @@
         }
       }
     },
+    "Allow Tabbi in AnkiConnect's settings, then try again." : {
+      "comment" : "Anki: what to do when AnkiConnect refused access.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسمح لـ Tabbi في إعدادات AnkiConnect، ثم حاول مجددًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube Tabbi in den Einstellungen von AnkiConnect und versuch es dann erneut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite Tabbi en los ajustes de AnkiConnect y vuelve a intentarlo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Payagan ang Tabbi sa settings ng AnkiConnect, tapos subukan ulit."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorise Tabbi dans les réglages d'AnkiConnect, puis réessaie."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect の設定で Tabbi を許可してから、もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect 설정에서 Tabbi를 허용한 다음 다시 시도하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permita o Tabbi nos ajustes do AnkiConnect e tente de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разреши Tabbi в настройках AnkiConnect и попробуй снова."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 AnkiConnect 的设置中允许 Tabbi，然后重试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 AnkiConnect 的設定中允許 Tabbi，然後再試一次。"
+          }
+        }
+      }
+    },
     "Allow Tabbi's notifications in System Settings" : {
       "comment" : "Settings pane text (Ask AI, Pet Coach, daily reminder or Party).",
       "extractionState" : "manual",
@@ -26671,6 +26743,78 @@
         }
       }
     },
+    "Anki couldn't send your review history this time: “%@”" : {
+      "comment" : "Anki tab: tooltip on the streak when the history failed to load. The quoted part is Anki's own error text.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر على Anki إرسال سجل مراجعاتك هذه المرة: «%@»"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki konnte deinen Lernverlauf diesmal nicht senden: „%@“"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki no pudo enviar tu historial de repasos esta vez: “%@”"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi naipadala ng Anki ang history ng review mo ngayon: “%@”"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki n'a pas pu envoyer ton historique de révisions cette fois : « %@ »"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今回は Anki から復習履歴を受け取れませんでした:「%@」"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번에는 Anki가 복습 기록을 보내지 못했어요: “%@”"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Anki não conseguiu enviar seu histórico de revisões desta vez: “%@”"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki не смогла передать историю повторений: «%@»"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这次 Anki 没能发送你的复习记录：“%@”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這次 Anki 沒能傳送你的複習記錄：「%@」"
+          }
+        }
+      }
+    },
     "Anki didn't answer" : {
       "comment" : "Connection status line in Settings > Connections (Anki). %@ is an app or connection name, %lld a number.",
       "extractionState" : "manual",
@@ -26811,6 +26955,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Anki 設了密碼"
+          }
+        }
+      }
+    },
+    "Anki has no deck called %@. It may have been renamed or deleted." : {
+      "comment" : "Anki tab: tooltip after a click on a deck Anki no longer has. %@ is the deck name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد في Anki مجموعة باسم %@. ربما أُعيدت تسميتها أو حُذفت."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki hat keinen Stapel namens %@. Vielleicht wurde er umbenannt oder gelöscht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki no tiene ningún mazo llamado %@. Puede que lo hayas renombrado o eliminado."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Walang deck na %@ sa Anki. Baka napalitan ang pangalan o nabura ito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki n'a aucun paquet nommé %@. Il a peut-être été renommé ou supprimé."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki に %@ というデッキはありません。名前が変わったか、削除された可能性があります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki에 %@ 덱이 없어요. 이름이 바뀌었거나 삭제되었을 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Anki não tem um baralho chamado %@. Ele pode ter sido renomeado ou apagado."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В Anki нет колоды %@. Возможно, её переименовали или удалили."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 中没有名为 %@ 的牌组。它可能已被重命名或删除。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 中沒有名為 %@ 的牌組。它可能已被重新命名或刪除。"
           }
         }
       }
@@ -27175,78 +27391,6 @@
         }
       }
     },
-    "Anki is waiting for you to choose whose cards to open." : {
-      "comment" : "Connection status line in Settings > Connections (Anki). %@ is an app or connection name, %lld a number.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anki ينتظر أن تختار الملف الشخصي الذي تُفتح بطاقاته."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anki wartet darauf, dass du wählst, wessen Karten es öffnet."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anki espera que elijas de quién son las tarjetas que abre."
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hinihintay ng Anki na piliin mo kung kaninong cards ang bubuksan."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anki attend que tu choisisses quel profil ouvrir."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ankiは、どのプロファイルのカードを開くか選ばれるのを待っています。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anki가 어떤 프로필의 카드를 열지 선택하기를 기다리고 있어요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O Anki está esperando você escolher de quem são os cartões a abrir."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anki ждет, когда ты выберешь, чьи карточки открыть."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anki 正在等你选择要打开谁的卡片。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anki 正在等你選擇要打開誰的卡片。"
-          }
-        }
-      }
-    },
     "Anki isn't installed" : {
       "comment" : "Anki panel: setup title.",
       "extractionState" : "manual",
@@ -27391,6 +27535,150 @@
         }
       }
     },
+    "Anki may be syncing or on its profile list. Tabbi reconnects by itself." : {
+      "comment" : "Settings > Connections: the Anki row while Anki has no cards open.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قد يكون Anki يزامن أو على قائمة الملفات الشخصية. سيتصل Tabbi تلقائيًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki synchronisiert vielleicht oder zeigt die Profilliste. Tabbi verbindet sich selbst wieder."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puede que Anki esté sincronizando o en la lista de perfiles. Tabbi se reconecta solo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baka nagsi-sync ang Anki o nasa listahan ng profile. Kusang kokonekta ulit ang Tabbi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki synchronise peut-être ou affiche la liste des profils. Tabbi se reconnecte tout seul."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki が同期中か、プロファイル一覧を表示しているかもしれません。Tabbi は自動で再接続します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki가 동기화 중이거나 프로필 목록에 있을 수 있어요. Tabbi가 알아서 다시 연결해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Anki pode estar sincronizando ou na lista de perfis. O Tabbi reconecta sozinho."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Возможно, Anki синхронизируется или открыт список профилей. Tabbi подключится сам."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 可能正在同步，或停在配置文件列表。Tabbi 会自动重新连接。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 可能正在同步，或停在設定檔列表。Tabbi 會自動重新連線。"
+          }
+        }
+      }
+    },
+    "Anki may be syncing, checking its database or showing a dialog. Tabbi reconnects when it's done." : {
+      "comment" : "Anki tab: Anki answers but has no cards open for a moment.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قد يكون Anki يزامن أو يفحص قاعدة بياناته أو يعرض نافذة حوار. سيتصل Tabbi تلقائيًا عند انتهائه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki synchronisiert vielleicht, prüft seine Datenbank oder zeigt einen Dialog. Tabbi verbindet sich danach selbst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puede que Anki esté sincronizando, revisando su base de datos o mostrando un diálogo. Tabbi se reconecta al terminar."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baka nagsi-sync ang Anki, sinusuri ang database nito o may bukas na dialog. Kusang kokonekta ulit ang Tabbi pagkatapos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki synchronise peut-être, vérifie sa base ou affiche une fenêtre. Tabbi se reconnecte une fois fini."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki が同期中、データベースを確認中、またはダイアログを表示中かもしれません。終われば Tabbi が自動で再接続します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki가 동기화 중이거나 데이터베이스를 확인 중이거나 대화상자를 띄우고 있을 수 있어요. 끝나면 Tabbi가 다시 연결해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Anki pode estar sincronizando, verificando o banco de dados ou mostrando uma janela. O Tabbi reconecta quando terminar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Возможно, Anki синхронизируется, проверяет базу или показывает диалог. Tabbi подключится сам, когда она закончит."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 可能正在同步、检查数据库或显示对话框。完成后 Tabbi 会自动重新连接。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 可能正在同步、檢查資料庫或顯示對話框。完成後 Tabbi 會自動重新連線。"
+          }
+        }
+      }
+    },
     "Anki needs a free add-on called AnkiConnect so Tabbi can count your cards." : {
       "comment" : "Connection status line in Settings > Connections (Anki). %@ is an app or connection name, %lld a number.",
       "extractionState" : "manual",
@@ -27459,6 +27747,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Anki 需要安裝免費的 AnkiConnect 附加元件，Tabbi 才能計算你的卡片。"
+          }
+        }
+      }
+    },
+    "Anki reported a problem" : {
+      "comment" : "Anki: headline when AnkiConnect sent an error Tabbi doesn't recognize. Anki's own words show under it.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أبلغ Anki عن مشكلة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki meldet ein Problem"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki informó de un problema"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "May problemang iniulat ang Anki"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki signale un problème"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki で問題が発生しました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki에서 문제가 발생했어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Anki informou um problema"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki сообщает о проблеме"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 报告了一个问题"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 回報了一個問題"
           }
         }
       }
@@ -27535,6 +27895,78 @@
         }
       }
     },
+    "Anki said no" : {
+      "comment" : "Anki: headline when AnkiConnect refused Tabbi's request for access.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رفض Anki الطلب"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki hat abgelehnt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki dijo que no"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tumanggi ang Anki"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki a refusé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki に拒否されました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki가 거절했어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Anki recusou"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki отказала"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 拒绝了访问"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 拒絕了存取"
+          }
+        }
+      }
+    },
     "Anki said no to Tabbi" : {
       "comment" : "Connection status line in Settings > Connections (Anki). %@ is an app or connection name, %lld a number.",
       "extractionState" : "manual",
@@ -27603,6 +28035,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Anki 拒絕了 Tabbi"
+          }
+        }
+      }
+    },
+    "Anki said “%@”." : {
+      "comment" : "Anki: the error text Anki sent, quoted as is (stays English), as the first sentence of an explanation.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قال Anki: «%@»."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki meldet: „%@“."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki dijo: “%@”."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sabi ng Anki: “%@”."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki a dit : « %@ »."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki のメッセージ:「%@」。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 메시지: “%@”."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Anki disse: “%@”."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki пишет: «%@»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 提示：“%@”。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 顯示：「%@」。"
+          }
+        }
+      }
+    },
+    "Anki said: “%@”" : {
+      "comment" : "Anki tab and Settings > Connections: the error text Anki sent, quoted as is (stays English).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قال Anki: «%@»"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki meldet: „%@“"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki dijo: “%@”"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sabi ng Anki: “%@”"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki a dit : « %@ »"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki のメッセージ:「%@」"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 메시지: “%@”"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Anki disse: “%@”"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki пишет: «%@»"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 提示：“%@”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 顯示：「%@」"
           }
         }
       }
@@ -27895,6 +28471,78 @@
         }
       }
     },
+    "AnkiConnect is out of date" : {
+      "comment" : "Anki: headline when the installed AnkiConnect add-on is too old.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إصدار AnkiConnect قديم"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect ist veraltet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect está desactualizado"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luma na ang AnkiConnect"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect n'est pas à jour"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect が古くなっています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect가 오래된 버전이에요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AnkiConnect está desatualizado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect устарело"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect 版本过旧"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect 版本過舊"
+          }
+        }
+      }
+    },
     "AnkiConnect is set to ask for a key. Turning that off takes a minute." : {
       "comment" : "Connection status line in Settings > Connections (Anki). %@ is an app or connection name, %lld a number.",
       "extractionState" : "manual",
@@ -27963,6 +28611,222 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AnkiConnect 設定為要求金鑰，關閉它只需要一分鐘。"
+          }
+        }
+      }
+    },
+    "AnkiConnect isn't answering" : {
+      "comment" : "Anki: headline when Anki runs but its AnkiConnect add-on does not answer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect لا يستجيب"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect antwortet nicht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect no responde"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi sumasagot ang AnkiConnect"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect ne répond pas"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect が応答しません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect가 응답하지 않아요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AnkiConnect não responde"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect не отвечает"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect 没有响应"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect 沒有回應"
+          }
+        }
+      }
+    },
+    "AnkiConnect needed" : {
+      "comment" : "Anki tab: short notice after a click on a deck when the AnkiConnect add-on is missing.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يلزم AnkiConnect"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect nötig"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falta AnkiConnect"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kailangan ang AnkiConnect"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect requis"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect が必要です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect가 필요해요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precisa do AnkiConnect"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нужно AnkiConnect"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要 AnkiConnect"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要 AnkiConnect"
+          }
+        }
+      }
+    },
+    "AnkiConnect needs your API key" : {
+      "comment" : "Anki: headline when AnkiConnect is set to require an API key.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتاج AnkiConnect إلى مفتاح API"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect braucht deinen API-Schlüssel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect necesita tu clave de API"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kailangan ng AnkiConnect ang API key mo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect demande ta clé d'API"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect に API キーが必要です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect에 API 키가 필요해요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AnkiConnect precisa da sua chave de API"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect нужен твой ключ API"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect 需要你的 API 密钥"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect 需要你的 API 金鑰"
           }
         }
       }
@@ -32663,6 +33527,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "將 %@ 移到最前面"
+          }
+        }
+      }
+    },
+    "Bring Anki to the front to see what it's doing; this tab reconnects on its own" : {
+      "comment" : "Anki tab: tooltip of the Open Anki button while Anki has no cards open.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اعرض Anki في المقدمة لترى ما يفعله؛ ستعيد علامة التبويب هذه الاتصال تلقائيًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hol Anki nach vorn, um zu sehen, was es tut. Der Tab verbindet sich selbst wieder"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trae Anki al frente para ver qué hace; esta pestaña se reconecta sola"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilabas ang Anki para makita kung ano ang ginagawa nito; kusang kokonekta ulit ang tab na ito"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche Anki pour voir ce qu'il fait, l'onglet se reconnecte tout seul"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki を前面に出して状況を確認できます。このタブは自動で再接続します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki를 앞으로 가져와 무엇을 하는지 확인하세요. 이 탭은 알아서 다시 연결돼요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traga o Anki para a frente para ver o que ele está fazendo; esta aba reconecta sozinha"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть Anki и посмотреть, что она делает. Вкладка переподключится сама"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将 Anki 调到前台查看它在做什么，此标签页会自动重新连接"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將 Anki 帶到前景查看它在做什麼，此標籤頁會自動重新連線"
           }
         }
       }
@@ -39980,6 +40916,78 @@
         }
       }
     },
+    "Close any open Anki dialog. If it keeps happening, turn off App Nap for Anki." : {
+      "comment" : "Anki: what to do when Anki took too long to answer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أغلق أي نافذة حوار مفتوحة في Anki. إذا تكرر ذلك، أوقف App Nap لـ Anki."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließ offene Dialoge in Anki. Passiert es öfter, schalte App Nap für Anki aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cierra cualquier diálogo abierto en Anki. Si sigue pasando, desactiva App Nap para Anki."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isara ang anumang bukas na dialog sa Anki. Kung paulit-ulit, i-off ang App Nap para sa Anki."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferme les fenêtres de dialogue d'Anki. Si ça se répète, désactive App Nap pour Anki."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki で開いているダイアログを閉じてください。繰り返す場合は Anki の App Nap をオフにしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki에 열린 대화상자를 닫으세요. 계속 그러면 Anki의 App Nap을 끄세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feche as caixas de diálogo abertas no Anki. Se continuar, desative o App Nap para o Anki."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрой открытые диалоги в Anki. Если повторяется, отключи App Nap для Anki."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭 Anki 中打开的对话框。如果反复出现，请为 Anki 关闭 App Nap。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉 Anki 中開著的對話框。如果一再發生，請為 Anki 關閉 App Nap。"
+          }
+        }
+      }
+    },
     "Close any open window inside Anki, then check again." : {
       "comment" : "Connection status line in Settings > Connections (Anki). %@ is an app or connection name, %lld a number.",
       "extractionState" : "manual",
@@ -44157,6 +45165,78 @@
         }
       }
     },
+    "Couldn't reach Anki" : {
+      "comment" : "Anki: headline when the request to AnkiConnect failed for a network reason.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر الوصول إلى Anki"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki ist nicht erreichbar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo conectar con Anki"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi maabot ang Anki"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de joindre Anki"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki に接続できませんでした"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki에 연결할 수 없어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível falar com o Anki"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось связаться с Anki"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法连接 Anki"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法連線到 Anki"
+          }
+        }
+      }
+    },
     "Couldn't reach the party server." : {
       "comment" : "Party message shown when something goes wrong or as a status line.",
       "extractionState" : "manual",
@@ -45958,6 +47038,78 @@
         }
       }
     },
+    "Deck not found" : {
+      "comment" : "Anki tab: short notice after a click on a deck Anki no longer has.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يُعثر على المجموعة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stapel nicht gefunden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mazo no encontrado"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi nakita ang deck"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paquet introuvable"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デッキが見つかりません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "덱을 찾을 수 없어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baralho não encontrado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Колода не найдена"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找不到牌组"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找不到牌組"
+          }
+        }
+      }
+    },
     "Deep" : {
       "comment" : "Short form of the Deep focus toggle in a narrow panel.",
       "extractionState" : "manual",
@@ -47683,6 +48835,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "桌面小工具"
+          }
+        }
+      }
+    },
+    "Details: %@" : {
+      "comment" : "Anki tab and Settings > Connections: a technical error message, shown as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التفاصيل: %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Details: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalles: %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalye: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Détails : %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세부 정보: %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalhes: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подробности: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "详细信息：%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細資訊：%@"
           }
         }
       }
@@ -50996,6 +52220,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "現在可以換%@了。"
+          }
+        }
+      }
+    },
+    "Enter the key from AnkiConnect's config in Settings." : {
+      "comment" : "Anki: what to do when AnkiConnect requires an API key.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أدخل المفتاح من إعدادات AnkiConnect في الإعدادات."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib den Schlüssel aus der Konfiguration von AnkiConnect in den Einstellungen ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduce la clave de la configuración de AnkiConnect en Ajustes."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilagay sa Settings ang key mula sa config ng AnkiConnect."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saisis la clé de la configuration d'AnkiConnect dans les Réglages."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect の設定にあるキーを「設定」に入力してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect 설정에 있는 키를 설정에 입력하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digite a chave da configuração do AnkiConnect nos Ajustes."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введи ключ из настроек AnkiConnect в настройках."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在设置中输入 AnkiConnect 配置里的密钥。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在設定中輸入 AnkiConnect 設定裡的金鑰。"
           }
         }
       }
@@ -59046,6 +60342,78 @@
         }
       }
     },
+    "Get the free Anki app from apps.ankiweb.net." : {
+      "comment" : "Anki tab: tooltip after a click on a deck when Anki isn't installed.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "احصل على تطبيق Anki المجاني من apps.ankiweb.net."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hol dir die kostenlose Anki-App auf apps.ankiweb.net."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descarga la app gratuita de Anki en apps.ankiweb.net."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunin ang libreng Anki app sa apps.ankiweb.net."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Télécharge l'app Anki gratuite sur apps.ankiweb.net."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料の Anki アプリを apps.ankiweb.net から入手してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "apps.ankiweb.net에서 무료 Anki 앱을 받으세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baixe o app gratuito do Anki em apps.ankiweb.net."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скачай бесплатное приложение Anki на apps.ankiweb.net."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从 apps.ankiweb.net 获取免费的 Anki 应用。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從 apps.ankiweb.net 取得免費的 Anki App。"
+          }
+        }
+      }
+    },
     "Give your cat a name" : {
       "comment" : "Closet subtitle when the cat has no name yet. Keep it short (about 22 characters).",
       "extractionState" : "manual",
@@ -63762,6 +65130,78 @@
         }
       }
     },
+    "Install AnkiConnect (code %@) from Tools › Add-ons, then restart Anki." : {
+      "comment" : "Anki: what to do when the AnkiConnect add-on is missing. Menu names as Anki shows them.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ثبّت AnkiConnect (الرمز %@) من Tools › Add-ons، ثم أعد تشغيل Anki."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installiere AnkiConnect (Code %@) über Extras › Erweiterungen und starte Anki dann neu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instala AnkiConnect (código %@) desde Herramientas › Complementos y reinicia Anki."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-install ang AnkiConnect (code %@) mula sa Tools › Add-ons, tapos i-restart ang Anki."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installe AnkiConnect (code %@) depuis Outils › Extensions, puis redémarre Anki."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ツール › アドオン から AnkiConnect(コード %@)をインストールして、Anki を再起動してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "도구 › 부가 기능에서 AnkiConnect(코드 %@)를 설치한 다음 Anki를 다시 시작하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instale o AnkiConnect (código %@) em Ferramentas › Complementos e reinicie o Anki."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установи AnkiConnect (код %@) через «Инструменты › Дополнения» и перезапусти Anki."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 工具 › 插件 中安装 AnkiConnect（代码 %@），然后重启 Anki。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在「工具 › 附加元件」中安裝 AnkiConnect（代碼 %@），然後重新啟動 Anki。"
+          }
+        }
+      }
+    },
     "Install Claude Code and sign in to see your live 5-hour and weekly limits." : {
       "comment" : "AI Usage card text when the claude CLI is missing.",
       "extractionState" : "manual",
@@ -64046,6 +65486,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "安裝 AnkiConnect 附加元件即可直接打開牌組。"
+          }
+        }
+      }
+    },
+    "Install the AnkiConnect add-on to open decks directly: in Anki, choose Tools › Add-ons › Get Add-ons, paste the code %@, then restart Anki." : {
+      "comment" : "Anki tab: tooltip after a click on a deck when AnkiConnect is missing. Menu names as Anki shows them.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ثبّت إضافة AnkiConnect لفتح المجموعات مباشرة: في Anki، اختر Tools › Add-ons › Get Add-ons، والصق الرمز %@، ثم أعد تشغيل Anki."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installiere das Add-on AnkiConnect, um Stapel direkt zu öffnen: Wähle in Anki Extras › Erweiterungen › Erweiterungen herunterladen, füge den Code %@ ein und starte Anki neu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instala el complemento AnkiConnect para abrir mazos directamente: en Anki, elige Herramientas › Complementos › Obtener complementos, pega el código %@ y reinicia Anki."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-install ang AnkiConnect add-on para direktang mabuksan ang mga deck: sa Anki, piliin ang Tools › Add-ons › Get Add-ons, i-paste ang code %@, tapos i-restart ang Anki."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installe l'extension AnkiConnect pour ouvrir les paquets directement : dans Anki, choisis Outils › Extensions › Obtenir des extensions, colle le code %@, puis redémarre Anki."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デッキを直接開くには AnkiConnect アドオンをインストールしてください。Anki で ツール › アドオン › アドオンを取得 を選び、コード %@ を貼り付けて、Anki を再起動します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "덱을 바로 열려면 AnkiConnect 부가 기능을 설치하세요. Anki에서 도구 › 부가 기능 › 부가 기능 받기를 선택하고 코드 %@를 붙여 넣은 다음 Anki를 다시 시작하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instale o complemento AnkiConnect para abrir baralhos direto: no Anki, escolha Ferramentas › Complementos › Obter complementos, cole o código %@ e reinicie o Anki."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установи дополнение AnkiConnect, чтобы открывать колоды отсюда: в Anki выбери «Инструменты › Дополнения › Загрузить дополнения», вставь код %@ и перезапусти Anki."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装 AnkiConnect 插件即可直接打开牌组：在 Anki 中选择 工具 › 插件 › 获取插件，粘贴代码 %@，然后重启 Anki。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安裝 AnkiConnect 附加元件即可直接打開牌組：在 Anki 中選擇「工具 › 附加元件 › 取得附加元件」，貼上代碼 %@，然後重新啟動 Anki。"
           }
         }
       }
@@ -69703,6 +71215,78 @@
         }
       }
     },
+    "Log in from Anki's Sync button once, then sync here." : {
+      "comment" : "Anki tab: what to do when Anki is not signed in to AnkiWeb.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سجّل الدخول مرة من زر Sync في Anki، ثم زامن من هنا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich einmal über den Sync-Knopf in Anki an und synchronisiere dann hier."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión una vez desde el botón Sincronizar de Anki y luego sincroniza aquí."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mag-log in nang isang beses mula sa Sync button ng Anki, tapos mag-sync dito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecte-toi une fois avec le bouton Synchroniser d'Anki, puis synchronise ici."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki の同期ボタンから一度ログインしてから、ここで同期してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki의 동기화 버튼에서 한 번 로그인한 다음 여기서 동기화하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entre uma vez pelo botão Sincronizar do Anki e depois sincronize aqui."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Один раз войди через кнопку «Синхронизировать» в Anki, потом синхронизируй здесь."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先在 Anki 的同步按钮中登录一次，然后在这里同步。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先在 Anki 的同步按鈕登入一次，然後在這裡同步。"
+          }
+        }
+      }
+    },
     "Long break" : {
       "comment" : "Study phase name: the long break after several rounds.",
       "extractionState" : "manual",
@@ -70636,6 +72220,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "確定該帳號的「行事曆」已開啟。"
+          }
+        }
+      }
+    },
+    "Make sure the AnkiConnect add-on (code %@) is installed and Anki was restarted after installing it." : {
+      "comment" : "Anki: shown when Tabbi can't tell what went wrong. The code is the add-on's AnkiWeb code, pasted in Tools > Add-ons > Get Add-ons.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تأكد من تثبيت إضافة AnkiConnect (الرمز %@) ومن إعادة تشغيل Anki بعد تثبيتها."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüf, ob das Add-on AnkiConnect (Code %@) installiert ist und Anki danach neu gestartet wurde."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asegúrate de que el complemento AnkiConnect (código %@) esté instalado y de reiniciar Anki después."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguraduhing naka-install ang AnkiConnect add-on (code %@) at na-restart ang Anki pagkatapos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifie que l'extension AnkiConnect (code %@) est installée et qu'Anki a redémarré ensuite."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect アドオン(コード %@)がインストール済みで、その後 Anki を再起動したか確認してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect 부가 기능(코드 %@)이 설치되어 있고 설치 후 Anki를 다시 시작했는지 확인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confira se o complemento AnkiConnect (código %@) está instalado e se o Anki foi reiniciado depois."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Проверь, что дополнение AnkiConnect (код %@) установлено и Anki после этого перезапущена."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请确认已安装 AnkiConnect 插件（代码 %@），并在安装后重启了 Anki。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請確認已安裝 AnkiConnect 附加元件（代碼 %@），並在安裝後重新啟動 Anki。"
+          }
+        }
+      }
+    },
+    "Make sure the AnkiConnect add-on is installed and Anki was restarted after installing it." : {
+      "comment" : "Anki tab: shown when Tabbi can't tell what went wrong. A Copy code button for the add-on sits next to it.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تأكد من تثبيت إضافة AnkiConnect ومن إعادة تشغيل Anki بعد تثبيتها."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüf, ob das Add-on AnkiConnect installiert ist und Anki danach neu gestartet wurde."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asegúrate de que el complemento AnkiConnect esté instalado y de reiniciar Anki después."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguraduhing naka-install ang AnkiConnect add-on at na-restart ang Anki pagkatapos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifie que l'extension AnkiConnect est installée et qu'Anki a redémarré ensuite."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect アドオンがインストール済みで、その後 Anki を再起動したか確認してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AnkiConnect 부가 기능이 설치되어 있고 설치 후 Anki를 다시 시작했는지 확인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confira se o complemento AnkiConnect está instalado e se o Anki foi reiniciado depois."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Проверь, что дополнение AnkiConnect установлено и Anki после этого перезапущена."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请确认已安装 AnkiConnect 插件，并在安装后重启了 Anki。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請確認已安裝 AnkiConnect 附加元件，並在安裝後重新啟動 Anki。"
           }
         }
       }
@@ -76473,74 +78201,74 @@
         }
       }
     },
-    "No. Anki is waiting for you to pick a profile." : {
-      "comment" : "Troubleshooter (Something not working?) in Settings > Connections: a yes-or-no check question or its short answer.",
+    "No. Anki said “%@”." : {
+      "comment" : "Settings > Connections troubleshooter: answer to 'Can Tabbi see your cards?' quoting Anki's own error text (stays English).",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لا. ينتظر Anki أن تختار ملفًا شخصيًا."
+            "value" : "لا. قال Anki: «%@»."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nein. Anki wartet darauf, dass du ein Profil wählst."
+            "value" : "Nein. Anki meldet: „%@“."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No. Anki espera a que elijas un perfil."
+            "value" : "No. Anki dijo: “%@”."
           }
         },
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hindi. Hinihintay ng Anki na pumili ka ng profile."
+            "value" : "Hindi. Sabi ng Anki: “%@”."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Non. Anki attend que tu choisisses un profil."
+            "value" : "Non. Anki a dit : « %@ »."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "いいえ。Ankiがプロファイルの選択を待っています。"
+            "value" : "いいえ。Anki のメッセージ:「%@」。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아니요. Anki가 프로필 선택을 기다리고 있어요."
+            "value" : "아니요. Anki 메시지: “%@”."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Não. O Anki está esperando você escolher um perfil."
+            "value" : "Não. O Anki disse: “%@”."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нет. Anki ждет, пока ты выберешь профиль."
+            "value" : "Нет. Anki пишет: «%@»."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "不行。Anki 在等你选择配置文件。"
+            "value" : "不能。Anki 提示：“%@”。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "不行。Anki 在等你選擇設定檔。"
+            "value" : "不能。Anki 顯示：「%@」。"
           }
         }
       }
@@ -77333,6 +79061,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "沒有。只有 Anki 開著時，Tabbi 才看得到你的卡片。"
+          }
+        }
+      }
+    },
+    "No. Tabbi couldn't read the cards (%@)." : {
+      "comment" : "Settings > Connections troubleshooter: answer to 'Can Tabbi see your cards?'; %@ is a technical message, shown as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا. تعذّر على Tabbi قراءة البطاقات (%@)."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein. Tabbi konnte die Karten nicht lesen (%@)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. Tabbi no pudo leer las tarjetas (%@)."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi. Hindi mabasa ng Tabbi ang mga card (%@)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non. Tabbi n'a pas pu lire les cartes (%@)."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ。Tabbi がカードを読み込めませんでした(%@)。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아니요. Tabbi가 카드를 읽지 못했어요(%@)."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. O Tabbi não conseguiu ler os cartões (%@)."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет. Tabbi не смогла прочитать карточки (%@)."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不能。Tabbi 无法读取卡片（%@）。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不能。Tabbi 無法讀取卡片（%@）。"
           }
         }
       }
@@ -79368,6 +81168,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "這台 Mac 未提供"
+          }
+        }
+      }
+    },
+    "Not right now. Anki has no cards open: it may be syncing or on its profile list." : {
+      "comment" : "Settings > Connections troubleshooter: answer to 'Can Tabbi see your cards?' when Anki has no collection open.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ليس الآن. لا توجد بطاقات مفتوحة في Anki: قد يكون يزامن أو على قائمة الملفات الشخصية."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerade nicht. Anki hat keine Karten geöffnet: Es synchronisiert vielleicht oder zeigt die Profilliste."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora no. Anki no tiene tarjetas abiertas: puede estar sincronizando o en la lista de perfiles."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi pa ngayon. Walang bukas na card ang Anki: baka nagsi-sync ito o nasa listahan ng profile."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas pour l'instant. Anki n'a aucune carte ouverte : il synchronise peut-être ou affiche la liste des profils."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今はできません。Anki でカードが開かれていません。同期中か、プロファイル一覧が表示されているかもしれません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금은 안 돼요. Anki에 열린 카드가 없어요. 동기화 중이거나 프로필 목록이 떠 있을 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agora não. O Anki não tem cartões abertos: pode estar sincronizando ou na lista de perfis."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сейчас нет. В Anki не открыты карточки: возможно, идёт синхронизация или открыт список профилей."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "现在不行。Anki 没有打开卡片：它可能正在同步，或停在配置文件列表。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在不行。Anki 沒有打開卡片：它可能正在同步，或停在設定檔列表。"
           }
         }
       }
@@ -81604,6 +83476,78 @@
         }
       }
     },
+    "On the profile list? Open your profile." : {
+      "comment" : "Anki tab: hint beside the Open Anki button when Anki has no cards open. The profile list is Anki's Switch Profile window.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "في قائمة الملفات الشخصية؟ افتح ملفك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profilliste offen? Öffne dein Profil."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿En la lista de perfiles? Abre el tuyo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nasa listahan ng profile? Buksan ang profile mo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur la liste des profils ? Ouvre le tien."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プロファイル一覧なら、自分のプロファイルを開いて。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "프로필 목록이 보이면 내 프로필을 여세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na lista de perfis? Abra o seu."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видишь список профилей? Открой свой."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "看到配置文件列表？打开你的配置文件。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "看到設定檔列表？打開你的設定檔。"
+          }
+        }
+      }
+    },
     "On today" : {
       "comment" : "Small note on a row of yesterday's list whose task is already on today's list.",
       "extractionState" : "manual",
@@ -83332,6 +85276,78 @@
         }
       }
     },
+    "Open Anki from your Applications folder, then try again." : {
+      "comment" : "Anki tab: what to do when macOS would not start Anki. Applications is the macOS folder name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح Anki من مجلد التطبيقات، ثم حاول مجددًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne Anki aus dem Ordner „Programme“ und versuch es dann erneut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre Anki desde la carpeta Aplicaciones y vuelve a intentarlo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buksan ang Anki mula sa Applications folder, tapos subukan ulit."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre Anki depuis le dossier Applications, puis réessaie."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリケーションフォルダから Anki を開いてから、もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "응용 프로그램 폴더에서 Anki를 연 다음 다시 시도하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra o Anki pela pasta Aplicativos e tente de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открой Anki из папки «Программы» и попробуй снова."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从“应用程序”文件夹打开 Anki，然后重试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從「應用程式」檔案夾打開 Anki，然後再試一次。"
+          }
+        }
+      }
+    },
     "Open Anki so Tabbi can see your cards." : {
       "comment" : "Connection status line in Settings > Connections (Anki). %@ is an app or connection name, %lld a number.",
       "extractionState" : "manual",
@@ -83544,6 +85560,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打開 Anki 查看今天的卡片。Anki 執行後，此標籤頁會自動連線。"
+          }
+        }
+      }
+    },
+    "Open Anki to see your due cards." : {
+      "comment" : "Anki: what to do when Anki is closed.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح Anki لترى بطاقاتك المستحقة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne Anki, um deine fälligen Karten zu sehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre Anki para ver tus tarjetas pendientes."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buksan ang Anki para makita ang mga card na due."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre Anki pour voir tes cartes à réviser."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "期限のカードを見るには Anki を開いてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복습할 카드를 보려면 Anki를 여세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra o Anki para ver seus cartões pendentes."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открой Anki, чтобы увидеть карточки к повторению."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 Anki 查看待复习的卡片。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打開 Anki 查看待複習的卡片。"
           }
         }
       }
@@ -91176,78 +93264,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選擇朋友會看到的名字和寵物，不需要帳號或密碼。"
-          }
-        }
-      }
-    },
-    "Pick your profile in Anki" : {
-      "comment" : "Connection status line in Settings > Connections (Anki). %@ is an app or connection name, %lld a number.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اختر ملفك الشخصي في Anki"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wähle dein Profil in Anki"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elige tu perfil en Anki"
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Piliin ang profile mo sa Anki"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisis ton profil dans Anki"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ankiでプロファイルを選択"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anki에서 프로필 선택"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escolha seu perfil no Anki"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выбери профиль в Anki"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Anki 中选择用户"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請在 Anki 中選擇個人檔案"
           }
         }
       }
@@ -106825,6 +108841,78 @@
         }
       }
     },
+    "Sign in to AnkiWeb to sync" : {
+      "comment" : "Anki tab: headline when Sync was clicked but Anki is not signed in to AnkiWeb.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سجّل الدخول إلى AnkiWeb للمزامنة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich bei AnkiWeb an, um zu synchronisieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión en AnkiWeb para sincronizar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mag-sign in sa AnkiWeb para mag-sync"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecte-toi à AnkiWeb pour synchroniser"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同期するには AnkiWeb にサインインしてください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동기화하려면 AnkiWeb에 로그인하세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entre no AnkiWeb para sincronizar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Войди в AnkiWeb для синхронизации"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登录 AnkiWeb 后才能同步"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登入 AnkiWeb 才能同步"
+          }
+        }
+      }
+    },
     "Sign in to Claude" : {
       "comment" : "Connection status line in Settings > Connections (Claude). %@ is an app or connection name, %lld a number.",
       "extractionState" : "manual",
@@ -112797,6 +114885,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "連續"
+          }
+        }
+      }
+    },
+    "Streak unavailable" : {
+      "comment" : "Anki tab footer: in place of the streak when the review history could not be read.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "السلسلة غير متاحة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie nicht verfügbar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Racha no disponible"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Walang streak data"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Série indisponible"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "連続記録を取得できません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연속 기록 없음"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sequência indisponível"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Серия недоступна"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连续记录不可用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "連續記錄無法取得"
           }
         }
       }
@@ -127456,6 +129616,78 @@
         }
       }
     },
+    "Unexpected reply from Anki" : {
+      "comment" : "Anki: headline when AnkiConnect's reply could not be read.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رد غير متوقع من Anki"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unerwartete Antwort von Anki"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respuesta inesperada de Anki"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi inaasahang sagot mula sa Anki"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réponse inattendue d'Anki"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki から予期しない応答がありました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki의 응답을 읽을 수 없어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resposta inesperada do Anki"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Неожиданный ответ от Anki"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 的回复无法识别"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anki 的回應無法辨識"
+          }
+        }
+      }
+    },
     "Unexpected reply from the party server." : {
       "comment" : "Party message shown when something goes wrong or as a status line.",
       "extractionState" : "manual",
@@ -128352,6 +130584,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新 AnkiConnect"
+          }
+        }
+      }
+    },
+    "Update AnkiConnect from Tools › Add-ons › Check for Updates." : {
+      "comment" : "Anki: what to do when AnkiConnect is too old. Menu names as Anki shows them.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حدّث AnkiConnect من Tools › Add-ons › Check for Updates."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisiere AnkiConnect über Extras › Erweiterungen › Nach Updates suchen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualiza AnkiConnect desde Herramientas › Complementos › Buscar actualizaciones."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-update ang AnkiConnect mula sa Tools › Add-ons › Check for Updates."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mets à jour AnkiConnect via Outils › Extensions › Rechercher des mises à jour."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ツール › アドオン › アップデートを確認 から AnkiConnect を更新してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "도구 › 부가 기능 › 업데이트 확인에서 AnkiConnect를 업데이트하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualize o AnkiConnect em Ferramentas › Complementos › Verificar atualizações."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обнови AnkiConnect через «Инструменты › Дополнения › Проверить обновления»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 工具 › 插件 › 检查更新 中更新 AnkiConnect。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在「工具 › 附加元件 › 檢查更新」中更新 AnkiConnect。"
           }
         }
       }

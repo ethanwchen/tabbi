@@ -487,6 +487,8 @@
 	<string>允許 %@ 讀取你的行事曆。macOS 只會詢問一次。</string>
 	<key>Allow Access</key>
 	<string>允許取用</string>
+	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
+	<string>在 AnkiConnect 的設定中允許 Tabbi，然後再試一次。</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>在「系統設定」中允許 Tabbi 的通知</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
@@ -511,10 +513,14 @@
 	<string>天使翅膀</string>
 	<key>Animations</key>
 	<string>動畫</string>
+	<key>Anki couldn't send your review history this time: “%@”</key>
+	<string>這次 Anki 沒能傳送你的複習記錄：「%@」</string>
 	<key>Anki didn't answer</key>
 	<string>Anki 沒有回應</string>
 	<key>Anki has a password on</key>
 	<string>Anki 設了密碼</string>
+	<key>Anki has no deck called %@. It may have been renamed or deleted.</key>
+	<string>Anki 中沒有名為 %@ 的牌組。它可能已被重新命名或刪除。</string>
 	<key>Anki is busy</key>
 	<string>Anki 忙碌中</string>
 	<key>Anki is closed</key>
@@ -525,18 +531,28 @@
 	<string>Anki 啟動中</string>
 	<key>Anki is starting. The deck opens for review as soon as it's ready.</key>
 	<string>Anki 正在啟動，準備好後就會打開牌組供你複習。</string>
-	<key>Anki is waiting for you to choose whose cards to open.</key>
-	<string>Anki 正在等你選擇要打開誰的卡片。</string>
 	<key>Anki isn't installed</key>
 	<string>未安裝 Anki</string>
 	<key>Anki isn't on this Mac</key>
 	<string>這台 Mac 上沒有 Anki</string>
+	<key>Anki may be syncing or on its profile list. Tabbi reconnects by itself.</key>
+	<string>Anki 可能正在同步，或停在設定檔列表。Tabbi 會自動重新連線。</string>
+	<key>Anki may be syncing, checking its database or showing a dialog. Tabbi reconnects when it's done.</key>
+	<string>Anki 可能正在同步、檢查資料庫或顯示對話框。完成後 Tabbi 會自動重新連線。</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>Anki 需要安裝免費的 AnkiConnect 附加元件，Tabbi 才能計算你的卡片。</string>
+	<key>Anki reported a problem</key>
+	<string>Anki 回報了一個問題</string>
 	<key>Anki reviews</key>
 	<string>Anki 複習</string>
+	<key>Anki said no</key>
+	<string>Anki 拒絕了存取</string>
 	<key>Anki said no to Tabbi</key>
 	<string>Anki 拒絕了 Tabbi</string>
+	<key>Anki said “%@”.</key>
+	<string>Anki 顯示：「%@」。</string>
+	<key>Anki said: “%@”</key>
+	<string>Anki 顯示：「%@」</string>
 	<key>Anki sprint</key>
 	<string>Anki 衝刺</string>
 	<key>Anki wouldn't open</key>
@@ -545,8 +561,16 @@
 	<string>AnkiConnect 封鎖了此 App</string>
 	<key>AnkiConnect is a free add-on that lets Tabbi count your due cards. It takes about a minute.</key>
 	<string>AnkiConnect 是免費的附加元件，讓 Tabbi 能計算你待複習的卡片。大約需要一分鐘。</string>
+	<key>AnkiConnect is out of date</key>
+	<string>AnkiConnect 版本過舊</string>
 	<key>AnkiConnect is set to ask for a key. Turning that off takes a minute.</key>
 	<string>AnkiConnect 設定為要求金鑰，關閉它只需要一分鐘。</string>
+	<key>AnkiConnect isn't answering</key>
+	<string>AnkiConnect 沒有回應</string>
+	<key>AnkiConnect needed</key>
+	<string>需要 AnkiConnect</string>
+	<key>AnkiConnect needs your API key</key>
+	<string>AnkiConnect 需要你的 API 金鑰</string>
 	<key>AnkiConnect wants an API key</key>
 	<string>AnkiConnect 需要 API 密鑰</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
@@ -671,6 +695,8 @@
 	<string>品種原色</string>
 	<key>Bring %@ to the front</key>
 	<string>將 %@ 移到最前面</string>
+	<key>Bring Anki to the front to see what it's doing; this tab reconnects on its own</key>
+	<string>將 Anki 帶到前景查看它在做什麼，此標籤頁會自動重新連線</string>
 	<key>Brown noise</key>
 	<string>棕色噪音</string>
 	<key>Built-in display</key>
@@ -873,6 +899,8 @@
 	<string>關閉</string>
 	<key>Close %@ settings</key>
 	<string>關閉 %@ 設定</string>
+	<key>Close any open Anki dialog. If it keeps happening, turn off App Nap for Anki.</key>
+	<string>關閉 Anki 中開著的對話框。如果一再發生，請為 Anki 關閉 App Nap。</string>
 	<key>Close any open window inside Anki, then check again.</key>
 	<string>關閉 Anki 裡開著的視窗，然後重新檢查。</string>
 	<key>Close details</key>
@@ -989,6 +1017,8 @@
 	<string>無法加入這個派對</string>
 	<key>Couldn't plan your day</key>
 	<string>無法規劃今天</string>
+	<key>Couldn't reach Anki</key>
+	<string>無法連線到 Anki</string>
 	<key>Couldn't reach the party server.</key>
 	<string>無法連線至派對伺服器。</string>
 	<key>Couldn't read today's list</key>
@@ -1039,6 +1069,8 @@
 	<string>每日回顧：今天的專注和學習分鐘數、次數與點數、你的目標數量，以及你已完成或要延到隔天的任務標題。</string>
 	<key>Days in a row with at least one review</key>
 	<string>至少複習一次的連續天數</string>
+	<key>Deck not found</key>
+	<string>找不到牌組</string>
 	<key>Deep</key>
 	<string>深度</string>
 	<key>Deep focus</key>
@@ -1087,6 +1119,8 @@
 	<string>刪除中…</string>
 	<key>Desktop widget</key>
 	<string>桌面小工具</string>
+	<key>Details: %@</key>
+	<string>詳細資訊：%@</string>
 	<key>Detect automatically</key>
 	<string>自動偵測</string>
 	<key>Detect claude automatically</key>
@@ -1179,6 +1213,8 @@
 	<string>現在可以換%@了</string>
 	<key>Enough for the %@ now.</key>
 	<string>現在可以換%@了。</string>
+	<key>Enter the key from AnkiConnect's config in Settings.</key>
+	<string>在設定中輸入 AnkiConnect 設定裡的金鑰。</string>
 	<key>Event</key>
 	<string>活動</string>
 	<key>Every deck is caught up</key>
@@ -1383,6 +1419,8 @@
 	<string>時間到了提醒你</string>
 	<key>Get an alert when a timer ends.</key>
 	<string>計時器結束時提醒你。</string>
+	<key>Get the free Anki app from apps.ankiweb.net.</key>
+	<string>從 apps.ankiweb.net 取得免費的 Anki App。</string>
 	<key>Give your cat a name</key>
 	<string>幫你的貓取個名字</string>
 	<key>Give your dog a name</key>
@@ -1513,6 +1551,8 @@
 	<string>安裝 %@ 後即可用它規劃。</string>
 	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
 	<string>安裝%@即可播放此播放列表，或選擇其他播放列表。按一下以關閉</string>
+	<key>Install AnkiConnect (code %@) from Tools › Add-ons, then restart Anki.</key>
+	<string>在「工具 › 附加元件」中安裝 AnkiConnect（代碼 %@），然後重新啟動 Anki。</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>安裝 Claude Code 並登入，即可查看即時的 5 小時和每週限額。</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1521,6 +1561,8 @@
 	<string>安裝 Spotify 或「音樂」，即可在瀏海中控制播放。</string>
 	<key>Install the AnkiConnect add-on to open decks directly.</key>
 	<string>安裝 AnkiConnect 附加元件即可直接打開牌組。</string>
+	<key>Install the AnkiConnect add-on to open decks directly: in Anki, choose Tools › Add-ons › Get Add-ons, paste the code %@, then restart Anki.</key>
+	<string>安裝 AnkiConnect 附加元件即可直接打開牌組：在 Anki 中選擇「工具 › 附加元件 › 取得附加元件」，貼上代碼 %@，然後重新啟動 Anki。</string>
 	<key>Install the free Anki desktop app to see your due cards, decks and streak here.</key>
 	<string>安裝免費的 Anki 桌面 App，即可在這裡查看待複習卡片、牌組和連續紀錄。</string>
 	<key>Installed</key>
@@ -1677,6 +1719,8 @@
 	<string>載入中…</string>
 	<key>Location</key>
 	<string>位置</string>
+	<key>Log in from Anki's Sync button once, then sync here.</key>
+	<string>先在 Anki 的同步按鈕登入一次，然後在這裡同步。</string>
 	<key>Long break</key>
 	<string>長休息</string>
 	<key>Long days, light focus. Keep a little rhythm going.</key>
@@ -1703,6 +1747,10 @@
 	<string>用同樣的方法再建立一個，設為「關閉」，並命名為：</string>
 	<key>Make sure Calendars is turned on for that account.</key>
 	<string>確定該帳號的「行事曆」已開啟。</string>
+	<key>Make sure the AnkiConnect add-on (code %@) is installed and Anki was restarted after installing it.</key>
+	<string>請確認已安裝 AnkiConnect 附加元件（代碼 %@），並在安裝後重新啟動 Anki。</string>
+	<key>Make sure the AnkiConnect add-on is installed and Anki was restarted after installing it.</key>
+	<string>請確認已安裝 AnkiConnect 附加元件，並在安裝後重新啟動 Anki。</string>
 	<key>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</key>
 	<string>在「捷徑」App 裡建立兩個簡單的捷徑，大約只要兩分鐘。</string>
 	<key>Make “%@” so Tabbi can switch Do Not Disturb both ways.</key>
@@ -1865,8 +1913,8 @@
 	<string>沒有。Anki 是免費 App，可從 apps.ankiweb.net 下載。</string>
 	<key>No. Anki is busy. A window inside Anki may be open.</key>
 	<string>不行。Anki 正忙，可能有 Anki 視窗開著。</string>
-	<key>No. Anki is waiting for you to pick a profile.</key>
-	<string>不行。Anki 在等你選擇設定檔。</string>
+	<key>No. Anki said “%@”.</key>
+	<string>不能。Anki 顯示：「%@」。</string>
 	<key>No. Anki turned Tabbi down when it asked.</key>
 	<string>不行。Tabbi 請求時被 Anki 拒絕了。</string>
 	<key>No. AnkiConnect is set to ask for a key.</key>
@@ -1889,6 +1937,8 @@
 	<string>沒有。登入一次，Tabbi 就能使用它。</string>
 	<key>No. Tabbi can only see your cards while Anki is open.</key>
 	<string>沒有。只有 Anki 開著時，Tabbi 才看得到你的卡片。</string>
+	<key>No. Tabbi couldn't read the cards (%@).</key>
+	<string>不能。Tabbi 無法讀取卡片（%@）。</string>
 	<key>No. That's fine if you don't use Google. The Calendar row can add it.</key>
 	<string>沒有。如果你不用 Google 就沒關係。可以在「行事曆」那一列加入。</string>
 	<key>No. The Shortcuts app didn't answer. Click Check again.</key>
@@ -1939,6 +1989,8 @@
 	<string>現在不要</string>
 	<key>Not reported by this Mac</key>
 	<string>這台 Mac 未提供</string>
+	<key>Not right now. Anki has no cards open: it may be syncing or on its profile list.</key>
+	<string>現在不行。Anki 沒有打開卡片：它可能正在同步，或停在設定檔列表。</string>
 	<key>Not saved</key>
 	<string>未儲存</string>
 	<key>Not set up</key>
@@ -2001,6 +2053,8 @@
 	<string>穿著</string>
 	<key>On a break</key>
 	<string>休息中</string>
+	<key>On the profile list? Open your profile.</key>
+	<string>看到設定檔列表？打開你的設定檔。</string>
 	<key>On today</key>
 	<string>已在今天</string>
 	<key>One add-on to go</key>
@@ -2049,12 +2103,16 @@
 	<string>打開 %@，Tabbi 會重新檢查</string>
 	<key>Open Anki</key>
 	<string>打開 Anki</string>
+	<key>Open Anki from your Applications folder, then try again.</key>
+	<string>從「應用程式」檔案夾打開 Anki，然後再試一次。</string>
 	<key>Open Anki so Tabbi can see your cards.</key>
 	<string>打開 Anki，讓 Tabbi 能看到你的卡片。</string>
 	<key>Open Anki straight into %@</key>
 	<string>在 Anki 中直接打開 %@</string>
 	<key>Open Anki to see today's due cards. This tab connects as soon as it's running.</key>
 	<string>打開 Anki 查看今天的卡片。Anki 執行後，此標籤頁會自動連線。</string>
+	<key>Open Anki to see your due cards.</key>
+	<string>打開 Anki 查看待複習的卡片。</string>
 	<key>Open Anki; this tab connects on its own</key>
 	<string>打開 Anki，此標籤頁會自動連線</string>
 	<key>Open Automation settings</key>
@@ -2267,8 +2325,6 @@
 	<string>選擇你出生的月份和年份</string>
 	<key>Pick the name and pet your friends will see. No account or password needed.</key>
 	<string>選擇朋友會看到的名字和寵物，不需要帳號或密碼。</string>
-	<key>Pick your profile in Anki</key>
-	<string>請在 Anki 中選擇個人檔案</string>
 	<key>Pin %@ to the Study button</key>
 	<string>將 %@ 釘選到「學習」按鈕</string>
 	<key>Pin as Favorite Deck</key>
@@ -2693,6 +2749,8 @@
 	<string>登出</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
 	<string>在打開的頁面中登入。Tabbi 會自動偵測到。</string>
+	<key>Sign in to AnkiWeb to sync</key>
+	<string>登入 AnkiWeb 才能同步</string>
 	<key>Sign in to Claude</key>
 	<string>登入 Claude</string>
 	<key>Sign in with Apple</key>
@@ -2857,6 +2915,8 @@
 	<string>已停止</string>
 	<key>Streak</key>
 	<string>連續</string>
+	<key>Streak unavailable</key>
+	<string>連續記錄無法取得</string>
 	<key>Studied today</key>
 	<string>今天已學習</string>
 	<key>Study</key>
@@ -3259,6 +3319,8 @@
 	<string>解除封鎖中…</string>
 	<key>Undo</key>
 	<string>撤銷</string>
+	<key>Unexpected reply from Anki</key>
+	<string>Anki 的回應無法辨識</string>
 	<key>Unexpected reply from the party server.</key>
 	<string>派對伺服器傳回非預期的回應。</string>
 	<key>Unknown track</key>
@@ -3283,6 +3345,8 @@
 	<string>「接下來」會隨時顯示你的%@，「規劃今天」會配合它們安排工作。</string>
 	<key>Update AnkiConnect</key>
 	<string>更新 AnkiConnect</string>
+	<key>Update AnkiConnect from Tools › Add-ons › Check for Updates.</key>
+	<string>在「工具 › 附加元件 › 檢查更新」中更新 AnkiConnect。</string>
 	<key>Updated %@ and applied it.</key>
 	<string>已更新並套用 %@。</string>
 	<key>Updated %@; your tabs are unchanged.</key>

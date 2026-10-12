@@ -55,9 +55,29 @@ All failures are `AnkiConnectError`, each with a short `title` and a one-sentenc
 | `apiKeyRequired` | `valid api key must be provided` |
 | `addOnOutdated(version:)` | Add-on API older than 6 |
 | `unsupportedAction(_:)` | `unsupported action` |
-| `collectionUnavailable` | Anki is on the profile picker |
+| `collectionUnavailable` | No collection open: the profile list, or a profile whose collection is closed for a moment (full sync, Check Database, loading). Matched whole against AnkiConnect's real strings (`collection is not available`, `database is not available`, `CollectionNotOpen`, `Collection is not available.`, `A collection operation is active.`) |
 | `syncNotConfigured` | `sync: auth not configured` |
-| `anki(_:)`, `invalidResponse(_:)`, `transport(_:)` | Anything else |
+| `anki(_:)`, `invalidResponse(_:)`, `transport(_:)` | Anything else; `isUnexplained` |
+
+An unexplained error shows Anki's own words (`quotedMessage`, cut to one short line by `shortMessage`) and reminds the user to check that AnkiConnect is installed and Anki was restarted (`addOnReminder`), both in the panel and in Settings > Connections.
+A body AnkiConnect could not parse ("Expecting value...") is sent once more before it counts as an error.
+`onError` tells the app which action failed and why, for its log.
+
+### AnkiConnect versions
+
+AnkiConnect 2026.10, the rewrite AnkiWeb serves for Anki 26.08 and later since October 11, 2026, fails a whole `getDeckStats` batch with "Deck counts unavailable." when any deck in it is missing from Anki's deck list.
+The empty Default deck always is, so every summary failed with that version until `deckStats(for:)` learned to ask again without Default, and then deck by deck through one `multi`.
+`summary` also treats the history (`getNumCardsReviewedToday`, `getNumCardsReviewedByDay`) and the review log (`cardReviews`) as optional: an action Anki fails for its own reasons leaves a gap (`AnkiSummary.missing`, `gaps`) instead of failing the panel, and `filling(from:)` keeps the last summary's numbers for that piece.
+`multi` inner actions carry the API key, which AnkiConnect checks per action.
+`AnkiConnectWireTests` pins the request on the wire (one `POST /` with `Content-Type: application/json` and `Content-Length`, no `Expect`, no chunking, no `Origin`) against a fake server that reads in tiny chunks or the headers before the body.
+
+Verified end to end (requestPermission, the full summary with nested decks, a filtered deck and six days of reviews, and opening a deck) on Anki 26.09.2 against a scratch profile:
+
+| AnkiConnect | Before the fix | After |
+|---|---|---|
+| 2026.10 rewrite (AnkiWeb, branch for Anki 26.08+) | Fails: "Deck counts unavailable." | Passes |
+| November 2025 release (AnkiWeb, previous branch) | Passes | Passes |
+| 2023 release (GitHub mirror `FooSoft/anki-connect` master) | Passes | Passes |
 
 ### Models
 
@@ -113,11 +133,13 @@ summary.retention      // 0.91, or nil below 20 graded reviews
 
 - `isSetupStep` marks the states that need the user to act first.
 - `keepsLastSummary` is true for `ready`, `checking` and `problem`, so a transient error shows the last numbers instead of an empty panel.
-- `refreshInterval` is the poll interval while the panel is visible: 2 s while starting, 5 s for setup steps (60 s when Anki is not installed), 30 s for problems, 3 min when ready.
-- `pollsWhileHidden` is true only for `starting`, so Today and the ticker get numbers as soon as AnkiConnect comes up after a background launch; the startup grace bounds it to a few polls.
+- `refreshInterval(problemAge:)` is the poll interval while the panel is visible: 2 s while starting, 5 s for setup steps (60 s when Anki is not installed), 3 min when ready, and for a problem the `AnkiRecovery` pace: every 4 s for its first minute, every 15 s up to five minutes, then once a minute.
+- `pollsWhileHidden(problemAge:)` is true while starting and in a problem's first minute, so Today and the ticker get numbers as soon as AnkiConnect comes up or a sync ends; both are bounded to a handful of polls.
+  The store also refreshes when Anki comes to the front while it isn't connected, and Settings > Connections re-checks a shown Anki row at the same pace (`ConnectionDiagnosis.clearsBySelf`).
 - `AnkiSummary.topDecks` lists top-level decks with cards due, most due first; `completionFraction` drives the progress ring; `isCurrent(now:)` stops yesterday's numbers from being shared after the rollover.
   `AnkiSummary.nextRollover(after:)` is when that happens, so the store wakes once a day at the rollover to stop sharing the old summary and fetch the new day's.
 - `AnkiConnectionState(previewName:)` parses `TABBI_ANKI_STATE` (for example `addOnMissing`, `notRunning`, `apiKey`, `problem`), which pins the Anki tab to one screen so every state can be snapshotted: `TABBI_ANKI_STATE=addOnMissing swift run Tabbi --snapshot snapshots-anki`.
+  `collection` and `anki` pin the closed collection and an unexplained error; add `TABBI_ANKI_SUMMARY=none` to see a problem's own screen instead of the last numbers.
 
 ### Opening a deck
 

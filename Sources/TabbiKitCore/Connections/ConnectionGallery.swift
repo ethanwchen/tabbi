@@ -21,7 +21,9 @@ extension ConnectionKind {
             let states: [AnkiConnectionState] = [
                 .checking, .notInstalled, .notRunning, .starting, .addOnMissing,
                 .needsPermission(.permissionDenied), .needsPermission(.apiKeyRequired), .addOnOutdated,
-                .problem(.collectionUnavailable), .problem(.timeout), .problem(.transport("")), .ready,
+                .problem(.collectionUnavailable), .problem(.timeout),
+                .problem(.anki("AnkiConnect.getDeckStats() missing 1 required positional argument: 'decks'")),
+                .problem(.invalidResponse("getNumCardsReviewedByDay: Bad day")), .ready,
             ]
             return states.map(\.diagnosis)
         case .spotify, .music:

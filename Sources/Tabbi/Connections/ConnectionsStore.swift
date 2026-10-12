@@ -11,6 +11,9 @@ import TabbiKitCore
 /// It checks only while someone is looking (between `beginWatching` and
 /// `endWatching`): when the first view appears, and again each time Tabbi
 /// becomes active, so a fix made in another app turns green on return.
+/// A state that clears by itself (Anki syncing or behind a dialog) is
+/// checked again at the `AnkiRecovery` pace while shown, and the Anki row
+/// whenever Anki comes to the front.
 /// Demo runs show `ConnectionKind.demoStatus` and never look at the Mac.
 @MainActor
 final class ConnectionsStore: ObservableObject {
@@ -33,6 +36,11 @@ final class ConnectionsStore: ObservableObject {
     /// How many shown views list each connection.
     private var watchers: [ConnectionKind: Int] = [:]
     private var activationObserver: NSObjectProtocol?
+    /// Follows Anki coming to the front while the Anki row shows.
+    private var ankiObserver: NSObjectProtocol?
+    /// Re-checks of rows in a state that clears by itself, and since when.
+    private var rechecks: [ConnectionKind: Task<Void, Never>] = [:]
+    private var clearingSince: [ConnectionKind: Date] = [:]
     /// What the Party tab shares (see `follow(party:)`).
     @Published private var party: PartyLink?
     private var partyCancellables: Set<AnyCancellable> = []
@@ -105,6 +113,18 @@ final class ConnectionsStore: ObservableObject {
                 }
             }
         }
+        if ankiObserver == nil, watchers[.anki] != nil {
+            ankiObserver = NSWorkspace.shared.notificationCenter.addObserver(
+                forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main
+            ) { [weak self] note in
+                let app = note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
+                guard let app, AnkiConnectClient.isAnkiApp(bundleIdentifier: app.bundleIdentifier, localizedName: app.localizedName) else { return }
+                MainActor.assumeIsolated {
+                    guard let self, self.watchers[.anki] != nil else { return }
+                    self.refresh([.anki])
+                }
+            }
+        }
         refresh(unwatched)
     }
 
@@ -112,6 +132,15 @@ final class ConnectionsStore: ObservableObject {
         for kind in kinds {
             guard let count = watchers[kind] else { continue }
             watchers[kind] = count > 1 ? count - 1 : nil
+            if watchers[kind] == nil {
+                rechecks[kind]?.cancel()
+                rechecks[kind] = nil
+                clearingSince[kind] = nil
+            }
+        }
+        if watchers[.anki] == nil, let ankiObserver {
+            NSWorkspace.shared.notificationCenter.removeObserver(ankiObserver)
+            self.ankiObserver = nil
         }
         guard watchers.isEmpty, let activationObserver else { return }
         NotificationCenter.default.removeObserver(activationObserver)
@@ -137,7 +166,28 @@ final class ConnectionsStore: ObservableObject {
                 running.remove(kind)
                 diagnoses[kind] = diagnosis
                 checkedAt[kind] = Date()
+                scheduleRecheck(of: kind, after: diagnosis)
             }
+        }
+    }
+
+    /// Checks a shown row again soon while its state usually clears by
+    /// itself, quickly at first and less often the longer it lasts, so
+    /// the row turns green moments after Anki finishes a sync.
+    private func scheduleRecheck(of kind: ConnectionKind, after diagnosis: ConnectionDiagnosis) {
+        rechecks[kind]?.cancel()
+        rechecks[kind] = nil
+        guard diagnosis.clearsBySelf, watchers[kind] != nil else {
+            clearingSince[kind] = nil
+            return
+        }
+        let since = clearingSince[kind] ?? Date()
+        clearingSince[kind] = since
+        let delay = AnkiRecovery.interval(problemAge: Date().timeIntervalSince(since))
+        rechecks[kind] = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(delay))
+            guard !Task.isCancelled, let self, self.watchers[kind] != nil else { return }
+            self.refreshIfIdle(kind)
         }
     }
 

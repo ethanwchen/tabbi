@@ -487,6 +487,8 @@
 	<string>%@ にカレンダーの読み取りを許可します。macOS が一度だけ確認します。</string>
 	<key>Allow Access</key>
 	<string>アクセスを許可</string>
+	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
+	<string>AnkiConnect の設定で Tabbi を許可してから、もう一度お試しください。</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>システム設定でTabbiの通知を許可してください</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
@@ -511,10 +513,14 @@
 	<string>天使の羽</string>
 	<key>Animations</key>
 	<string>アニメーション</string>
+	<key>Anki couldn't send your review history this time: “%@”</key>
+	<string>今回は Anki から復習履歴を受け取れませんでした:「%@」</string>
 	<key>Anki didn't answer</key>
 	<string>Ankiが応答しませんでした</string>
 	<key>Anki has a password on</key>
 	<string>Ankiにパスワードが設定されています</string>
+	<key>Anki has no deck called %@. It may have been renamed or deleted.</key>
+	<string>Anki に %@ というデッキはありません。名前が変わったか、削除された可能性があります。</string>
 	<key>Anki is busy</key>
 	<string>Ankiは処理中です</string>
 	<key>Anki is closed</key>
@@ -525,18 +531,28 @@
 	<string>Ankiを起動中</string>
 	<key>Anki is starting. The deck opens for review as soon as it's ready.</key>
 	<string>Anki を起動中です。準備ができたらデッキが開きます。</string>
-	<key>Anki is waiting for you to choose whose cards to open.</key>
-	<string>Ankiは、どのプロファイルのカードを開くか選ばれるのを待っています。</string>
 	<key>Anki isn't installed</key>
 	<string>Anki がインストールされていません</string>
 	<key>Anki isn't on this Mac</key>
 	<string>AnkiがこのMacにありません</string>
+	<key>Anki may be syncing or on its profile list. Tabbi reconnects by itself.</key>
+	<string>Anki が同期中か、プロファイル一覧を表示しているかもしれません。Tabbi は自動で再接続します。</string>
+	<key>Anki may be syncing, checking its database or showing a dialog. Tabbi reconnects when it's done.</key>
+	<string>Anki が同期中、データベースを確認中、またはダイアログを表示中かもしれません。終われば Tabbi が自動で再接続します。</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>TabbiがカードをカウントするにはAnkiConnectという無料アドオンが必要です。</string>
+	<key>Anki reported a problem</key>
+	<string>Anki で問題が発生しました</string>
 	<key>Anki reviews</key>
 	<string>Ankiの復習</string>
+	<key>Anki said no</key>
+	<string>Anki に拒否されました</string>
 	<key>Anki said no to Tabbi</key>
 	<string>AnkiがTabbiを拒否しました</string>
+	<key>Anki said “%@”.</key>
+	<string>Anki のメッセージ:「%@」。</string>
+	<key>Anki said: “%@”</key>
+	<string>Anki のメッセージ:「%@」</string>
 	<key>Anki sprint</key>
 	<string>Ankiスプリント</string>
 	<key>Anki wouldn't open</key>
@@ -545,8 +561,16 @@
 	<string>AnkiConnect がこのアプリをブロックしました</string>
 	<key>AnkiConnect is a free add-on that lets Tabbi count your due cards. It takes about a minute.</key>
 	<string>AnkiConnectは、Tabbiが復習予定のカードを数えられるようにする無料のアドオンです。1分ほどで終わります。</string>
+	<key>AnkiConnect is out of date</key>
+	<string>AnkiConnect が古くなっています</string>
 	<key>AnkiConnect is set to ask for a key. Turning that off takes a minute.</key>
 	<string>AnkiConnectがキーを求める設定になっています。オフにするのは1分ほどです。</string>
+	<key>AnkiConnect isn't answering</key>
+	<string>AnkiConnect が応答しません</string>
+	<key>AnkiConnect needed</key>
+	<string>AnkiConnect が必要です</string>
+	<key>AnkiConnect needs your API key</key>
+	<string>AnkiConnect に API キーが必要です</string>
 	<key>AnkiConnect wants an API key</key>
 	<string>AnkiConnect が API キーを求めています</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
@@ -671,6 +695,8 @@
 	<string>品種の色</string>
 	<key>Bring %@ to the front</key>
 	<string>%@を前面に表示</string>
+	<key>Bring Anki to the front to see what it's doing; this tab reconnects on its own</key>
+	<string>Anki を前面に出して状況を確認できます。このタブは自動で再接続します</string>
 	<key>Brown noise</key>
 	<string>ブラウンノイズ</string>
 	<key>Built-in display</key>
@@ -873,6 +899,8 @@
 	<string>閉じる</string>
 	<key>Close %@ settings</key>
 	<string>%@ の設定を閉じる</string>
+	<key>Close any open Anki dialog. If it keeps happening, turn off App Nap for Anki.</key>
+	<string>Anki で開いているダイアログを閉じてください。繰り返す場合は Anki の App Nap をオフにしてください。</string>
 	<key>Close any open window inside Anki, then check again.</key>
 	<string>Anki内で開いているウインドウを閉じてから、もう一度確認してください。</string>
 	<key>Close details</key>
@@ -989,6 +1017,8 @@
 	<string>このパーティに参加できませんでした</string>
 	<key>Couldn't plan your day</key>
 	<string>1日を計画できませんでした</string>
+	<key>Couldn't reach Anki</key>
+	<string>Anki に接続できませんでした</string>
 	<key>Couldn't reach the party server.</key>
 	<string>パーティサーバーに接続できませんでした。</string>
 	<key>Couldn't read today's list</key>
@@ -1039,6 +1069,8 @@
 	<string>1日の振り返り: 今日の集中・学習時間、セッション数とポイント、目標の達成数、完了または持ち越したタスクのタイトル。</string>
 	<key>Days in a row with at least one review</key>
 	<string>1回以上復習した連続日数</string>
+	<key>Deck not found</key>
+	<string>デッキが見つかりません</string>
 	<key>Deep</key>
 	<string>ディープ</string>
 	<key>Deep focus</key>
@@ -1087,6 +1119,8 @@
 	<string>削除中…</string>
 	<key>Desktop widget</key>
 	<string>デスクトップウィジェット</string>
+	<key>Details: %@</key>
+	<string>詳細: %@</string>
 	<key>Detect automatically</key>
 	<string>自動で検出</string>
 	<key>Detect claude automatically</key>
@@ -1179,6 +1213,8 @@
 	<string>%@と交換できます</string>
 	<key>Enough for the %@ now.</key>
 	<string>%@と交換できます。</string>
+	<key>Enter the key from AnkiConnect's config in Settings.</key>
+	<string>AnkiConnect の設定にあるキーを「設定」に入力してください。</string>
 	<key>Event</key>
 	<string>イベント</string>
 	<key>Every deck is caught up</key>
@@ -1383,6 +1419,8 @@
 	<string>時間になったらお知らせ</string>
 	<key>Get an alert when a timer ends.</key>
 	<string>タイマーが終わったら通知します。</string>
+	<key>Get the free Anki app from apps.ankiweb.net.</key>
+	<string>無料の Anki アプリを apps.ankiweb.net から入手してください。</string>
 	<key>Give your cat a name</key>
 	<string>ネコに名前をつけよう</string>
 	<key>Give your dog a name</key>
@@ -1513,6 +1551,8 @@
 	<string>%@ で計画するには、インストールしてください。</string>
 	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
 	<string>このプレイリストを再生するには%@をインストールするか、別のものを選んでください。クリックで閉じる</string>
+	<key>Install AnkiConnect (code %@) from Tools › Add-ons, then restart Anki.</key>
+	<string>ツール › アドオン から AnkiConnect(コード %@)をインストールして、Anki を再起動してください。</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Claude Codeをインストールしてサインインすると、5時間と週間の上限をリアルタイムで確認できます。</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1521,6 +1561,8 @@
 	<string>Spotifyかミュージックをインストールするとノッチから再生を操作できます。</string>
 	<key>Install the AnkiConnect add-on to open decks directly.</key>
 	<string>AnkiConnect アドオンを入れるとデッキを直接開けます。</string>
+	<key>Install the AnkiConnect add-on to open decks directly: in Anki, choose Tools › Add-ons › Get Add-ons, paste the code %@, then restart Anki.</key>
+	<string>デッキを直接開くには AnkiConnect アドオンをインストールしてください。Anki で ツール › アドオン › アドオンを取得 を選び、コード %@ を貼り付けて、Anki を再起動します。</string>
 	<key>Install the free Anki desktop app to see your due cards, decks and streak here.</key>
 	<string>無料の Anki デスクトップアプリを入れると、カードやデッキ、連続記録がここに表示されます。</string>
 	<key>Installed</key>
@@ -1677,6 +1719,8 @@
 	<string>読み込み中…</string>
 	<key>Location</key>
 	<string>場所</string>
+	<key>Log in from Anki's Sync button once, then sync here.</key>
+	<string>Anki の同期ボタンから一度ログインしてから、ここで同期してください。</string>
 	<key>Long break</key>
 	<string>長い休憩</string>
 	<key>Long days, light focus. Keep a little rhythm going.</key>
@@ -1703,6 +1747,10 @@
 	<string>同じ手順で「オフ」にしたものをもう1つ作り、次の名前を付けます：</string>
 	<key>Make sure Calendars is turned on for that account.</key>
 	<string>そのアカウントで「カレンダー」がオンになっていることを確認してください。</string>
+	<key>Make sure the AnkiConnect add-on (code %@) is installed and Anki was restarted after installing it.</key>
+	<string>AnkiConnect アドオン(コード %@)がインストール済みで、その後 Anki を再起動したか確認してください。</string>
+	<key>Make sure the AnkiConnect add-on is installed and Anki was restarted after installing it.</key>
+	<string>AnkiConnect アドオンがインストール済みで、その後 Anki を再起動したか確認してください。</string>
 	<key>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</key>
 	<string>ショートカットAppで簡単なショートカットを2つ作成してください。2分ほどで終わります。</string>
 	<key>Make “%@” so Tabbi can switch Do Not Disturb both ways.</key>
@@ -1865,8 +1913,8 @@
 	<string>いいえ。Ankiはapps.ankiweb.netから入手できる無料アプリです。</string>
 	<key>No. Anki is busy. A window inside Anki may be open.</key>
 	<string>いいえ。Ankiが取り込み中です。Anki内のウインドウが開いているかもしれません。</string>
-	<key>No. Anki is waiting for you to pick a profile.</key>
-	<string>いいえ。Ankiがプロファイルの選択を待っています。</string>
+	<key>No. Anki said “%@”.</key>
+	<string>いいえ。Anki のメッセージ:「%@」。</string>
 	<key>No. Anki turned Tabbi down when it asked.</key>
 	<string>いいえ。Tabbiからの要求をAnkiが拒否しました。</string>
 	<key>No. AnkiConnect is set to ask for a key.</key>
@@ -1889,6 +1937,8 @@
 	<string>いいえ。一度サインインすればTabbiで使えます。</string>
 	<key>No. Tabbi can only see your cards while Anki is open.</key>
 	<string>いいえ。TabbiはAnkiが開いている間だけカードを確認できます。</string>
+	<key>No. Tabbi couldn't read the cards (%@).</key>
+	<string>いいえ。Tabbi がカードを読み込めませんでした(%@)。</string>
 	<key>No. That's fine if you don't use Google. The Calendar row can add it.</key>
 	<string>いいえ。Googleを使っていなければ問題ありません。「カレンダー」の行から追加できます。</string>
 	<key>No. The Shortcuts app didn't answer. Click Check again.</key>
@@ -1939,6 +1989,8 @@
 	<string>今はしない</string>
 	<key>Not reported by this Mac</key>
 	<string>このMacでは取得不可</string>
+	<key>Not right now. Anki has no cards open: it may be syncing or on its profile list.</key>
+	<string>今はできません。Anki でカードが開かれていません。同期中か、プロファイル一覧が表示されているかもしれません。</string>
 	<key>Not saved</key>
 	<string>未保存</string>
 	<key>Not set up</key>
@@ -2001,6 +2053,8 @@
 	<string>着用</string>
 	<key>On a break</key>
 	<string>休憩中</string>
+	<key>On the profile list? Open your profile.</key>
+	<string>プロファイル一覧なら、自分のプロファイルを開いて。</string>
 	<key>On today</key>
 	<string>今日に追加済み</string>
 	<key>One add-on to go</key>
@@ -2049,12 +2103,16 @@
 	<string>%@を開くと、Tabbiがもう一度確認します</string>
 	<key>Open Anki</key>
 	<string>Anki を開く</string>
+	<key>Open Anki from your Applications folder, then try again.</key>
+	<string>アプリケーションフォルダから Anki を開いてから、もう一度お試しください。</string>
 	<key>Open Anki so Tabbi can see your cards.</key>
 	<string>Tabbiがカードを読み取れるよう、Ankiを開いてください。</string>
 	<key>Open Anki straight into %@</key>
 	<string>Anki で %@ を直接開く</string>
 	<key>Open Anki to see today's due cards. This tab connects as soon as it's running.</key>
 	<string>Anki を開くと今日のカードが表示されます。起動すると自動で接続します。</string>
+	<key>Open Anki to see your due cards.</key>
+	<string>期限のカードを見るには Anki を開いてください。</string>
 	<key>Open Anki; this tab connects on its own</key>
 	<string>Anki を開くと、このタブが自動で接続します</string>
 	<key>Open Automation settings</key>
@@ -2267,8 +2325,6 @@
 	<string>生まれた月と年を選んでください</string>
 	<key>Pick the name and pet your friends will see. No account or password needed.</key>
 	<string>友達に表示される名前とペットを選んでください。アカウントもパスワードも不要です。</string>
-	<key>Pick your profile in Anki</key>
-	<string>Ankiでプロファイルを選択</string>
 	<key>Pin %@ to the Study button</key>
 	<string>%@ を学習ボタンに固定</string>
 	<key>Pin as Favorite Deck</key>
@@ -2693,6 +2749,8 @@
 	<string>サインアウト</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
 	<string>開いたページでサインインします。Tabbiが自動で気づきます。</string>
+	<key>Sign in to AnkiWeb to sync</key>
+	<string>同期するには AnkiWeb にサインインしてください</string>
 	<key>Sign in to Claude</key>
 	<string>Claudeにサインイン</string>
 	<key>Sign in with Apple</key>
@@ -2857,6 +2915,8 @@
 	<string>停止しました</string>
 	<key>Streak</key>
 	<string>連続記録</string>
+	<key>Streak unavailable</key>
+	<string>連続記録を取得できません</string>
 	<key>Studied today</key>
 	<string>今日は勉強済み</string>
 	<key>Study</key>
@@ -3259,6 +3319,8 @@
 	<string>ブロック解除中…</string>
 	<key>Undo</key>
 	<string>取り消す</string>
+	<key>Unexpected reply from Anki</key>
+	<string>Anki から予期しない応答がありました</string>
 	<key>Unexpected reply from the party server.</key>
 	<string>パーティサーバーから予期しない応答がありました。</string>
 	<key>Unknown track</key>
@@ -3283,6 +3345,8 @@
 	<string>「次の予定」で1日の%@を確認でき、「1日を計画」がその合間に作業を組み込みます。</string>
 	<key>Update AnkiConnect</key>
 	<string>AnkiConnect をアップデート</string>
+	<key>Update AnkiConnect from Tools › Add-ons › Check for Updates.</key>
+	<string>ツール › アドオン › アップデートを確認 から AnkiConnect を更新してください。</string>
 	<key>Updated %@ and applied it.</key>
 	<string>%@を更新して適用しました。</string>
 	<key>Updated %@; your tabs are unchanged.</key>

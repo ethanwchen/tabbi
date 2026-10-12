@@ -48,25 +48,50 @@ final class AnkiConnectionStateTests: XCTestCase {
     }
 
     func testSetupStepsPollFasterThanReady() {
-        XCTAssertLessThan(AnkiConnectionState.starting.refreshInterval, AnkiConnectionState.notRunning.refreshInterval)
-        XCTAssertLessThan(AnkiConnectionState.addOnMissing.refreshInterval, AnkiConnectionState.ready.refreshInterval)
-        XCTAssertGreaterThanOrEqual(AnkiConnectionState.ready.refreshInterval, 120)
+        XCTAssertLessThan(AnkiConnectionState.starting.refreshInterval(), AnkiConnectionState.notRunning.refreshInterval())
+        XCTAssertLessThan(AnkiConnectionState.addOnMissing.refreshInterval(), AnkiConnectionState.ready.refreshInterval())
+        XCTAssertGreaterThanOrEqual(AnkiConnectionState.ready.refreshInterval(), 120)
     }
 
-    func testOnlyStartingPollsWhileHidden() {
-        XCTAssertTrue(AnkiConnectionState.starting.pollsWhileHidden)
+    func testProblemsRetryFastAtFirstThenBackOff() {
+        let problem = AnkiConnectionState.problem(.collectionUnavailable)
+        XCTAssertEqual(problem.refreshInterval(problemAge: 0), 4)
+        XCTAssertEqual(problem.refreshInterval(problemAge: 59), 4)
+        XCTAssertEqual(problem.refreshInterval(problemAge: 60), 15)
+        XCTAssertEqual(problem.refreshInterval(problemAge: 299), 15)
+        XCTAssertEqual(problem.refreshInterval(problemAge: 300), 60)
+        XCTAssertEqual(problem.refreshInterval(problemAge: 86_400), 60)
+        // Never faster than a few seconds, never slower than a minute.
+        for age in stride(from: 0.0, through: 3_600, by: 7) {
+            let interval = problem.refreshInterval(problemAge: age)
+            XCTAssertGreaterThanOrEqual(interval, 4)
+            XCTAssertLessThanOrEqual(interval, 60)
+        }
+        // A fresh problem polls twice in the first ten seconds, a stale one at most once a minute.
+        XCTAssertEqual(AnkiRecovery.fastInterval, 4)
+        XCTAssertEqual(AnkiRecovery.idleInterval, 60)
+    }
+
+    func testOnlyStartingAndAFreshProblemPollWhileHidden() {
+        XCTAssertTrue(AnkiConnectionState.starting.pollsWhileHidden())
+        XCTAssertTrue(AnkiConnectionState.problem(.timeout).pollsWhileHidden(problemAge: 0))
+        XCTAssertTrue(AnkiConnectionState.problem(.collectionUnavailable).pollsWhileHidden(problemAge: 59))
+        // The hidden window ends after a minute: at most 15 polls with nothing on screen.
+        XCTAssertFalse(AnkiConnectionState.problem(.timeout).pollsWhileHidden(problemAge: 60))
+        XCTAssertLessThanOrEqual(AnkiRecovery.fastWindow / AnkiRecovery.fastInterval, 15)
         let others: [AnkiConnectionState] = [
             .checking, .notInstalled, .notRunning, .addOnMissing, .needsPermission(.permissionDenied),
-            .addOnOutdated, .ready, .problem(.timeout),
+            .addOnOutdated, .ready,
         ]
         for state in others {
-            XCTAssertFalse(state.pollsWhileHidden, "\(state)")
+            XCTAssertFalse(state.pollsWhileHidden(), "\(state)")
+            XCTAssertFalse(state.pollsWhileHidden(problemAge: 0), "\(state)")
         }
         // Starting ends with the grace period, so hidden polling is bounded.
         let launched = Date(timeIntervalSince1970: 1_000)
         let afterGrace = launched.addingTimeInterval(AnkiConnectionState.startupGrace + 1)
         let state = AnkiConnectionState.resolve(error: .addOnMissing, isInstalled: true, launchedAt: launched, now: afterGrace)
-        XCTAssertFalse(state.pollsWhileHidden)
+        XCTAssertFalse(state.pollsWhileHidden())
     }
 
     // MARK: Summary helpers

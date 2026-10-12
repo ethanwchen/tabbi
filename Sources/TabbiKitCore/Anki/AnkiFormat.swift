@@ -21,7 +21,7 @@ public enum AnkiFormat {
 
     /// "12-day streak", "1-day streak", or "No streak yet".
     public static func streak(_ days: Int) -> String {
-        days > 0 ? "\(days)-day streak" : "No streak yet"
+        days > 0 ? String(localized: "\(days)-day streak", bundle: .tabbi) : String(localized: "No streak yet", bundle: .tabbi)
     }
 
     /// Tooltip for one heatmap cell: "Today · 112 reviews", "Mon, Sep 30 · No reviews".

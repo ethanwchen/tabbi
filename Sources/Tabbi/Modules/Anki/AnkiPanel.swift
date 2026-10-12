@@ -177,13 +177,16 @@ private struct QueueRow: View {
                 Text(title)
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .lineLimit(1)
-                    .fixedSize()
+                    .minimumScaleFactor(0.75)
             }
             Spacer(minLength: Theme.Spacing.s)
             Text("\(count)")
                 .foregroundStyle(count > 0 ? Theme.Palette.primaryText : Theme.Palette.tertiaryText)
                 .monospacedDigit()
                 .contentTransition(.numericText())
+                // A long queue name (German "Wiederholen") must not wrap a three-digit count.
+                .lineLimit(1)
+                .fixedSize()
         }
         .font(Theme.Typography.body)
     }
@@ -482,6 +485,10 @@ private struct AnkiFooter: View {
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
+            if summary.missing.contains(.history) {
+                // Anki couldn't send the history: no made-up streak or empty week.
+                StreakBadge(streak: nil, reviewedToday: false, unavailableReason: historyGap)
+            } else {
                 StreakBadge(streak: summary.streak, reviewedToday: summary.hasReviewedToday)
                 // The latest days that fit, so a long favorite deck name
                 // keeps its button readable.
@@ -492,6 +499,7 @@ private struct AnkiFooter: View {
                     // On a narrow panel the streak alone stays.
                     Color.clear.frame(width: 0, height: 0)
                 }
+            }
                 Spacer(minLength: Theme.Spacing.xs)
                 SyncButton(isSyncing: store.isSyncing, action: store.sync)
                 if let favorite = store.favorite {
@@ -521,6 +529,13 @@ private struct AnkiFooter: View {
             .layoutPriority(1)
     }
 
+    /// Why the history is missing, for the streak's tooltip.
+    private var historyGap: String {
+        let message = summary.gaps.first { $0.action == "getNumCardsReviewedByDay" }?.message ?? ""
+        return String(localized: "Anki couldn't send your review history this time: \u{201C}\(AnkiConnectError.shortMessage(message))\u{201D}", bundle: .tabbi,
+                      comment: "Anki tab: tooltip on the streak when the history failed to load. The quoted part is Anki's own error text.")
+    }
+
     private var startHelp: String {
         guard let deck = summary.topDecks.first else { return String(localized: "Nothing due today", bundle: .tabbi) }
         return String(localized: "Open \(deck.name) for review in Anki", bundle: .tabbi)
@@ -528,22 +543,30 @@ private struct AnkiFooter: View {
 }
 
 private struct StreakBadge: View {
-    let streak: Int
+    /// Nil when the history couldn't be read.
+    let streak: Int?
     let reviewedToday: Bool
+    /// The tooltip when `streak` is nil.
+    var unavailableReason: String?
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xs) {
             Image(systemName: "flame.fill")
                 .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(streak > 0 ? Theme.Palette.warning : Theme.Palette.tertiaryText)
-            Text(AnkiFormat.streak(streak))
+                .foregroundStyle((streak ?? 0) > 0 ? Theme.Palette.warning : Theme.Palette.tertiaryText)
+            Text(streak.map(AnkiFormat.streak) ?? String(localized: "Streak unavailable", bundle: .tabbi))
                 .font(Theme.Typography.caption.monospacedDigit())
-                .foregroundStyle(Theme.Palette.secondaryText)
+                .foregroundStyle(streak == nil ? Theme.Palette.tertiaryText : Theme.Palette.secondaryText)
                 .fixedSize()
         }
-        .help(streak > 0 && !reviewedToday
-              ? String(localized: "Review today to keep your \(streak)-day streak", bundle: .tabbi)
-              : String(localized: "Days in a row with at least one review", bundle: .tabbi))
+        .help(help)
+    }
+
+    private var help: String {
+        guard let streak else { return unavailableReason ?? "" }
+        return streak > 0 && !reviewedToday
+            ? String(localized: "Review today to keep your \(streak)-day streak", bundle: .tabbi)
+            : String(localized: "Days in a row with at least one review", bundle: .tabbi)
     }
 }
 
@@ -637,6 +660,17 @@ struct AnkiSetupView: View {
                                 .font(Theme.Typography.body)
                                 .foregroundStyle(Theme.Palette.secondaryText)
                                 .lineLimit(2)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        if let detail = guide.detail {
+                            Text(detail)
+                                .font(Theme.Typography.caption)
+                                .foregroundStyle(Theme.Palette.tertiaryText)
+                                .lineLimit(isCompact ? 1 : 2)
+                                .truncationMode(.tail)
+                                .textSelection(.enabled)
+                                .padding(.top, Theme.Spacing.xxs)
+                                .help(detail)
                         }
                     }
                     // In a short panel (Compact) the message gives up a line
@@ -686,6 +720,14 @@ struct AnkiSetupView: View {
                 restartButton
             case .needsPermission, .addOnOutdated:
                 restartButton
+            case .problem(.collectionUnavailable):
+                AnkiPrimaryButton(title: String(localized: "Open Anki", bundle: .tabbi), symbol: "arrow.up.forward.app.fill",
+                                  help: String(localized: "Bring Anki to the front to see what it's doing; this tab reconnects on its own", bundle: .tabbi),
+                                  action: store.openAnki)
+            case .problem(let error) where error.isUnexplained:
+                AnkiPrimaryButton(title: String(localized: "Try again", bundle: .tabbi), symbol: "arrow.clockwise",
+                                  help: String(localized: "Ask Anki again", bundle: .tabbi), action: store.refresh)
+                CopyCodeButton(code: AnkiConnectClient.addOnCode, isPrimary: false)
             case .problem:
                 AnkiPrimaryButton(title: String(localized: "Try again", bundle: .tabbi), symbol: "arrow.clockwise",
                                   help: String(localized: "Ask Anki again", bundle: .tabbi), action: store.refresh)
@@ -719,6 +761,9 @@ private struct AnkiSetupGuide {
     var message: String
     var steps: [String] = []
     var hint: String?
+    /// What Anki actually said, under the message, for an error Tabbi
+    /// can't explain.
+    var detail: String?
 
     init(state: AnkiConnectionState, opening: AnkiOpening?, notice: AnkiOpenOutcome? = nil) {
         if let opening {
@@ -798,6 +843,18 @@ private struct AnkiSetupGuide {
                 String(localized: "Select AnkiConnect and click Check for Updates", bundle: .tabbi),
                 String(localized: "Restart Anki", bundle: .tabbi),
             ]
+        case .problem(.collectionUnavailable):
+            symbol = "clock.arrow.circlepath"
+            title = AnkiConnectError.collectionUnavailable.title
+            message = AnkiConnectError.collectionUnavailableMessage
+            hint = AnkiConnectError.profileListHint
+        case .problem(let error) where error.isUnexplained:
+            // Tabbi can't tell what's wrong, so it shows Anki's own words
+            // and the likeliest fix, with the add-on code one click away.
+            symbol = "exclamationmark.triangle"
+            title = error.title
+            message = AnkiConnectError.addOnReminder
+            detail = error.quotedMessage
         case .problem(let error):
             symbol = "exclamationmark.triangle"
             title = error.title
@@ -834,19 +891,28 @@ private struct SetupStep: View {
 /// Copies the AnkiConnect code, confirming with a checkmark for a moment.
 private struct CopyCodeButton: View {
     let code: String
+    /// The filled accent capsule when copying is the screen's main step,
+    /// the quiet one beside another primary action.
+    var isPrimary = true
     @State private var copied = false
 
     var body: some View {
-        AnkiPrimaryButton(title: copied ? String(localized: "Copied", bundle: .tabbi) : String(localized: "Copy code \(code)", bundle: .tabbi),
-                          symbol: copied ? "checkmark" : "doc.on.doc.fill",
-                          help: String(localized: "Copy the AnkiConnect add-on code to paste into Anki", bundle: .tabbi)) {
-            NSPasteboard.general.clearContents()
-            NSPasteboard.general.setString(code, forType: .string)
-            withMotion(Theme.Motion.snappy) { copied = true }
-            Task {
-                try? await Task.sleep(for: .seconds(2))
-                withMotion(Theme.Motion.snappy) { copied = false }
-            }
+        let title = copied ? String(localized: "Copied", bundle: .tabbi) : String(localized: "Copy code \(code)", bundle: .tabbi)
+        let help = String(localized: "Copy the AnkiConnect add-on code to paste into Anki", bundle: .tabbi)
+        if isPrimary {
+            AnkiPrimaryButton(title: title, symbol: copied ? "checkmark" : "doc.on.doc.fill", help: help, action: copy)
+        } else {
+            AnkiSecondaryButton(title: title, symbol: copied ? "checkmark" : "doc.on.doc", help: help, action: copy)
+        }
+    }
+
+    private func copy() {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(code, forType: .string)
+        withMotion(Theme.Motion.snappy) { copied = true }
+        Task {
+            try? await Task.sleep(for: .seconds(2))
+            withMotion(Theme.Motion.snappy) { copied = false }
         }
     }
 }

@@ -487,6 +487,8 @@
 	<string>Autorise %@ à lire tes calendriers. macOS ne le demande qu'une fois.</string>
 	<key>Allow Access</key>
 	<string>Autoriser l'accès</string>
+	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
+	<string>Autorise Tabbi dans les réglages d'AnkiConnect, puis réessaie.</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>Autorise les notifications de Tabbi dans Réglages Système</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
@@ -511,10 +513,14 @@
 	<string>Ailes d'ange</string>
 	<key>Animations</key>
 	<string>Animations</string>
+	<key>Anki couldn't send your review history this time: “%@”</key>
+	<string>Anki n'a pas pu envoyer ton historique de révisions cette fois : « %@ »</string>
 	<key>Anki didn't answer</key>
 	<string>Anki n'a pas répondu</string>
 	<key>Anki has a password on</key>
 	<string>Anki demande une clé</string>
+	<key>Anki has no deck called %@. It may have been renamed or deleted.</key>
+	<string>Anki n'a aucun paquet nommé %@. Il a peut-être été renommé ou supprimé.</string>
 	<key>Anki is busy</key>
 	<string>Anki est occupé</string>
 	<key>Anki is closed</key>
@@ -525,18 +531,28 @@
 	<string>Anki démarre</string>
 	<key>Anki is starting. The deck opens for review as soon as it's ready.</key>
 	<string>Anki démarre. Le paquet s'ouvre dès qu'il est prêt.</string>
-	<key>Anki is waiting for you to choose whose cards to open.</key>
-	<string>Anki attend que tu choisisses quel profil ouvrir.</string>
 	<key>Anki isn't installed</key>
 	<string>Anki n'est pas installé</string>
 	<key>Anki isn't on this Mac</key>
 	<string>Anki n'est pas sur ce Mac</string>
+	<key>Anki may be syncing or on its profile list. Tabbi reconnects by itself.</key>
+	<string>Anki synchronise peut-être ou affiche la liste des profils. Tabbi se reconnecte tout seul.</string>
+	<key>Anki may be syncing, checking its database or showing a dialog. Tabbi reconnects when it's done.</key>
+	<string>Anki synchronise peut-être, vérifie sa base ou affiche une fenêtre. Tabbi se reconnecte une fois fini.</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>Anki a besoin d'un module gratuit, AnkiConnect, pour que Tabbi compte tes cartes.</string>
+	<key>Anki reported a problem</key>
+	<string>Anki signale un problème</string>
 	<key>Anki reviews</key>
 	<string>Révisions Anki</string>
+	<key>Anki said no</key>
+	<string>Anki a refusé</string>
 	<key>Anki said no to Tabbi</key>
 	<string>Anki a refusé Tabbi</string>
+	<key>Anki said “%@”.</key>
+	<string>Anki a dit : « %@ ».</string>
+	<key>Anki said: “%@”</key>
+	<string>Anki a dit : « %@ »</string>
 	<key>Anki sprint</key>
 	<string>Sprint Anki</string>
 	<key>Anki wouldn't open</key>
@@ -545,8 +561,16 @@
 	<string>AnkiConnect a bloqué cette app</string>
 	<key>AnkiConnect is a free add-on that lets Tabbi count your due cards. It takes about a minute.</key>
 	<string>AnkiConnect est une extension gratuite qui permet à Tabbi de compter tes cartes à réviser. Ça prend environ une minute.</string>
+	<key>AnkiConnect is out of date</key>
+	<string>AnkiConnect n'est pas à jour</string>
 	<key>AnkiConnect is set to ask for a key. Turning that off takes a minute.</key>
 	<string>AnkiConnect est réglé pour demander une clé. La désactiver prend une minute.</string>
+	<key>AnkiConnect isn't answering</key>
+	<string>AnkiConnect ne répond pas</string>
+	<key>AnkiConnect needed</key>
+	<string>AnkiConnect requis</string>
+	<key>AnkiConnect needs your API key</key>
+	<string>AnkiConnect demande ta clé d'API</string>
 	<key>AnkiConnect wants an API key</key>
 	<string>AnkiConnect demande une clé API</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
@@ -671,6 +695,8 @@
 	<string>Couleurs de la race</string>
 	<key>Bring %@ to the front</key>
 	<string>Mettre %@ au premier plan</string>
+	<key>Bring Anki to the front to see what it's doing; this tab reconnects on its own</key>
+	<string>Affiche Anki pour voir ce qu'il fait, l'onglet se reconnecte tout seul</string>
 	<key>Brown noise</key>
 	<string>Bruit brun</string>
 	<key>Built-in display</key>
@@ -873,6 +899,8 @@
 	<string>Fermer</string>
 	<key>Close %@ settings</key>
 	<string>Fermer les réglages de %@</string>
+	<key>Close any open Anki dialog. If it keeps happening, turn off App Nap for Anki.</key>
+	<string>Ferme les fenêtres de dialogue d'Anki. Si ça se répète, désactive App Nap pour Anki.</string>
 	<key>Close any open window inside Anki, then check again.</key>
 	<string>Ferme les fenêtres ouvertes dans Anki, puis revérifie.</string>
 	<key>Close details</key>
@@ -989,6 +1017,8 @@
 	<string>Impossible de rejoindre ce groupe</string>
 	<key>Couldn't plan your day</key>
 	<string>Impossible de planifier ta journée</string>
+	<key>Couldn't reach Anki</key>
+	<string>Impossible de joindre Anki</string>
 	<key>Couldn't reach the party server.</key>
 	<string>Impossible de joindre le serveur de groupes.</string>
 	<key>Couldn't read today's list</key>
@@ -1039,6 +1069,8 @@
 	<string>Bilan de la journée : les minutes de concentration et d'étude du jour, les sessions et points, le compte de tes objectifs et les titres des tâches terminées ou reportées.</string>
 	<key>Days in a row with at least one review</key>
 	<string>Jours d'affilée avec au moins une révision</string>
+	<key>Deck not found</key>
+	<string>Paquet introuvable</string>
 	<key>Deep</key>
 	<string>Focus</string>
 	<key>Deep focus</key>
@@ -1087,6 +1119,8 @@
 	<string>Suppression…</string>
 	<key>Desktop widget</key>
 	<string>Widget de bureau</string>
+	<key>Details: %@</key>
+	<string>Détails : %@</string>
 	<key>Detect automatically</key>
 	<string>Détection automatique</string>
 	<key>Detect claude automatically</key>
@@ -1179,6 +1213,8 @@
 	<string>Tu as assez pour %@</string>
 	<key>Enough for the %@ now.</key>
 	<string>Tu as assez pour %@.</string>
+	<key>Enter the key from AnkiConnect's config in Settings.</key>
+	<string>Saisis la clé de la configuration d'AnkiConnect dans les Réglages.</string>
 	<key>Event</key>
 	<string>Événement</string>
 	<key>Every deck is caught up</key>
@@ -1383,6 +1419,8 @@
 	<string>Sois prévenu quand le temps est écoulé</string>
 	<key>Get an alert when a timer ends.</key>
 	<string>Reçois une alerte quand un minuteur se termine.</string>
+	<key>Get the free Anki app from apps.ankiweb.net.</key>
+	<string>Télécharge l'app Anki gratuite sur apps.ankiweb.net.</string>
 	<key>Give your cat a name</key>
 	<string>Donne un nom à ton chat</string>
 	<key>Give your dog a name</key>
@@ -1513,6 +1551,8 @@
 	<string>Installe %@ pour planifier avec.</string>
 	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
 	<string>Installe %@ pour lire cette playlist, ou choisis-en une autre. Clique pour masquer</string>
+	<key>Install AnkiConnect (code %@) from Tools › Add-ons, then restart Anki.</key>
+	<string>Installe AnkiConnect (code %@) depuis Outils › Extensions, puis redémarre Anki.</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Installe Claude Code et connecte-toi pour voir tes limites de 5 heures et hebdomadaires en direct.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1521,6 +1561,8 @@
 	<string>Installe Spotify ou Musique pour contrôler la lecture depuis l'encoche.</string>
 	<key>Install the AnkiConnect add-on to open decks directly.</key>
 	<string>Installe l'extension AnkiConnect pour ouvrir les paquets directement.</string>
+	<key>Install the AnkiConnect add-on to open decks directly: in Anki, choose Tools › Add-ons › Get Add-ons, paste the code %@, then restart Anki.</key>
+	<string>Installe l'extension AnkiConnect pour ouvrir les paquets directement : dans Anki, choisis Outils › Extensions › Obtenir des extensions, colle le code %@, puis redémarre Anki.</string>
 	<key>Install the free Anki desktop app to see your due cards, decks and streak here.</key>
 	<string>Installe l'app gratuite Anki pour voir ici tes cartes, paquets et série.</string>
 	<key>Installed</key>
@@ -1677,6 +1719,8 @@
 	<string>Chargement…</string>
 	<key>Location</key>
 	<string>Emplacement</string>
+	<key>Log in from Anki's Sync button once, then sync here.</key>
+	<string>Connecte-toi une fois avec le bouton Synchroniser d'Anki, puis synchronise ici.</string>
 	<key>Long break</key>
 	<string>Longue pause</string>
 	<key>Long days, light focus. Keep a little rhythm going.</key>
@@ -1703,6 +1747,10 @@
 	<string>Crée-en un autre de la même façon, désactivé, et nomme-le :</string>
 	<key>Make sure Calendars is turned on for that account.</key>
 	<string>Vérifie que Calendriers est activé pour ce compte.</string>
+	<key>Make sure the AnkiConnect add-on (code %@) is installed and Anki was restarted after installing it.</key>
+	<string>Vérifie que l'extension AnkiConnect (code %@) est installée et qu'Anki a redémarré ensuite.</string>
+	<key>Make sure the AnkiConnect add-on is installed and Anki was restarted after installing it.</key>
+	<string>Vérifie que l'extension AnkiConnect est installée et qu'Anki a redémarré ensuite.</string>
 	<key>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</key>
 	<string>Crée deux raccourcis rapides dans l'app Raccourcis. Ça prend environ deux minutes.</string>
 	<key>Make “%@” so Tabbi can switch Do Not Disturb both ways.</key>
@@ -1865,8 +1913,8 @@
 	<string>Non. Anki est une app gratuite sur apps.ankiweb.net.</string>
 	<key>No. Anki is busy. A window inside Anki may be open.</key>
 	<string>Non. Anki est occupé. Une fenêtre est peut-être ouverte dans Anki.</string>
-	<key>No. Anki is waiting for you to pick a profile.</key>
-	<string>Non. Anki attend que tu choisisses un profil.</string>
+	<key>No. Anki said “%@”.</key>
+	<string>Non. Anki a dit : « %@ ».</string>
 	<key>No. Anki turned Tabbi down when it asked.</key>
 	<string>Non. Anki a refusé la demande de Tabbi.</string>
 	<key>No. AnkiConnect is set to ask for a key.</key>
@@ -1889,6 +1937,8 @@
 	<string>Non. Connecte-toi une fois et Tabbi pourra l'utiliser.</string>
 	<key>No. Tabbi can only see your cards while Anki is open.</key>
 	<string>Non. Tabbi ne voit tes cartes que si Anki est ouvert.</string>
+	<key>No. Tabbi couldn't read the cards (%@).</key>
+	<string>Non. Tabbi n'a pas pu lire les cartes (%@).</string>
 	<key>No. That's fine if you don't use Google. The Calendar row can add it.</key>
 	<string>Non. Pas de souci si tu n'utilises pas Google. La ligne Calendrier peut l'ajouter.</string>
 	<key>No. The Shortcuts app didn't answer. Click Check again.</key>
@@ -1939,6 +1989,8 @@
 	<string>Pas maintenant</string>
 	<key>Not reported by this Mac</key>
 	<string>Non fourni par ce Mac</string>
+	<key>Not right now. Anki has no cards open: it may be syncing or on its profile list.</key>
+	<string>Pas pour l'instant. Anki n'a aucune carte ouverte : il synchronise peut-être ou affiche la liste des profils.</string>
 	<key>Not saved</key>
 	<string>Non enregistré</string>
 	<key>Not set up</key>
@@ -2001,6 +2053,8 @@
 	<string>Porté</string>
 	<key>On a break</key>
 	<string>En pause</string>
+	<key>On the profile list? Open your profile.</key>
+	<string>Sur la liste des profils ? Ouvre le tien.</string>
 	<key>On today</key>
 	<string>Sur aujourd'hui</string>
 	<key>One add-on to go</key>
@@ -2049,12 +2103,16 @@
 	<string>Ouvre %@, puis Tabbi revérifie</string>
 	<key>Open Anki</key>
 	<string>Ouvrir Anki</string>
+	<key>Open Anki from your Applications folder, then try again.</key>
+	<string>Ouvre Anki depuis le dossier Applications, puis réessaie.</string>
 	<key>Open Anki so Tabbi can see your cards.</key>
 	<string>Ouvre Anki pour que Tabbi voie tes cartes.</string>
 	<key>Open Anki straight into %@</key>
 	<string>Ouvrir Anki directement sur %@</string>
 	<key>Open Anki to see today's due cards. This tab connects as soon as it's running.</key>
 	<string>Ouvre Anki pour voir les cartes du jour. L'onglet se connecte dès qu'il tourne.</string>
+	<key>Open Anki to see your due cards.</key>
+	<string>Ouvre Anki pour voir tes cartes à réviser.</string>
 	<key>Open Anki; this tab connects on its own</key>
 	<string>Ouvre Anki, l'onglet se connecte tout seul</string>
 	<key>Open Automation settings</key>
@@ -2267,8 +2325,6 @@
 	<string>Choisis ton mois et ton année de naissance</string>
 	<key>Pick the name and pet your friends will see. No account or password needed.</key>
 	<string>Choisis le nom et le compagnon que verront tes amis. Pas besoin de compte ni de mot de passe.</string>
-	<key>Pick your profile in Anki</key>
-	<string>Choisis ton profil dans Anki</string>
 	<key>Pin %@ to the Study button</key>
 	<string>Épingler %@ au bouton Étudier</string>
 	<key>Pin as Favorite Deck</key>
@@ -2693,6 +2749,8 @@
 	<string>Se déconnecter</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
 	<string>Connecte-toi sur la page qui s'ouvre. Tabbi le remarque tout seul.</string>
+	<key>Sign in to AnkiWeb to sync</key>
+	<string>Connecte-toi à AnkiWeb pour synchroniser</string>
 	<key>Sign in to Claude</key>
 	<string>Connecte-toi à Claude</string>
 	<key>Sign in with Apple</key>
@@ -2857,6 +2915,8 @@
 	<string>Arrêté</string>
 	<key>Streak</key>
 	<string>Série</string>
+	<key>Streak unavailable</key>
+	<string>Série indisponible</string>
 	<key>Studied today</key>
 	<string>Étudié aujourd'hui</string>
 	<key>Study</key>
@@ -3259,6 +3319,8 @@
 	<string>Déblocage…</string>
 	<key>Undo</key>
 	<string>Annuler</string>
+	<key>Unexpected reply from Anki</key>
+	<string>Réponse inattendue d'Anki</string>
 	<key>Unexpected reply from the party server.</key>
 	<string>Réponse inattendue du serveur de groupes.</string>
 	<key>Unknown track</key>
@@ -3283,6 +3345,8 @@
 	<string>À venir affiche tes %@ au fil de la journée, et Planifier ma journée place ton travail autour.</string>
 	<key>Update AnkiConnect</key>
 	<string>Mets à jour AnkiConnect</string>
+	<key>Update AnkiConnect from Tools › Add-ons › Check for Updates.</key>
+	<string>Mets à jour AnkiConnect via Outils › Extensions › Rechercher des mises à jour.</string>
 	<key>Updated %@ and applied it.</key>
 	<string>%@ mis à jour et appliqué.</string>
 	<key>Updated %@; your tabs are unchanged.</key>

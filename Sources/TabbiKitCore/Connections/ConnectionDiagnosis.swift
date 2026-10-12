@@ -64,14 +64,19 @@ public struct ConnectionDiagnosis: Hashable, Sendable {
     /// and never put in the support details, since it names the user's
     /// home folder.
     public var executable: URL?
+    /// Whether this state usually clears by itself within seconds (Anki
+    /// starting, syncing or behind a dialog), so a shown row checks again
+    /// soon at the `AnkiRecovery` pace instead of waiting for the user.
+    public var clearsBySelf: Bool
 
     public init(kind: ConnectionKind, status: ConnectionStatus, checks: [ConnectionCheck], technical: String,
-                executable: URL? = nil) {
+                executable: URL? = nil, clearsBySelf: Bool = false) {
         self.kind = kind
         self.status = status
         self.checks = checks
         self.technical = technical
         self.executable = executable
+        self.clearsBySelf = clearsBySelf
     }
 
     /// The first check that failed, which is what the row's button fixes.
@@ -149,8 +154,10 @@ extension AnkiConnectionState {
             if case .problem(let error) = self {
                 cards = .failed
                 cardsAnswer = switch error {
-                case .collectionUnavailable: String(localized: "No. Anki is waiting for you to pick a profile.", bundle: .tabbi)
+                case .collectionUnavailable: String(localized: "Not right now. Anki has no cards open: it may be syncing or on its profile list.", bundle: .tabbi)
                 case .timeout: String(localized: "No. Anki is busy. A window inside Anki may be open.", bundle: .tabbi)
+                case .anki: String(localized: "No. Anki said \u{201C}\(error.message ?? "")\u{201D}.", bundle: .tabbi)
+                case .invalidResponse, .transport: String(localized: "No. Tabbi couldn't read the cards (\(error.message ?? "")).", bundle: .tabbi)
                 default: String(localized: "No. Anki didn't answer this time.", bundle: .tabbi)
                 }
             }
@@ -171,7 +178,7 @@ extension AnkiConnectionState {
             ])
         }
         return ConnectionDiagnosis(kind: .anki, status: connectionStatus, checks: checks,
-                                   technical: technicalLabel)
+                                   technical: technicalLabel, clearsBySelf: clearsBySelf)
     }
 
     /// `anki.<state>` plus the error's case for the states that carry one,
@@ -182,6 +189,14 @@ extension AnkiConnectionState {
         case .needsPermission(let error): return "anki.needsPermission.\(caseName(error))"
         case .problem(let error): return "anki.problem.\(caseName(error))"
         default: return "anki.\(caseName(self))"
+        }
+    }
+
+    /// Anki starting or a problem: both usually end on their own.
+    private var clearsBySelf: Bool {
+        switch self {
+        case .starting, .problem: return true
+        default: return false
         }
     }
 
