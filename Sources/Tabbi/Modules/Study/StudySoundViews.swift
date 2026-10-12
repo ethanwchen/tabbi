@@ -336,7 +336,7 @@ private struct StudyMixTile: View {
             Button(action: toggle) {
                 HStack(spacing: 0) {
                     // A name too long for the tile in the user's language
-                    // ("Розовый шум") drops the icon before it is cut.
+                    // drops the icon, then shrinks a little, before it is cut.
                     ViewThatFits(in: .horizontal) {
                         if showsIcon {
                             HStack(spacing: Theme.Spacing.xs) {
@@ -345,7 +345,7 @@ private struct StudyMixTile: View {
                             }
                         }
                         Text(sound.displayName).fixedSize()
-                        Text(sound.displayName).lineLimit(1)
+                        Text(sound.displayName).lineLimit(1).minimumScaleFactor(0.8)
                     }
                     Spacer(minLength: 0)
                 }
