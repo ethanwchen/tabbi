@@ -120,7 +120,7 @@
 	<key>%@ learned a song from a bird</key>
 	<string>%@ учит песенку у птички</string>
 	<key>%@ left</key>
-	<string>Осталось: %@</string>
+	<string>ещё %@</string>
 	<key>%@ level</key>
 	<string>Уровень: %@</string>
 	<key>%@ level %@</key>
@@ -394,7 +394,7 @@
 	<key>Add Friend</key>
 	<string>Добавить друга</string>
 	<key>Add Google Calendar</key>
-	<string>Добавить Google Календарь</string>
+	<string>Добавить Google</string>
 	<key>Add a Distracting App</key>
 	<string>Добавить отвлекающее приложение</string>
 	<key>Add a few things you want to get done today.</key>
@@ -1597,12 +1597,18 @@
 	<string>Они в Аккаунте Apple. Удалить: «Основные» &gt; «Удалить учетную запись».</string>
 	<key>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</key>
 	<string>Команда установит Claude и откроет страницу входа в браузере. Войди там, и Tabbi заметит это автоматически.</string>
+	<key>It works.</key>
+	<string>Работает.</string>
+	<key>It works. Do Not Disturb turned on, then off again.</key>
+	<string>Работает. «Не беспокоить» включился и выключился.</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
 	<string>Это бесплатное приложение с карточками. Установи его и возвращайся.</string>
 	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
 	<string>Это ИИ-помощник: он планирует день и отвечает на вопросы. Все остальное работает и без него.</string>
 	<key>It's for people %lld and older.</key>
 	<string>Только для тех, кому %lld и больше.</string>
+	<key>It's on. Turning it off again…</key>
+	<string>Включено. Выключаем обратно…</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>Предметы других событий года, которые даются за фокус, пока они идут</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -2224,7 +2230,7 @@
 	<key>Party can't connect</key>
 	<string>Party не подключается</string>
 	<key>Party code</key>
-	<string>Код Party</string>
+	<string>Код</string>
 	<key>Party code %@. Study together with everyone in it.</key>
 	<string>Код группы %@. Учись вместе со всеми участниками.</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
@@ -2989,6 +2995,8 @@
 	<string>Система</string>
 	<key>Tabbi can't control %@</key>
 	<string>Tabbi не может управлять: %@</string>
+	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
+	<string>Tabbi не находит «%@». Проверь название в Быстрых командах.</string>
 	<key>Tabbi can't read your calendar</key>
 	<string>Tabbi не видит календарь</string>
 	<key>Tabbi checks by itself and turns green when it works.</key>
@@ -3161,6 +3169,8 @@
 	<string>Тридцать дней назад это было трудно. Заметь, что теперь уже нет.</string>
 	<key>This Mac blocks calendar access</key>
 	<string>Mac блокирует доступ к календарю</string>
+	<key>This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.</key>
+	<string>Этот Mac не может запускать команды для Tabbi. Обнови macOS.</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>Этот аккаунт больше не может пользоваться Party. Если считаешь, что это ошибка, напиши на %@.</string>
 	<key>This chat is open</key>
@@ -3301,6 +3311,8 @@
 	<string>Выключить перемешивание</string>
 	<key>Turn shuffle on</key>
 	<string>Включить перемешивание</string>
+	<key>Turning Do Not Disturb on…</key>
+	<string>Включаем «Не беспокоить»…</string>
 	<key>Type a name first</key>
 	<string>Сначала введи имя</string>
 	<key>Type a shortcut name first</key>
@@ -3721,5 +3733,9 @@
 	<string>твой набор</string>
 	<key>your playlist</key>
 	<string>твой плейлист</string>
+	<key>“%@” didn't finish. Open it in Shortcuts and run it once to see why.</key>
+	<string>«%@» не завершилась. Открой ее в Быстрых командах и запусти, чтобы понять почему.</string>
+	<key>“%@” took too long. Open it in Shortcuts and run it once yourself.</key>
+	<string>«%@» выполнялась слишком долго. Открой ее в Быстрых командах и запусти сам.</string>
 </dict>
 </plist>

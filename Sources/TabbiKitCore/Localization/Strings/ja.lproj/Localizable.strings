@@ -1597,12 +1597,18 @@
 	<string>Appleアカウントに紐づいています。「一般」の「アカウントを削除」で削除されます。</string>
 	<key>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</key>
 	<string>Claudeがインストールされ、ブラウザでサインインページが開きます。そこでサインインすると、Tabbiが自動で気づきます。</string>
+	<key>It works.</key>
+	<string>成功です。</string>
+	<key>It works. Do Not Disturb turned on, then off again.</key>
+	<string>成功です。おやすみモードがオンになり、オフに戻りました。</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
 	<string>無料の単語カードアプリです。入手したら、ここに戻ってきてください。</string>
 	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
 	<string>1日の計画や質問への回答を手伝うAIです。それ以外の機能はClaudeなしで使えます。</string>
 	<key>It's for people %lld and older.</key>
 	<string>%lld歳以上の方が対象です。</string>
+	<key>It's on. Turning it off again…</key>
+	<string>オンになりました。オフに戻しています…</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>今年のほかのイベントのアイテム。各イベント期間中に集中すると獲得できます</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -2989,6 +2995,8 @@
 	<string>システム</string>
 	<key>Tabbi can't control %@</key>
 	<string>Tabbiは%@を操作できません</string>
+	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
+	<string>「%@」が見つかりません。ショートカットで名前を確認してください。</string>
 	<key>Tabbi can't read your calendar</key>
 	<string>Tabbiはカレンダーを読めません</string>
 	<key>Tabbi checks by itself and turns green when it works.</key>
@@ -3161,6 +3169,8 @@
 	<string>30日前は大変だった。今はもうそうじゃないことに気づいて。</string>
 	<key>This Mac blocks calendar access</key>
 	<string>このMacはカレンダーへのアクセスをブロックしています</string>
+	<key>This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.</key>
+	<string>このMacではTabbiのショートカットを実行できません。macOSを最新にしてください。</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>このアカウントはパーティを利用できなくなりました。誤りだと思う場合は%@までご連絡ください。</string>
 	<key>This chat is open</key>
@@ -3301,6 +3311,8 @@
 	<string>シャッフルをオフ</string>
 	<key>Turn shuffle on</key>
 	<string>シャッフルをオン</string>
+	<key>Turning Do Not Disturb on…</key>
+	<string>おやすみモードをオンにしています…</string>
 	<key>Type a name first</key>
 	<string>先に名前を入力してください</string>
 	<key>Type a shortcut name first</key>
@@ -3721,5 +3733,9 @@
 	<string>キット</string>
 	<key>your playlist</key>
 	<string>プレイリスト</string>
+	<key>“%@” didn't finish. Open it in Shortcuts and run it once to see why.</key>
+	<string>「%@」が完了しませんでした。ショートカットで開いて実行し、理由を確認してください。</string>
+	<key>“%@” took too long. Open it in Shortcuts and run it once yourself.</key>
+	<string>「%@」に時間がかかりすぎました。ショートカットで開いて一度実行してください。</string>
 </dict>
 </plist>

@@ -47,6 +47,8 @@ private struct PartyRoom: View {
                 headerLabels(title: true, count: String(localized: "\(party.members.count) of \(party.maxMembers)", bundle: .tabbi))
                 headerLabels(title: false, count: String(localized: "\(party.members.count) of \(party.maxMembers)", bundle: .tabbi))
                 headerLabels(title: false, count: "\(party.members.count)/\(party.maxMembers)")
+                // The pets below show who's in, so the count is the last to go.
+                headerLabels(title: false, count: nil)
             }
             Spacer(minLength: Theme.Spacing.s)
             PartyTextButton(title: String(localized: "Leave", bundle: .tabbi), isBusy: store.pending == .leaveParty,
@@ -58,7 +60,7 @@ private struct PartyRoom: View {
         }
     }
 
-    private func headerLabels(title: Bool, count: String) -> some View {
+    private func headerLabels(title: Bool, count: String?) -> some View {
         HStack(spacing: Theme.Spacing.s) {
             if title {
                 Text("Party", bundle: .tabbi)
@@ -70,11 +72,13 @@ private struct PartyRoom: View {
                 .fixedSize()
             PartyShareInvite(invite: .joinParty(code: party.code),
                              help: String(localized: "Share an invite link. Friends who open it can join this party in one click.", bundle: .tabbi))
-            Text(count)
-                .font(Theme.Typography.caption.monospacedDigit())
-                .foregroundStyle(Theme.Palette.tertiaryText)
-                .fixedSize()
-                .help(String(localized: "Members in this party", bundle: .tabbi))
+            if let count {
+                Text(count)
+                    .font(Theme.Typography.caption.monospacedDigit())
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+                    .fixedSize()
+                    .help(String(localized: "Members in this party", bundle: .tabbi))
+            }
         }
     }
 
@@ -324,6 +328,25 @@ private struct PartyLobby: View {
     @ObservedObject var store: PartyStore
     var focus: FocusState<PartyField?>.Binding
 
+    /// Room for the field's icon, placeholder and Paste.
+    private static let codeFieldMinWidth: CGFloat = 120
+
+    private func startButton(title: String?) -> some View {
+        PartyPillButton(title: title, symbol: "plus", isProminent: true,
+                        isBusy: store.pending == .createParty,
+                        help: String(localized: "Create a party and get a code to share", bundle: .tabbi)) {
+            store.createParty()
+        }
+    }
+
+    private var codeField: some View {
+        PartyCodeField(placeholder: String(localized: "Party code", bundle: .tabbi), symbol: "number",
+                       length: PartyCode.partyCodeLength, field: .partyCode, focus: focus,
+                       help: String(localized: "Have a code? Type the \(PartyCode.partyCodeLength)-character party code and press Return to join", bundle: .tabbi)) {
+            store.joinParty(code: $0)
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.l) {
             HStack(spacing: Theme.Spacing.m) {
@@ -340,16 +363,16 @@ private struct PartyLobby: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            HStack(spacing: Theme.Spacing.s) {
-                PartyPillButton(title: String(localized: "Start a party", bundle: .tabbi), symbol: "plus", isProminent: true,
-                                isBusy: store.pending == .createParty,
-                                help: String(localized: "Create a party and get a code to share", bundle: .tabbi)) {
-                    store.createParty()
+            // On a narrow panel Start a party shrinks to its plus (the
+            // tooltip names it), so the code field keeps room for its words.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: Theme.Spacing.s) {
+                    startButton(title: String(localized: "Start a party", bundle: .tabbi))
+                    codeField.frame(minWidth: Self.codeFieldMinWidth)
                 }
-                PartyCodeField(placeholder: String(localized: "Party code", bundle: .tabbi), symbol: "number",
-                               length: PartyCode.partyCodeLength, field: .partyCode, focus: focus,
-                               help: String(localized: "Have a code? Type the \(PartyCode.partyCodeLength)-character party code and press Return to join", bundle: .tabbi)) {
-                    store.joinParty(code: $0)
+                HStack(spacing: Theme.Spacing.s) {
+                    startButton(title: nil)
+                    codeField
                 }
             }
         }

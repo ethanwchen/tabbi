@@ -111,30 +111,20 @@ struct ConnectionWalkthroughView: View {
 
             progress
 
-            HStack(spacing: 12) {
-                if let learnMore = walkthrough.learnMore, !isFinished {
-                    Link(String(localized: "More help", bundle: .tabbi), destination: learnMore)
-                        .help(String(localized: "Open the official setup page", bundle: .tabbi))
+            // More help moves under the buttons when a long language needs
+            // the whole row for them, so no label is cut.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 12) {
+                    moreHelp
+                    Spacer(minLength: 8)
+                    buttons
                 }
-                Spacer(minLength: 8)
-                if isFinished {
-                    if let runTest {
-                        Button(String(localized: "Test it", bundle: .tabbi), action: runTest)
-                            .disabled(test?.isRunning == true)
-                            .help(String(localized: "Turn \(kind.title) on for a moment, then off again", bundle: .tabbi))
-                    }
-                    Button(String(localized: "Done", bundle: .tabbi), action: close)
-                        .buttonStyle(.borderedProminent)
-                        .keyboardShortcut(.defaultAction)
-                        .help(String(localized: "Close this guide", bundle: .tabbi))
-                } else {
-                    Button(String(localized: "Not now", bundle: .tabbi), action: close)
-                        .keyboardShortcut(.cancelAction)
-                        .help(String(localized: "Close this guide. You can come back any time.", bundle: .tabbi))
-                    Button(walkthrough.start.title) { start(walkthrough.start) }
-                        .buttonStyle(.borderedProminent)
-                        .keyboardShortcut(.defaultAction)
-                        .help(walkthrough.start.help)
+                .fixedSize(horizontal: true, vertical: false)
+                VStack(alignment: .trailing, spacing: 12) {
+                    HStack(spacing: 12) { buttons }
+                        .fixedSize(horizontal: true, vertical: false)
+                    moreHelp
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
@@ -142,6 +132,36 @@ struct ConnectionWalkthroughView: View {
         .frame(width: 460)
         .fixedSize(horizontal: false, vertical: true)
         .animation(.spring(duration: 0.3), value: isFinished)
+    }
+
+    @ViewBuilder private var moreHelp: some View {
+        if let learnMore = walkthrough.learnMore, !isFinished {
+            Link(String(localized: "More help", bundle: .tabbi), destination: learnMore)
+                .fixedSize()
+                .help(String(localized: "Open the official setup page", bundle: .tabbi))
+        }
+    }
+
+    @ViewBuilder private var buttons: some View {
+        if isFinished {
+            if let runTest {
+                Button(String(localized: "Test it", bundle: .tabbi), action: runTest)
+                    .disabled(test?.isRunning == true)
+                    .help(String(localized: "Turn \(kind.title) on for a moment, then off again", bundle: .tabbi))
+            }
+            Button(String(localized: "Done", bundle: .tabbi), action: close)
+                .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.defaultAction)
+                .help(String(localized: "Close this guide", bundle: .tabbi))
+        } else {
+            Button(String(localized: "Not now", bundle: .tabbi), action: close)
+                .keyboardShortcut(.cancelAction)
+                .help(String(localized: "Close this guide. You can come back any time.", bundle: .tabbi))
+            Button(walkthrough.start.title) { start(walkthrough.start) }
+                .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.defaultAction)
+                .help(walkthrough.start.help)
+        }
     }
 
     /// Whether the row works yet, on its own line above the buttons.
@@ -203,10 +223,12 @@ struct CopyableValue: View {
 
     var body: some View {
         HStack(spacing: 8) {
+            // Wraps rather than cutting the middle out, so the whole
+            // command can be read before it is pasted.
             Text(value)
                 .font(.system(.callout, design: .monospaced))
-                .lineLimit(1)
-                .truncationMode(.middle)
+                .fixedSize(horizontal: false, vertical: true)
+                .textSelection(.enabled)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
                 .background(.quaternary.opacity(0.6), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
@@ -298,40 +320,12 @@ struct ConnectionTroubleshootView: View {
 
             Divider()
 
-            HStack(spacing: 12) {
-                Button {
-                    copyDetails()
-                    copied = true
-                    Task {
-                        try? await Task.sleep(for: .seconds(1.5))
-                        copied = false
-                    }
-                } label: {
-                    Label(copied ? String(localized: "Copied", bundle: .tabbi) : String(localized: "Copy details", bundle: .tabbi),
-                      systemImage: copied ? "checkmark" : "doc.on.doc")
-                }
-                .disabled(diagnosis == nil)
-                .help(String(localized: "Copy what Tabbi found, to paste into a message if you ask someone for help", bundle: .tabbi))
-
-                Spacer(minLength: 8)
-
-                if let fix = diagnosis?.status.action, !isChecking {
-                    Button(String(localized: "Not now", bundle: .tabbi), action: close)
-                        .keyboardShortcut(.cancelAction)
-                        .help(String(localized: "Close the checkup", bundle: .tabbi))
-                    Button(fix.title) { perform(fix) }
-                        .buttonStyle(.borderedProminent)
-                        .keyboardShortcut(.defaultAction)
-                        .help(fix.help(for: kind))
-                } else {
-                    Button(String(localized: "Check again", bundle: .tabbi), action: checkAgain)
-                        .disabled(isChecking)
-                        .help(String(localized: "Run the checks for \(kind.title) again", bundle: .tabbi))
-                    Button(String(localized: "Done", bundle: .tabbi), action: close)
-                        .buttonStyle(.borderedProminent)
-                        .keyboardShortcut(.defaultAction)
-                        .help(String(localized: "Close the checkup", bundle: .tabbi))
-                }
+            // In a long language the three buttons outgrow the sheet; Copy
+            // details then shows as its icon (with its tooltip), so no
+            // label is cut.
+            ViewThatFits(in: .horizontal) {
+                buttonRow(copyIconOnly: false)
+                buttonRow(copyIconOnly: true)
             }
         }
         .padding(24)
@@ -339,6 +333,60 @@ struct ConnectionTroubleshootView: View {
         .fixedSize(horizontal: false, vertical: true)
         .animation(.spring(duration: 0.3), value: diagnosis)
         .animation(.spring(duration: 0.3), value: isChecking)
+    }
+
+    private func buttonRow(copyIconOnly: Bool) -> some View {
+        HStack(spacing: 12) {
+            Button {
+                copyDetails()
+                copied = true
+                Task {
+                    try? await Task.sleep(for: .seconds(1.5))
+                    copied = false
+                }
+            } label: {
+                Label(copied ? String(localized: "Copied", bundle: .tabbi) : String(localized: "Copy details", bundle: .tabbi),
+                      systemImage: copied ? "checkmark" : "doc.on.doc")
+                    .labelStyle(CopyLabelStyle(iconOnly: copyIconOnly))
+            }
+            .disabled(diagnosis == nil)
+            .help(String(localized: "Copy what Tabbi found, to paste into a message if you ask someone for help", bundle: .tabbi))
+
+            Spacer(minLength: 8)
+
+            if let fix = diagnosis?.status.action, !isChecking {
+                Button(String(localized: "Not now", bundle: .tabbi), action: close)
+                    .keyboardShortcut(.cancelAction)
+                    .help(String(localized: "Close the checkup", bundle: .tabbi))
+                Button(fix.title) { perform(fix) }
+                    .buttonStyle(.borderedProminent)
+                    .keyboardShortcut(.defaultAction)
+                    .help(fix.help(for: kind))
+            } else {
+                Button(String(localized: "Check again", bundle: .tabbi), action: checkAgain)
+                    .disabled(isChecking)
+                    .help(String(localized: "Run the checks for \(kind.title) again", bundle: .tabbi))
+                Button(String(localized: "Done", bundle: .tabbi), action: close)
+                    .buttonStyle(.borderedProminent)
+                    .keyboardShortcut(.defaultAction)
+                    .help(String(localized: "Close the checkup", bundle: .tabbi))
+            }
+        }
+        .lineLimit(1)
+        .fixedSize(horizontal: true, vertical: false)
+    }
+}
+
+/// Title and icon, or the icon alone where the row is too narrow for both.
+private struct CopyLabelStyle: LabelStyle {
+    let iconOnly: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        if iconOnly {
+            configuration.icon
+        } else {
+            Label(configuration)
+        }
     }
 }
 

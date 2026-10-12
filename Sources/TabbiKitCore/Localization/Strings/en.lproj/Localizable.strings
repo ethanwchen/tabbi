@@ -1597,12 +1597,18 @@
 	<string>It belongs to your Apple Account. Delete Account in General removes it.</string>
 	<key>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</key>
 	<string>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</string>
+	<key>It works.</key>
+	<string>It works.</string>
+	<key>It works. Do Not Disturb turned on, then off again.</key>
+	<string>It works. Do Not Disturb turned on, then off again.</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
 	<string>It's a free flashcard app. Get it, then come back here.</string>
 	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
 	<string>It's an AI helper that can plan your day and answer questions. Everything else works without it.</string>
 	<key>It's for people %lld and older.</key>
 	<string>It's for people %lld and older.</string>
+	<key>It's on. Turning it off again…</key>
+	<string>It's on. Turning it off again…</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>Items from the year's other events, earned by focusing while each one runs</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -2989,6 +2995,8 @@
 	<string>System</string>
 	<key>Tabbi can't control %@</key>
 	<string>Tabbi can't control %@</string>
+	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
+	<string>Tabbi can't find “%@”. Check its name in Shortcuts.</string>
 	<key>Tabbi can't read your calendar</key>
 	<string>Tabbi can't read your calendar</string>
 	<key>Tabbi checks by itself and turns green when it works.</key>
@@ -3161,6 +3169,8 @@
 	<string>Thirty days ago this was hard. Notice that it isn't anymore.</string>
 	<key>This Mac blocks calendar access</key>
 	<string>This Mac blocks calendar access</string>
+	<key>This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.</key>
+	<string>This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>This account can no longer use Party. If you think that's a mistake, write to %@.</string>
 	<key>This chat is open</key>
@@ -3301,6 +3311,8 @@
 	<string>Turn shuffle off</string>
 	<key>Turn shuffle on</key>
 	<string>Turn shuffle on</string>
+	<key>Turning Do Not Disturb on…</key>
+	<string>Turning Do Not Disturb on…</string>
 	<key>Type a name first</key>
 	<string>Type a name first</string>
 	<key>Type a shortcut name first</key>
@@ -3721,5 +3733,9 @@
 	<string>your kit</string>
 	<key>your playlist</key>
 	<string>your playlist</string>
+	<key>“%@” didn't finish. Open it in Shortcuts and run it once to see why.</key>
+	<string>“%@” didn't finish. Open it in Shortcuts and run it once to see why.</string>
+	<key>“%@” took too long. Open it in Shortcuts and run it once yourself.</key>
+	<string>“%@” took too long. Open it in Shortcuts and run it once yourself.</string>
 </dict>
 </plist>

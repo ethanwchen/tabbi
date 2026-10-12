@@ -199,12 +199,15 @@ struct ConnectionRow: View {
             Spacer(minLength: 8)
 
             if let action = status.action {
+                // The text column wraps to make room; the button never cuts its label.
                 Button(action.title) { perform(action) }
                     .buttonStyle(.borderedProminent)
+                    .fixedSize()
                     .help(action.help(for: kind))
             } else if let suggestion = status.suggestion {
                 Button(suggestion.title) { perform(suggestion) }
                     .disabled(test?.isRunning == true)
+                    .fixedSize()
                     .help(suggestion.help(for: kind))
             }
         }
@@ -258,6 +261,7 @@ struct ConnectionLightBadge: View {
         .padding(.horizontal, 6)
         .padding(.vertical, 2)
         .background(light.tint.opacity(0.14), in: Capsule())
+        .fixedSize()
         .help(light.help)
     }
 }

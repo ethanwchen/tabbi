@@ -394,7 +394,7 @@
 	<key>Add Friend</key>
 	<string>Freund hinzufügen</string>
 	<key>Add Google Calendar</key>
-	<string>Google Kalender hinzufügen</string>
+	<string>Google hinzufügen</string>
 	<key>Add a Distracting App</key>
 	<string>Ablenkende App hinzufügen</string>
 	<key>Add a few things you want to get done today.</key>
@@ -1597,12 +1597,18 @@
 	<string>Sie gehören zu deinem Apple Account. Konto löschen in Allgemein entfernt sie.</string>
 	<key>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</key>
 	<string>Es installiert Claude und öffnet dann eine Anmeldeseite in deinem Browser. Melde dich dort an, Tabbi merkt das von selbst.</string>
+	<key>It works.</key>
+	<string>Klappt.</string>
+	<key>It works. Do Not Disturb turned on, then off again.</key>
+	<string>Klappt. Nicht stören ging an und wieder aus.</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
 	<string>Eine kostenlose Karteikarten-App. Hol sie dir und komm dann zurück.</string>
 	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
 	<string>Ein KI-Helfer, der deinen Tag plant und Fragen beantwortet. Alles andere geht auch ohne.</string>
 	<key>It's for people %lld and older.</key>
 	<string>Party ist ab %lld Jahren.</string>
+	<key>It's on. Turning it off again…</key>
+	<string>Ist an. Wird wieder ausgeschaltet…</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>Items aus den anderen Events des Jahres, verdient durch Fokus, während sie laufen</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -2224,7 +2230,7 @@
 	<key>Party can't connect</key>
 	<string>Party kann sich nicht verbinden</string>
 	<key>Party code</key>
-	<string>Party-Code</string>
+	<string>Code</string>
 	<key>Party code %@. Study together with everyone in it.</key>
 	<string>Party-Code %@. Lerne zusammen mit allen darin.</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
@@ -2989,6 +2995,8 @@
 	<string>System</string>
 	<key>Tabbi can't control %@</key>
 	<string>Tabbi kann %@ nicht steuern</string>
+	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
+	<string>Tabbi findet „%@“ nicht. Prüfe den Namen in Kurzbefehle.</string>
 	<key>Tabbi can't read your calendar</key>
 	<string>Tabbi kann deinen Kalender nicht lesen</string>
 	<key>Tabbi checks by itself and turns green when it works.</key>
@@ -3161,6 +3169,8 @@
 	<string>Vor dreißig Tagen war das schwer. Merkst du, dass es das nicht mehr ist?</string>
 	<key>This Mac blocks calendar access</key>
 	<string>Dieser Mac sperrt den Kalender</string>
+	<key>This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.</key>
+	<string>Dieser Mac kann für Tabbi keine Kurzbefehle ausführen. Halte macOS aktuell.</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>Dieses Konto kann Party nicht mehr nutzen. Hältst du das für einen Fehler, schreib an %@.</string>
 	<key>This chat is open</key>
@@ -3301,6 +3311,8 @@
 	<string>Zufallswiedergabe aus</string>
 	<key>Turn shuffle on</key>
 	<string>Zufallswiedergabe an</string>
+	<key>Turning Do Not Disturb on…</key>
+	<string>Nicht stören wird eingeschaltet…</string>
 	<key>Type a name first</key>
 	<string>Gib zuerst einen Namen ein</string>
 	<key>Type a shortcut name first</key>
@@ -3721,5 +3733,9 @@
 	<string>dein Kit</string>
 	<key>your playlist</key>
 	<string>deine Playlist</string>
+	<key>“%@” didn't finish. Open it in Shortcuts and run it once to see why.</key>
+	<string>„%@“ wurde nicht fertig. Öffne ihn in Kurzbefehle und führe ihn aus, um den Grund zu sehen.</string>
+	<key>“%@” took too long. Open it in Shortcuts and run it once yourself.</key>
+	<string>„%@“ hat zu lange gedauert. Öffne ihn in Kurzbefehle und führe ihn einmal selbst aus.</string>
 </dict>
 </plist>

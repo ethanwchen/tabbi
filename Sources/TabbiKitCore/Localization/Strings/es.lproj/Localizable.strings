@@ -1597,12 +1597,18 @@
 	<string>Pertenecen a tu cuenta de Apple. Eliminar cuenta en General los borra.</string>
 	<key>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</key>
 	<string>Instala Claude y luego abre una página de inicio de sesión en tu navegador. Inicia sesión ahí y Tabbi lo notará solo.</string>
+	<key>It works.</key>
+	<string>Funciona.</string>
+	<key>It works. Do Not Disturb turned on, then off again.</key>
+	<string>Funciona. No molestar se activó y se desactivó.</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
 	<string>Es una app gratis de tarjetas. Instálala y vuelve aquí.</string>
 	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
 	<string>Es un asistente de IA que puede planear tu día y responder preguntas. Todo lo demás funciona sin él.</string>
 	<key>It's for people %lld and older.</key>
 	<string>Es para personas de %lld años o más.</string>
+	<key>It's on. Turning it off again…</key>
+	<string>Activado. Desactivándolo de nuevo…</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>Artículos de los demás eventos del año, que se ganan concentrándote mientras duran</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -2224,13 +2230,13 @@
 	<key>Party can't connect</key>
 	<string>Grupo no puede conectar</string>
 	<key>Party code</key>
-	<string>Código de grupo</string>
+	<string>Código</string>
 	<key>Party code %@. Study together with everyone in it.</key>
 	<string>Código de grupo %@. Estudia junto a todos sus miembros.</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
 	<string>Código de grupo %@. Estudia junto a todos sus miembros. Saldrás de tu grupo actual.</string>
 	<key>Party invite</key>
-	<string>Invitación al grupo</string>
+	<string>Invitación</string>
 	<key>Party is for people %lld and older.</key>
 	<string>Grupo es para mayores de %lld años.</string>
 	<key>Party is for people %lld and older. It opens here in %@.</key>
@@ -2989,6 +2995,8 @@
 	<string>Sistema</string>
 	<key>Tabbi can't control %@</key>
 	<string>Tabbi no puede controlar %@</string>
+	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
+	<string>Tabbi no encuentra “%@”. Revisa su nombre en Atajos.</string>
 	<key>Tabbi can't read your calendar</key>
 	<string>Tabbi no puede leer tu calendario</string>
 	<key>Tabbi checks by itself and turns green when it works.</key>
@@ -3161,6 +3169,8 @@
 	<string>Hace treinta días esto costaba. Fíjate en que ya no.</string>
 	<key>This Mac blocks calendar access</key>
 	<string>Este Mac bloquea el calendario</string>
+	<key>This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.</key>
+	<string>Este Mac no puede ejecutar atajos para Tabbi. Comprueba que macOS esté al día.</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>Esta cuenta ya no puede usar Grupo. Si crees que es un error, escribe a %@.</string>
 	<key>This chat is open</key>
@@ -3301,6 +3311,8 @@
 	<string>Desactivar aleatorio</string>
 	<key>Turn shuffle on</key>
 	<string>Activar aleatorio</string>
+	<key>Turning Do Not Disturb on…</key>
+	<string>Activando No molestar…</string>
 	<key>Type a name first</key>
 	<string>Primero escribe un nombre</string>
 	<key>Type a shortcut name first</key>
@@ -3721,5 +3733,9 @@
 	<string>tu kit</string>
 	<key>your playlist</key>
 	<string>tu playlist</string>
+	<key>“%@” didn't finish. Open it in Shortcuts and run it once to see why.</key>
+	<string>“%@” no terminó. Ábrelo en Atajos y ejecútalo para ver por qué.</string>
+	<key>“%@” took too long. Open it in Shortcuts and run it once yourself.</key>
+	<string>“%@” tardó demasiado. Ábrelo en Atajos y ejecútalo una vez.</string>
 </dict>
 </plist>

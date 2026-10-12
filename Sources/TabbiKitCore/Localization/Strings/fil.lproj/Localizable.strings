@@ -394,7 +394,7 @@
 	<key>Add Friend</key>
 	<string>Magdagdag ng Kaibigan</string>
 	<key>Add Google Calendar</key>
-	<string>Idagdag ang Google Calendar</string>
+	<string>Idagdag ang Google</string>
 	<key>Add a Distracting App</key>
 	<string>Magdagdag ng Nakaka-distract na App</string>
 	<key>Add a few things you want to get done today.</key>
@@ -1597,12 +1597,18 @@
 	<string>Nakatali ito sa Apple Account mo. Buburahin ito ng Burahin ang Account sa General.</string>
 	<key>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</key>
 	<string>Ini-install nito ang Claude, saka magbubukas ng sign-in page sa browser mo. Mag-sign in doon at kusang mapapansin ito ng Tabbi.</string>
+	<key>It works.</key>
+	<string>Gumagana.</string>
+	<key>It works. Do Not Disturb turned on, then off again.</key>
+	<string>Gumagana. Nag-on at nag-off ang Do Not Disturb.</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
 	<string>Libreng flashcard app ito. I-download ito, tapos bumalik dito.</string>
 	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
 	<string>AI helper ito na kayang magplano ng araw mo at sumagot sa mga tanong. Gumagana ang lahat ng iba kahit wala ito.</string>
 	<key>It's for people %lld and older.</key>
 	<string>Para ito sa edad %lld pataas.</string>
+	<key>It's on. Turning it off again…</key>
+	<string>Naka-on na. Ino-off ulit…</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>Mga item mula sa ibang event ng taon, nakukuha sa pag-focus habang tumatakbo ang bawat isa</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -2224,7 +2230,7 @@
 	<key>Party can't connect</key>
 	<string>Hindi makakonekta ang Party</string>
 	<key>Party code</key>
-	<string>Party code</string>
+	<string>Code</string>
 	<key>Party code %@. Study together with everyone in it.</key>
 	<string>Party code %@. Mag-aral kasama ang lahat ng nasa loob nito.</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
@@ -2989,6 +2995,8 @@
 	<string>System</string>
 	<key>Tabbi can't control %@</key>
 	<string>Hindi makontrol ng Tabbi ang %@</string>
+	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
+	<string>Hindi mahanap ng Tabbi ang “%@”. Tingnan ang pangalan nito sa Shortcuts.</string>
 	<key>Tabbi can't read your calendar</key>
 	<string>Hindi mabasa ng Tabbi ang calendar mo</string>
 	<key>Tabbi checks by itself and turns green when it works.</key>
@@ -3161,6 +3169,8 @@
 	<string>Tatlumpung araw na ang nakalipas, mahirap ito. Pansinin mo, hindi na ngayon.</string>
 	<key>This Mac blocks calendar access</key>
 	<string>Bina-block ng Mac na ito ang calendar</string>
+	<key>This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.</key>
+	<string>Hindi makapagpatakbo ng shortcuts ang Mac na ito para sa Tabbi. I-update ang macOS.</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>Hindi na puwedeng gamitin ng account na ito ang Party. Kung sa tingin mo ay mali ito, sumulat sa %@.</string>
 	<key>This chat is open</key>
@@ -3301,6 +3311,8 @@
 	<string>I-off ang shuffle</string>
 	<key>Turn shuffle on</key>
 	<string>I-on ang shuffle</string>
+	<key>Turning Do Not Disturb on…</key>
+	<string>Ino-on ang Do Not Disturb…</string>
 	<key>Type a name first</key>
 	<string>Mag-type muna ng pangalan</string>
 	<key>Type a shortcut name first</key>
@@ -3721,5 +3733,9 @@
 	<string>ang kit mo</string>
 	<key>your playlist</key>
 	<string>ang playlist mo</string>
+	<key>“%@” didn't finish. Open it in Shortcuts and run it once to see why.</key>
+	<string>Hindi natapos ang “%@”. Buksan ito sa Shortcuts at patakbuhin para makita kung bakit.</string>
+	<key>“%@” took too long. Open it in Shortcuts and run it once yourself.</key>
+	<string>Masyadong natagalan ang “%@”. Buksan ito sa Shortcuts at patakbuhin nang isang beses.</string>
 </dict>
 </plist>

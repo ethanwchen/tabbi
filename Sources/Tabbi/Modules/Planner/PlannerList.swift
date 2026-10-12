@@ -242,6 +242,25 @@ private struct PlannerSharedRow: View {
         return item.isDone ? String(localized: "\(item.title) done for today. Open \(module)", bundle: .tabbi) : String(localized: "Checks itself when done. Open \(module)", bundle: .tabbi)
     }
 
+    private var title: some View {
+        Text(item.title)
+            .font(Theme.Typography.body)
+            .foregroundStyle(item.isDone ? Theme.Palette.secondaryText : Theme.Palette.primaryText)
+            .strikethrough(item.isDone, color: Theme.Palette.secondaryText)
+            .lineLimit(1)
+    }
+
+    @ViewBuilder private var detail: some View {
+        if let detail = item.detail {
+            Text(detail)
+                .font(Theme.Typography.caption.monospacedDigit())
+                .foregroundStyle(Theme.Palette.tertiaryText)
+                .lineLimit(1)
+                .fixedSize()
+                .contentTransition(.numericText())
+        }
+    }
+
     var body: some View {
         Button {
             if let action = item.action { runAction(action, from: item.source) }
@@ -249,20 +268,23 @@ private struct PlannerSharedRow: View {
         } label: {
             HStack(spacing: Theme.Spacing.s) {
                 PlannerSharedCheck(item: item)
-                Text(item.title)
-                    .font(Theme.Typography.body)
-                    .foregroundStyle(item.isDone ? Theme.Palette.secondaryText : Theme.Palette.primaryText)
-                    .strikethrough(item.isDone, color: Theme.Palette.secondaryText)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                if let detail = item.detail {
-                    Text(detail)
-                        .font(Theme.Typography.caption.monospacedDigit())
-                        .foregroundStyle(Theme.Palette.tertiaryText)
-                        .lineLimit(1)
-                        .contentTransition(.numericText())
+                // Rows keep one height (the list scrolls and reorders by
+                // it), so on a narrow panel the count goes before the
+                // title is cut (the module's tab shows it in full).
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: Theme.Spacing.s) {
+                        title.fixedSize()
+                        Spacer(minLength: 0)
+                        detail
+                    }
+                    HStack(spacing: 0) {
+                        title.fixedSize()
+                        Spacer(minLength: 0)
+                    }
+                    title.frame(maxWidth: .infinity, alignment: .leading)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .layoutPriority(1)
                 Image(systemName: "chevron.forward")
                     .font(.system(size: 9, weight: .bold))
                     .foregroundStyle(hovering ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)

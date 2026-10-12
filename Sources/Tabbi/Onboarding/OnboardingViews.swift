@@ -180,16 +180,20 @@ private struct OnboardingFooter: View {
                     store.update { $0.back() }
                 }
             }
+            // A hint too long for one line in the user's language wraps to
+            // a second rather than being cut.
             Text(hint)
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.tertiaryText)
-                .lineLimit(1)
+                .multilineTextAlignment(flow.canGoBack ? .center : .leading)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: flow.canGoBack ? .center : .leading)
             FooterButton(title: forwardTitle, symbol: "chevron.forward", isPrimary: forwardIsPrimary, help: forwardHelp) {
                 store.update { $0.next() }
             }
         }
-        .frame(height: 24)
+        .frame(minHeight: 24)
     }
 
     private var isLastStep: Bool { flow.stageIndex == flow.stages.count - 1 }
@@ -330,7 +334,8 @@ private struct NameStep: View {
                              : String(localized: "\(Edition.current.name) uses it to greet you.", bundle: .tabbi))
                             .font(Theme.Typography.caption)
                             .foregroundStyle(Theme.Palette.secondaryText)
-                            .lineLimit(1)
+                            .lineLimit(2)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                     field
                         .font(Theme.Typography.bodyEmphasis)
@@ -718,10 +723,12 @@ private struct ExtraTile: View {
             }
             Spacer(minLength: 0)
             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                // The tile has room above its words, so a long title wraps.
                 Text(extra.title)
                     .font(Theme.Typography.bodyEmphasis)
                     .foregroundStyle(Theme.Palette.primaryText)
-                    .lineLimit(1)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(extra.detail)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.secondaryText)

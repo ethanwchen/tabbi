@@ -334,14 +334,19 @@ private struct StudyMixTile: View {
         let isEnabled = isOn || canAdd
         VStack(spacing: Theme.Spacing.xs) {
             Button(action: toggle) {
-                HStack(spacing: Theme.Spacing.xs) {
-                    if showsIcon {
-                        Image(systemName: sound.symbolName)
-                            .font(.system(size: 10, weight: .semibold))
-                            .frame(width: 14)
+                HStack(spacing: 0) {
+                    // A name too long for the tile in the user's language
+                    // drops the icon, then shrinks a little, before it is cut.
+                    ViewThatFits(in: .horizontal) {
+                        if showsIcon {
+                            HStack(spacing: Theme.Spacing.xs) {
+                                icon
+                                Text(sound.displayName).fixedSize()
+                            }
+                        }
+                        Text(sound.displayName).fixedSize()
+                        Text(sound.displayName).lineLimit(1).minimumScaleFactor(0.8)
                     }
-                    Text(sound.displayName)
-                        .lineLimit(1)
                     Spacer(minLength: 0)
                 }
                 .font(Theme.Typography.caption)
@@ -372,6 +377,12 @@ private struct StudyMixTile: View {
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: isOn)
+    }
+
+    private var icon: some View {
+        Image(systemName: sound.symbolName)
+            .font(.system(size: 10, weight: .semibold))
+            .frame(width: 14)
     }
 
     private func help(isOn: Bool, isEnabled: Bool) -> String {
@@ -479,15 +490,16 @@ private struct StudyPlaylistIssueRow: View {
                     .font(.system(size: 9, weight: .semibold))
                     .foregroundStyle(Theme.Palette.warning)
                     .frame(width: 10)
+                // Wraps rather than cutting the fix it names.
                 Text(title)
                     .foregroundStyle(hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
             }
             .font(Theme.Typography.caption)
             .padding(.horizontal, Theme.Spacing.xs)
-            .frame(height: 16)
+            .frame(minHeight: 16)
             .background(
                 RoundedRectangle(cornerRadius: Theme.Spacing.xs, style: .continuous)
                     .fill(Theme.Palette.warning.opacity(hovering ? 0.22 : 0.12))

@@ -1597,12 +1597,18 @@
 	<string>它属于你的 Apple 账户。在“通用”中“删除账户”会将其移除。</string>
 	<key>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</key>
 	<string>它会安装 Claude，然后在浏览器中打开登录页面。在那里登录，Tabbi 会自动发现。</string>
+	<key>It works.</key>
+	<string>成功。</string>
+	<key>It works. Do Not Disturb turned on, then off again.</key>
+	<string>成功。勿扰模式已打开又关闭。</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
 	<string>这是一款免费的记忆卡 App。安装后再回到这里。</string>
 	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
 	<string>它是能帮你规划一天、回答问题的 AI 助手。没有它，其他功能也都能用。</string>
 	<key>It's for people %lld and older.</key>
 	<string>仅限 %lld 岁及以上用户。</string>
+	<key>It's on. Turning it off again…</key>
+	<string>已打开。正在关闭…</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>今年其他活动的物品,在各活动期间专注即可获得</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -2989,6 +2995,8 @@
 	<string>系统</string>
 	<key>Tabbi can't control %@</key>
 	<string>Tabbi 无法控制 %@</string>
+	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
+	<string>Tabbi 找不到“%@”。请在快捷指令中检查它的名称。</string>
 	<key>Tabbi can't read your calendar</key>
 	<string>Tabbi 无法读取日历</string>
 	<key>Tabbi checks by itself and turns green when it works.</key>
@@ -3161,6 +3169,8 @@
 	<string>三十天前，这还很难。留意一下，现在已经不难了。</string>
 	<key>This Mac blocks calendar access</key>
 	<string>这台 Mac 禁止访问日历</string>
+	<key>This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.</key>
+	<string>这台 Mac 无法为 Tabbi 运行快捷指令。请更新 macOS。</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>此账户已无法使用派对。如果你认为这是误判，请写信至 %@。</string>
 	<key>This chat is open</key>
@@ -3301,6 +3311,8 @@
 	<string>关闭随机播放</string>
 	<key>Turn shuffle on</key>
 	<string>开启随机播放</string>
+	<key>Turning Do Not Disturb on…</key>
+	<string>正在打开勿扰模式…</string>
 	<key>Type a name first</key>
 	<string>请先输入名字</string>
 	<key>Type a shortcut name first</key>
@@ -3721,5 +3733,9 @@
 	<string>你的套件</string>
 	<key>your playlist</key>
 	<string>你的播放列表</string>
+	<key>“%@” didn't finish. Open it in Shortcuts and run it once to see why.</key>
+	<string>“%@”没有完成。请在快捷指令中打开并运行，看看原因。</string>
+	<key>“%@” took too long. Open it in Shortcuts and run it once yourself.</key>
+	<string>“%@”耗时太久。请在快捷指令中打开并亲自运行一次。</string>
 </dict>
 </plist>

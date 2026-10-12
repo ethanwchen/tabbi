@@ -121,16 +121,16 @@ public enum DoNotDisturbTest: Equatable, Sendable {
     /// One sentence for the row or the walkthrough.
     public var message: String {
         switch self {
-        case .turningOn: "Turning Do Not Disturb on..."
-        case .turningOff: "It's on. Turning it off again..."
-        case .passed: "It works. Do Not Disturb turned on, then off again."
+        case .turningOn: String(localized: "Turning Do Not Disturb on…", bundle: .tabbi)
+        case .turningOff: String(localized: "It's on. Turning it off again…", bundle: .tabbi)
+        case .passed: String(localized: "It works. Do Not Disturb turned on, then off again.", bundle: .tabbi)
         case .failed(_, let name, let result):
             switch result {
-            case .succeeded: "It works."
-            case .notFound: "Tabbi can't find \u{201C}\(name)\u{201D}. Check its name in Shortcuts."
-            case .unavailable: "This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date."
-            case .timedOut: "\u{201C}\(name)\u{201D} took too long. Open it in Shortcuts and run it once yourself."
-            case .failed: "\u{201C}\(name)\u{201D} didn't finish. Open it in Shortcuts and run it once to see why."
+            case .succeeded: String(localized: "It works.", bundle: .tabbi)
+            case .notFound: String(localized: "Tabbi can't find \u{201C}\(name)\u{201D}. Check its name in Shortcuts.", bundle: .tabbi)
+            case .unavailable: String(localized: "This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.", bundle: .tabbi)
+            case .timedOut: String(localized: "\u{201C}\(name)\u{201D} took too long. Open it in Shortcuts and run it once yourself.", bundle: .tabbi)
+            case .failed: String(localized: "\u{201C}\(name)\u{201D} didn't finish. Open it in Shortcuts and run it once to see why.", bundle: .tabbi)
             }
         }
     }

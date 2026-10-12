@@ -49,6 +49,18 @@ public enum PartyRoster {
         }
     }
 
+    /// The status word alone ("Studying", "Break", "Online", "Offline"), for a
+    /// row too narrow for `compactStatusLine`'s count, so the count goes
+    /// before the word is cut.
+    public static func compactStatusWord(_ presence: PartyPresence?, online: Bool) -> String {
+        switch status(presence, online: online) {
+        case .studying: String(localized: "Studying", bundle: .tabbi)
+        case .onBreak: String(localized: "Break", bundle: .tabbi)
+        case .idle: String(localized: "Online", bundle: .tabbi)
+        case .offline: String(localized: "Offline", bundle: .tabbi)
+        }
+    }
+
     /// "18 min left", rounding up so a phase reads "1 min left" until it ends.
     public static func minutesLeft(_ seconds: TimeInterval) -> String {
         let minutes = Int((max(seconds, 0) / 60).rounded(.up))

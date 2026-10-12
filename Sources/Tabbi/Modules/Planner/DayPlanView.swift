@@ -210,11 +210,13 @@ private struct DayPlanBlockRow: View {
                 .foregroundStyle(Theme.Palette.secondaryText)
                 .lineLimit(1)
                 .frame(width: DayPlanFormat.rangeWidth, alignment: .leading)
+            // A title that doesn't fit beside the time and buttons wraps to
+            // more lines rather than being cut.
             Text(block.title)
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.primaryText)
-                .lineLimit(1)
-                .truncationMode(.tail)
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .help(block.title)
             if let rest {
@@ -229,7 +231,8 @@ private struct DayPlanBlockRow: View {
             }
         }
         .padding(.horizontal, Theme.Spacing.s)
-        .frame(height: PlannerList.rowHeight)
+        .padding(.vertical, Theme.Spacing.xxs)
+        .frame(minHeight: PlannerList.rowHeight)
         .background(
             RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
                 .fill(hovering ? Theme.Palette.surface : .clear)

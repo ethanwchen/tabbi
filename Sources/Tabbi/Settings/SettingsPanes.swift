@@ -119,8 +119,11 @@ struct GeneralSettingsPane: View {
             }
         }
         .formStyle(.grouped)
-        .scrollDisabled(!showsMore)
-        .frame(width: paneWidth, height: showsMore ? 846 : 726)
+        // Sized for the longer languages (ru, fr, fil wrap more lines); the
+        // pane still scrolls if a language needs more, so the Quit and
+        // Reset row is never cut off out of reach.
+        .scrollBounceBehavior(.basedOnSize)
+        .frame(width: paneWidth, height: showsMore ? 886 : 766)
         .motion(Motion.snappy, value: showsMore)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
             screens = DisplayOption.connectedScreens()
@@ -846,6 +849,9 @@ private struct RemoveTabButton: View {
             Image(systemName: "minus.circle.fill")
                 .font(.system(size: 14))
                 .foregroundStyle(isHovering && canRemove ? AnyShapeStyle(.red) : AnyShapeStyle(.tertiary))
+                // The glyph stays small and quiet; the hit area is a full 24 pt.
+                .frame(width: 24, height: 24)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.borderless)
         .disabled(!canRemove)
