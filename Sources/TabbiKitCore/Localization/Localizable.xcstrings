@@ -87515,31 +87515,31 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "رمز المجموعة"
+            "value" : "الرمز"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Party-Code"
+            "value" : "Code"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Código de grupo"
+            "value" : "Código"
           }
         },
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Party code"
+            "value" : "Code"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Code du groupe"
+            "value" : "Code"
           }
         },
         "ja" : {
@@ -87557,13 +87557,13 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Código do grupo"
+            "value" : "Código"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Код Party"
+            "value" : "Код"
           }
         },
         "zh-Hans" : {

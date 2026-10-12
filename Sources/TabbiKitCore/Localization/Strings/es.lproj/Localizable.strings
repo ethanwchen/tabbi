@@ -2166,7 +2166,7 @@
 	<key>Party can't connect</key>
 	<string>Grupo no puede conectar</string>
 	<key>Party code</key>
-	<string>Código de grupo</string>
+	<string>Código</string>
 	<key>Party code %@. Study together with everyone in it.</key>
 	<string>Código de grupo %@. Estudia junto a todos sus miembros.</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>

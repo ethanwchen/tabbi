@@ -2150,7 +2150,7 @@
 	<key>Party can't connect</key>
 	<string>تعذّر اتصال المجموعة</string>
 	<key>Party code</key>
-	<string>رمز المجموعة</string>
+	<string>الرمز</string>
 	<key>Party code %@. Study together with everyone in it.</key>
 	<string>رمز المجموعة %@. ادرس مع جميع أعضائها.</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>

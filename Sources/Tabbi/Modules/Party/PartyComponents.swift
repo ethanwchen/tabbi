@@ -60,7 +60,8 @@ struct PartyPet: View {
 /// A capsule button in the Party accent; `isProminent` fills it for the
 /// panel's main call to action. Dims and ignores clicks while busy.
 struct PartyPillButton: View {
-    let title: String
+    /// Nil shows the symbol alone, for a narrow panel; `help` names it.
+    let title: String?
     var symbol: String?
     var isProminent = false
     var isBusy = false
@@ -76,7 +77,7 @@ struct PartyPillButton: View {
                 if let symbol {
                     Image(systemName: symbol).font(.system(size: 9.5, weight: .bold))
                 }
-                Text(title).font(Theme.Typography.caption)
+                if let title { Text(title).font(Theme.Typography.caption) }
             }
             .foregroundStyle(isProminent ? Theme.Palette.background : accent)
             .lineLimit(1)
@@ -365,14 +366,14 @@ struct PartyCodeField: View {
     }
 
     private func emptyRow(placeholderFits: Bool, pasteIconOnly: Bool) -> some View {
-        HStack(spacing: Theme.Spacing.s) {
+        HStack(spacing: 0) {
             Text(placeholder)
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.tertiaryText)
                 .lineLimit(1)
                 .fixedSize(horizontal: placeholderFits, vertical: false)
                 .allowsHitTesting(false)
-            Spacer(minLength: 0)
+            Spacer(minLength: Theme.Spacing.s)
             PartyPasteButton(iconOnly: pasteIconOnly, action: paste)
         }
     }

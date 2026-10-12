@@ -2166,7 +2166,7 @@
 	<key>Party can't connect</key>
 	<string>Hindi makakonekta ang Party</string>
 	<key>Party code</key>
-	<string>Party code</string>
+	<string>Code</string>
 	<key>Party code %@. Study together with everyone in it.</key>
 	<string>Party code %@. Mag-aral kasama ang lahat ng nasa loob nito.</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
