@@ -487,6 +487,8 @@
 	<string>Allow %@ to read your calendars. macOS asks once.</string>
 	<key>Allow Access</key>
 	<string>Allow Access</string>
+	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
+	<string>Allow Tabbi in AnkiConnect's settings, then try again.</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>Allow Tabbi's notifications in System Settings</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
@@ -511,10 +513,14 @@
 	<string>Angel Wings</string>
 	<key>Animations</key>
 	<string>Animations</string>
+	<key>Anki couldn't send your review history this time: “%@”</key>
+	<string>Anki couldn't send your review history this time: “%@”</string>
 	<key>Anki didn't answer</key>
 	<string>Anki didn't answer</string>
 	<key>Anki has a password on</key>
 	<string>Anki has a password on</string>
+	<key>Anki has no deck called %@. It may have been renamed or deleted.</key>
+	<string>Anki has no deck called %@. It may have been renamed or deleted.</string>
 	<key>Anki is busy</key>
 	<string>Anki is busy</string>
 	<key>Anki is closed</key>
@@ -525,18 +531,28 @@
 	<string>Anki is starting</string>
 	<key>Anki is starting. The deck opens for review as soon as it's ready.</key>
 	<string>Anki is starting. The deck opens for review as soon as it's ready.</string>
-	<key>Anki is waiting for you to choose whose cards to open.</key>
-	<string>Anki is waiting for you to choose whose cards to open.</string>
 	<key>Anki isn't installed</key>
 	<string>Anki isn't installed</string>
 	<key>Anki isn't on this Mac</key>
 	<string>Anki isn't on this Mac</string>
+	<key>Anki may be syncing or on its profile list. Tabbi reconnects by itself.</key>
+	<string>Anki may be syncing or on its profile list. Tabbi reconnects by itself.</string>
+	<key>Anki may be syncing, checking its database or showing a dialog. Tabbi reconnects when it's done.</key>
+	<string>Anki may be syncing, checking its database or showing a dialog. Tabbi reconnects when it's done.</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</string>
+	<key>Anki reported a problem</key>
+	<string>Anki reported a problem</string>
 	<key>Anki reviews</key>
 	<string>Anki reviews</string>
+	<key>Anki said no</key>
+	<string>Anki said no</string>
 	<key>Anki said no to Tabbi</key>
 	<string>Anki said no to Tabbi</string>
+	<key>Anki said “%@”.</key>
+	<string>Anki said “%@”.</string>
+	<key>Anki said: “%@”</key>
+	<string>Anki said: “%@”</string>
 	<key>Anki sprint</key>
 	<string>Anki sprint</string>
 	<key>Anki wouldn't open</key>
@@ -545,8 +561,16 @@
 	<string>AnkiConnect blocked this app</string>
 	<key>AnkiConnect is a free add-on that lets Tabbi count your due cards. It takes about a minute.</key>
 	<string>AnkiConnect is a free add-on that lets Tabbi count your due cards. It takes about a minute.</string>
+	<key>AnkiConnect is out of date</key>
+	<string>AnkiConnect is out of date</string>
 	<key>AnkiConnect is set to ask for a key. Turning that off takes a minute.</key>
 	<string>AnkiConnect is set to ask for a key. Turning that off takes a minute.</string>
+	<key>AnkiConnect isn't answering</key>
+	<string>AnkiConnect isn't answering</string>
+	<key>AnkiConnect needed</key>
+	<string>AnkiConnect needed</string>
+	<key>AnkiConnect needs your API key</key>
+	<string>AnkiConnect needs your API key</string>
 	<key>AnkiConnect wants an API key</key>
 	<string>AnkiConnect wants an API key</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
@@ -671,6 +695,8 @@
 	<string>Breed colors</string>
 	<key>Bring %@ to the front</key>
 	<string>Bring %@ to the front</string>
+	<key>Bring Anki to the front to see what it's doing; this tab reconnects on its own</key>
+	<string>Bring Anki to the front to see what it's doing; this tab reconnects on its own</string>
 	<key>Brown noise</key>
 	<string>Brown noise</string>
 	<key>Built-in display</key>
@@ -869,6 +895,8 @@
 	<string>Close</string>
 	<key>Close %@ settings</key>
 	<string>Close %@ settings</string>
+	<key>Close any open Anki dialog. If it keeps happening, turn off App Nap for Anki.</key>
+	<string>Close any open Anki dialog. If it keeps happening, turn off App Nap for Anki.</string>
 	<key>Close any open window inside Anki, then check again.</key>
 	<string>Close any open window inside Anki, then check again.</string>
 	<key>Close details</key>
@@ -985,6 +1013,8 @@
 	<string>Couldn't join this party</string>
 	<key>Couldn't plan your day</key>
 	<string>Couldn't plan your day</string>
+	<key>Couldn't reach Anki</key>
+	<string>Couldn't reach Anki</string>
 	<key>Couldn't reach the party server.</key>
 	<string>Couldn't reach the party server.</string>
 	<key>Couldn't read today's list</key>
@@ -1035,6 +1065,8 @@
 	<string>Day review: today's focus and study minutes, sessions and points, your goal counts and the titles of the tasks you finished or are carrying over.</string>
 	<key>Days in a row with at least one review</key>
 	<string>Days in a row with at least one review</string>
+	<key>Deck not found</key>
+	<string>Deck not found</string>
 	<key>Deep</key>
 	<string>Deep</string>
 	<key>Deep focus</key>
@@ -1083,6 +1115,8 @@
 	<string>Deleting…</string>
 	<key>Desktop widget</key>
 	<string>Desktop widget</string>
+	<key>Details: %@</key>
+	<string>Details: %@</string>
 	<key>Detect automatically</key>
 	<string>Detect automatically</string>
 	<key>Detect claude automatically</key>
@@ -1175,6 +1209,8 @@
 	<string>Enough for the %@ now</string>
 	<key>Enough for the %@ now.</key>
 	<string>Enough for the %@ now.</string>
+	<key>Enter the key from AnkiConnect's config in Settings.</key>
+	<string>Enter the key from AnkiConnect's config in Settings.</string>
 	<key>Event</key>
 	<string>Event</string>
 	<key>Every deck is caught up</key>
@@ -1375,6 +1411,8 @@
 	<string>Get a heads-up when time's up</string>
 	<key>Get an alert when a timer ends.</key>
 	<string>Get an alert when a timer ends.</string>
+	<key>Get the free Anki app from apps.ankiweb.net.</key>
+	<string>Get the free Anki app from apps.ankiweb.net.</string>
 	<key>Give your cat a name</key>
 	<string>Give your cat a name</string>
 	<key>Give your dog a name</key>
@@ -1509,6 +1547,8 @@
 	<string>Install %@ to plan with it.</string>
 	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
 	<string>Install %@ to play this playlist, or pick another one. Click to dismiss</string>
+	<key>Install AnkiConnect (code %@) from Tools › Add-ons, then restart Anki.</key>
+	<string>Install AnkiConnect (code %@) from Tools › Add-ons, then restart Anki.</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Install Claude Code and sign in to see your live 5-hour and weekly limits.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1517,6 +1557,8 @@
 	<string>Install Spotify or Music to control playback from the notch.</string>
 	<key>Install the AnkiConnect add-on to open decks directly.</key>
 	<string>Install the AnkiConnect add-on to open decks directly.</string>
+	<key>Install the AnkiConnect add-on to open decks directly: in Anki, choose Tools › Add-ons › Get Add-ons, paste the code %@, then restart Anki.</key>
+	<string>Install the AnkiConnect add-on to open decks directly: in Anki, choose Tools › Add-ons › Get Add-ons, paste the code %@, then restart Anki.</string>
 	<key>Install the free Anki desktop app to see your due cards, decks and streak here.</key>
 	<string>Install the free Anki desktop app to see your due cards, decks and streak here.</string>
 	<key>Installed</key>
@@ -1671,6 +1713,8 @@
 	<string>Loading…</string>
 	<key>Location</key>
 	<string>Location</string>
+	<key>Log in from Anki's Sync button once, then sync here.</key>
+	<string>Log in from Anki's Sync button once, then sync here.</string>
 	<key>Long break</key>
 	<string>Long break</string>
 	<key>Long days, light focus. Keep a little rhythm going.</key>
@@ -1697,6 +1741,10 @@
 	<string>Make one more the same way, turned Off, and name it:</string>
 	<key>Make sure Calendars is turned on for that account.</key>
 	<string>Make sure Calendars is turned on for that account.</string>
+	<key>Make sure the AnkiConnect add-on (code %@) is installed and Anki was restarted after installing it.</key>
+	<string>Make sure the AnkiConnect add-on (code %@) is installed and Anki was restarted after installing it.</string>
+	<key>Make sure the AnkiConnect add-on is installed and Anki was restarted after installing it.</key>
+	<string>Make sure the AnkiConnect add-on is installed and Anki was restarted after installing it.</string>
 	<key>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</key>
 	<string>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</string>
 	<key>Make “%@” so Tabbi can switch Do Not Disturb both ways.</key>
@@ -1859,8 +1907,8 @@
 	<string>No. Anki is a free app from apps.ankiweb.net.</string>
 	<key>No. Anki is busy. A window inside Anki may be open.</key>
 	<string>No. Anki is busy. A window inside Anki may be open.</string>
-	<key>No. Anki is waiting for you to pick a profile.</key>
-	<string>No. Anki is waiting for you to pick a profile.</string>
+	<key>No. Anki said “%@”.</key>
+	<string>No. Anki said “%@”.</string>
 	<key>No. Anki turned Tabbi down when it asked.</key>
 	<string>No. Anki turned Tabbi down when it asked.</string>
 	<key>No. AnkiConnect is set to ask for a key.</key>
@@ -1883,6 +1931,8 @@
 	<string>No. Sign in once and Tabbi can use it.</string>
 	<key>No. Tabbi can only see your cards while Anki is open.</key>
 	<string>No. Tabbi can only see your cards while Anki is open.</string>
+	<key>No. Tabbi couldn't read the cards (%@).</key>
+	<string>No. Tabbi couldn't read the cards (%@).</string>
 	<key>No. That's fine if you don't use Google. The Calendar row can add it.</key>
 	<string>No. That's fine if you don't use Google. The Calendar row can add it.</string>
 	<key>No. The Shortcuts app didn't answer. Click Check again.</key>
@@ -1933,6 +1983,8 @@
 	<string>Not now</string>
 	<key>Not reported by this Mac</key>
 	<string>Not reported by this Mac</string>
+	<key>Not right now. Anki has no cards open: it may be syncing or on its profile list.</key>
+	<string>Not right now. Anki has no cards open: it may be syncing or on its profile list.</string>
 	<key>Not saved</key>
 	<string>Not saved</string>
 	<key>Not set up</key>
@@ -1995,6 +2047,8 @@
 	<string>On</string>
 	<key>On a break</key>
 	<string>On a break</string>
+	<key>On the profile list? Open your profile.</key>
+	<string>On the profile list? Open your profile.</string>
 	<key>On today</key>
 	<string>On today</string>
 	<key>One add-on to go</key>
@@ -2043,12 +2097,16 @@
 	<string>Open %@, then Tabbi checks again</string>
 	<key>Open Anki</key>
 	<string>Open Anki</string>
+	<key>Open Anki from your Applications folder, then try again.</key>
+	<string>Open Anki from your Applications folder, then try again.</string>
 	<key>Open Anki so Tabbi can see your cards.</key>
 	<string>Open Anki so Tabbi can see your cards.</string>
 	<key>Open Anki straight into %@</key>
 	<string>Open Anki straight into %@</string>
 	<key>Open Anki to see today's due cards. This tab connects as soon as it's running.</key>
 	<string>Open Anki to see today's due cards. This tab connects as soon as it's running.</string>
+	<key>Open Anki to see your due cards.</key>
+	<string>Open Anki to see your due cards.</string>
 	<key>Open Anki; this tab connects on its own</key>
 	<string>Open Anki; this tab connects on its own</string>
 	<key>Open Automation settings</key>
@@ -2261,8 +2319,6 @@
 	<string>Pick the month and year you were born</string>
 	<key>Pick the name and pet your friends will see. No account or password needed.</key>
 	<string>Pick the name and pet your friends will see. No account or password needed.</string>
-	<key>Pick your profile in Anki</key>
-	<string>Pick your profile in Anki</string>
 	<key>Pin %@ to the Study button</key>
 	<string>Pin %@ to the Study button</string>
 	<key>Pin as Favorite Deck</key>
@@ -2687,6 +2743,8 @@
 	<string>Sign Out</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
 	<string>Sign in on the page that opens. Tabbi notices by itself.</string>
+	<key>Sign in to AnkiWeb to sync</key>
+	<string>Sign in to AnkiWeb to sync</string>
 	<key>Sign in to Claude</key>
 	<string>Sign in to Claude</string>
 	<key>Sign in with Apple</key>
@@ -2851,6 +2909,8 @@
 	<string>Stopped</string>
 	<key>Streak</key>
 	<string>Streak</string>
+	<key>Streak unavailable</key>
+	<string>Streak unavailable</string>
 	<key>Studied today</key>
 	<string>Studied today</string>
 	<key>Study</key>
@@ -3253,6 +3313,8 @@
 	<string>Unblocking…</string>
 	<key>Undo</key>
 	<string>Undo</string>
+	<key>Unexpected reply from Anki</key>
+	<string>Unexpected reply from Anki</string>
 	<key>Unexpected reply from the party server.</key>
 	<string>Unexpected reply from the party server.</string>
 	<key>Unknown track</key>
@@ -3275,6 +3337,8 @@
 	<string>Up next shows your %@ as the day goes, and Plan my day fits work around them.</string>
 	<key>Update AnkiConnect</key>
 	<string>Update AnkiConnect</string>
+	<key>Update AnkiConnect from Tools › Add-ons › Check for Updates.</key>
+	<string>Update AnkiConnect from Tools › Add-ons › Check for Updates.</string>
 	<key>Updated %@ and applied it.</key>
 	<string>Updated %@ and applied it.</string>
 	<key>Updated %@; your tabs are unchanged.</key>

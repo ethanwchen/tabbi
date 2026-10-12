@@ -27,6 +27,9 @@ public struct AnkiConnectClient: Sendable {
     public var syncTimeout: TimeInterval
     /// Whether an Anki process is running (by bundle id or name).
     public var isAnkiRunning: @Sendable () async -> Bool
+    /// Told about every failed action with its name, so the app can log
+    /// which call Anki refused and why. Not told about cancellations.
+    public var onError: (@Sendable (_ action: String, _ error: AnkiConnectError) -> Void)?
 
     public init(
         transport: any AnkiConnectTransport = URLSessionAnkiConnectTransport(),
@@ -34,7 +37,8 @@ public struct AnkiConnectClient: Sendable {
         requestTimeout: TimeInterval = 3,
         batchTimeout: TimeInterval = 20,
         syncTimeout: TimeInterval = 90,
-        isAnkiRunning: @escaping @Sendable () async -> Bool = { false }
+        isAnkiRunning: @escaping @Sendable () async -> Bool = { false },
+        onError: (@Sendable (_ action: String, _ error: AnkiConnectError) -> Void)? = nil
     ) {
         self.transport = transport
         self.apiKey = apiKey
@@ -42,6 +46,7 @@ public struct AnkiConnectClient: Sendable {
         self.batchTimeout = batchTimeout
         self.syncTimeout = syncTimeout
         self.isAnkiRunning = isAnkiRunning
+        self.onError = onError
     }
 
     /// True when a running app looks like Anki. The launcher's GUI process
@@ -99,13 +104,31 @@ public struct AnkiConnectClient: Sendable {
     }
 
     /// Due counts for the decks, in the order asked for. Decks Anki doesn't
-    /// return are left out. `getDeckStats` names each deck by its leaf only
-    /// ("Cardio" for "Step1::Cardio"), so replies are matched by id and keep
-    /// the deck's full name.
+    /// return are left out. Older add-ons name each deck by its leaf only
+    /// ("Cardio" for "Step1::Cardio") and newer ones by its full name, so
+    /// replies are matched by id and keep the deck's full name.
+    ///
+    /// AnkiConnect 2026.10 (the rewrite AnkiWeb serves for Anki 26.08 and
+    /// later) fails the whole call with "Deck counts unavailable." when any
+    /// deck is missing from Anki's deck list, as the empty Default deck
+    /// always is; older versions skip such a deck. So a failed batch is
+    /// asked again without Default, and then deck by deck in one `multi`,
+    /// leaving out only the decks that fail.
     public func deckStats(for decks: [AnkiDeck]) async throws -> [AnkiDeckStats] {
         guard !decks.isEmpty else { return [] }
-        let replies = try await invoke("getDeckStats", params: ["decks": decks.map(\.name)], as: [String: AnkiDeckStats].self)
-        let byID = Dictionary(replies.values.map { ($0.deckID, $0) }, uniquingKeysWith: { first, _ in first })
+        let replies: [AnkiDeckStats]
+        do {
+            replies = try await deckStatsBatch(decks)
+        } catch let error as AnkiConnectError where !error.failsWholeRefresh {
+            let withoutDefault = decks.filter { $0.id != AnkiDeck.defaultID }
+            do {
+                guard withoutDefault.count < decks.count, !withoutDefault.isEmpty else { throw error }
+                replies = try await deckStatsBatch(withoutDefault)
+            } catch let retry as AnkiConnectError where !retry.failsWholeRefresh {
+                replies = try await deckStatsOneByOne(decks)
+            }
+        }
+        let byID = Dictionary(replies.map { ($0.deckID, $0) }, uniquingKeysWith: { first, _ in first })
         return decks.compactMap { deck in
             byID[deck.id].map {
                 AnkiDeckStats(
@@ -114,6 +137,33 @@ public struct AnkiConnectClient: Sendable {
                 )
             }
         }
+    }
+
+    private func deckStatsBatch(_ decks: [AnkiDeck]) async throws -> [AnkiDeckStats] {
+        Array(try await invoke("getDeckStats", params: ["decks": decks.map(\.name)], as: [String: AnkiDeckStats].self).values)
+    }
+
+    /// `getDeckStats` for each deck on its own, batched through `multi`;
+    /// a deck whose call fails is left out. Fails only when every deck does.
+    private func deckStatsOneByOne(_ decks: [AnkiDeck]) async throws -> [AnkiDeckStats] {
+        let actions = decks.map {
+            MultiAction(action: "getDeckStats", version: Self.apiVersion, params: ["decks": [$0.name]], key: apiKey)
+        }
+        let replies = try await invoke("multi", params: ["actions": actions], timeout: batchTimeout,
+                                       as: [MultiReply<[String: AnkiDeckStats]>].self)
+        var stats: [AnkiDeckStats] = []
+        var firstError: String?
+        for reply in replies {
+            if let message = reply.error {
+                firstError = firstError ?? message
+                continue
+            }
+            stats += reply.result.map { Array($0.values) } ?? []
+        }
+        if stats.isEmpty, let firstError {
+            throw reported(AnkiConnectError.fromAnkiMessage(firstError, action: "getDeckStats"), action: "getDeckStats")
+        }
+        return stats
     }
 
     /// Reviews (button presses) since today's rollover.
@@ -143,7 +193,7 @@ public struct AnkiConnectClient: Sendable {
     public func cardReviews(decks: [String], startID: Int64) async throws -> [AnkiReview] {
         guard !decks.isEmpty else { return [] }
         let actions = decks.map {
-            MultiAction(action: "cardReviews", version: Self.apiVersion, params: CardReviewsParams(deck: $0, startID: startID))
+            MultiAction(action: "cardReviews", version: Self.apiVersion, params: CardReviewsParams(deck: $0, startID: startID), key: apiKey)
         }
         let replies = try await invoke("multi", params: ["actions": actions], timeout: batchTimeout, as: [MultiReply<[AnkiReview]>].self)
         guard replies.count == decks.count else {
@@ -151,7 +201,7 @@ public struct AnkiConnectClient: Sendable {
         }
         var rows: [AnkiReview] = []
         for reply in replies {
-            if let message = reply.error { throw AnkiConnectError.fromAnkiMessage(message, action: "cardReviews") }
+            if let message = reply.error { throw reported(AnkiConnectError.fromAnkiMessage(message, action: "cardReviews"), action: "cardReviews") }
             rows += reply.result ?? []
         }
         return rows
@@ -172,7 +222,11 @@ public struct AnkiConnectClient: Sendable {
 
     /// Syncs with AnkiWeb, using the long timeout.
     public func sync() async throws {
-        _ = try await send("sync", params: EmptyParams?.none, timeout: syncTimeout)
+        do {
+            _ = try await send("sync", params: EmptyParams?.none, timeout: syncTimeout)
+        } catch let error as AnkiConnectError {
+            throw reported(error, action: "sync")
+        }
     }
 
     // MARK: Plumbing
@@ -185,11 +239,13 @@ public struct AnkiConnectClient: Sendable {
     }
 
     /// One inner action of a `multi` batch. Inner actions default to API
-    /// version 4 (bare results), so each carries its own `version`.
+    /// version 4 (bare results), so each carries its own `version`, and
+    /// AnkiConnect checks the API key of each one, so each carries the key.
     private struct MultiAction<Params: Encodable & Sendable>: Encodable, Sendable {
         let action: String
         let version: Int
         let params: Params
+        let key: String?
     }
 
     /// One inner `{result, error}` reply of a `multi` batch.
@@ -220,12 +276,28 @@ public struct AnkiConnectClient: Sendable {
     private func invoke<Params: Encodable, Result: Decodable>(
         _ action: String, params: Params?, timeout: TimeInterval? = nil, as type: Result.Type
     ) async throws -> Result {
-        let body = try await send(action, params: params, timeout: timeout ?? requestTimeout)
+        let body: Data
+        do {
+            do {
+                body = try await send(action, params: params, timeout: timeout ?? requestTimeout)
+            } catch let error as AnkiConnectError where error.isMalformedRequest {
+                // AnkiConnect read a damaged body; ask once more.
+                body = try await send(action, params: params, timeout: timeout ?? requestTimeout)
+            }
+        } catch let error as AnkiConnectError {
+            throw reported(error, action: action)
+        }
         do {
             return try JSONDecoder().decode(ResultReply<Result>.self, from: body).result
         } catch {
-            throw AnkiConnectError.invalidResponse("\(action): \(Self.describe(error))")
+            throw reported(AnkiConnectError.invalidResponse("\(action): \(Self.describe(error))"), action: action)
         }
+    }
+
+    /// Hands a failure to `onError` on its way out.
+    private func reported(_ error: AnkiConnectError, action: String) -> AnkiConnectError {
+        onError?(action, error)
+        return error
     }
 
     /// Posts one action and returns the body once the `error` field is clear.

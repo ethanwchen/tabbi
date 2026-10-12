@@ -41,6 +41,10 @@ public struct AnkiDeck: Hashable, Sendable, Codable, Identifiable {
         self.name = name
     }
 
+    /// Anki's Default deck, which every collection has. Anki hides it from
+    /// its deck list while it is empty.
+    public static let defaultID: Int64 = 1
+
     /// The last path component, e.g. "Cardio" for "Step1::Cardio".
     public var leafName: String {
         name.components(separatedBy: "::").last ?? name

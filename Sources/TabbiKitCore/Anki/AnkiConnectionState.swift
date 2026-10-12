@@ -80,21 +80,33 @@ public enum AnkiConnectionState: Hashable, Sendable {
     /// quickly so the panel flips to the deck view moments after the user
     /// opens Anki or restarts it with the add-on; otherwise the due counts
     /// only change as the user reviews, so a few minutes is plenty.
-    public var refreshInterval: TimeInterval {
+    /// A problem is usually over in seconds (a sync or dialog ends), so it
+    /// is retried quickly at first and less often the longer it lasts
+    /// (`AnkiRecovery`).
+    /// - Parameter problemAge: how long the panel has been in `.problem`.
+    public func refreshInterval(problemAge: TimeInterval = 0) -> TimeInterval {
         switch self {
         case .starting: return 2
         case .notRunning, .addOnMissing, .needsPermission, .addOnOutdated, .checking: return 5
-        case .problem: return 30
+        case .problem: return AnkiRecovery.interval(problemAge: problemAge)
         case .notInstalled: return 60
         case .ready: return 180
         }
     }
 
-    /// Whether to keep refreshing while the panel is hidden. Only while Anki
-    /// is starting: AnkiConnect comes up seconds later, and Today and the
+    /// Whether to keep refreshing while the panel is hidden. While Anki is
+    /// starting, AnkiConnect comes up seconds later, and Today and the
     /// ticker should get numbers then, not whenever Anki next loses focus.
-    /// The startup grace bounds this to a handful of polls.
-    public var pollsWhileHidden: Bool { self == .starting }
+    /// A problem is also retried for its first minute, so a sync or dialog
+    /// that ends by itself brings the numbers back without opening the
+    /// panel. Both are bounded to a handful of polls.
+    public func pollsWhileHidden(problemAge: TimeInterval = 0) -> Bool {
+        switch self {
+        case .starting: return true
+        case .problem: return AnkiRecovery.pollsWhileHidden(problemAge: problemAge)
+        default: return false
+        }
+    }
 }
 
 extension AnkiSummary {
@@ -177,6 +189,8 @@ extension AnkiConnectionState {
         case "apikey", "apikeyrequired": self = .needsPermission(.apiKeyRequired)
         case "addonoutdated": self = .addOnOutdated
         case "problem": self = .problem(.timeout)
+        case "collection", "collectionunavailable", "profile": self = .problem(.collectionUnavailable)
+        case "anki", "ankierror": self = .problem(.anki("AnkiConnect.getDeckStats() missing 1 required positional argument: 'decks'"))
         case "ready": self = .ready
         default: return nil
         }

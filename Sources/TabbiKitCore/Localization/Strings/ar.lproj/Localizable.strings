@@ -477,6 +477,8 @@
 	<string>اسمح لـ %@ بقراءة تقاويمك. يسأل macOS مرة واحدة.</string>
 	<key>Allow Access</key>
 	<string>السماح بالوصول</string>
+	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
+	<string>اسمح لـ Tabbi في إعدادات AnkiConnect، ثم حاول مجددًا.</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>اسمح بإشعارات Tabbi في إعدادات النظام</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
@@ -501,10 +503,14 @@
 	<string>أجنحة ملاك</string>
 	<key>Animations</key>
 	<string>الحركات</string>
+	<key>Anki couldn't send your review history this time: “%@”</key>
+	<string>تعذّر على Anki إرسال سجل مراجعاتك هذه المرة: «%@»</string>
 	<key>Anki didn't answer</key>
 	<string>لم يستجب Anki</string>
 	<key>Anki has a password on</key>
 	<string>Anki محمي بكلمة سر</string>
+	<key>Anki has no deck called %@. It may have been renamed or deleted.</key>
+	<string>لا توجد في Anki مجموعة باسم %@. ربما أُعيدت تسميتها أو حُذفت.</string>
 	<key>Anki is busy</key>
 	<string>Anki مشغول</string>
 	<key>Anki is closed</key>
@@ -515,18 +521,28 @@
 	<string>Anki قيد التشغيل</string>
 	<key>Anki is starting. The deck opens for review as soon as it's ready.</key>
 	<string>Anki قيد التشغيل. تُفتح الرزمة للمراجعة فور جاهزيته.</string>
-	<key>Anki is waiting for you to choose whose cards to open.</key>
-	<string>Anki ينتظر أن تختار الملف الشخصي الذي تُفتح بطاقاته.</string>
 	<key>Anki isn't installed</key>
 	<string>Anki غير مثبّت</string>
 	<key>Anki isn't on this Mac</key>
 	<string>Anki غير موجود على هذا الـ Mac</string>
+	<key>Anki may be syncing or on its profile list. Tabbi reconnects by itself.</key>
+	<string>قد يكون Anki يزامن أو على قائمة الملفات الشخصية. سيتصل Tabbi تلقائيًا.</string>
+	<key>Anki may be syncing, checking its database or showing a dialog. Tabbi reconnects when it's done.</key>
+	<string>قد يكون Anki يزامن أو يفحص قاعدة بياناته أو يعرض نافذة حوار. سيتصل Tabbi تلقائيًا عند انتهائه.</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>يحتاج Anki إلى إضافة مجانية اسمها AnkiConnect كي يعدّ Tabbi بطاقاتك.</string>
+	<key>Anki reported a problem</key>
+	<string>أبلغ Anki عن مشكلة</string>
 	<key>Anki reviews</key>
 	<string>مراجعات Anki</string>
+	<key>Anki said no</key>
+	<string>رفض Anki الطلب</string>
 	<key>Anki said no to Tabbi</key>
 	<string>رفض Anki الاتصال بـ Tabbi</string>
+	<key>Anki said “%@”.</key>
+	<string>قال Anki: «%@».</string>
+	<key>Anki said: “%@”</key>
+	<string>قال Anki: «%@»</string>
 	<key>Anki sprint</key>
 	<string>دفعة Anki</string>
 	<key>Anki wouldn't open</key>
@@ -535,8 +551,16 @@
 	<string>حظر AnkiConnect هذا التطبيق</string>
 	<key>AnkiConnect is a free add-on that lets Tabbi count your due cards. It takes about a minute.</key>
 	<string>AnkiConnect إضافة مجانية تتيح لـ Tabbi عدّ بطاقاتك المستحقة. يستغرق الأمر دقيقة تقريبًا.</string>
+	<key>AnkiConnect is out of date</key>
+	<string>إصدار AnkiConnect قديم</string>
 	<key>AnkiConnect is set to ask for a key. Turning that off takes a minute.</key>
 	<string>AnkiConnect مضبوط ليطلب مفتاحًا. إيقاف ذلك يستغرق دقيقة.</string>
+	<key>AnkiConnect isn't answering</key>
+	<string>AnkiConnect لا يستجيب</string>
+	<key>AnkiConnect needed</key>
+	<string>يلزم AnkiConnect</string>
+	<key>AnkiConnect needs your API key</key>
+	<string>يحتاج AnkiConnect إلى مفتاح API</string>
 	<key>AnkiConnect wants an API key</key>
 	<string>AnkiConnect يطلب مفتاح API</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
@@ -661,6 +685,8 @@
 	<string>ألوان السلالة</string>
 	<key>Bring %@ to the front</key>
 	<string>إظهار %@ في المقدمة</string>
+	<key>Bring Anki to the front to see what it's doing; this tab reconnects on its own</key>
+	<string>اعرض Anki في المقدمة لترى ما يفعله؛ ستعيد علامة التبويب هذه الاتصال تلقائيًا</string>
 	<key>Brown noise</key>
 	<string>ضجيج بني</string>
 	<key>Built-in display</key>
@@ -857,6 +883,8 @@
 	<string>إغلاق</string>
 	<key>Close %@ settings</key>
 	<string>إغلاق إعدادات %@</string>
+	<key>Close any open Anki dialog. If it keeps happening, turn off App Nap for Anki.</key>
+	<string>أغلق أي نافذة حوار مفتوحة في Anki. إذا تكرر ذلك، أوقف App Nap لـ Anki.</string>
 	<key>Close any open window inside Anki, then check again.</key>
 	<string>أغلق أي نافذة مفتوحة داخل Anki، ثم تحقّق مجددًا.</string>
 	<key>Close details</key>
@@ -973,6 +1001,8 @@
 	<string>تعذّر الانضمام إلى هذه المجموعة</string>
 	<key>Couldn't plan your day</key>
 	<string>تعذّر تخطيط يومك</string>
+	<key>Couldn't reach Anki</key>
+	<string>تعذّر الوصول إلى Anki</string>
 	<key>Couldn't reach the party server.</key>
 	<string>تعذّر الوصول إلى خادم المجموعات.</string>
 	<key>Couldn't read today's list</key>
@@ -1023,6 +1053,8 @@
 	<string>مراجعة اليوم: دقائق التركيز والدراسة اليوم، والجلسات والنقاط، وعدد أهدافك، وعناوين المهام التي أنهيتها أو التي تنقلها إلى الغد.</string>
 	<key>Days in a row with at least one review</key>
 	<string>أيام متتالية بمراجعة واحدة على الأقل</string>
+	<key>Deck not found</key>
+	<string>لم يُعثر على المجموعة</string>
 	<key>Deep</key>
 	<string>عميق</string>
 	<key>Deep focus</key>
@@ -1071,6 +1103,8 @@
 	<string>جارٍ الحذف…</string>
 	<key>Desktop widget</key>
 	<string>أداة سطح المكتب</string>
+	<key>Details: %@</key>
+	<string>التفاصيل: %@</string>
 	<key>Detect automatically</key>
 	<string>اكتشاف تلقائي</string>
 	<key>Detect claude automatically</key>
@@ -1163,6 +1197,8 @@
 	<string>يكفي الآن لـ %@</string>
 	<key>Enough for the %@ now.</key>
 	<string>يكفي الآن لـ %@.</string>
+	<key>Enter the key from AnkiConnect's config in Settings.</key>
+	<string>أدخل المفتاح من إعدادات AnkiConnect في الإعدادات.</string>
 	<key>Event</key>
 	<string>حدث</string>
 	<key>Every deck is caught up</key>
@@ -1363,6 +1399,8 @@
 	<string>تلقَّ تنبيهًا حين ينتهي الوقت</string>
 	<key>Get an alert when a timer ends.</key>
 	<string>تلقَّ تنبيهًا حين ينتهي مؤقت.</string>
+	<key>Get the free Anki app from apps.ankiweb.net.</key>
+	<string>احصل على تطبيق Anki المجاني من apps.ankiweb.net.</string>
 	<key>Give your cat a name</key>
 	<string>امنح قطتك اسمًا</string>
 	<key>Give your dog a name</key>
@@ -1495,6 +1533,8 @@
 	<string>ثبّت %@ لتخطط به.</string>
 	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
 	<string>ثبّت %@ لتشغيل قائمة التشغيل هذه، أو اختر قائمة أخرى. انقر للإخفاء</string>
+	<key>Install AnkiConnect (code %@) from Tools › Add-ons, then restart Anki.</key>
+	<string>ثبّت AnkiConnect (الرمز %@) من Tools › Add-ons، ثم أعد تشغيل Anki.</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>ثبّت Claude Code وسجّل الدخول لترى حدّي الـ 5 ساعات والأسبوع مباشرةً.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1503,6 +1543,8 @@
 	<string>ثبّت Spotify أو الموسيقى للتحكم في التشغيل من النوتش.</string>
 	<key>Install the AnkiConnect add-on to open decks directly.</key>
 	<string>ثبّت إضافة AnkiConnect لفتح الرزم مباشرةً.</string>
+	<key>Install the AnkiConnect add-on to open decks directly: in Anki, choose Tools › Add-ons › Get Add-ons, paste the code %@, then restart Anki.</key>
+	<string>ثبّت إضافة AnkiConnect لفتح المجموعات مباشرة: في Anki، اختر Tools › Add-ons › Get Add-ons، والصق الرمز %@، ثم أعد تشغيل Anki.</string>
 	<key>Install the free Anki desktop app to see your due cards, decks and streak here.</key>
 	<string>ثبّت تطبيق Anki المجاني لترى هنا بطاقاتك المستحقة ورزمك وسلسلتك.</string>
 	<key>Installed</key>
@@ -1655,6 +1697,8 @@
 	<string>جارٍ التحميل…</string>
 	<key>Location</key>
 	<string>الموقع</string>
+	<key>Log in from Anki's Sync button once, then sync here.</key>
+	<string>سجّل الدخول مرة من زر Sync في Anki، ثم زامن من هنا.</string>
 	<key>Long break</key>
 	<string>استراحة طويلة</string>
 	<key>Long days, light focus. Keep a little rhythm going.</key>
@@ -1681,6 +1725,10 @@
 	<string>أنشئ اختصارًا آخر بالطريقة نفسها، مع الإيقاف، وسمِّه:</string>
 	<key>Make sure Calendars is turned on for that account.</key>
 	<string>تأكد من تشغيل التقويمات لهذا الحساب.</string>
+	<key>Make sure the AnkiConnect add-on (code %@) is installed and Anki was restarted after installing it.</key>
+	<string>تأكد من تثبيت إضافة AnkiConnect (الرمز %@) ومن إعادة تشغيل Anki بعد تثبيتها.</string>
+	<key>Make sure the AnkiConnect add-on is installed and Anki was restarted after installing it.</key>
+	<string>تأكد من تثبيت إضافة AnkiConnect ومن إعادة تشغيل Anki بعد تثبيتها.</string>
 	<key>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</key>
 	<string>أنشئ اختصارين سريعين في تطبيق الاختصارات. يستغرق ذلك نحو دقيقتين.</string>
 	<key>Make “%@” so Tabbi can switch Do Not Disturb both ways.</key>
@@ -1843,8 +1891,8 @@
 	<string>لا. Anki تطبيق مجاني من apps.ankiweb.net.</string>
 	<key>No. Anki is busy. A window inside Anki may be open.</key>
 	<string>لا. Anki مشغول. ربما توجد نافذة مفتوحة داخل Anki.</string>
-	<key>No. Anki is waiting for you to pick a profile.</key>
-	<string>لا. ينتظر Anki أن تختار ملفًا شخصيًا.</string>
+	<key>No. Anki said “%@”.</key>
+	<string>لا. قال Anki: «%@».</string>
 	<key>No. Anki turned Tabbi down when it asked.</key>
 	<string>لا. رفض Anki طلب Tabbi.</string>
 	<key>No. AnkiConnect is set to ask for a key.</key>
@@ -1867,6 +1915,8 @@
 	<string>لا. سجّل الدخول مرة واحدة وسيتمكن Tabbi من استخدامه.</string>
 	<key>No. Tabbi can only see your cards while Anki is open.</key>
 	<string>لا. لا يرى Tabbi بطاقاتك إلا عندما يكون Anki مفتوحًا.</string>
+	<key>No. Tabbi couldn't read the cards (%@).</key>
+	<string>لا. تعذّر على Tabbi قراءة البطاقات (%@).</string>
 	<key>No. That's fine if you don't use Google. The Calendar row can add it.</key>
 	<string>لا. لا بأس إن كنت لا تستخدم Google. يمكن لصف التقويم إضافته.</string>
 	<key>No. The Shortcuts app didn't answer. Click Check again.</key>
@@ -1917,6 +1967,8 @@
 	<string>ليس الآن</string>
 	<key>Not reported by this Mac</key>
 	<string>لا يوفّره هذا الـMac</string>
+	<key>Not right now. Anki has no cards open: it may be syncing or on its profile list.</key>
+	<string>ليس الآن. لا توجد بطاقات مفتوحة في Anki: قد يكون يزامن أو على قائمة الملفات الشخصية.</string>
 	<key>Not saved</key>
 	<string>لم يُحفظ</string>
 	<key>Not set up</key>
@@ -1979,6 +2031,8 @@
 	<string>يرتديه</string>
 	<key>On a break</key>
 	<string>في استراحة</string>
+	<key>On the profile list? Open your profile.</key>
+	<string>في قائمة الملفات الشخصية؟ افتح ملفك.</string>
 	<key>On today</key>
 	<string>ضمن اليوم</string>
 	<key>One add-on to go</key>
@@ -2027,12 +2081,16 @@
 	<string>افتح %@، ثم سيتحقق Tabbi مجددًا</string>
 	<key>Open Anki</key>
 	<string>فتح Anki</string>
+	<key>Open Anki from your Applications folder, then try again.</key>
+	<string>افتح Anki من مجلد التطبيقات، ثم حاول مجددًا.</string>
 	<key>Open Anki so Tabbi can see your cards.</key>
 	<string>افتح Anki ليرى Tabbi بطاقاتك.</string>
 	<key>Open Anki straight into %@</key>
 	<string>فتح Anki مباشرة على %@</string>
 	<key>Open Anki to see today's due cards. This tab connects as soon as it's running.</key>
 	<string>افتح Anki لترى بطاقات اليوم المستحقة. تتصل علامة التبويب هذه فور تشغيله.</string>
+	<key>Open Anki to see your due cards.</key>
+	<string>افتح Anki لترى بطاقاتك المستحقة.</string>
 	<key>Open Anki; this tab connects on its own</key>
 	<string>افتح Anki؛ ستتصل علامة التبويب هذه تلقائيًا</string>
 	<key>Open Automation settings</key>
@@ -2245,8 +2303,6 @@
 	<string>اختر شهر ميلادك وسنته</string>
 	<key>Pick the name and pet your friends will see. No account or password needed.</key>
 	<string>اختر الاسم والرفيق اللذين سيراهما أصدقاؤك. لا حاجة إلى حساب أو كلمة سر.</string>
-	<key>Pick your profile in Anki</key>
-	<string>اختر ملفك الشخصي في Anki</string>
 	<key>Pin %@ to the Study button</key>
 	<string>تثبيت %@ على زر الدراسة</string>
 	<key>Pin as Favorite Deck</key>
@@ -2667,6 +2723,8 @@
 	<string>تسجيل الخروج</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
 	<string>سجّل الدخول في الصفحة التي تُفتح. سيلاحظ Tabbi ذلك تلقائيًا.</string>
+	<key>Sign in to AnkiWeb to sync</key>
+	<string>سجّل الدخول إلى AnkiWeb للمزامنة</string>
 	<key>Sign in to Claude</key>
 	<string>تسجيل الدخول إلى Claude</string>
 	<key>Sign in with Apple</key>
@@ -2827,6 +2885,8 @@
 	<string>توقّف</string>
 	<key>Streak</key>
 	<string>السلسلة</string>
+	<key>Streak unavailable</key>
+	<string>السلسلة غير متاحة</string>
 	<key>Studied today</key>
 	<string>درست اليوم</string>
 	<key>Study</key>
@@ -3219,6 +3279,8 @@
 	<string>جارٍ إلغاء الحظر…</string>
 	<key>Undo</key>
 	<string>تراجع</string>
+	<key>Unexpected reply from Anki</key>
+	<string>رد غير متوقع من Anki</string>
 	<key>Unexpected reply from the party server.</key>
 	<string>رد غير متوقع من خادم المجموعة.</string>
 	<key>Unknown track</key>
@@ -3241,6 +3303,8 @@
 	<string>يعرض التالي %@ على مدار اليوم، ويرتّب خطّط يومي العمل حولها.</string>
 	<key>Update AnkiConnect</key>
 	<string>حدّث AnkiConnect</string>
+	<key>Update AnkiConnect from Tools › Add-ons › Check for Updates.</key>
+	<string>حدّث AnkiConnect من Tools › Add-ons › Check for Updates.</string>
 	<key>Updated %@ and applied it.</key>
 	<string>تم تحديث %@ وتطبيقها.</string>
 	<key>Updated %@; your tabs are unchanged.</key>

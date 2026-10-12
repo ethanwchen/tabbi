@@ -38,6 +38,8 @@ extension SnapshotRenderer {
         let checkups: [(String, ConnectionDiagnosis)] = [
             ("anki-closed", AnkiConnectionState.notRunning.diagnosis),
             ("anki-addon", AnkiConnectionState.addOnMissing.diagnosis),
+            ("anki-problem", AnkiConnectionState.problem(.anki("Deck counts unavailable.")).diagnosis),
+            ("anki-collection", AnkiConnectionState.problem(.collectionUnavailable).diagnosis),
             ("calendar-connected", CalendarConnectionState(access: .fullAccess, accounts: ["iCloud"]).diagnosis),
             ("calendar-denied", CalendarConnectionState(access: .denied).diagnosis),
             ("claude-missing", ClaudeConnectionState.notInstalled.diagnosis),

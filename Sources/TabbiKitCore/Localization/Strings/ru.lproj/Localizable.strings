@@ -487,6 +487,8 @@
 	<string>Разреши %@ читать твои календари. macOS спросит один раз.</string>
 	<key>Allow Access</key>
 	<string>Разрешить</string>
+	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
+	<string>Разреши Tabbi в настройках AnkiConnect и попробуй снова.</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>Разреши уведомления Tabbi в Системных настройках</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
@@ -511,10 +513,14 @@
 	<string>Крылья ангела</string>
 	<key>Animations</key>
 	<string>Анимации</string>
+	<key>Anki couldn't send your review history this time: “%@”</key>
+	<string>Anki не смогла передать историю повторений: «%@»</string>
 	<key>Anki didn't answer</key>
 	<string>Anki не ответил</string>
 	<key>Anki has a password on</key>
 	<string>В Anki включен пароль</string>
+	<key>Anki has no deck called %@. It may have been renamed or deleted.</key>
+	<string>В Anki нет колоды %@. Возможно, её переименовали или удалили.</string>
 	<key>Anki is busy</key>
 	<string>Anki занят</string>
 	<key>Anki is closed</key>
@@ -525,18 +531,28 @@
 	<string>Anki запускается</string>
 	<key>Anki is starting. The deck opens for review as soon as it's ready.</key>
 	<string>Anki запускается. Колода откроется для повтора, как только все будет готово.</string>
-	<key>Anki is waiting for you to choose whose cards to open.</key>
-	<string>Anki ждет, когда ты выберешь, чьи карточки открыть.</string>
 	<key>Anki isn't installed</key>
 	<string>Anki не установлена</string>
 	<key>Anki isn't on this Mac</key>
 	<string>Anki нет на этом Mac</string>
+	<key>Anki may be syncing or on its profile list. Tabbi reconnects by itself.</key>
+	<string>Возможно, Anki синхронизируется или открыт список профилей. Tabbi подключится сам.</string>
+	<key>Anki may be syncing, checking its database or showing a dialog. Tabbi reconnects when it's done.</key>
+	<string>Возможно, Anki синхронизируется, проверяет базу или показывает диалог. Tabbi подключится сам, когда она закончит.</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>Anki нужен бесплатный аддон AnkiConnect, чтобы Tabbi мог считать карточки.</string>
+	<key>Anki reported a problem</key>
+	<string>Anki сообщает о проблеме</string>
 	<key>Anki reviews</key>
 	<string>Повторения в Anki</string>
+	<key>Anki said no</key>
+	<string>Anki отказала</string>
 	<key>Anki said no to Tabbi</key>
 	<string>Anki отказал Tabbi</string>
+	<key>Anki said “%@”.</key>
+	<string>Anki пишет: «%@».</string>
+	<key>Anki said: “%@”</key>
+	<string>Anki пишет: «%@»</string>
 	<key>Anki sprint</key>
 	<string>Спринт Anki</string>
 	<key>Anki wouldn't open</key>
@@ -545,8 +561,16 @@
 	<string>AnkiConnect заблокировал это приложение</string>
 	<key>AnkiConnect is a free add-on that lets Tabbi count your due cards. It takes about a minute.</key>
 	<string>Бесплатное дополнение AnkiConnect позволяет Tabbi считать карточки к повторению. Это займет около минуты.</string>
+	<key>AnkiConnect is out of date</key>
+	<string>AnkiConnect устарело</string>
 	<key>AnkiConnect is set to ask for a key. Turning that off takes a minute.</key>
 	<string>AnkiConnect просит ключ. Выключить это можно за минуту.</string>
+	<key>AnkiConnect isn't answering</key>
+	<string>AnkiConnect не отвечает</string>
+	<key>AnkiConnect needed</key>
+	<string>Нужно AnkiConnect</string>
+	<key>AnkiConnect needs your API key</key>
+	<string>AnkiConnect нужен твой ключ API</string>
 	<key>AnkiConnect wants an API key</key>
 	<string>AnkiConnect требует ключ API</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
@@ -671,6 +695,8 @@
 	<string>Цвета породы</string>
 	<key>Bring %@ to the front</key>
 	<string>Вывести %@ на передний план</string>
+	<key>Bring Anki to the front to see what it's doing; this tab reconnects on its own</key>
+	<string>Открыть Anki и посмотреть, что она делает. Вкладка переподключится сама</string>
 	<key>Brown noise</key>
 	<string>Бурый шум</string>
 	<key>Built-in display</key>
@@ -869,6 +895,8 @@
 	<string>Закрыть</string>
 	<key>Close %@ settings</key>
 	<string>Закрыть настройки: %@</string>
+	<key>Close any open Anki dialog. If it keeps happening, turn off App Nap for Anki.</key>
+	<string>Закрой открытые диалоги в Anki. Если повторяется, отключи App Nap для Anki.</string>
 	<key>Close any open window inside Anki, then check again.</key>
 	<string>Закрой открытые окна в Anki и проверь снова.</string>
 	<key>Close details</key>
@@ -985,6 +1013,8 @@
 	<string>Не удалось присоединиться к группе</string>
 	<key>Couldn't plan your day</key>
 	<string>Не удалось спланировать день</string>
+	<key>Couldn't reach Anki</key>
+	<string>Не удалось связаться с Anki</string>
 	<key>Couldn't reach the party server.</key>
 	<string>Не удалось связаться с сервером пати.</string>
 	<key>Couldn't read today's list</key>
@@ -1035,6 +1065,8 @@
 	<string>Итоги дня: минуты фокуса и учебы за сегодня, сессии и очки, твои показатели целей и названия задач, которые ты выполнил(а) или переносишь.</string>
 	<key>Days in a row with at least one review</key>
 	<string>Дней подряд хотя бы с одним повтором</string>
+	<key>Deck not found</key>
+	<string>Колода не найдена</string>
 	<key>Deep</key>
 	<string>Глуб.</string>
 	<key>Deep focus</key>
@@ -1083,6 +1115,8 @@
 	<string>Удаление…</string>
 	<key>Desktop widget</key>
 	<string>Виджет на рабочем столе</string>
+	<key>Details: %@</key>
+	<string>Подробности: %@</string>
 	<key>Detect automatically</key>
 	<string>Определять автоматически</string>
 	<key>Detect claude automatically</key>
@@ -1175,6 +1209,8 @@
 	<string>Уже хватает на «%@»</string>
 	<key>Enough for the %@ now.</key>
 	<string>Уже хватает на «%@».</string>
+	<key>Enter the key from AnkiConnect's config in Settings.</key>
+	<string>Введи ключ из настроек AnkiConnect в настройках.</string>
 	<key>Event</key>
 	<string>Событие</string>
 	<key>Every deck is caught up</key>
@@ -1375,6 +1411,8 @@
 	<string>Напомним, когда время выйдет</string>
 	<key>Get an alert when a timer ends.</key>
 	<string>Уведомление, когда таймер закончится.</string>
+	<key>Get the free Anki app from apps.ankiweb.net.</key>
+	<string>Скачай бесплатное приложение Anki на apps.ankiweb.net.</string>
 	<key>Give your cat a name</key>
 	<string>Дай имя своей кошке</string>
 	<key>Give your dog a name</key>
@@ -1509,6 +1547,8 @@
 	<string>Установи %@, чтобы планировать с ним.</string>
 	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
 	<string>Установи %@, чтобы слушать этот плейлист, или выбери другой. Нажми, чтобы скрыть</string>
+	<key>Install AnkiConnect (code %@) from Tools › Add-ons, then restart Anki.</key>
+	<string>Установи AnkiConnect (код %@) через «Инструменты › Дополнения» и перезапусти Anki.</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Установи Claude Code и войди, чтобы видеть свои 5-часовые и недельные лимиты в реальном времени.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1517,6 +1557,8 @@
 	<string>Установи Spotify или Музыку, чтобы управлять воспроизведением из выреза.</string>
 	<key>Install the AnkiConnect add-on to open decks directly.</key>
 	<string>Установи дополнение AnkiConnect, чтобы открывать колоды напрямую.</string>
+	<key>Install the AnkiConnect add-on to open decks directly: in Anki, choose Tools › Add-ons › Get Add-ons, paste the code %@, then restart Anki.</key>
+	<string>Установи дополнение AnkiConnect, чтобы открывать колоды отсюда: в Anki выбери «Инструменты › Дополнения › Загрузить дополнения», вставь код %@ и перезапусти Anki.</string>
 	<key>Install the free Anki desktop app to see your due cards, decks and streak here.</key>
 	<string>Установи бесплатную программу Anki, чтобы видеть здесь карты к повтору, колоды и серию.</string>
 	<key>Installed</key>
@@ -1671,6 +1713,8 @@
 	<string>Загрузка…</string>
 	<key>Location</key>
 	<string>Расположение</string>
+	<key>Log in from Anki's Sync button once, then sync here.</key>
+	<string>Один раз войди через кнопку «Синхронизировать» в Anki, потом синхронизируй здесь.</string>
 	<key>Long break</key>
 	<string>Длинный перерыв</string>
 	<key>Long days, light focus. Keep a little rhythm going.</key>
@@ -1697,6 +1741,10 @@
 	<string>Таким же образом создай еще одну, с «Выключить», и назови ее так:</string>
 	<key>Make sure Calendars is turned on for that account.</key>
 	<string>Проверь, что для этой учетной записи включены «Календари».</string>
+	<key>Make sure the AnkiConnect add-on (code %@) is installed and Anki was restarted after installing it.</key>
+	<string>Проверь, что дополнение AnkiConnect (код %@) установлено и Anki после этого перезапущена.</string>
+	<key>Make sure the AnkiConnect add-on is installed and Anki was restarted after installing it.</key>
+	<string>Проверь, что дополнение AnkiConnect установлено и Anki после этого перезапущена.</string>
 	<key>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</key>
 	<string>Создай две простые команды в приложении «Быстрые команды». Это займет пару минут.</string>
 	<key>Make “%@” so Tabbi can switch Do Not Disturb both ways.</key>
@@ -1859,8 +1907,8 @@
 	<string>Нет. Anki можно бесплатно скачать с apps.ankiweb.net.</string>
 	<key>No. Anki is busy. A window inside Anki may be open.</key>
 	<string>Нет. Anki занят. Возможно, в Anki открыто окно.</string>
-	<key>No. Anki is waiting for you to pick a profile.</key>
-	<string>Нет. Anki ждет, пока ты выберешь профиль.</string>
+	<key>No. Anki said “%@”.</key>
+	<string>Нет. Anki пишет: «%@».</string>
 	<key>No. Anki turned Tabbi down when it asked.</key>
 	<string>Нет. Anki отклонил запрос Tabbi.</string>
 	<key>No. AnkiConnect is set to ask for a key.</key>
@@ -1883,6 +1931,8 @@
 	<string>Нет. Войди один раз, и Tabbi сможет им пользоваться.</string>
 	<key>No. Tabbi can only see your cards while Anki is open.</key>
 	<string>Нет. Tabbi видит твои карточки, только пока Anki открыт.</string>
+	<key>No. Tabbi couldn't read the cards (%@).</key>
+	<string>Нет. Tabbi не смогла прочитать карточки (%@).</string>
 	<key>No. That's fine if you don't use Google. The Calendar row can add it.</key>
 	<string>Нет. Если ты не пользуешься Google, это нормально. Добавить его можно в строке «Календарь».</string>
 	<key>No. The Shortcuts app didn't answer. Click Check again.</key>
@@ -1933,6 +1983,8 @@
 	<string>Не сейчас</string>
 	<key>Not reported by this Mac</key>
 	<string>Mac не сообщает данные</string>
+	<key>Not right now. Anki has no cards open: it may be syncing or on its profile list.</key>
+	<string>Сейчас нет. В Anki не открыты карточки: возможно, идёт синхронизация или открыт список профилей.</string>
 	<key>Not saved</key>
 	<string>Не сохранено</string>
 	<key>Not set up</key>
@@ -1995,6 +2047,8 @@
 	<string>Надето</string>
 	<key>On a break</key>
 	<string>На перерыве</string>
+	<key>On the profile list? Open your profile.</key>
+	<string>Видишь список профилей? Открой свой.</string>
 	<key>On today</key>
 	<string>На сегодня</string>
 	<key>One add-on to go</key>
@@ -2043,12 +2097,16 @@
 	<string>Открой %@, и Tabbi проверит снова</string>
 	<key>Open Anki</key>
 	<string>Открыть Anki</string>
+	<key>Open Anki from your Applications folder, then try again.</key>
+	<string>Открой Anki из папки «Программы» и попробуй снова.</string>
 	<key>Open Anki so Tabbi can see your cards.</key>
 	<string>Открой Anki, чтобы Tabbi видел твои карточки.</string>
 	<key>Open Anki straight into %@</key>
 	<string>Открыть Anki сразу на %@</string>
 	<key>Open Anki to see today's due cards. This tab connects as soon as it's running.</key>
 	<string>Открой Anki, чтобы увидеть карточки на сегодня. Вкладка подключится, как только Anki запустится.</string>
+	<key>Open Anki to see your due cards.</key>
+	<string>Открой Anki, чтобы увидеть карточки к повторению.</string>
 	<key>Open Anki; this tab connects on its own</key>
 	<string>Открыть Anki, вкладка подключится сама</string>
 	<key>Open Automation settings</key>
@@ -2261,8 +2319,6 @@
 	<string>Выбери месяц и год рождения</string>
 	<key>Pick the name and pet your friends will see. No account or password needed.</key>
 	<string>Выбери имя и питомца, которых увидят друзья. Аккаунт и пароль не нужны.</string>
-	<key>Pick your profile in Anki</key>
-	<string>Выбери профиль в Anki</string>
 	<key>Pin %@ to the Study button</key>
 	<string>Закрепить %@ на кнопке «Учить»</string>
 	<key>Pin as Favorite Deck</key>
@@ -2687,6 +2743,8 @@
 	<string>Выйти</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
 	<string>Войди на открывшейся странице. Tabbi заметит это автоматически.</string>
+	<key>Sign in to AnkiWeb to sync</key>
+	<string>Войди в AnkiWeb для синхронизации</string>
 	<key>Sign in to Claude</key>
 	<string>Войди в Claude</string>
 	<key>Sign in with Apple</key>
@@ -2851,6 +2909,8 @@
 	<string>Остановлено</string>
 	<key>Streak</key>
 	<string>Серия</string>
+	<key>Streak unavailable</key>
+	<string>Серия недоступна</string>
 	<key>Studied today</key>
 	<string>Сегодня есть занятия</string>
 	<key>Study</key>
@@ -3253,6 +3313,8 @@
 	<string>Разблокировка…</string>
 	<key>Undo</key>
 	<string>Отменить</string>
+	<key>Unexpected reply from Anki</key>
+	<string>Неожиданный ответ от Anki</string>
 	<key>Unexpected reply from the party server.</key>
 	<string>Неожиданный ответ сервера пати.</string>
 	<key>Unknown track</key>
@@ -3275,6 +3337,8 @@
 	<string>«Далее» показывает твои %@ в течение дня, а «План дня» распределяет дела вокруг них.</string>
 	<key>Update AnkiConnect</key>
 	<string>Обнови AnkiConnect</string>
+	<key>Update AnkiConnect from Tools › Add-ons › Check for Updates.</key>
+	<string>Обнови AnkiConnect через «Инструменты › Дополнения › Проверить обновления».</string>
 	<key>Updated %@ and applied it.</key>
 	<string>Набор %@ обновлен и применен.</string>
 	<key>Updated %@; your tabs are unchanged.</key>

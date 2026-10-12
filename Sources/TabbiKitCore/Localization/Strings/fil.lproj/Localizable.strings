@@ -487,6 +487,8 @@
 	<string>Payagan ang %@ na basahin ang mga calendar mo. Isang beses lang magtatanong ang macOS.</string>
 	<key>Allow Access</key>
 	<string>Payagan</string>
+	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
+	<string>Payagan ang Tabbi sa settings ng AnkiConnect, tapos subukan ulit.</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>Payagan ang notifications ng Tabbi sa System Settings</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
@@ -511,10 +513,14 @@
 	<string>Pakpak ng Anghel</string>
 	<key>Animations</key>
 	<string>Mga animation</string>
+	<key>Anki couldn't send your review history this time: “%@”</key>
+	<string>Hindi naipadala ng Anki ang history ng review mo ngayon: “%@”</string>
 	<key>Anki didn't answer</key>
 	<string>Hindi sumagot ang Anki</string>
 	<key>Anki has a password on</key>
 	<string>May password ang Anki</string>
+	<key>Anki has no deck called %@. It may have been renamed or deleted.</key>
+	<string>Walang deck na %@ sa Anki. Baka napalitan ang pangalan o nabura ito.</string>
 	<key>Anki is busy</key>
 	<string>Busy ang Anki</string>
 	<key>Anki is closed</key>
@@ -525,18 +531,28 @@
 	<string>Nagbubukas ang Anki</string>
 	<key>Anki is starting. The deck opens for review as soon as it's ready.</key>
 	<string>Nagbubukas ang Anki. Bubuksan ang deck para sa review kapag handa na.</string>
-	<key>Anki is waiting for you to choose whose cards to open.</key>
-	<string>Hinihintay ng Anki na piliin mo kung kaninong cards ang bubuksan.</string>
 	<key>Anki isn't installed</key>
 	<string>Hindi naka-install ang Anki</string>
 	<key>Anki isn't on this Mac</key>
 	<string>Wala ang Anki sa Mac na ito</string>
+	<key>Anki may be syncing or on its profile list. Tabbi reconnects by itself.</key>
+	<string>Baka nagsi-sync ang Anki o nasa listahan ng profile. Kusang kokonekta ulit ang Tabbi.</string>
+	<key>Anki may be syncing, checking its database or showing a dialog. Tabbi reconnects when it's done.</key>
+	<string>Baka nagsi-sync ang Anki, sinusuri ang database nito o may bukas na dialog. Kusang kokonekta ulit ang Tabbi pagkatapos.</string>
 	<key>Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.</key>
 	<string>Kailangan ng Anki ng libreng add-on na AnkiConnect para mabilang ng Tabbi ang mga card mo.</string>
+	<key>Anki reported a problem</key>
+	<string>May problemang iniulat ang Anki</string>
 	<key>Anki reviews</key>
 	<string>Mga review sa Anki</string>
+	<key>Anki said no</key>
+	<string>Tumanggi ang Anki</string>
 	<key>Anki said no to Tabbi</key>
 	<string>Tinanggihan ng Anki ang Tabbi</string>
+	<key>Anki said “%@”.</key>
+	<string>Sabi ng Anki: “%@”.</string>
+	<key>Anki said: “%@”</key>
+	<string>Sabi ng Anki: “%@”</string>
 	<key>Anki sprint</key>
 	<string>Anki sprint</string>
 	<key>Anki wouldn't open</key>
@@ -545,8 +561,16 @@
 	<string>Hinarang ng AnkiConnect ang app na ito</string>
 	<key>AnkiConnect is a free add-on that lets Tabbi count your due cards. It takes about a minute.</key>
 	<string>Ang AnkiConnect ay libreng add-on para mabilang ng Tabbi ang mga due card mo. Mga isang minuto lang ito.</string>
+	<key>AnkiConnect is out of date</key>
+	<string>Luma na ang AnkiConnect</string>
 	<key>AnkiConnect is set to ask for a key. Turning that off takes a minute.</key>
 	<string>Naka-set ang AnkiConnect na humingi ng key. Isang minuto lang para i-off iyon.</string>
+	<key>AnkiConnect isn't answering</key>
+	<string>Hindi sumasagot ang AnkiConnect</string>
+	<key>AnkiConnect needed</key>
+	<string>Kailangan ang AnkiConnect</string>
+	<key>AnkiConnect needs your API key</key>
+	<string>Kailangan ng AnkiConnect ang API key mo</string>
 	<key>AnkiConnect wants an API key</key>
 	<string>Humihingi ng API key ang AnkiConnect</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
@@ -671,6 +695,8 @@
 	<string>Mga kulay ng lahi</string>
 	<key>Bring %@ to the front</key>
 	<string>Dalhin sa harap ang %@</string>
+	<key>Bring Anki to the front to see what it's doing; this tab reconnects on its own</key>
+	<string>Ilabas ang Anki para makita kung ano ang ginagawa nito; kusang kokonekta ulit ang tab na ito</string>
 	<key>Brown noise</key>
 	<string>Brown noise</string>
 	<key>Built-in display</key>
@@ -869,6 +895,8 @@
 	<string>Isara</string>
 	<key>Close %@ settings</key>
 	<string>Isara ang settings ng %@</string>
+	<key>Close any open Anki dialog. If it keeps happening, turn off App Nap for Anki.</key>
+	<string>Isara ang anumang bukas na dialog sa Anki. Kung paulit-ulit, i-off ang App Nap para sa Anki.</string>
 	<key>Close any open window inside Anki, then check again.</key>
 	<string>Isara ang anumang bukas na window sa Anki, tapos suriin ulit.</string>
 	<key>Close details</key>
@@ -985,6 +1013,8 @@
 	<string>Hindi makasali sa party na ito</string>
 	<key>Couldn't plan your day</key>
 	<string>Hindi naplano ang araw mo</string>
+	<key>Couldn't reach Anki</key>
+	<string>Hindi maabot ang Anki</string>
 	<key>Couldn't reach the party server.</key>
 	<string>Hindi naabot ang party server.</string>
 	<key>Couldn't read today's list</key>
@@ -1035,6 +1065,8 @@
 	<string>Day review: ang focus at study minutes ngayon, mga session at puntos, ang bilang ng mga goal mo at ang mga pamagat ng task na natapos mo o dadalhin mo sa susunod.</string>
 	<key>Days in a row with at least one review</key>
 	<string>Sunod-sunod na araw na may kahit isang review</string>
+	<key>Deck not found</key>
+	<string>Hindi nakita ang deck</string>
 	<key>Deep</key>
 	<string>Deep</string>
 	<key>Deep focus</key>
@@ -1083,6 +1115,8 @@
 	<string>Binubura…</string>
 	<key>Desktop widget</key>
 	<string>Desktop widget</string>
+	<key>Details: %@</key>
+	<string>Detalye: %@</string>
 	<key>Detect automatically</key>
 	<string>Kusang hanapin</string>
 	<key>Detect claude automatically</key>
@@ -1175,6 +1209,8 @@
 	<string>Sapat na para sa %@</string>
 	<key>Enough for the %@ now.</key>
 	<string>Sapat na para sa %@.</string>
+	<key>Enter the key from AnkiConnect's config in Settings.</key>
+	<string>Ilagay sa Settings ang key mula sa config ng AnkiConnect.</string>
 	<key>Event</key>
 	<string>Event</string>
 	<key>Every deck is caught up</key>
@@ -1375,6 +1411,8 @@
 	<string>Maabisuhan kapag ubos na ang oras</string>
 	<key>Get an alert when a timer ends.</key>
 	<string>Makatanggap ng alerto kapag natapos ang timer.</string>
+	<key>Get the free Anki app from apps.ankiweb.net.</key>
+	<string>Kunin ang libreng Anki app sa apps.ankiweb.net.</string>
 	<key>Give your cat a name</key>
 	<string>Pangalanan ang pusa mo</string>
 	<key>Give your dog a name</key>
@@ -1509,6 +1547,8 @@
 	<string>I-install ang %@ para magamit ito sa pagpaplano.</string>
 	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
 	<string>I-install ang %@ para i-play ang playlist na ito, o pumili ng iba. I-click para isara</string>
+	<key>Install AnkiConnect (code %@) from Tools › Add-ons, then restart Anki.</key>
+	<string>I-install ang AnkiConnect (code %@) mula sa Tools › Add-ons, tapos i-restart ang Anki.</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>I-install ang Claude Code at mag-sign in para makita ang live na 5-oras at lingguhang limit mo.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1517,6 +1557,8 @@
 	<string>I-install ang Spotify o Music para makontrol ang playback mula sa notch.</string>
 	<key>Install the AnkiConnect add-on to open decks directly.</key>
 	<string>I-install ang AnkiConnect add-on para direktang mabuksan ang mga deck.</string>
+	<key>Install the AnkiConnect add-on to open decks directly: in Anki, choose Tools › Add-ons › Get Add-ons, paste the code %@, then restart Anki.</key>
+	<string>I-install ang AnkiConnect add-on para direktang mabuksan ang mga deck: sa Anki, piliin ang Tools › Add-ons › Get Add-ons, i-paste ang code %@, tapos i-restart ang Anki.</string>
 	<key>Install the free Anki desktop app to see your due cards, decks and streak here.</key>
 	<string>I-install ang libreng Anki desktop app para makita rito ang mga due card, deck at streak mo.</string>
 	<key>Installed</key>
@@ -1671,6 +1713,8 @@
 	<string>Naglo-load…</string>
 	<key>Location</key>
 	<string>Lokasyon</string>
+	<key>Log in from Anki's Sync button once, then sync here.</key>
+	<string>Mag-log in nang isang beses mula sa Sync button ng Anki, tapos mag-sync dito.</string>
 	<key>Long break</key>
 	<string>Mahabang break</string>
 	<key>Long days, light focus. Keep a little rhythm going.</key>
@@ -1697,6 +1741,10 @@
 	<string>Gumawa pa ng isa sa parehong paraan, naka-Off, at pangalanan ito:</string>
 	<key>Make sure Calendars is turned on for that account.</key>
 	<string>Siguraduhing naka-on ang Calendars para sa account na iyon.</string>
+	<key>Make sure the AnkiConnect add-on (code %@) is installed and Anki was restarted after installing it.</key>
+	<string>Siguraduhing naka-install ang AnkiConnect add-on (code %@) at na-restart ang Anki pagkatapos.</string>
+	<key>Make sure the AnkiConnect add-on is installed and Anki was restarted after installing it.</key>
+	<string>Siguraduhing naka-install ang AnkiConnect add-on at na-restart ang Anki pagkatapos.</string>
 	<key>Make two quick shortcuts in the Shortcuts app. It takes about two minutes.</key>
 	<string>Gumawa ng dalawang mabilis na shortcut sa Shortcuts app. Mga dalawang minuto lang ito.</string>
 	<key>Make “%@” so Tabbi can switch Do Not Disturb both ways.</key>
@@ -1859,8 +1907,8 @@
 	<string>Hindi. Libreng app ang Anki mula sa apps.ankiweb.net.</string>
 	<key>No. Anki is busy. A window inside Anki may be open.</key>
 	<string>Hindi. Busy ang Anki. Baka may bukas na window sa loob ng Anki.</string>
-	<key>No. Anki is waiting for you to pick a profile.</key>
-	<string>Hindi. Hinihintay ng Anki na pumili ka ng profile.</string>
+	<key>No. Anki said “%@”.</key>
+	<string>Hindi. Sabi ng Anki: “%@”.</string>
 	<key>No. Anki turned Tabbi down when it asked.</key>
 	<string>Hindi. Tinanggihan ng Anki ang Tabbi nang humingi ito.</string>
 	<key>No. AnkiConnect is set to ask for a key.</key>
@@ -1883,6 +1931,8 @@
 	<string>Hindi. Mag-sign in nang isang beses at magagamit na ito ng Tabbi.</string>
 	<key>No. Tabbi can only see your cards while Anki is open.</key>
 	<string>Hindi. Nakikita lang ng Tabbi ang cards mo habang bukas ang Anki.</string>
+	<key>No. Tabbi couldn't read the cards (%@).</key>
+	<string>Hindi. Hindi mabasa ng Tabbi ang mga card (%@).</string>
 	<key>No. That's fine if you don't use Google. The Calendar row can add it.</key>
 	<string>Hindi. Okay lang kung hindi ka gumagamit ng Google. Maidadagdag ito ng row na Calendar.</string>
 	<key>No. The Shortcuts app didn't answer. Click Check again.</key>
@@ -1933,6 +1983,8 @@
 	<string>Hindi muna</string>
 	<key>Not reported by this Mac</key>
 	<string>Hindi iniulat ng Mac na ito</string>
+	<key>Not right now. Anki has no cards open: it may be syncing or on its profile list.</key>
+	<string>Hindi pa ngayon. Walang bukas na card ang Anki: baka nagsi-sync ito o nasa listahan ng profile.</string>
 	<key>Not saved</key>
 	<string>Hindi na-save</string>
 	<key>Not set up</key>
@@ -1995,6 +2047,8 @@
 	<string>Suot</string>
 	<key>On a break</key>
 	<string>Naka-break</string>
+	<key>On the profile list? Open your profile.</key>
+	<string>Nasa listahan ng profile? Buksan ang profile mo.</string>
 	<key>On today</key>
 	<string>Nasa ngayon na</string>
 	<key>One add-on to go</key>
@@ -2043,12 +2097,16 @@
 	<string>Buksan ang %@, tapos susuriin ulit ng Tabbi</string>
 	<key>Open Anki</key>
 	<string>Buksan ang Anki</string>
+	<key>Open Anki from your Applications folder, then try again.</key>
+	<string>Buksan ang Anki mula sa Applications folder, tapos subukan ulit.</string>
 	<key>Open Anki so Tabbi can see your cards.</key>
 	<string>Buksan ang Anki para makita ng Tabbi ang mga card mo.</string>
 	<key>Open Anki straight into %@</key>
 	<string>Buksan ang Anki diretso sa %@</string>
 	<key>Open Anki to see today's due cards. This tab connects as soon as it's running.</key>
 	<string>Buksan ang Anki para makita ang mga card na due ngayon. Kokonekta ang tab na ito pag tumatakbo na ito.</string>
+	<key>Open Anki to see your due cards.</key>
+	<string>Buksan ang Anki para makita ang mga card na due.</string>
 	<key>Open Anki; this tab connects on its own</key>
 	<string>Buksan ang Anki; kusang kokonekta ang tab na ito</string>
 	<key>Open Automation settings</key>
@@ -2261,8 +2319,6 @@
 	<string>Piliin ang buwan at taon ng kapanganakan mo</string>
 	<key>Pick the name and pet your friends will see. No account or password needed.</key>
 	<string>Pumili ng pangalan at pet na makikita ng mga kaibigan mo. Walang account o password na kailangan.</string>
-	<key>Pick your profile in Anki</key>
-	<string>Piliin ang profile mo sa Anki</string>
 	<key>Pin %@ to the Study button</key>
 	<string>I-pin ang %@ sa Study button</string>
 	<key>Pin as Favorite Deck</key>
@@ -2687,6 +2743,8 @@
 	<string>Mag-sign Out</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
 	<string>Mag-sign in sa page na magbubukas. Kusang mapapansin ito ng Tabbi.</string>
+	<key>Sign in to AnkiWeb to sync</key>
+	<string>Mag-sign in sa AnkiWeb para mag-sync</string>
 	<key>Sign in to Claude</key>
 	<string>Mag-sign in kay Claude</string>
 	<key>Sign in with Apple</key>
@@ -2851,6 +2909,8 @@
 	<string>Itinigil</string>
 	<key>Streak</key>
 	<string>Streak</string>
+	<key>Streak unavailable</key>
+	<string>Walang streak data</string>
 	<key>Studied today</key>
 	<string>Nag-aral ngayon</string>
 	<key>Study</key>
@@ -3253,6 +3313,8 @@
 	<string>Ina-unblock…</string>
 	<key>Undo</key>
 	<string>I-undo</string>
+	<key>Unexpected reply from Anki</key>
+	<string>Hindi inaasahang sagot mula sa Anki</string>
 	<key>Unexpected reply from the party server.</key>
 	<string>Hindi inaasahang sagot mula sa party server.</string>
 	<key>Unknown track</key>
@@ -3275,6 +3337,8 @@
 	<string>Nasa Susunod ang mga %@ mo, at isinisingit ng Planuhin ang araw ang trabaho sa pagitan.</string>
 	<key>Update AnkiConnect</key>
 	<string>I-update ang AnkiConnect</string>
+	<key>Update AnkiConnect from Tools › Add-ons › Check for Updates.</key>
+	<string>I-update ang AnkiConnect mula sa Tools › Add-ons › Check for Updates.</string>
 	<key>Updated %@ and applied it.</key>
 	<string>Na-update at na-apply ang %@.</string>
 	<key>Updated %@; your tabs are unchanged.</key>

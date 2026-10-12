@@ -1,5 +1,6 @@
 import AppKit
 import Combine
+import os
 import TabbiKitCore
 import TabbiKit
 
@@ -8,8 +9,11 @@ import TabbiKit
 /// Refreshes when the module starts, when the panel opens, on a timer only
 /// while the panel is visible (fast during setup steps, every few minutes
 /// once connected), and when Anki launches, quits, or loses focus after a
-/// review session. The rest of the time nothing polls. The summary is
-/// shared with Today and the ticker through `provision`.
+/// review session. A problem (Anki syncing, a dialog open) is retried every
+/// few seconds for its first minute even with the panel closed, then less
+/// often and only while the panel shows (`AnkiRecovery`), and again each
+/// time Anki comes to the front. The rest of the time nothing polls. The
+/// summary is shared with Today and the ticker through `provision`.
 @MainActor
 final class AnkiStore: ObservableObject {
     @Published private(set) var state: AnkiConnectionState = .checking
@@ -58,8 +62,12 @@ final class AnkiStore: ObservableObject {
     private var actionErrorTask: Task<Void, Never>?
     private var workspaceObservers: [NSObjectProtocol] = []
     private var isPanelVisible = false
+    /// When the current run of `.problem` refreshes began, for the retry pace.
+    private var problemSince: Date?
     /// Where newly answered cards are logged, as the Anki module's.
     private let activity: ActivityLog?
+    /// The module's logger: failed AnkiConnect calls and summary gaps.
+    private let logger: Logger?
     /// Plays a confetti milestone when the review streak reaches a round length.
     private let celebrations: CelebrationCenter?
     /// The streak length last seen, the baseline for `StreakMilestone.reached`.
@@ -70,17 +78,25 @@ final class AnkiStore: ObservableObject {
 
     /// `client` is injected by tests; the app talks to the real AnkiConnect.
     init(activity: ActivityLog? = nil, celebrations: CelebrationCenter? = nil, runMode: RunMode,
-         client: AnkiConnectClient? = nil) {
+         client: AnkiConnectClient? = nil, logger: Logger? = nil) {
         self.activity = activity
         self.celebrations = celebrations
+        self.logger = logger
         isDemo = runMode.isDemo
         let client = client
-            ?? AnkiConnectClient(isAnkiRunning: { await MainActor.run { AnkiWorkspaceLauncher.runningAnki() != nil } })
+            ?? AnkiConnectClient(isAnkiRunning: { await MainActor.run { AnkiWorkspaceLauncher.runningAnki() != nil } },
+                                 onError: { action, error in
+                                     // Which call failed and what Anki said, so a report can be traced.
+                                     logger?.error("AnkiConnect \(action, privacy: .public) failed: \(String(describing: error), privacy: .public)")
+                                 })
         self.client = client
         opener = AnkiDeckOpener(client: client, launcher: AnkiWorkspaceLauncher())
         if let pinnedState {
             state = pinnedState
-            if pinnedState.keepsLastSummary && pinnedState != .checking {
+            // `TABBI_ANKI_SUMMARY=none` shows a problem's own screen, as
+            // when it hits before the first numbers arrive.
+            let noSummary = ProcessInfo.processInfo.environment["TABBI_ANKI_SUMMARY"]?.lowercased() == "none"
+            if pinnedState.keepsLastSummary && pinnedState != .checking && !noSummary {
                 summary = .demo()
                 updatedAt = Date().addingTimeInterval(pinnedState == .ready ? 0 : -9 * 60)
             }
@@ -127,13 +143,21 @@ final class AnkiStore: ObservableObject {
         let names: [Notification.Name] = [
             NSWorkspace.didLaunchApplicationNotification,
             NSWorkspace.didTerminateApplicationNotification,
+            NSWorkspace.didActivateApplicationNotification,
             NSWorkspace.didDeactivateApplicationNotification,
         ]
         workspaceObservers = names.map { name in
             center.addObserver(forName: name, object: nil, queue: .main) { [weak self] note in
                 let app = note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
                 guard let app, AnkiConnectClient.isAnkiApp(bundleIdentifier: app.bundleIdentifier, localizedName: app.localizedName) else { return }
-                MainActor.assumeIsolated { self?.refresh() }
+                MainActor.assumeIsolated {
+                    guard let self else { return }
+                    // Coming to the front is when the user just picked a
+                    // profile or closed a dialog; while connected, the
+                    // refresh on losing focus is enough.
+                    if name == NSWorkspace.didActivateApplicationNotification, self.state == .ready { return }
+                    self.refresh()
+                }
             }
         }
         refresh()
@@ -152,6 +176,7 @@ final class AnkiStore: ObservableObject {
         isRefreshing = false
         rolloverTask?.cancel()
         rolloverTask = nil
+        problemSince = nil
         actionError = nil
         openTask?.cancel()
         openTask = nil
@@ -169,7 +194,7 @@ final class AnkiStore: ObservableObject {
 
     func panelDidDisappear() {
         isPanelVisible = false
-        if !state.pollsWhileHidden { stopPolling() }
+        if !shouldPoll { stopPolling() }
     }
 
     // MARK: Refresh
@@ -200,16 +225,27 @@ final class AnkiStore: ObservableObject {
         let now = Date()
         let anki = AnkiWorkspaceLauncher.runningAnki()
         switch outcome {
-        case .success(let value):
+        case .success(let fetched):
+            // A piece Anki couldn't send keeps what the last summary showed.
+            let value = fetched.filling(from: summary)
+            for gap in fetched.gaps {
+                logger?.notice("Anki summary without \(gap.action, privacy: .public): \(gap.message, privacy: .public)")
+            }
             summary = value
             if let current = favorite?.updated(from: value.decks) { saveFavorite(current) }
             updatedAt = now
             state = .ready
-            logReviews(value, now: now)
-            noteStreak(value.streak)
+            // Placeholder counts must not be logged or celebrated.
+            if !value.missing.contains(.todayCount) { logReviews(value, now: now) }
+            if !value.missing.contains(.history) { noteStreak(value.streak) }
         case .failure(let error):
             state = .resolve(error: error, isInstalled: Self.isInstalled, launchedAt: anki?.launchDate, now: now)
             if !state.keepsLastSummary { summary = nil }
+        }
+        if case .problem = state {
+            problemSince = problemSince ?? now
+        } else {
+            problemSince = nil
         }
         if shouldPoll { schedulePoll() } else { stopPolling() }
     }
@@ -250,7 +286,7 @@ final class AnkiStore: ObservableObject {
     /// the current state calls for.
     private func schedulePoll() {
         pollTask?.cancel()
-        let interval = state.refreshInterval
+        let interval = state.refreshInterval(problemAge: problemAge)
         pollTask = Task { [weak self] in
             try? await Task.sleep(for: .seconds(interval))
             guard !Task.isCancelled, let self, shouldPoll else { return }
@@ -258,8 +294,14 @@ final class AnkiStore: ObservableObject {
         }
     }
 
-    /// Polls run while the panel shows, or while Anki is starting up.
-    private var shouldPoll: Bool { isPanelVisible || state.pollsWhileHidden }
+    /// Polls run while the panel shows, while Anki is starting up, and in
+    /// the first minute of a problem.
+    private var shouldPoll: Bool { isPanelVisible || state.pollsWhileHidden(problemAge: problemAge) }
+
+    /// How long the current problem has lasted; 0 outside one.
+    private var problemAge: TimeInterval {
+        problemSince.map { Date().timeIntervalSince($0) } ?? 0
+    }
 
     private func stopPolling() {
         pollTask?.cancel()

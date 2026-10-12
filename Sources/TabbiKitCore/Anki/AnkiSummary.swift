@@ -5,25 +5,54 @@ import Foundation
 /// is testable without a transport; `AnkiConnectClient.summary` fetches it.
 public struct AnkiSummary: Hashable, Sendable, Codable {
     /// Due today, summed over top-level decks only (Anki rolls children up).
-    public let newDue: Int
-    public let learnDue: Int
-    public let reviewDue: Int
+    public private(set) var newDue: Int
+    public private(set) var learnDue: Int
+    public private(set) var reviewDue: Int
     /// Reviews (button presses) since today's rollover.
-    public let reviewedToday: Int
+    public private(set) var reviewedToday: Int
     /// Consecutive days with at least one review, ending today, or ending
     /// yesterday when today has no reviews yet (the streak is still alive).
-    public let streak: Int
+    public private(set) var streak: Int
     /// One entry per day, oldest first, ending today, zero-filled.
-    public let history: [AnkiDayCount]
+    public private(set) var history: [AnkiDayCount]
     /// True retention over `retentionWindowDays`: the share of review-card
     /// answers that were not Again. Nil when there are too few reviews to say.
-    public let retention: Double?
+    public private(set) var retention: Double?
     /// How many review answers `retention` is based on.
-    public let retentionSampleSize: Int
+    public private(set) var retentionSampleSize: Int
     /// Time spent answering today's reviews in the fetched decks.
-    public let studyTimeToday: TimeInterval
+    public private(set) var studyTimeToday: TimeInterval
     /// Per-deck counts, in the order given.
-    public let decks: [AnkiDeckStats]
+    public private(set) var decks: [AnkiDeckStats]
+    /// The parts AnkiConnect couldn't send this time. Their numbers above
+    /// are placeholders (zero, or nil retention) and must not be shown,
+    /// logged or celebrated as real. Empty for a complete summary.
+    public private(set) var missing: Set<Piece>
+    /// Why each optional action failed, for logs and the panel's tooltip.
+    public private(set) var gaps: [Gap]
+
+    /// A part of the summary that comes from an optional action, so it can
+    /// be missing while the due counts still show.
+    public enum Piece: String, Hashable, Sendable, Codable, CaseIterable {
+        /// Today's review count (`getNumCardsReviewedToday` and
+        /// `getNumCardsReviewedByDay` both failed).
+        case todayCount
+        /// The per-day history and the streak (`getNumCardsReviewedByDay`).
+        case history
+        /// Retention and today's study time (`cardReviews`).
+        case reviewLog
+    }
+
+    /// An optional action that failed, and what Anki said.
+    public struct Gap: Hashable, Sendable, Codable {
+        public let action: String
+        public let message: String
+
+        public init(action: String, message: String) {
+            self.action = action
+            self.message = message
+        }
+    }
 
     /// Days of history kept for the sparkline.
     public static let defaultHistoryDays = 14
@@ -46,6 +75,8 @@ public struct AnkiSummary: Hashable, Sendable, Codable {
     ///   - reviews: `cardReviews` rows from any decks; duplicates are ignored.
     ///   - now: the current instant, for the retention window.
     ///   - today: the current Anki day (already shifted by the rollover hour).
+    ///   - missing: the pieces whose actions failed; their inputs are empty.
+    ///   - gaps: the failed optional actions, with Anki's message.
     public init(
         deckStats: [AnkiDeckStats],
         reviewedToday: Int,
@@ -56,8 +87,12 @@ public struct AnkiSummary: Hashable, Sendable, Codable {
         rolloverHour: Int = 4,
         calendar: Calendar = .current,
         historyDays: Int = AnkiSummary.defaultHistoryDays,
-        retentionWindowDays: Int = AnkiSummary.defaultRetentionWindowDays
+        retentionWindowDays: Int = AnkiSummary.defaultRetentionWindowDays,
+        missing: Set<Piece> = [],
+        gaps: [Gap] = []
     ) {
+        self.missing = missing
+        self.gaps = gaps
         let roots = Self.rootDecks(deckStats)
         newDue = roots.reduce(0) { $0 + $1.newCount }
         learnDue = roots.reduce(0) { $0 + $1.learnCount }
@@ -166,24 +201,97 @@ extension AnkiConnectClient {
         let allDecks = try await decks()
         let names = allDecks.map(\.name)
         let stats = try await deckStats(for: allDecks)
-        let reviewedToday = try await numCardsReviewedToday()
-        let byDay = try await numCardsReviewedByDay()
+
+        // The due counts above are what the panel is for; the rest only
+        // decorates it, so an action Anki fails for its own reasons leaves
+        // a gap instead of failing everything. Anki closing or going away
+        // mid-refresh still fails the whole refresh.
+        var gaps: [AnkiSummary.Gap] = []
+        let reviewedToday = try await optionalPiece("getNumCardsReviewedToday", gaps: &gaps) { try await numCardsReviewedToday() }
+        let byDay = try await optionalPiece("getNumCardsReviewedByDay", gaps: &gaps) { try await numCardsReviewedByDay() }
 
         let startID = Int64((now.timeIntervalSince1970 - TimeInterval(retentionWindowDays) * 86_400) * 1000)
-        let reviews = try await cardReviews(decks: names, startID: startID)
+        let reviews = try await optionalPiece("cardReviews", gaps: &gaps) { try await cardReviews(decks: names, startID: startID) }
+
+        var missing: Set<AnkiSummary.Piece> = []
+        if byDay == nil { missing.insert(.history) }
+        if byDay == nil, reviewedToday == nil { missing.insert(.todayCount) }
+        if reviews == nil { missing.insert(.reviewLog) }
 
         return AnkiSummary(
             deckStats: stats,
-            reviewedToday: reviewedToday,
-            reviewsByDay: byDay,
-            reviews: reviews,
+            reviewedToday: reviewedToday ?? 0,
+            reviewsByDay: byDay ?? [],
+            reviews: reviews ?? [],
             now: now,
             today: AnkiDay(date: now, rolloverHour: rolloverHour, calendar: calendar),
             rolloverHour: rolloverHour,
             calendar: calendar,
             historyDays: historyDays,
-            retentionWindowDays: retentionWindowDays
+            retentionWindowDays: retentionWindowDays,
+            missing: missing,
+            gaps: gaps
         )
+    }
+
+    /// Runs one optional action of `summary`: its value, or nil and a gap
+    /// when Anki fails it for a reason of its own (an error string, a reply
+    /// Tabbi can't read, an action the add-on lacks). Anki being closed,
+    /// busy or without a collection still throws.
+    private func optionalPiece<T: Sendable>(
+        _ action: String, gaps: inout [AnkiSummary.Gap], _ body: () async throws -> T
+    ) async throws -> T? {
+        do {
+            return try await body()
+        } catch let error as AnkiConnectError where !error.failsWholeRefresh {
+            gaps.append(AnkiSummary.Gap(action: action, message: error.message ?? String(describing: error)))
+            return nil
+        }
+    }
+}
+
+extension AnkiConnectError {
+    /// Whether this error means nothing can be read right now (Anki is
+    /// closed, busy, without a collection or locked), rather than one
+    /// action failing on its own.
+    public var failsWholeRefresh: Bool {
+        switch self {
+        case .anki, .invalidResponse, .unsupportedAction: return false
+        default: return true
+        }
+    }
+}
+
+extension AnkiSummary {
+    /// This summary with its missing pieces filled in from `previous`, when
+    /// that one is from the same Anki day and has them, so one failed
+    /// optional action doesn't blank the streak or retention that were
+    /// showing a minute ago. Pieces `previous` lacks stay missing.
+    public func filling(from previous: AnkiSummary?) -> AnkiSummary {
+        guard let previous, !missing.isEmpty, previous.day == day else { return self }
+        var filled = self
+        if missing.contains(.todayCount), !previous.missing.contains(.todayCount) {
+            filled.reviewedToday = previous.reviewedToday
+            filled.missing.remove(.todayCount)
+        }
+        if missing.contains(.history), !previous.missing.contains(.history) {
+            // The newer count for today wins; the days before can't change.
+            let today = max(filled.reviewedToday, previous.reviewedToday)
+            var history = previous.history
+            if let last = history.last { history[history.count - 1] = AnkiDayCount(day: last.day, count: today) }
+            let startsToday = previous.reviewedToday == 0 && today > 0
+            filled.history = history
+            filled.reviewedToday = today
+            filled.streak = previous.streak + (startsToday ? 1 : 0)
+            filled.missing.remove(.history)
+        }
+        if missing.contains(.reviewLog), !previous.missing.contains(.reviewLog) {
+            filled.retention = previous.retention
+            filled.retentionSampleSize = previous.retentionSampleSize
+            filled.studyTimeToday = previous.studyTimeToday
+            filled.missing.remove(.reviewLog)
+        }
+        return filled
     }
 }
 
