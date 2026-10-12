@@ -1551,12 +1551,18 @@
 	<string>Apple 계정에 연결돼 있어요. 일반의 계정 삭제로 지울 수 있어요.</string>
 	<key>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</key>
 	<string>Claude가 설치된 다음 브라우저에 로그인 페이지가 열려요. 거기서 로그인하면 Tabbi가 알아서 알아차려요.</string>
+	<key>It works.</key>
+	<string>잘 돼요.</string>
+	<key>It works. Do Not Disturb turned on, then off again.</key>
+	<string>잘 돼요. 방해금지 모드가 켜졌다가 꺼졌어요.</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
 	<string>무료 플래시카드 앱이에요. 설치한 다음 여기로 돌아오세요.</string>
 	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
 	<string>하루를 계획하고 질문에 답해 주는 AI 도우미예요. 다른 기능은 없어도 모두 작동해요.</string>
 	<key>It's for people %lld and older.</key>
 	<string>만 %lld세 이상만 이용할 수 있어요.</string>
+	<key>It's on. Turning it off again…</key>
+	<string>켜졌어요. 다시 끄는 중…</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>올해 다른 이벤트의 아이템이에요. 각 이벤트 기간에 집중하면 얻어요</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -2923,6 +2929,8 @@
 	<string>시스템</string>
 	<key>Tabbi can't control %@</key>
 	<string>Tabbi가 %@ 제어 불가</string>
+	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
+	<string>“%@”을(를) 찾을 수 없어요. 단축어에서 이름을 확인하세요.</string>
 	<key>Tabbi can't read your calendar</key>
 	<string>Tabbi가 캘린더를 못 읽어요</string>
 	<key>Tabbi checks by itself and turns green when it works.</key>
@@ -3095,6 +3103,8 @@
 	<string>30일 전엔 이게 힘들었어요. 이제는 아니라는 걸 느껴 봐요.</string>
 	<key>This Mac blocks calendar access</key>
 	<string>이 Mac은 캘린더 접근을 막아요</string>
+	<key>This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.</key>
+	<string>이 Mac에서 Tabbi용 단축어를 실행할 수 없어요. macOS를 최신으로 업데이트하세요.</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>이 계정은 더 이상 파티를 사용할 수 없어요. 잘못된 것 같다면 %@(으)로 문의하세요.</string>
 	<key>This chat is open</key>
@@ -3235,6 +3245,8 @@
 	<string>셔플 끄기</string>
 	<key>Turn shuffle on</key>
 	<string>셔플 켜기</string>
+	<key>Turning Do Not Disturb on…</key>
+	<string>방해금지 모드를 켜는 중…</string>
 	<key>Type a name first</key>
 	<string>먼저 이름을 입력하세요</string>
 	<key>Type a shortcut name first</key>
@@ -3649,5 +3661,9 @@
 	<string>키트</string>
 	<key>your playlist</key>
 	<string>내 플레이리스트</string>
+	<key>“%@” didn't finish. Open it in Shortcuts and run it once to see why.</key>
+	<string>“%@”이(가) 끝나지 않았어요. 단축어에서 열어 실행하고 이유를 확인하세요.</string>
+	<key>“%@” took too long. Open it in Shortcuts and run it once yourself.</key>
+	<string>“%@”이(가) 너무 오래 걸렸어요. 단축어에서 열어 한 번 실행해 보세요.</string>
 </dict>
 </plist>

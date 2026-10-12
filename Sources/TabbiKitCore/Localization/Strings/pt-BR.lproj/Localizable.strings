@@ -1551,12 +1551,18 @@
 	<string>Pertencem à sua Conta Apple. Apagar conta, em Geral, os remove.</string>
 	<key>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</key>
 	<string>Ele instala o Claude e depois abre uma página de login no seu navegador. Entre lá e o Tabbi percebe sozinho.</string>
+	<key>It works.</key>
+	<string>Funciona.</string>
+	<key>It works. Do Not Disturb turned on, then off again.</key>
+	<string>Funciona. O Não Perturbe ligou e desligou.</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
 	<string>É um app gratuito de flashcards. Instale e depois volte aqui.</string>
 	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
 	<string>É um assistente de IA que planeja seu dia e responde perguntas. Todo o resto funciona sem ele.</string>
 	<key>It's for people %lld and older.</key>
 	<string>É para pessoas a partir de %lld anos.</string>
+	<key>It's on. Turning it off again…</key>
+	<string>Ativado. Desativando de novo…</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>Itens dos outros eventos do ano, conquistados com foco enquanto cada um acontece</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -2923,6 +2929,8 @@
 	<string>Sistema</string>
 	<key>Tabbi can't control %@</key>
 	<string>O Tabbi não consegue controlar %@</string>
+	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
+	<string>O Tabbi não encontra “%@”. Confira o nome no Atalhos.</string>
 	<key>Tabbi can't read your calendar</key>
 	<string>O Tabbi não lê seu calendário</string>
 	<key>Tabbi checks by itself and turns green when it works.</key>
@@ -3095,6 +3103,8 @@
 	<string>Trinta dias atrás isso era difícil. Repare que não é mais.</string>
 	<key>This Mac blocks calendar access</key>
 	<string>Este Mac bloqueia o calendário</string>
+	<key>This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.</key>
+	<string>Este Mac não consegue rodar atalhos para o Tabbi. Atualize o macOS.</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>Esta conta não pode mais usar Grupo. Se achar que é um erro, escreva para %@.</string>
 	<key>This chat is open</key>
@@ -3235,6 +3245,8 @@
 	<string>Desativar aleatório</string>
 	<key>Turn shuffle on</key>
 	<string>Ativar aleatório</string>
+	<key>Turning Do Not Disturb on…</key>
+	<string>Ativando o Não Perturbe…</string>
 	<key>Type a name first</key>
 	<string>Digite um nome primeiro</string>
 	<key>Type a shortcut name first</key>
@@ -3649,5 +3661,9 @@
 	<string>seu kit</string>
 	<key>your playlist</key>
 	<string>sua playlist</string>
+	<key>“%@” didn't finish. Open it in Shortcuts and run it once to see why.</key>
+	<string>“%@” não terminou. Abra no Atalhos e rode para ver o motivo.</string>
+	<key>“%@” took too long. Open it in Shortcuts and run it once yourself.</key>
+	<string>“%@” demorou demais. Abra no Atalhos e rode uma vez.</string>
 </dict>
 </plist>

@@ -1537,10 +1537,16 @@
 	<string>إنها مرتبطة بحساب Apple الخاص بك. يزيلها حذف الحساب في عام.</string>
 	<key>It installs Claude, then opens a sign-in page in your browser. Sign in there and Tabbi notices by itself.</key>
 	<string>يثبّت Claude، ثم يفتح صفحة تسجيل الدخول في متصفحك. سجّل الدخول هناك وسيلاحظ Tabbi ذلك تلقائيًا.</string>
+	<key>It works.</key>
+	<string>يعمل.</string>
+	<key>It works. Do Not Disturb turned on, then off again.</key>
+	<string>يعمل. تم تشغيل عدم الإزعاج ثم إيقافه.</string>
 	<key>It's a free flashcard app. Get it, then come back here.</key>
 	<string>إنه تطبيق بطاقات مجاني. نزّله ثم عد إلى هنا.</string>
 	<key>It's an AI helper that can plan your day and answer questions. Everything else works without it.</key>
 	<string>إنه مساعد AI يمكنه تخطيط يومك والإجابة عن أسئلتك. كل شيء آخر يعمل بدونه.</string>
+	<key>It's on. Turning it off again…</key>
+	<string>تم التشغيل. جارٍ الإيقاف مجددًا…</string>
 	<key>Items from the year's other events, earned by focusing while each one runs</key>
 	<string>عناصر من مناسبات العام الأخرى، تُكسب بالتركيز أثناء كل منها</string>
 	<key>Items with nothing to show are skipped.</key>
@@ -2899,6 +2905,8 @@
 	<string>النظام</string>
 	<key>Tabbi can't control %@</key>
 	<string>لا يستطيع Tabbi التحكم في %@</string>
+	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
+	<string>لا يجد Tabbi “%@”. تحقق من اسمه في الاختصارات.</string>
 	<key>Tabbi can't read your calendar</key>
 	<string>لا يستطيع Tabbi قراءة تقويمك</string>
 	<key>Tabbi checks by itself and turns green when it works.</key>
@@ -3065,6 +3073,8 @@
 	<string>قبل ثلاثين يومًا كان هذا صعبًا. لاحظ أنه لم يعد كذلك.</string>
 	<key>This Mac blocks calendar access</key>
 	<string>هذا الـMac يحظر الوصول إلى التقويم</string>
+	<key>This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.</key>
+	<string>لا يستطيع هذا الـ Mac تشغيل الاختصارات لـ Tabbi. تأكد من تحديث macOS.</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>لم يعد بإمكان هذا الحساب استخدام المجموعة. إن كنت تظن أن هذا خطأ، فاكتب إلى %@.</string>
 	<key>This chat is open</key>
@@ -3203,6 +3213,8 @@
 	<string>إيقاف الترتيب العشوائي</string>
 	<key>Turn shuffle on</key>
 	<string>تشغيل الترتيب العشوائي</string>
+	<key>Turning Do Not Disturb on…</key>
+	<string>جارٍ تشغيل عدم الإزعاج…</string>
 	<key>Type a name first</key>
 	<string>اكتب اسمًا أولًا</string>
 	<key>Type a shortcut name first</key>
@@ -3609,5 +3621,9 @@
 	<string>حزمتك</string>
 	<key>your playlist</key>
 	<string>قائمة التشغيل لديك</string>
+	<key>“%@” didn't finish. Open it in Shortcuts and run it once to see why.</key>
+	<string>لم يكتمل “%@”. افتحه في الاختصارات وشغّله لمعرفة السبب.</string>
+	<key>“%@” took too long. Open it in Shortcuts and run it once yourself.</key>
+	<string>استغرق “%@” وقتًا طويلًا. افتحه في الاختصارات وشغّله مرة بنفسك.</string>
 </dict>
 </plist>

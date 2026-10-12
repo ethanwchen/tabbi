@@ -21966,7 +21966,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Google Kalender hinzufügen"
+            "value" : "Google hinzufügen"
           }
         },
         "es" : {
@@ -21978,7 +21978,7 @@
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idagdag ang Google Calendar"
+            "value" : "Idagdag ang Google"
           }
         },
         "fr" : {
@@ -22008,7 +22008,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Добавить Google Календарь"
+            "value" : "Добавить Google"
           }
         },
         "zh-Hans" : {
@@ -65130,6 +65130,150 @@
         }
       }
     },
+    "It works." : {
+      "comment" : "Do Not Disturb test in Settings > Connections: it passed (short).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يعمل."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klappt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funciona."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gumagana."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ça marche."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잘 돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funciona."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Работает."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功。"
+          }
+        }
+      }
+    },
+    "It works. Do Not Disturb turned on, then off again." : {
+      "comment" : "Do Not Disturb test in Settings > Connections: it passed.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يعمل. تم تشغيل عدم الإزعاج ثم إيقافه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klappt. Nicht stören ging an und wieder aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funciona. No molestar se activó y se desactivó."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gumagana. Nag-on at nag-off ang Do Not Disturb."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ça marche. Ne pas déranger s'est activé puis désactivé."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功です。おやすみモードがオンになり、オフに戻りました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잘 돼요. 방해금지 모드가 켜졌다가 꺼졌어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funciona. O Não Perturbe ligou e desligou."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Работает. «Не беспокоить» включился и выключился."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功。勿扰模式已打开又关闭。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功。勿擾模式已開啟又關閉。"
+          }
+        }
+      }
+    },
     "It's a free flashcard app. Get it, then come back here." : {
       "comment" : "Connection status line in Settings > Connections (Anki). %@ is an app or connection name, %lld a number.",
       "extractionState" : "manual",
@@ -65378,6 +65522,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "限 %lld 歲以上使用。"
+          }
+        }
+      }
+    },
+    "It's on. Turning it off again…" : {
+      "comment" : "Do Not Disturb test in Settings > Connections, while it runs: the second step.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم التشغيل. جارٍ الإيقاف مجددًا…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ist an. Wird wieder ausgeschaltet…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activado. Desactivándolo de nuevo…"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naka-on na. Ino-off ulit…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C'est activé. Désactivation…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オンになりました。オフに戻しています…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "켜졌어요. 다시 끄는 중…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativado. Desativando de novo…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включено. Выключаем обратно…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已打开。正在关闭…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已開啟。正在關閉…"
           }
         }
       }
@@ -115177,6 +115393,78 @@
         }
       }
     },
+    "Tabbi can't find “%@”. Check its name in Shortcuts." : {
+      "comment" : "Do Not Disturb test failed: the shortcut (named %@) is missing. Shortcuts is the macOS app.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يجد Tabbi “%@”. تحقق من اسمه في الاختصارات."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi findet „%@“ nicht. Prüfe den Namen in Kurzbefehle."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi no encuentra “%@”. Revisa su nombre en Atajos."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi mahanap ng Tabbi ang “%@”. Tingnan ang pangalan nito sa Shortcuts."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi ne trouve pas « %@ ». Vérifie son nom dans Raccourcis."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」が見つかりません。ショートカットで名前を確認してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@”을(를) 찾을 수 없어요. 단축어에서 이름을 확인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi não encontra “%@”. Confira o nome no Atalhos."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi не находит «%@». Проверь название в Быстрых командах."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 找不到“%@”。请在快捷指令中检查它的名称。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 找不到「%@」。請在捷徑中檢查它的名稱。"
+          }
+        }
+      }
+    },
     "Tabbi can't read your calendar" : {
       "comment" : "Connection status line in Settings > Connections (Calendar). %@ is an app or connection name, %lld a number.",
       "extractionState" : "manual",
@@ -121478,6 +121766,78 @@
         }
       }
     },
+    "This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date." : {
+      "comment" : "Do Not Disturb test failed: shortcuts can't run at all.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يستطيع هذا الـ Mac تشغيل الاختصارات لـ Tabbi. تأكد من تحديث macOS."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Mac kann für Tabbi keine Kurzbefehle ausführen. Halte macOS aktuell."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Mac no puede ejecutar atajos para Tabbi. Comprueba que macOS esté al día."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi makapagpatakbo ng shortcuts ang Mac na ito para sa Tabbi. I-update ang macOS."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce Mac ne peut pas lancer de raccourcis pour Tabbi. Mets macOS à jour."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このMacではTabbiのショートカットを実行できません。macOSを最新にしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 Mac에서 Tabbi용 단축어를 실행할 수 없어요. macOS를 최신으로 업데이트하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Mac não consegue rodar atalhos para o Tabbi. Atualize o macOS."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот Mac не может запускать команды для Tabbi. Обнови macOS."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这台 Mac 无法为 Tabbi 运行快捷指令。请更新 macOS。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這台 Mac 無法為 Tabbi 執行捷徑。請更新 macOS。"
+          }
+        }
+      }
+    },
     "This account can no longer use Party. If you think that's a mistake, write to %@." : {
       "comment" : "Party: detail when the account is banned; %@ is the support email address.",
       "extractionState" : "manual",
@@ -126552,6 +126912,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟隨機播放"
+          }
+        }
+      }
+    },
+    "Turning Do Not Disturb on…" : {
+      "comment" : "Do Not Disturb test in Settings > Connections, while it runs: the first step.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ تشغيل عدم الإزعاج…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht stören wird eingeschaltet…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activando No molestar…"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ino-on ang Do Not Disturb…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activation de Ne pas déranger…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "おやすみモードをオンにしています…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "방해금지 모드를 켜는 중…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativando o Não Perturbe…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включаем «Не беспокоить»…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在打开勿扰模式…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在開啟勿擾模式…"
           }
         }
       }
@@ -143484,6 +143916,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的播放列表"
+          }
+        }
+      }
+    },
+    "“%@” didn't finish. Open it in Shortcuts and run it once to see why." : {
+      "comment" : "Do Not Disturb test failed: the shortcut (named %@) failed.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يكتمل “%@”. افتحه في الاختصارات وشغّله لمعرفة السبب."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ wurde nicht fertig. Öffne ihn in Kurzbefehle und führe ihn aus, um den Grund zu sehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” no terminó. Ábrelo en Atajos y ejecútalo para ver por qué."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi natapos ang “%@”. Buksan ito sa Shortcuts at patakbuhin para makita kung bakit."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » n'a pas abouti. Ouvre-le dans Raccourcis et lance-le pour voir pourquoi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」が完了しませんでした。ショートカットで開いて実行し、理由を確認してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@”이(가) 끝나지 않았어요. 단축어에서 열어 실행하고 이유를 확인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” não terminou. Abra no Atalhos e rode para ver o motivo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«%@» не завершилась. Открой ее в Быстрых командах и запусти, чтобы понять почему."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@”没有完成。请在快捷指令中打开并运行，看看原因。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」沒有完成。請在捷徑中打開並執行，看看原因。"
+          }
+        }
+      }
+    },
+    "“%@” took too long. Open it in Shortcuts and run it once yourself." : {
+      "comment" : "Do Not Disturb test failed: the shortcut (named %@) timed out.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استغرق “%@” وقتًا طويلًا. افتحه في الاختصارات وشغّله مرة بنفسك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ hat zu lange gedauert. Öffne ihn in Kurzbefehle und führe ihn einmal selbst aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” tardó demasiado. Ábrelo en Atajos y ejecútalo una vez."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masyadong natagalan ang “%@”. Buksan ito sa Shortcuts at patakbuhin nang isang beses."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » a pris trop de temps. Ouvre-le dans Raccourcis et lance-le une fois."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」に時間がかかりすぎました。ショートカットで開いて一度実行してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@”이(가) 너무 오래 걸렸어요. 단축어에서 열어 한 번 실행해 보세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” demorou demais. Abra no Atalhos e rode uma vez."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«%@» выполнялась слишком долго. Открой ее в Быстрых командах и запусти сам."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@”耗时太久。请在快捷指令中打开并亲自运行一次。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」花了太久時間。請在捷徑中打開並親自執行一次。"
           }
         }
       }
