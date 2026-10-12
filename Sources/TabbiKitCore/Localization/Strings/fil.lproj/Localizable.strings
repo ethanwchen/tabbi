@@ -865,6 +865,10 @@
 	<string>I-click para isara</string>
 	<key>Click to send the pet home</key>
 	<string>I-click para pauwiin ang pet</string>
+	<key>Click to take off</key>
+	<string>I-click para hubarin</string>
+	<key>Click to wear</key>
+	<string>I-click para isuot</string>
 	<key>Close</key>
 	<string>Isara</string>
 	<key>Close %@ settings</key>
@@ -1291,6 +1295,10 @@
 	<string>Naka-focus sa</string>
 	<key>Focusing on: %@</key>
 	<string>Naka-focus sa: %@</string>
+	<key>For signing in during Tabbi's first 100 days.</key>
+	<string>Sa nag-sign in sa unang 100 araw.</string>
+	<key>For using Tabbi in its launch week.</key>
+	<string>Sa gumamit ng Tabbi sa launch week.</string>
 	<key>Forever friends</key>
 	<string>Habambuhay</string>
 	<key>Found: %lld min toward the event</key>
@@ -1379,10 +1387,6 @@
 	<string>Pangalanan ang pusa mo</string>
 	<key>Give your dog a name</key>
 	<string>Pangalanan ang aso mo</string>
-	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
-	<string>Para sa lahat ng mag-sign in sa Tabbi sa unang 100 araw nito.</string>
-	<key>Given to everyone who used Tabbi in its launch week.</key>
-	<string>Para sa lahat ng gumamit ng Tabbi sa launch week nito.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>Kailangan ng Glass controls ang macOS 26, at nagiging solid ang mga ito kapag naka-on ang Reduce Transparency.</string>
 	<key>Go back one step</key>
@@ -1659,6 +1663,8 @@
 	<string>Lilac</string>
 	<key>Limited</key>
 	<string>Limitado</string>
+	<key>Limited edition</key>
+	<string>Limitadong edisyon</string>
 	<key>Lion Dance Hat</key>
 	<string>Sombrero ng Lion Dance</string>
 	<key>Listen to %@</key>
@@ -2144,7 +2150,7 @@
 	<key>Out of sight. Press %@ to open it.</key>
 	<string>Nakatago. Pindutin ang %@ para buksan ito.</string>
 	<key>Owned</key>
-	<string>Sa iyo na</string>
+	<string>Iyo na</string>
 	<key>Pals</key>
 	<string>Barkada</string>
 	<key>Panel size</key>
@@ -3259,6 +3265,8 @@
 	<string>Hindi kilalang track</string>
 	<key>Unlike</key>
 	<string>I-unlike</string>
+	<key>Unlock for %lld pts</key>
+	<string>I-unlock sa %lld pts</string>
 	<key>Unmute</key>
 	<string>I-unmute</string>
 	<key>Unpin %@ from the Study button</key>

@@ -865,6 +865,10 @@
 	<string>Haz clic para cerrar</string>
 	<key>Click to send the pet home</key>
 	<string>Haz clic para mandar a tu mascota a casa</string>
+	<key>Click to take off</key>
+	<string>Haz clic para quitártelo</string>
+	<key>Click to wear</key>
+	<string>Haz clic para ponértelo</string>
 	<key>Close</key>
 	<string>Cerrar</string>
 	<key>Close %@ settings</key>
@@ -1291,6 +1295,10 @@
 	<string>Enfocado en</string>
 	<key>Focusing on: %@</key>
 	<string>Enfocado en: %@</string>
+	<key>For signing in during Tabbi's first 100 days.</key>
+	<string>Por entrar en los primeros 100 días.</string>
+	<key>For using Tabbi in its launch week.</key>
+	<string>Por usar Tabbi en su semana de lanzamiento.</string>
 	<key>Forever friends</key>
 	<string>Para siempre</string>
 	<key>Found: %lld min toward the event</key>
@@ -1379,10 +1387,6 @@
 	<string>Ponle nombre a tu gato</string>
 	<key>Give your dog a name</key>
 	<string>Ponle nombre a tu perro</string>
-	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
-	<string>Para todos los que inician sesión en Tabbi en sus primeros 100 días.</string>
-	<key>Given to everyone who used Tabbi in its launch week.</key>
-	<string>Para todos los que usaron Tabbi en su semana de lanzamiento.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>Los controles de cristal necesitan macOS 26 y se vuelven sólidos con "Reducir transparencia" activado.</string>
 	<key>Go back one step</key>
@@ -1659,6 +1663,8 @@
 	<string>Lila</string>
 	<key>Limited</key>
 	<string>Limitado</string>
+	<key>Limited edition</key>
+	<string>Edición limitada</string>
 	<key>Lion Dance Hat</key>
 	<string>Gorro de danza del león</string>
 	<key>Listen to %@</key>
@@ -3259,6 +3265,8 @@
 	<string>Canción desconocida</string>
 	<key>Unlike</key>
 	<string>Ya no me gusta</string>
+	<key>Unlock for %lld pts</key>
+	<string>Desbloquear por %lld pts</string>
 	<key>Unmute</key>
 	<string>Activar sonido</string>
 	<key>Unpin %@ from the Study button</key>

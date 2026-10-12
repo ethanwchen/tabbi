@@ -853,6 +853,10 @@
 	<string>انقر للإغلاق</string>
 	<key>Click to send the pet home</key>
 	<string>انقر لإعادة رفيقك إلى البيت</string>
+	<key>Click to take off</key>
+	<string>انقر لنزعه</string>
+	<key>Click to wear</key>
+	<string>انقر لارتدائه</string>
 	<key>Close</key>
 	<string>إغلاق</string>
 	<key>Close %@ settings</key>
@@ -1279,6 +1283,10 @@
 	<string>التركيز على</string>
 	<key>Focusing on: %@</key>
 	<string>التركيز على: %@</string>
+	<key>For signing in during Tabbi's first 100 days.</key>
+	<string>لمن سجّل الدخول في أول 100 يوم.</string>
+	<key>For using Tabbi in its launch week.</key>
+	<string>لمن استخدم Tabbi في أسبوع إطلاقه.</string>
 	<key>Forever friends</key>
 	<string>أصدقاء للأبد</string>
 	<key>Found: %lld min toward the event</key>
@@ -1367,10 +1375,6 @@
 	<string>امنح قطتك اسمًا</string>
 	<key>Give your dog a name</key>
 	<string>سمِّ كلبك</string>
-	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
-	<string>هدية لكل من يسجّل الدخول إلى Tabbi في أول 100 يوم.</string>
-	<key>Given to everyone who used Tabbi in its launch week.</key>
-	<string>هدية لكل من استخدم Tabbi في أسبوع إطلاقه.</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>تتطلب عناصر التحكم الزجاجية macOS 26، وتصبح صلبة عند تشغيل تقليل الشفافية.</string>
 	<key>Go back one step</key>
@@ -1643,6 +1647,8 @@
 	<string>ليلكي</string>
 	<key>Limited</key>
 	<string>محدود</string>
+	<key>Limited edition</key>
+	<string>إصدار محدود</string>
 	<key>Lion Dance Hat</key>
 	<string>قبعة رقصة الأسد</string>
 	<key>Listen to %@</key>

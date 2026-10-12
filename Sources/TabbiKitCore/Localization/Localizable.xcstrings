@@ -39692,6 +39692,150 @@
         }
       }
     },
+    "Click to take off" : {
+      "comment" : "Closet footer beside the name of a worn item the pointer is on.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انقر لنزعه"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke zum Ablegen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic para quitártelo"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-click para hubarin"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique pour l'enlever"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリックで外す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클릭해서 벗기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique para tirar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми, чтобы снять"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点按即可取下"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "點一下即可取下"
+          }
+        }
+      }
+    },
+    "Click to wear" : {
+      "comment" : "Closet footer beside the name of an owned item the pointer is on.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انقر لارتدائه"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke zum Anziehen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic para ponértelo"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-click para isuot"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique pour le porter"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリックで着る"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클릭해서 입기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique para usar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми, чтобы надеть"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点按即可穿戴"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "點一下即可穿上"
+          }
+        }
+      }
+    },
     "Close" : {
       "comment" : "Tooltip and VoiceOver label: closes the open notch panel. A verb.",
       "extractionState" : "manual",
@@ -55500,6 +55644,150 @@
         }
       }
     },
+    "For signing in during Tabbi's first 100 days." : {
+      "comment" : "How to earn the Founder's Pin, a limited edition Closet item: signing in with Apple during the 100 days after Tabbi launched. Shown after the item name in the Closet footer, so keep it short.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لمن سجّل الدخول في أول 100 يوم."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fürs Anmelden in Tabbis ersten 100 Tagen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por entrar en los primeros 100 días."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sa nag-sign in sa unang 100 araw."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecté pendant les 100 premiers jours."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最初の100日間にサインインした人へ。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "출시 후 100일 안에 로그인한 분께."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por entrar nos primeiros 100 dias."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За вход в первые 100 дней Tabbi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Tabbi 最初 100 天内登录即可获得。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Tabbi 最初 100 天內登入即可獲得。"
+          }
+        }
+      }
+    },
+    "For using Tabbi in its launch week." : {
+      "comment" : "How to earn the launch week cap, a limited edition Closet item: using Tabbi during its launch week. Shown after the item name in the Closet footer, so keep it short.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لمن استخدم Tabbi في أسبوع إطلاقه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fürs Mitmachen in der Startwoche."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por usar Tabbi en su semana de lanzamiento."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sa gumamit ng Tabbi sa launch week."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour Tabbi pendant sa semaine de lancement."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "公開週にTabbiを使った人へ。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "출시 주에 Tabbi를 쓴 분께."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por usar o Tabbi na semana de estreia."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За вход в неделю запуска."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Tabbi 发布周使用即可获得。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Tabbi 發布週使用即可獲得。"
+          }
+        }
+      }
+    },
     "Forever friends" : {
       "comment" : "Bond tier name for the top bond level 10.",
       "extractionState" : "manual",
@@ -58898,150 +59186,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "幫你的狗取個名字"
-          }
-        }
-      }
-    },
-    "Given to everyone who signs in to Tabbi in its first 100 days." : {
-      "comment" : "How to earn the Founder's Pin, a limited edition Closet item: signing in with Apple during the 100 days after Tabbi launched.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "هدية لكل من يسجّل الدخول إلى Tabbi في أول 100 يوم."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Für alle, die sich in den ersten 100 Tagen bei Tabbi anmelden."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para todos los que inician sesión en Tabbi en sus primeros 100 días."
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para sa lahat ng mag-sign in sa Tabbi sa unang 100 araw nito."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Offert à tous ceux qui se connectent à Tabbi pendant ses 100 premiers jours."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tabbiの最初の100日間にサインインしたすべての人に贈られます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tabbi 출시 후 100일 안에 로그인한 모든 분께 드려요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para todos que entrarem no Tabbi nos primeiros 100 dias."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Для всех, кто вошёл в Tabbi в первые 100 дней."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "送给在 Tabbi 最初 100 天内登录的每个人。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "送給在 Tabbi 最初 100 天內登入的每個人。"
-          }
-        }
-      }
-    },
-    "Given to everyone who used Tabbi in its launch week." : {
-      "comment" : "How to earn the launch week cap.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "هدية لكل من استخدم Tabbi في أسبوع إطلاقه."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Für alle, die Tabbi in der Startwoche genutzt haben."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para todos los que usaron Tabbi en su semana de lanzamiento."
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para sa lahat ng gumamit ng Tabbi sa launch week nito."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Offert à tous ceux qui ont utilisé Tabbi pendant sa semaine de lancement."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "リリース週にTabbiを使ったすべての人に贈られます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "출시 주간에 Tabbi를 쓴 모든 분께 드려요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para todos que usaram o Tabbi na semana de lançamento."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Для всех, кто пользовался Tabbi в неделю запуска."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "送给在发布周使用 Tabbi 的每个人。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "送給在推出週使用 Tabbi 的每個人。"
           }
         }
       }
@@ -69050,6 +69194,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "限定"
+          }
+        }
+      }
+    },
+    "Limited edition" : {
+      "comment" : "Closet footer beside the name of a limited edition item that has no line on how to earn it.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إصدار محدود"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limitierte Edition"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edición limitada"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limitadong edisyon"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Édition limitée"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "限定アイテム"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한정판"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edição limitada"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лимитированная серия"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "限定款"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "限定款"
           }
         }
       }
@@ -86729,7 +86945,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Im Besitz"
+            "value" : "Deins"
           }
         },
         "es" : {
@@ -86741,13 +86957,13 @@
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sa iyo na"
+            "value" : "Iyo na"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Possédé"
+            "value" : "À toi"
           }
         },
         "ja" : {
@@ -125056,7 +125272,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ anprobieren"
+            "value" : "Anprobe: %@"
           }
         },
         "es" : {
@@ -127452,6 +127668,114 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消喜歡"
+          }
+        }
+      }
+    },
+    "Unlock for %lld pts" : {
+      "comment" : "Closet footer beside the name of an item the user can buy now with study points.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "افتحه بـ %lld نقاط"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "افتحه بـ %lld نقطةً"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "افتحه بـ %lld نقطة"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "افتحه بـ %lld نقطة"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "افتحه بـ %lld نقطتين"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "افتحه بـ %lld نقطة"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für %lld Pkt. freischalten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desbloquear por %lld pts"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-unlock sa %lld pts"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Débloquer pour %lld pts"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lldptで解放"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld점으로 잠금 해제"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desbloquear por %lld pts"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть за %lld очк."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 %lld 分解锁"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 %lld 點解鎖"
           }
         }
       }

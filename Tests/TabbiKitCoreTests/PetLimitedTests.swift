@@ -211,7 +211,7 @@ final class PetLimitedTests: XCTestCase {
         XCTAssertEqual(pin.cost, 0)
         XCTAssertFalse(pin.isNew)
         XCTAssertEqual(PetLimitedEdition.foundingMember.howToEarn,
-                       "Given to everyone who signs in to Tabbi in its first 100 days.")
+                       "For signing in during Tabbi's first 100 days.")
 
         var closet = PetCloset(save: PetSave(profile: PetProfile(name: "Kit", breed: .tuxedo),
                                              ledger: PetPointsLedger(earned: 5000)))

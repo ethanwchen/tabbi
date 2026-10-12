@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 import TabbiKitCore
 import TabbiKit
@@ -142,17 +143,19 @@ private struct ClosetPetCard: View {
                 .help(store.latestAdventureDetail.map { String(localized: "Latest adventure: \($0)", bundle: .tabbi) } ?? "")
             nameRow
             if let subtitle = subtitle(showsBreed: showsBreed) {
-                // An adventure line may wrap onto a second line: a whole
-                // sentence, longer in some languages than the card is wide.
-                Text(subtitle)
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(store.tryingOn == nil ? Theme.Palette.tertiaryText : accent)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(subtitle == store.latestAdventure ? 2 : 1)
-                    .truncationMode(.tail)
-                    .help(subtitle == store.latestAdventure
-                          ? String(localized: "Latest adventure: \(store.latestAdventureDetail ?? subtitle)", bundle: .tabbi) : "")
-                    .motion(Theme.Motion.snappy, value: subtitle)
+                Group {
+                    if subtitle == store.latestAdventure {
+                        ClosetAdventureLine(text: subtitle, help: String(
+                            localized: "Latest adventure: \(store.latestAdventureDetail ?? subtitle)", bundle: .tabbi))
+                    } else {
+                        // The item tried on can have a long name in some
+                        // languages, so the line scrolls rather than cut it off.
+                        MarqueeText(subtitle)
+                    }
+                }
+                .font(Theme.Typography.caption)
+                .foregroundStyle(store.tryingOn == nil ? Theme.Palette.tertiaryText : accent)
+                .motion(Theme.Motion.snappy, value: subtitle)
             }
             if store.tryingOn == nil && (showsBreed || !isUnnamed) {
                 ClosetBondRow(bond: store.bond)
@@ -175,6 +178,7 @@ private struct ClosetPetCard: View {
         return showsBreed ? store.latestAdventure ?? store.profile.breed.displayName : nil
     }
 
+    // A pet's name can be 16 letters long, so it scrolls rather than cut off.
     @ViewBuilder private var nameRow: some View {
         if isRenaming {
             TextField(String(localized: "Name", bundle: .tabbi), text: $draft)
@@ -208,6 +212,29 @@ private struct ClosetPetCard: View {
     }
 }
 
+/// The pet's latest adventure: a sentence on up to two centered lines, or
+/// one line that scrolls when even two can't hold it (a long name in a
+/// long language).
+private struct ClosetAdventureLine: View {
+    let text: String
+    let help: String
+
+    /// Two lines of caption type, the most the card gives the sentence.
+    private static let twoLines = ceil(2 * NSLayoutManager().defaultLineHeight(
+        for: .systemFont(ofSize: 10.5, weight: .medium)))
+
+    var body: some View {
+        ViewThatFits(in: .vertical) {
+            Text(text)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .help(help)
+            MarqueeText(text, help: help)
+        }
+        .frame(maxHeight: Self.twoLines)
+    }
+}
+
 /// The pet's name with a pencil that appears on hover; click to rename.
 private struct ClosetNameButton: View {
     let name: String
@@ -217,10 +244,9 @@ private struct ClosetNameButton: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: Theme.Spacing.xs) {
-                Text(name)
+                MarqueeText(name, help: String(localized: "Rename your pet", bundle: .tabbi))
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
-                    .lineLimit(1)
                 Image(systemName: "pencil")
                     .font(.system(size: 9.5, weight: .bold))
                     .foregroundStyle(hovering ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
@@ -250,11 +276,12 @@ private struct ClosetBondRow: View {
         HStack(spacing: Theme.Spacing.xs) {
             ProgressRing(progress: bond.progressInLevel, tint: accent, lineWidth: 2)
                 .frame(width: 10, height: 10)
-            (Text("Bond \(bond.level)", bundle: .tabbi).foregroundStyle(Theme.Palette.secondaryText)
-                + Text(verbatim: " · \(bond.tierName)").foregroundStyle(Theme.Palette.tertiaryText))
-                .font(Theme.Typography.caption.monospacedDigit())
-                .lineLimit(1)
-                .truncationMode(.tail)
+            // A tier name runs long in some languages, so the line scrolls.
+            Marquee("\(String(localized: "Bond \(bond.level)", bundle: .tabbi)) · \(bond.tierName)", help: help) {
+                Text("Bond \(bond.level)", bundle: .tabbi).foregroundStyle(Theme.Palette.secondaryText)
+                    + Text(verbatim: " · \(bond.tierName)").foregroundStyle(Theme.Palette.tertiaryText)
+            }
+            .font(Theme.Typography.caption.monospacedDigit())
         }
         .motion(Theme.Motion.content, value: bond.level)
         .help(help)
@@ -465,9 +492,8 @@ private struct ClosetWardrobe: View {
     /// Names the hovered item, or points to the next unlock.
     private var footer: some View {
         HStack(spacing: Theme.Spacing.xs) {
-            if let hovered {
-                Text(hovered.displayName).foregroundStyle(Theme.Palette.secondaryText)
-                Text(detail(for: hovered)).foregroundStyle(Theme.Palette.tertiaryText)
+            if let hovered = store.tryingOn {
+                ClosetFooterDetail(name: hovered.displayName, detail: detail(for: hovered))
             } else if let next = store.closet.nextUnlock, store.closet.save.ledger.earned == 0 {
                 // A brand-new pet: explain where points come from.
                 Text("Focus to earn points", bundle: .tabbi).foregroundStyle(Theme.Palette.secondaryText)
@@ -489,7 +515,8 @@ private struct ClosetWardrobe: View {
                     }
                 }
             } else {
-                Text("Everything unlocked. Dress up as you like.", bundle: .tabbi).foregroundStyle(Theme.Palette.tertiaryText)
+                MarqueeText(String(localized: "Everything unlocked. Dress up as you like.", bundle: .tabbi))
+                    .foregroundStyle(Theme.Palette.tertiaryText)
             }
         }
         .font(Theme.Typography.caption)
@@ -532,12 +559,31 @@ private struct ClosetWardrobe: View {
 
     private func detail(for item: PetItem) -> String {
         switch store.closet.state(of: item) {
-        case .wearing: "Click to take off"
-        case .owned: "Click to wear"
-        case .affordable: "Unlock for \(item.cost) pts"
-        case .locked(let missing): "\(item.cost) pts, \(PetEconomy.studyToEarn(missing)) to go"
-        case .unearned: item.limitedEdition?.howToEarn ?? "Limited edition"
+        case .wearing: String(localized: "Click to take off", bundle: .tabbi)
+        case .owned: String(localized: "Click to wear", bundle: .tabbi)
+        case .affordable: String(localized: "Unlock for \(item.cost) pts", bundle: .tabbi)
+        case .locked(let missing):
+            String(localized: "\(item.cost) pts, \(PetEconomy.studyToEarn(missing)) to go", bundle: .tabbi)
+        case .unearned: item.limitedEdition?.howToEarn ?? String(localized: "Limited edition", bundle: .tabbi)
         }
+    }
+}
+
+/// The footer line for the item on the pet: its name, then what clicking
+/// does or how to earn it. Both can run long, the sentence of how to earn a
+/// limited item most of all, so the line scrolls to show the rest.
+private struct ClosetFooterDetail: View {
+    let name: String
+    let detail: String
+
+    var body: some View {
+        Marquee("\(name) \(detail)") {
+            HStack(spacing: Theme.Spacing.xs) {
+                Text(name).foregroundStyle(Theme.Palette.secondaryText)
+                Text(detail).foregroundStyle(Theme.Palette.tertiaryText)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -639,6 +685,11 @@ private struct ClosetItemTile: View {
         }
         .font(.system(size: 10, weight: .semibold, design: .rounded).monospacedDigit())
         .labelStyle(ClosetTightLabelStyle())
+        .lineLimit(1)
+        // A price is a count, so in the Compact panel's narrow tiles it
+        // shrinks a little rather than cut off.
+        .minimumScaleFactor(0.75)
+        .padding(.horizontal, Theme.Spacing.xxs)
         .frame(height: 12)
     }
 
@@ -785,20 +836,22 @@ private struct ClosetLimited: View {
     /// How to earn the hovered item, or what the shelf is.
     private var footer: some View {
         HStack(spacing: Theme.Spacing.xs) {
-            if let hovered, let edition = hovered.limitedEdition {
-                Text(hovered.displayName).foregroundStyle(Theme.Palette.secondaryText)
-                Text(store.closet.state(of: hovered).isOwned ? hint(for: hovered) : edition.howToEarn)
-                    .foregroundStyle(Theme.Palette.tertiaryText)
+            if let hovered = store.tryingOn, let edition = hovered.limitedEdition {
+                ClosetFooterDetail(name: hovered.displayName,
+                                   detail: store.closet.state(of: hovered).isOwned ? hint(for: hovered) : edition.howToEarn)
             } else {
-                Text("Earned by studying, never sold", bundle: .tabbi).foregroundStyle(Theme.Palette.secondaryText)
+                // The count never cuts off; the line beside it scrolls instead.
+                MarqueeText(String(localized: "Earned by studying, never sold", bundle: .tabbi))
+                    .foregroundStyle(Theme.Palette.secondaryText)
                 Text("\(earnedCount) of \(PetCloset.limitedShelf.count) earned", bundle: .tabbi)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .monospacedDigit()
+                    .fixedSize()
+                Spacer(minLength: 0)
             }
         }
         .font(Theme.Typography.caption)
         .lineLimit(1)
-        .truncationMode(.tail)
         .frame(height: 12)
     }
 
@@ -825,20 +878,27 @@ private struct ClosetEventBanner: View {
                 .font(.system(size: 11, weight: .bold))
                 .foregroundStyle(accent)
             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                // The goal's progress never cuts off; the name and the line
+                // of copy scroll when a narrow panel or a long language
+                // leaves them too little room.
                 HStack(spacing: Theme.Spacing.xs) {
-                    Text(run.occurrence.event.displayName)
-                        .font(.system(size: 10, weight: .semibold, design: .rounded))
-                        .foregroundStyle(Theme.Palette.primaryText)
-                    Text("until \(lastDay)", bundle: .tabbi)
-                        .font(Theme.Typography.caption)
-                        .foregroundStyle(Theme.Palette.tertiaryText)
+                    let until = String(localized: "until \(lastDay)", bundle: .tabbi)
+                    Marquee("\(run.occurrence.event.displayName) \(until)", help: help) {
+                        HStack(spacing: Theme.Spacing.xs) {
+                            Text(run.occurrence.event.displayName)
+                                .font(.system(size: 10, weight: .semibold, design: .rounded))
+                                .foregroundStyle(Theme.Palette.primaryText)
+                            Text(until)
+                                .font(Theme.Typography.caption)
+                                .foregroundStyle(Theme.Palette.tertiaryText)
+                        }
+                    }
                     Spacer(minLength: Theme.Spacing.s)
-                    goal
+                    goal.fixedSize()
                 }
-                Text(run.occurrence.event.displayTagline)
+                MarqueeText(run.occurrence.event.displayTagline, help: help)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.secondaryText)
-                    .truncationMode(.tail)
             }
             .lineLimit(1)
         }
@@ -1029,6 +1089,10 @@ private struct ClosetLimitedTile: View {
         .font(.system(size: 10, weight: .semibold, design: .rounded).monospacedDigit())
         .labelStyle(ClosetTightLabelStyle())
         .lineLimit(1)
+        // A goal ("60/90 min") is a count, so in the Compact panel's
+        // narrow tiles it shrinks a little rather than cut off.
+        .minimumScaleFactor(0.75)
+        .padding(.horizontal, Theme.Spacing.xxs)
         .frame(height: 12)
     }
 
@@ -1092,11 +1156,9 @@ private struct ClosetStreak: View {
             Text(streak.length == 1 ? "day" : "days", bundle: .tabbi)
                 .font(Theme.Typography.bodyEmphasis)
                 .foregroundStyle(Theme.Palette.secondaryText)
-            Text(status(streak))
+            MarqueeText(status(streak))
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.tertiaryText)
-                .lineLimit(1)
-                .truncationMode(.tail)
                 .padding(.leading, Theme.Spacing.xs)
         }
         .motion(Theme.Motion.snappy, value: streak.length)
@@ -1113,23 +1175,26 @@ private struct ClosetStreak: View {
             Image(systemName: "snowflake")
                 .font(.system(size: 9.5, weight: .bold))
                 .foregroundStyle(streak.freezesReady > 0 ? frostColor : Theme.Palette.tertiaryText)
+            // The button never cuts off; this line shortens, then scrolls.
+            let help = Sentences.join([
+                String(localized: "A missed day uses a freeze, so the streak keeps going.", bundle: .tabbi),
+                String(localized: "You get one free freeze each week, and can hold \(StreakFreezeRules.maxHeld) extra.",
+                       bundle: .tabbi),
+            ])
             ViewThatFits(in: .horizontal) {
                 Text(freezes(streak, short: false))
-                Text(freezes(streak, short: true))
+                MarqueeText(freezes(streak, short: true), help: help)
             }
             .font(Theme.Typography.caption)
             .foregroundStyle(Theme.Palette.secondaryText)
             .lineLimit(1)
             .monospacedDigit()
-            .help(Sentences.join([
-                String(localized: "A missed day uses a freeze, so the streak keeps going.", bundle: .tabbi),
-                String(localized: "You get one free freeze each week, and can hold \(StreakFreezeRules.maxHeld) extra.",
-                       bundle: .tabbi),
-            ]))
+            .help(help)
             Spacer(minLength: Theme.Spacing.s)
             ClosetBuyFreezeButton(streak: streak, balance: store.closet.balance) {
                 withMotion(Theme.Motion.snappy) { _ = store.buyStreakFreeze() }
             }
+            .fixedSize()
         }
     }
 
@@ -1258,8 +1323,24 @@ private struct ClosetLook: View {
     @Environment(\.rareFurs) private var rareFurs
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.m) {
-            row(String(localized: "Pet", bundle: .tabbi)) {
+        // The labels take the width of the longest one in the language. The
+        // Compact panel has no room for them beside every fur swatch, so
+        // there the rows go without (the controls say what they are, and the
+        // rare furs keep a sparkle), and the swatches and rows sit closer,
+        // before anything could be cut off or pushed out of the panel.
+        ViewThatFits(in: [.horizontal, .vertical]) {
+            rows(labeled: true, rowSpacing: Theme.Spacing.m, swatchSpacing: Theme.Spacing.s - Theme.Spacing.xxs)
+            rows(labeled: true, rowSpacing: Theme.Spacing.s, swatchSpacing: Theme.Spacing.s - Theme.Spacing.xxs)
+            rows(labeled: true, rowSpacing: Theme.Spacing.s, swatchSpacing: Theme.Spacing.xs)
+            rows(labeled: false, rowSpacing: Theme.Spacing.s, swatchSpacing: Theme.Spacing.s - Theme.Spacing.xxs)
+            rows(labeled: false, rowSpacing: Theme.Spacing.s, swatchSpacing: Theme.Spacing.xxs)
+        }
+        .frame(maxHeight: .infinity)
+    }
+
+    private func rows(labeled: Bool, rowSpacing: CGFloat, swatchSpacing: CGFloat) -> some View {
+        Grid(alignment: .leading, horizontalSpacing: Theme.Spacing.s, verticalSpacing: rowSpacing) {
+            row(String(localized: "Pet", bundle: .tabbi), labeled: labeled) {
                 HStack(spacing: Theme.Spacing.xxs) {
                     ForEach(PetSpecies.allCases, id: \.self) { species in
                         ClosetPill(title: species.displayName,
@@ -1271,23 +1352,22 @@ private struct ClosetLook: View {
                     }
                 }
             }
-            row(String(localized: "Breed", bundle: .tabbi)) {
+            row(String(localized: "Breed", bundle: .tabbi), labeled: labeled) {
                 HStack(spacing: Theme.Spacing.s) {
                     IconButton(symbol: "chevron.backward", size: 22, help: "Previous breed") {
                         store.cycleBreed(by: -1)
                     }
-                    Text(store.profile.breed.displayName)
+                    MarqueeText(store.profile.breed.displayName)
                         .font(Theme.Typography.bodyEmphasis)
                         .foregroundStyle(Theme.Palette.primaryText)
-                        .lineLimit(1)
                         .frame(width: 120)
                     IconButton(symbol: "chevron.forward", size: 22, help: "Next breed") {
                         store.cycleBreed(by: 1)
                     }
                 }
             }
-            row(String(localized: "Fur", bundle: .tabbi)) {
-                HStack(spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
+            row(String(localized: "Fur", bundle: .tabbi), labeled: labeled) {
+                HStack(spacing: swatchSpacing) {
                     ClosetSwatch(color: nil, isSelected: store.closet.furTint == nil) {
                         store.tintFur(nil)
                     }
@@ -1300,8 +1380,16 @@ private struct ClosetLook: View {
             }
             // Rare furs come only as surprise gifts, so the row shows once one is found.
             if !rareFurs.isEmpty {
-                row(String(localized: "Rare", bundle: .tabbi)) {
-                    HStack(spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
+                let title = String(localized: "Rare", bundle: .tabbi)
+                row(title, labeled: labeled) {
+                    HStack(spacing: swatchSpacing) {
+                        if !labeled {
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 9.5, weight: .bold))
+                                .foregroundStyle(Theme.Palette.tertiaryText)
+                                .frame(width: 22, height: 22)
+                                .help(title)
+                        }
                         ForEach(rareFurs) { fur in
                             ClosetSwatch(color: fur.color, isSelected: store.closet.furTint == fur.color) {
                                 store.tintFur(fur.color)
@@ -1311,18 +1399,20 @@ private struct ClosetLook: View {
                 }
             }
         }
-        .frame(maxHeight: .infinity)
     }
 
-    private func row(_ title: String, @ViewBuilder content: () -> some View) -> some View {
-        HStack(spacing: Theme.Spacing.s) {
-            Text(title)
-                .font(Theme.Typography.caption)
-                .foregroundStyle(Theme.Palette.tertiaryText)
-                .frame(width: 40, alignment: .leading)
+    private func row(_ title: String, labeled: Bool, @ViewBuilder content: () -> some View) -> some View {
+        GridRow {
+            if labeled {
+                Text(title)
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+                    .lineLimit(1)
+                    .fixedSize()
+            }
             content()
+                .frame(height: 22)
         }
-        .frame(height: 22)
     }
 }
 

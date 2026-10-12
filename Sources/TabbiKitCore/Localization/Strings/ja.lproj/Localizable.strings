@@ -865,6 +865,10 @@
 	<string>クリックして閉じる</string>
 	<key>Click to send the pet home</key>
 	<string>クリックでペットがおうちに帰ります</string>
+	<key>Click to take off</key>
+	<string>クリックで外す</string>
+	<key>Click to wear</key>
+	<string>クリックで着る</string>
 	<key>Close</key>
 	<string>閉じる</string>
 	<key>Close %@ settings</key>
@@ -1291,6 +1295,10 @@
 	<string>集中中</string>
 	<key>Focusing on: %@</key>
 	<string>集中中: %@</string>
+	<key>For signing in during Tabbi's first 100 days.</key>
+	<string>最初の100日間にサインインした人へ。</string>
+	<key>For using Tabbi in its launch week.</key>
+	<string>公開週にTabbiを使った人へ。</string>
 	<key>Forever friends</key>
 	<string>ずっと一緒</string>
 	<key>Found: %lld min toward the event</key>
@@ -1379,10 +1387,6 @@
 	<string>ネコに名前をつけよう</string>
 	<key>Give your dog a name</key>
 	<string>イヌに名前をつけよう</string>
-	<key>Given to everyone who signs in to Tabbi in its first 100 days.</key>
-	<string>Tabbiの最初の100日間にサインインしたすべての人に贈られます。</string>
-	<key>Given to everyone who used Tabbi in its launch week.</key>
-	<string>リリース週にTabbiを使ったすべての人に贈られます。</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
 	<string>ガラスのコントロールには macOS 26 が必要です。「透明度を下げる」がオンのときは不透明な表示になります。</string>
 	<key>Go back one step</key>
@@ -1659,6 +1663,8 @@
 	<string>ライラック</string>
 	<key>Limited</key>
 	<string>限定</string>
+	<key>Limited edition</key>
+	<string>限定アイテム</string>
 	<key>Lion Dance Hat</key>
 	<string>獅子舞の帽子</string>
 	<key>Listen to %@</key>
@@ -3259,6 +3265,8 @@
 	<string>不明な曲</string>
 	<key>Unlike</key>
 	<string>いいねを取り消す</string>
+	<key>Unlock for %lld pts</key>
+	<string>%lldptで解放</string>
 	<key>Unmute</key>
 	<string>ミュート解除</string>
 	<key>Unpin %@ from the Study button</key>
