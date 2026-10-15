@@ -244,7 +244,8 @@ describe("SyncDocument coding", () => {
     expect(iso8601(1_800_000_000.75)).toBe("2027-01-15T08:00:00Z");
     expect(parseISO8601("2027-01-15T08:00:00Z")).toBe(1_800_000_000);
     expect(parseISO8601("2027-01-15T09:00:00+01:00")).toBe(1_800_000_000);
-    expect(parseISO8601("2027-01-15T08:00:00.000Z")).toBeUndefined();
+    expect(parseISO8601("2027-01-15T08:00:00.750Z"), "fractions are cut off").toBe(1_800_000_000);
+    expect(parseISO8601("2027-01-15T08:00:00")).toBeUndefined();
     expect(parseISO8601("yesterday")).toBeUndefined();
   });
 });

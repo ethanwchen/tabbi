@@ -45,12 +45,18 @@ export function iso8601(instant: Instant): string {
   return new Date(Math.floor(instant) * 1000).toISOString().replace(/\.\d{3}Z$/, "Z");
 }
 
-const ISO8601 = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|[+-]\d{2}:?\d{2})$/;
+const ISO8601 = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(\.\d+)?(Z|[+-]\d{2}:?\d{2})$/;
 
-/** Reads what `.iso8601` reads (internet date-time, no fractional seconds), or undefined. */
+/**
+ * Reads an ISO 8601 date-time as the Mac's sync reader does: a zone (`Z` or
+ * an offset) is required, and fractional seconds are cut off (towards
+ * earlier), so two looks set in the same second tie. Undefined otherwise.
+ */
 export function parseISO8601(text: string): Instant | undefined {
-  if (!ISO8601.test(text)) return undefined;
-  const millis = Date.parse(text);
+  const match = ISO8601.exec(text);
+  if (match === null) return undefined;
+  const zone = (match[3] ?? "").replace(/^([+-]\d{2})(\d{2})$/, "$1:$2");
+  const millis = Date.parse(`${match[1] ?? ""}${zone}`);
   return Number.isNaN(millis) ? undefined : millis / 1000;
 }
 
