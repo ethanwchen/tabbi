@@ -12,6 +12,8 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
   `edition.v1.schema.json` describes the edition files in `Sources/TabbiKitCore/Editions/BundledEditions`.
   `catalog.v1.schema.json` describes the Party catalog, `backend/shared/catalog.json`.
   `party.v1.schema.json` is the Party wire contract: every request body and reply the apps and the server exchange (endpoints and errors in `docs/study/backend-api.md`, versioning in `docs/party-compatibility.md`); `backend/test/compat.test.ts` checks the server's replies against it.
+  `sync-document.v1.schema.json` describes the Party sync document both apps write to the same server document (`SyncDocument`); `SyncDocumentGoldenTests` keeps its fields equal to what the Swift encoder writes.
+  `activity-record.v1.schema.json` describes an `ActivityRecord` and the per-day file `ActivityLogRepository` writes in the edition's `Activity` folder.
   `SharedSchemaTests` keeps the kit and edition schemas' fields, limits and patterns equal to the Swift decoders, and the catalog schema equal to the catalog's fields.
 - `fixtures/` holds golden fixtures written by the Swift tests.
   Each port checks its own output against them, so drift between the apps fails a test.
@@ -20,13 +22,24 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
   `study-session/` pins the Study tab's timer for every method: its steps, the dial, buttons and pet, the shared focus clock and the logged phases;
   `ticker/` pins which items the closed notch can show, when it next has to look again, and which one the rotation picks;
   `plan-my-day/` pins Plan my day: free time, the on-device and study planners, the Claude prompt and how its answers are read, and the proposal the user adds to the calendar;
-  `party/` pins the Party protocol: the server id of every outfit and accessory, the profile bodies sample pets send, and how sample replies (from this, an older and a newer server) read, down to the pet drawn for each profile.
+  `party/` pins the Party protocol: the server id of every outfit and accessory, the profile bodies sample pets send, and how sample replies (from this, an older and a newer server) read, down to the pet drawn for each profile;
+  `sync-document/` pins the sync document: its wire text, how lenient reads clean it, how a local and a remote document merge, and whole sync rounds against a scripted server;
+  `closet/` pins the closet economy: every item's price, tier and unlock rule, the points rules, ledgers, purchases, milestones, streak freezes and limited shelves;
+  `activity-log/` pins activity records and their day files: how a record is normalized, which day file it lands in, the exact file text and how older or broken files read;
+  `streaks-recap/` pins streaks (with freezes and milestones), the study heatmap and weekly recaps over sample activity logs;
+  `anki/` pins AnkiConnect: the requests a refresh sends, how recorded replies (failures included) become the summary, and the connection states;
+  `kits/` pins kits: every bundled kit and malformed ones, the errors and warnings validation gives, and the layout and settings applying them gives;
+  `onboarding/` pins first-run setup: step order and skipping for different kits, answers and tab choices;
+  `formatting/` pins durations and date ranges in all 12 languages.
 
 Fixtures are regenerated only on purpose, after an intended change:
 
 ```sh
-TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|ThemeGoldenTests|StudyMethodGoldenTests|ClaudeStreamGoldenTests|FocusTimerGoldenTests|StudySessionGoldenTests|TickerGoldenTests|PlanMyDayGoldenTests|PartyProtocolGoldenTests'
+TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|ThemeGoldenTests|StudyMethodGoldenTests|ClaudeStreamGoldenTests|FocusTimerGoldenTests|StudySessionGoldenTests|TickerGoldenTests|PlanMyDayGoldenTests|PartyProtocolGoldenTests|SyncDocumentGoldenTests|ClosetGoldenTests|ActivityLogGoldenTests|StreaksRecapGoldenTests|AnkiGoldenTests|KitGoldenTests|OnboardingGoldenTests|FormattingGoldenTests'
 ```
+
+A push to a branch named `shared/...` runs `.github/workflows/record-fixtures.yml`, which records the newer fixtures on a Mac runner, uploads `shared/fixtures/` as the `fixtures` artifact and then checks the tests against that recording.
+Fetch it with `gh run download <run id> -n fixtures`.
 
 Review the diff before committing it: every changed line is a pixel, color or timing that changed for users.
 
