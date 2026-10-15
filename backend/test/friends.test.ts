@@ -256,7 +256,7 @@ describe("friend requests", () => {
     expectError(daily, 429, "request_limit");
     expect(Number(daily.headers.get("Retry-After"))).toBeGreaterThan(60);
     expect((await listOf(a)).outgoing).toHaveLength(FRIEND_REQUESTS_PER_DAY - 1);
-  });
+  }, 30_000); // About 60 requests through the Worker: well over the 5 s default on a shared CI runner.
 
   it(`keeps at most ${MAX_PENDING_REQUESTS} requests waiting per sender`, async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
