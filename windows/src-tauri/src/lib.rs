@@ -3,7 +3,16 @@
 //! island's state machine; the host places the window, shapes it, watches the
 //! pointer and displays, and reports what it sees as events.
 
+mod ai_paths;
+mod autostart;
+mod credentials;
+mod error;
+mod http;
+mod media;
+mod notify;
 mod placement;
+mod storage;
+mod system;
 mod watcher;
 mod win;
 
@@ -342,6 +351,11 @@ fn setup(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
 
     build_tray(app)?;
 
+    app.manage(storage::Storage::for_app(app)?);
+    app.manage(http::Http::new());
+    app.manage(media::Media::default());
+    app.manage(system::SystemSampler::default());
+
     /* The installer registers tabbi:// per user; a dev build registers itself. */
     #[cfg(debug_assertions)]
     app.deep_link().register_all()?;
@@ -360,13 +374,36 @@ pub fn run() {
         .plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| open(app, Source::Launch)))
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
+        .plugin(tauri_plugin_notification::init())
+        /* Off until the user turns on Start with Windows; the plugin only registers its manager. */
+        .plugin(tauri_plugin_autostart::Builder::new().app_name("Tabbi").build())
         .invoke_handler(tauri::generate_handler![
             island_set_shape,
             island_set_open,
             island_activate,
             island_restore_focus,
             island_arm_hot_zone,
-            island_ready
+            island_ready,
+            storage::storage_read,
+            storage::storage_write,
+            storage::storage_list,
+            storage::storage_delete,
+            credentials::credential_get,
+            credentials::credential_set,
+            credentials::credential_delete,
+            notify::notify,
+            media::media_snapshot,
+            media::media_control,
+            media::media_watch,
+            system::system_watch,
+            http::http_request,
+            http::http_stream,
+            http::http_cancel,
+            http::http_fetch_calendar,
+            autostart::autostart_enable,
+            autostart::autostart_disable,
+            autostart::autostart_is_enabled,
+            ai_paths::ai_paths
         ])
         .setup(|app| setup(app.handle()))
         .build(tauri::generate_context!())
