@@ -44,6 +44,7 @@ import { NO_BOND_LOOK, type PetBondLook } from "./petBond";
 import { breedBodyShape, breedHasTail, breedPattern } from "./petBreed";
 import { PetCanvas, type PetPattern } from "./petCanvas";
 import { accessorySlot, wearable, type PetAccessory, type PetOutfit } from "./petCostume";
+import { itemParts, type PetItem } from "./petItem";
 import type { PetBodyShape, PetBreed } from "./petKinds";
 import { SITTING, petPose, type PetGesture, type PetPoint, type PetPose, type PetProp, type PetStance } from "./petPose";
 import type { SpriteGrid } from "./spriteGrid";
@@ -719,4 +720,13 @@ export function sitting(
   return composedPicture(
     compose(breed, options.pose ?? petPose(), options.outfit ?? "none", options.accessories ?? [], options.bond ?? NO_BOND_LOOK),
   );
+}
+
+/**
+ * Ticks of an item's own animation loop (a flame flickering, a glint
+ * crossing gold): 1 for an item that stays still. Port of PetItem.loopFrameCount.
+ */
+export function itemLoopFrameCount(item: PetItem): number {
+  const parts = itemParts(item);
+  return parts.kind === "outfit" ? itemLoopLength(parts.outfit, []) : itemLoopLength("none", [parts.accessory]);
 }

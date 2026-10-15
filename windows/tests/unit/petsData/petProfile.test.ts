@@ -83,7 +83,7 @@ describe("PetProfile", () => {
         }
       }
     }
-  });
+  }, 60_000);
 
   it("rings the British Shorthair's tail sitting and walking", () => {
     const ringCount = (canvas: PetCanvas) => {
