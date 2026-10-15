@@ -43,13 +43,9 @@ final class NotchMenuHoldTests: XCTestCase {
         var picked = false
         let item = ClosureMenuItem(title: "May") { picked = true }
         menu.addItem(item)
-        let timer = Timer(timeInterval: 0.2, repeats: false) { _ in
-            MainActor.assumeIsolated {
-                controller.pointerMoved(to: point)
-                menu.performActionForItem(at: 0)
-                menu.cancelTracking()
-            }
-        }
+        // Fires inside the menu's tracking loop, which runs the common modes.
+        let reach = MenuReach(controller: controller, menu: menu, point: point)
+        let timer = Timer(timeInterval: 0.2, target: reach, selector: #selector(MenuReach.fire), userInfo: nil, repeats: false)
         RunLoop.main.add(timer, forMode: .common)
         menu.popUp(positioning: nil, at: NSPoint(x: view.bounds.midX, y: view.bounds.midY), in: view)
         RunLoop.main.run(until: Date().addingTimeInterval(0.05))
@@ -90,6 +86,27 @@ final class NotchMenuHoldTests: XCTestCase {
         controller.pointerMoved(to: outside)
         try await waitPastCloseDelay()
         XCTAssertFalse(model.isOpen)
+    }
+}
+
+/// Reaches for the menu's first item from inside its tracking loop: the
+/// pointer moves to `point`, then the item is picked and the menu closes.
+@MainActor
+private final class MenuReach: NSObject {
+    let controller: NotchController
+    let menu: NSMenu
+    let point: NSPoint
+
+    init(controller: NotchController, menu: NSMenu, point: NSPoint) {
+        self.controller = controller
+        self.menu = menu
+        self.point = point
+    }
+
+    @objc func fire() {
+        controller.pointerMoved(to: point)
+        menu.performActionForItem(at: 0)
+        menu.cancelTracking()
     }
 }
 
