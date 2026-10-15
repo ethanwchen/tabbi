@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { FocusTimer, FocusTimerConfig, type FocusPhaseCompletion } from "../../src/core/focus/focusTimer";
 import { completionActivityRecord } from "../../src/core/focus/focusTimerActivity";
 import { focusClock, focusCompletionMessage, focusPhaseName, focusStatus } from "../../src/core/focus/focusTimerFormat";
-import { installEnglishCatalog } from "../support/englishCatalog";
+import { switchLanguage } from "../support/catalogs";
 import { loadFixture } from "../support/fixtures";
 import { activityJson, providedJson } from "../support/focusGolden";
 import { goldenDiff } from "../support/goldenCompare";
@@ -106,7 +106,7 @@ function run(inputs: Input[]): Record<string, unknown>[] {
 }
 
 describe("focus-timer fixture", () => {
-  beforeAll(installEnglishCatalog);
+  beforeAll(() => switchLanguage("en"));
 
   it("is the version this port reads", () => {
     expect(golden.schema).toBe("tabbi.focus-timer.golden");

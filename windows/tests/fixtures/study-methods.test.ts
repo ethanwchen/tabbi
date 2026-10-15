@@ -18,7 +18,7 @@ import { decodeStudyMethodFile, STUDY_EVIDENCE_LEVELS } from "../../src/core/stu
 import { StudyMethodInfo, evidenceLevelLabel, methodInfo, nameIsRhythm } from "../../src/core/studyMethods/studyMethodInfo";
 import { CUSTOM_RHYTHM_FIELDS, StudyCustomRhythm, customFieldStepper } from "../../src/core/studyMethods/studyCustomRhythm";
 import { StudyTimerLength, TIMER_MAX_MINUTES, TIMER_MIN_MINUTES } from "../../src/core/studyMethods/studyTimerLength";
-import { installEnglishCatalog } from "../support/englishCatalog";
+import { switchLanguage } from "../support/catalogs";
 import { loadFixture } from "../support/fixtures";
 import { goldenDiff } from "../support/goldenCompare";
 
@@ -134,7 +134,7 @@ function current(): Record<string, unknown> {
 }
 
 describe("study-methods fixture", () => {
-  beforeAll(installEnglishCatalog);
+  beforeAll(() => switchLanguage("en"));
 
   it("validates study-methods.json against study-methods.v1", () => {
     const ajv = new Ajv2020({ allErrors: true });

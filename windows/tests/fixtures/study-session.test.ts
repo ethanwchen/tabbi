@@ -20,7 +20,7 @@ import {
   studyReadout,
   studyRoundLabel,
 } from "../../src/core/studyMethods/studyTimerFormat";
-import { installEnglishCatalog } from "../support/englishCatalog";
+import { switchLanguage } from "../support/catalogs";
 import { loadFixture } from "../support/fixtures";
 import { activityJson, providedJson } from "../support/focusGolden";
 import { goldenDiff } from "../support/goldenCompare";
@@ -223,7 +223,7 @@ function run(method: StudyMethod, inputs: Input[]): Record<string, unknown>[] {
 }
 
 describe("study-session fixture", () => {
-  beforeAll(installEnglishCatalog);
+  beforeAll(() => switchLanguage("en"));
 
   it("is the version this port reads", () => {
     expect(golden.schema).toBe("tabbi.study-session.golden");
