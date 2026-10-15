@@ -1,3 +1,5 @@
+import { answer, type AIProvider } from "../ai/aiProvider";
+import { promptRequest, type AIRequest } from "../ai/aiRequest";
 import { clockText } from "../calendar/zonedCalendar";
 import { DAY_PLAN_JSON_SCHEMA, MAXIMUM_BLOCKS, dayPlanPrompt, parseDayPlan, validateDayPlan } from "../planner/dayPlan";
 import type { DayPlanContext, PlanBlock } from "../planner/dayPlan";
@@ -54,42 +56,23 @@ export function refinedBlocks(text: string, context: DayPlanContext, plan: reado
 }
 
 /**
- * What Plan my day and the Schedule's Refine send: the prompt alone, with
- * the plan's JSON Schema for a provider that can enforce it. A narrow
- * stand-in for the AI port's `promptRequest(prompt, "", schema)`.
+ * Port of DayPlanner.request(prompt:): what Plan my day and the Schedule's
+ * Refine send, the prompt alone, with the plan's JSON Schema for a provider
+ * that can enforce it.
  */
-export interface PlanPromptRequest {
-  readonly prompt: string;
-  readonly responseSchema: string;
-}
-
-export function planPromptRequest(prompt: string): PlanPromptRequest {
-  return { prompt, responseSchema: DAY_PLAN_JSON_SCHEMA };
+export function planRequest(prompt: string): AIRequest {
+  return promptRequest(prompt, "", DAY_PLAN_JSON_SCHEMA);
 }
 
 /**
- * The whole answer to `prompt` from `ask` (the AI the user picked), or
- * undefined on an error or after `timeoutSeconds`. Plan my day and Refine
- * both ask this way. `ask` gets an abort signal that fires on the timeout.
+ * Port of DayPlanner.answer(from:prompt:timeout:): `provider`'s whole
+ * answer to `prompt`, or undefined on an error or after `timeoutSeconds`.
+ * Plan my day and Refine both ask this way.
  */
-export async function planAnswer(
-  ask: (request: PlanPromptRequest, signal: AbortSignal) => Promise<string>,
-  prompt: string,
-  timeoutSeconds = 60,
-): Promise<string | undefined> {
-  const controller = new AbortController();
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const timeout = new Promise<undefined>((resolve) => {
-    timer = setTimeout(() => {
-      controller.abort();
-      resolve(undefined);
-    }, timeoutSeconds * 1000);
-  });
+export async function planAnswer(provider: AIProvider, prompt: string, timeoutSeconds = 60): Promise<string | undefined> {
   try {
-    return await Promise.race([ask(planPromptRequest(prompt), controller.signal), timeout]);
+    return await answer(provider, planRequest(prompt), AbortSignal.timeout(timeoutSeconds * 1000));
   } catch {
     return undefined;
-  } finally {
-    if (timer !== undefined) clearTimeout(timer);
   }
 }
