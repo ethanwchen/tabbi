@@ -1,4 +1,5 @@
 import type { Instant } from "../time";
+import { plannerDayKeyOf } from "../planner/plannerDayKey";
 import { SplitMix64 } from "./splitMix64";
 
 /*
@@ -160,18 +161,6 @@ export class CelebrationBurst {
   }
 }
 
-const dayFormatters = new Map<string, Intl.DateTimeFormat>();
-
-/* The calendar day of `instant` in `timeZone`, as "YYYY-MM-DD". */
-function dayKey(instant: Instant, timeZone: string): string {
-  let formatter = dayFormatters.get(timeZone);
-  if (!formatter) {
-    formatter = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" });
-    dayFormatters.set(timeZone, formatter);
-  }
-  return formatter.format(new Date(instant * 1000));
-}
-
 /**
  * Port of CelebrationPacer: at most one particle burst every ten minutes, and
  * one milestone a day. A celebration that isn't admitted still gets its small
@@ -200,7 +189,7 @@ export class CelebrationPacer {
    */
   admit(requested: CelebrationTier, at: Instant, timeZone: string): CelebrationTier | undefined {
     const { burst, milestone } = this.last;
-    if (requested === "milestone" && (milestone === undefined || dayKey(milestone, timeZone) !== dayKey(at, timeZone))) {
+    if (requested === "milestone" && (milestone === undefined || plannerDayKeyOf(milestone, timeZone) !== plannerDayKeyOf(at, timeZone))) {
       this.last = { burst: at, milestone: at };
       return "milestone";
     }
