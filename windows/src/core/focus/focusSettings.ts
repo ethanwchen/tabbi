@@ -1,3 +1,5 @@
+import { kitModuleSettings, type KitDefaults } from "../kits/kitManifest";
+import { MODULE_IDS } from "../modules/moduleId";
 import { FocusMix } from "./focusMix";
 import { FocusMixPresets } from "./focusMixPreset";
 import { parseFocusPlaylist, type FocusPlaylist } from "./focusPlaylist";
@@ -92,14 +94,14 @@ export class FocusSettings {
   }
 
   /** These settings with a kit's focus sound applied; a kit without one keeps the current mix. */
-  applyingKit(focusSection: unknown): FocusSettings {
-    const mix = kitFocusMix(focusSection);
+  applyingKit(kit: KitDefaults): FocusSettings {
+    const mix = kitFocusMix(kit);
     return mix === undefined ? this : this.with({ mix });
   }
 
   /** True when applying the kit's Focus section would leave these settings unchanged. */
-  usesKitDefaults(focusSection: unknown): boolean {
-    return this.applyingKit(focusSection).equals(this);
+  usesKitDefaults(kit: KitDefaults): boolean {
+    return this.applyingKit(kit).equals(this);
   }
 
   /** Switches to the preset in `slot`; an empty slot changes nothing. */
@@ -163,10 +165,11 @@ export class FocusSettings {
  * Port of FocusSettings.kitMix(of:): the focus sound a kit sets in its Focus
  * section (`moduleSettings.focus.sounds`: a list of `sound` and an optional
  * `level` from 0 to 1, default 1), with unknown sounds skipped. Undefined when
- * the kit sets no sound; an empty list turns the sound off. Takes the Focus
- * section as plain JSON, so the kit port can hand it over as it reads it.
+ * the kit sets no sound; an empty list turns the sound off. The section is
+ * read leniently: anything malformed is skipped rather than refused.
  */
-export function kitFocusMix(focusSection: unknown): FocusMix | undefined {
+export function kitFocusMix(kit: KitDefaults): FocusMix | undefined {
+  const focusSection = kitModuleSettings(kit, MODULE_IDS.focus);
   if (typeof focusSection !== "object" || focusSection === null) return undefined;
   const sounds = (focusSection as Record<string, unknown>).sounds;
   if (!Array.isArray(sounds)) return undefined;

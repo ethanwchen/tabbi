@@ -1,20 +1,10 @@
+import { PetPointsRules } from "../pets/petPointsRules";
+import type { StudyDayTally } from "../providers/studyDayTally";
 import type { Instant } from "../time";
 import type { StudyMethodKind } from "./studyMethodFile";
 import { isBreakPhase } from "./studyMethod";
 import { countsAsDone, type StudyPhaseRecord } from "./studyPhaseRecord";
 import { swiftInt } from "./swiftMath";
-
-/*
- * The Mac's PetPointsRules.points(forMinutes:completed:), which StudyLog pays
- * by: a point per full minute from five minutes up, plus a 10 point bonus for
- * finishing a block of at least 25 minutes. Kept here until the pet port owns
- * the rules, so Study's tally matches what the pet earns.
- */
-export function studyPointsFor(minutes: number, completed: boolean): number {
-  if (minutes < 5) return 0;
-  const bonus = completed && minutes >= 25 ? 10 : 0;
-  return minutes + bonus;
-}
 
 /** Port of StudyLogEntry: one study stretch in the saved log, with the points it earned. */
 export interface StudyLogEntry {
@@ -49,15 +39,8 @@ export function studyLogEntry(record: StudyPhaseRecord, id: string): StudyLogEnt
     minutes,
     completed,
     ...(record.cards === undefined ? {} : { cards: Math.max(record.cards, 0) }),
-    points: studyPointsFor(minutes, completed),
+    points: PetPointsRules.points(minutes, completed),
   };
-}
-
-/** Port of StudyDayTally: a day's study totals. */
-export interface StudyDayTally {
-  minutes: number;
-  sessions: number;
-  points: number;
 }
 
 const dayFormatters = new Map<string, Intl.DateTimeFormat>();
@@ -100,7 +83,7 @@ export class StudyLog {
   /** Totals for the stretches that ended on the calendar day of `day` in `timeZone` (an IANA name). */
   summary(day: Instant, timeZone: string): StudyDayTally {
     const target = dayIn(day, timeZone);
-    const total: StudyDayTally = { minutes: 0, sessions: 0, points: 0 };
+    const total = { minutes: 0, sessions: 0, points: 0 };
     for (const entry of this.entries) {
       if (dayIn(entry.endedAt, timeZone) !== target) continue;
       total.minutes += entry.minutes;

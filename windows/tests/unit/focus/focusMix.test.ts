@@ -10,6 +10,10 @@ import {
   presetSource,
 } from "../../../src/core/focus/focusPlaylist";
 import { FocusSettings, kitFocusMix } from "../../../src/core/focus/focusSettings";
+import { kitDefaults } from "../../../src/core/kits/kitManifest";
+import type { JSONObject } from "../../../src/core/persistence/json";
+
+const focusKit = (focus: JSONObject) => kitDefaults({ moduleSettings: { focus } });
 import { FOCUS_SOUNDS, loudnessGain, loudnessTrimDecibels } from "../../../src/core/focus/focusSound";
 
 describe("FocusMix", () => {
@@ -190,20 +194,20 @@ describe("FocusSettings", () => {
   });
 
   it("takes a kit's focus sound and nothing else", () => {
-    expect(kitFocusMix(undefined)).toBeUndefined();
-    expect(kitFocusMix({ sounds: [] })?.isOff).toBe(true);
-    const mix = kitFocusMix({ sounds: [{ sound: "rain", level: 0.5 }, { sound: "thunder" }, { sound: "cafe" }] });
+    expect(kitFocusMix(kitDefaults())).toBeUndefined();
+    expect(kitFocusMix(focusKit({ sounds: [] }))?.isOff).toBe(true);
+    const mix = kitFocusMix(focusKit({ sounds: [{ sound: "rain", level: 0.5 }, { sound: "thunder" }, { sound: "cafe" }] }));
     expect(mix?.layers).toEqual([
       { sound: "rain", level: 0.5 },
       { sound: "cafe", level: 1 },
     ]);
     const mine = new FocusSettings({ volume: 0.3, playlistText: "Chill" });
-    const applied = mine.applyingKit({ sounds: [{ sound: "fireplace" }] });
+    const applied = mine.applyingKit(focusKit({ sounds: [{ sound: "fireplace" }] }));
     expect(applied.mix.equals(FocusMix.single("fireplace"))).toBe(true);
     expect(applied.volume).toBe(mine.volume);
-    expect(applied.usesKitDefaults({ sounds: [{ sound: "fireplace" }] })).toBe(true);
-    expect(mine.usesKitDefaults({ sounds: [{ sound: "fireplace" }] })).toBe(false);
-    expect(mine.applyingKit({}).equals(mine)).toBe(true);
+    expect(applied.usesKitDefaults(focusKit({ sounds: [{ sound: "fireplace" }] }))).toBe(true);
+    expect(mine.usesKitDefaults(focusKit({ sounds: [{ sound: "fireplace" }] }))).toBe(false);
+    expect(mine.applyingKit(kitDefaults()).equals(mine)).toBe(true);
   });
 
   it("applies a saved preset by slot", () => {

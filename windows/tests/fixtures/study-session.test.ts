@@ -9,6 +9,7 @@ import {
 } from "../../src/core/studyMethods/studyMethod";
 import { STUDY_METHOD_KINDS } from "../../src/core/studyMethods/studyMethodFile";
 import { sharedStudyFocus, studyFocusActivity } from "../../src/core/studyMethods/studyFocusShare";
+import { durationMinutes } from "../../src/core/formatting/durationFormat";
 import { studyPetEvents, studyPetIsDozing } from "../../src/core/studyMethods/studyPetCue";
 import { MINIMUM_LOGGED_DURATION, phaseActivityRecord, type StudyPhaseRecord } from "../../src/core/studyMethods/studyPhaseRecord";
 import { StudySession } from "../../src/core/studyMethods/studySession";
@@ -18,7 +19,6 @@ import {
   studyPrimaryAction,
   studyReadout,
   studyRoundLabel,
-  studyStudied,
 } from "../../src/core/studyMethods/studyTimerFormat";
 import { installEnglishCatalog } from "../support/englishCatalog";
 import { loadFixture } from "../support/fixtures";
@@ -214,7 +214,7 @@ function run(method: StudyMethod, inputs: Input[]): Record<string, unknown>[] {
         round: studyRoundLabel(session),
         primaryAction: studyPrimaryAction(session),
         petDozing: studyPetIsDozing(session),
-        petEvents: studyPetEvents(before, session),
+        petEvents: studyPetEvents(before, session).map((event) => event.kind),
         deepFocus: studyFocusActivity(session, true),
       },
       provided: provided === undefined ? undefined : providedJson(provided, now),
@@ -234,7 +234,7 @@ describe("study-session fixture", () => {
   it("matches the dial, studied and points labels", () => {
     const labels = {
       clocks: golden.labels.clocks.map(({ seconds }) => ({ seconds, text: studyClock(seconds) })),
-      studied: golden.labels.studied.map(({ minutes }) => ({ minutes, text: studyStudied(minutes) })),
+      studied: golden.labels.studied.map(({ minutes }) => ({ minutes, text: durationMinutes(minutes) })),
       points: golden.labels.points.map(({ points }) => ({ points, text: studyPoints(points) })),
     };
     expect(goldenDiff(labels, golden.labels, "labels")).toBeUndefined();

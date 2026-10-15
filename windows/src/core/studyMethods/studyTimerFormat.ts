@@ -115,18 +115,6 @@ export function studyPrimaryAction(session: StudySession): string {
   }
 }
 
-/**
- * Time studied as a short label: "0 min", "45 min", "1h 5m". This is
- * DurationFormat.minutes on the Mac, kept here until the formatting port
- * lands so Study reads the same way.
- */
-export function studyStudied(minutes: number): string {
-  const value = Math.max(minutes, 0);
-  if (value < 60) return tr("%lld min", value);
-  const hours = intDivide(value, 60);
-  const rest = value % 60;
-  return rest === 0 ? tr("%lldh", hours) : tr("%lldh %lldm", hours, rest);
-}
 
 /** Points as a signed label for a day's tally: "+79 pts", "+1 pt", "0 pts". */
 export function studyPoints(points: number): string {

@@ -1,11 +1,5 @@
+import type { PetAnimatorEvent } from "../pets/petAnimator";
 import type { StudySession } from "./studySession";
-
-/*
- * The pet animator events Study sends. This is the slice of the Mac's
- * PetAnimator.Event that the Study tab uses, kept narrow until the pet port
- * owns the full enum.
- */
-export type StudyPetEvent = "celebrate" | "sleep" | "wake";
 
 /**
  * Port of StudyPetCue: how the pet in the Study panel's corner follows the
@@ -18,16 +12,20 @@ export function studyPetIsDozing(session: StudySession): boolean {
   return !session.isRunning;
 }
 
+const CELEBRATE: PetAnimatorEvent = { kind: "celebrate" };
+const SLEEP: PetAnimatorEvent = { kind: "sleep" };
+const WAKE: PetAnimatorEvent = { kind: "wake" };
+
 /**
  * The animator events that take the pet from `old` to `next`, in order. A
  * finished focus block celebrates (then dozes off if the timer stopped);
  * otherwise the pet only reacts when the clock starts or stops. Resetting or
  * switching methods never celebrates.
  */
-export function studyPetEvents(old: StudySession, next: StudySession): StudyPetEvent[] {
+export function studyPetEvents(old: StudySession, next: StudySession): PetAnimatorEvent[] {
   const finishedBlock = next.method.kind === old.method.kind && next.completedFocusCount > old.completedFocusCount;
   const dozing = studyPetIsDozing(next);
-  if (finishedBlock) return dozing ? ["celebrate", "sleep"] : ["celebrate"];
+  if (finishedBlock) return dozing ? [CELEBRATE, SLEEP] : [CELEBRATE];
   if (dozing === studyPetIsDozing(old)) return [];
-  return [dozing ? "sleep" : "wake"];
+  return [dozing ? SLEEP : WAKE];
 }
