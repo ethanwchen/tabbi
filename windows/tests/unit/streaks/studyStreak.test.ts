@@ -3,7 +3,8 @@ import { PetEconomy } from "../../../src/core/closet/petEconomy";
 import { PetMilestoneProgress } from "../../../src/core/closet/petLimited";
 import { ACTIVITY_KINDS, ACTIVITY_UNITS, type ActivityRecord } from "../../../src/core/activity/activityRecord";
 import { activity } from "../../support/activity";
-import { zonedInstant, type DayCalendar } from "../../../src/core/streaks/dayCalendar";
+import { instantOf } from "../../../src/core/calendar/zonedCalendar";
+import { type DayCalendar } from "../../../src/core/streaks/dayCalendar";
 import { StreakFreezeRules, StudyStreak } from "../../../src/core/streaks/studyStreak";
 
 // Port of StudyStreakTests. New York, weeks starting on Monday. October
@@ -17,7 +18,7 @@ function key(day: number, month = 10): string {
 }
 
 function date(day: number, cal: DayCalendar, month = 10, hour = 12): number {
-  return zonedInstant(2026, month, day, hour, 0, 0, cal.timeZone);
+  return instantOf({ year: 2026, month: month, day: day, hour: hour, minute: 0 }, cal.timeZone);
 }
 
 function streak(studied: number[], today: number, bought: number[] = [], cal: DayCalendar = calendar()): StudyStreak {
@@ -182,8 +183,8 @@ describe("StudyStreak: time zones", () => {
   it("study days follow the local day of the records", () => {
     const newYork = calendar();
     // 11:30 pm on Monday the 12th and 12:30 am on Wednesday the 14th, New York time.
-    const late = zonedInstant(2026, 10, 12, 23, 30, 0, newYork.timeZone);
-    const early = zonedInstant(2026, 10, 14, 0, 30, 0, newYork.timeZone);
+    const late = instantOf({ year: 2026, month: 10, day: 12, hour: 23, minute: 30 }, newYork.timeZone);
+    const early = instantOf({ year: 2026, month: 10, day: 14, hour: 0, minute: 30 }, newYork.timeZone);
     const records: ActivityRecord[] = [late, early].map((end, index) => activity({
       id: `r${index}`,
       source: "focus",

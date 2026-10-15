@@ -4,7 +4,8 @@ import { breedDisplayName } from "../../../src/core/pets/petBreed";
 import { InMemoryDocumentStore } from "../../../src/core/persistence/documentStore";
 import { ProgressItem } from "../../../src/core/providers/progressItem";
 import { StudyDailyGoal } from "../../../src/core/studyMethods/studyDailyGoal";
-import { zonedInstant, type DayCalendar } from "../../../src/core/streaks/dayCalendar";
+import { instantOf } from "../../../src/core/calendar/zonedCalendar";
+import { type DayCalendar } from "../../../src/core/streaks/dayCalendar";
 import {
   StudyReminderSave,
   StudyReminderSettings,
@@ -17,7 +18,7 @@ import {
 const calendar: DayCalendar = { timeZone: "America/New_York", firstWeekday: 1 };
 
 function date(day: number, hour: number, minute = 0): number {
-  return zonedInstant(2026, 10, day, hour, minute, 0, calendar.timeZone);
+  return instantOf({ year: 2026, month: 10, day: day, hour: hour, minute: minute }, calendar.timeZone);
 }
 
 function onAtSeven(): StudyReminderSave {

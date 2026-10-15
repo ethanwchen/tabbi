@@ -1,18 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  addDays,
-  dayKey,
-  daysBetween,
-  hourOf,
-  nextDateMatching,
-  parseDayKey,
-  startOfDay,
-  wallClock,
-  weekStart,
-  weekday,
-  zonedInstant,
-  type DayCalendar,
-} from "../../../src/core/streaks/dayCalendar";
+import { instantOf, wallTime } from "../../../src/core/calendar/zonedCalendar";
+import { addDays, dayKey, daysBetween, hourOf, nextDateMatching, parseDayKey, startOfDay, weekStart, weekday, type DayCalendar } from "../../../src/core/streaks/dayCalendar";
 
 const newYork: DayCalendar = { timeZone: "America/New_York", firstWeekday: 1 };
 const NY = "America/New_York";
@@ -20,33 +8,33 @@ const NY = "America/New_York";
 describe("zonedInstant", () => {
   it("names the instant of a wall-clock time in a zone", () => {
     // Noon on October 14, 2026 in New York (EDT, UTC-4) is 16:00 UTC.
-    expect(zonedInstant(2026, 10, 14, 12, 0, 0, NY)).toBe(Date.UTC(2026, 9, 14, 16) / 1000);
-    expect(zonedInstant(2026, 1, 14, 12, 0, 0, NY)).toBe(Date.UTC(2026, 0, 14, 17) / 1000);
-    expect(zonedInstant(2026, 10, 14, 12, 0, 0, "Asia/Tokyo")).toBe(Date.UTC(2026, 9, 14, 3) / 1000);
+    expect(instantOf({ year: 2026, month: 10, day: 14, hour: 12, minute: 0 }, NY)).toBe(Date.UTC(2026, 9, 14, 16) / 1000);
+    expect(instantOf({ year: 2026, month: 1, day: 14, hour: 12, minute: 0 }, NY)).toBe(Date.UTC(2026, 0, 14, 17) / 1000);
+    expect(instantOf({ year: 2026, month: 10, day: 14, hour: 12, minute: 0 }, "Asia/Tokyo")).toBe(Date.UTC(2026, 9, 14, 3) / 1000);
   });
 
   it("moves a time skipped by spring forward to the end of the gap", () => {
     // 2:30 does not exist on March 8, 2026 in New York; clocks jump from 2:00 to 3:00.
-    const instant = zonedInstant(2026, 3, 8, 2, 30, 0, NY);
+    const instant = instantOf({ year: 2026, month: 3, day: 8, hour: 2, minute: 30 }, NY);
     expect(instant).toBe(Date.UTC(2026, 2, 8, 7) / 1000);
-    const wall = wallClock(instant, NY);
+    const wall = wallTime(instant, NY);
     expect([wall.day, wall.hour, wall.minute]).toEqual([8, 3, 0]);
   });
 
   it("takes the first of a time that happens twice when clocks fall back", () => {
     // 1:30 happens twice on November 1, 2026 in New York; the first is EDT.
-    expect(zonedInstant(2026, 11, 1, 1, 30, 0, NY)).toBe(Date.UTC(2026, 10, 1, 5, 30) / 1000);
-    expect(zonedInstant(2026, 11, 2, 19, 0, 0, NY) - zonedInstant(2026, 11, 1, 19, 0, 0, NY)).toBe(86400);
-    expect(zonedInstant(2026, 11, 1, 19, 0, 0, NY) - zonedInstant(2026, 10, 31, 19, 0, 0, NY)).toBe(25 * 3600);
+    expect(instantOf({ year: 2026, month: 11, day: 1, hour: 1, minute: 30 }, NY)).toBe(Date.UTC(2026, 10, 1, 5, 30) / 1000);
+    expect(instantOf({ year: 2026, month: 11, day: 2, hour: 19, minute: 0 }, NY) - instantOf({ year: 2026, month: 11, day: 1, hour: 19, minute: 0 }, NY)).toBe(86400);
+    expect(instantOf({ year: 2026, month: 11, day: 1, hour: 19, minute: 0 }, NY) - instantOf({ year: 2026, month: 10, day: 31, hour: 19, minute: 0 }, NY)).toBe(25 * 3600);
   });
 });
 
 describe("day keys", () => {
   it("are the local day of an instant", () => {
-    const lateInNewYork = zonedInstant(2026, 10, 14, 23, 30, 0, NY);
+    const lateInNewYork = instantOf({ year: 2026, month: 10, day: 14, hour: 23, minute: 30 }, NY);
     expect(dayKey(lateInNewYork, newYork)).toBe("2026-10-14");
     expect(dayKey(lateInNewYork, { timeZone: "Asia/Tokyo", firstWeekday: 1 })).toBe("2026-10-15");
-    expect(startOfDay("2026-10-14", newYork)).toBe(zonedInstant(2026, 10, 14, 0, 0, 0, NY));
+    expect(startOfDay("2026-10-14", newYork)).toBe(instantOf({ year: 2026, month: 10, day: 14, hour: 0, minute: 0 }, NY));
     expect(hourOf(lateInNewYork, NY)).toBe(23);
   });
 
@@ -77,18 +65,18 @@ describe("day keys", () => {
 
 describe("nextDateMatching", () => {
   it("is strictly after the given moment", () => {
-    const nine = zonedInstant(2026, 10, 14, 9, 0, 0, NY);
-    expect(nextDateMatching(nine, 19, 0, newYork)).toBe(zonedInstant(2026, 10, 14, 19, 0, 0, NY));
-    const seven = zonedInstant(2026, 10, 14, 19, 0, 0, NY);
-    expect(nextDateMatching(seven, 19, 0, newYork)).toBe(zonedInstant(2026, 10, 15, 19, 0, 0, NY));
+    const nine = instantOf({ year: 2026, month: 10, day: 14, hour: 9, minute: 0 }, NY);
+    expect(nextDateMatching(nine, 19, 0, newYork)).toBe(instantOf({ year: 2026, month: 10, day: 14, hour: 19, minute: 0 }, NY));
+    const seven = instantOf({ year: 2026, month: 10, day: 14, hour: 19, minute: 0 }, NY);
+    expect(nextDateMatching(seven, 19, 0, newYork)).toBe(instantOf({ year: 2026, month: 10, day: 15, hour: 19, minute: 0 }, NY));
   });
 
   it("keeps the wall-clock time across daylight saving and fills a skipped hour", () => {
-    const evening = zonedInstant(2026, 10, 31, 20, 0, 0, NY);
+    const evening = instantOf({ year: 2026, month: 10, day: 31, hour: 20, minute: 0 }, NY);
     const fire = nextDateMatching(evening, 19, 0, newYork);
-    expect(wallClock(fire, NY).hour).toBe(19);
-    expect(wallClock(fire, NY).day).toBe(1);
+    expect(wallTime(fire, NY).hour).toBe(19);
+    expect(wallTime(fire, NY).day).toBe(1);
     const gap = nextDateMatching(startOfDay("2026-03-08", newYork), 2, 30, newYork);
-    expect([wallClock(gap, NY).day, wallClock(gap, NY).hour]).toEqual([8, 3]);
+    expect([wallTime(gap, NY).day, wallTime(gap, NY).hour]).toEqual([8, 3]);
   });
 });

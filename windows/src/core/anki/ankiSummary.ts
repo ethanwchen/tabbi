@@ -1,3 +1,4 @@
+import { instantOf } from "../calendar/zonedCalendar";
 import { DAY, type Instant, type Seconds } from "../time";
 import type { AnkiConnectClient } from "./ankiConnectClient";
 import { AnkiConnectFailure, errorMessage, failsWholeRefresh } from "./ankiConnectError";
@@ -15,7 +16,6 @@ import {
   addingDays,
   ankiDayAt,
   ankiDayText,
-  instantFromZoned,
   sameAnkiDay,
 } from "./ankiDay";
 import { DECK_SEPARATOR, deckLeaf, deckNameComponents } from "./ankiDeckName";
@@ -205,7 +205,7 @@ export function isSummaryCurrent(summary: AnkiSummary, now: Instant, timeZone: s
 /** The instant the next Anki day starts after `now`, when due counts reset. */
 export function nextRollover(now: Instant, timeZone: string, rolloverHour = 4): Instant {
   const tomorrow = addingDays(ankiDayAt(now, timeZone, rolloverHour), 1);
-  return instantFromZoned(tomorrow.year, tomorrow.month, tomorrow.day, rolloverHour, timeZone);
+  return instantOf({ year: tomorrow.year, month: tomorrow.month, day: tomorrow.day, hour: rolloverHour }, timeZone);
 }
 
 function byMostDue(a: AnkiDeckStats, b: AnkiDeckStats): number {

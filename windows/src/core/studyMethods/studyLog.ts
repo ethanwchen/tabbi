@@ -1,3 +1,4 @@
+import { plannerDayKeyOf } from "../planner/plannerDayKey";
 import { PetPointsRules } from "../pets/petPointsRules";
 import type { StudyDayTally } from "../providers/studyDayTally";
 import type { Instant } from "../time";
@@ -43,18 +44,6 @@ export function studyLogEntry(record: StudyPhaseRecord, id: string): StudyLogEnt
   };
 }
 
-const dayFormatters = new Map<string, Intl.DateTimeFormat>();
-
-/** The calendar day `instant` falls on in `timeZone`, as YYYY-MM-DD. */
-function dayIn(instant: Instant, timeZone: string): string {
-  let formatter = dayFormatters.get(timeZone);
-  if (formatter === undefined) {
-    formatter = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" });
-    dayFormatters.set(timeZone, formatter);
-  }
-  return formatter.format(new Date(instant * 1000));
-}
-
 /**
  * Port of StudyLog: the history of study stretches, oldest first, capped at
  * `capacity` entries. Points use the same rules the pet pays by; the log never
@@ -82,10 +71,10 @@ export class StudyLog {
 
   /** Totals for the stretches that ended on the calendar day of `day` in `timeZone` (an IANA name). */
   summary(day: Instant, timeZone: string): StudyDayTally {
-    const target = dayIn(day, timeZone);
+    const target = plannerDayKeyOf(day, timeZone);
     const total = { minutes: 0, sessions: 0, points: 0 };
     for (const entry of this.entries) {
-      if (dayIn(entry.endedAt, timeZone) !== target) continue;
+      if (plannerDayKeyOf(entry.endedAt, timeZone) !== target) continue;
       total.minutes += entry.minutes;
       total.points += entry.points;
       if (entry.completed) total.sessions += 1;

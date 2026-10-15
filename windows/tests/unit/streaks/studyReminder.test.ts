@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { wallClock, zonedInstant, type DayCalendar } from "../../../src/core/streaks/dayCalendar";
+import { instantOf, wallTime } from "../../../src/core/calendar/zonedCalendar";
+import { type DayCalendar } from "../../../src/core/streaks/dayCalendar";
 import {
   StudyReminderSettings,
   nextReminderFireDate,
@@ -13,7 +14,7 @@ function calendar(zone = "America/New_York"): DayCalendar {
 }
 
 function date(day: number, hour: number, cal: DayCalendar, minute = 0, month = 10): number {
-  return zonedInstant(2026, month, day, hour, minute, 0, cal.timeZone);
+  return instantOf({ year: 2026, month: month, day: day, hour: hour, minute: minute }, cal.timeZone);
 }
 
 const sevenPM = StudyReminderSettings.at(true, 19, 0);
@@ -115,8 +116,8 @@ describe("StudyReminder: when it fires", () => {
     // Clocks fall back on November 1, 2026 in New York.
     const cal = calendar();
     const fire = next(cal, date(31, 20, cal)) ?? 0;
-    expect(wallClock(fire, cal.timeZone).hour).toBe(19);
-    expect(wallClock(fire, cal.timeZone).day).toBe(1);
+    expect(wallTime(fire, cal.timeZone).hour).toBe(19);
+    expect(wallTime(fire, cal.timeZone).day).toBe(1);
     expect(fire - date(31, 19, cal)).toBe(25 * 3600);
   });
 
@@ -124,8 +125,8 @@ describe("StudyReminder: when it fires", () => {
     // 2:30 doesn't exist on March 8, 2026 in New York; 3:00 does.
     const cal = calendar();
     const fire = reminderFireDate("2026-03-08", StudyReminderSettings.at(true, 2, 30), cal);
-    expect(wallClock(fire, cal.timeZone).day).toBe(8);
-    expect(wallClock(fire, cal.timeZone).hour).toBe(3);
+    expect(wallTime(fire, cal.timeZone).day).toBe(8);
+    expect(wallTime(fire, cal.timeZone).hour).toBe(3);
   });
 });
 

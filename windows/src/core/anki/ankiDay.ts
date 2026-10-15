@@ -1,86 +1,10 @@
+import { wallTime } from "../calendar/zonedCalendar";
 import type { Instant } from "../time";
 
 /*
- * Calendar days the way AnkiConnect reports them, plus the two wall-clock
- * conversions the Anki port needs. The core never reads the machine's zone,
- * so every conversion names an IANA zone and goes through Intl.
+ * Calendar days the way AnkiConnect reports them. Wall-clock conversions go
+ * through core/calendar/zonedCalendar, which names an IANA zone each time.
  */
-
-/** Year, month (1 to 12), day, hour, minute and second of an instant in a zone. */
-export interface ZonedParts {
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-  minute: number;
-  second: number;
-}
-
-const formatters = new Map<string, Intl.DateTimeFormat>();
-
-function formatter(timeZone: string): Intl.DateTimeFormat {
-  let cached = formatters.get(timeZone);
-  if (!cached) {
-    cached = new Intl.DateTimeFormat("en-US", {
-      timeZone,
-      calendar: "gregory",
-      numberingSystem: "latn",
-      hourCycle: "h23",
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-    });
-    formatters.set(timeZone, cached);
-  }
-  return cached;
-}
-
-/** The wall-clock fields of `instant` in `timeZone`. */
-export function zonedParts(instant: Instant, timeZone: string): ZonedParts {
-  const parts: Record<string, number> = {};
-  for (const part of formatter(timeZone).formatToParts(new Date(Math.floor(instant) * 1000))) {
-    if (part.type !== "literal") parts[part.type] = Number(part.value);
-  }
-  const field = (key: string) => parts[key] ?? 0;
-  return {
-    year: field("year"),
-    month: field("month"),
-    day: field("day"),
-    hour: field("hour") % 24,
-    minute: field("minute"),
-    second: field("second"),
-  };
-}
-
-/**
- * The instant a wall-clock time happens in `timeZone`. A time skipped by a
- * daylight saving jump resolves forward, a repeated one to its first
- * occurrence, like Foundation's `Calendar.date(from:)`.
- */
-export function instantFromZoned(
-  year: number,
-  month: number,
-  day: number,
-  hour: number,
-  timeZone: string,
-  minute = 0,
-  second = 0,
-): Instant {
-  const wall = Date.UTC(year, month - 1, day, hour, minute, second) / 1000;
-  const offsetAt = (instant: Instant) => {
-    const p = zonedParts(instant, timeZone);
-    return Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second) / 1000 - Math.floor(instant);
-  };
-  const first = wall - offsetAt(wall);
-  const refined = wall - offsetAt(first);
-  const candidates = [first, refined].filter((candidate) => wall - offsetAt(candidate) === candidate);
-  if (candidates.length > 0) return Math.min(...candidates);
-  /* A skipped wall-clock time: move forward by the jump. */
-  return Math.max(first, refined);
-}
 
 /**
  * Port of AnkiDay: a calendar day as AnkiConnect reports it ("2026-09-30"),
@@ -115,7 +39,7 @@ export function parseAnkiDay(text: string): AnkiDay | undefined {
  * previous day).
  */
 export function ankiDayAt(instant: Instant, timeZone: string, rolloverHour = 4): AnkiDay {
-  const parts = zonedParts(instant - rolloverHour * 3600, timeZone);
+  const parts = wallTime(instant - rolloverHour * 3600, timeZone);
   return { year: parts.year, month: parts.month, day: parts.day };
 }
 

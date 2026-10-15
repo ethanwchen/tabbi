@@ -1,5 +1,5 @@
 import type { AIProviderID } from "../ai/aiProviderID";
-import { zonedParts } from "../anki/ankiDay";
+import { wallTime } from "../calendar/zonedCalendar";
 import type { Instant } from "../time";
 import type { ClaudeAskAttachment } from "./claudeAskAttachment";
 import { type ClaudeAskRole, type ClaudeAskStatus, demoConversation, summarize } from "./claudeAskConversation";
@@ -51,7 +51,7 @@ export function compareChats(a: ClaudeAskChat, b: ClaudeAskChat): number {
 }
 
 function dayNumber(instant: Instant, timeZone: string): number {
-  const parts = zonedParts(instant, timeZone);
+  const parts = wallTime(instant, timeZone);
   return Date.UTC(parts.year, parts.month - 1, parts.day) / 86_400_000;
 }
 
@@ -70,7 +70,7 @@ export function chatDateLabel(chat: ClaudeAskChat, now: Instant, timeZone: strin
   } else if (daysAgo < 7) {
     options = { weekday: "long" };
   } else {
-    const sameYear = zonedParts(chat.updatedAt, timeZone).year === zonedParts(now, timeZone).year;
+    const sameYear = wallTime(chat.updatedAt, timeZone).year === wallTime(now, timeZone).year;
     options = sameYear ? { month: "short", day: "numeric" } : { year: "numeric", month: "short", day: "numeric" };
   }
   return new Intl.DateTimeFormat(locale, { ...options, timeZone }).format(new Date(chat.updatedAt * 1000));

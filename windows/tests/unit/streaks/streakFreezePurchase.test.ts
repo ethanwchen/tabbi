@@ -6,7 +6,8 @@ import { activity } from "../../support/activity";
 import { PetProfile } from "../../../src/core/pets/petProfile";
 import { PetSave } from "../../../src/core/pets/petSave";
 import { PetPointsLedger, StreakFreezePurchaseError } from "../../../src/core/pets/petUnlocks";
-import { dayKey, zonedInstant, type DayCalendar } from "../../../src/core/streaks/dayCalendar";
+import { instantOf } from "../../../src/core/calendar/zonedCalendar";
+import { dayKey, type DayCalendar } from "../../../src/core/streaks/dayCalendar";
 import { StreakFreezeRules, StudyStreak } from "../../../src/core/streaks/studyStreak";
 
 // Port of StreakFreezePurchaseTests: buying extra streak freezes with
@@ -15,7 +16,7 @@ const calendar: DayCalendar = { timeZone: "America/New_York", firstWeekday: 2 };
 
 /** Noon on a day of October 2026 (Monday the 12th starts a week). */
 function date(day: number): number {
-  return zonedInstant(2026, 10, day, 12, 0, 0, calendar.timeZone);
+  return instantOf({ year: 2026, month: 10, day: day, hour: 12, minute: 0 }, calendar.timeZone);
 }
 
 function streak(ledger: PetPointsLedger, days: number[], today: number): StudyStreak {

@@ -1,4 +1,5 @@
-import { addingDays, ankiDayAt, instantFromZoned } from "../anki/ankiDay";
+import { addingDays, ankiDayAt } from "../anki/ankiDay";
+import { instantOf } from "../calendar/zonedCalendar";
 import type { Instant } from "../time";
 import { addTokens, type ClaudeTokenUsage, type ClaudeUsageRecord, totalTokens, ZERO_TOKENS } from "./claudeUsageRecord";
 
@@ -42,13 +43,13 @@ export function emptyLocalStats(): ClaudeLocalStats {
 /** Local midnight of the day containing `now` in `timeZone`. */
 export function startOfDay(now: Instant, timeZone: string): Instant {
   const day = ankiDayAt(now, timeZone, 0);
-  return instantFromZoned(day.year, day.month, day.day, 0, timeZone);
+  return instantOf({ year: day.year, month: day.month, day: day.day }, timeZone);
 }
 
 /** Start of the seven-day window: midnight six days before `now`. */
 export function windowStart(now: Instant, timeZone: string): Instant {
   const day = addingDays(ankiDayAt(now, timeZone, 0), -6);
-  return instantFromZoned(day.year, day.month, day.day, 0, timeZone);
+  return instantOf({ year: day.year, month: day.month, day: day.day }, timeZone);
 }
 
 /**

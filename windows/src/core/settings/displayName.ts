@@ -1,3 +1,4 @@
+import { wallTime } from "../calendar/zonedCalendar";
 import type { Instant } from "../time";
 
 /** The friends server's name limit, which every use of the name follows. */
@@ -31,18 +32,6 @@ export function cleanedDisplayName(text: string): string | undefined {
   return characters.slice(0, DISPLAY_NAME_MAX_LENGTH).join("").trim();
 }
 
-const hourFormatters = new Map<string, Intl.DateTimeFormat>();
-
-function hourIn(instant: Instant, timeZone: string): number {
-  let formatter = hourFormatters.get(timeZone);
-  if (!formatter) {
-    formatter = new Intl.DateTimeFormat("en-US", { timeZone, hour: "numeric", hourCycle: "h23" });
-    hourFormatters.set(timeZone, formatter);
-  }
-  const hour = formatter.formatToParts(new Date(instant * 1000)).find((part) => part.type === "hour")?.value;
-  return Number(hour ?? 0) % 24;
-}
-
 /**
  * Port of DisplayName.greeting: "Good morning, Ana" for the hour of
  * `instant` in `timeZone` (morning from 4 am, afternoon from noon, evening
@@ -51,7 +40,7 @@ function hourIn(instant: Instant, timeZone: string): number {
 export function displayNameGreeting(name: string | undefined, instant: Instant, timeZone: string): string | undefined {
   const cleaned = name === undefined ? undefined : cleanedDisplayName(name);
   if (cleaned === undefined) return undefined;
-  const hour = hourIn(instant, timeZone);
+  const hour = wallTime(instant, timeZone).hour;
   const part = hour >= 4 && hour < 12 ? "morning" : hour >= 12 && hour < 17 ? "afternoon" : "evening";
   return `Good ${part}, ${cleaned}`;
 }

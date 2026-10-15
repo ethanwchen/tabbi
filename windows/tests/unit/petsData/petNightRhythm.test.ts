@@ -3,7 +3,8 @@ import { ProvidedFocus } from "../../../src/core/providers/providedFocus";
 import { PetNightRhythm } from "../../../src/core/pets/petNightRhythm";
 import { PetPresence } from "../../../src/core/pets/petPresence";
 import { PetProfile } from "../../../src/core/pets/petProfile";
-import { zonedInstant, type DayCalendar } from "../../../src/core/streaks/dayCalendar";
+import { instantOf } from "../../../src/core/calendar/zonedCalendar";
+import { type DayCalendar } from "../../../src/core/streaks/dayCalendar";
 
 // Port of PetNightRhythmTests.swift.
 
@@ -14,7 +15,7 @@ function calendar(zone: string): DayCalendar {
 }
 
 function date(hour: number, minute = 0, zone = "America/New_York"): number {
-  return zonedInstant(2026, 10, 11, hour, minute, 0, zone);
+  return instantOf({ year: 2026, month: 10, day: 11, hour: hour, minute: minute }, zone);
 }
 
 function runningFocus(now: number): ProvidedFocus {
