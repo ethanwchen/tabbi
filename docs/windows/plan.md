@@ -2,6 +2,7 @@
 
 Status: proposal for a decision, October 2026.
 Nothing here is built yet.
+The handoff for the Windows build session, which updates this plan where they differ, is [HANDOFF.md](HANDOFF.md).
 
 ## Recommendation in brief
 
