@@ -55,17 +55,32 @@ struct StudySoundButton: View {
 /// The in-notch sound mixer: blend up to three sounds with their own
 /// levels, set the volume, pick a study playlist, and switch Do Not
 /// Disturb. Everything edits the shared focus settings, which crossfade
-/// live while focusing.
+/// live while focusing. The Study tab and the Focus tab both open it, each
+/// in its own accent (`tint`).
 struct StudySoundMixer: View {
     @ObservedObject var focus: FocusController
+    /// The accent of the tab showing the mixer.
+    var tint: Color = studyAccent
     let close: () -> Void
 
     var body: some View {
+        // A short panel (Compact) gets slimmer sound tiles, so both cards
+        // keep their bottom edges instead of being clipped by the notch.
+        ViewThatFits(in: .vertical) {
+            content(dense: false)
+            content(dense: true)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .environment(\.mixerTint, tint)
+        .onDisappear { focus.setPreviewing(false) }
+    }
+
+    private func content(dense: Bool) -> some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             header
             HStack(alignment: .top, spacing: Theme.Spacing.s) {
                 Card(padding: Theme.Spacing.s) {
-                    blend.frame(maxHeight: .infinity, alignment: .top)
+                    blend(dense: dense).frame(maxHeight: .infinity, alignment: .top)
                 }
                 Card(padding: Theme.Spacing.s) {
                     StudyPlaylistList(focus: focus, snapshotIssue: StudySnapshotState.current?.playlistIssue)
@@ -76,7 +91,6 @@ struct StudySoundMixer: View {
             .frame(maxHeight: .infinity)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .onDisappear { focus.setPreviewing(false) }
     }
 
     private var mix: FocusMix { focus.settings.mix }
@@ -117,14 +131,14 @@ struct StudySoundMixer: View {
     }
 
     /// The sounds in rows of three equal columns.
-    private func tiles(showsIcons: Bool) -> some View {
+    private func tiles(showsIcons: Bool, dense: Bool) -> some View {
         let sounds = FocusSound.allCases
         return Grid(horizontalSpacing: Theme.Spacing.xs, verticalSpacing: Theme.Spacing.xs) {
             ForEach(Array(stride(from: 0, to: sounds.count, by: 3)), id: \.self) { start in
                 GridRow {
                     ForEach(sounds[start..<min(start + 3, sounds.count)]) { sound in
                         StudyMixTile(sound: sound, level: mix.level(of: sound),
-                                     canAdd: mix.canAddLayer, showsIcon: showsIcons,
+                                     canAdd: mix.canAddLayer, showsIcon: showsIcons, isDense: dense,
                                      toggle: { withMotion(Theme.Motion.snappy) { _ = focus.settings.mix.toggle(sound) } },
                                      setLevel: { focus.settings.mix.setLevel($0, for: sound) })
                             .frame(maxWidth: .infinity)
@@ -134,7 +148,7 @@ struct StudySoundMixer: View {
         }
     }
 
-    private var blend: some View {
+    private func blend(dense: Bool) -> some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             HStack(spacing: Theme.Spacing.s) {
                 Text("Blend", bundle: .tabbi)
@@ -147,8 +161,8 @@ struct StudySoundMixer: View {
             // In a narrow panel (Compact) the names would truncate beside
             // their icons ("Brown n..."), so every tile drops its icon.
             ViewThatFits(in: .horizontal) {
-                tiles(showsIcons: true)
-                tiles(showsIcons: false)
+                tiles(showsIcons: true, dense: dense)
+                tiles(showsIcons: false, dense: dense)
             }
             Spacer(minLength: 0)
             HStack(spacing: Theme.Spacing.s) {
@@ -177,6 +191,7 @@ struct StudySoundMixer: View {
 /// long press or right-click renames or deletes it. The chip of the preset
 /// playing now is lit.
 private struct StudyMixPresetRow: View {
+    @Environment(\.mixerTint) private var mixerTint
     @ObservedObject var focus: FocusController
     @State private var renaming: Int?
     @State private var draft = ""
@@ -231,7 +246,7 @@ private struct StudyMixPresetRow: View {
         .padding(.leading, Theme.Spacing.s)
         .frame(height: 18)
         .background(Capsule().fill(Theme.Palette.surfaceHover))
-        .overlay(Capsule().strokeBorder(studyAccent.opacity(0.6), lineWidth: 1))
+        .overlay(Capsule().strokeBorder(mixerTint.opacity(0.6), lineWidth: 1))
     }
 
     private func beginRename(_ slot: Int, name: String) {
@@ -248,6 +263,7 @@ private struct StudyMixPresetRow: View {
 
 /// A saved blend: its name in a capsule, lit while it is the blend playing.
 private struct StudyMixPresetChip: View {
+    @Environment(\.mixerTint) private var mixerTint
     let name: String
     let isOn: Bool
     let help: String
@@ -268,7 +284,7 @@ private struct StudyMixPresetChip: View {
                                   : (hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText))
             .padding(.horizontal, Theme.Spacing.s)
             .frame(height: 18)
-            .background(Capsule().fill(isOn ? studyAccent.opacity(hovering ? 1 : 0.88)
+            .background(Capsule().fill(isOn ? mixerTint.opacity(hovering ? 1 : 0.88)
                                             : (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)))
             .overlay(Capsule().strokeBorder(Theme.Palette.stroke.opacity(isOn ? 0 : 1), lineWidth: 1))
             .contentShape(Capsule())
@@ -320,11 +336,14 @@ private struct StudyMixPresetSaveButton: View {
 /// One sound in the blend: tap to add or remove it; while it's in the mix
 /// a level slider sits underneath.
 private struct StudyMixTile: View {
+    @Environment(\.mixerTint) private var mixerTint
     let sound: FocusSound
     /// The sound's level, or nil when it isn't in the mix.
     let level: Float?
     let canAdd: Bool
     let showsIcon: Bool
+    /// Slimmer, for a short panel.
+    let isDense: Bool
     let toggle: () -> Void
     let setLevel: (Float) -> Void
     @State private var hovering = false
@@ -363,15 +382,15 @@ private struct StudyMixTile: View {
                 .allowsHitTesting(isOn)
         }
         .padding(.horizontal, Theme.Spacing.xs)
-        .padding(.vertical, Theme.Spacing.s - Theme.Spacing.xxs)
+        .padding(.vertical, isDense ? Theme.Spacing.xxs : Theme.Spacing.s - Theme.Spacing.xxs)
         .background(
             RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
-                .fill(isOn ? studyAccent.opacity(hovering ? 0.22 : 0.15)
+                .fill(isOn ? mixerTint.opacity(hovering ? 0.22 : 0.15)
                            : (hovering && isEnabled ? Theme.Palette.surfaceHover : Theme.Palette.surface))
         )
         .overlay(
             RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
-                .strokeBorder(studyAccent.opacity(isOn ? 0.5 : 0), lineWidth: 1)
+                .strokeBorder(mixerTint.opacity(isOn ? 0.5 : 0), lineWidth: 1)
         )
         .opacity(isEnabled ? 1 : 0.45)
         .onHover { hovering = $0 }
@@ -395,6 +414,7 @@ private struct StudyMixTile: View {
 /// A level in the mixer (the volume, or one sound's level in the blend):
 /// the shared `TrackSlider` in the Timer's accent.
 private struct StudyLevelSlider: View {
+    @Environment(\.mixerTint) private var mixerTint
     let level: Float
     /// What the slider sets, e.g. "Volume" or "Rain level".
     let name: String
@@ -403,7 +423,7 @@ private struct StudyLevelSlider: View {
     let action: (Float) -> Void
 
     var body: some View {
-        TrackSlider(value: Double(level), tint: studyAccent, help: help,
+        TrackSlider(value: Double(level), tint: mixerTint, help: help,
                     accessibilityLabel: name, accessibilityValue: StudyLevelSlider.percent(level),
                     onChange: { action(Float($0)) })
             .frame(height: 10)
@@ -544,6 +564,7 @@ private struct StudyPlaylistIssueRow: View {
 }
 
 private struct StudyPlaylistRow: View {
+    @Environment(\.mixerTint) private var mixerTint
     let name: String
     let detail: String
     let isOn: Bool
@@ -556,7 +577,7 @@ private struct StudyPlaylistRow: View {
             HStack(spacing: Theme.Spacing.xs) {
                 Image(systemName: isOn ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 9, weight: .semibold))
-                    .foregroundStyle(isOn ? studyAccent : Theme.Palette.tertiaryText)
+                    .foregroundStyle(isOn ? mixerTint : Theme.Palette.tertiaryText)
                 // The curator only shows when the whole name still fits.
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: Theme.Spacing.xs) {
@@ -594,6 +615,7 @@ private struct StudyPlaylistRow: View {
 
 /// A small capsule switch: accent fill when on, quiet surface when off.
 struct StudyCapsuleToggle: View {
+    @Environment(\.mixerTint) private var mixerTint
     let title: String
     let symbol: String
     let isOn: Bool
@@ -615,7 +637,7 @@ struct StudyCapsuleToggle: View {
             .foregroundStyle(isOn ? Theme.Palette.background : Theme.Palette.secondaryText)
             .padding(.horizontal, Theme.Spacing.s)
             .frame(height: 20)
-            .background(Capsule().fill(isOn ? studyAccent.opacity(hovering ? 1 : 0.88)
+            .background(Capsule().fill(isOn ? mixerTint.opacity(hovering ? 1 : 0.88)
                                             : (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)))
             .overlay(Capsule().strokeBorder(Theme.Palette.stroke.opacity(isOn ? 0 : 1), lineWidth: 1))
             .contentShape(Capsule())
@@ -625,4 +647,10 @@ struct StudyCapsuleToggle: View {
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
+}
+
+extension EnvironmentValues {
+    /// The accent the sound mixer and the capsule switches draw in: Study's,
+    /// unless the tab showing them sets its own.
+    @Entry var mixerTint: Color = studyAccent
 }

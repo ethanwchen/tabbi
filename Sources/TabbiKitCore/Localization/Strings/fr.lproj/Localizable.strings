@@ -751,12 +751,12 @@
 	<string>Les chats retombent sur leurs pattes parce qu'ils se tournent vers le sol jusqu'au bout. Bon retour.</string>
 	<key>Celebration sound</key>
 	<string>Son de célébration</string>
-	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
-	<string>Change le son et Ne pas déranger dans Réglages &gt; Onglets &gt; Options</string>
-	<key>Change focus sound in Settings &gt; Tabs &gt; Options</key>
-	<string>Change le son dans Réglages &gt; Onglets &gt; Options</string>
 	<key>Change the countdown to %lld minutes, or to a minute from now if that time has passed</key>
 	<string>Passer le compte à rebours à %lld minutes, ou à une minute si ce temps est déjà écoulé</string>
+	<key>Change the focus sound</key>
+	<string>Change le son de concentration</string>
+	<key>Change the focus sound and Do Not Disturb</key>
+	<string>Change le son de concentration et Ne pas déranger</string>
 	<key>Change the timer method</key>
 	<string>Changer la méthode du minuteur</string>
 	<key>Change your answers</key>

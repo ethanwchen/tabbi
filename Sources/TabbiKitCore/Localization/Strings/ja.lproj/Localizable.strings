@@ -751,12 +751,12 @@
 	<string>ネコが足から着地できるのは、最後まで地面のほうへ体をひねり続けるから。おかえり。</string>
 	<key>Celebration sound</key>
 	<string>お祝いのサウンド</string>
-	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
-	<string>集中サウンドとおやすみモードは 設定 &gt; タブ &gt; オプション で変更</string>
-	<key>Change focus sound in Settings &gt; Tabs &gt; Options</key>
-	<string>集中サウンドは 設定 &gt; タブ &gt; オプション で変更</string>
 	<key>Change the countdown to %lld minutes, or to a minute from now if that time has passed</key>
 	<string>カウントダウンを%lld分に変更 (すでに過ぎていれば今から1分)</string>
+	<key>Change the focus sound</key>
+	<string>集中サウンドを変更</string>
+	<key>Change the focus sound and Do Not Disturb</key>
+	<string>集中サウンドとおやすみモードを変更</string>
 	<key>Change the timer method</key>
 	<string>タイマーのメソッドを変更</string>
 	<key>Change your answers</key>

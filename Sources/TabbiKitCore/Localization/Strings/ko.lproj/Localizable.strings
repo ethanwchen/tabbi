@@ -751,12 +751,12 @@
 	<string>고양이가 발로 착지하는 건 끝까지 땅 쪽으로 몸을 돌리기 때문이에요. 다시 온 걸 환영해요.</string>
 	<key>Celebration sound</key>
 	<string>축하 소리</string>
-	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
-	<string>집중 사운드와 방해 금지는 설정 &gt; 탭 &gt; 옵션에서 변경</string>
-	<key>Change focus sound in Settings &gt; Tabs &gt; Options</key>
-	<string>집중 사운드는 설정 &gt; 탭 &gt; 옵션에서 변경</string>
 	<key>Change the countdown to %lld minutes, or to a minute from now if that time has passed</key>
 	<string>카운트다운을 %lld분으로 바꿔요 (이미 지났다면 지금부터 1분)</string>
+	<key>Change the focus sound</key>
+	<string>집중 사운드 변경</string>
+	<key>Change the focus sound and Do Not Disturb</key>
+	<string>집중 사운드와 방해금지 모드 변경</string>
 	<key>Change the timer method</key>
 	<string>타이머 방법 바꾸기</string>
 	<key>Change your answers</key>

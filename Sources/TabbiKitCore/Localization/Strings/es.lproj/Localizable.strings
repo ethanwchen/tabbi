@@ -751,12 +751,12 @@
 	<string>Los gatos caen de pie porque nunca dejan de girar hacia el suelo. Qué bueno verte de nuevo.</string>
 	<key>Celebration sound</key>
 	<string>Sonido de celebración</string>
-	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
-	<string>Cambia el sonido y No molestar en Ajustes &gt; Pestañas &gt; Opciones</string>
-	<key>Change focus sound in Settings &gt; Tabs &gt; Options</key>
-	<string>Cambia el sonido en Ajustes &gt; Pestañas &gt; Opciones</string>
 	<key>Change the countdown to %lld minutes, or to a minute from now if that time has passed</key>
 	<string>Cambiar la cuenta atrás a %lld minutos, o a un minuto si ese tiempo ya pasó</string>
+	<key>Change the focus sound</key>
+	<string>Cambia el sonido de concentración</string>
+	<key>Change the focus sound and Do Not Disturb</key>
+	<string>Cambia el sonido de concentración y No molestar</string>
 	<key>Change the timer method</key>
 	<string>Cambiar el método del temporizador</string>
 	<key>Change your answers</key>

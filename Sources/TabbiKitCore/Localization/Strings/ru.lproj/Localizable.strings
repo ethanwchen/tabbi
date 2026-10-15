@@ -751,12 +751,12 @@
 	<string>Кошка падает на лапы: она до конца поворачивается к земле. С возвращением.</string>
 	<key>Celebration sound</key>
 	<string>Звук празднования</string>
-	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
-	<string>Звук фокуса и «Не беспокоить» меняются в Настройки &gt; Вкладки &gt; Параметры</string>
-	<key>Change focus sound in Settings &gt; Tabs &gt; Options</key>
-	<string>Звук фокуса меняется в Настройки &gt; Вкладки &gt; Параметры</string>
 	<key>Change the countdown to %lld minutes, or to a minute from now if that time has passed</key>
 	<string>Изменить отсчет на %lld мин или на минуту от текущего момента, если это время прошло</string>
+	<key>Change the focus sound</key>
+	<string>Изменить звук фокуса</string>
+	<key>Change the focus sound and Do Not Disturb</key>
+	<string>Изменить звук фокуса и «Не беспокоить»</string>
 	<key>Change the timer method</key>
 	<string>Сменить метод таймера</string>
 	<key>Change your answers</key>

@@ -751,12 +751,12 @@
 	<string>Laging nakatapak ang pusa sa pagbagsak dahil hindi ito tumitigil sa pagbaling sa lupa. Welcome back.</string>
 	<key>Celebration sound</key>
 	<string>Tunog ng celebration</string>
-	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
-	<string>Palitan ang focus sound at Do Not Disturb sa Settings &gt; Tabs &gt; Options</string>
-	<key>Change focus sound in Settings &gt; Tabs &gt; Options</key>
-	<string>Palitan ang focus sound sa Settings &gt; Tabs &gt; Options</string>
 	<key>Change the countdown to %lld minutes, or to a minute from now if that time has passed</key>
 	<string>Gawing %lld minuto ang countdown, o isang minuto mula ngayon kung lampas na ang oras na iyon</string>
+	<key>Change the focus sound</key>
+	<string>Palitan ang focus sound</string>
+	<key>Change the focus sound and Do Not Disturb</key>
+	<string>Palitan ang focus sound at Do Not Disturb</string>
 	<key>Change the timer method</key>
 	<string>Palitan ang paraan ng timer</string>
 	<key>Change your answers</key>

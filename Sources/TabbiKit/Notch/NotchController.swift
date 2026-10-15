@@ -17,6 +17,8 @@ public final class NotchController {
     private var closeTask: Task<Void, Never>?
     private var hoverOpenTask: Task<Void, Never>?
     private var pointerInside = false
+    /// Keeps the notch open while a menu it opened is in use (`NotchPointerHold`).
+    private var pointerHold = NotchPointerHold()
     private var swipe = TabSwipe()
     private var closeSwipe = CloseSwipe()
     private var previewSwipe = TickerSwipe()
@@ -117,10 +119,11 @@ public final class NotchController {
             }
         }) { monitors.append(outside) }
         // Global monitors never see our own windows, so clicks in Settings
-        // need a local monitor to close the notch the same way.
+        // need a local monitor to close the notch the same way. A popover
+        // the notch opened is part of it, so clicks there keep it open.
         if let ownWindows = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown], handler: { [weak self] event in
             MainActor.assumeIsolated {
-                guard let self, self.model.isOpen, event.window !== self.panel else { return }
+                guard let self, self.model.isOpen, !self.belongsToNotch(event.window) else { return }
                 self.model.close()
             }
             return event
@@ -145,6 +148,19 @@ public final class NotchController {
             return event
         }) { monitors.append(scroll) }
 
+        // A menu opened from the notch (a picker, a context menu) keeps it
+        // open while the pointer is over the menu, outside the notch's shape.
+        NotificationCenter.default.publisher(for: NSMenu.didBeginTrackingNotification)
+            .sink { [weak self] _ in
+                MainActor.assumeIsolated { self?.menuBegan() }
+            }
+            .store(in: &cancellables)
+        NotificationCenter.default.publisher(for: NSMenu.didEndTrackingNotification)
+            .sink { [weak self] _ in
+                MainActor.assumeIsolated { self?.pointerHold.menuEnded() }
+            }
+            .store(in: &cancellables)
+
         NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)
             .sink { [weak self] _ in
                 MainActor.assumeIsolated { self?.screensChanged() }
@@ -163,10 +179,13 @@ public final class NotchController {
         }
     }
 
-    private func pointerMoved() {
+    /// Follows the pointer to `location` (in screen coordinates), opening
+    /// on hover and closing once it leaves the notch.
+    func pointerMoved(to location: NSPoint = NSEvent.mouseLocation) {
         updatePointerNear()
         guard isShown else { return }
-        let inside = hitRect.insetBy(dx: -4, dy: -4).contains(NSEvent.mouseLocation)
+        let inside = hitRect.insetBy(dx: -4, dy: -4).contains(location) || isOverChildWindow(location)
+        if inside { pointerHold.pointerEntered() }
         // Setting it, even to the value it has, commits a window server
         // transaction, which on every pointer move anywhere on screen was
         // most of what an idle Tabbi cost.
@@ -187,13 +206,40 @@ public final class NotchController {
         }
         hoverOpenTask?.cancel()
         if model.isOpen {
-            scheduleClose()
+            if !pointerHold.holdsOpen { scheduleClose() }
         } else {
             model.setHovering(false)
         }
     }
 
     private var settings: AppSettings { inputs.currentSettings() }
+
+    /// The panel, for tests that drive a real menu from it.
+    var panelForTesting: NSPanel { panel }
+
+    /// A menu began tracking: one opened from the open notch holds it open
+    /// and stops a close the pointer leaving already scheduled.
+    private func menuBegan() {
+        pointerHold.menuBegan(notchIsOpen: model.isOpen)
+        if pointerHold.holdsOpen { closeTask?.cancel() }
+    }
+
+    /// Whether `window` is the notch panel or one it shows (a popover).
+    private func belongsToNotch(_ window: NSWindow?) -> Bool {
+        var window = window
+        while let current = window {
+            if current === panel { return true }
+            window = current.parent
+        }
+        return false
+    }
+
+    /// Whether `location` is over a window the panel shows, such as a
+    /// popover reaching past the notch's shape.
+    private func isOverChildWindow(_ location: NSPoint) -> Bool {
+        guard let children = panel.childWindows, !children.isEmpty else { return false }
+        return children.contains { $0.isVisible && $0.frame.contains(location) }
+    }
 
     /// The hardware notch's rect (or where it would be on a notchless
     /// screen) in screen coordinates, which the hover zone grows from.
@@ -232,7 +278,8 @@ public final class NotchController {
         closeTask?.cancel()
         closeTask = Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(600))
-            guard let self, !Task.isCancelled, !self.pointerInside, !self.model.isPinned else { return }
+            guard let self, !Task.isCancelled, !self.pointerInside, !self.model.isPinned,
+                  !self.pointerHold.holdsOpen else { return }
             self.model.close()
         }
     }
@@ -354,6 +401,7 @@ public final class NotchController {
             .sink { [weak self] phase in
                 guard let self, phase != .open else { return }
                 self.revealed = false
+                self.pointerHold.notchClosed()
                 // Published before the change lands, so read `isOpen` next turn.
                 Task { @MainActor in self.updateVisibility() }
             }

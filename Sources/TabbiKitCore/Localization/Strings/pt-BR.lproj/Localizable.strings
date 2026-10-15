@@ -751,12 +751,12 @@
 	<string>Gatos caem de pé porque nunca param de se virar para o chão. Que bom ter você de volta.</string>
 	<key>Celebration sound</key>
 	<string>Som de comemoração</string>
-	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
-	<string>Altere o som e o Não perturbe em Ajustes &gt; Abas &gt; Opções</string>
-	<key>Change focus sound in Settings &gt; Tabs &gt; Options</key>
-	<string>Altere o som em Ajustes &gt; Abas &gt; Opções</string>
 	<key>Change the countdown to %lld minutes, or to a minute from now if that time has passed</key>
 	<string>Mudar a contagem para %lld minutos, ou para um minuto a partir de agora se esse tempo já passou</string>
+	<key>Change the focus sound</key>
+	<string>Altere o som de foco</string>
+	<key>Change the focus sound and Do Not Disturb</key>
+	<string>Altere o som de foco e o Não Perturbe</string>
 	<key>Change the timer method</key>
 	<string>Mudar o método do timer</string>
 	<key>Change your answers</key>

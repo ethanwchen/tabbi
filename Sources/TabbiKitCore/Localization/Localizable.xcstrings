@@ -35548,150 +35548,6 @@
         }
       }
     },
-    "Change focus sound and Do Not Disturb in Settings > Tabs > Options" : {
-      "comment" : "Tooltip of the Focus tab's focus mode row.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "غيّر صوت التركيز وعدم الإزعاج من الإعدادات > علامات التبويب > الخيارات"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fokusklang und Nicht stören unter Einstellungen > Tabs > Optionen ändern"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cambia el sonido y No molestar en Ajustes > Pestañas > Opciones"
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Palitan ang focus sound at Do Not Disturb sa Settings > Tabs > Options"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Change le son et Ne pas déranger dans Réglages > Onglets > Options"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "集中サウンドとおやすみモードは 設定 > タブ > オプション で変更"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "집중 사운드와 방해 금지는 설정 > 탭 > 옵션에서 변경"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Altere o som e o Não perturbe em Ajustes > Abas > Opções"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Звук фокуса и «Не беспокоить» меняются в Настройки > Вкладки > Параметры"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 设置 > 标签页 > 选项 中更改专注声音和勿扰模式"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在「設定 > 標籤頁 > 選項」中更改專注聲音和勿擾模式"
-          }
-        }
-      }
-    },
-    "Change focus sound in Settings > Tabs > Options" : {
-      "comment" : "Tooltip of the Focus tab's focus mode row without Do Not Disturb.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "غيّر صوت التركيز من الإعدادات > علامات التبويب > الخيارات"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fokusklang unter Einstellungen > Tabs > Optionen ändern"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cambia el sonido en Ajustes > Pestañas > Opciones"
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Palitan ang focus sound sa Settings > Tabs > Options"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Change le son dans Réglages > Onglets > Options"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "集中サウンドは 設定 > タブ > オプション で変更"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "집중 사운드는 설정 > 탭 > 옵션에서 변경"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Altere o som em Ajustes > Abas > Opções"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Звук фокуса меняется в Настройки > Вкладки > Параметры"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 设置 > 标签页 > 选项 中更改专注声音"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在「設定 > 標籤頁 > 選項」中更改專注聲音"
-          }
-        }
-      }
-    },
     "Change the countdown to %lld minutes, or to a minute from now if that time has passed" : {
       "comment" : "Tooltip on a Timer length chip while counting down. %lld is minutes.",
       "extractionState" : "manual",
@@ -35796,6 +35652,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "將倒數改為 %lld 分鐘（若該時間已過，則改為從現在起 1 分鐘）"
+          }
+        }
+      }
+    },
+    "Change the focus sound" : {
+      "comment" : "Tooltip on the focus mode row of the Focus tab; a click opens the sound mixer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غيّر صوت التركيز"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fokusklang ändern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambia el sonido de concentración"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palitan ang focus sound"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change le son de concentration"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "集中サウンドを変更"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "집중 사운드 변경"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altere o som de foco"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изменить звук фокуса"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更改专注声音"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更改專注聲音"
+          }
+        }
+      }
+    },
+    "Change the focus sound and Do Not Disturb" : {
+      "comment" : "Tooltip on the focus mode row of the Focus tab; a click opens the sound mixer, which also has the Do Not Disturb switch.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غيّر صوت التركيز وعدم الإزعاج"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fokusklang und Nicht stören ändern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambia el sonido de concentración y No molestar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palitan ang focus sound at Do Not Disturb"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change le son de concentration et Ne pas déranger"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "集中サウンドとおやすみモードを変更"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "집중 사운드와 방해금지 모드 변경"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altere o som de foco e o Não Perturbe"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изменить звук фокуса и «Не беспокоить»"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更改专注声音和勿扰模式"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更改專注聲音和勿擾模式"
           }
         }
       }
