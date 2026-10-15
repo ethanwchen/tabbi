@@ -3,11 +3,11 @@ import { deepEqual, type KitDefaults, type KitManifest } from "../kits/kitManife
 import { DEFAULT_KIT_ID } from "../kits/kitLibrary";
 import type { ModuleCatalog } from "../modules/moduleCatalog";
 import type { ModuleLayout } from "../modules/moduleLayout";
-import { DEFAULT_AI_SETTINGS, type AISettings } from "./aiSettings";
+import { aiSettings, type AISettings } from "../ai/aiSettings";
 import { cleanedDisplayName } from "./displayName";
 import { DEFAULT_DISPLAY_PREFERENCE, type DisplayPreference } from "./displayPreference";
 import { DEFAULT_HOTKEY, type Hotkey } from "./hotkey";
-import { DEFAULT_MOTION_PACE, type MotionPace } from "./motionPace";
+import { DEFAULT_MOTION_PACE, type MotionPace } from "../motion/motionPace";
 import { DEFAULT_NOTCH_MODE, type NotchMode } from "./notchMode";
 import {
   DEFAULT_NOTCH_PREVIEW,
@@ -16,7 +16,8 @@ import {
   type NotchPreviewSettings,
 } from "./notchPreviewSettings";
 import { DEFAULT_PANEL_SIZE, type PanelSize } from "./panelSize";
-import { DEFAULT_THEME_ID, themeIDForKitValue, type ThemeID } from "./themeIds";
+import type { ThemeID } from "../themes/appTheme";
+import { DEFAULT_THEME_ID, themeIdForKitValue } from "../themes/themeCatalog";
 import { allTickerKinds, tickerKindModule, type TickerKind } from "../ticker/tickerKind";
 
 /**
@@ -94,7 +95,7 @@ export function appSettings(input: AppSettingsInput): AppSettings {
     motionPace: DEFAULT_MOTION_PACE,
     notchPreview: DEFAULT_NOTCH_PREVIEW,
     themeID: DEFAULT_THEME_ID,
-    ai: DEFAULT_AI_SETTINGS,
+    ai: aiSettings(),
     ...input,
   };
   return withClaudePath(settings, input.claudePathOverride);
@@ -150,7 +151,7 @@ export function applyKit(
   catalog: ModuleCatalog,
   answers: KitAnswers = {},
 ): AppSettings {
-  const theme = kit.defaults.theme === undefined ? undefined : themeIDForKitValue(kit.defaults.theme);
+  const theme = kit.defaults.theme === undefined ? undefined : themeIdForKitValue(kit.defaults.theme);
   return {
     ...settings,
     kitID: kit.id,
@@ -246,7 +247,7 @@ export function usesGeneralDefaults(settings: AppSettings, kit: KitManifest | un
 /** The theme Look's "Reset to Default" picks: `kit`'s when it names one this build has, else the app's default. */
 export function defaultThemeForKit(kit: KitManifest | undefined): ThemeID {
   const value = kit?.defaults.theme;
-  return (value === undefined ? undefined : themeIDForKitValue(value)) ?? DEFAULT_THEME_ID;
+  return (value === undefined ? undefined : themeIdForKitValue(value)) ?? DEFAULT_THEME_ID;
 }
 
 /** Whether two settings values are equal, field by field. */

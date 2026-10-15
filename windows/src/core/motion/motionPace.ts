@@ -12,6 +12,11 @@ export const MOTION_PACES: readonly MotionPace[] = ["smooth", "fast", "instant"]
 
 export const DEFAULT_MOTION_PACE: MotionPace = "smooth";
 
+/** Whether a stored value is one of the raw values Settings keeps. */
+export function isMotionPace(value: unknown): value is MotionPace {
+  return typeof value === "string" && (MOTION_PACES as readonly string[]).includes(value);
+}
+
 /** The share of each duration Fast keeps. */
 export const FAST_SCALE = 0.6;
 

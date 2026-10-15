@@ -1,7 +1,7 @@
 import type { ModuleCatalog } from "../modules/moduleCatalog";
 import type { ModuleID } from "../modules/moduleId";
 import { allTickerKinds } from "../ticker/tickerKind";
-import { themeIDForKitValue } from "../settings/themeIds";
+import { themeIdForKitValue } from "../themes/themeCatalog";
 import {
   CURRENT_KIT_FORMAT_VERSION,
   KitDecodingFailure,
@@ -189,7 +189,7 @@ export function kitIssues(kit: KitManifest, catalog: ModuleCatalog): KitIssue[] 
     reportedPreviews.add(value);
     issues.push({ kind: "unknownTickerKind", value });
   }
-  if (kit.defaults.theme !== undefined && themeIDForKitValue(kit.defaults.theme) === undefined) {
+  if (kit.defaults.theme !== undefined && themeIdForKitValue(kit.defaults.theme) === undefined) {
     issues.push({ kind: "unknownTheme", value: kit.defaults.theme });
   }
   const questions = new Set<string>();

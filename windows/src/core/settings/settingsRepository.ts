@@ -11,11 +11,11 @@ import {
   type Defaults,
 } from "../persistence/defaults";
 import type { JSONObject } from "../persistence/json";
-import { isAIProviderID, type AIProviderID } from "./aiSettings";
+import { parseAIProviderID, type AIProviderID } from "../ai/aiProviderID";
 import { appSettings, type AppSettings } from "./appSettings";
 import { displayPreferenceFromStorage, displayPreferenceStorageValue } from "./displayPreference";
 import { decodeHotkey, encodeHotkey, isValidHotkey } from "./hotkey";
-import { isMotionPace } from "./motionPace";
+import { isMotionPace } from "../motion/motionPace";
 import { isNotchMode } from "./notchMode";
 import { isTickerInterval } from "./notchPreviewSettings";
 import { isPanelSize } from "./panelSize";
@@ -27,7 +27,7 @@ import {
   storedModuleOrder,
   storedSettingsVersion,
 } from "./settingsSchema";
-import { themeIDForKitValue } from "./themeIds";
+import { themeIdForKitValue } from "../themes/themeCatalog";
 
 function sorted(values: Iterable<string>): string[] {
   return [...values].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
@@ -69,7 +69,7 @@ export class SettingsRepository {
     const motionPace = defaults.get(Key.motionPace);
     const interval = defaultsInteger(defaults, Key.previewInterval);
     const savedTheme = defaultsString(defaults, Key.theme);
-    const kitTheme = kit?.defaults.theme === undefined ? undefined : themeIDForKitValue(kit.defaults.theme);
+    const kitTheme = kit?.defaults.theme === undefined ? undefined : themeIdForKitValue(kit.defaults.theme);
     const provider = defaults.get(Key.aiProvider);
     return appSettings({
       displayName: defaultsString(defaults, Key.displayName) ?? fallback.displayName,
@@ -104,9 +104,9 @@ export class SettingsRepository {
       /* Before the user picks one, the kit's theme. */
       themeID: savedTheme ?? kitTheme ?? fallback.themeID,
       ai: {
-        provider: isAIProviderID(provider) ? provider : undefined,
+        provider: parseAIProviderID(provider),
         models: readModels(defaultsObject(defaults, Key.aiModels)),
-        consented: new Set((defaultsStringArray(defaults, Key.aiConsented) ?? []).filter(isAIProviderID)),
+        consented: new Set((defaultsStringArray(defaults, Key.aiConsented) ?? []).flatMap((id) => parseAIProviderID(id) ?? [])),
       },
     });
   }
@@ -181,7 +181,8 @@ function readModels(stored: JSONObject | undefined): Partial<Record<AIProviderID
   const models: Partial<Record<AIProviderID, string>> = {};
   for (const [provider, model] of Object.entries(stored)) {
     if (typeof model !== "string") return {};
-    if (isAIProviderID(provider)) models[provider] = model;
+    const id = parseAIProviderID(provider);
+    if (id !== undefined) models[id] = model;
   }
   return models;
 }

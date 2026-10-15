@@ -40,7 +40,7 @@ import {
   storedSettingsVersion,
   type SettingsMigration,
 } from "../../../src/core/settings/settingsSchema";
-import { DEFAULT_THEME_ID } from "../../../src/core/settings/themeIds";
+import { DEFAULT_THEME_ID } from "../../../src/core/themes/themeCatalog";
 import { allTickerKinds, type TickerKind } from "../../../src/core/ticker/tickerKind";
 import { BUILT_IN_CATALOG, builtInLayout, defaultTestLayout } from "../../support/builtInCatalog";
 
