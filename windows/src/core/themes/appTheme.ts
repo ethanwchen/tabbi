@@ -4,6 +4,7 @@
  * island is pure black in every theme.
  */
 
+import { SpringSpec } from "../motion/springSpec";
 import { applyAccentTreatment, type AccentTreatment } from "./accentTreatment";
 import { composited, type ModuleAccent, type ThemeColor } from "./themeColor";
 
@@ -42,23 +43,17 @@ export type ThemeControlStyle = (typeof THEME_CONTROL_STYLES)[number];
 export const THEME_SURFACE_STYLES = ["flat", "glass"] as const;
 export type ThemeSurfaceStyle = (typeof THEME_SURFACE_STYLES)[number];
 
-/** A spring as a perceptual duration and a bounce; the shape of the motion port's SpringSpec. */
-export interface SpringShape {
-  readonly duration: number;
-  readonly bounce: number;
-}
-
 /*
- * `spec` as a theme plays it: unchanged for standard; for gentle, 30% longer
+ * Port of ThemeMotion.adjusted: `spec` as a theme plays it: unchanged for standard; for gentle, 30% longer
  * with 0.08 less bounce (never below none), so a cozy theme keeps every
  * motion token's character but calmer.
  */
-export function adjustedForThemeMotion(motion: ThemeMotion, spec: SpringShape): SpringShape {
+export function adjustedForThemeMotion(motion: ThemeMotion, spec: SpringSpec): SpringSpec {
   switch (motion) {
     case "standard":
       return spec;
     case "gentle":
-      return { duration: spec.duration * 1.3, bounce: Math.max(spec.bounce - 0.08, 0) };
+      return new SpringSpec(spec.duration * 1.3, Math.max(spec.bounce - 0.08, 0));
   }
 }
 

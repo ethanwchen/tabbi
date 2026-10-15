@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
+import { adjustedSpring, FAST_SCALE } from "../../../src/core/motion/motionPace";
+import { MotionTokens } from "../../../src/core/motion/motionTokens";
 import { applyAccentTreatment, MINIMUM_ACCENT_CONTRAST } from "../../../src/core/themes/accentTreatment";
 import {
   adjustedForThemeMotion,
   brightestSheen,
   resolveControlMaterial,
   REQUIRED_THEME_IDS,
-  type SpringShape,
 } from "../../../src/core/themes/appTheme";
 import {
   allThemes,
@@ -91,26 +92,21 @@ describe("theme catalog", () => {
   });
 
   it("plays every spring slower and calmer in gentle motion", () => {
-    /* MotionTokens: open, close, hover, snappy, content, press, check. */
-    const tokens: SpringShape[] = [
-      { duration: 0.45, bounce: 0.2 },
-      { duration: 0.38, bounce: 0 },
-      { duration: 0.25, bounce: 0.1 },
-      { duration: 0.26, bounce: 0.14 },
-      { duration: 0.34, bounce: 0.1 },
-      { duration: 0.18, bounce: 0 },
-      { duration: 0.4, bounce: 0.25 },
-    ];
-    for (const spec of tokens) {
+    const { open, close, hover, snappy, content, press, check } = MotionTokens;
+    for (const spec of [open, close, hover, snappy, content, press, check]) {
       expect(adjustedForThemeMotion("standard", spec)).toEqual(spec);
       const gentle = adjustedForThemeMotion("gentle", spec);
-      expect(gentle.duration).toBeCloseTo(spec.duration * 1.3, 12);
-      expect(gentle.bounce).toBeCloseTo(Math.max(spec.bounce - 0.08, 0), 12);
-      expect(gentle.bounce).toBeLessThanOrEqual(spec.bounce);
+      expect(gentle.duration).toBeGreaterThan(spec.duration);
+      expect(gentle.peak).toBeLessThanOrEqual(spec.peak);
       expect(gentle.bounce).toBeGreaterThanOrEqual(0);
     }
     /* The close still lands with no overshoot. */
-    expect(adjustedForThemeMotion("gentle", { duration: 0.38, bounce: 0 }).bounce).toBe(0);
+    expect(adjustedForThemeMotion("gentle", close).overshoots).toBe(false);
+  });
+
+  it("composes gentle motion with the Fast pace", () => {
+    const gentle = adjustedForThemeMotion("gentle", MotionTokens.open);
+    expect(adjustedSpring("fast", gentle)?.duration).toBeCloseTo(gentle.duration * FAST_SCALE, 9);
   });
 
   it("resolves unknown ids to the default", () => {
