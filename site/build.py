@@ -15,7 +15,7 @@ import sys
 import zipfile
 from html.parser import HTMLParser
 
-from _partials import page, download_button, PAW, DOWNLOAD, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, RELEASES_URL, SUGGESTIONS, SUPPORT_EMAIL, SUPPORT_TABBI
+from _partials import page, download_button, other_platform_link, PAW, DOWNLOAD, DOWNLOAD_PAGE, DOWNLOAD_WINDOWS, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, RELEASES_URL, SUGGESTIONS, SUPPORT_EMAIL, SUPPORT_TABBI
 from _downloads import current_milestone, downloads_note
 from _releases import RELEASES, VERSION
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
@@ -70,9 +70,9 @@ FEATURES = [
 # From 10,000 downloads the note under the button says so (_downloads.py).
 HOME_HERO = {
     'title': '<span class="ln">Focus with a cat</span> <span class="ln">in your <span class="hl">notch</span>.</span>',
-    'subtitle': 'A cozy study timer with a pixel pet, for your Mac.',
+    'subtitle': 'A cozy study timer with a pixel pet, <span data-windows-text="for your PC.">for your Mac.</span>',
     'cta': f'''<div class="cta">{download_button()}</div>
-        <p class="cta-note">Free, macOS 14+{downloads_note(current_milestone())}</p>''',
+        <p class="cta-note"><span data-windows-text="Free, Windows 10 and 11">Free, macOS 14+</span>{downloads_note(current_milestone())} <span class="sep" aria-hidden="true">&middot;</span> {other_platform_link()}</p>''',
     'icon': '<img class="hero-icon" src="/img/icon-256.webp" width="256" height="256" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
 }
 
@@ -137,9 +137,9 @@ SOFTWARE_APP = {
     'image': ORIGIN + '/img/icon-256.webp',
     'screenshot': ORIGIN + '/img/social-preview.png',
     'applicationCategory': 'ProductivityApplication',
-    'operatingSystem': 'macOS 14 or later',
+    'operatingSystem': 'macOS 14 or later, Windows 10 or later',
     'softwareVersion': VERSION,
-    'downloadUrl': DOWNLOAD,
+    'downloadUrl': [DOWNLOAD, DOWNLOAD_WINDOWS],
     'softwareHelp': ORIGIN + '/support',
     'isAccessibleForFree': True,
     'offers': {'@type': 'Offer', 'price': '0', 'priceCurrency': 'USD'},
@@ -548,6 +548,10 @@ def resolve(path):
     return None
 
 
+# Paths a Pages Function answers, with no file behind them.
+FUNCTION_ROUTES = {DOWNLOAD_PAGE}
+
+
 def check_links():
     """Every local link and asset must resolve, and every #anchor must exist.
 
@@ -563,6 +567,8 @@ def check_links():
     for html_file, p in parsed.items():
         for ref in p.refs:
             path, _, anchor = ref.partition('#')
+            if path in FUNCTION_ROUTES:
+                continue
             target = html_file if not path else resolve(path)
             if target is None:
                 problems.append(f'{html_file.name}: {ref} does not exist')
@@ -796,7 +802,8 @@ def write_function_facts():
     which Cloudflare Pages does not apply to a Function's response, the
     Suggest form's hidden app facts (functions/suggest.js), and the invite
     pages with their code rules (functions/add, functions/join), so the
-    pages and the Functions cannot drift apart."""
+    pages and the Functions cannot drift apart, and the two download links
+    for functions/download.js."""
     invite = {
         'alphabet': INVITE_ALPHABET,
         'lengths': INVITE_CODE_LENGTHS,
@@ -805,10 +812,11 @@ def write_function_facts():
         'pages': INVITE_TEMPLATES,
     }
     (HERE / '_generated.mjs').write_text(
-        '// Written by build.py from _headers, SUGGEST_APP_FACTS and the invite pages. Do not edit.\n'
+        '// Written by build.py from _headers, SUGGEST_APP_FACTS, the invite pages and the download links. Do not edit.\n'
         f'export const SITE_HEADERS = {json.dumps(SITE_HEADERS)};\n'
         f'export const SUGGEST_APP_FACTS = {json.dumps(SUGGEST_APP_FACTS)};\n'
         f'export const INVITE = {json.dumps(invite)};\n'
+        f'export const DOWNLOADS = {json.dumps({"mac": DOWNLOAD, "windows": DOWNLOAD_WINDOWS})};\n'
     )
 
 
@@ -833,6 +841,13 @@ class PagesHandler(http.server.SimpleHTTPRequestHandler):
 
     def send_head(self):
         path = self.path.split('?', 1)[0].split('#', 1)[0]
+        if path == DOWNLOAD_PAGE:
+            # What functions/download.js answers: the installer for this computer.
+            self.send_response(302)
+            self.send_header('Location', download_for(self.headers.get('Sec-CH-UA-Platform', ''), self.headers.get('User-Agent', '')))
+            self.send_header('Content-Length', '0')
+            self.end_headers()
+            return None
         invite = INVITE_PATH_RE.fullmatch(path)
         if invite:
             status, html = invite_page(INVITE_TEMPLATES, invite.group(1), invite.group(2), self.headers.get('User-Agent', ''))
@@ -853,6 +868,15 @@ class PagesHandler(http.server.SimpleHTTPRequestHandler):
             return None
         self.path = '/' + str(target.relative_to(OUT))
         return super().send_head()
+
+
+def download_for(platform_hint, user_agent):
+    """The installer for a visitor's computer, the same rule as _download.mjs:
+    the platform client hint when the browser sends one, else the user agent.
+    Anything that is not Windows gets the Mac download."""
+    if platform_hint:
+        return DOWNLOAD_WINDOWS if 'windows' in platform_hint.lower() else DOWNLOAD
+    return DOWNLOAD_WINDOWS if 'Windows NT' in user_agent else DOWNLOAD
 
 
 # What functions/add/[code].js and functions/join/[code].js match.

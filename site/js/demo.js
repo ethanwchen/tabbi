@@ -12,6 +12,24 @@
 // controls work. It runs no strings as code, builds markup only from the
 // page's own templates and talks to no server: the pet's frames, the
 // days' lists and the songs come from JSON data blocks.
+// Windows visitors see the Windows download first. The page is written for
+// the Mac (the no-script default); on Windows every element with a
+// data-windows-href or data-windows-text takes that value instead: the big
+// button, the note under it and the quiet link to the other platform.
+(() => {
+  'use strict';
+
+  const platform = navigator.userAgentData ? navigator.userAgentData.platform : '';
+  const windows = platform ? /windows/i.test(platform) : /Windows NT/.test(navigator.userAgent);
+  if (!windows) return;
+  for (const element of document.querySelectorAll('[data-windows-href]')) {
+    element.setAttribute('href', element.dataset.windowsHref);
+  }
+  for (const element of document.querySelectorAll('[data-windows-text]')) {
+    element.textContent = element.dataset.windowsText;
+  }
+})();
+
 (() => {
   'use strict';
 
