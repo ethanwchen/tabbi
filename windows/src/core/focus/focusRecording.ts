@@ -110,7 +110,7 @@ export function gaplessWindow(decodedLength: number, gapless: GaplessInfo | unde
  * and keeps the Mac's 16-bit resolution, so the level matches what the Mac
  * computes its gain from.
  */
-export function monoSixteenBit(channels: readonly Float32Array[], start = 0, length?: number): Float32Array {
+export function monoSixteenBit(channels: readonly Float32Array[], start = 0, length?: number): Float32Array<ArrayBuffer> {
   const count = length ?? (channels[0]?.length ?? 0) - start;
   const scale = Math.fround(32767 / Math.max(channels.length, 1));
   const out = new Float32Array(count);
