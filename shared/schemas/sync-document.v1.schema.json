@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tabbi.app/schemas/sync-document.v1.schema.json",
+  "title": "Tabbi sync document (schemaVersion 1)",
+  "description": "The one document Sign in with Apple keeps per account on the Party server (GET and PUT /v1/sync, docs/study/backend-api.md): the pet's look, points per device, unlock ids, study days and the longest streak. Written by SyncDocument.encoded() and read by SyncDocument.decode(_:) in Sources/TabbiKitCore/Sync/SyncDocument.swift; every app (Mac, Windows) reads and writes the same document, and the server stores it as sent (at most 65536 bytes with its {\"document\": ...} wrapper) without reading its fields. This schema describes what an app writes. Readers are lenient: a missing or unreadable field reads as empty, so one bad value never loses the rest; unknown keys are ignored and dropped on the next write, which is why no object here forbids additional properties. Merging two documents is a join (per-device tallies by max, unlocks and study days by union, the longest streak by max, the pet by last writer); shared/fixtures/sync-document/ pins it.",
+  "type": "object",
+  "required": ["schemaVersion", "tallies", "unlocks", "studyDays", "longestStreak"],
+  "properties": {
+    "schemaVersion": {
+      "description": "The format version. Apps write 1; a document without one counts as 0 and is read the same way, since version 1 needed no migration step.",
+      "type": "integer",
+      "const": 1
+    },
+    "pet": {
+      "description": "The pet's look as last chosen on any device. Left out until a device with a pet has synced. A pet a reader cannot decode (an unknown breed, a bad date) reads as no pet.",
+      "$ref": "#/$defs/syncedPet"
+    },
+    "tallies": {
+      "description": "Lifetime points per device, keyed by each device's sync id (a UUID string the device made). Each device only grows its own tally, so a merge takes the larger of each counter and the account's points are the sum over devices. A reader drops the whole object when any tally in it is unreadable.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/tally" }
+    },
+    "unlocks": {
+      "description": "Item ids bought or granted on any device (outfit.<id> or accessory.<id>), sorted. Ids this build does not know are kept, so an item from a newer build survives a round trip. Limited edition ids read back as granted, the rest as bought; free items are never listed by the Mac but are harmless.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/itemId" },
+      "uniqueItems": true
+    },
+    "studyDays": {
+      "description": "Local days (of whichever device recorded them) with focus time, sorted, at most the newest 400. Strings that are not a real calendar day in this exact form are dropped on read.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/day" },
+      "uniqueItems": true,
+      "maxItems": 400
+    },
+    "longestStreak": {
+      "description": "The longest run of consecutive study days ever reached, including days since trimmed; never less than the longest run in studyDays.",
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "$defs": {
+    "itemId": {
+      "description": "A Closet item id: outfit.<PetOutfit raw value> or accessory.<PetAccessory raw value>.",
+      "type": "string",
+      "minLength": 1
+    },
+    "day": {
+      "description": "A calendar day, YYYY-MM-DD, zero padded.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "hexColor": {
+      "description": "Uppercase #RRGGBB, plus AA when not fully opaque.",
+      "type": "string",
+      "pattern": "^#[0-9A-F]{6}([0-9A-F]{2})?$"
+    },
+    "tally": {
+      "description": "What one device added to the shared points: lifetime earned and spent. A device writes its own tally as 0 or more; a negative value read from a document is kept as it is until a merge with another copy of that device's tally clamps it to 0. Spent may exceed earned; the account's ledger caps spent at earned.",
+      "type": "object",
+      "required": ["earned", "spent"],
+      "properties": {
+        "earned": { "type": "integer" },
+        "spent": { "type": "integer" }
+      }
+    },
+    "syncedPet": {
+      "type": "object",
+      "required": ["profile", "updatedAt"],
+      "properties": {
+        "profile": { "$ref": "#/$defs/profile" },
+        "updatedAt": {
+          "description": "When the look was chosen: ISO 8601 in UTC, whole seconds (fractions are cut off before writing). The later look wins a merge; on equal times the profile whose compact, key-sorted JSON is the greater string wins, so every device converges.",
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        }
+      }
+    },
+    "profile": {
+      "description": "The pet as PetProfile encodes it. Only breed is needed to read it; every other field falls back to a default.",
+      "type": "object",
+      "required": ["name", "breed", "paletteOverrides", "furTint", "outfit", "accessories"],
+      "properties": {
+        "name": {
+          "description": "Whitespace trimmed and collapsed, cut to 16 characters unless it is a breed's display name; never empty (an empty name becomes the breed's display name).",
+          "type": "string",
+          "minLength": 1
+        },
+        "breed": { "description": "A PetBreed raw value, such as britishShorthair or goldenRetriever.", "type": "string", "minLength": 1 },
+        "paletteOverrides": {
+          "description": "User colors per recolorable palette role. A document without furTint is from before fur tints: its furBase override is read as the tint and the other fur roles are dropped.",
+          "type": "object",
+          "propertyNames": {
+            "enum": ["furBase", "furShade", "furAccent", "furSpot", "belly", "costumeBase", "costumeShade", "costumeTrim", "accessoryBase", "accessoryShade"]
+          },
+          "additionalProperties": { "$ref": "#/$defs/hexColor" }
+        },
+        "furTint": {
+          "description": "The one fur color picked in the Closet, or null for the breed's own colors. Always written, so a missing key means an older document.",
+          "oneOf": [{ "$ref": "#/$defs/hexColor" }, { "type": "null" }]
+        },
+        "outfit": { "description": "A PetOutfit raw value; none when no outfit is worn.", "type": "string", "minLength": 1 },
+        "accessories": {
+          "description": "PetAccessory raw values worn, at most one per slot, in drawing order.",
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}
