@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tabbi.app/schemas/activity-record.v1.schema.json",
+  "title": "Tabbi activity log day file (activity-record.v1)",
+  "description": "One day of the activity log, as ActivityLogRepository (Sources/TabbiKitCore/Activity/ActivityLogRepository.swift) writes it: the file <edition storage>/Activity/<yyyy-MM-dd>.json, named after the local day (in the user's time zone) that each of its records ended on, holding ActivityRecord values (Sources/TabbiKitCore/Activity/ActivityRecord.swift) under the VersionedJSON wrapper. Streaks, the weekly recap, points and the pet all read these files. The Mac writes it pretty-printed with sorted keys, slashes escaped as \\/ and a schemaVersion of 1; it reads files without schemaVersion (version 0, written before versions existed, which need no upgrade step), and files from newer builds as they are, ignoring keys it does not know. A file that is not valid JSON, or whose records do not decode, is refused as a whole and never overwritten. How records land in day files, the exact bytes written and how odd files read back are pinned by shared/fixtures/activity-log/activity-log.json.",
+  "type": "object",
+  "required": ["schemaVersion", "records"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "description": "The VersionedJSON version of the day file. Missing means 0, which reads the same as 1.",
+      "const": 1
+    },
+    "records": {
+      "description": "Every record of the day, sorted by end, oldest first, at most one per id. Appending skips a record whose id is already in the file.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/activityRecord" }
+    }
+  },
+  "$defs": {
+    "isoDate": {
+      "description": "An ISO 8601 internet date-time in UTC to the whole second, such as 2026-10-02T09:00:00Z. Records are made in whole seconds (a fraction rounds to the nearest second, half a second up), so a date reads back exactly. The Mac also reads a numeric offset (+02:00), but not a date without a zone or a number; never write fractional seconds.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "activityRecord": {
+      "description": "One thing that happened: a focus stretch, a break, cards reviewed, a task done. Records are only ever appended.",
+      "type": "object",
+      "required": ["id", "source", "kind", "start", "end", "metadata"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "A UUID, written in upper case. Reading accepts lower case too.",
+          "type": "string",
+          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
+        },
+        "source": {
+          "description": "The module that logged it (a ModuleID), such as focus, study, anki, party or planner. Open: any string.",
+          "type": "string"
+        },
+        "kind": {
+          "description": "What happened, an open id. Shared kinds: focus.completed (quantity is minutes focused), break.taken (quantity is minutes), cards.reviewed (quantity is cards), task.completed (subject is the task's id). Modules may log their own.",
+          "type": "string"
+        },
+        "start": { "$ref": "#/$defs/isoDate" },
+        "end": {
+          "description": "Never before start; equal to start for something that happened at one moment. The record counts toward the local day this falls on. Reading a file without it uses start, and an end before start reads as start.",
+          "$ref": "#/$defs/isoDate"
+        },
+        "quantity": {
+          "description": "How much, in unit. Left out when there is none (never null in a written file; null reads as absent).",
+          "type": "number"
+        },
+        "unit": {
+          "description": "The unit of quantity, an open id: min for minutes, cards for cards. Left out when there is none.",
+          "type": "string"
+        },
+        "subject": {
+          "description": "The stable id of what the record is about, such as a task's id. Left out when there is none.",
+          "type": "string"
+        },
+        "metadata": {
+          "description": "Small module-defined details, always written (an empty object when there are none; missing or null reads as empty). Shared keys: outcome (completed, stopped, skipped or abandoned: how a focus stretch ended; completed and stopped count as finished sessions, and no outcome counts as finished), method (the study method, such as pomodoro), friends (a Party stay: how many friends studied along, as a decimal string).",
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    }
+  }
+}

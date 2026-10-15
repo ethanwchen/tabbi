@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://tabbi.app/schemas/edition.v1.schema.json",
   "title": "Tabbi edition (formatVersion 1)",
-  "description": "Sources/TabbiKitCore/Editions/BundledEditions/<id>.json: a branded build of the same app, which changes only its name, bundle id, preselected kit, icon and data folder. Read by Edition.decode(from:) and by scripts/assemble.sh. The file name must equal the id. The app ignores fields it doesn't read; this schema rejects them, since editions are written only in this repository.",
+  "description": "Sources/TabbiKitCore/Editions/BundledEditions/<id>.json: a branded build of the same app, which changes only its name, bundle id, preselected kit, icon, data folder, distribution and the modules it leaves out. Read by Edition.decode(from:) and by scripts/assemble.sh. The file name must equal the id. The app ignores fields it doesn't read; this schema rejects them, since editions are written only in this repository.",
   "type": "object",
   "required": ["formatVersion", "id", "name", "bundleIdentifier", "defaultKitID"],
   "additionalProperties": false,
@@ -27,6 +27,16 @@
       "type": "object",
       "propertyNames": { "not": { "enum": ["CFBundleName", "CFBundleDisplayName", "CFBundleIdentifier", "TabbiEdition"] } },
       "additionalProperties": { "type": "string" }
+    },
+    "distribution": {
+      "description": "How the edition reaches users: direct (Developer ID, self-updating, may run helper programs) or appStore (sandboxed, Mac App Store). Left out means direct.",
+      "type": "string",
+      "enum": ["direct", "appStore"]
+    },
+    "excludedModules": {
+      "description": "Module ids this edition leaves out of its catalog, so no tab, Settings row, onboarding step or ticker preview offers them; kits that list them still apply. Left out means none.",
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9]*$" }
     }
   }
 }
