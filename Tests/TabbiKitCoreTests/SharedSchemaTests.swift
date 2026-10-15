@@ -157,6 +157,36 @@ final class SharedSchemaTests: XCTestCase {
         XCTAssertTrue(reserved.contains(Edition.infoKey))
         for key in reserved { XCTAssertFalse(decodes("infoPlist", [key: "x"]), key) }
         XCTAssertTrue(decodes("infoPlist", ["NSCalendarsUsageDescription": "x"]))
+
+        let distributions = try XCTUnwrap(object(top, "distribution")["enum"] as? [String])
+        XCTAssertEqual(distributions, ["direct", "appStore"])
+        for value in distributions { XCTAssertTrue(decodes("distribution", value), value) }
+        XCTAssertFalse(decodes("distribution", "testFlight"))
+        let modulePattern = object(object(top, "excludedModules"), "items")["pattern"]
+        for id in ["party", "claudeUsage", "a1", "", "1party", "claude-usage", "party ", "p\u{E4}rty"] {
+            XCTAssertEqual(try matches(modulePattern, id), decodes("excludedModules", [id]), id.debugDescription)
+        }
+    }
+
+    /// The edition schema names exactly the fields `Edition` stores (plus
+    /// `formatVersion`), and every bundled edition file uses only schema
+    /// fields and has the required ones, so a field added to the decoder
+    /// or to a bundled file without the schema fails here.
+    func testEditionSchemaHasTheFieldsSwiftReads() throws {
+        let schema = try schema("edition")
+        let stored = Set(Mirror(reflecting: Edition.tabbi).children.compactMap(\.label))
+        XCTAssertEqual(properties(schema), stored.union(["formatVersion"]))
+        let required = Set(schema["required"] as? [String] ?? [])
+        XCTAssertEqual(required, ["formatVersion", "id", "name", "bundleIdentifier", "defaultKitID"])
+        let files = Edition.bundledFileURLs
+        XCTAssertFalse(files.isEmpty)
+        for url in files {
+            let data = try Data(contentsOf: url)
+            let keys = Set(try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any]).keys)
+            let unknown = keys.subtracting(properties(schema)).sorted()
+            XCTAssertTrue(unknown.isEmpty, "\(url.lastPathComponent) has fields the schema lacks: \(unknown)")
+            XCTAssertTrue(required.isSubset(of: keys), url.lastPathComponent)
+        }
     }
 
     // MARK: Catalog

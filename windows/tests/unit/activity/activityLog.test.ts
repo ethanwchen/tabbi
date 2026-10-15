@@ -10,7 +10,7 @@ import {
   type ActivityRecord,
 } from "../../../src/core/activity/activityRecord";
 import { ActivityLogRepository } from "../../../src/core/activity/activityLogRepository";
-import { dayKeyOf, isDayKey } from "../../../src/core/activity/dayKey";
+import { plannerDayKeyOf as dayKeyOf, isPlannerDayKey as isDayKey } from "../../../src/core/planner/plannerDayKey";
 import { formatISODate, parseISODate } from "../../../src/core/activity/isoDate";
 import { InMemoryDocumentStore } from "../../../src/core/persistence/documentStore";
 import { VersionedJSON } from "../../../src/core/persistence/versionedJson";

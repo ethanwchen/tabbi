@@ -1,0 +1,3046 @@
+{
+  "cases" : [
+    {
+      "activity" : {
+        "end" : 1790877600,
+        "kind" : "cards.reviewed",
+        "metadata" : {
+          "ankiDay" : "2026-10-01"
+        },
+        "quantity" : 15,
+        "source" : "anki",
+        "start" : 1790877600,
+        "unit" : "cards"
+      },
+      "activityLog" : [
+        {
+          "ankiDay" : "2026-10-01",
+          "kind" : "cards.reviewed",
+          "quantity" : 25,
+          "source" : "anki"
+        },
+        {
+          "ankiDay" : "2026-09-30",
+          "kind" : "cards.reviewed",
+          "quantity" : 120,
+          "source" : "anki"
+        },
+        {
+          "ankiDay" : "2026-10-01",
+          "kind" : "cards.reviewed",
+          "quantity" : 99,
+          "source" : "study"
+        },
+        {
+          "ankiDay" : "2026-10-01",
+          "kind" : "focus.completed",
+          "quantity" : 7,
+          "source" : "anki"
+        }
+      ],
+      "connection" : {
+        "clearsBySelf" : false,
+        "detail" : "Your due cards show up in Tabbi.",
+        "headline" : "Anki is connected",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "connected",
+        "refreshInterval" : 180,
+        "state" : "anki.ready"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"Japanese\":1700000000006,\"Default\":1,\"Biology::Cells\":1700000000002,\"chemistry\":1700000000004,\"Biology\":1700000000001,\"Biology Extra\":1700000000003,\"Japanese::JLPT N5\":1700000000005,\"Archive\":1700000000007,\"Biology::Cells::Mitosis\":1700000000008},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":null,\"error\":\"Deck counts unavailable.\"}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getDeckStats",
+            "params" : {
+              "decks" : [
+                "Archive",
+                "Biology",
+                "Biology Extra",
+                "Biology::Cells",
+                "Biology::Cells::Mitosis",
+                "Default",
+                "Japanese",
+                "Japanese::JLPT N5",
+                "chemistry"
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"1700000000007\":{\"deck_id\":1700000000007,\"name\":\"Archive\",\"new_count\":0,\"learn_count\":0,\"review_count\":0,\"total_in_deck\":3000},\"1700000000001\":{\"deck_id\":1700000000001,\"name\":\"Biology\",\"new_count\":5,\"learn_count\":2,\"review_count\":20,\"total_in_deck\":900},\"1700000000003\":{\"deck_id\":1700000000003,\"name\":\"Biology Extra\",\"new_count\":0,\"learn_count\":0,\"review_count\":4,\"total_in_deck\":50},\"1700000000002\":{\"deck_id\":1700000000002,\"name\":\"Biology::Cells\",\"new_count\":2,\"learn_count\":1,\"review_count\":6,\"total_in_deck\":260},\"1700000000008\":{\"deck_id\":1700000000008,\"name\":\"Biology::Cells::Mitosis\",\"new_count\":0,\"learn_count\":0,\"review_count\":0,\"total_in_deck\":80},\"1700000000006\":{\"deck_id\":1700000000006,\"name\":\"Japanese\",\"new_count\":10,\"learn_count\":0,\"review_count\":15,\"total_in_deck\":1506},\"1700000000005\":{\"deck_id\":1700000000005,\"name\":\"Japanese::JLPT N5\",\"new_count\":10,\"learn_count\":0,\"review_count\":15,\"total_in_deck\":1506},\"1700000000004\":{\"deck_id\":1700000000004,\"name\":\"chemistry\",\"new_count\":3,\"learn_count\":1,\"review_count\":0,\"total_in_deck\":120}},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getDeckStats",
+            "params" : {
+              "decks" : [
+                "Archive",
+                "Biology",
+                "Biology Extra",
+                "Biology::Cells",
+                "Biology::Cells::Mitosis",
+                "Japanese",
+                "Japanese::JLPT N5",
+                "chemistry"
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":40,\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedToday",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[[\"2026-10-01\",38],[\"2026-09-30\",120],[\"2026-09-28\",40],[\"2026-09-29\",95],[\"2026-09-28\",20],[\"2026-09-27\",10],[\"2026-09-25\",80],[\"2026-09-18\",30],[\"2026-09-17\",500]],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedByDay",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[{\"result\":[],\"error\":null},{\"result\":[[1790877600000,5000,-1,3,10,5,2500,5000,1],[1790877000000,5001,-1,3,10,5,2500,5000,1],[1790876400000,5002,-1,3,10,5,2500,5000,1],[1790875800000,5003,-1,1,10,5,2500,5000,1],[1790875200000,5004,-1,3,10,5,2500,5000,1],[1790874600000,5005,-1,3,10,5,2500,5000,1],[1790874000000,5006,-1,3,10,5,2500,5000,1],[1790873400000,5007,-1,3,10,5,2500,5000,1],[1790872800000,5008,-1,3,10,5,2500,5000,1],[1790872200000,5009,-1,3,10,5,2500,5000,1],[1790871600000,5010,-1,1,10,5,2500,5000,1],[1790871000000,5011,-1,3,10,5,2500,5000,1],[1790870400000,5012,-1,3,10,5,2500,5000,1],[1790869800000,5013,-1,3,10,5,2500,5000,1],[1790869200000,5014,-1,3,10,5,2500,5000,1],[1790868600000,5015,-1,3,10,5,2500,5000,1],[1790868000000,5016,-1,3,10,5,2500,5000,1],[1790867400000,5017,-1,1,10,5,2500,5000,1],[1790866800000,5018,-1,3,10,5,2500,5000,1],[1790866200000,5019,-1,3,10,5,2500,5000,1],[1790841600000,5050,-1,4,10,5,2500,7000,1],[1790841599999,5051,-1,2,10,5,2500,9000,1],[1790874000001,5052,-1,1,10,5,2500,3000,0],[1790870400001,5053,-1,0,10,5,2500,0,4],[1788199200000,5054,-1,1,10,5,2500,5000,1]],\"error\":null},{\"result\":[],\"error\":null},{\"result\":[],\"error\":null},{\"result\":[[1790871600000,5010,-1,1,10,5,2500,5000,1],[1790870600000,5100,-1,1,10,5,2500,4000,2]],\"error\":null},{\"result\":[],\"error\":null},{\"result\":[],\"error\":null},{\"result\":[],\"error\":null},{\"result\":[],\"error\":null}],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "multi",
+            "params" : {
+              "actions" : [
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Archive",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Biology",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Biology Extra",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Biology::Cells",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Biology::Cells::Mitosis",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Default",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Japanese",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Japanese::JLPT N5",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "chemistry",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                }
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 20
+        }
+      ],
+      "format" : {
+        "dayHelp" : [
+          "Fri, Sep 18 · 30 reviews",
+          "Sat, Sep 19 · No reviews",
+          "Sun, Sep 20 · No reviews",
+          "Mon, Sep 21 · No reviews",
+          "Tue, Sep 22 · No reviews",
+          "Wed, Sep 23 · No reviews",
+          "Thu, Sep 24 · No reviews",
+          "Fri, Sep 25 · 80 reviews",
+          "Sat, Sep 26 · No reviews",
+          "Sun, Sep 27 · 10 reviews",
+          "Mon, Sep 28 · 60 reviews",
+          "Tue, Sep 29 · 95 reviews",
+          "Yesterday · 120 reviews",
+          "Today · 40 reviews"
+        ],
+        "heatLevels" : [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          0,
+          1,
+          2,
+          4,
+          4,
+          2
+        ],
+        "progressHelp" : "40 of 100 cards reviewed today",
+        "streak" : "5-day streak"
+      },
+      "name" : "modern-default-deck-retried",
+      "progress" : {
+        "actionID" : "anki.study",
+        "actionTitle" : "Study Biology",
+        "completed" : 40,
+        "id" : "reviews",
+        "target" : 100,
+        "title" : "Anki reviews",
+        "unit" : "cards"
+      },
+      "reportedErrors" : [
+        {
+          "action" : "getDeckStats",
+          "error" : "anki"
+        }
+      ],
+      "summary" : {
+        "completionFraction" : 0.4,
+        "day" : "2026-10-01",
+        "deckOutline" : [
+          {
+            "deckID" : 1700000000001,
+            "depth" : 0,
+            "title" : "Biology"
+          },
+          {
+            "deckID" : 1700000000002,
+            "depth" : 1,
+            "title" : "Cells"
+          },
+          {
+            "deckID" : 1700000000006,
+            "depth" : 0,
+            "title" : "Japanese"
+          },
+          {
+            "deckID" : 1700000000005,
+            "depth" : 1,
+            "title" : "JLPT N5"
+          },
+          {
+            "deckID" : 1700000000003,
+            "depth" : 0,
+            "title" : "Biology Extra"
+          },
+          {
+            "deckID" : 1700000000004,
+            "depth" : 0,
+            "title" : "chemistry"
+          }
+        ],
+        "decks" : [
+          {
+            "deckID" : 1700000000007,
+            "dueTotal" : 0,
+            "learnCount" : 0,
+            "name" : "Archive",
+            "newCount" : 0,
+            "reviewCount" : 0,
+            "totalInDeck" : 3000
+          },
+          {
+            "deckID" : 1700000000001,
+            "dueTotal" : 27,
+            "learnCount" : 2,
+            "name" : "Biology",
+            "newCount" : 5,
+            "reviewCount" : 20,
+            "totalInDeck" : 900
+          },
+          {
+            "deckID" : 1700000000003,
+            "dueTotal" : 4,
+            "learnCount" : 0,
+            "name" : "Biology Extra",
+            "newCount" : 0,
+            "reviewCount" : 4,
+            "totalInDeck" : 50
+          },
+          {
+            "deckID" : 1700000000002,
+            "dueTotal" : 9,
+            "learnCount" : 1,
+            "name" : "Biology::Cells",
+            "newCount" : 2,
+            "reviewCount" : 6,
+            "totalInDeck" : 260
+          },
+          {
+            "deckID" : 1700000000008,
+            "dueTotal" : 0,
+            "learnCount" : 0,
+            "name" : "Biology::Cells::Mitosis",
+            "newCount" : 0,
+            "reviewCount" : 0,
+            "totalInDeck" : 80
+          },
+          {
+            "deckID" : 1700000000006,
+            "dueTotal" : 25,
+            "learnCount" : 0,
+            "name" : "Japanese",
+            "newCount" : 10,
+            "reviewCount" : 15,
+            "totalInDeck" : 1506
+          },
+          {
+            "deckID" : 1700000000005,
+            "dueTotal" : 25,
+            "learnCount" : 0,
+            "name" : "Japanese::JLPT N5",
+            "newCount" : 10,
+            "reviewCount" : 15,
+            "totalInDeck" : 1506
+          },
+          {
+            "deckID" : 1700000000004,
+            "dueTotal" : 4,
+            "learnCount" : 1,
+            "name" : "chemistry",
+            "newCount" : 3,
+            "reviewCount" : 0,
+            "totalInDeck" : 120
+          }
+        ],
+        "dueTotal" : 60,
+        "gaps" : [
+
+        ],
+        "hasReviewedToday" : true,
+        "history" : [
+          {
+            "count" : 30,
+            "day" : "2026-09-18"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-19"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-20"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-21"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-22"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-23"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-24"
+          },
+          {
+            "count" : 80,
+            "day" : "2026-09-25"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-26"
+          },
+          {
+            "count" : 10,
+            "day" : "2026-09-27"
+          },
+          {
+            "count" : 60,
+            "day" : "2026-09-28"
+          },
+          {
+            "count" : 95,
+            "day" : "2026-09-29"
+          },
+          {
+            "count" : 120,
+            "day" : "2026-09-30"
+          },
+          {
+            "count" : 40,
+            "day" : "2026-10-01"
+          }
+        ],
+        "learnDue" : 3,
+        "missing" : [
+
+        ],
+        "newDue" : 18,
+        "retention" : 0.8636363636363636,
+        "retentionSampleSize" : 22,
+        "reviewDue" : 39,
+        "reviewedToday" : 40,
+        "streak" : 5,
+        "studyTimeToday" : 114,
+        "topDecks" : [
+          "Biology",
+          "Japanese",
+          "Biology Extra",
+          "chemistry"
+        ]
+      }
+    },
+    {
+      "activity" : {
+        "end" : 1790922600,
+        "kind" : "cards.reviewed",
+        "metadata" : {
+          "ankiDay" : "2026-10-01"
+        },
+        "quantity" : 12,
+        "source" : "anki",
+        "start" : 1790922600,
+        "unit" : "cards"
+      },
+      "activityLog" : [
+        {
+          "ankiDay" : "2026-10-02",
+          "kind" : "cards.reviewed",
+          "quantity" : 5,
+          "source" : "anki"
+        }
+      ],
+      "connection" : {
+        "clearsBySelf" : false,
+        "detail" : "Your due cards show up in Tabbi.",
+        "headline" : "Anki is connected",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "connected",
+        "refreshInterval" : 180,
+        "state" : "anki.ready"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790922600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"Default\":1,\"Step1\":1600000000001,\"Step1::Cardio\":1600000000002,\"Step1::Renal\":1600000000003,\"Pharm\":1600000000004},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"1600000000004\":{\"deck_id\":1600000000004,\"name\":\"Pharm\",\"new_count\":0,\"learn_count\":0,\"review_count\":0,\"total_in_deck\":1200},\"1600000000001\":{\"deck_id\":1600000000001,\"name\":\"Step1\",\"new_count\":0,\"learn_count\":0,\"review_count\":0,\"total_in_deck\":2000},\"1600000000002\":{\"deck_id\":1600000000002,\"name\":\"Cardio\",\"new_count\":0,\"learn_count\":0,\"review_count\":0,\"total_in_deck\":700},\"1600000000003\":{\"deck_id\":1600000000003,\"name\":\"Renal\",\"new_count\":0,\"learn_count\":0,\"review_count\":0,\"total_in_deck\":650}},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getDeckStats",
+            "params" : {
+              "decks" : [
+                "Default",
+                "Pharm",
+                "Step1",
+                "Step1::Cardio",
+                "Step1::Renal"
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":0,\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedToday",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[[\"2026-10-01\",12],[\"2026-09-29\",40]],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedByDay",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[{\"result\":[],\"error\":null},{\"result\":[],\"error\":null},{\"result\":[],\"error\":null},{\"result\":[[1790841599999,7001,-1,2,10,5,2500,9000,1],[1790841600000,7002,-1,4,10,5,2500,7000,1],[1790917200000,7003,-1,3,10,5,2500,6000,1]],\"error\":null},{\"result\":[],\"error\":null}],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "multi",
+            "params" : {
+              "actions" : [
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Default",
+                    "startID" : 1788330600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Pharm",
+                    "startID" : 1788330600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Step1",
+                    "startID" : 1788330600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Step1::Cardio",
+                    "startID" : 1788330600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Step1::Renal",
+                    "startID" : 1788330600000
+                  },
+                  "version" : 6
+                }
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 20
+        }
+      ],
+      "format" : {
+        "dayHelp" : [
+          "Fri, Sep 18 · No reviews",
+          "Sat, Sep 19 · No reviews",
+          "Sun, Sep 20 · No reviews",
+          "Mon, Sep 21 · No reviews",
+          "Tue, Sep 22 · No reviews",
+          "Wed, Sep 23 · No reviews",
+          "Thu, Sep 24 · No reviews",
+          "Fri, Sep 25 · No reviews",
+          "Sat, Sep 26 · No reviews",
+          "Sun, Sep 27 · No reviews",
+          "Mon, Sep 28 · No reviews",
+          "Tue, Sep 29 · 40 reviews",
+          "Yesterday · No reviews",
+          "Today · 12 reviews"
+        ],
+        "heatLevels" : [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          0,
+          2
+        ],
+        "progressHelp" : "All 12 cards done for today",
+        "streak" : "1-day streak"
+      },
+      "name" : "legacy-leaf-names-after-midnight",
+      "progress" : {
+        "actionID" : "anki.study",
+        "actionTitle" : "Open Anki",
+        "completed" : 12,
+        "id" : "reviews",
+        "target" : 12,
+        "title" : "Anki reviews",
+        "unit" : "cards"
+      },
+      "reportedErrors" : [
+
+      ],
+      "summary" : {
+        "completionFraction" : 1,
+        "day" : "2026-10-01",
+        "deckOutline" : [
+
+        ],
+        "decks" : [
+          {
+            "deckID" : 1600000000004,
+            "dueTotal" : 0,
+            "learnCount" : 0,
+            "name" : "Pharm",
+            "newCount" : 0,
+            "reviewCount" : 0,
+            "totalInDeck" : 1200
+          },
+          {
+            "deckID" : 1600000000001,
+            "dueTotal" : 0,
+            "learnCount" : 0,
+            "name" : "Step1",
+            "newCount" : 0,
+            "reviewCount" : 0,
+            "totalInDeck" : 2000
+          },
+          {
+            "deckID" : 1600000000002,
+            "dueTotal" : 0,
+            "learnCount" : 0,
+            "name" : "Step1::Cardio",
+            "newCount" : 0,
+            "reviewCount" : 0,
+            "totalInDeck" : 700
+          },
+          {
+            "deckID" : 1600000000003,
+            "dueTotal" : 0,
+            "learnCount" : 0,
+            "name" : "Step1::Renal",
+            "newCount" : 0,
+            "reviewCount" : 0,
+            "totalInDeck" : 650
+          }
+        ],
+        "dueTotal" : 0,
+        "gaps" : [
+
+        ],
+        "hasReviewedToday" : true,
+        "history" : [
+          {
+            "count" : 0,
+            "day" : "2026-09-18"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-19"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-20"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-21"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-22"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-23"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-24"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-25"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-26"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-27"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-28"
+          },
+          {
+            "count" : 40,
+            "day" : "2026-09-29"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-30"
+          },
+          {
+            "count" : 12,
+            "day" : "2026-10-01"
+          }
+        ],
+        "learnDue" : 0,
+        "missing" : [
+
+        ],
+        "newDue" : 0,
+        "retentionSampleSize" : 3,
+        "reviewDue" : 0,
+        "reviewedToday" : 12,
+        "streak" : 1,
+        "studyTimeToday" : 13,
+        "topDecks" : [
+
+        ]
+      }
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "clearsBySelf" : false,
+        "detail" : "Your due cards show up in Tabbi.",
+        "headline" : "Anki is connected",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "connected",
+        "refreshInterval" : 180,
+        "state" : "anki.ready"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "apiKey" : "s3cret",
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"Default\":1,\"Biology\":1700000000011,\"Broken\":1700000000012,\"Chemistry\":1700000000013},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "key" : "s3cret",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":null,\"error\":\"Deck counts unavailable.\"}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getDeckStats",
+            "key" : "s3cret",
+            "params" : {
+              "decks" : [
+                "Biology",
+                "Broken",
+                "Chemistry",
+                "Default"
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":null,\"error\":\"Deck counts unavailable.\"}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getDeckStats",
+            "key" : "s3cret",
+            "params" : {
+              "decks" : [
+                "Biology",
+                "Broken",
+                "Chemistry"
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[{\"result\":{\"1700000000011\":{\"deck_id\":1700000000011,\"name\":\"Biology\",\"new_count\":4,\"learn_count\":1,\"review_count\":7,\"total_in_deck\":400}},\"error\":null},{\"result\":null,\"error\":\"Deck counts unavailable.\"},{\"result\":{\"1700000000013\":{\"deck_id\":1700000000013,\"name\":\"Chemistry\",\"new_count\":2,\"learn_count\":0,\"review_count\":10,\"total_in_deck\":300}},\"error\":null},{\"result\":null,\"error\":\"Deck counts unavailable.\"}],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "multi",
+            "key" : "s3cret",
+            "params" : {
+              "actions" : [
+                {
+                  "action" : "getDeckStats",
+                  "key" : "s3cret",
+                  "params" : {
+                    "decks" : [
+                      "Biology"
+                    ]
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "getDeckStats",
+                  "key" : "s3cret",
+                  "params" : {
+                    "decks" : [
+                      "Broken"
+                    ]
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "getDeckStats",
+                  "key" : "s3cret",
+                  "params" : {
+                    "decks" : [
+                      "Chemistry"
+                    ]
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "getDeckStats",
+                  "key" : "s3cret",
+                  "params" : {
+                    "decks" : [
+                      "Default"
+                    ]
+                  },
+                  "version" : 6
+                }
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 20
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":0,\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedToday",
+            "key" : "s3cret",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[[\"2026-09-30\",30],[\"2026-09-29\",20]],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedByDay",
+            "key" : "s3cret",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[{\"result\":[],\"error\":null},{\"result\":[],\"error\":null},{\"result\":[],\"error\":null},{\"result\":[],\"error\":null}],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "multi",
+            "key" : "s3cret",
+            "params" : {
+              "actions" : [
+                {
+                  "action" : "cardReviews",
+                  "key" : "s3cret",
+                  "params" : {
+                    "deck" : "Biology",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "key" : "s3cret",
+                  "params" : {
+                    "deck" : "Broken",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "key" : "s3cret",
+                  "params" : {
+                    "deck" : "Chemistry",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "key" : "s3cret",
+                  "params" : {
+                    "deck" : "Default",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                }
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 20
+        }
+      ],
+      "format" : {
+        "dayHelp" : [
+          "Fri, Sep 18 · No reviews",
+          "Sat, Sep 19 · No reviews",
+          "Sun, Sep 20 · No reviews",
+          "Mon, Sep 21 · No reviews",
+          "Tue, Sep 22 · No reviews",
+          "Wed, Sep 23 · No reviews",
+          "Thu, Sep 24 · No reviews",
+          "Fri, Sep 25 · No reviews",
+          "Sat, Sep 26 · No reviews",
+          "Sun, Sep 27 · No reviews",
+          "Mon, Sep 28 · No reviews",
+          "Tue, Sep 29 · 20 reviews",
+          "Yesterday · 30 reviews",
+          "Today · No reviews"
+        ],
+        "heatLevels" : [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          4,
+          0
+        ],
+        "progressHelp" : "0 of 24 cards reviewed today",
+        "streak" : "2-day streak"
+      },
+      "name" : "deck-by-deck-multi-partial",
+      "progress" : {
+        "actionID" : "anki.study",
+        "actionTitle" : "Study Biology",
+        "completed" : 0,
+        "id" : "reviews",
+        "target" : 24,
+        "title" : "Anki reviews",
+        "unit" : "cards"
+      },
+      "reportedErrors" : [
+        {
+          "action" : "getDeckStats",
+          "error" : "anki"
+        },
+        {
+          "action" : "getDeckStats",
+          "error" : "anki"
+        }
+      ],
+      "summary" : {
+        "completionFraction" : 0,
+        "day" : "2026-10-01",
+        "deckOutline" : [
+          {
+            "deckID" : 1700000000011,
+            "depth" : 0,
+            "title" : "Biology"
+          },
+          {
+            "deckID" : 1700000000013,
+            "depth" : 0,
+            "title" : "Chemistry"
+          }
+        ],
+        "decks" : [
+          {
+            "deckID" : 1700000000011,
+            "dueTotal" : 12,
+            "learnCount" : 1,
+            "name" : "Biology",
+            "newCount" : 4,
+            "reviewCount" : 7,
+            "totalInDeck" : 400
+          },
+          {
+            "deckID" : 1700000000013,
+            "dueTotal" : 12,
+            "learnCount" : 0,
+            "name" : "Chemistry",
+            "newCount" : 2,
+            "reviewCount" : 10,
+            "totalInDeck" : 300
+          }
+        ],
+        "dueTotal" : 24,
+        "gaps" : [
+
+        ],
+        "hasReviewedToday" : false,
+        "history" : [
+          {
+            "count" : 0,
+            "day" : "2026-09-18"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-19"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-20"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-21"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-22"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-23"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-24"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-25"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-26"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-27"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-28"
+          },
+          {
+            "count" : 20,
+            "day" : "2026-09-29"
+          },
+          {
+            "count" : 30,
+            "day" : "2026-09-30"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-01"
+          }
+        ],
+        "learnDue" : 1,
+        "missing" : [
+
+        ],
+        "newDue" : 6,
+        "retentionSampleSize" : 0,
+        "reviewDue" : 17,
+        "reviewedToday" : 0,
+        "streak" : 2,
+        "studyTimeToday" : 0,
+        "topDecks" : [
+          "Biology",
+          "Chemistry"
+        ]
+      }
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "action" : "checkAgain",
+        "actionTitle" : "Check again",
+        "clearsBySelf" : true,
+        "detail" : "Make sure the AnkiConnect add-on (code 2055492159) is installed and Anki was restarted after installing it.",
+        "headline" : "Anki reported a problem",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "needsStep",
+        "refreshInterval" : 4,
+        "state" : "anki.problem.anki"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : false,
+        "isUnexplained" : true,
+        "kind" : "anki",
+        "message" : "Deck counts unavailable.",
+        "quotedMessage" : "Anki said: “Deck counts unavailable.”",
+        "suggestion" : "Anki said “Deck counts unavailable.”. Make sure the AnkiConnect add-on (code 2055492159) is installed and Anki was restarted after installing it.",
+        "title" : "Anki reported a problem"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"Default\":1,\"Broken\":1700000000012},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":null,\"error\":\"Deck counts unavailable.\"}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getDeckStats",
+            "params" : {
+              "decks" : [
+                "Broken",
+                "Default"
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":null,\"error\":\"Deck counts unavailable.\"}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getDeckStats",
+            "params" : {
+              "decks" : [
+                "Broken"
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[{\"result\":null,\"error\":\"Deck counts unavailable.\"},{\"result\":null,\"error\":\"Deck counts unavailable.\"}],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "multi",
+            "params" : {
+              "actions" : [
+                {
+                  "action" : "getDeckStats",
+                  "params" : {
+                    "decks" : [
+                      "Broken"
+                    ]
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "getDeckStats",
+                  "params" : {
+                    "decks" : [
+                      "Default"
+                    ]
+                  },
+                  "version" : 6
+                }
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 20
+        }
+      ],
+      "name" : "deck-by-deck-all-fail",
+      "reportedErrors" : [
+        {
+          "action" : "getDeckStats",
+          "error" : "anki"
+        },
+        {
+          "action" : "getDeckStats",
+          "error" : "anki"
+        },
+        {
+          "action" : "getDeckStats",
+          "error" : "anki"
+        }
+      ]
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "action" : "checkAgain",
+        "actionTitle" : "Check again",
+        "clearsBySelf" : true,
+        "detail" : "Make sure the AnkiConnect add-on (code 2055492159) is installed and Anki was restarted after installing it.",
+        "headline" : "Anki reported a problem",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "needsStep",
+        "refreshInterval" : 4,
+        "state" : "anki.problem.anki"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : false,
+        "isUnexplained" : true,
+        "kind" : "anki",
+        "message" : "Deck counts unavailable.",
+        "quotedMessage" : "Anki said: “Deck counts unavailable.”",
+        "suggestion" : "Anki said “Deck counts unavailable.”. Make sure the AnkiConnect add-on (code 2055492159) is installed and Anki was restarted after installing it.",
+        "title" : "Anki reported a problem"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"Default\":1},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":null,\"error\":\"Deck counts unavailable.\"}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getDeckStats",
+            "params" : {
+              "decks" : [
+                "Default"
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[{\"result\":null,\"error\":\"Deck counts unavailable.\"}],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "multi",
+            "params" : {
+              "actions" : [
+                {
+                  "action" : "getDeckStats",
+                  "params" : {
+                    "decks" : [
+                      "Default"
+                    ]
+                  },
+                  "version" : 6
+                }
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 20
+        }
+      ],
+      "name" : "modern-only-empty-default-deck",
+      "reportedErrors" : [
+        {
+          "action" : "getDeckStats",
+          "error" : "anki"
+        },
+        {
+          "action" : "getDeckStats",
+          "error" : "anki"
+        }
+      ]
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "clearsBySelf" : false,
+        "detail" : "Your due cards show up in Tabbi.",
+        "headline" : "Anki is connected",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "connected",
+        "refreshInterval" : 180,
+        "state" : "anki.ready"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"Default\":1},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":{},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getDeckStats",
+            "params" : {
+              "decks" : [
+                "Default"
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":0,\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedToday",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedByDay",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[{\"result\":[],\"error\":null}],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "multi",
+            "params" : {
+              "actions" : [
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Default",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                }
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 20
+        }
+      ],
+      "format" : {
+        "dayHelp" : [
+          "Fri, Sep 18 · No reviews",
+          "Sat, Sep 19 · No reviews",
+          "Sun, Sep 20 · No reviews",
+          "Mon, Sep 21 · No reviews",
+          "Tue, Sep 22 · No reviews",
+          "Wed, Sep 23 · No reviews",
+          "Thu, Sep 24 · No reviews",
+          "Fri, Sep 25 · No reviews",
+          "Sat, Sep 26 · No reviews",
+          "Sun, Sep 27 · No reviews",
+          "Mon, Sep 28 · No reviews",
+          "Tue, Sep 29 · No reviews",
+          "Yesterday · No reviews",
+          "Today · No reviews"
+        ],
+        "heatLevels" : [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "progressHelp" : "Nothing due today",
+        "streak" : "No streak yet"
+      },
+      "name" : "legacy-only-empty-default-deck",
+      "progress" : {
+        "actionID" : "anki.study",
+        "actionTitle" : "Open Anki",
+        "completed" : 0,
+        "id" : "reviews",
+        "target" : 0,
+        "title" : "Anki reviews",
+        "unit" : "cards"
+      },
+      "reportedErrors" : [
+
+      ],
+      "summary" : {
+        "completionFraction" : 1,
+        "day" : "2026-10-01",
+        "deckOutline" : [
+
+        ],
+        "decks" : [
+
+        ],
+        "dueTotal" : 0,
+        "gaps" : [
+
+        ],
+        "hasReviewedToday" : false,
+        "history" : [
+          {
+            "count" : 0,
+            "day" : "2026-09-18"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-19"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-20"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-21"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-22"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-23"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-24"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-25"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-26"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-27"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-28"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-29"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-30"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-01"
+          }
+        ],
+        "learnDue" : 0,
+        "missing" : [
+
+        ],
+        "newDue" : 0,
+        "retentionSampleSize" : 0,
+        "reviewDue" : 0,
+        "reviewedToday" : 0,
+        "streak" : 0,
+        "studyTimeToday" : 0,
+        "topDecks" : [
+
+        ]
+      }
+    },
+    {
+      "activity" : {
+        "end" : 1790877600,
+        "kind" : "cards.reviewed",
+        "metadata" : {
+          "ankiDay" : "2026-10-01"
+        },
+        "quantity" : 7,
+        "source" : "anki",
+        "start" : 1790877600,
+        "unit" : "cards"
+      },
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "clearsBySelf" : false,
+        "detail" : "Your due cards show up in Tabbi.",
+        "headline" : "Anki is connected",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "connected",
+        "refreshInterval" : 180,
+        "state" : "anki.ready"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "{\"result\":{},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":7,\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedToday",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedByDay",
+            "version" : 6
+          },
+          "timeout" : 3
+        }
+      ],
+      "format" : {
+        "dayHelp" : [
+          "Fri, Sep 18 · No reviews",
+          "Sat, Sep 19 · No reviews",
+          "Sun, Sep 20 · No reviews",
+          "Mon, Sep 21 · No reviews",
+          "Tue, Sep 22 · No reviews",
+          "Wed, Sep 23 · No reviews",
+          "Thu, Sep 24 · No reviews",
+          "Fri, Sep 25 · No reviews",
+          "Sat, Sep 26 · No reviews",
+          "Sun, Sep 27 · No reviews",
+          "Mon, Sep 28 · No reviews",
+          "Tue, Sep 29 · No reviews",
+          "Yesterday · No reviews",
+          "Today · 7 reviews"
+        ],
+        "heatLevels" : [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          4
+        ],
+        "progressHelp" : "All 7 cards done for today",
+        "streak" : "1-day streak"
+      },
+      "name" : "no-decks",
+      "progress" : {
+        "actionID" : "anki.study",
+        "actionTitle" : "Open Anki",
+        "completed" : 7,
+        "id" : "reviews",
+        "target" : 7,
+        "title" : "Anki reviews",
+        "unit" : "cards"
+      },
+      "reportedErrors" : [
+
+      ],
+      "summary" : {
+        "completionFraction" : 1,
+        "day" : "2026-10-01",
+        "deckOutline" : [
+
+        ],
+        "decks" : [
+
+        ],
+        "dueTotal" : 0,
+        "gaps" : [
+
+        ],
+        "hasReviewedToday" : true,
+        "history" : [
+          {
+            "count" : 0,
+            "day" : "2026-09-18"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-19"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-20"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-21"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-22"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-23"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-24"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-25"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-26"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-27"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-28"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-29"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-30"
+          },
+          {
+            "count" : 7,
+            "day" : "2026-10-01"
+          }
+        ],
+        "learnDue" : 0,
+        "missing" : [
+
+        ],
+        "newDue" : 0,
+        "retentionSampleSize" : 0,
+        "reviewDue" : 0,
+        "reviewedToday" : 7,
+        "streak" : 1,
+        "studyTimeToday" : 0,
+        "topDecks" : [
+
+        ]
+      }
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "clearsBySelf" : false,
+        "detail" : "Your due cards show up in Tabbi.",
+        "headline" : "Anki is connected",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "connected",
+        "refreshInterval" : 180,
+        "state" : "anki.ready"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1793521800,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"Biology\":1700000000021,\"Spanish\":1700000000022},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"1700000000021\":{\"deck_id\":1700000000021,\"name\":\"Biology\",\"new_count\":3,\"learn_count\":0,\"review_count\":9,\"total_in_deck\":400},\"1700000000022\":{\"deck_id\":1700000000022,\"name\":\"Spanish\",\"new_count\":0,\"learn_count\":2,\"review_count\":0,\"total_in_deck\":100}},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getDeckStats",
+            "params" : {
+              "decks" : [
+                "Biology",
+                "Spanish"
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":null,\"error\":\"unsupported action\"}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedToday",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":null,\"error\":\"no such column: day\"}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedByDay",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[{\"result\":[],\"error\":null}],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "multi",
+            "params" : {
+              "actions" : [
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Biology",
+                    "startID" : 1790929800000
+                  },
+                  "version" : 6
+                },
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Spanish",
+                    "startID" : 1790929800000
+                  },
+                  "version" : 6
+                }
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 20
+        }
+      ],
+      "format" : {
+        "dayHelp" : [
+          "Mon, Oct 19 · No reviews",
+          "Tue, Oct 20 · No reviews",
+          "Wed, Oct 21 · No reviews",
+          "Thu, Oct 22 · No reviews",
+          "Fri, Oct 23 · No reviews",
+          "Sat, Oct 24 · No reviews",
+          "Sun, Oct 25 · No reviews",
+          "Mon, Oct 26 · No reviews",
+          "Tue, Oct 27 · No reviews",
+          "Wed, Oct 28 · No reviews",
+          "Thu, Oct 29 · No reviews",
+          "Fri, Oct 30 · No reviews",
+          "Yesterday · No reviews",
+          "Today · No reviews"
+        ],
+        "heatLevels" : [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "progressHelp" : "0 of 14 cards reviewed today",
+        "streak" : "No streak yet"
+      },
+      "name" : "optional-pieces-fail",
+      "progress" : {
+        "actionID" : "anki.study",
+        "actionTitle" : "Study Biology",
+        "completed" : 0,
+        "id" : "reviews",
+        "target" : 14,
+        "title" : "Anki reviews",
+        "unit" : "cards"
+      },
+      "reportedErrors" : [
+        {
+          "action" : "getNumCardsReviewedToday",
+          "error" : "unsupportedAction"
+        },
+        {
+          "action" : "getNumCardsReviewedByDay",
+          "error" : "anki"
+        }
+      ],
+      "summary" : {
+        "completionFraction" : 0,
+        "day" : "2026-11-01",
+        "deckOutline" : [
+          {
+            "deckID" : 1700000000021,
+            "depth" : 0,
+            "title" : "Biology"
+          },
+          {
+            "deckID" : 1700000000022,
+            "depth" : 0,
+            "title" : "Spanish"
+          }
+        ],
+        "decks" : [
+          {
+            "deckID" : 1700000000021,
+            "dueTotal" : 12,
+            "learnCount" : 0,
+            "name" : "Biology",
+            "newCount" : 3,
+            "reviewCount" : 9,
+            "totalInDeck" : 400
+          },
+          {
+            "deckID" : 1700000000022,
+            "dueTotal" : 2,
+            "learnCount" : 2,
+            "name" : "Spanish",
+            "newCount" : 0,
+            "reviewCount" : 0,
+            "totalInDeck" : 100
+          }
+        ],
+        "dueTotal" : 14,
+        "gaps" : [
+          {
+            "action" : "getNumCardsReviewedToday",
+            "message" : "unsupportedAction(\"getNumCardsReviewedToday\")"
+          },
+          {
+            "action" : "getNumCardsReviewedByDay",
+            "message" : "no such column: day"
+          },
+          {
+            "action" : "cardReviews",
+            "message" : "multi: expected 2 replies, got 1"
+          }
+        ],
+        "hasReviewedToday" : false,
+        "history" : [
+          {
+            "count" : 0,
+            "day" : "2026-10-19"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-20"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-21"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-22"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-23"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-24"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-25"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-26"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-27"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-28"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-29"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-30"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-10-31"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-11-01"
+          }
+        ],
+        "learnDue" : 2,
+        "missing" : [
+          "todayCount",
+          "history",
+          "reviewLog"
+        ],
+        "newDue" : 3,
+        "retentionSampleSize" : 0,
+        "reviewDue" : 9,
+        "reviewedToday" : 0,
+        "streak" : 0,
+        "studyTimeToday" : 0,
+        "topDecks" : [
+          "Biology",
+          "Spanish"
+        ]
+      }
+    },
+    {
+      "activity" : {
+        "end" : 1790877600,
+        "kind" : "cards.reviewed",
+        "metadata" : {
+          "ankiDay" : "2026-10-01"
+        },
+        "quantity" : 3,
+        "source" : "anki",
+        "start" : 1790877600,
+        "unit" : "cards"
+      },
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "clearsBySelf" : false,
+        "detail" : "Your due cards show up in Tabbi.",
+        "headline" : "Anki is connected",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "connected",
+        "refreshInterval" : 180,
+        "state" : "anki.ready"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "{\"result\":null,\"error\":\"Expecting value: line 1 column 1 (char 0)\"}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"Spanish\":1700000000031},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"1700000000031\":{\"deck_id\":1700000000031,\"name\":\"Spanish\",\"new_count\":5,\"learn_count\":0,\"review_count\":3,\"total_in_deck\":300}},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getDeckStats",
+            "params" : {
+              "decks" : [
+                "Spanish"
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":3,\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedToday",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[[\"2026-10-01\",3],[\"2026-09-30\",4]],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedByDay",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":[{\"result\":[],\"error\":null}],\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "multi",
+            "params" : {
+              "actions" : [
+                {
+                  "action" : "cardReviews",
+                  "params" : {
+                    "deck" : "Spanish",
+                    "startID" : 1788285600000
+                  },
+                  "version" : 6
+                }
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 20
+        }
+      ],
+      "format" : {
+        "dayHelp" : [
+          "Fri, Sep 18 · No reviews",
+          "Sat, Sep 19 · No reviews",
+          "Sun, Sep 20 · No reviews",
+          "Mon, Sep 21 · No reviews",
+          "Tue, Sep 22 · No reviews",
+          "Wed, Sep 23 · No reviews",
+          "Thu, Sep 24 · No reviews",
+          "Fri, Sep 25 · No reviews",
+          "Sat, Sep 26 · No reviews",
+          "Sun, Sep 27 · No reviews",
+          "Mon, Sep 28 · No reviews",
+          "Tue, Sep 29 · No reviews",
+          "Yesterday · 4 reviews",
+          "Today · 3 reviews"
+        ],
+        "heatLevels" : [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          3
+        ],
+        "progressHelp" : "3 of 11 cards reviewed today",
+        "streak" : "2-day streak"
+      },
+      "name" : "malformed-request-retried",
+      "progress" : {
+        "actionID" : "anki.study",
+        "actionTitle" : "Study Spanish",
+        "completed" : 3,
+        "id" : "reviews",
+        "target" : 11,
+        "title" : "Anki reviews",
+        "unit" : "cards"
+      },
+      "reportedErrors" : [
+
+      ],
+      "summary" : {
+        "completionFraction" : 0.2727272727272727,
+        "day" : "2026-10-01",
+        "deckOutline" : [
+          {
+            "deckID" : 1700000000031,
+            "depth" : 0,
+            "title" : "Spanish"
+          }
+        ],
+        "decks" : [
+          {
+            "deckID" : 1700000000031,
+            "dueTotal" : 8,
+            "learnCount" : 0,
+            "name" : "Spanish",
+            "newCount" : 5,
+            "reviewCount" : 3,
+            "totalInDeck" : 300
+          }
+        ],
+        "dueTotal" : 8,
+        "gaps" : [
+
+        ],
+        "hasReviewedToday" : true,
+        "history" : [
+          {
+            "count" : 0,
+            "day" : "2026-09-18"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-19"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-20"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-21"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-22"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-23"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-24"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-25"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-26"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-27"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-28"
+          },
+          {
+            "count" : 0,
+            "day" : "2026-09-29"
+          },
+          {
+            "count" : 4,
+            "day" : "2026-09-30"
+          },
+          {
+            "count" : 3,
+            "day" : "2026-10-01"
+          }
+        ],
+        "learnDue" : 0,
+        "missing" : [
+
+        ],
+        "newDue" : 5,
+        "retentionSampleSize" : 0,
+        "reviewDue" : 3,
+        "reviewedToday" : 3,
+        "streak" : 2,
+        "studyTimeToday" : 0,
+        "topDecks" : [
+          "Spanish"
+        ]
+      }
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "action" : "openApp.Anki",
+        "actionTitle" : "Open Anki",
+        "clearsBySelf" : true,
+        "detail" : "Anki may be syncing or on its profile list. Tabbi reconnects by itself.",
+        "headline" : "Waiting for Anki",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "needsStep",
+        "refreshInterval" : 4,
+        "state" : "anki.problem.collectionUnavailable"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : true,
+        "isUnexplained" : false,
+        "kind" : "collectionUnavailable",
+        "suggestion" : "Anki may be syncing, checking its database or showing a dialog. Tabbi reconnects when it's done.",
+        "title" : "Waiting for Anki"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"Spanish\":1700000000031},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"1700000000031\":{\"deck_id\":1700000000031,\"name\":\"Spanish\",\"new_count\":5,\"learn_count\":0,\"review_count\":0,\"total_in_deck\":300}},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getDeckStats",
+            "params" : {
+              "decks" : [
+                "Spanish"
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":3,\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedToday",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":null,\"error\":\"Collection is not available.\"}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getNumCardsReviewedByDay",
+            "version" : 6
+          },
+          "timeout" : 3
+        }
+      ],
+      "name" : "collection-closed-mid-refresh",
+      "reportedErrors" : [
+        {
+          "action" : "getNumCardsReviewedByDay",
+          "error" : "collectionUnavailable"
+        }
+      ]
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "action" : "openApp.Anki",
+        "actionTitle" : "Open Anki",
+        "clearsBySelf" : true,
+        "detail" : "Anki may be syncing or on its profile list. Tabbi reconnects by itself.",
+        "headline" : "Waiting for Anki",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "needsStep",
+        "refreshInterval" : 4,
+        "state" : "anki.problem.collectionUnavailable"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : true,
+        "isUnexplained" : false,
+        "kind" : "collectionUnavailable",
+        "suggestion" : "Anki may be syncing, checking its database or showing a dialog. Tabbi reconnects when it's done.",
+        "title" : "Waiting for Anki"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "{\"result\":{\"Default\":1,\"Spanish\":1700000000031},\"error\":null}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        },
+        {
+          "reply" : {
+            "body" : "{\"result\":null,\"error\":\"A collection operation is active.\"}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "getDeckStats",
+            "params" : {
+              "decks" : [
+                "Default",
+                "Spanish"
+              ]
+            },
+            "version" : 6
+          },
+          "timeout" : 3
+        }
+      ],
+      "name" : "collection-busy-on-deck-stats",
+      "reportedErrors" : [
+        {
+          "action" : "getDeckStats",
+          "error" : "collectionUnavailable"
+        }
+      ]
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "action" : "openApp.Anki",
+        "actionTitle" : "Open Anki",
+        "clearsBySelf" : false,
+        "detail" : "Open Anki so Tabbi can see your cards.",
+        "headline" : "Anki is closed",
+        "isSetupStep" : true,
+        "keepsLastSummary" : false,
+        "light" : "needsStep",
+        "refreshInterval" : 5,
+        "state" : "anki.notRunning"
+      },
+      "environment" : {
+        "ankiRunning" : false,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : true,
+        "isUnexplained" : false,
+        "kind" : "ankiNotRunning",
+        "suggestion" : "Open Anki to see your due cards.",
+        "title" : "Anki is closed"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "failure" : "connectionRefused"
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        }
+      ],
+      "name" : "anki-closed",
+      "reportedErrors" : [
+        {
+          "action" : "deckNamesAndIds",
+          "error" : "ankiNotRunning"
+        }
+      ]
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "action" : "download.Anki",
+        "actionTitle" : "Get Anki",
+        "clearsBySelf" : false,
+        "detail" : "It's a free flashcard app. Get it, then come back here.",
+        "headline" : "Anki isn't on this Mac",
+        "isSetupStep" : true,
+        "keepsLastSummary" : false,
+        "light" : "notInstalled",
+        "refreshInterval" : 60,
+        "state" : "anki.notInstalled"
+      },
+      "environment" : {
+        "ankiRunning" : false,
+        "isInstalled" : false,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : true,
+        "isUnexplained" : false,
+        "kind" : "ankiNotRunning",
+        "suggestion" : "Open Anki to see your due cards.",
+        "title" : "Anki is closed"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "failure" : "connectionRefused"
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        }
+      ],
+      "name" : "anki-not-installed",
+      "reportedErrors" : [
+        {
+          "action" : "deckNamesAndIds",
+          "error" : "ankiNotRunning"
+        }
+      ]
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "clearsBySelf" : true,
+        "detail" : "This takes a few seconds.",
+        "headline" : "Anki is starting",
+        "isSetupStep" : true,
+        "keepsLastSummary" : false,
+        "light" : "checking",
+        "refreshInterval" : 2,
+        "state" : "anki.starting"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "launchedAt" : 1790877595,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : true,
+        "isUnexplained" : false,
+        "kind" : "addOnMissing",
+        "suggestion" : "Install AnkiConnect (code 2055492159) from Tools › Add-ons, then restart Anki.",
+        "title" : "AnkiConnect isn't answering"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "failure" : "connectionRefused"
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        }
+      ],
+      "name" : "anki-starting",
+      "reportedErrors" : [
+        {
+          "action" : "deckNamesAndIds",
+          "error" : "addOnMissing"
+        }
+      ]
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "action" : "showGuide.ankiAddOn",
+        "actionTitle" : "Show me how",
+        "clearsBySelf" : false,
+        "detail" : "Anki needs a free add-on called AnkiConnect so Tabbi can count your cards.",
+        "headline" : "One add-on to go",
+        "isSetupStep" : true,
+        "keepsLastSummary" : false,
+        "light" : "notSetUp",
+        "refreshInterval" : 5,
+        "state" : "anki.addOnMissing"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "launchedAt" : 1790877540,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : true,
+        "isUnexplained" : false,
+        "kind" : "addOnMissing",
+        "suggestion" : "Install AnkiConnect (code 2055492159) from Tools › Add-ons, then restart Anki.",
+        "title" : "AnkiConnect isn't answering"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "failure" : "connectionRefused"
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        }
+      ],
+      "name" : "add-on-missing",
+      "reportedErrors" : [
+        {
+          "action" : "deckNamesAndIds",
+          "error" : "addOnMissing"
+        }
+      ]
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "action" : "showGuide.ankiAccess",
+        "actionTitle" : "Show me how",
+        "clearsBySelf" : false,
+        "detail" : "AnkiConnect is set to ask for a key. Turning that off takes a minute.",
+        "headline" : "Anki has a password on",
+        "isSetupStep" : true,
+        "keepsLastSummary" : false,
+        "light" : "needsStep",
+        "refreshInterval" : 5,
+        "state" : "anki.needsPermission.apiKeyRequired"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : true,
+        "isUnexplained" : false,
+        "kind" : "apiKeyRequired",
+        "suggestion" : "Enter the key from AnkiConnect's config in Settings.",
+        "title" : "AnkiConnect needs your API key"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "{\"result\":null,\"error\":\"valid api key must be provided\"}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        }
+      ],
+      "name" : "api-key-required",
+      "reportedErrors" : [
+        {
+          "action" : "deckNamesAndIds",
+          "error" : "apiKeyRequired"
+        }
+      ]
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "action" : "showGuide.ankiAccess",
+        "actionTitle" : "Show me how",
+        "clearsBySelf" : false,
+        "detail" : "When Anki asked whether to let Tabbi in, the answer was no.",
+        "headline" : "Anki said no to Tabbi",
+        "isSetupStep" : true,
+        "keepsLastSummary" : false,
+        "light" : "needsStep",
+        "refreshInterval" : 5,
+        "state" : "anki.needsPermission.permissionDenied"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : true,
+        "isUnexplained" : false,
+        "kind" : "permissionDenied",
+        "suggestion" : "Allow Tabbi in AnkiConnect's settings, then try again.",
+        "title" : "Anki said no"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "",
+            "status" : 403
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        }
+      ],
+      "name" : "origin-rejected",
+      "reportedErrors" : [
+        {
+          "action" : "deckNamesAndIds",
+          "error" : "permissionDenied"
+        }
+      ]
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "action" : "checkAgain",
+        "actionTitle" : "Check again",
+        "clearsBySelf" : true,
+        "detail" : "Close any open window inside Anki, then check again.",
+        "headline" : "Anki is busy",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "needsStep",
+        "refreshInterval" : 4,
+        "state" : "anki.problem.timeout"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : true,
+        "isUnexplained" : false,
+        "kind" : "timeout",
+        "suggestion" : "Close any open Anki dialog. If it keeps happening, turn off App Nap for Anki.",
+        "title" : "Anki is busy"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "failure" : "timedOut"
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        }
+      ],
+      "name" : "anki-busy",
+      "reportedErrors" : [
+        {
+          "action" : "deckNamesAndIds",
+          "error" : "timeout"
+        }
+      ]
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "action" : "checkAgain",
+        "actionTitle" : "Check again",
+        "clearsBySelf" : true,
+        "detail" : "Make sure the AnkiConnect add-on (code 2055492159) is installed and Anki was restarted after installing it.",
+        "headline" : "Unexpected reply from Anki",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "needsStep",
+        "refreshInterval" : 4,
+        "state" : "anki.problem.invalidResponse"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : false,
+        "isUnexplained" : true,
+        "kind" : "invalidResponse",
+        "message" : "deckNamesAndIds: not JSON",
+        "quotedMessage" : "Details: deckNamesAndIds: not JSON",
+        "suggestion" : "Details: deckNamesAndIds: not JSON. Make sure the AnkiConnect add-on (code 2055492159) is installed and Anki was restarted after installing it.",
+        "title" : "Unexpected reply from Anki"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "<html>",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        }
+      ],
+      "name" : "reply-not-json",
+      "reportedErrors" : [
+        {
+          "action" : "deckNamesAndIds",
+          "error" : "invalidResponse"
+        }
+      ]
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "action" : "checkAgain",
+        "actionTitle" : "Check again",
+        "clearsBySelf" : true,
+        "detail" : "Make sure the AnkiConnect add-on (code 2055492159) is installed and Anki was restarted after installing it.",
+        "headline" : "Anki reported a problem",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "needsStep",
+        "refreshInterval" : 4,
+        "state" : "anki.problem.anki"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : false,
+        "isUnexplained" : true,
+        "kind" : "anki",
+        "message" : "Traceback (most recent call last): File \"plugin/__init__.py\", line 412, in handler result…",
+        "quotedMessage" : "Anki said: “Traceback (most recent call last): File \"plugin/__init__.py\", line 412, in handler result…”",
+        "suggestion" : "Anki said “Traceback (most recent call last): File \"plugin/__init__.py\", line 412, in handler result…”. Make sure the AnkiConnect add-on (code 2055492159) is installed and Anki was restarted after installing it.",
+        "title" : "Anki reported a problem"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "body" : "{\"result\":null,\"error\":\"Traceback (most recent call last):\\n  File \\\"plugin/__init__.py\\\", line 412, in handler\\n    result = method(**params)\\nAttributeError: 'NoneType' object has no attribute 'decks'\"}",
+            "status" : 200
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        }
+      ],
+      "name" : "unknown-anki-error-shortened",
+      "reportedErrors" : [
+        {
+          "action" : "deckNamesAndIds",
+          "error" : "anki"
+        }
+      ]
+    },
+    {
+      "activityLog" : [
+
+      ],
+      "connection" : {
+        "action" : "checkAgain",
+        "actionTitle" : "Check again",
+        "clearsBySelf" : true,
+        "detail" : "Make sure the AnkiConnect add-on (code 2055492159) is installed and Anki was restarted after installing it.",
+        "headline" : "Couldn't reach Anki",
+        "isSetupStep" : false,
+        "keepsLastSummary" : true,
+        "light" : "needsStep",
+        "refreshInterval" : 4,
+        "state" : "anki.problem.transport"
+      },
+      "environment" : {
+        "ankiRunning" : true,
+        "isInstalled" : true,
+        "now" : 1790877600,
+        "rolloverHour" : 4,
+        "timeZone" : "America/New_York"
+      },
+      "error" : {
+        "failsWholeRefresh" : true,
+        "isUnexplained" : true,
+        "kind" : "transport",
+        "message" : "The network connection was lost.",
+        "quotedMessage" : "Details: The network connection was lost.",
+        "suggestion" : "Details: The network connection was lost.. Make sure the AnkiConnect add-on (code 2055492159) is installed and Anki was restarted after installing it.",
+        "title" : "Couldn't reach Anki"
+      },
+      "exchanges" : [
+        {
+          "reply" : {
+            "failure" : "failed",
+            "failureMessage" : "The network connection was lost."
+          },
+          "request" : {
+            "action" : "deckNamesAndIds",
+            "version" : 6
+          },
+          "timeout" : 3
+        }
+      ],
+      "name" : "transport-failed",
+      "reportedErrors" : [
+        {
+          "action" : "deckNamesAndIds",
+          "error" : "transport"
+        }
+      ]
+    }
+  ],
+  "schema" : "tabbi.anki.golden",
+  "version" : 1
+}
