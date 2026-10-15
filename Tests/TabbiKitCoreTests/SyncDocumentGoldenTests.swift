@@ -758,11 +758,12 @@ struct SyncDocumentGoldenFixture: Codable, Equatable {
                 local: LocalProgress(save: try save(mochi, earned: 10), lookChangedAt: t0, studyDays: []),
                 racers: [SyncDocument(tallies: [deviceC: SyncTally(earned: 40)], unlocks: ["accessory.roundGlasses"])]
             )),
-            ("conflict-on-the-second-push", try makeRound(
+            ("two-conflicts-then-the-last-attempt-lands", try makeRound(
                 adopted: twoDevices, revision: 2,
                 local: LocalProgress(save: try save(mochi, earned: 170), studyDays: []),
                 server: try server(2, twoDevices),
-                racers: [nil, SyncDocument(tallies: [deviceB: SyncTally(earned: 75)])]
+                racers: [SyncDocument(tallies: [deviceB: SyncTally(earned: 75)]),
+                         SyncDocument(tallies: [deviceB: SyncTally(earned: 80, spent: 10)])]
             )),
             ("gives-up-after-repeated-conflicts", try makeRound(
                 local: LocalProgress(save: try save(mochi, earned: 10), lookChangedAt: t0, studyDays: []),

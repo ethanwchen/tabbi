@@ -41,9 +41,8 @@
   },
   "$defs": {
     "itemId": {
-      "description": "A Closet item id: outfit.<PetOutfit raw value> or accessory.<PetAccessory raw value>.",
-      "type": "string",
-      "minLength": 1
+      "description": "A Closet item id: outfit.<PetOutfit raw value> or accessory.<PetAccessory raw value>. Any string a reader finds is kept, even one no build knows (an empty one included).",
+      "type": "string"
     },
     "day": {
       "description": "A calendar day, YYYY-MM-DD, zero padded.",

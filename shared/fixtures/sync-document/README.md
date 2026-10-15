@@ -29,7 +29,7 @@ Rules the fixture pins that are easy to miss:
 
 - The document is a join: per-device tallies take the larger `earned` and the larger `spent` separately, unlocks and study days are unions, `longestStreak` is the maximum, and the pet is last writer wins.
 - `pet.updatedAt` is ISO 8601 in UTC with whole seconds; fractions are cut off (towards earlier) when the time is recorded, so two looks set in the same second tie.
-  Reading accepts only what Foundation's `.iso8601` date strategy accepts; see the `pet-date-*` decodes for an offset, fractions, no zone and a number.
+  Reading accepts a time zone offset (written back in UTC) and fractional seconds (cut off), and drops the pet for a time without a zone, a number or no `updatedAt` (the `pet-date-*` and `pet-without-a-date` decodes).
 - Equal times are settled by the profile's compact JSON with sorted keys (`{"accessories":[],"breed":"calico","furTint":null,...}`, as `JSONEncoder` with `.sortedKeys` writes it): the greater string wins.
   So no accessories (`[]`) beat worn ones, and a null `furTint` beats a color.
 - A device's tally is what its ledger holds beyond the other devices' tallies in the document it last adopted, so points earned on two devices while offline add up.
@@ -42,9 +42,11 @@ Rules the fixture pins that are easy to miss:
 - A pet whose profile has no known `breed` or whose `updatedAt` cannot be read is dropped; any other profile field falls back to a default (see the `pet-*` decodes, including a profile from before `furTint`, whose `furBase` becomes the tint).
 - Study days that are not real calendar days in exactly `YYYY-MM-DD` form are dropped; the newest 400 are kept, and `longestStreak` is never below the longest run in the days, so it remembers runs trimmed away.
   `currentStreak` counts the run of days ending today or yesterday, among the kept days only.
-- Unknown unlock ids are kept in the document; the ledger skips them, reads limited edition items as granted and leaves free items out.
+- Unknown unlock ids are kept in the document, even an empty string; the ledger skips them, reads limited edition items as granted and leaves free items out.
   Applying a document to a save keeps the save's granted items and streak freezes, and takes off worn items the ledger does not own.
-- The Mac writes keys sorted with no spaces and escapes `/` as `\/` (the `name-with-slash-and-accents` wire sample); a port may write either form, since readers parse the JSON, but its documents must parse to the same objects.
+- The Mac writes keys sorted with no spaces, escapes `/` as `\/` and writes other non-ASCII text as it is (the `name-with-slash-and-accents` wire sample); a port may write either form of `/`, since readers parse the JSON, but its documents must parse to the same objects.
+
+Every document in the file validates against the schema except the server's in `server-document-from-an-older-build-is-read-leniently`, which has no `schemaVersion` or `longestStreak` on purpose (the round reads it and leaves it as it is), and the `decodes` inputs, which are raw text.
 
 A port replays only the inputs (`wire[].text`, `decodes[].input`, `merges[].input`, `rounds[].input`) and compares every recorded output.
 Compare documents as parsed JSON objects.
