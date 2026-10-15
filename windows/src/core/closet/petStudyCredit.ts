@@ -1,15 +1,15 @@
+import {
+  ACTIVITY_KINDS,
+  ACTIVITY_UNITS,
+  activityOutcome,
+  type ActivityRecord,
+} from "../activity/activityRecord";
+import { MODULE_IDS } from "../modules/moduleId";
 import { tr } from "../localization/tr";
 import type { ProvidedFocus } from "../providers/providedFocus";
 import { itemDisplayName, type PetItem } from "../pets/petItem";
 import type { Instant } from "../time";
 import { PetCloset } from "./petCloset";
-import {
-  FOCUS_COMPLETED,
-  MINUTES_UNIT,
-  PARTY_SOURCE,
-  recordOutcome,
-  type StudyActivityRecord,
-} from "./studyActivity";
 
 /*
  * Port of PetStudyCredit.swift: points the pet earned from study sessions
@@ -100,11 +100,11 @@ export function creditFocus(
  * quit) from its activity record: the minutes studied, without the bonus.
  * Undefined for anything else and when nothing was earned.
  */
-export function creditRecord(closet: PetCloset, record: StudyActivityRecord): PetStudyAward | undefined {
+export function creditRecord(closet: PetCloset, record: ActivityRecord): PetStudyAward | undefined {
   const quantity = record.quantity;
-  if (record.kind !== FOCUS_COMPLETED || record.source === PARTY_SOURCE || record.unit !== MINUTES_UNIT) return undefined;
+  if (record.kind !== ACTIVITY_KINDS.focusCompleted || record.source === MODULE_IDS.party || record.unit !== ACTIVITY_UNITS.minutes) return undefined;
   if (quantity === undefined || !Number.isFinite(quantity)) return undefined;
-  const outcome = recordOutcome(record);
+  const outcome = activityOutcome(record);
   if (outcome !== "skipped" && outcome !== "abandoned") return undefined;
   const before = affordable(closet);
   const minutes = Math.trunc(Math.max(quantity, 0));

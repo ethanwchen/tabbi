@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { PetCloset } from "../../../src/core/closet/petCloset";
 import { PetMilestoneProgress } from "../../../src/core/closet/petLimited";
-import { FOCUS_COMPLETED, MINUTES_UNIT, type StudyActivityRecord } from "../../../src/core/closet/studyActivity";
+import { ACTIVITY_KINDS, ACTIVITY_UNITS, type ActivityRecord } from "../../../src/core/activity/activityRecord";
+import { activity } from "../../support/activity";
 import { PetProfile } from "../../../src/core/pets/petProfile";
 import { PetSave } from "../../../src/core/pets/petSave";
 import { PetPointsLedger, StreakFreezePurchaseError } from "../../../src/core/pets/petUnlocks";
@@ -79,13 +80,13 @@ describe("streak freezes: buying", () => {
 
 describe("streak freezes: closet", () => {
   it("the closet buys against its own study days", () => {
-    const records: StudyActivityRecord[] = [12, 13].map((day) => ({
+    const records: ActivityRecord[] = [12, 13].map((day) => activity({
       id: `focus-${day}`,
       source: "focus",
-      kind: FOCUS_COMPLETED,
+      kind: ACTIVITY_KINDS.focusCompleted,
       end: date(day),
       quantity: 25,
-      unit: MINUTES_UNIT,
+      unit: ACTIVITY_UNITS.minutes,
     }));
     const progress = new PetMilestoneProgress(records, calendar);
     const closet = new PetCloset(

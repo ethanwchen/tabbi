@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { PetEconomy } from "../../../src/core/closet/petEconomy";
 import { PetMilestoneProgress } from "../../../src/core/closet/petLimited";
-import { FOCUS_COMPLETED, MINUTES_UNIT, type StudyActivityRecord } from "../../../src/core/closet/studyActivity";
+import { ACTIVITY_KINDS, ACTIVITY_UNITS, type ActivityRecord } from "../../../src/core/activity/activityRecord";
+import { activity } from "../../support/activity";
 import { zonedInstant, type DayCalendar } from "../../../src/core/streaks/dayCalendar";
 import { StreakFreezeRules, StudyStreak } from "../../../src/core/streaks/studyStreak";
 
@@ -183,13 +184,13 @@ describe("StudyStreak: time zones", () => {
     // 11:30 pm on Monday the 12th and 12:30 am on Wednesday the 14th, New York time.
     const late = zonedInstant(2026, 10, 12, 23, 30, 0, newYork.timeZone);
     const early = zonedInstant(2026, 10, 14, 0, 30, 0, newYork.timeZone);
-    const records: StudyActivityRecord[] = [late, early].map((end, index) => ({
+    const records: ActivityRecord[] = [late, early].map((end, index) => activity({
       id: `r${index}`,
       source: "focus",
-      kind: FOCUS_COMPLETED,
+      kind: ACTIVITY_KINDS.focusCompleted,
       end,
       quantity: 20,
-      unit: MINUTES_UNIT,
+      unit: ACTIVITY_UNITS.minutes,
     }));
     const progress = new PetMilestoneProgress(records, newYork);
     const result = new StudyStreak(progress.studyDays, [], early, newYork);

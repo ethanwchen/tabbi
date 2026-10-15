@@ -23,6 +23,7 @@ describe("FocusTimer stop and recover", () => {
     expect(stopActivityRecord({ focused: 59, endedAt: t0, outcome: "abandoned" }, "focus")).toBeUndefined();
     const record = stopActivityRecord({ focused: 600, endedAt: t0, outcome: "skipped" }, "focus");
     expect(record).toEqual({
+      id: expect.any(String),
       source: "focus",
       kind: "focus.completed",
       start: t0 - 600,

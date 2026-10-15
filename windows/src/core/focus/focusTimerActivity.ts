@@ -1,13 +1,14 @@
-import type { ModuleID } from "../modules/moduleId";
-import { MINIMUM_LOGGED_DURATION } from "../studyMethods/studyPhaseRecord";
-import type { FocusPhaseCompletion, FocusStop, FocusTimerConfig } from "./focusTimer";
 import {
   ACTIVITY_KINDS,
   ACTIVITY_METADATA,
-  ACTIVITY_UNIT_MINUTES,
-  makeTimerActivityRecord,
-  type TimerActivityRecord,
-} from "./timerActivity";
+  ACTIVITY_UNITS,
+  countsAsFinishedSession,
+  makeActivityRecord,
+  type ActivityRecord,
+} from "../activity/activityRecord";
+import type { ModuleID } from "../modules/moduleId";
+import { MINIMUM_LOGGED_DURATION } from "../studyMethods/studyPhaseRecord";
+import type { FocusPhaseCompletion, FocusStop, FocusTimerConfig } from "./focusTimer";
 
 /**
  * Port of FocusPhaseCompletion.activityRecord(config:source:): a finished
@@ -18,15 +19,15 @@ export function completionActivityRecord(
   completion: FocusPhaseCompletion,
   config: FocusTimerConfig,
   source: ModuleID,
-): TimerActivityRecord {
+): ActivityRecord {
   const length = config.duration(completion.phase);
-  return makeTimerActivityRecord({
+  return makeActivityRecord({
     source,
     kind: completion.phase === "focus" ? ACTIVITY_KINDS.focusCompleted : ACTIVITY_KINDS.breakTaken,
     start: completion.endedAt - length,
     end: completion.endedAt,
     quantity: length / 60,
-    unit: ACTIVITY_UNIT_MINUTES,
+    unit: ACTIVITY_UNITS.minutes,
     metadata: { [ACTIVITY_METADATA.method]: "pomodoro", [ACTIVITY_METADATA.outcome]: "completed" },
   });
 }
@@ -36,33 +37,24 @@ export function completionActivityRecord(
  * a phase stopped or skipped early. Undefined under a minute, like a start
  * tapped by mistake.
  */
-export function stopActivityRecord(stop: FocusStop, source: ModuleID): TimerActivityRecord | undefined {
+export function stopActivityRecord(stop: FocusStop, source: ModuleID): ActivityRecord | undefined {
   if (!Number.isFinite(stop.focused) || stop.focused < MINIMUM_LOGGED_DURATION) return undefined;
-  return makeTimerActivityRecord({
+  return makeActivityRecord({
     source,
     kind: ACTIVITY_KINDS.focusCompleted,
     start: stop.endedAt - stop.focused,
     end: stop.endedAt,
     quantity: stop.focused / 60,
-    unit: ACTIVITY_UNIT_MINUTES,
+    unit: ACTIVITY_UNITS.minutes,
     metadata: { [ACTIVITY_METADATA.method]: "pomodoro", [ACTIVITY_METADATA.outcome]: stop.outcome },
   });
-}
-
-/*
- * Port of ActivityRecord.countsAsFinishedSession for the timers' records: a
- * stretch stopped or skipped early adds study time but is no finished session.
- */
-function countsAsFinishedSession(record: TimerActivityRecord): boolean {
-  const outcome = record.metadata[ACTIVITY_METADATA.outcome];
-  return outcome === undefined || outcome === "completed" || outcome === "stopped";
 }
 
 /**
  * Port of FocusTimer.sessionsDone(in:source:): how many focus stretches
  * `source` finished among `records`, for the Focus tab's daily tally.
  */
-export function focusSessionsDone(records: readonly TimerActivityRecord[], source: ModuleID): number {
+export function focusSessionsDone(records: readonly ActivityRecord[], source: ModuleID): number {
   return records.filter(
     (record) => record.source === source && record.kind === ACTIVITY_KINDS.focusCompleted && countsAsFinishedSession(record),
   ).length;

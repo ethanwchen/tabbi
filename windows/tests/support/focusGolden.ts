@@ -1,4 +1,4 @@
-import type { TimerActivityRecord } from "../../src/core/focus/timerActivity";
+import type { ActivityRecord } from "../../src/core/activity/activityRecord";
 import type { ProvidedFocus } from "../../src/core/providers/providedFocus";
 import type { Instant } from "../../src/core/time";
 
@@ -9,7 +9,7 @@ import type { Instant } from "../../src/core/time";
  */
 
 /** The activity record as the fixture writes it. */
-export function activityJson(record: TimerActivityRecord): Record<string, unknown> {
+export function activityJson(record: ActivityRecord): Record<string, unknown> {
   return {
     kind: record.kind,
     start: record.start,
