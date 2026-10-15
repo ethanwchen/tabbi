@@ -1,0 +1,47 @@
+/*
+ * User-facing text, keyed exactly like the Mac's string catalog
+ * (Localizable.xcstrings): the key is the English text with Swift format
+ * specifiers, so `String(localized: "\(count) left")` on the Mac is
+ * `tr("%lld left", count)` here, and both apps share every translation.
+ *
+ * This is the English-only first cut that every port can call today; the
+ * localization port replaces `lookup` with the catalog for the user's
+ * language (plural variations included) without changing any call site.
+ */
+
+export type FormatArg = string | number;
+
+type Lookup = (key: string, args: readonly FormatArg[]) => string | undefined;
+
+let lookup: Lookup = () => undefined;
+
+/** Installs the catalog lookup for the current language (the localization port calls this). */
+export function setLookup(next: Lookup): void {
+  lookup = next;
+}
+
+/** The localized text for a catalog key, with its arguments filled in. */
+export function tr(key: string, ...args: FormatArg[]): string {
+  return formatSpecifiers(lookup(key, args) ?? key, args);
+}
+
+/**
+ * Fills Swift format specifiers: %@, %d, %lld, %ld, %u, %f (with optional
+ * precision such as %.1f), positional forms like %1$@ and %2$lld, and %% for
+ * a literal percent sign.
+ */
+export function formatSpecifiers(format: string, args: readonly FormatArg[]): string {
+  let next = 0;
+  return format.replace(/%(?:(\d+)\$)?(\.\d+)?(@|lld|ld|llu|lu|d|i|u|f|%)/g, (match, position, precision, kind) => {
+    if (kind === "%") return "%";
+    const index = position ? Number(position) - 1 : next++;
+    const value = args[index];
+    if (value === undefined) return match;
+    if (kind === "f") {
+      const digits = precision ? Number(String(precision).slice(1)) : 6;
+      return Number(value).toFixed(digits);
+    }
+    if (kind === "@") return String(value);
+    return String(Math.trunc(Number(value)));
+  });
+}
