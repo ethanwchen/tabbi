@@ -1,7 +1,7 @@
 import { documentName, type DocumentStore } from "../persistence/documentStore";
 import { VersionedJSON } from "../persistence/versionedJson";
 import { activityDay, decodeActivityRecord, encodeActivityRecord, type ActivityRecord } from "./activityRecord";
-import { isDayKey, type DayKey } from "./dayKey";
+import { isPlannerDayKey as isDayKey, type PlannerDayKey as DayKey } from "../planner/plannerDayKey";
 
 /**
  * Port of ActivityLogRepository: the activity log as one JSON document per
