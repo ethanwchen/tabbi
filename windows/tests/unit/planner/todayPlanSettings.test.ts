@@ -98,7 +98,7 @@ describe("TodayPlanSettings from a kit", () => {
     expect(medicine).toBeDefined();
     const settings = todayPlanSettingsFromKit(medicine?.defaults);
     expect(settings.planMode).toBe("study");
-    expect(settings.studyMethod?.kind).toBe(StudyMethodMenu.fromKit(medicine?.defaults.moduleSettings.study).startingKind);
+    expect(settings.studyMethod?.kind).toBe(StudyMethodMenu.fromKit(medicine?.defaults).startingKind);
     expect(settings.reviewsFirst).toBe(true);
     /* Study days run into the evening. */
     expect(settings.dayEndHour).toBe(21);

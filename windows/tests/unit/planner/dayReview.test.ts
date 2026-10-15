@@ -3,7 +3,6 @@ import { ActivityLogRepository } from "../../../src/core/activity/activityLogRep
 import { ACTIVITY_KINDS, ACTIVITY_UNITS, makeActivityRecord, type ActivityRecord } from "../../../src/core/activity/activityRecord";
 import { FocusTimerConfig, type FocusPhase } from "../../../src/core/focus/focusTimer";
 import { completionActivityRecord } from "../../../src/core/focus/focusTimerActivity";
-import type { TimerActivityRecord } from "../../../src/core/focus/timerActivity";
 import { InMemoryDocumentStore } from "../../../src/core/persistence/documentStore";
 import {
   DAY_REVIEW_SCHEMA,
@@ -27,8 +26,8 @@ import { PlannerDay } from "../../../src/core/planner/plannerDay";
 import { dayKeyStart } from "../../../src/core/planner/plannerDayKey";
 import type { ProgressItem, StudyDayTally } from "../../../src/core/planner/providedWork";
 import { phaseActivityRecord, type StudyPhaseOutcome } from "../../../src/core/studyMethods/studyPhaseRecord";
-import { studyPointsFor } from "../../../src/core/studyMethods/studyLog";
-import { switchLanguage } from "../localization/catalogs";
+import { PetPointsRules } from "../../../src/core/pets/petPointsRules";
+import { switchLanguage } from "../../support/catalogs";
 
 /* Port of DayReviewTests: aggregation, the prompt and summary cleanup, persistence, demo data and study stats. */
 
@@ -50,7 +49,7 @@ function checklist(): PlannerDay {
 }
 
 /* A timer's record in the activity log's shape. */
-function logged(record: TimerActivityRecord): ActivityRecord {
+function logged(record: ActivityRecord): ActivityRecord {
   return makeActivityRecord({ ...record });
 }
 
@@ -313,7 +312,7 @@ describe("DayReview study stats", () => {
     const sample = {
       minutes: blocks.reduce((sum, [minutes]) => sum + minutes, 0),
       sessions: blocks.filter(([, done]) => done).length,
-      points: blocks.reduce((sum, [minutes, done]) => sum + studyPointsFor(minutes, done), 0),
+      points: blocks.reduce((sum, [minutes, done]) => sum + PetPointsRules.points(minutes, done), 0),
     };
     expect(sample).toEqual(tally);
   });

@@ -22,7 +22,7 @@ import {
 } from "../../../src/core/schedule/schedulePlanner";
 import { StudyMethod } from "../../../src/core/studyMethods/studyMethod";
 import type { Instant } from "../../../src/core/time";
-import { switchLanguage } from "../localization/catalogs";
+import { switchLanguage } from "../../support/catalogs";
 
 /* Port of SchedulePlannerTests. */
 

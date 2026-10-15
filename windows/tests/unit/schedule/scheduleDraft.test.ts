@@ -13,7 +13,7 @@ import {
   scheduleSampleWeekItems,
 } from "../../../src/core/schedule/scheduleSampleData";
 import type { Instant } from "../../../src/core/time";
-import { switchLanguage } from "../localization/catalogs";
+import { switchLanguage } from "../../support/catalogs";
 
 /* Port of ScheduleDraftTests, in UTC like the Swift suite. */
 

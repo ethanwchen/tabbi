@@ -89,7 +89,7 @@ export function todayPlanSettingsFromKit(kit: KitDefaults | undefined): TodayPla
   const flag = (key: string) => (typeof section[key] === "boolean" ? (section[key] as boolean) : undefined);
   const mode = text("planMode");
   const sample = text("sampleDay");
-  const kind = kitStartingKind(kit?.moduleSettings[MODULE_IDS.study]);
+  const kind = kitStartingKind(kit);
   const buffer = number("eventBufferMinutes");
   const endHour = number("dayEndHour");
   return todayPlanSettings({

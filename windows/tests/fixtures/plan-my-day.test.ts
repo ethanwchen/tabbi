@@ -42,7 +42,7 @@ import { WORKDAY_START_MINUTE, localPlan, localSchedulePreferences, localWork } 
 import { StudyMethod } from "../../src/core/studyMethods/studyMethod";
 import type { StudyMethodKind } from "../../src/core/studyMethods/studyMethodFile";
 import { MODULE_IDS } from "../../src/core/modules/moduleId";
-import { switchLanguage } from "../unit/localization/catalogs";
+import { switchLanguage } from "../support/catalogs";
 import { loadFixture } from "../support/fixtures";
 import { goldenDiff } from "../support/goldenCompare";
 

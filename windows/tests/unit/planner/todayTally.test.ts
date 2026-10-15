@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { PlannerDay } from "../../../src/core/planner/plannerDay";
 import { mergedProgress, progressIsComplete, type SharedTodayItemState } from "../../../src/core/planner/providedWork";
 import { TodayTally } from "../../../src/core/planner/todayTally";
-import { switchLanguage } from "../localization/catalogs";
+import { switchLanguage } from "../../support/catalogs";
 
 /* Port of TodayTallyTests. */
 
