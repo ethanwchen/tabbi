@@ -24,7 +24,8 @@ import {
 } from "../../../src/core/planner/dayReview";
 import { PlannerDay } from "../../../src/core/planner/plannerDay";
 import { dayKeyStart } from "../../../src/core/planner/plannerDayKey";
-import type { ProgressItem, StudyDayTally } from "../../../src/core/planner/providedWork";
+import { ProgressItem } from "../../../src/core/providers/progressItem";
+import type { StudyDayTally } from "../../../src/core/providers/studyDayTally";
 import { phaseActivityRecord, type StudyPhaseOutcome } from "../../../src/core/studyMethods/studyPhaseRecord";
 import { PetPointsRules } from "../../../src/core/pets/petPointsRules";
 import { switchLanguage } from "../../support/catalogs";
@@ -58,7 +59,7 @@ function completion(phase: FocusPhase, endedAt: number): ActivityRecord {
 }
 
 function ankiReviews(done: number, target: number): ProgressItem {
-  return { id: "reviews", source: "anki", title: "Anki reviews", completed: done, target, unit: "cards", waitsForStart: false };
+  return new ProgressItem({ id: "reviews", source: "anki", title: "Anki reviews", completed: done, target, unit: "cards", waitsForStart: false });
 }
 
 function review(fields: Partial<DayReview> = {}): DayReview {
@@ -240,7 +241,7 @@ describe("DayReview study stats", () => {
   const tally: StudyDayTally = { minutes: 185, sessions: 3, points: 215 };
 
   it("keeps the study tally and shared goal counts", () => {
-    const idle: ProgressItem = {
+    const idle = new ProgressItem({
       id: "q",
       source: "anki",
       title: "Questions",
@@ -248,7 +249,7 @@ describe("DayReview study stats", () => {
       target: 0,
       unit: "questions",
       waitsForStart: false,
-    };
+    });
     const result = reviewDay(checklist(), [], LA, tally, [ankiReviews(112, 432), idle]);
     expect(result.study).toEqual(tally);
     /* A goal with nothing due and nothing done is left out. */

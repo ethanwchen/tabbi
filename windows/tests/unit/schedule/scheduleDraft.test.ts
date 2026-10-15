@@ -2,7 +2,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { startOfDay, wallTime } from "../../../src/core/calendar/zonedCalendar";
 import { planBlock } from "../../../src/core/planner/dayPlan";
 import { PLANNED_EVENT_NOTE, type PlanCalendarWriting, type PlannedCalendarEvent } from "../../../src/core/planner/dayPlanProposal";
-import type { ProgressItem, ProvidedTask } from "../../../src/core/planner/providedWork";
+import { ProgressItem } from "../../../src/core/providers/progressItem";
+import type { ProvidedTask } from "../../../src/core/providers/providedTask";
 import { scheduleItem, scheduleItemEvent, type ScheduleItem } from "../../../src/core/schedule/scheduleDay";
 import { ScheduleDraft } from "../../../src/core/schedule/scheduleDraft";
 import {
@@ -76,7 +77,7 @@ describe("schedule draft", () => {
   });
 
   it("puts review goals first", () => {
-    const reviews: ProgressItem = {
+    const reviews = new ProgressItem({
       id: "deck",
       source: "anki",
       title: "Anki reviews",
@@ -84,7 +85,7 @@ describe("schedule draft", () => {
       target: 120,
       unit: "cards",
       waitsForStart: false,
-    };
+    });
     const result = draft([task("Write spec", 30)], { progress: [reviews] });
     expect(result.items[0]?.title).toBe("Anki reviews");
     expect(result.items[0]?.reason).toBe("Reviews first, while you are fresh");

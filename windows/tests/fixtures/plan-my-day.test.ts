@@ -20,14 +20,12 @@ import {
 } from "../../src/core/planner/dayPlan";
 import { DayPlanProposal, PLANNED_EVENT_NOTE } from "../../src/core/planner/dayPlanProposal";
 import { plannerItem } from "../../src/core/planner/plannerDay";
-import {
-  mergedProgress,
-  mergedTasks,
-  plannableWork,
-  type ProgressItem,
-  type ProvidedTask,
-} from "../../src/core/planner/providedWork";
 import { DEFAULT_SECONDS_PER_CARD, MAXIMUM_REVIEW_MINUTES } from "../../src/core/planner/studyDayPlan";
+import { moduleProvision } from "../../src/core/providers/moduleProvision";
+import { ProgressItem } from "../../src/core/providers/progressItem";
+import { providedTask } from "../../src/core/providers/providedTask";
+import { ProviderSnapshot } from "../../src/core/providers/providerSnapshot";
+import { plannableWork } from "../../src/core/providers/sharedTodayItem";
 import {
   planStudyPreferences,
   studyReviews,
@@ -164,30 +162,22 @@ function planDay(input: DayInput): Record<string, unknown> {
   const now = input.now;
   const events = input.events.map(event);
   const tasks = input.tasks.map((task) => plannerItem({ id: task.id, title: task.title, isDone: task.isDone, createdAt: now }));
-  const providedTasks = mergedTasks(
-    input.provided.map((provided) => [
-      provided.module,
-      provided.tasks.map(
-        (task): ProvidedTask => ({
-          id: task.id,
-          source: provided.module,
-          title: task.title,
-          isDone: task.isDone,
-          ...(task.estimatedMinutes === undefined ? {} : { estimatedMinutes: task.estimatedMinutes }),
-        }),
-      ),
-    ]),
-  );
-  const providedProgress = mergedProgress(
-    input.provided.map((provided) => [
-      provided.module,
-      provided.progress.map((goal): ProgressItem => ({ ...goal, source: provided.module })),
-    ]),
+  /* Every enabled module's provision, merged in tab order as the app does. */
+  const snapshot = new ProviderSnapshot(
+    input.provided.map((provided) => ({
+      module: provided.module,
+      provision: moduleProvision({
+        tasks: provided.tasks.map((task) =>
+          providedTask({ id: task.id, source: provided.module, title: task.title, isDone: task.isDone, estimatedMinutes: task.estimatedMinutes }),
+        ),
+        progress: provided.progress.map((goal) => new ProgressItem({ ...goal, source: provided.module })),
+      }),
+    })),
   );
   /* What Today passes on: other modules' work, phrased and as tasks and goals. */
-  const sharedWork = plannableWork(providedProgress, providedTasks, MODULE_IDS.planner, LOCALE);
-  const sharedTasks = providedTasks.filter((task) => !task.isDone && task.source !== MODULE_IDS.planner);
-  const progress = providedProgress.filter((goal) => goal.source !== MODULE_IDS.planner);
+  const sharedWork = plannableWork(snapshot, MODULE_IDS.planner, LOCALE);
+  const sharedTasks = snapshot.openTasks.filter((task) => task.source !== MODULE_IDS.planner);
+  const progress = snapshot.progress.filter((goal) => goal.source !== MODULE_IDS.planner);
   const settings = todayPlanSettings({
     planMode: input.settings.planMode as PlanMode,
     ...(input.settings.studyMethod === undefined
