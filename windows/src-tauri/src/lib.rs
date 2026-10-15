@@ -397,6 +397,7 @@ pub fn run() {
             media::media_watch,
             system::system_watch,
             http::http_request,
+            http::http_set_party_server,
             http::http_stream,
             http::http_cancel,
             http::http_fetch_calendar,

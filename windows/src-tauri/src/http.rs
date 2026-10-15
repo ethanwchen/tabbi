@@ -193,6 +193,29 @@ fn local_host(url: &Url) -> bool {
     }
 }
 
+/// A Party server the user typed in Settings (their own deployment of the
+/// Worker): https on a public host only, never this PC or the local network,
+/// and no user name or password. Only its origin is kept.
+pub fn party_server_origin(text: &str) -> HostResult<Url> {
+    let url =
+        Url::parse(text.trim()).map_err(|_| HostError::new("invalid", "not a valid address"))?;
+    if url.scheme() != "https" {
+        return Err(blocked("a Party server must use https"));
+    }
+    if !url.username().is_empty() || url.password().is_some() {
+        return Err(blocked(
+            "addresses with a user name or password are not allowed",
+        ));
+    }
+    if local_host(&url) {
+        return Err(blocked(
+            "a Party server must be on the internet, not this network",
+        ));
+    }
+    Url::parse(&url.origin().ascii_serialization())
+        .map_err(|_| HostError::new("invalid", "not a valid address"))
+}
+
 /// Checks one hop of a calendar fetch (the typed address or a redirect).
 pub fn check_calendar_url(url: &Url) -> HostResult<()> {
     if url.scheme() != "https" {
@@ -383,6 +406,8 @@ type Running = (JoinHandle<()>, Channel<StreamEvent>);
 
 pub struct Http {
     policy: Policy,
+    /// The user's own Party server from Settings, if they set one.
+    party_server: std::sync::RwLock<Option<Url>>,
     api: reqwest::Client,
     calendar: reqwest::Client,
     next_stream: AtomicU32,
@@ -416,6 +441,7 @@ impl Http {
             .expect("the HTTP client builds");
         Self {
             policy: Policy::from_environment(),
+            party_server: std::sync::RwLock::new(None),
             api,
             calendar,
             next_stream: AtomicU32::new(1),
@@ -425,7 +451,19 @@ impl Http {
 
     fn build(&self, request: &HttpRequest) -> HostResult<reqwest::RequestBuilder> {
         let method = request.method.to_ascii_uppercase();
-        let url = self.policy.check_api(&method, &request.url)?;
+        let url = self
+            .policy
+            .check_api(&method, &request.url)
+            .or_else(|error| {
+                let custom = self.party_server.read().map(|s| s.clone()).unwrap_or(None);
+                match custom {
+                    Some(server) => Policy {
+                        origins: vec![server],
+                    }
+                    .check_api(&method, &request.url),
+                    None => Err(error),
+                }
+            })?;
         let method = reqwest::Method::from_bytes(method.as_bytes())
             .map_err(|_| HostError::new("invalid", "not an HTTP method"))?;
         let mut builder = self
@@ -437,6 +475,20 @@ impl Http {
         }
         Ok(builder)
     }
+}
+
+/// Sets or clears the user's own Party server (Settings > Connections), which
+/// API requests may then reach alongside the built-in list.
+#[tauri::command]
+pub fn http_set_party_server(app: AppHandle, server: Option<String>) -> HostResult<()> {
+    let origin = server.as_deref().map(party_server_origin).transpose()?;
+    let http = app.state::<Http>();
+    let mut slot = http
+        .party_server
+        .write()
+        .map_err(|_| HostError::new("failed", "the Party server setting is unavailable"))?;
+    *slot = origin;
+    Ok(())
 }
 
 /// An API request, answered whole.
@@ -568,6 +620,22 @@ pub async fn http_fetch_calendar(app: AppHandle, url: String) -> HostResult<Stri
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_custom_party_server_must_be_public_https() {
+        assert_eq!(
+            party_server_origin("https://friends.example.com/v1/me")
+                .unwrap()
+                .as_str(),
+            "https://friends.example.com/"
+        );
+        assert!(party_server_origin("http://friends.example.com").is_err());
+        assert!(party_server_origin("https://user:pw@friends.example.com").is_err());
+        assert!(party_server_origin("https://localhost:8787").is_err());
+        assert!(party_server_origin("https://192.168.1.20").is_err());
+        assert!(party_server_origin("https://intranet").is_err());
+        assert!(party_server_origin("not a url").is_err());
+    }
 
     fn policy() -> Policy {
         Policy::new(&[])

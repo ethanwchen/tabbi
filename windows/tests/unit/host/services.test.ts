@@ -54,6 +54,7 @@ describe("the Tauri host's service commands", () => {
     await host.systemWatch(false);
     await host.httpRequest({ method: "POST", url: "http://127.0.0.1:8765", body: "{}" });
     await host.fetchCalendar("webcal://example.org/a.ics");
+    await host.setPartyServer("https://friends.example.com");
     await host.autostartEnable();
     await host.autostartDisable();
     await host.autostartIsEnabled();
@@ -73,6 +74,7 @@ describe("the Tauri host's service commands", () => {
       ["system_watch", { on: false }],
       ["http_request", { request: { method: "POST", url: "http://127.0.0.1:8765", body: "{}" } }],
       ["http_fetch_calendar", { url: "webcal://example.org/a.ics" }],
+      ["http_set_party_server", { server: "https://friends.example.com" }],
       ["autostart_enable", undefined],
       ["autostart_disable", undefined],
       ["autostart_is_enabled", undefined],

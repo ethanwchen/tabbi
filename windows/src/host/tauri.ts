@@ -72,6 +72,7 @@ export function tauriHost(): Host {
       return { id, cancel: () => invoke<boolean>("http_cancel", { id }) };
     },
     fetchCalendar: (url) => invoke<string>("http_fetch_calendar", { url }),
+    setPartyServer: (server) => invoke("http_set_party_server", { server }),
 
     autostartEnable: () => invoke("autostart_enable"),
     autostartDisable: () => invoke("autostart_disable"),

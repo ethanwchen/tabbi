@@ -148,6 +148,10 @@ export function mockHost(startup: Startup = { hotkey: { shortcut: "ctrl+alt+spac
       log("fetchCalendar", [url]);
       return offline();
     },
+    setPartyServer(server) {
+      log("setPartyServer", [server]);
+      return Promise.resolve();
+    },
 
     autostartEnable() {
       autostart = true;

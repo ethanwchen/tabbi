@@ -1,12 +1,8 @@
-/**
- * A narrow stand-in for the Party area's PartyInvite, which the party port
- * owns: an invite link's action and its normalized code.
- */
-export type PartyInvite =
-  | { readonly kind: "addFriend"; readonly code: string }
-  | { readonly kind: "joinParty"; readonly code: string };
+import { parseInvite as parsePartyInvite, type PartyInvite } from "../party/partyInvite";
 
-/** Reads an invite from a link, or undefined; the party port provides the real parser. */
+export type { PartyInvite };
+
+/** Reads an invite from a link, or undefined. Tests may pass their own. */
 export type PartyInviteParser = (url: string) => PartyInvite | undefined;
 
 /** The app's URL scheme. */
@@ -27,7 +23,7 @@ export type AppLink =
   | { readonly kind: "invite"; readonly invite: PartyInvite };
 
 /** The link in `url`, or undefined if Tabbi doesn't handle it. */
-export function parseAppLink(url: string, parseInvite: PartyInviteParser = () => undefined): AppLink | undefined {
+export function parseAppLink(url: string, parseInvite: PartyInviteParser = parsePartyInvite): AppLink | undefined {
   const invite = parseInvite(url);
   if (invite) return { kind: "invite", invite };
   let parsed: URL;

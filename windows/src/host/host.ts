@@ -73,6 +73,8 @@ export interface Host {
   httpStream(request: HttpRequest, onEvent: (event: HttpStreamEvent) => void): Promise<HttpStream>;
   /* A user-entered ICS address (https or webcal, any public host): the calendar's text. */
   fetchCalendar(url: string): Promise<string>;
+  /* The user's own Party server from Settings (public https only), or null for none; requests may then reach it. */
+  setPartyServer(server: string | null): Promise<void>;
 
   /* Start with Windows: off until the user turns it on. */
   autostartEnable(): Promise<void>;
