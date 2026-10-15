@@ -1,3 +1,4 @@
+import { editionItem } from "../closet/petLimited";
 import { PetProfile } from "./petProfile";
 import { PetPointsLedger } from "./petUnlocks";
 
@@ -32,6 +33,11 @@ export class PetSave {
   /** Replaces the profile as is; callers that change what is worn keep ownership in mind (the Closet does). */
   set profile(profile: PetProfile) {
     this.profileValue = profile;
+  }
+
+  /** Whether this pet holds the Founder's Pin, which only the Founding Member entitlement grants. */
+  get isFoundingMember(): boolean {
+    return this.ledger.owns(editionItem("foundingMember"));
   }
 
   copy(): PetSave {
