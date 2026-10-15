@@ -773,8 +773,11 @@ struct AnkiGoldenFixture: Codable, Equatable {
     /// a learning step, a manual reschedule and one answer from before the
     /// 30-day window. A child deck repeats one of them, which counts once.
     static var biologyReviews: [String] {
-        var rows = (0..<20).map { index in
-            row(ms(afternoon - Double(600 * index)), card: Int64(5_000 + index), ease: index % 7 == 3 ? 1 : 3)
+        var rows: [String] = []
+        for index in 0..<20 {
+            let answeredAt: Double = afternoon - Double(600 * index)
+            let ease: Int = index % 7 == 3 ? 1 : 3
+            rows.append(row(ms(answeredAt), card: Int64(5_000 + index), ease: ease))
         }
         rows += [
             row(ms(rollover), card: 5_050, ease: 4, duration: 7_000),
