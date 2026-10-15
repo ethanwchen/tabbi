@@ -35,9 +35,14 @@ final class PartyLiveServerTests: XCTestCase {
             XCTAssertEqual(seen.sittingCanvas(), pet.sittingCanvas())
             XCTAssertEqual(seen.palette[.furBase], pet.palette[.furBase])
 
-            let added = try await anaClient.addFriend(code: ben.code.lowercased())
-            XCTAssertTrue(added.added)
-            XCTAssertEqual(added.friend.name, "Test Ben")
+            // Ana asks, Ben sees the request and accepts it.
+            let asked = try await anaClient.addFriend(code: ben.code.lowercased())
+            XCTAssertEqual(asked, .requested(asked.profile))
+            XCTAssertEqual(asked.profile.name, "Test Ben")
+            let waiting = try await benClient.friendList().incoming
+            XCTAssertEqual(waiting.map(\.profile.code), [ana.code])
+            let accepted = try await benClient.acceptFriend(code: ana.code)
+            XCTAssertEqual(accepted, .friends(accepted.profile))
 
             // Ben's focus timer, reported the way the app does it.
             let started = Date().addingTimeInterval(-60)

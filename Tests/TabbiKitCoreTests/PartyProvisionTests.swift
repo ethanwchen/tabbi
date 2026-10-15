@@ -56,6 +56,15 @@ final class PartyProvisionTests: XCTestCase {
         XCTAssertEqual(snapshot.party, first)
     }
 
+    func testSnapshotKeepsEachModulesBadgeCount() {
+        let snapshot = ProviderSnapshot([
+            (.planner, ModuleProvision()),
+            (.party, ModuleProvision(badge: 2)),
+            (ModuleID("other"), ModuleProvision(badge: 0)),
+        ])
+        XCTAssertEqual(snapshot.badges, [.party: 2], "a zero count shows no badge")
+    }
+
     func testTickerShowsPartyPetsOnlyWithCompany() {
         let alone = TickerSources(party: ProvidedParty(pets: [pet("me")]))
         XCTAssertTrue(alone.items(at: now).isEmpty, "a party of one has no pets to show beside mine")

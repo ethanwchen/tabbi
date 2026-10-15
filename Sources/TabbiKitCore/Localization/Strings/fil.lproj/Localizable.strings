@@ -187,12 +187,16 @@
 	<string>Gagamitin ito ng %@ para batiin ka.</string>
 	<key>%@ visited the bakery</key>
 	<string>Dumalaw si %@ sa panaderya</string>
+	<key>%@ wants to be friends</key>
+	<string>Gusto kang maging kaibigan ni %@</string>
 	<key>%@ watched a cloud shaped like a fish</key>
 	<string>Pinanood ni %@ ang ulap na hugis isda</string>
 	<key>%@ went around the park twice</key>
 	<string>Dalawang beses umikot si %@ sa parke</string>
 	<key>%@ with %@</key>
 	<string>%1$@ kasama si %2$@</string>
+	<key>%@ with %@ wants to be friends.</key>
+	<string>Gusto kang maging kaibigan ni %1$@ kasama si %2$@.</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>Mas maganda ang %@ kapag nasa Applications, kung saan puwede itong magbukas pag-log in mo at mag-update nang kusa. Kokopyahin nito ang sarili roon at magbubukas ulit.</string>
 	<key>%@ · Paused</key>
@@ -369,6 +373,10 @@
 	<string>API key</string>
 	<key>About</key>
 	<string>About</string>
+	<key>Accept</key>
+	<string>Tanggapin</string>
+	<key>Accept %@'s friend request</key>
+	<string>Tanggapin ang friend request ni %@</string>
 	<key>Access is off</key>
 	<string>Naka-off ang access</string>
 	<key>Account</key>
@@ -667,6 +675,8 @@
 	<string>I-block si %@</string>
 	<key>Blocked</key>
 	<string>Naka-block</string>
+	<key>Blocked %@. Unblock them in Party options.</key>
+	<string>Na-block si %@. I-unblock sila sa Party options.</string>
 	<key>Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.</key>
 	<string>Hindi ka makikita, ma-add o masasalihan ng naka-block. Para mag-block o mag-report, i-right-click sila sa Party.</string>
 	<key>Blocks go to your calendar.</key>
@@ -739,6 +749,10 @@
 	<string>Hindi magamit ang server na ito</string>
 	<key>Cancel</key>
 	<string>Kanselahin</string>
+	<key>Cancel Request</key>
+	<string>Kanselahin ang Request</string>
+	<key>Cancel your request to %@</key>
+	<string>Kanselahin ang request mo kay %@</string>
 	<key>Caramel</key>
 	<string>Caramel</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -1071,6 +1085,10 @@
 	<string>Sunod-sunod na araw na may kahit isang review</string>
 	<key>Deck not found</key>
 	<string>Hindi nakita ang deck</string>
+	<key>Decline</key>
+	<string>Tanggihan</string>
+	<key>Decline %@'s request. They won't be told.</key>
+	<string>Tanggihan ang request ni %@. Hindi nila malalaman.</string>
 	<key>Deep</key>
 	<string>Deep</string>
 	<key>Deep focus</key>
@@ -1369,8 +1387,12 @@
 	<string>Libreng oras ng trabaho sa susunod na pitong araw, may buffer sa paligid ng bawat event</string>
 	<key>Friend code</key>
 	<string>Friend code</string>
-	<key>Friend code %@. You'll see each other's pets and study time.</key>
-	<string>Friend code %@. Makikita ninyo ang pet at study time ng isa't isa.</string>
+	<key>Friend code %@. Accept to see each other's pets and study time.</key>
+	<string>Friend code %@. Tanggapin para makita ninyo ang pet at oras ng pag-aaral ng isa't isa.</string>
+	<key>Friend code %@. Once they accept, you'll see each other's pets and study time.</key>
+	<string>Friend code %@. Kapag tinanggap nila, makikita ninyo ang pet at oras ng pag-aaral ng isa't isa.</string>
+	<key>Friend codes are %lld letters and digits.</key>
+	<string>Ang mga friend code ay %lld na letra at numero.</string>
 	<key>Friend's code</key>
 	<string>Code ng kaibigan</string>
 	<key>Friends</key>
@@ -2235,6 +2257,8 @@
 	<string>Party code %@. Mag-aral kasama ang lahat ng nasa loob nito.</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
 	<string>Party code %@. Mag-aral kasama ang lahat ng nasa loob nito. Aalis ka sa kasalukuyan mong party.</string>
+	<key>Party codes are %lld letters and digits.</key>
+	<string>Ang mga party code ay %lld na letra at numero.</string>
 	<key>Party invite</key>
 	<string>Imbitasyon</string>
 	<key>Party is for people %lld and older.</key>
@@ -2535,6 +2559,14 @@
 	<string>I-report si %@…</string>
 	<key>Report a problem: %@</key>
 	<string>Mag-report ng problema: %@</string>
+	<key>Request</key>
+	<string>Request</string>
+	<key>Request sent</key>
+	<string>Naipadala ang request</string>
+	<key>Request sent to %@</key>
+	<string>Naipadala ang request kay %@</string>
+	<key>Request sent to %@.</key>
+	<string>Naipadala ang request kay %@.</string>
 	<key>Reset to Default</key>
 	<string>Ibalik sa Default</string>
 	<key>Reset to Defaults</key>
@@ -2649,6 +2681,8 @@
 	<string>Ipadala ang mga AI request mo sa %@?</string>
 	<key>Sends what you ask to %@.</key>
 	<string>Ipinapadala ang mga tanong mo sa %@.</string>
+	<key>Sent</key>
+	<string>Naipadala</string>
 	<key>Server</key>
 	<string>Server</string>
 	<key>Session done. Nice work!</key>
@@ -2843,6 +2877,8 @@
 	<string>Magsimula ng party</string>
 	<key>Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.</key>
 	<string>Magsimula ng party at i-share ang code nito, o sumali sa party ng kaibigan. Magkatabi ang mga pet n'yo habang nagfo-focus kayo.</string>
+	<key>Start a party, or join a friend's.</key>
+	<string>Magsimula ng party, o sumali sa party ng kaibigan.</string>
 	<key>Start a timer</key>
 	<string>Magsimula ng timer</string>
 	<key>Start break</key>
@@ -3047,6 +3083,12 @@
 	<string>Subukan</string>
 	<key>Test it</key>
 	<string>Subukan</string>
+	<key>Thanks. Your report was sent and %@ is blocked.</key>
+	<string>Salamat. Naipadala ang report mo at naka-block na si %@.</string>
+	<key>Thanks. Your report was sent.</key>
+	<string>Salamat. Naipadala ang report mo.</string>
+	<key>That friend request is no longer there.</key>
+	<string>Wala na ang friend request na iyon.</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
 	<string>Hindi puwede ang key na iyan sa shortcut. Subukan ang letra, numero, o Space.</string>
 	<key>That name and your pet's name aren't allowed. Please pick others.</key>
@@ -3181,8 +3223,12 @@
 	<string>Buburahin nito ang account mo at lahat ng itinatago ng server para dito: ang naka-sync na kopya ng pet at points mo, ang friend code mo, mga kaibigan at party. Mananatili sa Mac na ito ang pet mo. Hindi na ito maibabalik.</string>
 	<key>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</key>
 	<string>Buburahin nito sa friends server ang friend code mo, ang profile at pet mo na nakikita ng kaibigan, ang friends list, mga party na sinalihan mo at ang study streak mo. Hindi ka na makikita ng kaibigan. Mananatili sa Mac na ito ang pet at points mo. Kung naka-on pa ang Party, bagong friend code ang makukuha mo.</string>
+	<key>This is a demo. No report was sent.</key>
+	<string>Demo ito. Walang ipinadalang report.</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>Demo ito. Walang binura.</string>
+	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
+	<string>Demo ito. Patakbuhin nang walang TABBI_DEMO para mag-aral kasama ang mga kaibigan.</string>
 	<key>This is usually short. Check again in a moment.</key>
 	<string>Kadalasan sandali lang ito. Suriin ulit mamaya.</string>
 	<key>This is what needs fixing</key>
@@ -3405,8 +3451,12 @@
 	<string>Hinihintay magsimula ang Anki</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>Hinihintay magsimula ang Anki, tapos bubuksan ang %@</string>
+	<key>Waiting: %lld</key>
+	<string>Naghihintay: %lld</string>
 	<key>Walk through the steps to connect %@</key>
 	<string>Sundan ang mga hakbang para ikonekta ang %@</string>
+	<key>Wants to be friends</key>
+	<string>Gustong makipagkaibigan</string>
 	<key>Wardrobe</key>
 	<string>Wardrobe</string>
 	<key>Water carves canyons by never skipping a day.</key>
@@ -3513,6 +3563,8 @@
 	<string>Ikaw</string>
 	<key>You already have 50 friends.</key>
 	<string>May 50 kaibigan ka na.</string>
+	<key>You asked %@ to be friends. You'll see each other once they accept.</key>
+	<string>Nagpadala ka ng friend request kay %@. Makikita ninyo ang isa't isa kapag tinanggap nila.</string>
 	<key>You blocked %@</key>
 	<string>Na-block mo si %@</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
@@ -3535,12 +3587,16 @@
 	<string>Wala kang gana, pero ginawa mo pa rin. Iyan ang buong sikreto.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>May isang libreng freeze ka bawat linggo, at puwede kang mag-ipon ng %lld pa.</string>
+	<key>You have 50 friend requests waiting. Cancel some first.</key>
+	<string>May 50 friend request kang naghihintay. Kanselahin muna ang ilan.</string>
 	<key>You joined the party</key>
 	<string>Sumali ka na sa party</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>Nag-aral ka ng %@ ngayon. Magpahinga ka at magsimula ulit bukas.</string>
 	<key>You started it for the party</key>
 	<string>Ikaw ang nagsimula nito para sa party</string>
+	<key>You'll be friends once they accept.</key>
+	<string>Magiging magkaibigan kayo kapag tinanggap nila.</string>
 	<key>You'll see %@ in your Party tab.</key>
 	<string>Makikita mo si %@ sa Party tab mo.</string>
 	<key>You're already in this party</key>
@@ -3555,6 +3611,8 @@
 	<string>Ikaw pa lang ang nandito sa ngayon.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>Sobrang dami na ng na-block mo. Mag-unblock muna ng isa.</string>
+	<key>You've sent a lot of friend requests today. Try again tomorrow.</key>
+	<string>Marami ka nang naipadalang friend request ngayon. Subukan ulit bukas.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
 	<string>Marami ka nang na-report ngayon. Subukan ulit bukas.</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>

@@ -5,7 +5,7 @@
  *   npx wrangler dev --port 8787        # in one terminal
  *   npm run e2e                          # or: node scripts/e2e.ts --url http://localhost:8787
  *
- * Ana and Ben register, become friends, see each other online, study together in Ana's party (Ben
+ * Ana and Ben register, become friends (Ana asks, Ben accepts), see each other online, study together in Ana's party (Ben
  * joins through her, Ana starts and ends a shared session), and then Ben blocks Ana, which must end
  * the friendship and the party and keep Ana from adding him again. Both accounts are deleted at the
  * end, even after a failed step, so repeated runs leave nothing behind.
@@ -70,7 +70,8 @@ class Client {
   }
 
   async send(method: string, path: string, ip: string, token?: string, body?: unknown): Promise<Reply> {
-    const headers: Record<string, string> = { "CF-Connecting-IP": ip };
+    // The current app's protocol, so friend requests wait for an answer as they do in the app.
+    const headers: Record<string, string> = { "CF-Connecting-IP": ip, "Tabbi-Protocol": "2" };
     if (token) headers.Authorization = `Bearer ${token}`;
     if (body !== undefined) headers["Content-Type"] = "application/json";
     const res = await this.fetcher(this.url + path, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
@@ -139,13 +140,19 @@ export async function runE2E(o: Options, fetcher: typeof fetch = fetch, log: (s:
     check(me.body.profile?.code === ana.code && me.body.profile?.name === "Ana", "Ana's profile", me.body);
   });
 
-  await step("Ana adds Ben by his friend code, and both see the friendship", async () => {
+  await step("Ana asks Ben by his friend code, Ben accepts, and both see the friendship", async () => {
     // The app normalizes a pasted code; the server must accept it lowercased with spaces too.
     const r = await c.as(ana).post("/v1/friends", { code: ` ${ben.code.toLowerCase()} ` });
     expectReply(r, 200, "POST /v1/friends");
-    check(r.body.added === true && r.body.friend?.code === ben.code, "the added friend", r.body);
+    check(r.body.status === "requested" && r.body.friend?.code === ben.code, "the friend request", r.body);
+    const waiting = await c.as(ben).get("/v1/friends");
+    expectReply(waiting, 200, "Ben's friends");
+    check(sameCodes(codesOf(waiting.body.incoming ?? []), [ana.code]), "Ben's incoming requests", waiting.body);
+    const accepted = await c.as(ben).post(`/v1/friends/${ana.code}/accept`, {});
+    expectReply(accepted, 200, "Ben accepting Ana");
+    check(accepted.body.added === true, "the accepted request", accepted.body);
     const again = await c.as(ben).post("/v1/friends", { code: ana.code });
-    expectReply(again, 200, "Ben adding Ana back");
+    expectReply(again, 200, "Ben adding Ana again");
     check(again.body.added === false, "adding an existing friend is a no-op", again.body);
     for (const [u, other] of [[ana, ben], [ben, ana]]) {
       const list = await c.as(u).get("/v1/friends");
@@ -236,12 +243,12 @@ export async function runE2E(o: Options, fetcher: typeof fetch = fetch, log: (s:
     check(sameCodes(codesOf(board), [ana.code]), "Ana's leaderboard", board);
   });
 
-  await step("Ben unblocks Ana: no friendship comes back until one adds the other", async () => {
+  await step("Ben unblocks Ana: no friendship comes back until one asks and the other accepts", async () => {
     const r = await c.as(ben).del(`/v1/blocks/${ana.code}`);
     check(r.status === 200 && r.body.unblocked === true, "the unblock", r.body);
     check((await c.as(ana).get("/v1/friends")).body.friends?.length === 0, "Ana's friends after the unblock", null);
     const add = await c.as(ana).post("/v1/friends", { code: ben.code });
-    check(add.status === 200 && add.body.added === true, "Ana adding Ben again", add.body);
+    check(add.status === 200 && add.body.status === "requested", "Ana asking Ben again", add.body);
   });
 
   // Cleanup runs whatever happened, so a failed run against wrangler dev leaves no accounts behind.

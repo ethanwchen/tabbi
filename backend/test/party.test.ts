@@ -2,7 +2,7 @@ import { env, runInDurableObject } from "cloudflare:test";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import catalog from "../shared/catalog.json";
 import type { Hub } from "../src/hub";
-import { call, expectError, pinClockToMinuteStart, register } from "./helpers";
+import { call, expectError, pinClockToMinuteStart, register, befriend } from "./helpers";
 
 const now = () => Math.floor(Date.now() / 1000);
 const EXPIRY = catalog.limits.partyIdleExpirySeconds;
@@ -75,7 +75,7 @@ describe("parties", () => {
     const a = await register();
     const b = await register();
     const stranger = await register();
-    await call("POST", "/v1/friends", { code: a.code }, b.token);
+    await befriend(b, a);
     const party = await create(a);
 
     // Friends see which party a friend is in.
@@ -197,7 +197,7 @@ describe("parties", () => {
   it("expires after 12 hours without activity", async () => {
     const a = await register();
     const b = await register();
-    await call("POST", "/v1/friends", { code: a.code }, b.token);
+    await befriend(b, a);
     const party = await create(a);
 
     // Polls keep the party alive, but write at most every 10 minutes.

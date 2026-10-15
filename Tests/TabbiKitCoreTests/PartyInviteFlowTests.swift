@@ -44,7 +44,7 @@ final class PartyInviteFlowTests: XCTestCase {
 
         XCTAssertTrue(flow.begin())
         XCTAssertFalse(flow.begin(), "a second click sends nothing")
-        flow.didAddFriend(profile(maya, "Maya", pet: "Biscuit"), added: true)
+        flow.didAsk(.friends(profile(maya, "Maya", pet: "Biscuit")))
 
         XCTAssertEqual(flow.title, "Maya is now your friend")
         XCTAssertTrue(flow.message.contains("Biscuit"))
@@ -145,7 +145,7 @@ final class PartyInviteFlowTests: XCTestCase {
         XCTAssertFalse(flow.isDone)
 
         XCTAssertTrue(flow.begin())
-        flow.didAddFriend(profile(maya, "Maya"), added: false)
+        flow.didAsk(.alreadyFriends(profile(maya, "Maya")))
         XCTAssertEqual(flow.stage, .finished(.alreadyFriends(profile(maya, "Maya"))))
     }
 
@@ -170,7 +170,7 @@ final class PartyInviteFlowTests: XCTestCase {
 
     func testIgnoresRepliesThatDoNotFitTheStep() {
         var flow = PartyInviteFlow(invite: .addFriend(code: maya), partyIsOn: true)
-        flow.didAddFriend(profile(maya, "Maya"), added: true)
+        flow.didAsk(.friends(profile(maya, "Maya")))
         XCTAssertEqual(flow.stage, .connecting, "no reply before a request")
         flow.update(with: connected(), blocked: nil)
         _ = flow.begin()

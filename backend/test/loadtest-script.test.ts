@@ -54,8 +54,8 @@ describe("loadTest against the real Worker", () => {
     const o = { ...parseArgs(["--users", "12", "--friends", "2", "--duration", "0.5", "--stages", "200"], { TABBI_ADMIN_TOKEN: ADMIN_TOKEN }), url: BASE, ipOctet: 172 };
     const report = await loadTest(o, worker);
     expect(report).toMatchObject({ users: 12, friendsPerUser: 4, parties: 1, setup: { failures: 0 } });
-    // 12 registrations, 24 friend adds, 1 party created and 3 joins.
-    expect(report.setup.requests).toBe(40);
+    // 12 registrations, 24 friend requests and their 24 acceptances, 1 party created and 3 joins.
+    expect(report.setup.requests).toBe(64);
     const [stage] = report.stages;
     expect(stage.multiple).toBe(200);
     expect(stage.shed).toBe(0);

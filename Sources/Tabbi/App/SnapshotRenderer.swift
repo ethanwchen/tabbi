@@ -575,9 +575,18 @@ enum SnapshotRenderer {
         let add = PartyInvite.addFriend(code: invitee.code)
         var confirming = PartyInviteFlow(invite: add, partyIsOn: true)
         confirming.update(with: PartyState.demo(.lobby, now: now), blocked: [])
-        var added = confirming
+        var requested = confirming
+        _ = requested.begin()
+        requested.didAsk(.requested(invitee))
+        // The person behind the link had asked me first: confirming accepts.
+        let lobby = PartyState.demo(.lobby, now: now)
+        let asking = PartyState(profile: lobby.profile ?? invitee, friends: lobby.friends, party: nil,
+                                incoming: [PartyFriendRequest(profile: invitee, since: now)])
+        var accepting = PartyInviteFlow(invite: add, partyIsOn: true)
+        accepting.update(with: asking, blocked: [])
+        var added = accepting
         _ = added.begin()
-        added.didAddFriend(invitee, added: true)
+        added.didAsk(.friends(invitee))
         var expired = confirming
         _ = expired.begin()
         expired.didFail(.unknownCode)
@@ -586,6 +595,8 @@ enum SnapshotRenderer {
         let flows: [(String, PartyInviteFlow)] = [
             ("party-invite-turn-on", PartyInviteFlow(invite: add, partyIsOn: false)),
             ("party-invite-add", confirming),
+            ("party-invite-requested", requested),
+            ("party-invite-accept", accepting),
             ("party-invite-added", added),
             ("party-invite-join", join),
             ("party-invite-expired", expired),

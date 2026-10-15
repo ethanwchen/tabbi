@@ -167,10 +167,72 @@ final class PartyStateTests: XCTestCase {
         XCTAssertTrue(noFriends.friendsLoaded)
         XCTAssertTrue(noFriends.friends.isEmpty)
         XCTAssertNotNil(noFriends.friendCode)
+        XCTAssertEqual(demo(.hosting).incomingRequests.map(\.profile.name), ["Noor"], "the demo shows one incoming request")
+        XCTAssertEqual(demo(.hosting).waitingRequestCount, 1)
+        XCTAssertTrue(demo(.requests).friends.isEmpty)
+        XCTAssertEqual(demo(.requests).outgoingRequests.count, 1)
+        XCTAssertTrue(demo(.requests).hasPeople)
+        XCTAssertFalse(demo(.noFriends).hasPeople)
         XCTAssertEqual(demo(.connecting).connection, .connecting)
         XCTAssertEqual(demo(.unreachable).connection, .unreachable(.unreachable))
         guard case .invalidServer = demo(.invalidServer).connection else {
             return XCTFail("expected an invalid server")
         }
+    }
+
+    private func request(_ code: String, _ name: String) -> PartyFriendRequest {
+        PartyFriendRequest(profile: profile(code, name), since: now)
+    }
+
+    func testFriendRequestsLoadAndSettle() {
+        var state = PartyState(settings: .oldEnough)
+        state.didConnect(profile("K7QW2MZD", "Sam"))
+        state.didFetchFriendList(.success(PartyFriendList(friends: [friend("B", "Ben")],
+                                                          incoming: [request("N", "Noor"), request("O", "Omar")],
+                                                          outgoing: [request("K", "Kai")])))
+        XCTAssertEqual(state.incomingRequests.map(\.id), ["N", "O"])
+        XCTAssertEqual(state.waitingRequestCount, 2)
+
+        state.didAddFriend(profile("N", "Noor"), at: now)
+        XCTAssertEqual(state.incomingRequests.map(\.id), ["O"], "accepting settles the request")
+        XCTAssertEqual(state.waitingRequestCount, 1)
+        XCTAssertEqual(state.friends.map(\.profile.name), ["Ben", "Noor"])
+
+        state.didRemoveFriend(code: "O")
+        XCTAssertEqual(state.incomingRequests, [], "declining drops it")
+        XCTAssertEqual(state.waitingRequestCount, 0)
+        state.didRemoveFriend(code: "K")
+        XCTAssertEqual(state.outgoingRequests, [], "cancelling drops mine")
+        XCTAssertEqual(state.friends.count, 2)
+    }
+
+    func testAskingShowsTheRequestOrTheFriendAtOnce() {
+        var state = PartyState(profile: profile("K7QW2MZD", "Sam"), friends: [], party: nil)
+        state.didAsk(.requested(profile("K", "Kai")), at: now)
+        state.didAsk(.requested(profile("K", "Kai")), at: now)
+        XCTAssertEqual(state.outgoingRequests.map(\.id), ["K"], "asking twice keeps one row")
+        XCTAssertTrue(state.hasPeople)
+
+        state.didAsk(.friends(profile("K", "Kai")), at: now)
+        XCTAssertEqual(state.outgoingRequests, [])
+        XCTAssertEqual(state.friends.map(\.id), ["K"])
+    }
+
+    func testAHeartbeatCountsWaitingRequestsForTheBadge() {
+        var state = PartyState(profile: profile("K7QW2MZD", "Sam"), friends: [], party: nil)
+        XCTAssertEqual(state.waitingRequestCount, 0)
+        state.didCountWaitingRequests(3)
+        XCTAssertEqual(state.waitingRequestCount, 3, "the badge follows heartbeats while the list is not loaded")
+        state.didFetchFriendList(.success(PartyFriendList(friends: [], incoming: [request("N", "Noor")])))
+        XCTAssertEqual(state.waitingRequestCount, 1, "the list, once loaded, is the truth")
+        state.didFetchFriends(.success([]))
+        XCTAssertEqual(state.waitingRequestCount, 0, "a server without requests has none")
+    }
+
+    func testBlockingDropsTheirRequest() {
+        var state = PartyState(profile: profile("K7QW2MZD", "Sam"), friends: [], party: nil, incoming: [request("N", "Noor")])
+        state.didBlock(code: "N")
+        XCTAssertEqual(state.incomingRequests, [])
+        XCTAssertEqual(state.waitingRequestCount, 0)
     }
 }

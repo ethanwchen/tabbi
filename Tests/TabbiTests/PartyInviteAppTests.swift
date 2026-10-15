@@ -99,7 +99,7 @@ final class PartyInviteAppTests: XCTestCase {
         XCTAssertFalse(server.requests.contains { $0.hasPrefix("POST /v1/friends") })
     }
 
-    func testTheDemoAddsAFriendAfterTurningPartyOn() {
+    func testTheDemoSendsAFriendRequestAfterTurningPartyOn() {
         let party = PartyStore(runMode: .demo, environment: [:])
         party.open(.addFriend(code: "AVA7K3RN"), partyIsOn: false)
         XCTAssertEqual(party.invite?.stage, .needsParty)
@@ -109,8 +109,9 @@ final class PartyInviteAppTests: XCTestCase {
         XCTAssertEqual(party.invite?.stage, .confirming)
 
         party.confirmInvite()
-        XCTAssertEqual(party.invite?.stage, .finished(.added(.demoInvitee)))
-        XCTAssertTrue(party.state.friends.contains { $0.profile.code == "AVA7K3RN" })
+        XCTAssertEqual(party.invite?.stage, .finished(.requested(.demoInvitee)))
+        XCTAssertTrue(party.state.outgoingRequests.contains { $0.profile.code == "AVA7K3RN" })
+        XCTAssertFalse(party.state.friends.contains { $0.profile.code == "AVA7K3RN" })
     }
 
     func testTheDemoJoinsTheLinkedParty() {

@@ -89,6 +89,8 @@ app ──HTTPS──> Worker (tabbi-friends) ──> Durable Object "Hub" (one 
 - Tokens are stored only as SHA-256 hashes.
 - Friendships are symmetric and stored as two rows (`a -> b` and `b -> a`) keyed by `(a, b)`.
   Listing my friends is one primary-key range scan, and adding a friend costs 2 row writes.
+- A friend request is one `friend_requests` row keyed by `(sender, recipient)`, with an index by recipient so my waiting requests are one range scan; accepting it deletes the row and writes the two friendship rows.
+  Each user row keeps the newest Party protocol (`Tabbi-Protocol` header) their apps sent, so a request to someone whose apps cannot show one is a friendship at once (see [`docs/party-compatibility.md`](../docs/party-compatibility.md)).
 - Presence lives in Hub memory and is flushed to a `presence` row only when it matters (see below).
   A restart loses at most 10 minutes of minute counters and `lastSeen`, and the next heartbeat restores them.
 - Parties are a `parties` row (host, last activity, optional shared session) plus one `party_members` row per member, keyed by user so a user is in at most one party.
@@ -139,6 +141,7 @@ Countdowns do not need fast heartbeats: the client sends `phaseEndsAt` and frien
 
 The Hub keeps the live presence in memory and writes the SQLite row (1 row write) only when friends would see a change (status, study method, phase end or streak) or when the last write is 10 minutes old.
 Ticking minute counters alone never force a write.
+Each heartbeat reply also counts the friend requests waiting for the user (for the app's tab badge), an index lookup that reads only those rows, usually none, and writes nothing.
 The hourly alarm writes what is still unsaved for users silent for an hour and drops them from memory.
 
 Budget for a heavy user who studies 4 hours in 25+5 minute pomodoros and has the app idle for another 4 hours:
@@ -157,7 +160,7 @@ Budget for a heavy user who studies 4 hours in 25+5 minute pomodoros and has the
 So 100,000 requests per day cover about 300 heavy users, and 100,000 row writes cover about 830.
 Requests are the binding limit; typical users study less than 4 hours and spend less time in a party, so the free plan serves several hundred daily users.
 A party poll does not write: `lastActive` is persisted at most once per 10 minutes per party, which is precise enough for a 12-hour expiry.
-Rows read are the next limit: a friend list poll reads at most about 150 rows (50 friendships, 50 profiles, 50 presence rows), so even 500 users who all have 50 friends and poll 30 times a day read 2.25M rows.
+Rows read are the next limit: a friend list poll reads at most about 150 rows (50 friendships, 50 profiles, 50 presence rows) plus the friend requests either way (usually none, at most 50 each), so even 500 users who all have 50 friends and poll 30 times a day read 2.25M rows.
 A party poll reads at most about 30 rows (the party, 8 members, 8 profiles, 8 presence rows), so 300 users polling 120 times a day read about 1.1M rows.
 A leaderboard load reads at most about 460 rows (51 profiles, 50 friendships, up to 357 study days), so 300 users loading it 6 times a day read about 0.8M rows.
 Together a heavy user reads at most about 11,000 rows a day, so 5M rows read cover about 450 heavy users even if every one of them has 50 friends.

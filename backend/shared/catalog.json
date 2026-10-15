@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "species": ["cat", "dog"],
   "breeds": {
     "cat": [
@@ -16,12 +16,17 @@
   "costumes": [
     "none", "scrubs", "white-coat", "surgical-cap", "stethoscope", "lab-goggles", "graduation",
     "hoodie", "sweater", "pajamas", "raincoat", "wizard", "chef", "pirate", "astronaut",
-    "superhero", "witch", "santa", "pumpkin", "bunny"
+    "superhero", "witch", "santa", "pumpkin", "bunny", "dinosaur-hoodie", "study-hoodie"
   ],
   "accessories": [
     "glasses", "sunglasses", "headphones", "bow", "bandana", "scarf", "collar-bell", "crown",
     "flower", "party-hat", "beanie", "coffee-mug", "pencil", "book", "id-badge", "reflex-hammer",
-    "face-mask", "halo"
+    "face-mask", "halo", "stethoscope", "surgical-cap", "head-mirror", "graduation-cap", "chef-hat",
+    "wizard-hat", "bunny-ears", "witch-hat", "cowboy-hat", "frog-hat", "ninja-headband", "pirate-hat",
+    "blindfolded-sorcerer", "astronaut-helmet", "backwards-cap", "flame-headband", "golden-laurel",
+    "team-medal", "moonlit-witch-hat", "pumpkin-hat", "reindeer-antlers", "snow-scarf", "heart-glasses",
+    "summer-shades", "lion-dance-hat", "sakura-sprig", "founders-pin", "angel-wings", "kings-cape",
+    "cherry-petals", "sparkle-trail", "rain-cloud"
   ],
   "statuses": ["studying", "break", "idle", "offline"],
   "studyMethods": ["pomodoro", "52-17", "flowtime", "timeblock", "anki", "qbank", "lecture", "free"],
@@ -29,8 +34,8 @@
   "limits": {
     "nameMaxLength": 24,
     "petNameMaxLength": 24,
-    "maxColors": 6,
-    "maxAccessories": 4,
+    "maxColors": 10,
+    "maxAccessories": 8,
     "maxFriends": 50,
     "maxPartyMembers": 8,
     "partyIdleExpirySeconds": 43200

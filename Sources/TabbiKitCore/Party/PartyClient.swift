@@ -51,6 +51,13 @@ public struct PartyClient: Sendable {
         self.init(transport: URLSessionPartyTransport(baseURL: baseURL), token: token, timeout: timeout)
     }
 
+    /// The Party protocol this app speaks, sent as `protocolHeader` on
+    /// every request. Protocol 2 added friend requests and catalog version
+    /// 2's item ids; a server answers an app that sends no header as
+    /// protocol 1. See `docs/party-compatibility.md`.
+    public static let protocolVersion = 2
+    public static let protocolHeader = "Tabbi-Protocol"
+
     // MARK: Health
 
     /// Service names a friends server answers `GET /` with: the current
@@ -106,20 +113,39 @@ public struct PartyClient: Sendable {
 
     // MARK: Friends
 
-    /// `GET /v1/friends`, sorted by name.
-    public func friends() async throws -> [PartyFriend] {
-        try await send("GET", "/v1/friends", as: FriendsReply.self).friends
+    /// `GET /v1/friends`: friends sorted by name, and the friend requests
+    /// waiting on either side.
+    public func friendList() async throws -> PartyFriendList {
+        try await send("GET", "/v1/friends", as: PartyFriendList.self)
     }
 
-    /// `POST /v1/friends`. Friendship is mutual at once. `added` is false
-    /// when they were already friends.
-    public func addFriend(code: String) async throws -> (added: Bool, friend: PartyProfile) {
+    /// `GET /v1/friends`, friends only, sorted by name.
+    public func friends() async throws -> [PartyFriend] {
+        try await friendList().friends
+    }
+
+    /// `POST /v1/friends`: asks someone to be friends by their code. They
+    /// become a friend once they accept, or at once when they had asked me
+    /// first. A server from before friend requests makes every add a
+    /// friendship right away.
+    public func addFriend(code: String) async throws -> PartyFriendAddition {
         let code = try Self.validCode(PartyCode.friendCode(code))
         let reply = try await send("POST", "/v1/friends", body: ["code": code], as: AddFriendReply.self)
-        return (reply.added, reply.friend)
+        if reply.status == "requested" { return .requested(reply.friend) }
+        return reply.added ? .friends(reply.friend) : .alreadyFriends(reply.friend)
     }
 
-    /// `DELETE /v1/friends/{code}`. Returns false if we were not friends.
+    /// `POST /v1/friends/{code}/accept`: accepts the request they sent me.
+    /// `PartyError.noRequest` when there is none any more.
+    public func acceptFriend(code: String) async throws -> PartyFriendAddition {
+        let code = try Self.validCode(PartyCode.friendCode(code))
+        let reply = try await send("POST", "/v1/friends/\(code)/accept", as: AddFriendReply.self)
+        return reply.added ? .friends(reply.friend) : .alreadyFriends(reply.friend)
+    }
+
+    /// `DELETE /v1/friends/{code}`: ends a friendship, cancels my request
+    /// to them, or declines theirs (quietly: they still see it as sent).
+    /// Returns false if there was nothing to end.
     @discardableResult
     public func removeFriend(code: String) async throws -> Bool {
         let code = try Self.validCode(PartyCode.friendCode(code))
@@ -164,7 +190,8 @@ public struct PartyClient: Sendable {
     /// `POST /v1/presence`: the heartbeat.
     public func heartbeat(_ heartbeat: PartyHeartbeat) async throws -> PartyHeartbeatReply {
         let reply = try await send("POST", "/v1/presence", body: heartbeat, as: PresenceReply.self)
-        return PartyHeartbeatReply(presence: reply.presence, nextHeartbeat: reply.heartbeatSeconds)
+        return PartyHeartbeatReply(presence: reply.presence, nextHeartbeat: reply.heartbeatSeconds,
+                                   incomingRequests: reply.incomingRequests)
     }
 
     /// `GET /v1/leaderboard`: this ISO week's minutes for me and my friends.
@@ -263,6 +290,7 @@ public struct PartyClient: Sendable {
         _ request: PartyHTTPRequest, authorized: Bool, as type: Reply.Type
     ) async throws -> Reply {
         var request = request
+        request.headers[Self.protocolHeader] = String(Self.protocolVersion)
         if authorized {
             guard let token else { throw PartyError.unauthorized }
             request.token = token
@@ -327,12 +355,10 @@ private struct ProfileReply: Decodable {
     let banned: Bool?
 }
 
-private struct FriendsReply: Decodable {
-    let friends: [PartyFriend]
-}
-
 private struct AddFriendReply: Decodable {
     let added: Bool
+    /// `friends` or `requested`; missing from a server without friend requests.
+    let status: String?
     let friend: PartyProfile
 }
 
@@ -343,6 +369,7 @@ private struct RemoveFriendReply: Decodable {
 private struct PresenceReply: Decodable {
     let presence: PartyPresence
     let heartbeatSeconds: TimeInterval?
+    let incomingRequests: Int?
 }
 
 private struct LeaderboardReply: Decodable {

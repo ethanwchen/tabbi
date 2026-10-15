@@ -187,12 +187,16 @@
 	<string>%@ uses it to greet you.</string>
 	<key>%@ visited the bakery</key>
 	<string>%@ visited the bakery</string>
+	<key>%@ wants to be friends</key>
+	<string>%@ wants to be friends</string>
 	<key>%@ watched a cloud shaped like a fish</key>
 	<string>%@ watched a cloud shaped like a fish</string>
 	<key>%@ went around the park twice</key>
 	<string>%@ went around the park twice</string>
 	<key>%@ with %@</key>
 	<string>%@ with %@</string>
+	<key>%@ with %@ wants to be friends.</key>
+	<string>%@ with %@ wants to be friends.</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</string>
 	<key>%@ · Paused</key>
@@ -369,6 +373,10 @@
 	<string>API key</string>
 	<key>About</key>
 	<string>About</string>
+	<key>Accept</key>
+	<string>Accept</string>
+	<key>Accept %@'s friend request</key>
+	<string>Accept %@'s friend request</string>
 	<key>Access is off</key>
 	<string>Access is off</string>
 	<key>Account</key>
@@ -667,6 +675,8 @@
 	<string>Block %@</string>
 	<key>Blocked</key>
 	<string>Blocked</string>
+	<key>Blocked %@. Unblock them in Party options.</key>
+	<string>Blocked %@. Unblock them in Party options.</string>
 	<key>Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.</key>
 	<string>Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.</string>
 	<key>Blocks go to your calendar.</key>
@@ -739,6 +749,10 @@
 	<string>Can't use this server</string>
 	<key>Cancel</key>
 	<string>Cancel</string>
+	<key>Cancel Request</key>
+	<string>Cancel Request</string>
+	<key>Cancel your request to %@</key>
+	<string>Cancel your request to %@</string>
 	<key>Caramel</key>
 	<string>Caramel</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -1071,6 +1085,10 @@
 	<string>Days in a row with at least one review</string>
 	<key>Deck not found</key>
 	<string>Deck not found</string>
+	<key>Decline</key>
+	<string>Decline</string>
+	<key>Decline %@'s request. They won't be told.</key>
+	<string>Decline %@'s request. They won't be told.</string>
 	<key>Deep</key>
 	<string>Deep</string>
 	<key>Deep focus</key>
@@ -1369,8 +1387,12 @@
 	<string>Free working time over the next seven days, with a buffer around each event</string>
 	<key>Friend code</key>
 	<string>Friend code</string>
-	<key>Friend code %@. You'll see each other's pets and study time.</key>
-	<string>Friend code %@. You'll see each other's pets and study time.</string>
+	<key>Friend code %@. Accept to see each other's pets and study time.</key>
+	<string>Friend code %@. Accept to see each other's pets and study time.</string>
+	<key>Friend code %@. Once they accept, you'll see each other's pets and study time.</key>
+	<string>Friend code %@. Once they accept, you'll see each other's pets and study time.</string>
+	<key>Friend codes are %lld letters and digits.</key>
+	<string>Friend codes are %lld letters and digits.</string>
 	<key>Friend's code</key>
 	<string>Friend's code</string>
 	<key>Friends</key>
@@ -2235,6 +2257,8 @@
 	<string>Party code %@. Study together with everyone in it.</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
 	<string>Party code %@. Study together with everyone in it. You'll leave your current party.</string>
+	<key>Party codes are %lld letters and digits.</key>
+	<string>Party codes are %lld letters and digits.</string>
 	<key>Party invite</key>
 	<string>Party invite</string>
 	<key>Party is for people %lld and older.</key>
@@ -2535,6 +2559,14 @@
 	<string>Report %@…</string>
 	<key>Report a problem: %@</key>
 	<string>Report a problem: %@</string>
+	<key>Request</key>
+	<string>Request</string>
+	<key>Request sent</key>
+	<string>Request sent</string>
+	<key>Request sent to %@</key>
+	<string>Request sent to %@</string>
+	<key>Request sent to %@.</key>
+	<string>Request sent to %@.</string>
 	<key>Reset to Default</key>
 	<string>Reset to Default</string>
 	<key>Reset to Defaults</key>
@@ -2649,6 +2681,8 @@
 	<string>Send your AI requests to %@?</string>
 	<key>Sends what you ask to %@.</key>
 	<string>Sends what you ask to %@.</string>
+	<key>Sent</key>
+	<string>Sent</string>
 	<key>Server</key>
 	<string>Server</string>
 	<key>Session done. Nice work!</key>
@@ -2843,6 +2877,8 @@
 	<string>Start a party</string>
 	<key>Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.</key>
 	<string>Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.</string>
+	<key>Start a party, or join a friend's.</key>
+	<string>Start a party, or join a friend's.</string>
 	<key>Start a timer</key>
 	<string>Start a timer</string>
 	<key>Start break</key>
@@ -3047,6 +3083,12 @@
 	<string>Test</string>
 	<key>Test it</key>
 	<string>Test it</string>
+	<key>Thanks. Your report was sent and %@ is blocked.</key>
+	<string>Thanks. Your report was sent and %@ is blocked.</string>
+	<key>Thanks. Your report was sent.</key>
+	<string>Thanks. Your report was sent.</string>
+	<key>That friend request is no longer there.</key>
+	<string>That friend request is no longer there.</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
 	<string>That key can't be part of a shortcut. Try a letter, number, or Space.</string>
 	<key>That name and your pet's name aren't allowed. Please pick others.</key>
@@ -3181,8 +3223,12 @@
 	<string>This deletes your account and everything the server keeps for it: the synced copy of your pet and points, your friend code, friends and parties. Your pet stays on this Mac. This can't be undone.</string>
 	<key>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</key>
 	<string>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</string>
+	<key>This is a demo. No report was sent.</key>
+	<string>This is a demo. No report was sent.</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>This is a demo. Nothing was deleted.</string>
+	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
+	<string>This is a demo. Run without TABBI_DEMO to study with friends.</string>
 	<key>This is usually short. Check again in a moment.</key>
 	<string>This is usually short. Check again in a moment.</string>
 	<key>This is what needs fixing</key>
@@ -3405,8 +3451,12 @@
 	<string>Waiting for Anki to start</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>Waiting for Anki to start, then opening %@</string>
+	<key>Waiting: %lld</key>
+	<string>Waiting: %lld</string>
 	<key>Walk through the steps to connect %@</key>
 	<string>Walk through the steps to connect %@</string>
+	<key>Wants to be friends</key>
+	<string>Wants to be friends</string>
 	<key>Wardrobe</key>
 	<string>Wardrobe</string>
 	<key>Water carves canyons by never skipping a day.</key>
@@ -3513,6 +3563,8 @@
 	<string>You</string>
 	<key>You already have 50 friends.</key>
 	<string>You already have 50 friends.</string>
+	<key>You asked %@ to be friends. You'll see each other once they accept.</key>
+	<string>You asked %@ to be friends. You'll see each other once they accept.</string>
 	<key>You blocked %@</key>
 	<string>You blocked %@</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
@@ -3535,12 +3587,16 @@
 	<string>You didn't feel like it, and you did it anyway. That's the whole secret.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>You get one free freeze each week, and can hold %lld extra.</string>
+	<key>You have 50 friend requests waiting. Cancel some first.</key>
+	<string>You have 50 friend requests waiting. Cancel some first.</string>
 	<key>You joined the party</key>
 	<string>You joined the party</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>You put in %@ of study today. Rest up and start fresh tomorrow.</string>
 	<key>You started it for the party</key>
 	<string>You started it for the party</string>
+	<key>You'll be friends once they accept.</key>
+	<string>You'll be friends once they accept.</string>
 	<key>You'll see %@ in your Party tab.</key>
 	<string>You'll see %@ in your Party tab.</string>
 	<key>You're already in this party</key>
@@ -3555,6 +3611,8 @@
 	<string>You're the only one here for now.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>You've blocked too many people. Unblock someone first.</string>
+	<key>You've sent a lot of friend requests today. Try again tomorrow.</key>
+	<string>You've sent a lot of friend requests today. Try again tomorrow.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
 	<string>You've sent a lot of reports today. Try again tomorrow.</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>

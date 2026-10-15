@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tabbinotch.com/schemas/party.v1.schema.json",
+  "title": "Tabbi Party wire contract",
+  "description": "The JSON the Party server (backend/, tabbi-friends) and every Tabbi app (Mac, Windows) exchange: request bodies under $defs ending in Body, replies under the rest. Endpoints, errors and the compatibility rules are in docs/study/backend-api.md and docs/party-compatibility.md. Replies may carry fields a client does not know yet, so no reply forbids additional properties and a client must ignore what it does not know; request bodies are strict, since the server refuses unknown fields. Item ids (species, breeds, costumes, accessories) are open strings checked against backend/shared/catalog.json: a client draws what it knows and drops the rest. Fields marked protocol 2 are sent to and by apps that send the Tabbi-Protocol: 2 header; older apps neither send nor read them.",
+  "$defs": {
+    "friendCode": { "type": "string", "pattern": "^[A-HJ-NP-Z2-9]{8}$" },
+    "partyCode": { "type": "string", "pattern": "^[A-HJ-NP-Z2-9]{6}$" },
+    "unixSeconds": { "description": "Whole seconds since 1970-01-01 UTC.", "type": "integer" },
+    "itemId": { "description": "A catalog id; unknown ones are drawn without the item.", "type": "string" },
+    "hexColor": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+    "error": {
+      "description": "Every failure: an HTTP status of 400 or more and a stable error code. Clients branch on error, never on message.",
+      "type": "object",
+      "required": ["ok", "error", "message"],
+      "properties": {
+        "ok": { "const": false },
+        "error": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    },
+    "health": {
+      "description": "GET / (no auth).",
+      "type": "object",
+      "required": ["ok", "service", "version"],
+      "properties": {
+        "ok": { "const": true },
+        "service": { "description": "tabbi-friends; studynotch-friends before the rename.", "type": "string" },
+        "version": { "type": "integer" },
+        "protocol": { "description": "The newest Party protocol the server speaks. Missing: 1.", "type": "integer", "minimum": 1 },
+        "minProtocol": { "description": "The oldest Party protocol the server still serves. Missing: 1.", "type": "integer", "minimum": 1 }
+      }
+    },
+    "profile": {
+      "description": "What friends and party members see of a user.",
+      "type": "object",
+      "required": ["code", "name", "petName", "species", "breed", "colors", "costume", "accessories", "points", "level"],
+      "properties": {
+        "code": { "$ref": "#/$defs/friendCode" },
+        "name": { "type": "string" },
+        "petName": { "type": "string" },
+        "species": { "$ref": "#/$defs/itemId" },
+        "breed": { "$ref": "#/$defs/itemId" },
+        "colors": {
+          "description": "The pet's effective colors for the recolorable palette roles, in this order: furBase, furShade, furAccent, furSpot, belly, costumeBase, costumeShade, costumeTrim, accessoryBase, accessoryShade. Apps before catalog version 2 send only the first six.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/hexColor" }
+        },
+        "costume": { "description": "The outfit, or none. Apps before catalog version 2 put a hat here when no outfit is worn.", "$ref": "#/$defs/itemId" },
+        "accessories": { "description": "Every worn accessory, at most one per slot.", "type": "array", "items": { "$ref": "#/$defs/itemId" } },
+        "points": { "type": "integer", "minimum": 0 },
+        "level": { "type": "integer", "minimum": 1 },
+        "badges": { "description": "Entitlement ids that show a badge (founding). Friends lists and party rosters only; missing reads as none.", "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "profileBody": {
+      "description": "POST /v1/register and PATCH /v1/me. Every field is optional; a missing one keeps the stored value.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "petName": { "type": "string" },
+        "species": { "$ref": "#/$defs/itemId" },
+        "breed": { "$ref": "#/$defs/itemId" },
+        "colors": { "type": "array", "maxItems": 10, "items": { "$ref": "#/$defs/hexColor" } },
+        "costume": { "$ref": "#/$defs/itemId" },
+        "accessories": { "type": "array", "maxItems": 8, "uniqueItems": true, "items": { "$ref": "#/$defs/itemId" } },
+        "points": { "type": "integer", "minimum": 0 },
+        "level": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "registerReply": {
+      "type": "object",
+      "required": ["ok", "code", "profile"],
+      "properties": {
+        "ok": { "const": true },
+        "token": { "description": "The secret bearer token; only on a new registration.", "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "code": { "$ref": "#/$defs/friendCode" },
+        "profile": { "$ref": "#/$defs/profile" }
+      }
+    },
+    "profileReply": {
+      "description": "GET /v1/me and PATCH /v1/me.",
+      "type": "object",
+      "required": ["ok", "profile"],
+      "properties": {
+        "ok": { "const": true },
+        "profile": { "$ref": "#/$defs/profile" },
+        "banned": { "type": "boolean" }
+      }
+    },
+    "presence": {
+      "type": "object",
+      "required": ["status", "method", "phaseEndsAt", "sessionMinutes", "todayMinutes", "streakDays", "day", "lastSeen"],
+      "properties": {
+        "status": { "enum": ["studying", "break", "idle", "offline"] },
+        "method": { "type": ["string", "null"] },
+        "phaseEndsAt": { "oneOf": [{ "$ref": "#/$defs/unixSeconds" }, { "type": "null" }] },
+        "sessionMinutes": { "type": "integer", "minimum": 0 },
+        "todayMinutes": { "type": "integer", "minimum": 0 },
+        "streakDays": { "type": "integer", "minimum": 0 },
+        "day": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "lastSeen": { "$ref": "#/$defs/unixSeconds" }
+      }
+    },
+    "heartbeatBody": {
+      "description": "POST /v1/presence.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["studying", "break", "idle", "offline"] },
+        "method": { "type": ["string", "null"] },
+        "phaseEndsAt": { "oneOf": [{ "$ref": "#/$defs/unixSeconds" }, { "type": "null" }] },
+        "sessionMinutes": { "type": "integer", "minimum": 0 },
+        "todayMinutes": { "type": "integer", "minimum": 0 },
+        "streakDays": { "type": "integer", "minimum": 0 },
+        "day": { "type": "string" }
+      }
+    },
+    "heartbeatReply": {
+      "type": "object",
+      "required": ["ok", "presence", "heartbeatSeconds"],
+      "properties": {
+        "ok": { "const": true },
+        "presence": { "$ref": "#/$defs/presence" },
+        "heartbeatSeconds": { "description": "Seconds until the next heartbeat; null after offline.", "type": ["number", "null"] },
+        "incomingRequests": { "description": "Protocol 2: friend requests waiting for me, for a badge.", "type": "integer", "minimum": 0 }
+      }
+    },
+    "partyRef": {
+      "type": "object",
+      "required": ["code", "size"],
+      "properties": {
+        "code": { "$ref": "#/$defs/partyCode" },
+        "size": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "friend": {
+      "type": "object",
+      "required": ["profile", "since", "presence", "online", "party"],
+      "properties": {
+        "profile": { "$ref": "#/$defs/profile" },
+        "since": { "$ref": "#/$defs/unixSeconds" },
+        "presence": { "oneOf": [{ "$ref": "#/$defs/presence" }, { "type": "null" }] },
+        "online": { "type": "boolean" },
+        "party": { "oneOf": [{ "$ref": "#/$defs/partyRef" }, { "type": "null" }] }
+      }
+    },
+    "friendRequest": {
+      "description": "Protocol 2. Only the profile is shared until the request is accepted.",
+      "type": "object",
+      "required": ["profile", "since"],
+      "properties": {
+        "profile": { "$ref": "#/$defs/profile" },
+        "since": { "$ref": "#/$defs/unixSeconds" }
+      }
+    },
+    "friendList": {
+      "description": "GET /v1/friends. A server before protocol 2 sends friends only, which reads as no requests.",
+      "type": "object",
+      "required": ["ok", "friends"],
+      "properties": {
+        "ok": { "const": true },
+        "friends": { "type": "array", "items": { "$ref": "#/$defs/friend" } },
+        "incoming": { "description": "Protocol 2: requests waiting for me, newest first.", "type": "array", "items": { "$ref": "#/$defs/friendRequest" } },
+        "outgoing": { "description": "Protocol 2: requests I sent, newest first; a declined one stays until it expires.", "type": "array", "items": { "$ref": "#/$defs/friendRequest" } }
+      }
+    },
+    "codeBody": {
+      "description": "POST /v1/friends, POST /v1/blocks.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code"],
+      "properties": { "code": { "type": "string" } }
+    },
+    "addFriendReply": {
+      "description": "POST /v1/friends and POST /v1/friends/{code}/accept. added: a friendship was made just now.",
+      "type": "object",
+      "required": ["ok", "added", "friend"],
+      "properties": {
+        "ok": { "const": true },
+        "added": { "type": "boolean" },
+        "status": { "description": "Protocol 2: friends, or requested while the request waits. Missing: friends.", "enum": ["friends", "requested"] },
+        "friend": { "$ref": "#/$defs/profile" }
+      }
+    },
+    "removeFriendReply": {
+      "description": "DELETE /v1/friends/{code}: ends a friendship, cancels my request or declines theirs.",
+      "type": "object",
+      "required": ["ok", "removed"],
+      "properties": {
+        "ok": { "const": true },
+        "removed": { "type": "boolean" }
+      }
+    },
+    "partySession": {
+      "type": "object",
+      "required": ["method", "phaseEndsAt", "startedAt"],
+      "properties": {
+        "method": { "type": "string" },
+        "phaseEndsAt": { "$ref": "#/$defs/unixSeconds" },
+        "startedAt": { "$ref": "#/$defs/unixSeconds" }
+      }
+    },
+    "partyMember": {
+      "type": "object",
+      "required": ["profile", "joinedAt", "host", "presence", "online"],
+      "properties": {
+        "profile": { "$ref": "#/$defs/profile" },
+        "joinedAt": { "$ref": "#/$defs/unixSeconds" },
+        "host": { "type": "boolean" },
+        "presence": { "oneOf": [{ "$ref": "#/$defs/presence" }, { "type": "null" }] },
+        "online": { "type": "boolean" }
+      }
+    },
+    "party": {
+      "type": "object",
+      "required": ["code", "host", "createdAt", "lastActive", "expiresAt", "maxMembers", "session", "members"],
+      "properties": {
+        "code": { "$ref": "#/$defs/partyCode" },
+        "host": { "$ref": "#/$defs/friendCode" },
+        "createdAt": { "$ref": "#/$defs/unixSeconds" },
+        "lastActive": { "$ref": "#/$defs/unixSeconds" },
+        "expiresAt": { "$ref": "#/$defs/unixSeconds" },
+        "maxMembers": { "type": "integer", "minimum": 1 },
+        "session": { "oneOf": [{ "$ref": "#/$defs/partySession" }, { "type": "null" }] },
+        "members": { "type": "array", "items": { "$ref": "#/$defs/partyMember" } }
+      }
+    },
+    "partyReply": {
+      "description": "GET /v1/party (party may be null), POST /v1/party, POST /v1/party/join, the session routes.",
+      "type": "object",
+      "required": ["ok", "party"],
+      "properties": {
+        "ok": { "const": true },
+        "party": { "oneOf": [{ "$ref": "#/$defs/party" }, { "type": "null" }] }
+      }
+    }
+  }
+}

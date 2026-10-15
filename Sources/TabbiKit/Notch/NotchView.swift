@@ -226,7 +226,7 @@ private struct OpenNotchContent: View {
         let headerHeight = NotchHeaderLayout.headerHeight(for: model.geometry)
         return VStack(spacing: 0) {
             HStack(spacing: 0) {
-                NotchTabBar(header: header, celebrations: content.celebrations)
+                NotchTabBar(header: header, celebrations: content.celebrations, badges: content.tabBadges)
                     .frame(width: header.leadingZone.width, alignment: .leading)
                 NotchCloseZone(width: header.trailingZone.minX - header.leadingZone.maxX)
                 HStack(spacing: NotchHeaderLayout.Metrics().trailingSpacing) {
@@ -272,7 +272,7 @@ private struct OpenNotchContent: View {
                     // A tap anywhere else closes the list without acting.
                     Color.black.opacity(0.001)
                         .onTapGesture { model.showsMoreTabs = false }
-                    NotchMoreTabsMenu(header: header)
+                    NotchMoreTabsMenu(header: header, badges: content.tabBadges)
                         .offset(x: more.minX, y: top)
                 }
                 .transition(.opacity)

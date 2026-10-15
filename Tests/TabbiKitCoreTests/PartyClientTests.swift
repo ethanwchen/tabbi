@@ -135,9 +135,48 @@ final class PartyClientTests: XCTestCase {
     func testAddFriendNormalizesThePastedCode() async throws {
         let (client, transport) = self.client(["POST /v1/friends": .json(#"{"ok":true,"added":true,"friend":\#(Fixture.ben)}"#)])
         let result = try await client.addFriend(code: "  b3nx-9qrt ")
-        XCTAssertTrue(result.added)
-        XCTAssertEqual(result.friend.petName, "Biscuit")
+        XCTAssertEqual(result, .friends(result.profile), "a server without requests makes friends at once")
+        XCTAssertEqual(result.profile.petName, "Biscuit")
         XCTAssertEqual(transport.lastBody as NSDictionary, ["code": "B3NX9QRT"])
+    }
+
+    func testAddFriendReadsARequestAndAnAlreadyFriend() async throws {
+        let (requested, _) = self.client(["POST /v1/friends": .json(#"{"ok":true,"added":false,"status":"requested","friend":\#(Fixture.ben)}"#)])
+        let asked = try await requested.addFriend(code: "B3NX9QRT")
+        XCTAssertEqual(asked, .requested(asked.profile))
+        let (already, _) = self.client(["POST /v1/friends": .json(#"{"ok":true,"added":false,"status":"friends","friend":\#(Fixture.ben)}"#)])
+        let again = try await already.addFriend(code: "B3NX9QRT")
+        XCTAssertEqual(again, .alreadyFriends(again.profile))
+    }
+
+    func testAcceptFriendPostsToTheirCodeAndTypesAGoneRequest() async throws {
+        let reply = #"{"ok":true,"added":true,"status":"friends","friend":\#(Fixture.ben)}"#
+        let (client, transport) = self.client(["POST /v1/friends/B3NX9QRT/accept": .json(reply)])
+        let accepted = try await client.acceptFriend(code: "b3nx-9qrt")
+        XCTAssertEqual(accepted, .friends(accepted.profile))
+        XCTAssertEqual(transport.requests.last?.method, "POST")
+        XCTAssertNil(transport.requests.last?.body)
+        let (gone, _) = self.client(["POST /v1/friends/B3NX9QRT/accept": .json(Fixture.error("no_request"), status: 404)])
+        await assertThrows(.noRequest) { try await gone.acceptFriend(code: "B3NX9QRT") }
+    }
+
+    func testFriendListReadsRequestsAndTheirAbsence() async throws {
+        let body = #"{"ok":true,"friends":[],"incoming":[{"profile":\#(Fixture.ana),"since":1789000000}],"outgoing":[{"profile":\#(Fixture.ben),"since":1789000500}]}"#
+        let (client, _) = self.client(["GET /v1/friends": .json(body)])
+        let list = try await client.friendList()
+        XCTAssertEqual(list.incoming.map(\.profile.name), ["Ana"])
+        XCTAssertEqual(list.outgoing.map(\.id), ["B3NX9QRT"])
+        XCTAssertEqual(list.incoming.first?.since, Date(timeIntervalSince1970: 1_789_000_000))
+        let (older, _) = self.client(["GET /v1/friends": .json(#"{"ok":true,"friends":[]}"#)])
+        let none = try await older.friendList()
+        XCTAssertEqual(none, PartyFriendList(friends: []))
+    }
+
+    func testRequestErrorsAreTyped() async {
+        for (code, status, expected) in [("pending_limit", 409, PartyError.pendingLimit), ("request_limit", 429, .requestLimit)] {
+            let (client, _) = self.client(["POST /v1/friends": .json(Fixture.error(code), status: status)])
+            await assertThrows(expected) { try await client.addFriend(code: "B3NX9QRT") }
+        }
     }
 
     func testAddFriendRejectsMalformedCodesWithoutARequest() async {

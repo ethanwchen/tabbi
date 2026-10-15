@@ -195,10 +195,12 @@ describe("schema step 10", () => {
       sql.exec("DROP TABLE web_sign_ins");
       sql.exec("DROP TABLE download_counts");
       sql.exec("DROP TABLE entitlements");
+      sql.exec("DROP TABLE friend_requests");
+      sql.exec("ALTER TABLE users DROP COLUMN protocol");
       sql.exec("ALTER TABLE apple_accounts DROP COLUMN client_id");
       sql.exec("UPDATE schema_version SET version = 9");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 13 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 14 }]);
       expect(sql.exec("SELECT name FROM users WHERE code = ?", user.code).toArray()).toEqual([{ name: "Kept" }]);
       expect(sql.exec("SELECT * FROM crashes").toArray()).toEqual([]);
     });

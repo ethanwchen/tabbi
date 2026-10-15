@@ -249,6 +249,9 @@ public struct ModuleProvision: Equatable, Sendable {
     public var party: ProvidedParty?
     public var highlights: [TickerHighlight]
     public var isPlaying: Bool
+    /// How many things wait for the user in this module (Party: friend
+    /// requests), shown as a count on its tab; 0 shows none.
+    public var badge: Int
 
     public init(
         tasks: [ProvidedTask] = [],
@@ -259,7 +262,8 @@ public struct ModuleProvision: Equatable, Sendable {
         pet: PetPresence? = nil,
         party: ProvidedParty? = nil,
         highlights: [TickerHighlight] = [],
-        isPlaying: Bool = false
+        isPlaying: Bool = false,
+        badge: Int = 0
     ) {
         self.tasks = tasks
         self.events = events
@@ -270,6 +274,7 @@ public struct ModuleProvision: Equatable, Sendable {
         self.party = party
         self.highlights = highlights
         self.isPlaying = isPlaying
+        self.badge = badge
     }
 
     public static let empty = ModuleProvision()
@@ -309,6 +314,9 @@ public struct ProviderSnapshot: Equatable, Sendable {
     public private(set) var highlights: [TickerHighlight] = []
     /// Whether any module is playing music.
     public private(set) var isPlaying = false
+    /// The count each module's tab shows (`ModuleProvision.badge`), for
+    /// modules with one above zero.
+    public private(set) var badges: [ModuleID: Int] = [:]
 
     public init() {}
 
@@ -342,6 +350,7 @@ public struct ProviderSnapshot: Equatable, Sendable {
                 highlights.append(highlight)
             }
             if provision.isPlaying { isPlaying = true }
+            if provision.badge > 0 { badges[module] = provision.badge }
             if pet == nil { pet = provision.pet }
             events += provision.events.filter { eventIDs.insert($0.id).inserted }
             if let tally = provision.study { study = (study ?? StudyDayTally()) + tally }

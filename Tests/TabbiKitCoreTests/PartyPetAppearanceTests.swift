@@ -97,18 +97,73 @@ final class PartyPetAppearanceTests: XCTestCase {
         }
     }
 
-    func testCostumeOnlyAccessoryRidesInTheCostumeSlotWhenNoOutfitIsWorn() {
+    /// The bug users saw: friends' Party showed pets without their hats.
+    /// A hat the server had no id for (the wizard or cowboy hat) never left
+    /// the Mac, and a medical or costume hat only rode in `costume`, so it
+    /// was dropped as soon as an outfit was worn.
+    func testHatsReachFriendsWithAndWithoutAnOutfit() {
+        let looks: [PetProfile] = [
+            PetProfile(name: "Luna", breed: .siamese, outfit: .scrubs, accessories: [.surgicalCap]),
+            PetProfile(name: "Mochi", breed: .orangeTabby, outfit: .whiteCoat, accessories: [.graduationCap, .stethoscope]),
+            PetProfile(name: "Biscuit", breed: .goldenRetriever, accessories: [.roundGlasses, .cowboyHat]),
+            PetProfile(name: "Pepper", breed: .blackCat, outfit: .wizardRobe, accessories: [.wizardHat]),
+            PetProfile(name: "Kit", breed: .beagle, outfit: .cozyHoodie, accessories: [.pirateHat, .scarf]),
+        ]
+        for pet in looks {
+            let seen = PartyPetAppearance.pet(for: profile(from: PartyPetAppearance.update(for: pet)))
+            XCTAssertEqual(seen.outfit, pet.outfit, pet.name)
+            XCTAssertEqual(seen.accessories, pet.accessories, pet.name)
+            XCTAssertEqual(seen.sittingCanvas(), pet.sittingCanvas(), pet.name)
+        }
+    }
+
+    /// Every outfit with every accessory, and every slot at once, looks the
+    /// same to friends as in the owner's Closet, recolored roles included.
+    func testEveryOutfitAndAccessoryLooksTheSameToFriends() {
+        for outfit in PetOutfit.allCases {
+            for accessory in PetAccessory.allCases {
+                let pet = PetProfile(name: "Mochi", breed: .calico, outfit: outfit, accessories: [accessory])
+                let seen = PartyPetAppearance.pet(for: profile(from: PartyPetAppearance.update(for: pet)))
+                XCTAssertEqual(seen.outfit, outfit, "\(outfit) + \(accessory)")
+                XCTAssertEqual(seen.accessories, [accessory], "\(outfit) + \(accessory)")
+            }
+        }
+        var full = PetProfile(name: "Nova", breed: .corgi, outfit: .studyHoodie,
+                              accessories: [.snowScarf, .heartGlasses, .lionDanceHat, .kingsCape, .cherryPetals])
+        for (index, role) in PetPaletteRole.userEditable.enumerated() {
+            full.setColor(PetColor(hex: String(format: "#%02X%02X%02X", 40 + index * 20, 200 - index * 15, 90 + index * 9)), for: role)
+        }
+        let update = PartyPetAppearance.update(for: full)
+        XCTAssertEqual(update.accessories?.count, 5)
+        let seen = PartyPetAppearance.pet(for: profile(from: update))
+        XCTAssertEqual(seen.accessories, full.accessories)
+        for role in PetPaletteRole.userEditable {
+            XCTAssertEqual(seen.palette[role], full.palette[role], "\(role)")
+        }
+        XCTAssertEqual(seen.sittingCanvas(), full.sittingCanvas())
+    }
+
+    /// Apps before catalog version 2 only read a hat from `costume`, so it
+    /// is still sent there when no outfit is worn, and a profile such an
+    /// app wrote still reads the same.
+    func testOlderAppsStillGetAndSendTheHatInTheCostumeSlot() {
         let pet = PetProfile(name: "Doc", breed: .corgi, accessories: [.stethoscope, .beanie])
         let update = PartyPetAppearance.update(for: pet)
         XCTAssertEqual(update.costume, "stethoscope")
-        XCTAssertEqual(update.accessories, ["beanie"])
-
-        let seen = PartyPetAppearance.pet(for: profile(from: update))
-        XCTAssertEqual(seen.outfit, PetOutfit.none)
-        XCTAssertEqual(Set(seen.accessories), [.stethoscope, .beanie])
+        XCTAssertEqual(update.accessories, ["stethoscope", "beanie"])
+        XCTAssertEqual(PartyPetAppearance.pet(for: profile(from: update)).accessories, [.stethoscope, .beanie])
 
         let scrubbed = PetProfile(name: "Doc", breed: .corgi, outfit: .scrubs, accessories: [.stethoscope])
         XCTAssertEqual(PartyPetAppearance.update(for: scrubbed).costume, "scrubs")
+
+        // What a 1.0 app sent for a graduation cap and glasses.
+        var old = profile(from: PartyProfileUpdate(petName: "Mochi", species: "cat", breed: "tabby"))
+        old.costume = "graduation"
+        old.accessories = ["glasses"]
+        XCTAssertEqual(PartyPetAppearance.pet(for: old).accessories, [.roundGlasses, .graduationCap])
+        // A head item the accessories name wins over the costume slot's.
+        old.accessories = ["glasses", "beanie"]
+        XCTAssertEqual(PartyPetAppearance.pet(for: old).accessories, [.roundGlasses, .beanie])
     }
 
     func testPlayfulItemsReachFriends() {
@@ -121,14 +176,27 @@ final class PartyPetAppearanceTests: XCTestCase {
         let pirate = PetProfile(name: "Kit", breed: .beagle, accessories: [.partyHat, .pirateHat])
         let pirateUpdate = PartyPetAppearance.update(for: pirate)
         XCTAssertEqual(pirateUpdate.costume, "pirate")
-        XCTAssertEqual(pirateUpdate.accessories, [])
+        XCTAssertEqual(pirateUpdate.accessories, ["pirate-hat"])
         XCTAssertEqual(PartyPetAppearance.pet(for: profile(from: pirateUpdate)).accessories, [.pirateHat])
+    }
+
+    /// A self-hosted server still on catalog version 1 gets what it takes.
+    func testAnUpdateForCatalogVersion1KeepsOnlyWhatItKnows() {
+        let pet = PetProfile(name: "Nova", breed: .corgi, outfit: .dinosaurHoodie,
+                             accessories: [.scarf, .heartGlasses, .wizardHat, .angelWings])
+        let update = PartyPetAppearance.update(for: pet).forCatalogVersion1()
+        XCTAssertEqual(update.costume, "hoodie")
+        XCTAssertEqual(update.accessories, ["scarf"])
+        XCTAssertEqual(update.colors?.count, 6)
+        let surgeon = PartyPetAppearance.update(for: PetProfile(name: "Doc", breed: .corgi, accessories: [.surgicalCap]))
+        XCTAssertEqual(surgeon.forCatalogVersion1().costume, "surgical-cap")
+        XCTAssertEqual(surgeon.forCatalogVersion1().accessories, [])
     }
 
     func testUnknownServerValuesFallBackInsteadOfFailing() {
         let pet = PartyPetAppearance.pet(for: PartyProfile(
             code: "K7QW2MZD", name: "Ana", petName: "", species: "dragon", breed: "wyvern",
-            colors: ["nope", "#123456"], costume: "santa", accessories: ["halo", "glasses"]
+            colors: ["nope", "#123456"], costume: "santa", accessories: ["jetpack", "glasses"]
         ))
         XCTAssertEqual(pet.breed, PetProfile.starter(.cat).breed)
         XCTAssertEqual(pet.name, pet.breed.displayName)

@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import catalog from "../shared/catalog.json";
 import { LIVE_IDLE_S, RETENTION_SWEEP_S, type Hub } from "../src/hub";
 import { STUDY_DAY_RETENTION_DAYS } from "../src/leaderboard";
-import { utcDay } from "../src/lib";
-import { call, hub, pinClockToMinuteStart, register } from "./helpers";
+import { FRIEND_REQUEST_EXPIRY_DAYS, utcDay } from "../src/lib";
+import { call, hub, pinClockToMinuteStart, register, befriend } from "./helpers";
 
 const EXPIRY = catalog.limits.partyIdleExpirySeconds;
 const nowS = () => Math.floor(Date.now() / 1000);
@@ -62,6 +62,25 @@ describe("retention sweep", () => {
     expect(await rows("SELECT day FROM study_days WHERE code = ?", a.code)).toEqual([{ day: keep }]);
   });
 
+  it(`drops friend requests after ${FRIEND_REQUEST_EXPIRY_DAYS} days, answered or not`, async () => {
+    const a = await register();
+    const b = await register();
+    const c = await register();
+    // A day no other test's once-a-day sweep reaches (see the study minutes test).
+    advance(2000 * 86_400);
+    const cutoff = nowS() - FRIEND_REQUEST_EXPIRY_DAYS * 86_400;
+    await runInDurableObject(hub(), (_hub: Hub, state) => {
+      const sql = state.storage.sql;
+      sql.exec("INSERT INTO friend_requests (sender, recipient, created_at) VALUES (?, ?, ?)", a.code, b.code, cutoff - 1);
+      sql.exec("INSERT INTO friend_requests (sender, recipient, created_at, declined_at) VALUES (?, ?, ?, ?)", c.code, b.code, cutoff - 1, cutoff);
+      sql.exec("INSERT INTO friend_requests (sender, recipient, created_at) VALUES (?, ?, ?)", a.code, c.code, cutoff);
+    });
+
+    expect(await runDurableObjectAlarm(hub())).toBe(true);
+    expect(await rows("SELECT sender, recipient FROM friend_requests WHERE sender IN (?, ?)", a.code, c.code))
+      .toEqual([{ sender: a.code, recipient: c.code }]);
+  });
+
   it("deletes identity token hashes once their token has expired", async () => {
     await register();
     await runInDurableObject(hub(), (_hub: Hub, state) => {
@@ -95,7 +114,7 @@ describe("retention sweep", () => {
     expect(await rows("SELECT minutes FROM study_days WHERE code = ?", a.code)).toEqual([{ minutes: 12 }]);
 
     // Back from the row, the user shows offline to friends with the minutes they studied.
-    await call("POST", "/v1/friends", { code: a.code }, b.token);
+    await befriend(b, a);
     const { friends } = (await call("GET", "/v1/friends", undefined, b.token)).body;
     expect(friends[0].profile.code).toBe(a.code);
     expect(friends[0].presence).toMatchObject({ status: "offline", todayMinutes: 12, lastSeen });

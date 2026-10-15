@@ -474,19 +474,46 @@ final class PartyStore: ObservableObject {
         }
     }
 
+    /// Asks someone to be friends by their code. They show as "Request
+    /// sent" until they accept, or as a friend at once when they had asked
+    /// me first.
     func addFriend(code text: String) {
         guard let code = PartyCode.normalize(text, length: PartyCode.friendCodeLength) else {
-            notice = "Friend codes are \(PartyCode.friendCodeLength) letters and digits."
+            notice = String(localized: "Friend codes are \(PartyCode.friendCodeLength) letters and digits.", bundle: .tabbi)
             return
         }
         run(.addFriend) { store, account in
-            let (_, friend) = try await account.perform { try await $0.addFriend(code: code) }
-            store.state.didAddFriend(friend, at: Date())
+            let addition = try await account.perform { try await $0.addFriend(code: code) }
+            store.state.didAsk(addition, at: Date())
+            store.plan.invalidate(.friends)
+            if case .requested(let profile) = addition {
+                store.confirm(String(localized: "Request sent to \(profile.name).", bundle: .tabbi))
+            }
+        }
+    }
+
+    /// Accepts the friend request someone sent me. The demo makes them a
+    /// friend on the spot.
+    func acceptFriend(_ request: PartyFriendRequest) {
+        let code = request.profile.code
+        if isDemo {
+            state.didAddFriend(request.profile, at: Date())
+            return
+        }
+        run(.acceptFriend(code)) { store, account in
+            let addition = try await account.perform { try await $0.acceptFriend(code: code) }
+            store.state.didAddFriend(addition.profile, at: Date())
             store.plan.invalidate(.friends)
         }
     }
 
+    /// Ends a friendship, cancels my request, or declines theirs. A decline
+    /// is quiet: the sender is never told. The demo just drops the row.
     func removeFriend(code: String) {
+        if isDemo, !state.friends.contains(where: { $0.profile.code == code }) {
+            state.didRemoveFriend(code: code)
+            return
+        }
         run(.removeFriend(code)) { store, account in
             _ = try await account.perform { try await $0.removeFriend(code: code) }
             store.state.didRemoveFriend(code: code)
@@ -502,7 +529,7 @@ final class PartyStore: ObservableObject {
 
     func joinParty(code text: String) {
         guard let code = PartyCode.normalize(text, length: PartyCode.partyCodeLength) else {
-            notice = "Party codes are \(PartyCode.partyCodeLength) letters and digits."
+            notice = String(localized: "Party codes are \(PartyCode.partyCodeLength) letters and digits.", bundle: .tabbi)
             return
         }
         run(.joinParty) { store, account in
@@ -632,7 +659,7 @@ final class PartyStore: ObservableObject {
         blocked = [user] + (blocked ?? []).filter { $0.code != user.code }
         plan.invalidate(.friends)
         plan.invalidate(.party)
-        confirm("Blocked \(user.name). Unblock them in Party options.")
+        confirm(String(localized: "Blocked \(user.name). Unblock them in Party options.", bundle: .tabbi))
     }
 
     /// Lifts a block from the Blocked list. The friendship stays ended.
@@ -679,7 +706,7 @@ final class PartyStore: ObservableObject {
         guard let profile = reporting else { return }
         if isDemo {
             reporting = nil
-            confirm("This is a demo. No report was sent.")
+            confirm(String(localized: "This is a demo. No report was sent.", bundle: .tabbi))
             return
         }
         let report = PartyReport(code: profile.code, reason: reason, note: note)
@@ -689,9 +716,9 @@ final class PartyStore: ObservableObject {
             if alsoBlock {
                 let (_, user) = try await account.perform { try await $0.block(code: profile.code) }
                 store.didBlock(user)
-                store.confirm("Thanks. Your report was sent and \(profile.name) is blocked.")
+                store.confirm(String(localized: "Thanks. Your report was sent and \(profile.name) is blocked.", bundle: .tabbi))
             } else {
-                store.confirm("Thanks. Your report was sent.")
+                store.confirm(String(localized: "Thanks. Your report was sent.", bundle: .tabbi))
             }
         }
     }
@@ -706,7 +733,7 @@ final class PartyStore: ObservableObject {
         guard pending == nil else { return }
         clearNotice()
         if isDemo {
-            notice = "This is a demo. Run without TABBI_DEMO to study with friends."
+            notice = String(localized: "This is a demo. Run without TABBI_DEMO to study with friends.", bundle: .tabbi)
             return
         }
         guard let account else { return }
@@ -765,11 +792,11 @@ final class PartyStore: ObservableObject {
             do {
                 switch flow.invite {
                 case .addFriend(let code):
-                    let (added, friend) = try await account.perform { try await $0.addFriend(code: code) }
+                    let addition = try await account.perform { try await $0.addFriend(code: code) }
                     guard let self else { return }
-                    state.didAddFriend(friend, at: Date())
+                    state.didAsk(addition, at: Date())
                     plan.invalidate(.friends)
-                    invite?.didAddFriend(friend, added: added)
+                    invite?.didAsk(addition)
                 case .joinParty(let code):
                     let party = try await account.perform { try await $0.joinParty(code: code) }
                     guard let self else { return }
@@ -824,8 +851,8 @@ final class PartyStore: ObservableObject {
         case .addFriend(let code):
             var friend = PartyProfile.demoInvitee
             friend.code = code
-            state.didAddFriend(friend, at: now)
-            invite?.didAddFriend(friend, added: true)
+            state.didAsk(.requested(friend), at: now)
+            invite?.didAsk(.requested(friend))
         case .joinParty(let code):
             guard var party = PartyState.demo(.member, now: now).party else { return }
             party.code = code
@@ -902,6 +929,7 @@ final class PartyStore: ObservableObject {
             do {
                 let reply = try await account.perform { try await $0.heartbeat(body) }
                 guard let self, !Task.isCancelled else { return }
+                if let waiting = reply.incomingRequests { state.didCountWaitingRequests(waiting) }
                 delay = heartbeats.delayAfterSuccess(reply)
             } catch {
                 guard let self, !Task.isCancelled else { return }
@@ -998,8 +1026,8 @@ final class PartyStore: ObservableObject {
         do {
             switch feed {
             case .friends:
-                let friends = try await account.perform { try await $0.friends() }
-                state.didFetchFriends(.success(friends))
+                let list = try await account.perform { try await $0.friendList() }
+                state.didFetchFriendList(.success(list))
             case .party:
                 let party = try await account.perform { try await $0.party() }
                 state.didFetchParty(.success(party))
@@ -1009,7 +1037,7 @@ final class PartyStore: ObservableObject {
         } catch {
             let error = Self.partyError(error)
             switch feed {
-            case .friends: state.didFetchFriends(.failure(error))
+            case .friends: state.didFetchFriendList(.failure(error))
             case .party: state.didFetchParty(.failure(error))
             }
         }
@@ -1037,6 +1065,7 @@ final class PartyStore: ObservableObject {
 /// A panel action in flight.
 enum PartyAction: Hashable {
     case addFriend
+    case acceptFriend(String)
     case removeFriend(String)
     case createParty
     case joinParty

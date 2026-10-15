@@ -64,6 +64,12 @@ public actor PartyAccount {
     /// for example one a maintainer replaced) is left out and the rest sent
     /// again, so a refused name never takes Party offline; `refusedNames`
     /// says which, so the app can ask for another.
+    ///
+    /// A self-hosted server that still runs catalog version 1 refuses the
+    /// newer outfit and accessory ids as an invalid field; the profile is
+    /// then sent again as that catalog takes it
+    /// (`PartyProfileUpdate.forCatalogVersion1()`), so Party stays online
+    /// and friends see what that server can carry.
     @discardableResult
     public func connect(profile update: PartyProfileUpdate) async throws -> PartyProfile {
         var update = update
@@ -74,6 +80,10 @@ public actor PartyAccount {
                 refusedNames = refused
                 return profile
             } catch let error as PartyError {
+                if case .invalidRequest = error, update.forCatalogVersion1() != update {
+                    update = update.forCatalogVersion1()
+                    continue
+                }
                 guard let refusal = PartyNameRefusal(error), !refused.contains(refusal) else { throw error }
                 refused.insert(refusal)
                 update = update.removing(refusal)

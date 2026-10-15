@@ -11,6 +11,7 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
   `kit.v1.schema.json` describes kit files (`formatVersion` 1), bundled in `Sources/TabbiKitCore/Kits/Bundled` or imported; see `docs/kits.md`.
   `edition.v1.schema.json` describes the edition files in `Sources/TabbiKitCore/Editions/BundledEditions`.
   `catalog.v1.schema.json` describes the Party catalog, `backend/shared/catalog.json`.
+  `party.v1.schema.json` is the Party wire contract: every request body and reply the apps and the server exchange (endpoints and errors in `docs/study/backend-api.md`, versioning in `docs/party-compatibility.md`); `backend/test/compat.test.ts` checks the server's replies against it.
   `SharedSchemaTests` keeps the kit and edition schemas' fields, limits and patterns equal to the Swift decoders, and the catalog schema equal to the catalog's fields.
 - `fixtures/` holds golden fixtures written by the Swift tests.
   Each port checks its own output against them, so drift between the apps fails a test.
@@ -18,12 +19,13 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
   `focus-timer/` pins the shared Pomodoro: its steps, readouts, shared focus clock and logged activity;
   `study-session/` pins the Study tab's timer for every method: its steps, the dial, buttons and pet, the shared focus clock and the logged phases;
   `ticker/` pins which items the closed notch can show, when it next has to look again, and which one the rotation picks;
-  `plan-my-day/` pins Plan my day: free time, the on-device and study planners, the Claude prompt and how its answers are read, and the proposal the user adds to the calendar.
+  `plan-my-day/` pins Plan my day: free time, the on-device and study planners, the Claude prompt and how its answers are read, and the proposal the user adds to the calendar;
+  `party/` pins the Party protocol: the server id of every outfit and accessory, the profile bodies sample pets send, and how sample replies (from this, an older and a newer server) read, down to the pet drawn for each profile.
 
 Fixtures are regenerated only on purpose, after an intended change:
 
 ```sh
-TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|ThemeGoldenTests|StudyMethodGoldenTests|ClaudeStreamGoldenTests|FocusTimerGoldenTests|StudySessionGoldenTests|TickerGoldenTests|PlanMyDayGoldenTests'
+TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|ThemeGoldenTests|StudyMethodGoldenTests|ClaudeStreamGoldenTests|FocusTimerGoldenTests|StudySessionGoldenTests|TickerGoldenTests|PlanMyDayGoldenTests|PartyProtocolGoldenTests'
 ```
 
 Review the diff before committing it: every changed line is a pixel, color or timing that changed for users.

@@ -187,12 +187,16 @@
 	<string>%@のあいさつに使われます。</string>
 	<key>%@ visited the bakery</key>
 	<string>%@がパン屋さんに寄った</string>
+	<key>%@ wants to be friends</key>
+	<string>%@からフレンド申請が届いています</string>
 	<key>%@ watched a cloud shaped like a fish</key>
 	<string>%@が魚の形の雲を見た</string>
 	<key>%@ went around the park twice</key>
 	<string>%@が公園を2周した</string>
 	<key>%@ with %@</key>
 	<string>%1$@と%2$@</string>
+	<key>%@ with %@ wants to be friends.</key>
+	<string>%1$@と%2$@からフレンド申請が届いています。</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>%@はアプリケーションフォルダから使うのがおすすめです。ログイン時に自動で開き、自分でアップデートできます。自分をそこにコピーして、もう一度開きます。</string>
 	<key>%@ · Paused</key>
@@ -369,6 +373,10 @@
 	<string>APIキー</string>
 	<key>About</key>
 	<string>情報</string>
+	<key>Accept</key>
+	<string>承認</string>
+	<key>Accept %@'s friend request</key>
+	<string>%@のフレンド申請を承認</string>
 	<key>Access is off</key>
 	<string>アクセスがオフです</string>
 	<key>Account</key>
@@ -667,6 +675,8 @@
 	<string>%@をブロック</string>
 	<key>Blocked</key>
 	<string>ブロック中</string>
+	<key>Blocked %@. Unblock them in Party options.</key>
+	<string>%@をブロックしました。パーティのオプションで解除できます。</string>
 	<key>Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.</key>
 	<string>ブロックした人はあなたを見たり、追加したり、パーティに参加したりできません。ブロックや報告はパーティで右クリック。</string>
 	<key>Blocks go to your calendar.</key>
@@ -739,6 +749,10 @@
 	<string>このサーバーは使えません</string>
 	<key>Cancel</key>
 	<string>キャンセル</string>
+	<key>Cancel Request</key>
+	<string>申請を取り消す</string>
+	<key>Cancel your request to %@</key>
+	<string>%@への申請を取り消す</string>
 	<key>Caramel</key>
 	<string>キャラメル</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -1071,6 +1085,10 @@
 	<string>1回以上復習した連続日数</string>
 	<key>Deck not found</key>
 	<string>デッキが見つかりません</string>
+	<key>Decline</key>
+	<string>拒否</string>
+	<key>Decline %@'s request. They won't be told.</key>
+	<string>%@の申請を拒否します。相手には通知されません。</string>
 	<key>Deep</key>
 	<string>ディープ</string>
 	<key>Deep focus</key>
@@ -1369,8 +1387,12 @@
 	<string>今後7日間の勤務時間の空き (予定の前後に余裕あり)</string>
 	<key>Friend code</key>
 	<string>フレンドコード</string>
-	<key>Friend code %@. You'll see each other's pets and study time.</key>
-	<string>フレンドコード %@。お互いのペットと勉強時間が見られます。</string>
+	<key>Friend code %@. Accept to see each other's pets and study time.</key>
+	<string>フレンドコード %@。承認すると、お互いのペットと勉強時間が見られます。</string>
+	<key>Friend code %@. Once they accept, you'll see each other's pets and study time.</key>
+	<string>フレンドコード %@。相手が承認すると、お互いのペットと勉強時間が見られます。</string>
+	<key>Friend codes are %lld letters and digits.</key>
+	<string>フレンドコードは英数字%lld文字です。</string>
 	<key>Friend's code</key>
 	<string>フレンドコード</string>
 	<key>Friends</key>
@@ -2235,6 +2257,8 @@
 	<string>パーティコード %@。参加しているみんなと一緒に勉強しましょう。</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
 	<string>パーティコード %@。参加しているみんなと一緒に勉強しましょう。今のパーティからは抜けます。</string>
+	<key>Party codes are %lld letters and digits.</key>
+	<string>パーティコードは英数字%lld文字です。</string>
 	<key>Party invite</key>
 	<string>パーティへの招待</string>
 	<key>Party is for people %lld and older.</key>
@@ -2535,6 +2559,14 @@
 	<string>%@を報告…</string>
 	<key>Report a problem: %@</key>
 	<string>問題を報告: %@</string>
+	<key>Request</key>
+	<string>申請</string>
+	<key>Request sent</key>
+	<string>申請済み</string>
+	<key>Request sent to %@</key>
+	<string>%@に申請を送りました</string>
+	<key>Request sent to %@.</key>
+	<string>%@に申請を送りました。</string>
 	<key>Reset to Default</key>
 	<string>デフォルトに戻す</string>
 	<key>Reset to Defaults</key>
@@ -2580,7 +2612,7 @@
 	<key>Right-click to remove, report or block.</key>
 	<string>右クリックで削除、報告、ブロックができます。</string>
 	<key>Right-click to report or block.</key>
-	<string>右クリックで報告やブロックができます。</string>
+	<string>右クリックで報告、ブロックができます。</string>
 	<key>Round %lld of %lld</key>
 	<string>ラウンド %1$lld/%2$lld</string>
 	<key>Round Glasses</key>
@@ -2649,6 +2681,8 @@
 	<string>AIへのリクエストを%@に送信しますか?</string>
 	<key>Sends what you ask to %@.</key>
 	<string>質問内容は%@に送信されます。</string>
+	<key>Sent</key>
+	<string>送信済み</string>
 	<key>Server</key>
 	<string>サーバー</string>
 	<key>Session done. Nice work!</key>
@@ -2843,6 +2877,8 @@
 	<string>パーティを作成</string>
 	<key>Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.</key>
 	<string>パーティを作ってコードを共有するか、友達のパーティに参加しましょう。集中している間、ペットが並んで座ります。</string>
+	<key>Start a party, or join a friend's.</key>
+	<string>パーティを始めるか、フレンドのパーティに参加しましょう。</string>
 	<key>Start a timer</key>
 	<string>タイマーを開始</string>
 	<key>Start break</key>
@@ -3047,6 +3083,12 @@
 	<string>テスト</string>
 	<key>Test it</key>
 	<string>テスト</string>
+	<key>Thanks. Your report was sent and %@ is blocked.</key>
+	<string>ありがとうございます。報告を送信し、%@をブロックしました。</string>
+	<key>Thanks. Your report was sent.</key>
+	<string>ありがとうございます。報告を送信しました。</string>
+	<key>That friend request is no longer there.</key>
+	<string>そのフレンド申請はもうありません。</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
 	<string>そのキーはショートカットに使えません。文字、数字、またはスペースを試してください。</string>
 	<key>That name and your pet's name aren't allowed. Please pick others.</key>
@@ -3181,8 +3223,12 @@
 	<string>アカウントと、サーバーに保存されているすべてのデータ（同期されたペットとポイント、フレンドコード、フレンド、パーティ）が削除されます。ペットはこのMacに残ります。この操作は取り消せません。</string>
 	<key>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</key>
 	<string>フレンドコード、フレンドに見えるプロフィールとペット、フレンドリスト、参加中のパーティ、勉強の連続記録がフレンドサーバーから削除されます。フレンドからは見えなくなります。ペットとポイントはこのMacに残ります。パーティをオンのままにすると新しいフレンドコードが発行されます。</string>
+	<key>This is a demo. No report was sent.</key>
+	<string>これはデモです。報告は送信されていません。</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>これはデモです。何も削除されていません。</string>
+	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
+	<string>これはデモです。フレンドと勉強するには TABBI_DEMO なしで起動してください。</string>
 	<key>This is usually short. Check again in a moment.</key>
 	<string>たいていすぐに終わります。少ししてからもう一度確認してください。</string>
 	<key>This is what needs fixing</key>
@@ -3405,8 +3451,12 @@
 	<string>Anki の起動を待っています</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>Anki の起動を待って %@ を開きます</string>
+	<key>Waiting: %lld</key>
+	<string>待機中: %lld</string>
 	<key>Walk through the steps to connect %@</key>
 	<string>%@に接続する手順を見る</string>
+	<key>Wants to be friends</key>
+	<string>フレンド申請中</string>
 	<key>Wardrobe</key>
 	<string>ワードローブ</string>
 	<key>Water carves canyons by never skipping a day.</key>
@@ -3513,6 +3563,8 @@
 	<string>あなた</string>
 	<key>You already have 50 friends.</key>
 	<string>フレンドがすでに50人います。</string>
+	<key>You asked %@ to be friends. You'll see each other once they accept.</key>
+	<string>%@にフレンド申請を送りました。承認されるとお互いが表示されます。</string>
 	<key>You blocked %@</key>
 	<string>%@をブロックしています</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
@@ -3535,12 +3587,16 @@
 	<string>気が乗らなくても、やった。秘訣はそれだけ。</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>毎週フリーズが1つ無料でもらえ、ほかに%lld個まで持てます。</string>
+	<key>You have 50 friend requests waiting. Cancel some first.</key>
+	<string>返事待ちのフレンド申請が50件あります。先にいくつか取り消してください。</string>
 	<key>You joined the party</key>
 	<string>パーティに参加しました</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>今日は%@勉強しました。ゆっくり休んで、明日また始めましょう。</string>
 	<key>You started it for the party</key>
 	<string>あなたがパーティ用に開始</string>
+	<key>You'll be friends once they accept.</key>
+	<string>相手が承認するとフレンドになります。</string>
 	<key>You'll see %@ in your Party tab.</key>
 	<string>パーティタブに%@が表示されます。</string>
 	<key>You're already in this party</key>
@@ -3555,6 +3611,8 @@
 	<string>今はあなただけです。</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>ブロックした人が多すぎます。先に誰かのブロックを解除してください。</string>
+	<key>You've sent a lot of friend requests today. Try again tomorrow.</key>
+	<string>今日はフレンド申請をたくさん送りました。明日もう一度お試しください。</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
 	<string>今日は報告が多すぎます。明日またお試しください。</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>

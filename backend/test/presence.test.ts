@@ -2,7 +2,7 @@ import { env, runInDurableObject } from "cloudflare:test";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import catalog from "../shared/catalog.json";
 import type { Hub } from "../src/hub";
-import { call, expectError, pinClockToMinuteStart, register } from "./helpers";
+import { call, expectError, pinClockToMinuteStart, register, befriend } from "./helpers";
 
 const now = () => Math.floor(Date.now() / 1000);
 
@@ -19,8 +19,8 @@ async function storedPresence(code: string) {
     state.storage.sql.exec("SELECT * FROM presence WHERE code = ?", code).toArray()[0] ?? null);
 }
 
-async function friends(a: { token: string }, b: { code: string }) {
-  await call("POST", "/v1/friends", { code: b.code }, a.token);
+async function friends(a: { code: string; token: string }, b: { code: string; token: string }) {
+  await befriend(a, b);
 }
 
 beforeEach(pinClockToMinuteStart);
@@ -44,6 +44,7 @@ describe("presence", () => {
         day: new Date().toISOString().slice(0, 10), lastSeen: expect.any(Number),
       },
       heartbeatSeconds: catalog.heartbeatSeconds.studying,
+      incomingRequests: 0,
     });
     expect(Math.abs(r.body.presence.lastSeen - now())).toBeLessThanOrEqual(2);
 

@@ -187,12 +187,16 @@
 	<string>%@가 인사할 때 불러요.</string>
 	<key>%@ visited the bakery</key>
 	<string>%@가 빵집에 들렀어요</string>
+	<key>%@ wants to be friends</key>
+	<string>%@ 님이 친구가 되고 싶어 해요</string>
 	<key>%@ watched a cloud shaped like a fish</key>
 	<string>%@가 물고기 구름을 봤어요</string>
 	<key>%@ went around the park twice</key>
 	<string>%@가 공원을 두 바퀴 돌았어요</string>
 	<key>%@ with %@</key>
 	<string>%1$@ 및 %2$@</string>
+	<key>%@ with %@ wants to be friends.</key>
+	<string>%1$@ 님과 %2$@이(가) 친구가 되고 싶어 해요.</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>%@은(는) 응용 프로그램 폴더에서 가장 잘 작동해요. 로그인할 때 열리고 스스로 업데이트할 수 있거든요. 그곳으로 복사한 뒤 다시 열려요.</string>
 	<key>%@ · Paused</key>
@@ -369,6 +373,10 @@
 	<string>API 키</string>
 	<key>About</key>
 	<string>정보</string>
+	<key>Accept</key>
+	<string>수락</string>
+	<key>Accept %@'s friend request</key>
+	<string>%@ 님의 친구 요청 수락</string>
 	<key>Access is off</key>
 	<string>접근이 꺼져 있어요</string>
 	<key>Account</key>
@@ -667,6 +675,8 @@
 	<string>%@ 차단</string>
 	<key>Blocked</key>
 	<string>차단됨</string>
+	<key>Blocked %@. Unblock them in Party options.</key>
+	<string>%@ 님을 차단했어요. 파티 옵션에서 해제할 수 있어요.</string>
 	<key>Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.</key>
 	<string>차단한 사람은 나를 보거나 추가하거나 내 파티에 참여할 수 없어요. 차단이나 신고는 파티에서 오른쪽 클릭하세요.</string>
 	<key>Blocks go to your calendar.</key>
@@ -739,6 +749,10 @@
 	<string>이 서버를 사용할 수 없어요</string>
 	<key>Cancel</key>
 	<string>취소</string>
+	<key>Cancel Request</key>
+	<string>요청 취소</string>
+	<key>Cancel your request to %@</key>
+	<string>%@ 님에게 보낸 요청 취소</string>
 	<key>Caramel</key>
 	<string>캐러멜</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -1071,6 +1085,10 @@
 	<string>하루 한 번 이상 복습한 연속 일수</string>
 	<key>Deck not found</key>
 	<string>덱을 찾을 수 없어요</string>
+	<key>Decline</key>
+	<string>거절</string>
+	<key>Decline %@'s request. They won't be told.</key>
+	<string>%@ 님의 요청을 거절해요. 상대에게 알리지 않아요.</string>
 	<key>Deep</key>
 	<string>딥</string>
 	<key>Deep focus</key>
@@ -1369,8 +1387,12 @@
 	<string>앞으로 7일간 근무 시간 중 여유 시간 (일정 앞뒤 여유 포함)</string>
 	<key>Friend code</key>
 	<string>친구 코드</string>
-	<key>Friend code %@. You'll see each other's pets and study time.</key>
-	<string>친구 코드 %@. 서로의 펫과 공부 시간을 볼 수 있어요.</string>
+	<key>Friend code %@. Accept to see each other's pets and study time.</key>
+	<string>친구 코드 %@. 수락하면 서로의 펫과 공부 시간을 볼 수 있어요.</string>
+	<key>Friend code %@. Once they accept, you'll see each other's pets and study time.</key>
+	<string>친구 코드 %@. 상대가 수락하면 서로의 펫과 공부 시간을 볼 수 있어요.</string>
+	<key>Friend codes are %lld letters and digits.</key>
+	<string>친구 코드는 영문과 숫자 %lld자예요.</string>
 	<key>Friend's code</key>
 	<string>친구 코드</string>
 	<key>Friends</key>
@@ -2235,6 +2257,8 @@
 	<string>파티 코드 %@. 모두와 함께 공부해요.</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
 	<string>파티 코드 %@. 모두와 함께 공부해요. 지금 있는 파티에서는 나가게 돼요.</string>
+	<key>Party codes are %lld letters and digits.</key>
+	<string>파티 코드는 영문과 숫자 %lld자예요.</string>
 	<key>Party invite</key>
 	<string>파티 초대</string>
 	<key>Party is for people %lld and older.</key>
@@ -2535,6 +2559,14 @@
 	<string>%@ 신고…</string>
 	<key>Report a problem: %@</key>
 	<string>문제 신고: %@</string>
+	<key>Request</key>
+	<string>요청</string>
+	<key>Request sent</key>
+	<string>요청 보냄</string>
+	<key>Request sent to %@</key>
+	<string>%@ 님에게 요청을 보냈어요</string>
+	<key>Request sent to %@.</key>
+	<string>%@ 님에게 요청을 보냈어요.</string>
 	<key>Reset to Default</key>
 	<string>기본값으로 재설정</string>
 	<key>Reset to Defaults</key>
@@ -2649,6 +2681,8 @@
 	<string>AI 요청을 %@에 보낼까요?</string>
 	<key>Sends what you ask to %@.</key>
 	<string>질문한 내용은 %@에 보내져요.</string>
+	<key>Sent</key>
+	<string>보냄</string>
 	<key>Server</key>
 	<string>서버</string>
 	<key>Session done. Nice work!</key>
@@ -2843,6 +2877,8 @@
 	<string>파티 시작</string>
 	<key>Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.</key>
 	<string>파티를 만들어 코드를 공유하거나 친구의 파티에 참가하세요. 집중하는 동안 펫들이 나란히 앉아 있어요.</string>
+	<key>Start a party, or join a friend's.</key>
+	<string>파티를 시작하거나 친구의 파티에 참여하세요.</string>
 	<key>Start a timer</key>
 	<string>타이머 시작</string>
 	<key>Start break</key>
@@ -3047,6 +3083,12 @@
 	<string>테스트</string>
 	<key>Test it</key>
 	<string>테스트</string>
+	<key>Thanks. Your report was sent and %@ is blocked.</key>
+	<string>고마워요. 신고를 보냈고 %@ 님을 차단했어요.</string>
+	<key>Thanks. Your report was sent.</key>
+	<string>고마워요. 신고를 보냈어요.</string>
+	<key>That friend request is no longer there.</key>
+	<string>그 친구 요청은 더 이상 없어요.</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
 	<string>그 키는 단축키에 쓸 수 없어요. 글자, 숫자 또는 Space를 써 보세요.</string>
 	<key>That name and your pet's name aren't allowed. Please pick others.</key>
@@ -3181,8 +3223,12 @@
 	<string>계정과 서버에 보관된 모든 데이터(동기화된 펫과 포인트 사본, 친구 코드, 친구, 파티)가 삭제돼요. 펫은 이 Mac에 남아요. 이 작업은 되돌릴 수 없어요.</string>
 	<key>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</key>
 	<string>친구 서버에서 친구 코드, 친구에게 보이는 프로필과 펫, 친구 목록, 파티 참여 정보, 공부 연속 기록이 삭제돼요. 친구에게 더 이상 보이지 않아요. 펫과 포인트는 이 Mac에 남아요. 파티를 계속 켜 두면 새 친구 코드를 받아요.</string>
+	<key>This is a demo. No report was sent.</key>
+	<string>데모예요. 신고는 보내지 않았어요.</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>데모예요. 아무것도 삭제되지 않았어요.</string>
+	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
+	<string>데모예요. 친구와 공부하려면 TABBI_DEMO 없이 실행하세요.</string>
 	<key>This is usually short. Check again in a moment.</key>
 	<string>보통 금방 풀려요. 잠시 후 다시 확인하세요.</string>
 	<key>This is what needs fixing</key>
@@ -3405,8 +3451,12 @@
 	<string>Anki가 켜지길 기다리는 중</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>Anki가 켜지면 %@ 덱을 열어요</string>
+	<key>Waiting: %lld</key>
+	<string>대기 중: %lld</string>
 	<key>Walk through the steps to connect %@</key>
 	<string>단계별로 연결하기: %@</string>
+	<key>Wants to be friends</key>
+	<string>친구 요청</string>
 	<key>Wardrobe</key>
 	<string>옷장</string>
 	<key>Water carves canyons by never skipping a day.</key>
@@ -3513,6 +3563,8 @@
 	<string>나</string>
 	<key>You already have 50 friends.</key>
 	<string>이미 친구가 50명이에요.</string>
+	<key>You asked %@ to be friends. You'll see each other once they accept.</key>
+	<string>%@ 님에게 친구 요청을 보냈어요. 상대가 수락하면 서로 볼 수 있어요.</string>
 	<key>You blocked %@</key>
 	<string>%@ 님을 차단했어요</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
@@ -3535,12 +3587,16 @@
 	<string>하기 싫었는데도 해냈어요. 비결은 그게 전부예요.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>매주 보호 하나를 무료로 받고, %lld개까지 더 가지고 있을 수 있어요.</string>
+	<key>You have 50 friend requests waiting. Cancel some first.</key>
+	<string>응답을 기다리는 친구 요청이 50개예요. 먼저 몇 개를 취소하세요.</string>
 	<key>You joined the party</key>
 	<string>파티에 참여했어요</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>오늘 %@ 공부했어요. 푹 쉬고 내일 새롭게 시작해요.</string>
 	<key>You started it for the party</key>
 	<string>내가 파티를 위해 시작했어요</string>
+	<key>You'll be friends once they accept.</key>
+	<string>상대가 수락하면 친구가 돼요.</string>
 	<key>You'll see %@ in your Party tab.</key>
 	<string>파티 탭에서 %@을(를) 볼 수 있어요.</string>
 	<key>You're already in this party</key>
@@ -3555,6 +3611,8 @@
 	<string>지금은 혼자예요.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>너무 많은 사람을 차단했어요. 먼저 누군가를 차단 해제하세요.</string>
+	<key>You've sent a lot of friend requests today. Try again tomorrow.</key>
+	<string>오늘 친구 요청을 많이 보냈어요. 내일 다시 시도하세요.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
 	<string>오늘 신고를 많이 보냈어요. 내일 다시 시도하세요.</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>

@@ -2,7 +2,7 @@ import { env } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MIN_ADMIN_TOKEN_LENGTH, RESTORE_WINDOW_S, isAdminToken } from "../src/admin";
 import { AUTH_FAILURES_PER_MIN } from "../src/lib";
-import { call, expectError, freshIp, pinClockToMinuteStart, register } from "./helpers";
+import { call, expectError, freshIp, pinClockToMinuteStart, register, befriend } from "./helpers";
 
 const admin = () => env.ADMIN_TOKEN as string;
 
@@ -83,7 +83,7 @@ describe("admin endpoints", () => {
   it("delete an account again, as DELETE /v1/me does, for deletions a restore brought back", async () => {
     const gone = await register();
     const friend = await register();
-    await call("POST", "/v1/friends", { code: gone.code }, friend.token);
+    await befriend(friend, gone);
     expectError(await call("DELETE", `/v1/admin/users/${gone.code}`, undefined, friend.token, freshIp()), 404, "not_found");
     const r = await call("DELETE", `/v1/admin/users/${gone.code.toLowerCase()}`, undefined, admin(), freshIp());
     expect(r.body).toEqual({ ok: true, deleted: true });
