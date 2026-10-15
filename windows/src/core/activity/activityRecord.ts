@@ -2,7 +2,7 @@ import type { ModuleID } from "../modules/moduleId";
 import { isJSONObject, type JSONObject } from "../persistence/json";
 import type { StudyPhaseOutcome } from "../studyMethods/studyPhaseRecord";
 import type { Instant } from "../time";
-import { dayKeyOf, type DayKey } from "./dayKey";
+import { plannerDayKeyOf as dayKeyOf, type PlannerDayKey as DayKey } from "../planner/plannerDayKey";
 import { formatISODate, parseISODate } from "./isoDate";
 
 /**
