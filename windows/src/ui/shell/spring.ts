@@ -1,22 +1,22 @@
 /*
  * SwiftUI's spring(duration:bounce:), so the island moves with the Mac's
- * curves (MotionTokens). A spring with duration d and bounce b is a unit mass
- * with stiffness (2 pi / d)^2 and damping 4 pi (1 - b) / d; bounce 0 is
- * critically damped and never overshoots.
+ * curves. The numbers and the duration and bounce to stiffness and damping
+ * conversion come from the core's port of MotionTokens and SpringSpec; this
+ * file only steps a value along the spring frame by frame.
  */
 
-export interface SpringSpec {
-  readonly duration: number;
-  readonly bounce: number;
-}
+import { MotionTokens } from "../../core/motion/motionTokens";
+import { SpringSpec as CoreSpringSpec, type SpringParameters } from "../../core/motion/springSpec";
 
-/* The Mac's motion tokens, in seconds. */
+export type SpringSpec = SpringParameters;
+
+/* The Mac's motion tokens the island plays, in seconds. */
 export const MOTION = {
-  open: { duration: 0.45, bounce: 0.2 },
-  close: { duration: 0.38, bounce: 0 },
-  hover: { duration: 0.25, bounce: 0.1 },
-  snappy: { duration: 0.26, bounce: 0.14 },
-  content: { duration: 0.34, bounce: 0.1 },
+  open: MotionTokens.open,
+  close: MotionTokens.close,
+  hover: MotionTokens.hover,
+  snappy: MotionTokens.snappy,
+  content: MotionTokens.content,
 } as const satisfies Record<string, SpringSpec>;
 
 export interface SpringValue {
@@ -34,9 +34,7 @@ const SUBSTEP = 1 / 1000;
  * value has come to rest, and then sits exactly on the target.
  */
 export function stepSpring(spring: SpringValue, target: number, spec: SpringSpec, dt: number): boolean {
-  const omega = (2 * Math.PI) / spec.duration;
-  const stiffness = omega * omega;
-  const damping = (4 * Math.PI * (1 - Math.max(0, spec.bounce))) / spec.duration;
+  const { stiffness, damping } = CoreSpringSpec.from(spec);
   let remaining = Math.min(dt, 0.1);
   while (remaining > 0) {
     const h = Math.min(SUBSTEP, remaining);
