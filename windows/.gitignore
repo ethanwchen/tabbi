@@ -1,0 +1,19 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+# The root .gitignore ignores every snapshots/ folder (the Mac's output); keep the
+# snapshot specs and ignore only what they render.
+!tests/snapshots/
+tests/snapshots/output/
+src-tauri/target/
+src-tauri/gen/
+# Generated from docs/brand/assets by `npm run icons`, never hand-made copies.
+src-tauri/icons/
+# Secrets: signing certificates, keys and the Tauri updater key pair.
+.env*
+*.pfx
+*.p12
+*.p8
+*.key
+*.key.pub

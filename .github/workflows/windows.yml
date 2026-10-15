@@ -1,0 +1,93 @@
+name: Windows
+
+# The Windows build (windows/): typecheck, lint and tests for the UI, fmt,
+# clippy and tests for the Rust host, and the snapshot run, whose PNGs are
+# uploaded for review. It also runs when the Mac data the UI reads changes.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "windows/**"
+      - "shared/**"
+      - "Sources/TabbiKitCore/**/*.json"
+      - "docs/brand/assets/**"
+      - ".github/workflows/windows.yml"
+  pull_request:
+    paths:
+      - "windows/**"
+      - "shared/**"
+      - "Sources/TabbiKitCore/**/*.json"
+      - "docs/brand/assets/**"
+      - ".github/workflows/windows.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: windows-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: Windows (UI, host, snapshots)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: windows
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Writing style
+        shell: bash
+        working-directory: .
+        run: scripts/check-style.sh
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+
+      - name: Rust toolchain
+        run: |
+          rustup toolchain install stable --profile minimal --component clippy,rustfmt
+          rustup default stable
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            windows/src-tauri/target
+          key: cargo-${{ runner.os }}-${{ hashFiles('windows/src-tauri/Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      - run: npm ci
+
+      # The host embeds the built UI and the generated icons at compile time.
+      - run: npm run icons
+      - run: npm run build
+
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+
+      - name: Host (fmt, clippy, test)
+        working-directory: windows/src-tauri
+        run: |
+          cargo fmt --check
+          cargo clippy --all-targets --locked -- -D warnings
+          cargo test --locked
+
+      - name: Snapshots
+        run: npm run snapshots
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-snapshots
+          path: windows/tests/snapshots/output
+          if-no-files-found: error
