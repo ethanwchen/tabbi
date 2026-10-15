@@ -15,7 +15,12 @@
     "isolatedModules": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@mac/*": ["./../Sources/TabbiKitCore/*"],
+      "@shared/*": ["./../shared/*"],
+      "@backend/*": ["./../backend/*"]
+    }
   },
   "include": ["src", "tests", "*.config.ts"]
 }

@@ -5,7 +5,7 @@
  * with Settings > Look.
  */
 
-import themes from "../../../Sources/TabbiKitCore/Themes/themes.json";
+import themes from "@mac/Themes/themes.json";
 
 export interface ThemeColor {
   readonly white?: number;

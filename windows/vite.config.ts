@@ -7,6 +7,13 @@ const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      "@mac": `${repoRoot}Sources/TabbiKitCore`,
+      "@shared": `${repoRoot}shared`,
+      "@backend": `${repoRoot}backend`,
+    },
+  },
   clearScreen: false,
   server: {
     port: 1420,

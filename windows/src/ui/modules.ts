@@ -5,7 +5,7 @@
  * src/modules/ with its real descriptor from phase 2 on, and this table goes.
  */
 
-import essentials from "../../../Sources/TabbiKitCore/Kits/Bundled/essentials.json";
+import essentials from "@mac/Kits/Bundled/essentials.json";
 
 export interface ModuleStub {
   readonly id: string;
