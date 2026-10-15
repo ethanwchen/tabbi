@@ -707,7 +707,7 @@ struct ClosetGoldenFixture: Codable, Equatable {
                                      calendar: calendar)
             var result = "bought"
             var missing: Int?
-            do {
+            do throws(StreakFreezePurchaseError) {
                 try ledger.buyStreakFreeze(for: streak, at: date(at))
             } catch {
                 switch error {

@@ -458,7 +458,7 @@ struct SyncDocumentGoldenFixture: Codable, Equatable {
     ]
 
     static let decodeInputs: [(String, String)] = {
-        let fullPet = #"{"profile":{"accessories":["roundGlasses","beanie"],"breed":"tuxedo","furTint":"#8A6BBE","name":"Pip","outfit":"scrubs","paletteOverrides":{"belly":"#F5E6D3"}},"updatedAt":"2027-01-15T08:00:00Z"}"#
+        let fullPet = ##"{"profile":{"accessories":["roundGlasses","beanie"],"breed":"tuxedo","furTint":"#8A6BBE","name":"Pip","outfit":"scrubs","paletteOverrides":{"belly":"#F5E6D3"}},"updatedAt":"2027-01-15T08:00:00Z"}"##
         func withPet(_ pet: String) -> String { #"{"schemaVersion":1,"pet":"# + pet + "}" }
         func withProfile(_ profile: String, updatedAt: String = #""2027-01-15T08:00:00Z""#) -> String {
             withPet(#"{"profile":"# + profile + #","updatedAt":"# + updatedAt + "}")
@@ -498,11 +498,11 @@ struct SyncDocumentGoldenFixture: Codable, Equatable {
             ("pet-without-breed-dropped", withProfile(#"{"name":"Rex"}"#)),
             ("pet-with-only-a-breed", withProfile(#"{"breed":"corgi"}"#)),
             ("pet-legacy-fur-base-becomes-the-tint",
-             withProfile(#"{"name":"Old","breed":"orangeTabby","paletteOverrides":{"furBase":"#aabbcc","furShade":"#112233","belly":"#FFFFFF","costumeBase":"#336699"}}"#)),
+             withProfile(##"{"name":"Old","breed":"orangeTabby","paletteOverrides":{"furBase":"#aabbcc","furShade":"#112233","belly":"#FFFFFF","costumeBase":"#336699"}}"##)),
             ("pet-null-fur-tint-keeps-fur-colors",
-             withProfile(#"{"name":"New","breed":"orangeTabby","furTint":null,"paletteOverrides":{"furBase":"#AABBCC","furShade":"#112233"}}"#)),
+             withProfile(##"{"name":"New","breed":"orangeTabby","furTint":null,"paletteOverrides":{"furBase":"#AABBCC","furShade":"#112233"}}"##)),
             ("pet-bad-colors-dropped",
-             withProfile(#"{"name":"Dots","breed":"calico","furTint":"blue","paletteOverrides":{"eye":"#00FF00","belly":"#abc","furSpot":"#11223344","nope":"#123456"}}"#)),
+             withProfile(##"{"name":"Dots","breed":"calico","furTint":"blue","paletteOverrides":{"eye":"#00FF00","belly":"#abc","furSpot":"#11223344","nope":"#123456"}}"##)),
             ("pet-name-cleaned", withProfile(#"{"name":"  Sir   Pounce-a-lot\n the Third  ","breed":"siamese"}"#)),
             ("pet-blank-name", withProfile(#"{"name":"   ","breed":"goldenRetriever"}"#)),
             ("pet-unknown-outfit-and-accessories",
