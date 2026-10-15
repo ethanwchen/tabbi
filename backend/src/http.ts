@@ -2,7 +2,7 @@
 export const CORS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Authorization, Content-Type, If-Match",
+  "Access-Control-Allow-Headers": "Authorization, Content-Type, If-Match, Tabbi-Protocol",
   "Access-Control-Expose-Headers": "ETag, Retry-After",
   "Access-Control-Max-Age": "86400",
 };

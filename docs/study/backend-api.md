@@ -1,6 +1,7 @@
 # Tabbi friends API (client contract)
 
-This is the contract between the Tabbi app and the `tabbi-friends` Cloudflare Worker in [`backend/`](../../backend).
+This is the contract between the Tabbi apps (Mac and Windows) and the `tabbi-friends` Cloudflare Worker in [`backend/`](../../backend).
+Its JSON is also a schema, [`shared/schemas/party.v1.schema.json`](../../shared/schemas/party.v1.schema.json), with golden fixtures in [`shared/fixtures/party/`](../../shared/fixtures/party), and every change follows [the compatibility policy](../party-compatibility.md).
 Deployment, architecture and the free-tier math are in [`backend/README.md`](../../backend/README.md); what is stored is in [`backend/PRIVACY.md`](../../backend/PRIVACY.md).
 
 ## Basics
@@ -23,6 +24,9 @@ Deployment, architecture and the free-tier math are in [`backend/README.md`](../
 - Every reply is JSON with `ok: true` on success, or `ok: false` with `error` (a stable code) and `message` (English, for logs only) on failure.
   Branch on `error`, never on `message`.
 - Replies are `Cache-Control: no-store`; CORS is open (`*`), so a web client works too.
+- Every app request sends `Tabbi-Protocol: 2`, the Party protocol it speaks; a request without the header is protocol 1 (apps up to 1.0.0).
+  The server keeps the highest protocol each user's apps sent and serves every protocol from `minProtocol` up (see [compatibility](../party-compatibility.md)).
+- Replies may gain fields at any time: ignore what you do not know, and draw a pet without any id you do not know.
 
 ### Identity and auth
 
@@ -69,11 +73,15 @@ What friends and party members see of a user.
 | `petName` | text, at most 24 characters, same cleaning | `buddy` |
 | `species` | `catalog.species` (`cat`, `dog`) | `cat` |
 | `breed` | must belong to the species in `catalog.breeds` | first breed of the species |
-| `colors` | array of at most 6 `#RRGGBB` strings, returned upper case | `[]` |
+| `colors` | array of at most 10 `#RRGGBB` strings, returned upper case | `[]` |
 | `costume` | `catalog.costumes` | `none` |
-| `accessories` | at most 4 distinct ids from `catalog.accessories` | `[]` |
+| `accessories` | at most 8 distinct ids from `catalog.accessories` | `[]` |
 | `points` | integer 0 to 100,000,000 | `0` |
 | `level` | integer 1 to 999 | `1` |
+
+The Tabbi app sends the pet as its owner sees it in the Closet: the outfit in `costume`, every worn item (hats, glasses, neck, back and aura items) in `accessories`, and `colors` in the order furBase, furShade, furAccent, furSpot, belly, costumeBase, costumeShade, costumeTrim, accessoryBase, accessoryShade.
+Catalog version 1 apps sent six colors, and a medical or costume hat in `costume` when no outfit was worn; the app still does that for them, and reads it (see [compatibility](../party-compatibility.md#pets-across-versions)).
+`shared/fixtures/party/party.json` lists the server id of every outfit and accessory the app draws.
 
 Friends lists and party rosters add `badges` to each profile: the ids of the entitlements that user holds that show a badge, `["founding"]` for a Founding Member (see [the economy doc](../economy.md#founding-member)) and `[]` otherwise.
 The app cannot write it.
@@ -158,9 +166,10 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `GET /v1/me` | token | my profile |
 | `PATCH /v1/me` | token | update my profile |
 | `DELETE /v1/me` | token | delete me and everything about me |
-| `GET /v1/friends` | token | my friends with profile, presence and party |
-| `POST /v1/friends` | token | add a friend by code |
-| `DELETE /v1/friends/{code}` | token | remove a friend |
+| `GET /v1/friends` | token | my friends with profile, presence and party, and friend requests either way |
+| `POST /v1/friends` | token | ask someone to be friends by code |
+| `POST /v1/friends/{code}/accept` | token | accept their friend request |
+| `DELETE /v1/friends/{code}` | token | remove a friend, cancel my request or decline theirs |
 | `GET /v1/blocks` | token | the users I blocked |
 | `POST /v1/blocks` | token | block a user |
 | `DELETE /v1/blocks/{code}` | token | unblock a user |
@@ -184,7 +193,9 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 
 ### `GET /`
 
-`200 {"ok": true, "service": "tabbi-friends", "version": 1}`
+`200 {"ok": true, "service": "tabbi-friends", "version": 1, "protocol": 2, "minProtocol": 1}`
+
+`protocol` is the newest Party protocol the server speaks and `minProtocol` the oldest it still serves; a server without them speaks protocol 1.
 
 ### `GET /v1/catalog`
 
@@ -288,19 +299,34 @@ Errors: `no_account` (403, an anonymous user would lose its only token), `unauth
       "online": true,
       "party": { "code": "Q4RT8M", "size": 3 } | null
     }
-  ]
+  ],
+  "incoming": [ { "profile": Profile, "since": 1789990000 } ],
+  "outgoing": [ { "profile": Profile, "since": 1789980000 } ]
 }
 ```
 
-Sorted by name, case-insensitively.
+`friends` is sorted by name, case-insensitively.
 `party` is the friend's current (not expired) party; offer "Join" when `online` is true and `party` is not null.
 `size` counts only the members you would see in that party (no one you blocked or who blocked you, and no banned users).
+
+`incoming` lists the friend requests waiting for me to accept or decline, and `outgoing` the ones I sent, each newest first and at most 50.
+A request shows only the other person's profile: their presence, party and minutes stay private until it is accepted.
+A request I declined leaves my `incoming`, but stays in the sender's `outgoing` until it expires, so a decline is never announced.
+Requests expire after 30 days, answered or not.
+A server before protocol 2 sends neither list, which reads as no requests.
 
 ### `POST /v1/friends`
 
 Body: `{"code": "K7QW2MZD"}`.
-Friendship is symmetric: both users see each other right away, with no request to accept.
-`200 {"ok": true, "added": true, "friend": Profile}`; `added` is `false` if they were already friends (a no-op success).
+Asks someone to be friends; friendship is symmetric once it exists.
+
+- We are friends already: `200 {"ok": true, "added": false, "status": "friends", "friend": Profile}`, a no-op success.
+- They asked me first (even if I declined it), or their apps are all protocol 1 and cannot show a request: we are friends now, `200 {"ok": true, "added": true, "status": "friends", "friend": Profile}`.
+- Otherwise the request waits for them: `200 {"ok": true, "added": false, "status": "requested", "friend": Profile}`.
+  Asking again is a no-op, and does not bring back a request they declined.
+
+`added` keeps its protocol 1 meaning (a friendship was made just now), so an app up to 1.0.0 reads a waiting request as "not added".
+New requests count toward 10 a minute and 50 a day per user, and at most 50 can wait at once.
 
 Errors:
 
@@ -313,11 +339,20 @@ Errors:
 | 409 | `blocked` | I blocked that user; unblock them first |
 | 409 | `friend_limit` | I already have 50 friends |
 | 409 | `their_friend_limit` | they already have 50 friends |
+| 409 | `pending_limit` | 50 of my requests already wait for an answer |
+| 429 | `request_limit` | 50 new requests today (UTC); `Retry-After` says when the next day starts |
+| 429 | `rate_limited` | more than 10 new requests this minute |
+
+### `POST /v1/friends/{code}/accept`
+
+No body.
+Accepts the request that user sent me: `200 {"ok": true, "added": true, "status": "friends", "friend": Profile}`, or `added: false` when we already were friends.
+Errors: `no_request` (404) when no request from them waits for me (they cancelled it, I declined it, or it expired), so a stale Accept never sends a request of its own; `unknown_code`, `banned`, `friend_limit` and `their_friend_limit` as for `POST /v1/friends`.
 
 ### `DELETE /v1/friends/{code}`
 
-Removes the friendship in both directions.
-`200 {"ok": true, "removed": true}`; `removed` is `false` if we were not friends.
+Ends whatever links us: removes the friendship in both directions, cancels my request to them, and declines their request to me.
+`200 {"ok": true, "removed": true}`; `removed` is `false` if there was nothing to end.
 Errors: `invalid_field` for a malformed code.
 
 ### `GET /v1/blocks`
@@ -340,6 +375,7 @@ Body: `{"code": "K7QW2MZD"}`.
 A block hides two users from each other, whoever blocked whom:
 
 - the friendship ends in both directions, so neither sees the other in `GET /v1/friends` or `GET /v1/leaderboard`;
+- any friend request between the two is dropped, either way;
 - neither can add the other (`POST /v1/friends` answers the blocked user `404 unknown_code` and the blocker `409 blocked`);
 - neither can join a party the other hosts (`404 party_not_found`, as if it did not exist);
 - in a party both are in, the blocked user is removed when I host, I leave when they host, and otherwise the two of us are left out of each other's `members`.
@@ -402,8 +438,9 @@ Omitted counters keep their previous value, except that `todayMinutes` restarts 
 `day` defaults to the UTC day; always send the local day so minutes count toward the day the student actually studied.
 It must be "today" somewhere on Earth (UTC-12 to UTC+14), which rejects a wrong clock.
 
-`200 {"ok": true, "presence": Presence, "heartbeatSeconds": 120}`.
+`200 {"ok": true, "presence": Presence, "heartbeatSeconds": 120, "incomingRequests": 1}`.
 `heartbeatSeconds` is when to send the next heartbeat (`null` after `offline`: stop sending).
+`incomingRequests` counts the friend requests waiting for me, so the app can badge its Party tab without fetching the friends list while the panel is closed.
 
 Errors: `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`.
 

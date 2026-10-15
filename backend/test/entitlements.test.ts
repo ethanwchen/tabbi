@@ -7,7 +7,7 @@ import {
 import { GRANTABLE_ITEMS } from "../src/grants";
 import { migrate } from "../src/hub";
 import { identityToken, installFakeApple } from "./fake-apple";
-import { ADMIN_TOKEN, call, freshIp, hub, register } from "./helpers";
+import { ADMIN_TOKEN, call, freshIp, hub, register, befriend } from "./helpers";
 
 installFakeApple();
 
@@ -176,7 +176,7 @@ describe("Founding Member", () => {
     at(LAUNCH + 10 * DAY);
     const founder = await signIn("sub.founding.badge");
     const friend = await register();
-    await call("POST", "/v1/friends", { code: founder.code }, friend.token);
+    await befriend(friend, founder);
 
     const friends = (await call("GET", "/v1/friends", undefined, friend.token)).body.friends;
     expect(friends.map((f: { profile: { badges: string[] } }) => f.profile.badges)).toEqual([[FOUNDING]]);
@@ -223,10 +223,12 @@ describe("schema step 13", () => {
     await runInDurableObject(stub, (_, state) => {
       const sql = state.storage.sql;
       sql.exec("DROP TABLE entitlements");
+      sql.exec("DROP TABLE friend_requests");
+      sql.exec("ALTER TABLE users DROP COLUMN protocol");
       sql.exec("UPDATE schema_version SET version = 12");
       sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, created_at) VALUES ('s', 'CCCCCCCC', 'r', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 13 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 14 }]);
       expect(sql.exec("SELECT apple_sub, code FROM apple_accounts").toArray()).toEqual([{ apple_sub: "s", code: "CCCCCCCC" }]);
       expect(sql.exec("SELECT * FROM entitlements").toArray()).toEqual([]);
     });

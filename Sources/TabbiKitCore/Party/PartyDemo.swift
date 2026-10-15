@@ -3,9 +3,12 @@ import Foundation
 extension PartyState {
     /// Sample data for `TABBI_DEMO=1` and snapshots: I host a party
     /// with two friends on a shared session, one more friend is in another
-    /// party I could join, and the rest cover every status. Maya and I are
-    /// Founding Members, so the badge shows. Built relative to `now` so
-    /// countdowns always read sensibly.
+    /// party I could join, the rest cover every status, and Noor asked to
+    /// be friends. Maya and I are Founding Members, so the badge shows.
+    /// Everyone wears a hat the server could not carry before catalog
+    /// version 2, so a snapshot shows at once if one goes missing again
+    /// (and nobody wears a cape). Built relative to `now` so countdowns
+    /// always read sensibly.
     public static func demo(now: Date, calendar: Calendar = .current) -> PartyState {
         let day = PartyPresenceTracker.dayString(now, calendar: calendar)
         func presence(_ status: PartyStatus, minutesLeft: Double? = nil, today: Int = 0, streak: Int = 0) -> PartyPresence {
@@ -22,13 +25,20 @@ extension PartyState {
         }
         let since = now.addingTimeInterval(-14 * 86_400)
 
-        let me = profile(code: "K7QW2MZD", name: "Sam", pet: PetProfile(name: "Mochi", breed: .orangeTabby, accessories: [.scarf]),
+        let me = profile(code: "K7QW2MZD", name: "Sam",
+                         pet: PetProfile(name: "Mochi", breed: .orangeTabby, accessories: [.scarf, .graduationCap]),
                          badges: [PartyBadge.founding])
-        let maya = profile(code: "M4YA8QRT", name: "Maya", pet: PetProfile(name: "Biscuit", breed: .goldenRetriever, accessories: [.roundGlasses]),
+        let maya = profile(code: "M4YA8QRT", name: "Maya",
+                           pet: PetProfile(name: "Biscuit", breed: .goldenRetriever, accessories: [.roundGlasses, .cowboyHat]),
                            badges: [PartyBadge.founding])
-        let priya = profile(code: "PR1YA6KD", name: "Priya", pet: PetProfile(name: "Luna", breed: .siamese, outfit: .scrubs))
-        let leo = profile(code: "LE0J9WXC", name: "Leo", pet: PetProfile(name: "Waffles", breed: .corgi, accessories: [.beanie]))
-        let jonah = profile(code: "J0NAH2PF", name: "Jonah", pet: PetProfile(name: "Pepper", breed: .blackCat))
+        let priya = profile(code: "PR1YA6KD", name: "Priya",
+                            pet: PetProfile(name: "Luna", breed: .siamese, outfit: .scrubs, accessories: [.surgicalCap]))
+        let leo = profile(code: "LE0J9WXC", name: "Leo",
+                          pet: PetProfile(name: "Waffles", breed: .corgi, outfit: .cozyHoodie, accessories: [.frogHat]))
+        let jonah = profile(code: "J0NAH2PF", name: "Jonah",
+                            pet: PetProfile(name: "Pepper", breed: .blackCat, accessories: [.wizardHat]))
+        let noor = profile(code: "N4ZR7HVB", name: "Noor",
+                           pet: PetProfile(name: "Pip", breed: .scottishFold, accessories: [.chunkyHeadphones]))
 
         let session = PartySession(method: "pomodoro", phaseEndsAt: now.addingTimeInterval(18 * 60 + 20), startedAt: now.addingTimeInterval(-6 * 60 - 40))
         let party = Party(
@@ -57,7 +67,8 @@ extension PartyState {
                         online: true, party: PartyRef(code: "ZX7M2P", size: 2)),
             PartyFriend(profile: jonah, since: since, presence: nil, online: false, party: nil),
         ]
-        return PartyState(profile: me, friends: friends, party: party)
+        let asked = [PartyFriendRequest(profile: noor, since: now.addingTimeInterval(-2 * 3600))]
+        return PartyState(profile: me, friends: friends, party: party, incoming: asked)
     }
 
     /// Someone who isn't a friend yet, for the demo's invite links: the
@@ -103,6 +114,9 @@ public enum PartyDemoScenario: String, CaseIterable, Sendable {
     case lobby
     /// Just registered: no friends and no party yet.
     case noFriends
+    /// No friends yet, but Noor asked to be friends and my request to Kai
+    /// waits: both kinds of request row.
+    case requests
     /// The default demo with the report card open about a friend.
     case reporting
     /// The default demo after the server refused my name (say, one a
@@ -139,14 +153,17 @@ extension PartyState {
                 member.host = member.profile.code == host
                 return member
             }
-            return PartyState(profile: me, friends: base.friends, party: party)
+            return PartyState(profile: me, friends: base.friends, party: party, incoming: base.incomingRequests)
         case .crowded:
             party.session = nil
-            let names = [("Ana", "Pretzel", PetBreed.corgi), ("Ben", "Olive", .tuxedo), ("Chloe", "Noodle", .beagle),
-                         ("Dev", "Tofu", .frenchBulldog), ("Eli", "Smudge", .grayTabby)]
+            let names: [(String, String, PetBreed, PetAccessory)] = [
+                ("Ana", "Pretzel", .corgi, .partyHat), ("Ben", "Olive", .tuxedo, .tinyCrown),
+                ("Chloe", "Noodle", .beagle, .flowerCrown), ("Dev", "Tofu", .frenchBulldog, .chefHat),
+                ("Eli", "Smudge", .grayTabby, .pirateHat),
+            ]
             party.members += names.enumerated().map { index, entry in
                 let code = "CRWD\(index + 2)ABZ"
-                let profile = profile(code: code, name: entry.0, pet: PetProfile(name: entry.1, breed: entry.2))
+                let profile = profile(code: code, name: entry.0, pet: PetProfile(name: entry.1, breed: entry.2, accessories: [entry.3]))
                 var member = party.members[1]
                 member.profile = profile
                 member.host = false
@@ -154,9 +171,13 @@ extension PartyState {
                 member.presence?.phaseEndsAt = index.isMultiple(of: 2) ? nil : now.addingTimeInterval(Double(10 + index) * 60)
                 return member
             }
-            return PartyState(profile: me, friends: base.friends, party: party)
+            return PartyState(profile: me, friends: base.friends, party: party, incoming: base.incomingRequests)
         case .lobby:
-            return PartyState(profile: me, friends: base.friends, party: nil)
+            return PartyState(profile: me, friends: base.friends, party: nil, incoming: base.incomingRequests)
+        case .requests:
+            let kai = profile(code: "K4AZ9TMW", name: "Kai", pet: PetProfile(name: "Tango", breed: .dachshund, accessories: [.backwardsCap]))
+            return PartyState(profile: me, friends: [], party: nil, incoming: base.incomingRequests,
+                              outgoing: [PartyFriendRequest(profile: kai, since: now.addingTimeInterval(-26 * 3600))])
         case .noFriends:
             return PartyState(profile: me, friends: [], party: nil)
         case .connecting:

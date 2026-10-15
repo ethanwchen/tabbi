@@ -6,7 +6,7 @@
  * Nothing about cards, decks or notes is ever accepted; bodies with unknown fields are rejected.
  * Every 5xx, every slow request and a small sample of the rest get a structured log line (log.ts).
  */
-import { CATALOG, SERVICE } from "./lib";
+import { CATALOG, MIN_PROTOCOL_VERSION, PROTOCOL_VERSION, SERVICE } from "./lib";
 import { CORS, json } from "./http";
 import { errorFields, logEvent, requestLog } from "./log";
 import type { Env } from "./hub";
@@ -31,7 +31,9 @@ async function handle(req: Request, env: Env): Promise<Response> {
   const url = new URL(req.url);
   const path = url.pathname.replace(/\/+$/, "") || "/";
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
-  if (path === "/" || path === "/v1") return json({ ok: true, service: SERVICE, version: 1 });
+  if (path === "/" || path === "/v1") {
+    return json({ ok: true, service: SERVICE, version: 1, protocol: PROTOCOL_VERSION, minProtocol: MIN_PROTOCOL_VERSION });
+  }
   if (path === "/v1/catalog" && req.method === "GET") return json({ ok: true, catalog: CATALOG });
   if (!path.startsWith("/v1/")) return json({ ok: false, error: "not_found", message: "not found" }, 404);
   try {

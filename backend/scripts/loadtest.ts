@@ -146,7 +146,8 @@ class Client {
   }
 
   async send(method: string, path: string, ip: string, token?: string, body?: unknown): Promise<{ status: number; body: any }> { // eslint-disable-line @typescript-eslint/no-explicit-any
-    const headers: Record<string, string> = { "CF-Connecting-IP": ip };
+    // The current app's protocol, so friend requests wait for an answer as they do in the app.
+    const headers: Record<string, string> = { "CF-Connecting-IP": ip, "Tabbi-Protocol": "2" };
     if (token) headers.Authorization = `Bearer ${token}`;
     if (body !== undefined) headers["Content-Type"] = "application/json";
     const res = await this.fetcher(this.o.url + path, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
@@ -198,7 +199,15 @@ async function setup(c: Client, o: Options, log: (s: string) => void): Promise<{
   for (let i = 0; i < live.length; i++) {
     for (let k = 1; k <= Math.min(o.friends, live.length - 1); k++) {
       const [a, b] = [live[i], live[(i + k) % live.length]];
-      adds.push(async () => { requests++; return (await c.send("POST", "/v1/friends", a.ip, a.token, { code: b.code })).status === 200; });
+      // A friend request, then its acceptance, as the app sends them.
+      adds.push(async () => {
+        requests++;
+        const asked = await c.send("POST", "/v1/friends", a.ip, a.token, { code: b.code });
+        if (asked.status !== 200) return false;
+        if (asked.body.status === "friends") return true;
+        requests++;
+        return (await c.send("POST", `/v1/friends/${a.code}/accept`, b.ip, b.token)).status === 200;
+      });
     }
   }
   failures += await pool(adds, o.concurrency);

@@ -39,7 +39,7 @@ describe("runE2E against the real Worker", () => {
     expect(report.steps.map((s) => s.name)).toEqual([
       "the Worker is up",
       "Ana and Ben register",
-      "Ana adds Ben by his friend code, and both see the friendship",
+      "Ana asks Ben by his friend code, Ben accepts, and both see the friendship",
       "Ana starts studying and Ben sees her online",
       "Ana hosts a party and Ben joins through her",
       "Ana starts a shared session and Ben follows it",
@@ -47,7 +47,7 @@ describe("runE2E against the real Worker", () => {
       "Ana ends the session and takes a break",
       "Ben blocks Ana: the friendship and the party end",
       "Ana cannot reach Ben again, and is not told why",
-      "Ben unblocks Ana: no friendship comes back until one adds the other",
+      "Ben unblocks Ana: no friendship comes back until one asks and the other accepts",
       "both accounts are deleted",
     ]);
     expect(lines).toHaveLength(12);

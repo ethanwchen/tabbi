@@ -19,7 +19,7 @@ const FULL = {
 describe("worker basics", () => {
   it("answers the health check, the catalog and CORS preflight", async () => {
     const root = await call("GET", "/");
-    expect(root.body).toEqual({ ok: true, service: "tabbi-friends", version: 1 });
+    expect(root.body).toEqual({ ok: true, service: "tabbi-friends", version: 1, protocol: 2, minProtocol: 1 });
     const cat = await call("GET", "/v1/catalog");
     expect(cat.body).toEqual({ ok: true, catalog });
     const pre = await SELF.fetch(BASE + "/v1/me", { method: "OPTIONS" });
@@ -87,12 +87,12 @@ describe("profile validation", () => {
     ["unknown breed", { breed: "unicorn" }, "invalid_field"],
     ["dog breed on a cat", { species: "cat", breed: "corgi" }, "invalid_field"],
     ["breed not a string", { breed: 3 }, "invalid_field"],
-    ["too many colors", { colors: Array(7).fill("#000000") }, "invalid_field"],
+    ["too many colors", { colors: Array(catalog.limits.maxColors + 1).fill("#000000") }, "invalid_field"],
     ["short hex", { colors: ["#FFF"] }, "invalid_field"],
     ["named color", { colors: ["red"] }, "invalid_field"],
     ["colors not an array", { colors: "#000000" }, "invalid_field"],
     ["unknown costume", { costume: "cape" }, "invalid_field"],
-    ["too many accessories", { accessories: ["glasses", "bow", "scarf", "crown", "halo"] }, "invalid_field"],
+    ["too many accessories", { accessories: catalog.accessories.slice(0, catalog.limits.maxAccessories + 1) }, "invalid_field"],
     ["duplicate accessory", { accessories: ["bow", "bow"] }, "invalid_field"],
     ["unknown accessory", { accessories: ["jetpack"] }, "invalid_field"],
     ["negative points", { points: -1 }, "invalid_field"],

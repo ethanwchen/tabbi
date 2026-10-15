@@ -74,7 +74,7 @@ Shared as data, one source of truth in this repo:
 | --- | --- | --- |
 | Kits | JSON in `Sources/TabbiKitCore/Kits/Bundled` | Load the same files; port `KitValidation` against fixtures |
 | Catalog | `backend/shared/catalog.json` | Bundle the same file |
-| Party API | `docs/study/backend-api.md`, Worker in TypeScript | TypeScript client sharing request and reply types with `backend/src` |
+| Party API | `docs/study/backend-api.md`, `shared/schemas/party.v1.schema.json`, `shared/fixtures/party/`, Worker in TypeScript | TypeScript client sharing request and reply types with `backend/src`, sending `Tabbi-Protocol` and following `docs/party-compatibility.md` |
 | Themes | Swift in `Themes/ThemeCatalog.swift` | Export to `themes.json`, Swift loads it |
 | Study methods | Swift enum in `StudyMethods/StudyMethod.swift` | Export phase lengths, labels and rules to `study-methods.json` |
 | Pet art | Swift string grids in `Pets/Art` | JSON, steps below |

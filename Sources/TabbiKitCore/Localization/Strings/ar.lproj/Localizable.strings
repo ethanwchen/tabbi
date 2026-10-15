@@ -187,12 +187,16 @@
 	<string>يستخدمه %@ لتحيتك.</string>
 	<key>%@ visited the bakery</key>
 	<string>%@ زار المخبز</string>
+	<key>%@ wants to be friends</key>
+	<string>يريد %@ أن تصبحا صديقين</string>
 	<key>%@ watched a cloud shaped like a fish</key>
 	<string>%@ تأمل غيمة على شكل سمكة</string>
 	<key>%@ went around the park twice</key>
 	<string>%@ دار حول الحديقة مرتين</string>
 	<key>%@ with %@</key>
 	<string>%1$@ مع %2$@</string>
+	<key>%@ with %@ wants to be friends.</key>
+	<string>%1$@ مع %2$@ يريد أن يصبح صديقك.</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>يعمل %@ بأفضل شكل من مجلد التطبيقات، حيث يمكنه الفتح عند تسجيل الدخول وتحديث نفسه. سينسخ نفسه إلى هناك ثم يُفتح من جديد.</string>
 	<key>%@ · Paused</key>
@@ -359,6 +363,10 @@
 	<string>مفتاح API</string>
 	<key>About</key>
 	<string>حول</string>
+	<key>Accept</key>
+	<string>قبول</string>
+	<key>Accept %@'s friend request</key>
+	<string>قبول طلب صداقة %@</string>
 	<key>Access is off</key>
 	<string>الوصول متوقف</string>
 	<key>Account</key>
@@ -657,6 +665,8 @@
 	<string>حظر %@</string>
 	<key>Blocked</key>
 	<string>المحظورون</string>
+	<key>Blocked %@. Unblock them in Party options.</key>
+	<string>تم حظر %@. يمكنك إلغاء الحظر من خيارات المجموعة.</string>
 	<key>Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.</key>
 	<string>لا يستطيع المحظورون رؤيتك أو إضافتك أو الانضمام إلى مجموعاتك. للحظر أو الإبلاغ، انقر بزر الماوس الأيمن على الشخص في المجموعة.</string>
 	<key>Blocks go to your calendar.</key>
@@ -729,6 +739,10 @@
 	<string>لا يمكن استخدام هذا الخادم</string>
 	<key>Cancel</key>
 	<string>إلغاء</string>
+	<key>Cancel Request</key>
+	<string>إلغاء الطلب</string>
+	<key>Cancel your request to %@</key>
+	<string>إلغاء طلبك إلى %@</string>
 	<key>Caramel</key>
 	<string>كراميل</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -1059,6 +1073,10 @@
 	<string>أيام متتالية بمراجعة واحدة على الأقل</string>
 	<key>Deck not found</key>
 	<string>لم يُعثر على المجموعة</string>
+	<key>Decline</key>
+	<string>رفض</string>
+	<key>Decline %@'s request. They won't be told.</key>
+	<string>رفض طلب %@. لن يُبلَّغ بذلك.</string>
 	<key>Deep</key>
 	<string>عميق</string>
 	<key>Deep focus</key>
@@ -1357,8 +1375,12 @@
 	<string>وقت العمل الحر في الأيام السبعة القادمة، مع هامش حول كل حدث</string>
 	<key>Friend code</key>
 	<string>رمز الصديق</string>
-	<key>Friend code %@. You'll see each other's pets and study time.</key>
-	<string>رمز الصديق %@. سيرى كل منكما حيوان الآخر الأليف ووقت دراسته.</string>
+	<key>Friend code %@. Accept to see each other's pets and study time.</key>
+	<string>رمز الصديق %@. اقبل ليرى كل منكما حيوان الآخر الأليف ووقت دراسته.</string>
+	<key>Friend code %@. Once they accept, you'll see each other's pets and study time.</key>
+	<string>رمز الصديق %@. بعد قبول طلبك، سيرى كل منكما حيوان الآخر الأليف ووقت دراسته.</string>
+	<key>Friend codes are %lld letters and digits.</key>
+	<string>تتكون رموز الأصدقاء من %lld أحرف وأرقام.</string>
 	<key>Friend's code</key>
 	<string>رمز صديق</string>
 	<key>Friends</key>
@@ -2219,6 +2241,8 @@
 	<string>رمز المجموعة %@. ادرس مع جميع أعضائها.</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
 	<string>رمز المجموعة %@. ادرس مع جميع أعضائها. ستغادر مجموعتك الحالية.</string>
+	<key>Party codes are %lld letters and digits.</key>
+	<string>تتكون رموز المجموعات من %lld أحرف وأرقام.</string>
 	<key>Party invite</key>
 	<string>دعوة</string>
 	<key>Party is for people %lld and older.</key>
@@ -2517,6 +2541,14 @@
 	<string>الإبلاغ عن %@…</string>
 	<key>Report a problem: %@</key>
 	<string>الإبلاغ عن مشكلة: %@</string>
+	<key>Request</key>
+	<string>طلب</string>
+	<key>Request sent</key>
+	<string>أُرسل الطلب</string>
+	<key>Request sent to %@</key>
+	<string>أُرسل الطلب إلى %@</string>
+	<key>Request sent to %@.</key>
+	<string>أُرسل الطلب إلى %@.</string>
 	<key>Reset to Default</key>
 	<string>استعادة الافتراضي</string>
 	<key>Reset to Defaults</key>
@@ -2629,6 +2661,8 @@
 	<string>إرسال طلبات AI إلى %@؟</string>
 	<key>Sends what you ask to %@.</key>
 	<string>يرسل ما تسأله إلى %@.</string>
+	<key>Sent</key>
+	<string>أُرسل</string>
 	<key>Server</key>
 	<string>الخادم</string>
 	<key>Session done. Nice work!</key>
@@ -2819,6 +2853,8 @@
 	<string>أنشئ مجموعة</string>
 	<key>Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.</key>
 	<string>أنشئ مجموعة وشارك رمزها، أو انضم إلى مجموعة صديق. تجلس حيواناتكم الأليفة جنبًا إلى جنب وأنتم تركّزون.</string>
+	<key>Start a party, or join a friend's.</key>
+	<string>أنشئ مجموعة، أو انضم إلى مجموعة صديق.</string>
 	<key>Start a timer</key>
 	<string>ابدأ مؤقتًا</string>
 	<key>Start break</key>
@@ -3023,6 +3059,12 @@
 	<string>اختبار</string>
 	<key>Test it</key>
 	<string>اختبره</string>
+	<key>Thanks. Your report was sent and %@ is blocked.</key>
+	<string>شكرًا. أُرسل بلاغك وتم حظر %@.</string>
+	<key>Thanks. Your report was sent.</key>
+	<string>شكرًا. أُرسل بلاغك.</string>
+	<key>That friend request is no longer there.</key>
+	<string>طلب الصداقة هذا لم يعد موجودًا.</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
 	<string>لا يمكن أن يكون هذا المفتاح جزءًا من اختصار. جرّب حرفًا أو رقمًا أو المسافة.</string>
 	<key>That name and your pet's name aren't allowed. Please pick others.</key>
@@ -3151,8 +3193,12 @@
 	<string>يحذف هذا حسابك وكل ما يحتفظ به الخادم له: النسخة المتزامنة من رفيقك ونقاطك، ورمز الصديق، والأصدقاء والمجموعات. يبقى رفيقك على هذا الـMac. لا يمكن التراجع عن ذلك.</string>
 	<key>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</key>
 	<string>يحذف هذا رمز الصديق، وملفك الشخصي ورفيقك كما يراهما الأصدقاء، وقائمة أصدقائك، وعضوياتك في المجموعات، وسلسلة دراستك من خادم الأصدقاء. لن يراك الأصدقاء بعد ذلك. يبقى رفيقك ونقاطك على هذا الـMac. إن بقيت المجموعة مفعّلة، فستحصل على رمز صديق جديد.</string>
+	<key>This is a demo. No report was sent.</key>
+	<string>هذا عرض تجريبي. لم يُرسل أي بلاغ.</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>هذا عرض تجريبي. لم يُحذف شيء.</string>
+	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
+	<string>هذا عرض تجريبي. شغّل التطبيق دون TABBI_DEMO للدراسة مع الأصدقاء.</string>
 	<key>This is usually short. Check again in a moment.</key>
 	<string>يكون هذا قصيرًا عادةً. تحقق مرة أخرى بعد قليل.</string>
 	<key>This is what needs fixing</key>
@@ -3369,8 +3415,12 @@
 	<string>بانتظار بدء Anki</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>بانتظار بدء Anki، ثم فتح %@</string>
+	<key>Waiting: %lld</key>
+	<string>بانتظارك: %lld</string>
 	<key>Walk through the steps to connect %@</key>
 	<string>اتبع الخطوات لربط %@</string>
+	<key>Wants to be friends</key>
+	<string>يريد أن يصبح صديقك</string>
 	<key>Wardrobe</key>
 	<string>خزانة الملابس</string>
 	<key>Water carves canyons by never skipping a day.</key>
@@ -3477,6 +3527,8 @@
 	<string>أنت</string>
 	<key>You already have 50 friends.</key>
 	<string>لديك 50 صديقًا بالفعل.</string>
+	<key>You asked %@ to be friends. You'll see each other once they accept.</key>
+	<string>أرسلت إلى %@ طلب صداقة. سيرى كل منكما الآخر بعد قبوله.</string>
 	<key>You blocked %@</key>
 	<string>حظرت %@</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
@@ -3497,12 +3549,16 @@
 	<string>يمكنك إيقاف التنبيهات في أي وقت من إعدادات النظام.</string>
 	<key>You didn't feel like it, and you did it anyway. That's the whole secret.</key>
 	<string>لم تكن لديك رغبة، وفعلتها رغم ذلك. هذا هو السر كله.</string>
+	<key>You have 50 friend requests waiting. Cancel some first.</key>
+	<string>لديك 50 طلب صداقة بانتظار الرد. ألغِ بعضها أولًا.</string>
 	<key>You joined the party</key>
 	<string>انضممت إلى المجموعة</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>أمضيت %@ في الدراسة اليوم. وقت الراحة، وغدًا بداية جديدة.</string>
 	<key>You started it for the party</key>
 	<string>بدأتها للمجموعة</string>
+	<key>You'll be friends once they accept.</key>
+	<string>ستصبحان صديقين بعد قبول الطلب.</string>
 	<key>You'll see %@ in your Party tab.</key>
 	<string>سترى %@ في علامة تبويب المجموعة.</string>
 	<key>You're already in this party</key>
@@ -3517,6 +3573,8 @@
 	<string>أنت الوحيد هنا حاليًا.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>حظرت عددًا كبيرًا من الأشخاص. ألغِ حظر أحدهم أولًا.</string>
+	<key>You've sent a lot of friend requests today. Try again tomorrow.</key>
+	<string>أرسلت الكثير من طلبات الصداقة اليوم. حاول مجددًا غدًا.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
 	<string>أرسلت تقارير كثيرة اليوم. حاول مجددًا غدًا.</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>

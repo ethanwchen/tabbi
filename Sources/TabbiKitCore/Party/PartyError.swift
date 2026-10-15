@@ -20,6 +20,12 @@ public enum PartyError: Error, Hashable, Sendable {
     case unknownCode
     case friendLimit
     case theirFriendLimit
+    /// The friend request to accept is gone (cancelled, declined or expired).
+    case noRequest
+    /// 50 friend requests already wait for an answer.
+    case pendingLimit
+    /// 50 new friend requests in one day.
+    case requestLimit
     case partyNotFound
     case notFriend
     case friendOffline
@@ -57,6 +63,9 @@ public enum PartyError: Error, Hashable, Sendable {
         case "unknown_code": return .unknownCode
         case "friend_limit": return .friendLimit
         case "their_friend_limit": return .theirFriendLimit
+        case "no_request": return .noRequest
+        case "pending_limit": return .pendingLimit
+        case "request_limit": return .requestLimit
         case "party_not_found": return .partyNotFound
         case "not_friend": return .notFriend
         case "friend_offline": return .friendOffline
@@ -98,6 +107,9 @@ public enum PartyError: Error, Hashable, Sendable {
         case .unknownCode: return String(localized: "No one has that friend code.", bundle: .tabbi)
         case .friendLimit: return String(localized: "You already have 50 friends.", bundle: .tabbi)
         case .theirFriendLimit: return String(localized: "They already have 50 friends.", bundle: .tabbi)
+        case .noRequest: return String(localized: "That friend request is no longer there.", bundle: .tabbi)
+        case .pendingLimit: return String(localized: "You have 50 friend requests waiting. Cancel some first.", bundle: .tabbi)
+        case .requestLimit: return String(localized: "You've sent a lot of friend requests today. Try again tomorrow.", bundle: .tabbi)
         case .partyNotFound: return String(localized: "That party has ended or the code is wrong.", bundle: .tabbi)
         case .notFriend: return String(localized: "You can only join a friend's party.", bundle: .tabbi)
         case .friendOffline: return String(localized: "Your friend just went offline.", bundle: .tabbi)

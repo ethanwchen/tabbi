@@ -357,10 +357,16 @@ private struct PartyLobby: View {
                     Text("Study together", bundle: .tabbi)
                         .font(Theme.Typography.title)
                         .foregroundStyle(Theme.Palette.primaryText)
-                    Text("Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.", bundle: .tabbi)
-                        .font(Theme.Typography.body)
-                        .foregroundStyle(Theme.Palette.secondaryText)
-                        .fixedSize(horizontal: false, vertical: true)
+                    // A shorter line when the long one would push the card past
+                    // the panel (German or French in the Compact canvas).
+                    ViewThatFits(in: .vertical) {
+                        Text("Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.", bundle: .tabbi)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text("Start a party, or join a friend's.", bundle: .tabbi)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .font(Theme.Typography.body)
+                    .foregroundStyle(Theme.Palette.secondaryText)
                 }
             }
             // On a narrow panel Start a party shrinks to its plus (the

@@ -1,6 +1,7 @@
 import { SELF, runInDurableObject } from "cloudflare:test";
 import { env } from "cloudflare:workers";
 import { expect, vi } from "vitest";
+import { PROTOCOL_HEADER, PROTOCOL_VERSION } from "../src/lib";
 
 export const BASE = "https://tabbi.test";
 
@@ -28,8 +29,24 @@ export interface Reply {
   body: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
+/**
+ * A request as the current app sends it, with its Party protocol (PROTOCOL_VERSION). `oldCall` is one from
+ * an app up to 1.0.0, which sends no protocol header.
+ */
 export async function call(method: string, path: string, body?: unknown, token?: string, ip = "10.255.0.1"): Promise<Reply> {
+  return callWithProtocol(PROTOCOL_VERSION, method, path, body, token, ip);
+}
+
+/** A request from an app up to 1.0.0: no protocol header, so protocol 1 and no friend requests. */
+export async function oldCall(method: string, path: string, body?: unknown, token?: string, ip = "10.255.0.2"): Promise<Reply> {
+  return callWithProtocol(null, method, path, body, token, ip);
+}
+
+async function callWithProtocol(
+  protocol: number | null, method: string, path: string, body?: unknown, token?: string, ip = "10.255.0.1",
+): Promise<Reply> {
   const headers: Record<string, string> = { "Content-Type": "application/json", "CF-Connecting-IP": ip };
+  if (protocol !== null) headers[PROTOCOL_HEADER] = String(protocol);
   if (token) headers.Authorization = `Bearer ${token}`;
   const res = await SELF.fetch(BASE + path, {
     method,
@@ -40,8 +57,9 @@ export async function call(method: string, path: string, body?: unknown, token?:
   return { status: res.status, headers: res.headers, body: text ? JSON.parse(text) : null };
 }
 
-export async function register(profile: Record<string, unknown> = {}) {
-  const r = await call("POST", "/v1/register", profile, undefined, freshIp());
+/** Registers a user from the current app, or from an app up to 1.0.0 with `old`. */
+export async function register(profile: Record<string, unknown> = {}, old = false) {
+  const r = await (old ? oldCall : call)("POST", "/v1/register", profile, undefined, freshIp());
   expect(r.status).toBe(201);
   expect(r.body.token).toMatch(/^[0-9a-f]{64}$/);
   expect(r.body.code).toMatch(/^[A-HJ-NP-Z2-9]{8}$/);
@@ -70,3 +88,12 @@ export const ADMIN_TOKEN = env.ADMIN_TOKEN as string;
 
 /** A maintainer call to /v1/admin/..., from a fresh IP so the per-IP authentication failure limit never leaks between tests. */
 export const admin = (method: string, path: string, token = ADMIN_TOKEN) => call(method, "/v1/admin" + path, undefined, token, freshIp());
+
+/** Makes two users friends the way the app does: `a` sends a friend request and `b` accepts it. */
+export async function befriend(a: { code: string; token: string }, b: { code: string; token: string }): Promise<void> {
+  const asked = await call("POST", "/v1/friends", { code: b.code }, a.token);
+  expect(asked.status).toBe(200);
+  if (asked.body.status === "friends") return;
+  const accepted = await call("POST", `/v1/friends/${a.code}/accept`, undefined, b.token);
+  expect(accepted.status).toBe(200);
+}

@@ -1,0 +1,1684 @@
+{
+  "accessories" : {
+    "angelWings" : "angel-wings",
+    "astronautHelmet" : "astronaut-helmet",
+    "backwardsCap" : "backwards-cap",
+    "beanie" : "beanie",
+    "blindfoldedSorcerer" : "blindfolded-sorcerer",
+    "bowTie" : "bow",
+    "bunnyEars" : "bunny-ears",
+    "chefHat" : "chef-hat",
+    "cherryPetals" : "cherry-petals",
+    "chunkyHeadphones" : "headphones",
+    "coolSunglasses" : "sunglasses",
+    "cowboyHat" : "cowboy-hat",
+    "flameHeadband" : "flame-headband",
+    "flowerCrown" : "flower",
+    "foundersPin" : "founders-pin",
+    "frogHat" : "frog-hat",
+    "goldenLaurel" : "golden-laurel",
+    "graduationCap" : "graduation-cap",
+    "halo" : "halo",
+    "headMirror" : "head-mirror",
+    "heartGlasses" : "heart-glasses",
+    "kingsCape" : "kings-cape",
+    "lionDanceHat" : "lion-dance-hat",
+    "moonlitWitchHat" : "moonlit-witch-hat",
+    "ninjaHeadband" : "ninja-headband",
+    "partyHat" : "party-hat",
+    "pirateHat" : "pirate-hat",
+    "pumpkinHat" : "pumpkin-hat",
+    "rainCloud" : "rain-cloud",
+    "reindeerAntlers" : "reindeer-antlers",
+    "roundGlasses" : "glasses",
+    "sakuraSprig" : "sakura-sprig",
+    "scarf" : "scarf",
+    "snowScarf" : "snow-scarf",
+    "sparkleTrail" : "sparkle-trail",
+    "stethoscope" : "stethoscope",
+    "summerShades" : "summer-shades",
+    "surgicalCap" : "surgical-cap",
+    "teamMedal" : "team-medal",
+    "tinyCrown" : "crown",
+    "witchHat" : "witch-hat",
+    "wizardHat" : "wizard-hat"
+  },
+  "colorRoles" : [
+    "furBase",
+    "furShade",
+    "furAccent",
+    "furSpot",
+    "belly",
+    "costumeBase",
+    "costumeShade",
+    "costumeTrim",
+    "accessoryBase",
+    "accessoryShade"
+  ],
+  "outfits" : {
+    "cozyHoodie" : "hoodie",
+    "dinosaurHoodie" : "dinosaur-hoodie",
+    "none" : "none",
+    "scrubs" : "scrubs",
+    "studyHoodie" : "study-hoodie",
+    "superheroCape" : "superhero",
+    "whiteCoat" : "white-coat",
+    "wizardRobe" : "wizard"
+  },
+  "protocol" : 2,
+  "protocolHeader" : "Tabbi-Protocol",
+  "replies" : [
+    {
+      "json" : {
+        "friends" : [
+          {
+            "online" : true,
+            "party" : {
+              "code" : "Q4RT8M",
+              "size" : 2
+            },
+            "presence" : {
+              "day" : "2026-10-15",
+              "lastSeen" : 1789999100,
+              "method" : "pomodoro",
+              "phaseEndsAt" : 1790000000,
+              "sessionMinutes" : 5,
+              "status" : "studying",
+              "streakDays" : 6,
+              "todayMinutes" : 95
+            },
+            "profile" : {
+              "accessories" : [
+                "glasses",
+                "scarf"
+              ],
+              "breed" : "tabby",
+              "code" : "K7QW2MZD",
+              "colors" : [
+                "#D98C4A",
+                "#B06A33",
+                "#F2C38B",
+                "#5A3A22",
+                "#FFF1DE",
+                "#3E7CB1"
+              ],
+              "costume" : "graduation",
+              "level" : 2,
+              "name" : "Olive",
+              "petName" : "Mochi",
+              "points" : 80,
+              "species" : "cat"
+            },
+            "since" : 1789000000
+          }
+        ],
+        "incoming" : [
+          {
+            "profile" : {
+              "accessories" : [
+                "snow-scarf",
+                "heart-glasses",
+                "wizard-hat",
+                "angel-wings",
+                "sparkle-trail"
+              ],
+              "badges" : [
+                "founding"
+              ],
+              "breed" : "corgi",
+              "code" : "N4ZR7HVB",
+              "colors" : [
+                "#D98C4A",
+                "#B06A33",
+                "#F2C38B",
+                "#5A3A22",
+                "#FFF1DE",
+                "#3E7CB1",
+                "#2E5E88",
+                "#FFFFFF",
+                "#E2557A",
+                "#B83D5E"
+              ],
+              "costume" : "dinosaur-hoodie",
+              "level" : 3,
+              "name" : "Noor",
+              "petName" : "Pip",
+              "points" : 120,
+              "species" : "dog"
+            },
+            "since" : 1789990000
+          }
+        ],
+        "ok" : true,
+        "outgoing" : [
+          {
+            "profile" : {
+              "accessories" : [
+                "jetpack",
+                "party-hat",
+                "wings-of-tomorrow"
+              ],
+              "aura" : "glow",
+              "badges" : [
+                "founding",
+                "fromTheFuture"
+              ],
+              "breed" : "maine-coon",
+              "code" : "F7TRE9XQ",
+              "colors" : [
+                "#334455",
+                "#AABBCC"
+              ],
+              "costume" : "space-suit",
+              "level" : 1,
+              "name" : "Fay",
+              "petName" : "Zip",
+              "points" : 5,
+              "pronouns" : "they",
+              "species" : "cat"
+            },
+            "since" : 1789980000
+          }
+        ]
+      },
+      "name" : "friend list with requests",
+      "pets" : {
+        "F7TRE9XQ" : {
+          "accessories" : [
+            "partyHat"
+          ],
+          "breed" : "britishShorthair",
+          "colors" : {
+            "accessoryBase" : "#E0607A",
+            "accessoryShade" : "#B04460",
+            "belly" : "#FFFFFF",
+            "costumeBase" : "#5BC0BE",
+            "costumeShade" : "#3E9593",
+            "costumeTrim" : "#E8FFFB",
+            "furAccent" : "#A8A098",
+            "furBase" : "#334455",
+            "furShade" : "#AABBCC",
+            "furSpot" : "#3A3036"
+          },
+          "outfit" : "none",
+          "species" : "cat"
+        },
+        "K7QW2MZD" : {
+          "accessories" : [
+            "scarf",
+            "roundGlasses",
+            "graduationCap"
+          ],
+          "breed" : "orangeTabby",
+          "colors" : {
+            "accessoryBase" : "#E0607A",
+            "accessoryShade" : "#B04460",
+            "belly" : "#FFF1DE",
+            "costumeBase" : "#3E7CB1",
+            "costumeShade" : "#3E9593",
+            "costumeTrim" : "#E8FFFB",
+            "furAccent" : "#F2C38B",
+            "furBase" : "#D98C4A",
+            "furShade" : "#B06A33",
+            "furSpot" : "#5A3A22"
+          },
+          "outfit" : "none",
+          "species" : "cat"
+        },
+        "N4ZR7HVB" : {
+          "accessories" : [
+            "snowScarf",
+            "heartGlasses",
+            "wizardHat",
+            "angelWings",
+            "sparkleTrail"
+          ],
+          "breed" : "corgi",
+          "colors" : {
+            "accessoryBase" : "#E2557A",
+            "accessoryShade" : "#B83D5E",
+            "belly" : "#FFF1DE",
+            "costumeBase" : "#3E7CB1",
+            "costumeShade" : "#2E5E88",
+            "costumeTrim" : "#FFFFFF",
+            "furAccent" : "#F2C38B",
+            "furBase" : "#D98C4A",
+            "furShade" : "#B06A33",
+            "furSpot" : "#5A3A22"
+          },
+          "outfit" : "dinosaurHoodie",
+          "species" : "dog"
+        }
+      },
+      "schema" : "friendList",
+      "summary" : {
+        "badges" : {
+          "K7QW2MZD" : [
+
+          ]
+        },
+        "friends" : [
+          "K7QW2MZD"
+        ],
+        "incoming" : [
+          "N4ZR7HVB"
+        ],
+        "outgoing" : [
+          "F7TRE9XQ"
+        ]
+      }
+    },
+    {
+      "json" : {
+        "friends" : [
+          {
+            "online" : false,
+            "party" : null,
+            "presence" : null,
+            "profile" : {
+              "accessories" : [
+                "glasses",
+                "scarf"
+              ],
+              "breed" : "tabby",
+              "code" : "K7QW2MZD",
+              "colors" : [
+                "#D98C4A",
+                "#B06A33",
+                "#F2C38B",
+                "#5A3A22",
+                "#FFF1DE",
+                "#3E7CB1"
+              ],
+              "costume" : "graduation",
+              "level" : 2,
+              "name" : "Olive",
+              "petName" : "Mochi",
+              "points" : 80,
+              "species" : "cat"
+            },
+            "since" : 1789000000
+          }
+        ],
+        "ok" : true
+      },
+      "name" : "friend list from a protocol 1 server",
+      "pets" : {
+        "K7QW2MZD" : {
+          "accessories" : [
+            "scarf",
+            "roundGlasses",
+            "graduationCap"
+          ],
+          "breed" : "orangeTabby",
+          "colors" : {
+            "accessoryBase" : "#E0607A",
+            "accessoryShade" : "#B04460",
+            "belly" : "#FFF1DE",
+            "costumeBase" : "#3E7CB1",
+            "costumeShade" : "#3E9593",
+            "costumeTrim" : "#E8FFFB",
+            "furAccent" : "#F2C38B",
+            "furBase" : "#D98C4A",
+            "furShade" : "#B06A33",
+            "furSpot" : "#5A3A22"
+          },
+          "outfit" : "none",
+          "species" : "cat"
+        }
+      },
+      "schema" : "friendList",
+      "summary" : {
+        "badges" : {
+          "K7QW2MZD" : [
+
+          ]
+        },
+        "friends" : [
+          "K7QW2MZD"
+        ],
+        "incoming" : [
+
+        ],
+        "outgoing" : [
+
+        ]
+      }
+    },
+    {
+      "json" : {
+        "cursor" : "abc",
+        "friends" : [
+          {
+            "online" : false,
+            "party" : null,
+            "presence" : null,
+            "profile" : {
+              "accessories" : [
+                "jetpack",
+                "party-hat",
+                "wings-of-tomorrow"
+              ],
+              "aura" : "glow",
+              "badges" : [
+                "founding",
+                "fromTheFuture"
+              ],
+              "breed" : "maine-coon",
+              "code" : "F7TRE9XQ",
+              "colors" : [
+                "#334455",
+                "#AABBCC"
+              ],
+              "costume" : "space-suit",
+              "level" : 1,
+              "name" : "Fay",
+              "petName" : "Zip",
+              "points" : 5,
+              "pronouns" : "they",
+              "species" : "cat"
+            },
+            "since" : 1789000000,
+            "streak" : {
+              "best" : 9
+            }
+          }
+        ],
+        "incoming" : [
+
+        ],
+        "ok" : true,
+        "outgoing" : [
+
+        ],
+        "suggested" : [
+          {
+            "code" : "ZZZZZZZZ"
+          }
+        ]
+      },
+      "name" : "friend list from a newer server",
+      "pets" : {
+        "F7TRE9XQ" : {
+          "accessories" : [
+            "partyHat"
+          ],
+          "breed" : "britishShorthair",
+          "colors" : {
+            "accessoryBase" : "#E0607A",
+            "accessoryShade" : "#B04460",
+            "belly" : "#FFFFFF",
+            "costumeBase" : "#5BC0BE",
+            "costumeShade" : "#3E9593",
+            "costumeTrim" : "#E8FFFB",
+            "furAccent" : "#A8A098",
+            "furBase" : "#334455",
+            "furShade" : "#AABBCC",
+            "furSpot" : "#3A3036"
+          },
+          "outfit" : "none",
+          "species" : "cat"
+        }
+      },
+      "schema" : "friendList",
+      "summary" : {
+        "badges" : {
+          "F7TRE9XQ" : [
+            "founding",
+            "fromTheFuture"
+          ]
+        },
+        "friends" : [
+          "F7TRE9XQ"
+        ],
+        "incoming" : [
+
+        ],
+        "outgoing" : [
+
+        ]
+      }
+    },
+    {
+      "json" : {
+        "added" : false,
+        "friend" : {
+          "accessories" : [
+            "snow-scarf",
+            "heart-glasses",
+            "wizard-hat",
+            "angel-wings",
+            "sparkle-trail"
+          ],
+          "badges" : [
+            "founding"
+          ],
+          "breed" : "corgi",
+          "code" : "N4ZR7HVB",
+          "colors" : [
+            "#D98C4A",
+            "#B06A33",
+            "#F2C38B",
+            "#5A3A22",
+            "#FFF1DE",
+            "#3E7CB1",
+            "#2E5E88",
+            "#FFFFFF",
+            "#E2557A",
+            "#B83D5E"
+          ],
+          "costume" : "dinosaur-hoodie",
+          "level" : 3,
+          "name" : "Noor",
+          "petName" : "Pip",
+          "points" : 120,
+          "species" : "dog"
+        },
+        "ok" : true,
+        "status" : "requested"
+      },
+      "name" : "request sent",
+      "pets" : {
+        "N4ZR7HVB" : {
+          "accessories" : [
+            "snowScarf",
+            "heartGlasses",
+            "wizardHat",
+            "angelWings",
+            "sparkleTrail"
+          ],
+          "breed" : "corgi",
+          "colors" : {
+            "accessoryBase" : "#E2557A",
+            "accessoryShade" : "#B83D5E",
+            "belly" : "#FFF1DE",
+            "costumeBase" : "#3E7CB1",
+            "costumeShade" : "#2E5E88",
+            "costumeTrim" : "#FFFFFF",
+            "furAccent" : "#F2C38B",
+            "furBase" : "#D98C4A",
+            "furShade" : "#B06A33",
+            "furSpot" : "#5A3A22"
+          },
+          "outfit" : "dinosaurHoodie",
+          "species" : "dog"
+        }
+      },
+      "schema" : "addFriendReply",
+      "summary" : {
+        "result" : "requested"
+      }
+    },
+    {
+      "json" : {
+        "added" : true,
+        "friend" : {
+          "accessories" : [
+            "snow-scarf",
+            "heart-glasses",
+            "wizard-hat",
+            "angel-wings",
+            "sparkle-trail"
+          ],
+          "badges" : [
+            "founding"
+          ],
+          "breed" : "corgi",
+          "code" : "N4ZR7HVB",
+          "colors" : [
+            "#D98C4A",
+            "#B06A33",
+            "#F2C38B",
+            "#5A3A22",
+            "#FFF1DE",
+            "#3E7CB1",
+            "#2E5E88",
+            "#FFFFFF",
+            "#E2557A",
+            "#B83D5E"
+          ],
+          "costume" : "dinosaur-hoodie",
+          "level" : 3,
+          "name" : "Noor",
+          "petName" : "Pip",
+          "points" : 120,
+          "species" : "dog"
+        },
+        "ok" : true,
+        "status" : "friends"
+      },
+      "name" : "request accepted, or theirs was waiting",
+      "pets" : {
+        "N4ZR7HVB" : {
+          "accessories" : [
+            "snowScarf",
+            "heartGlasses",
+            "wizardHat",
+            "angelWings",
+            "sparkleTrail"
+          ],
+          "breed" : "corgi",
+          "colors" : {
+            "accessoryBase" : "#E2557A",
+            "accessoryShade" : "#B83D5E",
+            "belly" : "#FFF1DE",
+            "costumeBase" : "#3E7CB1",
+            "costumeShade" : "#2E5E88",
+            "costumeTrim" : "#FFFFFF",
+            "furAccent" : "#F2C38B",
+            "furBase" : "#D98C4A",
+            "furShade" : "#B06A33",
+            "furSpot" : "#5A3A22"
+          },
+          "outfit" : "dinosaurHoodie",
+          "species" : "dog"
+        }
+      },
+      "schema" : "addFriendReply",
+      "summary" : {
+        "result" : "friends"
+      }
+    },
+    {
+      "json" : {
+        "added" : false,
+        "friend" : {
+          "accessories" : [
+            "glasses",
+            "scarf"
+          ],
+          "breed" : "tabby",
+          "code" : "K7QW2MZD",
+          "colors" : [
+            "#D98C4A",
+            "#B06A33",
+            "#F2C38B",
+            "#5A3A22",
+            "#FFF1DE",
+            "#3E7CB1"
+          ],
+          "costume" : "graduation",
+          "level" : 2,
+          "name" : "Olive",
+          "petName" : "Mochi",
+          "points" : 80,
+          "species" : "cat"
+        },
+        "ok" : true,
+        "status" : "friends"
+      },
+      "name" : "already friends",
+      "pets" : {
+        "K7QW2MZD" : {
+          "accessories" : [
+            "scarf",
+            "roundGlasses",
+            "graduationCap"
+          ],
+          "breed" : "orangeTabby",
+          "colors" : {
+            "accessoryBase" : "#E0607A",
+            "accessoryShade" : "#B04460",
+            "belly" : "#FFF1DE",
+            "costumeBase" : "#3E7CB1",
+            "costumeShade" : "#3E9593",
+            "costumeTrim" : "#E8FFFB",
+            "furAccent" : "#F2C38B",
+            "furBase" : "#D98C4A",
+            "furShade" : "#B06A33",
+            "furSpot" : "#5A3A22"
+          },
+          "outfit" : "none",
+          "species" : "cat"
+        }
+      },
+      "schema" : "addFriendReply",
+      "summary" : {
+        "result" : "alreadyFriends"
+      }
+    },
+    {
+      "json" : {
+        "added" : true,
+        "friend" : {
+          "accessories" : [
+            "glasses",
+            "scarf"
+          ],
+          "breed" : "tabby",
+          "code" : "K7QW2MZD",
+          "colors" : [
+            "#D98C4A",
+            "#B06A33",
+            "#F2C38B",
+            "#5A3A22",
+            "#FFF1DE",
+            "#3E7CB1"
+          ],
+          "costume" : "graduation",
+          "level" : 2,
+          "name" : "Olive",
+          "petName" : "Mochi",
+          "points" : 80,
+          "species" : "cat"
+        },
+        "ok" : true
+      },
+      "name" : "added on a protocol 1 server",
+      "pets" : {
+        "K7QW2MZD" : {
+          "accessories" : [
+            "scarf",
+            "roundGlasses",
+            "graduationCap"
+          ],
+          "breed" : "orangeTabby",
+          "colors" : {
+            "accessoryBase" : "#E0607A",
+            "accessoryShade" : "#B04460",
+            "belly" : "#FFF1DE",
+            "costumeBase" : "#3E7CB1",
+            "costumeShade" : "#3E9593",
+            "costumeTrim" : "#E8FFFB",
+            "furAccent" : "#F2C38B",
+            "furBase" : "#D98C4A",
+            "furShade" : "#B06A33",
+            "furSpot" : "#5A3A22"
+          },
+          "outfit" : "none",
+          "species" : "cat"
+        }
+      },
+      "schema" : "addFriendReply",
+      "summary" : {
+        "result" : "friends"
+      }
+    },
+    {
+      "json" : {
+        "heartbeatSeconds" : 120,
+        "incomingRequests" : 2,
+        "ok" : true,
+        "presence" : {
+          "day" : "2026-10-15",
+          "lastSeen" : 1789999100,
+          "method" : "pomodoro",
+          "phaseEndsAt" : 1790000000,
+          "sessionMinutes" : 5,
+          "status" : "studying",
+          "streakDays" : 6,
+          "todayMinutes" : 95
+        }
+      },
+      "name" : "heartbeat with requests waiting",
+      "pets" : {
+
+      },
+      "schema" : "heartbeatReply",
+      "summary" : {
+        "incomingRequests" : 2,
+        "nextHeartbeat" : 120,
+        "status" : "studying"
+      }
+    },
+    {
+      "json" : {
+        "heartbeatSeconds" : 120,
+        "ok" : true,
+        "presence" : {
+          "day" : "2026-10-15",
+          "lastSeen" : 1789999100,
+          "method" : "pomodoro",
+          "phaseEndsAt" : 1790000000,
+          "sessionMinutes" : 5,
+          "status" : "studying",
+          "streakDays" : 6,
+          "todayMinutes" : 95
+        }
+      },
+      "name" : "heartbeat from a protocol 1 server",
+      "pets" : {
+
+      },
+      "schema" : "heartbeatReply",
+      "summary" : {
+        "incomingRequests" : null,
+        "nextHeartbeat" : 120,
+        "status" : "studying"
+      }
+    },
+    {
+      "json" : {
+        "ok" : true,
+        "party" : {
+          "code" : "Q4RT8M",
+          "createdAt" : 1789990000,
+          "expiresAt" : 1790042200,
+          "host" : "N4ZR7HVB",
+          "lastActive" : 1789999000,
+          "maxMembers" : 8,
+          "members" : [
+            {
+              "host" : true,
+              "joinedAt" : 1789990000,
+              "online" : true,
+              "presence" : {
+                "day" : "2026-10-15",
+                "lastSeen" : 1789999100,
+                "method" : "pomodoro",
+                "phaseEndsAt" : 1790000000,
+                "sessionMinutes" : 5,
+                "status" : "studying",
+                "streakDays" : 6,
+                "todayMinutes" : 95
+              },
+              "profile" : {
+                "accessories" : [
+                  "snow-scarf",
+                  "heart-glasses",
+                  "wizard-hat",
+                  "angel-wings",
+                  "sparkle-trail"
+                ],
+                "badges" : [
+                  "founding"
+                ],
+                "breed" : "corgi",
+                "code" : "N4ZR7HVB",
+                "colors" : [
+                  "#D98C4A",
+                  "#B06A33",
+                  "#F2C38B",
+                  "#5A3A22",
+                  "#FFF1DE",
+                  "#3E7CB1",
+                  "#2E5E88",
+                  "#FFFFFF",
+                  "#E2557A",
+                  "#B83D5E"
+                ],
+                "costume" : "dinosaur-hoodie",
+                "level" : 3,
+                "name" : "Noor",
+                "petName" : "Pip",
+                "points" : 120,
+                "species" : "dog"
+              }
+            },
+            {
+              "host" : false,
+              "joinedAt" : 1789991000,
+              "online" : false,
+              "presence" : null,
+              "profile" : {
+                "accessories" : [
+                  "glasses",
+                  "scarf"
+                ],
+                "breed" : "tabby",
+                "code" : "K7QW2MZD",
+                "colors" : [
+                  "#D98C4A",
+                  "#B06A33",
+                  "#F2C38B",
+                  "#5A3A22",
+                  "#FFF1DE",
+                  "#3E7CB1"
+                ],
+                "costume" : "graduation",
+                "level" : 2,
+                "name" : "Olive",
+                "petName" : "Mochi",
+                "points" : 80,
+                "species" : "cat"
+              }
+            },
+            {
+              "host" : false,
+              "joinedAt" : 1789992000,
+              "online" : false,
+              "presence" : null,
+              "profile" : {
+                "accessories" : [
+                  "jetpack",
+                  "party-hat",
+                  "wings-of-tomorrow"
+                ],
+                "aura" : "glow",
+                "badges" : [
+                  "founding",
+                  "fromTheFuture"
+                ],
+                "breed" : "maine-coon",
+                "code" : "F7TRE9XQ",
+                "colors" : [
+                  "#334455",
+                  "#AABBCC"
+                ],
+                "costume" : "space-suit",
+                "level" : 1,
+                "name" : "Fay",
+                "petName" : "Zip",
+                "points" : 5,
+                "pronouns" : "they",
+                "species" : "cat"
+              },
+              "seat" : 3
+            }
+          ],
+          "session" : {
+            "method" : "pomodoro",
+            "phaseEndsAt" : 1790000000,
+            "startedAt" : 1789998500
+          },
+          "theme" : "night"
+        }
+      },
+      "name" : "party of an older and a current app, and a newer one",
+      "pets" : {
+        "F7TRE9XQ" : {
+          "accessories" : [
+            "partyHat"
+          ],
+          "breed" : "britishShorthair",
+          "colors" : {
+            "accessoryBase" : "#E0607A",
+            "accessoryShade" : "#B04460",
+            "belly" : "#FFFFFF",
+            "costumeBase" : "#5BC0BE",
+            "costumeShade" : "#3E9593",
+            "costumeTrim" : "#E8FFFB",
+            "furAccent" : "#A8A098",
+            "furBase" : "#334455",
+            "furShade" : "#AABBCC",
+            "furSpot" : "#3A3036"
+          },
+          "outfit" : "none",
+          "species" : "cat"
+        },
+        "K7QW2MZD" : {
+          "accessories" : [
+            "scarf",
+            "roundGlasses",
+            "graduationCap"
+          ],
+          "breed" : "orangeTabby",
+          "colors" : {
+            "accessoryBase" : "#E0607A",
+            "accessoryShade" : "#B04460",
+            "belly" : "#FFF1DE",
+            "costumeBase" : "#3E7CB1",
+            "costumeShade" : "#3E9593",
+            "costumeTrim" : "#E8FFFB",
+            "furAccent" : "#F2C38B",
+            "furBase" : "#D98C4A",
+            "furShade" : "#B06A33",
+            "furSpot" : "#5A3A22"
+          },
+          "outfit" : "none",
+          "species" : "cat"
+        },
+        "N4ZR7HVB" : {
+          "accessories" : [
+            "snowScarf",
+            "heartGlasses",
+            "wizardHat",
+            "angelWings",
+            "sparkleTrail"
+          ],
+          "breed" : "corgi",
+          "colors" : {
+            "accessoryBase" : "#E2557A",
+            "accessoryShade" : "#B83D5E",
+            "belly" : "#FFF1DE",
+            "costumeBase" : "#3E7CB1",
+            "costumeShade" : "#2E5E88",
+            "costumeTrim" : "#FFFFFF",
+            "furAccent" : "#F2C38B",
+            "furBase" : "#D98C4A",
+            "furShade" : "#B06A33",
+            "furSpot" : "#5A3A22"
+          },
+          "outfit" : "dinosaurHoodie",
+          "species" : "dog"
+        }
+      },
+      "schema" : "partyReply",
+      "summary" : {
+        "host" : "N4ZR7HVB",
+        "members" : [
+          "N4ZR7HVB",
+          "K7QW2MZD",
+          "F7TRE9XQ"
+        ],
+        "session" : "pomodoro"
+      }
+    }
+  ],
+  "updates" : [
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "british-shorthair",
+        "colors" : [
+          "#EEEBE7",
+          "#D8D2CB",
+          "#A8A098",
+          "#3A3036",
+          "#FFFFFF",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "none",
+        "petName" : "British Shorthair",
+        "species" : "cat"
+      },
+      "name" : "starter cat",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishShorthair",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FFFFFF",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#A8A098",
+          "furBase" : "#EEEBE7",
+          "furShade" : "#D8D2CB",
+          "furSpot" : "#3A3036"
+        },
+        "outfit" : "none",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "golden-retriever",
+        "colors" : [
+          "#E6AE52",
+          "#C98C36",
+          "#F3CB82",
+          "#3A3036",
+          "#F7DCA8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "none",
+        "petName" : "Biscuit",
+        "species" : "dog"
+      },
+      "name" : "starter dog",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#F7DCA8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#F3CB82",
+          "furBase" : "#E6AE52",
+          "furShade" : "#C98C36",
+          "furSpot" : "#3A3036"
+        },
+        "outfit" : "none",
+        "species" : "dog"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+          "stethoscope",
+          "surgical-cap"
+        ],
+        "breed" : "tabby",
+        "colors" : [
+          "#8E6FD1",
+          "#7B5FB5",
+          "#6B4FA3",
+          "#3A3036",
+          "#D6CAF9",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "scrubs",
+        "petName" : "Plum",
+        "species" : "cat"
+      },
+      "name" : "scrubs, surgical cap and stethoscope, purple fur",
+      "pet" : {
+        "accessories" : [
+          "stethoscope",
+          "surgicalCap"
+        ],
+        "breed" : "grayTabby",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#D6CAF9",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#6B4FA3",
+          "furBase" : "#8E6FD1",
+          "furShade" : "#7B5FB5",
+          "furSpot" : "#3A3036"
+        },
+        "outfit" : "scrubs",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+          "scarf",
+          "graduation-cap"
+        ],
+        "breed" : "tabby",
+        "colors" : [
+          "#F2A65A",
+          "#D9823E",
+          "#C0652B",
+          "#3A3036",
+          "#FFE9CF",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "graduation",
+        "petName" : "Mochi",
+        "species" : "cat"
+      },
+      "name" : "graduation cap and scarf, no outfit",
+      "pet" : {
+        "accessories" : [
+          "scarf",
+          "graduationCap"
+        ],
+        "breed" : "orangeTabby",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FFE9CF",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#C0652B",
+          "furBase" : "#F2A65A",
+          "furShade" : "#D9823E",
+          "furSpot" : "#3A3036"
+        },
+        "outfit" : "none",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+          "glasses",
+          "cowboy-hat"
+        ],
+        "breed" : "golden-retriever",
+        "colors" : [
+          "#E6AE52",
+          "#C98C36",
+          "#F3CB82",
+          "#3A3036",
+          "#F7DCA8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "none",
+        "petName" : "Biscuit",
+        "species" : "dog"
+      },
+      "name" : "cowboy hat and glasses",
+      "pet" : {
+        "accessories" : [
+          "roundGlasses",
+          "cowboyHat"
+        ],
+        "breed" : "goldenRetriever",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#F7DCA8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#F3CB82",
+          "furBase" : "#E6AE52",
+          "furShade" : "#C98C36",
+          "furSpot" : "#3A3036"
+        },
+        "outfit" : "none",
+        "species" : "dog"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+          "snow-scarf",
+          "heart-glasses",
+          "wizard-hat",
+          "angel-wings",
+          "sparkle-trail"
+        ],
+        "breed" : "corgi",
+        "colors" : [
+          "#E88D3C",
+          "#C76F28",
+          "#F2A65A",
+          "#3A3036",
+          "#FFF6EA",
+          "#3E7CB1",
+          "#3E9593",
+          "#E8FFFB",
+          "#E2557A",
+          "#B04460"
+        ],
+        "costume" : "dinosaur-hoodie",
+        "petName" : "Nova",
+        "species" : "dog"
+      },
+      "name" : "every slot, recolored",
+      "pet" : {
+        "accessories" : [
+          "snowScarf",
+          "heartGlasses",
+          "wizardHat",
+          "angelWings",
+          "sparkleTrail"
+        ],
+        "breed" : "corgi",
+        "colors" : {
+          "accessoryBase" : "#E2557A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FFF6EA",
+          "costumeBase" : "#3E7CB1",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#F2A65A",
+          "furBase" : "#E88D3C",
+          "furShade" : "#C76F28",
+          "furSpot" : "#3A3036"
+        },
+        "outfit" : "dinosaurHoodie",
+        "species" : "dog"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+          "pirate-hat"
+        ],
+        "breed" : "beagle",
+        "colors" : [
+          "#D58F48",
+          "#B57234",
+          "#A9652C",
+          "#332D31",
+          "#FFF8EE",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "pirate",
+        "petName" : "Kit",
+        "species" : "dog"
+      },
+      "name" : "eyepatch hat",
+      "pet" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "beagle",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FFF8EE",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#A9652C",
+          "furBase" : "#D58F48",
+          "furShade" : "#B57234",
+          "furSpot" : "#332D31"
+        },
+        "outfit" : "none",
+        "species" : "dog"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+          "founders-pin",
+          "summer-shades",
+          "lion-dance-hat",
+          "rain-cloud"
+        ],
+        "breed" : "pomeranian",
+        "colors" : [
+          "#2B2830",
+          "#1E1B22",
+          "#47414E",
+          "#7E4A32",
+          "#36323C",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "none",
+        "petName" : "Pip",
+        "species" : "dog"
+      },
+      "name" : "limited and seasonal items",
+      "pet" : {
+        "accessories" : [
+          "foundersPin",
+          "summerShades",
+          "lionDanceHat",
+          "rainCloud"
+        ],
+        "breed" : "shihTzu",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#36323C",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#47414E",
+          "furBase" : "#2B2830",
+          "furShade" : "#1E1B22",
+          "furSpot" : "#7E4A32"
+        },
+        "outfit" : "none",
+        "species" : "dog"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "none",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit none",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "none",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "scrubs",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit scrubs",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "scrubs",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "white-coat",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit whiteCoat",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "whiteCoat",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "hoodie",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit cozyHoodie",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "cozyHoodie",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "superhero",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit superheroCape",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "superheroCape",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "dinosaur-hoodie",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit dinosaurHoodie",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "dinosaurHoodie",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "wizard",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit wizardRobe",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "wizardRobe",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "study-hoodie",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit studyHoodie",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "studyHoodie",
+        "species" : "cat"
+      }
+    }
+  ]
+}

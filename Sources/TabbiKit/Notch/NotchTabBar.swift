@@ -10,19 +10,25 @@ import TabbiKitCore
 /// from `header`, so no tab ever reaches under the camera; the rest sit
 /// behind a "more" button that toggles `NotchViewModel.showsMoreTabs`
 /// (`NotchMoreTabsMenu`).
-/// A tab bounces when `celebrations` nods for its module. Reads
+/// A tab bounces when `celebrations` nods for its module, and wears a
+/// small count while `badges` has one for it (Party's friend requests);
+/// the "more" button wears a dot while a hidden tab has one. Reads
 /// `NotchViewModel` from the environment.
 public struct NotchTabBar: View {
     @EnvironmentObject private var model: NotchViewModel
     @Namespace private var selection
     /// Bounces per tab since this bar appeared; a tab's symbol bounces each time its count grows.
     @State private var bounces: [ModuleID: Int] = [:]
+    @State private var counts: [ModuleID: Int] = [:]
     private let header: NotchHeaderLayout
     private let celebrations: CelebrationCenter?
+    private let badges: AnyPublisher<[ModuleID: Int], Never>?
 
-    public init(header: NotchHeaderLayout, celebrations: CelebrationCenter? = nil) {
+    public init(header: NotchHeaderLayout, celebrations: CelebrationCenter? = nil,
+                badges: AnyPublisher<[ModuleID: Int], Never>? = nil) {
         self.header = header
         self.celebrations = celebrations
+        self.badges = badges
     }
 
     public var body: some View {
@@ -32,17 +38,20 @@ public struct NotchTabBar: View {
             ForEach(visible, id: \.self) { module in
                 TabButton(module: module, shortcut: model.layout.shortcut(for: module), width: header.tabWidth,
                           isSelected: model.selected == module, bounces: bounces[module, default: 0],
-                          namespace: selection) {
+                          badge: counts[module, default: 0], namespace: selection) {
                     model.selected = module
                 }
             }
             if header.hasOverflow {
                 MoreTabsButton(selected: header.overflowSelection(in: tabs, selected: model.selected),
-                               isOpen: model.showsMoreTabs, namespace: selection) {
+                               isOpen: model.showsMoreTabs,
+                               hasBadge: header.overflowTabs(tabs).contains { counts[$0, default: 0] > 0 },
+                               namespace: selection) {
                     model.showsMoreTabs.toggle()
                 }
             }
         }
+        .onReceive(badges ?? Empty().eraseToAnyPublisher()) { counts = $0 }
         .motion(Theme.Motion.snappy, value: model.selected)
         .motion(Theme.Motion.snappy, value: model.layout)
         .onReceive(nods) { nod in
@@ -63,6 +72,8 @@ private struct MoreTabsButton: View {
     /// The hidden tab that is open, if any.
     let selected: ModuleID?
     let isOpen: Bool
+    /// A hidden tab has a badge.
+    var hasBadge = false
     let namespace: Namespace.ID
     let action: () -> Void
     @State private var hovering = false
@@ -84,6 +95,14 @@ private struct MoreTabsButton: View {
                     }
                 }
                 .contentShape(Capsule())
+                .overlay(alignment: .topTrailing) {
+                    if hasBadge {
+                        Circle()
+                            .fill(Theme.Palette.primaryText)
+                            .frame(width: 5, height: 5)
+                            .offset(x: -2, y: 3)
+                    }
+                }
         }
         .buttonStyle(.tactile)
         .help(Text("More tabs", bundle: .tabbi))
@@ -97,17 +116,20 @@ private struct MoreTabsButton: View {
 /// with their number keys. Picking one opens it, which closes the list.
 public struct NotchMoreTabsMenu: View {
     @EnvironmentObject private var model: NotchViewModel
+    @State private var counts: [ModuleID: Int] = [:]
     private let header: NotchHeaderLayout
+    private let badges: AnyPublisher<[ModuleID: Int], Never>?
 
-    public init(header: NotchHeaderLayout) {
+    public init(header: NotchHeaderLayout, badges: AnyPublisher<[ModuleID: Int], Never>? = nil) {
         self.header = header
+        self.badges = badges
     }
 
     public var body: some View {
         VStack(spacing: 0) {
             ForEach(header.overflowTabs(model.layout.tabs), id: \.self) { module in
                 MoreTabRow(module: module, shortcut: model.layout.shortcut(for: module),
-                           isSelected: model.selected == module) {
+                           isSelected: model.selected == module, badge: counts[module, default: 0]) {
                     model.selected = module
                     model.showsMoreTabs = false
                 }
@@ -128,6 +150,7 @@ public struct NotchMoreTabsMenu: View {
             RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
                 .strokeBorder(Theme.Palette.stroke, lineWidth: 0.5)
         )
+        .onReceive(badges ?? Empty().eraseToAnyPublisher()) { counts = $0 }
     }
 }
 
@@ -135,6 +158,7 @@ private struct MoreTabRow: View {
     let module: ModuleID
     let shortcut: Int?
     let isSelected: Bool
+    var badge = 0
     let action: () -> Void
     @State private var hovering = false
     @Environment(\.moduleCatalog) private var catalog
@@ -153,6 +177,7 @@ private struct MoreTabRow: View {
                     .lineLimit(1)
                     .truncationMode(.tail)
                 Spacer(minLength: Theme.Spacing.xs)
+                if badge > 0 { TabBadge(count: badge, tint: descriptor.accentColor) }
                 if let shortcut {
                     Text("\(shortcut)")
                         .font(Theme.Typography.caption.monospacedDigit())
@@ -183,6 +208,8 @@ private struct TabButton: View {
     let isSelected: Bool
     /// Grows by one for each celebration nod aimed at this tab.
     let bounces: Int
+    /// The count the tab wears (`ModuleProvision.badge`); 0 shows none.
+    let badge: Int
     let namespace: Namespace.ID
     let action: () -> Void
     @State private var hovering = false
@@ -207,13 +234,40 @@ private struct TabButton: View {
                     }
                 }
                 .contentShape(Capsule())
+                .overlay(alignment: .topTrailing) {
+                    if badge > 0 {
+                        TabBadge(count: badge, tint: descriptor.accentColor)
+                            .offset(x: 1, y: -3)
+                            .transition(.scale.combined(with: .opacity))
+                    }
+                }
         }
         .buttonStyle(.tactile)
+        .motion(Theme.Motion.snappy, value: badge)
         .help(shortcut.map { "\(descriptor.title) (\($0))" } ?? descriptor.title)
-        // The tab shows only its symbol, so name it for VoiceOver.
+        // The tab shows only its symbol, so name it (and its count) for VoiceOver.
         .accessibilityLabel(descriptor.title)
+        .accessibilityValue(badge > 0 ? Text("Waiting: \(badge)", bundle: .tabbi) : Text(verbatim: ""))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
         .onHover { hovering = $0 }
+    }
+}
+
+/// A tab's count: a small capsule in the module's accent, "9+" past nine.
+private struct TabBadge: View {
+    let count: Int
+    let tint: Color
+
+    var body: some View {
+        Text(count > 9 ? "9+" : "\(count)")
+            .font(.system(size: 8, weight: .bold, design: .rounded).monospacedDigit())
+            .foregroundStyle(Theme.Palette.background)
+            .padding(.horizontal, 3)
+            .frame(minWidth: 12, minHeight: 12)
+            .background(Capsule().fill(tint))
+            .overlay(Capsule().strokeBorder(Theme.Palette.background, lineWidth: 1))
+            .fixedSize()
+            .accessibilityHidden(true)
     }
 }
 

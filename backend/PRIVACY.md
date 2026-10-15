@@ -9,10 +9,11 @@ Before Party or Sign in with Apple sends anything, the app asks the user's birth
 
 Per user, identified only by a random secret token (stored as a SHA-256 hash) and a public 8-character friend code:
 
-- the profile: a display name (up to 24 characters, any nickname works), the pet's name (up to 24 characters), species, breed, up to 6 colors, costume, up to 4 accessories, points and level, and when the friend code was created;
+- the profile: a display name (up to 24 characters, any nickname works), the pet's name (up to 24 characters), species, breed, up to 10 colors, costume, up to 8 accessories, points and level, when the friend code was created, and the newest Party protocol version your apps use (so the service knows whether they can show friend requests);
 - presence from the last heartbeat: status (`studying`, `break`, `idle` or `offline`), the study method id (for example `pomodoro`), when the current phase ends, minutes in the current session, minutes studied today, the study streak in days, your local calendar day, and the time of the last heartbeat;
 - study minutes per local calendar day, kept for 28 days (older days are deleted daily, whether or not you still use the service), for the weekly leaderboard;
 - the friend codes you are friends with, and when each friendship started;
+- friend requests you sent or received, when, and whether the recipient declined, kept for 30 days at most (an answered request is deleted at once, an unanswered or declined one after 30 days);
 - the friend codes you blocked, and when;
 - reports you send about another user: their friend code, their name and pet name at that moment, your friend code, the reason you picked, your optional note (up to 280 characters), the time, and, once the maintainer handles it, the outcome and when;
 - if the maintainer acts on a report: whether you are banned, and every name and pet name they replaced, so they cannot be set again;
@@ -61,6 +62,9 @@ Only the maintainer reads it, to fix the crash, and deletes it when it is no lon
 
 ## Who can see it
 
+- **Friend requests**: adding someone by their friend code asks them to be friends, and they see only your profile (name, pet and badges) until they accept.
+  Declining is never announced: your request just stays "sent" on your side until it expires.
+  Apps from before friend requests (up to 1.0.0) cannot show a request, so a request to someone who only uses such an app makes you friends at once, as adding did before.
 - **Friends** (friendship is mutual and needs your friend code) see your profile (with a Founding badge if you are a Founding Member), your presence (shown as `offline` once heartbeats stop), whether you are in a party with its code and size, and your weekly study minutes on the leaderboard.
 - **Party members** see the profile and presence of everyone in the same party, including members who are not their friends.
   Anyone who has a party's code can join it while it has room, so share party codes only with people you want to study with.
@@ -78,15 +82,15 @@ Your sync document and Apple account link are never shown to anyone, friends inc
 ## How to delete
 
 Leaving a party (`POST /v1/party/leave`) removes your membership; a party is deleted when its last member leaves, or within an hour once it has had 12 hours without activity.
-Removing a friend deletes the friendship in both directions.
+Removing a friend deletes the friendship in both directions, and cancelling a request deletes it.
 Unblocking someone deletes the block.
 A report stays until the account of the reporter or of the reported user is deleted.
-Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, sync document, Apple account link, blocks (yours, and others' blocks of you), reports by you or about you, any ban or replaced name, your limited edition items and your Founding Member record, removes you from your friends' lists, and takes you out of your party.
+Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, friend requests sent and received, sync document, Apple account link, blocks (yours, and others' blocks of you), reports by you or about you, any ban or replaced name, your limited edition items and your Founding Member record, removes you from your friends' lists, and takes you out of your party.
 If you signed in with Apple, it then revokes the app's Sign in with Apple grant with Apple.
 A pending web sign-in that was never picked up can still hold your Apple user id until the hourly cleanup erases it.
 Your secret token, and the token of every other Mac you signed in on, stops working at once.
 Signing out on one Mac (`POST /v1/auth/signout`) deletes that Mac's token on the server; your account and other Macs stay signed in.
-Signing in with Apple on a Mac that already had a friend code of its own moves that code's friends (up to the friend limit, leaving out anyone either side blocked), blocks, reports, any ban or replaced name, limited edition items and study minutes to your account and deletes the old code.
+Signing in with Apple on a Mac that already had a friend code of its own moves that code's friends (up to the friend limit, leaving out anyone either side blocked), waiting friend requests, blocks, reports, any ban or replaced name, limited edition items and study minutes to your account and deletes the old code.
 If that Apple ID has no account yet, the existing code simply becomes the account.
 Reports between that code and your account are deleted, since they would now be about yourself.
 

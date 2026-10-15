@@ -6627,6 +6627,78 @@
         }
       }
     },
+    "%@ wants to be friends" : {
+      "comment" : "Title of a Party invite link when the person behind it already asked to be friends. %@ is their name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يريد %@ أن تصبحا صديقين"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ möchte mit dir befreundet sein"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ quiere ser tu amigo"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gusto kang maging kaibigan ni %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ veut être ton ami"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@からフレンド申請が届いています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 님이 친구가 되고 싶어 해요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ quer ser seu amigo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ хочет дружить с тобой"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 想加你为好友"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 想加你為好友"
+          }
+        }
+      }
+    },
     "%@ watched a cloud shaped like a fish" : {
       "comment" : "Adventure journal line on the Closet pet card and its tooltip: what the pet did on its adventure during a long focus block. %@ is the pet's name. Short and cute; the card shows one line.",
       "extractionState" : "manual",
@@ -6839,6 +6911,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ 和 %2$@"
+          }
+        }
+      }
+    },
+    "%@ with %@ wants to be friends." : {
+      "comment" : "Tooltip of a friend request row. The first %@ is the person's name, the second their pet's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ مع %2$@ يريد أن يصبح صديقك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ mit %2$@ möchte mit dir befreundet sein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ con %2$@ quiere ser tu amigo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gusto kang maging kaibigan ni %1$@ kasama si %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ avec %2$@ veut être ton ami."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@と%2$@からフレンド申請が届いています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 님과 %2$@이(가) 친구가 되고 싶어 해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ com %2$@ quer ser seu amigo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ и %2$@ хотят дружить с тобой."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 和 %2$@ 想加你为好友。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 和 %2$@ 想加你為好友。"
           }
         }
       }
@@ -21089,6 +21233,150 @@
         }
       }
     },
+    "Accept" : {
+      "comment" : "Button that accepts a friend request.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قبول"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annehmen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aceptar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanggapin"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accepter"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "承認"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "수락"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aceitar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Принять"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接受"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接受"
+          }
+        }
+      }
+    },
+    "Accept %@'s friend request" : {
+      "comment" : "Tooltip of the button that accepts a friend request. %@ is the sender's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قبول طلب صداقة %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freundschaftsanfrage von %@ annehmen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aceptar la solicitud de amistad de %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanggapin ang friend request ni %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accepter la demande d'ami de %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のフレンド申請を承認"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 님의 친구 요청 수락"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aceitar o pedido de amizade de %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Принять заявку в друзья: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接受 %@ 的好友请求"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接受 %@ 的好友邀請"
+          }
+        }
+      }
+    },
     "Access is off" : {
       "comment" : "Onboarding calendar step. Calendar status: access denied.",
       "extractionState" : "manual",
@@ -32523,6 +32811,78 @@
         }
       }
     },
+    "Blocked %@. Unblock them in Party options." : {
+      "comment" : "Party notice after blocking someone. %@ is their name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم حظر %@. يمكنك إلغاء الحظر من خيارات المجموعة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ blockiert. Du kannst die Blockierung in den Party-Optionen aufheben."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloqueaste a %@. Puedes desbloquearlo en las opciones de Grupo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na-block si %@. I-unblock sila sa Party options."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ est bloqué. Débloque cette personne dans les options de Groupe."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をブロックしました。パーティのオプションで解除できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 님을 차단했어요. 파티 옵션에서 해제할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ foi bloqueado. Desbloqueie nas opções do Grupo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ заблокирован. Разблокировать можно в настройках Party."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已屏蔽 %@。可在派对选项中解除屏蔽。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已封鎖 %@。可到派對選項解除封鎖。"
+          }
+        }
+      }
+    },
     "Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party." : {
       "comment" : "Settings pane text (Ask AI, Pet Coach, daily reminder or Party).",
       "extractionState" : "manual",
@@ -35112,6 +35472,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
+          }
+        }
+      }
+    },
+    "Cancel Request" : {
+      "comment" : "Context menu item that withdraws a friend request the user sent.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إلغاء الطلب"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anfrage zurückziehen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar solicitud"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kanselahin ang Request"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuler la demande"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "申請を取り消す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "요청 취소"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar pedido"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отменить заявку"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消请求"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消邀請"
+          }
+        }
+      }
+    },
+    "Cancel your request to %@" : {
+      "comment" : "Tooltip of the button that withdraws a friend request. %@ is the recipient's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إلغاء طلبك إلى %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Anfrage an %@ zurückziehen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar tu solicitud a %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kanselahin ang request mo kay %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuler ta demande à %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@への申請を取り消す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 님에게 보낸 요청 취소"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar seu pedido para %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отменить заявку: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消发给 %@ 的请求"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消送給 %@ 的邀請"
           }
         }
       }
@@ -47110,6 +47614,150 @@
         }
       }
     },
+    "Decline" : {
+      "comment" : "Context menu item that declines a friend request.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رفض"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ablehnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechazar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanggihan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refuser"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拒否"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "거절"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recusar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отклонить"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拒绝"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拒絕"
+          }
+        }
+      }
+    },
+    "Decline %@'s request. They won't be told." : {
+      "comment" : "Tooltip of the button that declines a friend request. %@ is the sender's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رفض طلب %@. لن يُبلَّغ بذلك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anfrage von %@ ablehnen. Die Person erfährt es nicht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechazar la solicitud de %@. No se le avisará."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanggihan ang request ni %@. Hindi nila malalaman."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refuser la demande de %@. La personne n'en saura rien."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の申請を拒否します。相手には通知されません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 님의 요청을 거절해요. 상대에게 알리지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recusar o pedido de %@. A pessoa não vai ser avisada."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отклонить заявку: %@. Человек об этом не узнает."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拒绝 %@ 的请求。对方不会收到通知。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拒絕 %@ 的邀請。對方不會收到通知。"
+          }
+        }
+      }
+    },
     "Deep" : {
       "comment" : "Short form of the Deep focus toggle in a narrow panel.",
       "extractionState" : "manual",
@@ -58542,74 +59190,218 @@
         }
       }
     },
-    "Friend code %@. You'll see each other's pets and study time." : {
-      "comment" : "Party invite card (opened from an invite link): message; %@ is a code like K7QW-2MZD.",
+    "Friend code %@. Accept to see each other's pets and study time." : {
+      "comment" : "Party invite link message when the person already asked to be friends. %@ is the friend code.",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "رمز الصديق %@. سيرى كل منكما حيوان الآخر الأليف ووقت دراسته."
+            "value" : "رمز الصديق %@. اقبل ليرى كل منكما حيوان الآخر الأليف ووقت دراسته."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Freundescode %@. Ihr seht gegenseitig eure Haustiere und Lernzeit."
+            "value" : "Freundescode %@. Nimm an, um gegenseitig eure Haustiere und Lernzeit zu sehen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Código de amigo %@. Cada uno verá la mascota y el tiempo de estudio del otro."
+            "value" : "Código de amigo %@. Acepta para ver las mascotas y el tiempo de estudio del otro."
           }
         },
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Friend code %@. Makikita ninyo ang pet at study time ng isa't isa."
+            "value" : "Friend code %@. Tanggapin para makita ninyo ang pet at oras ng pag-aaral ng isa't isa."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Code ami %@. Vous verrez chacun le compagnon et le temps d'étude de l'autre."
+            "value" : "Code d'ami %@. Accepte pour voir vos animaux et votre temps d'étude."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "フレンドコード %@。お互いのペットと勉強時間が見られます。"
+            "value" : "フレンドコード %@。承認すると、お互いのペットと勉強時間が見られます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "친구 코드 %@. 서로의 펫과 공부 시간을 볼 수 있어요."
+            "value" : "친구 코드 %@. 수락하면 서로의 펫과 공부 시간을 볼 수 있어요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Código de amigo %@. Vocês vão ver o pet e o tempo de estudo um do outro."
+            "value" : "Código de amigo %@. Aceite para ver os pets e o tempo de estudo um do outro."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Код друга %@. Вы будете видеть питомцев и время учёбы друг друга."
+            "value" : "Код друга %@. Прими заявку, чтобы видеть питомцев и время учёбы друг друга."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "好友码 %@。你们可以看到彼此的宠物和学习时长。"
+            "value" : "好友代码 %@。接受后，你们就能看到彼此的宠物和学习时间。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "好友代碼 %@。你們會看到彼此的寵物和讀書時間。"
+            "value" : "好友代碼 %@。接受後，你們就能看到彼此的寵物和讀書時間。"
+          }
+        }
+      }
+    },
+    "Friend code %@. Once they accept, you'll see each other's pets and study time." : {
+      "comment" : "Party invite link message before sending a friend request. %@ is the friend code.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رمز الصديق %@. بعد قبول طلبك، سيرى كل منكما حيوان الآخر الأليف ووقت دراسته."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freundescode %@. Sobald die Person annimmt, seht ihr gegenseitig eure Haustiere und Lernzeit."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código de amigo %@. Cuando acepte, verán las mascotas y el tiempo de estudio del otro."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Friend code %@. Kapag tinanggap nila, makikita ninyo ang pet at oras ng pag-aaral ng isa't isa."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code d'ami %@. Dès que la personne accepte, vous verrez vos animaux et votre temps d'étude."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フレンドコード %@。相手が承認すると、お互いのペットと勉強時間が見られます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구 코드 %@. 상대가 수락하면 서로의 펫과 공부 시간을 볼 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código de amigo %@. Quando a pessoa aceitar, vocês vão ver os pets e o tempo de estudo um do outro."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Код друга %@. Когда заявку примут, вы будете видеть питомцев и время учёбы друг друга."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "好友代码 %@。对方接受后，你们就能看到彼此的宠物和学习时间。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "好友代碼 %@。對方接受後，你們就能看到彼此的寵物和讀書時間。"
+          }
+        }
+      }
+    },
+    "Friend codes are %lld letters and digits." : {
+      "comment" : "Party notice when the typed friend code has the wrong form. %lld is its length (8).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تتكون رموز الأصدقاء من %lld أحرف وأرقام."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freundescodes bestehen aus %lld Buchstaben und Ziffern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los códigos de amigo tienen %lld letras y números."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang mga friend code ay %lld na letra at numero."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les codes d'ami comptent %lld lettres et chiffres."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フレンドコードは英数字%lld文字です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구 코드는 영문과 숫자 %lld자예요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os códigos de amigo têm %lld letras e números."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Код друга состоит из %lld букв и цифр."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "好友代码由 %lld 个字母和数字组成。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "好友代碼由 %lld 個字母和數字組成。"
           }
         }
       }
@@ -90028,6 +90820,78 @@
         }
       }
     },
+    "Party codes are %lld letters and digits." : {
+      "comment" : "Party notice when the typed party code has the wrong form. %lld is its length (6).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تتكون رموز المجموعات من %lld أحرف وأرقام."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party-Codes bestehen aus %lld Buchstaben und Ziffern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los códigos de grupo tienen %lld letras y números."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang mga party code ay %lld na letra at numero."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les codes de groupe comptent %lld lettres et chiffres."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パーティコードは英数字%lld文字です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파티 코드는 영문과 숫자 %lld자예요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os códigos de grupo têm %lld letras e números."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Код Party состоит из %lld букв и цифр."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "派对代码由 %lld 个字母和数字组成。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "派對代碼由 %lld 個字母和數字組成。"
+          }
+        }
+      }
+    },
     "Party invite" : {
       "comment" : "Shown in PartyInviteView.",
       "extractionState" : "manual",
@@ -100865,6 +101729,294 @@
         }
       }
     },
+    "Request" : {
+      "comment" : "Party friends list: short form of 'Wants to be friends' when the row is narrow.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طلب"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anfrage"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitud"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demande"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "申請"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "요청"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pedido"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заявка"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请求"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邀請"
+          }
+        }
+      }
+    },
+    "Request sent" : {
+      "comment" : "Party friends list: the line under someone the user sent a friend request to.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أُرسل الطلب"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anfrage gesendet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitud enviada"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naipadala ang request"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demande envoyée"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "申請済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "요청 보냄"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pedido enviado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заявка отправлена"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已发送请求"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已送出邀請"
+          }
+        }
+      }
+    },
+    "Request sent to %@" : {
+      "comment" : "Title after a Party invite link sent a friend request. %@ is the person's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أُرسل الطلب إلى %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anfrage an %@ gesendet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitud enviada a %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naipadala ang request kay %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demande envoyée à %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@に申請を送りました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 님에게 요청을 보냈어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pedido enviado para %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заявка отправлена: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已向 %@ 发送请求"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已向 %@ 送出邀請"
+          }
+        }
+      }
+    },
+    "Request sent to %@." : {
+      "comment" : "Party notice after sending a friend request by code. %@ is the person's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أُرسل الطلب إلى %@."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anfrage an %@ gesendet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitud enviada a %@."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naipadala ang request kay %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demande envoyée à %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@に申請を送りました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 님에게 요청을 보냈어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pedido enviado para %@."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заявка отправлена: %@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已向 %@ 发送请求。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已向 %@ 送出邀請。"
+          }
+        }
+      }
+    },
     "Reset to Default" : {
       "comment" : "Button in Settings > Look that restores the default theme.",
       "extractionState" : "manual",
@@ -102720,7 +103872,7 @@
       }
     },
     "Right-click to report or block." : {
-      "comment" : "Party: end of a member's tooltip.",
+      "comment" : "End of the tooltip of a friend request row.",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -102756,7 +103908,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "右クリックで報告やブロックができます。"
+            "value" : "右クリックで報告、ブロックができます。"
           }
         },
         "ko" : {
@@ -105235,6 +106387,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "會將你的提問傳送給 %@。"
+          }
+        }
+      }
+    },
+    "Sent" : {
+      "comment" : "Party friends list: short form of 'Request sent' when the row is narrow.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أُرسل"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesendet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviada"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naipadala"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyée"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送信済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보냄"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправлена"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已发送"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已送出"
           }
         }
       }
@@ -112293,6 +113517,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "建立派對並分享代碼，或加入好友的派對。專注時，你們的寵物會並肩坐著。"
+          }
+        }
+      }
+    },
+    "Start a party, or join a friend's." : {
+      "comment" : "Party lobby: short form of the explanation when the panel has no room for the long one.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أنشئ مجموعة، أو انضم إلى مجموعة صديق."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starte eine Party oder tritt der eines Freundes bei."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea un grupo o únete al de un amigo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Magsimula ng party, o sumali sa party ng kaibigan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lance un groupe ou rejoins celui d'un ami."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パーティを始めるか、フレンドのパーティに参加しましょう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파티를 시작하거나 친구의 파티에 참여하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crie um grupo ou entre no de um amigo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создай Party или присоединись к Party друга."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发起派对，或加入好友的派对。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "發起派對，或加入好友的派對。"
           }
         }
       }
@@ -119641,6 +120937,222 @@
         }
       }
     },
+    "Thanks. Your report was sent and %@ is blocked." : {
+      "comment" : "Party notice after reporting and blocking someone. %@ is their name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شكرًا. أُرسل بلاغك وتم حظر %@."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danke. Deine Meldung wurde gesendet und %@ ist blockiert."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gracias. Se envió tu denuncia y %@ está bloqueado."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salamat. Naipadala ang report mo at naka-block na si %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merci. Ton signalement a été envoyé et %@ est bloqué."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ありがとうございます。報告を送信し、%@をブロックしました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고마워요. 신고를 보냈고 %@ 님을 차단했어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obrigado. Sua denúncia foi enviada e %@ foi bloqueado."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спасибо. Жалоба отправлена, %@ заблокирован."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "谢谢。举报已发送，%@ 已被屏蔽。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "謝謝。檢舉已送出，%@ 已被封鎖。"
+          }
+        }
+      }
+    },
+    "Thanks. Your report was sent." : {
+      "comment" : "Party notice after reporting someone.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شكرًا. أُرسل بلاغك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danke. Deine Meldung wurde gesendet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gracias. Se envió tu denuncia."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salamat. Naipadala ang report mo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merci. Ton signalement a été envoyé."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ありがとうございます。報告を送信しました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고마워요. 신고를 보냈어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obrigado. Sua denúncia foi enviada."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спасибо. Жалоба отправлена."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "谢谢。举报已发送。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "謝謝。檢舉已送出。"
+          }
+        }
+      }
+    },
+    "That friend request is no longer there." : {
+      "comment" : "Party error: the friend request the user tried to accept was cancelled, declined or expired.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طلب الصداقة هذا لم يعد موجودًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Freundschaftsanfrage gibt es nicht mehr."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esa solicitud de amistad ya no existe."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wala na ang friend request na iyon."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette demande d'ami n'existe plus."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "そのフレンド申請はもうありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그 친구 요청은 더 이상 없어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esse pedido de amizade não existe mais."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этой заявки в друзья больше нет."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这条好友请求已不存在。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這則好友邀請已不存在。"
+          }
+        }
+      }
+    },
     "That key can't be part of a shortcut. Try a letter, number, or Space." : {
       "comment" : "Settings > General error when recording a shortcut with an unsupported key.",
       "extractionState" : "manual",
@@ -124574,6 +126086,78 @@
         }
       }
     },
+    "This is a demo. No report was sent." : {
+      "comment" : "Party notice in demo mode after the report card was sent.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هذا عرض تجريبي. لم يُرسل أي بلاغ."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das ist eine Demo. Es wurde keine Meldung gesendet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esto es una demostración. No se envió ninguna denuncia."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo ito. Walang ipinadalang report."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ceci est une démo. Aucun signalement n'a été envoyé."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これはデモです。報告は送信されていません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "데모예요. 신고는 보내지 않았어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isto é uma demonstração. Nenhuma denúncia foi enviada."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это демо. Жалоба не отправлена."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这是演示。未发送任何举报。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這是示範。沒有送出任何檢舉。"
+          }
+        }
+      }
+    },
     "This is a demo. Nothing was deleted." : {
       "comment" : "Settings pane text (Ask AI, Pet Coach, daily reminder or Party).",
       "extractionState" : "manual",
@@ -124642,6 +126226,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "這是展示版，沒有刪除任何資料。"
+          }
+        }
+      }
+    },
+    "This is a demo. Run without TABBI_DEMO to study with friends." : {
+      "comment" : "Party notice in demo mode when an action would reach the server. TABBI_DEMO is an environment variable and stays as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هذا عرض تجريبي. شغّل التطبيق دون TABBI_DEMO للدراسة مع الأصدقاء."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das ist eine Demo. Starte ohne TABBI_DEMO, um mit Freunden zu lernen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esto es una demostración. Ejecuta sin TABBI_DEMO para estudiar con amigos."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo ito. Patakbuhin nang walang TABBI_DEMO para mag-aral kasama ang mga kaibigan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ceci est une démo. Lance sans TABBI_DEMO pour étudier avec tes amis."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これはデモです。フレンドと勉強するには TABBI_DEMO なしで起動してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "데모예요. 친구와 공부하려면 TABBI_DEMO 없이 실행하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isto é uma demonstração. Execute sem TABBI_DEMO para estudar com amigos."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это демо. Запусти без TABBI_DEMO, чтобы заниматься с друзьями."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这是演示。不带 TABBI_DEMO 运行即可与好友一起学习。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這是示範。不帶 TABBI_DEMO 執行，就能和好友一起讀書。"
           }
         }
       }
@@ -132748,6 +134404,78 @@
         }
       }
     },
+    "Waiting: %lld" : {
+      "comment" : "VoiceOver value of a tab with a badge: how many things wait for the user there (Party: friend requests).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بانتظارك: %lld"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wartend: %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pendientes: %lld"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naghihintay: %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En attente : %lld"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "待機中: %lld"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대기 중: %lld"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aguardando: %lld"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ожидают: %lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待中：%lld"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待中：%lld"
+          }
+        }
+      }
+    },
     "Walk through the steps to connect %@" : {
       "comment" : "Tooltip in Settings > Connections.",
       "extractionState" : "manual",
@@ -132816,6 +134544,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一步步帶你連接：%@"
+          }
+        }
+      }
+    },
+    "Wants to be friends" : {
+      "comment" : "Party friends list: the line under someone who sent the user a friend request.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يريد أن يصبح صديقك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Möchte befreundet sein"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quiere ser tu amigo"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gustong makipagkaibigan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veut être ton ami"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フレンド申請中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구 요청"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quer ser seu amigo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Хочет дружить"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "想加你为好友"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "想加你為好友"
           }
         }
       }
@@ -136870,6 +138670,78 @@
         }
       }
     },
+    "You asked %@ to be friends. You'll see each other once they accept." : {
+      "comment" : "Tooltip of a sent friend request row. %@ is the recipient's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أرسلت إلى %@ طلب صداقة. سيرى كل منكما الآخر بعد قبوله."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast %@ eine Freundschaftsanfrage geschickt. Ihr seht euch, sobald die Person annimmt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le enviaste una solicitud de amistad a %@. Se verán cuando acepte."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nagpadala ka ng friend request kay %@. Makikita ninyo ang isa't isa kapag tinanggap nila."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu as demandé %@ en ami. Vous vous verrez dès que la personne acceptera."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@にフレンド申請を送りました。承認されるとお互いが表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 님에게 친구 요청을 보냈어요. 상대가 수락하면 서로 볼 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você enviou um pedido de amizade para %@. Vocês vão se ver quando a pessoa aceitar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ты отправил заявку в друзья: %@. Вы увидите друг друга, когда её примут."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你已向 %@ 发送好友请求。对方接受后，你们就能看到彼此。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你已向 %@ 送出好友邀請。對方接受後，你們就能看到彼此。"
+          }
+        }
+      }
+    },
     "You blocked %@" : {
       "comment" : "Party invite card (opened from an invite link): title; %@ is a person's name.",
       "extractionState" : "manual",
@@ -138166,6 +140038,78 @@
         }
       }
     },
+    "You have 50 friend requests waiting. Cancel some first." : {
+      "comment" : "Party error: the user already has the most friend requests waiting for an answer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لديك 50 طلب صداقة بانتظار الرد. ألغِ بعضها أولًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast 50 offene Freundschaftsanfragen. Zieh zuerst einige zurück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tienes 50 solicitudes de amistad pendientes. Cancela algunas primero."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "May 50 friend request kang naghihintay. Kanselahin muna ang ilan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu as 50 demandes d'ami en attente. Annule-en d'abord quelques-unes."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返事待ちのフレンド申請が50件あります。先にいくつか取り消してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "응답을 기다리는 친구 요청이 50개예요. 먼저 몇 개를 취소하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você tem 50 pedidos de amizade aguardando. Cancele alguns primeiro."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У тебя 50 заявок в друзья без ответа. Сначала отмени несколько."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你有 50 条好友请求在等待回应。请先取消一些。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你有 50 則好友邀請在等待回覆。請先取消一些。"
+          }
+        }
+      }
+    },
     "You joined the party" : {
       "comment" : "Party invite card (opened from an invite link): title.",
       "extractionState" : "manual",
@@ -138612,6 +140556,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你為派對發起的"
+          }
+        }
+      }
+    },
+    "You'll be friends once they accept." : {
+      "comment" : "Party invite link message after a friend request was sent.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ستصبحان صديقين بعد قبول الطلب."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ihr seid befreundet, sobald die Person annimmt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serán amigos cuando acepte."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Magiging magkaibigan kayo kapag tinanggap nila."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous serez amis dès que la personne acceptera."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相手が承認するとフレンドになります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "상대가 수락하면 친구가 돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vocês vão ser amigos quando a pessoa aceitar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вы станете друзьями, когда заявку примут."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对方接受后，你们就是好友了。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "對方接受後，你們就是好友了。"
           }
         }
       }
@@ -139116,6 +141132,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你封鎖的人太多了，請先解除封鎖某人。"
+          }
+        }
+      }
+    },
+    "You've sent a lot of friend requests today. Try again tomorrow." : {
+      "comment" : "Party error: the daily limit of new friend requests is reached.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أرسلت الكثير من طلبات الصداقة اليوم. حاول مجددًا غدًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast heute viele Freundschaftsanfragen gesendet. Versuch es morgen wieder."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoy has enviado muchas solicitudes de amistad. Inténtalo mañana."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marami ka nang naipadalang friend request ngayon. Subukan ulit bukas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu as envoyé beaucoup de demandes d'ami aujourd'hui. Réessaie demain."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日はフレンド申請をたくさん送りました。明日もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 친구 요청을 많이 보냈어요. 내일 다시 시도하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você enviou muitos pedidos de amizade hoje. Tente de novo amanhã."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сегодня ты отправил много заявок в друзья. Попробуй завтра."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你今天发送了很多好友请求。请明天再试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你今天送出了很多好友邀請。請明天再試。"
           }
         }
       }

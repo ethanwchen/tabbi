@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import TabbiKitCore
 
@@ -36,6 +37,9 @@ public struct NotchContent {
     /// Where real events celebrate; the tab bar bounces a tab for the
     /// center's nods. Nil shows no nods.
     public var celebrations: CelebrationCenter?
+    /// The count each tab shows as a badge (`ProviderSnapshot.badges`),
+    /// such as Party's friend requests; nil shows none.
+    public var tabBadges: AnyPublisher<[ModuleID: Int], Never>?
     /// Hands a shared item's one-click action back to the module that
     /// offered it, for the closed-notch preview and Today's shared rows.
     public var runAction: ModuleActionRunner
@@ -52,6 +56,7 @@ public struct NotchContent {
         checkForUpdates: (() -> Void)? = nil,
         suggestFeedback: (() -> Void)? = nil,
         celebrations: CelebrationCenter? = nil,
+        tabBadges: AnyPublisher<[ModuleID: Int], Never>? = nil,
         runAction: ModuleActionRunner = ModuleActionRunner { _, _ in }
     ) {
         self.appName = appName
@@ -65,6 +70,7 @@ public struct NotchContent {
         self.checkForUpdates = checkForUpdates
         self.suggestFeedback = suggestFeedback
         self.celebrations = celebrations
+        self.tabBadges = tabBadges
         self.runAction = runAction
     }
 }

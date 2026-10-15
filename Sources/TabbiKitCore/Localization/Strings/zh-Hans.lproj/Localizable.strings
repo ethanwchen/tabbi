@@ -187,12 +187,16 @@
 	<string>%@ 会用它跟你打招呼。</string>
 	<key>%@ visited the bakery</key>
 	<string>%@ 去了面包店</string>
+	<key>%@ wants to be friends</key>
+	<string>%@ 想加你为好友</string>
 	<key>%@ watched a cloud shaped like a fish</key>
 	<string>%@ 看到一朵像鱼的云</string>
 	<key>%@ went around the park twice</key>
 	<string>%@ 绕公园走了两圈</string>
 	<key>%@ with %@</key>
 	<string>%1$@ 和 %2$@</string>
+	<key>%@ with %@ wants to be friends.</key>
+	<string>%1$@ 和 %2$@ 想加你为好友。</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>%@ 放在“应用程序”中效果最好，这样它能在登录时打开并自动保持更新。它会把自己拷贝过去，然后重新打开。</string>
 	<key>%@ · Paused</key>
@@ -369,6 +373,10 @@
 	<string>API 密钥</string>
 	<key>About</key>
 	<string>关于</string>
+	<key>Accept</key>
+	<string>接受</string>
+	<key>Accept %@'s friend request</key>
+	<string>接受 %@ 的好友请求</string>
 	<key>Access is off</key>
 	<string>访问已关闭</string>
 	<key>Account</key>
@@ -667,6 +675,8 @@
 	<string>屏蔽 %@</string>
 	<key>Blocked</key>
 	<string>已屏蔽</string>
+	<key>Blocked %@. Unblock them in Party options.</key>
+	<string>已屏蔽 %@。可在派对选项中解除屏蔽。</string>
 	<key>Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.</key>
 	<string>被屏蔽的人无法看到你、添加你或加入你的派对。要屏蔽或举报某人，请在派对中右键点按对方。</string>
 	<key>Blocks go to your calendar.</key>
@@ -739,6 +749,10 @@
 	<string>无法使用此服务器</string>
 	<key>Cancel</key>
 	<string>取消</string>
+	<key>Cancel Request</key>
+	<string>取消请求</string>
+	<key>Cancel your request to %@</key>
+	<string>取消发给 %@ 的请求</string>
 	<key>Caramel</key>
 	<string>焦糖色</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -1071,6 +1085,10 @@
 	<string>至少复习一次的连续天数</string>
 	<key>Deck not found</key>
 	<string>找不到牌组</string>
+	<key>Decline</key>
+	<string>拒绝</string>
+	<key>Decline %@'s request. They won't be told.</key>
+	<string>拒绝 %@ 的请求。对方不会收到通知。</string>
 	<key>Deep</key>
 	<string>深度</string>
 	<key>Deep focus</key>
@@ -1369,8 +1387,12 @@
 	<string>未来七天工作时间内的空闲时间（每个日程前后留有缓冲）</string>
 	<key>Friend code</key>
 	<string>好友代码</string>
-	<key>Friend code %@. You'll see each other's pets and study time.</key>
-	<string>好友码 %@。你们可以看到彼此的宠物和学习时长。</string>
+	<key>Friend code %@. Accept to see each other's pets and study time.</key>
+	<string>好友代码 %@。接受后，你们就能看到彼此的宠物和学习时间。</string>
+	<key>Friend code %@. Once they accept, you'll see each other's pets and study time.</key>
+	<string>好友代码 %@。对方接受后，你们就能看到彼此的宠物和学习时间。</string>
+	<key>Friend codes are %lld letters and digits.</key>
+	<string>好友代码由 %lld 个字母和数字组成。</string>
 	<key>Friend's code</key>
 	<string>好友代码</string>
 	<key>Friends</key>
@@ -2235,6 +2257,8 @@
 	<string>派对代码 %@。和里面的每个人一起学习。</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
 	<string>派对代码 %@。和里面的每个人一起学习。你会离开当前的派对。</string>
+	<key>Party codes are %lld letters and digits.</key>
+	<string>派对代码由 %lld 个字母和数字组成。</string>
 	<key>Party invite</key>
 	<string>派对邀请</string>
 	<key>Party is for people %lld and older.</key>
@@ -2535,6 +2559,14 @@
 	<string>举报 %@…</string>
 	<key>Report a problem: %@</key>
 	<string>报告问题：%@</string>
+	<key>Request</key>
+	<string>请求</string>
+	<key>Request sent</key>
+	<string>已发送请求</string>
+	<key>Request sent to %@</key>
+	<string>已向 %@ 发送请求</string>
+	<key>Request sent to %@.</key>
+	<string>已向 %@ 发送请求。</string>
 	<key>Reset to Default</key>
 	<string>恢复默认</string>
 	<key>Reset to Defaults</key>
@@ -2649,6 +2681,8 @@
 	<string>将你的 AI 请求发送给 %@?</string>
 	<key>Sends what you ask to %@.</key>
 	<string>会将你的提问发送给 %@。</string>
+	<key>Sent</key>
+	<string>已发送</string>
 	<key>Server</key>
 	<string>服务器</string>
 	<key>Session done. Nice work!</key>
@@ -2843,6 +2877,8 @@
 	<string>创建派对</string>
 	<key>Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.</key>
 	<string>创建派对并分享代码，或加入好友的派对。专注时你们的宠物会并排坐着。</string>
+	<key>Start a party, or join a friend's.</key>
+	<string>发起派对，或加入好友的派对。</string>
 	<key>Start a timer</key>
 	<string>开始计时</string>
 	<key>Start break</key>
@@ -3047,6 +3083,12 @@
 	<string>测试</string>
 	<key>Test it</key>
 	<string>测试</string>
+	<key>Thanks. Your report was sent and %@ is blocked.</key>
+	<string>谢谢。举报已发送，%@ 已被屏蔽。</string>
+	<key>Thanks. Your report was sent.</key>
+	<string>谢谢。举报已发送。</string>
+	<key>That friend request is no longer there.</key>
+	<string>这条好友请求已不存在。</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
 	<string>这个键不能用于快捷键。试试字母、数字或空格键。</string>
 	<key>That name and your pet's name aren't allowed. Please pick others.</key>
@@ -3181,8 +3223,12 @@
 	<string>这会删除你的账户以及服务器为其保存的所有内容：同步的宠物和积分副本、好友代码、好友和派对。你的宠物会保留在这台 Mac 上。此操作无法撤销。</string>
 	<key>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</key>
 	<string>这会从好友服务器删除你的好友代码、好友看到的个人资料和宠物、好友列表、加入的派对以及学习连续记录。好友将不再看到你。你的宠物和积分会保留在这台 Mac 上。如果派对保持开启，你会获得新的好友代码。</string>
+	<key>This is a demo. No report was sent.</key>
+	<string>这是演示。未发送任何举报。</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>这是演示，没有删除任何内容。</string>
+	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
+	<string>这是演示。不带 TABBI_DEMO 运行即可与好友一起学习。</string>
 	<key>This is usually short. Check again in a moment.</key>
 	<string>通常很快就好，稍后重新检查。</string>
 	<key>This is what needs fixing</key>
@@ -3405,8 +3451,12 @@
 	<string>等待 Anki 启动</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>等待 Anki 启动，然后打开 %@</string>
+	<key>Waiting: %lld</key>
+	<string>等待中：%lld</string>
 	<key>Walk through the steps to connect %@</key>
 	<string>按步骤连接：%@</string>
+	<key>Wants to be friends</key>
+	<string>想加你为好友</string>
 	<key>Wardrobe</key>
 	<string>衣橱</string>
 	<key>Water carves canyons by never skipping a day.</key>
@@ -3513,6 +3563,8 @@
 	<string>你</string>
 	<key>You already have 50 friends.</key>
 	<string>你已经有 50 位好友了。</string>
+	<key>You asked %@ to be friends. You'll see each other once they accept.</key>
+	<string>你已向 %@ 发送好友请求。对方接受后，你们就能看到彼此。</string>
 	<key>You blocked %@</key>
 	<string>你已屏蔽 %@</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
@@ -3535,12 +3587,16 @@
 	<string>你不想做，但还是做了。秘诀就这么简单。</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>每周免费获得一次冻结，另外最多可存 %lld 次。</string>
+	<key>You have 50 friend requests waiting. Cancel some first.</key>
+	<string>你有 50 条好友请求在等待回应。请先取消一些。</string>
 	<key>You joined the party</key>
 	<string>你已加入派对</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>今天学习了 %@。好好休息，明天重新出发。</string>
 	<key>You started it for the party</key>
 	<string>你为派对发起</string>
+	<key>You'll be friends once they accept.</key>
+	<string>对方接受后，你们就是好友了。</string>
 	<key>You'll see %@ in your Party tab.</key>
 	<string>你会在派对标签页里看到 %@。</string>
 	<key>You're already in this party</key>
@@ -3555,6 +3611,8 @@
 	<string>现在只有你一个人。</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>你屏蔽的人太多了，请先取消屏蔽一些人。</string>
+	<key>You've sent a lot of friend requests today. Try again tomorrow.</key>
+	<string>你今天发送了很多好友请求。请明天再试。</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
 	<string>你今天的举报次数过多，请明天再试。</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>

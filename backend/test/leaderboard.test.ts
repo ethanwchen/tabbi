@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Hub } from "../src/hub";
 import { rankEntries } from "../src/leaderboard";
 import type { Profile } from "../src/profile";
-import { call, expectError, register } from "./helpers";
+import { call, expectError, register, befriend } from "./helpers";
 
 /** Sets the clock (seen by both the test and the Hub, which share an isolate) to an ISO time. */
 function setTime(iso: string) {
@@ -46,8 +46,8 @@ describe("weekly leaderboard", () => {
     const b = await register({ name: "Ben" });
     const c = await register({ name: "Cy" });
     const stranger = await register({ name: "Zed" });
-    await call("POST", "/v1/friends", { code: b.code }, a.token);
-    await call("POST", "/v1/friends", { code: c.code }, a.token);
+    await befriend(a, b);
+    await befriend(a, c);
 
     // Sunday belongs to the previous ISO week.
     setTime("2027-02-28T20:00:00Z");

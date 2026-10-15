@@ -13,8 +13,10 @@
 import { DurableObject } from "cloudflare:workers";
 import { AdminSecrets, exportTables, isAdminToken, notFound, parseRestore } from "./admin";
 import {
-  AUTH_FAILURES_PER_MIN, DEFAULT_NAME, DEFAULT_PET_NAME, HttpError, MAX_DEVICE_TOKENS, MAX_FRIENDS, MAX_PARTY_MEMBERS, PARTY_IDLE_EXPIRY_S, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
-  clientKey, int, isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, readText, sha256Hex, utcDay,
+  AUTH_FAILURES_PER_MIN, DEFAULT_NAME, DEFAULT_PET_NAME, FRIEND_REQUESTS_PER_DAY, FRIEND_REQUESTS_PER_MIN, FRIEND_REQUEST_EXPIRY_DAYS,
+  FRIEND_REQUESTS_PROTOCOL, HttpError, MAX_DEVICE_TOKENS, MAX_FRIENDS, MAX_PARTY_MEMBERS, MAX_PENDING_REQUESTS, PARTY_IDLE_EXPIRY_S,
+  RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
+  clientKey, clientProtocol, int, isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, readText, sha256Hex, utcDay,
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
@@ -322,6 +324,28 @@ CREATE UNIQUE INDEX entitlements_by_reference ON entitlements (source, reference
 `;
 
 /**
+ * Friend requests (see Hub.addFriend), and the Party protocol each user's newest app speaks, which
+ * says whether it can show a request at all. Friendships made before requests existed stay in
+ * `friends` as they are: this step only adds, so every existing friend stays a friend.
+ */
+const FRIEND_REQUESTS_SCHEMA = `
+-- The highest Party protocol (Tabbi-Protocol header) any of the user's apps sent; 1 for apps up to
+-- 1.0.0, which have no friend requests.
+ALTER TABLE users ADD COLUMN protocol INTEGER NOT NULL DEFAULT 1;
+-- A friend request from sender to recipient, waiting for the recipient to accept. declined_at is set
+-- when the recipient declines: the request is gone for them, but still reads as sent for the sender,
+-- so a decline is never announced. Rows expire after FRIEND_REQUEST_EXPIRY_DAYS.
+CREATE TABLE friend_requests (
+  sender      TEXT NOT NULL,
+  recipient   TEXT NOT NULL,
+  created_at  INTEGER NOT NULL,
+  declined_at INTEGER,
+  PRIMARY KEY (sender, recipient)
+) WITHOUT ROWID;
+CREATE INDEX friend_requests_by_recipient ON friend_requests (recipient, created_at);
+`;
+
+/**
  * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
  * created before versioning (which have its tables but no recorded version) pass through it unchanged.
@@ -329,7 +353,7 @@ CREATE UNIQUE INDEX entitlements_by_reference ON entitlements (source, reference
 const MIGRATIONS = [
   SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA, GRANTS_SCHEMA,
   SUGGESTIONS_SCHEMA, SUGGESTION_APP_SCHEMA, CRASHES_SCHEMA, WEB_SIGN_IN_SCHEMA, DOWNLOAD_COUNTS_SCHEMA,
-  ENTITLEMENTS_SCHEMA,
+  ENTITLEMENTS_SCHEMA, FRIEND_REQUESTS_SCHEMA,
 ];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
@@ -367,6 +391,7 @@ interface UserRow extends Record<string, SqlStorageValue> {
   points: number;
   level: number;
   created_at: number;
+  protocol: number;
 }
 
 function rowToProfile(r: UserRow): Profile {
@@ -515,11 +540,10 @@ export class Hub extends DurableObject<Env> {
   }
 
   /**
-   * Deletes every expired party, study minutes past their retention, spent identity token hashes and web
-   * sign-in codes, old
-   * suggestions and old crash reports.
-   * Study minutes have no index by day, so that scan runs once per UTC day (again after an eviction,
-   * which is harmless) rather than every hour.
+   * Deletes every expired party, study minutes past their retention, expired friend requests, spent
+   * identity token hashes and web sign-in codes, old suggestions and old crash reports.
+   * Study minutes and friend requests have no index by age, so those scans run once per UTC day (again
+   * after an eviction, which is harmless) rather than every hour.
    */
   private sweepRetention(now: number): void {
     const today = utcDay(now);
@@ -533,6 +557,7 @@ export class Hub extends DurableObject<Env> {
       this.sql.exec("DELETE FROM crashes WHERE created_at < ?", now - CRASH_RETENTION_DAYS * 86_400);
       if (this.studyDaysSweptOn !== today) {
         this.sql.exec("DELETE FROM study_days WHERE day < ?", utcDay(now - STUDY_DAY_RETENTION_DAYS * 86_400));
+        this.sql.exec("DELETE FROM friend_requests WHERE created_at < ?", now - FRIEND_REQUEST_EXPIRY_DAYS * 86_400);
       }
     });
     this.studyDaysSweptOn = today;
@@ -622,7 +647,9 @@ export class Hub extends DurableObject<Env> {
     if (path === "/v1/friends" && method === "GET") return this.listFriends(caller, now);
     if (path === "/v1/friends" && method === "POST") return this.addFriend(req, caller, now);
     const friendPath = /^\/v1\/friends\/([^/]+)$/.exec(path);
-    if (friendPath && method === "DELETE") return this.removeFriend(caller, friendPath[1]);
+    if (friendPath && method === "DELETE") return this.removeFriend(caller, friendPath[1], now);
+    const acceptPath = /^\/v1\/friends\/([^/]+)\/accept$/.exec(path);
+    if (acceptPath && method === "POST") return this.acceptFriend(caller, acceptPath[1], now);
 
     if (path === "/v1/blocks" && method === "GET") return this.listBlocks(caller);
     if (path === "/v1/blocks" && method === "POST") return this.block(req, caller, now);
@@ -672,6 +699,9 @@ export class Hub extends DurableObject<Env> {
         "SELECT u.* FROM device_tokens d JOIN users u ON u.code = d.code WHERE d.token_hash = ?", tokenHash).toArray()[0];
     if (!row) throw unauthorized();
     this.rateLimit("t:" + tokenHash, RATE_LIMIT_PER_MIN, now);
+    // A newer app on any of the user's Macs raises it once; an older one never lowers it.
+    const protocol = clientProtocol(req);
+    if (protocol > row.protocol) this.sql.exec("UPDATE users SET protocol = ? WHERE code = ?", protocol, row.code);
     return { code: row.code, tokenHash, profile: rowToProfile(row) };
   }
 
@@ -1010,22 +1040,22 @@ export class Hub extends DurableObject<Env> {
   private async register(req: Request, now: number): Promise<Response> {
     const patch = parseProfilePatch(await readBody(req, PROFILE_FIELDS));
     const token = newToken();
-    const profile = this.insertUser(await sha256Hex(token), patch, now);
+    const profile = this.insertUser(await sha256Hex(token), patch, now, clientProtocol(req));
     return json({ ok: true, token, code: profile.code, profile }, 201);
   }
 
   /** Creates a user with a fresh friend code. Synchronous, so it can run inside a transaction. */
-  private insertUser(tokenHash: string, patch: ReturnType<typeof parseProfilePatch>, now: number): Profile {
+  private insertUser(tokenHash: string, patch: ReturnType<typeof parseProfilePatch>, now: number, protocol = 1): Profile {
     let code = newCode(8);
     for (let i = 0; i < 20 && this.userExists(code); i++) code = newCode(8);
     if (this.userExists(code)) throw new HttpError(503, "unavailable", "could not allocate a code, retry");
     const profile = applyProfilePatch(defaultProfile(code), patch);
     this.sql.exec(
-      `INSERT INTO users (code, token_hash, name, pet_name, species, breed, colors, costume, accessories, points, level, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO users (code, token_hash, name, pet_name, species, breed, colors, costume, accessories, points, level, created_at, protocol)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       code, tokenHash, profile.name, profile.petName, profile.species, profile.breed,
       JSON.stringify(profile.colors), profile.costume, JSON.stringify(profile.accessories),
-      profile.points, profile.level, now,
+      profile.points, profile.level, now, protocol,
     );
     return profile;
   }
@@ -1072,6 +1102,8 @@ export class Hub extends DurableObject<Env> {
     // Both directions via the primary key: the reverse rows are found through my own friend list.
     this.sql.exec("DELETE FROM friends WHERE b = ? AND a IN (SELECT b FROM friends WHERE a = ?)", code, code);
     this.sql.exec("DELETE FROM friends WHERE a = ?", code);
+    this.sql.exec("DELETE FROM friend_requests WHERE sender = ?", code);
+    this.sql.exec("DELETE FROM friend_requests WHERE recipient = ?", code);
     this.sql.exec("DELETE FROM presence WHERE code = ?", code);
     this.sql.exec("DELETE FROM study_days WHERE code = ?", code);
     this.sql.exec("DELETE FROM sync_documents WHERE code = ?", code);
@@ -1093,7 +1125,12 @@ export class Hub extends DurableObject<Env> {
 
   // ---------- friends ----------
 
-  /** Each friend's party size counts only the members the caller would see in that party's view. */
+  /**
+   * GET /v1/friends: my friends, then the friend requests waiting for me (`incoming`) and the ones I
+   * sent (`outgoing`), newest first. Each friend's party size counts only the members the caller would
+   * see in that party's view. A request I declined is not in `incoming`, but stays in the sender's
+   * `outgoing`, so they are never told. Older apps read only `friends`.
+   */
   private listFriends(caller: Caller, now: number): Response {
     const rows = this.sql.exec<UserRow & Partial<PresenceRow> & { since: number; party_code: string | null; party_size: number | null }>(
       `SELECT u.*, f.created_at AS since, p.status, p.method, p.phase_ends_at, p.session_minutes,
@@ -1108,21 +1145,47 @@ export class Hub extends DurableObject<Env> {
        WHERE f.a = ? AND f.b NOT IN (SELECT code FROM bans) ORDER BY u.name COLLATE NOCASE, u.code`,
       caller.code, caller.code, caller.code, now - PARTY_IDLE_EXPIRY_S, caller.code,
     ).toArray();
-    const badges = this.badgesByCode(rows.map((r) => r.code), now);
+    const incoming = this.sql.exec<UserRow & { since: number }>(
+      `SELECT u.*, r.created_at AS since FROM friend_requests r JOIN users u ON u.code = r.sender
+       WHERE r.recipient = ? AND r.declined_at IS NULL AND r.sender NOT IN (SELECT code FROM bans)
+       ORDER BY r.created_at DESC, u.code LIMIT ?`,
+      caller.code, MAX_PENDING_REQUESTS,
+    ).toArray();
+    const outgoing = this.sql.exec<UserRow & { since: number }>(
+      `SELECT u.*, r.created_at AS since FROM friend_requests r JOIN users u ON u.code = r.recipient
+       WHERE r.sender = ? AND r.recipient NOT IN (SELECT code FROM bans)
+       ORDER BY r.created_at DESC, u.code LIMIT ?`,
+      caller.code, MAX_PENDING_REQUESTS,
+    ).toArray();
+    const badges = this.badgesByCode([...rows, ...incoming, ...outgoing].map((r) => r.code), now);
+    const profileOf = (r: UserRow) => ({ ...rowToProfile(r), badges: badges.get(r.code) ?? [] });
     const friends = rows.map((r) => {
       const presence = this.live.get(r.code)?.presence ?? rowToPresence(r);
       return {
-        profile: { ...rowToProfile(r), badges: badges.get(r.code) ?? [] },
+        profile: profileOf(r),
         since: r.since,
         presence: publicPresence(presence, now),
         online: isOnline(presence, now),
         party: r.party_code ? { code: r.party_code, size: r.party_size ?? 0 } : null,
       };
     });
-    return json({ ok: true, friends });
+    const request = (r: UserRow & { since: number }) => ({ profile: profileOf(r), since: r.since });
+    return json({ ok: true, friends, incoming: incoming.map(request), outgoing: outgoing.map(request) });
   }
 
-  /** Symmetric add by friend code. Adding someone who is already a friend is a no-op success. */
+  /**
+   * POST /v1/friends with `{ code }`: asks someone to be friends. Nothing is shared until they accept,
+   * so a leaked or guessed code never puts anyone in a stranger's list.
+   * - Already friends: a no-op success (`status: "friends"`, `added: false`).
+   * - They asked me first (even if I declined it): we are friends now, as if I had accepted
+   *   (`status: "friends"`, `added: true`). An older app that adds someone back accepts this way.
+   * - They only have apps from before friend requests (protocol 1), which could never show one: we are
+   *   friends at once, as every add was before (`status: "friends"`, `added: true`).
+   * - Otherwise the request waits for them (`status: "requested"`, `added: false`); asking again is a
+   *   no-op that does not bring a declined request back.
+   * `added` keeps its old meaning (a friendship was made just now), so an older app reads a request as
+   * "not added". The sender's own protocol does not matter: an older app's add waits as a request too.
+   */
   private async addFriend(req: Request, caller: Caller, now: number): Promise<Response> {
     const body = await readBody(req, ["code"]);
     const code = parseFriendCode(body.code);
@@ -1130,35 +1193,128 @@ export class Hub extends DurableObject<Env> {
     this.requireNotBanned(caller);
     if (this.hasBlocked(caller.code, code)) throw new HttpError(409, "blocked", "you blocked them; unblock them first");
     const row = this.knownUser(caller, code);
-    const already = this.sql.exec("SELECT 1 FROM friends WHERE a = ? AND b = ?", caller.code, code).toArray().length > 0;
-    if (!already) {
-      if (this.friendCount(caller.code) >= MAX_FRIENDS) {
-        throw new HttpError(409, "friend_limit", `you already have ${MAX_FRIENDS} friends`);
-      }
-      if (this.friendCount(code) >= MAX_FRIENDS) {
-        throw new HttpError(409, "their_friend_limit", `they already have ${MAX_FRIENDS} friends`);
-      }
-      this.ctx.storage.transactionSync(() => {
-        this.sql.exec("INSERT OR IGNORE INTO friends (a, b, created_at) VALUES (?, ?, ?), (?, ?, ?)",
-          caller.code, code, now, code, caller.code, now);
-      });
+    const friend = rowToProfile(row);
+    if (this.areFriends(caller.code, code)) return json({ ok: true, added: false, status: "friends", friend });
+    if (this.hasRequest(code, caller.code)) {
+      this.befriend(caller.code, code, now);
+      return json({ ok: true, added: true, status: "friends", friend });
     }
-    return json({ ok: true, added: !already, friend: rowToProfile(row) });
+    if (row.protocol < FRIEND_REQUESTS_PROTOCOL) {
+      this.rateLimit("friendreq:" + caller.code, FRIEND_REQUESTS_PER_MIN, now);
+      this.befriend(caller.code, code, now);
+      return json({ ok: true, added: true, status: "friends", friend });
+    }
+    if (!this.hasRequest(caller.code, code)) {
+      this.rateLimit("friendreq:" + caller.code, FRIEND_REQUESTS_PER_MIN, now);
+      this.checkFriendLimits(caller.code, code);
+      const pending = this.sql.exec<{ n: number }>(
+        "SELECT COUNT(*) AS n FROM friend_requests WHERE sender = ?", caller.code).one().n;
+      if (pending >= MAX_PENDING_REQUESTS) {
+        throw new HttpError(409, "pending_limit", `you already have ${MAX_PENDING_REQUESTS} friend requests waiting`);
+      }
+      this.countDailyRequest(caller.code, now);
+      this.sql.exec("INSERT INTO friend_requests (sender, recipient, created_at) VALUES (?, ?, ?)", caller.code, code, now);
+    }
+    return json({ ok: true, added: false, status: "requested", friend });
   }
 
-  /** Symmetric remove. Removing someone who is not a friend is a no-op success (`removed: false`). */
-  private removeFriend(caller: Caller, raw: string): Response {
+  /**
+   * POST /v1/friends/{code}/accept: accepts the request that user sent me. `404 no_request` when there
+   * is none to accept (they cancelled it, I declined it, or it expired), so a stale Accept never sends a
+   * request of its own. Accepting someone who is already a friend is a no-op success.
+   */
+  private acceptFriend(caller: Caller, raw: string, now: number): Response {
+    const code = parseFriendCode(raw);
+    this.requireNotBanned(caller);
+    const friend = rowToProfile(this.knownUser(caller, code));
+    if (this.areFriends(caller.code, code)) return json({ ok: true, added: false, status: "friends", friend });
+    if (!this.hasRequest(code, caller.code, true)) {
+      throw new HttpError(404, "no_request", "that user has no friend request waiting for you");
+    }
+    this.befriend(caller.code, code, now);
+    return json({ ok: true, added: true, status: "friends", friend });
+  }
+
+  /**
+   * DELETE /v1/friends/{code}: ends whatever links us. A friendship ends in both directions, my request
+   * to them is cancelled, and their request to me is declined: it leaves my list, while they still see
+   * it as sent until it expires, so a decline is never announced. `removed` is false when there was
+   * nothing to end.
+   */
+  private removeFriend(caller: Caller, raw: string, now: number): Response {
     const code = parseFriendCode(raw);
     let removed = false;
     this.ctx.storage.transactionSync(() => {
-      removed = this.sql.exec("DELETE FROM friends WHERE a = ? AND b = ?", caller.code, code).rowsWritten > 0;
+      const unfriended = this.sql.exec("DELETE FROM friends WHERE a = ? AND b = ?", caller.code, code).rowsWritten > 0;
       this.sql.exec("DELETE FROM friends WHERE a = ? AND b = ?", code, caller.code);
+      const cancelled = this.sql.exec(
+        "DELETE FROM friend_requests WHERE sender = ? AND recipient = ?", caller.code, code).rowsWritten > 0;
+      const declined = this.sql.exec(
+        "UPDATE friend_requests SET declined_at = ? WHERE sender = ? AND recipient = ? AND declined_at IS NULL",
+        now, code, caller.code).rowsWritten > 0;
+      removed = unfriended || cancelled || declined;
     });
     return json({ ok: true, removed });
   }
 
   private friendCount(code: string): number {
     return this.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM friends WHERE a = ?", code).one().n;
+  }
+
+  private areFriends(a: string, b: string): boolean {
+    return this.sql.exec("SELECT 1 FROM friends WHERE a = ? AND b = ?", a, b).toArray().length > 0;
+  }
+
+  /** Whether `sender` has a request waiting for `recipient`; `openOnly` leaves out a declined one. */
+  private hasRequest(sender: string, recipient: string, openOnly = false): boolean {
+    const declined = openOnly ? " AND declined_at IS NULL" : "";
+    return this.sql.exec(`SELECT 1 FROM friend_requests WHERE sender = ? AND recipient = ?${declined}`, sender, recipient)
+      .toArray().length > 0;
+  }
+
+  /** How many requests GET /v1/friends would list in `incoming` for `code`. */
+  private incomingRequestCount(code: string): number {
+    return this.sql.exec<{ n: number }>(
+      `SELECT COUNT(*) AS n FROM (SELECT 1 FROM friend_requests WHERE recipient = ? AND declined_at IS NULL
+         AND sender NOT IN (SELECT code FROM bans) LIMIT ?)`, code, MAX_PENDING_REQUESTS).one().n;
+  }
+
+  private checkFriendLimits(me: string, them: string): void {
+    if (this.friendCount(me) >= MAX_FRIENDS) {
+      throw new HttpError(409, "friend_limit", `you already have ${MAX_FRIENDS} friends`);
+    }
+    if (this.friendCount(them) >= MAX_FRIENDS) {
+      throw new HttpError(409, "their_friend_limit", `they already have ${MAX_FRIENDS} friends`);
+    }
+  }
+
+  /** Makes us friends in both directions and drops the requests between us. */
+  private befriend(me: string, them: string, now: number): void {
+    this.checkFriendLimits(me, them);
+    this.ctx.storage.transactionSync(() => {
+      this.sql.exec("INSERT OR IGNORE INTO friends (a, b, created_at) VALUES (?, ?, ?), (?, ?, ?)", me, them, now, them, me, now);
+      this.deleteRequests(me, them);
+    });
+  }
+
+  /** Drops the friend requests between two users, in both directions. */
+  private deleteRequests(a: string, b: string): void {
+    this.sql.exec("DELETE FROM friend_requests WHERE (sender = ? AND recipient = ?) OR (sender = ? AND recipient = ?)", a, b, b, a);
+  }
+
+  /**
+   * Counts a new request toward the sender's FRIEND_REQUESTS_PER_DAY (per UTC day, in memory like every
+   * rate limit). Cancelling a request does not give it back, so cancelling and asking again cannot flood.
+   */
+  private countDailyRequest(code: string, now: number): void {
+    try {
+      this.rateLimit("friendreqday:" + code, FRIEND_REQUESTS_PER_DAY, now, 86_400);
+    } catch (e) {
+      if (e instanceof HttpError && e.status === 429) {
+        throw new HttpError(429, "request_limit", `at most ${FRIEND_REQUESTS_PER_DAY} friend requests a day`, e.headers);
+      }
+      throw e;
+    }
   }
 
   // ---------- blocks ----------
@@ -1194,7 +1350,8 @@ export class Hub extends DurableObject<Env> {
   }
 
   /**
-   * POST /v1/blocks with `{ code }`: ends the friendship and hides us from each other. If we share a
+   * POST /v1/blocks with `{ code }`: ends the friendship, drops any friend request between us, and hides
+   * us from each other. If we share a
    * party, the blocked user leaves it when I host, I leave it when they host, and otherwise we just stop
    * seeing each other in it. Blocking someone already blocked is a no-op success (`blocked: false`).
    */
@@ -1215,6 +1372,7 @@ export class Hub extends DurableObject<Env> {
       this.ctx.storage.transactionSync(() => {
         this.sql.exec("INSERT INTO blocks (blocker, blocked, created_at) VALUES (?, ?, ?)", caller.code, code, now);
         this.sql.exec("DELETE FROM friends WHERE (a = ? AND b = ?) OR (a = ? AND b = ?)", caller.code, code, code, caller.code);
+        this.deleteRequests(caller.code, code);
         if (host === caller.code) this.leaveParty(code, now);
         else if (host === code) this.leaveParty(caller.code, now);
       });
@@ -1522,6 +1680,7 @@ export class Hub extends DurableObject<Env> {
    * POST /v1/presence. Always updates the live copy; writes the row only when friends would see a
    * different status, method, phase or streak, on a new day, or when the last write is PRESENCE_FLUSH_S
    * old. The day's study minutes are written with the same flushes, and only when they changed.
+   * The reply also counts the friend requests waiting for the caller (`incomingRequests`).
    */
   private async heartbeat(req: Request, caller: Caller, now: number): Promise<Response> {
     const body = await readBody(req, PRESENCE_FIELDS);
@@ -1544,7 +1703,12 @@ export class Hub extends DurableObject<Env> {
       flushedAt = now;
     }
     this.live.set(caller.code, { presence: next, flushedAt, savedDay });
-    return json({ ok: true, presence: next, heartbeatSeconds: heartbeatSeconds(next.status) });
+    // The friend requests waiting for me ride along, so the app can badge the Party tab without
+    // polling the friends list while the panel is closed. Older apps ignore the field.
+    return json({
+      ok: true, presence: next, heartbeatSeconds: heartbeatSeconds(next.status),
+      incomingRequests: this.incomingRequestCount(caller.code),
+    });
   }
 
   /**
@@ -1808,8 +1972,8 @@ export class Hub extends DurableObject<Env> {
   }
 
   /**
-   * Moves an anonymous user's friends (up to the friend limit) and study days (the larger count per day)
-   * to an account, then deletes the anonymous user (call inside a transaction).
+   * Moves an anonymous user's friends (up to the friend limit), waiting friend requests and study days
+   * (the larger count per day) to an account, then deletes the anonymous user (call inside a transaction).
    */
   private foldInto(from: string, to: string, now: number): void {
     const friends = this.sql.exec<{ b: string }>(
@@ -1823,6 +1987,15 @@ export class Hub extends DurableObject<Env> {
       this.sql.exec("INSERT OR IGNORE INTO friends (a, b, created_at) VALUES (?, ?, ?), (?, ?, ?)", to, b, now, b, to, now);
       count++;
     }
+    // Waiting friend requests follow the user both ways, except between the two and with friends.
+    this.sql.exec(
+      `INSERT OR IGNORE INTO friend_requests (sender, recipient, created_at, declined_at)
+       SELECT ?, recipient, created_at, declined_at FROM friend_requests
+       WHERE sender = ? AND recipient != ? AND recipient NOT IN (SELECT b FROM friends WHERE a = ?)`, to, from, to, to);
+    this.sql.exec(
+      `INSERT OR IGNORE INTO friend_requests (sender, recipient, created_at, declined_at)
+       SELECT sender, ?, created_at, declined_at FROM friend_requests
+       WHERE recipient = ? AND sender != ? AND sender NOT IN (SELECT b FROM friends WHERE a = ?)`, to, from, to, to);
     this.sql.exec(
       `INSERT INTO study_days (code, day, minutes) SELECT ?, day, minutes FROM study_days WHERE code = ? AND true
        ON CONFLICT (code, day) DO UPDATE SET minutes = MAX(minutes, excluded.minutes)`,
@@ -1842,6 +2015,11 @@ export class Hub extends DurableObject<Env> {
       this.sql.exec(
         `DELETE FROM friends WHERE b = ? AND (a IN (SELECT blocked FROM blocks WHERE blocker = ?)
            OR a IN (SELECT blocker FROM blocks WHERE blocked = ?))`, to, to, to);
+      this.sql.exec(
+        `DELETE FROM friend_requests WHERE (sender = ? AND recipient IN (SELECT blocked FROM blocks WHERE blocker = ?
+           UNION SELECT blocker FROM blocks WHERE blocked = ?))
+         OR (recipient = ? AND sender IN (SELECT blocked FROM blocks WHERE blocker = ? UNION SELECT blocker FROM blocks WHERE blocked = ?))`,
+        to, to, to, to, to, to);
     }
     // Reports, bans and name holds follow the user too, so signing in never lifts a ban. Reports between
     // the two are dropped: once they are one user, they would be reports about oneself.

@@ -3,19 +3,26 @@ import TabbiKitCore
 @testable import Tabbi
 
 /// A friends server that keeps state like the Hub: who my friends are, the
-/// party I'm in and its shared session. It knows two other users, Ben and
-/// Maya, and Maya hosts a party (`Q4RT8M`) with a session running.
+/// friend requests either way, the party I'm in and its shared session. It
+/// knows four other users: Ben and Maya use apps from before friend
+/// requests, so adding them makes friends at once; Kai's app shows
+/// requests, so adding Kai waits for an answer; and Noor has asked me to be
+/// friends. Maya hosts a party (`Q4RT8M`) with a session running.
 /// Every request is recorded as "METHOD /path body".
 private final class StatefulFriendsServer: PartyTransport, @unchecked Sendable {
     static let me = "ANAC2345"
     static let ben = "K7QW2MZD"
     static let maya = "M4YA8QRT"
+    static let kai = "K4AZ9TMW"
+    static let noor = "N4ZR7HVB"
     static let mayasParty = "Q4RT8M"
     static let myParty = "H7ST42"
 
     private let lock = NSLock()
     private var sent: [String] = []
     private var friends: [String] = []
+    private var incoming: [String] = [StatefulFriendsServer.noor]
+    private var outgoing: [String] = []
     /// The party I'm in: its code and whether I host it.
     private var party: (code: String, hosting: Bool)?
     private var session: (method: String, endsAt: Int)?
@@ -60,7 +67,7 @@ private final class StatefulFriendsServer: PartyTransport, @unchecked Sendable {
             return reply(#"{"ok":true,"profile":\#(profile(Self.me))}"#)
         case "POST /v1/presence":
             let presence = #"{"status":"idle","sessionMinutes":0,"todayMinutes":0,"streakDays":0,"day":"2026-10-09","lastSeen":\#(now)}"#
-            return reply(#"{"ok":true,"presence":\#(presence),"heartbeatSeconds":300}"#)
+            return reply(#"{"ok":true,"presence":\#(presence),"heartbeatSeconds":300,"incomingRequests":\#(incoming.count)}"#)
         case "GET /v1/grants":
             return reply(#"{"ok":true,"items":[]}"#)
         case "GET /v1/blocks":
@@ -70,13 +77,21 @@ private final class StatefulFriendsServer: PartyTransport, @unchecked Sendable {
                 let ref = code == Self.maya ? #"{"code":"\#(Self.mayasParty)","size":2}"# : "null"
                 return #"{"profile":\#(profile(code)),"since":\#(now),"presence":null,"online":true,"party":\#(ref)}"#
             }
-            return reply(#"{"ok":true,"friends":[\#(list.joined(separator: ","))]}"#)
+            let requests = { (codes: [String]) in
+                codes.map { #"{"profile":\#(self.profile($0)),"since":\#(now)}"# }.joined(separator: ",")
+            }
+            return reply(#"{"ok":true,"friends":[\#(list.joined(separator: ","))],"incoming":[\#(requests(incoming))],"outgoing":[\#(requests(outgoing))]}"#)
         case "POST /v1/friends":
             if body.contains(Self.me) { return failure("self_friend", 400) }
-            guard let code = [Self.ben, Self.maya].first(where: body.contains) else { return failure("unknown_code", 404) }
-            let added = !friends.contains(code)
-            if added { friends.append(code) }
-            return reply(#"{"ok":true,"added":\#(added),"friend":\#(profile(code))}"#, added ? 201 : 200)
+            guard let code = [Self.ben, Self.maya, Self.kai, Self.noor].first(where: body.contains) else { return failure("unknown_code", 404) }
+            if friends.contains(code) { return reply(#"{"ok":true,"added":false,"status":"friends","friend":\#(profile(code))}"#) }
+            if code == Self.kai, !incoming.contains(code) {
+                if !outgoing.contains(code) { outgoing.append(code) }
+                return reply(#"{"ok":true,"added":false,"status":"requested","friend":\#(profile(code))}"#)
+            }
+            incoming.removeAll { $0 == code }
+            friends.append(code)
+            return reply(#"{"ok":true,"added":true,"status":"friends","friend":\#(profile(code))}"#)
         case "POST /v1/blocks":
             guard let code = [Self.ben, Self.maya].first(where: body.contains) else { return failure("unknown_code", 404) }
             friends.removeAll { $0 == code }
@@ -118,16 +133,25 @@ private final class StatefulFriendsServer: PartyTransport, @unchecked Sendable {
         default:
             if route.hasPrefix("DELETE /v1/friends/") {
                 let code = String(route.dropFirst("DELETE /v1/friends/".count))
-                let removed = friends.contains(code)
+                let removed = friends.contains(code) || incoming.contains(code) || outgoing.contains(code)
                 friends.removeAll { $0 == code }
+                incoming.removeAll { $0 == code }
+                outgoing.removeAll { $0 == code }
                 return reply(#"{"ok":true,"removed":\#(removed)}"#)
+            }
+            if route.hasPrefix("POST /v1/friends/"), route.hasSuffix("/accept") {
+                let code = String(route.dropFirst("POST /v1/friends/".count).dropLast("/accept".count))
+                guard incoming.contains(code) else { return failure("no_request", 404) }
+                incoming.removeAll { $0 == code }
+                friends.append(code)
+                return reply(#"{"ok":true,"added":true,"status":"friends","friend":\#(profile(code))}"#)
             }
             return failure("not_found", 404)
         }
     }
 
     private func name(_ code: String) -> String {
-        [Self.me: "Ana", Self.ben: "Ben", Self.maya: "Maya"][code] ?? "Someone"
+        [Self.me: "Ana", Self.ben: "Ben", Self.maya: "Maya", Self.kai: "Kai", Self.noor: "Noor"][code] ?? "Someone"
     }
 
     private func profile(_ code: String) -> String {
@@ -209,6 +233,63 @@ final class PartyStoreActionTests: XCTestCase {
         try await settle(party)
         XCTAssertEqual(party.state.friends, [])
         XCTAssertEqual(server.count("DELETE /v1/friends/\(Server.ben)"), 1)
+    }
+
+    func testAskingSomeoneWhoseAppShowsRequestsWaitsForThemAndCanBeCancelled() async throws {
+        let server = StatefulFriendsServer()
+        let party = try await makeStore(server)
+        defer { party.stop() }
+
+        party.addFriend(code: Server.kai)
+        try await settle(party)
+        XCTAssertEqual(party.state.outgoingRequests.map(\.profile.name), ["Kai"])
+        XCTAssertFalse(party.state.friends.contains { $0.profile.code == Server.kai })
+        XCTAssertTrue(party.noticeConfirms)
+        XCTAssertEqual(party.notice, "Request sent to Kai.")
+
+        party.removeFriend(code: Server.kai)
+        XCTAssertEqual(party.pending, .removeFriend(Server.kai))
+        try await settle(party)
+        XCTAssertEqual(party.state.outgoingRequests, [])
+        XCTAssertEqual(server.count("DELETE /v1/friends/\(Server.kai)"), 1)
+    }
+
+    func testAcceptingARequestMakesAFriendAndClearsTheBadge() async throws {
+        let server = StatefulFriendsServer()
+        let party = try await makeStore(server)
+        defer { party.stop() }
+
+        let request = try XCTUnwrap(party.state.incomingRequests.first)
+        XCTAssertEqual(request.profile.name, "Noor")
+        XCTAssertEqual(party.state.waitingRequestCount, 1)
+
+        party.acceptFriend(request)
+        XCTAssertEqual(party.pending, .acceptFriend(Server.noor))
+        try await settle(party)
+        XCTAssertNil(party.notice)
+        XCTAssertEqual(party.state.incomingRequests, [])
+        XCTAssertEqual(party.state.waitingRequestCount, 0)
+        XCTAssertEqual(party.state.friends.map(\.profile.name), ["Noor"])
+        XCTAssertEqual(server.count("POST /v1/friends/\(Server.noor)/accept"), 1)
+
+        // A second Accept, from a stale row, finds nothing to accept and says so.
+        party.acceptFriend(request)
+        try await settle(party)
+        XCTAssertEqual(party.notice, PartyError.noRequest.message)
+    }
+
+    func testDecliningARequestDropsItQuietly() async throws {
+        let server = StatefulFriendsServer()
+        let party = try await makeStore(server)
+        defer { party.stop() }
+
+        party.removeFriend(code: Server.noor)
+        try await settle(party)
+        XCTAssertNil(party.notice, "a decline confirms nothing out loud")
+        XCTAssertEqual(party.state.incomingRequests, [])
+        XCTAssertEqual(party.state.waitingRequestCount, 0)
+        XCTAssertEqual(party.state.friends, [])
+        XCTAssertEqual(server.count("DELETE /v1/friends/\(Server.noor)"), 1)
     }
 
     func testARefusedFriendCodeLeavesTheListAndSaysWhy() async throws {

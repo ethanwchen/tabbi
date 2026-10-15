@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { MAX_BLOCKS } from "../src/moderation";
 import { env, runInDurableObject } from "cloudflare:test";
 import { migrate } from "../src/hub";
-import { admin, call, expectError, hub, register } from "./helpers";
+import { admin, call, expectError, hub, register, befriend } from "./helpers";
 
 const codes = (list: { profile: { code: string } }[]) => list.map((x) => x.profile.code);
 const friendsOf = async (u: { token: string }) => codes((await call("GET", "/v1/friends", undefined, u.token)).body.friends);
@@ -21,7 +21,7 @@ describe("blocks", () => {
   it("ends the friendship, lists the block with current names, and is idempotent", async () => {
     const a = await register({ name: "Ana" });
     const b = await register({ name: "Ben", petName: "Mochi" });
-    await call("POST", "/v1/friends", { code: b.code }, a.token);
+    await befriend(a, b);
 
     const r = await call("POST", "/v1/blocks", { code: ` ${b.code.toLowerCase()} ` }, a.token);
     expect(r.status).toBe(200);
@@ -68,7 +68,7 @@ describe("blocks", () => {
   it("drops the blocked user from the leaderboard", async () => {
     const a = await register();
     const b = await register();
-    await call("POST", "/v1/friends", { code: b.code }, a.token);
+    await befriend(a, b);
     await block(b, a);
     const board = (await call("GET", "/v1/leaderboard", undefined, a.token)).body.entries;
     expect(board.map((e: { profile: { code: string } }) => e.profile.code)).toEqual([a.code]);
@@ -77,13 +77,14 @@ describe("blocks", () => {
   it("lifts with unblock, without restoring the friendship", async () => {
     const a = await register();
     const b = await register();
-    await call("POST", "/v1/friends", { code: b.code }, a.token);
+    await befriend(a, b);
     await block(a, b);
     expect((await call("DELETE", `/v1/blocks/${b.code.toLowerCase()}`, undefined, a.token)).body).toEqual({ ok: true, unblocked: true });
     expect((await call("DELETE", `/v1/blocks/${b.code}`, undefined, a.token)).body).toEqual({ ok: true, unblocked: false });
     expect(await blocksOf(a)).toEqual([]);
     expect(await friendsOf(a)).toEqual([]);
-    expect((await call("POST", "/v1/friends", { code: a.code }, b.token)).body.added).toBe(true);
+    // Either can ask again; it is a fresh request, not the old friendship back.
+    expect((await call("POST", "/v1/friends", { code: a.code }, b.token)).body).toMatchObject({ added: false, status: "requested" });
   });
 
   it("only lets the blocker lift a block", async () => {
@@ -161,7 +162,7 @@ describe("blocks", () => {
     const b = await register();
     const party = await createParty(host);
     await join(b, party);
-    await call("POST", "/v1/friends", { code: host.code }, a.token);
+    await befriend(a, host);
     const sizeFor = async (u: { token: string }) => (await call("GET", "/v1/friends", undefined, u.token)).body.friends[0].party;
     expect(await sizeFor(a)).toEqual({ code: party, size: 2 });
     await block(a, b);
@@ -224,11 +225,13 @@ describe("schema step 3", () => {
       sql.exec("DROP TABLE web_sign_ins");
       sql.exec("DROP TABLE download_counts");
       sql.exec("DROP TABLE entitlements");
+      sql.exec("DROP TABLE friend_requests");
+      sql.exec("ALTER TABLE users DROP COLUMN protocol");
       sql.exec("ALTER TABLE apple_accounts DROP COLUMN client_id");
       sql.exec("UPDATE schema_version SET version = 2");
       sql.exec("INSERT INTO friends (a, b, created_at) VALUES ('AAAAAAAA', 'BBBBBBBB', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 13 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 14 }]);
       expect(sql.exec("SELECT * FROM blocks").toArray()).toEqual([]);
       expect(sql.exec("SELECT a FROM friends").toArray()).toEqual([{ a: "AAAAAAAA" }]);
     });

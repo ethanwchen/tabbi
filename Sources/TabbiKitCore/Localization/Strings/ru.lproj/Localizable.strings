@@ -187,12 +187,16 @@
 	<string>%@ будет так к тебе обращаться.</string>
 	<key>%@ visited the bakery</key>
 	<string>%@ заглядывает в пекарню</string>
+	<key>%@ wants to be friends</key>
+	<string>%@ хочет дружить с тобой</string>
 	<key>%@ watched a cloud shaped like a fish</key>
 	<string>%@ смотрит на облако-рыбку</string>
 	<key>%@ went around the park twice</key>
 	<string>%@ дважды обходит парк</string>
 	<key>%@ with %@</key>
 	<string>%1$@ и %2$@</string>
+	<key>%@ with %@ wants to be friends.</key>
+	<string>%1$@ и %2$@ хотят дружить с тобой.</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>%@ лучше всего работает из папки «Программы»: оттуда приложение открывается при входе в систему и само обновляется. Оно скопирует себя туда и откроется снова.</string>
 	<key>%@ · Paused</key>
@@ -369,6 +373,10 @@
 	<string>Ключ API</string>
 	<key>About</key>
 	<string>О программе</string>
+	<key>Accept</key>
+	<string>Принять</string>
+	<key>Accept %@'s friend request</key>
+	<string>Принять заявку в друзья: %@</string>
 	<key>Access is off</key>
 	<string>Доступ выключен</string>
 	<key>Account</key>
@@ -667,6 +675,8 @@
 	<string>Заблокировать: %@</string>
 	<key>Blocked</key>
 	<string>Заблокированные</string>
+	<key>Blocked %@. Unblock them in Party options.</key>
+	<string>%@ заблокирован. Разблокировать можно в настройках Party.</string>
 	<key>Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.</key>
 	<string>Заблокированные не видят тебя и не могут добавить или войти в пати. Заблокировать или пожаловаться: правый клик в Party.</string>
 	<key>Blocks go to your calendar.</key>
@@ -739,6 +749,10 @@
 	<string>Этот сервер не подходит</string>
 	<key>Cancel</key>
 	<string>Отменить</string>
+	<key>Cancel Request</key>
+	<string>Отменить заявку</string>
+	<key>Cancel your request to %@</key>
+	<string>Отменить заявку: %@</string>
 	<key>Caramel</key>
 	<string>Карамельный</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -1071,6 +1085,10 @@
 	<string>Дней подряд хотя бы с одним повтором</string>
 	<key>Deck not found</key>
 	<string>Колода не найдена</string>
+	<key>Decline</key>
+	<string>Отклонить</string>
+	<key>Decline %@'s request. They won't be told.</key>
+	<string>Отклонить заявку: %@. Человек об этом не узнает.</string>
 	<key>Deep</key>
 	<string>Глуб.</string>
 	<key>Deep focus</key>
@@ -1369,8 +1387,12 @@
 	<string>Свободное рабочее время на ближайшие семь дней, с запасом вокруг каждого события</string>
 	<key>Friend code</key>
 	<string>Код друга</string>
-	<key>Friend code %@. You'll see each other's pets and study time.</key>
-	<string>Код друга %@. Вы будете видеть питомцев и время учёбы друг друга.</string>
+	<key>Friend code %@. Accept to see each other's pets and study time.</key>
+	<string>Код друга %@. Прими заявку, чтобы видеть питомцев и время учёбы друг друга.</string>
+	<key>Friend code %@. Once they accept, you'll see each other's pets and study time.</key>
+	<string>Код друга %@. Когда заявку примут, вы будете видеть питомцев и время учёбы друг друга.</string>
+	<key>Friend codes are %lld letters and digits.</key>
+	<string>Код друга состоит из %lld букв и цифр.</string>
 	<key>Friend's code</key>
 	<string>Код друга</string>
 	<key>Friends</key>
@@ -2235,6 +2257,8 @@
 	<string>Код группы %@. Учись вместе со всеми участниками.</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
 	<string>Код группы %@. Учись вместе со всеми участниками. Ты выйдешь из текущей группы.</string>
+	<key>Party codes are %lld letters and digits.</key>
+	<string>Код Party состоит из %lld букв и цифр.</string>
 	<key>Party invite</key>
 	<string>Приглашение</string>
 	<key>Party is for people %lld and older.</key>
@@ -2535,6 +2559,14 @@
 	<string>Пожаловаться: %@…</string>
 	<key>Report a problem: %@</key>
 	<string>Сообщить о проблеме: %@</string>
+	<key>Request</key>
+	<string>Заявка</string>
+	<key>Request sent</key>
+	<string>Заявка отправлена</string>
+	<key>Request sent to %@</key>
+	<string>Заявка отправлена: %@</string>
+	<key>Request sent to %@.</key>
+	<string>Заявка отправлена: %@.</string>
 	<key>Reset to Default</key>
 	<string>По умолчанию</string>
 	<key>Reset to Defaults</key>
@@ -2649,6 +2681,8 @@
 	<string>Отправлять запросы к ИИ в %@?</string>
 	<key>Sends what you ask to %@.</key>
 	<string>Отправляет твои запросы в %@.</string>
+	<key>Sent</key>
+	<string>Отправлена</string>
 	<key>Server</key>
 	<string>Сервер</string>
 	<key>Session done. Nice work!</key>
@@ -2843,6 +2877,8 @@
 	<string>Создать Party</string>
 	<key>Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.</key>
 	<string>Создай Party и поделись кодом или присоединись к другу. Ваши питомцы сидят рядом, пока вы в фокусе.</string>
+	<key>Start a party, or join a friend's.</key>
+	<string>Создай Party или присоединись к Party друга.</string>
 	<key>Start a timer</key>
 	<string>Запусти таймер</string>
 	<key>Start break</key>
@@ -3047,6 +3083,12 @@
 	<string>Проверить</string>
 	<key>Test it</key>
 	<string>Проверить</string>
+	<key>Thanks. Your report was sent and %@ is blocked.</key>
+	<string>Спасибо. Жалоба отправлена, %@ заблокирован.</string>
+	<key>Thanks. Your report was sent.</key>
+	<string>Спасибо. Жалоба отправлена.</string>
+	<key>That friend request is no longer there.</key>
+	<string>Этой заявки в друзья больше нет.</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
 	<string>Эту клавишу нельзя использовать в сочетании. Попробуй букву, цифру или пробел.</string>
 	<key>That name and your pet's name aren't allowed. Please pick others.</key>
@@ -3181,8 +3223,12 @@
 	<string>Будут удалены твой аккаунт и все, что сервер хранит для него: синхронизированная копия питомца и очков, код друга, друзья и Party. Питомец останется на этом Mac. Это действие нельзя отменить.</string>
 	<key>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</key>
 	<string>С сервера друзей будут удалены код друга, профиль и питомец в том виде, как их видят друзья, список друзей, участие в пати и серия учебы. Друзья больше не увидят тебя. Питомец и очки останутся на этом Mac. Если Party останется включенной, ты получишь новый код друга.</string>
+	<key>This is a demo. No report was sent.</key>
+	<string>Это демо. Жалоба не отправлена.</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>Это демо. Ничего не удалено.</string>
+	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
+	<string>Это демо. Запусти без TABBI_DEMO, чтобы заниматься с друзьями.</string>
 	<key>This is usually short. Check again in a moment.</key>
 	<string>Обычно это ненадолго. Проверь снова чуть позже.</string>
 	<key>This is what needs fixing</key>
@@ -3405,8 +3451,12 @@
 	<string>Ждем запуска Anki</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>Ждем запуска Anki, затем откроется %@</string>
+	<key>Waiting: %lld</key>
+	<string>Ожидают: %lld</string>
 	<key>Walk through the steps to connect %@</key>
 	<string>Пройти шаги подключения: %@</string>
+	<key>Wants to be friends</key>
+	<string>Хочет дружить</string>
 	<key>Wardrobe</key>
 	<string>Одежда</string>
 	<key>Water carves canyons by never skipping a day.</key>
@@ -3513,6 +3563,8 @@
 	<string>Ты</string>
 	<key>You already have 50 friends.</key>
 	<string>У тебя уже 50 друзей.</string>
+	<key>You asked %@ to be friends. You'll see each other once they accept.</key>
+	<string>Ты отправил заявку в друзья: %@. Вы увидите друг друга, когда её примут.</string>
 	<key>You blocked %@</key>
 	<string>Ты заблокировал(а) %@</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
@@ -3535,12 +3587,16 @@
 	<string>Настроения не было, а дело сделано. В этом весь секрет.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>Каждую неделю дается одна бесплатная заморозка, и можно хранить еще %lld.</string>
+	<key>You have 50 friend requests waiting. Cancel some first.</key>
+	<string>У тебя 50 заявок в друзья без ответа. Сначала отмени несколько.</string>
 	<key>You joined the party</key>
 	<string>Ты в группе</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>Сегодня на учебу ушло %@. Отдохни, а завтра начнешь с новыми силами.</string>
 	<key>You started it for the party</key>
 	<string>Ты запустил(а) ее для Party</string>
+	<key>You'll be friends once they accept.</key>
+	<string>Вы станете друзьями, когда заявку примут.</string>
 	<key>You'll see %@ in your Party tab.</key>
 	<string>%@ появится во вкладке Party.</string>
 	<key>You're already in this party</key>
@@ -3555,6 +3611,8 @@
 	<string>Пока ты здесь один(одна).</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>Слишком много блокировок. Сначала разблокируй кого-то.</string>
+	<key>You've sent a lot of friend requests today. Try again tomorrow.</key>
+	<string>Сегодня ты отправил много заявок в друзья. Попробуй завтра.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
 	<string>Сегодня отправлено много жалоб. Попробуй завтра.</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>

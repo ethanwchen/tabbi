@@ -43,6 +43,35 @@ export const REGISTER_PER_MIN = 10;
  * per IP rather than per token, since a guesser sends a different token every time.
  */
 export const AUTH_FAILURES_PER_MIN = 60;
+/**
+ * The Party protocol this server speaks, and the oldest it still serves. A client names its own in the
+ * PROTOCOL_HEADER of every request; a request without one is protocol 1 (the apps up to 1.0.0). See
+ * docs/party-compatibility.md: the server never drops what an older protocol sends or expects.
+ */
+export const PROTOCOL_VERSION = 2;
+export const MIN_PROTOCOL_VERSION = 1;
+export const PROTOCOL_HEADER = "Tabbi-Protocol";
+/** The first protocol whose apps show friend requests. Users on an older one get instant friendships. */
+export const FRIEND_REQUESTS_PROTOCOL = 2;
+
+/**
+ * The protocol a request says its client speaks: the header's integer, or 1 without one. A value this
+ * server does not know yet is capped at PROTOCOL_VERSION; anything unreadable counts as 1.
+ */
+export function clientProtocol(req: Request): number {
+  const raw = req.headers.get(PROTOCOL_HEADER)?.trim() ?? "";
+  if (!/^[0-9]{1,4}$/.test(raw)) return MIN_PROTOCOL_VERSION;
+  return Math.min(Math.max(Number(raw), MIN_PROTOCOL_VERSION), PROTOCOL_VERSION);
+}
+
+/** New friend requests per minute per user, on top of the general limit; one takes a typed or pasted code. */
+export const FRIEND_REQUESTS_PER_MIN = 10;
+/** New friend requests one user can send per UTC day. Stops one user from requesting everyone whose code leaked. */
+export const FRIEND_REQUESTS_PER_DAY = 50;
+/** Requests one user can have waiting at once (declined ones included, which still read as sent). */
+export const MAX_PENDING_REQUESTS = 50;
+/** A request nobody answered (or that was declined) goes away after this many days. */
+export const FRIEND_REQUEST_EXPIRY_DAYS = 30;
 export const MAX_BODY_BYTES = 4096;
 /**
  * Mac tokens kept per account besides the first Mac's. Each sign-in to an existing account adds one,

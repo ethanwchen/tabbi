@@ -187,12 +187,16 @@
 	<string>%@ s'en sert pour te saluer.</string>
 	<key>%@ visited the bakery</key>
 	<string>%@ a rendu visite à la boulangerie</string>
+	<key>%@ wants to be friends</key>
+	<string>%@ veut être ton ami</string>
 	<key>%@ watched a cloud shaped like a fish</key>
 	<string>%@ a vu un nuage en forme de poisson</string>
 	<key>%@ went around the park twice</key>
 	<string>%@ a fait deux fois le tour du parc</string>
 	<key>%@ with %@</key>
 	<string>%1$@ avec %2$@</string>
+	<key>%@ with %@ wants to be friends.</key>
+	<string>%1$@ avec %2$@ veut être ton ami.</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>%@ fonctionne mieux depuis Applications, où l'app peut s'ouvrir à la connexion et se mettre à jour toute seule. Elle s'y copie puis se rouvre.</string>
 	<key>%@ · Paused</key>
@@ -369,6 +373,10 @@
 	<string>Clé d'API</string>
 	<key>About</key>
 	<string>À propos</string>
+	<key>Accept</key>
+	<string>Accepter</string>
+	<key>Accept %@'s friend request</key>
+	<string>Accepter la demande d'ami de %@</string>
 	<key>Access is off</key>
 	<string>Accès désactivé</string>
 	<key>Account</key>
@@ -667,6 +675,8 @@
 	<string>Bloquer %@</string>
 	<key>Blocked</key>
 	<string>Bloqués</string>
+	<key>Blocked %@. Unblock them in Party options.</key>
+	<string>%@ est bloqué. Débloque cette personne dans les options de Groupe.</string>
 	<key>Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.</key>
 	<string>Les bloqués ne peuvent ni te voir, ni t'ajouter, ni rejoindre tes groupes. Pour bloquer ou signaler, clic droit dans Groupe.</string>
 	<key>Blocks go to your calendar.</key>
@@ -739,6 +749,10 @@
 	<string>Serveur inutilisable</string>
 	<key>Cancel</key>
 	<string>Annuler</string>
+	<key>Cancel Request</key>
+	<string>Annuler la demande</string>
+	<key>Cancel your request to %@</key>
+	<string>Annuler ta demande à %@</string>
 	<key>Caramel</key>
 	<string>Caramel</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -1071,6 +1085,10 @@
 	<string>Jours d'affilée avec au moins une révision</string>
 	<key>Deck not found</key>
 	<string>Paquet introuvable</string>
+	<key>Decline</key>
+	<string>Refuser</string>
+	<key>Decline %@'s request. They won't be told.</key>
+	<string>Refuser la demande de %@. La personne n'en saura rien.</string>
 	<key>Deep</key>
 	<string>Focus</string>
 	<key>Deep focus</key>
@@ -1369,8 +1387,12 @@
 	<string>Temps de travail libre sur les sept prochains jours, avec une marge autour de chaque événement</string>
 	<key>Friend code</key>
 	<string>Code ami</string>
-	<key>Friend code %@. You'll see each other's pets and study time.</key>
-	<string>Code ami %@. Vous verrez chacun le compagnon et le temps d'étude de l'autre.</string>
+	<key>Friend code %@. Accept to see each other's pets and study time.</key>
+	<string>Code d'ami %@. Accepte pour voir vos animaux et votre temps d'étude.</string>
+	<key>Friend code %@. Once they accept, you'll see each other's pets and study time.</key>
+	<string>Code d'ami %@. Dès que la personne accepte, vous verrez vos animaux et votre temps d'étude.</string>
+	<key>Friend codes are %lld letters and digits.</key>
+	<string>Les codes d'ami comptent %lld lettres et chiffres.</string>
 	<key>Friend's code</key>
 	<string>Code d'un ami</string>
 	<key>Friends</key>
@@ -2235,6 +2257,8 @@
 	<string>Code de groupe %@. Étudie avec tous ses membres.</string>
 	<key>Party code %@. Study together with everyone in it. You'll leave your current party.</key>
 	<string>Code de groupe %@. Étudie avec tous ses membres. Tu quitteras ton groupe actuel.</string>
+	<key>Party codes are %lld letters and digits.</key>
+	<string>Les codes de groupe comptent %lld lettres et chiffres.</string>
 	<key>Party invite</key>
 	<string>Invitation</string>
 	<key>Party is for people %lld and older.</key>
@@ -2535,6 +2559,14 @@
 	<string>Signaler %@…</string>
 	<key>Report a problem: %@</key>
 	<string>Signaler un problème : %@</string>
+	<key>Request</key>
+	<string>Demande</string>
+	<key>Request sent</key>
+	<string>Demande envoyée</string>
+	<key>Request sent to %@</key>
+	<string>Demande envoyée à %@</string>
+	<key>Request sent to %@.</key>
+	<string>Demande envoyée à %@.</string>
 	<key>Reset to Default</key>
 	<string>Réinitialiser</string>
 	<key>Reset to Defaults</key>
@@ -2649,6 +2681,8 @@
 	<string>Envoyer tes demandes d'IA à %@ ?</string>
 	<key>Sends what you ask to %@.</key>
 	<string>Envoie tes demandes à %@.</string>
+	<key>Sent</key>
+	<string>Envoyée</string>
 	<key>Server</key>
 	<string>Serveur</string>
 	<key>Session done. Nice work!</key>
@@ -2843,6 +2877,8 @@
 	<string>Créer un groupe</string>
 	<key>Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.</key>
 	<string>Crée un groupe et partage son code, ou rejoins celui d'un ami. Vos compagnons s'assoient côte à côte pendant que vous vous concentrez.</string>
+	<key>Start a party, or join a friend's.</key>
+	<string>Lance un groupe ou rejoins celui d'un ami.</string>
 	<key>Start a timer</key>
 	<string>Lancer un minuteur</string>
 	<key>Start break</key>
@@ -3047,6 +3083,12 @@
 	<string>Tester</string>
 	<key>Test it</key>
 	<string>Tester</string>
+	<key>Thanks. Your report was sent and %@ is blocked.</key>
+	<string>Merci. Ton signalement a été envoyé et %@ est bloqué.</string>
+	<key>Thanks. Your report was sent.</key>
+	<string>Merci. Ton signalement a été envoyé.</string>
+	<key>That friend request is no longer there.</key>
+	<string>Cette demande d'ami n'existe plus.</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
 	<string>Cette touche ne peut pas faire partie d'un raccourci. Essaie une lettre, un chiffre ou Espace.</string>
 	<key>That name and your pet's name aren't allowed. Please pick others.</key>
@@ -3181,8 +3223,12 @@
 	<string>Cela supprime ton compte et tout ce que le serveur conserve pour lui : la copie synchronisée de ton compagnon et de tes points, ton code ami, tes amis et tes groupes. Ton compagnon reste sur ce Mac. Cette action est irréversible.</string>
 	<key>This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code.</key>
 	<string>Cela supprime du serveur d'amis ton code ami, ton profil et ton compagnon tels que tes amis les voient, ta liste d'amis, tes groupes et ta série d'étude. Tes amis ne te verront plus. Ton compagnon et tes points restent sur ce Mac. Si Groupe reste activé, tu reçois un nouveau code ami.</string>
+	<key>This is a demo. No report was sent.</key>
+	<string>Ceci est une démo. Aucun signalement n'a été envoyé.</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>C'est une démo. Rien n'a été supprimé.</string>
+	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
+	<string>Ceci est une démo. Lance sans TABBI_DEMO pour étudier avec tes amis.</string>
 	<key>This is usually short. Check again in a moment.</key>
 	<string>C'est souvent passager. Revérifie dans un instant.</string>
 	<key>This is what needs fixing</key>
@@ -3405,8 +3451,12 @@
 	<string>En attente du démarrage d'Anki</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>En attente d'Anki, puis ouverture de %@</string>
+	<key>Waiting: %lld</key>
+	<string>En attente : %lld</string>
 	<key>Walk through the steps to connect %@</key>
 	<string>Suivre les étapes de connexion : %@</string>
+	<key>Wants to be friends</key>
+	<string>Veut être ton ami</string>
 	<key>Wardrobe</key>
 	<string>Garde-robe</string>
 	<key>Water carves canyons by never skipping a day.</key>
@@ -3513,6 +3563,8 @@
 	<string>Toi</string>
 	<key>You already have 50 friends.</key>
 	<string>Tu as déjà 50 amis.</string>
+	<key>You asked %@ to be friends. You'll see each other once they accept.</key>
+	<string>Tu as demandé %@ en ami. Vous vous verrez dès que la personne acceptera.</string>
 	<key>You blocked %@</key>
 	<string>Tu as bloqué %@</string>
 	<key>You blocked them. Unblock them in Party options first.</key>
@@ -3535,12 +3587,16 @@
 	<string>Tu n'avais pas envie, et tu l'as fait quand même. C'est tout le secret.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>Tu reçois un gel offert chaque semaine et peux en garder %lld de plus.</string>
+	<key>You have 50 friend requests waiting. Cancel some first.</key>
+	<string>Tu as 50 demandes d'ami en attente. Annule-en d'abord quelques-unes.</string>
 	<key>You joined the party</key>
 	<string>Tu as rejoint le groupe</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>Tu as étudié %@ aujourd'hui. Repose-toi et repars de plus belle demain.</string>
 	<key>You started it for the party</key>
 	<string>Tu l'as lancée pour la party</string>
+	<key>You'll be friends once they accept.</key>
+	<string>Vous serez amis dès que la personne acceptera.</string>
 	<key>You'll see %@ in your Party tab.</key>
 	<string>Tu verras %@ dans ton onglet Groupe.</string>
 	<key>You're already in this party</key>
@@ -3555,6 +3611,8 @@
 	<string>Il n'y a que toi ici pour l'instant.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>Tu as bloqué trop de personnes. Débloque quelqu'un d'abord.</string>
+	<key>You've sent a lot of friend requests today. Try again tomorrow.</key>
+	<string>Tu as envoyé beaucoup de demandes d'ami aujourd'hui. Réessaie demain.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
 	<string>Tu as envoyé beaucoup de signalements aujourd'hui. Réessaie demain.</string>
 	<key>Your %@ key. It is kept in your Keychain.</key>

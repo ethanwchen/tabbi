@@ -28,6 +28,14 @@ public struct PartyState: Equatable, Sendable {
     public private(set) var profile: PartyProfile?
     /// Friends in display order (`PartyRoster.sorted`).
     public private(set) var friends: [PartyFriend] = []
+    /// Friend requests waiting for me to accept or decline, newest first.
+    public private(set) var incomingRequests: [PartyFriendRequest] = []
+    /// Friend requests I sent that wait for an answer, newest first.
+    public private(set) var outgoingRequests: [PartyFriendRequest] = []
+    /// How many friend requests wait for me by the server's latest word:
+    /// the friends list while the panel shows, a heartbeat otherwise. The
+    /// Party tab's badge.
+    public private(set) var waitingRequestCount = 0
     /// Whether the friends list has loaded at least once, so "no friends
     /// yet" is never shown while it's still loading.
     public private(set) var friendsLoaded = false
@@ -53,10 +61,14 @@ public struct PartyState: Equatable, Sendable {
     }
 
     /// A state with data already loaded, for demo mode and previews.
-    public init(profile: PartyProfile, friends: [PartyFriend], party: Party?) {
+    public init(profile: PartyProfile, friends: [PartyFriend], party: Party?,
+                incoming: [PartyFriendRequest] = [], outgoing: [PartyFriendRequest] = []) {
         connection = .connected
         self.profile = profile
         self.friends = PartyRoster.sorted(friends)
+        incomingRequests = incoming
+        outgoingRequests = outgoing
+        waitingRequestCount = incoming.count
         friendsLoaded = true
         self.party = party.map(Self.ordered)
     }
@@ -64,6 +76,8 @@ public struct PartyState: Equatable, Sendable {
     // MARK: Derived
 
     public var friendCode: String? { profile?.code }
+    /// Whether the friends column has anyone to list: friends or requests.
+    public var hasPeople: Bool { !friends.isEmpty || !incomingRequests.isEmpty || !outgoingRequests.isEmpty }
     public var inParty: Bool { party != nil }
 
     /// Whether I host the current party and so control its session.
@@ -195,15 +209,30 @@ public struct PartyState: Equatable, Sendable {
         if case .unreachable = connection { connection = .connecting }
     }
 
+    /// A friends fetch from a server that sends friends only.
     public mutating func didFetchFriends(_ result: Result<[PartyFriend], PartyError>) {
+        didFetchFriendList(result.map { PartyFriendList(friends: $0) })
+    }
+
+    /// A friends fetch: friends and the friend requests on either side.
+    public mutating func didFetchFriendList(_ result: Result<PartyFriendList, PartyError>) {
         switch result {
-        case .success(let friends):
-            self.friends = PartyRoster.sorted(friends)
+        case .success(let list):
+            friends = PartyRoster.sorted(list.friends)
+            incomingRequests = list.incoming
+            outgoingRequests = list.outgoing
+            waitingRequestCount = list.incoming.count
             friendsLoaded = true
             staleError = nil
         case .failure(let error):
             staleError = error
         }
+    }
+
+    /// A heartbeat said how many friend requests wait for me. The list
+    /// itself loads with the friends while the panel shows.
+    public mutating func didCountWaitingRequests(_ count: Int) {
+        waitingRequestCount = max(0, count)
     }
 
     /// A party fetch, or the reply to create, join, leave or a session
@@ -221,15 +250,38 @@ public struct PartyState: Equatable, Sendable {
     }
 
     /// A friend was added: shown right away, before the next list refresh
-    /// brings their presence.
+    /// brings their presence. Any request between us is settled.
     public mutating func didAddFriend(_ profile: PartyProfile, at now: Date) {
+        dropRequests(with: profile.code)
         guard !friends.contains(where: { $0.profile.code == profile.code }) else { return }
         friends = PartyRoster.sorted(friends + [PartyFriend(profile: profile, since: now, presence: nil, online: false, party: nil)])
         friendsLoaded = true
     }
 
+    /// What asking someone by code led to, shown right away: a friend, or
+    /// my request waiting for them.
+    public mutating func didAsk(_ addition: PartyFriendAddition, at now: Date) {
+        switch addition {
+        case .friends(let profile), .alreadyFriends(let profile):
+            didAddFriend(profile, at: now)
+        case .requested(let profile):
+            guard !outgoingRequests.contains(where: { $0.profile.code == profile.code }) else { return }
+            outgoingRequests.insert(PartyFriendRequest(profile: profile, since: now), at: 0)
+            friendsLoaded = true
+        }
+    }
+
+    /// Ends whatever linked us: a friendship, my request, or theirs (declined).
     public mutating func didRemoveFriend(code: String) {
         friends.removeAll { $0.profile.code == code }
+        dropRequests(with: code)
+    }
+
+    private mutating func dropRequests(with code: String) {
+        let waited = incomingRequests.contains { $0.profile.code == code }
+        incomingRequests.removeAll { $0.profile.code == code }
+        outgoingRequests.removeAll { $0.profile.code == code }
+        if waited { waitingRequestCount = max(0, waitingRequestCount - 1) }
     }
 
     /// I blocked someone: they go from my friends and my party's members

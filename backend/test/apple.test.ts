@@ -7,7 +7,7 @@ import {
 } from "../src/apple";
 import { MAX_DEVICE_TOKENS, sha256Hex } from "../src/lib";
 import { apple, claimsOf, identityToken, installFakeApple, now } from "./fake-apple";
-import { ADMIN_TOKEN, admin, call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
+import { ADMIN_TOKEN, admin, call, expectError, freshIp, hub, pinClockToMinuteStart, register, befriend } from "./helpers";
 
 // The fake Apple (keys, token and revoke endpoints) is installed for every test in this file.
 installFakeApple();
@@ -112,8 +112,8 @@ describe("POST /v1/auth/apple", () => {
     await signIn({ identityToken: await identityToken("sub.fold") }, mac1.token);
     const mac2 = await register();
     const friend = await register({ name: "Bea" });
-    await call("POST", "/v1/friends", { code: friend.code }, mac2.token);
-    await call("POST", "/v1/friends", { code: mac1.code }, mac2.token); // a friendship with itself-to-be is dropped
+    await befriend(mac2, friend);
+    await befriend(mac2, mac1); // a friendship with itself-to-be is dropped
     await call("POST", "/v1/presence", { status: "studying", todayMinutes: 30 }, mac2.token);
 
     const r = await signIn({ identityToken: await identityToken("sub.fold") }, mac2.token);
@@ -127,14 +127,37 @@ describe("POST /v1/auth/apple", () => {
     expect(board.find((e: any) => e.me).minutes).toBe(30);
   });
 
+  it("carries an anonymous user's waiting friend requests, both ways, into the account it folds into", async () => {
+    const mac1 = await register();
+    await signIn({ identityToken: await identityToken("sub.fold.requests") }, mac1.token);
+    const mac2 = await register();
+    const asker = await register();
+    const asked = await register();
+    const friend = await register();
+    await call("POST", "/v1/friends", { code: mac2.code }, asker.token);
+    await call("POST", "/v1/friends", { code: asked.code }, mac2.token);
+    await call("POST", "/v1/friends", { code: mac1.code }, mac2.token); // a request to itself-to-be is dropped
+    await befriend(mac1, friend);
+    await call("POST", "/v1/friends", { code: mac2.code }, friend.token); // already the account's friend
+
+    const r = await signIn({ identityToken: await identityToken("sub.fold.requests") }, mac2.token);
+    expect(r.body.code).toBe(mac1.code);
+    const list = (await call("GET", "/v1/friends", undefined, r.body.token)).body;
+    expect(list.incoming.map((x: any) => x.profile.code)).toEqual([asker.code]);
+    expect(list.outgoing.map((x: any) => x.profile.code)).toEqual([asked.code]);
+    expect(list.friends.map((x: any) => x.profile.code)).toEqual([friend.code]);
+    const accepted = await call("POST", `/v1/friends/${asker.code}/accept`, undefined, r.body.token);
+    expect(accepted.body).toMatchObject({ ok: true, added: true });
+  });
+
   it("carries an anonymous user's blocks, both ways, into the account it folds into", async () => {
     const mac1 = await register();
     await signIn({ identityToken: await identityToken("sub.fold.blocks") }, mac1.token);
     const mac2 = await register();
     const pest = await register();
     const blocker = await register();
-    await call("POST", "/v1/friends", { code: mac1.code }, pest.token);
-    await call("POST", "/v1/friends", { code: mac1.code }, blocker.token);
+    await befriend(pest, mac1);
+    await befriend(blocker, mac1);
     await call("POST", "/v1/blocks", { code: pest.code }, mac2.token);
     await call("POST", "/v1/blocks", { code: mac2.code }, blocker.token);
 
@@ -417,7 +440,7 @@ describe("DELETE /v1/me with an Apple account", () => {
     await signIn({ identityToken: await identityToken("sub.delete"), authorizationCode: "c" }, mac1.token);
     const mac2 = (await signIn({ identityToken: await identityToken("sub.delete") })).body;
     const friend = await register();
-    await call("POST", "/v1/friends", { code: friend.code }, mac1.token);
+    await befriend(mac1, friend);
     await call("POST", "/v1/party", {}, mac1.token);
 
     const r = await call("DELETE", "/v1/me", undefined, mac2.token);
@@ -449,7 +472,7 @@ describe("DELETE /v1/me with an Apple account", () => {
   it("deletes the account even when Apple cannot be reached for the revoke", async () => {
     const r = await signIn({ identityToken: await identityToken("sub.delete.down"), authorizationCode: "c" });
     const friend = await register();
-    await call("POST", "/v1/friends", { code: friend.code }, r.body.token);
+    await befriend(r.body, friend);
     apple.unreachable.add(APPLE_REVOKE_URL);
     expect((await call("DELETE", "/v1/me", undefined, r.body.token)).body).toEqual({ ok: true, appleRevoked: false });
     expectError(await call("GET", "/v1/me", undefined, r.body.token), 401, "unauthorized");

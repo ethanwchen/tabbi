@@ -49,6 +49,7 @@ enum ModuleViews {
             checkForUpdates: checkForUpdates,
             suggestFeedback: { Feedback.open() },
             celebrations: services.celebrations,
+            tabBadges: services.providers.$snapshot.map(\.badges).removeDuplicates().eraseToAnyPublisher(),
             runAction: ModuleActionRunner { [weak services] module, action in
                 services?.modules.perform(action, on: module)
             }

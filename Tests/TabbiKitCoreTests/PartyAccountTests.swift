@@ -17,6 +17,11 @@ private final class FakeFriendsServer: PartyTransport, @unchecked Sendable {
     var heldNames: Set<String> = []
     /// Pet names it refuses, as `pet_name_not_allowed`.
     var heldPetNames: Set<String> = []
+    /// Answers like a self-hosted server still on catalog version 1: newer
+    /// accessory ids and more than six colors are an `invalid_field`.
+    var catalogVersion1 = false
+    /// The pet fields of every profile body it took.
+    private(set) var takenBodies: [[String: Any]] = []
 
     init(validTokens: Set<String> = []) { self.validTokens = validTokens }
 
@@ -41,6 +46,14 @@ private final class FakeFriendsServer: PartyTransport, @unchecked Sendable {
         if let petName = fields?["petName"] as? String, heldPetNames.contains(petName) {
             return reply(#"{"ok":false,"error":"pet_name_not_allowed","message":"no"}"#, 400)
         }
+        if catalogVersion1, let fields {
+            let known: Set<String> = ["glasses", "sunglasses", "headphones", "bow", "scarf", "crown", "flower", "party-hat", "beanie", "halo"]
+            let accessories = fields["accessories"] as? [String] ?? []
+            if !accessories.allSatisfy(known.contains) || (fields["colors"] as? [String] ?? []).count > 6 {
+                return reply(#"{"ok":false,"error":"invalid_field","message":"invalid accessories"}"#, 400)
+            }
+        }
+        if let fields { lock.withLock { takenBodies.append(fields) } }
         if route == "POST /v1/register" {
             if registerDelay > 0 { try await Task.sleep(nanoseconds: registerDelay) }
             let n: Int = lock.withLock {
@@ -143,6 +156,23 @@ final class PartyAccountTests: XCTestCase {
         try await account.connect(profile: PartyProfileUpdate(name: "Ana"))
         let cleared = await account.refusedNames
         XCTAssertEqual(cleared, [], "a name the server takes clears the refusal")
+    }
+
+    func testAServerOnCatalogVersion1GetsTheLookItCanCarry() async throws {
+        let token = FakeFriendsServer.token(7)
+        let fake = FakeFriendsServer(validTokens: [token])
+        fake.catalogVersion1 = true
+        let store = InMemoryPartyCredentialStore([server: PartyCredentials(token: token, code: FakeFriendsServer.code(7))])
+        let account = PartyAccount(server: server, transport: fake, credentials: store)
+        let pet = PetProfile(name: "Nova", breed: .corgi, outfit: .dinosaurHoodie, accessories: [.roundGlasses, .wizardHat])
+
+        _ = try await account.connect(profile: PartyPetAppearance.update(for: pet))
+
+        XCTAssertEqual(fake.requests, ["PATCH /v1/me", "PATCH /v1/me"], "refused once, then sent as catalog version 1 takes it")
+        let taken = try XCTUnwrap(fake.takenBodies.last)
+        XCTAssertEqual(taken["accessories"] as? [String], ["glasses"])
+        XCTAssertEqual(taken["costume"] as? String, "hoodie")
+        XCTAssertEqual((taken["colors"] as? [String])?.count, 6)
     }
 
     func testARefusedNameOnRegisterStillRegisters() async throws {

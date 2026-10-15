@@ -197,10 +197,15 @@ public struct PartyHeartbeatReply: Hashable, Sendable {
     public var presence: PartyPresence
     /// When to send the next heartbeat; `nil` after `offline` (stop sending).
     public var nextHeartbeat: TimeInterval?
+    /// How many friend requests wait for me, so the Party tab can show a
+    /// badge while its panel is closed; nil from a server without friend
+    /// requests.
+    public var incomingRequests: Int?
 
-    public init(presence: PartyPresence, nextHeartbeat: TimeInterval?) {
+    public init(presence: PartyPresence, nextHeartbeat: TimeInterval?, incomingRequests: Int? = nil) {
         self.presence = presence
         self.nextHeartbeat = nextHeartbeat
+        self.incomingRequests = incomingRequests
     }
 }
 
@@ -234,6 +239,67 @@ public struct PartyFriend: Codable, Hashable, Sendable, Identifiable {
         self.presence = presence
         self.online = online
         self.party = party
+    }
+}
+
+/// A friend request in `GET /v1/friends`: someone who asked me
+/// (`incoming`) or whom I asked (`outgoing`), and when. Nothing about a
+/// person is shared beyond their profile until the request is accepted.
+public struct PartyFriendRequest: Codable, Hashable, Sendable, Identifiable {
+    public var profile: PartyProfile
+    public var since: Date
+
+    public var id: String { profile.code }
+
+    public init(profile: PartyProfile, since: Date) {
+        self.profile = profile
+        self.since = since
+    }
+}
+
+/// `GET /v1/friends`: my friends and the friend requests on either side.
+/// A server from before friend requests sends only `friends`, which reads
+/// as no requests.
+public struct PartyFriendList: Codable, Hashable, Sendable {
+    public var friends: [PartyFriend]
+    /// Requests waiting for me to accept or decline, newest first.
+    public var incoming: [PartyFriendRequest]
+    /// Requests I sent that wait for the other person, newest first. One
+    /// they declined stays here until it expires, so a decline is never
+    /// announced.
+    public var outgoing: [PartyFriendRequest]
+
+    public init(friends: [PartyFriend], incoming: [PartyFriendRequest] = [], outgoing: [PartyFriendRequest] = []) {
+        self.friends = friends
+        self.incoming = incoming
+        self.outgoing = outgoing
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case friends, incoming, outgoing
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        friends = try container.decode([PartyFriend].self, forKey: .friends)
+        incoming = try container.decodeIfPresent([PartyFriendRequest].self, forKey: .incoming) ?? []
+        outgoing = try container.decodeIfPresent([PartyFriendRequest].self, forKey: .outgoing) ?? []
+    }
+}
+
+/// What `POST /v1/friends` (asking someone by code) led to.
+public enum PartyFriendAddition: Hashable, Sendable {
+    /// We are friends: they had asked me first, or I just accepted.
+    case friends(PartyProfile)
+    /// We were friends already; nothing changed.
+    case alreadyFriends(PartyProfile)
+    /// My request waits for them to accept.
+    case requested(PartyProfile)
+
+    public var profile: PartyProfile {
+        switch self {
+        case .friends(let profile), .alreadyFriends(let profile), .requested(let profile): profile
+        }
     }
 }
 
