@@ -1,9 +1,26 @@
-import { invoke } from "@tauri-apps/api/core";
+import { Channel, invoke } from "@tauri-apps/api/core";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import type { Host, HostEvent, HostSource, Startup } from "./host";
+import type {
+  AiPaths,
+  Host,
+  HostEvent,
+  HostSource,
+  HttpResponse,
+  HttpStreamEvent,
+  JsonValue,
+  MediaSnapshot,
+  Startup,
+  SystemStats,
+} from "./host";
 
-/* The host inside the app: Rust commands and events (src-tauri/src/lib.rs). */
+/* Listens to one host event until the returned function is called. */
+function on<T>(event: string, listener: (payload: T) => void): () => void {
+  const pending = listen<T>(event, (e) => listener(e.payload));
+  return () => void pending.then((unlisten) => unlisten());
+}
+
+/* The host inside the app: Rust commands and events (src-tauri/src/lib.rs and the service modules beside it). */
 export function tauriHost(): Host {
   return {
     setShape: (rect) => invoke("island_set_shape", { shape: rect }),
@@ -27,6 +44,40 @@ export function tauriHost(): Host {
         for (const p of pending) void p.then((unlisten) => unlisten());
       };
     },
+
+    storageRead: (area, name) => invoke<JsonValue | null>("storage_read", { area, name }),
+    storageWrite: (area, name, value) => invoke("storage_write", { area, name, value }),
+    storageList: (area, folder) => invoke<string[]>("storage_list", { area, folder }),
+    storageDelete: (area, name) => invoke<boolean>("storage_delete", { area, name }),
+
+    credentialGet: (name) => invoke<string | null>("credential_get", { name }),
+    credentialSet: (name, secret) => invoke("credential_set", { name, secret }),
+    credentialDelete: (name) => invoke<boolean>("credential_delete", { name }),
+
+    notify: (title, body) => invoke("notify", { title, body }),
+
+    mediaSnapshot: () => invoke<MediaSnapshot | null>("media_snapshot"),
+    mediaControl: (action) => invoke<boolean>("media_control", { action }),
+    mediaWatch: (on) => invoke("media_watch", { on }),
+    onMedia: (listener) => on<MediaSnapshot | null>("media:changed", listener),
+
+    systemWatch: (on) => invoke("system_watch", { on }),
+    onSystemStats: (listener) => on<SystemStats>("system:stats", listener),
+
+    httpRequest: (request) => invoke<HttpResponse>("http_request", { request }),
+    async httpStream(request, onEvent) {
+      const channel = new Channel<HttpStreamEvent>();
+      channel.onmessage = onEvent;
+      const id = await invoke<number>("http_stream", { request, onEvent: channel });
+      return { id, cancel: () => invoke<boolean>("http_cancel", { id }) };
+    },
+    fetchCalendar: (url) => invoke<string>("http_fetch_calendar", { url }),
+
+    autostartEnable: () => invoke("autostart_enable"),
+    autostartDisable: () => invoke("autostart_disable"),
+    autostartIsEnabled: () => invoke<boolean>("autostart_is_enabled"),
+
+    aiPaths: () => invoke<AiPaths>("ai_paths"),
   };
 }
 
