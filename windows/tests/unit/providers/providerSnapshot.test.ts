@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { FocusTimer } from "../../../src/core/focus/focusTimer";
 import { moduleProvision } from "../../../src/core/providers/moduleProvision";
 import { ProgressItem } from "../../../src/core/providers/progressItem";
-import type { ProvidedEvent } from "../../../src/core/providers/providedEvent";
+import type { UpcomingEvent } from "../../../src/core/planner/upcomingEvent";
 import { ProvidedFocus, type ProvidedFocusClock } from "../../../src/core/providers/providedFocus";
 import { providedTask, type ProvidedTask } from "../../../src/core/providers/providedTask";
 import { ProviderSnapshot } from "../../../src/core/providers/providerSnapshot";
@@ -12,7 +12,7 @@ import { switchLanguage } from "../../support/catalogs";
 // Date(timeIntervalSinceReferenceDate: 800_000_000) in seconds since 1970.
 const now = 800_000_000 + 978_307_200;
 
-function event(id: string, startsInMinutes: number): ProvidedEvent {
+function event(id: string, startsInMinutes: number): UpcomingEvent {
   const start = now + startsInMinutes * 60;
   return { id, title: id, start, end: start + 1800, isAllDay: false };
 }

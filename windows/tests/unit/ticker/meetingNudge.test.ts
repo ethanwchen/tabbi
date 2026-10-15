@@ -1,13 +1,13 @@
 // Port of MeetingNudgeTests.swift.
 import { describe, expect, it } from "vitest";
-import type { ProvidedEvent } from "../../../src/core/providers/providedEvent";
+import type { UpcomingEvent } from "../../../src/core/planner/upcomingEvent";
 import { MeetingNudge, MeetingNudgeWatch } from "../../../src/core/ticker/meetingNudge";
 import { TickerSources } from "../../../src/core/ticker/tickerSources";
 
 // Date(timeIntervalSinceReferenceDate: 800_000_000) in seconds since 1970.
 const now = 800_000_000 + 978_307_200;
 
-function event(id: string, startsInMinutes: number, allDay = false): ProvidedEvent {
+function event(id: string, startsInMinutes: number, allDay = false): UpcomingEvent {
   const start = now + startsInMinutes * 60;
   return { id, title: id, start, end: start + 30 * 60, isAllDay: allDay };
 }

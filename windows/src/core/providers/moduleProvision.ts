@@ -1,6 +1,6 @@
 import type { PetPresence } from "../pets/petPresence";
 import type { ProgressItem } from "./progressItem";
-import type { ProvidedEvent } from "./providedEvent";
+import type { UpcomingEvent } from "../planner/upcomingEvent";
 import type { ProvidedFocus } from "./providedFocus";
 import type { ProvidedParty } from "./providedParty";
 import type { ProvidedTask } from "./providedTask";
@@ -29,7 +29,7 @@ import type { TickerHighlight } from "./tickerHighlight";
  */
 export interface ModuleProvision {
   readonly tasks: readonly ProvidedTask[];
-  readonly events: readonly ProvidedEvent[];
+  readonly events: readonly UpcomingEvent[];
   readonly progress: readonly ProgressItem[];
   readonly focus: ProvidedFocus | undefined;
   readonly study: StudyDayTally | undefined;

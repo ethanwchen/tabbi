@@ -1,7 +1,7 @@
 import { focusClock } from "../focus/focusTimerFormat";
 import { tr } from "../localization/tr";
 import type { ProgressItem } from "../providers/progressItem";
-import { eventBadge, type EventTiming } from "../providers/providedEvent";
+import { eventBadge, type EventTiming } from "../planner/upcomingEvent";
 import type { Instant, Seconds } from "../time";
 import { tickerPetIsSipping, tickerPetUnlockHint, type TickerFocus, type TickerMeeting, type TickerPet } from "./tickerItem";
 

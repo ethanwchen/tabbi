@@ -1,4 +1,4 @@
-import type { ProvidedEvent } from "../providers/providedEvent";
+import type { UpcomingEvent } from "../planner/upcomingEvent";
 import type { Instant, Seconds } from "../time";
 import type { TickerSources } from "./tickerSources";
 
@@ -48,7 +48,7 @@ export class MeetingNudgeWatch {
   private nudged = new Map<string, Instant>();
 
   /** The meeting's identity for nudging: its event and its start, so rescheduling it counts as a new meeting. */
-  static key(event: ProvidedEvent): string {
+  static key(event: UpcomingEvent): string {
     return `${event.id}@${swiftDouble(event.start - REFERENCE_DATE_OFFSET)}`;
   }
 

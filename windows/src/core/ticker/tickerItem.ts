@@ -7,7 +7,8 @@ import type { PetAdventure } from "../pets/petAdventure";
 import type { PetMood } from "../pets/petAnimator";
 import type { PetProfile } from "../pets/petProfile";
 import type { ProgressItem, ProvidedAction } from "../providers/progressItem";
-import type { EventTiming, ProvidedMeetingLink } from "../providers/providedEvent";
+import type { MeetingLink } from "../planner/meetingLink";
+import type { EventTiming } from "../planner/upcomingEvent";
 import type { ProvidedFocus } from "../providers/providedFocus";
 import type { ProvidedPartyPet } from "../providers/providedParty";
 import type { TickerHighlight } from "../providers/tickerHighlight";
@@ -29,7 +30,7 @@ export interface TickerMeeting {
   /** Whether the event carries a video-call link, so the opened panel can offer "Join". */
   readonly canJoin: boolean;
   /** The call to join, which the closed island offers once the meeting is close (`meetingOffersJoin`). */
-  readonly link: ProvidedMeetingLink | undefined;
+  readonly link: MeetingLink | undefined;
   /** The "leave now" pulse is playing (`MeetingNudge`). */
   readonly isNudging: boolean;
 }
@@ -39,7 +40,7 @@ export function tickerMeeting(init: {
   title: string;
   timing: EventTiming;
   canJoin: boolean;
-  link?: ProvidedMeetingLink | undefined;
+  link?: MeetingLink | undefined;
   isNudging?: boolean;
 }): TickerMeeting {
   return {

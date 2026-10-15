@@ -3,7 +3,7 @@ import type { PetPresence } from "../pets/petPresence";
 import type { Instant } from "../time";
 import type { ModuleProvision } from "./moduleProvision";
 import type { ProgressItem } from "./progressItem";
-import type { ProvidedEvent } from "./providedEvent";
+import type { UpcomingEvent } from "../planner/upcomingEvent";
 import type { ProvidedFocus } from "./providedFocus";
 import type { ProvidedParty } from "./providedParty";
 import type { ProvidedTask } from "./providedTask";
@@ -41,7 +41,7 @@ export class ProviderSnapshot {
    * calendar identifiers should carry a module prefix so they never merge
    * by accident.
    */
-  readonly events: readonly ProvidedEvent[];
+  readonly events: readonly UpcomingEvent[];
   readonly progress: readonly ProgressItem[];
   /**
    * The one clock the app shows when several modules run one (say the
@@ -75,7 +75,7 @@ export class ProviderSnapshot {
     const tasks: ProvidedTask[] = [];
     const progress: ProgressItem[] = [];
     const highlights: TickerHighlight[] = [];
-    const events: ProvidedEvent[] = [];
+    const events: UpcomingEvent[] = [];
     const badges = new Map<ModuleID, number>();
     const taskKeys = new Set<string>();
     const progressKeys = new Set<string>();

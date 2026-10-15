@@ -1,7 +1,7 @@
 import { PetAdventure } from "../pets/petAdventure";
 import type { PetPresence } from "../pets/petPresence";
 import type { ProgressItem } from "../providers/progressItem";
-import { eventTiming, eventTitle, upNextEvents, type ProvidedEvent } from "../providers/providedEvent";
+import { eventTiming, eventTitle, upNext, type UpcomingEvent } from "../planner/upcomingEvent";
 import type { ProvidedFocus } from "../providers/providedFocus";
 import type { ProvidedParty } from "../providers/providedParty";
 import type { ProviderSnapshot } from "../providers/providerSnapshot";
@@ -27,7 +27,7 @@ function enabledPredicate(filter: TickerKindFilter | undefined): (kind: TickerKi
 }
 
 export interface TickerSourcesInit {
-  events?: readonly ProvidedEvent[];
+  events?: readonly UpcomingEvent[];
   isMusicPlaying?: boolean;
   /** The shared focus clock; its `source` is the module running it. */
   focus?: ProvidedFocus | undefined;
@@ -51,7 +51,7 @@ export class TickerSources {
   /** Meetings further out than this are not "live" yet and stay hidden. */
   static readonly meetingHorizon: Seconds = 60 * 60;
 
-  readonly events: readonly ProvidedEvent[];
+  readonly events: readonly UpcomingEvent[];
   readonly isMusicPlaying: boolean;
   readonly focus: ProvidedFocus | undefined;
   readonly tasksRemaining: number;
@@ -147,8 +147,8 @@ export class TickerSources {
   }
 
   /** The next meeting that starts within the pin lead (not yet under way), which the meeting preview shows ahead of one in progress. */
-  imminentMeeting(now: Instant): ProvidedEvent | undefined {
-    return upNextEvents(this.events, now, this.events.length).find(
+  imminentMeeting(now: Instant): UpcomingEvent | undefined {
+    return upNext(this.events, now, this.events.length).find(
       (event) => event.start > now && event.start - now <= TickerSources.pinLeadTime,
     );
   }
@@ -169,7 +169,7 @@ export class TickerSources {
     switch (kind) {
       case TICKER_KINDS.meeting: {
         /* A meeting about to start beats one already under way, so a long block can't hide "Standup in 3 min". */
-        const event = this.imminentMeeting(now) ?? upNextEvents(this.events, now, this.events.length)[0];
+        const event = this.imminentMeeting(now) ?? upNext(this.events, now, this.events.length)[0];
         if (event === undefined || event.start - now > TickerSources.meetingHorizon) return undefined;
         return {
           type: "meeting",

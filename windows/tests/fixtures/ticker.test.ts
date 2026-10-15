@@ -4,7 +4,8 @@ import { PET_BREEDS, type PetBreed } from "../../src/core/pets/petKinds";
 import { PetPresence } from "../../src/core/pets/petPresence";
 import { PetProfile } from "../../src/core/pets/petProfile";
 import { ProgressItem } from "../../src/core/providers/progressItem";
-import type { ProvidedEvent } from "../../src/core/providers/providedEvent";
+import { classifyMeetingURL, type MeetingLink } from "../../src/core/planner/meetingLink";
+import { upcomingEvent, type UpcomingEvent } from "../../src/core/planner/upcomingEvent";
 import { ProvidedFocus, type ProvidedFocusClock } from "../../src/core/providers/providedFocus";
 import { ProvidedParty, type ProvidedPartyPet } from "../../src/core/providers/providedParty";
 import { TICKER_HIGHLIGHT_TONES, TickerHighlight, type TickerHighlightTone } from "../../src/core/providers/tickerHighlight";
@@ -171,6 +172,13 @@ function tone(raw: string): TickerHighlightTone {
   return found;
 }
 
+/* A recorded link as the Mac rebuilds it: its provider and URL, checked against the Windows classifier. */
+function meetingLink(link: Link): MeetingLink {
+  const classified = classifyMeetingURL(link.url);
+  if (classified?.provider !== link.provider) throw new Error(`Not a ${link.provider} link: ${link.url}`);
+  return classified;
+}
+
 const profile = (pet: Pet) => new PetProfile(pet.name, breed(pet.breed));
 
 function clockOf(clock: Focus["clock"]): ProvidedFocusClock {
@@ -187,14 +195,16 @@ function clockOf(clock: Focus["clock"]): ProvidedFocusClock {
 }
 
 function tickerSources(sources: Sources): TickerSources {
-  const events: ProvidedEvent[] = (sources.events ?? []).map((event) => ({
-    id: event.id,
-    title: event.title,
-    start: event.start,
-    end: event.end,
-    isAllDay: event.isAllDay ?? false,
-    meetingLink: event.meetingLink,
-  }));
+  const events: UpcomingEvent[] = (sources.events ?? []).map((event) =>
+    upcomingEvent({
+      id: event.id,
+      title: event.title,
+      start: event.start,
+      end: event.end,
+      isAllDay: event.isAllDay ?? false,
+      meetingLink: event.meetingLink === undefined ? undefined : meetingLink(event.meetingLink),
+    }),
+  );
   const focus = sources.focus;
   const party = sources.party;
   return new TickerSources({

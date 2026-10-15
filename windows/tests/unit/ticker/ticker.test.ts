@@ -5,7 +5,8 @@ import type { ClaudeRateLimitSnapshot } from "../../../src/core/claude/claudeStr
 import { FocusTimer, FocusTimerConfig } from "../../../src/core/focus/focusTimer";
 import type { ModuleID } from "../../../src/core/modules/moduleId";
 import { ProgressItem } from "../../../src/core/providers/progressItem";
-import type { EventTiming, ProvidedEvent, ProvidedMeetingLink } from "../../../src/core/providers/providedEvent";
+import type { MeetingLink } from "../../../src/core/planner/meetingLink";
+import type { EventTiming, UpcomingEvent } from "../../../src/core/planner/upcomingEvent";
 import { TickerHighlight } from "../../../src/core/providers/tickerHighlight";
 import { tickerFocusClock, tickerMeetingCountdown, tickerMeetingSummary, tickerProgressLeft, tickerTasksLeft } from "../../../src/core/ticker/tickerFormat";
 import {
@@ -27,9 +28,9 @@ import { switchLanguage } from "../../support/catalogs";
 // Date(timeIntervalSinceReferenceDate: 800_000_000) in seconds since 1970.
 const now = 800_000_000 + 978_307_200;
 
-const zoom: ProvidedMeetingLink = { provider: "zoom", url: "https://zoom.us/j/1" };
+const zoom: MeetingLink = { provider: "zoom", url: "https://zoom.us/j/1" };
 
-function event(title: string, startsInMinutes: number, options: { length?: number; link?: boolean; allDay?: boolean } = {}): ProvidedEvent {
+function event(title: string, startsInMinutes: number, options: { length?: number; link?: boolean; allDay?: boolean } = {}): UpcomingEvent {
   const start = now + startsInMinutes * 60;
   return {
     id: title,
