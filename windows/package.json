@@ -5,7 +5,10 @@
   "description": "Tabbi for Windows: the island, tray and panels (Tauri 2 host, React UI)",
   "type": "module",
   "scripts": {
+    "strings": "node scripts/build-strings.mjs",
+    "predev": "npm run strings",
     "dev": "vite",
+    "prebuild": "npm run strings",
     "build": "tsc --noEmit && vite build",
     "tauri": "tauri",
     "icons": "tauri icon ../docs/brand/assets/tabbi-icon-1024.png -o src-tauri/icons",
