@@ -1,0 +1,294 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Another app is using Ctrl+Alt+Space, so open Tabbi from its icon in the tray." : {
+      "comment" : "Shown when the global hotkey cannot be registered because another app owns it. Name the keys as the language's Windows keyboards label them, and the tray as Windows calls the notification area in that language.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تطبيق آخر يستخدم Ctrl+Alt+Space، لذا افتح Tabbi من أيقونته في منطقة الإعلامات."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine andere App nutzt Strg+Alt+Leertaste, öffne Tabbi also über sein Symbol im Infobereich."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otra app usa Ctrl+Alt+Espacio, así que abre Tabbi desde su icono en el área de notificación."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "May ibang app na gumagamit ng Ctrl+Alt+Space, kaya buksan ang Tabbi mula sa icon nito sa tray."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une autre app utilise Ctrl+Alt+Espace, alors ouvre Tabbi depuis son icône dans la zone de notification."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ctrl+Alt+Spaceは別のアプリで使われています。通知領域のTabbiのアイコンから開いてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ctrl+Alt+Space 키는 다른 앱에서 쓰고 있어요. 알림 영역의 Tabbi 아이콘에서 열어 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outro app está usando Ctrl+Alt+Espaço, então abra o Tabbi pelo ícone na área de notificação."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ctrl+Alt+Пробел занято другим приложением, поэтому открывай Tabbi значком в области уведомлений."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ctrl+Alt+空格 已被其他 App 占用，请从通知区域中的 Tabbi 图标打开。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ctrl+Alt+空白鍵 已被其他 App 使用。請從通知區域中的 Tabbi 圖示開啟。"
+          }
+        }
+      }
+    },
+    "Open Tabbi" : {
+      "comment" : "The tray icon's menu: opens the island panel. Tabbi is the product name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح Tabbi"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi öffnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Tabbi"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buksan ang Tabbi"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir Tabbi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 열기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir o Tabbi"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть Tabbi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 Tabbi"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟 Tabbi"
+          }
+        }
+      }
+    },
+    "Quit Tabbi" : {
+      "comment" : "The tray icon's menu: quits the app. Use the platform's usual word for quitting an app.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إنهاء Tabbi"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi beenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salir de Tabbi"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umalis sa Tabbi"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitter Tabbi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiを終了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 종료"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sair do Tabbi"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выйти из Tabbi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出 Tabbi"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結束 Tabbi"
+          }
+        }
+      }
+    },
+    "This tab arrives in a later Windows build." : {
+      "comment" : "A tab's placeholder on Windows when its module is not ported yet. Use the same word for tab as the tab bar does.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تصل علامة التبويب هذه في إصدار لاحق لنظام Windows."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Tab kommt in einer späteren Windows-Version."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta pestaña llega en una versión posterior para Windows."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darating ang tab na ito sa susunod na Windows build."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cet onglet arrive dans une prochaine version Windows."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このタブは今後のWindows版で使えるようになります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 탭은 이후 Windows 버전에서 제공돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta aba chega em uma versão futura para Windows."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эта вкладка появится в одной из следующих версий для Windows."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此标签页将在之后的 Windows 版本中推出。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此標籤頁將在之後的 Windows 版本推出。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

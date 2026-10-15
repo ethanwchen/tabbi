@@ -17,3 +17,5 @@ src-tauri/icons/
 *.p8
 *.key
 *.key.pub
+# Built from the String Catalogs by scripts/build-strings.mjs.
+src/i18n/generated/
