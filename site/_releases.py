@@ -15,6 +15,8 @@ with open(pathlib.Path(__file__).parent.parent / 'Resources' / 'Info.plist', 'rb
 # (version, when, one sentence). Keep each line short and warm: the details
 # live in the GitHub release notes, which the page links to.
 RELEASES = [
+    ('1.0.1', 'Friend requests',
+     'Accept or decline friend requests, every hat now shows in Party, and smoother birthday and focus sound controls.'),
     ('1.0.0', 'The first release',
      'Tabbi moves into your notch: a focus timer, your day, music, study parties with friends, and a cat to dress up.'),
 ]
