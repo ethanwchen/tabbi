@@ -13,6 +13,9 @@ async function throwawayAppleKey(): Promise<string> {
 }
 
 export default defineConfig(async () => ({
+  // A few tests drive dozens of requests through the Worker (friend caps and rate limits); the 5 s default
+  // is too tight on a shared CI runner, so every test gets 30 s.
+  test: { testTimeout: 30_000 },
   plugins: [cloudflareTest({
     wrangler: { configPath: "./wrangler.toml" },
     miniflare: {
