@@ -751,12 +751,12 @@
 	<string>貓總能四腳著地，因為牠們從不停止轉向地面。歡迎回來。</string>
 	<key>Celebration sound</key>
 	<string>慶祝音效</string>
-	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
-	<string>在「設定 &gt; 標籤頁 &gt; 選項」中更改專注聲音和勿擾模式</string>
-	<key>Change focus sound in Settings &gt; Tabs &gt; Options</key>
-	<string>在「設定 &gt; 標籤頁 &gt; 選項」中更改專注聲音</string>
 	<key>Change the countdown to %lld minutes, or to a minute from now if that time has passed</key>
 	<string>將倒數改為 %lld 分鐘（若該時間已過，則改為從現在起 1 分鐘）</string>
+	<key>Change the focus sound</key>
+	<string>更改專注聲音</string>
+	<key>Change the focus sound and Do Not Disturb</key>
+	<string>更改專注聲音和勿擾模式</string>
 	<key>Change the timer method</key>
 	<string>更換計時方法</string>
 	<key>Change your answers</key>

@@ -4,26 +4,45 @@ import TabbiKit
 
 /// The Focus tab: a large countdown dial on the left (the panel's primary
 /// element), and on the right one card with what this session is for and
-/// what focus mode does while it runs, then the timer controls.
+/// what focus mode does while it runs, then the timer controls. The focus
+/// mode row opens the sound mixer Study uses in place of the timer, so the
+/// sound playing in a session can be changed without leaving it.
 struct FocusPanel: View {
     @ObservedObject var store: FocusStore
     /// Focus mode, whose sound and Do Not Disturb settings the panel shows.
     let focusMode: FocusController
     /// What other modules share, for the task this session is linked to.
     let providers: ProviderHub
+    @State private var showsMixer = FocusPanel.snapshotShowsMixer
 
     var body: some View {
-        HStack(spacing: Theme.Spacing.s) {
-            FocusDial(store: store)
-                .frame(width: 176)
-            VStack(spacing: Theme.Spacing.s) {
-                FocusSessionCard(store: store, focusMode: focusMode, providers: providers)
-                FocusControls(store: store)
+        Group {
+            if showsMixer {
+                StudySoundMixer(focus: focusMode, tint: accent) { show(mixer: false) }
+            } else {
+                HStack(spacing: Theme.Spacing.s) {
+                    FocusDial(store: store)
+                        .frame(width: 176)
+                    VStack(spacing: Theme.Spacing.s) {
+                        FocusSessionCard(store: store, focusMode: focusMode, providers: providers) { show(mixer: true) }
+                        FocusControls(store: store)
+                    }
+                }
             }
         }
+        .transition(.opacity)
         .onAppear { store.setVisible(true, viewer: .focus) }
         .onDisappear { store.setVisible(false, viewer: .focus) }
     }
+
+    private func show(mixer: Bool) {
+        withMotion(Theme.Motion.snappy) { showsMixer = mixer }
+    }
+
+    /// `TABBI_FOCUS_SNAPSHOT=sounds` renders the mixer open, so `--snapshot`
+    /// can show it without a click. Ignored outside snapshot runs.
+    private static let snapshotShowsMixer = RunMode.current.isSnapshot
+        && ProcessInfo.processInfo.environment["TABBI_FOCUS_SNAPSHOT"] == "sounds"
 }
 
 private var accent: Color { FocusModule.descriptor.accentColor }
@@ -70,13 +89,15 @@ private struct FocusSessionCard: View {
     @ObservedObject var store: FocusStore
     let focusMode: FocusController
     @ObservedObject var providers: ProviderHub
+    /// Opens the sound mixer.
+    let openMixer: () -> Void
 
     var body: some View {
         Card {
             VStack(alignment: .leading, spacing: 0) {
                 task
                 Spacer(minLength: Theme.Spacing.m)
-                FocusModeRow(controller: focusMode)
+                FocusModeRow(controller: focusMode, openMixer: openMixer)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         }
@@ -132,21 +153,40 @@ private struct FocusSessionCard: View {
     }
 }
 
-/// What focus mode does while a focus phase runs, from Settings › Focus.
+/// What focus mode does while a focus phase runs. A click opens the sound
+/// mixer, where the sounds, their levels, the volume and Do Not Disturb
+/// change live, even mid-session.
 private struct FocusModeRow: View {
     @ObservedObject var controller: FocusController
+    let openMixer: () -> Void
+    @State private var hovering = false
 
     var body: some View {
-        // A narrow panel (Compact) stacks the settings so a bare "On" never
-        // loses its name, and only drops the names when even that is too wide.
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: Theme.Spacing.m) { items(showsTitles: true) }
-            VStack(alignment: .leading, spacing: Theme.Spacing.xs) { items(showsTitles: true) }
-            HStack(spacing: Theme.Spacing.m) { items(showsTitles: false) }
+        Button(action: openMixer) {
+            // A narrow panel (Compact) stacks the settings so a bare "On" never
+            // loses its name, and only drops the names when even that is too wide.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: Theme.Spacing.m) { items(showsTitles: true) }
+                VStack(alignment: .leading, spacing: Theme.Spacing.xs) { items(showsTitles: true) }
+                HStack(spacing: Theme.Spacing.m) { items(showsTitles: false) }
+            }
+            .padding(.horizontal, Theme.Spacing.xs)
+            .padding(.vertical, Theme.Spacing.xxs)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                    .fill(hovering ? Theme.Palette.surfaceHover : .clear)
+            )
+            .contentShape(Rectangle())
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .help(controller.offersDoNotDisturb ? String(localized: "Change focus sound and Do Not Disturb in Settings > Tabs > Options", bundle: .tabbi)
-                                            : String(localized: "Change focus sound in Settings > Tabs > Options", bundle: .tabbi))
+        .buttonStyle(.plain)
+        // The hover fill reaches past the card's text edge by its padding.
+        .padding(.horizontal, -Theme.Spacing.xs)
+        .padding(.vertical, -Theme.Spacing.xxs)
+        .help(controller.offersDoNotDisturb ? String(localized: "Change the focus sound and Do Not Disturb", bundle: .tabbi)
+                                            : String(localized: "Change the focus sound", bundle: .tabbi))
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 
     @ViewBuilder

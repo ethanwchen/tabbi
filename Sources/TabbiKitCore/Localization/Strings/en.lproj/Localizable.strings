@@ -751,12 +751,12 @@
 	<string>Cats land on their feet because they never stop turning toward the ground. Welcome back.</string>
 	<key>Celebration sound</key>
 	<string>Celebration sound</string>
-	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
-	<string>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</string>
-	<key>Change focus sound in Settings &gt; Tabs &gt; Options</key>
-	<string>Change focus sound in Settings &gt; Tabs &gt; Options</string>
 	<key>Change the countdown to %lld minutes, or to a minute from now if that time has passed</key>
 	<string>Change the countdown to %lld minutes, or to a minute from now if that time has passed</string>
+	<key>Change the focus sound</key>
+	<string>Change the focus sound</string>
+	<key>Change the focus sound and Do Not Disturb</key>
+	<string>Change the focus sound and Do Not Disturb</string>
 	<key>Change the timer method</key>
 	<string>Change the timer method</string>
 	<key>Change your answers</key>

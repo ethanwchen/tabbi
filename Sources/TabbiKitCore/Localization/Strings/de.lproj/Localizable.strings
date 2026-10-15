@@ -751,12 +751,12 @@
 	<string>Katzen landen auf den Pfoten, weil sie sich bis zuletzt zum Boden drehen. Willkommen zurück.</string>
 	<key>Celebration sound</key>
 	<string>Feier-Sound</string>
-	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
-	<string>Fokusklang und Nicht stören unter Einstellungen &gt; Tabs &gt; Optionen ändern</string>
-	<key>Change focus sound in Settings &gt; Tabs &gt; Options</key>
-	<string>Fokusklang unter Einstellungen &gt; Tabs &gt; Optionen ändern</string>
 	<key>Change the countdown to %lld minutes, or to a minute from now if that time has passed</key>
 	<string>Countdown auf %lld Minuten ändern oder auf eine Minute ab jetzt, falls die Zeit schon um ist</string>
+	<key>Change the focus sound</key>
+	<string>Fokusklang ändern</string>
+	<key>Change the focus sound and Do Not Disturb</key>
+	<string>Fokusklang und Nicht stören ändern</string>
 	<key>Change the timer method</key>
 	<string>Timer-Methode ändern</string>
 	<key>Change your answers</key>

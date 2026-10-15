@@ -751,12 +751,12 @@
 	<string>猫总能四脚着地，因为它们从不停止转向地面。欢迎回来。</string>
 	<key>Celebration sound</key>
 	<string>庆祝音效</string>
-	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
-	<string>在 设置 &gt; 标签页 &gt; 选项 中更改专注声音和勿扰模式</string>
-	<key>Change focus sound in Settings &gt; Tabs &gt; Options</key>
-	<string>在 设置 &gt; 标签页 &gt; 选项 中更改专注声音</string>
 	<key>Change the countdown to %lld minutes, or to a minute from now if that time has passed</key>
 	<string>将倒计时改为 %lld 分钟（若已超过则改为从现在起 1 分钟）</string>
+	<key>Change the focus sound</key>
+	<string>更改专注声音</string>
+	<key>Change the focus sound and Do Not Disturb</key>
+	<string>更改专注声音和勿扰模式</string>
 	<key>Change the timer method</key>
 	<string>更换计时方法</string>
 	<key>Change your answers</key>

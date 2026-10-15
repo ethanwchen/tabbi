@@ -741,10 +741,10 @@
 	<string>تهبط القطط على أقدامها لأنها لا تتوقف عن الالتفات نحو الأرض. أهلًا بعودتك.</string>
 	<key>Celebration sound</key>
 	<string>صوت الاحتفال</string>
-	<key>Change focus sound and Do Not Disturb in Settings &gt; Tabs &gt; Options</key>
-	<string>غيّر صوت التركيز وعدم الإزعاج من الإعدادات &gt; علامات التبويب &gt; الخيارات</string>
-	<key>Change focus sound in Settings &gt; Tabs &gt; Options</key>
-	<string>غيّر صوت التركيز من الإعدادات &gt; علامات التبويب &gt; الخيارات</string>
+	<key>Change the focus sound</key>
+	<string>غيّر صوت التركيز</string>
+	<key>Change the focus sound and Do Not Disturb</key>
+	<string>غيّر صوت التركيز وعدم الإزعاج</string>
 	<key>Change the timer method</key>
 	<string>تغيير طريقة المؤقت</string>
 	<key>Change your answers</key>
