@@ -1,0 +1,117 @@
+import type { Instant } from "../time";
+import type { StudyMethodKind } from "./studyMethodFile";
+import { isBreakPhase } from "./studyMethod";
+import { countsAsDone, type StudyPhaseRecord } from "./studyPhaseRecord";
+import { swiftInt } from "./swiftMath";
+
+/*
+ * The Mac's PetPointsRules.points(forMinutes:completed:), which StudyLog pays
+ * by: a point per full minute from five minutes up, plus a 10 point bonus for
+ * finishing a block of at least 25 minutes. Kept here until the pet port owns
+ * the rules, so Study's tally matches what the pet earns.
+ */
+export function studyPointsFor(minutes: number, completed: boolean): number {
+  if (minutes < 5) return 0;
+  const bonus = completed && minutes >= 25 ? 10 : 0;
+  return minutes + bonus;
+}
+
+/** Port of StudyLogEntry: one study stretch in the saved log, with the points it earned. */
+export interface StudyLogEntry {
+  readonly id: string;
+  readonly method: StudyMethodKind;
+  readonly startedAt: Instant;
+  readonly endedAt: Instant;
+  /** Whole minutes the clock ran, excluding pauses. */
+  readonly minutes: number;
+  /** Ran its full length, hit its card goal, or was a stopped Flowtime stretch. */
+  readonly completed: boolean;
+  /** Cards answered, for an Anki sprint. */
+  readonly cards?: number;
+  /** Points earned, fixed when logged so later rule changes never rewrite history. */
+  readonly points: number;
+}
+
+/**
+ * Port of StudyLogEntry.init?(_:): the entry for a phase that ran, or
+ * undefined for breaks and stretches under a minute, which are not study time.
+ */
+export function studyLogEntry(record: StudyPhaseRecord, id: string): StudyLogEntry | undefined {
+  if (isBreakPhase(record.phase) || !Number.isFinite(record.activeDuration)) return undefined;
+  const minutes = swiftInt(Math.max(record.activeDuration, 0) / 60);
+  if (minutes < 1) return undefined;
+  const completed = countsAsDone(record.outcome);
+  return {
+    id,
+    method: record.method,
+    startedAt: record.startedAt,
+    endedAt: record.endedAt,
+    minutes,
+    completed,
+    ...(record.cards === undefined ? {} : { cards: Math.max(record.cards, 0) }),
+    points: studyPointsFor(minutes, completed),
+  };
+}
+
+/** Port of StudyDayTally: a day's study totals. */
+export interface StudyDayTally {
+  minutes: number;
+  sessions: number;
+  points: number;
+}
+
+const dayFormatters = new Map<string, Intl.DateTimeFormat>();
+
+/** The calendar day `instant` falls on in `timeZone`, as YYYY-MM-DD. */
+function dayIn(instant: Instant, timeZone: string): string {
+  let formatter = dayFormatters.get(timeZone);
+  if (formatter === undefined) {
+    formatter = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" });
+    dayFormatters.set(timeZone, formatter);
+  }
+  return formatter.format(new Date(instant * 1000));
+}
+
+/**
+ * Port of StudyLog: the history of study stretches, oldest first, capped at
+ * `capacity` entries. Points use the same rules the pet pays by; the log never
+ * credits the pet itself, so every stretch is paid exactly once.
+ */
+export class StudyLog {
+  /** The most entries kept; the oldest fall off first. Roughly a year of heavy daily use. */
+  static readonly capacity = 3000;
+
+  readonly entries: readonly StudyLogEntry[];
+
+  constructor(entries: readonly StudyLogEntry[] = []) {
+    this.entries = entries.slice(-StudyLog.capacity);
+  }
+
+  /**
+   * Logs the study stretches among `records` and returns the new log and the
+   * added entries. `makeId` names each entry (the app passes a UUID maker).
+   */
+  recording(records: readonly StudyPhaseRecord[], makeId: () => string): { log: StudyLog; added: StudyLogEntry[] } {
+    const added = records.flatMap((record) => studyLogEntry(record, makeId()) ?? []);
+    if (added.length === 0) return { log: this, added };
+    return { log: new StudyLog([...this.entries, ...added]), added };
+  }
+
+  /** Totals for the stretches that ended on the calendar day of `day` in `timeZone` (an IANA name). */
+  summary(day: Instant, timeZone: string): StudyDayTally {
+    const target = dayIn(day, timeZone);
+    const total: StudyDayTally = { minutes: 0, sessions: 0, points: 0 };
+    for (const entry of this.entries) {
+      if (dayIn(entry.endedAt, timeZone) !== target) continue;
+      total.minutes += entry.minutes;
+      total.points += entry.points;
+      if (entry.completed) total.sessions += 1;
+    }
+    return total;
+  }
+
+  /** Every point the log has earned. */
+  get totalPoints(): number {
+    return this.entries.reduce((sum, entry) => sum + entry.points, 0);
+  }
+}
