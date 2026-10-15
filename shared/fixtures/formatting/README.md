@@ -36,9 +36,12 @@ Which outputs come from the Mac's ICU:
   Other characters ICU writes are kept as they are, including no-break spaces (U+00A0), the full-width tilde in Japanese and Chinese, and any directional marks in Arabic.
   CLDR versions differ between ICU builds, so a mismatch that is only spacing or punctuation is an ICU difference, not a Tabbi rule.
 - The plural form each language picks for `%lld cards` (one, few, many, two, zero, other) follows CLDR plural rules for the language's locale, which `Intl.PluralRules(bcp47)` gives too.
-- The number in a `quantity` with any other unit (`1,234 questions`, `1.000.000 steps`) is the locale's own number format, which `Intl.NumberFormat(bcp47)` gives.
-- The numbers inside the translated duration strings are written by Foundation's `String(format:locale:)` from `%lld`: Western digits and no grouping separator in every shipped language, Arabic included.
-  Only the catalog text around them is translated.
+- Every number in the durations, the `%lld` inside a translated string as well as a `quantity` with any other unit (`1,234 questions`, `1.000.000 steps`), is written in the locale's own number format, which `Intl.NumberFormat(bcp47)` gives.
+  The digits are Western in every shipped language, Arabic included, and only `quantity` values reach four digits, where the grouping shows: `1,234` in English, `1.234` in German, `1234` in Spanish (which groups only from five digits), a narrow no-break space (U+202F) in French and a no-break space (U+00A0) in Russian.
+  These spaces are kept as ICU writes them, since only `DateRangeFormat` swaps spaces.
+  Some ICU builds, including V8's, write Arabic-Indic digits for plain `ar`, so a port may need `ar-u-nu-latn` to get the recorded Western digits.
+- In Arabic, Foundation wraps every string argument (`%@`, so each side of `%@ of %@` and the duration in `in %@`) in a first-strong isolate (U+2068) and a pop directional isolate (U+2069), so a port must add the same two marks around each one.
+  The test checks the mirror against `DurationFormat` only in the language it runs in, so that Arabic behavior is Foundation's `String(format:locale:)`, and is assumed to match `String(localized:)` under an Arabic locale.
 
 Rules the fixture pins that are easy to miss:
 

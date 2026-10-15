@@ -27,6 +27,7 @@ Rules the fixture pins that are easy to miss:
 
 - Checks run in a fixed order and the first failure wins: size (bytes, before parsing), JSON shape (the first missing field or wrong type the decoder meets, in field order), `formatVersion` below 1, above the current one, the id, a blank name, no modules, a question without answers, then the first limit in `KitLimits` order.
 - Malformed reasons name the path the way the decoder does, so the second module of `modules` is `modules.[1]`, and the top level is `the top level`.
+  A number that does not fit a whole-number field (`"formatVersion": 1.5`) reads as `not valid JSON`, like a truncated file.
 - Lengths count user-perceived characters (grapheme clusters), so `e` followed by a combining accent counts once.
 - A kit id is 1 to 64 characters of `a` to `z`, `0` to `9` and `-`.
 - Unknown modules, repeats, unknown previews, an unknown theme, repeated question or answer ids, unknown fields and bad `moduleSettings` values are warnings, never errors.

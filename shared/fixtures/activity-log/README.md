@@ -28,7 +28,7 @@ Rules the fixture pins that are easy to miss:
 - `append` writes days in date order and stops at the first day it cannot read: earlier days are written, that day's broken file is left as it was, and later days are not written.
 - Files that are not `yyyy-MM-dd.json` (such as `readme.txt`) are ignored, never deleted.
 - A file without `schemaVersion` reads like version 1 and is rewritten with it on the next append; a newer `schemaVersion` with unknown keys reads as it is.
-- The Mac writes keys sorted, two-space indented with ` : ` between key and value, `/` escaped as `\/`, non-ASCII as raw UTF-8, whole-number quantities without a decimal point, empty `metadata` as `{}`, absent `quantity`, `unit` and `subject` left out, and no trailing newline.
+- The Mac writes keys sorted, two-space indented with ` : ` between key and value, `/` escaped as `\/`, non-ASCII as raw UTF-8, whole-number quantities without a decimal point, empty `metadata` as an empty object (Foundation prints it as `{`, a blank line and `}`), absent `quantity`, `unit` and `subject` left out, and no trailing newline.
 - Reading accepts dates with a numeric offset, lower-case ids, `null` optional fields and `null` or missing `metadata`; it refuses a whole file when it is not JSON, has no `records` array, or any record lacks a valid `id` or has a date that is not an ISO 8601 string with a zone.
 
 A port replays only the inputs and compares every recorded output.

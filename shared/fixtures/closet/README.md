@@ -23,7 +23,7 @@ Every time zone is an IANA name, and every calendar is Gregorian in that zone (L
 - `pace`: for sample `points`, the typical blocks, days and weeks they take, rounded up, and the shop's `studyToEarn` line (blocks up to a day's points, days up to a week's, weeks beyond, empty for nothing).
 - `tierLookups`: the tier whose range holds `cost`, absent for a price in a gap between tiers.
 - `ledgers`: a stored ledger `json` and, when it decodes, the `output`: `earned`, `spent`, `balance`, the `purchased` and `granted` ids, `nextUnlock` (the cheapest shop item not owned), and `encoded`, the ledger written back with sorted keys and no whitespace.
-- `unlockProgress`: the end-of-session bar for an `input` (`balance` now, the points the session `earned`, the `purchased` items, and `pointsPerSession`, absent for a plain look), and its `output`, absent when every shop item is owned.
+- `unlockProgress`: the end-of-session bar for an `input` (`balance` now, the points the session `earned`, the `purchased` items, and `pointsPerSession`, absent to pace by a typical block; `earned` is 0 for a plain look), and its `output`, absent when every shop item is owned.
   The output has the goal `item` and `cost`, `balanceBefore`, `balance`, the pace used, `missing`, `isReady`, both bar `fraction`s, `sessionsLeft`, `isNear` and the `line` under the bar.
 - `closets`: each starts a Closet from `start` (a tuxedo cat's `outfit` and `accessories`, and the ledger's `earned`, `spent`, `purchased` and `granted`), records the cleaned-up `initial` state, and lists `steps`.
   A step's `op` is one of:
@@ -43,6 +43,7 @@ Every time zone is an IANA name, and every calendar is Gregorian in that zone (L
 - `windows`: the next runs of each seasonal event after `from` in each time zone, each found after the previous run's start, with its `id` (event and Gregorian start year), `start` (local midnight of the first day) and `end` (local midnight after the last day).
 - `moments`: the seasonal events at `at` in `timeZone`: the `active` runs (soonest to end first), the `next` run to start, the `featured` run with `isActive`, and the Limited section's `shelves` in order: `event` (the featured run's items), `milestones` (limited items that are not seasonal) and `laterEvents` (the other events' items in the order their next runs start), each present only with items.
 - `seasonalTallies`: activity `records` tallied per event run in `timeZone`, with every item `earned`, each run's `focusMinutes`, `earned` items and `nextReward`, the Limited shelf `progress` of each seasonal item at each query (only while its event runs), and the items `unlocked` for a Closet that owned none.
+  A query moment only picks which runs are going on; the progress shown is everything the tally holds for that run, including records that end after the moment (the app only ever tallies records already logged).
 
 Rules the fixture pins that are easy to miss:
 
@@ -60,6 +61,7 @@ Rules the fixture pins that are easy to miss:
   The same record id counts once, only `focus.completed` records in minutes count, and a Party record counts as a finished session only with the `completed` outcome.
 - The current streak runs back from today, or from yesterday when today has no study yet; the week streak milestone is reached by the longest run ever, while its shelf progress shows the current run.
 - Hours on the shelf round down, so a goal never shows as met before it is.
+- The week streak's shelf `value` can be 0 while `isReached` is true: a broken streak shows 0 even after the item was earned.
 - An event run includes its first local midnight and excludes the midnight after its last day, a record counts toward every run going on when it ended, and an item earned in a past run stays earned.
 
 A port replays only the inputs and compares every recorded output.
