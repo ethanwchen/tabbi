@@ -1,7 +1,11 @@
 import { tr } from "../localization/tr";
+import type { DocumentStore } from "../persistence/documentStore";
+import { VersionedJSON } from "../persistence/versionedJson";
 import { breedDisplayName, breedSpecies } from "../pets/petBreed";
 import type { PetBreed } from "../pets/petKinds";
 import { REFERENCE_DATE_OFFSET } from "../pets/petUnlocks";
+import type { ProgressItem } from "../providers/progressItem";
+import { DAILY_GOAL_PROGRESS_ID } from "../studyMethods/studyDailyGoal";
 import type { Instant } from "../time";
 import { addDays, dayKey, nextDateMatching, startOfDay, type DayCalendar, type DayKey } from "./dayCalendar";
 
@@ -132,21 +136,9 @@ export function reminderSpeaker(pet: ReminderPet): string {
   return breedSpecies(pet.breed) === "cat" ? tr("Your cat") : tr("Your dog");
 }
 
-/** A shared progress item, as far as the reminder reads it (the providers port owns the full shape). */
-export interface ReminderProgressItem {
-  readonly id: string;
-  readonly completed: number;
-  readonly target: number;
-}
-
-/** The Study timer's daily focus goal id (StudyDailyGoal.progressID). */
-export const STUDY_DAILY_GOAL_PROGRESS_ID = "minutes";
-
-/** Whether the day's study goal is met in the shared progress; false when no module shares it. */
-export function reminderGoalMet(progress: readonly ReminderProgressItem[]): boolean {
-  return progress.some(
-    (item) => item.id === STUDY_DAILY_GOAL_PROGRESS_ID && item.target > 0 && item.completed >= item.target,
-  );
+/** Whether the day's study goal (the Study timer's focus time goal) is met in the shared progress; false when no module shares it. */
+export function reminderGoalMet(progress: readonly ProgressItem[]): boolean {
+  return progress.some((item) => item.id === DAILY_GOAL_PROGRESS_ID && item.target > 0 && item.isComplete);
 }
 
 /**
@@ -155,8 +147,10 @@ export function reminderGoalMet(progress: readonly ReminderProgressItem[]): bool
  * Port of StudyReminderSave.
  */
 export class StudyReminderSave {
+  /** The save's file format; version 1 is the first. */
+  static readonly schema = new VersionedJSON(1);
   /** The current format version, written as `schemaVersion`. */
-  static readonly schemaVersion = 1;
+  static readonly schemaVersion = StudyReminderSave.schema.current;
 
   settings: StudyReminderSettings;
   /** The moment the pending reminder is set for, if one is. */
@@ -213,5 +207,26 @@ export class StudyReminderSave {
         ? StudyReminderSettings.fromJSON(object.settings)
         : StudyReminderSettings.off;
     return new StudyReminderSave(settings, date(object.scheduledFor), date(object.lastDelivered));
+  }
+
+  /** Reads a saved document after any migration its version needs; throws when it isn't a reminder save. */
+  static decode(text: string): StudyReminderSave {
+    return StudyReminderSave.schema.decode(text, (document) => StudyReminderSave.fromJSON(document));
+  }
+
+  /** The save as the Mac writes it: compact JSON with `schemaVersion`. */
+  encoded(): string {
+    return StudyReminderSave.schema.encode(this.toJSON());
+  }
+
+  /** The save stored as `name`, or undefined when there is none. Rejects when it exists but isn't a reminder save. */
+  static async load(store: DocumentStore, name: string): Promise<StudyReminderSave | undefined> {
+    const text = await store.read(name);
+    return text === undefined ? undefined : StudyReminderSave.decode(text);
+  }
+
+  /** Saves the state as `name` in `store`. */
+  async write(store: DocumentStore, name: string): Promise<void> {
+    await store.write(name, this.encoded());
   }
 }

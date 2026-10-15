@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { PetProfile } from "../../../src/core/pets/petProfile";
 import { breedDisplayName } from "../../../src/core/pets/petBreed";
+import { InMemoryDocumentStore } from "../../../src/core/persistence/documentStore";
+import { ProgressItem } from "../../../src/core/providers/progressItem";
+import { StudyDailyGoal } from "../../../src/core/studyMethods/studyDailyGoal";
 import { zonedInstant, type DayCalendar } from "../../../src/core/streaks/dayCalendar";
 import {
   StudyReminderSave,
@@ -8,7 +11,6 @@ import {
   reminderGoalMet,
   reminderMessage,
   reminderSpeaker,
-  type ReminderProgressItem,
 } from "../../../src/core/streaks/studyReminder";
 
 // Port of StudyReminderSaveTests and StudyReminderSpeakerTests.
@@ -76,7 +78,21 @@ describe("StudyReminderSave", () => {
     expect(save.plan(date(9, 21), false, false, calendar)).toBe(date(10, 23));
   });
 
-  // testRoundTripsThroughAFile becomes a JSON round trip: file I/O is the host's.
+  it("round-trips through a document", async () => {
+    const store = new InMemoryDocumentStore();
+    expect(await StudyReminderSave.load(store, "reminder.json")).toBeUndefined();
+    const save = onAtSeven();
+    save.plan(date(9, 9), false, false, calendar);
+    save.lastDelivered = date(8, 19);
+    await save.write(store, "reminder.json");
+    const loaded = await StudyReminderSave.load(store, "reminder.json");
+    expect(loaded !== undefined && sameSave(loaded, save)).toBe(true);
+    const json = JSON.parse(store.snapshot()["reminder.json"] ?? "{}") as Record<string, unknown>;
+    expect(json.schemaVersion).toBe(1);
+    await store.write("broken.json", "[1]");
+    await expect(StudyReminderSave.load(store, "broken.json")).rejects.toThrow();
+  });
+
   it("round-trips through its JSON form", () => {
     const save = onAtSeven();
     save.plan(date(9, 9), false, false, calendar);
@@ -93,10 +109,10 @@ describe("StudyReminderSave", () => {
   });
 
   it("goal met reads the study focus goal", () => {
-    // StudyDailyGoal belongs to the study methods port; its progress items carry the "minutes" id.
-    const halfway: ReminderProgressItem = { id: "minutes", completed: 30, target: 60 };
-    const done: ReminderProgressItem = { id: "minutes", completed: 75, target: 60 };
-    const cards: ReminderProgressItem = { id: "cards", completed: 0, target: 0 };
+    const goal = new StudyDailyGoal(60);
+    const halfway = goal.progressItem({ minutes: 30, sessions: 1, points: 0 });
+    const done = goal.progressItem({ minutes: 75, sessions: 3, points: 0 });
+    const cards = new ProgressItem({ id: "cards", source: "anki", title: "Cards", completed: 0, target: 0, unit: "cards" });
     expect(reminderGoalMet([])).toBe(false);
     expect(reminderGoalMet([cards, halfway])).toBe(false);
     expect(reminderGoalMet([cards, done])).toBe(true);

@@ -1,3 +1,4 @@
+import { durationSeconds } from "../../../src/core/formatting/durationFormat";
 import { describe, expect, it } from "vitest";
 import type { ClaudeStreamEvent } from "../../../src/core/claude/claudeStreamEvent";
 import {
@@ -17,7 +18,6 @@ import {
 } from "../../../src/core/claudeUsage/claudeUsageLogScanner";
 import {
   compactTokens,
-  durationText,
   modelName,
   percentText,
   resetDescription,
@@ -305,10 +305,10 @@ describe("ClaudeUsageFormat", () => {
   });
 
   it("writes durations", () => {
-    expect(durationText(30)).toBe("<1 min");
-    expect(durationText(14 * 60)).toBe("14 min");
-    expect(durationText(2 * 3600 + 13 * 60 + 5)).toBe("2h 14m");
-    expect(durationText(3 * 3600)).toBe("3h");
+    expect(durationSeconds(30)).toBe("<1 min");
+    expect(durationSeconds(14 * 60)).toBe("14 min");
+    expect(durationSeconds(2 * 3600 + 13 * 60 + 5)).toBe("2h 14m");
+    expect(durationSeconds(3 * 3600)).toBe("3h");
   });
 
   it("describes resets", () => {

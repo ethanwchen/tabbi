@@ -1,4 +1,4 @@
-import { tr } from "../localization/tr";
+import { durationSeconds } from "../formatting/durationFormat";
 import type { Instant } from "../time";
 
 /** Port of ClaudeUsageLevel: how close a usage window is to its limit; drives the ring color. */
@@ -44,19 +44,6 @@ export function percentText(utilization: number): string {
 }
 
 /**
- * Port of DurationFormat.seconds: a span rounded up to the minute, "<1 min"
- * for less, then "14 min", "2h", "2h 14m", with the Mac's catalog keys.
- */
-export function durationText(seconds: number): string {
-  if (seconds < 60) return tr("<1 min");
-  const minutes = Math.max(Math.ceil(seconds / 60), 0);
-  if (minutes < 60) return tr("%lld min", minutes);
-  const hours = Math.trunc(minutes / 60);
-  const rest = minutes % 60;
-  return rest === 0 ? tr("%lldh", hours) : tr("%lldh %lldm", hours, rest);
-}
-
-/**
  * "resets in 2h 14m" when the reset is within a day, otherwise the weekday
  * and time, e.g. "resets Thu 9:00 AM". Undefined without a reset time.
  */
@@ -64,7 +51,7 @@ export function resetDescription(resetsAt: Instant | undefined, now: Instant, ti
   if (resetsAt === undefined) return undefined;
   const seconds = resetsAt - now;
   if (seconds <= 0) return "resets now";
-  if (seconds < 24 * 3600) return "resets in " + durationText(seconds);
+  if (seconds < 24 * 3600) return "resets in " + durationSeconds(seconds);
   const text = new Intl.DateTimeFormat(locale, { timeZone, weekday: "short", hour: "numeric", minute: "2-digit" }).format(
     new Date(resetsAt * 1000),
   );

@@ -1,6 +1,7 @@
 import type { AIProviderID } from "../ai/aiProviderID";
 import type { ClaudeRateLimitSnapshot, ClaudeUsageWindow } from "../claude/claudeStreamEvent";
 import { MODULE_IDS, type ModuleID } from "../modules/moduleId";
+import { TickerHighlight } from "../providers/tickerHighlight";
 import type { Instant } from "../time";
 import { percentText } from "./claudeUsageFormat";
 
@@ -30,18 +31,6 @@ export function probesLimits(source: AIUsageSource): boolean {
   return source === "claudeCode";
 }
 
-/** The ticker highlight shape (the Mac's TickerHighlight), as the Usage tab publishes it. */
-export interface UsageHighlight {
-  id: string;
-  source: ModuleID;
-  text: string;
-  summary: string;
-  tone: "accent" | "danger";
-  priority: number;
-  isPinned: false;
-  expiresAt?: Instant;
-}
-
 /** Usage only surfaces once a window is above this fraction. */
 export const HIGHLIGHT_THRESHOLD = 0.8;
 
@@ -59,9 +48,9 @@ export function usageHighlight(
   resetsAt?: Instant,
   source: ModuleID = MODULE_IDS.claudeUsage,
   usage: AIUsageSource = "claudeCode",
-): UsageHighlight {
+): TickerHighlight {
   const text = `${windowLabel(window)} ${percentText(utilization)}`;
-  const highlight: UsageHighlight = {
+  return new TickerHighlight({
     id: window,
     source,
     text,
@@ -70,9 +59,8 @@ export function usageHighlight(
     /* Per mille, doubled so the 5-hour window wins a tie: it resets sooner and the user can act on it. */
     priority: Math.round(utilization * 1000) * 2 + (window === "fiveHour" ? 1 : 0),
     isPinned: false,
-  };
-  if (resetsAt !== undefined) highlight.expiresAt = resetsAt;
-  return highlight;
+    expiresAt: resetsAt,
+  });
 }
 
 /**
@@ -85,7 +73,7 @@ export function usageHighlights(
   now: Instant,
   source: ModuleID = MODULE_IDS.claudeUsage,
   usage: AIUsageSource = "claudeCode",
-): UsageHighlight[] {
+): TickerHighlight[] {
   const windows: [UsageWindowKind, ClaudeUsageWindow | undefined][] = [
     ["fiveHour", snapshot?.fiveHour],
     ["weekly", snapshot?.sevenDay],

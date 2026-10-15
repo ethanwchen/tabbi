@@ -9,6 +9,7 @@ import {
   phaseDistance,
   phaseIsOut,
 } from "../../../src/core/pets/petAdventure";
+import { InMemoryDocumentStore } from "../../../src/core/persistence/documentStore";
 import { ProvidedFocus } from "../../../src/core/providers/providedFocus";
 import type { FocusPhase } from "../../../src/core/focus/focusTimer";
 import { REFERENCE_DATE_OFFSET } from "../../../src/core/pets/petUnlocks";
@@ -220,6 +221,24 @@ describe("PetJournal", () => {
     expect(decoded.toJSON()).toEqual(json);
     expect(decoded.seed).toBe(journal.seed);
     expect(() => PetJournal.fromJSON("not json")).toThrow();
+  });
+
+  it("saves a versioned file the Mac can read, the seed as an exact number", async () => {
+    const store = new InMemoryDocumentStore();
+    expect(await PetJournal.load(store, "journal.json")).toBeUndefined();
+    const journal = new PetJournal((1n << 64n) - 1n);
+    for (let index = 0; index < 3; index++) journal.record(start + index * 60);
+    const first = journal.entries[0];
+    if (first) journal.attach({ kind: "bonusPoints", points: 5 }, first);
+    await journal.write(store, "journal.json");
+    const text = store.snapshot()["journal.json"] ?? "";
+    expect(text).toContain('"seed" : 18446744073709551615');
+    expect(text).toContain('"schemaVersion" : 1');
+    const loaded = await PetJournal.load(store, "journal.json");
+    expect(loaded?.seed).toBe(journal.seed);
+    expect(loaded?.toJSON()).toEqual(journal.toJSON());
+    await store.write("bad.json", "[]");
+    await expect(PetJournal.load(store, "bad.json")).rejects.toThrow();
   });
 
   it("makes a recent, varied demo journal", () => {
