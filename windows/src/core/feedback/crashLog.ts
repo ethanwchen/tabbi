@@ -47,7 +47,8 @@ function split(line: string): [string, string] {
 
 /** The report a crash log describes, cleaned; undefined for a file that is not one, has no known kind, or holds no frame. */
 export function crashReportFromLog(text: string): CrashReport | undefined {
-  const lines = text.split(/\r\n|[\n\r\u000b\u000c\u0085\u2028\u2029]/).filter((line) => line !== "");
+  /* Swift's isNewline: CR, LF, CRLF, vertical tab, form feed, NEL and the Unicode line and paragraph separators. */
+  const lines = text.split(new RegExp("\\r\\n|[\\n\\r\\v\\f\\u0085\\u2028\\u2029]")).filter((line) => line !== "");
   if (lines.shift() !== CRASH_LOG_MAGIC) return undefined;
   const fields = new Map<string, string>();
   const threads: { name: string; crashed: boolean; frames: string[] }[] = [];
