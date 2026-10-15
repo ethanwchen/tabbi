@@ -12,7 +12,12 @@ import {
   favoriteFromDeck,
 } from "../../../src/core/anki/ankiFavoriteDeck";
 import {
+  ANKI_ACTIVITY_DAY_KEY,
+  ANKI_STUDY_ACTION_ID,
+  ankiProgressItem,
   buildAnkiSummary,
+  reviewActivity,
+  studyAction,
   demoAnkiSummary,
   fetchAnkiSummary,
   hasReviewedToday,
@@ -23,6 +28,7 @@ import {
   topDecks,
   unloggedReviews,
 } from "../../../src/core/anki/ankiSummary";
+import { makeActivityRecord } from "../../../src/core/activity/activityRecord";
 import { actionOf, innerActions, params, ScriptedAnkiTransport } from "./fakeAnki";
 
 /* Port of AnkiSummaryTests, AnkiFormatTests and AnkiFavoriteDeckTests. */
@@ -223,6 +229,40 @@ describe("AnkiSummary study time and one-click study", () => {
     expect(studyActionTitle(result, undefined)).toBe("Study Step1");
     expect(studyActionTitle(result, makeFavoriteDeck("Step1::Renal", 2))).toBe("Study Renal");
     expect(studyActionTitle(summary(), undefined)).toBe("Open Anki");
+  });
+
+  it("shares today's reviews as a goal that carries the study action", () => {
+    const result = summary({ deckStats: [stats(1, "Step1", { review: 100 }), stats(2, "Step1::Renal", { review: 9 })], reviewedToday: 20 });
+    const item = ankiProgressItem(result);
+    expect([item.id, item.source, item.title, item.unit]).toEqual(["reviews", "anki", "Anki reviews", "cards"]);
+    expect([item.completed, item.target, item.remaining]).toEqual([20, 20 + summaryDueTotal(result), summaryDueTotal(result)]);
+    expect(item.action).toEqual({ id: ANKI_STUDY_ACTION_ID, title: "Study Step1" });
+    // A subdeck's title uses its leaf name.
+    expect(ankiProgressItem(result, "anki", makeFavoriteDeck("Step1::Renal", 2)).action?.title).toBe("Study Renal");
+    expect(studyAction(summary(), undefined).title).toBe("Open Anki");
+    const demo = demoAnkiSummary(now, "UTC");
+    expect(ankiProgressItem(demo).remaining).toBe(summaryDueTotal(demo));
+  });
+
+  it("logs a cards reviewed record only for cards not logged for the same Anki day", () => {
+    // Port of ActivityLogTests.testAnkiLogsOnlyCardsNotLoggedForTheSameAnkiDay.
+    const first = reviewActivity(summary({ reviewedToday: 30 }), [], "anki", now);
+    expect([first?.kind, first?.quantity, first?.unit]).toEqual(["cards.reviewed", 30, "cards"]);
+    expect(first?.metadata[ANKI_ACTIVITY_DAY_KEY]).toBe("2026-10-01");
+    const logged = first === undefined ? [] : [first];
+    const more = reviewActivity(summary({ reviewedToday: 45 }), logged, "anki", now + 3600);
+    expect(more?.quantity).toBe(15);
+    const both = more === undefined ? logged : [...logged, more];
+    expect(reviewActivity(summary({ reviewedToday: 45 }), both, "anki", now + 7200)).toBeUndefined();
+    // Another module's cards don't count as logged.
+    const study = makeActivityRecord({
+      source: "study",
+      kind: "cards.reviewed",
+      start: now,
+      quantity: 45,
+      metadata: { [ANKI_ACTIVITY_DAY_KEY]: "2026-10-01" },
+    });
+    expect(reviewActivity(summary({ reviewedToday: 45 }), [study], "anki", now)?.quantity).toBe(45);
   });
 
   it("logs only the reviews not yet logged for the Anki day", () => {
