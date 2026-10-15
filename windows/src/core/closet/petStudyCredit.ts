@@ -1,5 +1,5 @@
 import { tr } from "../localization/tr";
-import { focusElapsed, focusIsActive, focusLength, type PetFocus } from "../pets/petFocus";
+import type { ProvidedFocus } from "../providers/providedFocus";
 import { itemDisplayName, type PetItem } from "../pets/petItem";
 import type { Instant } from "../time";
 import { PetCloset } from "./petCloset";
@@ -48,9 +48,9 @@ function newlyAffordable(closet: PetCloset, before: Set<PetItem>): PetItem[] {
 }
 
 /** A focus phase under way in `old` that `next` left without completing it. */
-function focusWasCutShort(old: PetFocus, next: PetFocus): boolean {
-  if (old.phase !== "focus" || !focusIsActive(old)) return false;
-  return next.phase !== "focus" || !focusIsActive(next);
+function focusWasCutShort(old: ProvidedFocus, next: ProvidedFocus): boolean {
+  if (old.phase !== "focus" || !old.isActive) return false;
+  return next.phase !== "focus" || !next.isActive;
 }
 
 /**
@@ -62,8 +62,8 @@ function focusWasCutShort(old: PetFocus, next: PetFocus): boolean {
  */
 export function creditFocus(
   closet: PetCloset,
-  old: PetFocus | undefined,
-  next: PetFocus | undefined,
+  old: ProvidedFocus | undefined,
+  next: ProvidedFocus | undefined,
   now: Instant,
 ): PetStudyAward | undefined {
   if (!next) return undefined;
@@ -83,12 +83,12 @@ export function creditFocus(
   let minutes = 0;
   let completedSessions = 0;
   if (count > credited) {
-    const length = Math.trunc((focusLength(next) ?? 0) / 60);
+    const length = Math.trunc((next.focusLength ?? 0) / 60);
     for (let i = credited; i < count; i++) points += closet.recordStudy(length, true);
     completedSessions = count - credited;
     minutes = length * completedSessions;
   } else if (old && !old.logsEarlyEnds && old.source === next.source && focusWasCutShort(old, next)) {
-    minutes = Math.trunc(focusElapsed(old, now) / 60);
+    minutes = Math.trunc(old.elapsed(now) / 60);
     points = closet.recordStudy(minutes, false);
   }
   if (!(points > 0)) return undefined;

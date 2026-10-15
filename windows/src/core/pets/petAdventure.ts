@@ -1,6 +1,6 @@
 import { tr } from "../localization/tr";
 import type { Instant } from "../time";
-import type { PetFocus } from "./petFocus";
+import type { ProvidedFocus } from "../providers/providedFocus";
 import { REFERENCE_DATE_OFFSET } from "./petUnlocks";
 
 /*
@@ -75,7 +75,7 @@ export class PetAdventure {
    * not a running focus countdown, a block shorter than `minimumFocus`, or
    * Reduce Motion on.
    */
-  static plan(focus: PetFocus | undefined, reduceMotion: boolean): PetAdventure | undefined {
+  static plan(focus: ProvidedFocus | undefined, reduceMotion: boolean): PetAdventure | undefined {
     if (reduceMotion || !focus || focus.phase !== "focus" || focus.clock.kind !== "countdown") return undefined;
     const length = focus.phaseLength;
     if (length === undefined || length < PetAdventure.minimumFocus) return undefined;
@@ -86,7 +86,7 @@ export class PetAdventure {
   }
 
   /** Where the pet is at `now` for a focus clock. */
-  static phaseFor(focus: PetFocus | undefined, now: Instant, reduceMotion: boolean): AdventurePhase {
+  static phaseFor(focus: ProvidedFocus | undefined, now: Instant, reduceMotion: boolean): AdventurePhase {
     return PetAdventure.plan(focus, reduceMotion)?.phase(now) ?? HOME;
   }
 
@@ -118,8 +118,8 @@ export class PetAdventure {
    * way back.
    */
   static finished(
-    old: PetFocus | undefined,
-    next: PetFocus | undefined,
+    old: ProvidedFocus | undefined,
+    next: ProvidedFocus | undefined,
     now: Instant,
     reduceMotion: boolean,
   ): PetAdventure | undefined {

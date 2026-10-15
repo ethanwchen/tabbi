@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { PetFocus } from "../../../src/core/pets/petFocus";
+import { ProvidedFocus } from "../../../src/core/providers/providedFocus";
 import { PetNightRhythm } from "../../../src/core/pets/petNightRhythm";
 import { PetPresence } from "../../../src/core/pets/petPresence";
 import { PetProfile } from "../../../src/core/pets/petProfile";
@@ -17,8 +17,8 @@ function date(hour: number, minute = 0, zone = "America/New_York"): number {
   return zonedInstant(2026, 10, 11, hour, minute, 0, zone);
 }
 
-function runningFocus(now: number): PetFocus {
-  return { source: "focus", phase: "focus", clock: { kind: "countdown", endsAt: now + 600 }, phaseLength: 25 * 60, completedFocusCount: 0 };
+function runningFocus(now: number): ProvidedFocus {
+  return new ProvidedFocus({ source: "focus", phase: "focus", clock: { kind: "countdown", endsAt: now + 600 }, phaseLength: 25 * 60, completedFocusCount: 0 });
 }
 
 const ny = calendar("America/New_York");
@@ -50,9 +50,9 @@ describe("PetNightRhythm", () => {
   it("keeps the pet awake through a running or paused session", () => {
     const now = date(1);
     expect(rhythm.dozes(now, runningFocus(now), undefined, ny)).toBe(false);
-    const paused: PetFocus = { source: "focus", phase: "focus", clock: { kind: "paused", shown: 300 }, phaseLength: 1500, completedFocusCount: 0 };
+    const paused = new ProvidedFocus({ source: "focus", phase: "focus", clock: { kind: "paused", shown: 300 }, phaseLength: 1500, completedFocusCount: 0 });
     expect(rhythm.dozes(now, paused, undefined, ny)).toBe(false);
-    const idle: PetFocus = { source: "focus", phase: "focus", clock: { kind: "idle" }, phaseLength: 1500, completedFocusCount: 0 };
+    const idle = new ProvidedFocus({ source: "focus", phase: "focus", clock: { kind: "idle" }, phaseLength: 1500, completedFocusCount: 0 });
     expect(rhythm.dozes(now, idle, undefined, ny)).toBe(true);
   });
 

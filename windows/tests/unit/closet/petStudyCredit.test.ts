@@ -15,7 +15,9 @@ import {
   OUTCOME_KEY,
   type StudyActivityRecord,
 } from "../../../src/core/closet/studyActivity";
-import type { FocusClock, FocusPhase, PetFocus } from "../../../src/core/pets/petFocus";
+import { ProvidedFocus } from "../../../src/core/providers/providedFocus";
+import type { ProvidedFocusClock as FocusClock } from "../../../src/core/providers/providedFocus";
+import type { FocusPhase } from "../../../src/core/focus/focusTimer";
 import { accessoryItem, itemDisplayName, outfitItem } from "../../../src/core/pets/petItem";
 import { PetPointsRules } from "../../../src/core/pets/petPointsRules";
 import { PetProfile } from "../../../src/core/pets/petProfile";
@@ -107,14 +109,14 @@ class TestTimer {
     }
   }
 
-  get shared(): PetFocus {
+  get shared(): ProvidedFocus {
     const clock: FocusClock =
       this.run.kind === "idle"
         ? { kind: "idle" }
         : this.run.kind === "running"
           ? { kind: "countdown", endsAt: this.run.endsAt }
           : { kind: "paused", shown: this.run.remaining };
-    return {
+    return new ProvidedFocus({
       source: "planner",
       phase: this.phase,
       clock,
@@ -122,12 +124,12 @@ class TestTimer {
       focusLength: FOCUS,
       completedFocusCount: this.completedFocusCount,
       logsEarlyEnds: true,
-    };
+    });
   }
 
   /** The same clock from an engine that logs nothing when a focus phase is cut short. */
-  get unlogged(): PetFocus {
-    return { ...this.shared, logsEarlyEnds: false };
+  get unlogged(): ProvidedFocus {
+    return new ProvidedFocus({ ...this.shared, logsEarlyEnds: false });
   }
 }
 
@@ -353,7 +355,7 @@ describe("PetStudyCredit", () => {
 
     // A Study session starts at zero; then the Pomodoro, with its lifetime
     // total, comes back. Neither switch is a completed session.
-    const study: PetFocus = { source: "study", phase: "focus", clock: { kind: "countUp", since: t0 }, completedFocusCount: 0 };
+    const study = new ProvidedFocus({ source: "study", phase: "focus", clock: { kind: "countUp", since: t0 }, completedFocusCount: 0 });
     expect(creditFocus(c, pomodoro.shared, study, t0 + 26 * 60)).toBeUndefined();
     expect(creditFocus(c, study, pomodoro.shared, t0 + 27 * 60)).toBeUndefined();
     expect(c.balance).toBe(balance);

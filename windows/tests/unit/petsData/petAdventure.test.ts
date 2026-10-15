@@ -9,18 +9,19 @@ import {
   phaseDistance,
   phaseIsOut,
 } from "../../../src/core/pets/petAdventure";
-import type { FocusPhase, PetFocus } from "../../../src/core/pets/petFocus";
+import { ProvidedFocus } from "../../../src/core/providers/providedFocus";
+import type { FocusPhase } from "../../../src/core/focus/focusTimer";
 import { REFERENCE_DATE_OFFSET } from "../../../src/core/pets/petUnlocks";
 
 // Port of PetAdventureTests.swift.
 
 const start = 813_000_000 + REFERENCE_DATE_OFFSET;
 
-function focus(minutes: number, phase: FocusPhase = "focus"): PetFocus {
-  return { source: "focus", phase, clock: { kind: "countdown", endsAt: start + minutes * 60 }, phaseLength: minutes * 60, completedFocusCount: 0 };
+function focus(minutes: number, phase: FocusPhase = "focus"): ProvidedFocus {
+  return new ProvidedFocus({ source: "focus", phase, clock: { kind: "countdown", endsAt: start + minutes * 60 }, phaseLength: minutes * 60, completedFocusCount: 0 });
 }
 
-function plan(block: PetFocus): PetAdventure {
+function plan(block: ProvidedFocus): PetAdventure {
   const adventure = PetAdventure.plan(block, false);
   if (!adventure) throw new Error("no adventure");
   return adventure;
@@ -47,9 +48,9 @@ describe("PetAdventure", () => {
     expect(PetAdventure.plan(focus(25), true), "Reduce Motion").toBeUndefined();
     expect(PetAdventure.plan(focus(25, "rest"), false), "break").toBeUndefined();
     expect(PetAdventure.plan(undefined, false)).toBeUndefined();
-    const paused: PetFocus = { source: "focus", phase: "focus", clock: { kind: "paused", shown: 600 }, phaseLength: 1500, completedFocusCount: 0 };
+    const paused = new ProvidedFocus({ source: "focus", phase: "focus", clock: { kind: "paused", shown: 600 }, phaseLength: 1500, completedFocusCount: 0 });
     expect(PetAdventure.plan(paused, false)).toBeUndefined();
-    const open: PetFocus = { source: "study", phase: "focus", clock: { kind: "countUp", since: start }, completedFocusCount: 0 };
+    const open = new ProvidedFocus({ source: "study", phase: "focus", clock: { kind: "countUp", since: start }, completedFocusCount: 0 });
     expect(PetAdventure.plan(open, false)).toBeUndefined();
   });
 
@@ -57,13 +58,13 @@ describe("PetAdventure", () => {
     expect(plan(focus(25))).toEqual(plan(focus(25)));
     const departures = new Set(
       Array.from({ length: 10 }, (_, offset) => {
-        const block: PetFocus = {
+        const block = new ProvidedFocus({
           source: "focus",
           phase: "focus",
           clock: { kind: "countdown", endsAt: start + offset * 3600 + 1500 },
           phaseLength: 1500,
           completedFocusCount: 0,
-        };
+        });
         return plan(block).departsAt - offset * 3600;
       }),
     );
@@ -230,14 +231,14 @@ describe("PetJournal", () => {
 });
 
 describe("finishing an adventure", () => {
-  const running = (minutes: number, done = 0): PetFocus => ({
+  const running = (minutes: number, done = 0): ProvidedFocus => new ProvidedFocus({
     source: "focus",
     phase: "focus",
     clock: { kind: "countdown", endsAt: start + minutes * 60 },
     phaseLength: minutes * 60,
     completedFocusCount: done,
   });
-  const onBreak = (done: number, source = "focus"): PetFocus => ({
+  const onBreak = (done: number, source = "focus"): ProvidedFocus => new ProvidedFocus({
     source,
     phase: "rest",
     clock: { kind: "countdown", endsAt: start + 30 * 60 },
@@ -255,7 +256,7 @@ describe("finishing an adventure", () => {
 
   it("counts only a finished long block with the walk home", () => {
     const end = start + 25 * 60;
-    const idle: PetFocus = { source: "focus", phase: "focus", clock: { kind: "idle" }, phaseLength: 25 * 60, completedFocusCount: 0 };
+    const idle = new ProvidedFocus({ source: "focus", phase: "focus", clock: { kind: "idle" }, phaseLength: 25 * 60, completedFocusCount: 0 });
     expect(PetAdventure.finished(running(25), idle, start + 600, false), "stopped early").toBeUndefined();
     expect(PetAdventure.finished(running(25), onBreak(1), start + 600, false), "skipped").toBeUndefined();
     expect(PetAdventure.finished(running(10), onBreak(1), start + 600, false), "too short").toBeUndefined();
