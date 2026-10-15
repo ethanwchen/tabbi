@@ -23,7 +23,7 @@ import { ModuleCatalog } from "../../../src/core/modules/moduleCatalog";
 import { unknownModuleDescriptor } from "../../../src/core/modules/moduleDescriptor";
 import { DEFAULT_KIT_ID } from "../../../src/core/kits/kitLibrary";
 import { resolvedKitTicker } from "../../../src/core/settings/appSettings";
-import { allTickerKinds, tickerKindModule } from "../../../src/core/settings/tickerKind";
+import { allTickerKinds, tickerKindModule } from "../../../src/core/ticker/tickerKind";
 import { BUILT_IN_CATALOG } from "../../support/builtInCatalog";
 
 function decode(json: string): Edition {

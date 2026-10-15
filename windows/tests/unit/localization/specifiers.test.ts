@@ -4,7 +4,7 @@ import { languageTable, type PluralForms } from "../../../src/core/localization/
 import { LANGUAGES } from "../../../src/core/localization/languages";
 import { resetLanguage } from "../../../src/core/localization/lookup";
 import { formatSpecifiers, tr, type FormatArg } from "../../../src/core/localization/tr";
-import { macCatalog, switchLanguage, windowsCatalog } from "./catalogs";
+import { macCatalog, switchLanguage, windowsCatalog } from "../../support/catalogs";
 
 afterEach(resetLanguage);
 

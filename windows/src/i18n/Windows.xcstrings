@@ -288,6 +288,78 @@
           }
         }
       }
+    },
+    "Your PC is charging, and %@ is having a sip" : {
+      "comment" : "Closed island tooltip on Windows while the pet sips because the PC started charging; %@ is the pet's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جهاز الكمبيوتر يُشحن، و%@ يرتشف رشفة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein PC lädt, und %@ nimmt einen Schluck"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu PC se está cargando y %@ toma un sorbito"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nagcha-charge ang PC mo, at umiinom si %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton PC charge, et %@ boit une gorgée"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PCを充電中、%@もひと休みで一口"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PC가 충전 중이고, %@도 한 모금 마시는 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu PC está carregando, e %@ está tomando um golinho"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ПК заряжается, а %@ немного попьет"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "电脑正在充电，%@ 也在喝一小口"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "電腦正在充電，%@ 也在喝一小口"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

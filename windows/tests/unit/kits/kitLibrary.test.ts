@@ -31,7 +31,7 @@ import { ModuleCatalog } from "../../../src/core/modules/moduleCatalog";
 import { MODULE_CATEGORIES, moduleDescriptor } from "../../../src/core/modules/moduleDescriptor";
 import { appSettings, applyKit, resolvedKitTicker, settingsShowsPreview } from "../../../src/core/settings/appSettings";
 import { settingPreviewKind } from "../../../src/core/settings/notchPreviewSettings";
-import { BUILT_IN_TICKER_KINDS } from "../../../src/core/settings/tickerKind";
+import { BUILT_IN_TICKER_KINDS } from "../../../src/core/ticker/tickerKind";
 import { BUILT_IN_CATALOG, defaultTestLayout } from "../../support/builtInCatalog";
 
 const answers = (entries: Record<string, string[]>): KitAnswers =>

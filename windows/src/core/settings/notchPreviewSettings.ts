@@ -1,4 +1,4 @@
-import type { TickerKind } from "./tickerKind";
+import type { TickerKind } from "../ticker/tickerKind";
 
 /** Port of TickerInterval: seconds each closed-panel preview item stays before the next. */
 export type TickerInterval = 5 | 8 | 12;

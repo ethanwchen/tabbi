@@ -12,7 +12,7 @@ import {
 import { joinSentences } from "../../../src/core/formatting/sentences";
 import { resetLanguage } from "../../../src/core/localization/lookup";
 import { DAY } from "../../../src/core/time";
-import { switchLanguage } from "../localization/catalogs";
+import { switchLanguage } from "../../support/catalogs";
 
 afterEach(resetLanguage);
 

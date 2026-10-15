@@ -17,7 +17,7 @@ import {
 } from "./notchPreviewSettings";
 import { DEFAULT_PANEL_SIZE, type PanelSize } from "./panelSize";
 import { DEFAULT_THEME_ID, themeIDForKitValue, type ThemeID } from "./themeIds";
-import { allTickerKinds, tickerKindModule, type TickerKind } from "./tickerKind";
+import { allTickerKinds, tickerKindModule, type TickerKind } from "../ticker/tickerKind";
 
 /**
  * Port of AppSettings: every user preference Tabbi has, as one value. Treat

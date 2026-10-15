@@ -1,6 +1,6 @@
 import type { ModuleCatalog } from "../modules/moduleCatalog";
 import type { ModuleID } from "../modules/moduleId";
-import { allTickerKinds } from "../settings/tickerKind";
+import { allTickerKinds } from "../ticker/tickerKind";
 import { themeIDForKitValue } from "../settings/themeIds";
 import {
   CURRENT_KIT_FORMAT_VERSION,
