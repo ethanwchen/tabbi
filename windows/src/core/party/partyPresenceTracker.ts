@@ -1,4 +1,4 @@
-import { dayKeyOf } from "../activity/dayKey";
+import { plannerDayKeyOf as dayKeyOf } from "../planner/plannerDayKey";
 import { instantFromZoned } from "../anki/ankiDay";
 import { VersionedJSON } from "../persistence/versionedJson";
 import type { ProvidedFocus } from "../providers/providedFocus";
