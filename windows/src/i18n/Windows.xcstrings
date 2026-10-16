@@ -145,6 +145,312 @@
         }
       }
     },
+    "%@ reads your events on this PC and never uploads them" : {
+      "comment" : "Onboarding's calendar step on Windows: the tooltip of the Stays on this PC note. %@ is the app name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يقرأ %@ أحداثك على هذا الكمبيوتر ولا يرفعها أبدًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ liest deine Termine auf diesem PC und lädt sie nie hoch"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ lee tus eventos en este PC y nunca los sube"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ lit tes événements sur ce PC et ne les envoie jamais"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Binabasa ng %@ ang mga event mo sa PC na ito at hindi kailanman ina-upload"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ は予定をこの PC 上で読み取り、アップロードすることはありません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@는 이 PC에서 일정을 읽고 절대 업로드하지 않아요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O %@ lê seus eventos neste PC e nunca os envia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ читает события на этом ПК и никуда их не загружает"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 在这台电脑上读取你的日程，绝不上传"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 在這台電腦上讀取你的行程，絕不上傳"
+          }
+        }
+      }
+    },
+    "%lld added to Today" : {
+      "comment" : "Plan my day on Windows: how many accepted blocks were kept in the Today tab (the Mac writes them to the calendar). Today is the tab's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld added to Today"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld added to Today"
+                }
+              }
+            }
+          }
+        },
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "أُضيفت %lld فترة إلى اليوم"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "أُضيفت %lld فترة إلى اليوم"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "أُضيفت %lld فترتان إلى اليوم"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "أُضيفت %lld فترات إلى اليوم"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "أُضيفت %lld فترةً إلى اليوم"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "أُضيفت %lld فترة إلى اليوم"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld zu Heute hinzugefügt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld zu Heute hinzugefügt"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld añadido a Hoy"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld añadidos a Hoy"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ajouté à Aujourd'hui"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ajoutés à Aujourd'hui"
+                }
+              }
+            }
+          }
+        },
+        "fil" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld naidagdag sa Ngayon"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld naidagdag sa Ngayon"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld件を今日に追加"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "오늘에 %lld개 추가됨"
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld adicionado a Hoje"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld adicionados a Hoje"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld добавлен в «Сегодня»"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld добавлено в «Сегодня»"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld добавлено в «Сегодня»"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld добавлено в «Сегодня»"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "已添加 %lld 个到“今天”"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hant" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "已將 %lld 個加入「今天」"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "A school or work setting may block them. You can check in Windows Settings." : {
       "comment" : "Settings > Connections: the Alerts row when a policy blocks notifications. Name Windows Settings as Windows does.",
       "extractionState" : "manual",
@@ -213,6 +519,222 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "學校或工作的設定可能擋住了它們。你可以在 Windows 設定中查看。"
+          }
+        }
+      }
+    },
+    "Add every block to Today" : {
+      "comment" : "Plan my day on Windows: the Add all button's tooltip. Today is the tab's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أضف كل الفترات إلى اليوم"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Blöcke zu Heute hinzufügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade todos los bloques a Hoy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter tous les blocs à Aujourd'hui"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idagdag lahat ng block sa Ngayon"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのブロックを今日に追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모든 블록을 오늘에 추가"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione todos os blocos a Hoje"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить все блоки в «Сегодня»"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把所有时段添加到“今天”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把所有時段加入「今天」"
+          }
+        }
+      }
+    },
+    "Add every proposed block to Today" : {
+      "comment" : "The Schedule's plan strip on Windows: the Add all button's tooltip. Today is the tab's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أضف كل الفترات المقترحة إلى اليوم"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle vorgeschlagenen Blöcke zu Heute hinzufügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir todos los bloques propuestos a Hoy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter tous les blocs proposés à Aujourd'hui"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idagdag sa Ngayon ang lahat ng iminungkahing block"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提案されたブロックをすべて今日に追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제안된 블록을 모두 오늘에 추가"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar todos os blocos sugeridos a Hoje"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить все предложенные блоки в «Сегодня»"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将所有建议时段添加到“今天”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將所有建議時段加入「今天」"
+          }
+        }
+      }
+    },
+    "Add this block to Today" : {
+      "comment" : "Plan my day and the Schedule on Windows: the tooltip of a block's Add button. Today is the tab's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أضف هذه الفترة إلى اليوم"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diesen Block zu Heute hinzufügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir este bloque a Hoy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter ce bloc à Aujourd'hui"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idagdag ang block na ito sa Ngayon"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このブロックを今日に追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 블록을 오늘에 추가"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar este bloco a Hoje"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить этот блок в «Сегодня»"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将此时段添加到“今天”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將此時段加入「今天」"
           }
         }
       }
@@ -501,6 +1023,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "回到 Tabbi，把它加入為新的行事曆連結。"
+          }
+        }
+      }
+    },
+    "Blocks go to Today." : {
+      "comment" : "Plan my day on Windows: the caption under the proposed blocks, where accepted blocks go (the Today tab, not a calendar).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تُضاف الكتل إلى اليوم."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für Heute."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Van a Hoy."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoutés à Aujourd'hui."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mapupunta sa Ngayon."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ブロックは今日に追加されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "블록은 오늘에 추가돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vão para Hoje."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавятся в «Сегодня»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时段会添加到“今天”。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時段會加入「今天」。"
           }
         }
       }
@@ -1369,6 +1963,78 @@
         }
       }
     },
+    "Couldn't add to Today. Try again" : {
+      "comment" : "The Schedule's plan strip on Windows when a block couldn't be kept in the Today tab.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّرت الإضافة إلى اليوم. حاول مجددًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konnte nicht zu Heute hinzufügen. Versuch es nochmal"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo añadir a Hoy. Inténtalo de nuevo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d'ajouter à Aujourd'hui. Réessaie"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi maidagdag sa Ngayon. Subukan ulit"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日に追加できませんでした。もう一度お試しください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘에 추가하지 못했어요. 다시 시도해 주세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível adicionar a Hoje. Tente de novo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось добавить в «Сегодня». Попробуй еще раз"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法添加到“今天”，请重试"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法加入「今天」，請再試一次"
+          }
+        }
+      }
+    },
     "Did you add a calendar link?" : {
       "comment" : "Settings > Connections > Something not working?: a check on the Calendar row. A calendar link is a calendar's private iCal (ICS) address.",
       "extractionState" : "manual",
@@ -1581,6 +2247,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的行事曆能載入嗎？"
+          }
+        }
+      }
+    },
+    "Fill today's free time with your open tasks and reviews. Planned on this PC, nothing is added until you say so" : {
+      "comment" : "The Schedule's Plan button tooltip on Windows for today (the Mac says Mac).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "املأ وقت اليوم الحر بمهامك المفتوحة ومراجعاتك. يُخطّط على هذا الكمبيوتر، ولا يُضاف شيء حتى توافق"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fülle die freie Zeit von heute mit offenen Aufgaben und Wiederholungen. Auf diesem PC geplant, nichts wird ohne dich eingetragen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Llena el tiempo libre de hoy con tus tareas y repasos. Se planea en este PC y no se añade nada sin tu permiso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remplis le temps libre du jour avec tes tâches et révisions. Planifié sur ce PC, rien n'est ajouté sans ton accord"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punuin ang libreng oras ngayon ng mga natitira mong task at review. Pinaplano sa PC na ito, walang idadagdag hangga't hindi mo sinasabi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日の空き時間を未完了のタスクと復習で埋めます。この PC 上で計画し、許可するまで何も追加しません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 여유 시간을 할 일과 복습으로 채워요. 이 PC에서 계획하며, 허락 전엔 아무것도 추가하지 않아요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preencha o tempo livre de hoje com tarefas e revisões. Planejado neste PC, nada é adicionado sem você confirmar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заполнить свободное время сегодня открытыми задачами и повторами. План строится на этом ПК, ничего не добавится без тебя"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用未完成的任务和复习填满今天的空闲时间。在这台电脑上规划，未经你确认不会添加任何内容"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用未完成的任務和複習填滿今天的空閒時間。在這台電腦上規劃，你確認之前不會加入任何內容"
+          }
+        }
+      }
+    },
+    "Fill tomorrow's free time with your open tasks and reviews. Planned on this PC, nothing is added until you say so" : {
+      "comment" : "The Schedule's Plan button tooltip on Windows for tomorrow (the Mac says Mac).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "املأ وقت الغد الحر بمهامك المفتوحة ومراجعاتك. يُخطّط على هذا الكمبيوتر، ولا يُضاف شيء حتى توافق"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fülle die freie Zeit von morgen mit offenen Aufgaben und Wiederholungen. Auf diesem PC geplant, nichts wird ohne dich eingetragen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Llena el tiempo libre de mañana con tus tareas y repasos. Se planea en este PC y no se añade nada sin tu permiso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remplis le temps libre de demain avec tes tâches et révisions. Planifié sur ce PC, rien n'est ajouté sans ton accord"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punuin ang libreng oras bukas ng mga natitira mong task at review. Pinaplano sa PC na ito, walang idadagdag hangga't hindi mo sinasabi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明日の空き時間を未完了のタスクと復習で埋めます。この PC 上で計画し、許可するまで何も追加しません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내일 여유 시간을 할 일과 복습으로 채워요. 이 PC에서 계획하며, 허락 전엔 아무것도 추가하지 않아요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preencha o tempo livre de amanhã com tarefas e revisões. Planejado neste PC, nada é adicionado sem você confirmar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заполнить свободное время завтра открытыми задачами и повторами. План строится на этом ПК, ничего не добавится без тебя"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用未完成的任务和复习填满明天的空闲时间。在这台电脑上规划，未经你确认不会添加任何内容"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用未完成的任務和複習填滿明天的空閒時間。在這台電腦上規劃，你確認之前不會加入任何內容"
           }
         }
       }
@@ -3889,6 +4699,150 @@
         }
       }
     },
+    "Spread your open tasks and reviews over the week's free time. Planned on this PC, nothing is added until you say so" : {
+      "comment" : "The Schedule's Plan button tooltip on Windows in the Week view (the Mac says Mac).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "وزّع مهامك المفتوحة ومراجعاتك على أوقات الفراغ هذا الأسبوع. التخطيط على هذا الكمبيوتر، ولا يُضاف شيء حتى توافق"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verteile offene Aufgaben und Wiederholungen auf die freie Zeit der Woche. Auf diesem PC geplant, nichts wird ohne dich eingetragen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reparte tus tareas y repasos en el tiempo libre de la semana. Se planea en este PC y no se añade nada sin tu permiso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Répartis tes tâches et révisions sur le temps libre de la semaine. Planifié sur ce PC, rien n'est ajouté sans ton accord"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikalat ang mga bukas na task at review sa libreng oras ng linggo. Pinaplano sa PC na ito, walang idinadagdag hangga't hindi mo sinasabi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未完了のタスクと復習を今週の空き時間に振り分けます。この PC 上で計画し、許可するまで何も追加しません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "할 일과 복습을 이번 주 여유 시간에 나눠 배치해요. 이 PC에서 계획하며, 허락 전엔 아무것도 추가하지 않아요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distribua tarefas e revisões pelo tempo livre da semana. Planejado neste PC, nada é adicionado sem você confirmar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Распредели открытые задачи и повторения по свободному времени недели. План составляется на этом ПК, и без тебя ничего не добавится"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把未完成的任务和复习分配到本周的空闲时间。在这台电脑上规划，未经你确认不会添加任何内容"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把未完成的任務和複習分配到本週的空閒時間。在這台電腦上規劃，你確認前不會加入任何內容"
+          }
+        }
+      }
+    },
+    "Stays on this PC" : {
+      "comment" : "Onboarding's calendar step on Windows: the note beside the Connect calendar button (the Mac says Mac).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يبقى على هذا الكمبيوتر"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bleibt auf dem PC"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se queda en este PC"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reste sur ce PC"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nasa PC lang na ito"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この PC 内のみ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 PC에만 저장"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fica neste PC"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Только на этом ПК"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅存于本机"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只留在本機"
+          }
+        }
+      }
+    },
     "Tabbi Settings" : {
       "comment" : "The Settings window's title and the gear button's tooltip in the open island. Tabbi is the product name; Settings as Windows names an app's settings.",
       "extractionState" : "manual",
@@ -4533,6 +5487,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此標籤頁在此版本中無法使用。"
+          }
+        }
+      }
+    },
+    "Today couldn't keep the blocks. Try again." : {
+      "comment" : "Plan my day on Windows: the tooltip of the Not added warning when the blocks couldn't be written to disk.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر على اليوم حفظ الفترات. حاول مرة أخرى."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heute konnte die Blöcke nicht behalten. Versuch es erneut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoy no pudo guardar los bloques. Inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aujourd'hui n'a pas pu garder les blocs. Réessaie."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi naitago ng Ngayon ang mga block. Subukan ulit."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日にブロックを保存できませんでした。もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘에 블록을 저장하지 못했어요. 다시 시도해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoje não conseguiu guardar os blocos. Tente de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Сегодня» не удалось сохранить блоки. Попробуй еще раз."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“今天”未能保存这些时段。请重试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「今天」無法保留這些時段。請再試一次。"
+          }
+        }
+      }
+    },
+    "Today's events and the free time between them. Add a calendar link in Settings to see them here." : {
+      "comment" : "The Schedule tab on Windows before any calendar link was added: what the timeline will show and where to add a link (Settings > Connections).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أحداث اليوم ووقت الفراغ بينها. أضف رابط تقويم في الإعدادات لتراها هنا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Termine von heute und die freie Zeit dazwischen. Füge in den Einstellungen einen Kalenderlink hinzu, um sie hier zu sehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los eventos de hoy y el tiempo libre entre ellos. Añade un enlace de calendario en Ajustes para verlos aquí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les événements du jour et le temps libre entre eux. Ajoute un lien de calendrier dans les Réglages pour les voir ici."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mga event ngayon at ang libreng oras sa pagitan nila. Magdagdag ng calendar link sa Settings para makita dito."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日の予定とその間の空き時間。設定でカレンダーのリンクを追加すると、ここに表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 일정과 그 사이 여유 시간. 설정에서 캘린더 링크를 추가하면 여기에 보여요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os eventos de hoje e o tempo livre entre eles. Adicione um link de agenda nas Configurações para vê-los aqui."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "События дня и свободное время между ними. Добавь ссылку на календарь в настройках, чтобы видеть их здесь."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天的日程及其间的空闲时间。在设置中添加日历链接后即可在此查看。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天的行程和中間的空閒時間。在設定中加入行事曆連結後就會顯示在這裡。"
           }
         }
       }
