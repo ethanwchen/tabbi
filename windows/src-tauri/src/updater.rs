@@ -1,5 +1,5 @@
 //! Updates through the official updater plugin: it reads `latest.json` from
-//! the GitHub release, checks the installer's Ed25519 signature against the
+//! the windows-latest GitHub release, checks the installer's Ed25519 signature against the
 //! public key in `tauri.conf.json` (a tampered build is refused) and runs the
 //! per-user NSIS installer in passive mode.
 //!

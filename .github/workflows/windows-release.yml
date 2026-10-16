@@ -1,12 +1,18 @@
 name: Windows release
 
-# Builds the Windows installer for a release tag and attaches it to that
-# GitHub Release: Tabbi-Setup.exe (the per-user NSIS installer) and
-# latest.json (the feed the in-app updater reads from
-# releases/latest/download/latest.json). It only runs when started by hand
-# (Actions tab > Windows release > Run workflow). When the release does not
-# exist yet it creates a DRAFT, which reaches nobody until it is published by
-# hand; it never publishes anything itself.
+# Builds the Windows installer for a version and attaches it to the GitHub
+# Release windows-v<version>: Tabbi-Setup.exe (the per-user NSIS installer)
+# and latest.json (the in-app updater's feed). It only runs when started by
+# hand (Actions tab > Windows release > Run workflow).
+#
+# Windows has its own release channel so Mac releases in the same repo never
+# break it: Windows releases are never marked "Latest", and publishing copies
+# both files to the fixed release windows-latest. The updater reads
+# releases/download/windows-latest/latest.json and the website links
+# releases/download/windows-latest/Tabbi-Setup.exe.
+#
+# Without "publish" the release is a DRAFT, which reaches nobody. With it the
+# release goes public and every installed copy is offered the update.
 #
 # Repository secrets (Settings > Secrets and variables > Actions):
 #   TAURI_SIGNING_PRIVATE_KEY           the updater's Ed25519 private key, the
@@ -23,9 +29,14 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Release tag (for example v0.1.0); must match the version in tauri.conf.json
+        description: Release tag (for example windows-v0.1.0); must match the version in tauri.conf.json
         required: true
         type: string
+      publish:
+        description: Publish it (offers the update to every installed copy); otherwise a draft
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -52,7 +63,7 @@ jobs:
       - name: Tag matches the app version
         run: |
           version=$(node -p "require('./src-tauri/tauri.conf.json').version")
-          if [ "${TAG#v}" != "$version" ]; then
+          if [ "$TAG" != "windows-v$version" ]; then
             echo "Tag $TAG does not match version $version in tauri.conf.json" >&2
             exit 1
           fi
@@ -109,7 +120,18 @@ jobs:
       - name: Attach to the release (a draft when it is new)
         run: |
           if ! gh release view "$TAG" > /dev/null 2>&1; then
-            gh release create "$TAG" --draft --target "$GITHUB_SHA" \
-              --title "Tabbi $VERSION" --notes-file packaging/release-notes.md
+            gh release create "$TAG" --draft --latest=false --target "$GITHUB_SHA" \
+              --title "Tabbi for Windows $VERSION" --notes-file packaging/release-notes.md
           fi
           gh release upload "$TAG" out/Tabbi-Setup.exe out/latest.json --clobber
+
+      - name: Publish and update the windows-latest channel
+        if: inputs.publish
+        run: |
+          gh release edit "$TAG" --draft=false --latest=false
+          if ! gh release view windows-latest > /dev/null 2>&1; then
+            gh release create windows-latest --latest=false --target "$GITHUB_SHA" \
+              --title "Tabbi for Windows (latest)" \
+              --notes "The newest Tabbi for Windows. Each version also has its own windows-v release."
+          fi
+          gh release upload windows-latest out/Tabbi-Setup.exe out/latest.json --clobber

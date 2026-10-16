@@ -11,7 +11,7 @@ Protocols:
   - tabbi
 Installers:
   - Architecture: x64
-    InstallerUrl: https://github.com/ethanwchen/tabbi/releases/download/v0.1.0/Tabbi-Setup.exe
+    InstallerUrl: https://github.com/ethanwchen/tabbi/releases/download/windows-v0.1.0/Tabbi-Setup.exe
     # Fill in from the published release: (Get-FileHash Tabbi-Setup.exe).Hash
     InstallerSha256: 0000000000000000000000000000000000000000000000000000000000000000
 ManifestType: installer
