@@ -43,11 +43,16 @@ export interface Host {
 
   /* Windows services, each in src-tauri/src/<service>.rs; their types follow the interface. */
 
-  /* A named JSON document ("name" or "folder/name"), or null when it was never written. */
-  storageRead(area: StorageArea, name: string): Promise<JsonValue | null>;
-  /* Replaces the document atomically. */
-  storageWrite(area: StorageArea, name: string, value: JsonValue): Promise<void>;
-  /* The documents in the area's root (folder null) or in one folder, as full names, sorted. */
+  /*
+   * A named JSON document's text ("name", "folder/name" or "folder/folder/name";
+   * segments may hold inner spaces), or null when it was never written. The
+   * host keeps the text exactly as written, so 64-bit integers and the Mac's
+   * formatting survive.
+   */
+  storageRead(area: StorageArea, name: string): Promise<string | null>;
+  /* Replaces the document atomically; refused unless `text` is JSON. */
+  storageWrite(area: StorageArea, name: string, text: string): Promise<void>;
+  /* The documents in the area's root (folder null) or in a folder (up to two levels), as full names, sorted. */
   storageList(area: StorageArea, folder: string | null): Promise<string[]>;
   storageDelete(area: StorageArea, name: string): Promise<boolean>;
 

@@ -3,7 +3,7 @@ import { ActivityLogRepository } from "../../../src/core/activity/activityLogRep
 import { makeActivityRecord } from "../../../src/core/activity/activityRecord";
 import { VersionedJSON } from "../../../src/core/persistence/versionedJson";
 import { mockHost } from "../../../src/host/mock";
-import { HostDocumentStore, InexactNumberError, UnsupportedDocumentName } from "../../../src/platform/hostDocumentStore";
+import { HostDocumentStore, UnsupportedDocumentName } from "../../../src/platform/hostDocumentStore";
 
 describe("HostDocumentStore", () => {
   it("reads and writes JSON documents under the host's names", async () => {
@@ -11,16 +11,27 @@ describe("HostDocumentStore", () => {
     const store = new HostDocumentStore(host);
     expect(await store.read("Planner/2026-10-15.json")).toBeUndefined();
     await store.write("Planner/2026-10-15.json", '{"schemaVersion":2,"items":[]}');
-    expect(host.documents.get("durable:Planner/2026-10-15")).toEqual({ schemaVersion: 2, items: [] });
-    expect(JSON.parse((await store.read("Planner/2026-10-15.json")) ?? "")).toEqual({ schemaVersion: 2, items: [] });
+    expect(host.documents.get("durable:Planner/2026-10-15")).toBe('{"schemaVersion":2,"items":[]}');
     await store.write("settings.json", "[1, 2]");
-    expect(host.documents.get("durable:settings")).toEqual([1, 2]);
+    expect(await store.read("settings.json")).toBe("[1, 2]");
   });
 
-  it("keeps the value, not the characters", async () => {
+  it("keeps the characters exactly, the Mac's format and large integers included", async () => {
     const store = new HostDocumentStore(mockHost());
-    await store.write("pet.json", '{\n  "name" : "Mo\\/Mi",\n  "points" : 1.5\n}');
-    expect(await store.read("pet.json")).toBe('{"name":"Mo/Mi","points":1.5}');
+    const pet = '{\n  "name" : "Mo\\/Mi",\n  "points" : 1.5\n}';
+    await store.write("pet.json", pet);
+    expect(await store.read("pet.json")).toBe(pet);
+    const journal = '{"seed" : 18446744073709551615}';
+    await store.write("journal.json", journal);
+    expect(await store.read("journal.json")).toBe(journal);
+  });
+
+  it("stores documents two folders deep, with spaces in folder names", async () => {
+    const host = mockHost();
+    const store = new HostDocumentStore(host);
+    await store.write("tabbi/Claude Chats/0B5F2E9A.json", "{}");
+    expect(host.documents.has("durable:tabbi/Claude Chats/0B5F2E9A")).toBe(true);
+    expect(await store.list("tabbi/Claude Chats")).toEqual(["0B5F2E9A.json"]);
   });
 
   it("lists file names with their extension, in one folder or the root", async () => {
@@ -56,34 +67,16 @@ describe("HostDocumentStore", () => {
     const host = mockHost();
     const store = new HostDocumentStore(host);
     await expect(store.write("notes.txt", "{}")).rejects.toBeInstanceOf(UnsupportedDocumentName);
-    await expect(store.read("Tabbi/Planner/day.json")).rejects.toBeInstanceOf(UnsupportedDocumentName);
+    await expect(store.read("Tabbi/Planner/Days/day.json")).rejects.toBeInstanceOf(UnsupportedDocumentName);
     await expect(store.read(".json")).rejects.toBeInstanceOf(UnsupportedDocumentName);
-    await expect(store.list("Tabbi/Planner")).rejects.toBeInstanceOf(UnsupportedDocumentName);
+    await expect(store.list("Tabbi/Planner/Days")).rejects.toBeInstanceOf(UnsupportedDocumentName);
     expect(host.calls).toEqual([]);
   });
 
-  it("passes the host's errors on: a bad segment or a damaged document rejects", async () => {
+  it("passes the host's errors on: a bad segment or text that is not JSON rejects", async () => {
     const store = new HostDocumentStore(mockHost());
     await expect(store.read("con.json")).rejects.toMatchObject({ code: "invalidName" });
-    await expect(store.write("pet.json", "{not json")).rejects.toBeInstanceOf(SyntaxError);
-  });
-
-  it("refuses an integer it would round, rather than saving another number", async () => {
-    const store = new HostDocumentStore(mockHost());
-    const write = store.write("journal.json", '{"seed" : 18446744073709551615}');
-    /* Engines without JSON.parse source text access can't tell, and keep the old behavior. */
-    const supportsSource = (() => {
-      let seen = false;
-      JSON.parse("1", (_key, value: unknown, context?: { source?: string }) => {
-        seen = context?.source === "1";
-        return value;
-      });
-      return seen;
-    })();
-    if (supportsSource) await expect(write).rejects.toBeInstanceOf(InexactNumberError);
-    else await write;
-    await store.write("journal.json", '{"seed" : 9007199254740991, "big" : 1e300}');
-    expect(JSON.parse((await store.read("journal.json")) ?? "")).toEqual({ seed: 9007199254740991, big: 1e300 });
+    await expect(store.write("pet.json", "{not json")).rejects.toMatchObject({ code: "invalid" });
   });
 
   it("carries a core repository end to end", async () => {
@@ -92,7 +85,7 @@ describe("HostDocumentStore", () => {
     const record = makeActivityRecord({ source: "focus", kind: "focus.completed", start: 1_790_000_000, quantity: 25, unit: "min" });
     await repository.append([record]);
     const day = new Date(record.end * 1000).toISOString().slice(0, 10);
-    expect(VersionedJSON.versionOf(host.documents.get(`durable:Activity/${day}`))).toBe(1);
+    expect(VersionedJSON.versionOf(JSON.parse(host.documents.get(`durable:Activity/${day}`) ?? "null"))).toBe(1);
     expect(await repository.records(day)).toEqual([record]);
   });
 });

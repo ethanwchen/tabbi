@@ -8,7 +8,6 @@ import type {
   HostSource,
   HttpResponse,
   HttpStreamEvent,
-  JsonValue,
   MediaSnapshot,
   Startup,
   SystemStats,
@@ -45,8 +44,8 @@ export function tauriHost(): Host {
       };
     },
 
-    storageRead: (area, name) => invoke<JsonValue | null>("storage_read", { area, name }),
-    storageWrite: (area, name, value) => invoke("storage_write", { area, name, value }),
+    storageRead: (area, name) => invoke<string | null>("storage_read", { area, name }),
+    storageWrite: (area, name, text) => invoke("storage_write", { area, name, text }),
     storageList: (area, folder) => invoke<string[]>("storage_list", { area, folder }),
     storageDelete: (area, name) => invoke<boolean>("storage_delete", { area, name }),
 

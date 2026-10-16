@@ -1,4 +1,4 @@
-import type { CredentialName, Host, HostError, HostEvent, JsonValue, MediaSnapshot, StorageArea, Startup, SystemStats } from "./host";
+import type { CredentialName, Host, HostError, HostEvent, MediaSnapshot, StorageArea, Startup, SystemStats } from "./host";
 
 /*
  * A host for the browser: Vitest, the Vite dev server and the Playwright
@@ -12,7 +12,7 @@ export interface MockHost extends Host {
   emitMedia(media: MediaSnapshot | null): void;
   emitSystemStats(stats: SystemStats): void;
   /* Documents by "area:name", for tests to seed and inspect. */
-  readonly documents: Map<string, JsonValue>;
+  readonly documents: Map<string, string>;
   readonly credentials: Map<CredentialName, string>;
 }
 
@@ -20,8 +20,26 @@ const RESERVED = /^(con|prn|aux|nul|com\d|lpt\d)$/i;
 
 /* The host's rule for one path segment (storage.rs `valid_segment`). */
 function validSegment(segment: string): boolean {
-  const stem = segment.split(".")[0] ?? segment;
-  return /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(segment) && !segment.endsWith(".") && !segment.includes("..") && !RESERVED.test(stem);
+  const stem = (segment.split(".")[0] ?? segment).trimEnd();
+  return (
+    /^[A-Za-z0-9][A-Za-z0-9._ -]{0,63}$/.test(segment) &&
+    !segment.endsWith(".") &&
+    !segment.endsWith(" ") &&
+    !segment.includes("..") &&
+    !RESERVED.test(stem)
+  );
+}
+
+/* Folders a name may nest (storage.rs `MAX_FOLDERS`). */
+const MAX_FOLDERS = 2;
+
+function isJson(text: string): boolean {
+  try {
+    JSON.parse(text);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function rejection(code: HostError["code"], message: string): Promise<never> {
@@ -29,17 +47,12 @@ function rejection(code: HostError["code"], message: string): Promise<never> {
   return Promise.reject(error);
 }
 
-/* Stored and returned as copies, the way a round trip through the host would. */
-function copy<T extends JsonValue>(value: T): T {
-  return JSON.parse(JSON.stringify(value)) as T;
-}
-
 export function mockHost(startup: Startup = { hotkey: { shortcut: "ctrl+alt+space", registered: true }, notchMode: null }): MockHost {
   const listeners = new Set<(event: HostEvent) => void>();
   const mediaListeners = new Set<(media: MediaSnapshot | null) => void>();
   const statsListeners = new Set<(stats: SystemStats) => void>();
   const calls: { name: string; args: unknown[] }[] = [];
-  const documents = new Map<string, JsonValue>();
+  const documents = new Map<string, string>();
   const credentials = new Map<CredentialName, string>();
   let media: MediaSnapshot | null = null;
   let autostart = false;
@@ -55,7 +68,7 @@ export function mockHost(startup: Startup = { hotkey: { shortcut: "ctrl+alt+spac
   };
   const key = (area: StorageArea, name: string): string | null => {
     const parts = name.split("/");
-    return parts.length <= 2 && parts.every(validSegment) ? `${area}:${name}` : null;
+    return parts.length <= MAX_FOLDERS + 1 && parts.every(validSegment) ? `${area}:${name}` : null;
   };
   const badName = (name: string) => rejection("invalidName", `"${name}" is not a document name`);
   const offline = () => rejection("network", "the mock host makes no network calls");
@@ -87,17 +100,20 @@ export function mockHost(startup: Startup = { hotkey: { shortcut: "ctrl+alt+spac
     storageRead(area, name) {
       const k = key(area, name);
       if (k === null) return badName(name);
-      const value = documents.get(k);
-      return answer("storageRead", [area, name], value === undefined ? null : copy(value));
+      return answer("storageRead", [area, name], documents.get(k) ?? null);
     },
-    storageWrite(area, name, value) {
+    storageWrite(area, name, text) {
       const k = key(area, name);
       if (k === null) return badName(name);
-      documents.set(k, copy(value));
-      return answer("storageWrite", [area, name, value], undefined);
+      if (!isJson(text)) return rejection("invalid", `${name} is not valid JSON`);
+      documents.set(k, text);
+      return answer("storageWrite", [area, name, text], undefined);
     },
     storageList(area, folder) {
-      if (folder !== null && !validSegment(folder)) return badName(folder);
+      if (folder !== null) {
+        const parts = folder.split("/");
+        if (parts.length > MAX_FOLDERS || !parts.every(validSegment)) return badName(folder);
+      }
       const prefix = `${area}:${folder === null ? "" : `${folder}/`}`;
       const names = [...documents.keys()]
         .filter((k) => k.startsWith(prefix) && !k.slice(prefix.length).includes("/"))

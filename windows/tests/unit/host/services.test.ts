@@ -41,7 +41,7 @@ describe("the Tauri host's service commands", () => {
   it("call the Rust commands by name with their argument names", async () => {
     const host = tauriHost();
     await host.storageRead("durable", "Activity/2026-10-15");
-    await host.storageWrite("cache", "calendar", { schemaVersion: 1 });
+    await host.storageWrite("cache", "calendar", '{"schemaVersion":1}');
     await host.storageList("durable", null);
     await host.storageDelete("durable", "pet");
     await host.credentialGet("party");
@@ -61,7 +61,7 @@ describe("the Tauri host's service commands", () => {
     await host.aiPaths();
     expect(invoke.mock.calls).toEqual([
       ["storage_read", { area: "durable", name: "Activity/2026-10-15" }],
-      ["storage_write", { area: "cache", name: "calendar", value: { schemaVersion: 1 } }],
+      ["storage_write", { area: "cache", name: "calendar", text: '{"schemaVersion":1}' }],
       ["storage_list", { area: "durable", folder: null }],
       ["storage_delete", { area: "durable", name: "pet" }],
       ["credential_get", { name: "party" }],
@@ -105,28 +105,29 @@ describe("the Tauri host's service commands", () => {
 });
 
 describe("the mock host's services", () => {
-  it("keeps documents in memory with the host's naming rules", async () => {
+  it("keeps documents' text in memory with the host's naming rules", async () => {
     const host = mockHost();
-    await host.storageWrite("durable", "settings", { schemaVersion: 1 });
-    await host.storageWrite("durable", "Activity/2026-10-15", []);
-    await host.storageWrite("cache", "calendar", "BEGIN:VCALENDAR");
-    expect(await host.storageRead("durable", "settings")).toEqual({ schemaVersion: 1 });
+    await host.storageWrite("durable", "settings", '{\n  "schemaVersion" : 1\n}');
+    await host.storageWrite("durable", "Activity/2026-10-15", "[]");
+    await host.storageWrite("durable", "tabbi/Claude Chats/one", "{}");
+    expect(await host.storageRead("durable", "settings")).toBe('{\n  "schemaVersion" : 1\n}');
     expect(await host.storageRead("durable", "missing")).toBeNull();
     expect(await host.storageList("durable", null)).toEqual(["settings"]);
     expect(await host.storageList("durable", "Activity")).toEqual(["Activity/2026-10-15"]);
+    expect(await host.storageList("durable", "tabbi/Claude Chats")).toEqual(["tabbi/Claude Chats/one"]);
     expect(await host.storageDelete("durable", "settings")).toBe(true);
     expect(await host.storageDelete("durable", "settings")).toBe(false);
-    for (const bad of ["../x", "a/b/c", ".hidden", "CON", "a..b", "trailing."]) {
-      await expect(host.storageWrite("durable", bad, 1)).rejects.toMatchObject({ code: "invalidName" });
+    for (const bad of ["../x", "a/b/c/d", ".hidden", "CON", "a..b", "trailing.", "trailing ", " leading"]) {
+      await expect(host.storageWrite("durable", bad, "1")).rejects.toMatchObject({ code: "invalidName" });
     }
   });
 
-  it("returns copies, so a caller cannot change a stored document in place", async () => {
+  it("keeps large integers exactly and refuses text that is not JSON", async () => {
     const host = mockHost();
-    const doc = { tasks: ["read"] };
-    await host.storageWrite("durable", "planner", doc);
-    doc.tasks.push("changed");
-    expect(await host.storageRead("durable", "planner")).toEqual({ tasks: ["read"] });
+    const doc = '{"fileId":18446744073709551615}';
+    await host.storageWrite("cache", "scan-index", doc);
+    expect(await host.storageRead("cache", "scan-index")).toBe(doc);
+    await expect(host.storageWrite("cache", "calendar", "BEGIN:VCALENDAR")).rejects.toMatchObject({ code: "invalid" });
   });
 
   it("holds credentials without logging their values", async () => {
