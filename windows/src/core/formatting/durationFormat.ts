@@ -8,21 +8,12 @@
  */
 
 import { isRightToLeft } from "../localization/languages";
-import { currentLanguage, formatSpecifiers, localizedFormat } from "../localization/tr";
+import { currentLanguage, formatSpecifiers, localizedFormat, numberLocale } from "../localization/tr";
 
 /** The unit ProgressItems count minutes in, which `quantity` writes as a duration. */
 export const MINUTE_UNIT = "min";
 /** The unit Anki's review goal counts flashcards in, which `quantity` writes as a translated plural. */
 export const CARD_UNIT = "cards";
-
-/*
- * Western digits in the locale's grouping: Foundation writes them in every
- * shipped language, while some ICU builds give plain "ar" Arabic-Indic ones.
- */
-function numberLocale(locale: string): string {
-  const tag = new Intl.Locale(locale);
-  return tag.numberingSystem === undefined && tag.language === "ar" ? `${locale}-u-nu-latn` : locale;
-}
 
 function formatInteger(value: number, locale: string): string {
   return new Intl.NumberFormat(numberLocale(locale)).format(Math.trunc(value));
