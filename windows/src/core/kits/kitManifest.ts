@@ -263,7 +263,12 @@ function readString(value: unknown, path: readonly PathKey[]): string {
 }
 
 function readInt(value: unknown, path: readonly PathKey[]): number {
-  if (typeof value !== "number" || !Number.isInteger(value)) throw mismatch(path);
+  if (typeof value !== "number") throw mismatch(path);
+  /*
+   * Swift's decoder reports a number that doesn't fit a whole-number field
+   * (`1.5`) as corrupt data, which the Mac words like a truncated file.
+   */
+  if (!Number.isInteger(value)) throw new KitDecodingFailure("not valid JSON");
   return value;
 }
 
