@@ -74,6 +74,7 @@ body {
 
 .gallery-row[data-align="start"] {
   align-items: flex-start;
+  gap: 24px;
 }
 
 .gallery-cell {

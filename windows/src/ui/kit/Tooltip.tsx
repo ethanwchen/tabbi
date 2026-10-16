@@ -78,8 +78,10 @@ export function Tooltip({ text, children, open = false, placement = "below" }: T
     const below = a.bottom + GAP;
     const above = a.top - GAP - t.height;
     let top = placement === "below" ? below : above;
-    if (placement === "below" && top + t.height > height - MARGIN && above >= MARGIN) top = above;
-    if (placement === "above" && top < MARGIN) top = below;
+    /* Flips only for a control in view; one scrolled past the fold (a long page) keeps its side. */
+    const inView = a.bottom > 0 && a.top < height;
+    if (inView && placement === "below" && top + t.height > height - MARGIN && above >= MARGIN) top = above;
+    if (inView && placement === "above" && top < MARGIN) top = below;
     const next = { left: Math.round(left + window.scrollX), top: Math.round(top + window.scrollY) };
     setPosition((current) => (current && current.left === next.left && current.top === next.top ? current : next));
   }, [visible, placement, text]);

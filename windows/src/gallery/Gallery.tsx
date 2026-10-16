@@ -309,7 +309,7 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
           <Cell label="fits" width={220}>
             <MarqueeText text={tr("Nothing playing")} />
           </Cell>
-          <Cell label="overflows, at rest" width={220}>
+          <Cell label="overflows, at rest" width={220} accent="study">
             <MarqueeText text={LONG_LINE()} />
           </Cell>
           <Cell label="overflows, half way" width={220}>
@@ -635,7 +635,7 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
               <Picker
                 label={tr("Look")}
                 items={allThemes.slice(0, 5).map((t, i) => ({ id: t.id, title: t.name, caption: i === 1 ? t.summary : undefined, disabled: i === 4 }))}
-                selected={picked}
+                selected={allThemes[0]?.id ?? picked}
                 onSelect={() => {}}
                 open
               />
