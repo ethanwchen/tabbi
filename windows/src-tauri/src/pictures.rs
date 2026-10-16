@@ -31,15 +31,16 @@ pub fn valid_name(name: &str) -> bool {
     if stem.ends_with(' ') || stem.ends_with('.') {
         return false;
     }
-    if name
-        .chars()
-        .any(|c| c.is_control() || matches!(c, '/' | '\\' | ':' | '*' | '?' | '"' | '<' | '>' | '|'))
-    {
+    if name.chars().any(|c| {
+        c.is_control() || matches!(c, '/' | '\\' | ':' | '*' | '?' | '"' | '<' | '>' | '|')
+    }) {
         return false;
     }
     let base = stem.split('.').next().unwrap_or(stem).to_ascii_uppercase();
     let reserved = matches!(base.as_str(), "CON" | "PRN" | "AUX" | "NUL")
-        || (base.len() == 4 && (base.starts_with("COM") || base.starts_with("LPT")) && base[3..].chars().all(|c| c.is_ascii_digit()));
+        || (base.len() == 4
+            && (base.starts_with("COM") || base.starts_with("LPT"))
+            && base[3..].chars().all(|c| c.is_ascii_digit()));
     !reserved
 }
 
@@ -77,10 +78,16 @@ pub fn decode_base64(text: &str) -> Option<Vec<u8>> {
 /// Checks the name and the bytes, then says where the file goes under `pictures`.
 pub fn destination(pictures: &Path, name: &str, bytes: &[u8]) -> HostResult<PathBuf> {
     if !valid_name(name) {
-        return Err(HostError::new("invalidName", format!("{name:?} is not a picture file name")));
+        return Err(HostError::new(
+            "invalidName",
+            format!("{name:?} is not a picture file name"),
+        ));
     }
     if bytes.len() > MAX_BYTES {
-        return Err(HostError::new("tooLarge", "the picture is larger than 8 MB"));
+        return Err(HostError::new(
+            "tooLarge",
+            "the picture is larger than 8 MB",
+        ));
     }
     if bytes.len() < PNG_SIGNATURE.len() || bytes[..PNG_SIGNATURE.len()] != PNG_SIGNATURE {
         return Err(HostError::new("invalid", "the picture is not a PNG"));
@@ -90,7 +97,8 @@ pub fn destination(pictures: &Path, name: &str, bytes: &[u8]) -> HostResult<Path
 
 /// Writes `bytes` to `path` through a temporary file beside it, so a crash never leaves half a picture.
 pub fn write_picture(path: &Path, bytes: &[u8]) -> HostResult<()> {
-    let io = |action: &str, error: std::io::Error| HostError::new("io", format!("{action}: {error}"));
+    let io =
+        |action: &str, error: std::io::Error| HostError::new("io", format!("{action}: {error}"));
     if let Some(folder) = path.parent() {
         fs::create_dir_all(folder).map_err(|e| io("create the Pictures folder", e))?;
     }
@@ -142,8 +150,14 @@ mod tests {
 
     #[test]
     fn base64_round_trips_png_bytes() {
-        assert_eq!(decode_base64("iVBORw0KGgo=").unwrap(), PNG_SIGNATURE.to_vec());
-        assert_eq!(decode_base64("iVBORw0KGgo").unwrap(), PNG_SIGNATURE.to_vec());
+        assert_eq!(
+            decode_base64("iVBORw0KGgo=").unwrap(),
+            PNG_SIGNATURE.to_vec()
+        );
+        assert_eq!(
+            decode_base64("iVBORw0KGgo").unwrap(),
+            PNG_SIGNATURE.to_vec()
+        );
         assert_eq!(decode_base64("abc$"), None);
     }
 
@@ -151,10 +165,26 @@ mod tests {
     fn only_pngs_go_to_pictures() {
         let pictures = Path::new("C:\\Users\\me\\Pictures");
         let png = [PNG_SIGNATURE.to_vec(), vec![0; 16]].concat();
-        assert_eq!(destination(pictures, "week.png", &png).unwrap(), pictures.join("week.png"));
-        assert_eq!(destination(pictures, "week.png", b"GIF89a").unwrap_err().code, "invalid");
-        assert_eq!(destination(pictures, "week.txt", &png).unwrap_err().code, "invalidName");
-        assert_eq!(destination(pictures, "week.png", &vec![0; MAX_BYTES + 1]).unwrap_err().code, "tooLarge");
+        assert_eq!(
+            destination(pictures, "week.png", &png).unwrap(),
+            pictures.join("week.png")
+        );
+        assert_eq!(
+            destination(pictures, "week.png", b"GIF89a")
+                .unwrap_err()
+                .code,
+            "invalid"
+        );
+        assert_eq!(
+            destination(pictures, "week.txt", &png).unwrap_err().code,
+            "invalidName"
+        );
+        assert_eq!(
+            destination(pictures, "week.png", &vec![0; MAX_BYTES + 1])
+                .unwrap_err()
+                .code,
+            "tooLarge"
+        );
     }
 
     #[test]

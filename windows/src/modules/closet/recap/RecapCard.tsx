@@ -73,7 +73,7 @@ function RecapPetBadge({ pet, week }: { pet: PetProfile | undefined; week: strin
             <Icon id="sparkles" size={28} />
           </span>
         )}
-        {pet !== undefined && <span className="kit-body-emphasis recap-pet-name">{pet.name}</span>}
+        {pet !== undefined && <span className="kit-body-emphasis recap-pet-name kit-user-text">{pet.name}</span>}
         {week !== undefined && <span className="kit-caption kit-tertiary recap-pet-week">{week}</span>}
       </div>
     </Card>

@@ -278,7 +278,7 @@ function ClosetPetCard({ store }: { store: ClosetStore }) {
         </Tooltip>
         {renaming ? (
           <input
-            className="closet-name-field kit-title"
+            className="closet-name-field kit-title kit-user-text"
             aria-label={tr("Name")}
             autoFocus
             value={draft}
@@ -335,7 +335,7 @@ function ClosetNameButton({ name, onClick }: { name: string; onClick: () => void
   return (
     <Tooltip text={tr("Rename your pet")}>
       <button type="button" className="closet-name" onClick={onClick}>
-        <MarqueeText text={name} help={tr("Rename your pet")} className="closet-name-text kit-title" />
+        <MarqueeText text={name} help={tr("Rename your pet")} className="closet-name-text kit-title" userText />
         <Icon id="pencil" size={9.5} className="closet-name-pencil" />
       </button>
     </Tooltip>

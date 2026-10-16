@@ -94,7 +94,7 @@ function ClosetSetupPetCard({ store }: { store: ClosetStore }) {
         <PetView player={store.preview} pixelSize={2} />
       </div>
       {renaming ? (
-        <input className="closet-setup-name closet-setup-name-field kit-body-emphasis" aria-label={tr("Name")} autoFocus value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={onKey} onBlur={commit} />
+        <input className="closet-setup-name closet-setup-name-field kit-body-emphasis kit-user-text" aria-label={tr("Name")} autoFocus value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={onKey} onBlur={commit} />
       ) : (
         <Tooltip text={tr("Name your pet")}>
           <button
@@ -105,7 +105,7 @@ function ClosetSetupPetCard({ store }: { store: ClosetStore }) {
               setRenaming(true);
             }}
           >
-            <span className="kit-body-emphasis closet-setup-name-text">{name}</span>
+            <span className="kit-body-emphasis closet-setup-name-text kit-user-text">{name}</span>
             <Icon id="pencil" size={9.5} className="closet-name-pencil" />
           </button>
         </Tooltip>

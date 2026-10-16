@@ -55,7 +55,7 @@ export function PetCoachSettingsPane({ coach, reminder }: { coach: PetCoachContr
           })}
         </div>
         {state.apps.addedDistracting.map((executable) => (
-          <SettingsRow key={executable} label={executable} tooltip={executable}>
+          <SettingsRow key={executable} label={executable} tooltip={executable} className="kit-user-text">
             <IconButton symbol="minus.circle.fill" size={20} help={tr("Stop counting %@ as distracting", executable)} disabled={!state.nudgesOn} onClick={() => coach.toggleDistracting(executable)} />
           </SettingsRow>
         ))}

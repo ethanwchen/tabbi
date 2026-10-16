@@ -23,6 +23,12 @@ export interface MarqueeProps {
   readonly className?: string;
   readonly style?: CSSProperties;
   readonly children?: ReactNode;
+  /**
+   * Text the user typed or a service sent (a chat title, a task, a deck or a
+   * friend's name): ordered by its own content, so an English title keeps its
+   * punctuation in an Arabic panel, while the line stays aligned to the panel.
+   */
+  readonly userText?: boolean;
 }
 
 /** The mask that fades each cut edge, `leading` and `trailing` as fractions of the width. */
@@ -33,7 +39,7 @@ export function marqueeMask(leading: number, trailing: number, direction: "ltr" 
   return `linear-gradient(${toEnd}, transparent 0%, black ${l}%, black ${t}%, transparent 100%)`;
 }
 
-export function Marquee({ text, help, className, style, children }: MarqueeProps) {
+export function Marquee({ text, help, className, style, children, userText = false }: MarqueeProps) {
   const { reduceMotion, still, marqueeScrolled } = useKit();
   const container = useRef<HTMLSpanElement>(null);
   const line = useRef<HTMLSpanElement>(null);
@@ -149,7 +155,7 @@ export function Marquee({ text, help, className, style, children }: MarqueeProps
         onPointerEnter={onEnter}
         onPointerLeave={onLeave}
       >
-        <span ref={line} className="kit-marquee-line" aria-hidden="true">
+        <span ref={line} className={userText ? "kit-marquee-line kit-user-text" : "kit-marquee-line"} aria-hidden="true">
           {children ?? text}
         </span>
       </span>
@@ -162,8 +168,10 @@ export interface MarqueeTextProps {
   readonly help?: string;
   readonly className?: string;
   readonly style?: CSSProperties;
+  /** See `MarqueeProps.userText`. */
+  readonly userText?: boolean;
 }
 
-export function MarqueeText({ text, help, className, style }: MarqueeTextProps) {
-  return <Marquee text={text} help={help} className={className} style={style} />;
+export function MarqueeText({ text, help, className, style, userText }: MarqueeTextProps) {
+  return <Marquee text={text} help={help} className={className} style={style} userText={userText} />;
 }
