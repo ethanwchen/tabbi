@@ -1146,3 +1146,13 @@
     transition-timing-function: ease-in-out !important;
   }
 }
+
+/*
+ * Text the user typed or a service sent: each paragraph takes the direction
+ * of its own first strong letter, so an English chat title keeps its "?" at
+ * the end inside an Arabic panel, while the element's alignment still
+ * follows the panel.
+ */
+.kit-user-text {
+  unicode-bidi: plaintext;
+}
