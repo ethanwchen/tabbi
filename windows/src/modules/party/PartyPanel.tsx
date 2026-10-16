@@ -93,7 +93,7 @@ export function PartyPanel({ store, onOpenURL }: { store: PartyStore; onOpenURL:
         <Tooltip text={tr("Click to dismiss")}>
           <button type="button" className="party-notice kit-caption" onClick={() => store.clearNotice()}>
             <Icon id={state.noticeConfirms ? "checkmark.circle.fill" : "exclamationmark.circle.fill"} size={11} style={{ color: state.noticeConfirms ? "var(--success)" : "var(--warning)" }} />
-            <span className="party-notice-text">{state.notice}</span>
+            <span className="party-notice-text kit-user-text">{state.notice}</span>
           </button>
         </Tooltip>
       )}

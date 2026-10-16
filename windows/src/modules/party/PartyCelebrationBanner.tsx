@@ -25,7 +25,7 @@ export function PartyCelebrationBanner({ celebration, pets, onDismiss }: { celeb
         </span>
         <span className="party-banner-text">
           <MarqueeText text={celebration.title} className="kit-title" />
-          <MarqueeText text={celebration.detail} className="kit-caption party-banner-detail" />
+          <MarqueeText text={celebration.detail} userText className="kit-caption party-banner-detail" />
         </span>
         <Icon id="close" size={9} className="party-banner-close" />
       </button>

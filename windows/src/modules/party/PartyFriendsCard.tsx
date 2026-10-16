@@ -105,7 +105,7 @@ function PartyFriendRow({ friend, store, now }: { friend: PartyFriend; store: Pa
         <PartyPet profile={friend.profile} asleep={status === "offline"} />
         <div className="party-row-text">
           <div className="party-row-name">
-            <MarqueeText text={friend.profile.name} className={status === "offline" ? "kit-body-emphasis kit-secondary" : "kit-body-emphasis"} />
+            <MarqueeText text={friend.profile.name} userText className={status === "offline" ? "kit-body-emphasis kit-secondary" : "kit-body-emphasis"} />
             {isFoundingMember(friend.profile) && <FoundingBadge isMe={false} />}
           </div>
           <div className="party-row-status kit-caption kit-tertiary">
@@ -139,7 +139,8 @@ function PartyRequestRow({ request, isIncoming, store }: { request: PartyFriendR
   const profile = request.profile;
   const busy = store.isPending({ kind: "acceptFriend", code: profile.code }) || store.isPending({ kind: "removeFriend", code: profile.code });
   const [row, width] = useElementWidth<HTMLDivElement>();
-  const roomy = width === 0 || width >= 196;
+  /* The whole sentence and a spelled-out Accept while they fit, then a check mark for Accept and a shorter word: nothing is cut. */
+  const roomy = width === 0 || width >= 236;
   const help =
     (isIncoming ? tr("%@ with %@ wants to be friends.", profile.name, profile.petName) : tr("You asked %@ to be friends. You'll see each other once they accept.", profile.name)) +
     " " +
@@ -162,7 +163,7 @@ function PartyRequestRow({ request, isIncoming, store }: { request: PartyFriendR
         <PartyPet profile={profile} />
         <div className="party-row-text">
           <div className="party-row-name">
-            <MarqueeText text={profile.name} className="kit-body-emphasis" />
+            <MarqueeText text={profile.name} userText className="kit-body-emphasis" />
             {isFoundingMember(profile) && <FoundingBadge isMe={false} />}
           </div>
           <MarqueeText text={status} className="kit-caption" style={{ color: isIncoming ? "var(--accent)" : "var(--tertiary-text)" }} />

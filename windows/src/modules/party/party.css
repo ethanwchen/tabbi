@@ -102,7 +102,7 @@
   background: var(--surface);
   box-shadow: inset 0 0 0 0.5px var(--stroke);
   cursor: text;
-  flex: 1;
+  flex: none;
   min-width: 120px;
   transition:
     background-color var(--spring-snappy),
@@ -286,6 +286,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
+}
+.party-lobby-actions .party-code-field {
+  flex: 1;
 }
 
 /* The friends column */
@@ -672,12 +675,8 @@
   gap: 8px;
 }
 .party-setup-pet {
-  width: 36px;
-  height: 36px;
-  display: grid;
-  place-items: center;
-  overflow: visible;
   flex: none;
+  margin: -6px 0;
 }
 .party-setup-name-column {
   display: flex;
@@ -812,6 +811,11 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+.party-user-row .kit-settings-row-label,
+.party-user-row .kit-settings-row-help,
+.party-settings .kit-text-field-input {
+  unicode-bidi: plaintext;
 }
 .party-status-glyph {
   display: grid;

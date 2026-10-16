@@ -99,7 +99,7 @@ function PartySetupProfileCard({ store }: { store: PartyStore }) {
           {renaming ? (
             <input
               ref={input}
-              className="party-setup-name-input kit-body-emphasis"
+              className="party-setup-name-input kit-body-emphasis kit-user-text"
               aria-label={tr("Name")}
               value={draft}
               maxLength={PARTY_MAX_NAME_LENGTH * 2}
@@ -117,7 +117,7 @@ function PartySetupProfileCard({ store }: { store: PartyStore }) {
                   setRenaming(true);
                 }}
               >
-                <MarqueeText text={name ?? tr("Add your name")} className={name === undefined ? "kit-body-emphasis kit-secondary" : "kit-body-emphasis"} />
+                <MarqueeText text={name ?? tr("Add your name")} userText={name !== undefined} className={name === undefined ? "kit-body-emphasis kit-secondary" : "kit-body-emphasis"} />
                 <Icon id="pencil" size={9} className="party-setup-pencil" />
               </button>
             </Tooltip>

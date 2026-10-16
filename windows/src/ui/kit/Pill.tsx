@@ -31,6 +31,8 @@ export interface PillProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>,
   readonly lifts?: boolean;
   /** Dims the pill and ignores clicks while its action runs. */
   readonly busy?: boolean;
+  /** The title holds text the user typed or a service sent (a deck name), which keeps its own direction. */
+  readonly userText?: boolean;
   readonly onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   readonly preview?: PreviewState;
   readonly style?: CSSProperties;
@@ -47,6 +49,7 @@ export function Pill({
   height = 24,
   lifts = false,
   busy = false,
+  userText = false,
   onClick,
   preview,
   disabled = false,
@@ -83,7 +86,7 @@ export function Pill({
         style={merged}
       >
         {symbol && symbolPosition === "leading" && <Icon id={symbol} size={height === 28 ? 12 : 11} />}
-        {title !== "" && <span className="kit-pill-title">{title}</span>}
+        {title !== "" && <span className={userText ? "kit-pill-title kit-user-text" : "kit-pill-title"}>{title}</span>}
         {badge !== undefined && <span className="kit-pill-badge">{badge}</span>}
         {symbol && symbolPosition === "trailing" && <Icon id={symbol} size={height === 20 ? 9 : 11} />}
       </button>

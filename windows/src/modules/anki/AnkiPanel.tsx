@@ -13,7 +13,8 @@ import { ANKI_CONNECT_ADD_ON_CODE, errorSuggestion, errorTitle, isUnexplained, q
 import type { AnkiDayCount, AnkiDeckStats } from "../../core/anki/ankiConnectModels";
 import { addOnReminder, collectionUnavailableMessage, profileListHint, shortMessage } from "../../core/anki/ankiConnectError";
 import { deckLeaf } from "../../core/anki/ankiDeckName";
-import { ageText, dayHelp, heatLevels, progressHelp, streakText } from "../../core/anki/ankiFormat";
+import { ageText, heatLevels, progressHelp, streakText } from "../../core/anki/ankiFormat";
+import { addingDays, sameAnkiDay, type AnkiDay } from "../../core/anki/ankiDay";
 import { completionFraction, deckOutline, hasReviewedToday, summaryDueTotal, topDecks, type AnkiDeckOutlineRow, type AnkiSummary } from "../../core/anki/ankiSummary";
 import { dueTotal } from "../../core/anki/ankiConnectModels";
 import { currentLanguage, tr } from "../../core/localization/tr";
@@ -293,7 +294,7 @@ function DeckRow({
         }}
         aria-label={`${row.title}: ${tr("%lld new, %lld learning, %lld review", deck.newCount, deck.learnCount, deck.reviewCount)}`}
       >
-        <MarqueeText text={row.title} className={row.depth === 0 ? "kit-body-emphasis anki-deck-name" : "kit-body kit-secondary anki-deck-name"} />
+        <MarqueeText text={row.title} userText className={row.depth === 0 ? "kit-body-emphasis anki-deck-name" : "kit-body kit-secondary anki-deck-name"} />
         <span className="anki-deck-star" onClick={(event) => event.stopPropagation()}>
           <IconButton
             symbol={isFavorite ? "star.fill" : "star"}
@@ -364,6 +365,7 @@ function AnkiFooter({ store, summary }: { readonly store: AnkiStore; readonly su
           lifts
           symbol="play.fill"
           title={tr("Study %@", deckLeaf(name))}
+          userText
           badge={due > 0 ? due : undefined}
           help={due > 0 ? tr("Review %@ in Anki: %lld due. Pin another deck with its star.", name, due) : tr("Open %@ in Anki. Nothing is due there today.", name)}
           onClick={() => store.studyFavorite()}
@@ -404,6 +406,19 @@ function StreakBadge({ streak, reviewedToday, unavailableReason }: { readonly st
   );
 }
 
+/** "Today", "Yesterday", or a short weekday and date in the user's language. */
+function heatDayName(day: AnkiDay, today: AnkiDay, locale: string): string {
+  if (sameAnkiDay(day, today)) return tr("Today");
+  if (sameAnkiDay(day, addingDays(today, -1))) return tr("Yesterday");
+  return new Intl.DateTimeFormat(locale, { timeZone: "UTC", weekday: "short", month: "short", day: "numeric" }).format(new Date(Date.UTC(day.year, day.month - 1, day.day, 12)));
+}
+
+/** A heatmap cell's tooltip: "Today · 112 reviews". */
+function heatDayHelp(entry: AnkiDayCount, today: AnkiDay, locale: string): string {
+  const count = entry.count === 0 ? tr("No reviews") : tr("%lld reviews", entry.count);
+  return `${heatDayName(entry.day, today, locale)} · ${count}`;
+}
+
 /** Two weeks of reviews, one cell per day, today last and outlined. */
 function ReviewHeatmap({ history }: { readonly history: readonly AnkiDayCount[] }) {
   const levels = heatLevels(history);
@@ -415,7 +430,7 @@ function ReviewHeatmap({ history }: { readonly history: readonly AnkiDayCount[] 
         const level = levels[index] ?? 0;
         const isToday = today !== undefined && entry.day.year === today.year && entry.day.month === today.month && entry.day.day === today.day;
         return (
-          <Tooltip key={`${entry.day.year}-${entry.day.month}-${entry.day.day}`} text={today === undefined ? "" : dayHelp(entry, today, locale)}>
+          <Tooltip key={`${entry.day.year}-${entry.day.month}-${entry.day.day}`} text={today === undefined ? "" : heatDayHelp(entry, today, locale)}>
             <span
               className="anki-heat-cell"
               data-today={isToday || undefined}
@@ -552,6 +567,7 @@ export function AnkiSetupView({ store, compact = false }: { readonly store: Anki
               height={28}
               symbol="play.fill"
               title={tr("Study %@", deckLeaf(state.favorite.name))}
+              userText
               help={tr("Open Anki straight into %@", state.favorite.name)}
               onClick={() => store.studyFavorite()}
             />,

@@ -72,8 +72,8 @@ export function PartyInviteBody({ store, accent, symbol, actions }: { store: Par
       </div>
       <div className="party-invite-text">
         <div className="party-invite-words">
-          <span className="kit-title party-nowrap">{flow.title}</span>
-          <span className="kit-body kit-secondary party-invite-message">{flow.message}</span>
+          <span className="kit-title party-nowrap kit-user-text">{flow.title}</span>
+          <span className="kit-body kit-secondary party-invite-message kit-user-text">{flow.message}</span>
         </div>
         <div className="party-invite-buttons">
           {primaryTitle !== undefined && <PartyPillButton title={primaryTitle} prominent busy={stage.kind === "working"} help={primaryHelp(flow)} onClick={primary} />}

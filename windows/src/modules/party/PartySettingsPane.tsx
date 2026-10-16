@@ -245,7 +245,7 @@ function BlockedRow({ user, store }: { user: PartyBlockedUser; store: PartyStore
       ? tr("With %@", user.petName)
       : tr("With %@, blocked %@", user.petName, new Intl.RelativeTimeFormat(partyLocale(), { numeric: "auto" }).format(-Math.max(1, Math.round((store.now() - user.since) / 86_400)), "day"));
   return (
-    <SettingsRow label={user.name} help={detail}>
+    <SettingsRow label={user.name} help={detail} className="party-user-row">
       <Pill
         title={unblocking ? tr("Unblocking…") : tr("Unblock")}
         help={tr("Let %@ find you again. You won't be friends until one of you adds the other.", user.name)}

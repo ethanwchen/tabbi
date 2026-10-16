@@ -34,8 +34,8 @@ export function PartyReportCard({ profile, store }: { profile: PartyProfile; sto
       <div className="party-report-header">
         <PartyPet profile={profile} />
         <div className="party-report-words">
-          <MarqueeText text={tr("Report %@", profile.name)} className="kit-body-emphasis" />
-          <MarqueeText text={tr("The Tabbi team reviews it. %@ isn't told.", profile.name)} className="kit-caption kit-secondary" />
+          <MarqueeText text={tr("Report %@", profile.name)} userText className="kit-body-emphasis" />
+          <MarqueeText text={tr("The Tabbi team reviews it. %@ isn't told.", profile.name)} userText className="kit-caption kit-secondary" />
         </div>
       </div>
       <div className="party-report-reasons" role="radiogroup" aria-label={tr("Report %@", profile.name)}>
@@ -62,7 +62,7 @@ export function PartyReportCard({ profile, store }: { profile: PartyProfile; sto
         <Tooltip text={tr("Hide each other everywhere in Party. You can unblock in Party options.")}>
           <button type="button" role="checkbox" aria-checked={alsoBlock} className="party-checkbox kit-caption" onClick={() => setAlsoBlock((on) => !on)}>
             <Icon id={alsoBlock ? "checkmark.square.fill" : "square"} size={12} style={{ color: alsoBlock ? "var(--accent)" : "var(--tertiary-text)" }} />
-            <span>{tr("Also block %@", profile.name)}</span>
+            <span className="kit-user-text">{tr("Also block %@", profile.name)}</span>
           </button>
         </Tooltip>
         <span className="party-spacer" />

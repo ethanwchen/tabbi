@@ -94,7 +94,7 @@ function PartyMemberView({ member, isMe, width, store, now }: { member: PartyMem
         </div>
         <div className="party-member-name kit-caption">
           {member.host && roomy && crown}
-          <MarqueeText text={name} />
+          <MarqueeText text={name} userText={!isMe} />
           {isFoundingMember(member.profile) && roomy && <FoundingBadge isMe={isMe} />}
         </div>
         <div className="party-member-status kit-caption" style={{ color: roomy ? "var(--tertiary-text)" : statusColor(status) }}>
@@ -192,7 +192,7 @@ function RunningSession({ session, store, labeled }: { session: PartySession; st
 function PartyLobby({ store, onFieldFocus }: { store: PartyStore; onFieldFocus: (focused: boolean) => void }) {
   const state = useStore(store);
   const [row, width] = useElementWidth<HTMLDivElement>();
-  const shortStart = width > 0 && width < 300;
+  const shortStart = width > 0 && width < 236;
   return (
     <div className="party-lobby">
       <div className="party-lobby-intro">
