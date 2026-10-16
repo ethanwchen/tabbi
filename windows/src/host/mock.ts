@@ -228,6 +228,10 @@ export function mockHost(startup: Startup = MOCK_STARTUP, options: MockHostOptio
       log("setPartyServer", [server]);
       return Promise.resolve();
     },
+    openURL(url) {
+      log("openURL", [url]);
+      return Promise.resolve();
+    },
 
     autostartEnable() {
       autostart = true;

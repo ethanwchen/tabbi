@@ -123,6 +123,12 @@ export interface Host {
   fetchCalendar(url: string): Promise<string>;
   /* The user's own Party server from Settings (public https only), or null for none; requests may then reach it. */
   setPartyServer(server: string | null): Promise<void>;
+  /*
+   * Opens a web page (https) or a mail link in the user's default browser or
+   * mail app: Sign in with Apple's page, the Anki download page, support.
+   * The host refuses any other scheme.
+   */
+  openURL(url: string): Promise<void>;
 
   /* Start with Windows: off until the user turns it on. */
   autostartEnable(): Promise<void>;

@@ -98,7 +98,8 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
   const ticker = useStore(app.ticker ?? NO_TICKER);
   const snapshot = useStore(app.providers.snapshot);
   const appTakeover = useStore(app.takeover);
-  const takeover = forcedTakeover ?? appTakeover;
+  const moduleTakeover = useStore(app.modules.takeover);
+  const takeover = forcedTakeover ?? appTakeover ?? moduleTakeover;
   const catalog = app.settings.catalog;
   const layout = settings.modules;
 
@@ -134,6 +135,11 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
   );
 
   const dispatchRef = useRef<(event: ShellEvent) => void>(() => {});
+  /* The link handler is subscribed once; these follow the current layout and tab picker. */
+  const layoutRef = useRef(layout);
+  const selectRef = useRef(select);
+  layoutRef.current = layout;
+  selectRef.current = select;
   /* What the host's shape effects need now: the canvas and the pill's wings. */
   const shapeInputs = useRef({ canvas, wing });
 
@@ -237,9 +243,12 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
         case "focus":
           if (!event.focused) dispatch({ type: "blur" });
           return;
-        case "link":
-          /* Sign-in links arrive with Party and sync; for now a link only brings Tabbi forward. */
+        case "link": {
+          /* An invite or a sign-in callback: the module that takes it gets the tab, and the island opens to show how it goes. */
+          const taker = app.modules.openLink(event.url);
+          if (taker !== undefined && layoutRef.current.isEnabled(taker)) selectRef.current(taker);
           return dispatch({ type: "open", source: "launch" });
+        }
         case "placed":
         case "settingsSection":
           return;
@@ -259,7 +268,7 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
       cancelAnimationFrame(frame);
       for (const id of pending.values()) window.clearTimeout(id);
     };
-  }, [dispatch, host, runEffects]);
+  }, [app.modules, dispatch, host, runEffects]);
 
   /* Keyboard, while the panel is open: Escape closes, arrows and 1-9 pick a tab, a letter a header shortcut. The tab keys pause during a takeover. */
   useEffect(() => {
