@@ -1,0 +1,192 @@
+/*
+ * The Focus tab, on the kit's variables: the dial card on the left (176 px)
+ * and one session card above the controls on the right, the same bones as
+ * the Study tab. The mixer it opens is styled by study.css.
+ */
+
+.focus-panel,
+.focus-timer {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.focus-timer {
+  display: flex;
+  gap: 8px;
+}
+
+.focus-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.focus-spacer {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.focus-accent {
+  color: var(--accent);
+}
+
+.focus-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.focus-dial {
+  flex: none;
+  width: 176px;
+  display: grid;
+  place-items: center;
+}
+
+.focus-dial-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.focus-dial-value {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--secondary-text);
+}
+.focus-dial-value[data-running="true"] {
+  color: var(--primary-text);
+}
+
+.focus-card {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.focus-caption-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 16px;
+}
+
+.focus-task {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* The hover fill reaches past the card's text edge by its padding. */
+.focus-mode-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: -2px -4px;
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  text-align: start;
+  cursor: default;
+  min-width: 0;
+  color: inherit;
+}
+.focus-mode-row:hover {
+  background: var(--surface-hover);
+}
+
+.focus-mode-name {
+  flex: none;
+}
+
+.focus-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+
+/* Settings > Focus. */
+.focus-settings-chips {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.focus-settings-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--primary-text) 4%, transparent);
+  box-shadow: inset 0 0 0 1px var(--stroke);
+  color: var(--primary-text);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: start;
+  cursor: default;
+  min-width: 0;
+}
+.focus-settings-chip:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--primary-text) 8%, transparent);
+}
+.focus-settings-chip[aria-checked="true"] {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.focus-settings-chip[aria-checked="true"]:hover {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.focus-settings-chip:disabled {
+  opacity: 0.45;
+}
+
+.focus-settings-chip-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.focus-settings-slider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 240px;
+}
+
+.focus-settings-playlist {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.focus-settings-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  color: var(--secondary-text);
+  font-size: 12px;
+}
+.focus-settings-status[data-warning] .kit-icon {
+  color: var(--warning);
+}
+.focus-settings-status .kit-icon {
+  flex: none;
+  margin-top: 1px;
+}

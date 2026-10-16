@@ -2,60 +2,67 @@
  * The focus services several modules share, declared here because Focus
  * owns them (the Mac's `context.focusTimer` and `context.focusMode`
  * extensions in Modules/Focus/): Today, Focus and the pet coach share one
- * Pomodoro, and the Pomodoro and Study's deep focus blocks drive one focus
- * mode (the focus sounds). The Focus port grows these into the full
- * FocusStore and FocusController; the keys and accessors stay.
+ * Pomodoro (`FocusStore`), and the Pomodoro and Study's deep focus blocks
+ * drive one focus mode (`FocusController`: the focus sounds, and the
+ * saved focus settings). Both keep their values in the Focus module's
+ * preferences document, loaded once per window and posted between windows.
  */
 
 import type { ModuleContext } from "../../app/context";
 import { serviceKey } from "../../app/sharedServices";
-import { Store } from "../../app/store";
-import { FocusTimer } from "../../core/focus/focusTimer";
+import { hostChannel, quietChannel } from "../../app/windowChannel";
+import { isEphemeral } from "../../core/modules/runMode";
 import { browserAudioPlatform } from "../../ui/audio/browserAudioPlatform";
 import { FocusSoundEngine } from "../../ui/audio/focusSoundEngine";
+import { FocusController } from "./focusController";
+import { FocusStore } from "./focusStore";
+import { ModulePreferences } from "./modulePreferences";
 
-/** The shared Pomodoro: one FocusTimer that every module showing it reads and drives. */
-export class FocusTimerService extends Store<{ readonly timer: FocusTimer }> {
-  constructor() {
-    super({ timer: new FocusTimer() });
-  }
+export { FocusController } from "./focusController";
+export { FocusStore } from "./focusStore";
+export type { FocusViewer } from "./focusStore";
 
-  /** Changes a copy of the timer and publishes it, so readers holding the old state never see it move. */
-  change(mutate: (timer: FocusTimer) => void): void {
-    const next = this.state.timer.clone();
-    mutate(next);
-    this.changed({ timer: next });
-  }
+/** The shared Pomodoro: one FocusStore that every module showing it reads and drives. */
+export type FocusTimerService = FocusStore;
+/** The one focus mode: the focus sounds and the saved focus settings. */
+export type FocusModeService = FocusController;
+
+const FOCUS_PREFERENCES = serviceKey<ModulePreferences>("focus.preferences");
+const FOCUS_TIMER = serviceKey<FocusStore>("focus.timer");
+const FOCUS_MODE = serviceKey<FocusController>("focus.mode");
+
+/** The Focus module's preferences document (`Focus/preferences.json`), shared by the timer and focus mode. */
+export function focusPreferences(context: ModuleContext): ModulePreferences {
+  return context.shared.resolve(FOCUS_PREFERENCES, () => {
+    const store = isEphemeral(context.runMode) ? undefined : context.storage.folder("Focus");
+    /* One topic for every module's copy of the service, so the Settings window's pane reaches the island's store. */
+    const channel = context.isSnapshot ? quietChannel : hostChannel(context.host, "focus/preferences");
+    return new ModulePreferences(store, channel);
+  });
 }
-
-/**
- * The one focus mode: the focus sound engine the Pomodoro and Study's deep
- * focus blocks play through. The engine is made on first use (no audio
- * context exists until something plays), and never in a snapshot run, which
- * plays no sound.
- */
-export class FocusModeService {
-  private engine: FocusSoundEngine | undefined;
-
-  constructor(private readonly silent: boolean) {}
-
-  /** The sound engine, or undefined in a snapshot run. */
-  soundEngine(): FocusSoundEngine | undefined {
-    if (this.silent) return undefined;
-    this.engine ??= new FocusSoundEngine(browserAudioPlatform());
-    return this.engine;
-  }
-}
-
-const FOCUS_TIMER = serviceKey<FocusTimerService>("focus.timer");
-const FOCUS_MODE = serviceKey<FocusModeService>("focus.mode");
 
 /** The one shared Pomodoro. */
-export function focusTimer(context: ModuleContext): FocusTimerService {
-  return context.shared.resolve(FOCUS_TIMER, () => new FocusTimerService());
+export function focusTimer(context: ModuleContext): FocusStore {
+  return context.shared.resolve(FOCUS_TIMER, () => new FocusStore(context, focusPreferences(context), focusMode(context)));
 }
 
-/** The one focus mode (sounds). */
-export function focusMode(context: ModuleContext): FocusModeService {
-  return context.shared.resolve(FOCUS_MODE, () => new FocusModeService(context.isSnapshot));
+/** The one focus mode (sounds, the saved focus settings). */
+export function focusMode(context: ModuleContext): FocusController {
+  return context.shared.resolve(FOCUS_MODE, () => {
+    /* The engine is made on first use (no audio context exists until something plays), and never in a snapshot run, which plays no sound. */
+    let engine: FocusSoundEngine | undefined;
+    const silent = context.isSnapshot;
+    return new FocusController({
+      isLive: !isEphemeral(context.runMode),
+      preferences: focusPreferences(context),
+      soundEngine: () => {
+        if (silent) return undefined;
+        engine ??= new FocusSoundEngine(browserAudioPlatform());
+        return engine;
+      },
+      openLink: (url) => {
+        if (typeof window !== "undefined") window.open(url, "_blank", "noopener");
+      },
+    });
+  });
 }
