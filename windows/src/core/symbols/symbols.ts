@@ -97,6 +97,8 @@ export const SYMBOL_ICONS = {
   "info.circle": "info",
   key: "key",
   leaf: "leaf",
+  lightbulb: "lightbulb",
+  "line.3.horizontal": "menu",
   link: "link",
   "lock.fill": "lock-filled",
   memorychip: "memory",

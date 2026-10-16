@@ -24,9 +24,11 @@ export interface SheetProps {
   /** The accessible name when there is no title. */
   readonly label?: string;
   readonly className?: string;
+  /** The title and intro hold text the user or a kit author wrote, which keeps its own direction. */
+  readonly userText?: boolean;
 }
 
-export function Sheet({ title, intro, badge, children, actions, onCancel, width = 520, label, className }: SheetProps) {
+export function Sheet({ title, intro, badge, children, actions, onCancel, width = 520, label, className, userText = false }: SheetProps) {
   const transition = useTransition("content", ["transform", "opacity"]);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -51,8 +53,8 @@ export function Sheet({ title, intro, badge, children, actions, onCancel, width 
         {(badge !== undefined || title !== undefined || intro !== undefined) && (
           <div className="kit-sheet-head">
             {badge !== undefined && <div className="kit-sheet-badge">{badge}</div>}
-            {title !== undefined && <h2 className="kit-sheet-title">{title}</h2>}
-            {intro !== undefined && <p className="kit-sheet-intro">{intro}</p>}
+            {title !== undefined && <h2 className={userText ? "kit-sheet-title kit-user-text" : "kit-sheet-title"}>{title}</h2>}
+            {intro !== undefined && <p className={userText ? "kit-sheet-intro kit-user-text" : "kit-sheet-intro"}>{intro}</p>}
           </div>
         )}
         {children !== undefined && children !== null && <div className="kit-sheet-body">{children}</div>}

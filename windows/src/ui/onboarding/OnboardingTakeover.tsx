@@ -446,8 +446,8 @@ function KitStep({ flow, store, app }: { flow: OnboardingFlow; store: Onboarding
             <span className="ob-kit-badge" style={{ background: tint }}>
               <Icon id={kit.symbol} size={13} />
             </span>
-            <span className="kit-body-emphasis ob-kit-name">{kit.name}</span>
-            <span className="kit-caption kit-secondary ob-kit-summary">{kit.summary}</span>
+            <span className="kit-body-emphasis ob-kit-name kit-user-text">{kit.name}</span>
+            <span className="kit-caption kit-secondary ob-kit-summary kit-user-text">{kit.summary}</span>
             <span className="ob-kit-tabs">
               <TabSymbols modules={tabs} catalog={catalog} />
             </span>
@@ -476,7 +476,7 @@ function QuestionStep({ flow, question, store }: { flow: OnboardingFlow; questio
   const tint = flow.kit === undefined ? undefined : kitTint(flow.kit, flow.catalog, theme);
   return (
     <div className="ob-question">
-      <div className="kit-title">{question.prompt}</div>
+      <div className="kit-title kit-user-text">{question.prompt}</div>
       <div className="ob-answers">
         {question.options.map((option) => {
           const isPicked = picked.has(option.id);
@@ -492,7 +492,7 @@ function QuestionStep({ flow, question, store }: { flow: OnboardingFlow; questio
               <span className="ob-answer-symbol" style={{ color: isPicked ? (tint ?? "var(--primary-text)") : "var(--secondary-text)" }}>
                 <Icon id={option.symbol ?? "circle"} size={16} />
               </span>
-              <span className="kit-body ob-answer-label">{option.label}</span>
+              <span className="kit-body ob-answer-label kit-user-text">{option.label}</span>
             </OnboardingTile>
           );
         })}
@@ -692,9 +692,10 @@ function TrayIconStep() {
           <span className="ob-tray-slot" />
           <span className="ob-tray-slot" />
         </span>
-        <span className="ob-tray-arrow">
-          <Icon id="arrow.down.right.and.arrow.up.left" size={12} />
-        </span>
+        <svg className="ob-tray-arrow" width="44" height="40" viewBox="0 0 44 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 4c4 14 16 24 34 30" strokeDasharray="3 3" />
+          <path d="m33 29 7 5-4 5" />
+        </svg>
       </span>
       <span className="ob-tray-text">
         <span className="kit-title">{tr("Pin the tray icon")}</span>

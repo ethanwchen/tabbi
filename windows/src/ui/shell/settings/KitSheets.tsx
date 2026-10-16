@@ -60,6 +60,7 @@ export function KitQuestionsSheet({ kit, catalog, answers: initial = {}, onCance
     <Sheet
       badge={kitBadge(kit, catalog, theme)}
       title={tr("Set up %@", kit.name)}
+      userText
       intro={tr("A few quick questions so your tabs and starter tasks fit you. Skip any you like.")}
       onCancel={onCancel}
       actions={
@@ -94,7 +95,7 @@ function QuestionBlock({ question, picked, tint, select }: { question: KitQuesti
   return (
     <div className="settings-question">
       <div className="settings-question-prompt">
-        <span className="kit-title">{question.prompt}</span>
+        <span className="kit-title kit-user-text">{question.prompt}</span>
         {question.allowsMultiple && <span className="kit-caption kit-tertiary">{tr("Pick any")}</span>}
       </div>
       <div className="settings-answers">
@@ -125,7 +126,7 @@ function AnswerTile({ answer, isSelected, tint, onPick }: { answer: KitAnswer; i
         <span className="settings-answer-symbol" style={{ color: isSelected ? tint : "var(--secondary-text)" }}>
           <Icon id={answer.symbol ?? "circle"} size={16} />
         </span>
-        <span className="settings-answer-label kit-body">{answer.label}</span>
+        <span className="settings-answer-label kit-body kit-user-text">{answer.label}</span>
       </button>
     </Tooltip>
   );
@@ -182,6 +183,7 @@ export function KitImportReviewSheet({ candidate, preview, issues, isActiveKit, 
       badge={kitBadge(kit, catalog, theme)}
       title={isActiveKit ? tr("Update %@", kit.name) : tr("Import %@", kit.name)}
       intro={kit.summary === "" ? tr("Check what this kit changes before you switch to it.") : kit.summary}
+      userText
       onCancel={onCancel}
       actions={
         <>
@@ -211,7 +213,7 @@ export function KitImportReviewSheet({ candidate, preview, issues, isActiveKit, 
             </span>
             <span className="settings-review-value kit-body">
               {row.tabs && <TabIcons modules={preview.tabs.map((id) => catalog.descriptor(id))} />}
-              {row.value !== "" && <span className={row.tabs ? "kit-secondary" : undefined}>{row.value}</span>}
+              {row.value !== "" && <span className={row.tabs ? "kit-secondary kit-user-text" : "kit-user-text"}>{row.value}</span>}
             </span>
           </div>
         ))}

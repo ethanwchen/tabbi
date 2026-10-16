@@ -160,7 +160,7 @@ export function TabsSection({ app, host, snapshotState }: SettingsSectionProps) 
         <div className="kit-settings-row">
           <div className="kit-settings-row-text">
             <span className="kit-settings-row-label">{tr("Kit")}</span>
-            {store.activeKit?.summary !== undefined && store.activeKit.summary !== "" && <span className="kit-settings-row-help">{store.activeKit.summary}</span>}
+            {store.activeKit?.summary !== undefined && store.activeKit.summary !== "" && <span className="kit-settings-row-help kit-user-text">{store.activeKit.summary}</span>}
           </div>
           <div className="kit-settings-row-control">
             <Picker

@@ -376,6 +376,7 @@
 
 .ob-extra {
   flex: 1;
+  max-width: 160px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -539,8 +540,7 @@
 
 .ob-tray-arrow {
   position: absolute;
-  left: 38px;
-  top: 36px;
+  left: 70px;
+  top: 24px;
   color: var(--accent);
-  transform: rotate(-20deg);
 }

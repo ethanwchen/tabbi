@@ -145,6 +145,11 @@ export function ConnectionsSection({ app, host, snapshotState }: SettingsSection
     }
   });
 
+  /* The More options shot needs a provider picked, so the AI model group shows. */
+  useEffect(() => {
+    if (snapshotState === "more") app.settings.update((value) => ({ ...value, ai: choose(value.ai, "anthropic") }));
+  }, [snapshotState, app.settings]);
+
   useEffect(() => {
     store.beginWatching(kinds);
     return () => store.endWatching(kinds);
@@ -480,9 +485,9 @@ function CalendarSheet({ store, onCancel }: { store: ConnectionsStore; onCancel:
             <div key={feed.id} className="settings-feed">
               <span className="settings-feed-color" style={{ background: cssColor(feed.color) }} />
               <span className="settings-feed-text">
-                <span className="kit-body-emphasis">{feed.name}</span>
+                <span className="kit-body-emphasis kit-user-text">{feed.name}</span>
                 <Tooltip text={feed.url}>
-                  <span className="kit-caption kit-tertiary settings-feed-url">{feed.url}</span>
+                  <span className="kit-caption kit-tertiary settings-feed-url kit-user-text">{feed.url}</span>
                 </Tooltip>
               </span>
               <SettingsButton title={tr("Remove")} help={tr("Remove %@ from Tabbi", feed.name)} destructive onClick={() => void save(subscriptions.filter((other) => other.id !== feed.id))} />
