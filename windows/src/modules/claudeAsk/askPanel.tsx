@@ -255,7 +255,8 @@ function AssistantBubble({ message, still }: { readonly message: ClaudeAskMessag
     content = (
       <div className="ask-thinking">
         <span>{tr("Thinking")}</span>
-        <PawLoader size={16} label={tr("Thinking")} revealed={still} />
+        {/* A still render shows the trail mid-stride rather than its empty first frame. */}
+        <PawLoader size={16} label={tr("Thinking")} time={still ? 0.9 : undefined} />
       </div>
     );
   } else if (message.status === "streaming") {
