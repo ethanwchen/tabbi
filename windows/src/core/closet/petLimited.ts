@@ -7,7 +7,8 @@ import {
   type ActivityRecord,
 } from "../activity/activityRecord";
 import { MODULE_IDS } from "../modules/moduleId";
-import eventsFile from "@mac/Events/events.json";
+import { SeasonalEventCatalog } from "../events/seasonalEventCatalog";
+import { HOUR_LABEL_MINUTES, eventDisplayName, type SeasonalEventReward } from "../events/seasonalEvent";
 import { tr } from "../localization/tr";
 import { accessoryItem, outfitItem, type PetItem } from "../pets/petItem";
 import { PetPointsRules } from "../pets/petPointsRules";
@@ -120,33 +121,13 @@ export function itemEffect(item: PetItem): PetItemEffect | undefined {
   return edition ? editionEffect(edition) : undefined;
 }
 
-/** A seasonal event's reward, as the bundled events catalog (`events.json`) lists it. */
-export interface SeasonalEventReward {
-  readonly item: PetItem;
-  readonly focusMinutes: number;
-}
-
-interface CatalogEvent {
-  readonly id: string;
-  readonly name: string;
-  readonly rewards: readonly { readonly item: string; readonly focusMinutes: number }[];
-}
-
-/** The bundled event with `id`, read from the Mac's `events.json` (a narrow read; the events port owns the rest). */
-function catalogEvent(id: string): CatalogEvent | undefined {
-  return (eventsFile as { events: readonly CatalogEvent[] }).events.find((event) => event.id === id);
-}
-
 /** The bundled event reward for a seasonal item, or undefined for any other. */
 export function seasonalReward(edition: PetLimitedEdition): SeasonalEventReward | undefined {
   const source = editionSource(edition);
   if (source.kind !== "season") return undefined;
-  const reward = catalogEvent(source.id)?.rewards.find((candidate) => candidate.item === editionItem(edition));
+  const reward = SeasonalEventCatalog.bundled.event(source.id)?.rewards.find((candidate) => candidate.item === editionItem(edition));
   return reward ? { item: editionItem(edition), focusMinutes: reward.focusMinutes } : undefined;
 }
-
-/** Goals from this many minutes up read in hours (SeasonalEventProgress.hourLabelMinutes). */
-const HOUR_LABEL_MINUTES = 120;
 
 /** One line on how to earn the item, for the tile's tooltip and detail. */
 export function howToEarn(edition: PetLimitedEdition): string {
@@ -169,10 +150,9 @@ export function howToEarn(edition: PetLimitedEdition): string {
 /** "Focus for 90 minutes during Halloween.", with the event's name and goal from the catalog. */
 function seasonalHowToEarn(edition: PetLimitedEdition): string {
   const source = editionSource(edition);
-  const event = source.kind === "season" ? catalogEvent(source.id) : undefined;
+  const event = source.kind === "season" ? SeasonalEventCatalog.bundled.event(source.id) : undefined;
   if (!event) return tr("Focus while its event runs.");
-  /* Event names translate through the catalog, keyed by their English text. */
-  const name = tr(event.name);
+  const name = eventDisplayName(event);
   const minutes = seasonalReward(edition)?.focusMinutes;
   if (minutes === undefined) return tr("Focus during %@.", name);
   return minutes < HOUR_LABEL_MINUTES

@@ -6,7 +6,7 @@ import { ProgressItem, type ProvidedAction } from "../providers/progressItem";
 import { instantOf } from "../calendar/zonedCalendar";
 import { DAY, type Instant, type Seconds } from "../time";
 import type { AnkiConnectClient } from "./ankiConnectClient";
-import { AnkiConnectFailure, errorMessage, failsWholeRefresh } from "./ankiConnectError";
+import { AnkiConnectFailure, describeAnkiError, errorMessage, failsWholeRefresh } from "./ankiConnectError";
 import {
   type AnkiDayCount,
   type AnkiDeckStats,
@@ -499,7 +499,7 @@ export async function fetchAnkiSummary(client: AnkiConnectClient, options: Fetch
       return await body();
     } catch (error) {
       if (!(error instanceof AnkiConnectFailure) || failsWholeRefresh(error.error)) throw error;
-      gaps.push({ action, message: errorMessage(error.error) ?? JSON.stringify(error.error) });
+      gaps.push({ action, message: errorMessage(error.error) ?? describeAnkiError(error.error) });
       return undefined;
     }
   };

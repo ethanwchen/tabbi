@@ -7,25 +7,54 @@
  * the locale passed in.
  */
 
-import { tr } from "../localization/tr";
+import { isRightToLeft } from "../localization/languages";
+import { currentLanguage, formatSpecifiers, localizedFormat } from "../localization/tr";
 
 /** The unit ProgressItems count minutes in, which `quantity` writes as a duration. */
 export const MINUTE_UNIT = "min";
 /** The unit Anki's review goal counts flashcards in, which `quantity` writes as a translated plural. */
 export const CARD_UNIT = "cards";
 
+/*
+ * Western digits in the locale's grouping: Foundation writes them in every
+ * shipped language, while some ICU builds give plain "ar" Arabic-Indic ones.
+ */
+function numberLocale(locale: string): string {
+  const tag = new Intl.Locale(locale);
+  return tag.numberingSystem === undefined && tag.language === "ar" ? `${locale}-u-nu-latn` : locale;
+}
+
+function formatInteger(value: number, locale: string): string {
+  return new Intl.NumberFormat(numberLocale(locale)).format(Math.trunc(value));
+}
+
+/*
+ * Fills a catalog key the way String(localized:) does under the current
+ * locale: the plural form follows the numbers, which are written in the
+ * locale's own number format, and in a right-to-left language every string
+ * argument sits in a first-strong isolate so it keeps its own direction.
+ */
+function localized(key: string, args: readonly (string | number)[], locale = currentLanguage()): string {
+  const isolate = isRightToLeft(locale);
+  const format = localizedFormat(key, ...args).replace(/%(d+$)?(?:lld|ld|llu|lu|d|i|u)/g, "%$1@");
+  const filled = args.map((arg) =>
+    typeof arg === "number" ? formatInteger(arg, locale) : isolate ? `⁨${arg}⁩` : arg,
+  );
+  return formatSpecifiers(format, filled);
+}
+
 /** "0 min", "45 min", "2h", "1h 15m". Negative values read as "0 min". */
 export function durationMinutes(value: number): string {
   const minutes = Math.max(Math.trunc(value), 0);
-  if (minutes < 60) return tr("%lld min", minutes);
+  if (minutes < 60) return localized("%lld min", [minutes]);
   const hours = Math.trunc(minutes / 60);
   const rest = minutes % 60;
-  return rest === 0 ? tr("%lldh", hours) : tr("%lldh %lldm", hours, rest);
+  return rest === 0 ? localized("%lldh", [hours]) : localized("%lldh %lldm", [hours, rest]);
 }
 
 /* "0m", "45m", "2h", "1h 15m": the hours form, also under an hour. */
 function compact(minutes: number): string {
-  return minutes < 60 ? tr("%lldm", minutes) : durationMinutes(minutes);
+  return minutes < 60 ? localized("%lldm", [minutes]) : durationMinutes(minutes);
 }
 
 /**
@@ -36,19 +65,19 @@ function compact(minutes: number): string {
 export function durationProgress(done: number, total: number): string {
   const d = Math.max(Math.trunc(done), 0);
   const t = Math.max(Math.trunc(total), 0);
-  if (Math.max(d, t) < 60) return tr("%@ of %@", durationMinutes(d), durationMinutes(t));
-  return tr("%@ of %@", compact(d), compact(t));
+  if (Math.max(d, t) < 60) return localized("%@ of %@", [durationMinutes(d), durationMinutes(t)]);
+  return localized("%@ of %@", [compact(d), compact(t)]);
 }
 
 /** A span in seconds rounded up to the minute, with "<1 min" for less, so a countdown never claims nothing is left. */
 export function durationSeconds(seconds: number): string {
-  if (!(seconds >= 60)) return tr("<1 min");
+  if (!(seconds >= 60)) return localized("<1 min", []);
   return durationMinutes(Math.ceil(seconds / 60));
 }
 
 /** "in 12 min", "in 1h", "in 1h 15m". */
 export function durationCountdown(minutes: number): string {
-  return tr("in %@", durationMinutes(minutes));
+  return localized("in %@", [durationMinutes(minutes)]);
 }
 
 /**
@@ -62,8 +91,8 @@ export function durationQuantity(value: number, unit: string, locale: string): s
     case MINUTE_UNIT:
       return durationMinutes(value);
     case CARD_UNIT:
-      return tr("%lld cards", value);
+      return localized("%lld cards", [Math.trunc(value)], locale);
     default:
-      return `${new Intl.NumberFormat(locale).format(Math.trunc(value))} ${unit}`;
+      return `${formatInteger(value, locale)} ${unit}`;
   }
 }
