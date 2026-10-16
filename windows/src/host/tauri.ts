@@ -2,6 +2,7 @@ import { Channel, invoke } from "@tauri-apps/api/core";
 import { emit, listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import type {
+  AiLogFile,
   AiPaths,
   Host,
   HostEvent,
@@ -122,6 +123,9 @@ export function tauriHost(): Host {
     openURL: (url) => invoke("open_url", { url }),
     openApp: (app) => invoke("open_app", { app }),
     setTrayLabels: (labels) => invoke("tray_set_labels", { labels }),
+    aiLogs: (tool) => invoke<AiLogFile[]>("ai_logs_list", { tool }),
+    /* The host answers with a raw body, which arrives as an ArrayBuffer. */
+    aiLogRead: async (tool, path, offset) => new Uint8Array(await invoke<ArrayBuffer>("ai_log_read", { tool, path, offset })),
   };
 }
 

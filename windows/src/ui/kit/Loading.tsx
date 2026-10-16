@@ -137,7 +137,8 @@ export function ProgressRing({ progress, tint = "var(--accent)", track, lineWidt
           fill="none"
           stroke={tint}
           strokeWidth={lineWidth}
-          strokeLinecap="round"
+          /* A round cap on an empty arc would still draw a dot at twelve o'clock. */
+          strokeLinecap={shown > 0 ? "round" : "butt"}
           strokeDasharray={`${circumference * Math.min(Math.max(shown, 0), 1)} ${circumference}`}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />

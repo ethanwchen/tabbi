@@ -1,7 +1,7 @@
 import type { Instant } from "../time";
 import { type CPUUsage, cpuUsage, type ProcessorTimes } from "./cpuUsage";
 import { HistorySeries, RingBuffer } from "./history";
-import { memoryFromStatus, type MemoryStats, usedFraction } from "./memoryStats";
+import { memoryFromStatus, memoryFromUsed, type MemoryStats, usedFraction } from "./memoryStats";
 import { demoCPU, demoGPU, demoMemory, demoPerCore } from "./systemDemoData";
 
 /*
@@ -31,6 +31,19 @@ export interface SystemStatsSnapshot {
   gpu?: number;
 }
 
+/**
+ * One reading the Rust host sends (`system:stats`), with the load already
+ * worked out from PDH counters: CPU is absent on the first reading (a rate
+ * needs two samples), GPU where no adapter reports, memory if Windows
+ * won't say.
+ */
+export interface SystemReading {
+  capturedAt: Instant;
+  cpu?: CPUUsage;
+  memory?: { usedBytes: number; totalBytes: number };
+  gpu?: number;
+}
+
 /** Samples kept per sparkline: one minute at one sample a second. */
 export const HISTORY_CAPACITY = 60;
 
@@ -56,26 +69,52 @@ export class SystemMonitorState {
   /** Used-memory fraction over time. */
   readonly memoryHistory = new RingBuffer<number>(HISTORY_CAPACITY);
   private previous: { processors: ProcessorTimes[]; at: Instant } | undefined;
+  /** When the last reading of either shape arrived, for the gap rule. */
+  private previousAt: Instant | undefined;
 
   /** One reading: updates the values and histories, restarting them after a gap. */
   apply(snapshot: SystemStatsSnapshot): void {
     const processors = snapshot.processors ?? [];
-    if (this.previous && snapshot.capturedAt - this.previous.at < MAX_SAMPLE_GAP) {
-      this.cpu = cpuUsage(this.previous.processors, processors);
-      if (this.cpu) this.cpuHistory.append(this.cpu.total);
-    } else {
-      this.cpu = undefined;
+    const continuous = this.previous !== undefined && this.continuous(snapshot.capturedAt);
+    const cpu = continuous && this.previous ? cpuUsage(this.previous.processors, processors) : undefined;
+    this.previous = { processors, at: snapshot.capturedAt };
+    const memory = snapshot.memory ? memoryFromStatus(snapshot.memory.totalBytes, snapshot.memory.availableBytes) : undefined;
+    this.record(snapshot.capturedAt, continuous, cpu, snapshot.gpu, memory);
+  }
+
+  /**
+   * One reading the host already turned into usage (Windows' PDH counters
+   * give rates, not ticks), under the same gap and history rules as `apply`.
+   * The host's first reading has no CPU value, which also restarts the
+   * histories, so each sparkline covers one unbroken window.
+   */
+  applyReading(reading: SystemReading): void {
+    this.previous = undefined;
+    const continuous = this.continuous(reading.capturedAt);
+    const cpu = continuous ? reading.cpu : undefined;
+    const memory = reading.memory ? memoryFromUsed(reading.memory.usedBytes, reading.memory.totalBytes) : undefined;
+    this.record(reading.capturedAt, continuous, cpu, reading.gpu, memory);
+  }
+
+  private continuous(at: Instant): boolean {
+    return this.previousAt !== undefined && at - this.previousAt < MAX_SAMPLE_GAP;
+  }
+
+  private record(at: Instant, continuous: boolean, cpu: CPUUsage | undefined, gpu: number | undefined, memory: MemoryStats | undefined): void {
+    this.previousAt = at;
+    this.cpu = cpu;
+    if (!continuous) {
       this.cpuHistory.removeAll();
       this.gpuHistory.removeAll();
       this.memoryHistory.removeAll();
     }
-    this.previous = { processors, at: snapshot.capturedAt };
+    if (cpu) this.cpuHistory.append(cpu.total);
 
-    this.gpu = snapshot.gpu === undefined || !Number.isFinite(snapshot.gpu) ? undefined : Math.min(Math.max(snapshot.gpu, 0), 1);
+    this.gpu = gpu === undefined || !Number.isFinite(gpu) ? undefined : Math.min(Math.max(gpu, 0), 1);
     if (this.gpu !== undefined) this.gpuHistory.append(this.gpu);
 
-    this.memory = snapshot.memory ? memoryFromStatus(snapshot.memory.totalBytes, snapshot.memory.availableBytes) : undefined;
-    if (this.memory) this.memoryHistory.append(usedFraction(this.memory));
+    this.memory = memory;
+    if (memory) this.memoryHistory.append(usedFraction(memory));
   }
 
   /** One demo step: the same curves as the Mac's demo mode. */
