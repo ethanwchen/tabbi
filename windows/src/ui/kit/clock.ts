@@ -29,6 +29,13 @@ const BROWSER_TIMERS: AlarmTimers = {
 export const WATCHDOG_INTERVAL = 15_000;
 /** A watchdog tick arriving this much later than expected means the machine slept (or the page was throttled). */
 export const DRIFT_TOLERANCE = 2_000;
+/**
+ * The longest delay a timeout honors. Browsers and Node run a longer one
+ * after about 1 ms, so an alarm more than about 24.8 days out (a seasonal
+ * event, a recap weeks ahead) would fire at once and, re-planned for the same
+ * moment, spin. A longer wait arms this much and re-arms when it ends.
+ */
+export const MAX_TIMEOUT = 2 ** 31 - 1;
 
 export class WallClockAlarm {
   private readonly action: () => void;
@@ -89,7 +96,8 @@ export class WallClockAlarm {
     const fireAt = this.fireAt;
     if (fireAt === undefined) return;
     const wait = Math.max(0, fireAt - this.timers.now());
-    this.timer = this.timers.setTimeout(() => this.fire(), wait);
+    if (wait > MAX_TIMEOUT) this.timer = this.timers.setTimeout(() => this.arm(), MAX_TIMEOUT);
+    else this.timer = this.timers.setTimeout(() => this.fire(), wait);
     if (wait > WATCHDOG_INTERVAL) this.tickWatchdog();
   }
 

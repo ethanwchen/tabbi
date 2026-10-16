@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { WallClockAlarm, WATCHDOG_INTERVAL, type AlarmTimers } from "../../../src/ui/kit/clock";
+import { MAX_TIMEOUT, WallClockAlarm, WATCHDOG_INTERVAL, type AlarmTimers } from "../../../src/ui/kit/clock";
 
 /* A fake clock whose timeouts fire when the test advances it, and which can jump like a machine waking from sleep. */
 class FakeTimers implements AlarmTimers {
@@ -73,6 +73,22 @@ describe("WallClockAlarm", () => {
     timers.advance(2000);
     expect(fired).toBe(0);
     timers.advance(1000);
+    expect(fired).toBe(1);
+  });
+
+  it("waits out a moment more than 24.8 days away instead of firing at once", () => {
+    /* Like the browser and Node: a delay past the 32-bit limit runs after 1 ms. */
+    const timers = new FakeTimers();
+    const platform: AlarmTimers = { ...timers, now: timers.now, clearTimeout: timers.clearTimeout, setTimeout: (callback, ms) => timers.setTimeout(callback, ms > MAX_TIMEOUT ? 1 : ms) };
+    let fired = 0;
+    const alarm = new WallClockAlarm(() => fired++, platform);
+    const days = 26 * 24 * 60 * 60 * 1000;
+    alarm.schedule(timers.time + days);
+    timers.advance(1000);
+    expect(fired).toBe(0);
+    timers.advance(days - 1001);
+    expect(fired).toBe(0);
+    timers.advance(1);
     expect(fired).toBe(1);
   });
 });
