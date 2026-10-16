@@ -46,7 +46,12 @@ export function memoryStats(usedBytes: number, totalBytes: number, pressure: Mem
  * fraction.
  */
 export function memoryFromStatus(totalBytes: number, availableBytes: number): MemoryStats {
-  const used = Math.min(Math.max(totalBytes - availableBytes, 0), totalBytes);
+  return memoryFromUsed(totalBytes - availableBytes, totalBytes);
+}
+
+/** Stats from a host that already counted what is in use (the Rust host's `system:stats`), with the pressure judged by the used fraction. */
+export function memoryFromUsed(usedBytes: number, totalBytes: number): MemoryStats {
+  const used = Math.min(Math.max(usedBytes, 0), totalBytes);
   const fraction = totalBytes === 0 ? 0 : used / totalBytes;
   return memoryStats(used, totalBytes, pressureFromUsedFraction(fraction));
 }
