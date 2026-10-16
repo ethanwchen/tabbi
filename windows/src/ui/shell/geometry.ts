@@ -59,6 +59,26 @@ export const PILL_HOVERED: Silhouette = {
 /* Nothing drawn: the pill collapsed into the top edge, so opening grows down from there. */
 export const HIDDEN: Silhouette = { ...PILL, height: 0 };
 
+/* A canvas size in logical pixels: the open panel at the user's panel size. */
+export interface CanvasSize {
+  readonly width: number;
+  readonly height: number;
+}
+
+/* The open panel at `canvas` (compact, regular or large). */
+export function openSilhouette(canvas: CanvasSize): Silhouette {
+  return { width: canvas.width, height: canvas.height, topRadius: RADIUS.openTop, bottomRadius: RADIUS.openBottom };
+}
+
+/*
+ * The closed pill with a live preview: the virtual notch with a wing of
+ * `wing` px on each side (NotchViewModel.size, closed and hovering).
+ */
+export function pillSilhouette(wing: number, hovered: boolean): Silhouette {
+  const base = { ...PILL, width: PILL.width + 2 * Math.max(wing, 0) };
+  return hovered ? { ...base, width: base.width + HOVER_GROWTH.width, height: base.height + HOVER_GROWTH.height } : base;
+}
+
 /*
  * The NotchShape path, centered in the canvas. The flares and corners are
  * quadratic curves, and both radii shrink to fit a small shape, exactly as the
@@ -95,11 +115,13 @@ export interface HitRect {
 
 /*
  * The window region for each hit shape, relative to the island window. The
- * pill's area covers its hovered size plus the Mac's 4 px slop, so growing on
- * hover never clips; the open panel uses the whole canvas.
+ * pill's area covers its hovered size (with the preview's wings) plus the
+ * Mac's 4 px slop, so growing on hover never clips; the open panel uses the
+ * whole canvas.
  */
-export function hitRect(shape: "open" | "pill"): HitRect {
-  if (shape === "open") return { x: 0, y: 0, width: CANVAS.width, height: CANVAS.height };
-  const width = PILL_HOVERED.width + 2 * HIT_SLOP;
-  return { x: (CANVAS.width - width) / 2, y: 0, width, height: PILL_HOVERED.height + HIT_SLOP };
+export function hitRect(shape: "open" | "pill", canvas: CanvasSize = CANVAS, wing = 0): HitRect {
+  if (shape === "open") return { x: 0, y: 0, width: canvas.width, height: canvas.height };
+  const hovered = pillSilhouette(wing, true);
+  const width = Math.min(hovered.width + 2 * HIT_SLOP, canvas.width);
+  return { x: (canvas.width - width) / 2, y: 0, width, height: hovered.height + HIT_SLOP };
 }

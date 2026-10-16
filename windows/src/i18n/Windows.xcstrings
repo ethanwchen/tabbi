@@ -217,6 +217,78 @@
         }
       }
     },
+    "Control the music playing on your PC." : {
+      "comment" : "One-line summary of the Now Playing tab in Settings > Tabs on Windows, which controls any app's media session.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحكّم في الموسيقى التي تُشغَّل على جهاز الكمبيوتر."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steuer die Musik, die auf deinem PC läuft."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controla la música que suena en tu PC."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontrolin ang musikang tumutugtog sa PC mo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contrôle la musique qui joue sur ton PC."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PC で再生中の音楽を操作。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PC에서 재생 중인 음악을 조작해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controle a música que está tocando no seu PC."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Управляй музыкой, которая играет на ПК."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控制电脑上正在播放的音乐。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控制電腦上正在播放的音樂。"
+          }
+        }
+      }
+    },
     "Open Tabbi" : {
       "comment" : "The tray icon's menu: opens the island panel. Tabbi is the product name.",
       "extractionState" : "manual",
@@ -433,6 +505,150 @@
         }
       }
     },
+    "Tabbi Settings" : {
+      "comment" : "The Settings window's title and the gear button's tooltip in the open island. Tabbi is the product name; Settings as Windows names an app's settings.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعدادات Tabbi"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi-Einstellungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración de Tabbi"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings ng Tabbi"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paramètres de Tabbi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiの設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 설정"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurações do Tabbi"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки Tabbi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 设置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 設定"
+          }
+        }
+      }
+    },
+    "This section arrives in a later Windows build." : {
+      "comment" : "A Settings window section's placeholder on Windows while its settings are not ported yet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يصل هذا القسم في إصدار لاحق لنظام Windows."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Bereich kommt in einer späteren Windows-Version."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta sección llega en una versión posterior para Windows."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darating ang section na ito sa susunod na Windows build."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette section arrive dans une prochaine version Windows."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このセクションは今後のWindows版で使えるようになります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 섹션은 이후 Windows 버전에서 제공돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta seção chega em uma versão futura para Windows."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот раздел появится в одной из следующих версий для Windows."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此部分将在之后的 Windows 版本中推出。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此部分將在之後的 Windows 版本推出。"
+          }
+        }
+      }
+    },
     "This tab arrives in a later Windows build." : {
       "comment" : "A tab's placeholder on Windows when its module is not ported yet. Use the same word for tab as the tab bar does.",
       "extractionState" : "manual",
@@ -501,6 +717,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此標籤頁將在之後的 Windows 版本推出。"
+          }
+        }
+      }
+    },
+    "This tab isn't available in this build." : {
+      "comment" : "Shown in the open island for a tab a kit lists that this build has no module for. Use the same word for tab as the tab bar does.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "علامة التبويب هذه غير متوفرة في هذا الإصدار."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Tab ist in dieser Version nicht verfügbar."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta pestaña no está disponible en esta versión."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi available ang tab na ito sa build na ito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cet onglet n'est pas disponible dans cette version."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このタブはこのバージョンでは使えません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 탭은 이 버전에서 사용할 수 없어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta aba não está disponível nesta versão."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эта вкладка недоступна в этой версии."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此标签页在此版本中不可用。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此標籤頁在此版本中無法使用。"
           }
         }
       }
@@ -717,6 +1005,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "電腦正在充電，%@ 也在喝一小口"
+          }
+        }
+      }
+    },
+    "Your PC's CPU, GPU and memory use at a glance." : {
+      "comment" : "One-line summary of the System tab in Settings > Tabs on Windows (the Mac says Mac).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استخدام المعالج ووحدة الرسوميات والذاكرة في جهاز الكمبيوتر بلمحة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU-, GPU- und Speicherauslastung deines PCs auf einen Blick."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El uso de CPU, GPU y memoria de tu PC de un vistazo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang CPU, GPU at memory usage ng PC mo sa isang tingin."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le CPU, le GPU et la mémoire de ton PC en un coup d'œil."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PC の CPU、GPU、メモリの使用状況をひと目で。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PC의 CPU, GPU, 메모리 사용량을 한눈에."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O uso de CPU, GPU e memória do seu PC num relance."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузка ЦП, ГП и памяти ПК на одном экране."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一眼看清电脑的 CPU、GPU 和内存占用。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一眼看清電腦的 CPU、GPU 和記憶體用量。"
           }
         }
       }

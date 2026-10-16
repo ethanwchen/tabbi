@@ -24,6 +24,8 @@ import { ProviderHub } from "./providerHub";
 import { ModuleRegistry } from "./registry";
 import { SettingsStore } from "./settingsStore";
 import { SharedServices } from "./sharedServices";
+import { Observable } from "./store";
+import type { NotchTakeover } from "./takeover";
 import { TickerStore, type TickerAlarm } from "./tickerStore";
 import { hostChannel, quietChannel } from "./windowChannel";
 
@@ -67,6 +69,8 @@ export class AppServices {
   /** The closed island's preview; only the island has one. */
   readonly ticker: TickerStore | undefined;
   readonly environment: AppEnvironment;
+  /** What fills the open island instead of the tabs (first-run setup), or undefined for the tabs. */
+  readonly takeover = new Observable<NotchTakeover | undefined>(undefined);
   private readonly stops: (() => void)[] = [];
 
   private constructor(environment: AppEnvironment, types: readonly ModuleType[], alarm: (fire: () => void) => TickerAlarm) {

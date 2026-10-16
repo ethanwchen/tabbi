@@ -3,5 +3,5 @@
   "identifier": "default",
   "description": "What Tabbi's windows may use: listening to and posting host events, including their own window focus. The island and the Settings window keep their stores in step by posting events to each other.",
   "windows": ["island", "settings"],
-  "permissions": ["core:event:default"]
+  "permissions": ["core:event:default", "core:window:allow-set-title"]
 }
