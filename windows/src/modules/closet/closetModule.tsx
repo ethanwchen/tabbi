@@ -1,50 +1,200 @@
-import { localizedDescriptor } from "../../app/descriptor";
-import { defineModule } from "../../app/module";
-import { KitSettingsSchema, kitSetting } from "../../core/kits/kitSettingsSchema";
-import { tr } from "../../core/localization/tr";
-import { MODULE_CATEGORIES } from "../../core/modules/moduleDescriptor";
-import { MODULE_IDS } from "../../core/modules/moduleId";
-import { ONBOARDING_SETUP_STEPS } from "../../core/onboarding/onboardingSetupStep";
-import { PET_BREEDS } from "../../core/pets/petKinds";
-import { MAX_PET_NAME_LENGTH } from "../../core/pets/petProfile";
-import { placeholderPanel } from "../placeholderPanel";
-
 /*
- * Port of PetCoachMessages.kitSettingType: per nudge kind, a line or a list
- * of lines that fit a speech bubble. The coach is not ported yet, so its
- * kinds and limits are written out here as the Swift declares them.
+ * Port of ClosetModule: the pet's page, opened from the paw at the far
+ * right of the open island's header (or P) rather than a tab. Preview the
+ * study pet, rename and recolor it, and dress it in items unlocked with
+ * study points. The pet itself is the shared `studyPet`, which this module
+ * edits and hands the coach, so the island, the coach, Study and Party show
+ * the same pet. The pet's study coach, the daily reminder, the seasonal
+ * greeter and the weekly recap run while this module is on, and its
+ * Settings pane shows with it. The pet is shared as a provider, so the
+ * closed island shows it too.
  */
-const COACH_NUDGE_KINDS = ["distraction", "offerPause", "idleCheck", "autoPause"] as const;
-const COACH_LINE_MAX_LENGTH = 64;
-const COACH_LINES_PER_KIND = 20;
 
-/* The Closet's kit settings: the pet coach's lines and the starter pet (PetProfile.kitSettingType). */
-export const CLOSET_KIT_SCHEMA = new KitSettingsSchema({
-  coachLines: kitSetting.object(
-    Object.fromEntries(COACH_NUDGE_KINDS.map((kind) => [kind, kitSetting.lines(COACH_LINE_MAX_LENGTH, COACH_LINES_PER_KIND)])),
-  ),
-  pet: kitSetting.object({ breed: kitSetting.choice(PET_BREEDS), name: kitSetting.text(MAX_PET_NAME_LENGTH) }),
-});
+import type { ComponentType } from "react";
+import { defineModule, type SetupStepProps } from "../../app/module";
+import { mapped } from "../../app/store";
+import { currentLanguage } from "../../core/localization/tr";
+import { ONBOARDING_SETUP_STEPS } from "../../core/onboarding/onboardingSetupStep";
+import { accessoryItem } from "../../core/pets/petItem";
+import { PET_ACCESSORIES, type PetAccessory } from "../../core/pets/petCostume";
+import { moduleProvision } from "../../core/providers/moduleProvision";
+import { resolveTheme } from "../../core/themes/themeCatalog";
+import { focusTimer } from "../focus/focusServices";
+import { PetCoachController } from "./coach/petCoachController";
+import { PetCoachSettingsPane } from "./coach/PetCoachSettingsPane";
+import { ClosetPanel } from "./ClosetPanel";
+import { ClosetSetupView } from "./ClosetSetupView";
+import { CLOSET_DESCRIPTOR } from "./closetDescriptor";
+import { studyPet, surpriseGifts } from "./closetServices";
+import type { ClosetSection } from "./closetStore";
+import { recapTakeover } from "./recap/RecapCard";
+import { RecapMoment } from "./recap/recapMoment";
+import { copyRecapImage, saveRecapImage } from "./recap/recapSharing";
+import { RecapStore } from "./recap/recapStore";
+import { SeasonalEventGreeter } from "./seasonalEventGreeter";
+import { StudyReminderScheduler } from "./studyReminderScheduler";
 
-/* Port of ClosetModule: name the pet and dress it in what it earned. It opens from the paw at the far right of the header (key P). */
-export const CLOSET_DESCRIPTOR = localizedDescriptor(
-  {
-    id: MODULE_IDS.closet,
-    title: "Closet",
-    symbol: "pawprint.fill",
-    category: MODULE_CATEGORIES.fun,
-    accent: { red: 0.98, green: 0.8, blue: 0.3 },
-    kitSettings: CLOSET_KIT_SCHEMA,
-    setup: [ONBOARDING_SETUP_STEPS.pet],
-    headerShortcut: { label: "Your pet", key: "p" },
+export { CLOSET_DESCRIPTOR, CLOSET_KIT_SCHEMA } from "./closetDescriptor";
+
+/** The Closet's other sections and its longest lines (the Mac's `ClosetShot`s), plus the recap card in a heavy and a light week. */
+const SNAPSHOT_STATES = [
+  "wardrobe",
+  "limited",
+  "streak",
+  "look",
+  "weeks",
+  "founding",
+  "founding-unearned",
+  "founding-unearned-scrolling",
+  "long-name",
+  "long-name-scrolling",
+  "animated",
+  "recap-heavy",
+  "recap-light",
+] as const;
+
+interface SnapshotShot {
+  readonly tryingOn?: PetAccessory;
+  readonly foundingMember?: boolean;
+  readonly name?: string;
+  readonly scrolled?: number;
+}
+
+export const ClosetModule = defineModule(
+  CLOSET_DESCRIPTOR,
+  (context) => {
+    const store = studyPet(context);
+    const gifts = surpriseGifts(context);
+    const recaps = new RecapStore(context);
+    const progress = mapped(context.snapshot, (snapshot) => snapshot.progress);
+    const reminder = new StudyReminderScheduler(context, store, progress);
+    const greeter = new SeasonalEventGreeter(context, () => store.seasonNow);
+    greeter.greeted.on(() => store.preview.send({ kind: "celebrate" }));
+    const moment = new RecapMoment(context, recaps, (shown, done) =>
+      recapTakeover({
+        recap: shown.recap,
+        cheer: shown.cheer,
+        pet: () => context.snapshot.get().pet?.profile,
+        timeZone: () => context.timeZone(),
+        showsWeekDates: !context.isDemo,
+        done,
+        share: async (format, action) => {
+          const input = {
+            recap: shown.recap,
+            cheer: shown.cheer,
+            pet: context.snapshot.get().pet?.profile,
+            format,
+            theme: resolveTheme(context.settings.current.themeID),
+            locale: currentLanguage(),
+            timeZone: context.timeZone(),
+          };
+          try {
+            return action === "copy" ? await copyRecapImage(input) : await saveRecapImage(context.host, input, format);
+          } catch (error) {
+            context.logger.error("The recap image could not be shared", error);
+            return undefined;
+          }
+        },
+      }),
+    );
+    /* Pausing and resuming go to the shared Pomodoro, the Mac's `context.focusTimer`. */
+    const pomodoro = focusTimer(context);
+    const coach = new PetCoachController(context, {
+      profile: () => store.profile,
+      closet: store,
+      gifts,
+      pauseTimer: () => pomodoro.change((timer) => timer.pause(context.now())),
+      resumeTimer: () => pomodoro.change((timer) => timer.start(context.now())),
+    });
+
+    /* The island opening and closing: the recap shows on open and is done with on close. */
+    const kinds = context.closedPreview.watchedKinds;
+    let wasOpen = kinds.get().size === 0;
+    kinds.subscribe(() => {
+      const open = kinds.get().size === 0;
+      if (open === wasOpen) return;
+      wasOpen = open;
+      if (open) void moment.islandOpened();
+      else moment.islandClosed();
+    });
+
+    function Panel() {
+      return <ClosetPanel store={store} recaps={recaps} gifts={gifts} />;
+    }
+
+    function SettingsPane() {
+      return <PetCoachSettingsPane coach={coach} reminder={reminder} />;
+    }
+
+    const PetSetup: ComponentType<SetupStepProps> = () => <ClosetSetupView store={store} />;
+
+    const show = (section: ClosetSection, shot: SnapshotShot = {}) => {
+      store.setSection(section);
+      store.showForSnapshot({
+        ...(shot.foundingMember === undefined ? {} : { foundingMember: shot.foundingMember }),
+        ...(shot.name === undefined ? {} : { name: shot.name }),
+        ...(shot.scrolled === undefined ? {} : { scrolled: shot.scrolled }),
+      });
+      store.tryOn(shot.tryingOn === undefined || !PET_ACCESSORIES.includes(shot.tryingOn) ? undefined : accessoryItem(shot.tryingOn));
+    };
+
+    const showRecap = (pick: "heavy" | "light") => {
+      const list = recaps.archive.recaps;
+      const recap = pick === "heavy" ? list[0] : list.reduce((best, candidate) => (best === undefined || candidate.focusMinutes < best.focusMinutes ? candidate : best), list[0]);
+      if (recap !== undefined) moment.present({ recap, cheer: recaps.cheer(recap) });
+    };
+
+    return {
+      store,
+      coach,
+      recaps,
+      moment,
+      Panel,
+      SettingsPane,
+      setupView: (step) => (step.id === ONBOARDING_SETUP_STEPS.pet.id ? PetSetup : undefined),
+      /* Shares the pet, so the closed island can show it. */
+      provision: mapped(store, (state) => moduleProvision({ pet: state.presence })),
+      start: () => {
+        coach.start();
+        reminder.start();
+        greeter.start();
+        moment.start();
+      },
+      stop: () => {
+        coach.stop();
+        reminder.stop();
+        greeter.stop();
+        moment.stop();
+      },
+      showSnapshotState: (state: string) => {
+        switch (state) {
+          case "wardrobe":
+          case "limited":
+          case "streak":
+          case "look":
+          case "weeks":
+            return show(state);
+          case "founding":
+            return show("limited", { tryingOn: "foundersPin" });
+          case "founding-unearned":
+            return show("limited", { tryingOn: "foundersPin", foundingMember: false });
+          case "founding-unearned-scrolling":
+            return show("limited", { tryingOn: "foundersPin", foundingMember: false, scrolled: 0.6 });
+          case "long-name":
+            return show("wardrobe", { tryingOn: "chunkyHeadphones", name: "Wolfgang Wombats" });
+          case "long-name-scrolling":
+            return show("wardrobe", { tryingOn: "chunkyHeadphones", name: "Wolfgang Wombats", scrolled: 0.6 });
+          case "animated":
+            return show("activity", { tryingOn: "angelWings" });
+          case "recap-heavy":
+            return showRecap("heavy");
+          case "recap-light":
+            return showRecap("light");
+          default:
+            return coach.showSnapshotState(state);
+        }
+      },
+    };
   },
-  {
-    title: () => tr("Closet"),
-    summary: () => tr("Name your pet and dress it in items you earn."),
-    shortcutLabel: () => tr("Your pet"),
-  },
+  { snapshotStates: SNAPSHOT_STATES, closedSnapshotStates: PetCoachController.snapshotStates },
 );
-
-export const ClosetModule = defineModule(CLOSET_DESCRIPTOR, () => ({
-  Panel: placeholderPanel(CLOSET_DESCRIPTOR),
-}));

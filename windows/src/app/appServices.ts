@@ -25,8 +25,8 @@ import { ProviderHub } from "./providerHub";
 import { ModuleRegistry } from "./registry";
 import { SettingsStore } from "./settingsStore";
 import { SharedServices } from "./sharedServices";
-import { Observable } from "./store";
-import type { NotchTakeover } from "./takeover";
+import type { Observable } from "./store";
+import { takeoverSlot, type NotchTakeover } from "./takeover";
 import { TickerStore, type TickerAlarm } from "./tickerStore";
 import { hostChannel, quietChannel } from "./windowChannel";
 
@@ -70,8 +70,8 @@ export class AppServices {
   /** The closed island's preview; only the island has one. */
   readonly ticker: TickerStore | undefined;
   readonly environment: AppEnvironment;
-  /** What fills the open island instead of the tabs (first-run setup), or undefined for the tabs. */
-  readonly takeover = new Observable<NotchTakeover | undefined>(undefined);
+  /** What fills the open island instead of the tabs (first-run setup, the weekly recap), or undefined for the tabs: the shared `takeoverSlot`. */
+  readonly takeover: Observable<NotchTakeover | undefined>;
   private readonly stops: (() => void)[] = [];
 
   private constructor(environment: AppEnvironment, types: readonly ModuleType[], alarm: (fire: () => void) => TickerAlarm) {
@@ -79,6 +79,7 @@ export class AppServices {
     this.settings = environment.settings;
     this.providers = environment.providers;
     this.shared = environment.shared;
+    this.takeover = takeoverSlot(environment.shared);
     /* Types the edition leaves out are never created, so they run no code at all. */
     const available = types.filter((type) => environment.settings.catalog.contains(type.descriptor.id));
     this.modules = new ModuleRegistry(

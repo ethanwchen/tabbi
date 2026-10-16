@@ -1248,6 +1248,28 @@
 }
 .kit-primary-pill:disabled {
   opacity: 0.6;
+/* NotchPetWing: the closed island's pet in its fixed box, lifted off the bar's bottom edge. */
+.kit-pet-wing {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  direction: ltr;
+}
+.kit-pet-wing-pet {
+  position: absolute;
+  inset: 0;
+  transform-origin: center;
+}
+.kit-pet-wing-sparkles {
+  position: absolute;
+  top: -4px;
+  left: -12px;
+  pointer-events: none;
+}
+.kit-pet-wing-away {
+  display: grid;
+  place-items: center;
+  color: var(--tertiary-text);
 
 /*
  * Text the user typed or a service sent: each paragraph takes the direction

@@ -248,6 +248,10 @@ export function mockHost(startup: Startup = MOCK_STARTUP, options: MockHostOptio
       return Promise.resolve();
     },
 
+    /* The mock never sees the user's input or apps: the pet coach stays quiet on it. */
+    coachSample: () => answer("coachSample", [], null),
+    savePicture: (name, pngBase64) => answer("savePicture", [name, pngBase64.length], `C:\\Users\\mock\\Pictures\\${name}`),
+
     autostartEnable() {
       autostart = true;
       return answer("autostartEnable", [], undefined);

@@ -4,6 +4,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import type {
   AiLogFile,
   AiPaths,
+  CoachSample,
   Host,
   HostEvent,
   HostSource,
@@ -111,6 +112,9 @@ export function tauriHost(): Host {
     fetchCalendar: (url) => invoke<string>("http_fetch_calendar", { url }),
     setPartyServer: (server) => invoke("http_set_party_server", { server }),
     openUrl: (url) => invoke("open_url", { url }),
+
+    coachSample: () => invoke<CoachSample | null>("coach_sample"),
+    savePicture: (name, pngBase64) => invoke<string>("picture_save", { name, pngBase64 }),
 
     autostartEnable: () => invoke("autostart_enable"),
     autostartDisable: () => invoke("autostart_disable"),

@@ -162,6 +162,22 @@ export interface Host {
   autostartDisable(): Promise<void>;
   autostartIsEnabled(): Promise<boolean>;
 
+  /*
+   * One reading for the pet coach (src-tauri/src/coach.rs): seconds since
+   * the last keyboard or mouse input, and the executable name of the app in
+   * front ("Discord.exe"), never its window title or what it shows. Null
+   * when Windows cannot say.
+   */
+  coachSample(): Promise<CoachSample | null>;
+
+  /*
+   * Writes a PNG (base64) into the user's Pictures folder under `name`, a
+   * plain file name the UI made (src-tauri/src/pictures.rs), replacing a
+   * file of that name, and returns the path it landed at. The one file the
+   * host writes outside Tabbi's own folders: the weekly recap's share image.
+   */
+  savePicture(name: string, pngBase64: string): Promise<string>;
+
   aiPaths(): Promise<AiPaths>;
 
   /*
@@ -336,6 +352,13 @@ export interface HttpStream {
   readonly id: number;
   /* Stops the stream, which then ends with a "cancelled" error; false if it had already ended. */
   cancel(): Promise<boolean>;
+}
+
+/* What the pet coach samples every few seconds during a focus phase. */
+export interface CoachSample {
+  readonly idleSeconds: number;
+  /* The foreground app's executable name, or null when there is none (the desktop) or it cannot be read. */
+  readonly frontmost: string | null;
 }
 
 /* Whose logs: Claude Code's transcripts or Codex's session rollouts. */

@@ -5,6 +5,7 @@
 
 mod ai_paths;
 mod autostart;
+mod coach;
 mod credentials;
 mod error;
 mod http;
@@ -12,6 +13,7 @@ mod media;
 mod notify;
 mod open;
 mod outbox;
+mod pictures;
 mod placement;
 mod shell;
 mod storage;
@@ -717,7 +719,9 @@ pub fn run() {
             shell::open_app,
             shell::notifications_setting,
             ai_paths::ai_logs_list,
-            ai_paths::ai_log_read
+            ai_paths::ai_log_read,
+            coach::coach_sample,
+            pictures::picture_save
         ])
         .setup(|app| setup(app.handle()))
         .build(tauri::generate_context!())

@@ -10,9 +10,11 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { AppServices } from "../app/appServices";
-import { constant } from "../app/store";
+import { celebrationsIn } from "../app/celebrations";
+import type { CelebrationCenter } from "./kit/celebrationCenter";
+import { constant, type Readable } from "../app/store";
 import { tabRequests } from "../app/tabSelection";
-import type { NotchTakeover } from "../app/takeover";
+import { closedOverlaySlot, type ClosedOverlay, type NotchTakeover } from "../app/takeover";
 import type { TickerState } from "../app/tickerStore";
 import { useStore } from "../app/useStore";
 import { tr } from "../core/localization/tr";
@@ -21,9 +23,10 @@ import { panelCanvasSize, panelContentScale } from "../core/settings/panelSize";
 import { tickerItemAction, tickerItemModule, type TickerItem } from "../core/ticker/tickerItem";
 import type { Host, HostEvent, HotkeyStatus } from "../host/host";
 import { Header, HEADER_HEIGHT } from "./Header";
+import { CelebrationStage, type Celebration } from "./kit/Celebration";
 import { useKit } from "./kit/context";
 import { ClosedPreview } from "./shell/ClosedPreview";
-import { hitRect, notchPath, openSilhouette, pillSilhouette, type CanvasSize, type Silhouette } from "./shell/geometry";
+import { hitRect, notchPath, openSilhouette, pillSilhouette, type CanvasSize, type HitRect, type Silhouette } from "./shell/geometry";
 import {
   NOTCH_MODES,
   initialEffects,
@@ -92,6 +95,31 @@ function isNotchMode(value: string | null): value is NotchMode {
   return value !== null && (NOTCH_MODES as readonly string[]).includes(value);
 }
 
+/* The center's current celebration as a readable, so the stage follows it with useStore. */
+function celebrationReadable(center: CelebrationCenter): Readable<Celebration | undefined> {
+  return { get: () => center.current, subscribe: (listener) => center.subscribe(listener) };
+}
+
+/* The smallest rectangle holding both. */
+function union(a: HitRect, b: HitRect): HitRect {
+  const x = Math.min(a.x, b.x);
+  const y = Math.min(a.y, b.y);
+  return { x, y, width: Math.max(a.x + a.width, b.x + b.width) - x, height: Math.max(a.y + a.height, b.y + b.height) - y };
+}
+
+/*
+ * The window region for a closed shape: the pill's (or nothing), grown to
+ * hold a closed-island overlay (the pet coach beside the pill) while one
+ * shows, so it draws and takes clicks there.
+ */
+function closedRegion(shape: "pill" | "none", size: CanvasSize, wings: number, overlay: ClosedOverlay | undefined): HitRect | null {
+  const pill = hitRect("pill", size, wings);
+  const base = shape === "pill" ? pill : null;
+  if (overlay === undefined) return base;
+  const rect = overlay.rect({ pill, canvas: size });
+  return base === null ? rect : union(base, rect);
+}
+
 export function Island({ app, host, initial, still = false, initialTab, locale = "en", preview, takeover: forcedTakeover, mode: forcedMode, showsMore: initialShowsMore = false }: IslandProps) {
   const { reduceMotion } = useKit();
   const settings = useStore(app.settings.settings);
@@ -100,6 +128,14 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
   const snapshot = useStore(app.providers.snapshot);
   const appTakeover = useStore(app.takeover);
   const takeover = forcedTakeover ?? appTakeover;
+  const overlay = useStore(closedOverlaySlot(app.shared));
+  /* The one celebration center: panels are its stage while the island is open. */
+  const celebrations = useMemo(
+    () => celebrationsIn(app.shared, { isSnapshot: app.environment.runMode.isSnapshot, now: app.environment.now, timeZone: app.environment.timeZone }),
+    [app],
+  );
+  const celebrationSource = useMemo(() => celebrationReadable(celebrations), [celebrations]);
+  const celebration = useStore(celebrationSource);
   const catalog = app.settings.catalog;
   const layout = settings.modules;
 
@@ -145,8 +181,10 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
   );
 
   const dispatchRef = useRef<(event: ShellEvent) => void>(() => {});
-  /* What the host's shape effects need now: the canvas and the pill's wings. */
-  const shapeInputs = useRef({ canvas, wing });
+  /* What the host's shape effects need now: the canvas, the pill's wings and the closed overlay. */
+  const shapeInputs = useRef({ canvas, wing, overlay });
+  /* The canvas the host was last sized to, so a new overlay never resizes the window. */
+  const sentCanvas = useRef<CanvasSize | undefined>(undefined);
 
   /* Host calls run one after another, so "open" always lands before "activate". */
   const call = useCallback((run: () => Promise<void>) => {
@@ -158,8 +196,9 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
       for (const effect of effects) {
         switch (effect.type) {
           case "shape": {
-            const { canvas: size, wing: wings } = shapeInputs.current;
-            call(() => host.setShape(effect.shape === "none" ? null : hitRect(effect.shape, size, wings)));
+            const { canvas: size, wing: wings, overlay: shown } = shapeInputs.current;
+            const shape = effect.shape;
+            call(() => host.setShape(shape === "open" ? hitRect("open", size) : closedRegion(shape, size, wings, shown)));
             break;
           }
           case "open":
@@ -206,14 +245,26 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
     dispatchRef.current = dispatch;
   }, [dispatch]);
 
-  /* The canvas follows the panel size; the pill's region follows its wings. */
+  /* The canvas follows the panel size; the pill's region follows its wings and a closed overlay. */
   useEffect(() => {
-    shapeInputs.current = { canvas, wing };
-    call(() => host.setCanvas(canvas.width, canvas.height));
+    shapeInputs.current = { canvas, wing, overlay };
+    if (sentCanvas.current !== canvas) {
+      sentCanvas.current = canvas;
+      call(() => host.setCanvas(canvas.width, canvas.height));
+    }
     const phase = stateRef.current.phase;
     if (phase === "open") call(() => host.setShape(hitRect("open", canvas)));
-    if (phase === "pill") call(() => host.setShape(hitRect("pill", canvas, wing)));
-  }, [call, host, canvas, wing]);
+    if (phase === "pill") call(() => host.setShape(closedRegion("pill", canvas, wing, overlay)));
+    if (phase === "hidden") call(() => host.setShape(closedRegion("none", canvas, wing, overlay)));
+  }, [call, host, canvas, wing, overlay]);
+
+  /* A burst can only be seen over the open panel: the center counts stages so an unseen event uses no allowance. */
+  const stageOpen = state.phase === "open";
+  useEffect(() => {
+    if (!stageOpen) return;
+    celebrations.stageAppeared();
+    return () => celebrations.stageDisappeared();
+  }, [celebrations, stageOpen]);
 
   /* The mode: the user's, unless a development build forces one. */
   const mode = forcedMode ?? devMode ?? islandMode;
@@ -422,10 +473,16 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
             wing={wing}
             catalog={catalog}
             now={app.environment.now()}
+            clock={app.environment.now}
             locale={locale}
             musicWings={musicModule?.musicWings}
             onJoin={(url) => void host.openUrl(url).catch(() => undefined)}
           />
+        </div>
+      )}
+      {overlay !== undefined && state.phase !== "open" && (
+        <div className="closed-overlay">
+          <overlay.Body pill={pill} canvas={canvas} />
         </div>
       )}
       {state.phase === "pill" && (
@@ -475,7 +532,9 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
                 onShowMore={setShowsMore}
               />
               <div className="body">
-                <TabPanels selected={shown} forward={forward} registry={app.modules} catalog={catalog} scale={contentScale} />
+                <CelebrationStage celebration={celebration} className="body-stage">
+                  <TabPanels selected={shown} forward={forward} registry={app.modules} catalog={catalog} scale={contentScale} />
+                </CelebrationStage>
                 {hotkey && !hotkey.registered && (
                   <p className="hotkey-note">{tr("Another app is using Ctrl+Alt+Space, so open Tabbi from its icon in the tray.")}</p>
                 )}

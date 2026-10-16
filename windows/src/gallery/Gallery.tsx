@@ -27,6 +27,7 @@ import { PawLoader, Placeholder, ProgressRing, Shimmer, SkeletonLine, Spinner } 
 import { MarqueeText } from "../ui/kit/MarqueeText";
 import { ModulePlaceholder } from "../ui/kit/ModulePlaceholder";
 import { ModulePreview } from "../ui/kit/ModulePreview";
+import { NotchPetWing } from "../ui/kit/NotchPetWing";
 import { PetSprite, PetView } from "../ui/kit/PetView";
 import { Picker } from "../ui/kit/Picker";
 import { Pill } from "../ui/kit/Pill";
@@ -620,6 +621,12 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
           </Cell>
           <Cell label="PetSprite dog, 3">
             <PetSprite profile={dog} pixelSize={3} />
+          </Cell>
+          <Cell label="NotchPetWing studying" accent="closet">
+            <NotchPetWing profile={dressed} mood="studying" now={() => Date.now() / 1000} />
+          </Cell>
+          <Cell label="NotchPetWing asleep" accent="closet">
+            <NotchPetWing profile={cat} mood="asleep" now={() => Date.now() / 1000} />
           </Cell>
         </Row>
       </Section>

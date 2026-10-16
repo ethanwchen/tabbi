@@ -1,6 +1,78 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "\"%@ misses you. 10 minutes?\" At most once a day, and only if you haven't studied or met your goal yet. Focus assist silences it." : {
+      "comment" : "Settings > Pet Coach > Daily reminder footer on Windows (Focus assist is Windows' Do not disturb). %@ is the pet's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@ يشتاق إليك. 10 دقائق؟\" مرة واحدة في اليوم على الأكثر، وفقط إذا لم تدرس أو تحقق هدفك بعد. وضع التركيز يكتمها."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@ vermisst dich. 10 Minuten?\" Höchstens einmal am Tag, und nur wenn du noch nicht gelernt oder dein Ziel erreicht hast. Der Benachrichtigungsassistent schaltet sie stumm."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@ te echa de menos. ¿10 minutos?\" Como mucho una vez al día, y solo si aún no has estudiado ni cumplido tu meta. La asistencia de concentración lo silencia."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"Miss ka na ni %@. 10 minuto?\" Isang beses lang kada araw, at kung hindi ka pa nag-aaral o naabot ang goal mo. Pinapatahimik ito ng Focus assist."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@ s'ennuie de toi. 10 minutes ?\" Au plus une fois par jour, et seulement si tu n'as pas encore étudié ni atteint ton objectif. L'assistant de concentration le met en sourdine."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@が寂しがってるよ。10分だけ？」1日1回まで、まだ勉強も目標達成もしていないときだけ。集中モード中は鳴りません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@이(가) 보고 싶어 해요. 10분만?\" 하루 한 번까지, 아직 공부하지 않았거나 목표를 채우지 않았을 때만요. 집중 지원이 켜져 있으면 조용히 해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@ sente sua falta. 10 minutos?\" No máximo uma vez por dia, e só se você ainda não estudou nem bateu sua meta. O assistente de foco silencia o aviso."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@ скучает. 10 минут?\" Не чаще раза в день и только если ты ещё не занимался и не выполнил цель. Помощник концентрации его отключает."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@ 想你了。来 10 分钟？\" 每天最多一次，而且只在你还没学习、也没达成目标时。专注助手会将它静音。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@ 想你了。來 10 分鐘？\" 每天最多一次，而且只在你還沒讀書、也沒達成目標時。專注輔助會將它靜音。"
+          }
+        }
+      }
+    },
     "%@ (%lld min)" : {
       "comment" : "Timer tab, Custom lengths: a stepper tooltip with its step. %1$@ is a phrase such as Shorter focus, %2$lld the minutes one click moves.",
       "extractionState" : "manual",
@@ -218,6 +290,78 @@
         }
       },
       "generatesSymbol" : false
+    },
+    "%@ is ready to unlock" : {
+      "comment" : "Closet > Wardrobe footer tooltip: the next item can be bought now. %@ is the item's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ جاهز للفتح"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kann jetzt freigeschaltet werden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ya se puede desbloquear"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puwede nang i-unlock ang %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ est prêt à être débloqué"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をアンロックできます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@을(를) 지금 열 수 있어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ já pode ser desbloqueado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ можно открыть прямо сейчас"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 现在可以解锁了"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 現在可以解鎖了"
+          }
+        }
+      }
     },
     "%@ isn't a calendar link" : {
       "comment" : "Settings > Connections: the Calendar row's headline when a link doesn't work as a calendar. %@ is the name the user gave the calendar.",
@@ -809,6 +953,78 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "%lld more points: %@ at a typical study pace" : {
+      "comment" : "Closet > Wardrobe footer tooltip: points still missing for the next item, and the study it takes. %@ is a study length such as \"3 focus blocks\".",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld نقطة إضافية: %@ بوتيرة دراسة معتادة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch %lld Punkte: %@ bei normalem Lerntempo"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld puntos más: %@ a un ritmo de estudio normal"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pa na puntos: %@ sa karaniwang bilis ng pag-aaral"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld points de plus : %@ à un rythme d'étude normal"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あと%lldポイント：いつものペースなら%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld점 더: 평소 공부 속도로 %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais %lld pontos: %@ em um ritmo normal de estudo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ещё %lld очков: %@ при обычном темпе занятий"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还差 %lld 点：按平常的学习节奏约 %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "還差 %lld 點：按平常的讀書節奏約 %@"
           }
         }
       }
@@ -1606,6 +1822,78 @@
         }
       }
     },
+    "Add an app by its program name" : {
+      "comment" : "Settings > Pet Coach: the row where the user types a distracting app's executable name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أضف تطبيقًا باسم برنامجه"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App über ihren Programmnamen hinzufügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir una app por el nombre de su programa"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Magdagdag ng app gamit ang pangalan ng program nito"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter une app par le nom de son programme"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プログラム名でアプリを追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "프로그램 이름으로 앱 추가"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar um app pelo nome do programa"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить приложение по имени программы"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按程序名添加应用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按程式名稱加入 App"
+          }
+        }
+      }
+    },
     "Add every block to Today" : {
       "comment" : "Plan my day on Windows: the Add all button's tooltip. Today is the tab's name.",
       "extractionState" : "manual",
@@ -2254,6 +2542,78 @@
         }
       }
     },
+    "An extra freeze costs %lld points: %lld more, %@ at a typical study pace" : {
+      "comment" : "Closet > Streak: the Buy freeze button's tooltip while points are short. %@ is a study length such as \"about 2 study days\".",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التجميد الإضافي يكلف %lld نقطة: ينقصك %lld، أي %@ بوتيرة دراسة معتادة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein zusätzliches Einfrieren kostet %lld Punkte: noch %lld, %@ bei normalem Lerntempo"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una congelación extra cuesta %lld puntos: te faltan %lld, %@ a un ritmo de estudio normal"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld puntos ang isang extra freeze: %lld pa, %@ sa karaniwang bilis ng pag-aaral"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un gel supplémentaire coûte %lld points : il t'en manque %lld, %@ à un rythme d'étude normal"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加のフリーズは%lldポイント：あと%lld、いつものペースなら%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추가 프리즈는 %lld점이에요: %lld점 더, 평소 공부 속도로 %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um congelamento extra custa %lld pontos: faltam %lld, %@ em um ritmo normal de estudo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дополнительная заморозка стоит %lld очков: не хватает %lld, это %@ при обычном темпе"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "额外冻结需要 %lld 点：还差 %lld，按平常的学习节奏约 %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "額外凍結需要 %lld 點：還差 %lld，按平常的讀書節奏約 %@"
+          }
+        }
+      }
+    },
     "Another app is using Ctrl+Alt+Space, so open Tabbi from its icon in the tray." : {
       "comment" : "Shown when the global hotkey cannot be registered because another app owns it. Name the keys as the language's Windows keyboards label them, and the tray as Windows calls the notification area in that language.",
       "extractionState" : "manual",
@@ -2826,6 +3186,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "時段會加入「今天」。"
+          }
+        }
+      }
+    },
+    "Buy an extra freeze for %lld points. It protects a missed day once this week's free freeze is used." : {
+      "comment" : "Closet > Streak: the Buy freeze button's tooltip when it can be bought.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اشترِ تجميدًا إضافيًا مقابل %lld نقطة. يحمي يومًا فائتًا بعد استخدام التجميد المجاني لهذا الأسبوع."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein zusätzliches Einfrieren für %lld Punkte kaufen. Es schützt einen verpassten Tag, sobald das kostenlose dieser Woche verbraucht ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compra una congelación extra por %lld puntos. Protege un día perdido cuando ya usaste la gratuita de esta semana."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bumili ng extra freeze sa %lld puntos. Pinoprotektahan nito ang isang na-miss na araw kapag nagamit na ang libreng freeze ngayong linggo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acheter un gel supplémentaire pour %lld points. Il protège un jour manqué une fois le gel gratuit de la semaine utilisé."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lldポイントで追加のフリーズを買います。今週の無料フリーズを使ったあと、逃した日を1日守ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld점으로 추가 프리즈를 사요. 이번 주 무료 프리즈를 쓰고 나면 놓친 하루를 지켜 줘요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compre um congelamento extra por %lld pontos. Ele protege um dia perdido depois que o grátis desta semana for usado."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Купить дополнительную заморозку за %lld очков. Она сохранит пропущенный день, когда бесплатная на этой неделе уже использована."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 %lld 点购买额外冻结。本周免费冻结用完后，它会保住一个错过的日子。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 %lld 點購買額外凍結。本週免費凍結用完後，它會保住一個錯過的日子。"
           }
         }
       }
@@ -4702,6 +5134,78 @@
         }
       }
     },
+    "Copied to the clipboard" : {
+      "comment" : "The weekly recap: the line after its image was copied.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم النسخ إلى الحافظة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In die Zwischenablage kopiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado al portapapeles"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakopya sa clipboard"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copié dans le presse-papiers"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボードにコピーしました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립보드에 복사했어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado para a área de transferência"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скопировано в буфер обмена"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制到剪贴板"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已複製到剪貼簿"
+          }
+        }
+      }
+    },
     "Copies the address. Email the %@ team about a bug or anything else" : {
       "comment" : "Settings > About: tooltip on the support address in a build without Party. %@ is the app name.",
       "extractionState" : "manual",
@@ -4842,6 +5346,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "複製位址。就錯誤、Party 中的某人或其他任何事給 %@ 團隊寄信"
+          }
+        }
+      }
+    },
+    "Copy %@" : {
+      "comment" : "The weekly recap's share menu: copy the image in a shape. %@ is \"Square (1:1)\" or \"Story (9:16)\".",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نسخ %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kopieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopyahin ang %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をコピー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 복사"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скопировать %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制 %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "複製 %@"
           }
         }
       }
@@ -7726,6 +8302,78 @@
         }
       }
     },
+    "Let your pet walk out of the island when you drift during a focus phase" : {
+      "comment" : "Settings > Pet Coach: the nudges switch's tooltip on Windows (the island is the Mac's notch).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دع حيوانك الأليف يخرج من الجزيرة عندما تشرد أثناء مرحلة التركيز"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Haustier läuft aus der Insel heraus, wenn du in einer Fokusphase abschweifst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deja que tu mascota salga de la isla cuando te distraigas en una fase de concentración"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hayaang lumabas ang alaga mo sa island kapag nawala ang focus mo sa isang focus phase"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laisse ton animal sortir de l'île quand tu décroches pendant une phase de concentration"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "集中中に気がそれたら、ペットがアイランドから出てきます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "집중 중에 딴 데로 새면 펫이 아일랜드 밖으로 걸어 나와요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixe seu pet sair da ilha quando você se distrair em uma fase de foco"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Питомец выйдет из островка, когда ты отвлечёшься во время фазы фокуса"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "专注时走神，就让宠物从小岛走出来"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "專注時分心，就讓寵物從小島走出來"
+          }
+        }
+      }
+    },
     "Licenses" : {
       "comment" : "Settings > About: the licenses row and sheet title.",
       "extractionState" : "manual",
@@ -7794,6 +8442,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "授權"
+          }
+        }
+      }
+    },
+    "Limited edition items, earned by studying, never sold" : {
+      "comment" : "Closet: the Limited section pill's tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عناصر محدودة الإصدار، تُكتسب بالدراسة ولا تُباع أبدًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limitierte Stücke, durch Lernen verdient, nie verkauft"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Artículos de edición limitada, ganados estudiando, nunca en venta"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mga limited edition na item, kinikita sa pag-aaral, hindi kailanman binebenta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objets en édition limitée, gagnés en étudiant, jamais vendus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "限定アイテム。勉強で手に入り、販売はされません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한정판 아이템, 공부로만 얻고 팔지 않아요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Itens de edição limitada, ganhos estudando, nunca vendidos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лимитированные предметы: заработаны учёбой, никогда не продаются"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "限定物品，靠学习获得，从不出售"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "限定物品，靠讀書獲得，從不出售"
           }
         }
       }
@@ -8010,6 +8730,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在尋找媒體 App"
+          }
+        }
+      }
+    },
+    "Make your pet a %@" : {
+      "comment" : "Closet > Look: the species pill's tooltip. %@ is \"cat\" or \"dog\" in lower case.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اجعل حيوانك الأليف %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus deinem Haustier wird: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convierte a tu mascota en %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gawing %@ ang alaga mo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faire de ton animal un %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペットを%@にする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "펫을 %@(으)로 바꾸기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transformar seu pet em %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сделать питомца: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把宠物变成%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把寵物變成%@"
           }
         }
       }
@@ -8514,6 +9306,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "新分頁會連線到 %@。"
+          }
+        }
+      }
+    },
+    "Next breed" : {
+      "comment" : "Closet > Look: the breed arrow's tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "السلالة التالية"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächste Rasse"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguiente raza"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Susunod na breed"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Race suivante"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次の品種"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 품종"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próxima raça"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Следующая порода"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下一个品种"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下一個品種"
           }
         }
       }
@@ -11471,6 +12335,78 @@
         }
       }
     },
+    "Outfits and accessories to unlock with study points" : {
+      "comment" : "Closet: the Wardrobe section pill's tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أزياء وإكسسوارات تفتحها بنقاط الدراسة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outfits und Accessoires, die du mit Lernpunkten freischaltest"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trajes y accesorios para desbloquear con puntos de estudio"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mga outfit at accessory na mau-unlock gamit ang study points"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tenues et accessoires à débloquer avec des points d'étude"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "勉強ポイントでアンロックできる衣装とアクセサリー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공부 포인트로 여는 옷과 액세서리"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Roupas e acessórios para desbloquear com pontos de estudo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Наряды и аксессуары, которые открываются за очки учёбы"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用学习点数解锁的服装和配饰"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用讀書點數解鎖的服裝和配件"
+          }
+        }
+      }
+    },
     "Paste a key in Connections to ask %@ questions. It stays in Windows Credential Manager." : {
       "comment" : "Ask AI setup sentence on Windows; %@ is the assistant name. Credential Manager is named as Windows names it in each language.",
       "extractionState" : "manual",
@@ -11971,6 +12907,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "按下新的快速鍵，或按 Esc 取消"
+          }
+        }
+      }
+    },
+    "Previous breed" : {
+      "comment" : "Closet > Look: the breed arrow's tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "السلالة السابقة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorherige Rasse"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raza anterior"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakaraang breed"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Race précédente"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前の品種"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전 품종"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raça anterior"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Предыдущая порода"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上一个品种"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上一個品種"
+          }
+        }
+      }
+    },
+    "Program name" : {
+      "comment" : "Settings > Pet Coach: the accessible name of the field for a distracting app's executable name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسم البرنامج"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programmname"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre del programa"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pangalan ng program"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nom du programme"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プログラム名"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "프로그램 이름"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome do programa"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Имя программы"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "程序名"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "程式名稱"
           }
         }
       }
@@ -12623,6 +13703,78 @@
         }
       }
     },
+    "Save %@ to Pictures" : {
+      "comment" : "The weekly recap's share menu: save the image in a shape into the Pictures folder. %@ is \"Square (1:1)\" or \"Story (9:16)\".",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حفظ %@ في مجلد الصور"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ unter Bilder speichern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar %@ en Imágenes"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-save ang %@ sa Pictures"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer %@ dans Images"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@をピクチャに保存"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@을(를) 사진 폴더에 저장"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvar %@ em Imagens"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохранить %@ в «Изображения»"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将 %@ 保存到\"图片\""
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將 %@ 儲存到「圖片」"
+          }
+        }
+      }
+    },
     "Save the update and set your tabs up the way it does" : {
       "comment" : "Kit import review: tooltip on Apply Update.",
       "extractionState" : "manual",
@@ -12983,6 +14135,78 @@
         }
       }
     },
+    "Saved to Pictures" : {
+      "comment" : "The weekly recap: the line after its image was saved into the Pictures folder.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم الحفظ في مجلد الصور"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unter Bilder gespeichert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardado en Imágenes"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na-save sa Pictures"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistré dans Images"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピクチャに保存しました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진 폴더에 저장했어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvo em Imagens"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохранено в «Изображения»"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已保存到\"图片\""
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已儲存到「圖片」"
+          }
+        }
+      }
+    },
     "Scroll to Integrate calendar and copy the Secret address in iCal format." : {
       "comment" : "Settings > Connections: a step of the Google Calendar walkthrough. \"Integrate calendar\" and \"Secret address in iCal format\" are Google Calendar's labels; use its names in each language.",
       "extractionState" : "manual",
@@ -13199,6 +14423,78 @@
         }
       }
     },
+    "Share your week as an image" : {
+      "comment" : "The weekly recap's share button tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شارك أسبوعك كصورة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Woche als Bild teilen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte tu semana como imagen"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-share ang linggo mo bilang larawan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partager ta semaine en image"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今週を画像でシェア"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주를 이미지로 공유"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhe sua semana como imagem"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поделиться неделей картинкой"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把这一周分享成图片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把這一週分享成圖片"
+          }
+        }
+      }
+    },
     "Shorter %@" : {
       "comment" : "Timer tab, Custom lengths: tooltip of the minus button. %@ is a lowercase noun: focus, break or long break.",
       "extractionState" : "manual",
@@ -13267,6 +14563,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "縮短%@"
+          }
+        }
+      }
+    },
+    "Show %@ and try it on" : {
+      "comment" : "Closet > Wardrobe footer link tooltip: scroll the next item into view and try it on the pet. %@ is the item's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اعرض %@ وجرّبه"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ zeigen und anprobieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar %@ y probárselo"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ipakita ang %@ at subukan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher %@ et l'essayer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@を表示して試着"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 보여 주고 입혀 보기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar %@ e experimentar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать %@ и примерить"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示 %@ 并试穿"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示 %@ 並試穿"
           }
         }
       }
@@ -13555,6 +14923,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已略過"
+          }
+        }
+      }
+    },
+    "Species, breed and fur color" : {
+      "comment" : "Closet: the Look section pill's tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "النوع والسلالة ولون الفراء"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tierart, Rasse und Fellfarbe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Especie, raza y color del pelaje"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uri, breed at kulay ng balahibo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espèce, race et couleur du pelage"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "種類、品種、毛の色"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "종, 품종, 털 색"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espécie, raça e cor do pelo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вид, порода и цвет шерсти"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "种类、品种和毛色"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "種類、品種和毛色"
           }
         }
       }
@@ -14495,6 +15935,78 @@
         }
       }
     },
+    "The name of its program file, such as Discord.exe" : {
+      "comment" : "Settings > Pet Coach: the help line under the field for a distracting app's executable name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسم ملف برنامجه، مثل Discord.exe"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Name seiner Programmdatei, etwa Discord.exe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El nombre de su archivo de programa, como Discord.exe"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang pangalan ng program file nito, gaya ng Discord.exe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le nom de son fichier programme, par exemple Discord.exe"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プログラムファイルの名前（例：Discord.exe）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "프로그램 파일 이름, 예를 들어 Discord.exe"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O nome do arquivo do programa, como Discord.exe"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Имя файла программы, например Discord.exe"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "它的程序文件名，例如 Discord.exe"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "它的程式檔名，例如 Discord.exe"
+          }
+        }
+      }
+    },
     "The pause after each block" : {
       "comment" : "Timer tab, Custom lengths: tooltip of the Break card.",
       "extractionState" : "manual",
@@ -15211,6 +16723,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今天的行程和中間的空閒時間。在設定中加入行事曆連結後就會顯示在這裡。"
+          }
+        }
+      }
+    },
+    "Today: no study yet" : {
+      "comment" : "Closet > Streak: today's dot tooltip while the day has no study yet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اليوم: لا دراسة بعد"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heute: noch nicht gelernt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoy: todavía sin estudiar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngayon: wala pang pag-aaral"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aujourd'hui : pas encore étudié"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日：まだ勉強していません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘: 아직 공부 전"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoje: ainda sem estudo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сегодня: пока без занятий"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天：还没学习"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天：還沒讀書"
           }
         }
       }
@@ -16079,6 +17663,78 @@
         }
       }
     },
+    "When the reminder can come, in your PC's time zone" : {
+      "comment" : "Settings > Pet Coach > Daily reminder: the time row's tooltip on Windows.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متى يمكن أن يصل التذكير، بالمنطقة الزمنية لجهازك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wann die Erinnerung kommen darf, in der Zeitzone deines PCs"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuándo puede llegar el recordatorio, en la zona horaria de tu PC"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kung kailan puwedeng dumating ang paalala, sa time zone ng PC mo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand le rappel peut arriver, dans le fuseau horaire de ton PC"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リマインダーが届く時刻（PCのタイムゾーン）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림이 올 수 있는 시각, PC의 시간대 기준"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando o lembrete pode chegar, no fuso horário do seu PC"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Когда может прийти напоминание, по часовому поясу ПК"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提醒可以到来的时间，按电脑的时区"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提醒可以出現的時間，按電腦的時區"
+          }
+        }
+      }
+    },
     "Windows didn't accept the change. Try again from Settings > General." : {
       "comment" : "Shown when turning Start with Windows on or off failed.",
       "extractionState" : "manual",
@@ -16655,6 +18311,78 @@
         }
       }
     },
+    "You hold %lld extra freezes, the most at once" : {
+      "comment" : "Closet > Streak: the Buy freeze button's tooltip while the most extra freezes are held.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لديك %lld تجميدات إضافية، وهو الحد الأقصى في المرة الواحدة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast %lld zusätzliche Einfrierungen, mehr geht nicht auf einmal"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tienes %lld congelaciones extra, el máximo a la vez"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "May %lld extra freeze ka na, ang pinakamarami nang sabay"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu as %lld gels supplémentaires, le maximum à la fois"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加のフリーズを%lld個持っています。これが上限です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추가 프리즈를 %lld개 갖고 있어요, 한 번에 가질 수 있는 최대예요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você tem %lld congelamentos extras, o máximo de uma vez"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У тебя %lld дополнительных заморозок, больше за раз не бывает"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你已持有 %lld 个额外冻结，这是同时持有的上限"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你已持有 %lld 個額外凍結，這是同時持有的上限"
+          }
+        }
+      }
+    },
     "Your %@ key. It is kept in Credential Manager." : {
       "comment" : "Settings > Connections > AI: tooltip on the key field. %@ is the provider's name.",
       "extractionState" : "manual",
@@ -17015,6 +18743,150 @@
         }
       }
     },
+    "Your study day by day, with the time studied on each" : {
+      "comment" : "Closet: the Activity section pill's tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دراستك يومًا بيوم، مع وقت الدراسة في كل يوم"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Lernen Tag für Tag, mit der Lernzeit an jedem"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu estudio día a día, con el tiempo estudiado en cada uno"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang pag-aaral mo araw-araw, kasama ang oras na ginugol sa bawat isa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton étude jour par jour, avec le temps étudié chaque jour"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1日ごとの勉強と、その日に勉強した時間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하루하루의 공부와 각 날의 공부 시간"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu estudo dia a dia, com o tempo estudado em cada um"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твоя учёба день за днём, со временем занятий в каждый"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你每一天的学习，以及每天学了多久"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你每一天的讀書，以及每天讀了多久"
+          }
+        }
+      }
+    },
+    "Your study streak and the freezes that protect it" : {
+      "comment" : "Closet: the Streak section pill's tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سلسلة دراستك والتجميدات التي تحميها"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Lernserie und die Einfrierungen, die sie schützen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu racha de estudio y las congelaciones que la protegen"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang study streak mo at ang mga freeze na nagpoprotekta dito"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta série d'étude et les gels qui la protègent"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "勉強の連続記録と、それを守るフリーズ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공부 연속 기록과 그것을 지키는 프리즈"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua sequência de estudo e os congelamentos que a protegem"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твоя серия занятий и заморозки, которые её берегут"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的学习连续记录和保护它的冻结"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的讀書連續紀錄和保護它的凍結"
+          }
+        }
+      }
+    },
     "Your tabs stay on." : {
       "comment" : "Kit import review: the Tabs row when the kit changes no tab.",
       "extractionState" : "manual",
@@ -17083,6 +18955,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的分頁保持開啟。"
+          }
+        }
+      }
+    },
+    "Your weekly recaps with your pet" : {
+      "comment" : "Closet: the Weeks section pill's tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ملخصاتك الأسبوعية مع حيوانك الأليف"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Wochenrückblicke mit deinem Haustier"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus resúmenes semanales con tu mascota"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang mga weekly recap mo kasama ang alaga mo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tes bilans de la semaine avec ton animal"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペットと振り返る1週間のまとめ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "펫과 함께 보는 주간 요약"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus resumos da semana com seu pet"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твои итоги недели вместе с питомцем"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "和宠物一起的每周回顾"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "和寵物一起的每週回顧"
           }
         }
       }
@@ -17231,6 +19175,150 @@
         }
       }
     },
+    "focused this week" : {
+      "comment" : "The weekly recap's share image: the caption under the hours when the pet is turned off.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "من التركيز هذا الأسبوع"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "diese Woche fokussiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de concentración esta semana"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "na-focus ngayong linggo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de concentration cette semaine"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今週の集中時間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 집중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de foco nesta semana"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "фокуса на этой неделе"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本周专注"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本週專注"
+          }
+        }
+      }
+    },
+    "focused with %@" : {
+      "comment" : "The weekly recap's share image: the caption under the hours. %@ is the pet's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "من التركيز مع %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fokussiert mit %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de concentración con %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "na-focus kasama si %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de concentration avec %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@と集中した時間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@과(와) 함께 집중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de foco com %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "фокуса вместе с %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "和 %@ 一起专注"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "和 %@ 一起專注"
+          }
+        }
+      }
+    },
     "its module" : {
       "comment" : "Settings > General > Live activity: fallback for a module name in 'Add %@ in Tabs to include this'.",
       "extractionState" : "manual",
@@ -17375,6 +19463,150 @@
         }
       }
     },
+    "missed, a streak freeze kept the streak" : {
+      "comment" : "Closet > Streak: a frozen day's tooltip, after the date and a colon.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فائت، وحافظ التجميد على السلسلة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "verpasst, ein Einfrieren hat die Serie gehalten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "perdido, una congelación mantuvo la racha"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "na-miss, pinanatili ng freeze ang streak"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "manqué, un gel a maintenu la série"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お休み。フリーズが連続記録を守りました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "놓쳤지만 프리즈가 연속 기록을 지켰어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "perdido, um congelamento manteve a sequência"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "пропущен, заморозка сохранила серию"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "错过，冻结保住了连续记录"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "錯過，凍結保住了連續紀錄"
+          }
+        }
+      }
+    },
+    "no study" : {
+      "comment" : "Closet > Streak: a missed day's tooltip, after the date and a colon.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا دراسة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nicht gelernt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sin estudiar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "walang pag-aaral"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pas d'étude"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "勉強なし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공부 안 함"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sem estudo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "без занятий"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有学习"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有讀書"
+          }
+        }
+      }
+    },
     "rounds between long breaks" : {
       "comment" : "Timer tab, Custom lengths: lowercase noun filled into Fewer %@ and More %@.",
       "extractionState" : "manual",
@@ -17443,6 +19675,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "長休息之間的輪數"
+          }
+        }
+      }
+    },
+    "studied" : {
+      "comment" : "Closet > Streak: a study day's tooltip, after the date and a colon.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تمت الدراسة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gelernt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "estudiado"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nag-aral"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "étudié"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "勉強しました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공부함"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "estudado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "занимался"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "学习了"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "讀書了"
           }
         }
       }

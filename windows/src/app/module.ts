@@ -107,6 +107,12 @@ export interface ModuleType {
   create(context: ModuleContext): TabbiModule;
   /** Extra named states the snapshot harness renders besides the default one, such as "empty" or "running". */
   readonly snapshotStates?: readonly string[];
+  /**
+   * Named states drawn with the island closed (the pill with the ticker's
+   * demo preview), for what a module shows beside the closed island: the pet
+   * coach's bubbles. `showSnapshotState` handles these names too.
+   */
+  readonly closedSnapshotStates?: readonly string[];
 }
 
 /**
@@ -131,13 +137,14 @@ export interface DefinedModule<M extends TabbiModule> extends ModuleType {
 export function defineModule<M extends Omit<TabbiModule, "descriptor">>(
   descriptor: ModuleDescriptor,
   create: (context: ModuleContext) => M,
-  options: { readonly snapshotStates?: readonly string[] } = {},
+  options: { readonly snapshotStates?: readonly string[]; readonly closedSnapshotStates?: readonly string[] } = {},
 ): DefinedModule<M & { readonly descriptor: ModuleDescriptor }> {
   return {
     descriptor,
     /* Assigned rather than spread, so a module written as a class keeps its prototype's methods. */
     create: (context) => Object.assign(create(context), { descriptor }),
     ...(options.snapshotStates === undefined ? {} : { snapshotStates: options.snapshotStates }),
+    ...(options.closedSnapshotStates === undefined ? {} : { closedSnapshotStates: options.closedSnapshotStates }),
   };
 }
 
