@@ -223,9 +223,9 @@
   opacity: 1;
 }
 
-.np-transport .np-play,
-.np-transport .np-play:hover,
-.np-transport .np-play[data-hover="true"] {
+.np-panel .np-transport .np-play,
+.np-panel .np-transport .np-play:hover,
+.np-panel .np-transport .np-play[data-hover="true"] {
   background: var(--primary-text);
   color: var(--background);
 }
