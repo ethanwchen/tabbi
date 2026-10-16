@@ -166,7 +166,7 @@
 }
 
 /* Transport and mode buttons sit on nothing at rest (no glass rim either) and on the hover surface when hovered. */
-.np-transport .kit-icon-button {
+.np-panel .np-transport .kit-icon-button {
   background: transparent;
   box-shadow: none;
   color: var(--secondary-text);
