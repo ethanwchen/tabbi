@@ -60,6 +60,11 @@ describe.skipIf(!hasFfmpeg)("cafe loop decoded with ffmpeg", () => {
     return new Float32Array(raw.buffer, raw.byteOffset, raw.byteLength / 4);
   };
 
+  /*
+   * Decoding two minutes of audio and sorting 5.76 million steps takes a
+   * second or two alone and several times that on a busy machine, well past
+   * Vitest's 5 s default, so this test has a budget of its own (below).
+   */
   it("is exactly 5,760,000 samples at 48 kHz, wraps with no seam, and plays at the shared loudness", () => {
     const decoded = decode();
     const window = gaplessWindow(decoded.length, readMp4AudioTiming(bytes)?.gapless);
@@ -80,10 +85,5 @@ describe.skipIf(!hasFfmpeg)("cafe loop decoded with ffmpeg", () => {
     expect(rms(scaled)).toBeCloseTo(NOISE_TARGET_RMS, 4);
     const trimmed = Float32Array.from(scaled.subarray(0, FOCUS_SAMPLE_RATE * 30), (value) => value * loudnessGain("cafe"));
     expect(Math.abs(loudness(trimmed) - -17)).toBeLessThan(1);
-    /*
-     * Decoding two minutes of audio and sorting 5.76 million steps takes a
-     * second or two alone and several times that on a busy machine, well past
-     * Vitest's 5 s default, so this test has a budget of its own.
-     */
   }, 60_000);
 });
