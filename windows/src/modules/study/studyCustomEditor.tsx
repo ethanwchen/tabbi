@@ -54,7 +54,7 @@ export function StudyCustomEditor({ store, close }: { store: StudyStore; close: 
               <span className="kit-caption kit-tertiary">{tr("Long break")}</span>
               <span className="study-spacer" />
               <CapsuleToggle
-                title={isOn ? tr("On") : tr("Off")}
+                title={isOn ? tr("switch.on") : tr("Off")}
                 symbol="cup.and.saucer"
                 isOn={isOn}
                 help={isOn ? tr("Turn the long break off") : tr("Take a longer break every few rounds")}

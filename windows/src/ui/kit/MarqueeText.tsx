@@ -18,6 +18,8 @@ import { Tooltip } from "./Tooltip";
 export interface MarqueeProps {
   /** The whole line as plain text, for the tooltip and the accessible name. */
   readonly text: string;
+  /** The line's own direction; "auto" lets a Latin name read left to right inside an Arabic panel. */
+  readonly dir?: "ltr" | "rtl" | "auto";
   /** A tooltip to show at all times, in place of the full text (which shows only while the line overflows). */
   readonly help?: string;
   readonly className?: string;
@@ -33,7 +35,7 @@ export function marqueeMask(leading: number, trailing: number, direction: "ltr" 
   return `linear-gradient(${toEnd}, transparent 0%, black ${l}%, black ${t}%, transparent 100%)`;
 }
 
-export function Marquee({ text, help, className, style, children }: MarqueeProps) {
+export function Marquee({ text, help, dir, className, style, children }: MarqueeProps) {
   const { reduceMotion, still, marqueeScrolled } = useKit();
   const container = useRef<HTMLSpanElement>(null);
   const line = useRef<HTMLSpanElement>(null);
@@ -144,6 +146,7 @@ export function Marquee({ text, help, className, style, children }: MarqueeProps
         ref={container}
         className={["kit-marquee", className].filter(Boolean).join(" ")}
         data-overflows={overflow > 0 || undefined}
+        dir={dir}
         style={style}
         aria-label={text}
         onPointerEnter={onEnter}
@@ -160,10 +163,11 @@ export function Marquee({ text, help, className, style, children }: MarqueeProps
 export interface MarqueeTextProps {
   readonly text: string;
   readonly help?: string;
+  readonly dir?: "ltr" | "rtl" | "auto";
   readonly className?: string;
   readonly style?: CSSProperties;
 }
 
-export function MarqueeText({ text, help, className, style }: MarqueeTextProps) {
-  return <Marquee text={text} help={help} className={className} style={style} />;
+export function MarqueeText({ text, help, dir, className, style }: MarqueeTextProps) {
+  return <Marquee text={text} help={help} dir={dir} className={className} style={style} />;
 }

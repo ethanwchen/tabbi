@@ -13,7 +13,7 @@
  * settings and its tooltip says why.
  */
 
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { useStore } from "../../app/useStore";
 import { FocusMix } from "../../core/focus/focusMix";
 import { MAX_PRESET_NAME_LENGTH } from "../../core/focus/focusMixPreset";
@@ -75,6 +75,8 @@ export interface StudySoundMixerProps {
 export function StudySoundMixer({ focus, close }: StudySoundMixerProps) {
   const { settings, isPreviewing, isFocusing } = useStore(focus);
   const mix = settings.mix;
+  /* A name too long for its tile in the user's language ("Braunrauschen") drops every tile's icon, as the Mac's ViewThatFits does. */
+  const [showsIcons, setShowsIcons] = useState(true);
   useEffect(() => () => focus.setPreviewing(false), [focus]);
   const previewHelp = isFocusing
     ? tr("Already playing during focus")
@@ -118,6 +120,8 @@ export function StudySoundMixer({ focus, close }: StudySoundMixerProps) {
                 sound={sound}
                 level={mix.level(sound)}
                 canAdd={mix.canAddLayer}
+                showsIcon={showsIcons}
+                onOverflow={() => setShowsIcons(false)}
                 toggle={() => focus.toggleSound(sound)}
                 setLevel={(level) => focus.setLevel(level, sound)}
               />
@@ -276,24 +280,41 @@ function StudyMixTile({
   sound,
   level,
   canAdd,
+  showsIcon,
+  onOverflow,
   toggle,
   setLevel,
 }: {
   sound: FocusSound;
   level: number | undefined;
   canAdd: boolean;
+  showsIcon: boolean;
+  /** Called when the name does not fit beside its icon. */
+  onOverflow: () => void;
   toggle: () => void;
   setLevel: (level: number) => void;
 }) {
   const isOn = level !== undefined;
+  const button = useRef<HTMLButtonElement>(null);
+  useLayoutEffect(() => {
+    if (!showsIcon) return;
+    const measure = () => {
+      const outer = button.current?.querySelector<HTMLElement>(".kit-marquee");
+      const line = button.current?.querySelector<HTMLElement>(".kit-marquee-line");
+      if (outer && line && line.scrollWidth > outer.clientWidth + 0.5) onOverflow();
+    };
+    measure();
+    /* The web font may land after the first layout. */
+    if (typeof document !== "undefined" && "fonts" in document) void document.fonts.ready.then(measure);
+  }, [showsIcon, onOverflow, sound]);
   const isEnabled = isOn || canAdd;
   const name = focusSoundDisplayName(sound);
   const help = isOn ? tr("Remove %@ from the blend", name) : !isEnabled ? tr("Blend up to %lld sounds; remove one first", FocusMix.maxLayers) : tr("Add %@ to the blend", name);
   return (
     <div className="study-mix-tile" data-on={isOn} data-enabled={isEnabled}>
       <Tooltip text={help}>
-        <button type="button" className="study-mix-tile-name" role="switch" aria-checked={isOn} disabled={!isEnabled} onClick={toggle}>
-          <Icon id={focusSoundSymbolName(sound)} size={10} className="study-mix-tile-icon" />
+        <button ref={button} type="button" className="study-mix-tile-name" role="switch" aria-checked={isOn} disabled={!isEnabled} onClick={toggle}>
+          {showsIcon && <Icon id={focusSoundSymbolName(sound)} size={10} className="study-mix-tile-icon" />}
           <MarqueeText text={name} className="study-mix-tile-title" />
         </button>
       </Tooltip>
@@ -364,7 +385,7 @@ function StudyPlaylistRow({ name, detail, isOn, help, action }: { name: string; 
     <Tooltip text={help}>
       <button type="button" className="study-playlist-row kit-caption" role="switch" aria-checked={isOn} onClick={action}>
         <Icon id={isOn ? "checkmark.circle.fill" : "circle"} size={9} className="study-playlist-check" />
-        <MarqueeText text={name} className="study-playlist-name" />
+        <MarqueeText text={name} className="study-playlist-name" dir="auto" />
         <span className="study-playlist-detail kit-tertiary">{detail}</span>
       </button>
     </Tooltip>
