@@ -18,19 +18,28 @@ import { Icon } from "../../ui/kit/Icon";
 import { IconButton } from "../../ui/kit/IconButton";
 import { MarqueeText } from "../../ui/kit/MarqueeText";
 import { Tooltip } from "../../ui/kit/Tooltip";
-import { useElementWidth } from "../../ui/kit/useElementWidth";
 import { PartyCodeField, PartyCopyCode, PartyPet, PartyPillButton, PartyShareInvite, statusColor } from "./PartyComponents";
 import { useModerationMenu } from "./PartyModeration";
 import type { PartyStore } from "./partyStore";
 
-export function PartyFriendsCard({ store, onFieldFocus }: { store: PartyStore; onFieldFocus: (focused: boolean) => void }) {
+/** Width of the friends column in the Party tab; the stage keeps the rest. */
+export const FRIENDS_WIDTH = 212;
+
+/**
+ * The column is a fixed width, so what fits is decided up front (the Mac's
+ * ViewThatFits) rather than measured after a first draw: "Copy" is spelled
+ * out beside the code, and a request row keeps its whole sentence and a
+ * spelled-out Accept, only in a column wide enough for them.
+ */
+export function PartyFriendsCard({ store, onFieldFocus, width = FRIENDS_WIDTH }: { store: PartyStore; onFieldFocus: (focused: boolean) => void; width?: number }) {
   const state = useStore(store);
   const party = state.party;
-  const [header, headerWidth] = useElementWidth<HTMLDivElement>();
-  const showsLabel = headerWidth === 0 || headerWidth >= 200;
+  const inner = width - 16;
+  const showsLabel = inner >= 200;
+  const roomyRows = inner >= 236;
   return (
     <Card padding={8} className="party-friends">
-      <div ref={header} className="party-friends-header">
+      <div className="party-friends-header">
         <span className="kit-caption kit-tertiary party-nowrap">{tr("Friends")}</span>
         {party.staleError !== undefined && (
           <IconButton
@@ -61,13 +70,13 @@ export function PartyFriendsCard({ store, onFieldFocus }: { store: PartyStore; o
           <EdgeFade edge="bottom" length={12} className="party-friends-scroll">
             <div className="party-friends-rows">
               {party.incomingRequests.map((request) => (
-                <PartyRequestRow key={request.profile.code} request={request} isIncoming store={store} />
+                <PartyRequestRow key={request.profile.code} request={request} isIncoming store={store} roomy={roomyRows} />
               ))}
               {party.friends.map((friend) => (
                 <PartyFriendRow key={friend.profile.code} friend={friend} store={store} now={state.now} />
               ))}
               {party.outgoingRequests.map((request) => (
-                <PartyRequestRow key={request.profile.code} request={request} isIncoming={false} store={store} />
+                <PartyRequestRow key={request.profile.code} request={request} isIncoming={false} store={store} roomy={roomyRows} />
               ))}
             </div>
           </EdgeFade>
@@ -135,12 +144,9 @@ function PartyFriendRow({ friend, store, now }: { friend: PartyFriend; store: Pa
 }
 
 /** A friend request: someone who wants to be friends, with Accept and Decline, or someone I asked, with a way to cancel. */
-function PartyRequestRow({ request, isIncoming, store }: { request: PartyFriendRequest; isIncoming: boolean; store: PartyStore }) {
+function PartyRequestRow({ request, isIncoming, store, roomy }: { request: PartyFriendRequest; isIncoming: boolean; store: PartyStore; roomy: boolean }) {
   const profile = request.profile;
   const busy = store.isPending({ kind: "acceptFriend", code: profile.code }) || store.isPending({ kind: "removeFriend", code: profile.code });
-  const [row, width] = useElementWidth<HTMLDivElement>();
-  /* The whole sentence and a spelled-out Accept while they fit, then a check mark for Accept and a shorter word: nothing is cut. */
-  const roomy = width === 0 || width >= 236;
   const help =
     (isIncoming ? tr("%@ with %@ wants to be friends.", profile.name, profile.petName) : tr("You asked %@ to be friends. You'll see each other once they accept.", profile.name)) +
     " " +
@@ -159,7 +165,7 @@ function PartyRequestRow({ request, isIncoming, store }: { request: PartyFriendR
   const status = isIncoming ? (roomy ? tr("Wants to be friends") : tr("Request")) : roomy ? tr("Request sent") : tr("Sent");
   return (
     <Tooltip text={help}>
-      <div ref={row} className="party-row" data-incoming={isIncoming || undefined} onContextMenu={menu.open}>
+      <div className="party-row" data-incoming={isIncoming || undefined} onContextMenu={menu.open}>
         <PartyPet profile={profile} />
         <div className="party-row-text">
           <div className="party-row-name">

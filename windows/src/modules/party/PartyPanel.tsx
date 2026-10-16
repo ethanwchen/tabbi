@@ -19,14 +19,11 @@ import { Tooltip } from "../../ui/kit/Tooltip";
 import { PartyAgeCheckView } from "./PartyAgeCheckView";
 import { PartyCelebrationBanner } from "./PartyCelebrationBanner";
 import { PartyPillButton } from "./PartyComponents";
-import { PartyFriendsCard } from "./PartyFriendsCard";
+import { FRIENDS_WIDTH, PartyFriendsCard } from "./PartyFriendsCard";
 import { PartyReportCard } from "./PartyReportCard";
 import { PartyStage } from "./PartyStage";
 import type { PartyStore } from "./partyStore";
 import "./party.css";
-
-/** Width of the friends column; the stage keeps the rest. */
-const FRIENDS_WIDTH = 212;
 
 export function PartyPanel({ store, onOpenURL }: { store: PartyStore; onOpenURL: (url: string) => void }) {
   const state = useStore(store);
