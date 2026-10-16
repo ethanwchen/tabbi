@@ -10,6 +10,7 @@ mod error;
 mod http;
 mod media;
 mod notify;
+mod outbox;
 mod placement;
 mod storage;
 mod system;
@@ -187,7 +188,7 @@ fn place(app: &AppHandle, display: Monitor) {
     apply_shape(&island, &state);
     island.watcher.update(|watch| watch.display = Some(display));
     drop(state);
-    let _ = app.emit("island:placed", display.scale);
+    outbox::send(app, "island:placed", display.scale);
 }
 
 /// Applies the UI's shape as the window region, and tells the watcher where
@@ -227,12 +228,12 @@ fn follow_pointer(app: &AppHandle) {
 
 fn toggle(app: &AppHandle, source: Source) {
     follow_pointer(app);
-    let _ = app.emit("island:toggle", source);
+    outbox::send(app, "island:toggle", source);
 }
 
 fn open(app: &AppHandle, source: Source) {
     follow_pointer(app);
-    let _ = app.emit("island:open", source);
+    outbox::send(app, "island:open", source);
 }
 
 fn on_signal(app: &AppHandle, signal: Signal) {
@@ -247,13 +248,13 @@ fn on_signal(app: &AppHandle, signal: Signal) {
             if current != Some(display) {
                 place(app, display);
             }
-            let _ = app.emit("island:hot-zone", ());
+            outbox::send(app, "island:hot-zone", ());
         }
         Signal::OutsideClick => {
-            let _ = app.emit("island:outside-click", ());
+            outbox::send(app, "island:outside-click", ());
         }
         Signal::Fullscreen(active) => {
-            let _ = app.emit("island:fullscreen", active);
+            outbox::send(app, "island:fullscreen", active);
         }
         Signal::DisplaysChanged(monitors) => {
             let current = app
@@ -360,11 +361,19 @@ fn startup(app: &AppHandle) -> Startup {
     }
 }
 
+/// The startup values alone, for the page to build its services before the
+/// island draws; it shows nothing and lets no waiting event through.
+#[tauri::command]
+fn island_startup(app: AppHandle) -> Startup {
+    startup(&app)
+}
+
 /// The UI calls this once it has drawn its first frame, so the window never
 /// flashes an unstyled page.
 #[tauri::command]
 fn island_ready(app: AppHandle) -> Startup {
     let _ = island_window(&app).show();
+    outbox::open(&app);
     startup(&app)
 }
 
@@ -562,7 +571,7 @@ fn setup(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     let link_app = app.clone();
     app.deep_link().on_open_url(move |event| {
         for url in event.urls() {
-            let _ = link_app.emit("island:link", url.to_string());
+            outbox::send(&link_app, "island:link", url.to_string());
         }
     });
     Ok(())
@@ -570,6 +579,8 @@ fn setup(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
 
 pub fn run() {
     let app = tauri::Builder::default()
+        /* Before any plugin, so even a launch link waits for the UI instead of being lost. */
+        .manage(outbox::Outbox::default())
         /* First, so a second launch hands over its tabbi:// link and exits before anything else starts. */
         .plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| open(app, Source::Launch)))
         .plugin(tauri_plugin_deep_link::init())
@@ -583,6 +594,7 @@ pub fn run() {
             island_activate,
             island_restore_focus,
             island_arm_hot_zone,
+            island_startup,
             island_ready,
             island_set_canvas,
             settings_open,

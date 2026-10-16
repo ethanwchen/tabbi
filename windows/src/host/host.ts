@@ -57,7 +57,12 @@ export interface Host {
   activate(): Promise<void>;
   restoreFocus(): Promise<void>;
   armHotZone(armed: boolean): Promise<void>;
-  /* Shows the window once the first frame is drawn. */
+  /* The startup values (hotkey, dev overrides, demo), without showing anything. */
+  startup(): Promise<Startup>;
+  /*
+   * Shows the window once the first frame is drawn, and lets through the host
+   * events that waited for the UI. Call it only after subscribing.
+   */
   ready(): Promise<Startup>;
   subscribe(listener: (event: HostEvent) => void): () => void;
   /* Sizes the island window to the open canvas of the panel size (compact, regular, large), in logical pixels. */

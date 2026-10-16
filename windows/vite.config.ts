@@ -27,5 +27,12 @@ export default defineConfig({
     emptyOutDir: true,
     /* The kit gallery builds too, so a broken gallery fails the build instead of only the snapshot run. */
     rollupOptions: { input: { main: "index.html", gallery: "gallery.html" } },
+    /*
+     * Vite's 500 kB warning is for pages fetched over a network. Tabbi loads
+     * its bundle from disk, and most of it is the pet art the closed pill
+     * draws at once, so splitting it off would only delay the first frame.
+     * The limit still catches a bundle that grows by surprise.
+     */
+    chunkSizeWarningLimit: 800,
   },
 });

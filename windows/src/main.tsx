@@ -111,8 +111,8 @@ if (snapshot !== null && snapshot !== undefined) {
     </ThemedRoot>,
   );
 } else {
-  /* The island's region is empty until the machine shapes it, so asking for the startup values first shows nothing early. */
-  const startup = await host.ready();
+  /* Only the values: the island calls ready itself once it is listening, so no early host event is lost. */
+  const startup = await host.startup();
   const app = await services(startup);
   const browser = inApp ? undefined : browserIsland();
   render(

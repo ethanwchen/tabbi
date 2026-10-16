@@ -131,6 +131,7 @@ export function mockHost(startup: Startup = MOCK_STARTUP, options: MockHostOptio
     activate: record("activate"),
     restoreFocus: record("restoreFocus"),
     armHotZone: record("armHotZone"),
+    startup: () => answer("startup", [], startup),
     ready: () => answer("ready", [], startup),
     subscribe(listener) {
       listeners.add(listener);

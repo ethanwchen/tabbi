@@ -33,13 +33,24 @@ function on<T>(event: string, listener: (payload: T) => void): () => void {
 
 /* The host inside the app: Rust commands and events (src-tauri/src/lib.rs and the service modules beside it). */
 export function tauriHost(): Host {
+  /*
+   * Listeners register asynchronously. The host holds island events until
+   * `island_ready`, so `ready` waits for every registration first: a launch
+   * link or an early tray click then reaches a listener instead of nothing.
+   */
+  const registrations: Promise<unknown>[] = [];
+
   return {
     setShape: (rect) => invoke("island_set_shape", { shape: rect }),
     setOpen: (open) => invoke("island_set_open", { open }),
     activate: () => invoke("island_activate"),
     restoreFocus: () => invoke("island_restore_focus"),
     armHotZone: (armed) => invoke("island_arm_hot_zone", { armed }),
-    ready: () => invoke<Startup>("island_ready"),
+    startup: () => invoke<Startup>("island_startup"),
+    ready: async () => {
+      await Promise.all(registrations);
+      return invoke<Startup>("island_ready");
+    },
     subscribe(listener) {
       const pending: Promise<UnlistenFn>[] = [
         listen("island:hot-zone", () => listener({ type: "hotZone" })),
@@ -52,6 +63,7 @@ export function tauriHost(): Host {
         getCurrentWindow().onFocusChanged((e) => listener({ type: "focus", focused: e.payload })),
         listen<string>("settings:section", (e) => listener({ type: "settingsSection", section: e.payload })),
       ];
+      registrations.push(...pending);
       return () => {
         for (const p of pending) void p.then((unlisten) => unlisten());
       };
