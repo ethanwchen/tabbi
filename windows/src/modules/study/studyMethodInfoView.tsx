@@ -29,7 +29,7 @@ export function StudyMethodInfoView({ method, isCurrent, use, close }: StudyMeth
     <div className="study-info">
       <div className="study-info-header">
         <span className="kit-title">{info.displayName}</span>
-        {!nameIsRhythm(method) && <span className="kit-title study-accent study-tabular">{method.rhythmLabel}</span>}
+        {!nameIsRhythm(method) && <span className="kit-title study-accent study-rhythm">{method.rhythmLabel}</span>}
         {info.evidenceLevel !== undefined && <StudyEvidenceBadge level={info.evidenceLevel} />}
         <span className="study-spacer" />
         {!isCurrent && <Pill title={tr("Use %@", info.displayName)} help={tr("Start a fresh session with %@", info.displayName)} accent onClick={use} />}
@@ -38,13 +38,13 @@ export function StudyMethodInfoView({ method, isCurrent, use, close }: StudyMeth
       <div className="study-info-body">
         <Card className="study-info-section">
           <span className="kit-caption kit-tertiary">{tr("How to")}</span>
-          <p className="kit-body study-info-text">{info.howTo}</p>
+          <p className="kit-body study-info-text kit-user-text" dir="auto">{info.howTo}</p>
         </Card>
         {info.evidenceLevel !== undefined && (
           <Tooltip text={StudyMethodInfo.footnote}>
             <Card className="study-info-section study-info-evidence">
               <span className="kit-caption kit-tertiary">{tr("Evidence")}</span>
-              <p className="kit-caption kit-secondary study-info-text">{info.evidence}</p>
+              <p className="kit-caption kit-secondary study-info-text kit-user-text" dir="auto">{info.evidence}</p>
             </Card>
           </Tooltip>
         )}

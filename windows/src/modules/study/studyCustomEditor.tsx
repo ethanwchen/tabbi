@@ -23,7 +23,7 @@ export function StudyCustomEditor({ store, close }: { store: StudyStore; close: 
     <div className="study-custom">
       <div className="study-custom-header">
         <span className="kit-title">{tr("Custom")}</span>
-        <span className="kit-title study-accent study-tabular">{rhythm.method.rhythmLabel}</span>
+        <span className="kit-title study-accent study-rhythm">{rhythm.method.rhythmLabel}</span>
         <span className="kit-caption kit-tertiary study-custom-note">{isCurrent ? tr("Changes apply right away") : tr("Your own rhythm")}</span>
         <span className="study-spacer" />
         {!isCurrent && (

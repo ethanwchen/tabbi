@@ -44,6 +44,13 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* A rhythm label ("10 min", "25/5") is English figures: it reads left to right in every language. */
+.study-rhythm {
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+  direction: ltr;
+}
+
 /* A quiet round button inside a caption row (the (i) and the pencil): clear until hovered. */
 .study-quiet-button {
   background: transparent;
@@ -503,6 +510,14 @@
 .study-mix-tile-level[data-shown="true"] {
   opacity: 1;
   pointer-events: auto;
+}
+
+/* Once the icons are gone the names get the room instead, at the smallest size text may be. */
+.study-mixer[data-dense-names] .study-mix-tile {
+  padding-inline: 2px;
+}
+.study-mixer[data-dense-names] .study-mix-tile-name {
+  font-size: 10px;
 }
 
 /* A short panel (Compact) gets slimmer tiles; a narrow one drops the icons so names never cut. */

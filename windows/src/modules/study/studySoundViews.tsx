@@ -86,7 +86,7 @@ export function StudySoundMixer({ focus, close }: StudySoundMixerProps) {
         ? tr("Stop the preview")
         : tr("Listen to %@", mix.summary);
   return (
-    <div className="study-mixer">
+    <div className="study-mixer" data-dense-names={!showsIcons || undefined}>
       <div className="study-mixer-header kit-caption">
         <span className="kit-tertiary">{tr("Focus sound")}</span>
         <MarqueeText className="study-mixer-summary kit-secondary" text={mix.summary} />

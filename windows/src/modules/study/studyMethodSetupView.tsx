@@ -53,7 +53,7 @@ function StudyMethodSummaryCard({ method, isCurrent }: { method: StudyMethod; is
     <Card className="study-setup-summary">
       <div className="study-setup-summary-header kit-body-emphasis">
         <span className="study-setup-summary-name">{info.displayName}</span>
-        {!nameIsRhythm(method) && <span className="study-accent study-tabular">{method.rhythmLabel}</span>}
+        {!nameIsRhythm(method) && <span className="study-accent study-rhythm">{method.rhythmLabel}</span>}
         <span className="study-spacer" />
         {isCurrent && (
           <Tooltip text={tr("The timer starts with %@", info.displayName)}>
@@ -64,7 +64,7 @@ function StudyMethodSummaryCard({ method, isCurrent }: { method: StudyMethod; is
         )}
       </div>
       <Tooltip text={info.howTo}>
-        <RowsThatFit className="study-setup-sentences" data={sentences} keyOf={(_, index) => index} row={(sentence) => <span className="kit-caption kit-secondary study-setup-sentence">{sentence}</span>} />
+        <RowsThatFit className="study-setup-sentences" data={sentences} keyOf={(_, index) => index} row={(sentence) => <span className="kit-caption kit-secondary study-setup-sentence kit-user-text" dir="auto">{sentence}</span>} />
       </Tooltip>
       {info.evidenceLevel !== undefined && <StudyEvidenceBadge level={info.evidenceLevel} help={`${info.evidence} ${StudyMethodInfo.footnote}`} />}
     </Card>

@@ -38,7 +38,7 @@ export function StudyMethodTile({ method, isCurrent, info, onPick, showsRhythm =
           onPointerLeave={() => onHover?.(false)}
         >
           <MarqueeText text={text.displayName} className="study-method-tile-name" />
-          {showsRhythm && !nameIsRhythm(method) && <span className="study-method-tile-rhythm study-tabular">{method.rhythmLabel}</span>}
+          {showsRhythm && !nameIsRhythm(method) && <span className="study-method-tile-rhythm study-rhythm">{method.rhythmLabel}</span>}
         </button>
       </Tooltip>
       {info !== undefined && <StudyInfoButton method={method.kind} onClick={() => info(method.kind)} />}

@@ -264,10 +264,10 @@ function StudyMethodCard({
           <span className="study-method-title kit-title">
             <span>{text.displayName}</span>
             {/* The Timer's length row already shows its length. */}
-            {!nameIsRhythm(session.method) && session.method.kind !== "timer" && <span className="study-accent study-tabular">{session.method.rhythmLabel}</span>}
+            {!nameIsRhythm(session.method) && session.method.kind !== "timer" && <span className="study-accent study-rhythm">{session.method.rhythmLabel}</span>}
             <Icon id="chevron.up.chevron.down" size={9} className="study-method-chevron" />
           </span>
-          {session.method.kind !== "timer" && <MarqueeText className="kit-caption kit-secondary study-method-tagline" text={text.displayTagline} />}
+          {session.method.kind !== "timer" && <MarqueeText className="kit-caption kit-secondary study-method-tagline" text={text.displayTagline} userText />}
         </button>
       </Tooltip>
       {session.method.kind === "timer" && <StudyTimerLengthRow length={timer} isCounting={session.runState !== "idle"} set={(next) => store.setTimer(next)} start={(next) => store.startTimer(next)} />}
