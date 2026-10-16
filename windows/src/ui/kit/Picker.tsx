@@ -125,7 +125,8 @@ export function Picker<T extends string>({ items, selected, onSelect, label, hel
           style={style}
         >
           {current?.symbol && <Icon id={current.symbol} size={12} className="kit-picker-symbol" />}
-          <span className="kit-picker-title">{current?.title ?? ""}</span>
+          {/* With nothing chosen yet the button names the menu, as a Mac Menu label does. */}
+          <span className="kit-picker-title">{current?.title ?? label}</span>
           <Icon id="chevron-up-down" size={12} className="kit-picker-chevron" />
         </button>
       </Tooltip>
