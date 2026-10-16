@@ -432,8 +432,11 @@ fn open_settings(app: &AppHandle, section: Option<String>) {
     }
 }
 
+/// Async on purpose: a synchronous command runs on the main thread, and
+/// creating a webview window there deadlocks on Windows (wry#583), leaving
+/// the new window blank.
 #[tauri::command]
-fn settings_open(app: AppHandle, section: Option<String>) {
+async fn settings_open(app: AppHandle, section: Option<String>) {
     open_settings(&app, section);
 }
 
