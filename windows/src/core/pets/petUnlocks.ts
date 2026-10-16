@@ -261,22 +261,36 @@ export class PetPointsLedger {
     };
   }
 
-  /** Reads leniently: unknown item ids are skipped, and a save listing a now free item gets its price back. */
+  /**
+   * Reads a ledger the way the Mac decoder does: unknown item ids are
+   * skipped and a save listing a now free item gets its price back, but a
+   * value that is not an object, a count that is not a whole number or an id
+   * list that is not all strings throws (absent or null fields read as
+   * empty). Broken freeze dates are dropped rather than refused.
+   */
   static fromJSON(raw: unknown): PetPointsLedger {
-    const object = typeof raw === "object" && raw !== null ? (raw as Record<string, unknown>) : {};
-    const ids = (value: unknown) =>
-      Array.isArray(value) ? value.filter((id): id is string => typeof id === "string") : [];
-    const number = (value: unknown) => (typeof value === "number" && Number.isFinite(value) ? Math.trunc(value) : 0);
-    const items = new Set(ids(object.purchased).flatMap((id) => itemFromID(id) ?? []));
+    if (typeof raw !== "object" || raw === null || Array.isArray(raw)) throw new Error("A ledger must be an object");
+    const object = raw as Record<string, unknown>;
+    const ids = (value: unknown, key: string): string[] => {
+      if (value === undefined || value === null) return [];
+      if (!Array.isArray(value) || !value.every((id) => typeof id === "string")) throw new Error(`A ledger's ${key} must list ids`);
+      return value as string[];
+    };
+    const number = (value: unknown, key: string): number => {
+      if (value === undefined || value === null) return 0;
+      if (typeof value !== "number" || !Number.isSafeInteger(value)) throw new Error(`A ledger's ${key} must be a whole number`);
+      return value;
+    };
+    const items = new Set(ids(object.purchased, "purchased").flatMap((id) => itemFromID(id) ?? []));
     const refund = [...items].filter(isFree).reduce((sum, item) => sum + (REFUNDED_PRICES[item] ?? 0), 0);
     const freezes = Array.isArray(object.streakFreezes) && object.streakFreezes.every((value) => typeof value === "number")
       ? (object.streakFreezes as number[]).map((seconds) => seconds + REFERENCE_DATE_OFFSET)
       : [];
     return new PetPointsLedger({
-      earned: number(object.earned),
-      spent: number(object.spent) - refund,
+      earned: number(object.earned, "earned"),
+      spent: number(object.spent, "spent") - refund,
       purchased: items,
-      granted: ids(object.granted).flatMap((id) => itemFromID(id) ?? []),
+      granted: ids(object.granted, "granted").flatMap((id) => itemFromID(id) ?? []),
       streakFreezes: freezes,
     });
   }
