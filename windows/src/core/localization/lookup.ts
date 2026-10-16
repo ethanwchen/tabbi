@@ -57,7 +57,7 @@ export function lookUp(table: LanguageTable, language: string, key: string, args
 
 /** Makes `tr` read `table`, the strings of `language`; every call site keeps working unchanged. */
 export function installLanguage(table: LanguageTable, language: string): void {
-  setLookup((key, args) => lookUp(table, language, key, args));
+  setLookup((key, args) => lookUp(table, language, key, args), language);
 }
 
 /** Puts `tr` back on the English keys. */

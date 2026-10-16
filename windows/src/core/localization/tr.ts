@@ -14,15 +14,33 @@ export type FormatArg = string | number;
 type Lookup = (key: string, args: readonly FormatArg[]) => string | undefined;
 
 let lookup: Lookup = () => undefined;
+let language = "en";
 
-/** Installs the catalog lookup for the current language (the localization port calls this). */
-export function setLookup(next: Lookup): void {
+/** Installs the catalog lookup for `nextLanguage` (the localization port calls this). */
+export function setLookup(next: Lookup, nextLanguage = "en"): void {
   lookup = next;
+  language = nextLanguage;
+}
+
+/**
+ * The language `tr` reads, standing in for the Mac's Locale.current where a
+ * port formats numbers or arguments the way String(localized:) does.
+ */
+export function currentLanguage(): string {
+  return language;
 }
 
 /** The localized text for a catalog key, with its arguments filled in. */
 export function tr(key: string, ...args: FormatArg[]): string {
-  return formatSpecifiers(lookup(key, args) ?? key, args);
+  return formatSpecifiers(localizedFormat(key, ...args), args);
+}
+
+/**
+ * The translated format for a catalog key before its arguments are filled
+ * in, in the plural form `args` pick, for callers that fill it themselves.
+ */
+export function localizedFormat(key: string, ...args: FormatArg[]): string {
+  return lookup(key, args) ?? key;
 }
 
 /**
