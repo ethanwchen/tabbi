@@ -205,7 +205,12 @@ export class MediaSourceTracker {
 
   /** What the panel shows: the selected player's status, or `notRunning` with no session at all. */
   get status(): NowPlayingStatus {
-    const status = this.chosen === undefined ? undefined : this.statuses.get(this.chosen);
+    return this.statusOf(this.chosen);
+  }
+
+  /** One player's last recorded status; `notRunning` for one never seen (or no player at all). */
+  statusOf(source: NowPlayingSourceID | undefined): NowPlayingStatus {
+    const status = source === undefined ? undefined : this.statuses.get(source);
     return status ?? { kind: "notRunning" };
   }
 

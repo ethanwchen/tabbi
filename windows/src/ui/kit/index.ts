@@ -15,6 +15,7 @@ export * from "./Card";
 export * from "./IconButton";
 export * from "./Pill";
 export * from "./TrackSlider";
+export * from "./ProgressBar";
 export * from "./MarqueeText";
 export * from "./rowsFit";
 export * from "./RowsThatFit";

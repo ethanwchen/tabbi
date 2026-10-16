@@ -668,6 +668,21 @@
   opacity: 0.5;
 }
 
+/* ProgressBar: a read-only capsule that fills from the left. */
+.kit-progress-bar {
+  position: relative;
+  display: block;
+  direction: ltr;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-hover);
+}
+.kit-progress-bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+}
+
 /* HotkeyRecorder */
 .kit-hotkey {
   display: inline-flex;
@@ -1144,4 +1159,14 @@
 .kit-menu-item[data-active="true"] {
   background: var(--accent);
   color: var(--background);
+}
+
+/*
+ * Text the user typed or a service sent: each paragraph takes the direction
+ * of its own first strong letter, so an English chat title keeps its "?" at
+ * the end inside an Arabic panel, while the element's alignment still
+ * follows the panel.
+ */
+.kit-user-text {
+  unicode-bidi: plaintext;
 }

@@ -1,0 +1,399 @@
+/*
+ * The Ask AI panel: a chat that fills the canvas with a question field at
+ * the bottom, after ClaudeAskPanel on the Mac. Spacing follows Theme.Spacing
+ * (2, 4, 8, 12, 16, 24), corners Theme.Radius (6, 10), and every surface is
+ * the kit's card or the theme's tokens.
+ */
+
+.ask-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.ask-content {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+/* Messages: bottom-anchored, older rows fading out under the header. */
+.ask-messages {
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.ask-messages::-webkit-scrollbar {
+  display: none;
+}
+.ask-messages-rows {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 8px;
+  min-height: 100%;
+}
+
+.ask-row-user {
+  display: flex;
+  justify-content: flex-end;
+  padding-inline-start: 72px;
+}
+.ask-bubble-user {
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--primary-text);
+  font-size: 12px;
+  line-height: 1.3;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+  cursor: text;
+}
+
+.ask-row-assistant {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+.ask-row-assistant > .kit-card {
+  min-width: 0;
+  max-width: 100%;
+}
+.ask-bubble-assistant {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--primary-text);
+}
+.ask-answer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ask-prose {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+  cursor: text;
+}
+.ask-prose code,
+.ask-code-body {
+  font-family: "Cascadia Mono", "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 11px;
+}
+.ask-prose code[data-bold] {
+  font-weight: 600;
+}
+.ask-caret {
+  color: var(--accent);
+  animation: ask-caret 1s steps(2, jump-none) infinite;
+}
+.island[data-still="true"] .ask-caret,
+:root[data-reduce-motion="true"] .ask-caret {
+  animation: none;
+}
+@keyframes ask-caret {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.25;
+  }
+}
+.ask-thinking {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tertiary-text);
+}
+.ask-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--tertiary-text);
+}
+.ask-copy {
+  flex: none;
+  opacity: 0;
+  pointer-events: none;
+}
+.ask-row-assistant:hover .ask-copy[data-can-copy="true"],
+.ask-row-assistant[data-hover] .ask-copy[data-can-copy="true"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* A fenced code block: monospaced on a darker inset, language and Copy above. Code reads left to right in every language. */
+.ask-code {
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--background) 55%, transparent);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+  direction: ltr;
+  text-align: left;
+}
+.ask-code-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  padding-inline: 8px 2px;
+  box-shadow: inset 0 -0.5px 0 var(--stroke);
+}
+.ask-code-language {
+  flex: 1;
+  min-width: 0;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--tertiary-text);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ask-code-copy[data-can-copy="false"] {
+  opacity: 0;
+  pointer-events: none;
+}
+.ask-code-body {
+  margin: 0;
+  padding: 8px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--primary-text);
+  user-select: text;
+  cursor: text;
+}
+
+/* A failed answer: the warning, the headline and one action. */
+.ask-failure {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+}
+.ask-failure-icon {
+  color: var(--warning);
+  flex: none;
+}
+.ask-failure-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.ask-failure-title {
+  font-size: 12px;
+  font-weight: 500;
+}
+.ask-failure-detail {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--secondary-text);
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
+/* The question field: a card with the send button inside, like any chat. */
+.ask-input-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  flex: none;
+}
+.ask-field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  min-height: 32px;
+  box-shadow: inset 0 0 0 1px transparent;
+}
+[data-surfaces="glass"] .ask-field {
+  box-shadow: none;
+}
+.ask-field:hover,
+.ask-field[data-hover] {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--stroke) 100%, var(--primary-text) 10%);
+}
+.ask-field[data-focused="true"] {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.ask-field-text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 0 8px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--primary-text);
+  font: inherit;
+  font-size: 12px;
+  line-height: 16px;
+  resize: none;
+  outline: none;
+  user-select: text;
+  cursor: text;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.ask-field-text::placeholder {
+  color: var(--tertiary-text);
+}
+.ask-field-placeholder {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 0 8px 12px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--tertiary-text);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ask-field-trailing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px 4px 0;
+}
+.ask-send {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--stroke);
+  color: var(--tertiary-text);
+  cursor: default;
+  flex: none;
+}
+.ask-send[data-active="true"] {
+  background: var(--accent);
+  color: var(--background);
+}
+.ask-send[data-active="true"]:hover,
+.ask-send[data-active="true"][data-hover="true"] {
+  background: color-mix(in srgb, var(--accent) 85%, transparent);
+}
+
+/* History: a line that says where chats live, then the rows. */
+.ask-history {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 100%;
+  min-height: 0;
+}
+.ask-history-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  flex: none;
+}
+.ask-history-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--tertiary-text);
+  min-width: 0;
+}
+.ask-history-spacer {
+  flex: 1;
+}
+.ask-history-list {
+  flex: 1;
+  min-height: 0;
+}
+.ask-history-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding-bottom: 16px;
+}
+.ask-history-rows::-webkit-scrollbar {
+  display: none;
+}
+.ask-history-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  flex: none;
+  padding-inline: 8px 2px;
+  border-radius: 6px;
+  background: var(--surface);
+}
+.ask-history-row:hover,
+.ask-history-row[data-hover] {
+  background: var(--surface-hover);
+}
+.ask-history-open {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: start;
+  cursor: default;
+}
+.ask-history-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+  background: transparent;
+}
+.ask-history-dot[data-open="true"] {
+  background: var(--accent);
+}
+.ask-history-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--primary-text);
+}
+.ask-history-date {
+  flex: none;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--tertiary-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.ask-history-delete {
+  opacity: 0;
+  pointer-events: none;
+}
+.ask-history-row:hover .ask-history-delete,
+.ask-history-row[data-hover] .ask-history-delete {
+  opacity: 1;
+  pointer-events: auto;
+}
+.ask-clear[data-armed="true"] {
+  color: var(--warning);
+}

@@ -30,9 +30,22 @@ export function currentLanguage(): string {
   return language;
 }
 
-/** The localized text for a catalog key, with its arguments filled in. */
+/*
+ * Western digits in the locale's grouping: Foundation writes them in every
+ * shipped language, while some ICU builds give plain "ar" Arabic-Indic ones.
+ */
+export function numberLocale(locale: string): string {
+  const tag = new Intl.Locale(locale);
+  return tag.numberingSystem === undefined && tag.language === "ar" ? `${locale}-u-nu-latn` : locale;
+}
+
+/**
+ * The localized text for a catalog key, with its arguments filled in. Whole
+ * numbers take the language's grouping ("1,500", "1.500"), as Foundation
+ * writes them into a String(localized:).
+ */
 export function tr(key: string, ...args: FormatArg[]): string {
-  return formatSpecifiers(localizedFormat(key, ...args), args);
+  return formatSpecifiers(localizedFormat(key, ...args), args, currentLanguage());
 }
 
 /**
@@ -46,9 +59,11 @@ export function localizedFormat(key: string, ...args: FormatArg[]): string {
 /**
  * Fills Swift format specifiers: %@, %d, %lld, %ld, %u, %f (with optional
  * precision such as %.1f), positional forms like %1$@ and %2$lld, and %% for
- * a literal percent sign.
+ * a literal percent sign. With a `locale`, whole numbers are grouped for it;
+ * without one they are written plainly.
  */
-export function formatSpecifiers(format: string, args: readonly FormatArg[]): string {
+export function formatSpecifiers(format: string, args: readonly FormatArg[], locale?: string): string {
+  const integers = locale === undefined ? undefined : new Intl.NumberFormat(numberLocale(locale));
   let next = 0;
   return format.replace(/%(?:(\d+)\$)?(\.\d+)?(@|lld|ld|llu|lu|d|i|u|f|%)/g, (match, position, precision, kind) => {
     if (kind === "%") return "%";
@@ -60,6 +75,7 @@ export function formatSpecifiers(format: string, args: readonly FormatArg[]): st
       return Number(value).toFixed(digits);
     }
     if (kind === "@") return String(value);
-    return String(Math.trunc(Number(value)));
+    const whole = Math.trunc(Number(value));
+    return integers === undefined ? String(whole) : integers.format(whole);
   });
 }

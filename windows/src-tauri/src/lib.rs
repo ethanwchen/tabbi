@@ -619,7 +619,9 @@ pub fn run() {
             autostart::autostart_enable,
             autostart::autostart_disable,
             autostart::autostart_is_enabled,
-            ai_paths::ai_paths
+            ai_paths::ai_paths,
+            ai_paths::ai_logs_list,
+            ai_paths::ai_log_read
         ])
         .setup(|app| setup(app.handle()))
         .build(tauri::generate_context!())
