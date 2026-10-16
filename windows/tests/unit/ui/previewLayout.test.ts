@@ -52,7 +52,10 @@ describe("snapshot plan", () => {
     const states = snapshotStates(MODULE_LIST);
     for (const type of MODULE_LIST) expect(states).toContain(`open:${type.descriptor.id}`);
     expect(setupSteps(MODULE_LIST).map((step) => step.id)).toEqual(["pet", "anki", "calendar", "studyMethod", "party"]);
-    expect(states.filter((state) => state.startsWith("settings:"))).toHaveLength(5);
+    const sections = states.filter((state) => /^settings:[a-z]+$/.test(state));
+    expect(sections).toEqual(["settings:general", "settings:tabs", "settings:look", "settings:connections", "settings:about"]);
+    expect(states).toContain("settings:tabs:import");
+    for (const step of ["name", "kit", "question", "modules", "extras", "startWithWindows", "trayIcon"]) expect(states).toContain(`onboarding:${step}`);
   });
 
   it("reads states from the query", () => {
