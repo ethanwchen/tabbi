@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Tabbi",
+  "version": "0.1.0",
+  "identifier": "dev.tabbi.Tabbi",
+  "build": {
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "island",
+        "title": "Tabbi",
+        "width": 560,
+        "height": 236,
+        "decorations": false,
+        "transparent": true,
+        "shadow": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "resizable": false,
+        "maximizable": false,
+        "minimizable": false,
+        "visible": false,
+        "focus": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; connect-src ipc: http://ipc.localhost"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.ico"],
+    "publisher": "Tabbi",
+    "copyright": "Copyright (c) Tabbi contributors. MIT License.",
+    "category": "Productivity",
+    "shortDescription": "A cozy study and focus companion",
+    "homepage": "https://github.com/ethanwchen/tabbi",
+    "createUpdaterArtifacts": true,
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "installerIcon": "icons/icon.ico",
+        "displayLanguageSelector": false
+      }
+    }
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": { "schemes": ["tabbi"] }
+    },
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEU4QTY0Mzg2OEVEMTU4MzAKUldRd1dOR09oa09tNkcvZ2tkb0kyMXh2WnU5TzczbUcxTHc1MmR4aHBqK1hQNjl1VndJTzd2amMK",
+      "endpoints": ["https://github.com/ethanwchen/tabbi/releases/download/windows-latest/latest.json"],
+      "windows": { "installMode": "passive" }
+    }
+  }
+}

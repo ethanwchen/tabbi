@@ -1,0 +1,805 @@
+/*
+ * The island's and the Settings window's look, on top of the kit (kit.css):
+ * colors, springs and the type ramp come from the kit's variables, which
+ * ThemedRoot writes from the user's theme. Spacing stays on the 4 px grid;
+ * the panel keeps the Mac's 20 px content inset plus the 12 px open top
+ * radius from its sides (32 px), 8 px under the header and 16 px above the
+ * bottom edge. Frames use logical properties, so Arabic mirrors.
+ */
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  /* The island's window is transparent; only its shape draws. */
+  background: transparent;
+}
+
+body[data-window="settings"] {
+  background: var(--background);
+}
+
+/* Browser runs paint a neutral desktop so the shape's edges show. */
+body[data-backdrop] {
+  background: #5b6470;
+}
+
+/* The island. */
+.island {
+  position: relative;
+}
+
+.shape {
+  position: absolute;
+  inset: 0;
+}
+
+.shape path {
+  fill: var(--background);
+}
+
+.pill-target {
+  position: absolute;
+  z-index: 1;
+}
+
+/* Content fades and settles in after the shape starts opening, and leaves first when it closes. */
+.content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: scale(0.96);
+  transform-origin: 50% 0;
+  transition:
+    opacity var(--content-fade-out) cubic-bezier(0.42, 0, 1, 1),
+    transform var(--content-fade-out) cubic-bezier(0.42, 0, 1, 1);
+}
+
+.content[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--content-fade-in) cubic-bezier(0, 0, 0.58, 1) var(--content-delay),
+    transform var(--spring-content) var(--content-delay);
+}
+
+.island[data-still="true"] .content,
+.island[data-still="true"] .preview {
+  transition: none;
+}
+
+:root[data-reduce-motion="true"] .content,
+:root[data-reduce-motion="true"] .content[data-visible="true"] {
+  transform: none;
+  transition: opacity var(--reduced-crossfade) ease-in-out;
+}
+
+/* The theme's soft color rising from the bottom of the open panel; the top stays black. */
+.glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to top, var(--glow), transparent 60%);
+}
+
+/* Header: every control where NotchHeaderLayout puts it. */
+.header {
+  position: relative;
+  flex: none;
+}
+
+.header .tab,
+.header .tab-capsule,
+.header-title,
+.header-gear,
+.more-menu {
+  position: absolute;
+}
+
+.header .tab {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--tertiary-text);
+  transition:
+    color var(--spring-snappy),
+    background-color var(--spring-snappy);
+}
+
+.header .tab:hover,
+.header .tab[data-hover="true"] {
+  color: var(--primary-text);
+}
+
+.header .tab[data-selected="true"] {
+  color: var(--accent);
+}
+
+.header .tab:focus-visible {
+  outline: 1.5px solid var(--accent, var(--primary-text));
+  outline-offset: 1px;
+}
+
+/* The selection: one capsule that slides from tab to tab on the snappy spring. */
+.tab-capsule {
+  border-radius: 12px;
+  background: var(--accent-soft);
+  pointer-events: none;
+  transition:
+    inset-inline-start var(--spring-snappy),
+    width var(--spring-snappy),
+    background-color var(--spring-snappy);
+}
+
+[data-controls="glass"] .header .tab-capsule {
+  box-shadow:
+    inset 0 0.75px 0 var(--sheen-rim-top),
+    inset 0 -0.5px 0 var(--sheen-rim-bottom);
+}
+
+.island[data-still="true"] .header .tab-capsule {
+  transition: none;
+}
+
+/* The paw: a control surface like the gear, in the pet's accent on hover and while its page is open. */
+.header .tab.shortcut {
+  color: var(--secondary-text);
+  background: var(--surface);
+}
+
+.header .tab.shortcut:hover,
+.header .tab.shortcut[data-hover="true"],
+.header .tab.shortcut[data-selected="true"] {
+  color: var(--accent);
+}
+
+.header .tab.shortcut[data-hover="true"] {
+  background: var(--surface-hover);
+}
+
+.header .tab.shortcut[data-selected="true"] {
+  background: var(--accent-soft);
+}
+
+.header .tab.shortcut[data-hover="true"] .kit-icon {
+  animation: paw-wiggle 0.5s ease-in-out;
+}
+
+@keyframes paw-wiggle {
+  25% {
+    transform: rotate(-14deg);
+  }
+  55% {
+    transform: rotate(10deg);
+  }
+  80% {
+    transform: rotate(-4deg);
+  }
+}
+
+:root[data-reduce-motion="true"] .header .tab.shortcut .kit-icon {
+  animation: none;
+}
+
+.header .tab.more .kit-icon {
+  transition: transform var(--spring-snappy);
+}
+
+.header .tab.more[data-open="true"] {
+  color: var(--primary-text);
+}
+
+.header .tab.more[data-open="true"] .kit-icon {
+  transform: rotate(180deg);
+}
+
+.header .tab.more[data-selected="true"] {
+  color: var(--accent);
+}
+
+.more-dot {
+  position: absolute;
+  top: 3px;
+  inset-inline-end: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--primary-text);
+}
+
+.tab-badge {
+  position: absolute;
+  top: -3px;
+  inset-inline-end: -1px;
+  min-width: 12px;
+  height: 12px;
+  padding: 0 3px;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  border: 1px solid var(--background);
+  background: var(--accent);
+  color: var(--background);
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-weight: 600;
+  color: var(--secondary-text);
+  white-space: nowrap;
+}
+
+.header-gear {
+  display: grid;
+  place-items: center;
+}
+
+.more-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+}
+
+.more-menu {
+  z-index: 6;
+  width: 168px;
+  padding: 4px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  background: linear-gradient(var(--surface), var(--surface)), var(--background);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+}
+
+.more-menu .more-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--secondary-text);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: start;
+}
+
+.more-menu .more-row .kit-icon {
+  width: 16px;
+}
+
+.more-menu .more-row:hover {
+  background: var(--surface-hover);
+}
+
+.more-menu .more-row:hover,
+.more-menu .more-row[data-selected="true"] {
+  color: var(--primary-text);
+}
+
+.more-menu .more-row:hover .kit-icon,
+.more-menu .more-row[data-selected="true"] .kit-icon {
+  color: var(--accent);
+}
+
+.more-menu .more-row[data-selected="true"] {
+  background: var(--accent-soft);
+}
+
+.more-row-title {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.more-menu .more-row .tab-badge {
+  position: static;
+}
+
+.more-row-key {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--tertiary-text);
+}
+
+/* The panel: the canvas minus the header, with the Mac's insets. */
+.body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: 8px 32px 16px;
+}
+
+.panels {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.panel-layer {
+  position: absolute;
+  inset: 0;
+  --tab-from: -24px;
+  --tab-to: 24px;
+}
+
+.panel-layer[data-forward="true"] {
+  --tab-from: 24px;
+  --tab-to: -24px;
+}
+
+[dir="rtl"] .panel-layer {
+  --tab-from: 24px;
+  --tab-to: -24px;
+}
+
+[dir="rtl"] .panel-layer[data-forward="true"] {
+  --tab-from: -24px;
+  --tab-to: 24px;
+}
+
+:root[data-reduce-motion="true"] .panel-layer {
+  --tab-from: 0px;
+  --tab-to: 0px;
+}
+
+.panel-layer[data-phase="in"] {
+  animation: tab-in var(--spring-content) both;
+}
+
+.panel-layer[data-phase="out"] {
+  pointer-events: none;
+  animation: tab-out var(--spring-content) both;
+}
+
+@keyframes tab-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--tab-from));
+  }
+}
+
+@keyframes tab-out {
+  to {
+    opacity: 0;
+    transform: translateX(var(--tab-to));
+  }
+}
+
+/* Panels draw at Regular size and grow as a whole at Large (PanelSize.contentScale). */
+.panel-scaled {
+  width: calc(100% / var(--panel-scale, 1));
+  height: calc(100% / var(--panel-scale, 1));
+  transform: scale(var(--panel-scale, 1));
+  transform-origin: 0 0;
+}
+
+[dir="rtl"] .panel-scaled {
+  transform-origin: 100% 0;
+}
+
+.panel-placeholder {
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.hotkey-note {
+  position: absolute;
+  inset-inline: 32px;
+  bottom: 2px;
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--tertiary-text);
+  text-align: center;
+}
+
+/* The takeover's header and onboarding's fallback card. */
+.takeover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+}
+
+.takeover-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-text);
+}
+
+.setup-fallback-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.setup-fallback-badge {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.setup-fallback-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--primary-text);
+}
+
+.setup-fallback-detail {
+  color: var(--secondary-text);
+}
+
+/* The closed pill's preview: two wings either side of the empty middle. */
+.preview {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity var(--content-fade-out) ease-in;
+}
+
+.preview[data-visible="false"] {
+  opacity: 0;
+}
+
+.preview-stage {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 32px;
+}
+
+.preview-row {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  transform: translateX(-50%);
+}
+
+.preview-row[data-phase="in"] {
+  animation: row-in var(--spring-content) both;
+}
+
+.preview-row[data-phase="out"] {
+  animation: row-out var(--spring-content) both;
+}
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+}
+
+@keyframes row-out {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+}
+
+:root[data-reduce-motion="true"] .preview-row[data-phase="in"] {
+  animation: fade-in var(--reduced-crossfade) both;
+}
+
+:root[data-reduce-motion="true"] .preview-row[data-phase="out"] {
+  animation: fade-out var(--reduced-crossfade) both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* The "leave now" glow under a meeting about to start, breathing a few times. */
+.preview-row[data-nudging]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--accent) 50%, transparent));
+  animation: nudge 0.8s ease-in-out 8 alternate both;
+}
+
+@keyframes nudge {
+  to {
+    opacity: 0.36;
+  }
+}
+
+:root[data-reduce-motion="true"] .preview-row[data-nudging]::before {
+  animation: none;
+}
+
+.wing {
+  position: relative;
+  height: 32px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.wing.leading {
+  justify-content: flex-start;
+  padding-inline-start: 8px;
+}
+
+.wing.trailing {
+  justify-content: flex-end;
+  padding-inline-end: 8px;
+}
+
+.preview-row[data-music] .wing {
+  justify-content: center;
+  padding: 0;
+}
+
+.preview-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+}
+
+.preview-pair {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.preview-text {
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--primary-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.preview-text.title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.preview-text.accent {
+  color: var(--accent);
+}
+
+.preview-text.secondary {
+  color: var(--secondary-text);
+}
+
+.preview-text.tertiary {
+  color: var(--tertiary-text);
+}
+
+.preview-pair.success {
+  gap: 2px;
+  color: var(--success);
+}
+
+.preview-pair.success .preview-text {
+  color: var(--success);
+}
+
+.preview .preview-join {
+  flex: none;
+  pointer-events: auto;
+  height: 16px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 8px;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--background);
+  background: color-mix(in srgb, var(--accent) 88%, transparent);
+}
+
+.preview .preview-join:hover {
+  background: var(--accent);
+}
+
+.preview-party {
+  position: relative;
+  height: 24px;
+  margin-top: -4px;
+}
+
+.preview-party-pet {
+  position: absolute;
+  top: 0;
+}
+
+.preview-party-pet[data-away] {
+  opacity: 0.6;
+}
+
+.equalizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.equalizer span {
+  width: 3px;
+  border-radius: 1.5px;
+  background: var(--accent);
+}
+
+.equalizer span:nth-child(1) {
+  height: 7px;
+}
+
+.equalizer span:nth-child(2) {
+  height: 12px;
+}
+
+.equalizer span:nth-child(3) {
+  height: 9px;
+}
+
+.unlock-hint {
+  position: relative;
+  width: 16px;
+  height: 3px;
+  border-radius: 1.5px;
+  overflow: hidden;
+  direction: ltr;
+  background: color-mix(in srgb, var(--tertiary-text) 35%, transparent);
+}
+
+.unlock-hint span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 1.5px;
+  background: var(--accent);
+}
+
+/* The Settings window: five sections in a sidebar, the selected one beside it. */
+.settings-window {
+  display: flex;
+  height: 100%;
+  color: var(--primary-text);
+  background: var(--background);
+}
+
+.settings-sidebar {
+  flex: none;
+  width: 200px;
+  box-sizing: border-box;
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--surface);
+  border-inline-end: 1px solid var(--stroke);
+}
+
+.settings-sidebar .settings-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--secondary-text);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: start;
+  transition:
+    background-color var(--spring-snappy),
+    color var(--spring-snappy);
+}
+
+.settings-sidebar .settings-nav:hover {
+  background: var(--surface-hover);
+  color: var(--primary-text);
+}
+
+.settings-sidebar .settings-nav[data-selected="true"] {
+  background: var(--surface-hover);
+  color: var(--primary-text);
+}
+
+.settings-sidebar .settings-nav:focus-visible {
+  outline: 1.5px solid var(--primary-text);
+  outline-offset: -1.5px;
+}
+
+.settings-content {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 24px 32px;
+}
+
+.settings-title {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.settings-empty {
+  display: grid;
+  place-items: center;
+  min-height: calc(100% - 60px);
+}
+
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Snapshot frames: what the Playwright spec saves. */
+.snapshot-frame {
+  position: relative;
+}
+
+.settings-frame {
+  width: 760px;
+  height: 540px;
+}
+
+#snapshot-index {
+  margin: 0;
+  color: #000;
+}
+
+/* The panels are the celebration center's stage, so a burst plays over the open panel. */
+.body-stage {
+  width: 100%;
+  height: 100%;
+}
+
+/* A closed-island overlay (the pet coach) draws over the canvas outside the clipped content. */
+.closed-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}

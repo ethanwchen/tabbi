@@ -1,0 +1,137 @@
+name: Windows release
+
+# Builds the Windows installer for a version and attaches it to the GitHub
+# Release windows-v<version>: Tabbi-Setup.exe (the per-user NSIS installer)
+# and latest.json (the in-app updater's feed). It only runs when started by
+# hand (Actions tab > Windows release > Run workflow).
+#
+# Windows has its own release channel so Mac releases in the same repo never
+# break it: Windows releases are never marked "Latest", and publishing copies
+# both files to the fixed release windows-latest. The updater reads
+# releases/download/windows-latest/latest.json and the website links
+# releases/download/windows-latest/Tabbi-Setup.exe.
+#
+# Without "publish" the release is a DRAFT, which reaches nobody. With it the
+# release goes public and every installed copy is offered the update.
+#
+# Repository secrets (Settings > Secrets and variables > Actions):
+#   TAURI_SIGNING_PRIVATE_KEY           the updater's Ed25519 private key, the
+#                                       contents of the file
+#                                       `tauri signer generate` wrote
+#   TAURI_SIGNING_PRIVATE_KEY_PASSWORD  that key's password
+# The matching public key is plugins.updater.pubkey in
+# windows/src-tauri/tauri.conf.json. Losing the private key means installed
+# copies can no longer be updated, so the owner keeps a backup of it.
+#
+# The installer itself is not code signed yet, so SmartScreen warns on first
+# run. The "Code signing" step below is the hook for Azure Artifact Signing.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag (for example windows-v0.1.0); must match the version in tauri.conf.json
+        required: true
+        type: string
+      publish:
+        description: Publish it (offers the update to every installed copy); otherwise a draft
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: windows-release-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build and attach the installer
+    runs-on: windows-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: windows
+        shell: bash
+    env:
+      TAG: ${{ inputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Tag matches the app version
+        run: |
+          version=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          if [ "$TAG" != "windows-v$version" ]; then
+            echo "Tag $TAG does not match version $version in tauri.conf.json" >&2
+            exit 1
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+
+      - name: Rust toolchain
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+
+      - run: npm ci
+      - run: npm run icons
+
+      # Code signing (later). Once Azure Artifact Signing is set up, pass a
+      # signCommand so Tauri signs the app and the installer while it builds,
+      # for example by adding this to the build step below:
+      #   --config '{"bundle":{"windows":{"signCommand":"trusted-signing-cli -e https://<region>.codesigning.azure.net -a <account> -c <certificate-profile> -d Tabbi %1"}}}'
+      # with AZURE_CLIENT_ID, AZURE_CLIENT_SECRET and AZURE_TENANT_ID as
+      # secrets in its env.
+      - name: Build (signs the updater bundle)
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npx tauri build --ci
+
+      - name: Installer, signature and feed
+        run: |
+          bundle=src-tauri/target/release/bundle/nsis
+          setup=$(ls "$bundle"/*-setup.exe)
+          mkdir -p out
+          cp "$setup" out/Tabbi-Setup.exe
+          signature=$(cat "$setup.sig")
+          url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/Tabbi-Setup.exe"
+          notes=$(tail -n +3 packaging/release-notes.md)
+          node -e '
+            const [version, signature, url, notes] = process.argv.slice(1);
+            const entry = { signature, url };
+            const feed = {
+              version,
+              notes,
+              pub_date: new Date().toISOString(),
+              platforms: { "windows-x86_64": entry, "windows-x86_64-nsis": entry },
+            };
+            require("fs").writeFileSync("out/latest.json", JSON.stringify(feed, null, 2) + "\n");
+          ' "$VERSION" "$signature" "$url" "$notes"
+          ls -l out
+
+      - name: Attach to the release (a draft when it is new)
+        run: |
+          if ! gh release view "$TAG" > /dev/null 2>&1; then
+            gh release create "$TAG" --draft --latest=false --target "$GITHUB_SHA" \
+              --title "Tabbi for Windows $VERSION" --notes-file packaging/release-notes.md
+          fi
+          gh release upload "$TAG" out/Tabbi-Setup.exe out/latest.json --clobber
+
+      - name: Publish and update the windows-latest channel
+        if: inputs.publish
+        run: |
+          gh release edit "$TAG" --draft=false --latest=false
+          if ! gh release view windows-latest > /dev/null 2>&1; then
+            gh release create windows-latest --latest=false --target "$GITHUB_SHA" \
+              --title "Tabbi for Windows (latest)" \
+              --notes "The newest Tabbi for Windows. Each version also has its own windows-v release."
+          fi
+          gh release upload windows-latest out/Tabbi-Setup.exe out/latest.json --clobber

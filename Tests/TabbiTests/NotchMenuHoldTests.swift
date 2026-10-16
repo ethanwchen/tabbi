@@ -34,6 +34,16 @@ final class NotchMenuHoldTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(900))
     }
 
+    /// Waits for the close timer to close the notch. A busy test runner can
+    /// hold the main actor past the fixed wait above, so this polls with a
+    /// generous deadline instead of asserting at a single moment.
+    private func waitUntilClosed(_ model: NotchViewModel) async throws {
+        let deadline = ContinuousClock.now + .seconds(5)
+        while model.isOpen, ContinuousClock.now < deadline {
+            try await Task.sleep(for: .milliseconds(50))
+        }
+    }
+
     /// Opens a real menu from the panel and, inside its tracking loop, moves
     /// the pointer to `point` (as reaching for an item does) and picks the
     /// first item.
@@ -73,7 +83,7 @@ final class NotchMenuHoldTests: XCTestCase {
         // Back over the notch and away again closes it as always.
         controller.pointerMoved(to: inside)
         controller.pointerMoved(to: outside)
-        try await waitPastCloseDelay()
+        try await waitUntilClosed(model)
         XCTAssertFalse(model.isOpen, "Leaving the notch closes it again once the menu is done")
     }
 
@@ -84,7 +94,7 @@ final class NotchMenuHoldTests: XCTestCase {
         model.open()
         controller.pointerMoved(to: inside)
         controller.pointerMoved(to: outside)
-        try await waitPastCloseDelay()
+        try await waitUntilClosed(model)
         XCTAssertFalse(model.isOpen)
     }
 }

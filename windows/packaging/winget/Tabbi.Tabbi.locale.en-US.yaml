@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.9.0.schema.json
+PackageIdentifier: Tabbi.Tabbi
+PackageVersion: 0.1.0
+PackageLocale: en-US
+Publisher: Tabbi
+PublisherUrl: https://github.com/ethanwchen/tabbi
+PublisherSupportUrl: https://github.com/ethanwchen/tabbi/issues
+PackageName: Tabbi
+PackageUrl: https://github.com/ethanwchen/tabbi
+License: MIT
+LicenseUrl: https://github.com/ethanwchen/tabbi/blob/main/LICENSE
+ShortDescription: A cozy study and focus companion.
+Description: |-
+  Tabbi is a cozy study and focus companion: a cat at the top of your screen, with your tabs one click away.
+  Tabbi is free. Optional extras may come later, and the core will stay free.
+Moniker: tabbi
+Tags:
+  - focus
+  - productivity
+  - study
+  - pomodoro
+ReleaseNotesUrl: https://github.com/ethanwchen/tabbi/releases/tag/windows-v0.1.0
+ManifestType: defaultLocale
+ManifestVersion: 1.9.0
