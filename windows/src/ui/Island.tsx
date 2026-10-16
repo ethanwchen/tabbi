@@ -457,6 +457,7 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
             wing={wing}
             catalog={catalog}
             now={app.environment.now()}
+            clock={app.environment.now}
             locale={locale}
             musicWings={musicModule?.musicWings}
             onJoin={(url) => window.open(url, "_blank", "noopener")}

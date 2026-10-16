@@ -33,6 +33,7 @@ export * from "./celebrationCenter";
 export * from "./clock";
 export * from "./petPlayer";
 export * from "./PetView";
+export * from "./NotchPetWing";
 export * from "./hotkeyRecording";
 export * from "./HotkeyRecorder";
 export * from "./Toggle";

@@ -38,6 +38,7 @@ import { useTheme } from "../kit/context";
 import { Icon } from "../kit/Icon";
 import { ProgressRing } from "../kit/Loading";
 import { MarqueeText } from "../kit/MarqueeText";
+import { NotchPetWing } from "../kit/NotchPetWing";
 import { PetView } from "../kit/PetView";
 import { accentVariables } from "../kit/tokens";
 import { VIRTUAL_NOTCH } from "./geometry";
@@ -48,6 +49,8 @@ export interface ClosedPreviewProps {
   readonly wing: number;
   readonly catalog: ModuleCatalog;
   readonly now: Instant;
+  /** The app's clock, for the pet's cheer and adventure; the wall clock by default. */
+  readonly clock?: () => Instant;
   readonly locale: string;
   /** The playing module's own music wings, if it draws them. */
   readonly musicWings?: MusicWings;
@@ -90,7 +93,9 @@ function toneColor(tone: TickerHighlightTone): string {
   }
 }
 
-function PreviewRow({ item, wing, catalog, now, locale, musicWings, onJoin, phase, onDone }: ClosedPreviewProps & { phase: "in" | "out" | "rest"; onDone?: () => void }) {
+const wallClock = () => Date.now() / 1000;
+
+function PreviewRow({ item, wing, catalog, now, clock = wallClock, locale, musicWings, onJoin, phase, onDone }: ClosedPreviewProps & { phase: "in" | "out" | "rest"; onDone?: () => void }) {
   const theme = useTheme();
   const accent = catalog.descriptor(tickerItemModule(item)).accent;
   const isMusic = item.type === "nowPlaying";
@@ -106,7 +111,7 @@ function PreviewRow({ item, wing, catalog, now, locale, musicWings, onJoin, phas
       onAnimationEnd={phase === "out" ? onDone : undefined}
     >
       <div className="wing leading" style={{ width: wing }}>
-        <Leading item={item} catalog={catalog} musicWings={musicWings} />
+        <Leading item={item} catalog={catalog} musicWings={musicWings} now={clock} />
       </div>
       <div className="wing-gap" style={{ width: VIRTUAL_NOTCH.width }} />
       <div className="wing trailing" style={{ width: wing }}>
@@ -124,13 +129,13 @@ function PreviewIcon({ symbol }: { symbol: string }) {
   );
 }
 
-function Leading({ item, catalog, musicWings }: { item: TickerItem; catalog: ModuleCatalog; musicWings?: MusicWings }): ReactNode {
+function Leading({ item, catalog, musicWings, now }: { item: TickerItem; catalog: ModuleCatalog; musicWings?: MusicWings; now: () => Instant }): ReactNode {
   const symbol = previewSymbol(item, catalog);
   switch (item.type) {
     case "nowPlaying":
       return musicWings ? <musicWings.Leading /> : <PreviewIcon symbol={symbol} />;
     case "pet":
-      return <PetView profile={item.pet.profile} pixelSize={1} className="preview-pet" />;
+      return <NotchPetWing profile={item.pet.profile} mood={item.pet.mood} moodSince={item.pet.moodSince} cheer={item.pet.cheer} adventure={item.pet.adventure} now={now} />;
     case "party":
       return (
         <span className="preview-party" style={{ width: PREVIEW.partyPetStep * (item.party.pets.length - 1) + 24 }}>
