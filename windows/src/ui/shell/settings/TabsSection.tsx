@@ -9,7 +9,7 @@
  * user confirms.
  */
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
 import type { AppServices } from "../../../app/appServices";
 import type { KitSwitchUndo } from "../../../app/settingsStore";
 import { constant } from "../../../app/store";
@@ -277,7 +277,9 @@ export function TabsSection({ app, host, snapshotState }: SettingsSectionProps) 
             </>
           }
         >
-          <OptionsPane />
+          <Suspense fallback={null}>
+            <OptionsPane />
+          </Suspense>
         </Sheet>
       )}
     </SettingsPage>

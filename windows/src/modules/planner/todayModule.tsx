@@ -1,3 +1,4 @@
+import { lazyView } from "../../app/lazyView";
 import { localizedDescriptor } from "../../app/descriptor";
 import type { ModuleContext } from "../../app/context";
 import { defineModule } from "../../app/module";
@@ -24,10 +25,12 @@ import { DayReviewStore } from "./dayReviewStore";
 import { FocusCardActions } from "./focusCardActions";
 import { plannedBlocks } from "./plannedBlocks";
 import { PlannerStore } from "./plannerStore";
-import { TodayCalendarSetupView } from "./TodayCalendarSetupView";
-import { TodayPanel } from "./TodayPanel";
 import { UpNextStore } from "./upNextStore";
 import "./planner.css";
+
+/* The views load on first use; the store and descriptor stay eager. */
+const TodayCalendarSetupView = lazyView(() => import("./TodayCalendarSetupView"), "TodayCalendarSetupView");
+const TodayPanel = lazyView(() => import("./TodayPanel"), "TodayPanel");
 
 /*
  * Port of TodayModule: the to-do list, what is up next and a day plan.

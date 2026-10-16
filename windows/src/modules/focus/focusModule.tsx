@@ -1,3 +1,4 @@
+import { lazyView } from "../../app/lazyView";
 import { localizedDescriptor } from "../../app/descriptor";
 import { defineModule } from "../../app/module";
 import { derived, Observable } from "../../app/store";
@@ -10,11 +11,12 @@ import { tr } from "../../core/localization/tr";
 import { MODULE_CATEGORIES } from "../../core/modules/moduleDescriptor";
 import { MODULE_IDS } from "../../core/modules/moduleId";
 import { moduleProvision, type ModuleProvision } from "../../core/providers/moduleProvision";
-import { FocusPanel } from "./focusPanel";
 import { focusMode, focusTimer } from "./focusServices";
-import { FocusSettingsPane } from "./focusSettingsPane";
 
-export { FocusSettingsPane } from "./focusSettingsPane";
+/* The views load on first use; the store and descriptor stay eager. */
+const FocusPanel = lazyView(() => import("./focusPanel"), "FocusPanel");
+const FocusSettingsPane = lazyView(() => import("./focusSettingsPane"), "FocusSettingsPane");
+
 
 /* Port of FocusSettings.kitSettings: a kit may set the focus sounds, up to three layers. */
 export const FOCUS_KIT_SCHEMA = new KitSettingsSchema({

@@ -1,3 +1,4 @@
+import { lazyView } from "../../app/lazyView";
 import { localizedDescriptor } from "../../app/descriptor";
 import { defineModule } from "../../app/module";
 import { mapped } from "../../app/store";
@@ -6,8 +7,10 @@ import { MODULE_CATEGORIES } from "../../core/modules/moduleDescriptor";
 import { MODULE_IDS } from "../../core/modules/moduleId";
 import { moduleProvision } from "../../core/providers/moduleProvision";
 import { MusicLeading, MusicTrailing } from "./MusicWings";
-import { NowPlayingPanel } from "./NowPlayingPanel";
 import { NOW_PLAYING_SNAPSHOT_STATES, NowPlayingStore } from "./nowPlayingStore";
+
+/* The views load on first use; the store and descriptor stay eager. */
+const NowPlayingPanel = lazyView(() => import("./NowPlayingPanel"), "NowPlayingPanel");
 
 /*
  * Port of NowPlayingModule: the music playing on the PC. Windows reads the

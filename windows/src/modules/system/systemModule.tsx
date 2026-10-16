@@ -1,10 +1,13 @@
+import { lazyView } from "../../app/lazyView";
 import { localizedDescriptor } from "../../app/descriptor";
 import { defineModule } from "../../app/module";
 import { tr } from "../../core/localization/tr";
 import { MODULE_CATEGORIES } from "../../core/modules/moduleDescriptor";
 import { MODULE_IDS } from "../../core/modules/moduleId";
-import { SystemPanel } from "./SystemPanel";
 import { SYSTEM_SNAPSHOT_STATES, SystemStore } from "./systemStore";
+
+/* The views load on first use; the store and descriptor stay eager. */
+const SystemPanel = lazyView(() => import("./SystemPanel"), "SystemPanel");
 
 /* Port of SystemModule: CPU, GPU and memory use, sampled by the host only while the tab shows. */
 export const SYSTEM_DESCRIPTOR = localizedDescriptor(

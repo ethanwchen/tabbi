@@ -10,6 +10,7 @@
 
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import type { AppServices } from "../../../app/appServices";
+import { preloadLazyViews } from "../../../app/lazyView";
 import type { NotchTakeover } from "../../../app/takeover";
 import type { Host } from "../../../host/host";
 import { MODULE_LIST } from "../../../modules/moduleList";
@@ -94,6 +95,12 @@ function onboardingAt(app: AppServices, step: string): OnboardingStore {
 export function SnapshotView({ plan, app, host, locale, showsMore = false }: SnapshotViewProps) {
   const named = plan.kind === "open" || plan.kind === "closed" ? plan.state : undefined;
   const [ready, setReady] = useState(named === undefined);
+  /* Every lazy view is loaded first, so no frame is captured while a panel is still loading. */
+  const [viewsLoaded, setViewsLoaded] = useState(false);
+
+  useEffect(() => {
+    void preloadLazyViews().then(() => setViewsLoaded(true));
+  }, []);
 
   /* A module's named state may need a moment (a store loading demo data). */
   useEffect(() => {
@@ -107,6 +114,7 @@ export function SnapshotView({ plan, app, host, locale, showsMore = false }: Sna
     return onboardingTakeover(onboardingAt(app, plan.step), app);
   }, [app, plan]);
 
+  if (!viewsLoaded) return null;
   switch (plan.kind) {
     case "index":
       return <pre id="snapshot-index">{JSON.stringify(snapshotStates(MODULE_LIST))}</pre>;

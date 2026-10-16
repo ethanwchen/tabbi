@@ -1,3 +1,4 @@
+import { lazyView } from "../../app/lazyView";
 import { localizedDescriptor } from "../../app/descriptor";
 import { defineModule } from "../../app/module";
 import { derived } from "../../app/store";
@@ -8,8 +9,11 @@ import { MODULE_CATEGORIES } from "../../core/modules/moduleDescriptor";
 import { MODULE_IDS } from "../../core/modules/moduleId";
 import { ONBOARDING_SETUP_STEPS } from "../../core/onboarding/onboardingSetupStep";
 import type { ModuleProvision } from "../../core/providers/moduleProvision";
-import { AnkiConnectSetupView, AnkiPanel } from "./AnkiPanel";
 import { ANKI_SNAPSHOT_STATES, AnkiStore } from "./ankiStore";
+
+/* The views load on first use; the store and descriptor stay eager. */
+const AnkiConnectSetupView = lazyView(() => import("./AnkiPanel"), "AnkiConnectSetupView");
+const AnkiPanel = lazyView(() => import("./AnkiPanel"), "AnkiPanel");
 
 /* Port of AnkiModule: cards due today and the review streak, from AnkiConnect on this PC. */
 export const ANKI_DESCRIPTOR = localizedDescriptor(

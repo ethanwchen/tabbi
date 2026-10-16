@@ -1,3 +1,4 @@
+import { lazyView } from "../../app/lazyView";
 import { type CSSProperties } from "react";
 import { localizedDescriptor } from "../../app/descriptor";
 import { defineModule } from "../../app/module";
@@ -14,11 +15,13 @@ import type { ProvidedParty } from "../../core/providers/providedParty";
 import { useTheme } from "../../ui/kit/context";
 import { accentVariables } from "../../ui/kit/tokens";
 import { PartyInviteBody, PartyInviteTitle, type PartyInviteActions } from "./PartyInviteView";
-import { PartyOnboardingView } from "./PartyOnboardingView";
-import { PartyPanel } from "./PartyPanel";
-import { PartySettingsPane } from "./PartySettingsPane";
 import { PARTY_SNAPSHOT_STATES, PartyStore } from "./partyStore";
 import { accountSync, partyCredentialStore } from "./syncService";
+
+/* The views load on first use; the store and descriptor stay eager. */
+const PartyOnboardingView = lazyView(() => import("./PartyOnboardingView"), "PartyOnboardingView");
+const PartyPanel = lazyView(() => import("./PartyPanel"), "PartyPanel");
+const PartySettingsPane = lazyView(() => import("./PartySettingsPane"), "PartySettingsPane");
 
 /* Port of PartyModule: studying with friends, through the Party Worker. */
 export const PARTY_DESCRIPTOR = localizedDescriptor(

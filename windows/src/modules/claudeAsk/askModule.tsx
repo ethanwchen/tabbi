@@ -1,3 +1,4 @@
+import { lazyView } from "../../app/lazyView";
 import { aiService } from "../../app/aiService";
 import { localizedDescriptor } from "../../app/descriptor";
 import { defineModule } from "../../app/module";
@@ -7,8 +8,10 @@ import { tr } from "../../core/localization/tr";
 import { CLAUDE_ACCENT, MODULE_CATEGORIES } from "../../core/modules/moduleDescriptor";
 import { MODULE_IDS } from "../../core/modules/moduleId";
 import { SettingsGroup, SettingsRow } from "../../ui/kit/SettingsGroup";
-import { AskPanel } from "./askPanel";
 import { ClaudeAskSession } from "./askSession";
+
+/* The views load on first use; the store and descriptor stay eager. */
+const AskPanel = lazyView(() => import("./askPanel"), "AskPanel");
 
 /* Port of AskClaudeModule: a quick question to the AI the user picked in Settings > Connections. */
 export const ASK_DESCRIPTOR = localizedDescriptor(

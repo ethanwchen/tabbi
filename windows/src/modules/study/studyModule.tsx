@@ -1,3 +1,4 @@
+import { lazyView } from "../../app/lazyView";
 import type { ModuleContext } from "../../app/context";
 import { localizedDescriptor } from "../../app/descriptor";
 import { defineModule, type SetupStepProps } from "../../app/module";
@@ -19,9 +20,11 @@ import { hostChannel, quietChannel } from "../../app/windowChannel";
 import { isEphemeral } from "../../core/modules/runMode";
 import { focusMode } from "../focus/focusServices";
 import { ModulePreferences } from "../focus/modulePreferences";
-import { StudyMethodSetupView } from "./studyMethodSetupView";
-import { StudyPanel } from "./studyPanel";
 import { StudyStore } from "./studyStore";
+
+/* The views load on first use; the store and descriptor stay eager. */
+const StudyMethodSetupView = lazyView(() => import("./studyMethodSetupView"), "StudyMethodSetupView");
+const StudyPanel = lazyView(() => import("./studyPanel"), "StudyPanel");
 
 const methodChoice = kitSetting.choice(STUDY_METHOD_KINDS);
 

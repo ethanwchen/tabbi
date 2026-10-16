@@ -7,7 +7,7 @@
  * is scaled up as a whole at Large (PanelSize.contentScale).
  */
 
-import { useState, type CSSProperties } from "react";
+import { Suspense, useState, type CSSProperties } from "react";
 import type { ModuleRegistry } from "../../app/registry";
 import { tr } from "../../core/localization/tr";
 import type { ModuleCatalog } from "../../core/modules/moduleCatalog";
@@ -78,7 +78,14 @@ function PanelLayer({ shown, phase, registry, catalog, scale, onDone }: PanelLay
       }}
     >
       <div className="panel-scaled">
-        {Panel ? <Panel /> : <ModulePlaceholder symbol={descriptor.symbol} detail={tr("This tab isn't available in this build.")} />}
+        {/* A panel loads on first use; the layer stays empty for that moment. */}
+        {Panel ? (
+          <Suspense fallback={null}>
+            <Panel />
+          </Suspense>
+        ) : (
+          <ModulePlaceholder symbol={descriptor.symbol} detail={tr("This tab isn't available in this build.")} />
+        )}
       </div>
     </div>
   );

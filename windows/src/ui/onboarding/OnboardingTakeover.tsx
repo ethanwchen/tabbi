@@ -7,7 +7,7 @@
  * as the flow leaves the tab step (onboardingStore.ts).
  */
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import type { AppServices } from "../../app/appServices";
 import { ModuleContext } from "../../app/context";
 import type { NotchTakeover } from "../../app/takeover";
@@ -181,7 +181,11 @@ function renderStep(
     case "setup": {
       const current = flow.currentSetupStep;
       if (current === undefined || SetupView === undefined) return null;
-      return <SetupView step={current} done={() => store.next()} />;
+      return (
+        <Suspense fallback={null}>
+          <SetupView step={current} done={() => store.next()} />
+        </Suspense>
+      );
     }
     case "extras":
       return <ExtrasStep extras={flow.currentExtras} catalog={catalog} />;

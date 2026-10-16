@@ -10,6 +10,7 @@
  * closed island shows it too.
  */
 
+import { lazyView } from "../../app/lazyView";
 import type { ComponentType } from "react";
 import { defineModule, type SetupStepProps } from "../../app/module";
 import { mapped } from "../../app/store";
@@ -21,9 +22,6 @@ import { moduleProvision } from "../../core/providers/moduleProvision";
 import { resolveTheme } from "../../core/themes/themeCatalog";
 import { focusTimer } from "../focus/focusServices";
 import { PetCoachController } from "./coach/petCoachController";
-import { PetCoachSettingsPane } from "./coach/PetCoachSettingsPane";
-import { ClosetPanel } from "./ClosetPanel";
-import { ClosetSetupView } from "./ClosetSetupView";
 import { CLOSET_DESCRIPTOR } from "./closetDescriptor";
 import { studyPet, surpriseGifts } from "./closetServices";
 import type { ClosetSection } from "./closetStore";
@@ -33,6 +31,11 @@ import { copyRecapImage, saveRecapImage } from "./recap/recapSharing";
 import { RecapStore } from "./recap/recapStore";
 import { SeasonalEventGreeter } from "./seasonalEventGreeter";
 import { StudyReminderScheduler } from "./studyReminderScheduler";
+
+/* The views load on first use; the store and descriptor stay eager. */
+const PetCoachSettingsPane = lazyView(() => import("./coach/PetCoachSettingsPane"), "PetCoachSettingsPane");
+const ClosetPanel = lazyView(() => import("./ClosetPanel"), "ClosetPanel");
+const ClosetSetupView = lazyView(() => import("./ClosetSetupView"), "ClosetSetupView");
 
 export { CLOSET_DESCRIPTOR, CLOSET_KIT_SCHEMA } from "./closetDescriptor";
 

@@ -1,3 +1,4 @@
+import { lazyView } from "../../app/lazyView";
 import { localizedDescriptor } from "../../app/descriptor";
 import { defineModule } from "../../app/module";
 import { allAINetworkAccess } from "../../core/ai/aiProviderID";
@@ -7,9 +8,11 @@ import { MODULE_IDS } from "../../core/modules/moduleId";
 import { todayPlanSettingsFromKit } from "../../core/planner/todayPlanSettings";
 import { calendarSource } from "../planner/calendarServices";
 import { plannedBlocks } from "../planner/plannedBlocks";
-import { SchedulePanel } from "./SchedulePanel";
 import { ScheduleStore } from "./scheduleStore";
 import "./schedule.css";
+
+/* The views load on first use; the store and descriptor stay eager. */
+const SchedulePanel = lazyView(() => import("./SchedulePanel"), "SchedulePanel");
 
 /*
  * Port of ScheduleModule: the day on a timeline with the free time in

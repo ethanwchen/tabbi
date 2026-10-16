@@ -1,3 +1,4 @@
+import { lazyView } from "../../app/lazyView";
 import { aiService } from "../../app/aiService";
 import { localizedDescriptor } from "../../app/descriptor";
 import { defineModule } from "../../app/module";
@@ -7,8 +8,10 @@ import { tr } from "../../core/localization/tr";
 import { CLAUDE_ACCENT, MODULE_CATEGORIES } from "../../core/modules/moduleDescriptor";
 import { MODULE_IDS } from "../../core/modules/moduleId";
 import { moduleProvision } from "../../core/providers/moduleProvision";
-import { ClaudeUsagePanel } from "./claudeUsagePanel";
 import { ClaudeUsageStore } from "./claudeUsageStore";
+
+/* The views load on first use; the store and descriptor stay eager. */
+const ClaudeUsagePanel = lazyView(() => import("./claudeUsagePanel"), "ClaudeUsagePanel");
 
 /* Port of ClaudeUsageModule: how much of the Claude or Codex plan is used, read from the command line tools' own files. */
 export const CLAUDE_USAGE_DESCRIPTOR = localizedDescriptor(
