@@ -19,6 +19,8 @@ const origin = `http://localhost:${port}`;
 export default defineConfig({
   testDir: "tests/snapshots",
   outputDir: "test-results",
+  /* One test shoots every state of every module, well over the default 30 s. */
+  timeout: 600_000,
   reporter: "list",
   use: {
     baseURL: origin,

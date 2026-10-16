@@ -145,11 +145,12 @@
 .anki-deck[data-favorite] .anki-deck-star {
   display: inline-flex;
 }
-.anki-star {
+.anki-deck .anki-star {
   color: var(--tertiary-text);
   background: transparent;
+  box-shadow: none;
 }
-.anki-star:hover {
+.anki-deck .anki-star:hover {
   color: var(--primary-text);
 }
 .anki-deck .anki-deck-play {
