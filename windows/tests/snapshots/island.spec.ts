@@ -27,3 +27,16 @@ test("shell states", async ({ page }, info) => {
   await shoot(page, "open:schedule", "all&more", `${out}/open-all-tabs-more.png`);
   await shoot(page, "open:schedule", "all&more&lang=ar", `${out}/open-all-tabs-more-ar.png`);
 });
+
+/* The query strings the dev server documents, outside the harness: the live island and the Settings window on the mock host. */
+test("dev server pages", async ({ page }, info) => {
+  const out = `tests/snapshots/output/${info.project.name}/shell`;
+  await page.setViewportSize({ width: 560, height: 236 });
+  await page.goto("/?still&backdrop&phase=open&tab=planner");
+  await page.waitForSelector(".island[data-phase='open'] .header .tab");
+  await page.screenshot({ path: `${out}/dev-open-planner.png` });
+  await page.setViewportSize({ width: 760, height: 540 });
+  await page.goto("/?window=settings&section=look");
+  await page.waitForSelector(".settings-nav[data-selected='true']");
+  await page.screenshot({ path: `${out}/dev-settings-look.png` });
+});

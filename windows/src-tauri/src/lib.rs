@@ -494,7 +494,11 @@ fn build_tray(app: &AppHandle) -> tauri::Result<()> {
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id().as_ref() {
             "open" => open(app, Source::Tray),
-            "settings" => open_settings(app, None),
+            "settings" => {
+                /* Off the menu's callback, like the command, so building the window never blocks the event loop. */
+                let app = app.clone();
+                tauri::async_runtime::spawn(async move { open_settings(&app, None) });
+            }
             "quit" => app.exit(0),
             _ => {}
         })
