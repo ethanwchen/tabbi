@@ -234,6 +234,20 @@ function connectionOutput(error: AnkiConnectError | undefined, environment: Envi
   };
 }
 
+/*
+ * The Mac's row text, worded for Windows: the one recorded sentence that
+ * names the Mac reads "on this PC" here (a Windows.xcstrings key). Every
+ * other value is compared as recorded.
+ */
+const WINDOWS_WORDING: Readonly<Record<string, string>> = { "Anki isn't on this Mac": "Anki isn't on this PC" };
+
+function onWindows(connection: unknown): unknown {
+  if (typeof connection !== "object" || connection === null) return connection;
+  const row = connection as Record<string, unknown>;
+  const headline = typeof row.headline === "string" ? WINDOWS_WORDING[row.headline] : undefined;
+  return headline === undefined ? connection : { ...row, headline };
+}
+
 interface Outcome {
   sent: { request: unknown; timeout: number }[];
   reported: { action: string; error: string }[];
@@ -301,7 +315,7 @@ describe("anki golden fixture", () => {
     });
 
     it.each(["summary", "format", "progress", "activity", "error", "connection"] as const)("ends with the recorded %s", (key) => {
-      const expected = testCase[key];
+      const expected = key === "connection" ? onWindows(testCase[key]) : testCase[key];
       const actual = outcome.outputs[key];
       if (expected === undefined) expect(actual).toBeUndefined();
       else expect(goldenDiff(actual, expected)).toBeUndefined();
