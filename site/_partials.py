@@ -7,9 +7,10 @@ from _releases import VERSION
 ORIGIN = 'https://tabbinotch.com'
 # The newest DMG itself: every release also uploads it as Tabbi.dmg (scripts/release.sh).
 DOWNLOAD = 'https://github.com/ethanwchen/tabbi/releases/latest/download/Tabbi.dmg'
-# The newest Windows installer: the Windows release job uploads it to the same
-# release as Tabbi-Setup.exe (.github/workflows/windows-release.yml).
-DOWNLOAD_WINDOWS = 'https://github.com/ethanwchen/tabbi/releases/latest/download/Tabbi-Setup.exe'
+# The newest Windows installer: Windows has its own fixed release, windows-latest,
+# which the Windows release job refreshes on every publish
+# (.github/workflows/windows-release.yml), so Mac releases never move it.
+DOWNLOAD_WINDOWS = 'https://github.com/ethanwchen/tabbi/releases/download/windows-latest/Tabbi-Setup.exe'
 # The header's Download: a Pages Function (functions/download.js) sends each
 # visitor the installer for their computer, Windows or Mac.
 DOWNLOAD_PAGE = '/download'
