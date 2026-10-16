@@ -1,0 +1,197 @@
+/*
+ * The gallery page: a dark review sheet around the components, with the
+ * open panel's hardware-black 560 x 236 canvas where a component lives in a
+ * panel. Only the layout of the review page lives here; every component's
+ * look is in ui/kit/kit.css.
+ */
+
+html,
+body {
+  margin: 0;
+  background: #2a2d33;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--primary-text);
+}
+
+.gallery {
+  width: 1180px;
+  padding: 20px 24px 40px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.gallery-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.gallery-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.gallery-meta {
+  font-size: 12px;
+  color: var(--secondary-text);
+}
+
+.gallery-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--background);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+}
+
+.gallery-section-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--secondary-text);
+}
+
+.gallery-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gallery-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.gallery-row[data-align="start"] {
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.gallery-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.gallery-cell-body {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  min-width: 0;
+}
+
+.gallery-cell-body[data-column] {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.gallery-cell-label {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--tertiary-text);
+  white-space: nowrap;
+}
+
+/* The open panel's canvas: black with the glow rising from the bottom, 12 px top and 26 px bottom corners. */
+.gallery-panel {
+  width: 560px;
+  height: 236px;
+  border-radius: 12px 12px 26px 26px;
+  background: linear-gradient(to bottom, transparent 40%, var(--glow)), var(--background);
+  box-shadow: 0 0 0 0.5px rgb(255 255 255 / 0.08);
+  overflow: hidden;
+}
+
+/* Minus the header (32 px) and the insets: 20 px sides plus the 12 px top radius, 8 px below the header, 16 px above the bottom. */
+.gallery-panel-body {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 40px 32px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.gallery-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 72px;
+}
+
+.gallery-swatch-color {
+  width: 44px;
+  height: 28px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 0.15);
+}
+
+.gallery-swatch-name {
+  font-size: 10.5px;
+  color: var(--tertiary-text);
+  white-space: nowrap;
+}
+
+.gallery-spacing {
+  display: inline-block;
+  height: 24px;
+  background: var(--accent, var(--secondary-text));
+}
+
+.gallery-radius {
+  display: inline-block;
+  width: 44px;
+  height: 28px;
+  background: var(--surface-hover);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+}
+
+.gallery-icons {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 8px 4px;
+}
+
+.gallery-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.gallery-icon-name {
+  font-size: 9px;
+  color: var(--tertiary-text);
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.gallery-list-row {
+  padding: 2px 0;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.gallery-stage {
+  position: relative;
+  width: 200px;
+  height: 120px;
+  border-radius: 10px;
+  background: var(--surface);
+  overflow: hidden;
+}
