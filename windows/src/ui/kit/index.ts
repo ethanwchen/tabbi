@@ -17,6 +17,7 @@ export * from "./Pill";
 export * from "./CapsuleToggle";
 export * from "./PrimaryPill";
 export * from "./TrackSlider";
+export * from "./ProgressBar";
 export * from "./MarqueeText";
 export * from "./rowsFit";
 export * from "./RowsThatFit";

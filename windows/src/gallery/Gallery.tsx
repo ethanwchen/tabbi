@@ -32,6 +32,7 @@ import { Picker } from "../ui/kit/Picker";
 import { Pill } from "../ui/kit/Pill";
 import { CapsuleToggle } from "../ui/kit/CapsuleToggle";
 import { PrimaryPill } from "../ui/kit/PrimaryPill";
+import { ProgressBar } from "../ui/kit/ProgressBar";
 import { RowsThatFit } from "../ui/kit/RowsThatFit";
 import { SegmentedControl } from "../ui/kit/SegmentedControl";
 import { MoreOptions, SettingsGroup, SettingsRow } from "../ui/kit/SettingsGroup";
@@ -345,6 +346,20 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
           </Cell>
           <Cell label="disabled" accent="spotify" width={200}>
             <TrackSlider value={0.8} onChange={() => {}} help="80%" label="Volume" disabled />
+          </Cell>
+        </Row>
+        <Row>
+          <Cell label="ProgressBar: accent" accent="spotify" width={200}>
+            <ProgressBar value={0.35} help="1:27" label="Playback position" />
+          </Cell>
+          <Cell label="ProgressBar: primary, 6 px" accent="spotify" width={200}>
+            <ProgressBar value={0.35} tint="var(--primary-text)" height={6} help="1:27" label="Playback position" />
+          </Cell>
+          <Cell label="ProgressBar: success" width={200}>
+            <ProgressBar value={0.7} tint="var(--success)" help={tr("Memory pressure: %@", "Normal")} label={tr("Memory")} />
+          </Cell>
+          <Cell label="ProgressBar: danger" width={200}>
+            <ProgressBar value={0.95} tint="var(--danger)" help={tr("Memory pressure: %@", "Critical")} label={tr("Memory")} />
           </Cell>
         </Row>
       </Section>

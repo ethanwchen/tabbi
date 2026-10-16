@@ -659,9 +659,9 @@
   flex: none;
   white-space: nowrap;
 }
-/* The curator only shows when the whole name still fits. */
+/* The curator only shows when the whole name still fits; it keeps its room, so hiding it never changes what fits. */
 .study-playlist-row:has(.study-playlist-name[data-overflows]) .study-playlist-detail {
-  display: none;
+  visibility: hidden;
 }
 
 /* The party session. */

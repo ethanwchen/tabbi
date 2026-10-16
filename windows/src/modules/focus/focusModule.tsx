@@ -112,7 +112,8 @@ export const FocusModule = defineModule(
             store.pause();
             return;
           case "break":
-            store.skip();
+            /* Idempotent, since React may run the harness's effect twice. */
+            if (store.state.timer.phase === "focus") store.skip();
             return;
         }
       },
