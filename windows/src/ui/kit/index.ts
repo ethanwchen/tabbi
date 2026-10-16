@@ -42,3 +42,4 @@ export * from "./Stepper";
 export * from "./SettingsGroup";
 export * from "./useSpringValue";
 export * from "./useLoaderClock";
+export * from "./useElementWidth";

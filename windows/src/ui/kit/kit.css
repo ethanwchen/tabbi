@@ -336,6 +336,54 @@
   opacity: 0.6;
   color: var(--tertiary-text);
 }
+.kit-pill[data-busy] {
+  opacity: 0.5;
+  color: inherit;
+}
+.kit-pill[data-height="20"] {
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 10px;
+  font-size: 10.5px;
+}
+.kit-pill[data-height="28"] {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 14px;
+}
+.kit-pill[data-icon-only] {
+  padding: 0 10px;
+}
+.kit-pill-title {
+  white-space: nowrap;
+}
+/* The filled accent pill: text in the panel background, the whole accent on hover. */
+.kit-pill[data-prominent="true"] {
+  background: color-mix(in srgb, var(--accent) 88%, transparent);
+  color: var(--background);
+}
+.kit-pill[data-prominent="true"]:hover,
+.kit-pill[data-prominent="true"][data-hover="true"] {
+  background: var(--accent);
+}
+.kit-pill[data-prominent="true"]:disabled {
+  color: var(--background);
+}
+.kit-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  font-size: 10.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: color-mix(in srgb, var(--background) 18%, transparent);
+}
+.kit-pill[data-prominent="false"] .kit-pill-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
 
 /* ModulePlaceholder */
 .kit-module-placeholder {

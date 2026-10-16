@@ -281,6 +281,13 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
           <Cell label="disabled" accent="study">
             <Pill title={tr("Try again")} disabled />
           </Cell>
+          <Cell label="Pill prominent, badge, busy, icon only" accent="anki">
+            <Pill title={tr("Study %@", "Biology")} symbol="play-filled" prominent badge={92} height={28} lifts />
+            <Pill title={tr("Study %@", "Biology")} symbol="play-filled" prominent badge={92} height={28} preview="hover" />
+            <Pill title={tr("Join")} prominent height={20} />
+            <Pill title={tr("Leave")} busy />
+            <Pill title="" help={tr("Start a party")} symbol="plus" prominent />
+          </Cell>
         </Row>
       </Section>
 

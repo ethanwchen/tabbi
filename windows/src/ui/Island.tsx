@@ -138,8 +138,10 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
   /* The link handler is subscribed once; these follow the current layout and tab picker. */
   const layoutRef = useRef(layout);
   const selectRef = useRef(select);
-  layoutRef.current = layout;
-  selectRef.current = select;
+  useLayoutEffect(() => {
+    layoutRef.current = layout;
+    selectRef.current = select;
+  }, [layout, select]);
   /* What the host's shape effects need now: the canvas and the pill's wings. */
   const shapeInputs = useRef({ canvas, wing });
 
