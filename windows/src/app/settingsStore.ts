@@ -462,10 +462,12 @@ export class SettingsStore {
     const removed = this.activeKit;
     if (!this.canRemoveActiveKit || kitStore === undefined || removed === undefined) return;
     const previous = { [removed.id]: await kitStore.savedText(removed.id) };
+    /* Taken before the file goes: once it is gone, the settings already read as the default kit. */
+    const before = kitState(this.current);
     await kitStore.remove(removed.id);
     await this.reloadImportedKits();
     const fallback = this.kits.kit(this.defaultKitID);
-    if (fallback !== undefined) this.switchTo(fallback, {}, previous, removed.name);
+    if (fallback !== undefined) this.switchTo(fallback, {}, previous, removed.name, before);
   }
 
   /**
@@ -536,8 +538,8 @@ export class SettingsStore {
   }
 
   /** Applies `kit` as a switch and remembers what it replaced, so Undo can put it back. */
-  private switchTo(kit: KitManifest, answers: KitAnswers, kitFiles: Readonly<Record<string, string | undefined>>, undoName?: string): void {
-    const before = kitState(this.current);
+  private switchTo(kit: KitManifest, answers: KitAnswers, kitFiles: Readonly<Record<string, string | undefined>>, undoName?: string, replaced?: KitState): void {
+    const before = replaced ?? kitState(this.current);
     this.apply(kit, answers, "switched");
     this.lastKitSwitchValue.set({ kitState: before, kitName: undoName ?? kit.name, switchedKit: true, kitFiles });
   }
