@@ -620,6 +620,21 @@
   opacity: 0.5;
 }
 
+/* ProgressBar: a read-only capsule that fills from the left. */
+.kit-progress-bar {
+  position: relative;
+  display: block;
+  direction: ltr;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-hover);
+}
+.kit-progress-bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+}
+
 /* HotkeyRecorder */
 .kit-hotkey {
   display: inline-flex;
