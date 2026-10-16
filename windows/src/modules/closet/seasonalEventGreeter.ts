@@ -16,7 +16,7 @@ import type { SeasonalEventOccurrence } from "../../core/events/seasonalEvent";
 import type { DocumentStore } from "../../core/persistence/documentStore";
 import type { Instant } from "../../core/time";
 import { WallClockAlarm } from "../../ui/kit/clock";
-import { portableTimers } from "./alarmTimers";
+import { alarmTimers } from "./alarmTimers";
 
 export class SeasonalEventGreeter {
   /** A beat after launch, so the closed island is up before the pet dances. */
@@ -29,7 +29,7 @@ export class SeasonalEventGreeter {
   private readonly store: DocumentStore | undefined;
   private unreadable = false;
   private readonly loaded: Promise<void>;
-  private readonly alarm = new WallClockAlarm(() => this.check(), portableTimers);
+  private readonly alarm = new WallClockAlarm(() => this.check(), alarmTimers(() => this.now()));
 
   constructor(
     private readonly context: ModuleContext,

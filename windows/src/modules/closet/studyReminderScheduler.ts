@@ -21,7 +21,7 @@ import type { ProgressItem } from "../../core/providers/progressItem";
 import { reminderGoalMet, reminderMessage, reminderSpeaker, StudyReminderSave, StudyReminderSettings } from "../../core/streaks/studyReminder";
 import type { Instant } from "../../core/time";
 import { WallClockAlarm } from "../../ui/kit/clock";
-import { portableTimers } from "./alarmTimers";
+import { alarmTimers } from "./alarmTimers";
 import type { ClosetStore } from "./closetStore";
 
 export const REMINDER_DOCUMENT = "reminder.json";
@@ -37,7 +37,7 @@ export class StudyReminderScheduler extends Store<StudyReminderState> {
   private readonly store: DocumentStore | undefined;
   private unreadable = false;
   private readonly loaded: Promise<void>;
-  private readonly alarm = new WallClockAlarm(() => this.fire(), portableTimers);
+  private readonly alarm = new WallClockAlarm(() => this.fire(), alarmTimers(() => this.context.now()));
   private goalMet = false;
   private readonly stops: (() => void)[] = [];
   private started = false;

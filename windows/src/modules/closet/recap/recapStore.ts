@@ -20,7 +20,7 @@ import type { RecapWeek } from "../../../core/recap/recapWeek";
 import { dayKeyStart } from "../../../core/planner/plannerDayKey";
 import type { Instant } from "../../../core/time";
 import { WallClockAlarm } from "../../../ui/kit/clock";
-import { portableTimers } from "../alarmTimers";
+import { alarmTimers } from "../alarmTimers";
 
 export interface RecapStoreState {
   readonly archive: RecapArchive;
@@ -40,7 +40,7 @@ export class RecapStore extends Store<RecapStoreState> {
   private readonly loaded: Promise<void>;
   private readonly alarm = new WallClockAlarm(() => {
     void this.buildOnSchedule().then(() => this.scheduleNextBuild());
-  }, portableTimers);
+  }, alarmTimers(() => this.context.now()));
   /** Builds run one after another, so a Sunday alarm and an island opening never write the archive twice at once. */
   private building: Promise<void> = Promise.resolve();
 
