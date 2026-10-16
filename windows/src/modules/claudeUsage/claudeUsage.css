@@ -1,0 +1,193 @@
+/*
+ * The AI Usage panel: two usage rings beside today's card, and a footer with
+ * freshness and a refresh button, after ClaudeUsagePanel on the Mac.
+ * Spacing follows Theme.Spacing and the rings keep a fixed width so the
+ * layout never shifts as a reset label changes.
+ */
+
+.usage-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.usage-top {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+.usage-rings {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+
+/* One usage window as a ring with the percentage inside. */
+.usage-ring {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 120px;
+  flex: none;
+}
+.usage-ring-dial {
+  margin-bottom: 2px;
+}
+.usage-ring-value {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--primary-text);
+}
+.usage-ring-unknown {
+  color: var(--tertiary-text);
+}
+.usage-ring-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--secondary-text);
+  white-space: nowrap;
+}
+.usage-ring-reset {
+  min-height: 13px;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--tertiary-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* Today's local usage. */
+.usage-today {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.usage-today[data-tight] {
+  gap: 4px;
+}
+.usage-today-caption {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--tertiary-text);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.usage-today-hero {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+}
+.usage-today-unit {
+  font-size: 12px;
+  color: var(--secondary-text);
+  white-space: nowrap;
+}
+.usage-today-spacer {
+  flex: 1;
+}
+.usage-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12px;
+  min-width: 0;
+}
+.usage-row-title {
+  color: var(--secondary-text);
+  white-space: nowrap;
+  flex: none;
+}
+.usage-row-value {
+  flex: 1;
+  min-width: 0;
+  text-align: end;
+  color: var(--primary-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.usage-row-value > .kit-marquee {
+  max-width: 100%;
+}
+.usage-today-loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--secondary-text);
+  min-height: 0;
+}
+
+/* Shown in place of the rings when the source's CLI can't be found. */
+.usage-missing {
+  width: 228px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.usage-missing-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-text);
+  min-width: 0;
+}
+.usage-missing-title .kit-icon {
+  color: var(--primary-text);
+}
+.usage-missing-body {
+  font-size: 12px;
+  color: var(--secondary-text);
+}
+.usage-missing-spacer {
+  flex: 1;
+}
+.usage-missing-note {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--tertiary-text);
+  overflow-wrap: anywhere;
+}
+.usage-missing-note code {
+  font-family: "Cascadia Mono", "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+}
+
+/* Freshness, warnings and the refresh button. */
+.usage-footer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  flex: none;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--tertiary-text);
+  font-variant-numeric: tabular-nums;
+}
+.usage-footer-warning {
+  color: var(--warning);
+  flex: none;
+}
+.usage-footer-status {
+  flex: 1;
+  min-width: 0;
+}
