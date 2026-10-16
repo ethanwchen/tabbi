@@ -38,10 +38,20 @@ export function TextThatFits({ candidates, className, style }: TextThatFitsProps
       setChosen(candidateThatFits(widths, element.clientWidth));
     };
     measure();
+    /* The probes measure in the fallback font until the page's fonts are in. */
+    let cancelled = false;
+    if (typeof document !== "undefined" && "fonts" in document) {
+      void document.fonts.ready.then(() => {
+        if (!cancelled) measure();
+      });
+    }
     if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(measure);
     observer.observe(element);
-    return () => observer.disconnect();
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+    };
   }, [key]);
 
   return (

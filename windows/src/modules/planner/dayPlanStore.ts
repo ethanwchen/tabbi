@@ -13,6 +13,7 @@ import { aiService } from "../../app/aiService";
 import type { ModuleContext } from "../../app/context";
 import { Store } from "../../app/store";
 import { assistantName, type AIProviderID } from "../../core/ai/aiProviderID";
+import { ankiProgressItem, demoAnkiSummary } from "../../core/anki/ankiSummary";
 import { setupProvider } from "../../core/ai/aiProviderFactory";
 import { currentLanguage } from "../../core/localization/tr";
 import { DayPlanContext, dayPlanPrompt, dayPlanProposalBlocks, type PlanBlock } from "../../core/planner/dayPlan";
@@ -161,7 +162,9 @@ export class DayPlanStore extends Store<DayPlanState> {
     this.invalidateRun();
     this.lastTasks = tasks;
     this.setState({ target: day, canRefine: this.settings.planMode === "local" });
-    const proposal = await this.sampleProposal(tasks, [], []);
+    /* Today's preview plans the demo Anki reviews too, as the Mac's does. */
+    const progress = day === "today" ? [ankiProgressItem(demoAnkiSummary(this.context.now(), this.context.timeZone()))] : [];
+    const proposal = await this.sampleProposal(tasks, [], progress);
     this.setState({ phase: { kind: "proposal", proposal } });
   }
 

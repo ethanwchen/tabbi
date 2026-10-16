@@ -56,7 +56,7 @@ export function DayReviewView({ store, locale }: DayReviewViewProps) {
             </div>
           </Tooltip>
         ) : (
-          <div className="dayreview-summary" title={review.summary}>
+          <div className="dayreview-summary kit-user-text" title={review.summary}>
             {review.summary}
           </div>
         )}
@@ -99,7 +99,9 @@ function DayReviewList({ title, titles, isDone, emptyText }: { title: string; ti
               <span className="dayreview-item-glyph">
                 <Icon id={isDone ? "checkmark.circle.fill" : "arrow.turn.down.right"} size={9.5} />
               </span>
-              <MarqueeText text={item} />
+              <span className="dayreview-item-text" dir="auto">
+                <MarqueeText text={item} userText />
+              </span>
             </div>
           ))
         )}

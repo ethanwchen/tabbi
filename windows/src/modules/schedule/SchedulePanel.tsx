@@ -46,6 +46,7 @@ import { StatusMessage } from "../../ui/kit/StatusMessage";
 import { TextThatFits } from "../../ui/kit/TextThatFits";
 import { Spacing } from "../../ui/kit/tokens";
 import { Tooltip } from "../../ui/kit/Tooltip";
+import { textWidth } from "../../ui/shell/measure";
 import { DayStepper } from "../planner/DayStepper";
 import { formatDate, hourLabel } from "../planner/plannerFormat";
 import { PlannerPillButton } from "../planner/plannerControls";
@@ -75,6 +76,12 @@ function useSize(): [React.RefObject<HTMLDivElement | null>, { width: number; he
     return () => observer.disconnect();
   }, []);
   return [ref, size];
+}
+
+/* The direction of text the user or a calendar wrote: its first strong letter's. */
+function textDirection(text: string): "rtl" | "ltr" {
+  const strong = /[p{L}]/u.exec(text);
+  return strong !== null && /[p{Script=Arabic}p{Script=Hebrew}]/u.test(strong[0]) ? "rtl" : "ltr";
 }
 
 function itemColor(item: ScheduleItem): string {
@@ -188,7 +195,7 @@ function ScheduleHeader({ store, layout, locale, timeZone }: { store: ScheduleSt
         <Tooltip text={tr("All day: %@", scheduleItemTitle(allDay))}>
           <span className="schedule-allday">
             <Icon id="sun.max" size={11} />
-            <span>{scheduleItemTitle(allDay)}</span>
+            <span className="kit-user-text">{scheduleItemTitle(allDay)}</span>
           </span>
         </Tooltip>
       )}
@@ -288,14 +295,14 @@ function ScheduleTimeline({ layout, now, selectedID, isDrafting, select, locale,
       <div ref={ref} className="schedule-timeline">
         {width > 0 && (
           <>
-            {nowX !== undefined && <div className="schedule-past" style={{ width: width * nowX, top: LABEL_HEIGHT, height: trackHeight }} />}
+            {nowX !== undefined && <div className="schedule-past" style={{ insetInlineStart: 0, width: width * nowX, top: LABEL_HEIGHT, height: trackHeight }} />}
             {layout.hours.map((hour, index) => {
               const x = width * (layout.position(hour) ?? 1);
               return (
                 <span key={index}>
-                  <div className="schedule-gridline" style={{ left: x, top: LABEL_HEIGHT, height: trackHeight }} />
+                  <div className="schedule-gridline" style={{ insetInlineStart: x, top: LABEL_HEIGHT, height: trackHeight }} />
                   {index % labelEvery === 0 && index < layout.hours.length - 1 && (
-                    <div className="schedule-hour" style={{ left: x + 3 }}>
+                    <div className="schedule-hour" style={{ insetInlineStart: x + 3 }}>
                       {hourLabel(hour, locale, timeZone)}
                     </div>
                   )}
@@ -309,7 +316,7 @@ function ScheduleTimeline({ layout, now, selectedID, isDrafting, select, locale,
                 isPast={isPast(placed.item)}
                 isSelected={placed.item.id === selectedID}
                 isDimmed={isDrafting && placed.item.kind !== "proposed"}
-                style={{ left: width * placed.x + 0.5, top: laneY(placed), width: Math.max(width * placed.width - 1, 3), height: laneHeight(placed) }}
+                style={{ insetInlineStart: width * placed.x + 0.5, top: laneY(placed), width: Math.max(width * placed.width - 1, 3), height: laneHeight(placed) }}
                 onClick={() => select(placed.item.id)}
                 locale={locale}
                 timeZone={timeZone}
@@ -317,7 +324,7 @@ function ScheduleTimeline({ layout, now, selectedID, isDrafting, select, locale,
             ))}
             {/* Under the labels, so the line never cuts through a title. */}
             {nowX !== undefined && (
-              <div className="schedule-now" style={{ left: width * nowX - 3, top: LABEL_HEIGHT - 4, height: trackHeight + 4 }}>
+              <div className="schedule-now" style={{ insetInlineStart: width * nowX - 3, top: LABEL_HEIGHT - 4, height: trackHeight + 4 }}>
                 <span className="schedule-now-dot" />
                 <span className="schedule-now-line" />
               </div>
@@ -331,10 +338,15 @@ function ScheduleTimeline({ layout, now, selectedID, isDrafting, select, locale,
                 <div
                   key={`label-${placed.item.id}`}
                   className="schedule-block-label"
+                  dir={textDirection(scheduleItemTitle(placed.item))}
                   data-tall={height >= 20}
-                  style={{ left: width * placed.x + 0.5 + inset, top: laneY(placed), width: labelWidth, height, opacity: blockOpacity(isPast(placed.item), placed.item.id === selectedID, isDrafting && placed.item.kind !== "proposed") }}
+                  style={{ insetInlineStart: width * placed.x + 0.5 + inset, top: laneY(placed), width: labelWidth, height, opacity: blockOpacity(isPast(placed.item), placed.item.id === selectedID, isDrafting && placed.item.kind !== "proposed") }}
                 >
-                  <span className="schedule-block-title" data-lines={height >= 48 && labelWidth >= 40 ? 2 : 1}>
+                  <span
+                    className="schedule-block-title"
+                    data-lines={height >= 48 && labelWidth >= 40 ? 2 : 1}
+                    data-cut={textWidth(scheduleItemTitle(placed.item), 10.5, 500) > labelWidth + 0.5}
+                  >
                     {scheduleItemTitle(placed.item)}
                   </span>
                   {height >= 34 && width * placed.width >= 48 && <span className="schedule-block-time">{eventStartTime(placed.item.start, locale, timeZone)}</span>}
@@ -413,7 +425,7 @@ function ScheduleWeek({ layout, now, selectedID, isDrafting, select, locale, tim
           <div className="schedule-week-axis-track">
             {marks.map((minute, index) =>
               index % every === 0 && index < marks.length - 1 ? (
-                <span key={minute} className="schedule-week-axis-label" style={{ left: `${layout.positionOfMinute(minute) * 100}%` }}>
+                <span key={minute} className="schedule-week-axis-label" style={{ insetInlineStart: `${layout.positionOfMinute(minute) * 100}%` }}>
                   {hourLabel(clockTime(minute, now, timeZone), locale, timeZone)}
                 </span>
               ) : null,
@@ -461,9 +473,9 @@ function ScheduleWeekRow({ day, now, hourMarks, height, selectedID, isDrafting, 
         </span>
         <div className="schedule-week-track">
           {hourMarks.map((mark) => (
-            <span key={mark} className="schedule-week-mark" style={{ left: `${mark * 100}%` }} />
+            <span key={mark} className="schedule-week-mark" style={{ insetInlineStart: `${mark * 100}%` }} />
           ))}
-          {nowX !== undefined && <span className="schedule-week-past" style={{ width: `${nowX * 100}%` }} />}
+          {nowX !== undefined && <span className="schedule-week-past" style={{ insetInlineStart: 0, width: `${nowX * 100}%` }} />}
           {day.placed.map((placed) => {
             const laneHeight = (height - (placed.lanes - 1)) / placed.lanes;
             const item = placed.item;
@@ -471,7 +483,7 @@ function ScheduleWeekRow({ day, now, hourMarks, height, selectedID, isDrafting, 
             const isSelected = item.id === selectedID;
             const isDimmed = isDrafting && item.kind !== "proposed";
             const style = {
-              left: `calc(${placed.x * 100}% + 0.5px)`,
+              insetInlineStart: `calc(${placed.x * 100}% + 0.5px)`,
               width: `max(calc(${placed.width * 100}% - 1px), 2px)`,
               top: placed.lane * (laneHeight + 1),
               height: laneHeight,
@@ -488,7 +500,7 @@ function ScheduleWeekRow({ day, now, hourMarks, height, selectedID, isDrafting, 
             }
             return <span key={item.id} className="schedule-week-block" data-kind={item.kind} style={style} />;
           })}
-          {nowX !== undefined && <span className="schedule-week-now" style={{ left: `calc(${nowX * 100}% - 0.75px)` }} />}
+          {nowX !== undefined && <span className="schedule-week-now" style={{ insetInlineStart: `calc(${nowX * 100}% - 0.75px)` }} />}
         </div>
         <span className="schedule-week-free" data-free={day.freeMinutes > 0} style={{ width: WEEK_FREE_WIDTH }}>
           {day.freeMinutes > 0 ? scheduleDuration(day.freeMinutes) : tr("Full")}
@@ -531,7 +543,7 @@ function ScheduleDetailStrip({ layout, now, viewing, selected, appName, locale, 
       <Card padding={Spacing.s} className="schedule-strip">
         <span className="schedule-strip-bar" style={{ background: itemColor(selected) }} />
         <div className="schedule-strip-text">
-          <MarqueeText text={scheduleItemTitle(selected)} className="schedule-strip-title" />
+          <MarqueeText text={scheduleItemTitle(selected)} className="schedule-strip-title" userText />
           <MarqueeText text={parts.join(", ")} className="schedule-strip-detail" />
         </div>
         {link !== undefined && <PlannerPillButton title={tr("Join")} symbol="video.fill" help={tr("Join %@ call", meetingProviderName(link.provider))} onClick={() => join(link)} />}
@@ -547,7 +559,7 @@ function ScheduleDetailStrip({ layout, now, viewing, selected, appName, locale, 
       <span className="schedule-strip-icon">
         <Icon id={symbol} size={12} />
       </span>
-      <MarqueeText text={text} className="schedule-strip-status" />
+      <MarqueeText text={text} className="schedule-strip-status" userText />
       {layout.placed.length === 0 && viewing === "today" && <span className="schedule-strip-note">{tr("Nothing on your calendar today")}</span>}
     </Card>
   );
@@ -580,7 +592,7 @@ function SchedulePlanStrip({ store, draft, selected, locale, timeZone, isInline 
       <>
         <span className="schedule-strip-bar" style={{ background: "var(--accent)" }} />
         <div className="schedule-strip-text">
-          <MarqueeText text={scheduleItemTitle(selected)} className="schedule-strip-title" />
+          <MarqueeText text={scheduleItemTitle(selected)} className="schedule-strip-title" userText />
           <MarqueeText text={failureOr(parts.join(", "))} className="schedule-strip-detail" style={state.writeFailed ? { color: "var(--danger)" } : undefined} />
         </div>
         <PlannerPillButton title={tr("Skip")} help={tr("Leave this block out of the plan")} onClick={() => store.skip(selected.id)} />

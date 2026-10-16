@@ -193,7 +193,7 @@ function PlannerRow({ item, store, focus, isLifted, isLeftover, isRenaming, begi
       <PlannerCheckbox title={item.title} isOn={item.isDone} disabled={!canEdit} onToggle={() => store.toggle(item.id)} />
       {isRenaming ? (
         <input
-          className="planner-rename"
+          className="planner-rename kit-user-text"
           autoFocus
           value={draft}
           aria-label={item.title}
@@ -210,7 +210,7 @@ function PlannerRow({ item, store, focus, isLifted, isLeftover, isRenaming, begi
             beginRename();
           }}
         >
-          <MarqueeText text={item.title} />
+          <MarqueeText text={item.title} userText />
         </div>
       )}
       {viewing === "yesterday" && !item.isDone && (
@@ -311,7 +311,7 @@ function PlannerSharedRow({ item, context, open }: { item: SharedTodayItem; cont
           )}
         </span>
         <div className="planner-row-title" data-done={item.isDone}>
-          <MarqueeText text={item.title} />
+          <MarqueeText text={item.title} userText />
         </div>
         {item.detail !== undefined && <span className="planner-shared-detail">{item.detail}</span>}
         <span className="planner-shared-chevron" data-visible={hovering}>

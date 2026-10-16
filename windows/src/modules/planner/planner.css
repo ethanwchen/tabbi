@@ -230,7 +230,8 @@
   color: var(--primary-text);
 }
 
-.planner-row-title[data-done="true"] {
+.planner-row-title[data-done="true"],
+.planner-row-title[data-done="true"] .kit-marquee-line {
   color: var(--secondary-text);
   text-decoration: line-through;
   text-decoration-color: var(--secondary-text);
@@ -446,9 +447,17 @@
 .planner-add-placeholder {
   position: absolute;
   inset-inline: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
   font-size: 12px;
   color: var(--tertiary-text);
   pointer-events: none;
+}
+
+.planner-add-placeholder > .kit-fits {
+  width: 100%;
 }
 
 .planner-add-input {
@@ -896,7 +905,7 @@
   color: var(--primary-text);
   white-space: nowrap;
   min-width: 0;
-  overflow: hidden;
+  flex: 0 1 auto;
 }
 
 .dayplan-spacer {
@@ -1133,6 +1142,12 @@
 
 .dayreview-item[data-done="true"] {
   color: var(--secondary-text);
+}
+
+.dayreview-item-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
 }
 
 .dayreview-item-glyph {

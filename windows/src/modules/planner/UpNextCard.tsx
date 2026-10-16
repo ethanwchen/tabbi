@@ -83,7 +83,7 @@ export function UpNextRow({ event, now, locale, timeZone, join }: UpNextRowProps
     <div className="upnext-row" title={`${title}, ${start}`}>
       <span className="upnext-dot" style={{ background: eventColor(event) } as CSSProperties} />
       <div className="upnext-text">
-        <MarqueeText text={title} className="upnext-title" />
+        <MarqueeText text={title} className="upnext-title" userText />
         <div className="upnext-meta">
           <span className="upnext-time">{start}</span>
           <span className="upnext-badge" data-live={timing?.kind === "now"}>

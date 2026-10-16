@@ -53,7 +53,7 @@ export class DayReviewStore extends Store<DayReviewState> {
 
   constructor(private readonly context: ModuleContext) {
     super({ review: undefined, saveFailed: false });
-    this.repository = isEphemeral(context.runMode) ? undefined : new DayReviewRepository(context.storage.folder("Planner"));
+    this.repository = isEphemeral(context.runMode) ? undefined : new DayReviewRepository(context.storage.root());
   }
 
   get isActive(): boolean {

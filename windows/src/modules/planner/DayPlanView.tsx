@@ -6,6 +6,7 @@
  * write to), so the copy says "Today" where the Mac says "your calendar".
  */
 
+import { useLayoutEffect, useRef, useState } from "react";
 import { useStore } from "../../app/useStore";
 import { displayName, requiresAPIKey } from "../../core/ai/aiProviderID";
 import { tr } from "../../core/localization/tr";
@@ -15,7 +16,9 @@ import type { DayPlanProposal } from "../../core/planner/dayPlanProposal";
 import { viewedDayPlanTitle } from "../../core/planner/plannerViewedDay";
 import { eventStartTime } from "../../core/planner/upcomingEvent";
 import { Icon } from "../../ui/kit/Icon";
+import { IconButton } from "../../ui/kit/IconButton";
 import { Shimmer, SkeletonLine } from "../../ui/kit/Loading";
+import { MarqueeText } from "../../ui/kit/MarqueeText";
 import { Tooltip } from "../../ui/kit/Tooltip";
 import type { DayPlanFailure, DayPlanStore } from "./dayPlanStore";
 import { blockRange, breakLength, planningHelp } from "./plannerFormat";
@@ -95,13 +98,34 @@ export function DayPlanView({ plan, locale, timeZone, openConnections }: DayPlan
           ? tr("Tomorrow")
           : tr("Your plan")
         : viewedDayPlanTitle(state.target);
+  /*
+   * The Mac's ViewThatFits over the header row: the Add all pill keeps its
+   * glyph while the title shows whole, then drops it, and in a language
+   * longer still Cancel becomes a round glyph. Measured after layout: a
+   * title still cut moves to the next level, and a new title starts over.
+   */
+  const addAllTitle = tr("Add all");
+  const cancelTitle = isFinal ? tr("Done") : tr("Cancel");
+  const header = useRef<HTMLDivElement>(null);
+  const [fit, setFit] = useState<{ title: string; level: number }>({ title, level: 0 });
+  const level = fit.title === title ? fit.level : 0;
+  useLayoutEffect(() => {
+    const element = header.current;
+    if (!element || level >= 2) return;
+    const line = element.querySelector<HTMLElement>(".dayplan-title .kit-marquee-line");
+    const box = element.querySelector<HTMLElement>(".dayplan-title");
+    if (!line || !box) return;
+    if (line.getBoundingClientRect().width > box.getBoundingClientRect().width + 0.5) setFit({ title, level: level + 1 });
+  }, [title, level, phase.kind]);
+  const addAllSymbol = level === 0 ? "calendar.badge.plus" : undefined;
+  const compactCancel = level >= 2;
   return (
     <div className="dayplan">
-      <div className="dayplan-header">
+      <div ref={header} className="dayplan-header">
         <span className="dayplan-sparkle" data-pulse={phase.kind === "planning" || state.isRefining}>
           <Icon id="sparkles" size={12} />
         </span>
-        <span className="dayplan-title">{title}</span>
+        <MarqueeText text={title} className="dayplan-title" />
         <span className="dayplan-spacer" />
         {state.writeFailed && (
           <Tooltip text={tr("Today couldn't keep the blocks. Try again.")}>
@@ -111,15 +135,15 @@ export function DayPlanView({ plan, locale, timeZone, openConnections }: DayPlan
             </span>
           </Tooltip>
         )}
-        <PlannerTextButton
-          title={isFinal ? tr("Done") : tr("Cancel")}
-          help={isFinal ? tr("Back to the checklist") : tr("Discard the plan and show the checklist")}
-          onClick={() => plan.cancel()}
-        />
+        {compactCancel ? (
+          <IconButton symbol={isFinal ? "checkmark" : "xmark"} size={20} help={isFinal ? tr("Back to the checklist") : tr("Discard the plan and show the checklist")} onClick={() => plan.cancel()} />
+        ) : (
+          <PlannerTextButton title={cancelTitle} help={isFinal ? tr("Back to the checklist") : tr("Discard the plan and show the checklist")} onClick={() => plan.cancel()} />
+        )}
         {phase.kind === "proposal" && (
           <PlannerPillButton
-            title={tr("Add all")}
-            symbol="calendar.badge.plus"
+            title={addAllTitle}
+            symbol={addAllSymbol}
             isProminent
             disabled={state.isRefining}
             help={tr("Add every block to Today")}
@@ -218,7 +242,7 @@ function DayPlanBlockRow({ block, rest, locale, timeZone, add, dismiss }: DayPla
       <span className="dayplan-range" style={{ width: RANGE_WIDTH }}>
         {blockRange(block, locale, timeZone)}
       </span>
-      <span className="dayplan-block-title" title={block.title}>
+      <span className="dayplan-block-title kit-user-text" title={block.title}>
         {block.title}
       </span>
       {rest !== undefined && (

@@ -78,7 +78,7 @@ export function FocusCard({ context, actions, items }: FocusCardProps) {
         {linked !== undefined && timer.phase === "focus" ? (
           <div className="focus-card-detail focus-card-linked" title={tr("Focusing on: %@", linked)}>
             <Icon id="scope" size={9} className="focus-card-scope" />
-            <MarqueeText text={linked} help={tr("Focusing on: %@", linked)} />
+            <MarqueeText text={linked} help={tr("Focusing on: %@", linked)} userText />
           </div>
         ) : (
           <MarqueeText text={focusStatus(timer)} className="focus-card-detail" />

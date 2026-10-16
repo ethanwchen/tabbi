@@ -104,7 +104,7 @@ export class PlannerStore extends Store<PlannerState> {
     this.upNext = stores.upNext;
     this.plan = stores.plan;
     this.review = stores.review;
-    this.repository = ephemeral ? undefined : new PlannerRepository(context.storage.folder("Planner"));
+    this.repository = ephemeral ? undefined : new PlannerRepository(context.storage.root());
     this.loaded = this.load(today);
   }
 

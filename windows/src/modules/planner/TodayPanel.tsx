@@ -281,10 +281,14 @@ function PlannerAddField({ store, viewing }: { store: PlannerStore; viewing: Pla
           <Icon id="plus" size={11} />
         </span>
         <span className="planner-add-field">
-          {text === "" && <TextThatFits candidates={candidates} className="planner-add-placeholder" />}
+          {text === "" && (
+            <span className="planner-add-placeholder">
+              <TextThatFits candidates={candidates} />
+            </span>
+          )}
           <input
             ref={input}
-            className="planner-add-input"
+            className="planner-add-input kit-user-text"
             value={text}
             aria-label={candidates[0] ?? ""}
             onChange={(event) => setText(event.target.value)}

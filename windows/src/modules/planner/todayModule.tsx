@@ -94,7 +94,7 @@ export const TodayModule = defineModule(
     /* The starter tasks the last kit switch added, which undoing it takes back. */
     let starterTasksAdded: PlannerItem[] = [];
     /* A pinned hour for the "evening" and plan snapshots; undefined follows the clock. */
-    let eveningOverride: boolean | undefined;
+    let eveningOverride: boolean | undefined = context.isSnapshot ? false : undefined;
 
     const followSettings = () => {
       const settings = context.settings.current;
@@ -171,8 +171,8 @@ export const TodayModule = defineModule(
         upNext.setPreviewWatching(false);
       },
       showSnapshotState: async (state: string) => {
-        const daytime = new Set(["plan", "planning", "plan-failed", "plan-refining"]);
-        eveningOverride = state === "evening" ? true : daytime.has(state) ? false : undefined;
+        /* Demo snapshots pin the hour, as the Mac's TABBI_PLANNER_PREVIEW does: daytime unless the state is the evening. */
+        eveningOverride = state === "evening";
         switch (state) {
           case "yesterday":
             return store.showForSnapshot("yesterday");
