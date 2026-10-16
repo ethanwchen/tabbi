@@ -63,7 +63,8 @@ export function ClosedPreview(props: ClosedPreviewProps) {
   if (current.kind !== kind) {
     setLeaving(current);
     setCurrent({ kind, props });
-  } else if (current.props !== props) {
+  } else if (current.props.item !== props.item || current.props.wing !== props.wing || current.props.musicWings !== props.musicWings) {
+    /* Kept fresh, so an item that starts leaving fades out showing what it showed last (a clock at its latest second). */
     setCurrent({ kind, props });
   }
   return (
