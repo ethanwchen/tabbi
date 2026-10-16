@@ -10,6 +10,8 @@ export const SUGGESTED_ON_SHORTCUT = "Tabbi Focus On";
 export const SUGGESTED_OFF_SHORTCUT = "Tabbi Focus Off";
 
 const DEFAULT_VOLUME = 0.5;
+/** `Float.greatestFiniteMagnitude`. */
+const FLOAT_GREATEST_FINITE = 3.4028234663852886e38;
 
 function clampVolume(volume: number): number {
   return Number.isFinite(volume) ? Math.fround(Math.min(Math.max(volume, 0), 1)) : DEFAULT_VOLUME;
@@ -149,7 +151,8 @@ export class FocusSettings {
     if (mix !== undefined) init.mix = mix;
     const presets = FocusMixPresets.fromJSON(entry.presets);
     if (presets !== undefined) init.presets = presets;
-    if (typeof entry.volume === "number") init.volume = entry.volume;
+    /* Swift refuses a number past Float's range, so the volume falls back instead of clamping to 1. */
+    if (typeof entry.volume === "number" && Math.abs(entry.volume) <= FLOAT_GREATEST_FINITE) init.volume = entry.volume;
     const playlistText = text("playlistText");
     if (playlistText !== undefined) init.playlistText = playlistText;
     if (typeof entry.doNotDisturb === "boolean") init.doNotDisturb = entry.doNotDisturb;

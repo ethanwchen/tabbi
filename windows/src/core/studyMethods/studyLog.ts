@@ -1,8 +1,12 @@
+import type { DocumentStore } from "../persistence/documentStore";
+import { isJSONObject, type JSONObject, type JSONValue } from "../persistence/json";
+import { VersionedJSON } from "../persistence/versionedJson";
+import { parseUUID } from "../planner/uuid";
 import { plannerDayKeyOf } from "../planner/plannerDayKey";
 import { PetPointsRules } from "../pets/petPointsRules";
 import type { StudyDayTally } from "../providers/studyDayTally";
 import type { Instant } from "../time";
-import type { StudyMethodKind } from "./studyMethodFile";
+import { STUDY_METHOD_KINDS, type StudyMethodKind } from "./studyMethodFile";
 import { isBreakPhase } from "./studyMethod";
 import { countsAsDone, type StudyPhaseRecord } from "./studyPhaseRecord";
 import { swiftInt } from "./swiftMath";
@@ -86,4 +90,97 @@ export class StudyLog {
   get totalPoints(): number {
     return this.entries.reduce((sum, entry) => sum + entry.points, 0);
   }
+}
+
+/* Persistence: the Mac's `Study/log.json`, a VersionedJSON document. */
+
+/** Port of StudyStore.logURL(in:): the log's document name in the edition's folder. */
+export const STUDY_LOG_DOCUMENT_NAME = "Study/log.json";
+
+/** Port of StudyLog.schema: the log file format. Version 1 added the `schemaVersion` key. */
+export const STUDY_LOG_SCHEMA = new VersionedJSON(1);
+
+/** Seconds from 1970 to 2001, the reference date Foundation encodes dates against by default. */
+const REFERENCE_DATE_OFFSET = 978_307_200;
+
+function integer(value: JSONValue | undefined, key: string): number {
+  if (typeof value !== "number" || !Number.isSafeInteger(value)) throw new TypeError(`Invalid ${key}`);
+  return value;
+}
+
+function date(value: JSONValue | undefined, key: string): Instant {
+  if (typeof value !== "number" || !Number.isFinite(value)) throw new TypeError(`Invalid ${key}`);
+  return value + REFERENCE_DATE_OFFSET;
+}
+
+/**
+ * Port of StudyLogEntry.init(from:): every key but `cards` is required, and
+ * decoding goes through the clamping init so a hand-edited file can't carry
+ * negative minutes, cards or points. Throws on a malformed entry.
+ */
+export function decodeStudyLogEntry(json: JSONValue | undefined): StudyLogEntry {
+  if (!isJSONObject(json)) throw new TypeError("Invalid entry");
+  const id = typeof json.id === "string" ? parseUUID(json.id) : undefined;
+  if (id === undefined) throw new TypeError("Invalid id");
+  const method = STUDY_METHOD_KINDS.find((kind) => kind === json.method);
+  if (method === undefined) throw new TypeError("Invalid method");
+  if (typeof json.completed !== "boolean") throw new TypeError("Invalid completed");
+  const cards = json.cards === undefined || json.cards === null ? undefined : Math.max(integer(json.cards, "cards"), 0);
+  return {
+    id,
+    method,
+    startedAt: date(json.startedAt, "startedAt"),
+    endedAt: date(json.endedAt, "endedAt"),
+    minutes: Math.max(integer(json.minutes, "minutes"), 0),
+    completed: json.completed,
+    ...(cards === undefined ? {} : { cards }),
+    points: Math.max(integer(json.points, "points"), 0),
+  };
+}
+
+/** The entry in the Mac's Codable shape (dates as seconds since 2001, no `cards` when there are none). */
+export function encodeStudyLogEntry(entry: StudyLogEntry): JSONObject {
+  const json: JSONObject = {
+    id: entry.id,
+    method: entry.method,
+    startedAt: entry.startedAt - REFERENCE_DATE_OFFSET,
+    endedAt: entry.endedAt - REFERENCE_DATE_OFFSET,
+    minutes: entry.minutes,
+    completed: entry.completed,
+    points: entry.points,
+  };
+  if (entry.cards !== undefined) json.cards = entry.cards;
+  return json;
+}
+
+/**
+ * Port of StudyLog.init(from:): `entries`, an empty log when the key is
+ * missing or null. Keys it doesn't know (such as the retired `uncredited`
+ * list) are ignored; one malformed entry makes the whole log unreadable.
+ */
+export function decodeStudyLog(document: JSONObject): StudyLog {
+  const entries = document.entries;
+  if (entries === undefined || entries === null) return new StudyLog();
+  if (!Array.isArray(entries)) throw new TypeError("Invalid entries");
+  return new StudyLog(entries.map(decodeStudyLogEntry));
+}
+
+/** Port of StudyLog.write's encoding: sorted keys, no indentation, stamped with the schema version. */
+export function encodeStudyLog(log: StudyLog): string {
+  return STUDY_LOG_SCHEMA.encode({ entries: log.entries.map(encodeStudyLogEntry) }, { sortedKeys: true });
+}
+
+/**
+ * Port of StudyLog.load(from:): the log in document `name`, or undefined
+ * when there is none yet. Rejects when it exists but can't be read, so the
+ * caller can decide not to overwrite it.
+ */
+export async function loadStudyLog(store: DocumentStore, name: string = STUDY_LOG_DOCUMENT_NAME): Promise<StudyLog | undefined> {
+  const text = await store.read(name);
+  return text === undefined ? undefined : STUDY_LOG_SCHEMA.decode(text, decodeStudyLog);
+}
+
+/** Port of StudyLog.write(to:): replaces document `name` atomically. */
+export async function writeStudyLog(store: DocumentStore, log: StudyLog, name: string = STUDY_LOG_DOCUMENT_NAME): Promise<void> {
+  await store.write(name, encodeStudyLog(log));
 }
