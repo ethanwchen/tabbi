@@ -1,5 +1,6 @@
 import { parseAIProviderID, type AIProviderID } from "../ai/aiProviderID";
 import { wallTime } from "../calendar/zonedCalendar";
+import { tr } from "../localization/tr";
 import { documentName, type DocumentStore } from "../persistence/documentStore";
 import { isJSONObject, type JSONObject, type JSONValue } from "../persistence/json";
 import { VersionedJSON } from "../persistence/versionedJson";
@@ -70,7 +71,8 @@ export function chatDateLabel(chat: ClaudeAskChat, now: Instant, timeZone: strin
   if (daysAgo < 1) {
     options = { hour: "numeric", minute: "2-digit" };
   } else if (daysAgo === 1) {
-    return "Yesterday";
+    /* Translated, unlike the Mac's ClaudeAskChat, which writes "Yesterday" in English in every language. */
+    return tr("Yesterday");
   } else if (daysAgo < 7) {
     options = { weekday: "long" };
   } else {

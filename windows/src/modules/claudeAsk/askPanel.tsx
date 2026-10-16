@@ -148,7 +148,7 @@ function InputField({ value, onChange, placeholder, help, still, onSubmit, trail
         ) : (
           <textarea
             ref={area}
-            className="ask-field-text"
+            className="ask-field-text kit-user-text"
             rows={1}
             value={value}
             placeholder={placeholder}
@@ -241,7 +241,7 @@ function MessageList({ session, still, onOpenConnections }: MessageListProps) {
 function UserBubble({ message }: { readonly message: ClaudeAskMessage }) {
   return (
     <div className="ask-row-user">
-      <div className="ask-bubble-user">{message.text}</div>
+      <div className="ask-bubble-user kit-user-text">{message.text}</div>
     </div>
   );
 }
@@ -289,7 +289,7 @@ function AssistantBubble({ message, still }: { readonly message: ClaudeAskMessag
 function AnswerBody({ text, caret }: { readonly text: string; readonly caret: boolean }) {
   const blocks = markdownBlocks(text);
   return (
-    <div className="ask-answer">
+    <div className="ask-answer kit-user-text">
       {blocks.map((block, index) => {
         const isLast = index === blocks.length - 1;
         if (block.kind === "text") {
@@ -472,7 +472,7 @@ function HistoryRow({ chat, date, isOpen, open, remove }: HistoryRowProps) {
       <Tooltip text={isOpen ? tr("This chat is open") : tr("Open this chat and continue it")}>
         <button type="button" className="ask-history-open" onClick={open}>
           <span className="ask-history-dot" data-open={isOpen} />
-          <MarqueeText text={title} className="ask-history-title" />
+          <MarqueeText text={title} className="ask-history-title" userText />
           <span className="ask-history-date">{date}</span>
         </button>
       </Tooltip>
