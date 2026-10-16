@@ -297,6 +297,8 @@ fn island_set_open(app: AppHandle, open: bool) {
     state.open = open;
     win::set_activatable(island.window, open);
     apply_shape(&island, &state);
+    drop(state);
+    win::set_memory_low(&island_window(&app), !open);
 }
 
 /// Takes keyboard focus, remembering who had it to give it back on close.
@@ -382,7 +384,16 @@ fn island_startup(app: AppHandle) -> Startup {
 /// flashes an unstyled page.
 #[tauri::command]
 fn island_ready(app: AppHandle) -> Startup {
-    let _ = island_window(&app).show();
+    let island = island_window(&app);
+    let _ = island.show();
+    /* The island starts closed; island_set_open raises the level when it opens. */
+    let open = app
+        .state::<Island>()
+        .state
+        .lock()
+        .expect("island lock")
+        .open;
+    win::set_memory_low(&island, !open);
     outbox::open(&app);
     startup(&app)
 }
@@ -446,8 +457,17 @@ fn open_settings(app: &AppHandle, section: Option<String>) {
         .center()
         .visible(false)
         .build();
-    if let Err(error) = built {
-        eprintln!("tabbi: the Settings window did not open: {error}");
+    match built {
+        /* Settings in the background keeps its page but lets WebView2 trim it. */
+        Ok(window) => {
+            let watched = window.clone();
+            window.on_window_event(move |event| {
+                if let tauri::WindowEvent::Focused(focused) = event {
+                    win::set_memory_low(&watched, !focused);
+                }
+            });
+        }
+        Err(error) => eprintln!("tabbi: the Settings window did not open: {error}"),
     }
 }
 

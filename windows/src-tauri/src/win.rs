@@ -222,3 +222,35 @@ fn is_shell(window: HWND) -> bool {
         "Progman" | "WorkerW" | "Shell_TrayWnd" | "Shell_SecondaryTrayWnd"
     )
 }
+
+/// Asks WebView2 to keep `window`'s processes small (`low`) or back at
+/// normal. While low, WebView2 trims caches and working set, which the
+/// closed island and an unfocused Settings window can spare; a page that
+/// draws again wakes it at once. Older runtimes without ICoreWebView2_19
+/// keep the normal level.
+pub fn set_memory_low(window: &tauri::WebviewWindow, low: bool) {
+    use webview2_com::Microsoft::Web::WebView2::Win32::{
+        COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_LOW, COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_NORMAL,
+        ICoreWebView2_19,
+    };
+    use windows::core::Interface;
+    let result = window.with_webview(move |webview| {
+        let level = if low {
+            COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_LOW
+        } else {
+            COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_NORMAL
+        };
+        /* SAFETY: called on the webview's own thread, which with_webview guarantees. */
+        unsafe {
+            let Ok(core) = webview.controller().CoreWebView2() else {
+                return;
+            };
+            if let Ok(core) = core.cast::<ICoreWebView2_19>() {
+                let _ = core.SetMemoryUsageTargetLevel(level);
+            }
+        }
+    });
+    if let Err(error) = result {
+        eprintln!("tabbi: could not set the WebView2 memory level: {error}");
+    }
+}
