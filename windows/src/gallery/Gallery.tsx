@@ -40,6 +40,7 @@ import { StatusMessage } from "../ui/kit/StatusMessage";
 import { Stepper } from "../ui/kit/Stepper";
 import { TextField } from "../ui/kit/TextField";
 import { ThemePreview } from "../ui/kit/ThemePreview";
+import { Sheet } from "../ui/kit/Sheet";
 import { Toggle } from "../ui/kit/Toggle";
 import { Tooltip } from "../ui/kit/Tooltip";
 import { TrackSlider } from "../ui/kit/TrackSlider";
@@ -630,6 +631,33 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
           </Cell>
           <Cell label="disabled">
             <HotkeyRecorder hotkey={DEFAULT_HOTKEY} onRecord={() => {}} disabled />
+          </Cell>
+        </Row>
+      </Section>
+
+      <Section title="Sheet">
+        <Row align="start">
+          <Cell label="Sheet with a badge, intro and actions" width={600} column>
+            <div style={{ position: "relative", width: 600, height: 300, overflow: "hidden", borderRadius: 10, background: "var(--background)" }}>
+              <Sheet
+                title={tr("Set up %@", "Med School")}
+                intro={tr("A few quick questions so your tabs and starter tasks fit you. Skip any you like.")}
+                badge={<Icon id="cross.case.fill" size={24} />}
+                onCancel={() => {}}
+                width={440}
+                actions={
+                  <>
+                    <Pill title={tr("Cancel")} />
+                    <span className="kit-sheet-spacer" />
+                    <Pill title={tr("Switch Kit")} accent />
+                  </>
+                }
+              >
+                <Card padding={8}>
+                  <div className="kit-body kit-secondary">{tr("Nothing playing")}</div>
+                </Card>
+              </Sheet>
+            </div>
           </Cell>
         </Row>
       </Section>
