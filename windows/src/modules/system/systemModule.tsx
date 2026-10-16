@@ -3,7 +3,8 @@ import { defineModule } from "../../app/module";
 import { tr } from "../../core/localization/tr";
 import { MODULE_CATEGORIES } from "../../core/modules/moduleDescriptor";
 import { MODULE_IDS } from "../../core/modules/moduleId";
-import { placeholderPanel } from "../placeholderPanel";
+import { SystemPanel } from "./SystemPanel";
+import { SYSTEM_SNAPSHOT_STATES, SystemStore } from "./systemStore";
 
 /* Port of SystemModule: CPU, GPU and memory use, sampled by the host only while the tab shows. */
 export const SYSTEM_DESCRIPTOR = localizedDescriptor(
@@ -20,6 +21,18 @@ export const SYSTEM_DESCRIPTOR = localizedDescriptor(
   },
 );
 
-export const SystemModule = defineModule(SYSTEM_DESCRIPTOR, () => ({
-  Panel: placeholderPanel(SYSTEM_DESCRIPTOR),
-}));
+export const SystemModule = defineModule(
+  SYSTEM_DESCRIPTOR,
+  (context) => {
+    const store = new SystemStore(context);
+    function Panel() {
+      return <SystemPanel store={store} />;
+    }
+    return {
+      store,
+      Panel,
+      showSnapshotState: (state: string) => store.showSnapshotState(state),
+    };
+  },
+  { snapshotStates: SYSTEM_SNAPSHOT_STATES },
+);
