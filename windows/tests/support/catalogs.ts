@@ -1,7 +1,7 @@
-import type { LanguageTable, StringCatalog } from "../../../src/core/localization/catalog";
-import { languageTable, mergeTables } from "../../../src/core/localization/catalog";
-import { installLanguage } from "../../../src/core/localization/lookup";
-import { loadRepoJson } from "../../support/fixtures";
+import type { LanguageTable, StringCatalog } from "../../src/core/localization/catalog";
+import { languageTable, mergeTables } from "../../src/core/localization/catalog";
+import { installLanguage } from "../../src/core/localization/lookup";
+import { loadRepoJson } from "./fixtures";
 
 /* The two String Catalogs the Windows build reads, straight from the repo. */
 export const macCatalog = loadRepoJson<StringCatalog>("Sources/TabbiKitCore/Localization/Localizable.xcstrings");

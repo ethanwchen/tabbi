@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { instantOf, wallTime } from "../../../src/core/calendar/zonedCalendar";
 import { DayPlanContext, MAXIMUM_BLOCKS, MINIMUM_BLOCK_MINUTES } from "../../../src/core/planner/dayPlan";
 import { plannerItem, type PlannerItem } from "../../../src/core/planner/plannerDay";
-import type { ProgressItem } from "../../../src/core/planner/providedWork";
+import { ProgressItem } from "../../../src/core/providers/progressItem";
 import {
   MAXIMUM_REVIEW_MINUTES,
   planStudyDay,
@@ -126,7 +126,7 @@ describe("StudyDayPlanner reviews", () => {
   });
 
   it("rounds review work from progress up to five minutes", () => {
-    const item: ProgressItem = {
+    const item = new ProgressItem({
       id: "reviews",
       source: "anki",
       title: "Anki reviews",
@@ -134,11 +134,11 @@ describe("StudyDayPlanner reviews", () => {
       target: 432,
       unit: "cards",
       waitsForStart: false,
-    };
+    });
     /* 320 cards at 10 s is 53.3 min. */
     expect(reviewWork(item)).toEqual({ title: "Anki reviews", minutes: 55 });
     expect(reviewWork(item, 6)).toEqual({ title: "Anki reviews", minutes: 35 });
-    expect(reviewWork({ ...item, completed: 432 })).toBeUndefined();
+    expect(reviewWork(new ProgressItem({ ...item, completed: 432 }))).toBeUndefined();
     /* A huge per-card time stays at the longest review. */
     expect(reviewWork(item, 1e300)?.minutes).toBe(MAXIMUM_REVIEW_MINUTES);
   });

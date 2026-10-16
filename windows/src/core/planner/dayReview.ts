@@ -13,7 +13,8 @@ import { countsAsDone, type StudyPhaseOutcome } from "../studyMethods/studyPhase
 import type { Instant, Seconds } from "../time";
 import type { PlannerDay } from "./plannerDay";
 import { isPlannerDayKey, type PlannerDayKey } from "./plannerDayKey";
-import type { ProgressItem, StudyDayTally } from "./providedWork";
+import type { ProgressItem } from "../providers/progressItem";
+import type { StudyDayTally } from "../providers/studyDayTally";
 import { samplePlannerDay } from "./plannerSampleData";
 import type { PlannerSampleDay } from "./todayPlanSettings";
 import { roundHalfAwayFromZero } from "./upcomingEvent";

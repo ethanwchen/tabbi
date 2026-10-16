@@ -1,7 +1,7 @@
 import type { Instant } from "../time";
 import type { ModuleID } from "../modules/moduleId";
 import type { PlannerDayKey } from "./plannerDayKey";
-import type { ProvidedTask } from "./providedWork";
+import type { ProvidedTask } from "../providers/providedTask";
 import { newUUID } from "./uuid";
 
 /** Port of PlannerItem: one checklist entry. */

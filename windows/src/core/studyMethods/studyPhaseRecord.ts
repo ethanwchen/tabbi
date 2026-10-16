@@ -1,10 +1,4 @@
-import {
-  ACTIVITY_KINDS,
-  ACTIVITY_METADATA,
-  ACTIVITY_UNIT_MINUTES,
-  makeTimerActivityRecord,
-  type TimerActivityRecord,
-} from "../focus/timerActivity";
+import { ACTIVITY_KINDS, ACTIVITY_METADATA, ACTIVITY_UNITS, makeActivityRecord, type ActivityRecord } from "../activity/activityRecord";
 import type { ModuleID } from "../modules/moduleId";
 import type { Instant, Seconds } from "../time";
 import type { StudyMethodKind } from "./studyMethodFile";
@@ -53,7 +47,7 @@ export const MINIMUM_LOGGED_DURATION: Seconds = 60;
  * minutes the clock ran. Undefined for phases under a minute. Sprint cards go
  * in the metadata only, since the Anki module logs the cards themselves.
  */
-export function phaseActivityRecord(record: StudyPhaseRecord, source: ModuleID): TimerActivityRecord | undefined {
+export function phaseActivityRecord(record: StudyPhaseRecord, source: ModuleID): ActivityRecord | undefined {
   if (!Number.isFinite(record.activeDuration) || record.activeDuration < MINIMUM_LOGGED_DURATION) return undefined;
   const metadata: Record<string, string> = {
     [ACTIVITY_METADATA.method]: record.method,
@@ -61,13 +55,13 @@ export function phaseActivityRecord(record: StudyPhaseRecord, source: ModuleID):
     phase: record.phase,
   };
   if (record.cards !== undefined) metadata.cards = String(record.cards);
-  return makeTimerActivityRecord({
+  return makeActivityRecord({
     source,
     kind: isBreakPhase(record.phase) ? ACTIVITY_KINDS.breakTaken : ACTIVITY_KINDS.focusCompleted,
     start: record.startedAt,
     end: record.endedAt,
     quantity: record.activeDuration / 60,
-    unit: ACTIVITY_UNIT_MINUTES,
+    unit: ACTIVITY_UNITS.minutes,
     metadata,
   });
 }

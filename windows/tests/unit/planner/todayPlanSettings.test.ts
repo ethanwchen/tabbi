@@ -4,7 +4,7 @@ import { BUNDLED_KITS } from "../../../src/core/kits/bundledKits";
 import { kitDefaults } from "../../../src/core/kits/kitManifest";
 import type { JSONValue } from "../../../src/core/persistence/json";
 import { DayPlanContext } from "../../../src/core/planner/dayPlan";
-import type { ProgressItem } from "../../../src/core/planner/providedWork";
+import { ProgressItem } from "../../../src/core/providers/progressItem";
 import { todayPlanSettings, todayPlanSettingsFromKit, todayStudyPlan } from "../../../src/core/planner/todayPlanSettings";
 import { upcomingEvent } from "../../../src/core/planner/upcomingEvent";
 import { StudyMethod } from "../../../src/core/studyMethods/studyMethod";
@@ -98,7 +98,7 @@ describe("TodayPlanSettings from a kit", () => {
     expect(medicine).toBeDefined();
     const settings = todayPlanSettingsFromKit(medicine?.defaults);
     expect(settings.planMode).toBe("study");
-    expect(settings.studyMethod?.kind).toBe(StudyMethodMenu.fromKit(medicine?.defaults.moduleSettings.study).startingKind);
+    expect(settings.studyMethod?.kind).toBe(StudyMethodMenu.fromKit(medicine?.defaults).startingKind);
     expect(settings.reviewsFirst).toBe(true);
     /* Study days run into the evening. */
     expect(settings.dayEndHour).toBe(21);
@@ -116,15 +116,16 @@ describe("TodayPlanSettings planning", () => {
       secondsPerCard: 10,
     });
     const context = new DayPlanContext({ now: at(8), events: [], tasks: [], timeZone: LA });
-    const goal = (id: string, title: string, completed: number, target: number): ProgressItem => ({
-      id,
-      source: "anki",
-      title,
-      completed,
-      target,
-      unit: "cards",
-      waitsForStart: false,
-    });
+    const goal = (id: string, title: string, completed: number, target: number): ProgressItem =>
+      new ProgressItem({
+        id,
+        source: "anki",
+        title,
+        completed,
+        target,
+        unit: "cards",
+        waitsForStart: false,
+      });
     const plan = todayStudyPlan(settings, context, [goal("reviews", "Anki reviews", 50, 230), goal("done", "New cards", 20, 20)]);
 
     /* 180 cards at 10 s is 30 min, first thing; the finished goal gets no block. */

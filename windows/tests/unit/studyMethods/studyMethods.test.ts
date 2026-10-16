@@ -1,11 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { FocusMix } from "../../../src/core/focus/focusMix";
 import { FocusSettings } from "../../../src/core/focus/focusSettings";
+import { kitDefaults } from "../../../src/core/kits/kitManifest";
+import type { JSONObject } from "../../../src/core/persistence/json";
+import { PetPointsRules } from "../../../src/core/pets/petPointsRules";
+import { ProgressItem } from "../../../src/core/providers/progressItem";
 import { cardsReviewedToday } from "../../../src/core/studyMethods/studyCardFeed";
 import { StudyCustomRhythm, presetMethod } from "../../../src/core/studyMethods/studyCustomRhythm";
 import { StudyDailyGoal } from "../../../src/core/studyMethods/studyDailyGoal";
 import { sharedStudyFocus } from "../../../src/core/studyMethods/studyFocusShare";
-import { StudyLog, studyLogEntry, studyPointsFor } from "../../../src/core/studyMethods/studyLog";
+import { StudyLog, studyLogEntry } from "../../../src/core/studyMethods/studyLog";
 import { StudyMethod, studyLongBreak } from "../../../src/core/studyMethods/studyMethod";
 import { StudyMethodMenu, kitStartingKind } from "../../../src/core/studyMethods/studyMethodMenu";
 import { StudySession } from "../../../src/core/studyMethods/studySession";
@@ -15,6 +19,10 @@ import { StudyTimerLength } from "../../../src/core/studyMethods/studyTimerLengt
 /* The study pieces the golden fixtures do not walk through. */
 
 const t0 = 1_790_000_000;
+const studyKit = (study: JSONObject) => kitDefaults({ moduleSettings: { study } });
+const points = (minutes: number, completed: boolean) => PetPointsRules.points(minutes, completed);
+const goal = (source: string, unit: string, completed: number) =>
+  new ProgressItem({ id: `${source}-${unit}`, source, title: "Goal", completed, target: 100, unit });
 
 describe("StudyMethod", () => {
   it("clamps every way a method is made", () => {
@@ -57,11 +65,11 @@ describe("StudyMethodMenu", () => {
   it("offers every preset unless a kit names known methods", () => {
     expect(StudyMethodMenu.all.kinds).toHaveLength(8);
     expect(StudyMethodMenu.all.startingKind).toBe("pomodoro");
-    const kit = StudyMethodMenu.fromKit({ methods: ["ankiSprint", "nope", "questionBlock", "ankiSprint"], method: "questionBlock" });
+    const kit = StudyMethodMenu.fromKit(studyKit({ methods: ["ankiSprint", "nope", "questionBlock", "ankiSprint"], method: "questionBlock" }));
     expect(kit.kinds).toEqual(["ankiSprint", "questionBlock"]);
     expect(kit.startingKind).toBe("questionBlock");
-    expect(StudyMethodMenu.fromKit({ methods: ["nope"] }).kinds).toHaveLength(8);
-    expect(kitStartingKind({ methods: ["flowtime"] })).toBe("flowtime");
+    expect(StudyMethodMenu.fromKit(studyKit({ methods: ["nope"] })).kinds).toHaveLength(8);
+    expect(kitStartingKind(studyKit({ methods: ["flowtime"] }))).toBe("flowtime");
     expect(kitStartingKind(undefined)).toBeUndefined();
   });
 
@@ -83,9 +91,20 @@ describe("StudyDailyGoal", () => {
     expect(new StudyDailyGoal(100).minutes).toBe(105);
     expect(new StudyDailyGoal(0).minutes).toBe(15);
     expect(new StudyDailyGoal(10_000).minutes).toBe(720);
-    expect(StudyDailyGoal.fromKit({ dailyGoalMinutes: 300 }).minutes).toBe(300);
-    expect(StudyDailyGoal.fromKit({ dailyGoalMinutes: "lots" }).minutes).toBe(120);
+    expect(StudyDailyGoal.fromKit(studyKit({ dailyGoalMinutes: 300 })).minutes).toBe(300);
+    expect(StudyDailyGoal.fromKit(studyKit({ dailyGoalMinutes: "lots" })).minutes).toBe(120);
+    expect(StudyDailyGoal.fromKit(undefined).minutes).toBe(120);
     expect(StudyDailyGoal.standard.stepped(-2).minutes).toBe(90);
+  });
+
+  it("shares the day's minutes as a goal that waits for the first ones", () => {
+    const goal = StudyDailyGoal.standard;
+    const item = goal.progressItem({ minutes: 45, sessions: 2, points: 50 });
+    expect([item.id, item.source, item.title, item.completed, item.target, item.unit]).toEqual(["minutes", "study", "Focus time", 45, 120, "min"]);
+    expect(item.waitsForStart).toBe(true);
+    expect(item.remainingText("en")).toBe("1h 15m left");
+    expect(goal.progressItem({ minutes: 0, sessions: 0, points: 0 }).showsBesideNotch).toBe(false);
+    expect(new StudyDailyGoal(90).progressItem({ minutes: 95, sessions: 1, points: 95 }).isComplete).toBe(true);
   });
 });
 
@@ -100,7 +119,7 @@ describe("StudyLog", () => {
   });
 
   it("pays points by the pet's rules", () => {
-    expect([studyPointsFor(4, true), studyPointsFor(5, false), studyPointsFor(25, true), studyPointsFor(25, false)]).toEqual([
+    expect([points(4, true), points(5, false), points(25, true), points(25, false)]).toEqual([
       0, 5, 35, 25,
     ]);
     expect(studyLogEntry({ ...record(25, "completed"), phase: "shortBreak" }, "a")).toBeUndefined();
@@ -149,10 +168,10 @@ describe("StudySession extras", () => {
     expect(
       cardsReviewedToday(
         [
-          { source: "anki", unit: "cards", completed: 40 },
-          { source: "other", unit: "cards", completed: -3 },
-          { source: "study", unit: "cards", completed: 99 },
-          { source: "anki", unit: "min", completed: 5 },
+          goal("anki", "cards", 40),
+          goal("other", "cards", -3),
+          goal("study", "cards", 99),
+          goal("anki", "min", 5),
         ],
         "study",
       ),

@@ -1,6 +1,6 @@
 import { hourOf, nextDateMatching, type DayCalendar } from "../streaks/dayCalendar";
 import type { Instant } from "../time";
-import { focusIsActive, type PetFocus } from "./petFocus";
+import type { ProvidedFocus } from "../providers/providedFocus";
 
 /*
  * Port of PetNightRhythm: late at night, when no session runs, the pet
@@ -33,8 +33,8 @@ export class PetNightRhythm {
   }
 
   /** Whether the pet dozes at `now`: night, no session, and nothing woke it within the wake spell. */
-  dozes(now: Instant, focus: PetFocus | undefined, lastWoken: Instant | undefined, calendar: DayCalendar): boolean {
-    if (!this.isNight(now, calendar) || (focus !== undefined && focusIsActive(focus))) return false;
+  dozes(now: Instant, focus: ProvidedFocus | undefined, lastWoken: Instant | undefined, calendar: DayCalendar): boolean {
+    if (!this.isNight(now, calendar) || focus?.isActive === true) return false;
     if (lastWoken === undefined) return true;
     return now - lastWoken >= this.wakeSpell || now < lastWoken;
   }

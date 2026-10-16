@@ -10,7 +10,8 @@ import {
   weekStudiedDays,
   type HeatmapDay,
 } from "../../../src/core/closet/studyHeatmap";
-import { zonedInstant, type DayCalendar } from "../../../src/core/streaks/dayCalendar";
+import { instantOf } from "../../../src/core/calendar/zonedCalendar";
+import { type DayCalendar } from "../../../src/core/streaks/dayCalendar";
 
 // Port of StudyHeatmapTests.
 function calendar(firstWeekday = 1): DayCalendar {
@@ -19,7 +20,7 @@ function calendar(firstWeekday = 1): DayCalendar {
 
 /** Tuesday, October 7, 2025, mid-afternoon in New York. */
 function tuesday(cal: DayCalendar): number {
-  return zonedInstant(2025, 10, 7, 15, 0, 0, cal.timeZone);
+  return instantOf({ year: 2025, month: 10, day: 7, hour: 15, minute: 0 }, cal.timeZone);
 }
 
 function heatmap(minutes: Record<string, number>, weeks: number, cal: DayCalendar = calendar()): StudyHeatmap {

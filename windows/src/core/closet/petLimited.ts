@@ -1,3 +1,12 @@
+import {
+  ACTIVITY_KINDS,
+  ACTIVITY_UNITS,
+  activityDay,
+  activityOutcome,
+  makeActivityRecord,
+  type ActivityRecord,
+} from "../activity/activityRecord";
+import { MODULE_IDS } from "../modules/moduleId";
 import eventsFile from "@mac/Events/events.json";
 import { tr } from "../localization/tr";
 import { accessoryItem, outfitItem, type PetItem } from "../pets/petItem";
@@ -11,14 +20,6 @@ import {
   type DayCalendar,
   type DayKey,
 } from "../streaks/dayCalendar";
-import {
-  FOCUS_COMPLETED,
-  MINUTES_UNIT,
-  PARTY_SOURCE,
-  recordDay,
-  recordOutcome,
-  type StudyActivityRecord,
-} from "./studyActivity";
 
 /*
  * Port of PetLimited.swift: the limited edition items (never sold, earned
@@ -224,19 +225,19 @@ export class PetMilestoneProgress {
   finishedPartySessions = 0;
   private readonly seen = new Set<string>();
 
-  constructor(records: Iterable<StudyActivityRecord> = [], calendar?: DayCalendar) {
+  constructor(records: Iterable<ActivityRecord> = [], calendar?: DayCalendar) {
     if (calendar) for (const record of records) this.add(record, calendar);
   }
 
-  add(record: StudyActivityRecord, calendar: DayCalendar): void {
+  add(record: ActivityRecord, calendar: DayCalendar): void {
     const quantity = record.quantity;
-    if (record.kind !== FOCUS_COMPLETED || record.unit !== MINUTES_UNIT || quantity === undefined) return;
+    if (record.kind !== ACTIVITY_KINDS.focusCompleted || record.unit !== ACTIVITY_UNITS.minutes || quantity === undefined) return;
     if (!Number.isFinite(quantity) || !(quantity > 0) || this.seen.has(record.id)) return;
     this.seen.add(record.id);
     this.focusMinutes += quantity;
-    const day = recordDay(record, calendar);
+    const day = activityDay(record, calendar.timeZone);
     this.minutesByDay.set(day, (this.minutesByDay.get(day) ?? 0) + quantity);
-    if (record.source === PARTY_SOURCE && recordOutcome(record) === "completed") this.finishedPartySessions += 1;
+    if (record.source === MODULE_IDS.party && activityOutcome(record) === "completed") this.finishedPartySessions += 1;
   }
 
   /** The days with enough focused study, oldest first. */
@@ -315,15 +316,22 @@ export class PetMilestoneProgress {
   static demo(today: Instant, calendar: DayCalendar): PetMilestoneProgress {
     const start = dayKey(today, calendar);
     let next = 0;
-    const record = (daysAgo: number, minutes: number): StudyActivityRecord | undefined => {
+    const record = (daysAgo: number, minutes: number): ActivityRecord | undefined => {
       if (!(minutes > 0)) return undefined;
       const day = addDays(start, -daysAgo);
       /* Ten hours after local midnight, as the Mac adds 10 hours to the start of the day. */
       const end = startOf(day, calendar) + 10 * 3600;
       next += 1;
-      return { id: `demo-${next}`, source: "focus", kind: FOCUS_COMPLETED, end, quantity: minutes, unit: MINUTES_UNIT };
+      return makeActivityRecord({
+        id: `demo-${next}`,
+        source: "focus",
+        kind: ACTIVITY_KINDS.focusCompleted,
+        start: end,
+        quantity: minutes,
+        unit: ACTIVITY_UNITS.minutes,
+      });
     };
-    const records: StudyActivityRecord[] = [];
+    const records: ActivityRecord[] = [];
     DEMO_EARLIER.forEach((minutes, offset) => {
       const made = record(14 + offset, minutes);
       if (made) records.push(made);

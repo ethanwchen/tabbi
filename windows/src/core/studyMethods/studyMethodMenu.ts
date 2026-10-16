@@ -1,3 +1,5 @@
+import { kitModuleSettings, type KitDefaults } from "../kits/kitManifest";
+import { MODULE_IDS } from "../modules/moduleId";
 import { StudyCustomRhythm, presetMethod } from "./studyCustomRhythm";
 import { StudyMethod } from "./studyMethod";
 import { STUDY_METHOD_KINDS, type StudyMethodKind } from "./studyMethodFile";
@@ -15,17 +17,23 @@ function kitKinds(section: unknown): StudyMethodKind[] | undefined {
   return Array.isArray(methods) ? methods.filter(isKind) : undefined;
 }
 
+/* The kit's Study section (`moduleSettings.study`), read leniently: anything that is not an object reads as none. */
+function studySection(defaults: KitDefaults | undefined): unknown {
+  return defaults === undefined ? undefined : kitModuleSettings(defaults, MODULE_IDS.study);
+}
+
 /**
  * Port of StudyMethodMenu.kitStartingKind(of:): the method a kit starts on, its
- * `method` if known, otherwise the first known one in `methods`. Takes the
- * kit's Study section (`moduleSettings.study`) as plain JSON.
+ * `method` if known, otherwise the first known one in `methods`; undefined
+ * when it names neither. Today plans study blocks on it too.
  */
-export function kitStartingKind(studySection: unknown): StudyMethodKind | undefined {
-  if (typeof studySection === "object" && studySection !== null) {
-    const method = (studySection as Record<string, unknown>).method;
+export function kitStartingKind(defaults: KitDefaults | undefined): StudyMethodKind | undefined {
+  const section = studySection(defaults);
+  if (typeof section === "object" && section !== null) {
+    const method = (section as Record<string, unknown>).method;
     if (isKind(method)) return method;
   }
-  return kitKinds(studySection)?.[0];
+  return kitKinds(section)?.[0];
 }
 
 /**
@@ -48,9 +56,9 @@ export class StudyMethodMenu {
     this.startingKind = starting !== undefined && list.includes(starting) ? starting : first;
   }
 
-  /** The menu a kit's Study section sets up; every preset when it says nothing. */
-  static fromKit(studySection: unknown): StudyMethodMenu {
-    return new StudyMethodMenu(kitKinds(studySection), kitStartingKind(studySection));
+  /** The menu a kit sets up in its Study section; every preset when it says nothing. Unknown method names are skipped. */
+  static fromKit(defaults: KitDefaults | undefined): StudyMethodMenu {
+    return new StudyMethodMenu(kitKinds(studySection(defaults)), kitStartingKind(defaults));
   }
 
   /** Every preset, starting on Pomodoro. */

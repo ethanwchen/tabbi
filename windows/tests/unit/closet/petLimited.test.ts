@@ -14,13 +14,9 @@ import {
   limitedProgressFraction,
   milestoneProgress,
 } from "../../../src/core/closet/petLimited";
-import {
-  FOCUS_COMPLETED,
-  MINUTES_UNIT,
-  OUTCOME_KEY,
-  type StudyActivityRecord,
-  type StudyPhaseOutcome,
-} from "../../../src/core/closet/studyActivity";
+import { ACTIVITY_KINDS, ACTIVITY_METADATA, ACTIVITY_UNITS, type ActivityRecord } from "../../../src/core/activity/activityRecord";
+import { activity } from "../../support/activity";
+import type { StudyPhaseOutcome } from "../../../src/core/studyMethods/studyPhaseRecord";
 import { accessorySlot } from "../../../src/core/pets/petCostume";
 import { PET_ITEM_THEMES, itemIsNew, itemTheme, themeItems } from "../../../src/core/pets/petItemTheme";
 import { accessoryItem, itemFromID, outfitItem } from "../../../src/core/pets/petItem";
@@ -40,17 +36,17 @@ function day(offset: number, hour = 10): number {
 
 let nextID = 0;
 
-function focus(minutes: number, on: number, source = "focus", outcome: StudyPhaseOutcome = "completed"): StudyActivityRecord {
+function focus(minutes: number, on: number, source = "focus", outcome: StudyPhaseOutcome = "completed"): ActivityRecord {
   nextID += 1;
-  return {
+  return activity({
     id: `record-${nextID}`,
     source,
-    kind: FOCUS_COMPLETED,
+    kind: ACTIVITY_KINDS.focusCompleted,
     end: on,
     quantity: minutes,
-    unit: MINUTES_UNIT,
-    metadata: { [OUTCOME_KEY]: outcome },
-  };
+    unit: ACTIVITY_UNITS.minutes,
+    metadata: { [ACTIVITY_METADATA.outcome]: outcome },
+  });
 }
 
 function tuxedoCloset(ledger = new PetPointsLedger()): PetCloset {
@@ -395,7 +391,7 @@ describe("limited editions: milestones", () => {
   });
 
   it("other activity kinds do not count", () => {
-    const cards: StudyActivityRecord = { id: "cards", source: "anki", kind: "cards.reviewed", end: day(0), quantity: 300, unit: "cards" };
+    const cards = activity({ id: "cards", source: "anki", kind: "cards.reviewed", end: day(0), quantity: 300, unit: "cards" });
     const progress = new PetMilestoneProgress([cards], calendar);
     expect(progress.focusMinutes).toBe(0);
     expect(progress.studyDays).toEqual([]);

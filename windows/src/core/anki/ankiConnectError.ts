@@ -1,3 +1,4 @@
+import { joinSentences } from "../formatting/sentences";
 import { tr } from "../localization/tr";
 
 /** The add-on's AnkiWeb code, for install instructions. */
@@ -262,18 +263,3 @@ export function errorSuggestion(error: AnkiConnectError): string {
   }
 }
 
-const fullWidthStops = new Set(["。", "！", "？", "：", "）"]);
-
-/**
- * Port of Sentences.join: sentences joined with a space, except after a
- * full-width stop, which carries its own spacing in Chinese and Japanese.
- */
-export function joinSentences(sentences: readonly string[]): string {
-  let text = "";
-  for (const sentence of sentences.map((s) => s.trim()).filter((s) => s.length > 0)) {
-    const last = characters(text).at(-1);
-    if (last !== undefined && !fullWidthStops.has(last)) text += " ";
-    text += sentence;
-  }
-  return text;
-}

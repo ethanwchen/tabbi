@@ -1,8 +1,11 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { PlannerDay } from "../../../src/core/planner/plannerDay";
-import { mergedProgress, progressIsComplete, type SharedTodayItemState } from "../../../src/core/planner/providedWork";
+import { moduleProvision } from "../../../src/core/providers/moduleProvision";
+import { ProgressItem } from "../../../src/core/providers/progressItem";
+import { ProviderSnapshot } from "../../../src/core/providers/providerSnapshot";
+import { sharedTodayItems, type SharedTodayItem } from "../../../src/core/providers/sharedTodayItem";
 import { TodayTally } from "../../../src/core/planner/todayTally";
-import { switchLanguage } from "../localization/catalogs";
+import { switchLanguage } from "../../support/catalogs";
 
 /* Port of TodayTallyTests. */
 
@@ -10,12 +13,10 @@ const OCT1 = "2026-10-01";
 const NOW = 1_790_000_000;
 
 /* Anki's reviews goal as Today lists it (`sharedTodayItems(excluding: .planner)`): goals with something due, done at zero left. */
-function reviews(completed: number, target: number): SharedTodayItemState[] {
-  return mergedProgress([
-    ["anki", [{ id: "reviews", source: "anki", title: "Anki reviews", completed, target, unit: "cards", waitsForStart: false }]],
-  ])
-    .filter((item) => item.source !== "planner" && item.target > 0)
-    .map((item) => ({ isDone: progressIsComplete(item) }));
+function reviews(completed: number, target: number): SharedTodayItem[] {
+  const goal = new ProgressItem({ id: "reviews", source: "anki", title: "Anki reviews", completed, target, unit: "cards" });
+  const snapshot = new ProviderSnapshot([{ module: "anki", provision: moduleProvision({ progress: [goal] }) }]);
+  return sharedTodayItems(snapshot, "planner", "en");
 }
 
 function add(day: PlannerDay, title: string): string {

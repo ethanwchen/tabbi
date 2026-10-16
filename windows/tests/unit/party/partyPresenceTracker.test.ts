@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { instantFromZoned } from "../../../src/core/anki/ankiDay";
+import { instantOf } from "../../../src/core/calendar/zonedCalendar";
 import { heartbeatBody } from "../../../src/core/party/partyClient";
 import { OFFLINE_HEARTBEAT } from "../../../src/core/party/partyModels";
 import { PartyPresenceTracker, presenceDayString } from "../../../src/core/party/partyPresenceTracker";
@@ -8,7 +8,7 @@ import { ProvidedFocus } from "../../../src/core/providers/providedFocus";
 
 const zone = "America/New_York";
 /** 2026-10-02 09:00 in New York. */
-const morning = instantFromZoned(2026, 10, 2, 9, zone);
+const morning = instantOf({ year: 2026, month: 10, day: 2, hour: 9 }, zone);
 
 function running(start: number, focus = 25 * 60, rest = 5 * 60): FocusTimer {
   const timer = new FocusTimer(new FocusTimerConfig(focus, rest));
@@ -106,7 +106,7 @@ describe("PartyPresenceTracker", () => {
 
   it("splits minutes at local midnight and grows the streak", () => {
     const tracker = new PartyPresenceTracker();
-    const lateNight = instantFromZoned(2026, 10, 2, 23, zone, 50);
+    const lateNight = instantOf({ year: 2026, month: 10, day: 2, hour: 23, minute: 50 }, zone);
     tracker.observe(shared(running(lateNight)), lateNight, zone);
     const beat = tracker.heartbeat(lateNight + 25 * 60, zone);
     expect(beat.day).toBe("2026-10-03");

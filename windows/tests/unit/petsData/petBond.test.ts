@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PetMilestoneProgress } from "../../../src/core/closet/petLimited";
-import type { StudyActivityRecord } from "../../../src/core/closet/studyActivity";
+import type { ActivityRecord } from "../../../src/core/activity/activityRecord";
+import { activity } from "../../support/activity";
 import {
   NO_BOND_LOOK,
   PET_COLLARS,
@@ -21,12 +22,12 @@ function day(offset: number): number {
 }
 
 let nextID = 0;
-function focus(minutes: number, end: number): StudyActivityRecord {
+function focus(minutes: number, end: number): ActivityRecord {
   nextID += 1;
-  return { id: `r${nextID}`, source: "focus", kind: "focus.completed", end, quantity: minutes, unit: "min" };
+  return activity({ id: `r${nextID}`, source: "focus", kind: "focus.completed", end, quantity: minutes, unit: "min" });
 }
 
-function bond(records: StudyActivityRecord[]): PetBond {
+function bond(records: ActivityRecord[]): PetBond {
   return PetBond.fromProgress(new PetMilestoneProgress(records, calendar));
 }
 
@@ -83,7 +84,7 @@ describe("PetBond", () => {
   });
 
   it("counts only focus minutes", () => {
-    const cards: StudyActivityRecord = { id: "cards", source: "anki", kind: "cards.reviewed", end: day(0), quantity: 300, unit: "cards" };
+    const cards = activity({ id: "cards", source: "anki", kind: "cards.reviewed", end: day(0), quantity: 300, unit: "cards" });
     expect(bond([cards]).points).toBe(0);
   });
 

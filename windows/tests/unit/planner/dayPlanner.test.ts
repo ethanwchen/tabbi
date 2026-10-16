@@ -17,7 +17,7 @@ import {
 import { plannerItem } from "../../../src/core/planner/plannerDay";
 import { viewedDayPlanStart } from "../../../src/core/planner/plannerViewedDay";
 import { upcomingEvent, type UpcomingEvent } from "../../../src/core/planner/upcomingEvent";
-import { switchLanguage } from "../localization/catalogs";
+import { switchLanguage } from "../../support/catalogs";
 
 /* Port of DayPlannerTests: day end, free gaps, the prompt and flags, parsing and validation. */
 

@@ -8,7 +8,7 @@ import { StudyMethod } from "../studyMethods/studyMethod";
 import { kitStartingKind } from "../studyMethods/studyMethodMenu";
 import { DEFAULT_DAY_END_HOUR, LATEST_DAY_END_HOUR, type DayPlanContext } from "./dayPlan";
 import { normalizedTitle } from "./plannerDay";
-import type { ProgressItem } from "./providedWork";
+import type { ProgressItem } from "../providers/progressItem";
 import {
   DEFAULT_SECONDS_PER_CARD,
   planStudyDay,
@@ -89,7 +89,7 @@ export function todayPlanSettingsFromKit(kit: KitDefaults | undefined): TodayPla
   const flag = (key: string) => (typeof section[key] === "boolean" ? (section[key] as boolean) : undefined);
   const mode = text("planMode");
   const sample = text("sampleDay");
-  const kind = kitStartingKind(kit?.moduleSettings[MODULE_IDS.study]);
+  const kind = kitStartingKind(kit);
   const buffer = number("eventBufferMinutes");
   const endHour = number("dayEndHour");
   return todayPlanSettings({

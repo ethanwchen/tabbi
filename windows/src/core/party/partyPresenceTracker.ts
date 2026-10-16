@@ -1,5 +1,5 @@
 import { plannerDayKeyOf as dayKeyOf } from "../planner/plannerDayKey";
-import { instantFromZoned } from "../anki/ankiDay";
+import { instantOf } from "../calendar/zonedCalendar";
 import { VersionedJSON } from "../persistence/versionedJson";
 import type { ProvidedFocus } from "../providers/providedFocus";
 import type { Instant, Seconds } from "../time";
@@ -56,7 +56,7 @@ function nextMidnight(instant: Instant, timeZone: string): Instant {
   const parts = dayParts(dayKeyOf(instant, timeZone));
   if (parts === undefined) return instant + 86400;
   const tomorrow = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2] + 1));
-  return instantFromZoned(tomorrow.getUTCFullYear(), tomorrow.getUTCMonth() + 1, tomorrow.getUTCDate(), 0, timeZone);
+  return instantOf({ year: tomorrow.getUTCFullYear(), month: tomorrow.getUTCMonth() + 1, day: tomorrow.getUTCDate(), hour: 0 }, timeZone);
 }
 
 export class PartyPresenceTracker {

@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { PetCloset } from "../../../src/core/closet/petCloset";
 import { starterForKit } from "../../../src/core/closet/petKitDefaults";
+import { readKitManifest } from "../../../src/core/kits/kitManifest";
 import { PetMilestoneProgress } from "../../../src/core/closet/petLimited";
 import { PetJournal } from "../../../src/core/pets/petAdventure";
 import { accessoryItem, outfitItem } from "../../../src/core/pets/petItem";
@@ -36,10 +37,8 @@ describe("demo and snapshot pets", () => {
     const kits = readdirSync(folder).filter((file) => file.endsWith(".json"));
     expect(kits.length).toBeGreaterThan(0);
     for (const file of kits) {
-      const kit = loadRepoJson<{ defaults?: { moduleSettings?: { closet?: { pet?: unknown } } } }>(
-        `Sources/TabbiKitCore/Kits/Bundled/${file}`,
-      );
-      expectNoCape(starterForKit(kit.defaults?.moduleSettings?.closet?.pet), file);
+      const kit = readKitManifest(loadRepoJson(`Sources/TabbiKitCore/Kits/Bundled/${file}`));
+      expectNoCape(starterForKit(kit.defaults), file);
     }
   });
 

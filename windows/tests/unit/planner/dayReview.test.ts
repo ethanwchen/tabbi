@@ -3,7 +3,6 @@ import { ActivityLogRepository } from "../../../src/core/activity/activityLogRep
 import { ACTIVITY_KINDS, ACTIVITY_UNITS, makeActivityRecord, type ActivityRecord } from "../../../src/core/activity/activityRecord";
 import { FocusTimerConfig, type FocusPhase } from "../../../src/core/focus/focusTimer";
 import { completionActivityRecord } from "../../../src/core/focus/focusTimerActivity";
-import type { TimerActivityRecord } from "../../../src/core/focus/timerActivity";
 import { InMemoryDocumentStore } from "../../../src/core/persistence/documentStore";
 import {
   DAY_REVIEW_SCHEMA,
@@ -25,10 +24,11 @@ import {
 } from "../../../src/core/planner/dayReview";
 import { PlannerDay } from "../../../src/core/planner/plannerDay";
 import { dayKeyStart } from "../../../src/core/planner/plannerDayKey";
-import type { ProgressItem, StudyDayTally } from "../../../src/core/planner/providedWork";
+import { ProgressItem } from "../../../src/core/providers/progressItem";
+import type { StudyDayTally } from "../../../src/core/providers/studyDayTally";
 import { phaseActivityRecord, type StudyPhaseOutcome } from "../../../src/core/studyMethods/studyPhaseRecord";
-import { studyPointsFor } from "../../../src/core/studyMethods/studyLog";
-import { switchLanguage } from "../localization/catalogs";
+import { PetPointsRules } from "../../../src/core/pets/petPointsRules";
+import { switchLanguage } from "../../support/catalogs";
 
 /* Port of DayReviewTests: aggregation, the prompt and summary cleanup, persistence, demo data and study stats. */
 
@@ -50,7 +50,7 @@ function checklist(): PlannerDay {
 }
 
 /* A timer's record in the activity log's shape. */
-function logged(record: TimerActivityRecord): ActivityRecord {
+function logged(record: ActivityRecord): ActivityRecord {
   return makeActivityRecord({ ...record });
 }
 
@@ -59,7 +59,7 @@ function completion(phase: FocusPhase, endedAt: number): ActivityRecord {
 }
 
 function ankiReviews(done: number, target: number): ProgressItem {
-  return { id: "reviews", source: "anki", title: "Anki reviews", completed: done, target, unit: "cards", waitsForStart: false };
+  return new ProgressItem({ id: "reviews", source: "anki", title: "Anki reviews", completed: done, target, unit: "cards", waitsForStart: false });
 }
 
 function review(fields: Partial<DayReview> = {}): DayReview {
@@ -241,7 +241,7 @@ describe("DayReview study stats", () => {
   const tally: StudyDayTally = { minutes: 185, sessions: 3, points: 215 };
 
   it("keeps the study tally and shared goal counts", () => {
-    const idle: ProgressItem = {
+    const idle = new ProgressItem({
       id: "q",
       source: "anki",
       title: "Questions",
@@ -249,7 +249,7 @@ describe("DayReview study stats", () => {
       target: 0,
       unit: "questions",
       waitsForStart: false,
-    };
+    });
     const result = reviewDay(checklist(), [], LA, tally, [ankiReviews(112, 432), idle]);
     expect(result.study).toEqual(tally);
     /* A goal with nothing due and nothing done is left out. */
@@ -313,7 +313,7 @@ describe("DayReview study stats", () => {
     const sample = {
       minutes: blocks.reduce((sum, [minutes]) => sum + minutes, 0),
       sessions: blocks.filter(([, done]) => done).length,
-      points: blocks.reduce((sum, [minutes, done]) => sum + studyPointsFor(minutes, done), 0),
+      points: blocks.reduce((sum, [minutes, done]) => sum + PetPointsRules.points(minutes, done), 0),
     };
     expect(sample).toEqual(tally);
   });

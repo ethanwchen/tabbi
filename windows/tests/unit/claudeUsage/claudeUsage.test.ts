@@ -1,4 +1,7 @@
+import { durationSeconds } from "../../../src/core/formatting/durationFormat";
 import { describe, expect, it } from "vitest";
+import { InMemoryDocumentStore } from "../../../src/core/persistence/documentStore";
+import { VersionedJSON } from "../../../src/core/persistence/versionedJson";
 import type { ClaudeStreamEvent } from "../../../src/core/claude/claudeStreamEvent";
 import {
   decodeLimitsRecord,
@@ -11,13 +14,12 @@ import { aggregateUsage, emptyLocalStats, periodMessages, periodTokens, topModel
 import {
   ClaudeUsageLogScanner,
   claudeProjectsRoot,
-  decodeScanIndex,
+  CLAUDE_USAGE_SCAN_INDEX_NAME,
   MAX_LINE_LENGTH,
   type TranscriptFile,
 } from "../../../src/core/claudeUsage/claudeUsageLogScanner";
 import {
   compactTokens,
-  durationText,
   modelName,
   percentText,
   resetDescription,
@@ -220,13 +222,12 @@ describe("ClaudeUsageLogScanner", () => {
     const disk = new FakeDisk();
     disk.write("a.jsonl", [assistantLine("m1", "2026-10-01T10:00:00Z")], now);
     disk.write("b.jsonl", [assistantLine("m2", "2026-10-01T11:00:00Z")], now);
-    const first = new ClaudeUsageLogScanner();
-    await scan(first, disk);
-    const index = decodeScanIndex(JSON.parse(JSON.stringify(first.index())));
-    if (!index) throw new Error("index did not round-trip");
+    const store = new InMemoryDocumentStore();
+    await scan(new ClaudeUsageLogScanner({ store }), disk);
+    expect(Object.keys(store.snapshot())).toEqual([CLAUDE_USAGE_SCAN_INDEX_NAME]);
     disk.append("b.jsonl", assistantLine("m3", "2026-10-01T12:00:00Z") + "\n", now);
     disk.reads.length = 0;
-    const stats = await scan(new ClaudeUsageLogScanner(index), disk);
+    const stats = await scan(new ClaudeUsageLogScanner({ store }), disk);
     expect(periodMessages(stats.today)).toBe(3);
     expect(totalTokens(periodTokens(stats.today))).toBe(30);
     expect(disk.reads.map((r) => r.path)).toEqual(["b.jsonl"]);
@@ -244,24 +245,21 @@ describe("ClaudeUsageLogScanner", () => {
       now,
     );
     const later = at("2026-10-02T09:00:00Z");
-    const first = new ClaudeUsageLogScanner();
-    await scan(first, disk);
-    const second = new ClaudeUsageLogScanner(decodeScanIndex(first.index()));
-    await scan(second, disk, later);
+    const store = new InMemoryDocumentStore();
+    await scan(new ClaudeUsageLogScanner({ store }), disk);
+    await scan(new ClaudeUsageLogScanner({ store }), disk, later);
     disk.write("resumed.jsonl", [assistantLine("m1", "2026-10-01T10:00:00Z", { model: "claude-haiku-4-5", output: 7 })], later);
-    const stats = await scan(new ClaudeUsageLogScanner(decodeScanIndex(second.index())), disk, later);
+    const stats = await scan(new ClaudeUsageLogScanner({ store }), disk, later);
     expect(stats.lastSevenDays.models.map((m) => m.model)).toEqual(["claude-opus-4-5-20251101", "claude-haiku-4-5"]);
     expect(stats.lastSevenDays.models.map((m) => m.tokens.output)).toEqual([9, 7]);
     expect(periodMessages(stats.lastSevenDays)).toBe(2);
   });
 
   it("falls back to a full scan with a corrupt index", async () => {
-    expect(decodeScanIndex({ schemaVersion: 2 })).toBeUndefined();
-    expect(decodeScanIndex("not json")).toBeUndefined();
-    expect(decodeScanIndex({ schemaVersion: 1, files: { a: { offset: "x" } }, records: {} })).toBeUndefined();
+    const store = new InMemoryDocumentStore({ [CLAUDE_USAGE_SCAN_INDEX_NAME]: "{not json" });
     const disk = new FakeDisk();
     disk.write("a.jsonl", [assistantLine("m1", "2026-10-01T10:00:00Z")], now);
-    expect(periodMessages((await scan(new ClaudeUsageLogScanner(decodeScanIndex({ schemaVersion: 9 })), disk)).today)).toBe(1);
+    expect(periodMessages((await scan(new ClaudeUsageLogScanner({ store }), disk)).today)).toBe(1);
   });
 
   it("skips lines longer than the limit and keeps reading", async () => {
@@ -305,10 +303,10 @@ describe("ClaudeUsageFormat", () => {
   });
 
   it("writes durations", () => {
-    expect(durationText(30)).toBe("<1 min");
-    expect(durationText(14 * 60)).toBe("14 min");
-    expect(durationText(2 * 3600 + 13 * 60 + 5)).toBe("2h 14m");
-    expect(durationText(3 * 3600)).toBe("3h");
+    expect(durationSeconds(30)).toBe("<1 min");
+    expect(durationSeconds(14 * 60)).toBe("14 min");
+    expect(durationSeconds(2 * 3600 + 13 * 60 + 5)).toBe("2h 14m");
+    expect(durationSeconds(3 * 3600)).toBe("3h");
   });
 
   it("describes resets", () => {
@@ -347,13 +345,13 @@ describe("ClaudeLimitsRecord", () => {
   it("round-trips through its stored form", () => {
     const record = { snapshot: { status: "allowed", fiveHour: { utilization: 0.42, resetsAt: 1_790_912_400 } }, fetchedAt: 1_790_900_000 };
     expect(decodeLimitsRecord(encodeLimitsRecord(record))).toEqual(record);
-    expect(JSON.parse(encodeLimitsRecord(record)).schemaVersion).toBe(1);
+    expect(VersionedJSON.version(encodeLimitsRecord(record) ?? "")).toBe(1);
   });
 
   it("decodes corrupt or missing data to nothing", () => {
     expect(decodeLimitsRecord(undefined)).toBeUndefined();
     expect(decodeLimitsRecord("{")).toBeUndefined();
-    expect(decodeLimitsRecord(`{"fetchedAt":1}`)).toBeUndefined();
+    expect(decodeLimitsRecord(`{"status":"allowed"}`)).toBeUndefined();
   });
 
   it("refreshes on open only when stale", () => {

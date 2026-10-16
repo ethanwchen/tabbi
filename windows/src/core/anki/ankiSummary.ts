@@ -1,3 +1,9 @@
+import { ACTIVITY_KINDS, ACTIVITY_UNITS, makeActivityRecord, type ActivityRecord } from "../activity/activityRecord";
+import { CARD_UNIT } from "../formatting/durationFormat";
+import { tr } from "../localization/tr";
+import { MODULE_IDS, type ModuleID } from "../modules/moduleId";
+import { ProgressItem, type ProvidedAction } from "../providers/progressItem";
+import { instantOf } from "../calendar/zonedCalendar";
 import { DAY, type Instant, type Seconds } from "../time";
 import type { AnkiConnectClient } from "./ankiConnectClient";
 import { AnkiConnectFailure, errorMessage, failsWholeRefresh } from "./ankiConnectError";
@@ -15,7 +21,6 @@ import {
   addingDays,
   ankiDayAt,
   ankiDayText,
-  instantFromZoned,
   sameAnkiDay,
 } from "./ankiDay";
 import { DECK_SEPARATOR, deckLeaf, deckNameComponents } from "./ankiDeckName";
@@ -205,7 +210,7 @@ export function isSummaryCurrent(summary: AnkiSummary, now: Instant, timeZone: s
 /** The instant the next Anki day starts after `now`, when due counts reset. */
 export function nextRollover(now: Instant, timeZone: string, rolloverHour = 4): Instant {
   const tomorrow = addingDays(ankiDayAt(now, timeZone, rolloverHour), 1);
-  return instantFromZoned(tomorrow.year, tomorrow.month, tomorrow.day, rolloverHour, timeZone);
+  return instantOf({ year: tomorrow.year, month: tomorrow.month, day: tomorrow.day, hour: rolloverHour }, timeZone);
 }
 
 function byMostDue(a: AnkiDeckStats, b: AnkiDeckStats): number {
@@ -336,6 +341,37 @@ export function studyActionTitle(summary: AnkiSummary, favorite: AnkiFavoriteDec
   return deck === undefined ? "Open Anki" : `Study ${deckLeaf(deck)}`;
 }
 
+/**
+ * Port of AnkiSummary.studyAction(favorite:): what Today's Anki row and the
+ * closed island's Anki preview run on click, opening `studyDeck` for review,
+ * the same as the panel's primary button.
+ */
+export function studyAction(summary: AnkiSummary, favorite: AnkiFavoriteDeck | undefined): ProvidedAction {
+  return { id: ANKI_STUDY_ACTION_ID, title: studyActionTitle(summary, favorite) };
+}
+
+/**
+ * Port of AnkiSummary.progressItem(source:favorite:): today's reviews as a
+ * shared progress goal, cards reviewed so far out of those plus the cards
+ * still due. Today and the ticker show it without knowing it came from
+ * Anki, and a click on it runs `studyAction`.
+ */
+export function ankiProgressItem(
+  summary: AnkiSummary,
+  source: ModuleID = MODULE_IDS.anki,
+  favorite?: AnkiFavoriteDeck,
+): ProgressItem {
+  return new ProgressItem({
+    id: "reviews",
+    source,
+    title: tr("Anki reviews"),
+    completed: summary.reviewedToday,
+    target: summary.reviewedToday + summaryDueTotal(summary),
+    unit: CARD_UNIT,
+    action: studyAction(summary, favorite),
+  });
+}
+
 /** Metadata key holding the Anki day a `cardsReviewed` activity record counts toward. */
 export const ANKI_ACTIVITY_DAY_KEY = "ankiDay";
 
@@ -350,6 +386,43 @@ export function unloggedReviews(summary: AnkiSummary, loggedForDay: readonly num
   const already = loggedForDay.reduce((sum, quantity) => sum + quantity, 0);
   const fresh = summary.reviewedToday - already;
   return fresh >= 1 ? fresh : undefined;
+}
+
+/**
+ * Port of AnkiSummary.reviewActivity(after:source:now:): a `cardsReviewed`
+ * record for the cards answered today that `logged` doesn't hold yet, or
+ * undefined when there are none. AnkiConnect only reports a running count
+ * for the Anki day, so the module logs the difference from what it logged
+ * before for that same Anki day; reading back the log keeps a relaunch from
+ * counting twice. Pass the records of the last two calendar days.
+ */
+export function reviewActivity(
+  summary: AnkiSummary,
+  logged: readonly ActivityRecord[],
+  source: ModuleID,
+  now: Instant,
+): ActivityRecord | undefined {
+  const today = summaryDay(summary);
+  if (today === undefined) return undefined;
+  const day = ankiDayText(today);
+  const quantities = logged
+    .filter(
+      (record) =>
+        record.source === source &&
+        record.kind === ACTIVITY_KINDS.cardsReviewed &&
+        record.metadata[ANKI_ACTIVITY_DAY_KEY] === day,
+    )
+    .map((record) => record.quantity ?? 0);
+  const fresh = unloggedReviews(summary, quantities);
+  if (fresh === undefined) return undefined;
+  return makeActivityRecord({
+    source,
+    kind: ACTIVITY_KINDS.cardsReviewed,
+    start: now,
+    quantity: fresh,
+    unit: ACTIVITY_UNITS.cards,
+    metadata: { [ANKI_ACTIVITY_DAY_KEY]: day },
+  });
 }
 
 /**

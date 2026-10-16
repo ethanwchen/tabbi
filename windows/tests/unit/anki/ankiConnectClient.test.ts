@@ -16,9 +16,9 @@ import {
   ankiDayAt,
   ankiDayText,
   compareAnkiDays,
-  instantFromZoned,
   parseAnkiDay,
 } from "../../../src/core/anki/ankiDay";
+import { instantOf } from "../../../src/core/calendar/zonedCalendar";
 import { FakeAnkiTransport, failure, json, params, recorded, type Reply } from "./fakeAnki";
 
 /* Port of AnkiConnectClientTests, over recorded AnkiConnect replies. */
@@ -425,7 +425,7 @@ describe("AnkiDay", () => {
   });
 
   it("respects the rollover hour in the given zone", () => {
-    const twoAM = instantFromZoned(2026, 10, 1, 2, "America/New_York");
+    const twoAM = instantOf({ year: 2026, month: 10, day: 1, hour: 2 }, "America/New_York");
     expect(ankiDayText(ankiDayAt(twoAM, "America/New_York", 4))).toBe("2026-09-30");
     expect(ankiDayText(ankiDayAt(twoAM, "America/New_York", 0))).toBe("2026-10-01");
   });

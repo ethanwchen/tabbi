@@ -24,7 +24,7 @@ import {
   type PlannerViewedDay,
 } from "../../../src/core/planner/plannerViewedDay";
 import { PLANNER_SAMPLE_DAYS } from "../../../src/core/planner/todayPlanSettings";
-import { switchLanguage } from "../localization/catalogs";
+import { switchLanguage } from "../../support/catalogs";
 
 /* Port of PlannerTests: PlannerDayKey, PlannerDay, PlannerRepository, sample data, starter tasks and PlannerViewedDay. */
 

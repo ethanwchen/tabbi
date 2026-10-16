@@ -1,6 +1,8 @@
 import { tr } from "../localization/tr";
+import type { DocumentStore } from "../persistence/documentStore";
+import { VersionedJSON } from "../persistence/versionedJson";
 import type { Instant } from "../time";
-import type { PetFocus } from "./petFocus";
+import type { ProvidedFocus } from "../providers/providedFocus";
 import { REFERENCE_DATE_OFFSET } from "./petUnlocks";
 
 /*
@@ -75,7 +77,7 @@ export class PetAdventure {
    * not a running focus countdown, a block shorter than `minimumFocus`, or
    * Reduce Motion on.
    */
-  static plan(focus: PetFocus | undefined, reduceMotion: boolean): PetAdventure | undefined {
+  static plan(focus: ProvidedFocus | undefined, reduceMotion: boolean): PetAdventure | undefined {
     if (reduceMotion || !focus || focus.phase !== "focus" || focus.clock.kind !== "countdown") return undefined;
     const length = focus.phaseLength;
     if (length === undefined || length < PetAdventure.minimumFocus) return undefined;
@@ -86,7 +88,7 @@ export class PetAdventure {
   }
 
   /** Where the pet is at `now` for a focus clock. */
-  static phaseFor(focus: PetFocus | undefined, now: Instant, reduceMotion: boolean): AdventurePhase {
+  static phaseFor(focus: ProvidedFocus | undefined, now: Instant, reduceMotion: boolean): AdventurePhase {
     return PetAdventure.plan(focus, reduceMotion)?.phase(now) ?? HOME;
   }
 
@@ -118,8 +120,8 @@ export class PetAdventure {
    * way back.
    */
   static finished(
-    old: PetFocus | undefined,
-    next: PetFocus | undefined,
+    old: ProvidedFocus | undefined,
+    next: ProvidedFocus | undefined,
     now: Instant,
     reduceMotion: boolean,
   ): PetAdventure | undefined {
@@ -249,11 +251,16 @@ export function entryDetail(entry: JournalEntry, petName: string): string | unde
  * repeats until every line was used, decks are seeded, and a new deck
  * never starts with the line the last one ended on. Port of PetJournal.
  */
+/* Stands in for the seed while the journal is written, so its exact digits can go in after. */
+const SEED_PLACEHOLDER = "@seed@";
+
 export class PetJournal {
   /** The most entries kept; older ones fall off. */
   static readonly maxEntries = 30;
+  /** The journal's file format; version 1 is the first. */
+  static readonly schema = new VersionedJSON(1);
   /** The journal's file format version, written as `schemaVersion`. */
-  static readonly schemaVersion = 1;
+  static readonly schemaVersion = PetJournal.schema.current;
 
   entries: JournalEntry[] = [];
   /** The line ids used in the current deck, in order. */
@@ -333,6 +340,36 @@ export class PetJournal {
       seed: Number(this.seed) <= Number.MAX_SAFE_INTEGER ? Number(this.seed) : this.seed.toString(),
       schemaVersion: PetJournal.schemaVersion,
     };
+  }
+
+  /** Reads a saved journal after any migration its version needs; throws when it isn't one. */
+  static decode(text: string): PetJournal {
+    /*
+     * The Mac writes the seed as a plain 64-bit number, which JSON.parse would
+     * round above 2^53, so its digits are read from the text itself (the
+     * last match: sorted keys put the top-level seed after the entries).
+     */
+    const seedDigits = [...text.matchAll(/"seed"\s*:\s*(\d+)/g)].at(-1)?.[1];
+    return PetJournal.schema.decode(text, (document) =>
+      PetJournal.fromJSON(seedDigits === undefined ? document : { ...document, seed: seedDigits }),
+    );
+  }
+
+  /** The journal file as the Mac writes it: pretty printed, sorted keys, the seed as a plain number. */
+  encoded(): string {
+    const text = PetJournal.schema.encode({ ...this.toJSON(), seed: SEED_PLACEHOLDER }, { pretty: true, sortedKeys: true });
+    return text.replace(`"${SEED_PLACEHOLDER}"`, this.seed.toString());
+  }
+
+  /** The journal saved as `name` in `store`, or undefined when there is none yet. A corrupt file rejects, so the caller can decide not to overwrite it. */
+  static async load(store: DocumentStore, name: string): Promise<PetJournal | undefined> {
+    const text = await store.read(name);
+    return text === undefined ? undefined : PetJournal.decode(text);
+  }
+
+  /** Saves the journal as `name` in `store`. */
+  async write(store: DocumentStore, name: string): Promise<void> {
+    await store.write(name, this.encoded());
   }
 
   /** Reads forgivingly: unknown deck ids and gifts are dropped, so a newer build's save still loads. */

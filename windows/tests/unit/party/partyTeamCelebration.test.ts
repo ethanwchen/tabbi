@@ -3,7 +3,7 @@ import { setLookup } from "../../../src/core/localization/tr";
 import { partyDemoCelebration } from "../../../src/core/party/partyDemo";
 import { PartySessionCompletion } from "../../../src/core/party/partySessionTracker";
 import { PartyTeamCelebration } from "../../../src/core/party/partyTeamCelebration";
-import { switchLanguage } from "../localization/catalogs";
+import { switchLanguage } from "../../support/catalogs";
 
 /* The message shown when a shared session runs to its end. The English catalog supplies the plural forms. */
 

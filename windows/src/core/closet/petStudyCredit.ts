@@ -1,15 +1,15 @@
+import {
+  ACTIVITY_KINDS,
+  ACTIVITY_UNITS,
+  activityOutcome,
+  type ActivityRecord,
+} from "../activity/activityRecord";
+import { MODULE_IDS } from "../modules/moduleId";
 import { tr } from "../localization/tr";
-import { focusElapsed, focusIsActive, focusLength, type PetFocus } from "../pets/petFocus";
+import type { ProvidedFocus } from "../providers/providedFocus";
 import { itemDisplayName, type PetItem } from "../pets/petItem";
 import type { Instant } from "../time";
 import { PetCloset } from "./petCloset";
-import {
-  FOCUS_COMPLETED,
-  MINUTES_UNIT,
-  PARTY_SOURCE,
-  recordOutcome,
-  type StudyActivityRecord,
-} from "./studyActivity";
 
 /*
  * Port of PetStudyCredit.swift: points the pet earned from study sessions
@@ -48,9 +48,9 @@ function newlyAffordable(closet: PetCloset, before: Set<PetItem>): PetItem[] {
 }
 
 /** A focus phase under way in `old` that `next` left without completing it. */
-function focusWasCutShort(old: PetFocus, next: PetFocus): boolean {
-  if (old.phase !== "focus" || !focusIsActive(old)) return false;
-  return next.phase !== "focus" || !focusIsActive(next);
+function focusWasCutShort(old: ProvidedFocus, next: ProvidedFocus): boolean {
+  if (old.phase !== "focus" || !old.isActive) return false;
+  return next.phase !== "focus" || !next.isActive;
 }
 
 /**
@@ -62,8 +62,8 @@ function focusWasCutShort(old: PetFocus, next: PetFocus): boolean {
  */
 export function creditFocus(
   closet: PetCloset,
-  old: PetFocus | undefined,
-  next: PetFocus | undefined,
+  old: ProvidedFocus | undefined,
+  next: ProvidedFocus | undefined,
   now: Instant,
 ): PetStudyAward | undefined {
   if (!next) return undefined;
@@ -83,12 +83,12 @@ export function creditFocus(
   let minutes = 0;
   let completedSessions = 0;
   if (count > credited) {
-    const length = Math.trunc((focusLength(next) ?? 0) / 60);
+    const length = Math.trunc((next.focusLength ?? 0) / 60);
     for (let i = credited; i < count; i++) points += closet.recordStudy(length, true);
     completedSessions = count - credited;
     minutes = length * completedSessions;
   } else if (old && !old.logsEarlyEnds && old.source === next.source && focusWasCutShort(old, next)) {
-    minutes = Math.trunc(focusElapsed(old, now) / 60);
+    minutes = Math.trunc(old.elapsed(now) / 60);
     points = closet.recordStudy(minutes, false);
   }
   if (!(points > 0)) return undefined;
@@ -100,11 +100,11 @@ export function creditFocus(
  * quit) from its activity record: the minutes studied, without the bonus.
  * Undefined for anything else and when nothing was earned.
  */
-export function creditRecord(closet: PetCloset, record: StudyActivityRecord): PetStudyAward | undefined {
+export function creditRecord(closet: PetCloset, record: ActivityRecord): PetStudyAward | undefined {
   const quantity = record.quantity;
-  if (record.kind !== FOCUS_COMPLETED || record.source === PARTY_SOURCE || record.unit !== MINUTES_UNIT) return undefined;
+  if (record.kind !== ACTIVITY_KINDS.focusCompleted || record.source === MODULE_IDS.party || record.unit !== ACTIVITY_UNITS.minutes) return undefined;
   if (quantity === undefined || !Number.isFinite(quantity)) return undefined;
-  const outcome = recordOutcome(record);
+  const outcome = activityOutcome(record);
   if (outcome !== "skipped" && outcome !== "abandoned") return undefined;
   const before = affordable(closet);
   const minutes = Math.trunc(Math.max(quantity, 0));

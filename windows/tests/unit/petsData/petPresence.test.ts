@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PetAnimator, PetClipSet, activityForMood } from "../../../src/core/pets/petAnimator";
-import type { PetFocus } from "../../../src/core/pets/petFocus";
+import { ProvidedFocus } from "../../../src/core/providers/providedFocus";
 import { PetPresence } from "../../../src/core/pets/petPresence";
 import { PetProfile } from "../../../src/core/pets/petProfile";
 import { REFERENCE_DATE_OFFSET } from "../../../src/core/pets/petUnlocks";
@@ -15,14 +15,14 @@ const calendar: DayCalendar = { timeZone: "America/New_York", firstWeekday: 1 };
 
 const minutes = (value: number) => start + value * 60;
 
-const idleTimer: PetFocus = { source: "focus", phase: "focus", clock: { kind: "idle" }, phaseLength: 25 * 60, completedFocusCount: 0 };
+const idleTimer = new ProvidedFocus({ source: "focus", phase: "focus", clock: { kind: "idle" }, phaseLength: 25 * 60, completedFocusCount: 0 });
 
-function focusRunning(since: number): PetFocus {
-  return { source: "focus", phase: "focus", clock: { kind: "countdown", endsAt: since + 25 * 60 }, phaseLength: 25 * 60, completedFocusCount: 0 };
+function focusRunning(since: number): ProvidedFocus {
+  return new ProvidedFocus({ source: "focus", phase: "focus", clock: { kind: "countdown", endsAt: since + 25 * 60 }, phaseLength: 25 * 60, completedFocusCount: 0 });
 }
 
-function breakRunning(since: number): PetFocus {
-  return { source: "focus", phase: "rest", clock: { kind: "countdown", endsAt: since + 5 * 60 }, phaseLength: 5 * 60, completedFocusCount: 0 };
+function breakRunning(since: number): ProvidedFocus {
+  return new ProvidedFocus({ source: "focus", phase: "rest", clock: { kind: "countdown", endsAt: since + 5 * 60 }, phaseLength: 5 * 60, completedFocusCount: 0 });
 }
 
 const presence = (lastActive = start) => new PetPresence(profile, lastActive, calendar);
@@ -42,7 +42,7 @@ describe("PetPresence", () => {
   });
 
   it("keeps the pet awake through a paused session", () => {
-    const paused: PetFocus = { source: "focus", phase: "focus", clock: { kind: "paused", shown: 24 * 60 }, phaseLength: 25 * 60, completedFocusCount: 0 };
+    const paused = new ProvidedFocus({ source: "focus", phase: "focus", clock: { kind: "paused", shown: 24 * 60 }, phaseLength: 25 * 60, completedFocusCount: 0 });
     expect(presence().mood(paused, minutes(90))).toBe("awake");
   });
 
@@ -74,7 +74,7 @@ describe("PetPresence", () => {
   it("yawns when a long block ends, though the pet was drawn anew mid-block", () => {
     // The ticker hands the animator the phase start as the mood's start.
     const block = PetAnimator.longSession + 5 * 60;
-    const focus: PetFocus = { source: "study", phase: "focus", clock: { kind: "countdown", endsAt: start + block }, phaseLength: block, completedFocusCount: 0 };
+    const focus = new ProvidedFocus({ source: "study", phase: "focus", clock: { kind: "countdown", endsAt: start + block }, phaseLength: block, completedFocusCount: 0 });
     const rebuiltAt = start + block - 60;
     const mood = presence().mood(focus, rebuiltAt);
     expect(mood).toBe("studying");

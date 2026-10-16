@@ -11,7 +11,7 @@ import {
   type PlanBlock,
 } from "./dayPlan";
 import { normalizedTitle } from "./plannerDay";
-import { progressRemaining, type ProgressItem } from "./providedWork";
+import type { ProgressItem } from "../providers/progressItem";
 import { roundHalfAwayFromZero } from "./upcomingEvent";
 
 /** Typical time to answer one Anki card, in seconds. */
@@ -32,7 +32,7 @@ export interface StudyReviewWork {
  * review. Undefined when the goal is already met.
  */
 export function reviewWork(item: ProgressItem, secondsPerUnit: Seconds = DEFAULT_SECONDS_PER_CARD): StudyReviewWork | undefined {
-  const remaining = progressRemaining(item);
+  const remaining = item.remaining;
   if (!(remaining > 0)) return undefined;
   const seconds = Number.isNaN(secondsPerUnit) ? DEFAULT_SECONDS_PER_CARD : Math.max(secondsPerUnit, 1);
   const minutes = Math.min(Math.ceil((remaining * seconds) / 60 / 5) * 5, MAXIMUM_REVIEW_MINUTES);

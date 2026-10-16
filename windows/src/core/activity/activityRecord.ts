@@ -1,5 +1,6 @@
 import type { ModuleID } from "../modules/moduleId";
 import { isJSONObject, type JSONObject } from "../persistence/json";
+import type { StudyPhaseOutcome } from "../studyMethods/studyPhaseRecord";
 import type { Instant } from "../time";
 import { plannerDayKeyOf as dayKeyOf, type PlannerDayKey as DayKey } from "../planner/plannerDayKey";
 import { formatISODate, parseISODate } from "./isoDate";
@@ -115,8 +116,28 @@ export function makeActivityRecord(input: ActivityRecordInput): ActivityRecord {
   return record;
 }
 
+/** How a focus stretch ended, from its `outcome` metadata; undefined when it has none or one this version doesn't know. */
+export function activityOutcome(record: Pick<ActivityRecord, "metadata">): StudyPhaseOutcome | undefined {
+  const raw = record.metadata[ACTIVITY_METADATA.outcome];
+  return raw === "completed" || raw === "stopped" || raw === "skipped" || raw === "abandoned" ? raw : undefined;
+}
+
+/**
+ * Port of ActivityRecord.countsAsFinishedSession (DayReview.swift on the
+ * Mac): whether a focus stretch counts as a finished session. Study logs
+ * skipped and abandoned phases too, and so does the Pomodoro when it is
+ * stopped early; only phases that ran out or were stopped at their normal
+ * end count. A record without an outcome (a module that logs only finished
+ * stretches) does.
+ */
+export function countsAsFinishedSession(record: Pick<ActivityRecord, "metadata">): boolean {
+  if (record.metadata[ACTIVITY_METADATA.outcome] === undefined) return true;
+  const outcome = activityOutcome(record);
+  return outcome === "completed" || outcome === "stopped";
+}
+
 /** The local day the record counts toward, in the IANA zone `timeZone`: the day it ended. */
-export function activityDay(record: ActivityRecord, timeZone: string): DayKey {
+export function activityDay(record: Pick<ActivityRecord, "end">, timeZone: string): DayKey {
   return dayKeyOf(record.end, timeZone);
 }
 

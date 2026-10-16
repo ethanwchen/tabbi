@@ -1,4 +1,4 @@
-import { instantFromZoned, zonedParts } from "../anki/ankiDay";
+import { instantOf, wallTime } from "../calendar/zonedCalendar";
 import type { Instant } from "../time";
 
 /*
@@ -43,7 +43,7 @@ export function eligibleFrom(birth: PartyBirth, timeZone: string): Instant | und
   const { month, year } = birth;
   if (!Number.isInteger(month) || !Number.isInteger(year) || month < 1 || month > 12 || year <= 1900) return undefined;
   const months = (year + MINIMUM_AGE) * 12 + (month - 1) + 1;
-  return instantFromZoned(Math.floor(months / 12), (months % 12) + 1, 1, 0, timeZone);
+  return instantOf({ year: Math.floor(months / 12), month: (months % 12) + 1, day: 1, hour: 0 }, timeZone);
 }
 
 /** Where someone stands at `now`, from what `eligibleFrom` saved. */
@@ -54,7 +54,7 @@ export function ageStatus(eligible: Instant | undefined, now: Instant): PartyAge
 
 /** The years the birth year picker offers, newest first: this year back a century, so none is suggested. */
 export function birthYears(now: Instant, timeZone: string): number[] {
-  const year = zonedParts(now, timeZone).year;
+  const year = wallTime(now, timeZone).year;
   return Array.from({ length: 101 }, (_, index) => year - index);
 }
 

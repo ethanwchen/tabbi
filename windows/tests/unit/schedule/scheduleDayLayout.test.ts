@@ -22,7 +22,7 @@ import {
 import { scheduleSampleItems, scheduleSampleNow, scheduleSampleYesterdayItems } from "../../../src/core/schedule/scheduleSampleData";
 import { localSchedulePreferences } from "../../../src/core/schedule/todayLocalPlan";
 import type { Instant } from "../../../src/core/time";
-import { switchLanguage } from "../localization/catalogs";
+import { switchLanguage } from "../../support/catalogs";
 
 /* Port of ScheduleDayLayoutTests, in UTC like the Swift suite. */
 

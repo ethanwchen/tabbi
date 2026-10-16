@@ -9,13 +9,11 @@ import {
   creditRecord,
   type PetStudyAward,
 } from "../../../src/core/closet/petStudyCredit";
-import {
-  FOCUS_COMPLETED,
-  MINUTES_UNIT,
-  OUTCOME_KEY,
-  type StudyActivityRecord,
-} from "../../../src/core/closet/studyActivity";
-import type { FocusClock, FocusPhase, PetFocus } from "../../../src/core/pets/petFocus";
+import { ACTIVITY_KINDS, ACTIVITY_METADATA, ACTIVITY_UNITS, type ActivityRecord } from "../../../src/core/activity/activityRecord";
+import { activity } from "../../support/activity";
+import { ProvidedFocus } from "../../../src/core/providers/providedFocus";
+import type { ProvidedFocusClock as FocusClock } from "../../../src/core/providers/providedFocus";
+import type { FocusPhase } from "../../../src/core/focus/focusTimer";
 import { accessoryItem, itemDisplayName, outfitItem } from "../../../src/core/pets/petItem";
 import { PetPointsRules } from "../../../src/core/pets/petPointsRules";
 import { PetProfile } from "../../../src/core/pets/petProfile";
@@ -107,14 +105,14 @@ class TestTimer {
     }
   }
 
-  get shared(): PetFocus {
+  get shared(): ProvidedFocus {
     const clock: FocusClock =
       this.run.kind === "idle"
         ? { kind: "idle" }
         : this.run.kind === "running"
           ? { kind: "countdown", endsAt: this.run.endsAt }
           : { kind: "paused", shown: this.run.remaining };
-    return {
+    return new ProvidedFocus({
       source: "planner",
       phase: this.phase,
       clock,
@@ -122,26 +120,26 @@ class TestTimer {
       focusLength: FOCUS,
       completedFocusCount: this.completedFocusCount,
       logsEarlyEnds: true,
-    };
+    });
   }
 
   /** The same clock from an engine that logs nothing when a focus phase is cut short. */
-  get unlogged(): PetFocus {
-    return { ...this.shared, logsEarlyEnds: false };
+  get unlogged(): ProvidedFocus {
+    return new ProvidedFocus({ ...this.shared, logsEarlyEnds: false });
   }
 }
 
 /** FocusStop.activityRecord: minutes focused, the outcome and the method. */
-function stopRecord(stop: { focused: number; endedAt: number; outcome: string }, source: string): StudyActivityRecord {
-  return {
+function stopRecord(stop: { focused: number; endedAt: number; outcome: string }, source: string): ActivityRecord {
+  return activity({
     id: `stop-${stop.endedAt}`,
     source,
-    kind: FOCUS_COMPLETED,
+    kind: ACTIVITY_KINDS.focusCompleted,
     end: stop.endedAt,
     quantity: stop.focused / 60,
-    unit: MINUTES_UNIT,
-    metadata: { method: "pomodoro", [OUTCOME_KEY]: stop.outcome },
-  };
+    unit: ACTIVITY_UNITS.minutes,
+    metadata: { method: "pomodoro", [ACTIVITY_METADATA.outcome]: stop.outcome },
+  });
 }
 
 /** `credited` null means no timer seen yet (an undefined argument would take the default). */
@@ -281,7 +279,7 @@ describe("PetStudyCredit", () => {
     const skip = must(timer.skip(t0 + 20 * 60));
     expect(timer.phase).toBe("rest");
     const record = stopRecord(skip, "focus");
-    expect(record.metadata?.[OUTCOME_KEY]).toBe("skipped");
+    expect(record.metadata[ACTIVITY_METADATA.outcome]).toBe("skipped");
     expect(creditRecord(c, record)?.points).toBe(20);
     expect(timer.skip(t0 + 21 * 60), "skipping the break banks nothing").toBeUndefined();
   });
@@ -290,35 +288,35 @@ describe("PetStudyCredit", () => {
     // Study's clock disappears when the session goes idle, so the record is
     // the only trace of the time studied.
     const c = closet();
-    const record: StudyActivityRecord = {
+    const record = activity({
       id: "study-stop",
       source: "study",
-      kind: FOCUS_COMPLETED,
+      kind: ACTIVITY_KINDS.focusCompleted,
       end: t0 + 18 * 60,
       quantity: 18,
-      unit: MINUTES_UNIT,
-      metadata: { [OUTCOME_KEY]: "abandoned" },
-    };
+      unit: ACTIVITY_UNITS.minutes,
+      metadata: { [ACTIVITY_METADATA.outcome]: "abandoned" },
+    });
     expect(creditRecord(c, record)?.minutes).toBe(18);
     expect(c.balance).toBe(18);
   });
 
   it("only cut short focus records are paid", () => {
     const c = closet();
-    const record = (kind: string, outcome: string | undefined, minutes = 20): StudyActivityRecord => ({
+    const record = (kind: string, outcome: string | undefined, minutes = 20): ActivityRecord => activity({
       id: `${kind}-${outcome ?? "none"}-${minutes}`,
       source: "focus",
       kind,
       end: t0 + minutes * 60,
       quantity: minutes,
-      unit: MINUTES_UNIT,
-      metadata: outcome === undefined ? {} : { [OUTCOME_KEY]: outcome },
+      unit: ACTIVITY_UNITS.minutes,
+      metadata: outcome === undefined ? {} : { [ACTIVITY_METADATA.outcome]: outcome },
     });
-    expect(creditRecord(c, record(FOCUS_COMPLETED, "completed")), "paid from the completion count").toBeUndefined();
-    expect(creditRecord(c, record(FOCUS_COMPLETED, "stopped")), "a Flowtime stop is a completion").toBeUndefined();
-    expect(creditRecord(c, record(FOCUS_COMPLETED, undefined)), "Party's own sessions pay through Party").toBeUndefined();
+    expect(creditRecord(c, record(ACTIVITY_KINDS.focusCompleted, "completed")), "paid from the completion count").toBeUndefined();
+    expect(creditRecord(c, record(ACTIVITY_KINDS.focusCompleted, "stopped")), "a Flowtime stop is a completion").toBeUndefined();
+    expect(creditRecord(c, record(ACTIVITY_KINDS.focusCompleted, undefined)), "Party's own sessions pay through Party").toBeUndefined();
     expect(creditRecord(c, record("break.taken", "skipped")), "breaks earn nothing").toBeUndefined();
-    expect(creditRecord(c, record(FOCUS_COMPLETED, "abandoned", 3)), "under the minimum").toBeUndefined();
+    expect(creditRecord(c, record(ACTIVITY_KINDS.focusCompleted, "abandoned", 3)), "under the minimum").toBeUndefined();
     expect(c.balance).toBe(0);
   });
 
@@ -353,7 +351,7 @@ describe("PetStudyCredit", () => {
 
     // A Study session starts at zero; then the Pomodoro, with its lifetime
     // total, comes back. Neither switch is a completed session.
-    const study: PetFocus = { source: "study", phase: "focus", clock: { kind: "countUp", since: t0 }, completedFocusCount: 0 };
+    const study = new ProvidedFocus({ source: "study", phase: "focus", clock: { kind: "countUp", since: t0 }, completedFocusCount: 0 });
     expect(creditFocus(c, pomodoro.shared, study, t0 + 26 * 60)).toBeUndefined();
     expect(creditFocus(c, study, pomodoro.shared, t0 + 27 * 60)).toBeUndefined();
     expect(c.balance).toBe(balance);

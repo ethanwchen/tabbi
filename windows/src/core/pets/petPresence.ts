@@ -1,8 +1,8 @@
 import type { DayCalendar } from "../streaks/dayCalendar";
 import type { Instant } from "../time";
 import type { PetMood } from "./petAnimator";
-import { focusIsActive, focusIsRunning, type PetFocus } from "./petFocus";
-import type { PetItem } from "./petItem";
+import type { UnlockProgress } from "../motivation/unlockProgress";
+import type { ProvidedFocus } from "../providers/providedFocus";
 import type { PetNightRhythm } from "./petNightRhythm";
 import type { PetProfile } from "./petProfile";
 
@@ -12,20 +12,13 @@ import type { PetProfile } from "./petProfile";
  * the island can tell when the pet should doze off.
  */
 
-/** Progress toward the next shop item, as the closed island hints at it (the Mac's UnlockProgress fields). */
-export interface PetUnlockHint {
-  readonly item: PetItem;
-  readonly balanceBefore: number;
-  readonly balance: number;
-  readonly pointsPerSession: number;
-}
-
 export class PetPresence {
   /** Quiet time after a session (or launch) before the pet falls asleep. */
   static readonly sleepAfter = 20 * 60;
 
   profile: PetProfile;
-  nextUnlock: PetUnlockHint | undefined;
+  /** Progress toward the next shop item from the pet's real points, so the closed island can hint at a near unlock; undefined when everything is owned. */
+  nextUnlock: UnlockProgress | undefined;
   /** The pet's night, or undefined for a pet that only sleeps after `sleepAfter`. */
   night: PetNightRhythm | undefined;
   /** The calendar whose time zone places the night. */
@@ -39,7 +32,7 @@ export class PetPresence {
     profile: PetProfile,
     lastActive: Instant,
     calendar: DayCalendar,
-    options: { nextUnlock?: PetUnlockHint; night?: PetNightRhythm } = {},
+    options: { nextUnlock?: UnlockProgress; night?: PetNightRhythm } = {},
   ) {
     this.profile = profile;
     this.lastActiveValue = lastActive;
@@ -59,8 +52,8 @@ export class PetPresence {
   }
 
   /** Records the shared focus clock at `now`: running or paused sessions keep the pet awake, as does the moment one ends. */
-  observe(focus: PetFocus | undefined, now: Instant): void {
-    const active = focus !== undefined && focusIsActive(focus);
+  observe(focus: ProvidedFocus | undefined, now: Instant): void {
+    const active = focus?.isActive === true;
     if (active || this.sessionWasActive) this.lastActiveValue = Math.max(this.lastActiveValue, now);
     this.sessionWasActive = active;
   }
@@ -71,9 +64,9 @@ export class PetPresence {
   }
 
   /** The pet's mood at `now` for the shared focus clock. */
-  mood(focus: PetFocus | undefined, now: Instant): PetMood {
-    if (focus && focusIsRunning(focus)) return focus.phase === "focus" ? "studying" : "onBreak";
-    if (focus && focusIsActive(focus)) return "awake";
+  mood(focus: ProvidedFocus | undefined, now: Instant): PetMood {
+    if (focus?.isRunning === true) return focus.phase === "focus" ? "studying" : "onBreak";
+    if (focus?.isActive === true) return "awake";
     const night = this.night;
     if (night && night.isNight(now, this.calendar)) {
       return night.dozes(now, focus, this.lastStirred, this.calendar) ? "asleep" : "awake";
@@ -82,8 +75,8 @@ export class PetPresence {
   }
 
   /** When the mood can next change if nothing else happens; undefined while a session runs. */
-  sleepsAt(focus: PetFocus | undefined, now: Instant): Instant | undefined {
-    if (focus && focusIsActive(focus)) return undefined;
+  sleepsAt(focus: ProvidedFocus | undefined, now: Instant): Instant | undefined {
+    if (focus?.isActive === true) return undefined;
     const dates = [this.lastActiveValue + PetPresence.sleepAfter];
     const night = this.night;
     if (night) {

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { pluralArgumentIndex, resetLanguage, selectPlural } from "../../../src/core/localization/lookup";
 import { tr } from "../../../src/core/localization/tr";
-import { switchLanguage } from "./catalogs";
+import { switchLanguage } from "../../support/catalogs";
 
 afterEach(resetLanguage);
 

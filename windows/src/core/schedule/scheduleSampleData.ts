@@ -1,7 +1,7 @@
 import type { Instant } from "../time";
 import { addingDays, isWeekend, startOfDay } from "../calendar/zonedCalendar";
 import type { MeetingLink } from "../planner/meetingLink";
-import type { ProvidedTask } from "../planner/providedWork";
+import type { ProvidedTask } from "../providers/providedTask";
 import type { EventColor } from "../planner/upcomingEvent";
 import { scheduleItem, type ScheduleItem, type ScheduleItemKind } from "./scheduleDay";
 import { clockTime } from "./schedulePlanner";

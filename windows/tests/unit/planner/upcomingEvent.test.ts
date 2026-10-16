@@ -16,7 +16,7 @@ import {
   upcomingEvent,
   type UpcomingEvent,
 } from "../../../src/core/planner/upcomingEvent";
-import { switchLanguage } from "../localization/catalogs";
+import { switchLanguage } from "../../support/catalogs";
 
 /* Port of UpcomingEventTests and MeetingLinkTests. */
 

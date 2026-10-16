@@ -1,6 +1,6 @@
 import { tr } from "../localization/tr";
 import type { PlannerDay } from "./plannerDay";
-import type { SharedTodayItemState } from "./providedWork";
+import type { SharedTodayItem } from "../providers/sharedTodayItem";
 
 /**
  * Port of TodayTally: how much of today is done, counting the user's own
@@ -11,7 +11,7 @@ export class TodayTally {
   readonly doneCount: number;
   readonly totalCount: number;
 
-  constructor(day: PlannerDay, shared: readonly SharedTodayItemState[]) {
+  constructor(day: PlannerDay, shared: readonly SharedTodayItem[]) {
     this.doneCount = day.doneCount + shared.filter((item) => item.isDone).length;
     this.totalCount = day.items.length + shared.length;
   }

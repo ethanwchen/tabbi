@@ -1,3 +1,5 @@
+import { kitModuleSettings, type KitDefaults } from "../kits/kitManifest";
+import { MODULE_IDS } from "../modules/moduleId";
 import { FocusMix } from "./focusMix";
 import { FocusMixPresets } from "./focusMixPreset";
 import { parseFocusPlaylist, type FocusPlaylist } from "./focusPlaylist";
@@ -8,6 +10,8 @@ export const SUGGESTED_ON_SHORTCUT = "Tabbi Focus On";
 export const SUGGESTED_OFF_SHORTCUT = "Tabbi Focus Off";
 
 const DEFAULT_VOLUME = 0.5;
+/** `Float.greatestFiniteMagnitude`. */
+const FLOAT_GREATEST_FINITE = 3.4028234663852886e38;
 
 function clampVolume(volume: number): number {
   return Number.isFinite(volume) ? Math.fround(Math.min(Math.max(volume, 0), 1)) : DEFAULT_VOLUME;
@@ -92,14 +96,14 @@ export class FocusSettings {
   }
 
   /** These settings with a kit's focus sound applied; a kit without one keeps the current mix. */
-  applyingKit(focusSection: unknown): FocusSettings {
-    const mix = kitFocusMix(focusSection);
+  applyingKit(kit: KitDefaults): FocusSettings {
+    const mix = kitFocusMix(kit);
     return mix === undefined ? this : this.with({ mix });
   }
 
   /** True when applying the kit's Focus section would leave these settings unchanged. */
-  usesKitDefaults(focusSection: unknown): boolean {
-    return this.applyingKit(focusSection).equals(this);
+  usesKitDefaults(kit: KitDefaults): boolean {
+    return this.applyingKit(kit).equals(this);
   }
 
   /** Switches to the preset in `slot`; an empty slot changes nothing. */
@@ -147,7 +151,8 @@ export class FocusSettings {
     if (mix !== undefined) init.mix = mix;
     const presets = FocusMixPresets.fromJSON(entry.presets);
     if (presets !== undefined) init.presets = presets;
-    if (typeof entry.volume === "number") init.volume = entry.volume;
+    /* Swift refuses a number past Float's range, so the volume falls back instead of clamping to 1. */
+    if (typeof entry.volume === "number" && Math.abs(entry.volume) <= FLOAT_GREATEST_FINITE) init.volume = entry.volume;
     const playlistText = text("playlistText");
     if (playlistText !== undefined) init.playlistText = playlistText;
     if (typeof entry.doNotDisturb === "boolean") init.doNotDisturb = entry.doNotDisturb;
@@ -163,10 +168,11 @@ export class FocusSettings {
  * Port of FocusSettings.kitMix(of:): the focus sound a kit sets in its Focus
  * section (`moduleSettings.focus.sounds`: a list of `sound` and an optional
  * `level` from 0 to 1, default 1), with unknown sounds skipped. Undefined when
- * the kit sets no sound; an empty list turns the sound off. Takes the Focus
- * section as plain JSON, so the kit port can hand it over as it reads it.
+ * the kit sets no sound; an empty list turns the sound off. The section is
+ * read leniently: anything malformed is skipped rather than refused.
  */
-export function kitFocusMix(focusSection: unknown): FocusMix | undefined {
+export function kitFocusMix(kit: KitDefaults): FocusMix | undefined {
+  const focusSection = kitModuleSettings(kit, MODULE_IDS.focus);
   if (typeof focusSection !== "object" || focusSection === null) return undefined;
   const sounds = (focusSection as Record<string, unknown>).sounds;
   if (!Array.isArray(sounds)) return undefined;

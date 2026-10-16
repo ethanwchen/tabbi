@@ -1,3 +1,4 @@
+import { durationMinutes } from "../formatting/durationFormat";
 import { tr } from "../localization/tr";
 import { addDays, dayKey, weekStart, type DayCalendar, type DayKey } from "../streaks/dayCalendar";
 import type { Instant } from "../time";
@@ -20,15 +21,6 @@ export const HEATMAP_LABELED_WEEKDAYS: ReadonlySet<number> = new Set([2, 4, 6]);
 export function heatmapLevel(minutes: number): number {
   if (!(minutes > 0)) return 0;
   return 1 + HEATMAP_LEVEL_THRESHOLDS.filter((threshold) => minutes >= threshold).length;
-}
-
-/** "25 min", "1h" or "1h 25m" (the Mac's DurationFormat.minutes, kept local until the formatting port lands). */
-function durationMinutes(minutesIn: number): string {
-  const minutes = Math.max(minutesIn, 0);
-  if (minutes < 60) return tr("%lld min", minutes);
-  const hours = Math.trunc(minutes / 60);
-  const rest = minutes % 60;
-  return rest === 0 ? tr("%lldh", hours) : tr("%lldh %lldm", hours, rest);
 }
 
 /** One day's cell. */

@@ -19,7 +19,7 @@ export interface ProvidedFocusInit {
   phase: FocusPhase;
   label?: string;
   clock: ProvidedFocusClock;
-  phaseLength: Seconds | undefined;
+  phaseLength?: Seconds | undefined;
   focusLength?: Seconds;
   completedFocusCount?: number;
   isDeep?: boolean;

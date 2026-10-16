@@ -1,3 +1,9 @@
+import { MINUTE_UNIT } from "../formatting/durationFormat";
+import { kitModuleSettings, type KitDefaults } from "../kits/kitManifest";
+import { tr } from "../localization/tr";
+import { MODULE_IDS, type ModuleID } from "../modules/moduleId";
+import { ProgressItem } from "../providers/progressItem";
+import type { StudyDayTally } from "../providers/studyDayTally";
 import { roundHalfAwayFromZero, swiftInt } from "./swiftMath";
 
 /** Shortest and longest goal, in minutes; anything outside is clamped. */
@@ -28,7 +34,8 @@ export class StudyDailyGoal {
   }
 
   /** The kit's goal from its Study section, or `standard` when it has none or it is not a finite number. */
-  static fromKit(studySection: unknown): StudyDailyGoal {
+  static fromKit(defaults: KitDefaults | undefined): StudyDailyGoal {
+    const studySection = defaults === undefined ? undefined : kitModuleSettings(defaults, MODULE_IDS.study);
     const value =
       typeof studySection === "object" && studySection !== null
         ? (studySection as Record<string, unknown>).dailyGoalMinutes
@@ -40,5 +47,22 @@ export class StudyDailyGoal {
   /** The goal moved by `steps` quarter hours, clamped. */
   stepped(steps: number): StudyDailyGoal {
     return new StudyDailyGoal(this.minutes + steps * DAILY_GOAL_STEP);
+  }
+
+  /**
+   * The day's study minutes against this goal, for `ModuleProvision.progress`.
+   * Shown by Today as e.g. "Focus time, 1h 15m left", and beside the closed
+   * island only once the day's first minutes are in.
+   */
+  progressItem(day: StudyDayTally, source: ModuleID = MODULE_IDS.study): ProgressItem {
+    return new ProgressItem({
+      id: DAILY_GOAL_PROGRESS_ID,
+      source,
+      title: tr("Focus time"),
+      completed: Math.max(day.minutes, 0),
+      target: this.minutes,
+      unit: MINUTE_UNIT,
+      waitsForStart: true,
+    });
   }
 }

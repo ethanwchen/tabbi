@@ -6,7 +6,7 @@ import { buildStrings, CATALOGS, LANGUAGES as SCRIPT_LANGUAGES } from "../../../
 import { catalogIssues, describeIssue } from "../../../src/core/localization/audit";
 import type { StringCatalog } from "../../../src/core/localization/catalog";
 import { LANGUAGES, SOURCE_LANGUAGE } from "../../../src/core/localization/languages";
-import { macCatalog, tableFor, windowsCatalog } from "./catalogs";
+import { macCatalog, tableFor, windowsCatalog } from "../../support/catalogs";
 
 /* The languages a key lacks: the source language counts as present, since the key is its text. */
 function missingLanguages(catalog: StringCatalog, key: string): string[] {

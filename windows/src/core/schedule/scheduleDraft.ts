@@ -1,7 +1,8 @@
 import type { Instant } from "../time";
 import { DayPlanContext, type PlanBlock } from "../planner/dayPlan";
 import type { DayPlanProposal, PlanCalendarWriting, PlannedCalendarEvent } from "../planner/dayPlanProposal";
-import type { ProgressItem, ProvidedTask } from "../planner/providedWork";
+import type { ProgressItem } from "../providers/progressItem";
+import type { ProvidedTask } from "../providers/providedTask";
 import { todayPlanSettings, type TodayPlanSettings } from "../planner/todayPlanSettings";
 import type { UpcomingEvent } from "../planner/upcomingEvent";
 import type { PlanRefinement } from "./planRefinement";

@@ -5,7 +5,7 @@ import {
   grantedSituationOn,
   upNextEmptyState,
 } from "../../../src/core/planner/upNextEmptyState";
-import { switchLanguage } from "../localization/catalogs";
+import { switchLanguage } from "../../support/catalogs";
 
 /* Port of UpNextEmptyStateTests, plus the Windows calendar source's situations. */
 
