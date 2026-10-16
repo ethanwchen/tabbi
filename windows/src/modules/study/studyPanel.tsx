@@ -205,7 +205,7 @@ function StudyPartySessionView({ store, session }: { store: StudyStore; session:
             </Tooltip>
           </div>
           <MarqueeText className="kit-title" text={session.methodName} />
-          <MarqueeText className="kit-caption kit-secondary" text={startedBy} />
+          <MarqueeText className="kit-caption kit-secondary" text={startedBy} userText />
           <MarqueeText className="kit-caption kit-tertiary study-tabular" text={tr("Ends at %@", endsAt)} />
           <span className="study-spacer" />
           <StudyTodayRow today={store.today} goalMinutes={goal.minutes} />

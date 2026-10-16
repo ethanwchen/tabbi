@@ -255,6 +255,7 @@ function StudyMixPresetChip({ name, isOn, help, apply, rename }: { name: string;
   return (
     <CapsuleToggle
       className="study-preset-chip"
+      userText
       title={name}
       isOn={isOn}
       height={18}
@@ -385,7 +386,7 @@ function StudyPlaylistRow({ name, detail, isOn, help, action }: { name: string; 
     <Tooltip text={help}>
       <button type="button" className="study-playlist-row kit-caption" role="switch" aria-checked={isOn} onClick={action}>
         <Icon id={isOn ? "checkmark.circle.fill" : "circle"} size={9} className="study-playlist-check" />
-        <MarqueeText text={name} className="study-playlist-name" dir="auto" />
+        <MarqueeText text={name} className="study-playlist-name" userText />
         <span className="study-playlist-detail kit-tertiary">{detail}</span>
       </button>
     </Tooltip>

@@ -113,7 +113,7 @@ function FocusSessionCard({ store, focusMode, context, openMixer }: { store: Foc
         <Tooltip text={tr("Focusing on: %@", linkedTitle)}>
           <span className="focus-task kit-title">
             <Icon id="scope" size={12} className="focus-accent" />
-            <MarqueeText text={linkedTitle} />
+            <MarqueeText text={linkedTitle} userText />
           </span>
         </Tooltip>
       ) : (

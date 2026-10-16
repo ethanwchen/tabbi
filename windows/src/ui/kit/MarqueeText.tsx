@@ -18,13 +18,17 @@ import { Tooltip } from "./Tooltip";
 export interface MarqueeProps {
   /** The whole line as plain text, for the tooltip and the accessible name. */
   readonly text: string;
-  /** The line's own direction; "auto" lets a Latin name read left to right inside an Arabic panel. */
-  readonly dir?: "ltr" | "rtl" | "auto";
   /** A tooltip to show at all times, in place of the full text (which shows only while the line overflows). */
   readonly help?: string;
   readonly className?: string;
   readonly style?: CSSProperties;
   readonly children?: ReactNode;
+  /**
+   * Text the user typed or a service sent (a chat title, a task, a deck or a
+   * friend's name): ordered by its own content, so an English title keeps its
+   * punctuation in an Arabic panel, while the line stays aligned to the panel.
+   */
+  readonly userText?: boolean;
 }
 
 /** The mask that fades each cut edge, `leading` and `trailing` as fractions of the width. */
@@ -35,7 +39,7 @@ export function marqueeMask(leading: number, trailing: number, direction: "ltr" 
   return `linear-gradient(${toEnd}, transparent 0%, black ${l}%, black ${t}%, transparent 100%)`;
 }
 
-export function Marquee({ text, help, dir, className, style, children }: MarqueeProps) {
+export function Marquee({ text, help, className, style, children, userText = false }: MarqueeProps) {
   const { reduceMotion, still, marqueeScrolled } = useKit();
   const container = useRef<HTMLSpanElement>(null);
   const line = useRef<HTMLSpanElement>(null);
@@ -146,13 +150,12 @@ export function Marquee({ text, help, dir, className, style, children }: Marquee
         ref={container}
         className={["kit-marquee", className].filter(Boolean).join(" ")}
         data-overflows={overflow > 0 || undefined}
-        dir={dir}
         style={style}
         aria-label={text}
         onPointerEnter={onEnter}
         onPointerLeave={onLeave}
       >
-        <span ref={line} className="kit-marquee-line" aria-hidden="true">
+        <span ref={line} className={userText ? "kit-marquee-line kit-user-text" : "kit-marquee-line"} aria-hidden="true">
           {children ?? text}
         </span>
       </span>
@@ -163,11 +166,12 @@ export function Marquee({ text, help, dir, className, style, children }: Marquee
 export interface MarqueeTextProps {
   readonly text: string;
   readonly help?: string;
-  readonly dir?: "ltr" | "rtl" | "auto";
   readonly className?: string;
   readonly style?: CSSProperties;
+  /** See `MarqueeProps.userText`. */
+  readonly userText?: boolean;
 }
 
-export function MarqueeText({ text, help, dir, className, style }: MarqueeTextProps) {
-  return <Marquee text={text} help={help} dir={dir} className={className} style={style} />;
+export function MarqueeText({ text, help, className, style, userText }: MarqueeTextProps) {
+  return <Marquee text={text} help={help} className={className} style={style} userText={userText} />;
 }

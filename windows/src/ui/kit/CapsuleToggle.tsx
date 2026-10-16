@@ -32,6 +32,8 @@ export interface CapsuleToggleProps extends Omit<ButtonHTMLAttributes<HTMLButton
   readonly height?: number;
   /** The accent, as CSS; `var(--accent)` by default. */
   readonly tint?: string;
+  /** The title is text the user typed (a preset's name), so it keeps its own direction inside an Arabic panel. */
+  readonly userText?: boolean;
   /** Dims the on state a little, for a sound button whose sound is not playing right now. */
   readonly muted?: boolean;
   readonly onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
@@ -49,6 +51,7 @@ export function CapsuleToggle({
   outlined = true,
   height = 20,
   tint,
+  userText = false,
   muted = false,
   onClick,
   preview,
@@ -87,7 +90,7 @@ export function CapsuleToggle({
         style={merged}
       >
         {symbol && <Icon id={symbol} size={9} />}
-        <span className="kit-capsule-toggle-title">{title}</span>
+        <span className={userText ? "kit-capsule-toggle-title kit-user-text" : "kit-capsule-toggle-title"}>{title}</span>
         {trailingSymbol && <Icon id={trailingSymbol} size={8} />}
       </button>
     </Tooltip>
