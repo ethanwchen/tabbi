@@ -31,6 +31,7 @@ import { PetSprite, PetView } from "../ui/kit/PetView";
 import { Picker } from "../ui/kit/Picker";
 import { Pill } from "../ui/kit/Pill";
 import { RowsThatFit } from "../ui/kit/RowsThatFit";
+import { TextThatFits } from "../ui/kit/TextThatFits";
 import { SegmentedControl } from "../ui/kit/SegmentedControl";
 import { MoreOptions, SettingsGroup, SettingsRow } from "../ui/kit/SettingsGroup";
 import { StatusMessage } from "../ui/kit/StatusMessage";
@@ -321,6 +322,17 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
             <KitProvider themeId={themeId} still marqueeScrolled={1}>
               <MarqueeText text={LONG_LINE()} />
             </KitProvider>
+          </Cell>
+        </Row>
+        <Row align="start">
+          <Cell label="TextThatFits: 220 px" width={220}>
+            <TextThatFits candidates={[tr("Add a task for tomorrow…"), tr("Add a task…"), tr("Add…")]} />
+          </Cell>
+          <Cell label="TextThatFits: 90 px" width={90}>
+            <TextThatFits candidates={[tr("Add a task for tomorrow…"), tr("Add a task…"), tr("Add…")]} />
+          </Cell>
+          <Cell label="TextThatFits: 30 px" width={30}>
+            <TextThatFits candidates={[tr("Add a task for tomorrow…"), tr("Add a task…"), tr("Add…")]} />
           </Cell>
         </Row>
         <Row align="start">

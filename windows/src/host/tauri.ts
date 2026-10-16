@@ -72,6 +72,17 @@ export function tauriHost(): Host {
     setCanvas: (width, height) => invoke("island_set_canvas", { width, height }),
     openSettings: (section) => invoke("settings_open", { section }),
     settingsReady: () => invoke<SettingsLaunch>("settings_ready"),
+    openUrl: (url) => {
+      if (!url.toLowerCase().startsWith("http://") && !url.toLowerCase().startsWith("https://")) {
+        return Promise.reject(new Error("Only web addresses open in the browser"));
+      }
+      /* Until the host has an open_url command, the webview's own new-window request reaches the default browser. */
+      return invoke("open_url", { url })
+        .then(() => undefined)
+        .catch(() => {
+          window.open(url, "_blank", "noopener");
+        });
+    },
     broadcast: (topic, payload) => emit(eventName(topic), { sender: WINDOW_ID, payload } satisfies Broadcast),
     onBroadcast: (topic, listener) =>
       on<Broadcast>(eventName(topic), (message) => {

@@ -75,6 +75,11 @@ export interface Host {
   openSettings(section: string | null): Promise<void>;
   /* The Settings window calls this once it has drawn its first frame; the host then shows it. */
   settingsReady(): Promise<SettingsLaunch>;
+  /*
+   * Opens an http(s) address in the user's default browser (a meeting
+   * link, a help page). Only web addresses: anything else is refused.
+   */
+  openUrl(url: string): Promise<void>;
 
   /*
    * Posts `payload` on `topic` to every other Tabbi window (the island and

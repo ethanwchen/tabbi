@@ -11,6 +11,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { AppServices } from "../app/appServices";
 import { constant } from "../app/store";
+import { tabRequests } from "../app/tabSelection";
 import type { NotchTakeover } from "../app/takeover";
 import type { TickerState } from "../app/tickerStore";
 import { useStore } from "../app/useStore";
@@ -131,6 +132,16 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
       setSelected(id);
     },
     [layout, shown],
+  );
+
+  /* A panel asking for another tab (Today's shared rows open their module). */
+  useEffect(
+    () =>
+      tabRequests(app.shared).on((request) => {
+        if (request.action !== undefined) app.modules.perform(request.action, request.module);
+        if (layout.isEnabled(request.module)) select(request.module);
+      }),
+    [app, layout, select],
   );
 
   const dispatchRef = useRef<(event: ShellEvent) => void>(() => {});
