@@ -21,7 +21,8 @@ describe("Today module", () => {
     const snapshot = app.providers.snapshot.get();
     expect(snapshot.tasks.filter((task) => task.source === MODULE_IDS.planner).length).toBe(3);
     expect(snapshot.events.length).toBeGreaterThan(0);
-    expect(snapshot.focus?.source).toBe(MODULE_IDS.planner);
+    /* The merged clock may be another module's (the Study timer in demo); Today's own provision carries the Pomodoro. */
+    expect(today.provision?.get().focus?.source).toBe(MODULE_IDS.planner);
     today.store.upNext.setVisible(false);
     app.dispose();
   });
