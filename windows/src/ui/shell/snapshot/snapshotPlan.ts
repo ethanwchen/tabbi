@@ -7,9 +7,11 @@
  *
  * States: `hidden`, `pill` (plain), `pill:<preview>` (DEMO_PREVIEWS),
  * `open:<module>` and `open:<module>:<state>` (a module's `snapshotStates`),
- * `onboarding:<step>` (each setup step a module declares) and
- * `settings:<section>`. The query can add `theme`, `lang`, `size`
- * (compact, regular, large), `kit` and `reduce`.
+ * `onboarding:<step>` (the flow's own steps, each setup step a module
+ * declares, and Windows' two steps) and `settings:<section>` plus
+ * `settings:<section>:<state>` (a section's sheets and messages). The query
+ * can add `theme`, `lang`, `size` (compact, regular, large), `kit` and
+ * `reduce`.
  */
 
 import type { ModuleType } from "../../../app/module";
@@ -24,7 +26,12 @@ export type SnapshotPlan =
   | { readonly kind: "pill"; readonly preview: string | undefined }
   | { readonly kind: "open"; readonly module: ModuleID; readonly state: string | undefined }
   | { readonly kind: "onboarding"; readonly step: string }
-  | { readonly kind: "settings"; readonly section: string };
+  | { readonly kind: "settings"; readonly section: string; readonly state: string | undefined };
+
+/** The onboarding flow's own steps, in order, around the modules' setup steps. */
+export const ONBOARDING_FLOW_STEPS = ["name", "kit", "question", "modules"] as const;
+/** The steps after the modules' setup steps: the Mac's extras and Windows' two of its own. */
+export const ONBOARDING_LAST_STEPS = ["extras", "startWithWindows", "trayIcon"] as const;
 
 /** The setup steps the listed modules declare, once each, in onboarding's order. */
 export function setupSteps(types: readonly ModuleType[]): OnboardingSetupStep[] {
@@ -40,8 +47,10 @@ export function snapshotStates(types: readonly ModuleType[]): string[] {
     "pill",
     ...Object.keys(DEMO_PREVIEWS).map((preview) => `pill:${preview}`),
     ...types.flatMap((type) => [`open:${type.descriptor.id}`, ...(type.snapshotStates ?? []).map((state) => `open:${type.descriptor.id}:${state}`)]),
+    ...ONBOARDING_FLOW_STEPS.map((step) => `onboarding:${step}`),
     ...setupSteps(types).map((step) => `onboarding:${step.id}`),
-    ...SETTINGS_SECTIONS.map((section) => `settings:${section.id}`),
+    ...ONBOARDING_LAST_STEPS.map((step) => `onboarding:${step}`),
+    ...SETTINGS_SECTIONS.flatMap((section) => [`settings:${section.id}`, ...(section.snapshotStates ?? []).map((state) => `settings:${section.id}:${state}`)]),
   ];
 }
 
@@ -60,7 +69,7 @@ export function parseSnapshot(value: string): SnapshotPlan | undefined {
     case "onboarding":
       return first === undefined ? undefined : { kind: "onboarding", step: first };
     case "settings":
-      return { kind: "settings", section: first ?? "general" };
+      return { kind: "settings", section: first ?? "general", state: second };
     default:
       return undefined;
   }

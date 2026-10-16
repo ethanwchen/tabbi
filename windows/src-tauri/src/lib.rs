@@ -13,6 +13,7 @@ mod notify;
 mod open;
 mod outbox;
 mod placement;
+mod shell;
 mod storage;
 mod system;
 mod watcher;
@@ -343,6 +344,10 @@ struct Startup {
     demo: bool,
     /// A development Party Worker on loopback (debug builds only).
     party_server: Option<String>,
+    /// This build's version, for About and the Suggest link.
+    app_version: String,
+    /// The Windows version ("10.0.26200"), for the Suggest link; nothing more about the PC.
+    system_version: String,
 }
 
 fn startup(app: &AppHandle) -> Startup {
@@ -359,6 +364,8 @@ fn startup(app: &AppHandle) -> Startup {
         notch_mode: launch.notch_mode.clone(),
         demo: launch.demo,
         party_server: launch.party_server.clone(),
+        app_version: app.package_info().version.to_string(),
+        system_version: shell::system_version(),
     }
 }
 
@@ -471,20 +478,97 @@ fn settings_ready(app: AppHandle) -> SettingsLaunch {
     }
 }
 
-fn register_hotkey(app: &AppHandle) -> HotkeyStatus {
+/// Registers `shortcut` as the one global hotkey, after unregistering any
+/// other, so the user's own shortcut replaces the default. A shortcut
+/// another app owns leaves none registered and reports `registered: false`.
+fn register_hotkey(app: &AppHandle, shortcut: &str) -> HotkeyStatus {
+    let _ = app.global_shortcut().unregister_all();
     let registered = app
         .global_shortcut()
-        .on_shortcut(DEFAULT_HOTKEY, |app, _shortcut, event| {
+        .on_shortcut(shortcut, |app, _shortcut, event| {
             if event.state() == ShortcutState::Pressed {
                 toggle(app, Source::Hotkey);
             }
         })
-        .map_err(|error| eprintln!("tabbi: the hotkey {DEFAULT_HOTKEY} is taken: {error}"))
+        .map_err(|error| eprintln!("tabbi: the hotkey {shortcut} is taken: {error}"))
         .is_ok();
     HotkeyStatus {
-        shortcut: DEFAULT_HOTKEY.into(),
+        shortcut: shortcut.into(),
         registered,
     }
+}
+
+/// The UI's hotkey: the saved shortcut at launch, a newly recorded one, or
+/// `None` while the recorder listens (so the current one is recorded instead
+/// of toggling the island). The result says whether another app owns it.
+#[tauri::command]
+fn hotkey_set(app: AppHandle, shortcut: Option<String>) -> HotkeyStatus {
+    let status = match shortcut {
+        Some(shortcut) if valid_shortcut(&shortcut) => register_hotkey(&app, &shortcut),
+        Some(shortcut) => HotkeyStatus {
+            shortcut,
+            registered: false,
+        },
+        None => {
+            let _ = app.global_shortcut().unregister_all();
+            HotkeyStatus {
+                shortcut: String::new(),
+                registered: false,
+            }
+        }
+    };
+    app.state::<Island>()
+        .state
+        .lock()
+        .expect("island lock")
+        .hotkey = Some(status.clone());
+    status
+}
+
+/// A shortcut string the plugin can parse: modifiers and one key, plain ASCII, short.
+fn valid_shortcut(shortcut: &str) -> bool {
+    shortcut.len() <= 48
+        && shortcut
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '+')
+        && shortcut.split('+').count() >= 2
+        && !shortcut.split('+').any(str::is_empty)
+}
+
+/// The tray menu's items, kept so the UI can put its language on them.
+struct TrayMenu {
+    open: MenuItem<tauri::Wry>,
+    settings: MenuItem<tauri::Wry>,
+    quit: MenuItem<tauri::Wry>,
+}
+
+/// The tray menu's labels in the user's language.
+#[derive(Debug, Clone, Deserialize)]
+struct TrayLabels {
+    open: String,
+    settings: String,
+    quit: String,
+}
+
+/// The host builds the tray in English before any string is loaded; the
+/// island sends the user's language once its catalog is in.
+#[tauri::command]
+fn tray_set_labels(app: AppHandle, labels: TrayLabels) -> Result<(), String> {
+    let clean = |text: &str| -> String {
+        let text: String = text.chars().filter(|c| !c.is_control()).collect();
+        text.trim().chars().take(64).collect()
+    };
+    let menu = app.state::<TrayMenu>();
+    for (item, text) in [
+        (&menu.open, clean(&labels.open)),
+        (&menu.settings, clean(&labels.settings)),
+        (&menu.quit, clean(&labels.quit)),
+    ] {
+        if !text.is_empty() {
+            item.set_text(text).map_err(|error| error.to_string())?;
+        }
+    }
+    Ok(())
 }
 
 fn build_tray(app: &AppHandle) -> tauri::Result<()> {
@@ -493,6 +577,11 @@ fn build_tray(app: &AppHandle) -> tauri::Result<()> {
     let quit_item = MenuItem::with_id(app, "quit", "Quit Tabbi", true, None::<&str>)?;
     let separator = PredefinedMenuItem::separator(app)?;
     let menu = Menu::with_items(app, &[&open_item, &settings_item, &separator, &quit_item])?;
+    app.manage(TrayMenu {
+        open: open_item.clone(),
+        settings: settings_item.clone(),
+        quit: quit_item.clone(),
+    });
     TrayIconBuilder::with_id("tabbi")
         .icon(
             app.default_window_icon()
@@ -552,7 +641,7 @@ fn setup(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
         place(app, display);
     }
 
-    let hotkey = register_hotkey(app);
+    let hotkey = register_hotkey(app, DEFAULT_HOTKEY);
     app.state::<Island>()
         .state
         .lock()
@@ -622,6 +711,11 @@ pub fn run() {
             autostart::autostart_disable,
             autostart::autostart_is_enabled,
             ai_paths::ai_paths,
+            hotkey_set,
+            tray_set_labels,
+            shell::dialog_pick_kit,
+            shell::open_app,
+            shell::notifications_setting,
             ai_paths::ai_logs_list,
             ai_paths::ai_log_read
         ])
@@ -641,6 +735,16 @@ pub fn run() {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn shortcuts_are_modifiers_plus_one_key() {
+        assert!(valid_shortcut("ctrl+alt+space"));
+        assert!(valid_shortcut("ctrl+shift+KeyT"));
+        assert!(!valid_shortcut("space"));
+        assert!(!valid_shortcut("ctrl++space"));
+        assert!(!valid_shortcut("ctrl+alt+spa ce"));
+        assert!(!valid_shortcut(""));
+    }
 
     #[test]
     fn demo_needs_exactly_one() {

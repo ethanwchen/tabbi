@@ -226,6 +226,11 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
     dispatch({ type: "live", live: ticker.live });
   }, [dispatch, ticker.live]);
 
+  /* First-run setup opens the island and fills it; it stays open until the flow ends or the user closes it. */
+  useEffect(() => {
+    if (appTakeover !== undefined && stateRef.current.phase !== "open") dispatch({ type: "open", source: "launch" });
+  }, [appTakeover, dispatch]);
+
   /* The ticker's clock runs only while the island is closed. */
   useEffect(() => {
     app.ticker?.setActive(state.phase !== "open");

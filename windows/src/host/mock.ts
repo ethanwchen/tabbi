@@ -1,4 +1,4 @@
-import type { CredentialName, Host, HostError, HostEvent, MediaSnapshot, StorageArea, Startup, SystemStats } from "./host";
+import type { CredentialName, Host, HostError, HostEvent, HotkeyStatus, KitFilePick, MediaSnapshot, NotificationSetting, StorageArea, Startup, SystemStats } from "./host";
 
 /*
  * The windows mock hosts share, so a test can play the island and the
@@ -26,6 +26,12 @@ export interface MockHostOptions {
   readonly bus?: MockWindowBus;
   /* The section settingsReady reports. */
   readonly settingsSection?: string | null;
+  /* Shortcuts another app owns, which setHotkey then reports as not registered. */
+  readonly takenShortcuts?: readonly string[];
+  /* What the file dialog returns; null (the default) is a cancelled dialog. */
+  readonly kitFile?: KitFilePick | null;
+  /* Windows' toast setting for Tabbi; enabled by default. */
+  readonly notifications?: NotificationSetting;
   /* The modified time every seeded AI log reports, in seconds since 1970. */
   readonly aiLogModified?: number;
 }
@@ -36,6 +42,8 @@ export const MOCK_STARTUP: Startup = {
   notchMode: null,
   demo: false,
   partyServer: null,
+  appVersion: "0.1.0",
+  systemVersion: "10.0.26200",
 };
 
 /*
@@ -252,6 +260,17 @@ export function mockHost(startup: Startup = MOCK_STARTUP, options: MockHostOptio
 
     aiPaths: () => answer("aiPaths", [], { claudeHome: null, codexHome: null, claude: null, codex: null, gemini: null }),
 
+    setHotkey(shortcut) {
+      const status: HotkeyStatus = {
+        shortcut: shortcut ?? "",
+        registered: shortcut !== null && !(options.takenShortcuts ?? []).includes(shortcut),
+      };
+      return answer("setHotkey", [shortcut], status);
+    },
+    notificationsSetting: () => answer("notificationsSetting", [], options.notifications ?? "enabled"),
+    pickKitFile: () => answer("pickKitFile", [], options.kitFile ?? null),
+    openApp: (app) => answer("openApp", [app], undefined),
+    setTrayLabels: (labels) => answer("setTrayLabels", [labels], undefined),
     aiLogFiles,
     aiLogs: (tool) =>
       answer(

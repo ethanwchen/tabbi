@@ -101,6 +101,24 @@ export function windowsReservedReason(hotkey: Hotkey): string | undefined {
   return reserved ? tr("Windows uses %@ itself, so Tabbi can't take it. Record a different shortcut.", windowsLabel(hotkey)) : undefined;
 }
 
+/**
+ * The shortcut as the host registers it (the global shortcut plugin's
+ * form, "ctrl+alt+Space"): modifiers by name, then the physical key's
+ * `KeyboardEvent.code`, so a saved Mac key code maps back to the same key.
+ * Undefined for a key the host cannot register.
+ */
+export function hostShortcut(hotkey: Hotkey): string | undefined {
+  const code = Object.entries(CODE_TO_KEY_CODE).find(([, value]) => value === hotkey.keyCode)?.[0];
+  if (code === undefined) return undefined;
+  const parts: string[] = [];
+  if (hotkey.modifiers & control) parts.push("ctrl");
+  if (hotkey.modifiers & option) parts.push("alt");
+  if (hotkey.modifiers & shift) parts.push("shift");
+  if (hotkey.modifiers & command) parts.push("super");
+  parts.push(code);
+  return parts.join("+");
+}
+
 /** The Windows label for a hotkey, from the core. */
 export function windowsLabel(hotkey: Hotkey): string {
   const parts: string[] = [];

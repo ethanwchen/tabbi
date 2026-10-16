@@ -67,3 +67,14 @@ describe("hotkey recording (HotkeyRecorder)", () => {
     expect(windowsReservedReason(DEFAULT_HOTKEY)).toBeUndefined();
   });
 });
+
+describe("hostShortcut", () => {
+  it("writes the plugin's form from a Mac key code and modifier bits", async () => {
+    const { hostShortcut } = await import("../../../src/ui/kit/hotkeyRecording");
+    const { DEFAULT_HOTKEY, HOTKEY_MODIFIERS } = await import("../../../src/core/settings/hotkey");
+    expect(hostShortcut(DEFAULT_HOTKEY)).toBe("ctrl+alt+Space");
+    expect(hostShortcut({ keyCode: 17, modifiers: HOTKEY_MODIFIERS.control | HOTKEY_MODIFIERS.shift })).toBe("ctrl+shift+KeyT");
+    expect(hostShortcut({ keyCode: 37, modifiers: HOTKEY_MODIFIERS.command })).toBe("super+KeyL");
+    expect(hostShortcut({ keyCode: 999, modifiers: HOTKEY_MODIFIERS.control })).toBeUndefined();
+  });
+});

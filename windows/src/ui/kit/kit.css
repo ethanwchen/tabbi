@@ -1075,6 +1075,90 @@
   transform: scaleX(-1) rotate(90deg);
 }
 
+.kit-more-options-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Sheet: a card over a dimmed backdrop, inside the nearest positioned ancestor. */
+.kit-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgb(0 0 0 / 0.55);
+}
+
+.kit-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 100%;
+  max-height: 100%;
+  padding: 24px;
+  border-radius: 14px;
+  background: linear-gradient(var(--surface), var(--surface)), var(--background);
+  box-shadow:
+    inset 0 0 0 0.5px var(--stroke),
+    0 16px 40px rgb(0 0 0 / 0.5);
+  overflow: hidden;
+}
+
+.kit-sheet-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.kit-sheet-badge {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  color: var(--background);
+  background: var(--accent);
+}
+
+.kit-sheet-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.kit-sheet-intro {
+  margin: 0;
+  max-width: 400px;
+  font-size: 12px;
+  color: var(--secondary-text);
+}
+
+.kit-sheet-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.kit-sheet-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kit-sheet-actions > .kit-sheet-spacer {
+  flex: 1;
+}
+
 /* Reduce Motion: nothing scales or slides; crossfades only. */
 @media (prefers-reduced-motion: reduce) {
   .kit-root * {

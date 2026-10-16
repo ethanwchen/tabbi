@@ -28,6 +28,33 @@ export interface Startup {
    * only a plain-http loopback address (http://localhost:8787); null otherwise.
    */
   readonly partyServer: string | null;
+  /* This build's version ("0.1.0"), for About and the Suggest link. */
+  readonly appVersion: string;
+  /* The Windows version ("10.0.26200"), for the Suggest link; never anything more about the PC. */
+  readonly systemVersion: string;
+}
+
+/*
+ * Windows' toast setting for Tabbi (ToastNotifier.Setting): on, off for
+ * Tabbi, off for every app, blocked by a policy, or impossible for a copy
+ * without an app identity. The same names as core/connections.
+ */
+export type NotificationSetting = "enabled" | "disabledForApplication" | "disabledForUser" | "disabledByGroupPolicy" | "disabledByManifest";
+
+/* A kit file the user picked in the file dialog: its name and its text. */
+export interface KitFilePick {
+  readonly fileName: string;
+  readonly text: string;
+}
+
+/* The apps Connections may open, by name; the host knows each one's executable. */
+export type OpenableApp = "anki" | "spotify" | "powershell";
+
+/* The tray menu's labels in the user's language; the host builds them in English until the UI sends these. */
+export interface TrayLabels {
+  readonly open: string;
+  readonly settings: string;
+  readonly quit: string;
 }
 
 /* What the Settings window starts with: the host's startup and the section to show first. */
@@ -138,6 +165,23 @@ export interface Host {
   aiPaths(): Promise<AiPaths>;
 
   /*
+   * Registers `shortcut` ("ctrl+alt+space", the global shortcut plugin's
+   * form, case-insensitive) as the one global hotkey, replacing the current one; null keeps
+   * none registered (while the recorder listens). `registered` is false
+   * when another app owns the combination, and the previous shortcut stays
+   * unregistered then, so the UI says so and offers another.
+   */
+  setHotkey(shortcut: string | null): Promise<HotkeyStatus>;
+  /* Whether Windows lets Tabbi show toasts right now. */
+  notificationsSetting(): Promise<NotificationSetting>;
+  /* The official file dialog, limited to one .json file of a kit's size; null when the user cancels. */
+  pickKitFile(): Promise<KitFilePick | null>;
+  /* Opens (or brings forward) one of the apps Connections knows. */
+  openApp(app: OpenableApp): Promise<void>;
+  /* Puts the user's language on the tray menu. */
+  setTrayLabels(labels: TrayLabels): Promise<void>;
+
+  /*
    * The AI command line tools' own usage logs, read-only: every `.jsonl`
    * under `%USERPROFILE%\.claude\projects` (Claude Code's transcripts) or
    * `%USERPROFILE%\.codex\sessions` (Codex's rollouts), hidden files skipped.
@@ -173,7 +217,9 @@ export type HostErrorCode =
   | "timeout"
   | "status"
   | "notCalendar"
-  | "cancelled";
+  | "cancelled"
+  | "hotkey"
+  | "refused";
 
 export interface HostError {
   readonly code: HostErrorCode;

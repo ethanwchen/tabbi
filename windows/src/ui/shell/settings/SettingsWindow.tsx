@@ -12,16 +12,18 @@ import { tr } from "../../../core/localization/tr";
 import type { Host } from "../../../host/host";
 import { Icon } from "../../kit/Icon";
 import { MoreOptions } from "../../kit/SettingsGroup";
-import { StatusMessage } from "../../kit/StatusMessage";
 import { settingsSection, SETTINGS_SECTIONS, type SettingsSectionID } from "./sections";
+import "./settings.css";
 
 export interface SettingsWindowProps {
   readonly app: AppServices;
   readonly host: Host;
   readonly initialSection?: string | null;
+  /** A section state to draw, in a snapshot run. */
+  readonly snapshotState?: string | undefined;
 }
 
-export function SettingsWindow({ app, host, initialSection }: SettingsWindowProps) {
+export function SettingsWindow({ app, host, initialSection, snapshotState }: SettingsWindowProps) {
   const [selected, setSelected] = useState<SettingsSectionID>(settingsSection(initialSection).id);
 
   /* The gear or the tray asked for a section while the window was open. */
@@ -53,26 +55,20 @@ export function SettingsWindow({ app, host, initialSection }: SettingsWindowProp
           </button>
         ))}
       </nav>
-      <main className="settings-content">
+      <main className="settings-content" key={section.id}>
         <h1 className="settings-title">{section.title()}</h1>
-        {Content ? (
-          <Content app={app} />
-        ) : (
-          <div className="settings-empty">
-            <StatusMessage symbol={section.symbol} tint="var(--secondary-text)" title={section.title()} message={tr("This section arrives in a later Windows build.")} />
-          </div>
-        )}
+        <Content app={app} host={host} snapshotState={snapshotState} />
       </main>
     </div>
   );
 }
 
 /** A section's page: its groups, then its rare settings folded under More options. */
-export function SettingsPage({ children, moreOptions }: { children?: ReactNode; moreOptions?: ReactNode }) {
+export function SettingsPage({ children, moreOptions, moreOpen = false }: { children?: ReactNode; moreOptions?: ReactNode; moreOpen?: boolean }) {
   return (
     <div className="settings-page">
       {children}
-      {moreOptions !== undefined && moreOptions !== null && <MoreOptions>{moreOptions}</MoreOptions>}
+      {moreOptions !== undefined && moreOptions !== null && <MoreOptions open={moreOpen}>{moreOptions}</MoreOptions>}
     </div>
   );
 }
