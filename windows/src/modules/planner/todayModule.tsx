@@ -19,7 +19,7 @@ import type { UpcomingEvent } from "../../core/planner/upcomingEvent";
 import type { FocusTimer } from "../../core/focus/focusTimer";
 import { settingsCleanedName } from "../../core/settings/appSettings";
 import { TICKER_KINDS } from "../../core/ticker/tickerKind";
-import { calendarSource } from "./calendarServices";
+import { calendarSource, isCalendarSubscriptionsChange, reloadCalendarSubscriptions } from "./calendarServices";
 import { DayPlanStore } from "./dayPlanStore";
 import { DayReviewStore } from "./dayReviewStore";
 import { FocusCardActions } from "./focusCardActions";
@@ -109,6 +109,15 @@ export const TodayModule = defineModule(
     followSettings();
     stops.push(context.settings.settings.subscribe(followSettings));
     stops.push(store.followSharedWork());
+    /* Settings > Connections saved other calendar feeds: read them and show their events. */
+    stops.push(
+      context.channel("calendar").on((message) => {
+        if (!isCalendarSubscriptionsChange(message)) return;
+        void reloadCalendarSubscriptions(context)
+          .then(() => upNext.reload())
+          .catch((error: unknown) => context.logger.error("could not read the calendar feeds", error));
+      }),
+    );
     stops.push(
       context.kitApplied((application) => {
         /* Also when re-applying the same kit, which may have been re-imported. */

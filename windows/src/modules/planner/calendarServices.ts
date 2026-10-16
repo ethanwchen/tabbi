@@ -38,3 +38,22 @@ export function calendarSource(context: ModuleContext): CalendarSource {
     return source;
   });
 }
+
+/** The message the Settings window posts on Today's "calendar" channel after the saved feeds change. */
+export const CALENDAR_SUBSCRIPTIONS_CHANGED = { type: "subscriptions" } as const;
+
+/** Whether `message` says the saved feeds changed. */
+export function isCalendarSubscriptionsChange(message: unknown): boolean {
+  return typeof message === "object" && message !== null && (message as { type?: unknown }).type === CALENDAR_SUBSCRIPTIONS_CHANGED.type;
+}
+
+/**
+ * Reads the saved feeds again into this window's source and fetches them,
+ * after Settings added or removed one. A demo source has no feeds to read.
+ */
+export async function reloadCalendarSubscriptions(context: ModuleContext): Promise<void> {
+  const source = calendarSource(context);
+  if (!(source instanceof IcsCalendarSource)) return;
+  source.setSubscriptions(await loadCalendarSubscriptions(context.storage.root()));
+  await source.reload();
+}

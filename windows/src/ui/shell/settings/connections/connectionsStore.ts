@@ -32,6 +32,8 @@ import type { PartyState } from "../../../../core/party/partyState";
 import type { Instant } from "../../../../core/time";
 import { isHostError, type Host } from "../../../../host/host";
 import type { Readable } from "../../../../app/store";
+import type { WindowChannel } from "../../../../app/windowChannel";
+import { CALENDAR_SUBSCRIPTIONS_CHANGED } from "../../../../modules/planner/calendarServices";
 
 export interface ConnectionsState {
   readonly diagnoses: Partial<Record<ConnectionKind, ConnectionDiagnosis>>;
@@ -44,6 +46,8 @@ export interface ConnectionsStoreOptions {
   readonly host: Host;
   readonly context: ModuleContext;
   readonly calendar: CalendarSource;
+  /** Today's "calendar" channel, which tells the island's Today the saved feeds changed. */
+  readonly calendarFeeds: WindowChannel;
   readonly party: Readable<PartyState>;
   readonly isDemo: boolean;
 }
@@ -155,7 +159,7 @@ export class ConnectionsStore extends Store<ConnectionsState> {
     source.setSubscriptions?.(subscriptions);
     await this.options.calendar.reload().catch(() => undefined);
     /* Today's module in the island owns the live source; it hears the change on its own topic. */
-    this.options.context.channel("calendar").post({ type: "subscriptions" });
+    this.options.calendarFeeds.post(CALENDAR_SUBSCRIPTIONS_CHANGED);
     this.refresh(["calendar"]);
   }
 

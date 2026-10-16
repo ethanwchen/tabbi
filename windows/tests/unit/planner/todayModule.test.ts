@@ -4,6 +4,10 @@ import { DEMO_RUN_MODE } from "../../../src/core/modules/runMode";
 import { MODULE_LIST } from "../../../src/modules/moduleList";
 import { TodayModule } from "../../../src/modules/planner/todayModule";
 import { ScheduleModule } from "../../../src/modules/schedule/scheduleModule";
+import { ModuleContext } from "../../../src/app/context";
+import { hostChannel } from "../../../src/app/windowChannel";
+import { saveCalendarSubscriptions } from "../../../src/core/calendar/calendarSource";
+import { mockHost, MockWindowBus } from "../../../src/host/mock";
 import { testApp } from "../../support/runtime";
 
 /* 2026-10-15 09:00 UTC, a Thursday. */
@@ -48,6 +52,23 @@ describe("Today module", () => {
     today.store.show("yesterday");
     expect(today.store.canEdit).toBe(false);
     expect(today.store.add("Nope")).toBe(false);
+    app.dispose();
+  });
+
+  it("reads the calendar feeds again when Settings says they changed", async () => {
+    const bus = new MockWindowBus();
+    const { app, host } = await testApp({ moduleTypes: MODULE_LIST, host: mockHost(undefined, { bus }) }, MORNING);
+    const today = app.modules.instance(TodayModule);
+    if (today === undefined) throw new Error("Today is missing");
+    await today.store.ready;
+    await today.store.upNext.reload();
+    expect(today.store.upNext.state.hasSubscriptions).toBe(false);
+    const storage = new ModuleContext(MODULE_IDS.planner, app.environment).storage.root();
+    await saveCalendarSubscriptions(storage, [{ id: "work", name: "Work", url: "https://example.org/work.ics", color: { red: 0.2, green: 0.55, blue: 0.98 } }]);
+    hostChannel(mockHost(undefined, { bus }), "module/planner/calendar").post({ type: "subscriptions" });
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(host.calls.some((call) => call.name === "fetchCalendar" && call.args[0] === "https://example.org/work.ics")).toBe(true);
+    expect(today.store.upNext.state.hasSubscriptions).toBe(true);
     app.dispose();
   });
 

@@ -116,14 +116,17 @@ export function ConnectionsSection({ app, host, snapshotState }: SettingsSection
   const settings = useStore(app.settings.settings);
   const context = useMemo(() => new ModuleContext("app", app.environment), [app]);
   const store = useMemo(
-    () =>
-      new ConnectionsStore({
+    () => {
+      const today = new ModuleContext(MODULE_IDS.planner, app.environment);
+      return new ConnectionsStore({
         host,
         context,
-        calendar: calendarSource(new ModuleContext(MODULE_IDS.planner, app.environment)),
+        calendar: calendarSource(today),
+        calendarFeeds: today.channel("calendar"),
         party: partyState(new ModuleContext(MODULE_IDS.party, app.environment)),
         isDemo: app.environment.runMode.isDemo || app.environment.runMode.isSnapshot,
-      }),
+      });
+    },
     [app, host, context],
   );
   const state = useStore(store);
