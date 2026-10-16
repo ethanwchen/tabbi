@@ -7,8 +7,7 @@ import {
   type ActivityRecord,
 } from "../activity/activityRecord";
 import { MODULE_IDS } from "../modules/moduleId";
-import { SeasonalEventCatalog } from "../events/seasonalEventCatalog";
-import { HOUR_LABEL_MINUTES, type SeasonalEvent, type SeasonalEventReward } from "../events/seasonalEvent";
+import eventsFile from "@mac/Events/events.json";
 import { tr } from "../localization/tr";
 import { accessoryItem, outfitItem, type PetItem } from "../pets/petItem";
 import { PetPointsRules } from "../pets/petPointsRules";
@@ -121,11 +120,21 @@ export function itemEffect(item: PetItem): PetItemEffect | undefined {
   return edition ? editionEffect(edition) : undefined;
 }
 
-export type { SeasonalEventReward } from "../events/seasonalEvent";
+/** A seasonal event's reward, as the bundled events catalog (`events.json`) lists it. */
+export interface SeasonalEventReward {
+  readonly item: PetItem;
+  readonly focusMinutes: number;
+}
 
-/** The bundled event with `id`, from the events catalog. */
-function catalogEvent(id: string): SeasonalEvent | undefined {
-  return SeasonalEventCatalog.bundled.event(id);
+interface CatalogEvent {
+  readonly id: string;
+  readonly name: string;
+  readonly rewards: readonly { readonly item: string; readonly focusMinutes: number }[];
+}
+
+/** The bundled event with `id`, read from the Mac's `events.json` (a narrow read; the events port owns the rest). */
+function catalogEvent(id: string): CatalogEvent | undefined {
+  return (eventsFile as { events: readonly CatalogEvent[] }).events.find((event) => event.id === id);
 }
 
 /** The bundled event reward for a seasonal item, or undefined for any other. */
@@ -135,6 +144,9 @@ export function seasonalReward(edition: PetLimitedEdition): SeasonalEventReward 
   const reward = catalogEvent(source.id)?.rewards.find((candidate) => candidate.item === editionItem(edition));
   return reward ? { item: editionItem(edition), focusMinutes: reward.focusMinutes } : undefined;
 }
+
+/** Goals from this many minutes up read in hours (SeasonalEventProgress.hourLabelMinutes). */
+const HOUR_LABEL_MINUTES = 120;
 
 /** One line on how to earn the item, for the tile's tooltip and detail. */
 export function howToEarn(edition: PetLimitedEdition): string {
