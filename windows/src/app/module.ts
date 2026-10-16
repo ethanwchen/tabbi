@@ -14,6 +14,7 @@ import type { ModuleProvision } from "../core/providers/moduleProvision";
 import type { ProvidedAction } from "../core/providers/progressItem";
 import type { ModuleContext } from "./context";
 import type { Readable } from "./store";
+import type { NotchTakeover } from "./takeover";
 
 /** What a setup step's view gets: `done` moves first-run onboarding on. */
 export interface SetupStepProps {
@@ -84,6 +85,21 @@ export interface TabbiModule {
 
   /** Runs an action this module put on something it shares (a progress goal's one-click action). Unknown ids are ignored. */
   perform?(action: ProvidedAction): void;
+
+  /**
+   * A tabbi:// link the host received (an invite, a sign-in callback).
+   * Returns true when this module took it; the island then opens on the
+   * module's tab. Asked whether or not the module is running, since a link
+   * may be what turns it on (Party's invite flow offers that).
+   */
+  openLink?(url: string): boolean;
+
+  /**
+   * A flow this module fills the whole open island with for a while (the
+   * Mac's NotchTakeover, which Party uses for an invite's confirmation);
+   * undefined while it has none. Only the first running module's shows.
+   */
+  readonly takeover?: Readable<NotchTakeover | undefined>;
 
   /** The closed island's wings while this module is playing music; undefined draws the shared music glyphs. */
   readonly musicWings?: MusicWings;

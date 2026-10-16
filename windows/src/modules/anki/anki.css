@@ -1,0 +1,372 @@
+/*
+ * The Anki tab, laid out on the kit's grid: the ring card and the decks
+ * card side by side with the footer under them, and the setup card.
+ */
+
+.anki-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.anki-cards {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+}
+
+/* The ring card */
+.anki-due {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+.anki-ring-due,
+.anki-ring-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+}
+.anki-ring-done {
+  gap: 2px;
+  color: var(--success);
+}
+.anki-queues {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.anki-queue {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.anki-queue-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.anki-queue-title {
+  flex: 1;
+  min-width: 0;
+}
+.anki-count {
+  margin-inline-start: auto;
+  padding-inline-start: 8px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.anki-queue-rule {
+  height: 0.5px;
+  margin: 2px 0;
+  background: var(--stroke);
+}
+.anki-done {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* The decks card */
+.anki-decks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-height: 0;
+}
+.anki-decks-fit {
+  flex: 1;
+}
+.anki-decks-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  padding: 0 4px;
+}
+.anki-decks-notice {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+.anki-notice {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+.anki-decks-scroll {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding-bottom: 12px;
+}
+.anki-decks-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.anki-deck {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  padding: 0 4px;
+  border-radius: 6px;
+  min-width: 0;
+  transition: background-color var(--spring-snappy);
+}
+.anki-deck:hover {
+  background: var(--surface-hover);
+}
+.anki-deck-name {
+  flex: 1;
+  min-width: 0;
+}
+.anki-deck .anki-deck-star {
+  display: none;
+  flex: none;
+}
+.anki-deck:hover .anki-deck-star,
+.anki-deck[data-favorite] .anki-deck-star {
+  display: inline-flex;
+}
+.anki-deck .anki-star {
+  color: var(--tertiary-text);
+  background: transparent;
+  box-shadow: none;
+}
+.anki-deck .anki-star:hover {
+  color: var(--primary-text);
+}
+.anki-deck .anki-deck-play {
+  display: none;
+  flex: none;
+  color: var(--accent);
+}
+.anki-deck:hover .anki-deck-play {
+  display: inline-block;
+}
+.anki-deck-count {
+  flex: none;
+  width: 26px;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+.anki-caught-up {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 1;
+}
+
+/* The footer */
+.anki-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  flex: none;
+}
+.anki-streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+.anki-heatmap-slot {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+.anki-heatmap {
+  display: flex;
+  gap: 3px;
+}
+.anki-heat-cell {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2.5px;
+  box-sizing: border-box;
+}
+.anki-heat-cell[data-today] {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary-text) 70%, transparent);
+}
+.anki-primary {
+  flex: none;
+  max-width: 60%;
+}
+.anki-primary .kit-pill-title {
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+/* The setup card */
+.anki-setup {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  height: 100%;
+}
+.anki-setup-badge {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.anki-setup-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.anki-setup-words {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.anki-setup-message {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.anki-setup-detail {
+  padding-top: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  user-select: text;
+}
+.anki-setup[data-compact] .anki-setup-detail {
+  -webkit-line-clamp: 1;
+}
+.anki-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.anki-steps[data-compact] {
+  gap: 2px;
+}
+.anki-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.anki-step-number {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.anki-setup-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+  min-width: 0;
+}
+.anki-setup[data-compact] .anki-setup-actions {
+  padding-top: 0;
+}
+.anki-setup-hint {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Onboarding's step */
+.anki-setup-step {
+  width: 100%;
+  height: 100%;
+}
+
+/* Onboarding's connected pair */
+.anki-connected {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+}
+.anki-connected-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.anki-connected-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.anki-connected-check {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.anki-connected-lines {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.anki-connected-decks {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.anki-connected-note {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.anki-connected-lock {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: auto;
+  min-width: 0;
+}

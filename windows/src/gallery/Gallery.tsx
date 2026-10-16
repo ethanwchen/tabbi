@@ -30,6 +30,7 @@ import { ModulePreview } from "../ui/kit/ModulePreview";
 import { NotchPetWing } from "../ui/kit/NotchPetWing";
 import { PetSprite, PetView } from "../ui/kit/PetView";
 import { Picker } from "../ui/kit/Picker";
+import { ContextMenu } from "../ui/kit/ContextMenu";
 import { Pill } from "../ui/kit/Pill";
 import { CapsuleToggle } from "../ui/kit/CapsuleToggle";
 import { PrimaryPill } from "../ui/kit/PrimaryPill";
@@ -286,6 +287,31 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
           </Cell>
           <Cell label="disabled" accent="study">
             <Pill title={tr("Try again")} disabled />
+          </Cell>
+          <Cell label="Pill prominent, badge, busy, icon only" accent="anki">
+            <Pill title={tr("Study %@", "Biology")} symbol="play-filled" prominent badge={92} height={28} lifts />
+            <Pill title={tr("Study %@", "Biology")} symbol="play-filled" prominent badge={92} height={28} preview="hover" />
+            <Pill title={tr("Join")} prominent height={20} />
+            <Pill title={tr("Leave")} busy />
+            <Pill title="" help={tr("Start a party")} symbol="plus" prominent />
+          </Cell>
+        </Row>
+      </Section>
+
+      <Section title="ContextMenu">
+        <Row align="start">
+          <Cell label="A friend row's menu, open" accent="study" width={240}>
+            <div style={{ position: "relative", height: 112 }}>
+              <ContextMenu
+                items={[
+                  { title: tr("Remove %@", "Maya"), symbol: "minus.circle.fill", destructive: true, onSelect: () => {} },
+                  { title: tr("Report %@…", "Maya"), symbol: "exclamationmark.triangle", separator: true, onSelect: () => {} },
+                  { title: tr("Block %@", "Maya"), symbol: "hand.raised.fill", destructive: true, onSelect: () => {} },
+                ]}
+                at={{ x: 0, y: 0 }}
+                onClose={() => {}}
+              />
+            </div>
           </Cell>
         </Row>
       </Section>

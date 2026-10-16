@@ -1,0 +1,858 @@
+/*
+ * The Party tab, onboarding step, invite and options, on the kit's grid:
+ * the stage card and the friends column, the pets in a row, the shared
+ * session bar, the code fields and capsules, and the notice and banner
+ * overlays.
+ */
+
+.party-panel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.party-columns {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.party-spacer {
+  flex: 1;
+  min-width: 8px;
+}
+.party-grow {
+  flex: 1;
+  min-width: 0;
+}
+.party-nowrap {
+  white-space: nowrap;
+}
+.party-dot {
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+.party-code {
+  font-family: "Cascadia Mono", "Consolas", ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* The capsules */
+.party-copy-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--primary-text);
+  cursor: default;
+  flex: none;
+  transition: background-color var(--spring-snappy);
+}
+.party-copy-code:hover {
+  background: var(--surface-hover);
+}
+.party-copy-glyph,
+.party-copy-label {
+  color: var(--accent);
+}
+.party-copy-code[data-copied] .party-copy-glyph,
+.party-copy-code[data-copied] .party-copy-label {
+  color: var(--success);
+}
+.party-share {
+  color: var(--accent);
+}
+.party-text-button {
+  color: var(--secondary-text);
+}
+.party-text-button:hover,
+.party-text-button[data-hover="true"] {
+  color: var(--primary-text);
+}
+.party-pill[data-accent="true"] {
+  background: var(--accent-soft);
+}
+.party-pill[data-accent="true"]:hover,
+.party-pill[data-accent="true"][data-hover="true"] {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.party-pill[data-height="24"] {
+  padding: 0 10px;
+  font-size: 10.5px;
+}
+
+/* The code field */
+.party-code-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  padding-inline: 8px 4px;
+  border-radius: 6px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+  cursor: text;
+  flex: none;
+  min-width: 120px;
+  transition:
+    background-color var(--spring-snappy),
+    box-shadow var(--spring-snappy);
+}
+.party-code-field:hover {
+  background: var(--surface-hover);
+}
+.party-code-field[data-focused] {
+  background: var(--surface-hover);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+.party-code-field-symbol {
+  color: var(--tertiary-text);
+}
+.party-code-field[data-focused] .party-code-field-symbol {
+  color: var(--accent);
+}
+.party-code-field-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--primary-text);
+  font: inherit;
+  font-family: "Cascadia Mono", "Consolas", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  outline: none;
+  user-select: text;
+}
+.party-code-field-input::placeholder {
+  font-family: var(--font);
+  font-weight: 400;
+  color: var(--tertiary-text);
+}
+.party-paste {
+  flex: none;
+  height: 16px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--secondary-text);
+  font-size: 10.5px;
+  font-weight: 500;
+  cursor: default;
+  transition:
+    background-color var(--spring-snappy),
+    color var(--spring-snappy);
+}
+.party-paste:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.party-submit {
+  background: transparent;
+}
+
+/* The stage */
+.party-stage {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+.party-room {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.party-room-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.party-room-count {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.party-members {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  flex: 1;
+  min-height: 0;
+}
+.party-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+.party-member-pet {
+  position: relative;
+}
+.party-member-crown-overlay {
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+}
+.party-crown {
+  color: var(--warning);
+  flex: none;
+}
+.party-member-name {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  min-width: 0;
+  color: var(--primary-text);
+}
+.party-member-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.party-session-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  min-width: 0;
+}
+.party-clock {
+  color: var(--primary-text);
+  white-space: nowrap;
+}
+.party-progress {
+  position: relative;
+  flex: 1;
+  min-width: 32px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.party-progress-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+/* The lobby */
+.party-lobby {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+.party-lobby-intro {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.party-lobby-words {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.party-lobby-line {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.party-lobby-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.party-lobby-actions .party-code-field {
+  flex: 1;
+}
+
+/* The friends column */
+.party-friends {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.party-friends-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding-inline-start: 4px;
+}
+.party-stale {
+  background: transparent;
+}
+.party-share-code {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.party-friends-list {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.party-friends-scroll {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding-bottom: 12px;
+}
+.party-friends-rows {
+  display: flex;
+  flex-direction: column;
+}
+.party-friends-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+  text-align: center;
+}
+.party-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding-inline-end: 2px;
+  border-radius: 6px;
+  min-width: 0;
+  transition: background-color var(--spring-snappy);
+}
+.party-row:hover {
+  background: var(--surface);
+}
+.party-row[data-incoming] {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.party-row[data-incoming]:hover {
+  background: var(--surface);
+}
+.party-row-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.party-row-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.party-row-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+.party-row-in-party {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  color: color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.party-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+}
+.party-row-actions[data-busy] {
+  opacity: 0.5;
+}
+.party-accept {
+  background: var(--accent);
+  color: var(--background);
+}
+.party-accept:hover {
+  background: var(--accent);
+}
+
+/* The age check */
+.party-age {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+.party-age-words {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 360px;
+}
+.party-age-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.party-agreement {
+  display: inline;
+  text-align: center;
+}
+.party-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  cursor: default;
+}
+.party-link:hover {
+  text-decoration: underline;
+}
+
+/* The invite takeover */
+.party-invite {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  height: 100%;
+}
+.party-invite-art {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+}
+.party-invite-badge {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.party-invite-text {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+.party-invite-words {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.party-invite-message {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.party-invite-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Overlays: the notice, the celebration banner and the report card */
+.party-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: var(--background);
+  display: flex;
+}
+.party-notice {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  max-width: 100%;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 12px;
+  background: rgb(41 41 41);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+  color: var(--primary-text);
+  cursor: default;
+}
+.party-notice-text {
+  white-space: nowrap;
+  overflow: hidden;
+}
+.party-celebration-slot {
+  position: absolute;
+  top: 8px;
+  inset-inline: 8px;
+  display: flex;
+}
+.party-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(36 36 36);
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--primary-text);
+  text-align: start;
+  cursor: default;
+  transition: background-color var(--spring-snappy);
+}
+.party-banner:hover {
+  background: rgb(43 43 43);
+}
+.party-banner-pets {
+  display: flex;
+  flex: none;
+}
+.party-banner-pets > * + * {
+  margin-inline-start: -4px;
+}
+.party-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.party-banner-detail {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.party-banner-close {
+  color: var(--tertiary-text);
+  flex: none;
+}
+.party-banner:hover .party-banner-close {
+  color: var(--secondary-text);
+}
+
+/* The report card */
+.party-report {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+}
+.party-report-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.party-report-words {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.party-report-reasons {
+  display: flex;
+  gap: 4px;
+}
+.party-chip {
+  height: 20px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--secondary-text);
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: default;
+  transition:
+    background-color var(--spring-snappy),
+    color var(--spring-snappy);
+}
+.party-chip:hover {
+  background: var(--surface-hover);
+  color: var(--primary-text);
+}
+.party-chip[data-selected] {
+  background: var(--accent);
+  color: var(--background);
+}
+.party-note {
+  height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+  color: var(--primary-text);
+  font: inherit;
+  outline: none;
+  user-select: text;
+}
+.party-note:hover {
+  background: var(--surface-hover);
+}
+.party-note:focus {
+  background: var(--surface-hover);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+.party-note::placeholder {
+  color: var(--tertiary-text);
+}
+.party-report-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.party-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--secondary-text);
+  cursor: default;
+  white-space: nowrap;
+}
+.party-checkbox:hover {
+  color: var(--primary-text);
+}
+
+/* Onboarding's party step */
+.party-setup {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.party-setup-columns {
+  gap: 12px;
+}
+.party-setup-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.party-setup-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.party-setup-pet {
+  flex: none;
+  margin: -6px 0;
+}
+.party-setup-name-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+.party-setup-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--primary-text);
+  cursor: default;
+  min-width: 0;
+  max-width: 100%;
+  transition: background-color var(--spring-snappy);
+}
+.party-setup-name:hover {
+  background: var(--surface-hover);
+}
+.party-setup-pencil {
+  color: var(--tertiary-text);
+  flex: none;
+}
+.party-setup-name:hover .party-setup-pencil {
+  color: var(--secondary-text);
+}
+.party-setup-name-input {
+  height: 20px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--surface-hover);
+  color: var(--primary-text);
+  font: inherit;
+  outline: none;
+  user-select: text;
+}
+.party-setup-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-inline-start: 4px;
+  min-width: 0;
+}
+.party-setup-issue {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  color: var(--warning);
+}
+.party-setup-note,
+.party-setup-detail {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.party-visibility {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--secondary-text);
+  cursor: default;
+  min-width: 0;
+  max-width: 100%;
+  transition:
+    background-color var(--spring-snappy),
+    color var(--spring-snappy);
+}
+.party-visibility:hover {
+  background: var(--surface-hover);
+  color: var(--primary-text);
+}
+.party-setup-friends {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.party-setup-friends-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding-inline-start: 4px;
+}
+.party-setup-friends-body {
+  flex: 1;
+  min-height: 0;
+  padding: 2px 4px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.party-setup-message {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.party-setup-message-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.party-setup-unreachable {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.party-setup-pets {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Party options */
+.party-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.party-user-row .kit-settings-row-label,
+.party-user-row .kit-settings-row-help,
+.party-settings .kit-text-field-input {
+  unicode-bidi: plaintext;
+}
+.party-status-glyph {
+  display: grid;
+  place-items: center;
+  width: 16px;
+}
+.party-destructive {
+  color: var(--danger);
+}
+.party-settings-warning .kit-settings-row-help {
+  color: var(--warning);
+}
+.party-settings-agreement .kit-settings-row-text {
+  display: none;
+}
+.party-settings-agreement .kit-settings-row-control {
+  margin-inline-start: 0;
+  justify-content: flex-start;
+}
+.party-apple-button {
+  background: var(--primary-text);
+  color: var(--background);
+}
+.party-apple-button:hover,
+.party-apple-button[data-hover="true"] {
+  background: var(--primary-text);
+  opacity: 0.9;
+}
+.party-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0 12px;
+  box-shadow: inset 0 0.5px 0 var(--stroke);
+}
+.party-confirm-buttons {
+  display: flex;
+  gap: 8px;
+  padding-top: 4px;
+}

@@ -146,6 +146,78 @@
         }
       }
     },
+    "%@ Fix it in Settings > Tabs > Party > Options." : {
+      "comment" : "Onboarding's party step: the server setting can't be used. %@ is the problem sentence.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ أصلحه من الإعدادات > التبويبات > Party > الخيارات."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Behebe das unter Einstellungen > Tabs > Party > Optionen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Arréglalo en Ajustes > Pestañas > Party > Opciones."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Corrige-le dans Réglages > Onglets > Party > Options."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Ayusin ito sa Settings > Tabs > Party > Options."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 設定 > タブ > Party > オプションで修正してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 설정 > 탭 > Party > 옵션에서 고쳐 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Corrija em Ajustes > Abas > Party > Opções."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Исправь это в Настройках > Вкладки > Party > Параметры."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 请在设置 > 标签页 > Party > 选项中修正。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 請在設定 > 分頁 > Party > 選項中修正。"
+          }
+        }
+      }
+    },
     "%@ Themes style the open panel; the closed pill stays black." : {
       "comment" : "Settings > Look: footer under the themes. %@ is the chosen theme's summary sentence.",
       "extractionState" : "manual",
@@ -290,6 +362,78 @@
         }
       },
       "generatesSymbol" : false
+    },
+    "%@ is away" : {
+      "comment" : "Onboarding's party step: tooltip on an offline friend's pet. %@ is the friend's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ غير متصل"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ist nicht da"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ no está"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ est absent"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wala si %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@は離席中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 님은 자리에 없어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ está ausente"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ не в сети"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 不在"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 不在"
+          }
+        }
+      }
     },
     "%@ is ready to unlock" : {
       "comment" : "Closet > Wardrobe footer tooltip: the next item can be bought now. %@ is the item's name.",
@@ -957,6 +1101,474 @@
         }
       }
     },
+    "%lld decks with cards due" : {
+      "comment" : "Onboarding's Anki step, under 'Anki is connected': how many decks have cards due today.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld deck with cards due"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld decks with cards due"
+                }
+              }
+            }
+          }
+        },
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld رزم فيها بطاقات مستحقة"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld رزمة فيها بطاقات مستحقة"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld رزمتان فيهما بطاقات مستحقة"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld رزم فيها بطاقات مستحقة"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld رزمة فيها بطاقات مستحقة"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld رزمة فيها بطاقات مستحقة"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Stapel mit fälligen Karten"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Stapel mit fälligen Karten"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld mazo con tarjetas pendientes"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld mazos con tarjetas pendientes"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld paquet avec des cartes à réviser"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld paquets avec des cartes à réviser"
+                }
+              }
+            }
+          }
+        },
+        "fil" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld deck na may mga card na due"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld deck na may mga card na due"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "期限のカードがあるデッキ: %lld"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "복습할 카드가 있는 덱 %lld개"
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld baralho com cartões pendentes"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld baralhos com cartões pendentes"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld колода с карточками к повторению"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld колоды с карточками к повторению"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld колод с карточками к повторению"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld колоды с карточками к повторению"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 个牌组有到期卡片"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hant" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 個牌組有到期卡片"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld friends" : {
+      "comment" : "Onboarding's party step: how many friends the user has.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld friend"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld friends"
+                }
+              }
+            }
+          }
+        },
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld أصدقاء"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld صديق"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld صديقان"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld أصدقاء"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld صديقًا"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld صديق"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Freund"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Freunde"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld amigo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld amigos"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ami"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld amis"
+                }
+              }
+            }
+          }
+        },
+        "fil" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld kaibigan"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld kaibigan"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "友だち%lld人"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "친구 %lld명"
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld amigo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld amigos"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld друг"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld друга"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld друзей"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld друга"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 位好友"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hant" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 位好友"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld more points: %@ at a typical study pace" : {
       "comment" : "Closet > Wardrobe footer tooltip: points still missing for the next item, and the study it takes. %@ is a study length such as \"3 focus blocks\".",
       "extractionState" : "manual",
@@ -1025,6 +1637,240 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "還差 %lld 點：按平常的讀書節奏約 %@"
+          }
+        }
+      }
+    },
+    "%lld reviews" : {
+      "comment" : "Anki tab: a heatmap cell's tooltip, the reviews done that day.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld review"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld reviews"
+                }
+              }
+            }
+          }
+        },
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld مراجعات"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld مراجعة"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld مراجعتان"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld مراجعات"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld مراجعة"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld مراجعة"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Wiederholung"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Wiederholungen"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld repaso"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld repasos"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld révision"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld révisions"
+                }
+              }
+            }
+          }
+        },
+        "fil" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld review"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld review"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld回の復習"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "복습 %lld회"
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld revisão"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld revisões"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld повторение"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld повторения"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld повторений"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld повторения"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 次复习"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hant" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 次複習"
+                }
+              }
+            }
           }
         }
       }
@@ -2254,6 +3100,78 @@
         }
       }
     },
+    "Add your name" : {
+      "comment" : "Onboarding's party step: the name button while no name is set.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أضف اسمك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Namen hinzufügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade tu nombre"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute ton nom"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idagdag ang pangalan mo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名前を追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이름 추가"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione seu nome"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь своё имя"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加你的名字"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入你的名字"
+          }
+        }
+      }
+    },
     "Adds \"%@\"." : {
       "comment" : "Kit import review: the one starter task the kit adds. %@ is the task's title.",
       "extractionState" : "manual",
@@ -2466,6 +3384,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "不新增任務。"
+          }
+        }
+      }
+    },
+    "Also block %@" : {
+      "comment" : "Party report card: the checkbox to block the person as well. %@ is their name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حظر %@ أيضًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ auch blockieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquear también a %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquer aussi %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-block din si %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@もブロック"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 님도 차단"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquear %@ também"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Также заблокировать %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同时屏蔽 %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同時封鎖 %@"
           }
         }
       }
@@ -2754,6 +3744,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "回答來自你選擇的 AI：Claude、ChatGPT、Gemini，或這台電腦上的免費模型。"
+          }
+        }
+      }
+    },
+    "Apple didn't accept the sign-in. Try again." : {
+      "comment" : "The Account row: the server said Apple rejected the sign-in.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم تقبل Apple تسجيل الدخول. حاول مجددًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple hat die Anmeldung nicht akzeptiert. Versuch es noch einmal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple no aceptó el inicio de sesión. Inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple n'a pas accepté la connexion. Réessaie."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi tinanggap ng Apple ang sign-in. Subukan ulit."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appleがサインインを受け付けませんでした。もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple이 로그인을 받아들이지 않았어요. 다시 시도해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Apple não aceitou o login. Tente de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple не приняла вход. Попробуй ещё раз."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple 未接受此次登录。请再试一次。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple 未接受此次登入。請再試一次。"
           }
         }
       }
@@ -3982,6 +5044,78 @@
         }
       }
     },
+    "Check your internet connection. You can also set up Party later in its tab." : {
+      "comment" : "Onboarding's party step: the server can't be reached.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحقق من اتصالك بالإنترنت. يمكنك أيضًا إعداد Party لاحقًا من تبويبه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüf deine Internetverbindung. Du kannst Party auch später in seinem Tab einrichten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprueba tu conexión a internet. También puedes configurar Party más tarde en su pestaña."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifie ta connexion internet. Tu peux aussi configurer Party plus tard dans son onglet."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tingnan ang koneksyon mo sa internet. Puwede mo ring i-set up ang Party mamaya sa tab nito."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インターネット接続を確認してください。Partyは後でそのタブから設定することもできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인터넷 연결을 확인해 주세요. Party는 나중에 해당 탭에서 설정할 수도 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifique sua conexão com a internet. Você também pode configurar o Party depois, na aba dele."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Проверь подключение к интернету. Party можно настроить и позже, в его вкладке."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请检查网络连接。你也可以稍后在 Party 标签页中设置。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請檢查網路連線。你也可以稍後在 Party 分頁中設定。"
+          }
+        }
+      }
+    },
     "Choose how big the open panel is. Every tab uses the same size." : {
       "comment" : "Settings > Look: tooltip on the Panel size control.",
       "extractionState" : "manual",
@@ -4774,6 +5908,78 @@
         }
       }
     },
+    "Close without reporting (Esc)" : {
+      "comment" : "Party report card: tooltip on Cancel.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إغلاق دون إبلاغ (Esc)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Meldung schließen (Esc)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar sin denunciar (Esc)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer sans signaler (Échap)"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isara nang walang report (Esc)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "報告せずに閉じる (Esc)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신고하지 않고 닫기 (Esc)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fechar sem denunciar (Esc)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрыть без жалобы (Esc)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不举报，关闭 (Esc)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不檢舉，關閉 (Esc)"
+          }
+        }
+      }
+    },
     "Closed island" : {
       "comment" : "Settings > Look: the row that picks what the closed island shows (the Mac's Notch picker).",
       "extractionState" : "manual",
@@ -5494,6 +6700,78 @@
         }
       }
     },
+    "Copy the support address, %@" : {
+      "comment" : "Tooltip on Email Support: Windows copies the address instead of opening a mail app. %@ is the address.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نسخ عنوان الدعم، %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Support-Adresse kopieren, %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar la dirección de soporte, %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier l'adresse du support, %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopyahin ang support address, %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポートのアドレス %@ をコピー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지원 주소 %@ 복사"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar o endereço do suporte, %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скопировать адрес поддержки, %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制支持邮箱 %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "複製支援信箱 %@"
+          }
+        }
+      }
+    },
     "Copy these checks to paste into a message to support" : {
       "comment" : "Troubleshooter: tooltip on Copy details.",
       "extractionState" : "manual",
@@ -5634,6 +6912,294 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "無法加入「今天」，請再試一次"
+          }
+        }
+      }
+    },
+    "Couldn't reach the server. Try again." : {
+      "comment" : "The Account row: a sync or delete failed for a reason without its own sentence.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر الوصول إلى الخادم. حاول مجددًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Server ist nicht erreichbar. Versuch es noch einmal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo conectar con el servidor. Inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de joindre le serveur. Réessaie."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi maabot ang server. Subukan ulit."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーバーに接続できませんでした。もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "서버에 연결하지 못했어요. 다시 시도해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível acessar o servidor. Tente de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось связаться с сервером. Попробуй ещё раз."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法连接服务器。请再试一次。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法連接伺服器。請再試一次。"
+          }
+        }
+      }
+    },
+    "Couldn't reach your account from this PC. Email support@tabbinotch.com to delete it." : {
+      "comment" : "The Account row: Delete Account had no server or token to ask.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر الوصول إلى حسابك من هذا الكمبيوتر. راسل support@tabbinotch.com لحذفه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Account ist von diesem PC aus nicht erreichbar. Schreib an support@tabbinotch.com, um ihn zu löschen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo acceder a tu cuenta desde este PC. Escribe a support@tabbinotch.com para eliminarla."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d'atteindre ton compte depuis ce PC. Écris à support@tabbinotch.com pour le supprimer."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi maabot ang account mo mula sa PC na ito. Mag-email sa support@tabbinotch.com para burahin ito."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このPCからアカウントに接続できませんでした。削除するにはsupport@tabbinotch.comまでメールしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 PC에서 계정에 접근할 수 없어요. 삭제하려면 support@tabbinotch.com으로 메일해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível acessar sua conta deste PC. Escreva para support@tabbinotch.com para excluí-la."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось связаться с аккаунтом с этого ПК. Напиши на support@tabbinotch.com, чтобы удалить его."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法从这台电脑访问你的账户。请发邮件到 support@tabbinotch.com 以删除。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法從這台電腦存取你的帳號。請寄信到 support@tabbinotch.com 以刪除。"
+          }
+        }
+      }
+    },
+    "Couldn't sign in with Apple. Try again." : {
+      "comment" : "The Account row: Apple's page could not be opened or answered.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر تسجيل الدخول بحساب Apple. حاول مجددًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmeldung mit Apple fehlgeschlagen. Versuch es noch einmal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo iniciar sesión con Apple. Inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de se connecter avec Apple. Réessaie."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi makapag-sign in gamit ang Apple. Subukan ulit."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appleでサインインできませんでした。もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple로 로그인하지 못했어요. 다시 시도해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível entrar com a Apple. Tente de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось войти через Apple. Попробуй ещё раз."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法通过 Apple 登录。请再试一次。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法透過 Apple 登入。請再試一次。"
+          }
+        }
+      }
+    },
+    "Couldn't sign in. Try again." : {
+      "comment" : "The Account row: signing in failed for a reason without its own sentence.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر تسجيل الدخول. حاول مجددًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmeldung fehlgeschlagen. Versuch es noch einmal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo iniciar sesión. Inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de se connecter. Réessaie."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi makapag-sign in. Subukan ulit."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインインできませんでした。もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인하지 못했어요. 다시 시도해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível entrar. Tente de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось войти. Попробуй ещё раз."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法登录。请再试一次。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法登入。請再試一次。"
           }
         }
       }
@@ -7078,6 +8644,78 @@
         }
       }
     },
+    "Friends see your name, your pet and when you're studying. Nothing about your cards or decks leaves your PC." : {
+      "comment" : "Onboarding's party step: what is shared.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يرى أصدقاؤك اسمك وحيوانك الأليف ومتى تدرس. لا يغادر أي شيء عن بطاقاتك أو رزمك هذا الكمبيوتر."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freunde sehen deinen Namen, dein Haustier und wann du lernst. Nichts über deine Karten oder Stapel verlässt deinen PC."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus amigos ven tu nombre, tu mascota y cuándo estudias. Nada sobre tus tarjetas o mazos sale de tu PC."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tes amis voient ton nom, ton animal et quand tu étudies. Rien sur tes cartes ou tes paquets ne quitte ton PC."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakikita ng mga kaibigan ang pangalan mo, ang alaga mo, at kung kailan ka nag-aaral. Walang umaalis sa PC mo tungkol sa mga card o deck mo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だちにはあなたの名前、ペット、勉強中かどうかが見えます。カードやデッキの情報がPCの外に出ることはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구에게는 이름, 펫, 공부 중인지만 보여요. 카드나 덱에 관한 정보는 PC 밖으로 나가지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus amigos veem seu nome, seu bichinho e quando você estuda. Nada sobre seus cartões ou baralhos sai do seu PC."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Друзья видят твоё имя, питомца и когда ты учишься. Ничего о твоих карточках и колодах не покидает ПК."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "好友能看到你的名字、宠物和学习状态。关于卡片和牌组的内容不会离开你的电脑。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "好友能看到你的名字、寵物和學習狀態。關於卡片和牌組的內容不會離開你的電腦。"
+          }
+        }
+      }
+    },
     "Get %@ to control your music from Tabbi." : {
       "comment" : "Settings > Connections: the Spotify row when Spotify isn't installed. %@ is the app name.",
       "extractionState" : "manual",
@@ -7218,6 +8856,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "給行事曆取個名字。"
+          }
+        }
+      }
+    },
+    "Go invisible. Your study minutes still count." : {
+      "comment" : "Onboarding's party step: tooltip on the visibility button while visible.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كن غير مرئي. دقائق دراستك تُحتسب رغم ذلك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsichtbar werden. Deine Lernminuten zählen trotzdem."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hazte invisible. Tus minutos de estudio siguen contando."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passer invisible. Tes minutes d'étude comptent quand même."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mag-invisible. Bibilang pa rin ang mga minuto ng pag-aaral mo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非表示にします。勉強時間はこれまで通りカウントされます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "숨김으로 바꿔요. 공부한 시간은 그대로 쌓여요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ficar invisível. Seus minutos de estudo continuam contando."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стать невидимым. Минуты учёбы всё равно засчитываются."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "进入隐身。你的学习分钟数照样计算。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "進入隱身。你的學習分鐘數照樣計算。"
+          }
+        }
+      }
+    },
+    "Hide each other everywhere in Party. You can unblock in Party options." : {
+      "comment" : "Party report card: tooltip on the Also block checkbox.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إخفاء كل منكما عن الآخر في كل مكان في Party. يمكنك رفع الحظر من خيارات Party."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ihr seht euch nirgends mehr in Party. In den Party-Optionen kannst du die Blockierung aufheben."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No os veréis en ninguna parte de Party. Puedes desbloquear en las opciones de Party."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous ne vous verrez plus nulle part dans Party. Tu peux débloquer dans les options de Party."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi na kayo magkikita kahit saan sa Party. Puwede mong i-unblock sa mga opsyon ng Party."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partyのどこでもお互いに表示されなくなります。Partyのオプションでブロックを解除できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party 어디에서도 서로 보이지 않아요. Party 옵션에서 차단을 풀 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vocês não se verão em nenhum lugar do Party. Dá para desbloquear nas opções do Party."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вы не будете видеть друг друга нигде в Party. Разблокировать можно в параметрах Party."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Party 中彼此都不再可见。可以在 Party 选项中取消屏蔽。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Party 中彼此都不再可見。可以在 Party 選項中取消封鎖。"
           }
         }
       }
@@ -7726,6 +9508,150 @@
         }
       }
     },
+    "Invisible to friends" : {
+      "comment" : "Onboarding's party step: the status line while invisible.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير مرئي للأصدقاء"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für Freunde unsichtbar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisible para tus amigos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisible pour tes amis"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisible sa mga kaibigan"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だちに非表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구에게 숨김"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisível para os amigos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Невидим для друзей"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对好友隐身"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "對好友隱身"
+          }
+        }
+      }
+    },
+    "Invisible: friends see you as away" : {
+      "comment" : "Onboarding's party step: the visibility button while invisible.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير مرئي: يراك أصدقاؤك غير متصل"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsichtbar: Freunde sehen dich als abwesend"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisible: tus amigos te ven ausente"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisible : tes amis te voient absent"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisible: nakikita kang wala ng mga kaibigan"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非表示: 友だちには離席中と表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "숨김: 친구에게 자리 비움으로 보여요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisível: seus amigos te veem ausente"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Невидимый: друзья видят тебя как отсутствующего"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐身：好友看到你不在"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隱身：好友看到你不在"
+          }
+        }
+      }
+    },
     "Is %@ on this PC?" : {
       "comment" : "Settings > Connections > Something not working?: whether an app is installed. %@ is an app name, such as Anki, Spotify or Claude.",
       "extractionState" : "manual",
@@ -7866,6 +9792,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tabbi 裡有 Google 日曆嗎？"
+          }
+        }
+      }
+    },
+    "It belongs to your Apple Account. Delete Account above removes it." : {
+      "comment" : "Party options, Your data, while signed in: the data goes with the account row above.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تخص حساب Apple الخاص بك. يزيلها «حذف الحساب» أعلاه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sie gehören zu deinem Apple-Account. „Account löschen“ oben entfernt sie."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pertenecen a tu cuenta de Apple. Eliminar cuenta, arriba, los borra."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elles appartiennent à ton compte Apple. Supprimer le compte, ci-dessus, les efface."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pag-aari ito ng Apple Account mo. Tinatanggal ito ng Delete Account sa itaas."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これらはApple Accountに属します。上の「アカウントを削除」で削除されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple 계정에 속한 데이터예요. 위의 계정 삭제로 지워져요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pertencem à sua Conta Apple. Excluir conta, acima, os remove."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Они принадлежат твоему Apple Account. «Удалить аккаунт» выше удалит их."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "它属于你的 Apple 账户。上方的“删除账户”会一并删除。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "它屬於你的 Apple 帳號。上方的「刪除帳號」會一併刪除。"
+          }
+        }
+      }
+    },
+    "Joining the party server" : {
+      "comment" : "Onboarding's party step: title while connecting.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ الانضمام إلى خادم الحفلة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinde mit dem Party-Server"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectando con el servidor de fiestas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion au serveur de fêtes"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sumasali sa party server"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パーティーサーバーに接続中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파티 서버에 접속하는 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrando no servidor de festas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подключаемся к серверу вечеринок"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在加入派对服务器"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在加入派對伺服器"
           }
         }
       }
@@ -9454,6 +11524,78 @@
         }
       }
     },
+    "No reviews" : {
+      "comment" : "Anki tab: a heatmap cell's tooltip for a day without reviews.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا مراجعات"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Wiederholungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin repasos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune révision"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Walang review"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "復習なし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복습 없음"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem revisões"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Без повторений"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无复习"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無複習"
+          }
+        }
+      }
+    },
     "No. %@ didn't send a calendar." : {
       "comment" : "Settings > Connections > Something not working?: the link answered with something that isn't a calendar. %@ is the calendar's name.",
       "extractionState" : "manual",
@@ -10966,6 +13108,78 @@
         }
       }
     },
+    "Only your name, pet, study status and minutes are shared. Nothing about your cards, decks or what you study ever leaves your PC." : {
+      "comment" : "Party options, the Privacy footer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يُشارك سوى اسمك وحيوانك الأليف وحالة الدراسة والدقائق. لا يغادر أي شيء عن بطاقاتك أو رزمك أو ما تدرسه هذا الكمبيوتر أبدًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur dein Name, dein Haustier, dein Lernstatus und deine Minuten werden geteilt. Nichts über deine Karten, Stapel oder was du lernst verlässt je deinen PC."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo se comparten tu nombre, tu mascota, tu estado de estudio y tus minutos. Nada sobre tus tarjetas, mazos o lo que estudias sale nunca de tu PC."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seuls ton nom, ton animal, ton statut d'étude et tes minutes sont partagés. Rien sur tes cartes, tes paquets ou ce que tu étudies ne quitte jamais ton PC."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pangalan, alaga, status ng pag-aaral, at minuto mo lang ang ibinabahagi. Walang umaalis sa PC mo tungkol sa mga card, deck, o pinag-aaralan mo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "共有されるのは名前、ペット、勉強状況、勉強時間だけです。カード、デッキ、勉強内容の情報がPCの外に出ることはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이름, 펫, 공부 상태와 시간만 공유돼요. 카드, 덱, 공부 내용에 관한 정보는 PC 밖으로 나가지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só seu nome, bichinho, status de estudo e minutos são compartilhados. Nada sobre seus cartões, baralhos ou o que você estuda sai do seu PC."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Передаются только имя, питомец, статус учёбы и минуты. Ничего о твоих карточках, колодах и о том, что ты учишь, не покидает ПК."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只会分享你的名字、宠物、学习状态和分钟数。关于卡片、牌组或学习内容的任何信息都不会离开你的电脑。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只會分享你的名字、寵物、學習狀態和分鐘數。關於卡片、牌組或學習內容的任何資訊都不會離開你的電腦。"
+          }
+        }
+      }
+    },
     "Open" : {
       "comment" : "Settings > Tabs > Focus > Options: button that opens the saved playlist in the browser.",
       "extractionState" : "manual",
@@ -11683,6 +13897,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟工作列設定"
+          }
+        }
+      }
+    },
+    "Open the Party tab to answer when you were born, then sign in here." : {
+      "comment" : "Party options: Sign In was clicked before the age check; the Party tab asks it.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح تبويب Party للإجابة عن تاريخ ميلادك، ثم سجّل الدخول هنا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne den Party-Tab und gib an, wann du geboren bist, dann melde dich hier an."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre la pestaña Party para indicar cuándo naciste y luego inicia sesión aquí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre l'onglet Party pour indiquer quand tu es né, puis connecte-toi ici."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buksan ang tab na Party para sagutin kung kailan ka ipinanganak, tapos mag-sign in dito."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partyタブを開いて生年月を答えてから、ここでサインインしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party 탭에서 태어난 때를 먼저 답한 뒤 여기서 로그인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra a aba Party para informar quando você nasceu e depois entre aqui."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открой вкладку Party, укажи, когда ты родился, а затем войди здесь."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先打开 Party 标签页回答你的出生年月，再回到这里登录。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先打開 Party 分頁回答你的出生年月，再回到這裡登入。"
           }
         }
       }
@@ -12407,6 +14693,78 @@
         }
       }
     },
+    "Party asks once before you join. Your answer stays on this PC." : {
+      "comment" : "Party's age check: under 'When were you born?'.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يسأل Party مرة واحدة قبل الانضمام. تبقى إجابتك على هذا الكمبيوتر."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party fragt einmal, bevor du beitrittst. Deine Antwort bleibt auf diesem PC."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party lo pregunta una vez antes de unirte. Tu respuesta se queda en este PC."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party le demande une fois avant que tu rejoignes. Ta réponse reste sur ce PC."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minsan lang nagtatanong ang Party bago ka sumali. Nananatili sa PC na ito ang sagot mo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partyは参加前に一度だけ尋ねます。回答はこのPCに保存されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party는 참여 전에 한 번만 물어요. 답은 이 PC에만 남아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Party pergunta uma vez antes de você entrar. Sua resposta fica neste PC."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party спрашивает один раз перед входом. Ответ остаётся на этом ПК."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party 只在加入前问一次。你的回答只留在这台电脑上。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Party 只在加入前問一次。你的回答只留在這台電腦上。"
+          }
+        }
+      }
+    },
     "Paste a key in Connections to ask %@ questions. It stays in Windows Credential Manager." : {
       "comment" : "Ask AI setup sentence on Windows; %@ is the assistant name. Credential Manager is named as Windows names it in each language.",
       "extractionState" : "manual",
@@ -12619,6 +14977,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在島嶼中重新選擇套件、分頁及其所需設定"
+          }
+        }
+      }
+    },
+    "Pick a reason first" : {
+      "comment" : "Party report card: tooltip on Send Report while no reason is picked.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر سببًا أولًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle zuerst einen Grund"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un motivo primero"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis d'abord une raison"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pumili muna ng dahilan"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まず理由を選んでください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "먼저 이유를 골라 주세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um motivo primeiro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сначала выбери причину"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先选一个原因"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先選一個原因"
           }
         }
       }
@@ -13271,6 +15701,78 @@
         }
       }
     },
+    "Read through AnkiConnect on this PC" : {
+      "comment" : "Onboarding's Anki step: a small lock line saying the decks are read locally.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تُقرأ عبر AnkiConnect على هذا الكمبيوتر"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Über AnkiConnect auf diesem PC gelesen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leído a través de AnkiConnect en este PC"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lu via AnkiConnect sur ce PC"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Binabasa sa AnkiConnect sa PC na ito"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このPCのAnkiConnectから読み取り"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 PC의 AnkiConnect로 읽어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lido pelo AnkiConnect neste PC"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Читается через AnkiConnect на этом ПК"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过这台电脑上的 AnkiConnect 读取"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "透過這台電腦上的 AnkiConnect 讀取"
+          }
+        }
+      }
+    },
     "Reduce Motion" : {
       "comment" : "Settings > Look: the switch that turns movement into fades, like Windows' own accessibility setting.",
       "extractionState" : "manual",
@@ -13627,6 +16129,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取代你之前匯入的 %@ 套件。"
+          }
+        }
+      }
+    },
+    "Report %@ for %@" : {
+      "comment" : "Party report card: tooltip on a reason chip. First %@ is the person's name, second the reason in lowercase.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإبلاغ عن %@ بسبب %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ melden wegen: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denunciar a %@ por %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signaler %@ pour %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-report si %@ dahil sa %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@を%@で報告"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 님을 %@(으)로 신고"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denunciar %@ por %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пожаловаться на %@: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以“%2$@”举报 %1$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以「%2$@」檢舉 %1$@"
           }
         }
       }
@@ -14423,6 +16997,222 @@
         }
       }
     },
+    "Send Report" : {
+      "comment" : "Party report card: the button that sends the report.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إرسال البلاغ"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldung senden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar informe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer le signalement"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ipadala ang report"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "報告を送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신고 보내기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar denúncia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить жалобу"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送举报"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送出檢舉"
+          }
+        }
+      }
+    },
+    "Send this report to the Tabbi team" : {
+      "comment" : "Party report card: tooltip on Send Report.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إرسال هذا البلاغ إلى فريق Tabbi"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Meldung an das Tabbi-Team senden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar este informe al equipo de Tabbi"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer ce signalement à l'équipe Tabbi"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ipadala ang report na ito sa Tabbi team"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この報告をTabbiチームに送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 신고를 Tabbi 팀에 보내요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar esta denúncia à equipe do Tabbi"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить эту жалобу команде Tabbi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把这份举报发给 Tabbi 团队"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把這份檢舉送給 Tabbi 團隊"
+          }
+        }
+      }
+    },
+    "Share your code, or add theirs below. Start a party from the Party tab." : {
+      "comment" : "Onboarding's party step: under 'No friends yet'.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شارك رمزك، أو أضف رمز صديقك أدناه. ابدأ حفلة من تبويب Party."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teile deinen Code oder füge unten den eines Freundes hinzu. Eine Party startest du im Party-Tab."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte tu código o añade el de un amigo abajo. Crea una fiesta desde la pestaña Party."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partage ton code ou ajoute celui d'un ami ci-dessous. Lance une fête depuis l'onglet Party."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ibahagi ang code mo, o idagdag ang sa kanila sa ibaba. Magsimula ng party mula sa tab na Party."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コードを共有するか、下に友だちのコードを追加しましょう。パーティーはPartyタブから始められます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 코드를 공유하거나 아래에 친구 코드를 추가하세요. 파티는 Party 탭에서 시작해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhe seu código ou adicione o de um amigo abaixo. Comece uma festa na aba Party."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поделись своим кодом или добавь код друга ниже. Вечеринку можно начать во вкладке Party."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享你的代码，或在下方添加好友的代码。可以在 Party 标签页开始派对。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享你的代碼，或在下方加入好友的代碼。可以在 Party 分頁開始派對。"
+          }
+        }
+      }
+    },
     "Share your week as an image" : {
       "comment" : "The weekly recap's share button tooltip.",
       "extractionState" : "manual",
@@ -14783,6 +17573,78 @@
         }
       }
     },
+    "Show friends when you study again" : {
+      "comment" : "Onboarding's party step: tooltip on the visibility button while invisible.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أظهر لأصدقائك متى تدرس مجددًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freunden wieder zeigen, wann du lernst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a mostrar a tus amigos cuándo estudias"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montrer de nouveau à tes amis quand tu étudies"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ipakita ulit sa mga kaibigan kapag nag-aaral ka"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "勉強中を再び友だちに表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공부 중인 걸 친구에게 다시 보여줘요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voltar a mostrar aos amigos quando você estuda"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снова показывать друзьям, когда ты учишься"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新让好友看到你在学习"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新讓好友看到你在學習"
+          }
+        }
+      }
+    },
     "Shown once. Tabbi won't ask again." : {
       "comment" : "Onboarding footer hint on the tray icon step: this step never comes back.",
       "extractionState" : "manual",
@@ -14851,6 +17713,222 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "只顯示一次。Tabbi 不會再問。"
+          }
+        }
+      }
+    },
+    "Sign in with your Apple Account to sync your pet across your devices" : {
+      "comment" : "Tooltip on the Sign in with Apple button.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سجّل الدخول بحساب Apple لمزامنة حيوانك الأليف عبر أجهزتك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit deinem Apple-Account anmelden, um dein Haustier über deine Geräte zu synchronisieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión con tu cuenta de Apple para sincronizar tu mascota entre tus dispositivos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecte-toi avec ton compte Apple pour synchroniser ton animal entre tes appareils"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mag-sign in gamit ang Apple Account mo para i-sync ang alaga mo sa mga device mo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Accountでサインインして、デバイス間でペットを同期"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple 계정으로 로그인해 여러 기기에서 펫을 동기화해요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entre com sua Conta Apple para sincronizar seu bichinho entre seus dispositivos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Войди с Apple Account, чтобы синхронизировать питомца между устройствами"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 Apple 账户登录，在多台设备间同步宠物"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 Apple 帳號登入，在多台裝置間同步寵物"
+          }
+        }
+      }
+    },
+    "Signing in… Finish in your browser, then come back here." : {
+      "comment" : "The Account row's caption while the web sign-in waits for the browser.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ تسجيل الدخول… أكمل في متصفحك ثم عد إلى هنا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmeldung läuft … Schließ sie im Browser ab und komm dann hierher zurück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciando sesión… Termina en tu navegador y vuelve aquí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion en cours… Termine dans ton navigateur, puis reviens ici."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nagsa-sign in… Tapusin sa browser mo, tapos bumalik dito."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインイン中… ブラウザーで完了したら、ここに戻ってきてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인 중… 브라우저에서 마친 뒤 여기로 돌아오세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrando… Conclua no navegador e volte aqui."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выполняем вход… Заверши в браузере и вернись сюда."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在登录… 请在浏览器中完成，然后回到这里。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在登入… 請在瀏覽器中完成，然後回到這裡。"
+          }
+        }
+      }
+    },
+    "Signing you in so friends can find you. Your code shows here in a moment." : {
+      "comment" : "Onboarding's party step: detail while connecting.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ تسجيل دخولك ليتمكن أصدقاؤك من إيجادك. سيظهر رمزك هنا بعد لحظات."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du wirst angemeldet, damit Freunde dich finden. Dein Code erscheint gleich hier."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciando sesión para que tus amigos te encuentren. Tu código aparecerá aquí en un momento."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion en cours pour que tes amis te trouvent. Ton code s'affichera ici dans un instant."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinasign-in ka para mahanap ka ng mga kaibigan. Lalabas dito ang code mo sa ilang sandali."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "友だちが見つけられるようにサインインしています。コードはまもなくここに表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구들이 찾을 수 있도록 로그인하는 중이에요. 코드가 곧 여기에 나타나요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrando para que seus amigos te encontrem. Seu código aparece aqui em instantes."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выполняем вход, чтобы друзья могли тебя найти. Код появится здесь через мгновение."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在登录，好让好友能找到你。你的代码稍后会显示在这里。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在登入，好讓好友能找到你。你的代碼稍後會顯示在這裡。"
           }
         }
       }
@@ -15431,6 +18509,222 @@
         }
       }
     },
+    "Stop syncing on this PC. Your pet and progress stay here." : {
+      "comment" : "Tooltip on Sign Out.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إيقاف المزامنة على هذا الكمبيوتر. يبقى حيوانك وتقدمك هنا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronisierung auf diesem PC beenden. Dein Haustier und dein Fortschritt bleiben hier."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dejar de sincronizar en este PC. Tu mascota y tu progreso se quedan aquí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrêter la synchronisation sur ce PC. Ton animal et ta progression restent ici."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Itigil ang pag-sync sa PC na ito. Mananatili rito ang alaga at progreso mo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このPCでの同期を停止します。ペットと進捗はここに残ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 PC에서 동기화를 멈춰요. 펫과 진행 상황은 여기 남아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parar de sincronizar neste PC. Seu bichinho e seu progresso ficam aqui."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прекратить синхронизацию на этом ПК. Питомец и прогресс останутся здесь."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止在这台电脑上同步。你的宠物和进度留在这里。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止在這台電腦上同步。你的寵物和進度留在這裡。"
+          }
+        }
+      }
+    },
+    "Stop waiting for the browser" : {
+      "comment" : "Tooltip on Cancel while a web sign-in waits for the browser.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التوقف عن انتظار المتصفح"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht länger auf den Browser warten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dejar de esperar al navegador"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne plus attendre le navigateur"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huwag nang hintayin ang browser"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ブラウザーの応答を待つのをやめる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "브라우저 기다리기를 그만둬요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parar de esperar o navegador"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не ждать браузер"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不再等待浏览器"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不再等待瀏覽器"
+          }
+        }
+      }
+    },
+    "Sync your pet, points and streaks across your devices." : {
+      "comment" : "The Account row's caption while signed out.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "زامن حيوانك ونقاطك وسلاسلك عبر أجهزتك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronisiere dein Haustier, deine Punkte und Serien über deine Geräte."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincroniza tu mascota, puntos y rachas entre tus dispositivos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronise ton animal, tes points et tes séries entre tes appareils."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-sync ang alaga, mga puntos, at mga streak mo sa mga device mo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペット、ポイント、連続記録をデバイス間で同期します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "펫, 포인트, 연속 기록을 여러 기기에서 동기화해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronize seu bichinho, pontos e sequências entre seus dispositivos."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Синхронизируй питомца, очки и серии между устройствами."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在多台设备间同步你的宠物、积分和连续记录。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在多台裝置間同步你的寵物、點數和連續紀錄。"
+          }
+        }
+      }
+    },
     "Tabbi Settings" : {
       "comment" : "The Settings window's title and the gear button's tooltip in the open island. Tabbi is the product name; Settings as Windows names an app's settings.",
       "extractionState" : "manual",
@@ -15787,6 +19081,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tabbi 透過連結讀取行事曆。從 Google、Outlook 或 iCloud 複製 iCal 或 ICS 位址並貼到這裡。"
+          }
+        }
+      }
+    },
+    "Tabbi talks to Anki only on this PC and never uploads your decks" : {
+      "comment" : "Tooltip on the lock line in onboarding's Anki step.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتواصل Tabbi مع Anki على هذا الكمبيوتر فقط ولا يرفع رزمك أبدًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi spricht nur auf diesem PC mit Anki und lädt deine Stapel nie hoch"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi habla con Anki solo en este PC y nunca sube tus mazos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi ne parle à Anki que sur ce PC et n'envoie jamais tes paquets"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sa PC na ito lang nakikipag-usap si Tabbi kay Anki at hindi kailanman ina-upload ang mga deck mo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TabbiはこのPC上でのみAnkiと通信し、デッキをアップロードすることはありません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi는 이 PC에서만 Anki와 통신하고 덱을 업로드하지 않아요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi fala com o Anki só neste PC e nunca envia seus baralhos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi общается с Anki только на этом ПК и никогда не загружает твои колоды"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 只在这台电脑上与 Anki 通信，从不上传你的牌组"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 只在這台電腦上與 Anki 通訊，絕不上傳你的牌組"
           }
         }
       }
@@ -16223,6 +19589,78 @@
         }
       }
     },
+    "The sign-in took too long. Try again." : {
+      "comment" : "The Account row: the web sign-in code expired.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استغرق تسجيل الدخول وقتًا طويلًا. حاول مجددًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anmeldung hat zu lange gedauert. Versuch es noch einmal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El inicio de sesión tardó demasiado. Inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La connexion a pris trop de temps. Réessaie."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masyadong natagalan ang sign-in. Subukan ulit."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインインに時間がかかりすぎました。もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인에 시간이 너무 오래 걸렸어요. 다시 시도해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O login demorou demais. Tente de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вход занял слишком много времени. Попробуй ещё раз."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登录用时过长。请再试一次。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登入花了太久。請再試一次。"
+          }
+        }
+      }
+    },
     "This PC blocks alerts" : {
       "comment" : "Settings > Connections: the Alerts row when a school or work policy blocks notifications.",
       "extractionState" : "manual",
@@ -16295,6 +19733,78 @@
         }
       }
     },
+    "This account can no longer use Party. Write to %@ if that's a mistake." : {
+      "comment" : "Onboarding's party step: the banned state. %@ is the support email.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يعد هذا الحساب يستطيع استخدام Party. راسل %@ إن كان ذلك خطأ."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Konto kann Party nicht mehr nutzen. Schreib an %@, falls das ein Fehler ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta cuenta ya no puede usar Party. Escribe a %@ si es un error."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce compte ne peut plus utiliser Party. Écris à %@ si c'est une erreur."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi na puwedeng gumamit ng Party ang account na ito. Sumulat sa %@ kung mali ito."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアカウントはPartyを使えなくなりました。間違いであれば%@までご連絡ください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 계정은 더 이상 Party를 쓸 수 없어요. 오류라면 %@(으)로 알려 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta conta não pode mais usar o Party. Escreva para %@ se for um engano."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот аккаунт больше не может пользоваться Party. Напиши на %@, если это ошибка."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这个账户已不能使用 Party。如果这是个错误，请写信给 %@。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這個帳號已不能使用 Party。如果這是個錯誤，請寫信給 %@。"
+          }
+        }
+      }
+    },
     "This copy can't show alerts" : {
       "comment" : "Settings > Connections: the Alerts row in a development copy of Tabbi without an app identity.",
       "extractionState" : "manual",
@@ -16363,6 +19873,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "這份副本無法顯示提醒"
+          }
+        }
+      }
+    },
+    "This deletes your account and everything the server keeps for it: the synced copy of your pet and points, your friend code, friends and parties. Your pet stays on this PC. This can't be undone." : {
+      "comment" : "The Delete Account confirmation.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحذف هذا حسابك وكل ما يحتفظ به الخادم له: النسخة المتزامنة من حيوانك ونقاطك ورمز صديقك وأصدقاءك وحفلاتك. يبقى حيوانك على هذا الكمبيوتر. لا يمكن التراجع عن هذا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das löscht deinen Account und alles, was der Server dafür speichert: die synchronisierte Kopie deines Haustiers und deiner Punkte, deinen Freundescode, Freunde und Partys. Dein Haustier bleibt auf diesem PC. Das lässt sich nicht rückgängig machen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esto elimina tu cuenta y todo lo que el servidor guarda de ella: la copia sincronizada de tu mascota y tus puntos, tu código de amigo, tus amigos y tus fiestas. Tu mascota se queda en este PC. No se puede deshacer."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cela supprime ton compte et tout ce que le serveur garde pour lui : la copie synchronisée de ton animal et de tes points, ton code ami, tes amis et tes fêtes. Ton animal reste sur ce PC. C'est irréversible."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buburahin nito ang account mo at lahat ng itinatago ng server para rito: ang naka-sync na kopya ng alaga at mga puntos mo, ang friend code mo, mga kaibigan, at mga party. Mananatili sa PC na ito ang alaga mo. Hindi ito maibabalik."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アカウントと、サーバーが保持するすべてのデータ（同期されたペットとポイント、フレンドコード、友だち、パーティー）が削除されます。ペットはこのPCに残ります。この操作は取り消せません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정과 서버가 보관하는 모든 것(동기화된 펫과 포인트, 친구 코드, 친구, 파티)이 삭제돼요. 펫은 이 PC에 남아요. 되돌릴 수 없어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isso exclui sua conta e tudo que o servidor guarda dela: a cópia sincronizada do seu bichinho e dos pontos, seu código de amigo, amigos e festas. Seu bichinho fica neste PC. Não dá para desfazer."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это удалит аккаунт и всё, что сервер хранит для него: синхронизированную копию питомца и очков, код друга, друзей и вечеринки. Питомец останется на этом ПК. Отменить это нельзя."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这会删除你的账户以及服务器为它保存的一切：宠物和积分的同步副本、好友代码、好友和派对。你的宠物留在这台电脑上。此操作无法撤销。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這會刪除你的帳號以及伺服器為它保存的一切：寵物和點數的同步副本、好友代碼、好友和派對。你的寵物留在這台電腦上。此操作無法復原。"
+          }
+        }
+      }
+    },
+    "This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this PC. If Party stays on, you get a new friend code." : {
+      "comment" : "Party options: the Delete my Party data confirmation.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحذف هذا رمز صديقك وملفك الشخصي وحيوانك كما يراهما أصدقاؤك وقائمة أصدقائك وعضوياتك في الحفلات وسلسلة دراستك من خادم الأصدقاء. لن يراك أصدقاؤك بعد الآن. يبقى حيوانك ونقاطك على هذا الكمبيوتر. إن بقي Party مفعلًا، تحصل على رمز صديق جديد."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das löscht deinen Freundescode, dein Profil und Haustier, wie Freunde sie sehen, deine Freundesliste, deine Party-Mitgliedschaften und deine Lernserie vom Freundeserver. Freunde sehen dich nicht mehr. Dein Haustier und deine Punkte bleiben auf diesem PC. Bleibt Party an, bekommst du einen neuen Freundescode."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esto borra del servidor de amigos tu código de amigo, tu perfil y mascota tal como los ven tus amigos, tu lista de amigos, tus fiestas y tu racha de estudio. Tus amigos dejarán de verte. Tu mascota y tus puntos se quedan en este PC. Si Party sigue activado, recibes un código de amigo nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cela supprime du serveur d'amis ton code ami, ton profil et ton animal tels que tes amis les voient, ta liste d'amis, tes fêtes et ta série d'étude. Tes amis ne te verront plus. Ton animal et tes points restent sur ce PC. Si Party reste activé, tu reçois un nouveau code ami."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buburahin nito sa friends server ang friend code mo, ang profile at alaga mo ayon sa nakikita ng mga kaibigan, ang listahan ng mga kaibigan mo, ang mga party mo, at ang study streak mo. Hindi ka na makikita ng mga kaibigan. Mananatili sa PC na ito ang alaga at mga puntos mo. Kung nakabukas pa ang Party, makakakuha ka ng bagong friend code."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フレンドコード、友だちに見えるプロフィールとペット、友だちリスト、パーティーへの参加、勉強の連続記録がフレンドサーバーから削除されます。友だちからはあなたが見えなくなります。ペットとポイントはこのPCに残ります。Partyをオンのままにすると、新しいフレンドコードが発行されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구 코드, 친구에게 보이는 프로필과 펫, 친구 목록, 파티 참여 정보, 공부 연속 기록이 친구 서버에서 삭제돼요. 친구들은 더 이상 나를 볼 수 없어요. 펫과 포인트는 이 PC에 남아요. Party를 켜 두면 새 친구 코드를 받아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isso apaga do servidor de amigos seu código de amigo, seu perfil e bichinho como os amigos os veem, sua lista de amigos, suas festas e sua sequência de estudo. Seus amigos não vão mais te ver. Seu bichinho e seus pontos ficam neste PC. Se o Party continuar ligado, você recebe um novo código de amigo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это удалит с сервера друзей твой код друга, профиль и питомца, какими их видят друзья, список друзей, участие в вечеринках и серию учёбы. Друзья больше не будут тебя видеть. Питомец и очки останутся на этом ПК. Если Party останется включённым, ты получишь новый код друга."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这会从好友服务器删除你的好友代码、好友看到的资料和宠物、好友列表、派对成员资格和学习连续记录。好友将不再看到你。你的宠物和积分留在这台电脑上。如果 Party 保持开启，你会得到一个新的好友代码。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這會從好友伺服器刪除你的好友代碼、好友看到的資料和寵物、好友列表、派對成員資格和學習連續紀錄。好友將不再看到你。你的寵物和點數留在這台電腦上。如果 Party 保持開啟，你會得到一個新的好友代碼。"
           }
         }
       }
@@ -17587,6 +21241,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用自訂"
+          }
+        }
+      }
+    },
+    "Visible: friends see when you study" : {
+      "comment" : "Onboarding's party step: the visibility button while visible.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مرئي: يرى أصدقاؤك متى تدرس"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sichtbar: Freunde sehen, wann du lernst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visible: tus amigos ven cuándo estudias"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visible : tes amis voient quand tu étudies"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visible: nakikita ng mga kaibigan kapag nag-aaral ka"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示: 友だちに勉強中が伝わります"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "표시: 친구에게 공부 중인 걸 보여줘요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visível: seus amigos veem quando você estuda"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видимый: друзья видят, когда ты учишься"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可见：好友能看到你在学习"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可見：好友能看到你在學習"
           }
         }
       }
