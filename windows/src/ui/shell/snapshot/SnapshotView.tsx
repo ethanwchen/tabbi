@@ -2,10 +2,10 @@
  * Draws one snapshot state (snapshotPlan.ts) from demo data, still: the
  * island in a phase, the open panel of any module (turned on for the shot
  * if its kit leaves it off) in any of its named states, the pill with a
- * given preview, an onboarding setup step in the takeover slot, or a
- * Settings section in a window-sized frame. The frame it draws carries
- * `data-snapshot-ready` once the module has settled into its state, which
- * the Playwright spec waits for.
+ * given preview, an onboarding step in the takeover slot (the real flow,
+ * driven to that step), or a Settings section in a window-sized frame. The
+ * frame it draws carries `data-snapshot-ready` once the module has settled
+ * into its state, which the Playwright spec waits for.
  */
 
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
@@ -13,13 +13,14 @@ import type { AppServices } from "../../../app/appServices";
 import type { NotchTakeover } from "../../../app/takeover";
 import type { Host } from "../../../host/host";
 import { MODULE_LIST } from "../../../modules/moduleList";
-import { Icon } from "../../kit/Icon";
+import { OnboardingFlow } from "../../../core/onboarding/onboardingFlow";
 import { Island } from "../../Island";
+import { OnboardingStore, WINDOWS_ONBOARDING_EXTRAS } from "../../onboarding/onboardingStore";
+import { onboardingTakeover } from "../../onboarding/OnboardingTakeover";
 import { initialState, type ShellState } from "../machine";
 import { SettingsWindow } from "../settings/SettingsWindow";
-import { setupStepView } from "../SetupFallback";
-import { DEMO_PREVIEWS } from "./demoPreviews";
 import { setupSteps, snapshotStates, type SnapshotPlan } from "./snapshotPlan";
+import { DEMO_PREVIEWS } from "./demoPreviews";
 
 export interface SnapshotViewProps {
   readonly plan: SnapshotPlan;
@@ -33,6 +34,9 @@ export interface SnapshotViewProps {
 const OPEN: ShellState = { ...initialState("alwaysVisible"), phase: "open", source: "tray", focused: true };
 const PILL: ShellState = initialState("alwaysVisible");
 const HIDDEN: ShellState = initialState("showOnHover");
+
+/* The kit the onboarding shots pick: the one with questions, so every step has something to show. */
+const ONBOARDING_KIT = "medicine";
 
 /* Turns `id` on for the shot when the kit's layout leaves it off, so every module's panel can be drawn. */
 function enable(app: AppServices, id: string): void {
@@ -56,6 +60,37 @@ export function prepareSnapshot(app: AppServices, plan: SnapshotPlan, options: {
   }
 }
 
+/**
+ * The onboarding store driven to `step`: the flow's own steps by name, a
+ * module's setup step by its id, or one of Windows' two. Nothing is
+ * applied; the store only shows the flow as it stands there.
+ */
+function onboardingAt(app: AppServices, step: string): OnboardingStore {
+  const store = new OnboardingStore(app);
+  const settings = app.settings;
+  const kit = settings.kits.get(ONBOARDING_KIT) ?? settings.activeKit;
+  const flow = new OnboardingFlow(settings.catalog, {
+    layout: settings.current.modules,
+    ...(kit === undefined ? {} : { kit }),
+    asksName: step === "name",
+    extras: WINDOWS_ONBOARDING_EXTRAS,
+  });
+  const windows = step === "startWithWindows" || step === "trayIcon" ? step : undefined;
+  if (step !== "name" && step !== "kit") {
+    if (kit !== undefined) flow.choose(kit);
+    const wanted = (stage: typeof flow.stage) =>
+      step === "question" ? stage.kind === "question" : step === "modules" ? stage.kind === "modules" : step === "extras" ? stage.kind === "extras" : stage.kind === "setup" && stage.id === step;
+    for (let guard = 0; guard < 40 && !wanted(flow.stage) && flow.stage.kind !== "finished"; guard++) {
+      if (windows !== undefined && flow.stageIndex >= flow.stages.length - 1) break;
+      flow.next();
+    }
+    /* A step the current choices never reach (the tray hint) shows the flow's last step behind it. */
+    if (!wanted(flow.stage) && windows === undefined && setupSteps(MODULE_LIST).every((declared) => declared.id !== step)) flow.back();
+  }
+  store.show(flow, windows);
+  return store;
+}
+
 export function SnapshotView({ plan, app, host, locale, showsMore = false }: SnapshotViewProps) {
   const [ready, setReady] = useState(plan.kind !== "open" || plan.state === undefined);
 
@@ -68,19 +103,7 @@ export function SnapshotView({ plan, app, host, locale, showsMore = false }: Sna
 
   const takeover = useMemo((): NotchTakeover | undefined => {
     if (plan.kind !== "onboarding") return undefined;
-    const step = setupSteps(MODULE_LIST).find((candidate) => candidate.id === plan.step);
-    if (step === undefined) return undefined;
-    const View = setupStepView(step, app.settings.current.modules.enabled, app.modules, app.settings.catalog);
-    return {
-      Leading: () => (
-        <span className="takeover-step">
-          <Icon id={step.symbol} size={14} />
-          <span>{step.title}</span>
-        </span>
-      ),
-      Trailing: () => null,
-      Body: () => <View step={step} done={() => {}} />,
-    };
+    return onboardingTakeover(onboardingAt(app, plan.step), app);
   }, [app, plan]);
 
   switch (plan.kind) {
@@ -89,7 +112,7 @@ export function SnapshotView({ plan, app, host, locale, showsMore = false }: Sna
     case "settings":
       return (
         <div className="snapshot-frame settings-frame" data-snapshot-ready="">
-          <SettingsWindow app={app} host={host} initialSection={plan.section} />
+          <SettingsWindow app={app} host={host} initialSection={plan.section} snapshotState={plan.state} />
         </div>
       );
     case "hidden":

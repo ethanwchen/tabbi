@@ -101,4 +101,18 @@ export class KitLibrary {
   withImported(imported: readonly KitManifest[]): KitLibrary {
     return new KitLibrary([...this.list, ...imported]);
   }
+
+  /**
+   * Replaces the imported kits in place (the bundled ones stay), so a
+   * repository holding this library sees an import or a removal at once.
+   */
+  setImported(imported: readonly KitManifest[]): void {
+    const bundled = this.list.filter((kit) => !isImportedKitID(kit.id));
+    this.list = new KitLibrary([...bundled, ...imported]).list;
+  }
+
+  /** The imported kits, in library order. */
+  get imported(): KitManifest[] {
+    return this.list.filter((kit) => isImportedKitID(kit.id));
+  }
 }

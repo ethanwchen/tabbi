@@ -82,21 +82,25 @@ export interface MoreOptionsProps {
   /** Starts open, for reviews. */
   readonly open?: boolean;
   readonly title?: string;
+  /** The children are whole `SettingsGroup`s (a section's rare groups), not rows for one card. */
+  readonly groups?: boolean;
 }
 
-export function MoreOptions({ children, open: initial = false, title }: MoreOptionsProps) {
+export function MoreOptions({ children, open: initial = false, title, groups = false }: MoreOptionsProps) {
   const [open, setOpen] = useState(initial);
   const transition = useTransition("snappy", ["transform"]);
   const id = useId();
   const heading = title ?? tr("More options");
   return (
     <section className="kit-settings-group kit-more-options" data-open={open}>
-      <button type="button" className="kit-more-options-toggle" aria-expanded={open} aria-controls={id} onClick={() => setOpen((o) => !o)}>
-        <Icon id="chevron-forward" size={12} className="kit-more-options-chevron" style={{ transition }} />
-        <span>{heading}</span>
-      </button>
+      <Tooltip text={open ? tr("Hide the less common settings") : tr("Show the less common settings")}>
+        <button type="button" className="kit-more-options-toggle" aria-expanded={open} aria-controls={id} onClick={() => setOpen((o) => !o)}>
+          <Icon id="chevron-forward" size={12} className="kit-more-options-chevron" style={{ transition }} />
+          <span>{heading}</span>
+        </button>
+      </Tooltip>
       {open && (
-        <div id={id} className="kit-card kit-settings-group-card">
+        <div id={id} className={groups ? "kit-more-options-groups" : "kit-card kit-settings-group-card"}>
           {children}
         </div>
       )}

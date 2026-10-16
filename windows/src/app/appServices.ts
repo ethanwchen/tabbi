@@ -7,6 +7,7 @@
  */
 
 import { BUNDLED_KITS } from "../core/kits/bundledKits";
+import { ImportedKitStore } from "../core/kits/importedKitStore";
 import type { KitLibrary } from "../core/kits/kitLibrary";
 import { editionCatalog, type Edition } from "../core/editions/edition";
 import { TABBI_EDITION } from "../core/editions/bundledEditions";
@@ -120,11 +121,15 @@ export class AppServices {
       kits,
       defaultKitID: edition.defaultKitID,
       channel: runMode.isSnapshot ? quietChannel : hostChannel(options.host, "settings"),
+      hotkeyStatus: options.startup.hotkey,
     };
-    const settings =
-      options.settingsEntries !== undefined || isEphemeral(runMode)
-        ? SettingsStore.inMemory(settingsOptions, JSON.parse(JSON.stringify(options.settingsEntries ?? {})))
-        : await SettingsStore.load({ ...settingsOptions, store: storage.root() });
+    /* Live runs keep imported kits beside the settings and drive Start with Windows and the hotkey through the host. */
+    const live = options.settingsEntries === undefined && !isEphemeral(runMode);
+    const settings = live
+      ? await SettingsStore.load({ ...settingsOptions, store: storage.root(), kitStore: new ImportedKitStore(storage.root()), system: options.host })
+      : SettingsStore.inMemory(settingsOptions, JSON.parse(JSON.stringify(options.settingsEntries ?? {})));
+    /* The host registers the default shortcut at launch; the island puts the user's own in its place. */
+    if (live && options.role === "island") void settings.registerSavedHotkey();
     const now = options.now ?? (() => Date.now() / 1000);
     const environment: AppEnvironment = {
       edition,

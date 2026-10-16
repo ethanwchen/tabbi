@@ -40,5 +40,6 @@ export * from "./Picker";
 export * from "./TextField";
 export * from "./Stepper";
 export * from "./SettingsGroup";
+export * from "./Sheet";
 export * from "./useSpringValue";
 export * from "./useLoaderClock";

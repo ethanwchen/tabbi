@@ -26,6 +26,7 @@ import { insideTauri, tauriHost, tauriWindowLabel } from "./host/tauri";
 import { loadLanguage } from "./i18n/strings";
 import { MODULE_LIST } from "./modules/moduleList";
 import { Island } from "./ui/Island";
+import { installOnboarding } from "./ui/onboarding/installOnboarding";
 import { initialState, NOTCH_MODES, type NotchMode, type ShellState } from "./ui/shell/machine";
 import { clearTextWidths } from "./ui/shell/measure";
 import { SettingsWindow } from "./ui/shell/settings/SettingsWindow";
@@ -63,6 +64,8 @@ function browserSettings(): Record<string, unknown> {
   if (isPanelSize(size)) entries["settings.panelSize"] = size;
   const kit = query.get("kit");
   if (kit) entries["settings.kit"] = kit;
+  /* A browser run has picked its kit, unless it asks for first-run setup (`?onboarding`). */
+  entries["settings.kit.chosen"] = !query.has("onboarding");
   return entries;
 }
 
@@ -115,6 +118,9 @@ if (snapshot !== null && snapshot !== undefined) {
   const startup = await host.startup();
   const app = await services(startup);
   const browser = inApp ? undefined : browserIsland();
+  /* The host built the tray menu in English; now that the strings are loaded, it gets the user's language. */
+  if (inApp) void host.setTrayLabels({ open: tr("Open Tabbi"), settings: tr("Tabbi Settings"), quit: tr("Quit Tabbi") });
+  installOnboarding(app);
   render(
     <ThemedRoot settings={app.settings} still={browser?.still ?? false} reduceMotion={reduce}>
       <Island app={app} host={host} initial={browser?.initial ?? initialState()} still={browser?.still ?? false} initialTab={browser?.tab} locale={language} />

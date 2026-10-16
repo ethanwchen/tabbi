@@ -6,7 +6,10 @@ import type {
   Host,
   HostEvent,
   HostSource,
+  HotkeyStatus,
   HttpResponse,
+  KitFilePick,
+  NotificationSetting,
   HttpStreamEvent,
   MediaSnapshot,
   SettingsLaunch,
@@ -112,6 +115,13 @@ export function tauriHost(): Host {
     autostartIsEnabled: () => invoke<boolean>("autostart_is_enabled"),
 
     aiPaths: () => invoke<AiPaths>("ai_paths"),
+
+    setHotkey: (shortcut) => invoke<HotkeyStatus>("hotkey_set", { shortcut }),
+    notificationsSetting: () => invoke<NotificationSetting>("notifications_setting"),
+    pickKitFile: () => invoke<KitFilePick | null>("dialog_pick_kit"),
+    openURL: (url) => invoke("open_url", { url }),
+    openApp: (app) => invoke("open_app", { app }),
+    setTrayLabels: (labels) => invoke("tray_set_labels", { labels }),
   };
 }
 
