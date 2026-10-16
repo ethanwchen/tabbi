@@ -50,18 +50,19 @@ function enable(app: AppServices, id: string): void {
  */
 export function prepareSnapshot(app: AppServices, plan: SnapshotPlan, options: { readonly allModules?: boolean } = {}): void {
   if (options.allModules === true) for (const type of MODULE_LIST) enable(app, type.descriptor.id);
-  if (plan.kind === "open") enable(app, plan.module);
+  if (plan.kind === "open" || plan.kind === "closed") enable(app, plan.module);
   if (plan.kind === "onboarding") {
     for (const type of MODULE_LIST) if (type.descriptor.setup.some((declared) => declared.id === plan.step)) enable(app, type.descriptor.id);
   }
 }
 
 export function SnapshotView({ plan, app, host, locale, showsMore = false }: SnapshotViewProps) {
-  const [ready, setReady] = useState(plan.kind !== "open" || plan.state === undefined);
+  const named = plan.kind === "open" || plan.kind === "closed" ? plan.state : undefined;
+  const [ready, setReady] = useState(named === undefined);
 
   /* A module's named state may need a moment (a store loading demo data). */
   useEffect(() => {
-    if (plan.kind !== "open" || plan.state === undefined) return;
+    if ((plan.kind !== "open" && plan.kind !== "closed") || plan.state === undefined) return;
     const state = plan.state;
     void Promise.resolve(app.modules.get(plan.module)?.showSnapshotState?.(state)).then(() => setReady(true));
   }, [app, plan]);
@@ -94,9 +95,10 @@ export function SnapshotView({ plan, app, host, locale, showsMore = false }: Sna
       );
     case "hidden":
     case "pill":
+    case "closed":
     case "open":
     case "onboarding": {
-      const initial = plan.kind === "hidden" ? HIDDEN : plan.kind === "pill" ? PILL : OPEN;
+      const initial = plan.kind === "hidden" ? HIDDEN : plan.kind === "pill" || plan.kind === "closed" ? PILL : OPEN;
       const mode = plan.kind === "hidden" ? "showOnHover" : "alwaysVisible";
       const preview = plan.kind === "pill" && plan.preview !== undefined ? DEMO_PREVIEWS[plan.preview]?.() : undefined;
       return (

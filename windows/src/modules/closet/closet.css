@@ -1,0 +1,1039 @@
+/*
+ * The Closet's look, on the kit's tokens: the pet card beside the sections
+ * card, the capsule pills and points chip, the wardrobe and limited grids,
+ * the study chart, the streak strip and the look rows. Sizes are the Mac's
+ * (Theme.Spacing, Theme.Radius and the panel's fixed canvas), so the two
+ * apps draw the same tab.
+ */
+
+.closet-panel {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.closet-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.closet-spacer {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.closet-spacer-v {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* Pet card */
+.closet-pet-card {
+  flex: none;
+  width: 164px;
+  display: flex;
+  overflow: hidden;
+}
+
+.closet-pet-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.closet-pet-view {
+  padding-bottom: 4px;
+}
+
+.closet-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  height: 20px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--primary-text);
+  transition: background-color var(--spring-snappy);
+}
+
+.closet-name:hover,
+.closet-name[data-hover="true"] {
+  background: var(--surface-hover);
+}
+
+.closet-name-text {
+  min-width: 0;
+}
+
+.closet-name-pencil {
+  color: var(--tertiary-text);
+  transition: color var(--spring-snappy);
+}
+
+.closet-name:hover .closet-name-pencil {
+  color: var(--secondary-text);
+}
+
+.closet-name-field {
+  width: 100%;
+  max-width: 148px;
+  height: 20px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--surface-hover);
+  color: var(--primary-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  outline: none;
+  user-select: text;
+}
+
+.closet-subtitle {
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+  min-width: 0;
+  color: var(--tertiary-text);
+  text-align: center;
+  transition: color var(--spring-snappy);
+}
+
+.closet-subtitle[data-accent] {
+  color: var(--accent);
+}
+
+/* Two lines of caption type, the most the card gives the sentence. */
+.closet-adventure {
+  display: block;
+  max-height: 27px;
+  overflow: hidden;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.closet-bond {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Header */
+.closet-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  min-width: 0;
+}
+
+.closet-header[data-tight] {
+  gap: 4px;
+}
+
+.closet-pills {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.closet-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--secondary-text);
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: default;
+  transition:
+    color var(--spring-snappy),
+    background-color var(--spring-snappy);
+}
+
+.closet-pill:hover,
+.closet-pill[data-hover="true"] {
+  color: var(--primary-text);
+  background: var(--surface-hover);
+}
+
+.closet-pill[data-selected="true"] {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.closet-points {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 11px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+  font-size: 10.5px;
+  font-weight: 500;
+}
+
+.closet-points-star {
+  color: var(--accent);
+}
+
+.closet-points-value {
+  color: var(--primary-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.closet-points-unit {
+  color: var(--tertiary-text);
+}
+
+/* Sections */
+.closet-section {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.closet-footer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  height: 12px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.closet-footer-lead {
+  min-width: 0;
+}
+
+.closet-footer-count {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.closet-footer-detail {
+  flex: 1;
+  min-width: 0;
+}
+
+.closet-footer-detail .kit-marquee-line {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.closet-footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  white-space: nowrap;
+  transition: filter var(--spring-snappy);
+}
+
+.closet-footer-link:hover {
+  filter: brightness(1.25);
+}
+
+.closet-next-unlock {
+  display: inline-flex;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Grids */
+.closet-grid-fade {
+  flex: 1;
+  min-height: 0;
+}
+
+.closet-grid-scroll {
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding-bottom: 12px;
+}
+
+.closet-grid-scroll[data-still] {
+  overflow: hidden;
+}
+
+.closet-shelves {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.closet-shelf {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.closet-shelf-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 12px;
+  padding-inline-start: 2px;
+  color: var(--secondary-text);
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.closet-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.closet-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  height: 50px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+  color: var(--primary-text);
+  overflow: hidden;
+  cursor: default;
+  transition:
+    background-color var(--spring-snappy),
+    box-shadow var(--spring-snappy);
+}
+
+.closet-tile:hover {
+  background: var(--surface-hover);
+}
+
+.closet-tile[data-wearing] {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.closet-tile-limited {
+  height: 60px;
+  gap: 2px;
+}
+
+.closet-tile-sprite {
+  display: block;
+  line-height: 0;
+  transition:
+    opacity var(--spring-snappy),
+    filter var(--spring-snappy);
+}
+
+.closet-tile-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 12px;
+  max-width: 100%;
+  padding: 0 2px;
+  font-size: 10px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.closet-tight-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.closet-tight-label > span {
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+.closet-tile-on,
+.closet-tile-affordable {
+  color: var(--accent);
+}
+
+.closet-tile-new {
+  position: absolute;
+  top: 4px;
+  inset-inline-end: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  pointer-events: none;
+}
+
+.closet-tile-sparkle {
+  position: absolute;
+  top: 4px;
+  inset-inline-end: 4px;
+  pointer-events: none;
+}
+
+.closet-bar {
+  position: relative;
+  display: inline-block;
+  height: 3px;
+  border-radius: 1.5px;
+  overflow: hidden;
+  background: var(--surface-hover);
+  direction: ltr;
+}
+
+.closet-bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 1.5px;
+  background: var(--accent);
+}
+
+.closet-tile-bar {
+  transition: opacity var(--spring-snappy);
+}
+
+/* The event going on now, at the top of the Limited section. */
+.closet-event-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.closet-event-sparkle {
+  color: var(--accent);
+}
+
+.closet-event-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.closet-event-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.closet-event-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.closet-event-title .kit-marquee-line {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.closet-event-name {
+  color: var(--primary-text);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.closet-event-goal {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+
+.closet-event-progress {
+  color: var(--secondary-text);
+  font-size: 10px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.closet-event-done {
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.closet-event-tagline {
+  min-width: 0;
+}
+
+/* Heatmap */
+.closet-heatmap-section {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.closet-heatmap-header {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  flex: none;
+  height: 16px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.closet-heatmap-date,
+.closet-heatmap-total {
+  color: var(--primary-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.closet-heatmap-empty {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.closet-streak-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.closet-heatmap-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+}
+
+.closet-heatmap-frame {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+}
+
+.closet-heatmap-layout {
+  display: flex;
+  align-items: flex-start;
+  height: 100%;
+}
+
+.closet-heatmap-weekdays {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  color: var(--secondary-text);
+  font-size: 9px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.closet-heatmap-weekdays > span {
+  display: block;
+  overflow: hidden;
+}
+
+.closet-heatmap-columns {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.closet-heatmap-months {
+  position: relative;
+  color: var(--secondary-text);
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 10px;
+}
+
+.closet-heatmap-months > span {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+
+.closet-heatmap-cells {
+  display: flex;
+  align-items: flex-start;
+}
+
+.closet-heatmap-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.closet-heatmap-cell {
+  display: block;
+  box-sizing: border-box;
+  transition: background-color var(--spring-snappy);
+}
+
+.closet-heatmap-cell[data-today] {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary-text) 45%, transparent);
+}
+
+.closet-heatmap-cell[data-hovered] {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary-text) 90%, transparent);
+}
+
+.closet-heatmap-cell[data-swell] {
+  animation: closet-cell-swell 0.5s var(--spring-snappy, ease-out);
+}
+
+@keyframes closet-cell-swell {
+  36% {
+    transform: scale(1.45);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes closet-column-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.closet-heatmap-legend {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  color: var(--tertiary-text);
+  font-size: 9px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.closet-heatmap-legend-more {
+  padding-bottom: 2px;
+}
+
+.closet-heatmap-legend-less {
+  padding-top: 2px;
+}
+
+.closet-heatmap-legend-cell {
+  display: block;
+  border-radius: 2px;
+}
+
+/* Streak */
+.closet-streak {
+  gap: 8px;
+}
+
+.closet-streak-summary {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+}
+
+.closet-streak-status {
+  min-width: 0;
+  padding-inline-start: 4px;
+}
+
+.closet-streak-strip {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 0 2px;
+}
+
+.closet-streak-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.closet-streak-letter {
+  height: 12px;
+  line-height: 12px;
+  color: var(--tertiary-text);
+}
+
+.closet-streak-day[data-last] .closet-streak-letter {
+  color: var(--secondary-text);
+}
+
+.closet-streak-mark {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.closet-streak-studied {
+  background: var(--accent);
+  color: var(--background);
+}
+
+.closet-streak-frozen {
+  background: rgb(143 209 255 / 0.18);
+  box-shadow: inset 0 0 0 1px rgb(143 209 255 / 0.5);
+}
+
+.closet-streak-missed {
+  box-shadow: inset 0 0 0 1px var(--stroke);
+}
+
+.closet-streak-footer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  min-width: 0;
+}
+
+.closet-streak-freezes {
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.closet-buy-freeze {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  height: 22px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--primary-text);
+  white-space: nowrap;
+  cursor: default;
+  transition: background-color var(--spring-snappy);
+}
+
+.closet-buy-freeze:hover {
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+.closet-buy-freeze:disabled {
+  background: var(--surface);
+  color: var(--tertiary-text);
+}
+
+.closet-buy-freeze-price {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.closet-buy-freeze:disabled .closet-buy-freeze-price {
+  color: var(--tertiary-text);
+}
+
+/* Look */
+.closet-look {
+  justify-content: center;
+}
+
+.closet-look-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.closet-look-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.closet-look-label {
+  flex: none;
+  min-width: var(--closet-label-width, auto);
+  white-space: nowrap;
+}
+
+.closet-look-content {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 22px;
+}
+
+.closet-species {
+  display: flex;
+  gap: 2px;
+}
+
+.closet-breed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.closet-breed-name {
+  width: 120px;
+  color: var(--primary-text);
+  text-align: center;
+}
+
+.closet-swatches {
+  display: flex;
+  align-items: center;
+}
+
+.closet-swatch {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px transparent;
+  cursor: default;
+  transition: box-shadow var(--spring-snappy);
+}
+
+.closet-swatch:hover {
+  box-shadow: inset 0 0 0 1.5px var(--secondary-text);
+}
+
+.closet-swatch[data-selected="true"] {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+.closet-swatch-color {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+  color: var(--secondary-text);
+}
+
+.closet-rare-mark {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  color: var(--tertiary-text);
+}
+
+/* Onboarding's pet step. */
+.closet-setup {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.closet-setup-pet {
+  flex: none;
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.closet-setup-pet-view {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+}
+
+.closet-setup-name {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+  color: var(--primary-text);
+  font: inherit;
+  transition:
+    background-color var(--spring-snappy),
+    box-shadow var(--spring-snappy);
+}
+
+.closet-setup-name:hover {
+  background: var(--surface-hover);
+}
+
+.closet-setup-name-field {
+  background: var(--surface-hover);
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--accent) 70%, transparent);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  outline: none;
+  user-select: text;
+}
+
+.closet-setup-name-text {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.closet-setup-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.closet-setup-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.closet-setup-breed {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.closet-setup-species {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+  color: var(--secondary-text);
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    color var(--spring-snappy),
+    background-color var(--spring-snappy),
+    box-shadow var(--spring-snappy);
+}
+
+.closet-setup-species:hover {
+  color: var(--primary-text);
+  background: var(--surface-hover);
+}
+
+.closet-setup-species[data-selected="true"] {
+  color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.closet-setup-breeds {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  min-height: 0;
+}
+
+/* The sprite's canvas has transparent margins, so let the tile shrink below it (and clip) rather than push the row past the panel. */
+.closet-setup-breed-tile {
+  flex: 1 1 0;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+  overflow: hidden;
+  transition:
+    background-color var(--spring-snappy),
+    box-shadow var(--spring-snappy);
+}
+
+.closet-setup-breed-tile:hover {
+  background: var(--surface-hover);
+}
+
+.closet-setup-breed-tile[data-selected="true"] {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 80%, transparent);
+}
+
+.closet-setup-fur {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.closet-setup-fur-label {
+  width: 28px;
+  flex: none;
+}

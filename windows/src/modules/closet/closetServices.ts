@@ -1,30 +1,33 @@
 /*
- * The pet service, declared here because the Closet owns the pet's save
- * (the Mac's `context.studyPet`, a ClosetStore): Study and Party follow its
- * profile, so every module draws the same pet in the same outfit. Until the
- * Closet port loads and saves the PetSave, it holds the kit's starter pet.
+ * The pet services, declared here because the Closet owns the pet's save
+ * (the Mac's `context.studyPet`, a ClosetStore, and `context.surpriseGifts`):
+ * Study and Party follow the store's `profile`, so every module draws the
+ * same pet in the same outfit, and the coach hands out the gifts. Every
+ * module asking gets the one instance, already following the shared focus
+ * clock, the activity log, kit switches and the island opening and closing.
  */
 
 import type { ModuleContext } from "../../app/context";
 import { serviceKey } from "../../app/sharedServices";
-import { Store } from "../../app/store";
-import { starterForKit } from "../../core/closet/petKitDefaults";
-import type { PetProfile } from "../../core/pets/petProfile";
+import { ClosetStore } from "./closetStore";
+import { SurpriseGiftKeeper } from "./surpriseGiftKeeper";
 
-export class StudyPetService extends Store<{ readonly profile: PetProfile }> {
-  constructor(profile: PetProfile) {
-    super({ profile });
-  }
+const STUDY_PET = serviceKey<ClosetStore>("closet.studyPet");
+const SURPRISE_GIFTS = serviceKey<SurpriseGiftKeeper>("closet.surpriseGifts");
 
-  /** Replaces the pet everyone draws. */
-  setProfile(profile: PetProfile): void {
-    this.changed({ profile });
-  }
+/** The one study pet: its look, points and save; read `state.profile` for the pet as shown everywhere. */
+export function studyPet(context: ModuleContext): ClosetStore {
+  return context.shared.resolve(STUDY_PET, () => {
+    const store = new ClosetStore(context);
+    store.followFocus();
+    void store.followActivity();
+    store.followKits();
+    store.followIslandToggles();
+    return store;
+  });
 }
 
-const STUDY_PET = serviceKey<StudyPetService>("closet.studyPet");
-
-/** The one pet. */
-export function studyPet(context: ModuleContext): StudyPetService {
-  return context.shared.resolve(STUDY_PET, () => new StudyPetService(starterForKit(context.activeKit?.defaults)));
+/** The one surprise gift keeper, beside the pet it gives to. */
+export function surpriseGifts(context: ModuleContext): SurpriseGiftKeeper {
+  return context.shared.resolve(SURPRISE_GIFTS, () => new SurpriseGiftKeeper(context, studyPet(context)));
 }

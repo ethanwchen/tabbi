@@ -7,7 +7,8 @@
  *
  * States: `hidden`, `pill` (plain), `pill:<preview>` (DEMO_PREVIEWS),
  * `open:<module>` and `open:<module>:<state>` (a module's `snapshotStates`),
- * `onboarding:<step>` (each setup step a module declares) and
+ * `closed:<module>:<state>` (a module's `closedSnapshotStates`, drawn on the
+ * pill with the demo preview), `onboarding:<step>` (each setup step a module declares) and
  * `settings:<section>`. The query can add `theme`, `lang`, `size`
  * (compact, regular, large), `kit` and `reduce`.
  */
@@ -23,6 +24,8 @@ export type SnapshotPlan =
   | { readonly kind: "hidden" }
   | { readonly kind: "pill"; readonly preview: string | undefined }
   | { readonly kind: "open"; readonly module: ModuleID; readonly state: string | undefined }
+  /** The pill with the ticker's demo preview, with a module put into one of its closed states (the coach's bubbles). */
+  | { readonly kind: "closed"; readonly module: ModuleID; readonly state: string }
   | { readonly kind: "onboarding"; readonly step: string }
   | { readonly kind: "settings"; readonly section: string };
 
@@ -40,6 +43,7 @@ export function snapshotStates(types: readonly ModuleType[]): string[] {
     "pill",
     ...Object.keys(DEMO_PREVIEWS).map((preview) => `pill:${preview}`),
     ...types.flatMap((type) => [`open:${type.descriptor.id}`, ...(type.snapshotStates ?? []).map((state) => `open:${type.descriptor.id}:${state}`)]),
+    ...types.flatMap((type) => (type.closedSnapshotStates ?? []).map((state) => `closed:${type.descriptor.id}:${state}`)),
     ...setupSteps(types).map((step) => `onboarding:${step.id}`),
     ...SETTINGS_SECTIONS.map((section) => `settings:${section.id}`),
   ];
@@ -57,6 +61,8 @@ export function parseSnapshot(value: string): SnapshotPlan | undefined {
       return first === undefined || first in DEMO_PREVIEWS ? { kind: "pill", preview: first } : undefined;
     case "open":
       return first === undefined ? undefined : { kind: "open", module: first, state: second };
+    case "closed":
+      return first === undefined || second === undefined ? undefined : { kind: "closed", module: first, state: second };
     case "onboarding":
       return first === undefined ? undefined : { kind: "onboarding", step: first };
     case "settings":

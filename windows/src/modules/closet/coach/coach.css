@@ -1,0 +1,293 @@
+/*
+ * The pet coach's overlay: the pet beside the pill and its speech bubble on
+ * the island's black, over any wallpaper. The bubble's words follow the
+ * language; the pet walks the same way in every language, as on the Mac.
+ */
+
+.coach-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  direction: ltr;
+}
+
+.coach-pet {
+  position: absolute;
+  transform-origin: center;
+}
+
+.coach-bubble {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--background);
+  box-shadow:
+    inset 0 0 0 0.5px rgb(255 255 255 / 0.14),
+    0 4px 10px rgb(0 0 0 / 0.35);
+  color: var(--primary-text);
+  pointer-events: auto;
+  animation: coach-bubble-in var(--spring-snappy) both;
+  transform-origin: var(--coach-tail-x, 24px) 0;
+  transition: box-shadow var(--spring-snappy);
+}
+
+.coach-bubble[data-clickable]:hover {
+  box-shadow:
+    inset 0 0 0 0.5px rgb(255 255 255 / 0.28),
+    0 4px 10px rgb(0 0 0 / 0.35);
+}
+
+:root[data-reduce-motion="true"] .coach-bubble,
+.island[data-still="true"] .coach-bubble {
+  animation: none;
+}
+
+@keyframes coach-bubble-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+/* The short tail on the top edge, pointing up at the pet's face. */
+.coach-bubble-tail {
+  position: absolute;
+  top: -7px;
+  left: calc(var(--coach-tail-x, 24px) - 7px);
+  fill: var(--background);
+  stroke: rgb(255 255 255 / 0.14);
+  stroke-width: 0.5;
+}
+
+.coach-nudge-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--primary-text);
+}
+
+.coach-replies {
+  display: flex;
+  gap: 4px;
+}
+
+.coach-reply {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 22px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 11px;
+  background: var(--surface);
+  color: var(--secondary-text);
+  white-space: nowrap;
+  transition:
+    background-color var(--spring-snappy),
+    color var(--spring-snappy);
+}
+
+.coach-reply:hover {
+  background: var(--surface-hover);
+  color: var(--primary-text);
+}
+
+.coach-reply[data-primary] {
+  background: var(--accent);
+  color: black;
+}
+
+.coach-reply[data-primary]:hover {
+  background: color-mix(in srgb, var(--accent) 85%, transparent);
+  color: black;
+}
+
+.coach-celebration {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.coach-celebration-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.coach-headline {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--primary-text);
+}
+
+.coach-points {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 10.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.coach-unlock {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.coach-unlock-bar {
+  position: relative;
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--surface);
+  direction: ltr;
+}
+
+.coach-unlock-bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: width var(--spring-content);
+}
+
+.coach-unlock-line {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.coach-gift {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding-top: 2px;
+  color: var(--primary-text);
+  white-space: nowrap;
+}
+
+.coach-gift-icon {
+  color: var(--accent);
+}
+
+.coach-gift-text {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.coach-gift-fur {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+}
+
+.coach-wisdom {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.coach-wisdom-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.coach-wisdom-sparkle {
+  color: var(--accent);
+}
+
+.coach-wisdom-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--primary-text);
+}
+
+/* Settings > Pet Coach: the suggested apps as chips, three to a row. */
+.coach-chips {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.coach-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--primary-text) 4%, transparent);
+  box-shadow: inset 0 0 0 1px var(--stroke);
+  color: var(--primary-text);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  transition:
+    background-color var(--spring-snappy),
+    box-shadow var(--spring-snappy),
+    color var(--spring-snappy);
+}
+
+.coach-chip:hover {
+  background: color-mix(in srgb, var(--primary-text) 8%, transparent);
+}
+
+.coach-chip[data-on="true"] {
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent);
+  color: var(--accent);
+}
+
+.coach-chip-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-align: start;
+}
+
+.coach-chip-icon {
+  color: var(--secondary-text);
+}
+
+.coach-chip[data-on="true"] .coach-chip-icon {
+  color: var(--accent);
+}
+
+.coach-add-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.coach-added-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

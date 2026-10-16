@@ -1,0 +1,282 @@
+/*
+ * The weekly recap's look: the card in the island's panel canvas (the pet
+ * badge beside the numbers), the list of past weeks in the Closet, and the
+ * takeover's header pieces. Sizes follow the Mac's RecapCard.
+ */
+
+.recap-card {
+  --recap-accent: var(--accent);
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.recap-pet-card {
+  flex: none;
+  width: 112px;
+  display: flex;
+}
+
+.recap-pet-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.recap-sparkles {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  color: var(--recap-accent);
+}
+
+.recap-pet-name,
+.recap-pet-week {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.recap-pet-name {
+  color: var(--primary-text);
+}
+
+.recap-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recap-fill {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.recap-cheer {
+  min-width: 0;
+  color: var(--primary-text);
+}
+
+.recap-hero {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  min-width: 0;
+}
+
+.recap-hours {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.recap-hours-value {
+  color: var(--recap-accent);
+  white-space: nowrap;
+}
+
+.recap-bars {
+  display: flex;
+  align-items: flex-end;
+  flex: none;
+}
+
+.recap-bar-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.recap-bar {
+  display: block;
+  border-radius: 3px;
+}
+
+.recap-bar-initial {
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.recap-stats {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.recap-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: none;
+  white-space: nowrap;
+}
+
+/* The takeover's header pieces. */
+.recap-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary-text);
+  white-space: nowrap;
+}
+
+.recap-trailing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recap-done {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--secondary-text);
+  white-space: nowrap;
+  transition: color var(--spring-snappy);
+}
+
+.recap-done:hover {
+  color: var(--primary-text);
+}
+
+.recap-share {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recap-share-note {
+  white-space: nowrap;
+}
+
+.recap-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+}
+
+.recap-menu {
+  position: absolute;
+  z-index: 6;
+  top: calc(100% + 4px);
+  inset-inline-end: 0;
+  width: 200px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  background: linear-gradient(var(--surface), var(--surface)), var(--background);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+}
+
+.recap-menu-row {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--secondary-text);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: start;
+  white-space: nowrap;
+}
+
+.recap-menu-row:hover {
+  background: var(--surface-hover);
+  color: var(--primary-text);
+}
+
+.recap-menu-separator {
+  display: block;
+  height: 0.5px;
+  margin: 4px 8px;
+  background: var(--stroke);
+}
+
+/* The list of past weeks in the Closet. */
+.recap-history-fade {
+  flex: 1;
+  min-height: 0;
+}
+
+.recap-history-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding-bottom: 12px;
+}
+
+.recap-history-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--primary-text);
+  text-align: start;
+  white-space: nowrap;
+  transition: background-color var(--spring-snappy);
+}
+
+.recap-history-row:hover {
+  background: var(--surface-hover);
+}
+
+.recap-history-title {
+  overflow: hidden;
+}
+
+.recap-history-star {
+  display: inline-grid;
+  color: var(--accent);
+}
+
+.recap-history-minutes {
+  font-variant-numeric: tabular-nums;
+}
+
+.recap-history-chevron {
+  color: var(--tertiary-text);
+  transition: color var(--spring-snappy);
+}
+
+.recap-history-row:hover .recap-history-chevron {
+  color: var(--secondary-text);
+}
+
+.recap-history-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+}
