@@ -20,7 +20,8 @@ export async function snapshotStates(page: Page): Promise<string[]> {
 /** Draws `state` with the extra query and saves its frame to `path`. */
 export async function shoot(page: Page, state: string, query: string, path: string): Promise<void> {
   await page.goto(`/?still&backdrop&snapshot=${encodeURIComponent(state)}${query ? `&${query}` : ""}`);
-  await page.waitForSelector("[data-snapshot-ready]");
+  /* A state that never settles fails here, named, instead of using up the whole test. */
+  await page.waitForSelector("[data-snapshot-ready]", { timeout: 30_000 });
   await page.evaluate(() => document.fonts.ready);
   /* One more frame, so text measured after the fonts loaded is drawn. */
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));

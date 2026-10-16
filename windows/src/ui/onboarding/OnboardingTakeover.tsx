@@ -136,10 +136,17 @@ function SkipSetup({ store, appName }: { store: OnboardingStore; appName: string
 function OnboardingBody({ store, app }: Props) {
   const state = useStore(store);
   const flow = state.flow;
+  /*
+   * The same view for as long as the step and the enabled modules stay put. A
+   * module's setup view is a fresh component each time it is asked for, and
+   * drawing a fresh one every render would remount it: a view that reads on
+   * mount (the calendar step reloads Up next) would then redraw itself forever.
+   */
+  const setupKey = flow !== undefined && store.step.kind === "setup" ? `${flow.currentSetupStep?.id ?? ""}|${flow.layout.enabled.join(",")}` : undefined;
+  const setupView = useMemo(() => (flow === undefined || setupKey === undefined ? undefined : setupViewFor(flow, app)), [flow, setupKey, app]);
   if (flow === undefined) return null;
   const step = store.step;
   const catalog = app.settings.catalog;
-  const setupView = step.kind === "setup" ? setupViewFor(flow, app) : undefined;
   const key = step.kind === "question" || step.kind === "setup" ? `${step.kind}-${step.id}` : step.kind;
   return (
     <div className="ob">
