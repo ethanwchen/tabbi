@@ -55,7 +55,7 @@
       "desktop": { "schemes": ["tabbi"] }
     },
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEMyNDBBQzFDNDJCRDBFMjAKUldRZ0RyMUNIS3hBd3JvTGlVU0JxRlJyTDJLZ2VMMDlPbFFHcFpiSXEwZ0lob3BDWC8vUlJtYysK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEU4QTY0Mzg2OEVEMTU4MzAKUldRd1dOR09oa09tNkcvZ2tkb0kyMXh2WnU5TzczbUcxTHc1MmR4aHBqK1hQNjl1VndJTzd2amMK",
       "endpoints": ["https://github.com/ethanwchen/tabbi/releases/latest/download/latest.json"],
       "windows": { "installMode": "passive" }
     }
