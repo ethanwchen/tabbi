@@ -1,6 +1,42 @@
 import type { CredentialName, Host, HostError, HostEvent, MediaSnapshot, StorageArea, Startup, SystemStats } from "./host";
 
 /*
+ * The windows mock hosts share, so a test can play the island and the
+ * Settings window side by side: what one broadcasts, the others hear.
+ */
+export class MockWindowBus {
+  private readonly windows = new Set<{ deliver(topic: string, payload: unknown): void }>();
+
+  join(window: { deliver(topic: string, payload: unknown): void }): () => void {
+    this.windows.add(window);
+    return () => {
+      this.windows.delete(window);
+    };
+  }
+
+  post(from: object, topic: string, payload: unknown): void {
+    /* A copy, as the real host serializes every message. */
+    const copy: unknown = JSON.parse(JSON.stringify(payload));
+    for (const window of this.windows) if (window !== from) window.deliver(topic, copy);
+  }
+}
+
+export interface MockHostOptions {
+  /* Other mock windows that hear this one's broadcasts. */
+  readonly bus?: MockWindowBus;
+  /* The section settingsReady reports. */
+  readonly settingsSection?: string | null;
+}
+
+/* What a mock host starts with: the default hotkey registered, live data, no development servers. */
+export const MOCK_STARTUP: Startup = {
+  hotkey: { shortcut: "ctrl+alt+space", registered: true },
+  notchMode: null,
+  demo: false,
+  partyServer: null,
+};
+
+/*
  * A host for the browser: Vitest, the Vite dev server and the Playwright
  * snapshot runs. It records every call, and `emit` plays a host event, so a
  * test can drive the island the way Windows would. Demo and snapshot runs
@@ -47,8 +83,15 @@ function rejection(code: HostError["code"], message: string): Promise<never> {
   return Promise.reject(error);
 }
 
-export function mockHost(startup: Startup = { hotkey: { shortcut: "ctrl+alt+space", registered: true }, notchMode: null }): MockHost {
+export function mockHost(startup: Startup = MOCK_STARTUP, options: MockHostOptions = {}): MockHost {
   const listeners = new Set<(event: HostEvent) => void>();
+  const broadcastListeners = new Map<string, Set<(payload: unknown) => void>>();
+  const endpoint = {
+    deliver(topic: string, payload: unknown) {
+      for (const listener of [...(broadcastListeners.get(topic) ?? [])]) listener(payload);
+    },
+  };
+  options.bus?.join(endpoint);
   const mediaListeners = new Set<(media: MediaSnapshot | null) => void>();
   const statsListeners = new Set<(stats: SystemStats) => void>();
   const calls: { name: string; args: unknown[] }[] = [];
@@ -95,6 +138,22 @@ export function mockHost(startup: Startup = { hotkey: { shortcut: "ctrl+alt+spac
     },
     emit(event) {
       for (const listener of listeners) listener(event);
+    },
+    setCanvas: record("setCanvas"),
+    openSettings: record("openSettings"),
+    settingsReady: () => answer("settingsReady", [], { startup, section: options.settingsSection ?? null }),
+    broadcast(topic, payload) {
+      log("broadcast", [topic]);
+      options.bus?.post(endpoint, topic, payload);
+      return Promise.resolve();
+    },
+    onBroadcast(topic, listener) {
+      const set = broadcastListeners.get(topic) ?? new Set();
+      broadcastListeners.set(topic, set);
+      set.add(listener);
+      return () => {
+        set.delete(listener);
+      };
     },
 
     storageRead(area, name) {

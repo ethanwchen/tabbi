@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "What the island UI may use: listening to host events, including its own window focus.",
-  "windows": ["island"],
-  "permissions": ["core:event:default"]
+  "description": "What Tabbi's windows may use: listening to and posting host events, including their own window focus. The island and the Settings window keep their stores in step by posting events to each other.",
+  "windows": ["island", "settings"],
+  "permissions": ["core:event:default", "core:window:allow-set-title"]
 }

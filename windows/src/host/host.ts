@@ -17,6 +17,24 @@ export interface Startup {
   readonly hotkey: HotkeyStatus | null;
   /* A development override of the closed-island mode; null in release builds. */
   readonly notchMode: string | null;
+  /*
+   * `TABBI_DEMO=1`, read once by the host at launch: realistic sample data,
+   * and never the network, media sessions, calendars or CLIs. The runtime
+   * hands it to modules as their run mode; no module reads it itself.
+   */
+  readonly demo: boolean;
+  /*
+   * `TABBI_PARTY_SERVER`, a development Party Worker: debug builds only, and
+   * only a plain-http loopback address (http://localhost:8787); null otherwise.
+   */
+  readonly partyServer: string | null;
+}
+
+/* What the Settings window starts with: the host's startup and the section to show first. */
+export interface SettingsLaunch {
+  readonly startup: Startup;
+  /* "general", "tabs", "look", "connections" or "about"; null for the first. */
+  readonly section: string | null;
 }
 
 export type HostEvent =
@@ -27,7 +45,9 @@ export type HostEvent =
   | { type: "fullscreen"; active: boolean }
   | { type: "focus"; focused: boolean }
   | { type: "link"; url: string }
-  | { type: "placed"; scale: number };
+  | { type: "placed"; scale: number }
+  /* The Settings window was asked to show a section (it was already open). */
+  | { type: "settingsSection"; section: string };
 
 export interface Host {
   /* Limits drawing and clicks to this rectangle of the window, or to nothing. */
@@ -40,6 +60,24 @@ export interface Host {
   /* Shows the window once the first frame is drawn. */
   ready(): Promise<Startup>;
   subscribe(listener: (event: HostEvent) => void): () => void;
+  /* Sizes the island window to the open canvas of the panel size (compact, regular, large), in logical pixels. */
+  setCanvas(width: number, height: number): Promise<void>;
+
+  /*
+   * Opens the Settings window at `section`, or brings it forward and shows
+   * that section. The window exists only while it is open.
+   */
+  openSettings(section: string | null): Promise<void>;
+  /* The Settings window calls this once it has drawn its first frame; the host then shows it. */
+  settingsReady(): Promise<SettingsLaunch>;
+
+  /*
+   * Posts `payload` on `topic` to every other Tabbi window (the island and
+   * Settings keep their own stores, so a change one makes reaches the other).
+   * A window never hears its own posts.
+   */
+  broadcast(topic: string, payload: JsonValue): Promise<void>;
+  onBroadcast(topic: string, listener: (payload: unknown) => void): () => void;
 
   /* Windows services, each in src-tauri/src/<service>.rs; their types follow the interface. */
 

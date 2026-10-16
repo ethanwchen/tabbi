@@ -1,8 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { CANVAS, HIDDEN, OPEN, PILL, PILL_HOVERED, hitRect, notchPath } from "../../src/ui/shell/geometry";
+import { CANVAS, HIDDEN, OPEN, PILL, PILL_HOVERED, hitRect, notchPath, openSilhouette, pillSilhouette } from "../../src/ui/shell/geometry";
 import { MOTION, stepSpring, type SpringValue } from "../../src/ui/shell/spring";
-import { cssColor, paletteVariables } from "../../src/ui/theme";
-import { kitLayout } from "../../src/ui/modules";
+import { BUNDLED_KITS } from "../../src/core/kits/bundledKits";
+import { kitLayout } from "../../src/core/kits/kitApplication";
+import { ModuleCatalog } from "../../src/core/modules/moduleCatalog";
+import { panelCanvasSize } from "../../src/core/settings/panelSize";
+import { resolveTheme } from "../../src/core/themes/themeCatalog";
+import { MODULE_LIST } from "../../src/modules/moduleList";
+import { themeVariables } from "../../src/ui/kit/tokens";
 
 describe("geometry", () => {
   it("matches the Mac's sizes", () => {
@@ -74,14 +79,8 @@ describe("spring", () => {
 });
 
 describe("theme", () => {
-  it("reads themes.json colors", () => {
-    expect(cssColor({ white: 1, opacity: 0.62 })).toBe("rgb(255 255 255 / 0.62)");
-    expect(cssColor({ red: 0.3, green: 0.85, blue: 0.48 })).toBe("rgb(77 217 122 / 1)");
-    expect(() => cssColor({})).toThrow();
-  });
-
-  it("turns the default theme into variables", () => {
-    const variables = paletteVariables();
+  it("turns the default theme into the kit's variables", () => {
+    const variables = themeVariables(resolveTheme("midnight"));
     expect(variables["--background"]).toBe("rgb(0 0 0 / 1)");
     expect(variables["--secondary-text"]).toBe("rgb(255 255 255 / 0.62)");
     expect(variables["--surface-hover"]).toBe("rgb(255 255 255 / 0.12)");
@@ -90,12 +89,25 @@ describe("theme", () => {
 
 describe("kit layout", () => {
   it("puts the Essentials modules in kit order, with the Closet as the header shortcut", () => {
-    const { tabs, shortcuts } = kitLayout();
-    expect(tabs.map((t) => t.id)).toEqual(["study", "planner", "spotify", "claudeAsk"]);
-    expect(shortcuts.map((s) => s.id)).toEqual(["closet"]);
+    const catalog = new ModuleCatalog(MODULE_LIST.map((type) => type.descriptor));
+    const essentials = BUNDLED_KITS.get("essentials");
+    if (essentials === undefined) throw new Error("Essentials is bundled");
+    const layout = kitLayout(essentials, catalog);
+    expect(layout.tabs).toEqual(["study", "planner", "spotify", "claudeAsk"]);
+    expect(layout.headerShortcuts).toEqual(["closet"]);
+  });
+});
+
+describe("panel sizes and the pill's wings", () => {
+  it("opens to each panel size's canvas", () => {
+    expect(openSilhouette(panelCanvasSize("large"))).toEqual({ width: 640, height: 272, topRadius: 12, bottomRadius: 26 });
+    expect(hitRect("open", panelCanvasSize("compact"))).toEqual({ x: 0, y: 0, width: 512, height: 224 });
   });
 
-  it("skips module ids it does not know", () => {
-    expect(kitLayout(["study", "nope"]).tabs.map((t) => t.id)).toEqual(["study"]);
+  it("widens the pill by a wing on each side and keeps its region around the hovered size", () => {
+    expect(pillSilhouette(0, false)).toEqual(PILL);
+    expect(pillSilhouette(40, false).width).toBe(PILL.width + 80);
+    expect(pillSilhouette(40, true)).toMatchObject({ width: PILL.width + 96, height: 36 });
+    expect(hitRect("pill", CANVAS, 40)).toEqual({ x: 127, y: 0, width: 306, height: 40 });
   });
 });

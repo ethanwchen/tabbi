@@ -25,5 +25,7 @@ export default defineConfig({
     target: "chrome120",
     outDir: "dist",
     emptyOutDir: true,
+    /* The kit gallery builds too, so a broken gallery fails the build instead of only the snapshot run. */
+    rollupOptions: { input: { main: "index.html", gallery: "gallery.html" } },
   },
 });

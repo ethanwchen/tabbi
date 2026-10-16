@@ -1,5 +1,5 @@
 import { Channel, invoke } from "@tauri-apps/api/core";
-import { listen, type UnlistenFn } from "@tauri-apps/api/event";
+import { emit, listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import type {
   AiPaths,
@@ -9,9 +9,21 @@ import type {
   HttpResponse,
   HttpStreamEvent,
   MediaSnapshot,
+  SettingsLaunch,
   Startup,
   SystemStats,
 } from "./host";
+
+/* Tells this window's own broadcasts apart from the other windows'. */
+const WINDOW_ID = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+
+/* Tauri event names allow letters, digits and - / : _ only. */
+const eventName = (topic: string) => `tabbi:${topic.replace(/[^A-Za-z0-9/:_-]/g, "_")}`;
+
+interface Broadcast {
+  readonly sender: string;
+  readonly payload: unknown;
+}
 
 /* Listens to one host event until the returned function is called. */
 function on<T>(event: string, listener: (payload: T) => void): () => void {
@@ -38,11 +50,21 @@ export function tauriHost(): Host {
         listen<string>("island:link", (e) => listener({ type: "link", url: e.payload })),
         listen<number>("island:placed", (e) => listener({ type: "placed", scale: e.payload })),
         getCurrentWindow().onFocusChanged((e) => listener({ type: "focus", focused: e.payload })),
+        listen<string>("settings:section", (e) => listener({ type: "settingsSection", section: e.payload })),
       ];
       return () => {
         for (const p of pending) void p.then((unlisten) => unlisten());
       };
     },
+
+    setCanvas: (width, height) => invoke("island_set_canvas", { width, height }),
+    openSettings: (section) => invoke("settings_open", { section }),
+    settingsReady: () => invoke<SettingsLaunch>("settings_ready"),
+    broadcast: (topic, payload) => emit(eventName(topic), { sender: WINDOW_ID, payload } satisfies Broadcast),
+    onBroadcast: (topic, listener) =>
+      on<Broadcast>(eventName(topic), (message) => {
+        if (message.sender !== WINDOW_ID) listener(message.payload);
+      }),
 
     storageRead: (area, name) => invoke<string | null>("storage_read", { area, name }),
     storageWrite: (area, name, text) => invoke("storage_write", { area, name, text }),
@@ -83,6 +105,11 @@ export function tauriHost(): Host {
 
 export function insideTauri(): boolean {
   return "__TAURI_INTERNALS__" in window;
+}
+
+/* The Tauri window this page runs in: "island" or "settings". */
+export function tauriWindowLabel(): string {
+  return getCurrentWindow().label;
 }
 
 export type { HostEvent };
