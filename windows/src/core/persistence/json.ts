@@ -26,7 +26,8 @@ export interface JSONFormatting {
 /**
  * Serializes `value` like Foundation's `JSONEncoder`: forward slashes are
  * escaped (`\/`) as the Mac writes them, keys can be sorted, and pretty
- * output puts a space on both sides of the colon. `undefined` members are
+ * output puts a space on both sides of the colon and writes an empty array
+ * or object as its brackets around a blank line. `undefined` members are
  * left out, as a Swift optional that is nil is.
  */
 export function stringifyJSON(value: unknown, formatting: JSONFormatting = {}): string {
@@ -44,14 +45,14 @@ function write(value: unknown, formatting: JSONFormatting, indent: string): stri
   const inner = formatting.pretty ? `${indent}  ` : "";
   const newline = formatting.pretty ? "\n" : "";
   if (Array.isArray(value)) {
-    if (value.length === 0) return "[]";
+    if (value.length === 0) return formatting.pretty ? `[\n\n${indent}]` : "[]";
     const items = value.map((item: unknown) => inner + write(item === undefined ? null : item, formatting, inner));
     return `[${newline}${items.join(`,${newline}`)}${newline}${formatting.pretty ? indent : ""}]`;
   }
   if (typeof value === "object") {
     let keys = Object.keys(value).filter((key) => (value as Record<string, unknown>)[key] !== undefined);
     if (formatting.sortedKeys) keys = keys.sort(compareCodeUnits);
-    if (keys.length === 0) return "{}";
+    if (keys.length === 0) return formatting.pretty ? `{\n\n${indent}}` : "{}";
     const colon = formatting.pretty ? " : " : ":";
     const members = keys.map(
       (key) => inner + quote(key) + colon + write((value as Record<string, unknown>)[key], formatting, inner),

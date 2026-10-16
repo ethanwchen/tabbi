@@ -93,7 +93,7 @@ describe("VersionedJSON", () => {
 describe("stringifyJSON", () => {
   it("writes like Foundation's pretty, sorted encoder", () => {
     expect(stringifyJSON({ b: [1, "a/b"], a: {}, c: undefined, d: [] }, { pretty: true, sortedKeys: true })).toBe(
-      '{\n  "a" : {},\n  "b" : [\n    1,\n    "a\\/b"\n  ],\n  "d" : []\n}',
+      '{\n  "a" : {\n\n  },\n  "b" : [\n    1,\n    "a\\/b"\n  ],\n  "d" : [\n\n  ]\n}',
     );
     expect(stringifyJSON({ b: 1, a: true })).toBe('{"b":1,"a":true}');
     expect(JSON.parse(stringifyJSON({ path: "a/b" }))).toEqual({ path: "a/b" });
