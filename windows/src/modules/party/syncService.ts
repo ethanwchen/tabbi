@@ -229,7 +229,7 @@ export class SyncService extends Store<SyncServiceState> {
     const attempt = await AppleWebSignIn.start();
     this.attempt = attempt;
     try {
-      await this.context.host.openURL(attempt.authorizeURL(server));
+      await this.context.host.openUrl(attempt.authorizeURL(server));
     } catch (error) {
       this.context.logger.error("Could not open Apple's sign-in page", error);
       this.attempt = undefined;

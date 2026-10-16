@@ -115,7 +115,7 @@ export function PartySettingsPane({ store, account }: { store: PartyStore; accou
           />
         )}
         <SettingsRow label={SupportContact.reportLine()}>
-          <Pill title={tr("Email Support")} symbol="envelope" help={tr("Email the %@ team about a person or a problem", "Tabbi")} onClick={() => store.openURL(SupportContact.mailURL)} />
+          <Pill title={tr("Email Support")} symbol="envelope" help={tr("Copy the support address, %@", SupportContact.email)} onClick={() => store.openURL(SupportContact.mailURL)} />
         </SettingsRow>
       </SettingsGroup>
 

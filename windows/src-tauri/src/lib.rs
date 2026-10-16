@@ -10,6 +10,7 @@ mod error;
 mod http;
 mod media;
 mod notify;
+mod open;
 mod outbox;
 mod placement;
 mod storage;
@@ -613,6 +614,7 @@ pub fn run() {
             system::system_watch,
             http::http_request,
             http::http_set_party_server,
+            open::open_url,
             http::http_stream,
             http::http_cancel,
             http::http_fetch_calendar,

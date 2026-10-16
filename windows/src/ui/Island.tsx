@@ -419,7 +419,7 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
             now={app.environment.now()}
             locale={locale}
             musicWings={musicModule?.musicWings}
-            onJoin={(url) => window.open(url, "_blank", "noopener")}
+            onJoin={(url) => void host.openUrl(url).catch(() => undefined)}
           />
         </div>
       )}

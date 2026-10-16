@@ -60,7 +60,7 @@ export function PartyPanel({ store, onOpenURL }: { store: PartyStore; onOpenURL:
             symbol="hand.raised.fill"
             title={tr("Party isn't available")}
             message={tr("This account can no longer use Party. If you think that's a mistake, write to %@.", SupportContact.email)}
-            actions={<PartyPillButton title={tr("Email Support")} symbol="envelope" help={tr("Write to %@", SupportContact.email)} onClick={() => onOpenURL(SupportContact.mailURL)} />}
+            actions={<PartyPillButton title={tr("Email Support")} symbol="envelope" help={tr("Copy the support address, %@", SupportContact.email)} onClick={() => onOpenURL(SupportContact.mailURL)} />}
           />
         ) : (
           <StatusMessage

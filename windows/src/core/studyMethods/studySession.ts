@@ -17,6 +17,22 @@ import { countsAsDone, type StudyPhaseOutcome, type StudyPhaseRecord, type Study
  * fresh idle one. Open-ended Flowtime focus ends with `stopFocus`; Anki
  * sprint focus ends when `recordReviewedToday` reaches the card goal.
  */
+/** Every stored field of a session, as `StudySession.stored` reads them and `fromStored` takes them back. */
+export interface StudySessionStoredState {
+  readonly method: StudyMethod;
+  readonly phase: StudyPhaseKind;
+  readonly phaseDuration: Seconds | undefined;
+  readonly completedFocusCount: number;
+  readonly cardsDone: number;
+  readonly log: readonly StudyPhaseRecord[];
+  readonly banked: Seconds;
+  readonly resumedAt: Instant | undefined;
+  readonly phaseStartedAt: Instant | undefined;
+  readonly lastFocusWorked: Seconds;
+  readonly lastFocusCounted: boolean;
+  readonly cardBaseline: number | undefined;
+}
+
 export class StudySession {
   private methodValue: StudyMethod;
   private phaseValue: StudyPhaseKind = "focus";
@@ -81,6 +97,50 @@ export class StudySession {
   /** Active time of the last focus phase. */
   get lastFocusWorked(): Seconds {
     return this.lastFocusWorkedValue;
+  }
+
+  // MARK: Saving
+
+  /** The fields a saved session carries, the Mac's Codable shape before dates and methods are encoded. */
+  get stored(): StudySessionStoredState {
+    return {
+      method: this.methodValue,
+      phase: this.phaseValue,
+      phaseDuration: this.phaseDurationValue,
+      completedFocusCount: this.completedFocusCountValue,
+      cardsDone: this.cardsDoneValue,
+      log: [...this.logValue],
+      banked: this.banked,
+      resumedAt: this.resumedAt,
+      phaseStartedAt: this.phaseStartedAt,
+      lastFocusWorked: this.lastFocusWorkedValue,
+      lastFocusCounted: this.lastFocusCounted,
+      cardBaseline: this.cardBaseline,
+    };
+  }
+
+  /**
+   * Port of StudySession.init(from:): a session from saved fields, repairing
+   * what a corrupt or hand-edited file could carry: a phase shorter than the
+   * minimum (which would complete instantly), non-finite or negative banked
+   * time, negative tallies, and a running clock on a phase that never started.
+   */
+  static fromStored(state: StudySessionStoredState): StudySession {
+    const nonNegative = (value: number): number => (Number.isFinite(value) ? Math.max(value, 0) : 0);
+    const session = new StudySession(state.method);
+    session.phaseValue = state.phase;
+    session.phaseDurationValue =
+      state.phaseDuration === undefined ? undefined : Number.isNaN(state.phaseDuration) ? MINIMUM_PHASE : Math.max(state.phaseDuration, MINIMUM_PHASE);
+    session.completedFocusCountValue = Math.max(state.completedFocusCount, 0);
+    session.cardsDoneValue = Math.max(state.cardsDone, 0);
+    session.logValue = [...state.log];
+    session.banked = nonNegative(state.banked);
+    session.resumedAt = state.resumedAt;
+    session.phaseStartedAt = state.phaseStartedAt ?? state.resumedAt;
+    session.lastFocusWorkedValue = nonNegative(state.lastFocusWorked);
+    session.lastFocusCounted = state.lastFocusCounted;
+    session.cardBaseline = state.cardBaseline;
+    return session;
   }
 
   // MARK: Reading

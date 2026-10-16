@@ -124,11 +124,11 @@ export interface Host {
   /* The user's own Party server from Settings (public https only), or null for none; requests may then reach it. */
   setPartyServer(server: string | null): Promise<void>;
   /*
-   * Opens a web page (https) or a mail link in the user's default browser or
-   * mail app: Sign in with Apple's page, the Anki download page, support.
-   * The host refuses any other scheme.
+   * Opens an https link in the default browser, or a listed Windows Settings
+   * page (ms-settings:notifications, :quiethours, :taskbar). Anything else is
+   * refused with code "blocked".
    */
-  openURL(url: string): Promise<void>;
+  openUrl(url: string): Promise<void>;
 
   /* Start with Windows: off until the user turns it on. */
   autostartEnable(): Promise<void>;

@@ -14,6 +14,8 @@ export * from "./Icon";
 export * from "./Card";
 export * from "./IconButton";
 export * from "./Pill";
+export * from "./CapsuleToggle";
+export * from "./PrimaryPill";
 export * from "./TrackSlider";
 export * from "./ProgressBar";
 export * from "./MarqueeText";

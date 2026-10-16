@@ -370,7 +370,7 @@ export class AnkiStore extends Store<AnkiStoreState> {
   /** Opens the Anki download page in the browser. */
   getAnki(): void {
     if (this.isStatic) return;
-    void this.context.host.openURL("https://apps.ankiweb.net").catch((error: unknown) => this.context.logger.error("Could not open the Anki site", error));
+    void this.context.host.openUrl("https://apps.ankiweb.net").catch((error: unknown) => this.context.logger.error("Could not open the Anki site", error));
   }
 
   /** Shows every deck with cards due, or the top decks beside the ring again. */

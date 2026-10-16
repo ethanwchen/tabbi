@@ -1,0 +1,738 @@
+/*
+ * The Study tab and the sound mixer, on the kit's variables: the dial card
+ * on the left (176 px), the method card and controls on the right, and the
+ * overlays (picker, info, custom lengths, mixer) that take the whole panel.
+ * Spacing stays on the 4 px grid; logical properties keep Arabic mirrored.
+ */
+
+.study-panel,
+.study-timer,
+.study-picker,
+.study-info,
+.study-custom,
+.study-mixer,
+.study-setup {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.study-timer {
+  display: flex;
+  gap: 8px;
+}
+
+.study-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.study-spacer {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.study-accent {
+  color: var(--accent);
+}
+
+.study-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* A rhythm label ("10 min", "25/5") is English figures: it reads left to right in every language. */
+.study-rhythm {
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+  direction: ltr;
+}
+
+/* A quiet round button inside a caption row (the (i) and the pencil): clear until hovered. */
+.study-quiet-button {
+  background: transparent;
+  color: var(--tertiary-text);
+}
+.study-quiet-button:hover,
+.study-quiet-button[data-hover="true"] {
+  color: var(--primary-text);
+}
+
+/* The dial. */
+.study-dial {
+  position: relative;
+  flex: none;
+  width: 176px;
+  display: grid;
+  place-items: center;
+}
+
+.study-dial-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.study-dial-value {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--secondary-text);
+}
+.study-dial-value[data-running="true"] {
+  color: var(--primary-text);
+}
+.study-dial-value[data-long] {
+  font-size: 26px;
+}
+
+.study-dial-waiting {
+  color: color-mix(in srgb, var(--accent) 80%, transparent);
+}
+
+.study-dial-pet {
+  position: absolute;
+  inset-inline-end: 4px;
+  bottom: 4px;
+}
+
+/* The method card. */
+.study-card {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.study-caption-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 20px;
+}
+.study-caption-row > .study-quiet-button:last-child {
+  margin-inline-end: -4px;
+}
+
+.study-method-name {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  cursor: default;
+  min-width: 0;
+}
+
+.study-method-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.study-method-chevron {
+  color: var(--tertiary-text);
+}
+.study-method-name:hover .study-method-chevron {
+  color: var(--secondary-text);
+}
+
+.study-method-tagline {
+  display: block;
+}
+
+.study-timer-lengths {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-top: 2px;
+}
+
+.study-deep-focus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.study-deep-focus-switch {
+  flex: none;
+}
+
+.study-sound-button {
+  min-width: 0;
+}
+
+/* Today's tally. */
+.study-today {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.study-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+.study-label[data-met] {
+  color: var(--accent);
+}
+.study-label[data-points]:not([data-met]) {
+  color: var(--tertiary-text);
+}
+
+/* A narrow panel drops the goal, so every number stays whole. */
+.study-today-plain {
+  display: none;
+}
+@container study (max-width: 380px) {
+  .study-today-goal {
+    display: none;
+  }
+  .study-today-plain {
+    display: inline;
+  }
+}
+
+.study-panel {
+  container: study / inline-size;
+}
+
+/* The controls row under the card. */
+.study-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+
+/* The picker. */
+.study-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.study-picker-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.study-method-tile-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.study-method-tile {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--secondary-text);
+  text-align: start;
+  cursor: default;
+}
+.study-method-tile:hover,
+.study-method-tile[data-current="true"] {
+  background: var(--surface-hover);
+}
+.study-method-tile[data-current="true"] {
+  color: var(--primary-text);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.study-method-tile-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.study-method-tile-rhythm {
+  flex: none;
+  color: var(--tertiary-text);
+}
+.study-method-tile[data-current="true"] .study-method-tile-rhythm {
+  color: var(--accent);
+}
+
+/* The info view. */
+.study-info,
+.study-custom {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.study-info-header,
+.study-custom-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.study-info-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 8px;
+}
+
+.study-info-section {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.study-info-evidence {
+  flex: none;
+  width: 196px;
+}
+
+.study-info-text {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.study-evidence {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 9px;
+  white-space: nowrap;
+  color: var(--secondary-text);
+  background: color-mix(in srgb, var(--secondary-text) 14%, transparent);
+}
+.study-evidence[data-level="strong"] {
+  color: var(--success);
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+}
+.study-evidence[data-level="mixed"] {
+  color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 14%, transparent);
+}
+
+/* The Custom lengths. */
+.study-custom-note {
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.study-custom-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 8px;
+}
+
+.study-custom-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.study-custom-long {
+  flex: none;
+  width: 208px;
+}
+
+.study-custom-caption {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  gap: 4px;
+}
+
+.study-custom-value {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.study-custom-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.study-custom-rows[data-disabled] {
+  opacity: 0.4;
+}
+
+.study-custom-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.study-custom-row-label {
+  white-space: nowrap;
+}
+
+.study-stepper {
+  display: flex;
+  gap: 4px;
+}
+
+/* The sound mixer. */
+.study-mixer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  container: mixer / size;
+}
+
+.study-mixer-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.study-mixer-summary {
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.study-mixer-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 8px;
+}
+
+.study-mixer-blend {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.study-mixer-blend-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 2px;
+}
+
+.study-mixer-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.study-mix-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 4px;
+  border-radius: 6px;
+  background: var(--surface);
+  min-width: 0;
+}
+.study-mix-tile[data-enabled="false"] {
+  opacity: 0.45;
+}
+.study-mix-tile[data-on="false"][data-enabled="true"]:hover {
+  background: var(--surface-hover);
+}
+.study-mix-tile[data-on="true"] {
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+.study-mix-tile[data-on="true"]:hover {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.study-mix-tile-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--secondary-text);
+  font-size: 10.5px;
+  font-weight: 500;
+  text-align: start;
+  cursor: default;
+  min-width: 0;
+}
+.study-mix-tile[data-on="true"] .study-mix-tile-name {
+  color: var(--primary-text);
+}
+
+.study-mix-tile-icon {
+  flex: none;
+}
+
+.study-mix-tile-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.study-mix-tile-level {
+  opacity: 0;
+  pointer-events: none;
+}
+.study-mix-tile-level[data-shown="true"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Once the icons are gone the names get the room instead, at the smallest size text may be. */
+.study-mixer[data-dense-names] .study-mix-tile {
+  padding-inline: 2px;
+}
+.study-mixer[data-dense-names] .study-mix-tile-name {
+  font-size: 10px;
+}
+
+/* A short panel (Compact) gets slimmer tiles; a narrow one drops the icons so names never cut. */
+@container mixer (max-height: 150px) {
+  .study-mix-tile {
+    padding: 2px 4px;
+  }
+}
+@container mixer (max-width: 440px) {
+  .study-mix-tile-icon {
+    display: none;
+  }
+}
+
+.study-mixer-volume {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.study-mixer-volume[data-disabled] {
+  opacity: 0.4;
+}
+
+.study-mixer-percent {
+  flex: none;
+  width: 32px;
+  text-align: end;
+}
+
+.study-presets {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.study-preset-chip {
+  max-width: 64px;
+}
+
+.study-preset-save {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 18px;
+  padding: 0;
+  border: 1px dashed var(--stroke);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--tertiary-text);
+  cursor: default;
+}
+.study-preset-save:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--primary-text);
+}
+.study-preset-save:disabled {
+  opacity: 0.5;
+}
+
+.study-preset-rename {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 18px;
+  padding-inline-start: 8px;
+  border-radius: 9px;
+  background: var(--surface-hover);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.study-preset-rename-input {
+  width: 64px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--primary-text);
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 600;
+  outline: none;
+  user-select: text;
+}
+
+.study-mixer-playlist {
+  flex: none;
+  width: 176px;
+  display: flex;
+  flex-direction: column;
+}
+
+.study-playlist {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+}
+
+.study-playlist-title {
+  padding-bottom: 2px;
+}
+
+.study-playlist-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: var(--secondary-text);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  line-height: 1.25;
+}
+
+.study-playlist-note-icon {
+  flex: none;
+  margin-top: 2px;
+  color: var(--accent);
+}
+
+.study-playlist-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 16px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--secondary-text);
+  text-align: start;
+  cursor: default;
+  min-width: 0;
+}
+.study-playlist-row:hover {
+  background: var(--surface-hover);
+}
+.study-playlist-row[aria-checked="true"] {
+  color: var(--primary-text);
+}
+
+.study-playlist-check {
+  flex: none;
+  color: var(--tertiary-text);
+}
+.study-playlist-row[aria-checked="true"] .study-playlist-check {
+  color: var(--accent);
+}
+
+.study-playlist-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.study-playlist-detail {
+  flex: none;
+  white-space: nowrap;
+}
+/* The curator only shows when the whole name still fits; it keeps its room, so hiding it never changes what fits. */
+.study-playlist-row:has(.study-playlist-name[data-overflows]) .study-playlist-detail {
+  visibility: hidden;
+}
+
+/* The party session. */
+.study-party-note {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  min-width: 0;
+}
+
+/* Onboarding's method step. */
+.study-setup {
+  display: flex;
+  gap: 12px;
+}
+
+.study-setup-grid {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  align-content: start;
+}
+
+.study-setup-summary {
+  flex: none;
+  width: 232px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+}
+
+.study-setup-summary-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.study-setup-summary-name {
+  overflow: hidden;
+  min-width: 0;
+}
+
+.study-setup-check {
+  display: inline-flex;
+}
+
+.study-setup-sentences {
+  flex: 1;
+}
+
+.study-setup-sentence {
+  line-height: 1.35;
+}

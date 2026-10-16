@@ -1,69 +1,80 @@
-//! Opens a link in whatever the user set as their browser or mail app:
-//! Sign in with Apple's page, the Anki download page, the support address.
-//! Only `https` and `mailto` links are opened, so the UI can never start a
-//! program or open a file through this command. The rule is pure and
-//! tested; the shell call itself is the thin part at the end.
+//! Opens a link in the user's default browser, or a Windows Settings page.
 //!
-//! Not wired yet: `lib.rs` has to add `mod open;` and `open::open_url` to
-//! its `invoke_handler` (both files are owned by another task).
+//! The UI asks for this when the user clicks a meeting link, a playlist, the
+//! Suggest page, Sign in with Apple, or "Open Windows Settings". Only https
+//! links and a short list of Settings pages are opened; anything else (a
+//! file, a script, another app's scheme) is refused, so a crafted link in a
+//! calendar feed or a chat answer can never start a program.
 
 use crate::error::{HostError, HostResult};
-use std::ffi::OsStr;
-use std::os::windows::ffi::OsStrExt;
-use windows::core::PCWSTR;
-use windows::Win32::UI::Shell::ShellExecuteW;
-use windows::Win32::UI::WindowsAndMessaging::SW_SHOWNORMAL;
+use tauri_plugin_http::reqwest::Url;
 
-/// Links longer than this are not something a person was shown.
-const MAX_CHARS: usize = 2048;
+/// The Windows Settings pages Tabbi points people to.
+const SETTINGS_PAGES: [&str; 3] = [
+    /* Notifications and Do not disturb, which Windows does not let apps switch. */
+    "ms-settings:notifications",
+    "ms-settings:quiethours",
+    /* Taskbar settings, where tray icons are pinned. */
+    "ms-settings:taskbar",
+];
 
-/// The link as it may be handed to the shell, or why it is refused.
-pub fn openable_url(text: &str) -> HostResult<String> {
-    let trimmed = text.trim();
-    if trimmed.is_empty() {
-        return Err(HostError::new("invalid", "an empty link"));
-    }
-    if trimmed.chars().count() > MAX_CHARS {
-        return Err(HostError::new("tooLarge", "the link is too long"));
-    }
-    if trimmed.chars().any(|c| c.is_control() || c.is_whitespace()) {
-        return Err(HostError::new("invalid", "the link holds control characters or spaces"));
-    }
-    let lower = trimmed.to_ascii_lowercase();
-    if lower.starts_with("https://") && lower.len() > "https://".len() {
-        return Ok(trimmed.to_owned());
-    }
-    if lower.starts_with("mailto:") && lower.len() > "mailto:".len() {
-        return Ok(trimmed.to_owned());
-    }
-    Err(HostError::new("blocked", "only https and mailto links can be opened"))
+const MAX_LENGTH: usize = 4096;
+
+fn refused(message: impl Into<String>) -> HostError {
+    HostError::new("blocked", message)
 }
 
-fn wide(text: &str) -> Vec<u16> {
-    OsStr::new(text).encode_wide().chain(std::iter::once(0)).collect()
+/// The exact text to hand to the shell, once it is known to be safe to open.
+pub fn openable(text: &str) -> HostResult<String> {
+    let text = text.trim();
+    if text.len() > MAX_LENGTH {
+        return Err(refused("the link is too long"));
+    }
+    if let Some(page) = SETTINGS_PAGES
+        .iter()
+        .find(|page| text.eq_ignore_ascii_case(page))
+    {
+        return Ok((*page).to_owned());
+    }
+    let url = Url::parse(text).map_err(|_| HostError::new("invalid", "not a valid link"))?;
+    if url.scheme() != "https" {
+        return Err(refused("only https links open from Tabbi"));
+    }
+    if !url.username().is_empty() || url.password().is_some() {
+        return Err(refused("links with a user name or password are not opened"));
+    }
+    if url.host_str().is_none_or(str::is_empty) {
+        return Err(refused("the link has no host"));
+    }
+    Ok(url.into())
 }
 
-#[tauri::command(async)]
+/// Opens an https link in the default browser, or an allowed Settings page.
+#[tauri::command]
 pub fn open_url(url: String) -> HostResult<()> {
-    let url = openable_url(&url)?;
-    let operation = wide("open");
-    let target = wide(&url);
-    /* ShellExecuteW returns a value above 32 on success, an error code otherwise. */
-    let result = unsafe {
-        ShellExecuteW(
-            None,
-            PCWSTR(operation.as_ptr()),
-            PCWSTR(target.as_ptr()),
-            PCWSTR::null(),
-            PCWSTR::null(),
-            SW_SHOWNORMAL,
-        )
-    };
-    if result.0 as usize > 32 {
+    let target = openable(&url)?;
+    shell_open(&target)
+}
+
+#[cfg(windows)]
+fn shell_open(target: &str) -> HostResult<()> {
+    use windows::Win32::UI::Shell::ShellExecuteW;
+    use windows::Win32::UI::WindowsAndMessaging::SW_SHOWNORMAL;
+    use windows::core::{HSTRING, w};
+
+    let target = HSTRING::from(target);
+    /* ShellExecute reports success as a value above 32. */
+    let result = unsafe { ShellExecuteW(None, w!("open"), &target, None, None, SW_SHOWNORMAL) };
+    if result.0 as isize > 32 {
         Ok(())
     } else {
-        Err(HostError::new("io", format!("the shell could not open the link (code {})", result.0 as usize)))
+        Err(HostError::new("failed", "Windows could not open the link"))
     }
+}
+
+#[cfg(not(windows))]
+fn shell_open(_target: &str) -> HostResult<()> {
+    Err(HostError::new("failed", "opening links needs Windows"))
 }
 
 #[cfg(test)]
@@ -71,18 +82,49 @@ mod tests {
     use super::*;
 
     #[test]
-    fn opens_web_pages_and_mail_links_only() {
-        assert_eq!(openable_url("https://apps.ankiweb.net").unwrap(), "https://apps.ankiweb.net");
-        assert_eq!(openable_url("  mailto:support@tabbinotch.com ").unwrap(), "mailto:support@tabbinotch.com");
-        assert_eq!(openable_url("HTTPS://appleid.apple.com/auth/authorize?x=1").unwrap(), "HTTPS://appleid.apple.com/auth/authorize?x=1");
-        assert_eq!(openable_url("http://example.com").unwrap_err().code, "blocked");
-        assert_eq!(openable_url("file:///C:/Windows/notepad.exe").unwrap_err().code, "blocked");
-        assert_eq!(openable_url("C:\\Windows\\notepad.exe").unwrap_err().code, "blocked");
-        assert_eq!(openable_url("https://").unwrap_err().code, "blocked");
-        assert_eq!(openable_url("").unwrap_err().code, "invalid");
-        assert_eq!(openable_url("https://a.b/c d").unwrap_err().code, "invalid");
-        assert_eq!(openable_url("https://a.b/\u{7}").unwrap_err().code, "invalid");
-        let long = format!("https://a.b/{}", "x".repeat(MAX_CHARS));
-        assert_eq!(openable_url(&long).unwrap_err().code, "tooLarge");
+    fn https_links_open_as_written() {
+        assert_eq!(
+            openable("https://meet.google.com/abc-defg-hij").unwrap(),
+            "https://meet.google.com/abc-defg-hij"
+        );
+        assert_eq!(
+            openable("  https://open.spotify.com/playlist/37i9dQZF1DX8NTLI2TtZa6?si=1  ").unwrap(),
+            "https://open.spotify.com/playlist/37i9dQZF1DX8NTLI2TtZa6?si=1"
+        );
+    }
+
+    #[test]
+    fn only_the_listed_settings_pages_open() {
+        assert_eq!(
+            openable("ms-settings:notifications").unwrap(),
+            "ms-settings:notifications"
+        );
+        assert_eq!(
+            openable("MS-SETTINGS:Taskbar").unwrap(),
+            "ms-settings:taskbar"
+        );
+        assert!(openable("ms-settings:privacy-webcam").is_err());
+        assert!(openable("ms-settings:").is_err());
+    }
+
+    #[test]
+    fn everything_else_is_refused() {
+        for bad in [
+            "http://example.com",
+            "file:///C:/Windows/System32/calc.exe",
+            "C:\\Windows\\System32\\calc.exe",
+            "javascript:alert(1)",
+            "tabbi://open",
+            "steam://run/440",
+            "ms-msdt:/id",
+            "search-ms:query=x",
+            "https://user:pw@example.com",
+            "https://",
+            "not a link",
+            "",
+        ] {
+            assert!(openable(bad).is_err(), "{bad:?} must be refused");
+        }
+        assert!(openable(&format!("https://example.com/{}", "a".repeat(5000))).is_err());
     }
 }

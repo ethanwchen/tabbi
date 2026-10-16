@@ -61,6 +61,7 @@ import { PartyState } from "../../core/party/partyState";
 import { PartyTeamCelebration } from "../../core/party/partyTeamCelebration";
 import { hostPartyTransport, type PartyTransport } from "../../core/party/partyTransport";
 import { studyPet } from "../closet/closetServices";
+import { copyText } from "./PartyComponents";
 import { partyState as sharedPartyState } from "./partyServices";
 
 /** A panel action in flight. Port of PartyAction. */
@@ -254,9 +255,19 @@ export class PartyStore extends Store<PartyStoreState> {
     return this.panelVisible;
   }
 
-  /** Opens a web page or mail link in the default app, best effort. */
+  /**
+   * Opens a web page in the default browser, best effort. The host opens
+   * https links only, so a mail link puts the address on the clipboard
+   * instead and says so.
+   */
   openURL(url: string): void {
-    void this.context.host.openURL(url).catch((error: unknown) => this.context.logger.error("Could not open a link", error));
+    if (url.startsWith("mailto:")) {
+      void copyText(url.slice("mailto:".length)).then((copied) => {
+        if (copied) this.confirm(tr("Copied"));
+      });
+      return;
+    }
+    void this.context.host.openUrl(url).catch((error: unknown) => this.context.logger.error("Could not open a link", error));
   }
 
   /** The account's Sign In before the age check: the question belongs to Party, so its tab asks it. */
