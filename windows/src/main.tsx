@@ -119,7 +119,7 @@ if (snapshot !== null && snapshot !== undefined) {
   const app = await services(startup);
   const browser = inApp ? undefined : browserIsland();
   /* The host built the tray menu in English; now that the strings are loaded, it gets the user's language. */
-  if (inApp) void host.setTrayLabels({ open: tr("Open Tabbi"), settings: tr("Tabbi Settings"), quit: tr("Quit Tabbi") });
+  if (inApp) void host.setTrayLabels({ open: tr("Open Tabbi"), settings: tr("Tabbi Settings"), updates: tr("Check for Updates"), quit: tr("Quit Tabbi") });
   installOnboarding(app);
   render(
     <ThemedRoot settings={app.settings} still={browser?.still ?? false} reduceMotion={reduce}>

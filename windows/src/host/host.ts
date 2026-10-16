@@ -54,6 +54,7 @@ export type OpenableApp = "anki" | "spotify" | "powershell";
 export interface TrayLabels {
   readonly open: string;
   readonly settings: string;
+  readonly updates: string;
   readonly quit: string;
 }
 
@@ -210,6 +211,26 @@ export interface Host {
    * "blocked" for a path outside the tool's folder.
    */
   aiLogRead(tool: AiLogTool, path: string, offset: number): Promise<Uint8Array>;
+
+  /*
+   * Updates (src-tauri/src/updater.rs). A check contacts GitHub, so it runs
+   * only when the user asks, or at launch once they turned on the automatic
+   * check. updateCheck resolves with the newer build or null; updateInstall
+   * installs what the last check found (its signature verified) and restarts.
+   */
+  updateCheck(): Promise<UpdateInfo | null>;
+  updateInstall(): Promise<void>;
+  updateAutoCheck(): Promise<boolean>;
+  setUpdateAutoCheck(on: boolean): Promise<void>;
+  /* True once after the tray asked Settings to check for updates; onUpdateRequest hears a later ask. */
+  updateTakeRequest(): Promise<boolean>;
+  onUpdateRequest(listener: () => void): () => void;
+}
+
+/* A newer build than the running one, from the release feed. */
+export interface UpdateInfo {
+  readonly version: string;
+  readonly notes: string | null;
 }
 
 /*

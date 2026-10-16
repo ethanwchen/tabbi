@@ -1,12 +1,13 @@
 /*
  * Port of AboutSettingsPane: the app glyph, the version, what Tabbi is,
  * the GitHub and support links, the Suggest link with the app and Windows
- * versions filled in, the crash report choice (an "always send" switch
+ * versions filled in, Check for Updates with its opt-in automatic check
+ * (Windows only, the Mac has Sparkle), the crash report choice (an "always send" switch
  * exists, but this build sends nothing yet), the licenses, and the pricing
  * sentence, word for word.
  */
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useStore } from "../../../app/useStore";
 import { CRASH_REPORT_CONSENTS, crashReportConsentTitle, type CrashReportConsent } from "../../../core/feedback/crashReporting";
 import { DiagnosticEnvironment } from "../../../core/feedback/diagnosticEnvironment";
@@ -18,9 +19,11 @@ import { Icon } from "../../kit/Icon";
 import { Picker } from "../../kit/Picker";
 import { SettingsGroup, SettingsRow } from "../../kit/SettingsGroup";
 import { Sheet } from "../../kit/Sheet";
+import { Toggle } from "../../kit/Toggle";
 import { Tooltip } from "../../kit/Tooltip";
 import glyph from "../../../../../docs/brand/assets/tabbi-glyph-256.png";
 import { SettingsButton } from "./parts";
+import type { UpdateInfo } from "../../../host/host";
 import type { SettingsSectionProps } from "./sections";
 import { SettingsPage } from "./SettingsWindow";
 
@@ -55,6 +58,85 @@ function LinkRow({ title, symbol, help, href, host, copies = false }: { title: s
   );
 }
 
+/* Where a check for updates stands. */
+type UpdateState = { kind: "idle" } | { kind: "checking" } | { kind: "latest" } | { kind: "available"; update: UpdateInfo } | { kind: "installing" } | { kind: "failed" };
+
+function updateStatus(state: UpdateState): string | undefined {
+  switch (state.kind) {
+    case "idle":
+      return undefined;
+    case "checking":
+      return tr("Checking for updates...");
+    case "latest":
+      return tr("You have the latest version.");
+    case "available":
+      return tr("Version %@ is available.", state.update.version);
+    case "installing":
+      return tr("Installing the update. Tabbi restarts when it is done.");
+    case "failed":
+      return tr("Could not check for updates. Try again later.");
+  }
+}
+
+/*
+ * Check for Updates and the opt-in automatic check. A check contacts
+ * GitHub, so nothing is checked until the user asks here or in the tray,
+ * or turns on Check automatically (off by default).
+ */
+function UpdatesGroup({ host }: { host: SettingsSectionProps["host"] }) {
+  const [state, setState] = useState<UpdateState>({ kind: "idle" });
+  const [automatic, setAutomatic] = useState(false);
+
+  const check = useCallback(() => {
+    setState({ kind: "checking" });
+    host.updateCheck().then(
+      (update) => setState(update ? { kind: "available", update } : { kind: "latest" }),
+      () => setState({ kind: "failed" }),
+    );
+  }, [host]);
+  const install = () => {
+    setState({ kind: "installing" });
+    host.updateInstall().catch(() => setState({ kind: "failed" }));
+  };
+
+  useEffect(() => {
+    let live = true;
+    void host.updateAutoCheck().then((on) => live && setAutomatic(on));
+    /* The tray's Check for Updates opens this page and asks it to check. */
+    const take = () => void host.updateTakeRequest().then((asked) => asked && check());
+    take();
+    const stop = host.onUpdateRequest(take);
+    return () => {
+      live = false;
+      stop();
+    };
+  }, [host, check]);
+
+  const busy = state.kind === "checking" || state.kind === "installing";
+  return (
+    <SettingsGroup title={tr("Updates")} footer={tr("Checking for updates contacts GitHub. Tabbi checks only when you ask, unless Check automatically is on.")}>
+      <SettingsRow label={tr("Updates")} help={updateStatus(state)}>
+        {state.kind === "available" ? (
+          <SettingsButton title={tr("Install and Restart")} help={tr("Download version %@, install it and restart Tabbi", state.update.version)} primary onClick={install} />
+        ) : (
+          <SettingsButton title={tr("Check for Updates")} help={tr("Ask GitHub whether a newer version of Tabbi is out")} disabled={busy} onClick={check} />
+        )}
+      </SettingsRow>
+      <SettingsRow label={tr("Check automatically")} help={tr("Checks once each time Tabbi starts.")}>
+        <Toggle
+          isOn={automatic}
+          onChange={(on) => {
+            setAutomatic(on);
+            host.setUpdateAutoCheck(on).catch(() => setAutomatic(!on));
+          }}
+          label={tr("Check automatically")}
+          help={tr("Check GitHub for a newer version each time Tabbi starts")}
+        />
+      </SettingsRow>
+    </SettingsGroup>
+  );
+}
+
 export function AboutSection({ app, host, snapshotState }: SettingsSectionProps) {
   const consent = useStore(app.settings.crashReportConsent);
   const [licenses, setLicenses] = useState(snapshotState === "licenses");
@@ -83,6 +165,8 @@ export function AboutSection({ app, host, snapshotState }: SettingsSectionProps)
           <LinkRow title={feedbackLinkTitle()} symbol="lightbulb" help={tr("Opens the Suggest page with your app version, Windows version and edition filled in")} href={feedbackLinkURL(environment)} host={host} />
         </div>
       </div>
+
+      <UpdatesGroup host={host} />
 
       <SettingsGroup footer={tr("Nothing is sent in this build yet. When crash reports arrive, they go only with your say-so and never hold typed text, names or file paths.")}>
         <SettingsRow label={tr("Crash reports")}>

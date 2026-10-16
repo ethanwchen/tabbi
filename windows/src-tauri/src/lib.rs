@@ -18,6 +18,7 @@ mod placement;
 mod shell;
 mod storage;
 mod system;
+mod updater;
 mod watcher;
 mod win;
 
@@ -561,6 +562,7 @@ fn valid_shortcut(shortcut: &str) -> bool {
 struct TrayMenu {
     open: MenuItem<tauri::Wry>,
     settings: MenuItem<tauri::Wry>,
+    updates: MenuItem<tauri::Wry>,
     quit: MenuItem<tauri::Wry>,
 }
 
@@ -569,6 +571,8 @@ struct TrayMenu {
 struct TrayLabels {
     open: String,
     settings: String,
+    #[serde(default)]
+    updates: String,
     quit: String,
 }
 
@@ -584,6 +588,7 @@ fn tray_set_labels(app: AppHandle, labels: TrayLabels) -> Result<(), String> {
     for (item, text) in [
         (&menu.open, clean(&labels.open)),
         (&menu.settings, clean(&labels.settings)),
+        (&menu.updates, clean(&labels.updates)),
         (&menu.quit, clean(&labels.quit)),
     ] {
         if !text.is_empty() {
@@ -596,12 +601,23 @@ fn tray_set_labels(app: AppHandle, labels: TrayLabels) -> Result<(), String> {
 fn build_tray(app: &AppHandle) -> tauri::Result<()> {
     let open_item = MenuItem::with_id(app, "open", "Open Tabbi", true, None::<&str>)?;
     let settings_item = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
+    let updates_item = MenuItem::with_id(app, "updates", "Check for Updates", true, None::<&str>)?;
     let quit_item = MenuItem::with_id(app, "quit", "Quit Tabbi", true, None::<&str>)?;
     let separator = PredefinedMenuItem::separator(app)?;
-    let menu = Menu::with_items(app, &[&open_item, &settings_item, &separator, &quit_item])?;
+    let menu = Menu::with_items(
+        app,
+        &[
+            &open_item,
+            &settings_item,
+            &updates_item,
+            &separator,
+            &quit_item,
+        ],
+    )?;
     app.manage(TrayMenu {
         open: open_item.clone(),
         settings: settings_item.clone(),
+        updates: updates_item.clone(),
         quit: quit_item.clone(),
     });
     TrayIconBuilder::with_id("tabbi")
@@ -619,6 +635,12 @@ fn build_tray(app: &AppHandle) -> tauri::Result<()> {
                 /* Off the menu's callback, like the command, so building the window never blocks the event loop. */
                 let app = app.clone();
                 tauri::async_runtime::spawn(async move { open_settings(&app, None) });
+            }
+            "updates" => {
+                updater::request_check(app);
+                let _ = app.emit_to(SETTINGS, "settings:check-updates", ());
+                let app = app.clone();
+                tauri::async_runtime::spawn(async move { open_settings(&app, Some("about".to_owned())) });
             }
             "quit" => app.exit(0),
             _ => {}
@@ -645,6 +667,7 @@ fn setup(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     win::set_region(raw, None);
     app.manage(Launch::from_environment());
     app.manage(PendingSection::default());
+    app.manage(updater::Updates::default());
 
     let signal_app = app.clone();
     let watcher = Watcher::spawn(move |signal| {
@@ -676,6 +699,7 @@ fn setup(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     app.manage(http::Http::new());
     app.manage(media::Media::default());
     app.manage(system::SystemSampler::default());
+    updater::check_at_launch(app);
 
     /* The installer registers tabbi:// per user; a dev build registers itself. */
     #[cfg(debug_assertions)]
@@ -700,6 +724,7 @@ pub fn run() {
         .plugin(tauri_plugin_notification::init())
         /* Off until the user turns on Start with Windows; the plugin only registers its manager. */
         .plugin(tauri_plugin_autostart::Builder::new().app_name("Tabbi").build())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .invoke_handler(tauri::generate_handler![
             island_set_shape,
             island_set_open,
@@ -741,7 +766,12 @@ pub fn run() {
             ai_paths::ai_logs_list,
             ai_paths::ai_log_read,
             coach::coach_sample,
-            pictures::picture_save
+            pictures::picture_save,
+            updater::update_check,
+            updater::update_install,
+            updater::update_auto_check,
+            updater::update_set_auto_check,
+            updater::update_take_request
         ])
         .setup(|app| setup(app.handle()))
         .build(tauri::generate_context!())

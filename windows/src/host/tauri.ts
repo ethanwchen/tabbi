@@ -17,6 +17,7 @@ import type {
   SettingsLaunch,
   Startup,
   SystemStats,
+  UpdateInfo,
 } from "./host";
 
 /* Tells this window's own broadcasts apart from the other windows'. */
@@ -130,6 +131,13 @@ export function tauriHost(): Host {
     aiLogs: (tool) => invoke<AiLogFile[]>("ai_logs_list", { tool }),
     /* The host answers with a raw body, which arrives as an ArrayBuffer. */
     aiLogRead: async (tool, path, offset) => new Uint8Array(await invoke<ArrayBuffer>("ai_log_read", { tool, path, offset })),
+
+    updateCheck: () => invoke<UpdateInfo | null>("update_check"),
+    updateInstall: () => invoke("update_install"),
+    updateAutoCheck: () => invoke<boolean>("update_auto_check"),
+    setUpdateAutoCheck: (on) => invoke("update_set_auto_check", { on }),
+    updateTakeRequest: () => invoke<boolean>("update_take_request"),
+    onUpdateRequest: (listener) => on<null>("settings:check-updates", () => listener()),
   };
 }
 

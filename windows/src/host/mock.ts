@@ -111,6 +111,7 @@ export function mockHost(startup: Startup = MOCK_STARTUP, options: MockHostOptio
   const credentials = new Map<CredentialName, string>();
   let media: MediaSnapshot | null = null;
   let autostart = false;
+  let updateAutoCheck = false;
   const aiLogFiles = new Map<string, string>();
   const aiLogModified = options.aiLogModified ?? 0;
   const encoder = new TextEncoder();
@@ -290,5 +291,16 @@ export function mockHost(startup: Startup = MOCK_STARTUP, options: MockHostOptio
       if (text === undefined) return rejection("blocked", `${path} is not a log of ${tool}`);
       return answer("aiLogRead", [tool, path, offset], encoder.encode(text).subarray(offset));
     },
+
+    /* No feed in tests: the running build is the latest, and the automatic check stays off until set. */
+    updateCheck: () => answer("updateCheck", [], null),
+    updateInstall: record("updateInstall"),
+    updateAutoCheck: () => answer("updateAutoCheck", [], updateAutoCheck),
+    setUpdateAutoCheck(on) {
+      updateAutoCheck = on;
+      return answer("setUpdateAutoCheck", [on], undefined);
+    },
+    updateTakeRequest: () => answer("updateTakeRequest", [], false),
+    onUpdateRequest: () => () => {},
   };
 }
