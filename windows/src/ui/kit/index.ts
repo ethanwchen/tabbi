@@ -37,6 +37,7 @@ export * from "./HotkeyRecorder";
 export * from "./Toggle";
 export * from "./SegmentedControl";
 export * from "./Picker";
+export * from "./ContextMenu";
 export * from "./TextField";
 export * from "./Stepper";
 export * from "./SettingsGroup";

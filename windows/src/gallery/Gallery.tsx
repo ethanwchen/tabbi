@@ -29,6 +29,7 @@ import { ModulePlaceholder } from "../ui/kit/ModulePlaceholder";
 import { ModulePreview } from "../ui/kit/ModulePreview";
 import { PetSprite, PetView } from "../ui/kit/PetView";
 import { Picker } from "../ui/kit/Picker";
+import { ContextMenu } from "../ui/kit/ContextMenu";
 import { Pill } from "../ui/kit/Pill";
 import { RowsThatFit } from "../ui/kit/RowsThatFit";
 import { SegmentedControl } from "../ui/kit/SegmentedControl";
@@ -287,6 +288,24 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
             <Pill title={tr("Join")} prominent height={20} />
             <Pill title={tr("Leave")} busy />
             <Pill title="" help={tr("Start a party")} symbol="plus" prominent />
+          </Cell>
+        </Row>
+      </Section>
+
+      <Section title="ContextMenu">
+        <Row align="start">
+          <Cell label="A friend row's menu, open" accent="study" width={240}>
+            <div style={{ position: "relative", height: 112 }}>
+              <ContextMenu
+                items={[
+                  { title: tr("Remove %@", "Maya"), symbol: "minus.circle.fill", destructive: true, onSelect: () => {} },
+                  { title: tr("Report %@…", "Maya"), symbol: "exclamationmark.triangle", separator: true, onSelect: () => {} },
+                  { title: tr("Block %@", "Maya"), symbol: "hand.raised.fill", destructive: true, onSelect: () => {} },
+                ]}
+                at={{ x: 0, y: 0 }}
+                onClose={() => {}}
+              />
+            </div>
           </Cell>
         </Row>
       </Section>

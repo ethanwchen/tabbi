@@ -240,6 +240,30 @@ export class PartyStore extends Store<PartyStoreState> {
 
   /* MARK: Derived */
 
+  /** The clock, for countdowns and dates. */
+  now(): Instant {
+    return this.context.now();
+  }
+
+  timeZone(): string {
+    return this.context.timeZone();
+  }
+
+  /** Whether the panel (or the onboarding step) is on screen. */
+  get isVisible(): boolean {
+    return this.panelVisible;
+  }
+
+  /** Opens a web page or mail link in the default app, best effort. */
+  openURL(url: string): void {
+    void this.context.host.openURL(url).catch((error: unknown) => this.context.logger.error("Could not open a link", error));
+  }
+
+  /** The account's Sign In before the age check: the question belongs to Party, so its tab asks it. */
+  askAgeFirst(): void {
+    this.setNotice(tr("Open the Party tab to answer when you were born, then sign in here."), false);
+  }
+
   get party(): PartyState {
     return this.state.party;
   }
