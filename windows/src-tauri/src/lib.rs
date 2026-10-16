@@ -10,6 +10,7 @@ mod error;
 mod http;
 mod media;
 mod notify;
+mod open;
 mod outbox;
 mod placement;
 mod shell;
@@ -702,6 +703,7 @@ pub fn run() {
             system::system_watch,
             http::http_request,
             http::http_set_party_server,
+            open::open_url,
             http::http_stream,
             http::http_cancel,
             http::http_fetch_calendar,
@@ -712,7 +714,6 @@ pub fn run() {
             hotkey_set,
             tray_set_labels,
             shell::dialog_pick_kit,
-            shell::open_url,
             shell::open_app,
             shell::notifications_setting,
             ai_paths::ai_logs_list,

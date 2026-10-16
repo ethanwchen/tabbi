@@ -454,6 +454,10 @@
   gap: 4px;
 }
 
+.ob-tray-actions {
+  margin-top: 4px;
+}
+
 .ob-windows-error {
   color: var(--warning);
 }

@@ -30,6 +30,8 @@ import { ModulePreview } from "../ui/kit/ModulePreview";
 import { PetSprite, PetView } from "../ui/kit/PetView";
 import { Picker } from "../ui/kit/Picker";
 import { Pill } from "../ui/kit/Pill";
+import { CapsuleToggle } from "../ui/kit/CapsuleToggle";
+import { PrimaryPill } from "../ui/kit/PrimaryPill";
 import { ProgressBar } from "../ui/kit/ProgressBar";
 import { RowsThatFit } from "../ui/kit/RowsThatFit";
 import { SegmentedControl } from "../ui/kit/SegmentedControl";
@@ -281,6 +283,49 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
           </Cell>
           <Cell label="disabled" accent="study">
             <Pill title={tr("Try again")} disabled />
+          </Cell>
+        </Row>
+      </Section>
+
+      <Section title="CapsuleToggle, PrimaryPill">
+        <Row>
+          <Cell label="CapsuleToggle on" accent="study">
+            <CapsuleToggle title={tr("Deep focus")} symbol="moon" isOn help={tr("Deep focus")} />
+          </Cell>
+          <Cell label="off" accent="study">
+            <CapsuleToggle title={tr("Deep focus")} symbol="moon" isOn={false} help={tr("Deep focus")} />
+          </Cell>
+          <Cell label="off, hover" accent="study">
+            <CapsuleToggle title={tr("Deep focus")} symbol="moon" isOn={false} help={tr("Deep focus")} preview="hover" />
+          </Cell>
+          <Cell label="soft on, trailing glyph" accent="study">
+            <CapsuleToggle title={tr("Rain")} symbol="rain" trailingSymbol="music-note" isOn look="soft" help={tr("Sound")} />
+          </Cell>
+          <Cell label="soft on, muted" accent="study">
+            <CapsuleToggle title={tr("Rain")} symbol="rain" isOn look="soft" muted help={tr("Sound")} />
+          </Cell>
+          <Cell label="chip 22, on" accent="study">
+            <CapsuleToggle title={tr("%lld min", 25)} isOn outlined={false} height={22} help={tr("Start timer")} />
+          </Cell>
+          <Cell label="chip 22, off" accent="study">
+            <CapsuleToggle title={tr("%lld min", 5)} isOn={false} outlined={false} height={22} help={tr("Start timer")} />
+          </Cell>
+          <Cell label="disabled" accent="study">
+            <CapsuleToggle title={tr("Off")} isOn={false} help={tr("Off")} disabled />
+          </Cell>
+        </Row>
+        <Row>
+          <Cell label="PrimaryPill" accent="study">
+            <PrimaryPill title={tr("Start focus")} symbol="play-filled" help={tr("Start focus")} />
+          </Cell>
+          <Cell label="hover" accent="study">
+            <PrimaryPill title={tr("Pause")} symbol="pause-filled" help={tr("Pause")} preview="hover" />
+          </Cell>
+          <Cell label="pressed" accent="planner">
+            <PrimaryPill title={tr("Resume")} symbol="play-filled" help={tr("Resume")} preview="pressed" />
+          </Cell>
+          <Cell label="disabled" accent="study">
+            <PrimaryPill title={tr("Start focus")} symbol="play-filled" help={tr("Start focus")} disabled />
           </Cell>
         </Row>
       </Section>

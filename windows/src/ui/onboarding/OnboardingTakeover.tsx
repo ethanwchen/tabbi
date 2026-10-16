@@ -30,6 +30,7 @@ import { useTheme, useTransition } from "../kit/context";
 import { Icon } from "../kit/Icon";
 import { PetPlayer } from "../kit/petPlayer";
 import { PetView } from "../kit/PetView";
+import { Pill } from "../kit/Pill";
 import { TextField } from "../kit/TextField";
 import { Toggle } from "../kit/Toggle";
 import { accentCss, accentVariables } from "../kit/tokens";
@@ -187,7 +188,7 @@ function renderStep(
     case "startWithWindows":
       return <StartWithWindowsStep app={app} />;
     case "trayIcon":
-      return <TrayIconStep />;
+      return <TrayIconStep app={app} />;
   }
 }
 
@@ -670,7 +671,7 @@ function StartWithWindowsStep({ app }: { app: AppServices }) {
 }
 
 /** Windows' last step: how to drag the tray icon out of the hidden icons, drawn as a small taskbar. */
-function TrayIconStep() {
+function TrayIconStep({ app }: { app: AppServices }) {
   return (
     <Card className="ob-tray">
       <span className="ob-tray-art" aria-hidden="true">
@@ -700,6 +701,9 @@ function TrayIconStep() {
       <span className="ob-tray-text">
         <span className="kit-title">{tr("Pin the tray icon")}</span>
         <span className="kit-body kit-secondary">{tr("Windows tucks new icons behind the arrow by the clock. Drag Tabbi's paw onto the taskbar once and it stays there.")}</span>
+        <span className="ob-tray-actions">
+          <Pill title={tr("Open taskbar settings")} symbol="menubar.rectangle" help={tr("Opens Windows' taskbar settings, where tray icons can be turned on too")} onClick={() => void app.environment.host.openUrl("ms-settings:taskbar")} />
+        </span>
       </span>
     </Card>
   );

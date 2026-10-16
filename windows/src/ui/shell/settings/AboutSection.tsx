@@ -42,10 +42,12 @@ const LICENSES: readonly { name: string; license: string; url: string }[] = [
   { name: "serde", license: "MIT or Apache-2.0", url: "https://github.com/serde-rs/serde" },
 ];
 
-function LinkRow({ title, symbol, help, href, host }: { title: string; symbol: string; help: string; href: string; host: SettingsSectionProps["host"] }) {
+function LinkRow({ title, symbol, help, href, host, copies = false }: { title: string; symbol: string; help: string; href: string; host: SettingsSectionProps["host"]; copies?: boolean }) {
+  /* The host opens https links only; a mail address is copied for the user's own mail app instead. */
+  const open = () => (copies ? void navigator.clipboard?.writeText(href) : void host.openUrl(href));
   return (
     <Tooltip text={help}>
-      <button type="button" className="settings-about-link" onClick={() => void host.openURL(href)}>
+      <button type="button" className="settings-about-link" onClick={open}>
         <Icon id={symbol} size={13} />
         <span>{title}</span>
       </button>
@@ -73,9 +75,10 @@ export function AboutSection({ app, host, snapshotState }: SettingsSectionProps)
           <LinkRow
             title={SupportContact.reportLine()}
             symbol="envelope"
-            help={offersParty ? tr("Email the %@ team about a bug, a person in Party or anything else", edition.name) : tr("Email the %@ team about a bug or anything else", edition.name)}
-            href={SupportContact.mailURL}
+            help={offersParty ? tr("Copies the address. Email the %@ team about a bug, a person in Party or anything else", edition.name) : tr("Copies the address. Email the %@ team about a bug or anything else", edition.name)}
+            href={SupportContact.email}
             host={host}
+            copies
           />
           <LinkRow title={feedbackLinkTitle()} symbol="lightbulb" help={tr("Opens the Suggest page with your app version, Windows version and edition filled in")} href={feedbackLinkURL(environment)} host={host} />
         </div>
@@ -101,12 +104,12 @@ export function AboutSection({ app, host, snapshotState }: SettingsSectionProps)
         <p className="settings-about-pricing kit-body">{PRICING_SENTENCE}</p>
         <div className="settings-about-legal">
           <Tooltip text={SupportContact.privacyURL}>
-            <button type="button" className="settings-link kit-caption" onClick={() => void host.openURL(SupportContact.privacyURL)}>
+            <button type="button" className="settings-link kit-caption" onClick={() => void host.openUrl(SupportContact.privacyURL)}>
               {tr("Privacy Policy")}
             </button>
           </Tooltip>
           <Tooltip text={SupportContact.termsURL}>
-            <button type="button" className="settings-link kit-caption" onClick={() => void host.openURL(SupportContact.termsURL)}>
+            <button type="button" className="settings-link kit-caption" onClick={() => void host.openUrl(SupportContact.termsURL)}>
               {tr("Terms of Use")}
             </button>
           </Tooltip>
@@ -129,7 +132,7 @@ export function AboutSection({ app, host, snapshotState }: SettingsSectionProps)
           <div className="settings-licenses kit-card">
             {LICENSES.map((entry) => (
               <Tooltip key={entry.name} text={entry.url}>
-                <button type="button" className="settings-license" onClick={() => void host.openURL(entry.url)}>
+                <button type="button" className="settings-license" onClick={() => void host.openUrl(entry.url)}>
                   <span className="kit-body-emphasis">{entry.name}</span>
                   <span className="kit-caption kit-secondary">{entry.license}</span>
                 </button>

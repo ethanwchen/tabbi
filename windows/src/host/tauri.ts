@@ -110,6 +110,7 @@ export function tauriHost(): Host {
     },
     fetchCalendar: (url) => invoke<string>("http_fetch_calendar", { url }),
     setPartyServer: (server) => invoke("http_set_party_server", { server }),
+    openUrl: (url) => invoke("open_url", { url }),
 
     autostartEnable: () => invoke("autostart_enable"),
     autostartDisable: () => invoke("autostart_disable"),
@@ -120,7 +121,6 @@ export function tauriHost(): Host {
     setHotkey: (shortcut) => invoke<HotkeyStatus>("hotkey_set", { shortcut }),
     notificationsSetting: () => invoke<NotificationSetting>("notifications_setting"),
     pickKitFile: () => invoke<KitFilePick | null>("dialog_pick_kit"),
-    openURL: (url) => invoke("open_url", { url }),
     openApp: (app) => invoke("open_app", { app }),
     setTrayLabels: (labels) => invoke("tray_set_labels", { labels }),
     aiLogs: (tool) => invoke<AiLogFile[]>("ai_logs_list", { tool }),

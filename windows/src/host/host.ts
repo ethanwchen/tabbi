@@ -150,6 +150,12 @@ export interface Host {
   fetchCalendar(url: string): Promise<string>;
   /* The user's own Party server from Settings (public https only), or null for none; requests may then reach it. */
   setPartyServer(server: string | null): Promise<void>;
+  /*
+   * Opens an https link in the default browser, or a listed Windows Settings
+   * page (ms-settings:notifications, :quiethours, :taskbar). Anything else is
+   * refused with code "blocked".
+   */
+  openUrl(url: string): Promise<void>;
 
   /* Start with Windows: off until the user turns it on. */
   autostartEnable(): Promise<void>;
@@ -170,8 +176,6 @@ export interface Host {
   notificationsSetting(): Promise<NotificationSetting>;
   /* The official file dialog, limited to one .json file of a kit's size; null when the user cancels. */
   pickKitFile(): Promise<KitFilePick | null>;
-  /* Opens an https page or an ms-settings: page in the user's default handler; anything else is refused. */
-  openURL(url: string): Promise<void>;
   /* Opens (or brings forward) one of the apps Connections knows. */
   openApp(app: OpenableApp): Promise<void>;
   /* Puts the user's language on the tray menu. */

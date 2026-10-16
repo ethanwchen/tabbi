@@ -165,7 +165,7 @@ export function ConnectionsSection({ app, host, snapshotState }: SettingsSection
   const perform = (action: ConnectionAction, kind: ConnectionKind) => {
     switch (action.kind) {
       case "download":
-        if (action.app.downloadPage !== undefined) void host.openURL(action.app.downloadPage);
+        if (action.app.downloadPage !== undefined) void host.openUrl(action.app.downloadPage);
         return;
       case "openApp":
         void host.openApp(action.app.id).then(() => window.setTimeout(() => store.refresh([kind]), 3000));
@@ -174,7 +174,7 @@ export function ConnectionsSection({ app, host, snapshotState }: SettingsSection
         setSheet({ kind: "walkthrough", guide: action.guide });
         return;
       case "openSettings":
-        void host.openURL(settingsURL(action.link));
+        void host.openUrl(settingsURL(action.link));
         return;
       case "checkAgain":
         store.refresh([kind]);
@@ -230,7 +230,7 @@ export function ConnectionsSection({ app, host, snapshotState }: SettingsSection
           executable={state.diagnoses.claude?.executable}
           onCancel={() => setSheet(undefined)}
           onStart={(action) => {
-            if (action.kind === "openPage") void host.openURL(action.url);
+            if (action.kind === "openPage") void host.openUrl(action.url);
             else {
               if (action.kind === "copyAndOpen") void navigator.clipboard?.writeText(action.text);
               void host.openApp(action.app.id);
@@ -564,7 +564,7 @@ function AIGroup({ app, host, onConsent }: { app: SettingsSectionProps["app"]; h
   const page = provider === undefined ? undefined : setupPage(provider);
   const pageButton =
     provider === undefined || page === undefined ? null : (
-      <SettingsButton title={setupPageTitle(provider)} help={tr("Open %@ in your browser", new URL(page).host)} onClick={() => void host.openURL(page)} />
+      <SettingsButton title={setupPageTitle(provider)} help={tr("Open %@ in your browser", new URL(page).host)} onClick={() => void host.openUrl(page)} />
     );
   return (
     <SettingsGroup title={tr("AI")} footer={footer}>

@@ -1,9 +1,7 @@
 //! Small Windows shell services for Settings: the official file dialog for a
-//! kit file, opening a web page or a Windows Settings page in the user's
-//! default handler, opening one of the few apps Connections knows, Windows'
+//! kit file, opening one of the few apps Connections knows, Windows'
 //! toast setting for Tabbi, and the Windows version. Each one is narrowly
-//! scoped (one .json file of a kit's size, https and ms-settings links only,
-//! three named executables), so the UI never gets a general shell.
+//! scoped (one .json file of a kit's size, three named executables), so the UI never gets a general shell.
 
 use crate::error::{HostError, HostResult};
 use serde::Serialize;
@@ -99,23 +97,6 @@ pub fn dialog_pick_kit(app: AppHandle) -> HostResult<Option<KitFilePick>> {
     }
 }
 
-/// Whether a link may be opened in the user's default handler: a web page
-/// over https, or a page of Windows Settings. Nothing else, so the UI can
-/// never launch a program or a file through this command.
-pub fn is_openable_url(url: &str) -> bool {
-    let lower = url.to_ascii_lowercase();
-    if lower.starts_with("ms-settings:") {
-        return url.len() < 200
-            && url[12..].chars().all(|c| {
-                c.is_ascii_alphanumeric() || c == '-' || c == ':' || c == '?' || c == '='
-            });
-    }
-    if !(lower.starts_with("https://") || lower.starts_with("mailto:")) {
-        return false;
-    }
-    url.len() < 2048 && !url.chars().any(|c| c.is_control() || c.is_whitespace())
-}
-
 fn shell_open(file: &str) -> HostResult<()> {
     let file = wide(file);
     let verb = wide("open");
@@ -138,17 +119,6 @@ fn shell_open(file: &str) -> HostResult<()> {
             format!("ShellExecute failed with {}", result.0 as usize),
         ))
     }
-}
-
-#[tauri::command(async)]
-pub fn open_url(url: String) -> HostResult<()> {
-    if !is_openable_url(&url) {
-        return Err(HostError::new(
-            "refused",
-            "only https and ms-settings links open",
-        ));
-    }
-    shell_open(&url)
 }
 
 /// The executable each app Connections may open goes by, found through the
@@ -213,20 +183,6 @@ pub fn system_version() -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn only_https_mailto_and_settings_links_open() {
-        assert!(is_openable_url(
-            "https://tabbinotch.com/suggest?version=0.1.0"
-        ));
-        assert!(is_openable_url("ms-settings:notifications"));
-        assert!(is_openable_url("mailto:support@tabbinotch.com"));
-        assert!(!is_openable_url("http://example.com"));
-        assert!(!is_openable_url("file:///C:/Windows/notepad.exe"));
-        assert!(!is_openable_url("C:\\Windows\\notepad.exe"));
-        assert!(!is_openable_url("https://example.com/a b"));
-        assert!(!is_openable_url("ms-settings:notifications; cmd"));
-    }
 
     #[test]
     fn apps_are_a_fixed_list() {

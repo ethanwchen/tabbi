@@ -1147,6 +1147,88 @@
   }
 }
 
+/* CapsuleToggle: a short switch or chip, the accent while on, a quiet surface while off. */
+.kit-capsule-toggle {
+  --capsule-tint: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--secondary-text);
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: default;
+  flex: none;
+  max-width: 100%;
+}
+.kit-capsule-toggle[data-outlined="true"][data-on="false"] {
+  box-shadow: inset 0 0 0 1px var(--stroke);
+}
+.kit-capsule-toggle[data-on="false"]:hover,
+.kit-capsule-toggle[data-on="false"][data-hover="true"] {
+  background: var(--surface-hover);
+  color: var(--primary-text);
+}
+.kit-capsule-toggle[data-look="filled"][data-on="true"] {
+  background: color-mix(in srgb, var(--capsule-tint) 88%, transparent);
+  color: var(--background);
+}
+.kit-capsule-toggle[data-look="filled"][data-on="true"]:hover,
+.kit-capsule-toggle[data-look="filled"][data-on="true"][data-hover="true"] {
+  background: var(--capsule-tint);
+}
+.kit-capsule-toggle[data-look="soft"][data-on="true"] {
+  background: color-mix(in srgb, var(--capsule-tint) 20%, transparent);
+  color: var(--capsule-tint);
+}
+.kit-capsule-toggle[data-look="soft"][data-on="true"][data-muted] {
+  color: color-mix(in srgb, var(--capsule-tint) 70%, transparent);
+}
+.kit-capsule-toggle[data-look="soft"][data-on="true"]:hover,
+.kit-capsule-toggle[data-look="soft"][data-on="true"][data-hover="true"] {
+  background: color-mix(in srgb, var(--capsule-tint) 30%, transparent);
+  color: var(--capsule-tint);
+}
+.kit-capsule-toggle:disabled {
+  opacity: 0.5;
+}
+.kit-capsule-toggle-title {
+  overflow: hidden;
+  text-overflow: clip;
+}
+.kit-capsule-toggle .kit-icon + .kit-capsule-toggle-title,
+.kit-capsule-toggle-title + .kit-icon {
+  margin-inline-start: 2px;
+}
+
+/* PrimaryPill: the one primary action, a filled accent capsule. */
+.kit-primary-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 88%, transparent);
+  color: var(--background);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: default;
+  flex: none;
+}
+.kit-primary-pill:hover,
+.kit-primary-pill[data-hover="true"] {
+  background: var(--accent);
+}
+.kit-primary-pill:disabled {
+  opacity: 0.6;
+
 /*
  * Text the user typed or a service sent: each paragraph takes the direction
  * of its own first strong letter, so an English chat title keeps its "?" at

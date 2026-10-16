@@ -239,6 +239,10 @@ export function mockHost(startup: Startup = MOCK_STARTUP, options: MockHostOptio
       log("fetchCalendar", [url]);
       return offline();
     },
+    openUrl(url) {
+      log("openUrl", [url]);
+      return Promise.resolve();
+    },
     setPartyServer(server) {
       log("setPartyServer", [server]);
       return Promise.resolve();
@@ -265,7 +269,6 @@ export function mockHost(startup: Startup = MOCK_STARTUP, options: MockHostOptio
     },
     notificationsSetting: () => answer("notificationsSetting", [], options.notifications ?? "enabled"),
     pickKitFile: () => answer("pickKitFile", [], options.kitFile ?? null),
-    openURL: (url) => answer("openURL", [url], undefined),
     openApp: (app) => answer("openApp", [app], undefined),
     setTrayLabels: (labels) => answer("setTrayLabels", [labels], undefined),
     aiLogFiles,
