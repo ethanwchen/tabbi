@@ -51,7 +51,8 @@ export function focusMode(context: ModuleContext): FocusController {
   return context.shared.resolve(FOCUS_MODE, () => {
     /* The engine is made on first use (no audio context exists until something plays), and never in a snapshot run, which plays no sound. */
     let engine: FocusSoundEngine | undefined;
-    const silent = context.isSnapshot;
+    /* A snapshot run plays no sound, and a test runs where no audio context exists. */
+    const silent = context.isSnapshot || typeof window === "undefined" || typeof AudioContext === "undefined";
     return new FocusController({
       isLive: !isEphemeral(context.runMode),
       preferences: focusPreferences(context),

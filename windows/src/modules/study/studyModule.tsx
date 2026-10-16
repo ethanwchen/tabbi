@@ -1,3 +1,4 @@
+import type { ModuleContext } from "../../app/context";
 import { localizedDescriptor } from "../../app/descriptor";
 import { defineModule, type SetupStepProps } from "../../app/module";
 import { derived } from "../../app/store";
@@ -13,7 +14,11 @@ import { sharedStudyFocus } from "../../core/studyMethods/studyFocusShare";
 import { STUDY_METHOD_KINDS, type StudyMethodKind } from "../../core/studyMethods/studyMethodFile";
 import { StudyMethodMenu } from "../../core/studyMethods/studyMethodMenu";
 import { studyPet } from "../closet/closetServices";
-import { focusMode, focusPreferences } from "../focus/focusServices";
+import { serviceKey } from "../../app/sharedServices";
+import { hostChannel, quietChannel } from "../../app/windowChannel";
+import { isEphemeral } from "../../core/modules/runMode";
+import { focusMode } from "../focus/focusServices";
+import { ModulePreferences } from "../focus/modulePreferences";
 import { StudyMethodSetupView } from "./studyMethodSetupView";
 import { StudyPanel } from "./studyPanel";
 import { StudyStore } from "./studyStore";
@@ -64,6 +69,17 @@ const STUDY_SNAPSHOT_STATES = [
   "party",
 ] as const;
 
+const STUDY_PREFERENCES = serviceKey<ModulePreferences>("study.preferences");
+
+/** The Timer's preferences document (`Study/preferences.json`): the session, the deep focus switch and the user's lengths. */
+export function studyPreferences(context: ModuleContext): ModulePreferences {
+  return context.shared.resolve(STUDY_PREFERENCES, () => {
+    const store = isEphemeral(context.runMode) ? undefined : context.storage.folder("Study");
+    const channel = context.isSnapshot ? quietChannel : hostChannel(context.host, "study/preferences");
+    return new ModulePreferences(store, channel);
+  });
+}
+
 function isMethodKind(value: string): value is StudyMethodKind {
   return (STUDY_METHOD_KINDS as readonly string[]).includes(value);
 }
@@ -86,7 +102,7 @@ export const StudyModule = defineModule(
     const store = new StudyStore(context, {
       menu: StudyMethodMenu.fromKit(kit),
       goal: StudyDailyGoal.fromKit(kit),
-      preferences: focusPreferences(context),
+      preferences: studyPreferences(context),
       focusMode: mode,
       petProfile: pet.state.profile,
     });

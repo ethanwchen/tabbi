@@ -27,7 +27,7 @@ import { plannerDayKeyOf } from "../../core/planner/plannerDayKey";
 import { FocusTimerStorage } from "../../core/planner/focusTimerStorage";
 import { samplePlannerDay } from "../../core/planner/plannerSampleData";
 import type { Instant } from "../../core/time";
-import { WallClockAlarm } from "../../ui/kit/clock";
+import { WallClockAlarm, type AlarmTimers } from "../../ui/kit/clock";
 import type { FocusController } from "./focusController";
 import type { ModulePreferences } from "./modulePreferences";
 
@@ -45,6 +45,15 @@ export interface FocusTimerState {
 /** A celebration a panel showing the timer should play: a confetti burst when a focus session ends. */
 export interface FocusCelebration {
   readonly style: CelebrationStyle;
+}
+
+/** The wall-clock alarm's timers: the context's clock (pinned in snapshot runs and tests) and the page's timeouts. */
+function alarmTimers(context: ModuleContext): AlarmTimers {
+  return {
+    now: () => context.now() * 1000,
+    setTimeout: (callback, ms) => Number(globalThis.setTimeout(callback, ms)),
+    clearTimeout: (id) => globalThis.clearTimeout(id),
+  };
 }
 
 /** Fresh phase ends older than this stay quiet: the PC was asleep or Tabbi busy. */
@@ -104,7 +113,7 @@ export class FocusStore extends Store<FocusTimerState> {
     this.isDemo = isDemo;
     this.isSnapshot = context.isSnapshot;
     this.isEphemeral = isDemo || context.isSnapshot;
-    this.phaseEnd = new WallClockAlarm(() => this.catchUp());
+    this.phaseEnd = new WallClockAlarm(() => this.catchUp(), alarmTimers(context));
     focusMode?.timerChanged(this.state.timer);
     if (isDemo) {
       this.ready = Promise.resolve();

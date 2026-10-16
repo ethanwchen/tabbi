@@ -17,7 +17,8 @@ import { isJSONObject, type JSONObject } from "../../core/persistence/json";
 const DOCUMENT = "preferences.json";
 
 export class ModulePreferences {
-  private values: InMemoryDefaults = new InMemoryDefaults();
+  /** One object for the module's lifetime, so a store's repository made before the load still writes the loaded values. */
+  private readonly values = new InMemoryDefaults();
   /** Resolves once the saved values are in; a store applies them then. */
   readonly ready: Promise<void>;
   private saving: Promise<void> = Promise.resolve();
@@ -35,9 +36,7 @@ export class ModulePreferences {
     this.ready =
       store === undefined
         ? Promise.resolve()
-        : loadDefaults(store, DOCUMENT).then((loaded) => {
-            this.values = loaded;
-          });
+        : loadDefaults(store, DOCUMENT).then((loaded) => this.replace(loaded.entries()));
     channel?.on((message) => this.receive(message));
   }
 
@@ -69,9 +68,14 @@ export class ModulePreferences {
       .catch((error: unknown) => console.error("tabbi preferences: could not save", error));
   }
 
+  private replace(entries: JSONObject): void {
+    for (const key of Object.keys(this.values.entries())) this.values.remove(key);
+    for (const [key, value] of Object.entries(entries)) this.values.set(key, value);
+  }
+
   private receive(raw: unknown): void {
     if (!isJSONObject(raw) || raw.type !== "preferences" || !isJSONObject(raw.entries)) return;
-    this.values = new InMemoryDefaults(raw.entries as JSONObject);
+    this.replace(raw.entries as JSONObject);
     for (const listener of [...this.listeners]) listener();
   }
 }

@@ -40,7 +40,7 @@ import { decodeStudySession, encodeStudySession } from "../../core/studyMethods/
 import type { StudyPhaseRecord } from "../../core/studyMethods/studyPhaseRecord";
 import { StudyTimerLength } from "../../core/studyMethods/studyTimerLength";
 import type { Instant, Seconds } from "../../core/time";
-import { WallClockAlarm } from "../../ui/kit/clock";
+import { WallClockAlarm, type AlarmTimers } from "../../ui/kit/clock";
 import { PetPlayer } from "../../ui/kit/petPlayer";
 import type { FocusController } from "../focus/focusController";
 import { HEARTBEAT_INTERVAL_SECONDS } from "../focus/focusStore";
@@ -87,6 +87,15 @@ const CUSTOM_KEY = "study.custom";
 const TIMER_KEY = "study.timerMinutes";
 /** The last moment a session under way was known to run, in seconds since 1970. */
 const LAST_ALIVE_KEY = "study.lastAlive";
+
+/** The wall-clock alarm's timers: the context's clock (pinned in snapshot runs and tests) and the page's timeouts. */
+function alarmTimers(context: ModuleContext): AlarmTimers {
+  return {
+    now: () => context.now() * 1000,
+    setTimeout: (callback, ms) => Number(globalThis.setTimeout(callback, ms)),
+    clearTimeout: (id) => globalThis.clearTimeout(id),
+  };
+}
 
 /** Fresh phase ends older than this stay quiet: the PC was asleep or Tabbi busy. */
 const FRESH_END_SECONDS = 60;
@@ -166,7 +175,7 @@ export class StudyStore extends Store<StudyState> {
     this.isDemo = isDemo;
     this.isSnapshot = context.isSnapshot;
     this.pet = new PetPlayer(options.petProfile, { asleep: studyPetIsDozing(session), ...(isDemo ? { seed: 7 } : {}) });
-    this.phaseEnd = new WallClockAlarm(() => this.catchUp());
+    this.phaseEnd = new WallClockAlarm(() => this.catchUp(), alarmTimers(context));
     if (isDemo) {
       this.loaded = true;
       this.ready = Promise.resolve();
