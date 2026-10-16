@@ -263,3 +263,23 @@ export function errorSuggestion(error: AnkiConnectError): string {
   }
 }
 
+
+/**
+ * The error written the way Swift's `String(describing:)` prints the Mac's
+ * enum case, such as `unsupportedAction("getNumCardsReviewedToday")`: what a
+ * summary gap says for an error without a message of its own.
+ */
+export function describeAnkiError(error: AnkiConnectError): string {
+  switch (error.kind) {
+    case "addOnOutdated":
+      return `addOnOutdated(version: ${error.version})`;
+    case "unsupportedAction":
+      return `unsupportedAction(${JSON.stringify(error.action)})`;
+    case "anki":
+    case "invalidResponse":
+    case "transport":
+      return `${error.kind}(${JSON.stringify(error.message)})`;
+    default:
+      return error.kind;
+  }
+}
