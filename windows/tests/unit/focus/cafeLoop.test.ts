@@ -80,5 +80,10 @@ describe.skipIf(!hasFfmpeg)("cafe loop decoded with ffmpeg", () => {
     expect(rms(scaled)).toBeCloseTo(NOISE_TARGET_RMS, 4);
     const trimmed = Float32Array.from(scaled.subarray(0, FOCUS_SAMPLE_RATE * 30), (value) => value * loudnessGain("cafe"));
     expect(Math.abs(loudness(trimmed) - -17)).toBeLessThan(1);
-  });
+    /*
+     * Decoding two minutes of audio and sorting 5.76 million steps takes a
+     * second or two alone and several times that on a busy machine, well past
+     * Vitest's 5 s default, so this test has a budget of its own.
+     */
+  }, 60_000);
 });
