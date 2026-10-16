@@ -145,6 +145,78 @@
         }
       }
     },
+    "%@ isn't on this PC yet. Connections shows you how to add it." : {
+      "comment" : "Ask AI setup sentence on Windows; %@ is the provider name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ غير موجود على هذا الكمبيوتر بعد. تشرح لك الاتصالات كيفية إضافته."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ist noch nicht auf diesem PC. Verbindungen zeigt dir, wie es geht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ aún no está en este PC. Conexiones te enseña a añadirlo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wala pa ang %@ sa PC na ito. Ipapakita ng Connections kung paano ito idagdag."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ n'est pas encore sur ce PC. Connexions t'explique comment l'ajouter."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ はまだこの PC にありません。追加方法は「接続」で確認できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 PC에 아직 %@가 없어요. 연결에서 추가하는 방법을 알려 드려요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O %@ ainda não está neste PC. Conexões mostra como adicionar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ еще нет на этом ПК. В разделе «Подключения» показано, как добавить."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这台电脑上还没有 %@。“连接”会告诉你如何添加。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這台電腦上還沒有 %@。「連線」會告訴你如何加入。"
+          }
+        }
+      }
+    },
     "A school or work setting may block them. You can check in Windows Settings." : {
       "comment" : "Settings > Connections: the Alerts row when a policy blocks notifications. Name Windows Settings as Windows does.",
       "extractionState" : "manual",
@@ -357,6 +429,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ctrl+Alt+空白鍵 已被其他 App 使用。請從通知區域中的 Tabbi 圖示開啟。"
+          }
+        }
+      }
+    },
+    "Answers come from the AI you pick: Claude, ChatGPT, Gemini or a free model on this PC." : {
+      "comment" : "Ask AI setup sentence when no AI provider is picked, on Windows.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تأتي الإجابات من الذكاء الاصطناعي الذي تختاره: Claude أو ChatGPT أو Gemini أو نموذج مجاني على هذا الكمبيوتر."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antworten kommen von der KI deiner Wahl: Claude, ChatGPT, Gemini oder ein kostenloses Modell auf diesem PC."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responde la IA que elijas: Claude, ChatGPT, Gemini o un modelo gratis en este PC."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Galing ang mga sagot sa AI na pipiliin mo: Claude, ChatGPT, Gemini o libreng model sa PC na ito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les réponses viennent de l'IA choisie : Claude, ChatGPT, Gemini ou un modèle gratuit sur ce PC."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回答は選んだ AI から届きます：Claude、ChatGPT、Gemini、またはこの PC の無料モデル。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고른 AI가 답해요: Claude, ChatGPT, Gemini 또는 이 PC의 무료 모델."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem responde é a IA que você escolher: Claude, ChatGPT, Gemini ou um modelo grátis neste PC."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ответы дает выбранный тобой ИИ: Claude, ChatGPT, Gemini или бесплатная модель на этом ПК."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回答来自你选择的 AI：Claude、ChatGPT、Gemini，或这台电脑上的免费模型。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回答來自你選擇的 AI：Claude、ChatGPT、Gemini，或這台電腦上的免費模型。"
           }
         }
       }
@@ -645,6 +789,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tabbi 能開啟勿干擾嗎？"
+          }
+        }
+      }
+    },
+    "Chats stay on this PC" : {
+      "comment" : "Ask AI: line at the top of chat history, on Windows.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تبقى المحادثات على هذا الكمبيوتر"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chats bleiben auf diesem PC"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los chats se quedan en este PC"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nananatili ang mga chat sa PC na ito"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les chats restent sur ce PC"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チャットはこのPCにだけ保存"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "채팅은 이 PC에만 저장돼요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os chats ficam neste PC"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чаты остаются на этом ПК"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "聊天只保存在这台电脑上"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "聊天只會保留在這台電腦上"
+          }
+        }
+      }
+    },
+    "Chats stay on this PC, in %@'s own folder. Delete them from History in the Ask AI tab." : {
+      "comment" : "Settings > Tabs > Ask AI options: the History footer on Windows. %@ is the app name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تبقى المحادثات على هذا الكمبيوتر، في مجلد %@ الخاص. احذفها من السجل في علامة اسأل AI."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chats bleiben auf diesem PC, im Ordner von %@. Lösche sie im Verlauf von KI fragen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los chats quedan en este PC, en la carpeta de %@. Bórralos en Historial de Pregunta a la IA."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nasa PC na ito ang mga chat, sa sariling folder ng %@. Burahin sa History ng Ask AI tab."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les chats restent sur ce PC, dans le dossier de %@. Supprime-les dans l'Historique de Demander à l'IA."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チャットはこのPCの%@専用フォルダに保存されます。「AIに質問」タブの履歴から削除できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "채팅은 이 PC의 %@ 폴더에만 저장돼요. AI에게 묻기 탭의 기록에서 삭제할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os chats ficam neste PC, na pasta do %@. Apague-os no Histórico da aba Pergunte à IA."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чаты хранятся на этом ПК в папке %@. Удалить их можно в Истории во вкладке «Спросить ИИ»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "聊天保存在这台电脑上 %@ 自己的文件夹中。可在“问 AI”标签页的历史记录中删除。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "聊天保存在這台電腦上 %@ 自己的檔案夾。可在「問 AI」的記錄中刪除。"
           }
         }
       }
@@ -1725,6 +2013,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "偏高"
+          }
+        }
+      }
+    },
+    "Enter to send, Shift+Enter for a new line" : {
+      "comment" : "Ask AI: tooltip on the question field, on Windows. Name the keys as the language's Windows keyboards label them.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter للإرسال، Shift+Enter لسطر جديد"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eingabetaste zum Senden, Umschalt+Eingabetaste für neue Zeile"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intro para enviar, Mayús+Intro para nueva línea"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter para mag-send, Shift+Enter para sa bagong linya"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrée pour envoyer, Maj+Entrée pour une nouvelle ligne"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enterで送信、Shift+Enterで改行"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter로 보내기, Shift+Enter로 줄 바꿈"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter para enviar, Shift+Enter para nova linha"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter: отправить, Shift+Enter: новая строка"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter 发送，Shift+Enter 换行"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 Enter 傳送，Shift+Enter 換行"
           }
         }
       }
@@ -3817,6 +4177,78 @@
         }
       }
     },
+    "Paste a key in Connections to ask %@ questions. It stays in Windows Credential Manager." : {
+      "comment" : "Ask AI setup sentence on Windows; %@ is the assistant name. Credential Manager is named as Windows names it in each language.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الصق مفتاحًا في الاتصالات لتسأل %@. يبقى في مدير بيانات اعتماد Windows."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füge in Verbindungen einen Schlüssel ein, um %@ zu fragen. Er bleibt in der Windows-Anmeldeinformationsverwaltung."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pega una clave en Conexiones para preguntar a %@. Se queda en el Administrador de credenciales de Windows."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mag-paste ng key sa Connections para makapagtanong kay %@. Mananatili ito sa Windows Credential Manager."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colle une clé dans Connexions pour interroger %@. Elle reste dans le Gestionnaire d'identification Windows."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「接続」にキーを貼り付けると %@ に質問できます。キーは Windows 資格情報マネージャーに保存されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연결에 키를 붙여 넣으면 %@에게 질문할 수 있어요. 키는 Windows 자격 증명 관리자에 보관돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cole uma chave em Conexões para perguntar ao %@. Ela fica no Gerenciador de Credenciais do Windows."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вставь ключ в подключениях, чтобы задавать вопросы %@. Он хранится в Диспетчере учетных данных Windows."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在“连接”中粘贴密钥即可向 %@ 提问。密钥保存在 Windows 凭据管理器中。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在「連線」中貼上密鑰，就能向 %@ 提問。密鑰會保存在 Windows 認證管理員中。"
+          }
+        }
+      }
+    },
     "Play something in Spotify, a browser or another app with media controls, and it shows up here." : {
       "comment" : "Now Playing tab: the guidance line under \"Nothing playing\" when no app has a media session Windows knows about.",
       "extractionState" : "manual",
@@ -4105,6 +4537,150 @@
         }
       }
     },
+    "Read the latest %@ sessions (sends nothing)" : {
+      "comment" : "Tooltip on the AI Usage refresh button on Windows, where the tab only reads the tool's own files. %@ is the tool name (Claude Code, Codex).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قراءة أحدث جلسات %@ (لا يُرسل شيئًا)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neueste %@-Sitzungen lesen (sendet nichts)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leer las últimas sesiones de %@ (no envía nada)"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Basahin ang pinakabagong %@ session (walang ipinapadala)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lire les dernières sessions %@ (n'envoie rien)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新の%@セッションを読む（何も送信しません）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최신 %@ 세션 읽기 (아무것도 보내지 않음)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ler as sessões mais recentes do %@ (não envia nada)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прочитать свежие сеансы %@ (ничего не отправляет)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "读取最新的 %@ 会话（不发送任何内容）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "讀取最新的 %@ 工作階段（不會傳送任何內容）"
+          }
+        }
+      }
+    },
+    "Saved chats are kept only on this PC and never uploaded" : {
+      "comment" : "Ask AI: tooltip on 'Chats stay on this PC'.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المحادثات المحفوظة تبقى على هذا الكمبيوتر فقط ولا تُرفع أبدًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gespeicherte Chats bleiben nur auf diesem PC und werden nie hochgeladen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los chats guardados solo se quedan en este PC y nunca se suben"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sa PC na ito lang nakatago ang mga naka-save na chat at hindi kailanman ina-upload"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les chats enregistrés restent sur ce PC et ne sont jamais envoyés"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存したチャットはこのPCにだけ残り、アップロードされません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장된 채팅은 이 PC에만 보관되고 업로드되지 않아요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os chats salvos ficam só neste PC e nunca são enviados"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохраненные чаты хранятся только на этом ПК и никуда не загружаются"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存的聊天只留在这台电脑上，绝不会上传"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "儲存的聊天只會留在這台電腦上，絕不會上傳"
+          }
+        }
+      }
+    },
     "Scroll to Integrate calendar and copy the Secret address in iCal format." : {
       "comment" : "Settings > Connections: a step of the Google Calendar walkthrough. \"Integrate calendar\" and \"Secret address in iCal format\" are Google Calendar's labels; use its names in each language.",
       "extractionState" : "manual",
@@ -4245,6 +4821,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 Tabbi 裡查看今天的行程。"
+          }
+        }
+      }
+    },
+    "Send (Enter)" : {
+      "comment" : "Ask AI: tooltip on the send button, on Windows.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إرسال (Enter)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senden (Eingabetaste)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar (Intro)"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-send (Enter)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer (Entrée)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送信(Enter)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보내기 (Enter)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar (Enter)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить (Enter)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送(Enter)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "傳送（Enter）"
           }
         }
       }

@@ -59,6 +59,7 @@ describe("the Tauri host's service commands", () => {
     await host.autostartDisable();
     await host.autostartIsEnabled();
     await host.aiPaths();
+    await host.aiLogs("codex");
     expect(invoke.mock.calls).toEqual([
       ["storage_read", { area: "durable", name: "Activity/2026-10-15" }],
       ["storage_write", { area: "cache", name: "calendar", text: '{"schemaVersion":1}' }],
@@ -79,6 +80,7 @@ describe("the Tauri host's service commands", () => {
       ["autostart_disable", undefined],
       ["autostart_is_enabled", undefined],
       ["ai_paths", undefined],
+      ["ai_logs_list", { tool: "codex" }],
     ]);
   });
 
