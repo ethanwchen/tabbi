@@ -181,7 +181,7 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
             const spec = themedSpring(theme, "smooth", token);
             return (
               <Cell key={token} label={`spring ${token}`}>
-                <span className="kit-caption kit-secondary">
+                <span className="kit-caption kit-secondary" dir="ltr">
                   {spec ? `${spec.duration.toFixed(2)} s, bounce ${spec.bounce.toFixed(2)}` : "instant"}
                 </span>
               </Cell>
