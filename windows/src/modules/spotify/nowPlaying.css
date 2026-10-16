@@ -1,0 +1,258 @@
+/*
+ * Now Playing: the cover (112 px, 14 px corners) with its glow and the
+ * player badge on the left, 16 px from a column as tall as the cover that
+ * holds the titles, the track bar and the transport, vertically centered on
+ * the panel canvas as on the Mac. The transport keeps its order in a
+ * right-to-left language: its arrows are media symbols, not reading
+ * direction, and so does the track bar.
+ */
+
+.np-panel {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  height: 100%;
+}
+
+.np-artwork-slot {
+  position: relative;
+  flex: none;
+}
+
+.np-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: background var(--spring-content);
+}
+
+.np-artwork-frame {
+  position: relative;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.5);
+}
+
+/* The cover: clipped to its corners with a hairline stroke, like a card. */
+.np-artwork {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+}
+
+.np-artwork-image,
+.np-artwork-generated,
+.np-artwork-empty,
+.np-demo-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.np-artwork-image {
+  object-fit: cover;
+  display: block;
+}
+
+.np-artwork-generated {
+  display: grid;
+  place-items: center;
+}
+
+.np-artwork-highlight {
+  position: absolute;
+  inset: 0;
+}
+
+.np-artwork-note {
+  position: relative;
+  color: rgb(255 255 255 / 0.85);
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.2));
+}
+
+.np-artwork-empty {
+  display: grid;
+  place-items: center;
+  color: var(--tertiary-text);
+}
+
+.np-demo-cover {
+  display: block;
+}
+
+/* The player's badge: a glyph on a dark disc at the cover's bottom trailing corner. */
+.np-badge {
+  position: absolute;
+  inset-inline-end: 6px;
+  bottom: 6px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--primary-text);
+  background: rgb(0 0 0 / 0.6);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.45);
+}
+
+.np-column {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.np-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.np-title,
+.np-subtitle {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* The track bar: a 12 px row for the bar, then the two times. */
+.np-track {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.np-track-bar {
+  display: flex;
+  align-items: center;
+  height: 12px;
+}
+
+.np-times {
+  display: flex;
+  justify-content: space-between;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The transport: the buttons stay centered in the column; modes sit on the left. */
+.np-transport {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+}
+
+.np-modes {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.np-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Transport and mode buttons sit on nothing at rest (no glass rim either) and on the hover surface when hovered. */
+.np-transport .kit-icon-button {
+  background: transparent;
+  box-shadow: none;
+  color: var(--secondary-text);
+}
+
+.np-transport .kit-icon-button:hover,
+.np-transport .kit-icon-button[data-hover="true"] {
+  background: var(--surface-hover);
+  color: var(--primary-text);
+}
+
+.np-transport .np-mode {
+  color: var(--tertiary-text);
+}
+
+.np-transport .np-mode[data-on] {
+  color: var(--accent);
+}
+
+.np-transport .np-mode[data-selected="true"] {
+  background: transparent;
+}
+
+.np-transport .np-mode:hover,
+.np-transport .np-mode[data-hover="true"] {
+  background: var(--surface-hover);
+}
+
+.np-transport .np-mode[data-on]:hover,
+.np-transport .np-mode[data-on][data-hover="true"] {
+  color: var(--accent);
+}
+
+/* On shows a dot under the glyph. */
+.np-transport .np-mode::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: 3px;
+  height: 3px;
+  margin-left: -1.5px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity var(--spring-snappy);
+}
+
+.np-transport .np-mode {
+  position: relative;
+}
+
+.np-transport .np-mode[data-on]::after {
+  opacity: 1;
+}
+
+.np-transport .np-play,
+.np-transport .np-play:hover,
+.np-transport .np-play[data-hover="true"] {
+  background: var(--primary-text);
+  color: var(--background);
+}
+
+/* play.fill looks off-center without a nudge. */
+.np-transport .np-play [data-icon="play-filled"] {
+  transform: translateX(1px);
+}
+
+/* The closed pill's wings. */
+.np-wing-art {
+  display: grid;
+  place-items: center;
+}
+
+.np-wing-bars {
+  display: grid;
+  place-items: center;
+}
+
+.np-equalizer {
+  display: flex;
+  align-items: flex-end;
+}
+
+.np-equalizer-bar {
+  flex: none;
+  border-radius: 1.5px;
+  background: var(--accent);
+}
