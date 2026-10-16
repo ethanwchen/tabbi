@@ -33,6 +33,21 @@ describe("chineseCalendar", () => {
     }
   });
 
+  it("agrees with every official Lunar New Year from 2020 to 2050", () => {
+    /* The Hong Kong Observatory's dates; ICU 76 alone gets 2027 (7 February) and 2030 (2 February) wrong. */
+    const official: Record<number, string> = {
+      2020: "01-25", 2021: "02-12", 2022: "02-01", 2023: "01-22", 2024: "02-10", 2025: "01-29", 2026: "02-17",
+      2027: "02-06", 2028: "01-26", 2029: "02-13", 2030: "02-03", 2031: "01-23", 2032: "02-11", 2033: "01-31",
+      2034: "02-19", 2035: "02-08", 2036: "01-28", 2037: "02-15", 2038: "02-04", 2039: "01-24", 2040: "02-12",
+      2041: "02-01", 2042: "01-22", 2043: "02-10", 2044: "01-30", 2045: "02-17", 2046: "02-06", 2047: "01-26",
+      2048: "02-14", 2049: "02-02", 2050: "01-23",
+    };
+    for (const [year, day] of Object.entries(official)) {
+      const start = chineseMidnight(1, 1, Date.UTC(Number(year), 0, 1) / 1000, "UTC");
+      expect(start === undefined ? undefined : localDate(start, 0), year).toBe(`${year}-${day}`);
+    }
+  });
+
   it("searches backward for the last match before a moment", () => {
     const before = chineseMidnight(1, 15, Date.UTC(2027, 5, 1) / 1000, "Asia/Tokyo", true);
     expect(before === undefined ? undefined : localDate(before, 9)).toBe("2027-02-20");

@@ -64,6 +64,11 @@ export function eventDisplayTagline(event: SeasonalEvent): string {
   return tr(event.tagline);
 }
 
+/** The event's headline item, the one with a subtle effect. */
+export function eventHeadline(event: SeasonalEvent): PetItem | undefined {
+  return event.rewards.at(-1)?.item;
+}
+
 /** One year's run of an event. Port of SeasonalEventOccurrence. */
 export interface SeasonalEventOccurrence {
   readonly event: SeasonalEvent;
