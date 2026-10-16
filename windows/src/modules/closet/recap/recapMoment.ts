@@ -72,8 +72,13 @@ export class RecapMoment extends Store<RecapMomentState> {
    * open, a relaunch or a quit never brings it back.
    */
   async islandOpened(): Promise<void> {
-    /* A snapshot run draws the card only when asked for it, never over every other module's shot. */
-    if (!this.isEnabled || this.state.shown !== undefined || this.isBlocked || this.context.isSnapshot) return;
+    /*
+     * A snapshot run draws the card only when asked for it, never over every
+     * other module's shot. A demo run saves nothing, so its sample recaps
+     * would count as unseen on every open and cover the tabs each time; there
+     * a recap shows only when picked from the Closet's list.
+     */
+    if (!this.isEnabled || this.state.shown !== undefined || this.isBlocked || this.context.isSnapshot || this.context.isDemo) return;
     await this.store.refresh();
     const recap = this.store.unseen;
     if (recap === undefined || this.state.shown !== undefined || this.isBlocked) return;

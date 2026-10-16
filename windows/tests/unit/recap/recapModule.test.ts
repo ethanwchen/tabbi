@@ -56,9 +56,13 @@ describe("the weekly recap on the runtime", () => {
   });
 
   it("waits while onboarding owns the slot, and names the file it saves", async () => {
-    const { app } = await testApp({ moduleTypes: MODULE_LIST, settingsEntries: WITH_CLOSET, runMode: { isDemo: true, isSnapshot: false } }, NOW);
+    const { app } = await testApp({ moduleTypes: MODULE_LIST, settingsEntries: WITH_CLOSET }, NOW);
     const closet = app.modules.instance(ClosetModule);
     if (!closet) throw new Error("no closet");
+    const monday = dayKeyStart(latestReadyWeek(NOW, "UTC"), "UTC");
+    await app.activityLog.record(
+      makeActivityRecord({ source: MODULE_IDS.focus, kind: ACTIVITY_KINDS.focusCompleted, start: monday + 9 * 3600, end: monday + 9 * 3600 + 90 * 60, quantity: 90, unit: ACTIVITY_UNITS.minutes, metadata: { outcome: "completed" } }),
+    );
     const slot = takeoverSlot(app.shared);
     const onboarding = { Leading: () => null, Trailing: () => null, Body: () => null };
     slot.set(onboarding);
@@ -68,5 +72,22 @@ describe("the weekly recap on the runtime", () => {
     slot.set(undefined);
     expect(recapShareFileName("square", "2026-10-05", "en", "UTC")).toBe("Tabbi week Oct 5 - 11 (square).png");
     expect(await blobToBase64(new Blob([new Uint8Array([0x89, 0x50, 0x4e, 0x47])]))).toBe("iVBORw==");
+  });
+
+  it("never covers the tabs on open in a demo run, whose sample recaps would count as unseen every time", async () => {
+    const { app } = await testApp({ moduleTypes: MODULE_LIST, settingsEntries: WITH_CLOSET, runMode: { isDemo: true, isSnapshot: false } }, NOW);
+    const closet = app.modules.instance(ClosetModule);
+    if (!closet) throw new Error("no closet");
+    await closet.recaps.refresh();
+    const recap = closet.recaps.archive.recaps[0];
+    expect(recap).toBeDefined();
+    const slot = takeoverSlot(app.shared);
+    await closet.moment.islandOpened();
+    expect(closet.moment.state.shown).toBeUndefined();
+    expect(slot.get()).toBeUndefined();
+    /* Picked from the list, it still shows. */
+    if (recap) closet.recaps.reopen(recap);
+    expect(slot.get()).toBeDefined();
+    closet.moment.dismiss();
   });
 });
