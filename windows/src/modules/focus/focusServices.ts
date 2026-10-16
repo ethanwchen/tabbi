@@ -62,7 +62,7 @@ export function focusMode(context: ModuleContext): FocusController {
         return engine;
       },
       openLink: (url) => {
-        if (typeof window !== "undefined") window.open(url, "_blank", "noopener");
+        if (!context.isSnapshot) void context.host.openUrl(url).catch(() => undefined);
       },
     });
   });

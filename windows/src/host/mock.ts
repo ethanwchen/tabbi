@@ -231,6 +231,10 @@ export function mockHost(startup: Startup = MOCK_STARTUP, options: MockHostOptio
       log("fetchCalendar", [url]);
       return offline();
     },
+    openUrl(url) {
+      log("openUrl", [url]);
+      return Promise.resolve();
+    },
     setPartyServer(server) {
       log("setPartyServer", [server]);
       return Promise.resolve();

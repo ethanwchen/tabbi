@@ -123,6 +123,12 @@ export interface Host {
   fetchCalendar(url: string): Promise<string>;
   /* The user's own Party server from Settings (public https only), or null for none; requests may then reach it. */
   setPartyServer(server: string | null): Promise<void>;
+  /*
+   * Opens an https link in the default browser, or a listed Windows Settings
+   * page (ms-settings:notifications, :quiethours, :taskbar). Anything else is
+   * refused with code "blocked".
+   */
+  openUrl(url: string): Promise<void>;
 
   /* Start with Windows: off until the user turns it on. */
   autostartEnable(): Promise<void>;
