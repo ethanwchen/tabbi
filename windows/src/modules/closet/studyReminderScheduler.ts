@@ -21,6 +21,7 @@ import type { ProgressItem } from "../../core/providers/progressItem";
 import { reminderGoalMet, reminderMessage, reminderSpeaker, StudyReminderSave, StudyReminderSettings } from "../../core/streaks/studyReminder";
 import type { Instant } from "../../core/time";
 import { WallClockAlarm } from "../../ui/kit/clock";
+import { portableTimers } from "./alarmTimers";
 import type { ClosetStore } from "./closetStore";
 
 export const REMINDER_DOCUMENT = "reminder.json";
@@ -36,12 +37,12 @@ export class StudyReminderScheduler extends Store<StudyReminderState> {
   private readonly store: DocumentStore | undefined;
   private unreadable = false;
   private readonly loaded: Promise<void>;
-  private readonly alarm = new WallClockAlarm(() => this.fire());
+  private readonly alarm = new WallClockAlarm(() => this.fire(), portableTimers);
   private goalMet = false;
   private readonly stops: (() => void)[] = [];
   private started = false;
   /** Several changes land at once (a study record moves the streak and the milestones); one plan serves them all. */
-  private replanTimer: number | undefined;
+  private replanTimer: ReturnType<typeof globalThis.setTimeout> | undefined;
 
   constructor(
     private readonly context: ModuleContext,
@@ -89,7 +90,7 @@ export class StudyReminderScheduler extends Store<StudyReminderState> {
     this.started = false;
     for (const stop of this.stops) stop();
     this.stops.length = 0;
-    window.clearTimeout(this.replanTimer);
+    globalThis.clearTimeout(this.replanTimer);
     this.alarm.cancel();
   }
 
@@ -126,8 +127,8 @@ export class StudyReminderScheduler extends Store<StudyReminderState> {
 
   private scheduleReplan(): void {
     if (!this.started) return;
-    window.clearTimeout(this.replanTimer);
-    this.replanTimer = window.setTimeout(() => this.replan(), 200);
+    globalThis.clearTimeout(this.replanTimer);
+    this.replanTimer = globalThis.setTimeout(() => this.replan(), 200);
   }
 
   /** Settles the past and sets the alarm for the next reminder, if any. */

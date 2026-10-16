@@ -85,9 +85,9 @@ export class PetCoachController extends Store<PetCoachControllerState> {
   private readonly loaded: Promise<void>;
   private timer: ProvidedFocus | undefined;
   private isRunning = false;
-  private sampler: number | undefined;
+  private sampler: ReturnType<typeof globalThis.setInterval> | undefined;
   private sampling = false;
-  private closer: number | undefined;
+  private closer: ReturnType<typeof globalThis.setTimeout> | undefined;
   /** Whether the coach saw a focus phase run since the last award, so a session settled at launch brings no wisdom line or gift. */
   private watchedFocus = false;
   private waitingLine: { readonly line: PetCoachLine; readonly since: Instant } | undefined;
@@ -206,9 +206,9 @@ export class PetCoachController extends Store<PetCoachControllerState> {
   private updateSampling(): void {
     const focusing = this.isRunning && this.save.nudgesOn && coachStudyState(this.timer) === "focusing";
     if (focusing && this.sampler === undefined) {
-      this.sampler = window.setInterval(() => void this.sample(), PetCoach.sampleInterval * 1000);
+      this.sampler = globalThis.setInterval(() => void this.sample(), PetCoach.sampleInterval * 1000);
     } else if (!focusing && this.sampler !== undefined) {
-      window.clearInterval(this.sampler);
+      globalThis.clearInterval(this.sampler);
       this.sampler = undefined;
       /* Leaving focus takes one last sample, which ends any episode in the coach; switching off ends them without one. */
       if (this.isRunning && this.save.nudgesOn) void this.sample();
@@ -251,7 +251,7 @@ export class PetCoachController extends Store<PetCoachControllerState> {
   private awarded(award: PetStudyAward): void {
     const watched = this.watchedFocus;
     this.watchedFocus = coachStudyState(this.timer) === "focusing";
-    window.setTimeout(() => void this.celebrate(award, watched), 0);
+    globalThis.setTimeout(() => void this.celebrate(award, watched), 0);
   }
 
   /**
@@ -358,14 +358,14 @@ export class PetCoachController extends Store<PetCoachControllerState> {
 
   /** Closes the overlay once the pet is back under the island. */
   private scheduleClose(at: Instant): void {
-    window.clearTimeout(this.closer);
+    globalThis.clearTimeout(this.closer);
     const wait = Number.isFinite(at) ? Math.max(0, (at + 0.1 - this.context.now()) * 1000) : undefined;
     if (wait === undefined) return;
-    this.closer = window.setTimeout(() => this.closeOverlay(), wait);
+    this.closer = globalThis.setTimeout(() => this.closeOverlay(), wait);
   }
 
   private closeOverlay(): void {
-    window.clearTimeout(this.closer);
+    globalThis.clearTimeout(this.closer);
     this.closer = undefined;
     if (this.state.scene === undefined) return;
     this.setState({ scene: undefined });

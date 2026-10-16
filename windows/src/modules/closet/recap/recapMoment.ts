@@ -72,7 +72,8 @@ export class RecapMoment extends Store<RecapMomentState> {
    * open, a relaunch or a quit never brings it back.
    */
   async islandOpened(): Promise<void> {
-    if (!this.isEnabled || this.state.shown !== undefined || this.isBlocked) return;
+    /* A snapshot run draws the card only when asked for it, never over every other module's shot. */
+    if (!this.isEnabled || this.state.shown !== undefined || this.isBlocked || this.context.isSnapshot) return;
     await this.store.refresh();
     const recap = this.store.unseen;
     if (recap === undefined || this.state.shown !== undefined || this.isBlocked) return;
