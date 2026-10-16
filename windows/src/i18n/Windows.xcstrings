@@ -3385,6 +3385,78 @@
         }
       }
     },
+    "Open Tabbi to see your recap." : {
+      "comment" : "The end of the weekly recap toast's body: where to find the recap card. Tabbi is the product name; on the Mac this says to open the notch.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح Tabbi لترى ملخصك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne Tabbi für deinen Rückblick."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre Tabbi para ver tu resumen."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buksan ang Tabbi para makita ang recap mo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez Tabbi pour voir votre bilan."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiを開いて振り返りを見てね。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi를 열어 요약을 확인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra o Tabbi para ver seu resumo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открой Tabbi, чтобы увидеть итоги."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 Tabbi 查看你的回顾。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟 Tabbi 查看你的回顧。"
+          }
+        }
+      }
+    },
     "Play, pause and skip songs from Tabbi." : {
       "comment" : "Settings > Connections: the Spotify row once it works.",
       "extractionState" : "manual",
