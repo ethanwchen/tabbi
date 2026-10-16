@@ -1,0 +1,73 @@
+name: Record fixtures
+
+# Records the golden fixtures in shared/fixtures/ on a Mac, for branches
+# that change what shared/ pins, and uploads them for review. Recording is
+# deliberate (shared/README.md): the run only produces an artifact, and a
+# person or agent reviews it and commits the files. The second test step
+# then proves the tests pass against what was just recorded.
+on:
+  push:
+    branches: ['shared/**']
+  workflow_dispatch:
+
+concurrency:
+  group: record-fixtures-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  FIXTURE_TESTS: SyncDocumentGoldenTests|ClosetGoldenTests|ActivityLogGoldenTests|StreaksRecapGoldenTests|AnkiGoldenTests|KitGoldenTests|OnboardingGoldenTests|FormattingGoldenTests
+
+jobs:
+  record:
+    name: Record and verify fixtures
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      # The runner image's default Xcode can lag behind the newest one it
+      # ships, and Tabbi builds with a recent Swift. Use the newest stable
+      # Xcode on the image (betas and release candidates are skipped).
+      - name: Select the newest Xcode
+        run: |
+          xcode=$(find /Applications -maxdepth 1 -name 'Xcode_*.app' | grep -E '/Xcode_[0-9]+(\.[0-9]+)*\.app$' | sort -V | tail -n 1 || true)
+          if [[ -n "$xcode" ]]; then sudo xcode-select -s "$xcode"; fi
+          xcode-select -p
+
+      - name: Toolchain
+        run: |
+          sw_vers
+          xcodebuild -version
+          swift --version
+
+      - name: Cache SwiftPM dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            .build/artifacts
+            .build/checkouts
+            .build/repositories
+            ~/Library/Caches/org.swift.swiftpm
+          key: spm-${{ runner.os }}-${{ hashFiles('Package.resolved') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: Build (warnings are errors)
+        run: swift build --build-tests -Xswiftc -warnings-as-errors
+
+      - name: Record
+        run: TABBI_RECORD_FIXTURES=1 swift test -Xswiftc -warnings-as-errors --filter "$FIXTURE_TESTS"
+
+      - name: Show what changed
+        run: git status --short shared/fixtures && git diff --stat shared/fixtures
+
+      - name: Upload the recorded fixtures
+        uses: actions/upload-artifact@v4
+        with:
+          name: fixtures
+          path: shared/fixtures/
+
+      - name: Verify against the recording
+        run: swift test -Xswiftc -warnings-as-errors --filter "$FIXTURE_TESTS"

@@ -199,7 +199,7 @@ Use `.monospacedDigit()`'s equivalent (`font-variant-numeric: tabular-nums`) on 
 
 ## 5. Using `shared/`
 
-`shared/schemas/` holds JSON Schema (draft 2020-12) files: `pets.v1`, `themes.v1`, `study-methods.v1`, `events.v1`, `kit.v1`, `edition.v1` and `catalog.v1`.
+`shared/schemas/` holds JSON Schema (draft 2020-12) files: `pets.v1`, `themes.v1`, `study-methods.v1`, `events.v1`, `kit.v1`, `edition.v1`, `catalog.v1`, `party.v1`, `sync-document.v1` and `activity-record.v1`.
 The data they describe lives where the Mac app reads it, and the Windows build reads the same paths, never a copy:
 
 | Data | Path |
@@ -229,6 +229,14 @@ The Windows port must pass all of them, replaying the fixture's own inputs and c
 | `ticker/` | 19 source sets with visible items, strings and next change, and 13 rotation sequences |
 | `plan-my-day/` | 19 days planned three ways, prompts, parsed answers and 4 proposal sequences |
 | `claude-stream/` | 34 `claude -p` stream-json lines and 13 Ask Claude exchanges (needed with the CLI providers) |
+| `sync-document/` | 9 wire samples, 39 lenient reads, 27 local and remote merges and 18 sync rounds against a scripted server |
+| `closet/` | Every item's price, tier, unlock rule and shelf, the points rules and tables, ledgers, 5 closet sequences, milestones, streak freezes, event windows and limited shelves |
+| `activity-log/` | 9 normalized records, the day file of 17 instants in 8 zones, 6 appends with the exact file text and 16 day-file reads |
+| `streaks-recap/` | 21 activity logs with their streak (freezes, milestones), heatmap and weekly recaps |
+| `anki/` | 21 AnkiConnect refreshes: the requests sent, recorded replies, the summary or error, and the connection state |
+| `kits/` | Every bundled kit and 71 kit cases with errors, warnings, layout, settings and change preview, on two catalogs |
+| `onboarding/` | 20 `OnboardingFlow` runs with the state after every step |
+| `formatting/` | Durations and date ranges in all 12 languages |
 
 Write one Vitest suite per fixture under `windows/tests/fixtures/`, each shown to fail on a one-value change, like the Swift suites.
 Never edit a fixture from the Windows side; fixtures are regenerated only on a Mac, on purpose, with `TABBI_RECORD_FIXTURES=1 swift test --filter ...` (`shared/README.md`).
@@ -239,14 +247,22 @@ When a fixture test fails on Windows, the Windows port is wrong until proven oth
 Each item is a small Mac-side PR (a Swift test that records a fixture, or data moved out of Swift), best done before the phase that needs it.
 
 1. **Sync document**: a `sync-document.v1` schema and a merge fixture (pairs of local and remote documents with the merged result, including points per device, unlock unions, study-day unions, longest-streak maximum and last-writer-wins look), recorded from `SyncDocument` and `SyncRound`; needed before phase 4, because both apps write the same server document.
+   Done: `sync-document/` and `shared/schemas/sync-document.v1.schema.json`.
 2. **Closet prices and unlock rules**: item prices and tiers live in Swift (`Pets/PetUnlocks.swift`, `PetPointsRules`, `PetEconomy`, `PetLimited`); move them to data (or record a fixture of every item's price, tier and unlock rule, and points per focus block); needed for phase 2.
+   Done as a fixture: `closet/`.
 3. **Streaks, heatmap and weekly recap**: fixtures from `StudyStreak` (including freezes and milestones), `StudyHeatmap`, `RecapStats` and `WeeklyRecap` over recorded activity logs; needed for phases 2 and 3.
+   Done: `streaks-recap/`.
 4. **Activity records**: a schema for `ActivityRecord` and its per-day file, so streaks, recap and the pet read the same shape on both platforms.
+   Done: `shared/schemas/activity-record.v1.schema.json` and `activity-log/`.
 5. **Focus sounds**: the mixes, presets, playlists and per-sound loudness trims (`FocusMix`, `FocusMixPreset`, `FocusSound.loudnessTrimDecibels`, `NoiseGenerator.targetRMS`) as data, and a fixture of each synthesized sound's RMS and integrated loudness, so the Web Audio port can be measured against the Mac; the DSP itself is code and gets ported.
 6. **Anki**: recorded AnkiConnect replies (deck list, stats, the "Deck counts unavailable." failure, `multi` partial failures, old leaf-name replies) with the expected summary, from `AnkiSummary` and `AnkiConnectClient`.
+   Done: `anki/`.
 7. **Kit application and validation**: a fixture of kits (bundled and malformed) with the warnings `KitValidation` reports and the layout applying them gives.
+   Done: `kits/`.
 8. **Onboarding flow**: a fixture of `OnboardingFlow` step order and skipping for different kits, answers and tab choices.
+   Done: `onboarding/`.
 9. **Formatting**: a fixture of `DurationFormat` and `DateRangeFormat` outputs in all 12 languages, so durations and date spans match.
+   Done: `formatting/` (durations go through a test mirror of `DurationFormat`, since it cannot be given a language; see its README).
 10. **Symbol map**: a JSON table from every SF Symbol name used in kits, descriptors and catalog to a neutral icon id, so both apps agree on icons for imported kits.
 11. **Icons**: a multi-size `.ico` (16 to 256 px) generated from `tabbi-icon-1024.png`, and light and dark monochrome tray icons from the glyph; generate them in the Windows build from the PNG and PDF rather than committing hand-made copies.
 12. **Chimes**: original or CC0 notification sounds, if the Windows build wants in-app chimes beyond toast audio, listed in `docs/sounds.md` with their license.

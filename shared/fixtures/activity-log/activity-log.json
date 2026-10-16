@@ -1,0 +1,1823 @@
+{
+  "appends" : [
+    {
+      "input" : {
+        "batches" : [
+          [
+            {
+              "end" : 1790974800,
+              "id" : "00000000-0000-4000-8000-000000000201",
+              "kind" : "focus.completed",
+              "metadata" : {
+                "method" : "flowtime",
+                "outcome" : "stopped"
+              },
+              "quantity" : 50,
+              "source" : "study",
+              "start" : 1790971800,
+              "unit" : "min"
+            },
+            {
+              "end" : 1791014400,
+              "id" : "00000000-0000-4000-8000-000000000202",
+              "kind" : "focus.completed",
+              "metadata" : {
+                "method" : "pomodoro",
+                "outcome" : "completed"
+              },
+              "quantity" : 25,
+              "source" : "focus",
+              "start" : 1791012900,
+              "unit" : "min"
+            },
+            {
+              "end" : 1790931300,
+              "id" : "00000000-0000-4000-8000-000000000203",
+              "kind" : "focus.completed",
+              "metadata" : {
+                "method" : "pomodoro",
+                "outcome" : "completed"
+              },
+              "quantity" : 24.6,
+              "source" : "focus",
+              "start" : 1790929824,
+              "unit" : "min"
+            },
+            {
+              "id" : "00000000-0000-4000-8000-000000000204",
+              "kind" : "task.completed",
+              "metadata" : {
+
+              },
+              "source" : "planner",
+              "start" : 1790953200,
+              "subject" : "notes/ch-1 café \"draft\""
+            },
+            {
+              "end" : 1790946900,
+              "id" : "00000000-0000-4000-8000-000000000205",
+              "kind" : "cards.reviewed",
+              "metadata" : {
+
+              },
+              "quantity" : 12,
+              "source" : "anki",
+              "start" : 1790946000,
+              "unit" : "cards"
+            },
+            {
+              "end" : 1790931900,
+              "id" : "00000000-0000-4000-8000-000000000206",
+              "kind" : "break.taken",
+              "metadata" : {
+
+              },
+              "quantity" : 5,
+              "source" : "focus",
+              "start" : 1790931600,
+              "unit" : "min"
+            }
+          ]
+        ],
+        "seed" : [
+
+        ],
+        "timeZone" : "UTC"
+      },
+      "name" : "two-days-utc",
+      "output" : {
+        "files" : [
+          {
+            "contents" : "{\n  \"records\" : [\n    {\n      \"end\" : \"2026-10-02T08:55:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000203\",\n      \"kind\" : \"focus.completed\",\n      \"metadata\" : {\n        \"method\" : \"pomodoro\",\n        \"outcome\" : \"completed\"\n      },\n      \"quantity\" : 24.6,\n      \"source\" : \"focus\",\n      \"start\" : \"2026-10-02T08:30:24Z\",\n      \"unit\" : \"min\"\n    },\n    {\n      \"end\" : \"2026-10-02T09:05:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000206\",\n      \"kind\" : \"break.taken\",\n      \"metadata\" : {\n\n      },\n      \"quantity\" : 5,\n      \"source\" : \"focus\",\n      \"start\" : \"2026-10-02T09:00:00Z\",\n      \"unit\" : \"min\"\n    },\n    {\n      \"end\" : \"2026-10-02T13:15:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000205\",\n      \"kind\" : \"cards.reviewed\",\n      \"metadata\" : {\n\n      },\n      \"quantity\" : 12,\n      \"source\" : \"anki\",\n      \"start\" : \"2026-10-02T13:00:00Z\",\n      \"unit\" : \"cards\"\n    },\n    {\n      \"end\" : \"2026-10-02T15:00:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000204\",\n      \"kind\" : \"task.completed\",\n      \"metadata\" : {\n\n      },\n      \"source\" : \"planner\",\n      \"start\" : \"2026-10-02T15:00:00Z\",\n      \"subject\" : \"notes\\/ch-1 café \\\"draft\\\"\"\n    },\n    {\n      \"end\" : \"2026-10-02T21:00:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000201\",\n      \"kind\" : \"focus.completed\",\n      \"metadata\" : {\n        \"method\" : \"flowtime\",\n        \"outcome\" : \"stopped\"\n      },\n      \"quantity\" : 50,\n      \"source\" : \"study\",\n      \"start\" : \"2026-10-02T20:10:00Z\",\n      \"unit\" : \"min\"\n    }\n  ],\n  \"schemaVersion\" : 1\n}",
+            "document" : {
+              "records" : [
+                {
+                  "end" : "2026-10-02T08:55:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000203",
+                  "kind" : "focus.completed",
+                  "metadata" : {
+                    "method" : "pomodoro",
+                    "outcome" : "completed"
+                  },
+                  "quantity" : 24.6,
+                  "source" : "focus",
+                  "start" : "2026-10-02T08:30:24Z",
+                  "unit" : "min"
+                },
+                {
+                  "end" : "2026-10-02T09:05:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000206",
+                  "kind" : "break.taken",
+                  "metadata" : {
+
+                  },
+                  "quantity" : 5,
+                  "source" : "focus",
+                  "start" : "2026-10-02T09:00:00Z",
+                  "unit" : "min"
+                },
+                {
+                  "end" : "2026-10-02T13:15:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000205",
+                  "kind" : "cards.reviewed",
+                  "metadata" : {
+
+                  },
+                  "quantity" : 12,
+                  "source" : "anki",
+                  "start" : "2026-10-02T13:00:00Z",
+                  "unit" : "cards"
+                },
+                {
+                  "end" : "2026-10-02T15:00:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000204",
+                  "kind" : "task.completed",
+                  "metadata" : {
+
+                  },
+                  "source" : "planner",
+                  "start" : "2026-10-02T15:00:00Z",
+                  "subject" : "notes/ch-1 café \"draft\""
+                },
+                {
+                  "end" : "2026-10-02T21:00:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000201",
+                  "kind" : "focus.completed",
+                  "metadata" : {
+                    "method" : "flowtime",
+                    "outcome" : "stopped"
+                  },
+                  "quantity" : 50,
+                  "source" : "study",
+                  "start" : "2026-10-02T20:10:00Z",
+                  "unit" : "min"
+                }
+              ],
+              "schemaVersion" : 1
+            },
+            "name" : "2026-10-02.json"
+          },
+          {
+            "contents" : "{\n  \"records\" : [\n    {\n      \"end\" : \"2026-10-03T08:00:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000202\",\n      \"kind\" : \"focus.completed\",\n      \"metadata\" : {\n        \"method\" : \"pomodoro\",\n        \"outcome\" : \"completed\"\n      },\n      \"quantity\" : 25,\n      \"source\" : \"focus\",\n      \"start\" : \"2026-10-03T07:35:00Z\",\n      \"unit\" : \"min\"\n    }\n  ],\n  \"schemaVersion\" : 1\n}",
+            "document" : {
+              "records" : [
+                {
+                  "end" : "2026-10-03T08:00:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000202",
+                  "kind" : "focus.completed",
+                  "metadata" : {
+                    "method" : "pomodoro",
+                    "outcome" : "completed"
+                  },
+                  "quantity" : 25,
+                  "source" : "focus",
+                  "start" : "2026-10-03T07:35:00Z",
+                  "unit" : "min"
+                }
+              ],
+              "schemaVersion" : 1
+            },
+            "name" : "2026-10-03.json"
+          }
+        ],
+        "readBack" : [
+          {
+            "end" : 1790931300,
+            "id" : "00000000-0000-4000-8000-000000000203",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 24.6,
+            "source" : "focus",
+            "start" : 1790929824,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790931900,
+            "id" : "00000000-0000-4000-8000-000000000206",
+            "kind" : "break.taken",
+            "metadata" : {
+
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1790931600,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790946900,
+            "id" : "00000000-0000-4000-8000-000000000205",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 12,
+            "source" : "anki",
+            "start" : 1790946000,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1790953200,
+            "id" : "00000000-0000-4000-8000-000000000204",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "source" : "planner",
+            "start" : 1790953200,
+            "subject" : "notes/ch-1 café \"draft\""
+          },
+          {
+            "end" : 1790974800,
+            "id" : "00000000-0000-4000-8000-000000000201",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "flowtime",
+              "outcome" : "stopped"
+            },
+            "quantity" : 50,
+            "source" : "study",
+            "start" : 1790971800,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791014400,
+            "id" : "00000000-0000-4000-8000-000000000202",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "focus",
+            "start" : 1791012900,
+            "unit" : "min"
+          }
+        ],
+        "savedDays" : [
+          "2026-10-02",
+          "2026-10-03"
+        ],
+        "threw" : [
+          false
+        ]
+      }
+    },
+    {
+      "input" : {
+        "batches" : [
+          [
+            {
+              "end" : 1790964000,
+              "id" : "00000000-0000-4000-8000-000000000211",
+              "kind" : "focus.completed",
+              "metadata" : {
+                "method" : "pomodoro",
+                "outcome" : "completed"
+              },
+              "quantity" : 25,
+              "source" : "focus",
+              "start" : 1790962500,
+              "unit" : "min"
+            }
+          ],
+          [
+            {
+              "end" : 1790946000,
+              "id" : "00000000-0000-4000-8000-000000000212",
+              "kind" : "focus.completed",
+              "metadata" : {
+                "method" : "pomodoro",
+                "outcome" : "completed"
+              },
+              "quantity" : 25,
+              "source" : "focus",
+              "start" : 1790944500,
+              "unit" : "min"
+            },
+            {
+              "end" : 1790964000,
+              "id" : "00000000-0000-4000-8000-000000000211",
+              "kind" : "focus.completed",
+              "metadata" : {
+                "method" : "pomodoro",
+                "outcome" : "completed"
+              },
+              "quantity" : 25,
+              "source" : "focus",
+              "start" : 1790962500,
+              "unit" : "min"
+            }
+          ],
+          [
+            {
+              "end" : 1790964000,
+              "id" : "00000000-0000-4000-8000-000000000211",
+              "kind" : "focus.completed",
+              "metadata" : {
+                "method" : "pomodoro",
+                "outcome" : "completed"
+              },
+              "quantity" : 25,
+              "source" : "focus",
+              "start" : 1790962500,
+              "unit" : "min"
+            }
+          ]
+        ],
+        "seed" : [
+
+        ],
+        "timeZone" : "America/New_York"
+      },
+      "name" : "merge-and-skip-duplicates-new-york",
+      "output" : {
+        "files" : [
+          {
+            "contents" : "{\n  \"records\" : [\n    {\n      \"end\" : \"2026-10-02T13:00:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000212\",\n      \"kind\" : \"focus.completed\",\n      \"metadata\" : {\n        \"method\" : \"pomodoro\",\n        \"outcome\" : \"completed\"\n      },\n      \"quantity\" : 25,\n      \"source\" : \"focus\",\n      \"start\" : \"2026-10-02T12:35:00Z\",\n      \"unit\" : \"min\"\n    },\n    {\n      \"end\" : \"2026-10-02T18:00:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000211\",\n      \"kind\" : \"focus.completed\",\n      \"metadata\" : {\n        \"method\" : \"pomodoro\",\n        \"outcome\" : \"completed\"\n      },\n      \"quantity\" : 25,\n      \"source\" : \"focus\",\n      \"start\" : \"2026-10-02T17:35:00Z\",\n      \"unit\" : \"min\"\n    }\n  ],\n  \"schemaVersion\" : 1\n}",
+            "document" : {
+              "records" : [
+                {
+                  "end" : "2026-10-02T13:00:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000212",
+                  "kind" : "focus.completed",
+                  "metadata" : {
+                    "method" : "pomodoro",
+                    "outcome" : "completed"
+                  },
+                  "quantity" : 25,
+                  "source" : "focus",
+                  "start" : "2026-10-02T12:35:00Z",
+                  "unit" : "min"
+                },
+                {
+                  "end" : "2026-10-02T18:00:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000211",
+                  "kind" : "focus.completed",
+                  "metadata" : {
+                    "method" : "pomodoro",
+                    "outcome" : "completed"
+                  },
+                  "quantity" : 25,
+                  "source" : "focus",
+                  "start" : "2026-10-02T17:35:00Z",
+                  "unit" : "min"
+                }
+              ],
+              "schemaVersion" : 1
+            },
+            "name" : "2026-10-02.json"
+          }
+        ],
+        "readBack" : [
+          {
+            "end" : 1790946000,
+            "id" : "00000000-0000-4000-8000-000000000212",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "focus",
+            "start" : 1790944500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790964000,
+            "id" : "00000000-0000-4000-8000-000000000211",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "focus",
+            "start" : 1790962500,
+            "unit" : "min"
+          }
+        ],
+        "savedDays" : [
+          "2026-10-02"
+        ],
+        "threw" : [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "input" : {
+        "batches" : [
+          [
+            {
+              "end" : 1790914200,
+              "id" : "00000000-0000-4000-8000-000000000221",
+              "kind" : "focus.completed",
+              "metadata" : {
+                "method" : "pomodoro",
+                "outcome" : "completed"
+              },
+              "quantity" : 30,
+              "source" : "focus",
+              "start" : 1790912400,
+              "unit" : "min"
+            },
+            {
+              "end" : 1790913599.5,
+              "id" : "00000000-0000-4000-8000-000000000222",
+              "kind" : "focus.completed",
+              "metadata" : {
+
+              },
+              "quantity" : 30,
+              "source" : "focus",
+              "start" : 1790911800,
+              "unit" : "min"
+            },
+            {
+              "id" : "00000000-0000-4000-8000-000000000223",
+              "kind" : "task.completed",
+              "metadata" : {
+
+              },
+              "source" : "planner",
+              "start" : 1790913598
+            },
+            {
+              "id" : "00000000-0000-4000-8000-000000000224",
+              "kind" : "task.completed",
+              "metadata" : {
+
+              },
+              "source" : "planner",
+              "start" : 1793511000
+            },
+            {
+              "id" : "00000000-0000-4000-8000-000000000225",
+              "kind" : "task.completed",
+              "metadata" : {
+
+              },
+              "source" : "planner",
+              "start" : 1793514600
+            },
+            {
+              "id" : "00000000-0000-4000-8000-000000000226",
+              "kind" : "task.completed",
+              "metadata" : {
+
+              },
+              "source" : "planner",
+              "start" : 1772955000
+            },
+            {
+              "id" : "00000000-0000-4000-8000-000000000227",
+              "kind" : "task.completed",
+              "metadata" : {
+
+              },
+              "source" : "planner",
+              "start" : 1772945999
+            }
+          ]
+        ],
+        "seed" : [
+
+        ],
+        "timeZone" : "America/New_York"
+      },
+      "name" : "midnight-and-daylight-saving-new-york",
+      "output" : {
+        "files" : [
+          {
+            "contents" : "{\n  \"records\" : [\n    {\n      \"end\" : \"2026-03-08T04:59:59Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000227\",\n      \"kind\" : \"task.completed\",\n      \"metadata\" : {\n\n      },\n      \"source\" : \"planner\",\n      \"start\" : \"2026-03-08T04:59:59Z\"\n    }\n  ],\n  \"schemaVersion\" : 1\n}",
+            "document" : {
+              "records" : [
+                {
+                  "end" : "2026-03-08T04:59:59Z",
+                  "id" : "00000000-0000-4000-8000-000000000227",
+                  "kind" : "task.completed",
+                  "metadata" : {
+
+                  },
+                  "source" : "planner",
+                  "start" : "2026-03-08T04:59:59Z"
+                }
+              ],
+              "schemaVersion" : 1
+            },
+            "name" : "2026-03-07.json"
+          },
+          {
+            "contents" : "{\n  \"records\" : [\n    {\n      \"end\" : \"2026-03-08T07:30:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000226\",\n      \"kind\" : \"task.completed\",\n      \"metadata\" : {\n\n      },\n      \"source\" : \"planner\",\n      \"start\" : \"2026-03-08T07:30:00Z\"\n    }\n  ],\n  \"schemaVersion\" : 1\n}",
+            "document" : {
+              "records" : [
+                {
+                  "end" : "2026-03-08T07:30:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000226",
+                  "kind" : "task.completed",
+                  "metadata" : {
+
+                  },
+                  "source" : "planner",
+                  "start" : "2026-03-08T07:30:00Z"
+                }
+              ],
+              "schemaVersion" : 1
+            },
+            "name" : "2026-03-08.json"
+          },
+          {
+            "contents" : "{\n  \"records\" : [\n    {\n      \"end\" : \"2026-10-02T03:59:58Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000223\",\n      \"kind\" : \"task.completed\",\n      \"metadata\" : {\n\n      },\n      \"source\" : \"planner\",\n      \"start\" : \"2026-10-02T03:59:58Z\"\n    }\n  ],\n  \"schemaVersion\" : 1\n}",
+            "document" : {
+              "records" : [
+                {
+                  "end" : "2026-10-02T03:59:58Z",
+                  "id" : "00000000-0000-4000-8000-000000000223",
+                  "kind" : "task.completed",
+                  "metadata" : {
+
+                  },
+                  "source" : "planner",
+                  "start" : "2026-10-02T03:59:58Z"
+                }
+              ],
+              "schemaVersion" : 1
+            },
+            "name" : "2026-10-01.json"
+          },
+          {
+            "contents" : "{\n  \"records\" : [\n    {\n      \"end\" : \"2026-10-02T04:00:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000222\",\n      \"kind\" : \"focus.completed\",\n      \"metadata\" : {\n\n      },\n      \"quantity\" : 30,\n      \"source\" : \"focus\",\n      \"start\" : \"2026-10-02T03:30:00Z\",\n      \"unit\" : \"min\"\n    },\n    {\n      \"end\" : \"2026-10-02T04:10:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000221\",\n      \"kind\" : \"focus.completed\",\n      \"metadata\" : {\n        \"method\" : \"pomodoro\",\n        \"outcome\" : \"completed\"\n      },\n      \"quantity\" : 30,\n      \"source\" : \"focus\",\n      \"start\" : \"2026-10-02T03:40:00Z\",\n      \"unit\" : \"min\"\n    }\n  ],\n  \"schemaVersion\" : 1\n}",
+            "document" : {
+              "records" : [
+                {
+                  "end" : "2026-10-02T04:00:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000222",
+                  "kind" : "focus.completed",
+                  "metadata" : {
+
+                  },
+                  "quantity" : 30,
+                  "source" : "focus",
+                  "start" : "2026-10-02T03:30:00Z",
+                  "unit" : "min"
+                },
+                {
+                  "end" : "2026-10-02T04:10:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000221",
+                  "kind" : "focus.completed",
+                  "metadata" : {
+                    "method" : "pomodoro",
+                    "outcome" : "completed"
+                  },
+                  "quantity" : 30,
+                  "source" : "focus",
+                  "start" : "2026-10-02T03:40:00Z",
+                  "unit" : "min"
+                }
+              ],
+              "schemaVersion" : 1
+            },
+            "name" : "2026-10-02.json"
+          },
+          {
+            "contents" : "{\n  \"records\" : [\n    {\n      \"end\" : \"2026-11-01T05:30:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000224\",\n      \"kind\" : \"task.completed\",\n      \"metadata\" : {\n\n      },\n      \"source\" : \"planner\",\n      \"start\" : \"2026-11-01T05:30:00Z\"\n    },\n    {\n      \"end\" : \"2026-11-01T06:30:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000225\",\n      \"kind\" : \"task.completed\",\n      \"metadata\" : {\n\n      },\n      \"source\" : \"planner\",\n      \"start\" : \"2026-11-01T06:30:00Z\"\n    }\n  ],\n  \"schemaVersion\" : 1\n}",
+            "document" : {
+              "records" : [
+                {
+                  "end" : "2026-11-01T05:30:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000224",
+                  "kind" : "task.completed",
+                  "metadata" : {
+
+                  },
+                  "source" : "planner",
+                  "start" : "2026-11-01T05:30:00Z"
+                },
+                {
+                  "end" : "2026-11-01T06:30:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000225",
+                  "kind" : "task.completed",
+                  "metadata" : {
+
+                  },
+                  "source" : "planner",
+                  "start" : "2026-11-01T06:30:00Z"
+                }
+              ],
+              "schemaVersion" : 1
+            },
+            "name" : "2026-11-01.json"
+          }
+        ],
+        "readBack" : [
+          {
+            "end" : 1772945999,
+            "id" : "00000000-0000-4000-8000-000000000227",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "source" : "planner",
+            "start" : 1772945999
+          },
+          {
+            "end" : 1772955000,
+            "id" : "00000000-0000-4000-8000-000000000226",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "source" : "planner",
+            "start" : 1772955000
+          },
+          {
+            "end" : 1790913598,
+            "id" : "00000000-0000-4000-8000-000000000223",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "source" : "planner",
+            "start" : 1790913598
+          },
+          {
+            "end" : 1790913600,
+            "id" : "00000000-0000-4000-8000-000000000222",
+            "kind" : "focus.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 30,
+            "source" : "focus",
+            "start" : 1790911800,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790914200,
+            "id" : "00000000-0000-4000-8000-000000000221",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 30,
+            "source" : "focus",
+            "start" : 1790912400,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793511000,
+            "id" : "00000000-0000-4000-8000-000000000224",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "source" : "planner",
+            "start" : 1793511000
+          },
+          {
+            "end" : 1793514600,
+            "id" : "00000000-0000-4000-8000-000000000225",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "source" : "planner",
+            "start" : 1793514600
+          }
+        ],
+        "savedDays" : [
+          "2026-03-07",
+          "2026-03-08",
+          "2026-10-01",
+          "2026-10-02",
+          "2026-11-01"
+        ],
+        "threw" : [
+          false
+        ]
+      }
+    },
+    {
+      "input" : {
+        "batches" : [
+          [
+            {
+              "id" : "00000000-0000-4000-8000-000000000231",
+              "kind" : "task.completed",
+              "metadata" : {
+
+              },
+              "source" : "planner",
+              "start" : 1790879399
+            },
+            {
+              "id" : "00000000-0000-4000-8000-000000000232",
+              "kind" : "task.completed",
+              "metadata" : {
+
+              },
+              "source" : "planner",
+              "start" : 1790879400
+            }
+          ]
+        ],
+        "seed" : [
+
+        ],
+        "timeZone" : "Asia/Kolkata"
+      },
+      "name" : "half-hour-zone-kolkata",
+      "output" : {
+        "files" : [
+          {
+            "contents" : "{\n  \"records\" : [\n    {\n      \"end\" : \"2026-10-01T18:29:59Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000231\",\n      \"kind\" : \"task.completed\",\n      \"metadata\" : {\n\n      },\n      \"source\" : \"planner\",\n      \"start\" : \"2026-10-01T18:29:59Z\"\n    }\n  ],\n  \"schemaVersion\" : 1\n}",
+            "document" : {
+              "records" : [
+                {
+                  "end" : "2026-10-01T18:29:59Z",
+                  "id" : "00000000-0000-4000-8000-000000000231",
+                  "kind" : "task.completed",
+                  "metadata" : {
+
+                  },
+                  "source" : "planner",
+                  "start" : "2026-10-01T18:29:59Z"
+                }
+              ],
+              "schemaVersion" : 1
+            },
+            "name" : "2026-10-01.json"
+          },
+          {
+            "contents" : "{\n  \"records\" : [\n    {\n      \"end\" : \"2026-10-01T18:30:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000232\",\n      \"kind\" : \"task.completed\",\n      \"metadata\" : {\n\n      },\n      \"source\" : \"planner\",\n      \"start\" : \"2026-10-01T18:30:00Z\"\n    }\n  ],\n  \"schemaVersion\" : 1\n}",
+            "document" : {
+              "records" : [
+                {
+                  "end" : "2026-10-01T18:30:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000232",
+                  "kind" : "task.completed",
+                  "metadata" : {
+
+                  },
+                  "source" : "planner",
+                  "start" : "2026-10-01T18:30:00Z"
+                }
+              ],
+              "schemaVersion" : 1
+            },
+            "name" : "2026-10-02.json"
+          }
+        ],
+        "readBack" : [
+          {
+            "end" : 1790879399,
+            "id" : "00000000-0000-4000-8000-000000000231",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "source" : "planner",
+            "start" : 1790879399
+          },
+          {
+            "end" : 1790879400,
+            "id" : "00000000-0000-4000-8000-000000000232",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "source" : "planner",
+            "start" : 1790879400
+          }
+        ],
+        "savedDays" : [
+          "2026-10-01",
+          "2026-10-02"
+        ],
+        "threw" : [
+          false
+        ]
+      }
+    },
+    {
+      "input" : {
+        "batches" : [
+          [
+            {
+              "end" : 1790845200,
+              "id" : "00000000-0000-4000-8000-000000000241",
+              "kind" : "focus.completed",
+              "metadata" : {
+                "method" : "pomodoro",
+                "outcome" : "completed"
+              },
+              "quantity" : 25,
+              "source" : "focus",
+              "start" : 1790843700,
+              "unit" : "min"
+            },
+            {
+              "end" : 1790931600,
+              "id" : "00000000-0000-4000-8000-000000000242",
+              "kind" : "focus.completed",
+              "metadata" : {
+                "method" : "pomodoro",
+                "outcome" : "completed"
+              },
+              "quantity" : 25,
+              "source" : "focus",
+              "start" : 1790930100,
+              "unit" : "min"
+            },
+            {
+              "end" : 1791018000,
+              "id" : "00000000-0000-4000-8000-000000000243",
+              "kind" : "focus.completed",
+              "metadata" : {
+                "method" : "pomodoro",
+                "outcome" : "completed"
+              },
+              "quantity" : 25,
+              "source" : "focus",
+              "start" : 1791016500,
+              "unit" : "min"
+            }
+          ]
+        ],
+        "seed" : [
+          {
+            "contents" : "{\"records\": 42}",
+            "name" : "2026-10-02.json"
+          },
+          {
+            "contents" : "notes",
+            "name" : "readme.txt"
+          }
+        ],
+        "timeZone" : "UTC"
+      },
+      "name" : "unreadable-day-is-kept",
+      "output" : {
+        "files" : [
+          {
+            "contents" : "{\n  \"records\" : [\n    {\n      \"end\" : \"2026-10-01T09:00:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000241\",\n      \"kind\" : \"focus.completed\",\n      \"metadata\" : {\n        \"method\" : \"pomodoro\",\n        \"outcome\" : \"completed\"\n      },\n      \"quantity\" : 25,\n      \"source\" : \"focus\",\n      \"start\" : \"2026-10-01T08:35:00Z\",\n      \"unit\" : \"min\"\n    }\n  ],\n  \"schemaVersion\" : 1\n}",
+            "document" : {
+              "records" : [
+                {
+                  "end" : "2026-10-01T09:00:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000241",
+                  "kind" : "focus.completed",
+                  "metadata" : {
+                    "method" : "pomodoro",
+                    "outcome" : "completed"
+                  },
+                  "quantity" : 25,
+                  "source" : "focus",
+                  "start" : "2026-10-01T08:35:00Z",
+                  "unit" : "min"
+                }
+              ],
+              "schemaVersion" : 1
+            },
+            "name" : "2026-10-01.json"
+          },
+          {
+            "contents" : "{\"records\": 42}",
+            "name" : "2026-10-02.json"
+          },
+          {
+            "contents" : "notes",
+            "name" : "readme.txt"
+          }
+        ],
+        "readBack" : [
+          {
+            "end" : 1790845200,
+            "id" : "00000000-0000-4000-8000-000000000241",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "focus",
+            "start" : 1790843700,
+            "unit" : "min"
+          }
+        ],
+        "savedDays" : [
+          "2026-10-01",
+          "2026-10-02"
+        ],
+        "threw" : [
+          true
+        ]
+      }
+    },
+    {
+      "input" : {
+        "batches" : [
+          [
+            {
+              "end" : 1790928000,
+              "id" : "00000000-0000-4000-8000-000000000251",
+              "kind" : "focus.completed",
+              "metadata" : {
+                "method" : "pomodoro",
+                "outcome" : "completed"
+              },
+              "quantity" : 25,
+              "source" : "focus",
+              "start" : 1790926500,
+              "unit" : "min"
+            }
+          ]
+        ],
+        "seed" : [
+          {
+            "contents" : "{\"records\": [{\"id\": \"6F1D3A2E-0C59-4D0B-9A64-1B5B8F1D2C3E\", \"source\": \"anki\", \"kind\": \"cards.reviewed\",\n              \"start\": \"2026-10-02T09:00:00Z\", \"quantity\": 12, \"unit\": \"cards\"}]}",
+            "name" : "2026-10-02.json"
+          }
+        ],
+        "timeZone" : "UTC"
+      },
+      "name" : "legacy-day-file-rewritten",
+      "output" : {
+        "files" : [
+          {
+            "contents" : "{\n  \"records\" : [\n    {\n      \"end\" : \"2026-10-02T08:00:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000251\",\n      \"kind\" : \"focus.completed\",\n      \"metadata\" : {\n        \"method\" : \"pomodoro\",\n        \"outcome\" : \"completed\"\n      },\n      \"quantity\" : 25,\n      \"source\" : \"focus\",\n      \"start\" : \"2026-10-02T07:35:00Z\",\n      \"unit\" : \"min\"\n    },\n    {\n      \"end\" : \"2026-10-02T09:00:00Z\",\n      \"id\" : \"6F1D3A2E-0C59-4D0B-9A64-1B5B8F1D2C3E\",\n      \"kind\" : \"cards.reviewed\",\n      \"metadata\" : {\n\n      },\n      \"quantity\" : 12,\n      \"source\" : \"anki\",\n      \"start\" : \"2026-10-02T09:00:00Z\",\n      \"unit\" : \"cards\"\n    }\n  ],\n  \"schemaVersion\" : 1\n}",
+            "document" : {
+              "records" : [
+                {
+                  "end" : "2026-10-02T08:00:00Z",
+                  "id" : "00000000-0000-4000-8000-000000000251",
+                  "kind" : "focus.completed",
+                  "metadata" : {
+                    "method" : "pomodoro",
+                    "outcome" : "completed"
+                  },
+                  "quantity" : 25,
+                  "source" : "focus",
+                  "start" : "2026-10-02T07:35:00Z",
+                  "unit" : "min"
+                },
+                {
+                  "end" : "2026-10-02T09:00:00Z",
+                  "id" : "6F1D3A2E-0C59-4D0B-9A64-1B5B8F1D2C3E",
+                  "kind" : "cards.reviewed",
+                  "metadata" : {
+
+                  },
+                  "quantity" : 12,
+                  "source" : "anki",
+                  "start" : "2026-10-02T09:00:00Z",
+                  "unit" : "cards"
+                }
+              ],
+              "schemaVersion" : 1
+            },
+            "name" : "2026-10-02.json"
+          }
+        ],
+        "readBack" : [
+          {
+            "end" : 1790928000,
+            "id" : "00000000-0000-4000-8000-000000000251",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "focus",
+            "start" : 1790926500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790931600,
+            "id" : "6F1D3A2E-0C59-4D0B-9A64-1B5B8F1D2C3E",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 12,
+            "source" : "anki",
+            "start" : 1790931600,
+            "unit" : "cards"
+          }
+        ],
+        "savedDays" : [
+          "2026-10-02"
+        ],
+        "threw" : [
+          false
+        ]
+      }
+    }
+  ],
+  "constants" : {
+    "folderName" : "Activity",
+    "kinds" : {
+      "breakTaken" : "break.taken",
+      "cardsReviewed" : "cards.reviewed",
+      "focusCompleted" : "focus.completed",
+      "taskCompleted" : "task.completed"
+    },
+    "metadataKeys" : {
+      "method" : "method",
+      "outcome" : "outcome"
+    },
+    "migrations" : [
+
+    ],
+    "schemaVersion" : 1,
+    "units" : {
+      "cards" : "cards",
+      "minutes" : "min"
+    },
+    "versionKey" : "schemaVersion"
+  },
+  "days" : {
+    "records" : [
+      {
+        "id" : "00000000-0000-4000-8000-000000000101",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1772945999
+      },
+      {
+        "id" : "00000000-0000-4000-8000-000000000102",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1772946000
+      },
+      {
+        "id" : "00000000-0000-4000-8000-000000000103",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1772955000
+      },
+      {
+        "id" : "00000000-0000-4000-8000-000000000104",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1774744200
+      },
+      {
+        "id" : "00000000-0000-4000-8000-000000000105",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1774747800
+      },
+      {
+        "id" : "00000000-0000-4000-8000-000000000106",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1775307600
+      },
+      {
+        "id" : "00000000-0000-4000-8000-000000000107",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1775395800
+      },
+      {
+        "id" : "00000000-0000-4000-8000-000000000108",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1790879399
+      },
+      {
+        "id" : "00000000-0000-4000-8000-000000000109",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1790879400
+      },
+      {
+        "end" : 1790914200,
+        "id" : "00000000-0000-4000-8000-000000000110",
+        "kind" : "focus.completed",
+        "metadata" : {
+          "method" : "pomodoro",
+          "outcome" : "completed"
+        },
+        "quantity" : 30,
+        "source" : "focus",
+        "start" : 1790912400,
+        "unit" : "min"
+      },
+      {
+        "end" : 1790913599.5,
+        "id" : "00000000-0000-4000-8000-000000000111",
+        "kind" : "focus.completed",
+        "metadata" : {
+
+        },
+        "quantity" : 30,
+        "source" : "focus",
+        "start" : 1790911800,
+        "unit" : "min"
+      },
+      {
+        "id" : "00000000-0000-4000-8000-000000000112",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1793511000
+      },
+      {
+        "id" : "00000000-0000-4000-8000-000000000113",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1793514600
+      },
+      {
+        "id" : "00000000-0000-4000-8000-000000000114",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1793595599
+      },
+      {
+        "id" : "00000000-0000-4000-8000-000000000115",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1793595600
+      },
+      {
+        "id" : "00000000-0000-4000-8000-000000000116",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1790937000
+      },
+      {
+        "end" : 1790983800,
+        "id" : "00000000-0000-4000-8000-000000000117",
+        "kind" : "break.taken",
+        "metadata" : {
+
+        },
+        "quantity" : 5,
+        "source" : "focus",
+        "start" : 1790987400,
+        "unit" : "min"
+      }
+    ],
+    "zones" : [
+      {
+        "days" : [
+          "2026-03-08",
+          "2026-03-08",
+          "2026-03-08",
+          "2026-03-29",
+          "2026-03-29",
+          "2026-04-04",
+          "2026-04-05",
+          "2026-10-01",
+          "2026-10-01",
+          "2026-10-02",
+          "2026-10-02",
+          "2026-11-01",
+          "2026-11-01",
+          "2026-11-02",
+          "2026-11-02",
+          "2026-10-02",
+          "2026-10-03"
+        ],
+        "timeZone" : "UTC"
+      },
+      {
+        "days" : [
+          "2026-03-07",
+          "2026-03-08",
+          "2026-03-08",
+          "2026-03-28",
+          "2026-03-28",
+          "2026-04-04",
+          "2026-04-05",
+          "2026-10-01",
+          "2026-10-01",
+          "2026-10-02",
+          "2026-10-02",
+          "2026-11-01",
+          "2026-11-01",
+          "2026-11-01",
+          "2026-11-02",
+          "2026-10-02",
+          "2026-10-02"
+        ],
+        "timeZone" : "America/New_York"
+      },
+      {
+        "days" : [
+          "2026-03-07",
+          "2026-03-07",
+          "2026-03-07",
+          "2026-03-28",
+          "2026-03-28",
+          "2026-04-04",
+          "2026-04-05",
+          "2026-10-01",
+          "2026-10-01",
+          "2026-10-01",
+          "2026-10-01",
+          "2026-10-31",
+          "2026-10-31",
+          "2026-11-01",
+          "2026-11-01",
+          "2026-10-02",
+          "2026-10-02"
+        ],
+        "timeZone" : "America/Los_Angeles"
+      },
+      {
+        "days" : [
+          "2026-03-08",
+          "2026-03-08",
+          "2026-03-08",
+          "2026-03-29",
+          "2026-03-29",
+          "2026-04-04",
+          "2026-04-05",
+          "2026-10-01",
+          "2026-10-01",
+          "2026-10-02",
+          "2026-10-02",
+          "2026-11-01",
+          "2026-11-01",
+          "2026-11-02",
+          "2026-11-02",
+          "2026-10-02",
+          "2026-10-03"
+        ],
+        "timeZone" : "Europe/London"
+      },
+      {
+        "days" : [
+          "2026-03-08",
+          "2026-03-08",
+          "2026-03-08",
+          "2026-03-29",
+          "2026-03-29",
+          "2026-04-04",
+          "2026-04-05",
+          "2026-10-01",
+          "2026-10-02",
+          "2026-10-02",
+          "2026-10-02",
+          "2026-11-01",
+          "2026-11-01",
+          "2026-11-02",
+          "2026-11-02",
+          "2026-10-02",
+          "2026-10-03"
+        ],
+        "timeZone" : "Asia/Kolkata"
+      },
+      {
+        "days" : [
+          "2026-03-08",
+          "2026-03-08",
+          "2026-03-08",
+          "2026-03-29",
+          "2026-03-29",
+          "2026-04-05",
+          "2026-04-05",
+          "2026-10-02",
+          "2026-10-02",
+          "2026-10-02",
+          "2026-10-02",
+          "2026-11-01",
+          "2026-11-01",
+          "2026-11-02",
+          "2026-11-02",
+          "2026-10-02",
+          "2026-10-03"
+        ],
+        "timeZone" : "Australia/Sydney"
+      },
+      {
+        "days" : [
+          "2026-03-08",
+          "2026-03-08",
+          "2026-03-08",
+          "2026-03-29",
+          "2026-03-29",
+          "2026-04-05",
+          "2026-04-06",
+          "2026-10-02",
+          "2026-10-02",
+          "2026-10-02",
+          "2026-10-02",
+          "2026-11-01",
+          "2026-11-01",
+          "2026-11-02",
+          "2026-11-02",
+          "2026-10-03",
+          "2026-10-03"
+        ],
+        "timeZone" : "Pacific/Kiritimati"
+      },
+      {
+        "days" : [
+          "2026-03-07",
+          "2026-03-07",
+          "2026-03-07",
+          "2026-03-28",
+          "2026-03-28",
+          "2026-04-04",
+          "2026-04-05",
+          "2026-10-01",
+          "2026-10-01",
+          "2026-10-01",
+          "2026-10-01",
+          "2026-10-31",
+          "2026-10-31",
+          "2026-11-01",
+          "2026-11-01",
+          "2026-10-01",
+          "2026-10-02"
+        ],
+        "timeZone" : "Pacific/Pago_Pago"
+      }
+    ]
+  },
+  "reads" : [
+    {
+      "contents" : "{\n  \"records\" : [\n    {\n      \"end\" : \"2026-10-02T09:00:00Z\",\n      \"id\" : \"00000000-0000-4000-8000-000000000301\",\n      \"kind\" : \"focus.completed\",\n      \"metadata\" : {\n        \"method\" : \"pomodoro\",\n        \"outcome\" : \"completed\"\n      },\n      \"quantity\" : 25,\n      \"source\" : \"focus\",\n      \"start\" : \"2026-10-02T08:35:00Z\",\n      \"unit\" : \"min\"\n    }\n  ],\n  \"schemaVersion\" : 1\n}",
+      "name" : "current-version",
+      "records" : [
+        {
+          "end" : 1790931600,
+          "id" : "00000000-0000-4000-8000-000000000301",
+          "kind" : "focus.completed",
+          "metadata" : {
+            "method" : "pomodoro",
+            "outcome" : "completed"
+          },
+          "quantity" : 25,
+          "source" : "focus",
+          "start" : 1790930100,
+          "unit" : "min"
+        }
+      ]
+    },
+    {
+      "contents" : "{\"records\": [{\"id\": \"6F1D3A2E-0C59-4D0B-9A64-1B5B8F1D2C3E\", \"source\": \"anki\", \"kind\": \"cards.reviewed\",\n              \"start\": \"2026-10-02T09:00:00Z\", \"quantity\": 12, \"unit\": \"cards\"}]}",
+      "name" : "legacy-without-version",
+      "records" : [
+        {
+          "end" : 1790931600,
+          "id" : "6F1D3A2E-0C59-4D0B-9A64-1B5B8F1D2C3E",
+          "kind" : "cards.reviewed",
+          "metadata" : {
+
+          },
+          "quantity" : 12,
+          "source" : "anki",
+          "start" : 1790931600,
+          "unit" : "cards"
+        }
+      ]
+    },
+    {
+      "contents" : "{\"schemaVersion\": 2, \"device\": \"mac\", \"records\": [{\"id\": \"00000000-0000-4000-8000-000000000302\",\n  \"source\": \"focus\", \"kind\": \"focus.completed\", \"start\": \"2026-10-02T08:35:00Z\", \"end\": \"2026-10-02T09:00:00Z\",\n  \"quantity\": 25, \"unit\": \"min\", \"metadata\": {}, \"mood\": \"calm\"}]}",
+      "name" : "newer-version-with-unknown-keys",
+      "records" : [
+        {
+          "end" : 1790931600,
+          "id" : "00000000-0000-4000-8000-000000000302",
+          "kind" : "focus.completed",
+          "metadata" : {
+
+          },
+          "quantity" : 25,
+          "source" : "focus",
+          "start" : 1790930100,
+          "unit" : "min"
+        }
+      ]
+    },
+    {
+      "contents" : "{\"schemaVersion\": 1, \"records\": [{\"id\": \"00000000-0000-4000-8000-000000000303\", \"source\": \"focus\",\n  \"kind\": \"focus.completed\", \"start\": \"2026-10-02T10:35:00+02:00\", \"end\": \"2026-10-02T05:00:00-04:00\",\n  \"quantity\": 25, \"unit\": \"min\", \"metadata\": {}}]}",
+      "name" : "offset-dates",
+      "records" : [
+        {
+          "end" : 1790931600,
+          "id" : "00000000-0000-4000-8000-000000000303",
+          "kind" : "focus.completed",
+          "metadata" : {
+
+          },
+          "quantity" : 25,
+          "source" : "focus",
+          "start" : 1790930100,
+          "unit" : "min"
+        }
+      ]
+    },
+    {
+      "contents" : "{\"schemaVersion\": 1, \"records\": [{\"id\": \"00000000-0000-4000-8000-000000000304\", \"source\": \"focus\",\n  \"kind\": \"break.taken\", \"start\": \"2026-10-02T09:00:00Z\", \"end\": \"2026-10-02T08:00:00Z\", \"metadata\": {}}]}",
+      "name" : "end-before-start-clamped",
+      "records" : [
+        {
+          "end" : 1790931600,
+          "id" : "00000000-0000-4000-8000-000000000304",
+          "kind" : "break.taken",
+          "metadata" : {
+
+          },
+          "source" : "focus",
+          "start" : 1790931600
+        }
+      ]
+    },
+    {
+      "contents" : "{\"schemaVersion\": 1, \"records\": [{\"id\": \"00000000-0000-4000-8000-000000000305\", \"source\": \"planner\",\n  \"kind\": \"task.completed\", \"start\": \"2026-10-02T09:00:00Z\", \"end\": null, \"quantity\": null, \"unit\": null,\n  \"subject\": null, \"metadata\": null}]}",
+      "name" : "null-optionals",
+      "records" : [
+        {
+          "end" : 1790931600,
+          "id" : "00000000-0000-4000-8000-000000000305",
+          "kind" : "task.completed",
+          "metadata" : {
+
+          },
+          "source" : "planner",
+          "start" : 1790931600
+        }
+      ]
+    },
+    {
+      "contents" : "{\"schemaVersion\": 1, \"records\": [{\"id\": \"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d\", \"source\": \"planner\",\n  \"kind\": \"task.completed\", \"start\": \"2026-10-02T09:00:00Z\", \"end\": \"2026-10-02T09:00:00Z\", \"metadata\": {}}]}",
+      "name" : "lower-case-id",
+      "records" : [
+        {
+          "end" : 1790931600,
+          "id" : "A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D",
+          "kind" : "task.completed",
+          "metadata" : {
+
+          },
+          "source" : "planner",
+          "start" : 1790931600
+        }
+      ]
+    },
+    {
+      "contents" : "{\"schemaVersion\": 1, \"records\": [\n  {\"id\": \"00000000-0000-4000-8000-000000000306\", \"source\": \"focus\", \"kind\": \"focus.completed\",\n   \"start\": \"2026-10-02T14:35:00Z\", \"end\": \"2026-10-02T15:00:00Z\", \"quantity\": 25, \"unit\": \"min\", \"metadata\": {}},\n  {\"id\": \"00000000-0000-4000-8000-000000000307\", \"source\": \"focus\", \"kind\": \"focus.completed\",\n   \"start\": \"2026-10-02T08:35:00Z\", \"end\": \"2026-10-02T09:00:00Z\", \"quantity\": 25, \"unit\": \"min\", \"metadata\": {}}]}",
+      "name" : "records-kept-in-file-order",
+      "records" : [
+        {
+          "end" : 1790953200,
+          "id" : "00000000-0000-4000-8000-000000000306",
+          "kind" : "focus.completed",
+          "metadata" : {
+
+          },
+          "quantity" : 25,
+          "source" : "focus",
+          "start" : 1790951700,
+          "unit" : "min"
+        },
+        {
+          "end" : 1790931600,
+          "id" : "00000000-0000-4000-8000-000000000307",
+          "kind" : "focus.completed",
+          "metadata" : {
+
+          },
+          "quantity" : 25,
+          "source" : "focus",
+          "start" : 1790930100,
+          "unit" : "min"
+        }
+      ]
+    },
+    {
+      "contents" : "{\"schemaVersion\": 1, \"records\": []}",
+      "name" : "empty-records",
+      "records" : [
+
+      ]
+    },
+    {
+      "contents" : "{\"schemaVersion\": 1}",
+      "name" : "missing-records"
+    },
+    {
+      "contents" : "{\"records\": 42}",
+      "name" : "records-not-an-array"
+    },
+    {
+      "contents" : "not json",
+      "name" : "not-json"
+    },
+    {
+      "contents" : "{\"schemaVersion\": 1, \"records\": [{\"source\": \"focus\", \"kind\": \"focus.completed\",\n  \"start\": \"2026-10-02T09:00:00Z\", \"metadata\": {}}]}",
+      "name" : "missing-id"
+    },
+    {
+      "contents" : "{\"schemaVersion\": 1, \"records\": [{\"id\": \"301\", \"source\": \"focus\", \"kind\": \"focus.completed\",\n  \"start\": \"2026-10-02T09:00:00Z\", \"metadata\": {}}]}",
+      "name" : "invalid-id"
+    },
+    {
+      "contents" : "{\"schemaVersion\": 1, \"records\": [{\"id\": \"00000000-0000-4000-8000-000000000308\", \"source\": \"focus\",\n  \"kind\": \"focus.completed\", \"start\": 781088400, \"metadata\": {}}]}",
+      "name" : "date-as-number"
+    },
+    {
+      "contents" : "{\"schemaVersion\": 1, \"records\": [{\"id\": \"00000000-0000-4000-8000-000000000309\", \"source\": \"focus\",\n  \"kind\": \"focus.completed\", \"start\": \"2026-10-02T09:00:00\", \"metadata\": {}}]}",
+      "name" : "date-without-zone"
+    }
+  ],
+  "records" : [
+    {
+      "input" : {
+        "end" : 1790931600,
+        "id" : "00000000-0000-4000-8000-000000000001",
+        "kind" : "focus.completed",
+        "metadata" : {
+          "method" : "pomodoro",
+          "outcome" : "completed"
+        },
+        "quantity" : 25,
+        "source" : "focus",
+        "start" : 1790930100,
+        "unit" : "min"
+      },
+      "name" : "focus-whole-seconds",
+      "record" : {
+        "end" : 1790931600,
+        "id" : "00000000-0000-4000-8000-000000000001",
+        "kind" : "focus.completed",
+        "metadata" : {
+          "method" : "pomodoro",
+          "outcome" : "completed"
+        },
+        "quantity" : 25,
+        "source" : "focus",
+        "start" : 1790930100,
+        "unit" : "min"
+      }
+    },
+    {
+      "input" : {
+        "id" : "00000000-0000-4000-8000-000000000002",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1790931600,
+        "subject" : "4D1C7E3A-2B6F-4A8E-9C0D-5E7F8A9B0C1D"
+      },
+      "name" : "moment-without-end",
+      "record" : {
+        "end" : 1790931600,
+        "id" : "00000000-0000-4000-8000-000000000002",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1790931600,
+        "subject" : "4D1C7E3A-2B6F-4A8E-9C0D-5E7F8A9B0C1D"
+      }
+    },
+    {
+      "input" : {
+        "end" : 1790928000,
+        "id" : "00000000-0000-4000-8000-000000000003",
+        "kind" : "break.taken",
+        "metadata" : {
+
+        },
+        "quantity" : 5,
+        "source" : "focus",
+        "start" : 1790931600,
+        "unit" : "min"
+      },
+      "name" : "end-before-start-clamped",
+      "record" : {
+        "end" : 1790931600,
+        "id" : "00000000-0000-4000-8000-000000000003",
+        "kind" : "break.taken",
+        "metadata" : {
+
+        },
+        "quantity" : 5,
+        "source" : "focus",
+        "start" : 1790931600,
+        "unit" : "min"
+      }
+    },
+    {
+      "input" : {
+        "end" : 1790931600.5,
+        "id" : "00000000-0000-4000-8000-000000000004",
+        "kind" : "focus.completed",
+        "metadata" : {
+
+        },
+        "quantity" : 25,
+        "source" : "study",
+        "start" : 1790930099.5,
+        "unit" : "min"
+      },
+      "name" : "half-second-rounds-up",
+      "record" : {
+        "end" : 1790931601,
+        "id" : "00000000-0000-4000-8000-000000000004",
+        "kind" : "focus.completed",
+        "metadata" : {
+
+        },
+        "quantity" : 25,
+        "source" : "study",
+        "start" : 1790930100,
+        "unit" : "min"
+      }
+    },
+    {
+      "input" : {
+        "end" : 1790931600.49,
+        "id" : "00000000-0000-4000-8000-000000000005",
+        "kind" : "focus.completed",
+        "metadata" : {
+
+        },
+        "quantity" : 25,
+        "source" : "study",
+        "start" : 1790930099.51,
+        "unit" : "min"
+      },
+      "name" : "under-half-second-rounds-down",
+      "record" : {
+        "end" : 1790931600,
+        "id" : "00000000-0000-4000-8000-000000000005",
+        "kind" : "focus.completed",
+        "metadata" : {
+
+        },
+        "quantity" : 25,
+        "source" : "study",
+        "start" : 1790930100,
+        "unit" : "min"
+      }
+    },
+    {
+      "input" : {
+        "end" : 1790931600,
+        "id" : "00000000-0000-4000-8000-000000000006",
+        "kind" : "focus.completed",
+        "metadata" : {
+          "method" : "pomodoro",
+          "outcome" : "completed"
+        },
+        "quantity" : 24.6,
+        "source" : "focus",
+        "start" : 1790930124,
+        "unit" : "min"
+      },
+      "name" : "fractional-quantity",
+      "record" : {
+        "end" : 1790931600,
+        "id" : "00000000-0000-4000-8000-000000000006",
+        "kind" : "focus.completed",
+        "metadata" : {
+          "method" : "pomodoro",
+          "outcome" : "completed"
+        },
+        "quantity" : 24.6,
+        "source" : "focus",
+        "start" : 1790930124,
+        "unit" : "min"
+      }
+    },
+    {
+      "input" : {
+        "end" : 1790931600,
+        "id" : "00000000-0000-4000-8000-000000000007",
+        "kind" : "cards.reviewed",
+        "metadata" : {
+          "deck" : "Pharmacology"
+        },
+        "quantity" : 40,
+        "source" : "anki",
+        "start" : 1790931000,
+        "unit" : "cards"
+      },
+      "name" : "cards",
+      "record" : {
+        "end" : 1790931600,
+        "id" : "00000000-0000-4000-8000-000000000007",
+        "kind" : "cards.reviewed",
+        "metadata" : {
+          "deck" : "Pharmacology"
+        },
+        "quantity" : 40,
+        "source" : "anki",
+        "start" : 1790931000,
+        "unit" : "cards"
+      }
+    },
+    {
+      "input" : {
+        "id" : "00000000-0000-4000-8000-000000000008",
+        "kind" : "problem.solved",
+        "metadata" : {
+
+        },
+        "quantity" : 1,
+        "source" : "leetcode",
+        "start" : 1790931600,
+        "subject" : "two-sum",
+        "unit" : "problems"
+      },
+      "name" : "open-kind-and-source",
+      "record" : {
+        "end" : 1790931600,
+        "id" : "00000000-0000-4000-8000-000000000008",
+        "kind" : "problem.solved",
+        "metadata" : {
+
+        },
+        "quantity" : 1,
+        "source" : "leetcode",
+        "start" : 1790931600,
+        "subject" : "two-sum",
+        "unit" : "problems"
+      }
+    },
+    {
+      "input" : {
+        "id" : "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1790931600
+      },
+      "name" : "lower-case-id",
+      "record" : {
+        "end" : 1790931600,
+        "id" : "A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D",
+        "kind" : "task.completed",
+        "metadata" : {
+
+        },
+        "source" : "planner",
+        "start" : 1790931600
+      }
+    }
+  ],
+  "schema" : "tabbi.activity-log.golden",
+  "version" : 1
+}
