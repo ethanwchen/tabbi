@@ -1,6 +1,294 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ isn't a calendar link" : {
+      "comment" : "Settings > Connections: the Calendar row's headline when a link doesn't work as a calendar. %@ is the name the user gave the calendar.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ليس رابط تقويم"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ist kein Kalenderlink"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ no es un enlace de calendario"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi calendar link ang %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ n'est pas un lien de calendrier"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@はカレンダーのリンクではありません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@은(는) 캘린더 링크가 아니에요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ não é um link de calendário"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ не ссылка на календарь"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 不是日历链接"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 不是行事曆連結"
+          }
+        }
+      }
+    },
+    "%@ isn't on this PC" : {
+      "comment" : "Settings > Connections: the headline when an app isn't installed. %@ is an app name, such as Anki or Spotify.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ غير موجود على هذا الكمبيوتر"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ fehlt auf diesem PC"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ no está en este PC"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wala ang %@ sa PC na ito"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ n'est pas sur ce PC"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@がこのPCにありません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 PC에 %@ 없음"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O %@ não está neste PC"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ нет на этом ПК"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这台电脑上没有 %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這台電腦上沒有 %@"
+          }
+        }
+      }
+    },
+    "A school or work setting may block them. You can check in Windows Settings." : {
+      "comment" : "Settings > Connections: the Alerts row when a policy blocks notifications. Name Windows Settings as Windows does.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قد يحظرها إعداد للمدرسة أو العمل. يمكنك التحقق في إعدادات Windows."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vielleicht blockiert eine Schul- oder Arbeitseinstellung sie. Du kannst es in den Windows-Einstellungen prüfen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puede que un ajuste del centro o del trabajo las bloquee. Puedes revisarlo en Configuración de Windows."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baka hinaharang ito ng setting ng school o trabaho. Puwede mong i-check sa Windows Settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un réglage de l'école ou du travail les bloque peut-être. Tu peux vérifier dans Paramètres Windows."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "学校や職場の設定でブロックされている可能性があります。Windowsの設定で確認できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "학교나 회사 설정이 막고 있을 수 있어요. Windows 설정에서 확인할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um ajuste da escola ou do trabalho pode bloquear. Você pode conferir nas Configurações do Windows."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Возможно, их блокирует настройка школы или работы. Это можно проверить в Параметрах Windows."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "学校或工作的设置可能阻止了它们。你可以在 Windows 设置中查看。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "學校或工作的設定可能擋住了它們。你可以在 Windows 設定中查看。"
+          }
+        }
+      }
+    },
+    "Add your calendar's link from Google, Outlook or iCloud to see its events here." : {
+      "comment" : "Settings > Connections: the Calendar row before any calendar link was added.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أضف رابط تقويمك من Google أو Outlook أو iCloud لترى أحداثه هنا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füge den Link deines Kalenders aus Google, Outlook oder iCloud hinzu, um seine Termine hier zu sehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agrega el enlace de tu calendario de Google, Outlook o iCloud para ver sus eventos aquí."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idagdag ang link ng calendar mo mula sa Google, Outlook o iCloud para makita rito ang mga event nito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute le lien de ton calendrier Google, Outlook ou iCloud pour voir ses événements ici."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google、Outlook、iCloudのカレンダーのリンクを追加すると、その予定がここに表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google, Outlook, iCloud 캘린더 링크를 추가하면 여기서 일정을 볼 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione o link do seu calendário do Google, Outlook ou iCloud para ver os eventos aqui."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь ссылку на календарь из Google, Outlook или iCloud, чтобы видеть события здесь."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加 Google、Outlook 或 iCloud 的日历链接，就能在这里看到日程。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入 Google、Outlook 或 iCloud 的行事曆連結，就能在這裡看到行程。"
+          }
+        }
+      }
+    },
     "Another app is using Ctrl+Alt+Space, so open Tabbi from its icon in the tray." : {
       "comment" : "Shown when the global hotkey cannot be registered because another app owns it. Name the keys as the language's Windows keyboards label them, and the tray as Windows calls the notification area in that language.",
       "extractionState" : "manual",
@@ -69,6 +357,438 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ctrl+Alt+空白鍵 已被其他 App 使用。請從通知區域中的 Tabbi 圖示開啟。"
+          }
+        }
+      }
+    },
+    "Asked once. Your answer stays on this PC." : {
+      "comment" : "Party setup on Windows: the note under the birth month and year question.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُسأل مرة واحدة. تبقى إجابتك على هذا الكمبيوتر."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird nur einmal gefragt. Deine Antwort bleibt auf diesem PC."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo se pregunta una vez. Tu respuesta se queda en este PC."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isang beses lang itatanong. Mananatili sa PC na ito ang sagot mo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demandé une seule fois. Ta réponse reste sur ce PC."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "質問は一度だけ。回答はこのPCに保存されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 번만 물어봐요. 답은 이 PC에만 남아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perguntado só uma vez. Sua resposta fica neste PC."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спросим один раз. Ответ останется на этом ПК."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只问一次。你的回答只保存在这台电脑上。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只問一次。你的回答只會保留在這台電腦上。"
+          }
+        }
+      }
+    },
+    "Back in Tabbi, add it as a new calendar link." : {
+      "comment" : "Settings > Connections: the last step of the Google Calendar walkthrough.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "في Tabbi، أضفه كرابط تقويم جديد."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füge ihn dann in Tabbi als neuen Kalenderlink hinzu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De vuelta en Tabbi, agrégalo como un enlace de calendario nuevo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pagbalik sa Tabbi, idagdag ito bilang bagong calendar link."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De retour dans Tabbi, ajoute-le comme nouveau lien de calendrier."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiに戻り、新しいカレンダーのリンクとして追加します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi로 돌아와 새 캘린더 링크로 추가하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De volta ao Tabbi, adicione como um novo link de calendário."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вернись в Tabbi и добавь ее как новую ссылку на календарь."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回到 Tabbi，把它添加为新的日历链接。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回到 Tabbi，把它加入為新的行事曆連結。"
+          }
+        }
+      }
+    },
+    "Can Tabbi see what's playing?" : {
+      "comment" : "Settings > Connections > Something not working?: the check on the Media apps row.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل يرى Tabbi ما يُشغَّل؟"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sieht Tabbi, was gerade läuft?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Puede Tabbi ver lo que suena?"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakikita ba ng Tabbi kung ano ang tumutugtog?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi voit-il ce qui joue ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiは再生中の曲を確認できますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi가 재생 중인 걸 볼 수 있나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi consegue ver o que está tocando?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi видит, что сейчас играет?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 能看到正在播放的内容吗？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 能看到正在播放的內容嗎？"
+          }
+        }
+      }
+    },
+    "Can Tabbi turn on Do not disturb?" : {
+      "comment" : "Settings > Connections > Something not working?: the Do not disturb row's check. Use Windows' name for Do not disturb.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل يستطيع Tabbi تشغيل عدم الإزعاج؟"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kann Tabbi „Nicht stören“ einschalten?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Puede Tabbi activar No molestar?"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaya bang i-on ng Tabbi ang Do not disturb?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi peut-il activer Ne pas déranger ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiは応答不可をオンにできますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi가 방해 금지를 켤 수 있나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi pode ativar o Não incomodar?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Может ли Tabbi включить «Не беспокоить»?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 能打开请勿打扰吗？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 能開啟勿干擾嗎？"
+          }
+        }
+      }
+    },
+    "Check that you're online, then check again." : {
+      "comment" : "Settings > Connections: what to do when a calendar link couldn't be loaded. The second \"check\" matches the Check again button.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تأكد من اتصالك بالإنترنت، ثم تحقّق مرة أخرى."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe, ob du online bist, und prüfe dann erneut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprueba que tienes conexión y vuelve a comprobar."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguraduhing online ka, tapos i-check ulit."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifie que tu es en ligne, puis revérifie."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オンラインか確認してから、もう一度確認してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "온라인인지 확인한 다음 다시 확인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confira se você está online e verifique de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Проверь, что ты в сети, и проверь еще раз."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确认你已联网，然后再检查一次。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確認你已連上網路，然後再檢查一次。"
+          }
+        }
+      }
+    },
+    "Claude is on your PC. Sign in once and Tabbi can use it." : {
+      "comment" : "Settings > Connections: the intro of the Sign in to Claude walkthrough on Windows.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude موجود على الكمبيوتر. سجّل الدخول مرة واحدة ويستطيع Tabbi استخدامه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude ist auf deinem PC. Melde dich einmal an, dann kann Tabbi es nutzen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude está en tu PC. Inicia sesión una vez y Tabbi podrá usarlo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nasa PC mo na si Claude. Mag-sign in nang isang beses at magagamit na siya ng Tabbi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude est sur ton PC. Connecte-toi une fois et Tabbi pourra l'utiliser."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClaudeはPCに入っています。一度サインインすればTabbiで使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PC에 Claude가 있어요. 한 번만 로그인하면 Tabbi가 쓸 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Claude está no seu PC. Entre uma vez e o Tabbi poderá usá-lo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude уже есть на ПК. Войди один раз, и Tabbi сможет им пользоваться."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的电脑上已有 Claude。登录一次，Tabbi 就能使用它。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的電腦上已有 Claude。登入一次，Tabbi 就能使用它。"
           }
         }
       }
@@ -145,6 +865,222 @@
         }
       }
     },
+    "Click in the PowerShell window, press Ctrl+V to paste, then press Enter." : {
+      "comment" : "Settings > Connections: a step of the Claude walkthroughs on Windows. Name the keys as the language's Windows keyboards label them.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انقر في نافذة PowerShell، واضغط Ctrl+V للصق، ثم اضغط Enter."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke ins PowerShell-Fenster, drücke Strg+V zum Einfügen und dann die Eingabetaste."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en la ventana de PowerShell, pulsa Ctrl+V para pegar y luego pulsa Intro."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mag-click sa PowerShell window, pindutin ang Ctrl+V para mag-paste, tapos pindutin ang Enter."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique dans la fenêtre PowerShell, appuie sur Ctrl+V pour coller, puis sur Entrée."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PowerShellのウインドウ内をクリックし、Ctrl+Vで貼り付けてから、Enterキーを押します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PowerShell 창을 클릭하고 Ctrl+V를 눌러 붙여넣은 다음 Enter 키를 누르세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique na janela do PowerShell, pressione Ctrl+V para colar e depois Enter."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Щелкни в окне PowerShell, нажми Ctrl+V, чтобы вставить, затем нажми Enter."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击 PowerShell 窗口，按 Ctrl+V 粘贴，然后按 Enter 键。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按一下 PowerShell 視窗，按 Ctrl+V 貼上，再按 Enter 鍵。"
+          }
+        }
+      }
+    },
+    "Click the button below. It copies the setup line and opens PowerShell, which comes with Windows." : {
+      "comment" : "Settings > Connections: a step of the Set up Claude walkthrough on Windows. PowerShell is an app name; keep it.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انقر الزر أدناه. ينسخ سطر الإعداد ويفتح PowerShell، الذي يأتي مع Windows."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke auf die Taste unten. Sie kopiert die Einrichtungszeile und öffnet PowerShell, das bei Windows dabei ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en el botón de abajo. Copia la línea de configuración y abre PowerShell, que viene con Windows."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-click ang button sa ibaba. Kinokopya nito ang setup line at binubuksan ang PowerShell, na kasama ng Windows."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique sur le bouton ci-dessous. Il copie la ligne d'installation et ouvre PowerShell, inclus dans Windows."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下のボタンをクリックすると、セットアップ用のコマンドがコピーされ、Windowsに付属のPowerShellが開きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아래 버튼을 클릭하면 설정 명령어가 복사되고 Windows에 들어 있는 PowerShell이 열려요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique no botão abaixo. Ele copia a linha de configuração e abre o PowerShell, que vem com o Windows."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми кнопку ниже. Она скопирует команду установки и откроет PowerShell, который есть в Windows."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击下方按钮。它会复制安装命令并打开 Windows 自带的 PowerShell。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按一下下方按鈕。它會拷貝安裝指令並打開 Windows 內建的 PowerShell。"
+          }
+        }
+      }
+    },
+    "Click the button below. It copies the sign-in line and opens PowerShell." : {
+      "comment" : "Settings > Connections: a step of the Sign in to Claude walkthrough on Windows. PowerShell is an app name; keep it.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انقر الزر أدناه. ينسخ سطر تسجيل الدخول ويفتح PowerShell."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke auf die Taste unten. Sie kopiert die Anmeldezeile und öffnet PowerShell."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en el botón de abajo. Copia la línea de inicio de sesión y abre PowerShell."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-click ang button sa ibaba. Kinokopya nito ang sign-in line at binubuksan ang PowerShell."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique sur le bouton ci-dessous. Il copie la ligne de connexion et ouvre PowerShell."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下のボタンをクリックすると、サインイン用のコマンドがコピーされ、PowerShellが開きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아래 버튼을 클릭하면 로그인 명령어가 복사되고 PowerShell이 열려요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique no botão abaixo. Ele copia a linha de login e abre o PowerShell."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми кнопку ниже. Она скопирует команду входа и откроет PowerShell."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击下方按钮。它会复制登录命令并打开 PowerShell。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按一下下方按鈕。它會拷貝登入指令並打開 PowerShell。"
+          }
+        }
+      }
+    },
     "Click to record a new shortcut" : {
       "comment" : "Tooltip on the shortcut recorder field while it shows the current shortcut.",
       "extractionState" : "manual",
@@ -217,6 +1153,2166 @@
         }
       }
     },
+    "Control music playing in other apps." : {
+      "comment" : "Settings > Connections: what the Media apps row unlocks. Keep it short; it sits beside a button.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحكّم في الموسيقى في التطبيقات الأخرى."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steuere Musik aus anderen Apps."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controla la música de otras apps."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontrolin ang music sa ibang app."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contrôle la musique d'autres apps."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ほかのアプリの音楽を操作。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 앱의 음악을 제어해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controle a música de outros apps."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Управляй музыкой в других приложениях."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控制其他应用里的音乐。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控制其他 App 裡的音樂。"
+          }
+        }
+      }
+    },
+    "Copy the calendar's iCal or ICS link again and paste it in." : {
+      "comment" : "Settings > Connections: what to do when a calendar link doesn't work. iCal and ICS are format names; keep them.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انسخ رابط iCal أو ICS للتقويم مرة أخرى والصقه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiere den iCal- oder ICS-Link des Kalenders erneut und füge ihn ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copia de nuevo el enlace iCal o ICS del calendario y pégalo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopyahin ulit ang iCal o ICS link ng calendar at i-paste ito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copie à nouveau le lien iCal ou ICS du calendrier et colle-le."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カレンダーのiCalまたはICSリンクをもう一度コピーして貼り付けてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캘린더의 iCal 또는 ICS 링크를 다시 복사해 붙여넣으세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copie de novo o link iCal ou ICS do calendário e cole."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скопируй ссылку iCal или ICS календаря еще раз и вставь ее."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新复制日历的 iCal 或 ICS 链接并粘贴进来。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新拷貝行事曆的 iCal 或 ICS 連結並貼上。"
+          }
+        }
+      }
+    },
+    "Did you add a calendar link?" : {
+      "comment" : "Settings > Connections > Something not working?: a check on the Calendar row. A calendar link is a calendar's private iCal (ICS) address.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل أضفت رابط تقويم؟"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hast du einen Kalenderlink hinzugefügt?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Agregaste un enlace de calendario?"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nagdagdag ka ba ng calendar link?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As-tu ajouté un lien de calendrier ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カレンダーのリンクを追加しましたか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캘린더 링크를 추가했나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você adicionou um link de calendário?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ты добавил(а) ссылку на календарь?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你添加日历链接了吗？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你加入行事曆連結了嗎？"
+          }
+        }
+      }
+    },
+    "Do not disturb" : {
+      "comment" : "Settings > Connections: the row for Windows' Do not disturb. Use the name Windows Settings gives it in each language.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عدم الإزعاج"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht stören"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No molestar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do not disturb"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne pas déranger"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "応答不可"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "방해 금지"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não incomodar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не беспокоить"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请勿打扰"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "勿干擾"
+          }
+        }
+      }
+    },
+    "Do your calendars load?" : {
+      "comment" : "Settings > Connections > Something not working?: a check on the Calendar row.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل تُحمَّل تقويماتك؟"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laden deine Kalender?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Se cargan tus calendarios?"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naglo-load ba ang mga calendar mo?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tes calendriers se chargent-ils ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カレンダーは読み込めていますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캘린더가 불러와지나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus calendários carregam?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Календари загружаются?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的日历能载入吗？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的行事曆能載入嗎？"
+          }
+        }
+      }
+    },
+    "Get %@ to control your music from Tabbi." : {
+      "comment" : "Settings > Connections: the Spotify row when Spotify isn't installed. %@ is the app name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "احصل على %@ للتحكم في موسيقاك من Tabbi."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hol dir %@, um deine Musik über Tabbi zu steuern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instala %@ para controlar tu música desde Tabbi."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-install ang %@ para makontrol ang music mo mula sa Tabbi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installe %@ pour contrôler ta musique depuis Tabbi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@を入手すると、Tabbiから音楽を操作できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi에서 음악을 제어하려면 %@ 앱을 설치하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instale %@ para controlar sua música pelo Tabbi."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установи %@, чтобы управлять музыкой из Tabbi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装 %@，就能在 Tabbi 里控制音乐。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安裝 %@，就能從 Tabbi 控制音樂。"
+          }
+        }
+      }
+    },
+    "In Google Calendar's settings, click your calendar under Settings for my calendars." : {
+      "comment" : "Settings > Connections: a step of the Google Calendar walkthrough. \"Settings for my calendars\" is the section name Google Calendar shows; use its name in each language.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "في إعدادات تقويم Google، انقر تقويمك تحت \"إعدادات التقويمات الخاصة بي\"."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke in den Einstellungen von Google Kalender unter „Einstellungen für meine Kalender“ auf deinen Kalender."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la configuración de Google Calendar, haz clic en tu calendario en \"Configuración de mis calendarios\"."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sa settings ng Google Calendar, i-click ang calendar mo sa ilalim ng Settings for my calendars."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dans les paramètres de Google Agenda, clique sur ton agenda sous « Paramètres de mes agendas »."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Googleカレンダーの設定で、「マイカレンダーの設定」からカレンダーをクリックします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google 캘린더 설정의 '내 캘린더의 설정'에서 캘린더를 클릭하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nas configurações do Google Agenda, clique na sua agenda em \"Configurações das minhas agendas\"."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В настройках Google Календаря нажми на свой календарь в разделе «Настройки моих календарей»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Google 日历的设置中，点击“我的日历的设置”下的日历。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Google 日曆的設定中，按一下「我的日曆設定」下的日曆。"
+          }
+        }
+      }
+    },
+    "Install Tabbi with its installer to get alerts." : {
+      "comment" : "Settings > Connections: what to do in a development copy of Tabbi that can't show notifications.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ثبّت Tabbi باستخدام برنامج التثبيت لتحصل على التنبيهات."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installiere Tabbi mit seinem Installer, um Mitteilungen zu bekommen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instala Tabbi con su instalador para recibir alertas."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-install ang Tabbi gamit ang installer nito para makatanggap ng alerto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installe Tabbi avec son programme d'installation pour recevoir des alertes."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知を受け取るには、インストーラーでTabbiをインストールしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림을 받으려면 설치 프로그램으로 Tabbi를 설치하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instale o Tabbi com o instalador para receber alertas."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установи Tabbi через установщик, чтобы получать уведомления."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用安装程序安装 Tabbi 才能收到提醒。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用安裝程式安裝 Tabbi 才能收到提醒。"
+          }
+        }
+      }
+    },
+    "Is %@ on this PC?" : {
+      "comment" : "Settings > Connections > Something not working?: whether an app is installed. %@ is an app name, such as Anki, Spotify or Claude.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل %@ على هذا الكمبيوتر؟"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ist %@ auf diesem PC?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Está %@ en este PC?"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nasa PC na ito ba ang %@?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ est-il sur ce PC ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このPCに%@はありますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 PC에 %@이(가) 있나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O %@ está neste PC?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ есть на этом ПК?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这台电脑上有 %@ 吗？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這台電腦上有 %@ 嗎？"
+          }
+        }
+      }
+    },
+    "Is a Google calendar in Tabbi?" : {
+      "comment" : "Settings > Connections > Something not working?: an optional check on the Calendar row.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل يوجد تقويم Google في Tabbi؟"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ist ein Google-Kalender in Tabbi?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Hay un calendario de Google en Tabbi?"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "May Google calendar ba sa Tabbi?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un calendrier Google est-il dans Tabbi ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TabbiにGoogleカレンダーはありますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi에 Google 캘린더가 있나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Há um calendário do Google no Tabbi?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В Tabbi есть Google Календарь?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 里有 Google 日历吗？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 裡有 Google 日曆嗎？"
+          }
+        }
+      }
+    },
+    "Loading your calendars" : {
+      "comment" : "Settings > Connections: the Calendar row's headline while its calendar links load for the first time.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ تحميل تقويماتك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Kalender laden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando tus calendarios"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nilo-load ang mga calendar mo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chargement de tes calendriers"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カレンダーを読み込み中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캘린더를 불러오는 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregando seus calendários"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загружаем календари"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在载入你的日历"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在載入你的行事曆"
+          }
+        }
+      }
+    },
+    "Looking for media apps" : {
+      "comment" : "Settings > Connections: the Media apps row while Tabbi asks Windows' media controls.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ البحث عن تطبيقات الوسائط"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche nach Medien-Apps"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando apps de medios"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hinahanap ang mga media app"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche des apps multimédias"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メディアアプリを探しています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미디어 앱을 찾는 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Procurando apps de mídia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ищем медиаприложения"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在查找媒体应用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在尋找媒體 App"
+          }
+        }
+      }
+    },
+    "Media apps" : {
+      "comment" : "Settings > Connections: the row for any app that plays music or video through Windows' media controls.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تطبيقات الوسائط"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medien-Apps"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apps de medios"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mga media app"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apps multimédias"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メディアアプリ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미디어 앱"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apps de mídia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Медиаприложения"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "媒体应用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "媒體 App"
+          }
+        }
+      }
+    },
+    "Media controls are on" : {
+      "comment" : "Settings > Connections: the Media apps row once Windows' media controls answer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عناصر التحكم في الوسائط مفعّلة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mediensteuerung ist an"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controles multimedia activados"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naka-on ang media controls"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Commandes multimédias activées"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メディアコントロールはオンです"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미디어 컨트롤 켜짐"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controles de mídia ativados"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Управление медиа включено"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "媒体控件已打开"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "媒體控制項已開啟"
+          }
+        }
+      }
+    },
+    "Media controls didn't answer" : {
+      "comment" : "Settings > Connections: the Media apps row when Windows' media controls didn't answer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم تستجب عناصر التحكم في الوسائط"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mediensteuerung antwortet nicht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los controles multimedia no respondieron"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi sumagot ang media controls"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les commandes multimédias n'ont pas répondu"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メディアコントロールが応答しません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미디어 컨트롤이 응답하지 않음"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os controles de mídia não responderam"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Управление медиа не отвечает"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "媒体控件没有响应"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "媒體控制項沒有回應"
+          }
+        }
+      }
+    },
+    "No. %@ didn't send a calendar." : {
+      "comment" : "Settings > Connections > Something not working?: the link answered with something that isn't a calendar. %@ is the calendar's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا. لم يُرسل %@ تقويمًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein. %@ hat keinen Kalender geschickt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. %@ no envió un calendario."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi. Walang ipinadalang calendar ang %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non. %@ n'a pas envoyé de calendrier."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ。%@からカレンダーが届きませんでした。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아니요. %@에서 캘린더를 보내지 않았어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. %@ não enviou um calendário."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет. %@ не прислал календарь."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有。%@ 没有发回日历。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有。%@ 沒有傳回行事曆。"
+          }
+        }
+      }
+    },
+    "No. %@ isn't a web address Tabbi can open." : {
+      "comment" : "Settings > Connections > Something not working?: a calendar link that isn't a web address. %@ is the name the user gave the calendar.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا. %@ ليس عنوان ويب يستطيع Tabbi فتحه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein. %@ ist keine Webadresse, die Tabbi öffnen kann."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. %@ no es una dirección web que Tabbi pueda abrir."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi. Ang %@ ay hindi web address na mabubuksan ng Tabbi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non. %@ n'est pas une adresse web que Tabbi peut ouvrir."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ。%@はTabbiが開けるウェブアドレスではありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아니요. %@은(는) Tabbi가 열 수 있는 웹 주소가 아니에요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. %@ não é um endereço web que o Tabbi consiga abrir."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет. %@ не является веб-адресом, который Tabbi может открыть."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有。%@ 不是 Tabbi 能打开的网址。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有。%@ 不是 Tabbi 能打開的網址。"
+          }
+        }
+      }
+    },
+    "No. A setting on this PC blocks them." : {
+      "comment" : "Settings > Connections > Something not working?: a school or work policy blocks notifications.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا. أحد إعدادات هذا الكمبيوتر يمنعها."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein. Eine Einstellung auf diesem PC blockiert sie."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. Un ajuste de este PC las bloquea."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi. May setting sa PC na ito na humaharang dito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non. Un réglage de ce PC les bloque."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ。このPCの設定でブロックされています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아니요. 이 PC의 설정이 막고 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. Um ajuste deste PC bloqueia isso."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет. Их блокирует настройка на этом ПК."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有。这台电脑上的某个设置阻止了它们。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有。這台電腦上的某個設定擋住了它們。"
+          }
+        }
+      }
+    },
+    "No. Get %@ to control your music from Tabbi." : {
+      "comment" : "Settings > Connections > Something not working?: the answer when Spotify isn't installed. %@ is the app name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا. احصل على %@ للتحكم في موسيقاك من Tabbi."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein. Hol dir %@, um deine Musik über Tabbi zu steuern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. Instala %@ para controlar tu música desde Tabbi."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi. I-install ang %@ para makontrol ang music mo mula sa Tabbi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non. Installe %@ pour contrôler ta musique depuis Tabbi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ。%@を入手すると、Tabbiから音楽を操作できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아니요. Tabbi에서 음악을 제어하려면 %@ 앱을 설치하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. Instale %@ para controlar sua música pelo Tabbi."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет. Установи %@, чтобы управлять музыкой из Tabbi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有。安装 %@，就能在 Tabbi 里控制音乐。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有。安裝 %@，就能從 Tabbi 控制音樂。"
+          }
+        }
+      }
+    },
+    "No. Tabbi can't reach %@ right now." : {
+      "comment" : "Settings > Connections > Something not working?: a calendar link that couldn't be loaded. %@ is the calendar's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا. لا يستطيع Tabbi الوصول إلى %@ الآن."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein. Tabbi erreicht %@ gerade nicht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. Tabbi no puede acceder a %@ ahora."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi. Hindi maabot ng Tabbi ang %@ ngayon."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non. Tabbi n'arrive pas à joindre %@ pour l'instant."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ。今は%@に接続できません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아니요. 지금은 Tabbi가 %@에 연결할 수 없어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. O Tabbi não consegue acessar %@ agora."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет. Tabbi сейчас не может достучаться до %@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有。Tabbi 现在连不上 %@。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有。Tabbi 現在連不上 %@。"
+          }
+        }
+      }
+    },
+    "No. They're off for Tabbi in Windows Settings." : {
+      "comment" : "Settings > Connections > Something not working?: notifications are turned off for Tabbi. Name Windows Settings as Windows does.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا. إنها متوقفة لـTabbi في إعدادات Windows."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein. Sie sind in den Windows-Einstellungen für Tabbi aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. Están desactivadas para Tabbi en Configuración de Windows."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi. Naka-off ang mga ito para sa Tabbi sa Windows Settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non. Elles sont désactivées pour Tabbi dans Paramètres Windows."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ。Windowsの設定でTabbiの通知がオフです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아니요. Windows 설정에서 Tabbi 알림이 꺼져 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. Estão desativados para o Tabbi nas Configurações do Windows."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет. В Параметрах Windows они выключены для Tabbi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有。Windows 设置中已为 Tabbi 关闭通知。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有。Windows 設定中已為 Tabbi 關閉通知。"
+          }
+        }
+      }
+    },
+    "No. They're off for every app in Windows Settings." : {
+      "comment" : "Settings > Connections > Something not working?: notifications are turned off for all apps. Name Windows Settings as Windows does.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا. إنها متوقفة لكل التطبيقات في إعدادات Windows."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein. Sie sind in den Windows-Einstellungen für alle Apps aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. Están desactivadas para todas las apps en Configuración de Windows."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi. Naka-off ang mga ito para sa lahat ng app sa Windows Settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non. Elles sont désactivées pour toutes les apps dans Paramètres Windows."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ。Windowsの設定で、すべてのアプリの通知がオフです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아니요. Windows 설정에서 모든 앱의 알림이 꺼져 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. Estão desativados para todos os apps nas Configurações do Windows."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет. В Параметрах Windows они выключены для всех приложений."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有。Windows 设置中已为所有应用关闭通知。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有。Windows 設定中已為所有 App 關閉通知。"
+          }
+        }
+      }
+    },
+    "No. This copy of Tabbi can't show them." : {
+      "comment" : "Settings > Connections > Something not working?: a development copy of Tabbi without an app identity can't show notifications.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا. لا تستطيع هذه النسخة من Tabbi عرضها."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein. Diese Tabbi-Kopie kann sie nicht zeigen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. Esta copia de Tabbi no puede mostrarlas."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi. Hindi ito maipapakita ng kopyang ito ng Tabbi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non. Cette copie de Tabbi ne peut pas les afficher."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ。このTabbiでは表示できません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아니요. 이 Tabbi 사본은 알림을 표시할 수 없어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. Esta cópia do Tabbi não consegue mostrá-los."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет. Эта копия Tabbi не может их показывать."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不能。这份 Tabbi 无法显示通知。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不能。這份 Tabbi 無法顯示通知。"
+          }
+        }
+      }
+    },
+    "No. Windows didn't answer this time." : {
+      "comment" : "Settings > Connections > Something not working?: Windows' media controls didn't answer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا. لم يستجب Windows هذه المرة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein. Windows hat diesmal nicht geantwortet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. Windows no respondió esta vez."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi. Hindi sumagot ang Windows ngayon."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non. Windows n'a pas répondu cette fois."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ。今回はWindowsから応答がありませんでした。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아니요. 이번에는 Windows가 응답하지 않았어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. O Windows não respondeu desta vez."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет. Windows в этот раз не ответила."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有。Windows 这次没有响应。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有。Windows 這次沒有回應。"
+          }
+        }
+      }
+    },
+    "No. Windows doesn't let apps do that, so it's up to you in Settings." : {
+      "comment" : "Settings > Connections > Something not working?: why Tabbi can't switch Do not disturb on Windows. Name Settings as Windows does.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا. لا يسمح Windows للتطبيقات بذلك، فالأمر بيدك في الإعدادات."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein. Windows erlaubt das Apps nicht, also liegt es bei dir in den Einstellungen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. Windows no lo permite a las apps, así que depende de ti en Configuración."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi. Hindi ito pinapayagan ng Windows sa mga app, kaya ikaw ang bahala sa Settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non. Windows ne le permet pas aux apps, donc c'est à toi de le faire dans Paramètres."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ。Windowsではアプリから操作できないので、設定からご自身で切り替えてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아니요. Windows가 앱에 허용하지 않아서, 설정에서 직접 하셔야 해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. O Windows não permite isso para apps, então fica com você nas Configurações."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет. Windows не дает приложениям это делать, так что это делается в Параметрах."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不能。Windows 不允许应用这样做，所以要你自己在设置中打开。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不能。Windows 不允許 App 這樣做，所以要你自己在設定中開啟。"
+          }
+        }
+      }
+    },
+    "Not available on Windows" : {
+      "comment" : "Settings > Connections: the Do not disturb row's headline. Windows has no way for apps to switch Do not disturb.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير متاح على Windows"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unter Windows nicht verfügbar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No disponible en Windows"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi available sa Windows"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indisponible sous Windows"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windowsでは利用できません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows에서는 사용할 수 없음"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indisponível no Windows"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Недоступно в Windows"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Windows 上不可用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Windows 上無法使用"
+          }
+        }
+      }
+    },
+    "Not on Windows" : {
+      "comment" : "Settings > Connections: the status beside a row Windows can't support (Do not disturb).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير متاح على Windows"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht unter Windows"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No en Windows"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wala sa Windows"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas sous Windows"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windowsでは使えません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows에서 지원 안 됨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não no Windows"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет в Windows"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 不支持"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 不支援"
+          }
+        }
+      }
+    },
+    "Not yet. Copy your calendar's link from Google, Outlook or iCloud." : {
+      "comment" : "Settings > Connections > Something not working?: the answer when no calendar link was added.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ليس بعد. انسخ رابط تقويمك من Google أو Outlook أو iCloud."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch nicht. Kopiere den Link deines Kalenders aus Google, Outlook oder iCloud."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todavía no. Copia el enlace de tu calendario desde Google, Outlook o iCloud."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi pa. Kopyahin ang link ng calendar mo mula sa Google, Outlook o iCloud."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas encore. Copie le lien de ton calendrier depuis Google, Outlook ou iCloud."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まだです。Google、Outlook、iCloudからカレンダーのリンクをコピーしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직이요. Google, Outlook, iCloud에서 캘린더 링크를 복사하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não. Copie o link do seu calendário no Google, Outlook ou iCloud."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Еще нет. Скопируй ссылку на календарь из Google, Outlook или iCloud."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还没有。从 Google、Outlook 或 iCloud 复制日历链接。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "還沒有。從 Google、Outlook 或 iCloud 拷貝行事曆連結。"
+          }
+        }
+      }
+    },
+    "Notifications are off for every app. Turn them on in Windows Settings." : {
+      "comment" : "Settings > Connections: the Alerts row when notifications are off for all apps. Name Windows Settings as Windows does.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإشعارات متوقفة لكل التطبيقات. شغّلها في إعدادات Windows."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benachrichtigungen sind für alle Apps aus. Schalte sie in den Windows-Einstellungen ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las notificaciones están desactivadas para todas las apps. Actívalas en Configuración de Windows."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naka-off ang notifications para sa lahat ng app. I-on ito sa Windows Settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notifications sont désactivées pour toutes les apps. Active-les dans Paramètres Windows."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのアプリの通知がオフです。Windowsの設定でオンにしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모든 앱의 알림이 꺼져 있어요. Windows 설정에서 켜 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As notificações estão desativadas para todos os apps. Ative nas Configurações do Windows."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уведомления выключены для всех приложений. Включи их в Параметрах Windows."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有应用的通知都已关闭。请在 Windows 设置中打开。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有 App 的通知都已關閉。請在 Windows 設定中開啟。"
+          }
+        }
+      }
+    },
+    "Open Google Calendar" : {
+      "comment" : "Settings > Connections: the button that opens Google Calendar's settings in the browser. Use Google Calendar's name in each language.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح تقويم Google"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Kalender öffnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Google Calendar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buksan ang Google Calendar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir Google Agenda"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Googleカレンダーを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google 캘린더 열기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Google Agenda"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть Google Календарь"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 Google 日历"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打開 Google 日曆"
+          }
+        }
+      }
+    },
     "Open Tabbi" : {
       "comment" : "The tray icon's menu: opens the island panel. Tabbi is the product name.",
       "extractionState" : "manual",
@@ -285,6 +3381,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟 Tabbi"
+          }
+        }
+      }
+    },
+    "Play, pause and skip songs from Tabbi." : {
+      "comment" : "Settings > Connections: the Spotify row once it works.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغّل الأغاني وأوقفها وتخطَّها من Tabbi."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Songs über Tabbi abspielen, pausieren und überspringen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproduce, pausa y salta canciones desde Tabbi."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mag-play, mag-pause at mag-skip ng kanta mula sa Tabbi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lance, mets en pause et passe des morceaux depuis Tabbi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiから再生、一時停止、スキップができます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi에서 노래를 재생, 일시정지, 건너뛸 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque, pause e pule músicas pelo Tabbi."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включай, ставь на паузу и переключай песни из Tabbi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Tabbi 里播放、暂停和切歌。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從 Tabbi 播放、暫停和跳過歌曲。"
           }
         }
       }
@@ -433,6 +3601,510 @@
         }
       }
     },
+    "Scroll to Integrate calendar and copy the Secret address in iCal format." : {
+      "comment" : "Settings > Connections: a step of the Google Calendar walkthrough. \"Integrate calendar\" and \"Secret address in iCal format\" are Google Calendar's labels; use its names in each language.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مرّر إلى \"دمج التقويم\" وانسخ \"العنوان السري بتنسيق iCal\"."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scrolle zu „Kalender integrieren“ und kopiere die „Privatadresse im iCal-Format“."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desplázate a \"Integrar el calendario\" y copia la \"Dirección secreta en formato iCal\"."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mag-scroll sa Integrate calendar at kopyahin ang Secret address in iCal format."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fais défiler jusqu'à « Intégrer l'agenda » et copie l'« Adresse secrète au format iCal »."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「カレンダーの統合」までスクロールし、「iCal形式の非公開URL」をコピーします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'캘린더 통합'으로 스크롤해 'iCal 형식의 비공개 주소'를 복사하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Role até \"Integrar agenda\" e copie o \"Endereço secreto no formato iCal\"."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прокрути до раздела «Интеграция календаря» и скопируй «Закрытый адрес в формате iCal»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "滚动到“集成日历”，复制“iCal 格式的私密地址”。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捲動到「整合日曆」，拷貝「iCal 格式的私人網址」。"
+          }
+        }
+      }
+    },
+    "See today's events in Tabbi." : {
+      "comment" : "Settings > Connections: what the Calendar row unlocks. Keep it short; it sits beside a button.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اعرض أحداث اليوم في Tabbi."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sieh die heutigen Termine in Tabbi."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mira los eventos de hoy en Tabbi."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tingnan ang mga event ngayon sa Tabbi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vois les événements du jour dans Tabbi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日の予定をTabbiで確認。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 일정을 Tabbi에서 확인해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veja os eventos de hoje no Tabbi."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "События дня прямо в Tabbi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Tabbi 里查看今天的日程。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Tabbi 裡查看今天的行程。"
+          }
+        }
+      }
+    },
+    "Tabbi can't reach %@" : {
+      "comment" : "Settings > Connections: the Calendar row's headline when a calendar link couldn't be loaded. %@ is the calendar's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يستطيع Tabbi الوصول إلى %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi erreicht %@ nicht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi no puede acceder a %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi maabot ng Tabbi ang %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi n'arrive pas à joindre %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@に接続できません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi가 %@에 연결할 수 없어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi não consegue acessar %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi не может достучаться до %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 连不上 %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 連不上 %@"
+          }
+        }
+      }
+    },
+    "Tabbi follows whatever app is playing." : {
+      "comment" : "Settings > Connections: the Media apps row once it works.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتابع Tabbi أي تطبيق يُشغِّل الآن."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi folgt jeder App, die gerade spielt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi sigue a la app que esté sonando."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinusundan ng Tabbi kung anumang app ang tumutugtog."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi suit l'app qui joue, quelle qu'elle soit."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再生中のアプリにTabbiが合わせます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi가 재생 중인 앱을 따라가요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi acompanha o app que estiver tocando."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi следит за любым играющим приложением."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 会跟随正在播放的任何应用。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 會跟著正在播放的任何 App。"
+          }
+        }
+      }
+    },
+    "Tabbi reads a calendar from its private link. Copy your Google Calendar's link once and its events show up." : {
+      "comment" : "Settings > Connections: the intro of the Add your Google Calendar walkthrough on Windows.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يقرأ Tabbi التقويم من رابطه الخاص. انسخ رابط تقويم Google مرة واحدة وستظهر أحداثه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi liest einen Kalender über seinen privaten Link. Kopiere einmal den Link deines Google-Kalenders, dann erscheinen seine Termine."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi lee un calendario desde su enlace privado. Copia una vez el enlace de tu Google Calendar y aparecerán sus eventos."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Binabasa ng Tabbi ang calendar mula sa private link nito. Kopyahin nang isang beses ang link ng Google Calendar mo at lalabas ang mga event nito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi lit un calendrier depuis son lien privé. Copie une fois le lien de ton Google Agenda et ses événements s'affichent."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiはカレンダーを非公開リンクから読み込みます。Googleカレンダーのリンクを一度コピーすれば予定が表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi는 비공개 링크로 캘린더를 읽어요. Google 캘린더 링크를 한 번 복사하면 일정이 표시돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi lê um calendário pelo link privado. Copie uma vez o link do seu Google Agenda e os eventos aparecem."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi читает календарь по его закрытой ссылке. Скопируй ссылку на Google Календарь один раз, и события появятся."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 通过私密链接读取日历。复制一次 Google 日历的链接，日程就会显示出来。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 透過私人連結讀取行事曆。拷貝一次 Google 日曆的連結，行程就會顯示出來。"
+          }
+        }
+      }
+    },
+    "This PC blocks alerts" : {
+      "comment" : "Settings > Connections: the Alerts row when a school or work policy blocks notifications.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هذا الكمبيوتر يحظر التنبيهات"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser PC sperrt Mitteilungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este PC bloquea las alertas"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bina-block ng PC na ito ang mga alerto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce PC bloque les alertes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このPCは通知をブロックしています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 PC는 알림을 막아요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este PC bloqueia os alertas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ПК блокирует уведомления"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这台电脑阻止了提醒"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這台電腦封鎖了提醒"
+          }
+        }
+      }
+    },
+    "This copy can't show alerts" : {
+      "comment" : "Settings > Connections: the Alerts row in a development copy of Tabbi without an app identity.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هذه النسخة لا تعرض التنبيهات"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Kopie zeigt keine Mitteilungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta copia no muestra alertas"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi makakapagpakita ng alerto ang kopyang ito"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette copie n'affiche pas d'alertes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このコピーでは通知を表示できません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 사본은 알림을 표시할 수 없음"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta cópia não mostra alertas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эта копия не показывает уведомления"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这份副本无法显示提醒"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這份副本無法顯示提醒"
+          }
+        }
+      }
+    },
     "This tab arrives in a later Windows build." : {
       "comment" : "A tab's placeholder on Windows when its module is not ported yet. Use the same word for tab as the tab bar does.",
       "extractionState" : "manual",
@@ -505,6 +4177,150 @@
         }
       }
     },
+    "Turn it on yourself while you focus." : {
+      "comment" : "Settings > Connections: the Do not disturb row's line on Windows, where apps can't switch it; the user turns it on.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغّله بنفسك أثناء التركيز."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schalte es beim Fokussieren selbst ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actívalo tú mientras te concentras."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-on mo ito habang nagfo-focus."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active-le toi-même pendant ta concentration."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "集中するときは自分でオンに。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "집중할 때 직접 켜 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ative você mesmo enquanto foca."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включай сам(а), когда сосредотачиваешься."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "专注时请自己打开。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "專注時請自己開啟。"
+          }
+        }
+      }
+    },
+    "Turn on notifications for Tabbi in Windows Settings." : {
+      "comment" : "Settings > Connections: the Alerts row when notifications are off for Tabbi. Name Windows Settings as Windows does.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغّل الإشعارات لـTabbi في إعدادات Windows."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schalte in den Windows-Einstellungen Benachrichtigungen für Tabbi ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa las notificaciones de Tabbi en Configuración de Windows."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-on ang notifications para sa Tabbi sa Windows Settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active les notifications de Tabbi dans Paramètres Windows."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windowsの設定で、Tabbiの通知をオンにしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 설정에서 Tabbi 알림을 켜 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ative as notificações do Tabbi nas Configurações do Windows."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включи уведомления для Tabbi в Параметрах Windows."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Windows 设置中为 Tabbi 打开通知。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Windows 設定中為 Tabbi 開啟通知。"
+          }
+        }
+      }
+    },
     "Type shortcut" : {
       "comment" : "The shortcut recorder field while it waits for a key combination.",
       "extractionState" : "manual",
@@ -573,6 +4389,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "輸入快速鍵"
+          }
+        }
+      }
+    },
+    "Windows doesn't let apps turn on Do not disturb. Turn it on yourself in Settings when you focus." : {
+      "comment" : "Settings > Connections: the Do not disturb row's sentence. Use Windows' name for Do not disturb and for Settings.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يسمح Windows للتطبيقات بتشغيل عدم الإزعاج. شغّله بنفسك من الإعدادات عند التركيز."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows lässt Apps „Nicht stören“ nicht einschalten. Schalte es beim Fokussieren selbst in den Einstellungen ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows no deja que las apps activen No molestar. Actívalo tú en Configuración cuando te concentres."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi pinapayagan ng Windows ang mga app na i-on ang Do not disturb. I-on mo ito sa Settings kapag nagfo-focus ka."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows ne laisse pas les apps activer Ne pas déranger. Active-le toi-même dans Paramètres quand tu te concentres."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windowsでは、アプリが応答不可をオンにできません。集中するときは設定から自分でオンにしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows는 앱이 방해 금지를 켜도록 허용하지 않아요. 집중할 때 설정에서 직접 켜 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Windows não deixa apps ativarem o Não incomodar. Ative você mesmo nas Configurações quando for focar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows не дает приложениям включать «Не беспокоить». Включай сам(а) в Параметрах, когда сосредотачиваешься."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 不允许应用打开请勿打扰。专注时请自己在设置中打开。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 不允許 App 開啟勿干擾。專注時請自己在設定中開啟。"
+          }
+        }
+      }
+    },
+    "Windows may still be starting them. Check again in a moment." : {
+      "comment" : "Settings > Connections: what to do when Windows' media controls didn't answer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ربما لا يزال Windows يشغّلها. تحقّق مرة أخرى بعد قليل."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows startet sie vielleicht noch. Prüfe es gleich noch mal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puede que Windows aún los esté iniciando. Vuelve a comprobar en un momento."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baka sinisimulan pa ito ng Windows. I-check ulit mamaya."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows les démarre peut-être encore. Revérifie dans un instant."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windowsがまだ起動中かもしれません。少ししてからもう一度確認してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows가 아직 시작하는 중일 수 있어요. 잠시 후 다시 확인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Windows ainda pode estar iniciando. Verifique de novo daqui a pouco."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Возможно, Windows еще запускает его. Проверь чуть позже."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 可能还在启动它们。稍后再检查一次。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 可能還在啟動它們。稍後再檢查一次。"
           }
         }
       }
