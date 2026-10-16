@@ -135,6 +135,20 @@ export interface Host {
   autostartIsEnabled(): Promise<boolean>;
 
   aiPaths(): Promise<AiPaths>;
+
+  /*
+   * The AI command line tools' own usage logs, read-only: every `.jsonl`
+   * under `%USERPROFILE%\.claude\projects` (Claude Code's transcripts) or
+   * `%USERPROFILE%\.codex\sessions` (Codex's rollouts), hidden files skipped.
+   * Nothing outside those two folders can be listed or read.
+   */
+  aiLogs(tool: AiLogTool): Promise<AiLogFile[]>;
+  /*
+   * The bytes of one listed log from `offset` to its end, capped at
+   * AI_LOG_READ_CAP; the caller reads the rest on its next scan. Rejects with
+   * "blocked" for a path outside the tool's folder.
+   */
+  aiLogRead(tool: AiLogTool, path: string, offset: number): Promise<Uint8Array>;
 }
 
 /*
@@ -276,6 +290,27 @@ export interface HttpStream {
   /* Stops the stream, which then ends with a "cancelled" error; false if it had already ended. */
   cancel(): Promise<boolean>;
 }
+
+/* Whose logs: Claude Code's transcripts or Codex's session rollouts. */
+export type AiLogTool = "claude" | "codex";
+
+/* One log file the host found (src-tauri/src/ai_paths.rs `LogFile`). */
+export interface AiLogFile {
+  /* The full path, which aiLogRead takes back. */
+  readonly path: string;
+  readonly size: number;
+  /*
+   * Changes when the file is replaced (its creation time in 100 ns ticks),
+   * as a decimal string, so the usage scanner can tell a rewritten file from
+   * one that grew.
+   */
+  readonly identity: string;
+  /* Last modified, in seconds since 1970. */
+  readonly modified: number;
+}
+
+/* The most bytes one aiLogRead returns (ai_paths.rs `READ_CAP`). */
+export const AI_LOG_READ_CAP = 16 * 1024 * 1024;
 
 /* Where the AI command line tools and their logs are; null when not found. */
 export interface AiPaths {

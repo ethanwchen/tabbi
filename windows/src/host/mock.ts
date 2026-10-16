@@ -26,6 +26,8 @@ export interface MockHostOptions {
   readonly bus?: MockWindowBus;
   /* The section settingsReady reports. */
   readonly settingsSection?: string | null;
+  /* The modified time every seeded AI log reports, in seconds since 1970. */
+  readonly aiLogModified?: number;
 }
 
 /* What a mock host starts with: the default hotkey registered, live data, no development servers. */
@@ -50,6 +52,8 @@ export interface MockHost extends Host {
   /* Documents by "area:name", for tests to seed and inspect. */
   readonly documents: Map<string, string>;
   readonly credentials: Map<CredentialName, string>;
+  /* AI logs by "tool:path", for tests to seed; aiLogs lists them and aiLogRead reads their UTF-8 bytes. */
+  readonly aiLogFiles: Map<string, string>;
 }
 
 const RESERVED = /^(con|prn|aux|nul|com\d|lpt\d)$/i;
@@ -99,6 +103,9 @@ export function mockHost(startup: Startup = MOCK_STARTUP, options: MockHostOptio
   const credentials = new Map<CredentialName, string>();
   let media: MediaSnapshot | null = null;
   let autostart = false;
+  const aiLogFiles = new Map<string, string>();
+  const aiLogModified = options.aiLogModified ?? 0;
+  const encoder = new TextEncoder();
 
   const log = (name: string, args: unknown[]) => calls.push({ name, args });
   const record = (name: string) => (...args: unknown[]) => {
@@ -241,5 +248,21 @@ export function mockHost(startup: Startup = MOCK_STARTUP, options: MockHostOptio
     autostartIsEnabled: () => answer("autostartIsEnabled", [], autostart),
 
     aiPaths: () => answer("aiPaths", [], { claudeHome: null, codexHome: null, claude: null, codex: null, gemini: null }),
+
+    aiLogFiles,
+    aiLogs: (tool) =>
+      answer(
+        "aiLogs",
+        [tool],
+        [...aiLogFiles.entries()]
+          .filter(([k]) => k.startsWith(`${tool}:`))
+          .map(([k, text]) => ({ path: k.slice(tool.length + 1), size: encoder.encode(text).length, identity: "1", modified: aiLogModified }))
+          .sort((a, b) => (a.path < b.path ? -1 : 1)),
+      ),
+    aiLogRead(tool, path, offset) {
+      const text = aiLogFiles.get(`${tool}:${path}`);
+      if (text === undefined) return rejection("blocked", `${path} is not a log of ${tool}`);
+      return answer("aiLogRead", [tool, path, offset], encoder.encode(text).subarray(offset));
+    },
   };
 }
