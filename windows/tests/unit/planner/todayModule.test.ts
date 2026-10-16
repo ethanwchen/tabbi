@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { MODULE_IDS } from "../../../src/core/modules/moduleId";
 import { DEMO_RUN_MODE } from "../../../src/core/modules/runMode";
 import { MODULE_LIST } from "../../../src/modules/moduleList";
+import { ClosetModule } from "../../../src/modules/closet/closetModule";
+import { FocusModule } from "../../../src/modules/focus/focusModule";
 import { TodayModule } from "../../../src/modules/planner/todayModule";
 import { ScheduleModule } from "../../../src/modules/schedule/scheduleModule";
 import { ModuleContext } from "../../../src/app/context";
@@ -69,6 +71,14 @@ describe("Today module", () => {
     await new Promise((resolve) => setTimeout(resolve, 10));
     expect(host.calls.some((call) => call.name === "fetchCalendar" && call.args[0] === "https://example.org/work.ics")).toBe(true);
     expect(today.store.upNext.state.hasSubscriptions).toBe(true);
+    app.dispose();
+  });
+
+  it("offers Options in Settings > Tabs for Today, Focus and the pet, Today's being Focus's pane", async () => {
+    const { app } = await testApp({ moduleTypes: MODULE_LIST, runMode: DEMO_RUN_MODE }, MORNING);
+    expect(app.modules.instance(TodayModule)?.SettingsPane).toBeDefined();
+    expect(app.modules.instance(FocusModule)?.SettingsPane).toBeDefined();
+    expect(app.modules.instance(ClosetModule)?.SettingsPane).toBeDefined();
     app.dispose();
   });
 

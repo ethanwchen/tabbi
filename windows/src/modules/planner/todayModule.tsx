@@ -19,6 +19,7 @@ import type { UpcomingEvent } from "../../core/planner/upcomingEvent";
 import type { FocusTimer } from "../../core/focus/focusTimer";
 import { settingsCleanedName } from "../../core/settings/appSettings";
 import { TICKER_KINDS } from "../../core/ticker/tickerKind";
+import { focusMode } from "../focus/focusServices";
 import { calendarSource, isCalendarSubscriptionsChange, reloadCalendarSubscriptions } from "./calendarServices";
 import { DayPlanStore } from "./dayPlanStore";
 import { DayReviewStore } from "./dayReviewStore";
@@ -31,6 +32,7 @@ import "./planner.css";
 /* The views load on first use; the store and descriptor stay eager. */
 const TodayCalendarSetupView = lazyView(() => import("./TodayCalendarSetupView"), "TodayCalendarSetupView");
 const TodayPanel = lazyView(() => import("./TodayPanel"), "TodayPanel");
+const FocusSettingsPane = lazyView(() => import("../focus/focusSettingsPane"), "FocusSettingsPane");
 
 /*
  * Port of TodayModule: the to-do list, what is up next and a day plan.
@@ -146,6 +148,11 @@ export const TodayModule = defineModule(
       return <TodayPanel context={context} store={store} focus={focus} openModule={openModule} openConnections={openConnections} eveningOverride={eveningOverride} />;
     }
 
+    /* Port of TodayModule.makeSettingsPane: Today runs the Pomodoro, so its Options are Focus's. */
+    function SettingsPane() {
+      return <FocusSettingsPane controller={focusMode(context)} />;
+    }
+
     /** The checklist, today's calendar events, and the focus timer. Kept while none of the three changed, so the hub hears real changes only. */
     let lastProvision: { day: PlannerDay; events: readonly UpcomingEvent[]; timer: FocusTimer; provision: ModuleProvision } | undefined;
     const provision = derived([store, upNext, focus.service], (): ModuleProvision => {
@@ -167,6 +174,7 @@ export const TodayModule = defineModule(
     return {
       store,
       Panel,
+      SettingsPane,
       provision,
       setupView: (step) =>
         step.id === ONBOARDING_SETUP_STEPS.calendar.id ? () => <TodayCalendarSetupView context={context} store={store} openConnections={openConnections} /> : undefined,
