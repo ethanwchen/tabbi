@@ -43,8 +43,13 @@ function answering(): ScriptedAnkiTransport {
   });
 }
 
+/**
+ * The app with only the Anki module. The polling test drives the closed
+ * preview watch by hand, so no other module (whose items make the ticker
+ * rewrite the watch) may run beside it.
+ */
 async function ankiApp(options: { transport?: ScriptedAnkiTransport; demo?: boolean } = {}): Promise<TestApp & { store: AnkiStore; context: ModuleContext }> {
-  const made = await testApp({ moduleTypes: MODULE_LIST, ...(options.demo ? { runMode: { isDemo: true, isSnapshot: false } } : {}) }, NOW);
+  const made = await testApp({ moduleTypes: [AnkiModule], ...(options.demo ? { runMode: { isDemo: true, isSnapshot: false } } : {}) }, NOW);
   apps.push(made);
   const context = new ModuleContext("anki", made.app.environment);
   const client = options.transport === undefined ? undefined : new AnkiConnectClient({ transport: options.transport.transport });
