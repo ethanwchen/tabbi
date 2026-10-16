@@ -437,8 +437,9 @@ fn settings_open(app: AppHandle, section: Option<String>) {
     open_settings(&app, section);
 }
 
-/// The Settings window calls this once it has drawn its first frame; it is
-/// shown then, so it never flashes an empty page.
+/// The Settings window calls this as its page starts, and it is shown then:
+/// its dark background color keeps it from flashing white before the first
+/// frame, and the page needs the startup values to build its stores.
 #[tauri::command]
 fn settings_ready(app: AppHandle) -> SettingsLaunch {
     if let Some(window) = app.get_webview_window(SETTINGS) {

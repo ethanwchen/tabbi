@@ -17,6 +17,9 @@ import type {
 /* Tells this window's own broadcasts apart from the other windows'. */
 const WINDOW_ID = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 
+/* Tauri event names allow letters, digits and - / : _ only. */
+const eventName = (topic: string) => `tabbi:${topic.replace(/[^A-Za-z0-9/:_-]/g, "_")}`;
+
 interface Broadcast {
   readonly sender: string;
   readonly payload: unknown;
@@ -57,9 +60,9 @@ export function tauriHost(): Host {
     setCanvas: (width, height) => invoke("island_set_canvas", { width, height }),
     openSettings: (section) => invoke("settings_open", { section }),
     settingsReady: () => invoke<SettingsLaunch>("settings_ready"),
-    broadcast: (topic, payload) => emit(`tabbi:${topic}`, { sender: WINDOW_ID, payload } satisfies Broadcast),
+    broadcast: (topic, payload) => emit(eventName(topic), { sender: WINDOW_ID, payload } satisfies Broadcast),
     onBroadcast: (topic, listener) =>
-      on<Broadcast>(`tabbi:${topic}`, (message) => {
+      on<Broadcast>(eventName(topic), (message) => {
         if (message.sender !== WINDOW_ID) listener(message.payload);
       }),
 

@@ -190,6 +190,6 @@ export class ModuleContext {
    */
   channel(topic: string): WindowChannel {
     if (this.isSnapshot) return quietChannel;
-    return hostChannel(this.environment.host, `module.${this.id}.${topic}`);
+    return hostChannel(this.environment.host, `module/${this.id}/${topic}`);
   }
 }
