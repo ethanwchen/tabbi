@@ -27,8 +27,10 @@ import { Pill } from "../../ui/kit/Pill";
 import { RowsThatFit } from "../../ui/kit/RowsThatFit";
 import { StatusMessage } from "../../ui/kit/StatusMessage";
 import { Tooltip } from "../../ui/kit/Tooltip";
-import { useKit } from "../../ui/kit/context";
+import { useKit, useTheme } from "../../ui/kit/context";
+import { accentVariables } from "../../ui/kit/tokens";
 import { useElementWidth } from "../../ui/kit/useElementWidth";
+import type { ModuleAccent } from "../../core/themes/themeColor";
 import type { AnkiOpenNotice, AnkiOpening, AnkiStore } from "./ankiStore";
 import "./anki.css";
 
@@ -649,8 +651,11 @@ function CopyCodeButton({ secondary = false }: { readonly secondary?: boolean })
  * setup step that is missing is fixed right here. Once AnkiConnect answers
  * it confirms the connection with today's due cards as the tab will show them.
  */
-export function AnkiConnectSetupView({ store }: { readonly store: AnkiStore }) {
+export function AnkiConnectSetupView({ store, accent }: { readonly store: AnkiStore; readonly accent: ModuleAccent }) {
   const state = useStore(store);
+  const theme = useTheme();
+  /* The takeover body carries no module accent; the step draws in Anki's. */
+  const style = accentVariables(theme, accent) as CSSProperties;
   useEffect(() => {
     /* Visible like the panel, so it checks again while the user sets up. */
     store.panelDidAppear();
@@ -658,14 +663,17 @@ export function AnkiConnectSetupView({ store }: { readonly store: AnkiStore }) {
   }, [store]);
   if (state.summary !== undefined && keepsSummary(state.connection.kind)) {
     return (
-      <div className="anki-connected">
+      <div className="anki-connected" style={style}>
         <DueCard summary={state.summary} style={{ width: DUE_CARD_WIDTH, flex: "none" }} />
         <AnkiConnectedCard summary={state.summary} />
       </div>
     );
   }
-  if (state.connection.kind === "checking") return <AnkiLoadingView />;
-  return <AnkiSetupView store={store} compact />;
+  return (
+    <div className="anki-setup-step" style={style}>
+      {state.connection.kind === "checking" ? <AnkiLoadingView /> : <AnkiSetupView store={store} compact />}
+    </div>
+  );
 }
 
 /** What the connection gives: where the due cards show up from now on. */

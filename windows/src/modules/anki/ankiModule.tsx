@@ -45,7 +45,7 @@ export const AnkiModule = defineModule(
       return <AnkiPanel store={store} />;
     }
     function SetupView() {
-      return <AnkiConnectSetupView store={store} />;
+      return <AnkiConnectSetupView store={store} accent={ANKI_DESCRIPTOR.accent} />;
     }
     return {
       store,

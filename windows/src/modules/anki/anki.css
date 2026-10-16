@@ -137,7 +137,7 @@
   flex: 1;
   min-width: 0;
 }
-.anki-deck-star {
+.anki-deck .anki-deck-star {
   display: none;
   flex: none;
 }
@@ -147,11 +147,12 @@
 }
 .anki-star {
   color: var(--tertiary-text);
+  background: transparent;
 }
 .anki-star:hover {
   color: var(--primary-text);
 }
-.anki-deck-play {
+.anki-deck .anki-deck-play {
   display: none;
   flex: none;
   color: var(--accent);
@@ -309,6 +310,12 @@
 .anki-setup-hint {
   flex: 1;
   min-width: 0;
+}
+
+/* Onboarding's step */
+.anki-setup-step {
+  width: 100%;
+  height: 100%;
 }
 
 /* Onboarding's connected pair */
