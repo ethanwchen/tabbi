@@ -123,9 +123,11 @@ function CoachOverlay({ input, frame }: { input: CoachOverlayInput; frame: Close
     if (pose === undefined) return null;
     const petFrame = drawn(scene.clips.clip(pose.animation).frame(pose.elapsed), date, reduceMotion);
     return (
-      <div className="coach-overlay" style={{ clipPath: `inset(${VIRTUAL_NOTCH.height}px 0 0 0)` }}>
-        <div className="coach-pet" style={{ left: edge - GLANCE_INSET - COACH_PET_SIDE, top: VIRTUAL_NOTCH.height }} role="img" aria-label={scene.profile.name}>
-          <PetSprite canvas={petFrame.canvas} palette={scene.profile.palette} pixelSize={COACH_PIXEL_SIZE} />
+      <div className="coach-overlay">
+        <div className="coach-pet-track" style={{ clipPath: `inset(${VIRTUAL_NOTCH.height}px 0 0 0)` }}>
+          <div className="coach-pet" style={{ left: edge - GLANCE_INSET - COACH_PET_SIDE, top: VIRTUAL_NOTCH.height }} role="img" aria-label={scene.profile.name}>
+            <PetSprite canvas={petFrame.canvas} palette={scene.profile.palette} pixelSize={COACH_PIXEL_SIZE} />
+          </div>
         </div>
       </div>
     );
@@ -159,9 +161,12 @@ function CoachOverlay({ input, frame }: { input: CoachOverlayInput; frame: Close
   const bubbleLeft = Math.max(0, Math.min(edge + stroll.distance - COACH_PET_SIDE, frame.canvas.width - 8 - COACH_BUBBLE_WIDTH));
   const tailX = edge + stroll.distance - COACH_PET_SIDE / 2 - bubbleLeft;
   return (
-    <div className="coach-overlay" style={{ clipPath: `inset(0 0 0 ${edge}px)` }}>
-      <div className="coach-pet" style={{ left: petX, top: petTop, transform: mirrored ? "scaleX(-1)" : undefined }} role="img" aria-label={scene.profile.name}>
-        <PetSprite canvas={petFrame.canvas} palette={scene.profile.palette} pixelSize={COACH_PIXEL_SIZE} />
+    <div className="coach-overlay">
+      {/* The pet emerges from under the pill: its track is clipped at the pill's edge, the bubble below is not. */}
+      <div className="coach-pet-track" style={{ clipPath: `inset(0 0 0 ${edge}px)` }}>
+        <div className="coach-pet" style={{ left: petX, top: petTop, transform: mirrored ? "scaleX(-1)" : undefined }} role="img" aria-label={scene.profile.name}>
+          <PetSprite canvas={petFrame.canvas} palette={scene.profile.palette} pixelSize={COACH_PIXEL_SIZE} />
+        </div>
       </div>
       {showsBubble && (
         <PetCoachBubble
@@ -202,6 +207,7 @@ function PetCoachBubble({ line, showsWisdom, animated, style, onReply, onHover }
     <div
       className="coach-bubble"
       data-clickable={dismissesOnClick || undefined}
+      dir={typeof document === "undefined" ? undefined : document.documentElement.dir || undefined}
       style={style}
       role="group"
       onClick={dismissesOnClick ? () => onReply("thanks") : undefined}
@@ -211,7 +217,7 @@ function PetCoachBubble({ line, showsWisdom, animated, style, onReply, onHover }
       <svg className="coach-bubble-tail" width="14" height="8" viewBox="0 0 14 8" aria-hidden="true">
         <path d="M0 8 L7 0.5 L14 8 Z" />
       </svg>
-      {line.kind === "nudge" && <div className="kit-body-emphasis coach-nudge-text">{coachMessageText(line.nudge.message)}</div>}
+      {line.kind === "nudge" && <div className="kit-body-emphasis coach-nudge-text kit-user-text">{coachMessageText(line.nudge.message)}</div>}
       {line.kind === "celebration" &&
         (showsWisdom && wisdom !== undefined ? (
           <PetWisdomText line={wisdom} />
@@ -254,7 +260,7 @@ function PetCelebrationText({ award, progress, gift, animated }: { award: PetStu
   return (
     <div className="coach-celebration" role="group">
       <div className="coach-celebration-head">
-        <span className="kit-body-emphasis coach-headline">{awardHeadline(award)}</span>
+        <span className="kit-body-emphasis coach-headline kit-user-text">{awardHeadline(award)}</span>
         <Tooltip text={tr("Points earned for this session")}>
           <span className="coach-points">
             <Icon id="star.fill" size={8} />
@@ -311,7 +317,7 @@ function PetWisdomText({ line }: { line: CatWisdomLine }) {
           <Icon id="sparkle" size={8} className="coach-wisdom-sparkle" />
           <span>{tr("Cat wisdom")}</span>
         </span>
-        <span className="kit-body-emphasis coach-wisdom-text">{wisdomDisplayText(line)}</span>
+        <span className="kit-body-emphasis coach-wisdom-text kit-user-text">{wisdomDisplayText(line)}</span>
       </div>
     </Tooltip>
   );

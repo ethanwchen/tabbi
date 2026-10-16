@@ -8,7 +8,7 @@
  * footer says how to earn the hovered item.
  */
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useStore } from "../../app/useStore";
 import { PetCloset, stateIsOwned, type PetClosetItemState } from "../../core/closet/petCloset";
 import { howToEarn, limitedEditionOf, limitedProgressFraction, type PetLimitedProgress } from "../../core/closet/petLimited";
@@ -38,7 +38,6 @@ export function ClosetLimited({ store }: { store: ClosetStore }) {
   const timeZone = store.calendar.timeZone;
   const seasonNow = store.seasonNow;
   const shelves = SeasonalEventCatalog.bundled.limitedShelves(seasonNow, timeZone);
-  useEffect(() => () => store.tryOn(undefined), [store]);
 
   const hover = (item: PetItem, inside: boolean) => {
     const next = inside ? item : hovered === item ? undefined : hovered;

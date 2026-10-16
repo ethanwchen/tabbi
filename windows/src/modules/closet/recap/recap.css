@@ -5,7 +5,6 @@
  */
 
 .recap-card {
-  --recap-accent: var(--accent);
   display: flex;
   gap: 8px;
   width: 100%;
@@ -34,7 +33,7 @@
   place-items: center;
   width: 64px;
   height: 64px;
-  color: var(--recap-accent);
+  color: var(--accent);
 }
 
 .recap-pet-name,
@@ -82,7 +81,7 @@
 }
 
 .recap-hours-value {
-  color: var(--recap-accent);
+  color: var(--accent);
   white-space: nowrap;
 }
 

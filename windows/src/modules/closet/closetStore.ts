@@ -287,6 +287,8 @@ export class ClosetStore extends Store<ClosetState> {
         if (empty === wasEmpty) return;
         wasEmpty = empty;
         this.state.presence.wake(this.context.now());
+        /* Closing the island mid-hover sends no hover exit either. */
+        if (!empty) this.tryOn(undefined);
       }),
     );
   }
@@ -487,8 +489,11 @@ export class ClosetStore extends Store<ClosetState> {
     this.refreshPreview();
   }
 
+  /** Switching sections mid-hover sends no hover exit, so the try-on ends here or it would greet the next visit. */
   setSection(section: ClosetSection): void {
+    if (section === this.state.section) return;
     this.setState({ section });
+    this.tryOn(undefined);
   }
 
   /**

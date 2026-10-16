@@ -6,7 +6,7 @@
  * in the header, the share button and Done on the right.
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import type { NotchTakeover } from "../../../app/takeover";
 import { durationMinutes } from "../../../core/formatting/durationFormat";
 import { currentLanguage, tr } from "../../../core/localization/tr";
@@ -15,6 +15,9 @@ import { recapDayInitials, recapStats, recapWeekTitle, type RecapStat } from "..
 import { RECAP_SHARE_FORMATS, recapShareTitle, type RecapShareFormat } from "../../../core/recap/recapShareFormat";
 import { recapCheerLine, type RecapCheer, type WeeklyRecap } from "../../../core/recap/weeklyRecap";
 import { Card } from "../../../ui/kit/Card";
+import { useTheme } from "../../../ui/kit/context";
+import { accentVariables } from "../../../ui/kit/tokens";
+import { CLOSET_ACCENT } from "../closetDescriptor";
 import { Icon } from "../../../ui/kit/Icon";
 import { IconButton } from "../../../ui/kit/IconButton";
 import { MarqueeText } from "../../../ui/kit/MarqueeText";
@@ -35,11 +38,22 @@ export interface RecapCardProps {
   readonly showsWeekDates: boolean;
 }
 
+/** The recap's warm gold (the Closet's accent) as the `--accent` pair, since the takeover sits outside any module's panel. */
+function RecapAccent({ className, children }: { className: string; children: ReactNode }) {
+  const theme = useTheme();
+  return (
+    <span className={className} style={accentVariables(theme, CLOSET_ACCENT) as CSSProperties}>
+      {children}
+    </span>
+  );
+}
+
 export function RecapCard({ recap, cheer, pet, timeZone, showsWeekDates }: RecapCardProps) {
   const locale = currentLanguage();
+  const theme = useTheme();
   const stats = useMemo(() => recapStats(recap, locale), [recap, locale]);
   return (
-    <div className="recap-card" role="group" aria-label={tr("Your week")}>
+    <div className="recap-card" role="group" aria-label={tr("Your week")} style={accentVariables(theme, CLOSET_ACCENT) as CSSProperties}>
       <RecapPetBadge pet={pet} week={showsWeekDates ? recapWeekTitle(recap.week, locale, timeZone) : undefined} />
       <Card className="recap-body">
         <div className="recap-cheer kit-title">
@@ -173,20 +187,20 @@ export interface RecapTakeoverInput {
 export function recapTakeover(input: RecapTakeoverInput): NotchTakeover {
   return {
     Leading: () => (
-      <span className="recap-title">
-        <Icon id="sparkles" size={11} style={{ color: "var(--recap-accent)" }} />
+      <RecapAccent className="recap-title">
+        <Icon id="sparkles" size={11} style={{ color: "var(--accent)" }} />
         <span className="kit-title">{tr("Your week")}</span>
-      </span>
+      </RecapAccent>
     ),
     Trailing: () => (
-      <span className="recap-trailing">
+      <RecapAccent className="recap-trailing">
         <RecapShareButton share={input.share} />
         <Tooltip text={tr("Put the recap away")}>
           <button type="button" className="recap-done kit-caption" onClick={input.done}>
             {tr("Done")}
           </button>
         </Tooltip>
-      </span>
+      </RecapAccent>
     ),
     Body: () => <RecapCard recap={input.recap} cheer={input.cheer} pet={input.pet()} timeZone={input.timeZone()} showsWeekDates={input.showsWeekDates} />,
   };

@@ -5,7 +5,7 @@
  * Edits apply right away; the footer's Continue just moves on.
  */
 
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { useStore } from "../../app/useStore";
 import { PetCloset } from "../../core/closet/petCloset";
 import { tr } from "../../core/localization/tr";
@@ -14,6 +14,9 @@ import { PET_SPECIES, type PetBreed } from "../../core/pets/petKinds";
 import { colorHex, colorsEqual } from "../../core/pets/petPalette";
 import type { PetProfile } from "../../core/pets/petProfile";
 import { Card } from "../../ui/kit/Card";
+import { useTheme } from "../../ui/kit/context";
+import { accentVariables } from "../../ui/kit/tokens";
+import { CLOSET_ACCENT } from "./closetDescriptor";
 import { Icon } from "../../ui/kit/Icon";
 import { PetSprite, PetView } from "../../ui/kit/PetView";
 import { Tooltip } from "../../ui/kit/Tooltip";
@@ -23,6 +26,7 @@ import "./closet.css";
 
 export function ClosetSetupView({ store }: { store: ClosetStore }) {
   const state = useStore(store);
+  const theme = useTheme();
   const profile = state.profile;
   const furTint = state.closet.furTint;
   /* The pet as it would look as `breed`, with its fur color and outfit. */
@@ -32,7 +36,8 @@ export function ClosetSetupView({ store }: { store: ClosetStore }) {
     return closet.profile;
   };
   return (
-    <div className="closet-setup">
+    /* The step draws in the takeover, outside any module's panel, so it carries the Closet's accent itself. */
+    <div className="closet-setup" style={accentVariables(theme, CLOSET_ACCENT) as CSSProperties}>
       <ClosetSetupPetCard store={store} />
       <Card className="closet-setup-card">
         <div className="closet-setup-top">

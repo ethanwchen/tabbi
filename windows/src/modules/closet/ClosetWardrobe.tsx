@@ -130,11 +130,11 @@ function tileHelp(item: PetItem, state: PetClosetItemState, isNew: boolean): str
   const fresh = isNew ? `${tr("New")}: ` : "";
   switch (state.kind) {
     case "wearing":
-      return `${name}: ${tr("Click to take off").toLowerCase()}`;
+      return `${name}: ${tr("Click to take off")}`;
     case "owned":
-      return `${name}: ${tr("Click to wear").toLowerCase()}`;
+      return `${name}: ${tr("Click to wear")}`;
     case "affordable":
-      return `${fresh}${name}: ${tr("Unlock for %lld pts", itemCost(item)).toLowerCase()}`;
+      return `${fresh}${name}: ${tr("Unlock for %lld pts", itemCost(item))}`;
     case "locked":
       return `${fresh}${name}: ${tr("%lld pts, %@ to go", itemCost(item), PetEconomy.studyToEarn(state.missing))}`;
     case "unearned": {
@@ -177,9 +177,6 @@ export function ClosetWardrobe({ store }: { store: ClosetStore }) {
   const [shown, setShown] = useState<PetItem | undefined>(undefined);
   const model = thumbnailModel(state.profile);
   const closet = state.closet;
-
-  /* Closing the island or switching to Look mid-hover sends no hover exit, so drop the try-on here or it would greet the next visit. */
-  useEffect(() => () => store.tryOn(undefined), [store]);
 
   const hover = (item: PetItem, inside: boolean) => {
     const next = inside ? item : hovered === item ? undefined : hovered;

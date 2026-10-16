@@ -11,6 +11,11 @@
   direction: ltr;
 }
 
+.coach-pet-track {
+  position: absolute;
+  inset: 0;
+}
+
 .coach-pet {
   position: absolute;
   transform-origin: center;
@@ -73,6 +78,7 @@
 
 .coach-replies {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
 }
 
