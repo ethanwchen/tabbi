@@ -34,6 +34,7 @@ public final class FocusSoundEngine {
     private let box: MixerBox
     private let source: AVAudioSourceNode
     private var shutdownTask: Task<Void, Never>?
+    private var decodeTask: Task<Void, Never>?
     private var configurationObserver: NSObjectProtocol?
 
     public private(set) var mix: FocusMix = .off
@@ -84,11 +85,7 @@ public final class FocusSoundEngine {
     /// sound again fades back in.
     public func setMix(_ mix: FocusMix) {
         self.mix = mix
-        // Decode a recorded sound before taking the lock, so the audio
-        // thread never waits on it.
-        FocusMixer.preloadRecordings(for: mix)
-        box.withMixer { $0.setMix(mix) }
-        if isPlaying { updateTransport() }
+        applyWhenDecoded()
     }
 
     /// Sets the 0...1 master volume; glides over 50 ms so sliders never zip.
@@ -102,13 +99,48 @@ public final class FocusSoundEngine {
     /// Fades in over 2 s (starting the engine) when the mix has any sound.
     public func play() {
         isPlaying = true
-        updateTransport()
+        applyWhenDecoded()
     }
 
     /// Fades out over 2 s, then stops the engine.
     public func stop() {
         guard isPlaying else { return }
         isPlaying = false
+        apply()
+    }
+
+    /// True while a recorded sound is being decoded off the main thread;
+    /// the mix and transport apply once it is ready.
+    public var isDecoding: Bool { decodeTask != nil }
+
+    /// Applies `mix` and the transport now when every recording they need
+    /// is decoded. Otherwise decodes them on a background thread first (the
+    /// cafe loop takes about 45 ms, a visible hitch on the main thread) and
+    /// applies whatever the state is by then, so calls made meanwhile are
+    /// never lost. The mixer only ever takes a recording that is ready, so
+    /// neither the main thread nor the audio thread waits on a decode.
+    private func applyWhenDecoded() {
+        guard FocusMixer.needsDecoding(for: mix) else {
+            apply()
+            return
+        }
+        guard decodeTask == nil else { return }
+        let mix = mix
+        decodeTask = Task { [weak self] in
+            // The decoded recordings are cached, and held here until applied.
+            let recordings = await Task.detached(priority: .userInitiated) {
+                FocusMixer.preloadRecordings(for: mix)
+            }.value
+            guard let self else { return }
+            decodeTask = nil
+            withExtendedLifetime(recordings) { self.applyWhenDecoded() }
+        }
+    }
+
+    /// Hands the current mix to the mixer and starts or stops it.
+    private func apply() {
+        let mix = mix
+        box.withMixer { if $0.mix != mix { $0.setMix(mix) } }
         updateTransport()
     }
 
@@ -121,9 +153,8 @@ public final class FocusSoundEngine {
         if isPlaying && !mix.isOff {
             shutdownTask?.cancel()
             shutdownTask = nil
-            // The recordings were let go at the last shutdown; decode them
-            // before taking the lock, as `setMix` does.
-            FocusMixer.preloadRecordings(for: mix)
+            // Decoded already (`applyWhenDecoded`), so this only attaches
+            // the recordings let go at the last shutdown.
             box.withMixer {
                 $0.prepareRecordings()
                 $0.play()
@@ -173,6 +204,8 @@ public final class FocusSoundEngine {
     /// With the engine stopped, frees the decoded recordings (the cafe loop
     /// is 11 MB), which `play()` decodes again when a mix needs them.
     private func releaseRecordings() {
+        // A decode under way is for the next play; keep what it caches.
+        guard decodeTask == nil else { return }
         box.withMixer { $0.releaseRecordings() }
         FocusRecording.releaseDecoded()
     }

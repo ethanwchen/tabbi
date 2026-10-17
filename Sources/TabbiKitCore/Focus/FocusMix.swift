@@ -198,12 +198,18 @@ public struct FocusMixer: Sendable {
         for index in generators.indices { generators[index].releaseRecording() }
     }
 
-    /// Decodes the recordings `mix` plays, so `setMix` finds them ready.
-    /// Takes tens of milliseconds the first time and nothing after.
-    public static func preloadRecordings(for mix: FocusMix) {
-        for layer in mix.layers {
-            if let name = layer.sound.recording { _ = FocusRecording.named(name) }
-        }
+    /// Decodes the recordings `mix` plays, so `setMix` finds them ready,
+    /// and returns them. Takes tens of milliseconds the first time and
+    /// nothing after; safe to call off the main thread.
+    @discardableResult
+    public static func preloadRecordings(for mix: FocusMix) -> [FocusRecording] {
+        mix.layers.compactMap { layer in layer.sound.recording.flatMap { FocusRecording.named($0) } }
+    }
+
+    /// True when `mix` plays a recorded sound that isn't decoded yet, so
+    /// `preloadRecordings(for:)` would take tens of milliseconds.
+    public static func needsDecoding(for mix: FocusMix) -> Bool {
+        mix.layers.contains { layer in layer.sound.recording.map { FocusRecording.ifLoaded($0) == nil } ?? false }
     }
 
     public mutating func setVolume(_ volume: Float) {

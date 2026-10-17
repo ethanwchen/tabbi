@@ -291,6 +291,8 @@ Half of the freed heap stays as fragmented malloc pages, and the rest of the win
 
 - Focus sounds: the cafe loop (11 MB as 16-bit samples) stayed decoded for the rest of the day after one session, and decoding it held the whole two minutes as floats first.
   The engine now frees the loop when it shuts down after a fade out and decodes it again on the next play, a second at a time: the decode peaks at 15 MB instead of 37 MB, gives identical samples and takes 43 ms instead of 49 ms.
+  That decode now runs on a background thread, so starting a session no longer stalls the main thread; the sound fades in once the loop is ready, and calls made meanwhile (another sound, a stop) apply then.
+  `FocusSoundEngineDecodeTests` guards that `play()` returns at once, playback starts after the decode, and nothing called during it is lost.
   `FocusRecordingReleaseTests` guards that a released loop decodes the same and that a mixer plays it again after `prepareRecordings()`.
 - Pets: the on-screen pet layer held each frame pre-scaled to device pixels (144 KB for the Closet's 3x pet on a 2x screen, up to 256 frames in the renderer's cache).
   It now holds the 32 pixel frame (4 KB) and lets the layer's nearest filter scale it, which draws the same hard-edged pixels; `PetAnimationViewTests` checks the frame size and that every sprite pixel fills its block with one color.
