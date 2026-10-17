@@ -20,6 +20,28 @@ final class SettingsSectionsTests: XCTestCase {
                        "turning modules on adds no toolbar items")
     }
 
+    /// A closed Settings window is let go with its panes (about 20 MB of
+    /// views once they have all shown) and comes back on the pane it closed on.
+    func testClosingSettingsLetsItGoAndReopeningShowsTheSamePane() {
+        _ = NSApplication.shared
+        let services = AppServices(settings: .ephemeral(catalog: ModuleList.catalog), moduleTypes: ModuleList.all,
+                                   environment: ["TABBI_DEMO": "1"], arguments: [])
+        services.openSettings(pane: AppSettingsPane.look.rawValue)
+        XCTAssertEqual(services.settingsPaneOnScreen, "look")
+
+        services.closeSettings()
+        RunLoop.main.run(until: Date().addingTimeInterval(0.2))
+        XCTAssertFalse(services.hasSettingsWindow, "the closed window is still held")
+
+        services.openSettings()
+        XCTAssertEqual(services.settingsPaneOnScreen, "look", "reopening shows the pane Settings closed on")
+        services.openSettings(pane: AppSettingsPane.about.rawValue)
+        XCTAssertEqual(services.settingsPaneOnScreen, "about", "a pane asked for wins")
+        services.closeSettings()
+        RunLoop.main.run(until: Date().addingTimeInterval(0.2))
+        XCTAssertFalse(services.hasSettingsWindow)
+    }
+
     func testModulesWithSettingsOfferThemFromTheirTabRow() {
         let services = AppServices(settings: .ephemeral(catalog: ModuleList.catalog), moduleTypes: ModuleList.all,
                                    environment: ["TABBI_DEMO": "1"], arguments: [])

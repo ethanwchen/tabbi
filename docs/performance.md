@@ -17,6 +17,7 @@ scripts/measure-performance.sh --live --duration 600    # real data
 scripts/measure-performance.sh --pid <pid> --no-leaks   # an app that is already running
 scripts/measure-performance.sh --open focus             # the notch held open on a tab
 scripts/measure-performance.sh --cycle 3                # open each tab in turn, closing in between
+scripts/measure-performance.sh --settings 2             # show each Settings pane, close, wait, repeat
 ```
 
 The script launches the binary directly with `TABBI_DEMO=1` (unless `--live`), so it knows the PID and stops only that process.
@@ -35,6 +36,8 @@ The notch tracks the pointer with a global monitor, so this is how a user moving
 
 `--open <module id>` launches with `TABBI_PERF_OPEN` set, which opens the notch on that tab and pins it, so it stays open with no hand on the mouse.
 In a demo run a module id that is not in the layout (`system`, `anki`, `party`, `schedule`, ...) is added as a tab first, so the notch opens on the tab asked for; a `--live` run never changes the user's tabs, so there an id that is not a tab opens the first tab instead.
+
+`--settings <seconds>` launches with `TABBI_PERF_SETTINGS` set: every that many seconds Settings shows its next pane, and after the last one the window closes and stays closed as long, so the memory a closed Settings window keeps shows up.
 
 `--cycle <seconds>` launches with `TABBI_PERF_CYCLE` set: every that many seconds the notch opens on the next enabled tab (including the ones under the chevron and the Closet) or closes again, so a long run shows whether memory grows with each open and close.
 
@@ -245,6 +248,59 @@ Everything they say sits below about 6 kHz and passes a 4 kHz low-pass, so nothi
 Over 60 s of cafe the level is unchanged (RMS 0.1818 before, 0.1817 after) and every octave band from 125 Hz to 16 kHz is within 0.4 dB of before.
 `FocusAmbienceTests` and `FocusLoudnessTests` still pass, and they guard what the cafe sounds like (voice band, no low growl, steady level, loudness within 1 LU).
 A timing test was not added: in the debug build that `swift test` uses, the cafe's cost relative to rain moves only from 2.3 to 1.6 times, too close to set a threshold that never flakes.
+
+## Memory in a long live run
+
+An installed 1.0.1 build that had run for 42 hours with real data used 105 MB, with a peak of 287 MB, while a demo run idles at 24 MB.
+`heap` showed only about 34 MB of live objects: most of the rest was `MALLOC_SMALL` pages left dirty by a past spike, plus 19 MB of IOSurfaces.
+Watching its footprint every 2 s for half an hour (Spotify playing) showed the peak climbing by about 2 MB every 4 to 5 minutes, once per song, and the footprint with it, from 110 MB to 120 MB.
+
+### Album covers
+
+That was Now Playing's cover.
+For every new track the closed notch's 20 point cover (and the panel's, when open) decoded the cover at full size and computed its glow color with Core Image's `CIAreaAverage`, creating a new `CIContext` each time.
+A `CIContext` sets up its own Metal resources, so every track change spiked by close to 200 MB and left some behind.
+Now `ArtworkThumbnail` (`TabbiKitCore/Spotify`) decodes the cover with ImageIO straight to 256 pixels, the most the panel draws (112 points on a 2x screen at the Large size), and reads the mean color from that small picture with Core Graphics.
+
+Measured in a release build with the loader's old and new decode, each cover drawn at 112 points on a 2x screen and kept as the cache keeps them (24):
+
+| Covers | Peak before | Peak after | Kept before | Kept after | Time per cover before | after |
+| --- | --- | --- | --- | --- | --- | --- |
+| 24 Spotify covers (640 px) | +189 MB | +10 MB | +119 MB | +9 MB | 18 ms | 4 ms |
+| 10 Music covers (3000 px) | +269 MB | +5 MB | +78 MB | +5 MB | 43 ms | 12 ms |
+
+`ArtworkThumbnailTests` guards it: covers come out at the panel's size and keep their shape, small ones are not scaled up, the mean color is right, and decoding 12 covers of 2400 pixels grows the footprint by less than 40 MB.
+
+### Settings window
+
+The Settings window was kept for the rest of the day once opened, with every pane it had shown.
+Showing all five panes takes the footprint from 22 MB to about 70 MB, and closing the window gave none of it back.
+Now the window lets go of its panes when it closes and comes back on the pane it closed on.
+AppKit keeps the closed `NSWindow` shell alive a while longer, so freeing the controller alone frees nothing; the panes have to be removed.
+
+| Demo, all five panes shown, then closed (`--settings 3`) | Before | After |
+| --- | --- | --- |
+| Live heap, closed | 39.7 MB in 323k blocks | 19.9 MB in 102k blocks |
+| Footprint, closed | 69-71 MB | 61-66 MB |
+| Footprint, second round open | 72-74 MB | 66-69 MB |
+
+Half of the freed heap stays as fragmented malloc pages, and the rest of the window's cost is AppKit and SwiftUI setup an app pays once, so the footprint gains less than the heap.
+`SettingsSectionsTests` checks that a closed window is let go and reopens on its last pane.
+
+### Smaller fixes
+
+- Focus sounds: the cafe loop (11 MB as 16-bit samples) stayed decoded for the rest of the day after one session, and decoding it held the whole two minutes as floats first.
+  The engine now frees the loop when it shuts down after a fade out and decodes it again on the next play, a second at a time: the decode peaks at 15 MB instead of 37 MB, gives identical samples and takes 43 ms instead of 49 ms.
+  That decode now runs on a background thread, so starting a session no longer stalls the main thread; the sound fades in once the loop is ready, and calls made meanwhile (another sound, a stop) apply then.
+  `FocusSoundEngineDecodeTests` guards that `play()` returns at once, playback starts after the decode, and nothing called during it is lost.
+  `FocusRecordingReleaseTests` guards that a released loop decodes the same and that a mixer plays it again after `prepareRecordings()`.
+- Pets: the on-screen pet layer held each frame pre-scaled to device pixels (144 KB for the Closet's 3x pet on a 2x screen, up to 256 frames in the renderer's cache).
+  It now holds the 32 pixel frame (4 KB) and lets the layer's nearest filter scale it, which draws the same hard-edged pixels; `PetAnimationViewTests` checks the frame size and that every sprite pixel fills its block with one color.
+- HTTP: sync made a new `URLSession` for every request, and sessions are never freed until invalidated.
+  Party, sync, crash reports and AnkiConnect now share one ephemeral session with cookies and caching off (`URLSession.tabbiEphemeral`); 200 requests through new sessions grew a test process by 7.9 MB, through one session by 0.8 MB.
+- Memory pressure: `MemoryRelief` returns free malloc pages to macOS after a burst (a closed Settings window, a large transcript scan) and, when macOS reports memory pressure, also drops the pet image cache.
+
+The demo runs above did not change: idle closed 24-26 MB and 0.05% CPU, the tab cycle 40 to 52 MB, and every tab held open within 1 MB and 0.1% CPU of before, since demo data shows no real covers and plays no recordings.
 
 ## To measure next
 

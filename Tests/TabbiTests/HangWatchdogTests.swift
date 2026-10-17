@@ -30,6 +30,15 @@ final class HangWatchdogTests: XCTestCase {
         RunLoop.main.run(until: Date().addingTimeInterval(seconds))
     }
 
+    /// Hangs the main thread (it answers no ping) until the hang log
+    /// appears, for at most 5 s. About 200 ms is enough on a quiet Mac, but
+    /// a loaded parallel test run can delay the watchdog's timer past the
+    /// fixed second these tests used to wait, which made them flaky.
+    private func blockMainThreadUntilTheHangLog() {
+        let deadline = Date().addingTimeInterval(5)
+        while log == nil, Date() < deadline { Thread.sleep(forTimeInterval: 0.02) }
+    }
+
     func testAnAnsweringMainThreadLeavesNoLog() {
         watchdog.start()
         spinMainRunLoop(for: 0.5)
@@ -63,8 +72,8 @@ final class HangWatchdogTests: XCTestCase {
     func testAHangLeavesTheMainThreadsStackUntilItEnds() throws {
         watchdog.start()
         spinMainRunLoop(for: 0.1)
-        // The hang: the main thread answers no ping for a second.
-        Thread.sleep(forTimeInterval: 1)
+        // The hang: the main thread answers no ping until the log appears.
+        blockMainThreadUntilTheHangLog()
         let text = try XCTUnwrap(log, "a hang that lasts leaves a log")
         let report = try XCTUnwrap(CrashLog.report(from: text))
         XCTAssertEqual(report.environment, environment)
@@ -94,7 +103,7 @@ final class HangWatchdogTests: XCTestCase {
     func testStoppingDuringAHangTakesTheLogBack() {
         watchdog.start()
         spinMainRunLoop(for: 0.1)
-        Thread.sleep(forTimeInterval: 1)
+        blockMainThreadUntilTheHangLog()
         XCTAssertNotNil(log)
         watchdog.stop()
         XCTAssertNil(log)

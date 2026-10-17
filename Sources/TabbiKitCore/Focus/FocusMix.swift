@@ -182,12 +182,34 @@ public struct FocusMixer: Sendable {
         }
     }
 
-    /// Decodes the recordings `mix` plays, so `setMix` finds them ready.
-    /// Takes tens of milliseconds the first time and nothing after.
-    public static func preloadRecordings(for mix: FocusMix) {
-        for layer in mix.layers {
-            if let name = layer.sound.recording { _ = FocusRecording.named(name) }
+    /// Makes sure the current mix's recorded sounds have their recordings,
+    /// after `releaseRecordings()`. Decodes them unless
+    /// `preloadRecordings(for:)` already did.
+    public mutating func prepareRecordings() {
+        for (index, sound) in FocusSound.allCases.enumerated() where mix.contains(sound) {
+            generators[index].prepareRecording()
         }
+    }
+
+    /// Lets go of every recording while the mixer is silent, so a stopped
+    /// focus sound holds no decoded audio; `prepareRecordings()` (or the
+    /// next `setMix`) takes them back.
+    public mutating func releaseRecordings() {
+        for index in generators.indices { generators[index].releaseRecording() }
+    }
+
+    /// Decodes the recordings `mix` plays, so `setMix` finds them ready,
+    /// and returns them. Takes tens of milliseconds the first time and
+    /// nothing after; safe to call off the main thread.
+    @discardableResult
+    public static func preloadRecordings(for mix: FocusMix) -> [FocusRecording] {
+        mix.layers.compactMap { layer in layer.sound.recording.flatMap { FocusRecording.named($0) } }
+    }
+
+    /// True when `mix` plays a recorded sound that isn't decoded yet, so
+    /// `preloadRecordings(for:)` would take tens of milliseconds.
+    public static func needsDecoding(for mix: FocusMix) -> Bool {
+        mix.layers.contains { layer in layer.sound.recording.map { FocusRecording.ifLoaded($0) == nil } ?? false }
     }
 
     public mutating func setVolume(_ volume: Float) {

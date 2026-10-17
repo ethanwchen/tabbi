@@ -10,6 +10,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var pendingLinks: [URL] = []
     /// Drives `TABBI_PERF_CYCLE` measurement runs; nil otherwise.
     private var perfCycle: Timer?
+    /// Drives `TABBI_PERF_SETTINGS` measurement runs; nil otherwise.
+    private var perfSettings: Timer?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // The App Store installs, moves and updates the app itself, so its
@@ -82,6 +84,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                         model.isPinned = true
                         step += 1
                     }
+                }
+            }
+        }
+        // scripts/measure-performance.sh --settings <seconds>: show each
+        // Settings pane in turn, close the window and leave it closed as
+        // long, then start over, so memory kept after Settings closes shows up.
+        if let seconds = ProcessInfo.processInfo.environment["TABBI_PERF_SETTINGS"].flatMap(Double.init),
+           seconds > 0 {
+            let panes = AppSettingsPane.allCases.map(\.rawValue)
+            var step = 0
+            perfSettings = Timer.scheduledTimer(withTimeInterval: seconds, repeats: true) { [weak services] _ in
+                MainActor.assumeIsolated {
+                    guard let services else { return }
+                    let index = step % (2 * panes.count)
+                    if index < panes.count {
+                        services.openSettings(pane: panes[index])
+                    } else if index == panes.count {
+                        services.closeSettings()
+                    }
+                    step += 1
                 }
             }
         }

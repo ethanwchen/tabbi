@@ -41,15 +41,15 @@ public protocol PartyTransport: Sendable {
     func send(_ request: PartyHTTPRequest, timeout: TimeInterval) async throws -> PartyHTTPResponse
 }
 
-/// The real transport: HTTPS to the configured server with an ephemeral
-/// session, so no cookies or caches outlive the request.
+/// The real transport: HTTPS to the configured server through one shared
+/// ephemeral session that keeps no cookies or caches.
 public struct URLSessionPartyTransport: PartyTransport {
     public let baseURL: URL
     private let session: URLSession
 
     public init(baseURL: URL, session: URLSession? = nil) {
         self.baseURL = baseURL
-        self.session = session ?? URLSession(configuration: .ephemeral)
+        self.session = session ?? .tabbiEphemeral
     }
 
     public func send(_ request: PartyHTTPRequest, timeout: TimeInterval) async throws -> PartyHTTPResponse {
