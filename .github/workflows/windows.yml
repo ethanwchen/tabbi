@@ -1,8 +1,9 @@
 name: Windows
 
 # The Windows build (windows/): typecheck, lint and tests for the UI, fmt,
-# clippy and tests for the Rust host, and the snapshot run, whose PNGs are
-# uploaded for review. It also runs when the Mac data the UI reads changes.
+# clippy and tests for the Rust host, and the snapshot run (in shards), whose
+# PNGs are uploaded for review. It also runs when the Mac data the UI reads
+# changes.
 on:
   push:
     branches: [main]
@@ -30,7 +31,7 @@ permissions:
 
 jobs:
   windows:
-    name: Windows (UI, host, snapshots)
+    name: Windows (UI, host)
     runs-on: windows-latest
     timeout-minutes: 30
     defaults:
@@ -82,12 +83,37 @@ jobs:
           cargo clippy --all-targets --locked -- -D warnings
           cargo test --locked
 
+  # The snapshot run on its own runners, split in shards that run side by
+  # side: one runner took close to the whole job budget on its own, and a slow
+  # runner pushed it past. Each shard uploads its PNGs as its own artifact.
+  snapshots:
+    name: Windows snapshots (${{ matrix.shard }}/3)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    defaults:
+      run:
+        working-directory: windows
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+
+      - run: npm ci
+
       - name: Snapshots
-        run: npm run snapshots
+        run: npx playwright test --shard=${{ matrix.shard }}/3
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: windows-snapshots
+          name: windows-snapshots-${{ matrix.shard }}
           path: windows/tests/snapshots/output
           if-no-files-found: error
