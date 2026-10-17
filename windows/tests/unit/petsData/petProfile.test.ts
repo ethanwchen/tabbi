@@ -7,10 +7,11 @@ import { sitting } from "../../../src/core/pets/petComposer";
 import { PET_ACCESSORIES, PET_OUTFITS } from "../../../src/core/pets/petCostume";
 import { accessoryItem, itemFromID, outfitItem } from "../../../src/core/pets/petItem";
 import { PET_ANIMATIONS, PET_SPECIES } from "../../../src/core/pets/petKinds";
-import { colorFromHex, colorHex, luminance, roleSymbol, type PetColor } from "../../../src/core/pets/petPalette";
+import { colorFromHex, colorHex, colorsEqual, luminance, roleSymbol, type PetColor } from "../../../src/core/pets/petPalette";
 import { PetPointsRules } from "../../../src/core/pets/petPointsRules";
 import { MAX_PET_NAME_LENGTH, PetProfile } from "../../../src/core/pets/petProfile";
 import { PetSave } from "../../../src/core/pets/petSave";
+import { silhouetteColors } from "../../../src/core/pets/petVisibility";
 import { ALL_ITEMS, PetPointsLedger, PetPurchaseError, SHOP_ITEMS, isFree, itemCost } from "../../../src/core/pets/petUnlocks";
 
 // Port of PetsProfileTests.swift (PetProfileTests, PetUnlockTests, PetSaveTests).
@@ -42,7 +43,7 @@ describe("PetProfile", () => {
     expect(starter.breed).toBe("britishShorthair");
     expect(starter.name).toBe(breedDisplayName("britishShorthair"));
     expect(starter.hasDefaultName).toBe(true);
-    expect(starter.palette.equals(breedPalette("britishShorthair").withVisibleRim())).toBe(true);
+    expect(starter.palette.equals(breedPalette("britishShorthair"))).toBe(true);
     expect(starterForKit(undefined).equals(starter)).toBe(true);
     expect(new PetProfile("Earl Grey", "britishShorthair").hasDefaultName).toBe(false);
   });
@@ -182,7 +183,9 @@ describe("PetProfile", () => {
   it("adds the light rim when fur is recolored dark", () => {
     const profile = new PetProfile("Pip", "whiteCat");
     profile.setColor(hex("#151217"), "furBase");
-    expect(profile.palette.color("outline")).toEqual(profile.palette.rim);
+    // The white belly and paws keep their dark outline; the dark coat around them is rimmed.
+    const edge = silhouetteColors(profile.sittingCanvas(), profile.palette);
+    expect(edge.filter((color) => colorsEqual(color, profile.palette.rim)).length).toBeGreaterThan((edge.length * 3) / 4);
   });
 
   it("keeps the fur tint as the pick and follows the breed", () => {
@@ -214,7 +217,9 @@ describe("PetProfile", () => {
     const profile = new PetProfile("Pip", "goldenRetriever");
     profile.setColor(pink, "costumeBase");
     profile.tintFur(hex("#1C1719"));
-    expect(profile.palette.color("outline"), "black fur still gets the light rim").toEqual(profile.palette.rim);
+    expect(silhouetteColors(profile.sittingCanvas(), profile.palette), "black fur still gets the light rim").toContainEqual(
+      profile.palette.rim,
+    );
     profile.tintFur(undefined);
     expect(profile.paletteOverrides).toEqual({ costumeBase: pink });
     expect(profile.palette.color("furAccent")).toEqual(breedPalette("goldenRetriever").color("furAccent"));

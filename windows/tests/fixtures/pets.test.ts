@@ -1,7 +1,9 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import { breedPalette } from "../../src/core/pets/petBreed";
-import { PET_PALETTE_ROLES, colorHex } from "../../src/core/pets/petPalette";
+import { PetCloset } from "../../src/core/closet/petCloset";
+import { PET_PALETTE_ROLES, colorFromHex, colorHex } from "../../src/core/pets/petPalette";
+import { PetProfile } from "../../src/core/pets/petProfile";
 import { composeClip, type PetClip } from "../../src/core/pets/petClip";
 import { FRAME_SIZE, sitting } from "../../src/core/pets/petComposer";
 import { PET_ACCESSORIES, PET_OUTFITS, type PetAccessory, type PetOutfit } from "../../src/core/pets/petCostume";
@@ -45,12 +47,20 @@ interface FrameFile {
 interface PaletteFile {
   schema: string;
   version: number;
-  breeds: { breed: PetBreed; colors: Record<string, string>; rim: string }[];
+  breeds: { breed: PetBreed; colors: Record<string, string>; rim: string; sheen: string }[];
+}
+
+interface RenderedFile {
+  schema: string;
+  version: number;
+  frameSize: number;
+  frames: { dress: Dress; furTint?: string; colors: string[]; rle: string }[];
 }
 
 const digests = loadFixture<DigestFile>("pets/composed-digests.json");
 const frames = loadFixture<FrameFile>("pets/frames.json");
 const palettes = loadFixture<PaletteFile>("pets/palettes.json");
+const rendered = loadFixture<RenderedFile>("pets/rendered.json");
 
 /** Every clip of a dress, in animation declaration order. */
 function clipsOf(dress: Dress): PetClip[] {
@@ -208,13 +218,41 @@ describe("pets golden fixtures", () => {
     expect(digests.dresses.map((entry) => entry.dress)).toEqual(expected);
   });
 
-  it("match every breed's palette after the visible rim", () => {
+  it("match every breed's palette, rim and sheen", () => {
     expect(palettes.breeds.map((entry) => entry.breed)).toEqual([...PET_BREEDS]);
     for (const entry of palettes.breeds) {
-      const palette = breedPalette(entry.breed).withVisibleRim();
+      const palette = breedPalette(entry.breed);
       const colors = Object.fromEntries(PET_PALETTE_ROLES.map((role) => [role, colorHex(palette.color(role))]));
       expect(colors, entry.breed).toEqual(entry.colors);
       expect(colorHex(palette.rim), entry.breed).toBe(entry.rim);
+      expect(colorHex(palette.sheen), entry.breed).toBe(entry.sheen);
+    }
+  });
+
+  it("render every breed, swatch and item to the same colors, rim included", () => {
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    expect(rendered.frames.length).toBe(PET_BREEDS.length * (PetCloset.furSwatches.length + 1) + 2 * (PET_OUTFITS.length - 1 + PET_ACCESSORIES.length));
+    for (const entry of rendered.frames) {
+      const tint = entry.furTint === undefined ? undefined : colorFromHex(entry.furTint);
+      const profile = new PetProfile("", entry.dress.breed, {
+        furTint: tint,
+        outfit: entry.dress.outfit,
+        accessories: entry.dress.accessories,
+      });
+      const canvas = sitting(entry.dress.breed, { outfit: entry.dress.outfit, accessories: entry.dress.accessories });
+      const colors: string[] = [];
+      const symbols = canvas.colors(profile.palette).map((color) => {
+        if (!color) return ".";
+        const hex = colorHex(color);
+        let index = colors.indexOf(hex);
+        if (index < 0) index = colors.push(hex) - 1;
+        return letters[index] ?? "?";
+      });
+      const rows: string[] = [];
+      for (let y = 0; y < canvas.height; y++) rows.push(symbols.slice(y * canvas.width, (y + 1) * canvas.width).join(""));
+      const name = `${dressName(entry.dress)} ${entry.furTint ?? "own colors"}`;
+      expect(colors, name).toEqual(entry.colors);
+      expect(runLength(rows), name).toBe(entry.rle);
     }
   });
 

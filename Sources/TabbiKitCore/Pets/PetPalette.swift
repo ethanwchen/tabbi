@@ -38,14 +38,24 @@ public struct PetColor: Hashable, Codable, Sendable, CustomStringConvertible {
 
     public var description: String { hex }
 
-    /// Relative luminance (0...1, WCAG formula). Used to decide whether a fur
-    /// color needs a light rim to stay visible on the black notch.
+    /// Relative luminance (0...1, WCAG formula). Used to decide whether the
+    /// edge of a pet needs a light rim to stay visible on dark backdrops.
     public var luminance: Double {
         func channel(_ value: UInt8) -> Double {
             let c = Double(value) / 255
             return c <= 0.040_45 ? c / 12.92 : pow((c + 0.055) / 1.055, 2.4)
         }
         return 0.2126 * channel(red) + 0.7152 * channel(green) + 0.0722 * channel(blue)
+    }
+
+    /// WCAG contrast ratio (1...21) between two relative luminances.
+    public static func contrast(_ a: Double, _ b: Double) -> Double {
+        (max(a, b) + 0.05) / (min(a, b) + 0.05)
+    }
+
+    /// WCAG contrast ratio against `other`, ignoring alpha.
+    public func contrast(with other: PetColor) -> Double {
+        Self.contrast(luminance, other.luminance)
     }
 
     /// Hue, saturation, and lightness, each 0...1. Fur tinting works in HSL
@@ -368,37 +378,76 @@ public struct PetPalette: Hashable, Codable, Sendable {
         return overrides
     }
 
-    /// A copy whose outline stays visible on the black notch. Dark fur with a
-    /// dark outline would vanish, so the outline becomes a soft light rim.
-    /// Applied after user overrides, so recoloring a pet black is still safe.
-    public func withVisibleRim() -> PetPalette {
-        guard self[.furBase].luminance < PetPalette.darkFurThreshold,
-              self[.outline].luminance < PetPalette.rimMinimumLuminance else { return self }
-        var copy = self
-        copy[.outline] = rim
-        return copy
-    }
-
-    /// The light rim (and mouth color) for dark fur: the fur's own hue at a
-    /// soft mid tone with little saturation. A fixed tan rim read as a harsh
-    /// brown frame around a black cat; a rim in the coat's own hue reads as
-    /// a gentle sheen on the fur while still parting it from the black notch.
+    /// The light edge for dark fur: the coat's own hue with little
+    /// saturation (a soft moonlit gray on a black cat, a warm one on a
+    /// chocolate coat), just light enough to reach `silhouetteContrast`
+    /// against the brightest backdrop a pet is drawn on
+    /// (`backdropCeiling`). `PetCanvas.colors(using:)` puts it on the
+    /// silhouette's outer edge wherever the fur inside would melt into a
+    /// dark card or the black notch. It is never darker than `sheen`, so
+    /// the edge always reads brighter than the lines inside the coat.
     public var rim: PetColor {
         let fur = self[.furBase].hsl
-        return PetColor(hue: fur.hue, saturation: min(fur.saturation, PetPalette.rimMaximumSaturation),
-                        lightness: PetPalette.rimLightness)
+        let saturation = min(fur.saturation, PetPalette.rimMaximumSaturation)
+        func color(_ lightness: Double) -> PetColor { PetColor(hue: fur.hue, saturation: saturation, lightness: lightness) }
+        let reaches = PetPalette.standsOut
+        var low = PetPalette.sheenLightness, high = 1.0
+        if reaches(color(low)) { return color(low) }
+        // Bisect for the darkest lightness that still reaches the target, so
+        // the rim lights the edge without becoming a bright frame.
+        for _ in 0..<32 {
+            let mid = (low + high) / 2
+            if reaches(color(mid)) { high = mid } else { low = mid }
+        }
+        return color(high)
     }
 
-    /// Fur darker than this needs a rim (about #555 gray).
-    static let darkFurThreshold = 0.09
-    /// Outlines at least this bright already read on black.
-    static let rimMinimumLuminance = 0.12
-    static let rimLightness = 0.5
+    /// The soft light line for dark fur: the coat's own hue at a muted mid
+    /// tone. Inner lines (leg separations, ear lines) and a cat's mouth use
+    /// it on near-black fur, where the dark outline would vanish; a fixed
+    /// tan read as a harsh brown frame, while the coat's own hue reads as a
+    /// gentle sheen on the fur.
+    public var sheen: PetColor {
+        let fur = self[.furBase].hsl
+        return PetColor(hue: fur.hue, saturation: min(fur.saturation, PetPalette.rimMaximumSaturation),
+                        lightness: PetPalette.sheenLightness)
+    }
+
+    /// Whether `color` alone parts a pet from every backdrop up to
+    /// `backdropCeiling` at `silhouetteContrast`. A light coat's fur does,
+    /// so its dark outline can stay; black fur, a chocolate Labrador and
+    /// Siamese points do not, so their edge needs the rim.
+    public static func standsOut(_ color: PetColor) -> Bool {
+        PetColor.contrast(color.luminance, backdropCeiling) >= silhouetteContrast
+    }
+
+    /// The brightest backdrop (relative luminance) a pet may be drawn on: a
+    /// hovered card in a theme with a glow, or the top of a glass card. It
+    /// sits above every shipped theme with headroom for new ones, and
+    /// `PetVisibilityTests` checks every theme's `brightestPetBackdrop`
+    /// against it, so a brighter theme cannot quietly hide dark pets. One
+    /// worst case instead of each theme's own: the renderer and its cache
+    /// stay theme-independent, and a pet looks the same in every theme, on
+    /// a friend's screen and in the widget.
+    public static let backdropCeiling = 0.08
+    /// The contrast a pet's silhouette keeps against any backdrop up to
+    /// `backdropCeiling`: WCAG's 3:1 for graphical objects.
+    public static let silhouetteContrast = 3.0
+    /// Whether `color` is a patch on a dark coat light enough to keep its
+    /// dark outline (a tuxedo's white paws): clearly lighter than the rim,
+    /// so a light rim would merge with it.
+    static func isLightPatch(_ color: PetColor, against rim: PetColor) -> Bool {
+        color.luminance > rim.luminance && color.contrast(with: rim) >= lightPatchContrast
+    }
+
+    static let lightPatchContrast = 2.0
+    static let sheenLightness = 0.5
     static let rimMaximumSaturation = 0.14
-    /// Fur around a mouth darker than this (on average) gets a rim-colored
-    /// mouth instead of the dark one. It sits where both have about the same
-    /// contrast against the fur, so a charcoal or chocolate coat keeps the
-    /// crisp dark mouth and only near-black fur gets the light one.
+    /// Fur around a mouth or an inner line darker than this (on average)
+    /// gets the light `sheen` instead of the dark line. It sits where both
+    /// have about the same contrast against the fur, so a charcoal or
+    /// chocolate coat keeps its crisp dark lines and only near-black fur
+    /// gets light ones.
     static let darkMouthBackground = 0.08
 
     /// Shared, breed-independent colors: eyes, effects, the default costume.

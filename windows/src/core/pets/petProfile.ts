@@ -192,10 +192,10 @@ export class PetProfile {
     return parts.kind === "outfit" ? this.outfit === parts.outfit : this.worn.includes(parts.accessory);
   }
 
-  /** The colors to render with: breed defaults, the fur tint, user overrides, then the light rim for dark fur. */
+  /** The colors to render with: breed defaults, the fur tint, then user overrides (the renderer lights dark edges). */
   get palette(): PetPalette {
     const tint = this.tint ? breedFurTint(this.breedValue, this.tint) : {};
-    return breedPalette(this.breedValue).applying(tint).applying(this.overrides).withVisibleRim();
+    return breedPalette(this.breedValue).applying(tint).applying(this.overrides);
   }
 
   /** The pet sitting in its current outfit and accessories. */

@@ -17,7 +17,7 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
   `SharedSchemaTests` keeps the kit and edition schemas' fields, limits and patterns equal to the Swift decoders, and the catalog schema equal to the catalog's fields.
 - `fixtures/` holds golden fixtures written by the Swift tests.
   Each port checks its own output against them, so drift between the apps fails a test.
-  `pets/`, `themes/` and `study-methods/` pin the data files above; `claude-stream/` pins how the `claude` CLI's stream-json lines are parsed and folded into an Ask Claude chat;
+  `pets/`, `themes/` and `study-methods/` pin the data files above (`pets/rendered.json` also pins the rendered colors, dark-coat rim included); `claude-stream/` pins how the `claude` CLI's stream-json lines are parsed and folded into an Ask Claude chat;
   `focus-timer/` pins the shared Pomodoro: its steps, readouts, shared focus clock and logged activity;
   `study-session/` pins the Study tab's timer for every method: its steps, the dial, buttons and pet, the shared focus clock and the logged phases;
   `ticker/` pins which items the closed notch can show, when it next has to look again, and which one the rotation picks;
