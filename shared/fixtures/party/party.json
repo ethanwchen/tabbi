@@ -187,15 +187,15 @@
           "accessories" : [
             "partyHat"
           ],
-          "breed" : "britishShorthair",
+          "breed" : "britishLonghair",
           "colors" : {
             "accessoryBase" : "#E0607A",
             "accessoryShade" : "#B04460",
-            "belly" : "#FFFFFF",
+            "belly" : "#9C6B53",
             "costumeBase" : "#5BC0BE",
             "costumeShade" : "#3E9593",
             "costumeTrim" : "#E8FFFB",
-            "furAccent" : "#A8A098",
+            "furAccent" : "#86523D",
             "furBase" : "#334455",
             "furShade" : "#AABBCC",
             "furSpot" : "#3A3036"
@@ -403,15 +403,15 @@
           "accessories" : [
             "partyHat"
           ],
-          "breed" : "britishShorthair",
+          "breed" : "britishLonghair",
           "colors" : {
             "accessoryBase" : "#E0607A",
             "accessoryShade" : "#B04460",
-            "belly" : "#FFFFFF",
+            "belly" : "#9C6B53",
             "costumeBase" : "#5BC0BE",
             "costumeShade" : "#3E9593",
             "costumeTrim" : "#E8FFFB",
-            "furAccent" : "#A8A098",
+            "furAccent" : "#86523D",
             "furBase" : "#334455",
             "furShade" : "#AABBCC",
             "furSpot" : "#3A3036"
@@ -880,15 +880,15 @@
           "accessories" : [
             "partyHat"
           ],
-          "breed" : "britishShorthair",
+          "breed" : "britishLonghair",
           "colors" : {
             "accessoryBase" : "#E0607A",
             "accessoryShade" : "#B04460",
-            "belly" : "#FFFFFF",
+            "belly" : "#9C6B53",
             "costumeBase" : "#5BC0BE",
             "costumeShade" : "#3E9593",
             "costumeTrim" : "#E8FFFB",
-            "furAccent" : "#A8A098",
+            "furAccent" : "#86523D",
             "furBase" : "#334455",
             "furShade" : "#AABBCC",
             "furSpot" : "#3A3036"

@@ -49,4 +49,17 @@ enum CatArt {
     /// in a plain plush coat with a pale chest and a thick tail split off
     /// at column 18.
     static let bodyFold = PetArt.cat.grid("bodyFold")
+
+    /// British Longhair: a round head with small tufted ears set wide and a
+    /// fluffy cheek ruff that breaks the outline into soft tufts.
+    static let headLonghair = PetArt.cat.grid("headLonghair")
+
+    /// British Longhair face: the round eyes (copper by default) over the
+    /// nose and a tiny mouth in the fur's own shade, never a dark line, with
+    /// rosy cheeks.
+    static let faceLonghair = PetArt.cat.grid("faceLonghair")
+
+    /// British Longhair sitting body: the plump 21-wide frame with a lighter
+    /// fluffy bib, tufted haunches, and a big plumed tail split off at column 18.
+    static let bodyLonghair = PetArt.cat.grid("bodyLonghair")
 }

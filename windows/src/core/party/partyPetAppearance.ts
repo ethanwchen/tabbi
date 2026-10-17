@@ -9,7 +9,7 @@ import type { PartyProfile, PartyProfileUpdate } from "./partyModels";
  * the server's pet fields.
  *
  * Friends see a pet exactly as its owner dressed it in the Closet: the
- * server catalog (version 2) has an id for every outfit and accessory the
+ * server catalog (version 3) has an id for every outfit and accessory the
  * app draws, so the outfit rides in `costume`, every worn accessory in
  * `accessories`, and the effective colors of every recolorable role in
  * `colors`. Breeds are the one lossy part: a breed without art falls back to
@@ -57,6 +57,8 @@ export function wireBreed(breed: PetBreed): string {
       return "sphynx";
     case "scottishFold":
       return "scottish-fold";
+    case "britishLonghair":
+      return "british-longhair";
     case "goldenRetriever":
       return "golden-retriever";
     case "labrador":
@@ -79,15 +81,15 @@ export function wireBreed(breed: PetBreed): string {
 
 /** Server breeds the app has no art for, mapped to the drawn breed with the most similar body. */
 export const FALLBACK_BREEDS: Readonly<Record<string, PetBreed>> = {
-  "domestic-longhair": "britishShorthair",
+  "domestic-longhair": "britishLonghair",
   tortoiseshell: "calico",
-  persian: "britishShorthair",
-  "maine-coon": "britishShorthair",
-  ragdoll: "britishShorthair",
+  persian: "britishLonghair",
+  "maine-coon": "britishLonghair",
+  ragdoll: "britishLonghair",
   bengal: "orangeTabby",
   "russian-blue": "grayTabby",
   abyssinian: "orangeTabby",
-  "norwegian-forest": "britishShorthair",
+  "norwegian-forest": "britishLonghair",
   mixed: "beagle",
   "german-shepherd": "corgi",
   "shiba-inu": "corgi",
@@ -322,16 +324,23 @@ export const VERSION1_COSTUMES: ReadonlySet<string> = new Set([
 ]);
 export const VERSION1_MAX_COLORS = 6;
 export const VERSION1_MAX_ACCESSORIES = 4;
+/**
+ * Breeds added after catalog version 2, sent to an older server as the breed
+ * it has with the closest body (which older apps draw as a British Shorthair).
+ */
+export const OLDER_CATALOG_BREEDS: Readonly<Record<string, string>> = { "british-longhair": "domestic-longhair" };
 
 /**
- * This update as a server on catalog version 1 takes it: accessories it has
- * no id for left out, the newer hoodies sent as the plain hoodie, and only
- * the first six colors. Port of PartyProfileUpdate.forCatalogVersion1.
+ * This update as a server on catalog version 1 or 2 takes it: accessories it
+ * has no id for left out, the newer hoodies sent as the plain hoodie, newer
+ * breeds as their closest older one, and only the first six colors. Port of
+ * PartyProfileUpdate.forCatalogVersion1.
  */
 export function forCatalogVersion1(update: PartyProfileUpdate): PartyProfileUpdate {
-  const { colors, accessories, costume } = update;
+  const { breed, colors, accessories, costume } = update;
   return {
     ...update,
+    ...(breed === undefined ? {} : { breed: Object.hasOwn(OLDER_CATALOG_BREEDS, breed) ? OLDER_CATALOG_BREEDS[breed] : breed }),
     ...(colors === undefined ? {} : { colors: colors.slice(0, VERSION1_MAX_COLORS) }),
     ...(accessories === undefined
       ? {}

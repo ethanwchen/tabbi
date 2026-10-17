@@ -102,6 +102,8 @@ export function breedFurTones(breed: PetBreed): FurTones {
       return { furBase: pick, furShade: darker(0.12), furAccent: darker(0.35) };
     case "sphynx":
       return { furBase: pick, furShade: darker(0.14), furAccent: darker(0.1), belly: lighter(0.35, 0.7) };
+    case "britishLonghair":
+      return { furBase: pick, furShade: darker(0.16), furAccent: lighter(0.12), belly: lighter(0.2) };
     case "scottishFold":
       return { furBase: pick, furShade: darker(0.16), furAccent: lighter(0.2), belly: lighter(0.65, 0.4) };
     case "goldenRetriever":

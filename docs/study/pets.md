@@ -3,7 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all ten cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish, nap, play), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
+Status: the sprite format, palettes, pattern zones, renderer, all eleven cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish, nap, play), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -258,7 +258,7 @@ The waving arm grows from the left shoulder (3 px in and 4 px down the body) and
 The grooming leg rises straight from just above the floor to the mouth, found like an open mouth, so it lines up on every head.
 
 A swinging tail is bent from its base by `TailArt`, so every breed keeps its own tail (the Sphynx's whip, the British Shorthair's rings, the Poodle's pom, the Shih Tzu's plume).
-Dogs draw the tail as its own grid; cats and the dachshund draw it into the sitting body, so the composer cuts it out at the body's tail column first (`SitLayout.tailColumn`: 17 for cats, 18 for the British Shorthair and the Scottish Fold, whose plump bodies are a column wider, and 23 for the dachshund).
+Dogs draw the tail as its own grid; cats and the dachshund draw it into the sitting body, so the composer cuts it out at the body's tail column first (`SitLayout.tailColumn`: 17 for cats, 18 for the British Shorthair, the Scottish Fold and the British Longhair, whose plump bodies are a column wider, and 23 for the dachshund).
 The base row stays put and each row above leans a little further, never more than a pixel past the row below, so the tail stays one connected stroke.
 The swing is cut down to the room left in the frame, which keeps the dachshund's tail, near the right edge, to a 1 px flick.
 The corgi and French bulldog have no tail, so `TailArt.nub` pops out past the haunch and bobs instead.
@@ -496,6 +496,24 @@ The Scottish Fold is all roundness, so its look comes from its folded ears and a
 
 ![Every costume on the Scottish Fold](images/costumes-scottishFold.png)
 
+### The British Longhair
+
+The British Longhair is the British Shorthair's fluffy cousin, so its look comes from fur breaking up the outline:
+
+- Head (`CatArt.headLonghair`): a round head with small, wide-set tufted ears, and a cheek ruff whose strands and loose tufts at the bottom corners give the silhouette a soft, fluffy edge.
+  The chin carries a shade line so the head reads apart from the chest ruff even on a dark coat.
+- Face (`CatArt.faceLonghair`): the shared 2x3 eyes in copper, the nose, and a tiny two-pixel mouth drawn in `furShade` instead of the mouth role, so it is a soft hint in the fur's own color and never a dark line around the nose.
+- Body (`CatArt.bodyLonghair`, `WalkArt.longhairCatTorso`, `WalkArt.longhairCatTail`): the plump 21-wide frame with a lighter V-shaped chest ruff, tufted haunches, and a big plumed tail split off at column 18.
+  Walking, its torso has a ruff at the chest and a tufted fringe along the belly, and its plumed tail sways a pixel between steps.
+- Coloring (`PetBreed.palette`): solid chocolate with a lighter muzzle and chest ruff, copper eyes, a rosy nose, and pink cheeks.
+  Fur is recolorable like every breed, from the same Closet swatches; the picked color becomes the coat, with a slightly lighter muzzle and ruff.
+- Party: its server id is `british-longhair` (catalog version 3).
+  A server on an older catalog gets `domestic-longhair` instead, and the server breeds without art that are longhairs (`domestic-longhair`, `persian`, `maine-coon`, `ragdoll`, `norwegian-forest`) are drawn as a British Longhair.
+
+![Every animation frame for the British Longhair](images/animations-britishLonghair.png)
+
+![Every costume on the British Longhair](images/costumes-britishLonghair.png)
+
 ### The Poodle
 
 The Poodle is all curls, so its look comes from a bumpy silhouette and dotted texture:
@@ -549,7 +567,7 @@ This also protects user recolors.
 ## Body shapes
 
 Breeds that share a silhouette share all of their art and differ only in palette and pattern.
-Cats look alike enough that four shapes cover all ten breeds.
+Cats look alike enough that five shapes cover all eleven breeds.
 Dogs need more, because their ears and snouts are what make them recognizable at notch size:
 
 | Shape | Breeds | What sets it apart |
@@ -558,6 +576,7 @@ Dogs need more, because their ears and snouts are what make them recognizable at
 | `roundCat` | British Shorthair | small wide-set ears, round cheeks, big blue eyes, stocky body, ringed tail |
 | `sphynxCat` | Sphynx | big flared ears, wrinkled brow and neck, lemon eyes, lean body, thin whip tail |
 | `foldCat` | Scottish Fold | small ears folded forward and down, round owl-like head, plush body, thick plain tail |
+| `longhairCat` | British Longhair | small tufted ears, fluffy cheek ruff, lighter chest ruff, copper eyes, big plumed tail |
 | `floppyDog` | Labrador, Beagle | hanging ears beside a rounded skull |
 | `fluffyDog` | Golden Retriever | long feathered ears |
 | `batEaredDog` | French Bulldog | big rounded bat ears, broad face |

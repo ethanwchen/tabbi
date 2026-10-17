@@ -22,6 +22,9 @@ public enum PetBodyShape: String, CaseIterable, Codable, Sendable {
     case sphynxCat
     /// Small ears folded forward and down on a round owl-like head (Scottish Fold).
     case foldCat
+    /// Round head with small tufted ears, a fluffy cheek ruff, and a plumed
+    /// tail (British Longhair).
+    case longhairCat
     /// Hanging ears on a rounded skull (Labrador, Beagle).
     case floppyDog
     /// Long feathered ears (Golden Retriever).
@@ -56,6 +59,7 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
     case britishShorthair
     case sphynx
     case scottishFold
+    case britishLonghair
     case goldenRetriever
     case labrador
     case frenchBulldog
@@ -113,6 +117,8 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
         case .sphynx:
             [.furBase: .pick, .furShade: .darker(0.14), .furAccent: .darker(0.1),
              .belly: .lighter(0.35, chroma: 0.7)]
+        case .britishLonghair:
+            [.furBase: .pick, .furShade: .darker(0.16), .furAccent: .lighter(0.12), .belly: .lighter(0.2)]
         case .scottishFold:
             [.furBase: .pick, .furShade: .darker(0.16), .furAccent: .lighter(0.2),
              .belly: .lighter(0.65, chroma: 0.4)]

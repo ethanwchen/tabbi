@@ -62,6 +62,15 @@
       ".ccBSBBBSBBBBSBBBBSBBB",
       ".cBSBBBSBBBBSBBBBSBBSB",
       "..SB.SB.SBSB.SBS.BSBS."
+    ],
+    "longhairCatTorso": [
+      "...BBBBBBBBBBBBBBBBB..",
+      "..BBBBBBBBBBBBBBBBBBB.",
+      ".BBBBBBBBBBBBBBBBBBBSS",
+      ".cBBBBBBBBBBBBBBBBBBBS",
+      ".ccBBBBBBBBBBBBBBBBBBS",
+      ".cccBsBBBBsBBBBsBBBBBS",
+      "..cS.SSS.SSSS.SSS.SSS."
     ]
   },
   "sequences": {
@@ -195,6 +204,24 @@
         "...",
         ".tt",
         "B.."
+      ]
+    ],
+    "longhairCatTail": [
+      [
+        "..t.",
+        ".tBt",
+        ".BBB",
+        "BBB.",
+        "BBB.",
+        "BB.."
+      ],
+      [
+        "...t.",
+        "..tBt",
+        "..BBB",
+        ".BBB.",
+        ".BBB.",
+        "BB..."
       ]
     ]
   }

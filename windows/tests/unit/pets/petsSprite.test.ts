@@ -221,8 +221,8 @@ describe("PetRenderer", () => {
 
 describe("PetBreed", () => {
   it("catalog has every cat and dog breed", () => {
-    expect(breedsOf("cat").length).toBe(10);
-    expect(breedsOf("cat").at(-1)).toBe("scottishFold");
+    expect(breedsOf("cat").length).toBe(11);
+    expect(breedsOf("cat").at(-1)).toBe("britishLonghair");
     expect(breedsOf("dog")).toEqual([
       "goldenRetriever",
       "labrador",

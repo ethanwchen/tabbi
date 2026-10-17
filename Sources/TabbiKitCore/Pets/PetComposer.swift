@@ -542,16 +542,17 @@ public enum PetComposer {
 
         init(_ shape: PetBodyShape) {
             switch shape {
-            case .cat, .roundCat, .sphynxCat, .foldCat:
+            case .cat, .roundCat, .sphynxCat, .foldCat, .longhairCat:
                 family = .cat
                 // The British Shorthair's and Scottish Fold's plump bodies are a
                 // column wider, so their tails start one later.
-                let plump = shape == .roundCat || shape == .foldCat
+                let plump = shape == .roundCat || shape == .foldCat || shape == .longhairCat
                 (bodyX, bodyY, tail, tailColumn) = (6, 20, nil, plump ? 18 : 17)
                 (body, head, face) = switch shape {
                 case .roundCat: (CatArt.bodyRound, CatArt.headRound, CatArt.faceRound)
                 case .sphynxCat: (CatArt.bodySphynx, CatArt.headSphynx, CatArt.faceSphynx)
                 case .foldCat: (CatArt.bodyFold, CatArt.headFold, CatArt.faceOpen)
+                case .longhairCat: (CatArt.bodyLonghair, CatArt.headLonghair, CatArt.faceLonghair)
                 default: (CatArt.bodySit, CatArt.head, CatArt.faceOpen)
                 }
                 (headX, headY, faceRow, eyeRow, skullTop) = (6, 7, 0, 7, 3)
@@ -635,6 +636,7 @@ public enum PetComposer {
                 case .roundCat: (WalkArt.roundCatTorso, WalkArt.roundCatTail)
                 case .sphynxCat: (WalkArt.sphynxTorso, WalkArt.sphynxTail)
                 case .foldCat: (WalkArt.catTorso, WalkArt.foldCatTail)
+                case .longhairCat: (WalkArt.longhairCatTorso, WalkArt.longhairCatTail)
                 default: (WalkArt.catTorso, WalkArt.catTail)
                 }
                 (torsoY, tailX) = (20, 26)
