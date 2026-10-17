@@ -1236,7 +1236,7 @@ private struct ClosetStreakStrip: View {
         case .studied:
             Circle().fill(accent)
                 .overlay(Image(systemName: "checkmark").font(.system(size: 10, weight: .heavy))
-                    .foregroundStyle(Theme.Palette.background))
+                    .foregroundStyle(Theme.Palette.onAccent))
         case .frozen:
             Circle().fill(frostColor.opacity(0.18))
                 .overlay(Circle().strokeBorder(frostColor.opacity(0.5), lineWidth: 1))

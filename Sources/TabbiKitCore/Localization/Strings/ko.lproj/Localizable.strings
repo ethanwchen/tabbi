@@ -645,6 +645,8 @@
 	<string>자동화</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>%@이(가) 앱 번들로 실행될 때 사용할 수 있어요.</string>
+	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
+	<string>하늘색과 구름 같은 흰색, 블루베리 우유 한 팩처럼.</string>
 	<key>Back</key>
 	<string>뒤로</string>
 	<key>Back to %@.</key>
@@ -725,6 +727,8 @@
 	<string>내장 디스플레이</string>
 	<key>Bunny Ears</key>
 	<string>토끼 귀</string>
+	<key>Butter yellow sunshine, happy and bright.</key>
+	<string>버터 옐로 햇살, 밝고 행복하게.</string>
 	<key>Buy freeze</key>
 	<string>보호 구매</string>
 	<key>By joining you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
@@ -765,6 +769,8 @@
 	<string>요청 취소</string>
 	<key>Cancel your request to %@</key>
 	<string>%@ 님에게 보낸 요청 취소</string>
+	<key>Candy pink and milk, sweet but never loud.</key>
+	<string>캔디 핑크와 우유, 달콤하지만 요란하지 않게.</string>
 	<key>Caramel</key>
 	<string>캐러멜</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -841,6 +847,8 @@
 	<string>벚꽃 시즌</string>
 	<key>Cherry Petals</key>
 	<string>벚꽃잎</string>
+	<key>Cherry blossom pink on warm black.</key>
+	<string>따뜻한 검정 위의 벚꽃 분홍.</string>
 	<key>Chocolate</key>
 	<string>초콜릿</string>
 	<key>Choose AI</key>
@@ -999,6 +1007,8 @@
 	<string>노치에서 Spotify나 Apple Music을 조작해요.</string>
 	<key>Cool Sunglasses</key>
 	<string>멋진 선글라스</string>
+	<key>Cool gray surfaces and plain SF type.</key>
+	<string>차가운 회색 면과 담백한 SF 서체.</string>
 	<key>Copied</key>
 	<string>복사됨</string>
 	<key>Copy</key>
@@ -1105,6 +1115,8 @@
 	<string>%@ 님의 요청을 거절해요. 상대에게 알리지 않아요.</string>
 	<key>Deep</key>
 	<string>딥</string>
+	<key>Deep cherry red, fizzy and warm, made for late sessions.</key>
+	<string>짙은 체리 레드, 톡 쏘고 따뜻하게, 늦은 공부 시간을 위해.</string>
 	<key>Deep focus</key>
 	<string>딥 포커스</string>
 	<key>Deep focus is on: focus blocks bring %@. Click to turn it off</key>
@@ -1431,6 +1443,8 @@
 	<string>친구 서버</string>
 	<key>Frog Hat</key>
 	<string>개구리 모자</string>
+	<key>Frosted glass cards over a cool blue glow.</key>
+	<string>차가운 파란 빛 위의 반투명 유리 카드.</string>
 	<key>Full</key>
 	<string>꽉 참</string>
 	<key>Full path to the claude binary. Leave empty to detect it automatically.</key>
@@ -1487,6 +1501,8 @@
 	<string>컵을 들고 몇 모금 마셔요.</string>
 	<key>Graduation Cap</key>
 	<string>학사모</string>
+	<key>Grayscale everything, no distractions.</key>
+	<string>모든 것을 회색조로, 방해 요소 없이.</string>
 	<key>Great job!</key>
 	<string>잘했어요!</string>
 	<key>Great job, team!</key>
@@ -1503,6 +1519,8 @@
 	<string>괴롭힘</string>
 	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
 	<string>어려운 일이 쉬워지는 건 길이 나는 것과 같아요. 한 걸음을 여러 번.</string>
+	<key>Hardware black, calm and crisp.</key>
+	<string>하드웨어처럼 까맣고, 차분하고 선명하게.</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>코드가 있나요? %lld자리 파티 코드를 입력하고 Return 키를 눌러 참가하세요</string>
 	<key>Head Mirror</key>
@@ -1583,6 +1601,8 @@
 	<string>노치가 열려 있을 땐 화살표 키나 두 손가락 쓸기로 탭을 바꾸고, 1-9로 탭에 바로 가고, Esc나 위로 쓸기로 닫아요. 닫힌 노치에서는 아래로 쓸거나 가운데 클릭하면 다음 실시간 현황을 볼 수 있어요.</string>
 	<key>Inappropriate name</key>
 	<string>부적절한 이름</string>
+	<key>Indigo night sky with a little gold star.</key>
+	<string>남색 밤하늘에 작은 금빛 별 하나.</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>자정 이후 모든 %@ 세션의 입력, 출력, 캐시 토큰</string>
 	<key>Inseparable</key>
@@ -1753,6 +1773,8 @@
 	<string>예: 민준 또는 김 박사</string>
 	<key>Lilac</key>
 	<string>라일락</string>
+	<key>Lilac bubble tea, dreamy and soft.</key>
+	<string>라일락빛 버블티, 몽글몽글 부드럽게.</string>
 	<key>Limited</key>
 	<string>한정</string>
 	<key>Limited edition</key>
@@ -1837,10 +1859,14 @@
 	<string>방법</string>
 	<key>Midnight</key>
 	<string>미드나이트</string>
+	<key>Midnight ocean blue with a soft periwinkle glow.</key>
+	<string>한밤의 바다색에 은은한 페리윙클 빛.</string>
 	<key>Milestones</key>
 	<string>마일스톤</string>
 	<key>Mint</key>
 	<string>민트</string>
+	<key>Mint chip ice cream: cool mint over a cocoa glow.</key>
+	<string>민트초코 아이스크림: 시원한 민트 위에 코코아 빛.</string>
 	<key>Model</key>
 	<string>모델</string>
 	<key>Month</key>
@@ -1861,6 +1887,8 @@
 	<string>추가 옵션</string>
 	<key>More tabs</key>
 	<string>탭 더 보기</string>
+	<key>Mossy sage greens, quiet as a walk.</key>
+	<string>이끼 같은 세이지 그린, 산책처럼 고요하게.</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>대부분은 준비될 때까지 기다려요. 그냥 시작했다는 것, 그게 차이예요.</string>
 	<key>Mostly convention</key>
@@ -2389,6 +2417,8 @@
 	<string>즐겨찾기로 고정</string>
 	<key>Pink noise</key>
 	<string>핑크 노이즈</string>
+	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
+	<string>분홍 하늘, 하늘색 설탕: 해 질 녘의 축제.</string>
 	<key>Pirate Hat</key>
 	<string>해적 모자</string>
 	<key>Plain collar</key>
@@ -3055,6 +3085,8 @@
 	<string>슈퍼히어로 망토</string>
 	<key>Surgical Cap</key>
 	<string>수술 모자</string>
+	<key>Sweet</key>
+	<string>스위트</string>
 	<key>Switch Kit</key>
 	<string>키트 바꾸기</string>
 	<key>Switch every</key>
@@ -3489,6 +3521,8 @@
 	<string>버전 %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>GitHub에서 보기</string>
+	<key>Vivid accents with a violet glow.</key>
+	<string>선명한 강조색과 보랏빛 광채.</string>
 	<key>Volume</key>
 	<string>음량</string>
 	<key>Volume %@</key>
@@ -3513,6 +3547,8 @@
 	<string>친구 요청</string>
 	<key>Wardrobe</key>
 	<string>옷장</string>
+	<key>Warm cream and peach, soft and gentle.</key>
+	<string>따뜻한 크림과 복숭아색, 부드럽고 포근하게.</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>물이 협곡을 만드는 건 하루도 빠지지 않아서예요.</string>
 	<key>Wearing</key>
@@ -3553,6 +3589,8 @@
 	<string>언제 태어났나요?</string>
 	<key>Whether a question grows the notch into the larger chat view</key>
 	<string>질문하면 노치를 큰 채팅 화면으로 넓힐지 정해요</string>
+	<key>Whisked green tea and oat milk, fresh and grounded.</key>
+	<string>거품 낸 녹차와 귀리 우유, 상쾌하고 차분하게.</string>
 	<key>White Coat</key>
 	<string>흰 가운</string>
 	<key>White noise</key>
@@ -3841,6 +3879,42 @@
 	<string>호스트</string>
 	<key>the rare %@ fur</key>
 	<string>희귀 털색 '%@'</string>
+	<key>theme.bananaMilk</key>
+	<string>바나나 우유</string>
+	<key>theme.blueberryMilk</key>
+	<string>블루베리 우유</string>
+	<key>theme.cherrySoda</key>
+	<string>체리 소다</string>
+	<key>theme.cottonCandy</key>
+	<string>솜사탕</string>
+	<key>theme.cozy</key>
+	<string>포근함</string>
+	<key>theme.deepSea</key>
+	<string>심해</string>
+	<key>theme.forest</key>
+	<string>숲</string>
+	<key>theme.graphite</key>
+	<string>그래파이트</string>
+	<key>theme.liquidGlass</key>
+	<string>Liquid Glass</string>
+	<key>theme.matchaLatte</key>
+	<string>말차 라테</string>
+	<key>theme.midnight</key>
+	<string>미드나이트</string>
+	<key>theme.mintChoco</key>
+	<string>민트초코</string>
+	<key>theme.monochrome</key>
+	<string>모노크롬</string>
+	<key>theme.neon</key>
+	<string>네온</string>
+	<key>theme.sakura</key>
+	<string>벚꽃</string>
+	<key>theme.stargazer</key>
+	<string>별빛</string>
+	<key>theme.strawberryMilk</key>
+	<string>딸기 우유</string>
+	<key>theme.taro</key>
+	<string>타로</string>
 	<key>today</key>
 	<string>오늘</string>
 	<key>tokens</key>

@@ -645,6 +645,8 @@
 	<string>自動化</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>%@ 以 App 套件執行時才能使用。</string>
+	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
+	<string>嬰兒藍配雲朵白，像一盒藍莓牛奶。</string>
 	<key>Back</key>
 	<string>返回</string>
 	<key>Back to %@.</key>
@@ -725,6 +727,8 @@
 	<string>內建顯示器</string>
 	<key>Bunny Ears</key>
 	<string>兔耳朵</string>
+	<key>Butter yellow sunshine, happy and bright.</key>
+	<string>奶油黃的陽光，快樂又明亮。</string>
 	<key>Buy freeze</key>
 	<string>購買凍結</string>
 	<key>By joining you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
@@ -765,6 +769,8 @@
 	<string>取消邀請</string>
 	<key>Cancel your request to %@</key>
 	<string>取消送給 %@ 的邀請</string>
+	<key>Candy pink and milk, sweet but never loud.</key>
+	<string>糖果粉配牛奶，甜美卻不張揚。</string>
 	<key>Caramel</key>
 	<string>焦糖色</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -841,6 +847,8 @@
 	<string>櫻花季</string>
 	<key>Cherry Petals</key>
 	<string>櫻花瓣</string>
+	<key>Cherry blossom pink on warm black.</key>
+	<string>暖黑底上的櫻花粉。</string>
 	<key>Chocolate</key>
 	<string>巧克力色</string>
 	<key>Choose AI</key>
@@ -999,6 +1007,8 @@
 	<string>在瀏海裡控制 Spotify 或 Apple Music。</string>
 	<key>Cool Sunglasses</key>
 	<string>酷炫墨鏡</string>
+	<key>Cool gray surfaces and plain SF type.</key>
+	<string>冷灰色表面，搭配簡潔的 SF 字體。</string>
 	<key>Copied</key>
 	<string>已拷貝</string>
 	<key>Copy</key>
@@ -1105,6 +1115,8 @@
 	<string>拒絕 %@ 的邀請。對方不會收到通知。</string>
 	<key>Deep</key>
 	<string>深度</string>
+	<key>Deep cherry red, fizzy and warm, made for late sessions.</key>
+	<string>深櫻桃紅，氣泡滿滿又溫暖，專為深夜讀書。</string>
 	<key>Deep focus</key>
 	<string>深度專注</string>
 	<key>Deep focus is on: focus blocks bring %@. Click to turn it off</key>
@@ -1431,6 +1443,8 @@
 	<string>好友伺服器</string>
 	<key>Frog Hat</key>
 	<string>青蛙帽</string>
+	<key>Frosted glass cards over a cool blue glow.</key>
+	<string>冷藍光暈上的霧面玻璃卡片。</string>
 	<key>Full</key>
 	<string>已滿</string>
 	<key>Full path to the claude binary. Leave empty to detect it automatically.</key>
@@ -1487,6 +1501,8 @@
 	<string>拿起杯子，喝幾口。</string>
 	<key>Graduation Cap</key>
 	<string>學士帽</string>
+	<key>Grayscale everything, no distractions.</key>
+	<string>全部灰階，毫無干擾。</string>
 	<key>Great job!</key>
 	<string>做得好！</string>
 	<key>Great job, team!</key>
@@ -1503,6 +1519,8 @@
 	<string>騷擾</string>
 	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
 	<string>難事變容易，就像路是走出來的：一步，走很多次。</string>
+	<key>Hardware black, calm and crisp.</key>
+	<string>與硬體一樣的黑，安靜又俐落。</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>有代碼嗎？輸入 %lld 位數的派對代碼，然後按 Return 鍵加入</string>
 	<key>Head Mirror</key>
@@ -1583,6 +1601,8 @@
 	<string>瀏海打開時，用方向鍵或雙指滑動切換標籤頁，按 1-9 跳到某個標籤頁，按 Esc 或向上滑動即可關閉。瀏海收起時，向下滑動或按一下滑鼠中鍵即可查看下一個即時動態。</string>
 	<key>Inappropriate name</key>
 	<string>名字不當</string>
+	<key>Indigo night sky with a little gold star.</key>
+	<string>靛藍夜空，綴著一顆小金星。</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>自午夜以來所有 %@ 工作階段的輸入、輸出和快取 Token</string>
 	<key>Inseparable</key>
@@ -1753,6 +1773,8 @@
 	<string>例如小明或林醫師</string>
 	<key>Lilac</key>
 	<string>淡紫色</string>
+	<key>Lilac bubble tea, dreamy and soft.</key>
+	<string>丁香紫的珍珠奶茶，夢幻又柔軟。</string>
 	<key>Limited</key>
 	<string>限定</string>
 	<key>Limited edition</key>
@@ -1837,10 +1859,14 @@
 	<string>方法</string>
 	<key>Midnight</key>
 	<string>午夜藍</string>
+	<key>Midnight ocean blue with a soft periwinkle glow.</key>
+	<string>午夜海洋藍，透著柔和的長春花紫光。</string>
 	<key>Milestones</key>
 	<string>里程碑</string>
 	<key>Mint</key>
 	<string>薄荷色</string>
+	<key>Mint chip ice cream: cool mint over a cocoa glow.</key>
+	<string>薄荷巧克力冰淇淋：清涼薄荷配可可光暈。</string>
 	<key>Model</key>
 	<string>模型</string>
 	<key>Month</key>
@@ -1861,6 +1887,8 @@
 	<string>更多選項</string>
 	<key>More tabs</key>
 	<string>更多標籤頁</string>
+	<key>Mossy sage greens, quiet as a walk.</key>
+	<string>苔蘚般的鼠尾草綠，安靜如散步。</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>多數人等到覺得準備好了才開始。你直接開始了。差別就在這裡。</string>
 	<key>Mostly convention</key>
@@ -2389,6 +2417,8 @@
 	<string>設為最愛</string>
 	<key>Pink noise</key>
 	<string>粉紅噪音</string>
+	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
+	<string>粉色天空，嬰兒藍糖絲：黃昏的遊樂園。</string>
 	<key>Pirate Hat</key>
 	<string>海盜帽</string>
 	<key>Plain collar</key>
@@ -3055,6 +3085,8 @@
 	<string>超級英雄披風</string>
 	<key>Surgical Cap</key>
 	<string>手術帽</string>
+	<key>Sweet</key>
+	<string>甜美</string>
 	<key>Switch Kit</key>
 	<string>切換套件</string>
 	<key>Switch every</key>
@@ -3489,6 +3521,8 @@
 	<string>版本 %@（%@）</string>
 	<key>View on GitHub</key>
 	<string>在 GitHub 上查看</string>
+	<key>Vivid accents with a violet glow.</key>
+	<string>鮮豔的強調色，配上紫色光暈。</string>
 	<key>Volume</key>
 	<string>音量</string>
 	<key>Volume %@</key>
@@ -3513,6 +3547,8 @@
 	<string>想加你為好友</string>
 	<key>Wardrobe</key>
 	<string>衣櫥</string>
+	<key>Warm cream and peach, soft and gentle.</key>
+	<string>暖奶油色與蜜桃色，柔和溫柔。</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>水能刻出峽谷，是因為它一天也不停歇。</string>
 	<key>Wearing</key>
@@ -3553,6 +3589,8 @@
 	<string>你是什麼時候出生的？</string>
 	<key>Whether a question grows the notch into the larger chat view</key>
 	<string>提問時是否將瀏海展開成大型聊天視圖</string>
+	<key>Whisked green tea and oat milk, fresh and grounded.</key>
+	<string>現刷綠茶配燕麥奶，清新又踏實。</string>
 	<key>White Coat</key>
 	<string>白袍</string>
 	<key>White noise</key>
@@ -3841,6 +3879,42 @@
 	<string>主持人</string>
 	<key>the rare %@ fur</key>
 	<string>稀有毛色「%@」</string>
+	<key>theme.bananaMilk</key>
+	<string>香蕉牛奶</string>
+	<key>theme.blueberryMilk</key>
+	<string>藍莓牛奶</string>
+	<key>theme.cherrySoda</key>
+	<string>櫻桃汽水</string>
+	<key>theme.cottonCandy</key>
+	<string>棉花糖</string>
+	<key>theme.cozy</key>
+	<string>溫馨</string>
+	<key>theme.deepSea</key>
+	<string>深海</string>
+	<key>theme.forest</key>
+	<string>森林</string>
+	<key>theme.graphite</key>
+	<string>石墨</string>
+	<key>theme.liquidGlass</key>
+	<string>Liquid Glass</string>
+	<key>theme.matchaLatte</key>
+	<string>抹茶拿鐵</string>
+	<key>theme.midnight</key>
+	<string>午夜</string>
+	<key>theme.mintChoco</key>
+	<string>薄荷巧克力</string>
+	<key>theme.monochrome</key>
+	<string>單色</string>
+	<key>theme.neon</key>
+	<string>霓虹</string>
+	<key>theme.sakura</key>
+	<string>櫻花</string>
+	<key>theme.stargazer</key>
+	<string>觀星</string>
+	<key>theme.strawberryMilk</key>
+	<string>草莓牛奶</string>
+	<key>theme.taro</key>
+	<string>芋泥</string>
 	<key>today</key>
 	<string>今天</string>
 	<key>tokens</key>

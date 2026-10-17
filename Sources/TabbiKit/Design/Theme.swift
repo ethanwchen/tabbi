@@ -42,16 +42,28 @@ public enum Theme {
         /// it reads as "loved" rather than as one module's accent (Spotify's
         /// green on an Apple Music track looked wrong).
         public static var favorite: Color {
-            accent(ModuleAccent(red: 0.98, green: 0.26, blue: 0.40))
+            identityAccent(ModuleAccent(red: 0.98, green: 0.26, blue: 0.40))
         }
 
         /// One accent per module, used for progress, selection, and
-        /// highlights, as the active theme treats it (muted, vivid, pastel).
-        /// Modules pass their own descriptor's accent; shared views look it
-        /// up through the `moduleCatalog` environment value.
+        /// highlights, as the active theme treats it (muted, vivid, pastel),
+        /// or the theme's own key color when it has one (Strawberry Milk's
+        /// pink). Modules pass their own descriptor's accent; shared views
+        /// look it up through the `moduleCatalog` environment value.
         public static func accent(_ accent: ModuleAccent) -> Color {
             Color(current.accent(accent))
         }
+
+        /// A module's accent as the theme treats it, ignoring the theme's
+        /// key color: for what has to tell modules apart, like module icons
+        /// listed side by side or another module's item in a list.
+        public static func identityAccent(_ accent: ModuleAccent) -> Color {
+            Color(current.identityAccent(accent))
+        }
+
+        /// Text and symbols on an accent fill (a primary button's label):
+        /// the theme's `onAccent`, or the black body in themes without one.
+        public static var onAccent: Color { Color(current.onAccent) }
     }
 
     public enum Spacing {
@@ -169,8 +181,13 @@ public struct IconButton: View {
 }
 
 public extension ModuleDescriptor {
-    /// The module's accent as a SwiftUI color.
+    /// The module's accent as a SwiftUI color, or the theme's key color
+    /// when it has one.
     var accentColor: Color { Theme.Palette.accent(accent) }
+
+    /// The module's own accent as the theme treats it, even in a theme with
+    /// a key color, for places that list several modules side by side.
+    var identityColor: Color { Theme.Palette.identityAccent(accent) }
 }
 
 public extension Color {

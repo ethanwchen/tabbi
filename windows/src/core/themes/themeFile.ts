@@ -7,6 +7,7 @@
 
 import { ACCENT_TREATMENTS } from "./accentTreatment";
 import {
+  BASE_THEME_FAMILIES,
   GLASS_SHEEN_ROLES,
   PALETTE_ROLES,
   REQUIRED_THEME_IDS,
@@ -18,6 +19,7 @@ import {
   paletteRoles,
   type AppTheme,
   type GlassSheen,
+  type ThemeFamily,
   type ThemeID,
   type ThemePalette,
 } from "./appTheme";
@@ -114,7 +116,23 @@ function decodePalette(value: unknown, path: string): ThemePalette {
     (typeof PALETTE_ROLES)[number],
     ThemeColor
   >;
-  return json.glow === undefined ? roles : { ...roles, glow: color("glow") };
+  return {
+    ...roles,
+    ...(json.glow === undefined ? {} : { glow: color("glow") }),
+    ...(json.accent === undefined ? {} : { accent: color("accent") }),
+    ...(json.onAccent === undefined ? {} : { onAccent: color("onAccent") }),
+  };
+}
+
+/*
+ * Reads `family`, which stays a value every build knows (classic or cozy),
+ * then `group` when it names a family this build knows, so a group from a
+ * newer build falls back to the theme's `family`.
+ */
+function decodeFamily(json: JsonObject, path: string): ThemeFamily {
+  const family = oneOf(BASE_THEME_FAMILIES, json.family, `${path}.family`);
+  const group = typeof json.group === "string" ? THEME_FAMILIES.find((f) => f === json.group) : undefined;
+  return group ?? family;
 }
 
 function decodeTheme(value: unknown, path: string): AppTheme {
@@ -123,7 +141,7 @@ function decodeTheme(value: unknown, path: string): AppTheme {
     id: string(json.id, `${path}.id`),
     name: string(json.name, `${path}.name`),
     summary: string(json.summary, `${path}.summary`),
-    family: oneOf(THEME_FAMILIES, json.family, `${path}.family`),
+    family: decodeFamily(json, path),
     palette: decodePalette(json.palette, `${path}.palette`),
     accents: oneOf(ACCENT_TREATMENTS, json.accents, `${path}.accents`),
     typeface: oneOf(THEME_TYPEFACES, json.typeface, `${path}.typeface`),

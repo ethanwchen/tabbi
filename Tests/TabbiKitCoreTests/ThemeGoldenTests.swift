@@ -82,14 +82,20 @@ struct ThemeGoldenFixture: Codable, Equatable {
         var motion: String
         var controls: String
         var surfaces: String
-        /// Role name (`background`, `glow`, `surface`, ...) to color; `glow`
-        /// is absent for a flat body.
+        /// Role name (`background`, `glow`, `surface`, ...) to color; `glow`,
+        /// `accent` and `onAccent` are absent when the theme doesn't set them.
         var palette: [String: Color]
+        /// What the theme draws with `ThemeGoldenFixture.resolvedSample`:
+        /// `accent` (the theme's key color, or the module accent as
+        /// `accents` treats it), `identityAccent` (always the treated module
+        /// accent) and `onAccent` (the palette's, or the background).
+        var resolved: [String: Color]
 
         func matches(_ other: Theme) -> Bool {
             var (a, b) = (self, other)
-            (a.palette, b.palette) = ([:], [:])
+            (a.palette, b.palette, a.resolved, b.resolved) = ([:], [:], [:], [:])
             return a == b && ThemeGoldenFixture.matches(palette, other.palette)
+                && ThemeGoldenFixture.matches(resolved, other.resolved)
         }
     }
 
@@ -147,6 +153,10 @@ struct ThemeGoldenFixture: Codable, Equatable {
 
     static let treatments: [AccentTreatment] = [.original, .monochrome, .vivid, .pastel]
 
+    /// The module accent each theme's `resolved` colors are drawn for:
+    /// Study's amber, the brand color.
+    static let resolvedSample = ModuleAccent(red: 1.00, green: 0.62, blue: 0.26)
+
     static func current() -> ThemeGoldenFixture {
         let sheen = GlassSheen.standard
         return ThemeGoldenFixture(
@@ -175,10 +185,17 @@ struct ThemeGoldenFixture: Codable, Equatable {
             "danger": Color(p.danger),
         ]
         palette["glow"] = p.glow.map(Color.init)
+        palette["accent"] = p.accent.map(Color.init)
+        palette["onAccent"] = p.onAccent.map(Color.init)
         return Theme(
             id: theme.id.rawValue, name: theme.name, summary: theme.summary, family: theme.family.rawValue,
             accents: theme.accents.rawValue, typeface: theme.typeface.rawValue, motion: theme.motion.rawValue,
-            controls: theme.controls.rawValue, surfaces: theme.surfaces.rawValue, palette: palette
+            controls: theme.controls.rawValue, surfaces: theme.surfaces.rawValue, palette: palette,
+            resolved: [
+                "accent": Color(theme.accent(resolvedSample)),
+                "identityAccent": Color(theme.identityAccent(resolvedSample)),
+                "onAccent": Color(theme.onAccent),
+            ]
         )
     }
 }

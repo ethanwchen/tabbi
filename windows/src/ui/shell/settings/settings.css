@@ -392,8 +392,11 @@
   min-width: 0;
 }
 
+/* Fills its column, so five cards fit a row at any window width without touching. */
 .settings-theme-preview {
   display: block;
+  align-self: stretch;
+  box-sizing: border-box;
   padding: 3px;
   border-radius: 9px;
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary-text) 12%, transparent);
@@ -418,10 +421,17 @@
   font-weight: 600;
 }
 
+/*
+ * Two lines, reserved in every card so a row's previews line up: longer
+ * names (Клубничное молоко) wrap instead of being cut.
+ */
 .settings-theme-name {
-  white-space: nowrap;
-  overflow: hidden;
+  --name-line: 1.25em;
   max-width: 100%;
+  min-height: calc(2 * var(--name-line));
+  line-height: var(--name-line);
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 
 /* Connections. */
@@ -731,4 +741,5 @@
 .settings-window {
   --accent: rgb(90 150 255);
   --accent-soft: color-mix(in srgb, rgb(90 150 255) 18%, transparent);
+  --on-accent: var(--background);
 }

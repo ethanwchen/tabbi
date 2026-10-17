@@ -40,7 +40,7 @@ import { ProgressRing } from "../kit/Loading";
 import { MarqueeText } from "../kit/MarqueeText";
 import { NotchPetWing } from "../kit/NotchPetWing";
 import { PetView } from "../kit/PetView";
-import { accentVariables } from "../kit/tokens";
+import { identityAccentVariables } from "../kit/tokens";
 import { VIRTUAL_NOTCH } from "./geometry";
 import { PREVIEW, previewSummary, previewSymbol } from "./previewLayout";
 
@@ -97,6 +97,7 @@ const wallClock = () => Date.now() / 1000;
 
 function PreviewRow({ item, wing, catalog, now, clock = wallClock, locale, musicWings, onJoin, phase, onDone }: ClosedPreviewProps & { phase: "in" | "out" | "rest"; onDone?: () => void }) {
   const theme = useTheme();
+  /* The module's own color: the closed island keeps module identity in every theme, since its wings take turns between modules. */
   const accent = catalog.descriptor(tickerItemModule(item)).accent;
   const isMusic = item.type === "nowPlaying";
   const nudging = item.type === "meeting" && item.meeting.isNudging;
@@ -107,7 +108,7 @@ function PreviewRow({ item, wing, catalog, now, clock = wallClock, locale, music
       data-music={isMusic || undefined}
       data-nudging={nudging || undefined}
       title={previewSummary(item, now, locale)}
-      style={accentVariables(theme, accent) as CSSProperties}
+      style={identityAccentVariables(theme, accent) as CSSProperties}
       onAnimationEnd={phase === "out" ? onDone : undefined}
     >
       <div className="wing leading" style={{ width: wing }}>

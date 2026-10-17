@@ -254,7 +254,7 @@ private struct SendButton: View {
         Button(action: isStreaming ? stop : send) {
             Image(systemName: isStreaming ? "stop.fill" : "arrow.up")
                 .font(.system(size: 11, weight: .bold))
-                .foregroundStyle(isActive ? Theme.Palette.background : Theme.Palette.tertiaryText)
+                .foregroundStyle(isActive ? Theme.Palette.onAccent : Theme.Palette.tertiaryText)
                 .frame(width: 24, height: 24)
                 .background(Circle().fill(fill))
                 .contentShape(Circle())

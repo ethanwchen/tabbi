@@ -645,6 +645,8 @@
 	<string>Automação</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>Disponível quando o %@ roda como pacote de app.</string>
+	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
+	<string>Azul-bebê e branco-nuvem, como uma caixinha de leite de mirtilo.</string>
 	<key>Back</key>
 	<string>Voltar</string>
 	<key>Back to %@.</key>
@@ -725,6 +727,8 @@
 	<string>Tela integrada</string>
 	<key>Bunny Ears</key>
 	<string>Orelhas de coelho</string>
+	<key>Butter yellow sunshine, happy and bright.</key>
+	<string>Sol amarelo-manteiga, alegre e luminoso.</string>
 	<key>Buy freeze</key>
 	<string>Comprar proteção</string>
 	<key>By joining you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
@@ -765,6 +769,8 @@
 	<string>Cancelar pedido</string>
 	<key>Cancel your request to %@</key>
 	<string>Cancelar seu pedido para %@</string>
+	<key>Candy pink and milk, sweet but never loud.</key>
+	<string>Rosa bala e leite, doce mas nunca berrante.</string>
 	<key>Caramel</key>
 	<string>Caramelo</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -841,6 +847,8 @@
 	<string>Época das cerejeiras</string>
 	<key>Cherry Petals</key>
 	<string>Pétalas de cerejeira</string>
+	<key>Cherry blossom pink on warm black.</key>
+	<string>Rosa flor de cerejeira sobre preto quente.</string>
 	<key>Chocolate</key>
 	<string>Chocolate</string>
 	<key>Choose AI</key>
@@ -999,6 +1007,8 @@
 	<string>Controle o Spotify ou o Apple Music pelo notch.</string>
 	<key>Cool Sunglasses</key>
 	<string>Óculos escuros estilosos</string>
+	<key>Cool gray surfaces and plain SF type.</key>
+	<string>Superfícies em cinza frio e fonte SF simples.</string>
 	<key>Copied</key>
 	<string>Copiado</string>
 	<key>Copy</key>
@@ -1105,6 +1115,8 @@
 	<string>Recusar o pedido de %@. A pessoa não vai ser avisada.</string>
 	<key>Deep</key>
 	<string>Profundo</string>
+	<key>Deep cherry red, fizzy and warm, made for late sessions.</key>
+	<string>Vermelho-cereja profundo, borbulhante e quente, para sessões até tarde.</string>
 	<key>Deep focus</key>
 	<string>Foco profundo</string>
 	<key>Deep focus is on: focus blocks bring %@. Click to turn it off</key>
@@ -1431,6 +1443,8 @@
 	<string>Servidor de amigos</string>
 	<key>Frog Hat</key>
 	<string>Chapéu de sapo</string>
+	<key>Frosted glass cards over a cool blue glow.</key>
+	<string>Cartões de vidro fosco sobre um brilho azul frio.</string>
 	<key>Full</key>
 	<string>Cheio</string>
 	<key>Full path to the claude binary. Leave empty to detect it automatically.</key>
@@ -1487,6 +1501,8 @@
 	<string>Pegue seu copo e tome alguns goles.</string>
 	<key>Graduation Cap</key>
 	<string>Capelo</string>
+	<key>Grayscale everything, no distractions.</key>
+	<string>Tudo em tons de cinza, sem distrações.</string>
 	<key>Great job!</key>
 	<string>Mandou bem!</string>
 	<key>Great job, team!</key>
@@ -1503,6 +1519,8 @@
 	<string>Assédio</string>
 	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
 	<string>O difícil fica fácil como se abre uma trilha: um passo, muitas vezes.</string>
+	<key>Hardware black, calm and crisp.</key>
+	<string>Preto como o hardware, calmo e nítido.</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>Tem um código? Digite o código do grupo de %lld caracteres e pressione Return para entrar</string>
 	<key>Head Mirror</key>
@@ -1583,6 +1601,8 @@
 	<string>Com o notch aberto, as setas ou um gesto de dois dedos trocam de aba, 1-9 vai direto a uma aba, e Esc ou deslizar para cima fecha. Com o notch fechado, deslize para baixo ou clique com o botão do meio para ver a próxima atividade ao vivo.</string>
 	<key>Inappropriate name</key>
 	<string>Nome impróprio</string>
+	<key>Indigo night sky with a little gold star.</key>
+	<string>Céu noturno anil com uma pequena estrela dourada.</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>Tokens de entrada, saída e cache de todas as sessões do %@ desde a meia-noite</string>
 	<key>Inseparable</key>
@@ -1753,6 +1773,8 @@
 	<string>Como Ana ou Dra. Ana</string>
 	<key>Lilac</key>
 	<string>Lilás</string>
+	<key>Lilac bubble tea, dreamy and soft.</key>
+	<string>Bubble tea lilás, sonhador e suave.</string>
 	<key>Limited</key>
 	<string>Limitado</string>
 	<key>Limited edition</key>
@@ -1837,10 +1859,14 @@
 	<string>Método</string>
 	<key>Midnight</key>
 	<string>Meia-noite</string>
+	<key>Midnight ocean blue with a soft periwinkle glow.</key>
+	<string>Azul de oceano à meia-noite com um suave brilho lavanda.</string>
 	<key>Milestones</key>
 	<string>Marcos</string>
 	<key>Mint</key>
 	<string>Menta</string>
+	<key>Mint chip ice cream: cool mint over a cocoa glow.</key>
+	<string>Sorvete de menta com chocolate: menta fresca sobre um brilho de cacau.</string>
 	<key>Model</key>
 	<string>Modelo</string>
 	<key>Month</key>
@@ -1861,6 +1887,8 @@
 	<string>Mais opções</string>
 	<key>More tabs</key>
 	<string>Mais abas</string>
+	<key>Mossy sage greens, quiet as a walk.</key>
+	<string>Verdes sálvia e musgo, calmos como uma caminhada.</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>A maioria espera se sentir pronta. Você simplesmente começou. Essa é a diferença.</string>
 	<key>Mostly convention</key>
@@ -2389,6 +2417,8 @@
 	<string>Fixar como favorito</string>
 	<key>Pink noise</key>
 	<string>Ruído rosa</string>
+	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
+	<string>Céu rosa, açúcar azul-bebê: o parque ao entardecer.</string>
 	<key>Pirate Hat</key>
 	<string>Chapéu de pirata</string>
 	<key>Plain collar</key>
@@ -3055,6 +3085,8 @@
 	<string>Capa de super-herói</string>
 	<key>Surgical Cap</key>
 	<string>Touca cirúrgica</string>
+	<key>Sweet</key>
+	<string>Doce</string>
 	<key>Switch Kit</key>
 	<string>Trocar de kit</string>
 	<key>Switch every</key>
@@ -3489,6 +3521,8 @@
 	<string>Versão %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>Ver no GitHub</string>
+	<key>Vivid accents with a violet glow.</key>
+	<string>Destaques vivos com um brilho violeta.</string>
 	<key>Volume</key>
 	<string>Volume</string>
 	<key>Volume %@</key>
@@ -3513,6 +3547,8 @@
 	<string>Quer ser seu amigo</string>
 	<key>Wardrobe</key>
 	<string>Guarda-roupa</string>
+	<key>Warm cream and peach, soft and gentle.</key>
+	<string>Creme quente e pêssego, suave e delicado.</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>A água esculpe cânions sem pular um dia sequer.</string>
 	<key>Wearing</key>
@@ -3553,6 +3589,8 @@
 	<string>Quando você nasceu?</string>
 	<key>Whether a question grows the notch into the larger chat view</key>
 	<string>Se uma pergunta amplia o notch para o chat maior</string>
+	<key>Whisked green tea and oat milk, fresh and grounded.</key>
+	<string>Chá verde batido e leite de aveia, fresco e equilibrado.</string>
 	<key>White Coat</key>
 	<string>Jaleco</string>
 	<key>White noise</key>
@@ -3841,6 +3879,42 @@
 	<string>o anfitrião</string>
 	<key>the rare %@ fur</key>
 	<string>pelagem rara %@</string>
+	<key>theme.bananaMilk</key>
+	<string>Leite de banana</string>
+	<key>theme.blueberryMilk</key>
+	<string>Leite de mirtilo</string>
+	<key>theme.cherrySoda</key>
+	<string>Refri de cereja</string>
+	<key>theme.cottonCandy</key>
+	<string>Algodão-doce</string>
+	<key>theme.cozy</key>
+	<string>Aconchegante</string>
+	<key>theme.deepSea</key>
+	<string>Mar profundo</string>
+	<key>theme.forest</key>
+	<string>Floresta</string>
+	<key>theme.graphite</key>
+	<string>Grafite</string>
+	<key>theme.liquidGlass</key>
+	<string>Liquid Glass</string>
+	<key>theme.matchaLatte</key>
+	<string>Matcha latte</string>
+	<key>theme.midnight</key>
+	<string>Meia-noite</string>
+	<key>theme.mintChoco</key>
+	<string>Menta com chocolate</string>
+	<key>theme.monochrome</key>
+	<string>Monocromático</string>
+	<key>theme.neon</key>
+	<string>Neon</string>
+	<key>theme.sakura</key>
+	<string>Sakura</string>
+	<key>theme.stargazer</key>
+	<string>Céu estrelado</string>
+	<key>theme.strawberryMilk</key>
+	<string>Leite de morango</string>
+	<key>theme.taro</key>
+	<string>Taro</string>
 	<key>today</key>
 	<string>hoje</string>
 	<key>tokens</key>

@@ -12,9 +12,9 @@ struct TabIcons: View {
             ForEach(modules.map(catalog.descriptor(for:))) { module in
                 Image(systemName: module.symbol)
                     .font(.system(size: 9, weight: .semibold))
-                    .foregroundStyle(module.accentColor)
+                    .foregroundStyle(module.identityColor)
                     .frame(width: 18, height: 18)
-                    .background(Circle().fill(module.accentColor.opacity(0.16)))
+                    .background(Circle().fill(module.identityColor.opacity(0.16)))
                     .help(module.title)
                     .transition(.scale.combined(with: .opacity))
             }
@@ -45,7 +45,7 @@ struct KitQuestionsView: View {
 
     var body: some View {
         let tabs = kit.layout(catalog: catalog, answers: answers).enabled
-        let tint = kit.accentModule(catalog: catalog).map { catalog.descriptor(for: $0).accentColor } ?? .accentColor
+        let tint = kit.accentModule(catalog: catalog).map { catalog.descriptor(for: $0).identityColor } ?? .accentColor
         VStack(spacing: 0) {
             VStack(spacing: 8) {
                 Image(systemName: kit.symbol)

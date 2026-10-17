@@ -11,7 +11,7 @@ import { CELEBRATION_STYLES, type CelebrationStyle, type CelebrationTier } from 
 import { motionPaceCaption, motionPaceTitle, MOTION_PACES, type MotionPace } from "../core/motion/motionPace";
 import { PetProfile } from "../core/pets/petProfile";
 import { DEFAULT_HOTKEY, HOTKEY_MODIFIERS, type Hotkey } from "../core/settings/hotkey";
-import { paletteRoles, type ThemeID } from "../core/themes/appTheme";
+import { paletteRoles, themeDisplayName, themeDisplaySummary, type ThemeID } from "../core/themes/appTheme";
 import { allThemes } from "../core/themes/themeCatalog";
 import type { ModuleAccent } from "../core/themes/themeColor";
 import { Card } from "../ui/kit/Card";
@@ -136,7 +136,7 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
       <header className="gallery-header">
         <h1 className="gallery-title">Tabbi kit</h1>
         <span className="gallery-meta">
-          {theme.name} ({theme.id}), {language}
+          {themeDisplayName(theme)} ({theme.id}), {language}
         </span>
       </header>
 
@@ -519,7 +519,7 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
       <Section title="ThemePreview, FoundingBadge">
         <Row>
           {allThemes.map((t) => (
-            <Cell key={t.id} label={t.name}>
+            <Cell key={t.id} label={themeDisplayName(t)}>
               <ThemePreview theme={t} accents={[ACCENTS.study, ACCENTS.planner, ACCENTS.spotify, ACCENTS.claude].filter((a): a is ModuleAccent => a !== undefined)} />
             </Cell>
           ))}
@@ -758,16 +758,16 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
         </Row>
         <Row align="start">
           <Cell label="Picker" accent="planner">
-            <Picker label={tr("Look")} items={allThemes.map((t) => ({ id: t.id, title: t.name, caption: t.summary }))} selected={picked} onSelect={setPicked} />
+            <Picker label={tr("Look")} items={allThemes.map((t) => ({ id: t.id, title: themeDisplayName(t), caption: themeDisplaySummary(t) }))} selected={picked} onSelect={setPicked} />
           </Cell>
           <Cell label="Picker hover" accent="planner">
-            <Picker label={tr("Look")} items={allThemes.map((t) => ({ id: t.id, title: t.name }))} selected={picked} onSelect={() => {}} preview="hover" />
+            <Picker label={tr("Look")} items={allThemes.map((t) => ({ id: t.id, title: themeDisplayName(t) }))} selected={picked} onSelect={() => {}} preview="hover" />
           </Cell>
           <Cell label="Picker open" accent="planner" width={260}>
             <div style={{ height: 232 }}>
               <Picker
                 label={tr("Look")}
-                items={allThemes.slice(0, 5).map((t, i) => ({ id: t.id, title: t.name, caption: i === 1 ? t.summary : undefined, disabled: i === 4 }))}
+                items={allThemes.slice(0, 5).map((t, i) => ({ id: t.id, title: themeDisplayName(t), caption: i === 1 ? themeDisplaySummary(t) : undefined, disabled: i === 4 }))}
                 selected={allThemes[0]?.id ?? picked}
                 onSelect={() => {}}
                 open
@@ -815,8 +815,8 @@ export function Gallery({ themeId, language }: { themeId: ThemeID; language: str
               <SettingsRow label={tr("Shortcut")} symbol="timer" stacked>
                 <HotkeyRecorder hotkey={hotkey} onRecord={setHotkey} />
               </SettingsRow>
-              <SettingsRow label={tr("Look")} help={theme.summary}>
-                <Picker label={tr("Look")} items={allThemes.map((t) => ({ id: t.id, title: t.name }))} selected={picked} onSelect={setPicked} />
+              <SettingsRow label={tr("Look")} help={themeDisplaySummary(theme)}>
+                <Picker label={tr("Look")} items={allThemes.map((t) => ({ id: t.id, title: themeDisplayName(t) }))} selected={picked} onSelect={setPicked} />
               </SettingsRow>
               <SettingsRow label={tr("Smooth")} tooltip={motionPaceCaption(pace)}>
                 <SegmentedControl label={tr("Smooth")} segments={MOTION_PACES.map((p) => ({ id: p, title: motionPaceTitle(p) }))} selected={pace} onSelect={setPace} />

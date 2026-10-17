@@ -22,13 +22,13 @@ import { useTheme, useTransition } from "../../kit/context";
 import { Icon } from "../../kit/Icon";
 import { Sheet } from "../../kit/Sheet";
 import { useTactile } from "../../kit/tactile";
-import { accentCss } from "../../kit/tokens";
+import { identityAccentCss } from "../../kit/tokens";
 import { Tooltip } from "../../kit/Tooltip";
 import { listOf, SettingsButton, TabIcons } from "./parts";
 
 function kitBadge(kit: KitManifest, catalog: ModuleCatalog, theme: ReturnType<typeof useTheme>) {
   const module = kitAccentModule(kit, catalog);
-  const tint = module === undefined ? "var(--primary-text)" : accentCss(theme, catalog.descriptor(module).accent);
+  const tint = module === undefined ? "var(--primary-text)" : identityAccentCss(theme, catalog.descriptor(module).accent);
   return (
     <span className="settings-kit-badge" style={{ background: tint }}>
       <Icon id={kit.symbol} size={24} />
@@ -54,7 +54,7 @@ export function KitQuestionsSheet({ kit, catalog, answers: initial = {}, onCance
   const [answers, setAnswers] = useState<KitAnswers>(initial);
   const tabs = kitLayout(kit, catalog, answers).enabled.map((id) => catalog.descriptor(id));
   const module = kitAccentModule(kit, catalog);
-  const tint = module === undefined ? "var(--primary-text)" : accentCss(theme, catalog.descriptor(module).accent);
+  const tint = module === undefined ? "var(--primary-text)" : identityAccentCss(theme, catalog.descriptor(module).accent);
   const title = continueTitle ?? tr("Switch Kit");
   return (
     <Sheet

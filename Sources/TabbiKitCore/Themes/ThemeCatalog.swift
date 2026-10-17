@@ -144,13 +144,13 @@ struct ThemeFile: Decodable, Sendable {
 }
 
 extension ThemePalette {
-    /// Every color by its `themes.json` key, in declaration order; `glow`
-    /// only when set.
+    /// Every color by its `themes.json` key, in declaration order; `glow`,
+    /// `accent` and `onAccent` only when set.
     var roles: [(String, ThemeColor)] {
         [("background", background)] + (glow.map { [("glow", $0)] } ?? []) + [
             ("surface", surface), ("surfaceHover", surfaceHover), ("stroke", stroke),
             ("primaryText", primaryText), ("secondaryText", secondaryText), ("tertiaryText", tertiaryText),
             ("success", success), ("warning", warning), ("danger", danger),
-        ]
+        ] + (accent.map { [("accent", $0)] } ?? []) + (onAccent.map { [("onAccent", $0)] } ?? [])
     }
 }

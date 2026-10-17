@@ -7,7 +7,14 @@
  * cell), and `accentVariables` gives a module its `--accent` pair.
  */
 
-import { adjustedForThemeMotion, themeAccent, type AppTheme, type ThemeID } from "../../core/themes/appTheme";
+import {
+  adjustedForThemeMotion,
+  themeAccent,
+  themeIdentityAccent,
+  themeOnAccent,
+  type AppTheme,
+  type ThemeID,
+} from "../../core/themes/appTheme";
 import { MotionTokens } from "../../core/motion/motionTokens";
 import { adjustedSpring, pacedDuration, type MotionPace } from "../../core/motion/motionPace";
 import type { SpringSpec } from "../../core/motion/springSpec";
@@ -76,7 +83,7 @@ export function themedSpring(theme: AppTheme, pace: MotionPace, token: SpringTok
 
 /**
  * Every variable for `theme`: the palette (`--background`, `--surface-hover`,
- * ...), `--glow` when the theme has one, the glass sheen, the typeface, and a
+ * ...), `--glow` when the theme has one, `--on-accent`, the glass sheen, the typeface, and a
  * `--spring-<token>` transition (duration plus a `linear()` easing sampled
  * from the spring) for each motion token at `pace`.
  */
@@ -98,8 +105,10 @@ export function themeVariables(theme: AppTheme, pace: MotionPace = "smooth"): Re
   ] as const) {
     variables[`--${kebab(role)}`] = cssColor(palette[role]);
   }
-  /* The liked-song heart (Theme.Palette.favorite), pink-red in every player. */
-  variables["--favorite"] = cssColor(themeAccent(theme, { red: 0.98, green: 0.26, blue: 0.4 }));
+  /* Text and symbols on an accent fill (Theme.Palette.onAccent): the theme's onAccent, or the black body. */
+  variables["--on-accent"] = cssColor(themeOnAccent(theme));
+  /* The liked-song heart (Theme.Palette.favorite), pink-red in every player, even in a theme with a key color. */
+  variables["--favorite"] = cssColor(themeIdentityAccent(theme, { red: 0.98, green: 0.26, blue: 0.4 }));
   const sheen = standardGlassSheen;
   variables["--sheen-fill-top"] = cssColor(sheen.fillTop);
   variables["--sheen-fill-bottom"] = cssColor(sheen.fillBottom);
@@ -122,19 +131,48 @@ export function themeVariables(theme: AppTheme, pace: MotionPace = "smooth"): Re
   return variables;
 }
 
-/** The `--accent` pair a module's subtree reads: the accent as `theme` treats it, and a soft 16% tint. */
+/*
+ * The `--accent` pair a module's subtree reads: the theme's key color, or the
+ * module accent as `theme` treats it, a soft 16% tint, and `--on-accent`,
+ * the text color on that fill, so the two always travel together.
+ */
 export function accentVariables(theme: AppTheme, accent: ModuleAccent): Record<string, string> {
   const color = themeAccent(theme, accent);
   return {
     "--accent": cssColor(color),
     "--accent-soft": cssColorAt(color, 0.16),
     "--accent-faint": cssColorAt(color, 0.12),
+    "--on-accent": cssColor(themeOnAccent(theme)),
   };
 }
 
-/** A module's accent as `theme` shows it, as CSS. */
+/** A module's accent as `theme` shows it (the theme's key color when it has one), as CSS. */
 export function accentCss(theme: AppTheme, accent: ModuleAccent, opacity = 1): string {
   return cssColorAt(themeAccent(theme, accent), opacity);
+}
+
+/*
+ * A module's own accent as `theme` treats it, even in a theme with a key
+ * color, as CSS: for places that list several modules side by side or show
+ * another module's item (the Mac's `identityColor`).
+ */
+export function identityAccentCss(theme: AppTheme, accent: ModuleAccent, opacity = 1): string {
+  return cssColorAt(themeIdentityAccent(theme, accent), opacity);
+}
+
+/*
+ * The `--accent` pair for a module's own identity color (identityAccentCss),
+ * for a subtree listing modules or another module's item. Text on that fill
+ * is the black body, as before themes had accents.
+ */
+export function identityAccentVariables(theme: AppTheme, accent: ModuleAccent): Record<string, string> {
+  const color = themeIdentityAccent(theme, accent);
+  return {
+    "--accent": cssColor(color),
+    "--accent-soft": cssColorAt(color, 0.16),
+    "--accent-faint": cssColorAt(color, 0.12),
+    "--on-accent": cssColor(theme.palette.background),
+  };
 }
 
 /**
