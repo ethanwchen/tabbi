@@ -192,12 +192,13 @@ final class PetAnimationView: NSView {
     private func draw(at date: Date) {
         guard let player else { return }
         let frame = still ? player.stillFrame(at: date) : player.frame(at: date)
-        // Whole device pixels per sprite pixel, as in `PetFrameView`.
-        let backingScale = window?.backingScaleFactor ?? 2
-        let scale = max(1, Int((pixelSize * backingScale).rounded()))
         CATransaction.begin()
         CATransaction.setDisableActions(true)
-        sprite.contents = frame.flatMap { PetRenderer.shared.image(for: $0.canvas, palette: player.palette, scale: scale) }
+        // One image pixel per sprite pixel: the layer's nearest filter
+        // scales it up with the same hard edges as a pre-scaled image, and
+        // a 32 pixel frame is 4 KB where the Closet's 3x pet at 2x was 144 KB,
+        // in the renderer's cache and again in the layer's backing.
+        sprite.contents = frame.flatMap { PetRenderer.shared.image(for: $0.canvas, palette: player.palette, scale: 1) }
         if let anchor = frame?.bubbleAnchor {
             // The tail tip sits one sprite pixel up and right of the anchor;
             // layers count y up from the bottom.

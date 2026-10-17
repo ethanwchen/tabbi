@@ -104,7 +104,7 @@ public actor ClaudeUsageLogScanner {
         if bytesRead > 0 || !staleFiles.isEmpty || records.count != recordCount { saveIndex() }
         // The scan itself allocates little, but reading a week of files or
         // decoding the index still leaves freed pages behind; return them once.
-        if isFirstScan || bytesRead >= Self.pressureReliefThreshold { malloc_zone_pressure_relief(nil, 0) }
+        if isFirstScan || bytesRead >= Self.pressureReliefThreshold { MemoryRelief.returnFreedPages() }
         // Aggregation ignores message ids; records are already unique.
         let models = self.models
         return ClaudeLocalStats.aggregate(records.values.lazy.map {

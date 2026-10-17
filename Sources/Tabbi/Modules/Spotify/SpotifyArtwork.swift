@@ -1,5 +1,4 @@
 import AppKit
-import CoreImage
 import SwiftUI
 import TabbiKitCore
 import TabbiKit
@@ -62,28 +61,19 @@ final class SpotifyArtworkLoader: ObservableObject {
         isLoading = false
     }
 
+    /// Decodes the cover at the size the panel draws it (`ArtworkThumbnail`),
+    /// so a 3000 pixel Music cover never sits in memory at full size.
     private nonisolated static func decode(_ data: Data) async -> SpotifyArtworkImage? {
-        guard let image = NSImage(data: data) else { return nil }
-        return SpotifyArtworkImage(image: image, averageColor: averageColor(of: data))
+        guard let thumbnail = ArtworkThumbnail(data: data) else { return nil }
+        let image = NSImage(cgImage: thumbnail.image,
+                            size: NSSize(width: thumbnail.image.width, height: thumbnail.image.height))
+        return SpotifyArtworkImage(image: image, averageColor: glowColor(from: thumbnail.averageColor))
     }
 
-    /// The cover's mean color via `CIAreaAverage`, nudged brighter so a dark
-    /// cover still gives a visible (but soft) glow on the black notch.
-    private nonisolated static func averageColor(of data: Data) -> Color? {
-        guard let input = CIImage(data: data),
-              let filter = CIFilter(name: "CIAreaAverage", parameters: [
-                  kCIInputImageKey: input,
-                  kCIInputExtentKey: CIVector(cgRect: input.extent),
-              ]),
-              let output = filter.outputImage
-        else { return nil }
-        var pixel = [UInt8](repeating: 0, count: 4)
-        CIContext(options: [.workingColorSpace: NSNull()]).render(
-            output, toBitmap: &pixel, rowBytes: 4,
-            bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBA8, colorSpace: nil
-        )
-        let color = NSColor(red: CGFloat(pixel[0]) / 255, green: CGFloat(pixel[1]) / 255,
-                            blue: CGFloat(pixel[2]) / 255, alpha: 1)
+    /// The cover's mean color, nudged brighter so a dark cover still gives a
+    /// visible (but soft) glow on the black notch.
+    private nonisolated static func glowColor(from mean: (red: Double, green: Double, blue: Double)) -> Color {
+        let color = NSColor(red: mean.red, green: mean.green, blue: mean.blue, alpha: 1)
         var hue: CGFloat = 0, saturation: CGFloat = 0, brightness: CGFloat = 0, alpha: CGFloat = 0
         color.usingColorSpace(.deviceRGB)?.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
         return Color(hue: hue, saturation: min(saturation * 1.2, 1), brightness: max(brightness, 0.6))

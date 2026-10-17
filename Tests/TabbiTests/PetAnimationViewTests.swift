@@ -54,6 +54,37 @@ final class PetAnimationViewTests: XCTestCase {
         withExtendedLifetime(window) {}
     }
 
+    /// The layer holds the frame at one pixel per sprite pixel and scales it
+    /// up with hard edges, so a big pet costs no more memory than a small one.
+    func testTheSpriteIsHeldAtSpritePixelsAndDrawnCrisp() throws {
+        let pixelSize: CGFloat = 3
+        let player = PetPlayer(profile: .starter(.cat), seed: 1)
+        let (view, window) = showInWindow(side: CGFloat(PetComposer.frameSize) * pixelSize)
+        view.play(player, revision: player.revision, pixelSize: pixelSize, still: true)
+        let image = try XCTUnwrap(spriteImage(of: view))
+        XCTAssertEqual(image.width, PetComposer.frameSize)
+        XCTAssertEqual(image.height, PetComposer.frameSize)
+
+        // Every sprite pixel fills its 3x3 block with one color.
+        let bitmap = try render(view)
+        var opaqueBlocks = 0
+        for blockY in 0..<PetComposer.frameSize {
+            for blockX in 0..<PetComposer.frameSize {
+                let corner = bitmap.pixel(x: blockX * 3, y: blockY * 3)
+                if corner.alpha > 0 { opaqueBlocks += 1 }
+                for dy in 0..<3 {
+                    for dx in 0..<3 {
+                        let pixel = bitmap.pixel(x: blockX * 3 + dx, y: blockY * 3 + dy)
+                        XCTAssertEqual(pixel.red, corner.red, "block (\(blockX), \(blockY)) is blurred")
+                        XCTAssertEqual(pixel.alpha, corner.alpha, "block (\(blockX), \(blockY)) is blurred")
+                    }
+                }
+            }
+        }
+        XCTAssertGreaterThan(opaqueBlocks, 100, "the pet was drawn")
+        withExtendedLifetime(window) {}
+    }
+
     // MARK: Helpers
 
     /// The view in a window it counts as visible; keep the window alive.

@@ -6,7 +6,7 @@ import os
 /// ships in TabbiKitCore's resource bundle (see docs/sounds.md for where
 /// each one comes from and its license).
 ///
-/// The loop is decoded once into memory as 16-bit mono, which halves the
+/// The loop is decoded into memory as 16-bit mono, which halves the
 /// footprint of floats (two minutes at 48 kHz is about 11 MB) and is still
 /// far below the noise floor of any room recording. Decoding takes tens of
 /// milliseconds, so it never happens on the audio thread: `FocusMixer`
@@ -44,7 +44,7 @@ public final class FocusRecording: Sendable {
 
     private static let cache = OSAllocatedUnfairLock(initialState: [Name: FocusRecording]())
 
-    /// The recording, decoded on first use and kept from then on. Nil when
+    /// The recording, decoded on first use and kept until `releaseDecoded()`. Nil when
     /// the file is missing or unreadable, in which case the sound is silent
     /// rather than crashing the app.
     public static func named(_ name: Name) -> FocusRecording? {
@@ -71,28 +71,40 @@ public final class FocusRecording: Sendable {
     }
 
     /// Decodes any file AVFoundation reads into 16-bit mono, averaging the
-    /// channels of a stereo file.
+    /// channels of a stereo file. Reads a second at a time into one small
+    /// buffer, so decoding never holds the whole loop as floats (twice the
+    /// 16-bit size, 23 MB for the cafe) next to the result.
     static func decode(_ url: URL) -> FocusRecording? {
         guard let file = try? AVAudioFile(forReading: url) else { return nil }
         let format = file.processingFormat
-        let frames = AVAudioFrameCount(file.length)
-        guard frames > 0,
-              let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frames),
-              (try? file.read(into: buffer)) != nil,
-              let channels = buffer.floatChannelData
-        else { return nil }
-        let count = Int(buffer.frameLength)
+        let length = Int(file.length)
+        let chunk = AVAudioFrameCount(max(1, format.sampleRate.rounded()))
+        guard length > 0, let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: chunk) else { return nil }
         let channelCount = Int(format.channelCount)
         let scale = Float(Int16.max) / Float(channelCount)
-        let samples = [Int16](unsafeUninitializedCapacity: count) { output, initialized in
-            for i in 0..<count {
-                var sum: Float = 0
-                for channel in 0..<channelCount { sum += channels[channel][i] }
-                output[i] = Int16(max(min(sum * scale, Float(Int16.max)), -Float(Int16.max)))
+        let samples = [Int16](unsafeUninitializedCapacity: length) { output, initialized in
+            while initialized < length {
+                guard (try? file.read(into: buffer, frameCount: chunk)) != nil, buffer.frameLength > 0,
+                      let channels = buffer.floatChannelData
+                else { break }
+                for i in 0..<min(Int(buffer.frameLength), length - initialized) {
+                    var sum: Float = 0
+                    for channel in 0..<channelCount { sum += channels[channel][i] }
+                    output[initialized] = Int16(max(min(sum * scale, Float(Int16.max)), -Float(Int16.max)))
+                    initialized += 1
+                }
             }
-            initialized = count
         }
+        guard !samples.isEmpty else { return nil }
         return FocusRecording(samples: samples, sampleRate: format.sampleRate)
+    }
+
+    /// Forgets every decoded recording, so the next `named(_:)` decodes
+    /// again. `FocusSoundEngine` calls it once its sound has stopped: a loop
+    /// is 11 MB, too much to keep for the rest of the day after one session.
+    /// A mixer still playing one keeps its own reference.
+    public static func releaseDecoded() {
+        cache.withLock { $0.removeAll() }
     }
 }
 
@@ -124,6 +136,11 @@ struct RecordingLoop: Sendable {
         var random = NoiseRandom(seed: seed ^ 0x100F)
         startFraction = Double(random.nextUnit())
         if loadsNow { attach(FocusRecording.named(name)) }
+    }
+
+    /// Lets go of the recording's samples; `prepare()` takes them again.
+    mutating func release() {
+        samples = []
     }
 
     /// Takes the recording if it's decoded already; decodes it otherwise.

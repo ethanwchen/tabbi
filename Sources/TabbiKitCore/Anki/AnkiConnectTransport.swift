@@ -41,7 +41,7 @@ public struct URLSessionAnkiConnectTransport: AnkiConnectTransport {
 
     public init(endpoint: URL = URLSessionAnkiConnectTransport.defaultEndpoint, session: URLSession? = nil) {
         self.endpoint = endpoint
-        self.session = session ?? URLSession(configuration: .ephemeral)
+        self.session = session ?? .tabbiEphemeral
     }
 
     public func post(_ body: Data, timeout: TimeInterval) async throws -> AnkiConnectHTTPResponse {

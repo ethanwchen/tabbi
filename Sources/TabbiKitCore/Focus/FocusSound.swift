@@ -109,6 +109,11 @@ public struct FocusSoundGenerator: Sendable {
         loop?.prepare()
     }
 
+    /// Lets go of a recorded sound's recording until `prepareRecording()`.
+    public mutating func releaseRecording() {
+        loop?.release()
+    }
+
     public mutating func next() -> Float {
         switch sound {
         case .brown, .pink, .white: noise?.next() ?? 0
