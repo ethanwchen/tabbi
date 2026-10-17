@@ -13,7 +13,7 @@ const request = (headers) => new Request('https://tabbinotch.com/download', { he
 
 test('the links point at the latest release of each installer', () => {
   assert.match(DOWNLOADS.mac, /\/releases\/latest\/download\/Tabbi\.dmg$/);
-  assert.match(DOWNLOADS.windows, /\/releases\/latest\/download\/Tabbi-Setup\.exe$/);
+  assert.match(DOWNLOADS.windows, /\/releases\/download\/windows-latest\/Tabbi-Setup\.exe$/);
 });
 
 test('Windows gets the Windows installer, everything else the Mac download', () => {
