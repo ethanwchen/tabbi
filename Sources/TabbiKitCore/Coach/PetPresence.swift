@@ -43,6 +43,10 @@ public struct PetPresence: Hashable, Sendable {
     public var calendar: Calendar
     /// When the user last opened the notch, which wakes a dozing pet at night.
     public private(set) var lastWoken: Date?
+    /// The break move the pet is modeling right now (the break buddy), or
+    /// nil. The Closet sets it from the shared break buddy, so the closed
+    /// notch's pet plays the move with its countdown.
+    public var breakMoment: BreakMoment?
 
     public init(profile: PetProfile, lastActive: Date, nextUnlock: UnlockProgress? = nil,
                 night: PetNightRhythm? = nil, calendar: Calendar = .autoupdatingCurrent) {

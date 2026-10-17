@@ -141,6 +141,12 @@ struct NotchPreview: View {
             }
             .foregroundStyle(Theme.Palette.success)
             .previewText()
+        case .pet(let pet) where pet.breakMoment != nil:
+            if let moment = pet.breakMoment {
+                BreakCountdownText(moment: moment)
+                    .foregroundStyle(accent)
+                    .previewText()
+            }
         case .pet(let pet):
             NotchPetLabel(pet: pet, accent: accent)
         case .party(let party):

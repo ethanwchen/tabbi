@@ -184,7 +184,7 @@
     "animations": {
       "description": "How every animation plays, keyed by its id. A frame composes the pet in its pose and stance, moves it down by shiftY, paints its effects behind the pet, then its steam over the chest, then its dust.",
       "type": "object",
-      "propertyNames": { "enum": ["idle", "blink", "sit", "sleep", "walk", "stretch", "peekIn", "peekOut", "alert", "celebrate", "yawn", "hop", "typing", "coffee", "wave", "groom", "tailSwish", "nap", "play"] },
+      "propertyNames": { "enum": ["idle", "blink", "sit", "sleep", "walk", "stretch", "peekIn", "peekOut", "alert", "celebrate", "yawn", "hop", "typing", "coffee", "wave", "groom", "tailSwish", "nap", "play", "sip", "breathe"] },
       "additionalProperties": { "$ref": "#/$defs/timeline" }
     }
   },

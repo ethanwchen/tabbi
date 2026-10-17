@@ -1,6 +1,6 @@
 import XCTest
 import TabbiKitCore
-import TabbiKit
+@testable import TabbiKit
 
 /// The closed-notch meeting preview stays narrow and balanced: its text is
 /// split across both wings instead of one wide line beside an empty wing.
@@ -49,6 +49,24 @@ final class NotchPreviewLayoutTests: XCTestCase {
         let wing = NotchPreviewLayout.wingWidth(for: .pet(sipping))
         XCTAssertGreaterThan(wing, NotchPreviewLayout.wingWidth(for: .pet(pet)), "room for the bolt and Charging")
         XCTAssertLessThan(wing, NotchPreviewLayout.maxWingWidth, "never truncated")
+    }
+
+    func testTheBreakCountdownWingHoldsStillAndFits() {
+        var profile = PetProfile.starter(.cat)
+        profile.rename("Wolfgang Wombats")
+        let start = Date()
+        func pet(_ move: BreakMove) -> TickerItem {
+            .pet(TickerPet(profile: profile, mood: .onBreak, breakMoment: BreakMoment(
+                move: move, source: .study, breakStartedAt: start, startedAt: start,
+                endsAt: start.addingTimeInterval(move.length))))
+        }
+        let widths = Set(BreakMove.allCases.map { NotchPreviewLayout.wingWidth(for: pet($0)) })
+        XCTAssertEqual(widths.count, 1, "every move and time left sizes the wing the same")
+        let wing = widths.first ?? 0
+        XCTAssertLessThan(wing, NotchPreviewLayout.maxWingWidth, "the digits are never truncated")
+        XCTAssertGreaterThanOrEqual(wing, NotchPetWing.side + NotchPreviewLayout.outerInset, "room for the pet")
+        XCTAssertLessThan(wing, NotchPreviewLayout.wingWidth(for: .pet(TickerPet(profile: profile, mood: .onBreak))),
+                          "only digits beside the pet, not its long name")
     }
 }
 

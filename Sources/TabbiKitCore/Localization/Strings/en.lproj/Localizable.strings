@@ -201,6 +201,8 @@
 	<string>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · Paused</string>
+	<key>%@, %@ left</key>
+	<string>%@, %@ left</string>
 	<key>%@, %lld extra</key>
 	<string>%@, %lld extra</string>
 	<key>%@, limited edition: %@</key>
@@ -359,6 +361,8 @@
 	<string>A school or work setting may block it. You can check in System Settings.</string>
 	<key>A shorter timer</key>
 	<string>A shorter timer</string>
+	<key>A slow breath in, and out</key>
+	<string>A slow breath in, and out</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
 	<string>A soft sound when you unlock an item or reach a streak.</string>
 	<key>AI</key>
@@ -631,6 +635,10 @@
 	<string>Astronaut Helmet</string>
 	<key>At least one tab must stay</key>
 	<string>At least one tab must stay</string>
+	<key>At the start of a break, %@ shows a short move you can copy</key>
+	<string>At the start of a break, %@ shows a short move you can copy</string>
+	<key>At the start of a break, your pet shows a short move you can copy</key>
+	<string>At the start of a break, your pet shows a short move you can copy</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>Attach a screenshot of this screen (Tabbi stays out of it)</string>
 	<key>Automation</key>
@@ -697,8 +705,12 @@
 	<string>Bow Tie</string>
 	<key>Break</key>
 	<string>Break</string>
+	<key>Break buddy</key>
+	<string>Break buddy</string>
 	<key>Break's over</key>
 	<string>Break's over</string>
+	<key>Breathe in slowly, then let it all out.</key>
+	<string>Breathe in slowly, then let it all out.</string>
 	<key>Breed</key>
 	<string>Breed</string>
 	<key>Breed colors</key>
@@ -1047,6 +1059,8 @@
 	<string>Couldn't start the playlist</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>Couldn't take a screenshot. Try again.</string>
+	<key>Count glasses of water</key>
+	<string>Count glasses of water</string>
 	<key>Count this session for you again</key>
 	<string>Count this session for you again</string>
 	<key>Count time in %@ as drifting</key>
@@ -1145,6 +1159,10 @@
 	<string>Detect claude automatically</string>
 	<key>Development build</key>
 	<string>Development build</string>
+	<key>Did it</key>
+	<string>Did it</string>
+	<key>Did it with %@</key>
+	<string>Did it with %@</string>
 	<key>Did you answer the age question?</key>
 	<string>Did you answer the age question?</string>
 	<key>Did you let Tabbi control %@?</key>
@@ -1465,6 +1483,8 @@
 	<string>Gold tag</string>
 	<key>Golden Laurel</key>
 	<string>Golden Laurel</string>
+	<key>Grab your glass and take a few sips.</key>
+	<string>Grab your glass and take a few sips.</string>
 	<key>Graduation Cap</key>
 	<string>Graduation Cap</string>
 	<key>Great job!</key>
@@ -1721,6 +1741,8 @@
 	<string>Let your AI fit your open tasks around today's calendar</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>Let your AI fit your open tasks around tomorrow's calendar</string>
+	<key>Let your eyes rest on something across the room or out the window.</key>
+	<string>Let your eyes rest on something across the room or out the window.</string>
 	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
 	<string>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
@@ -1747,6 +1769,8 @@
 	<string>Loading…</string>
 	<key>Location</key>
 	<string>Location</string>
+	<key>Log a glass of water</key>
+	<string>Log a glass of water</string>
 	<key>Log in from Anki's Sync button once, then sync here.</key>
 	<string>Log in from Anki's Sync button once, then sync here.</string>
 	<key>Long break</key>
@@ -1755,6 +1779,8 @@
 	<string>Long days, light focus. Keep a little rhythm going.</string>
 	<key>Look</key>
 	<string>Look</string>
+	<key>Look at something far away</key>
+	<string>Look at something far away</string>
 	<key>Looking for %@…</key>
 	<string>Looking for %@…</string>
 	<key>Looking for Anki</key>
@@ -2481,6 +2507,8 @@
 	<string>Rain</string>
 	<key>Rare</key>
 	<string>Rare</string>
+	<key>Reach your arms up high, then roll your shoulders back.</key>
+	<string>Reach your arms up high, then roll your shoulders back.</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Read the latest Codex logs (sends nothing)</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2573,6 +2601,8 @@
 	<string>Reset to Defaults</string>
 	<key>Reset to Kit Defaults</key>
 	<string>Reset to Kit Defaults</string>
+	<key>Rest your eyes</key>
+	<string>Rest your eyes</string>
 	<key>Restart Anki</key>
 	<string>Restart Anki</string>
 	<key>Restart Anki to load it</key>
@@ -2735,6 +2765,8 @@
 	<string>Show %@</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>Show SoundCloud from Safari or Chrome</string>
+	<key>Show a break move</key>
+	<string>Show a break move</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>Show a recap of your week the first time you open the notch after Sunday 6 pm</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -2763,6 +2795,8 @@
 	<string>Show the top decks beside today's total</string>
 	<key>Show this in the live activity</key>
 	<string>Show this in the live activity</string>
+	<key>Show today's glasses on the break card, with a button to add one</key>
+	<string>Show today's glasses on the break card, with a button to add one</string>
 	<key>Show tomorrow's calendar</key>
 	<string>Show tomorrow's calendar</string>
 	<key>Show yesterday's calendar</key>
@@ -2811,6 +2845,10 @@
 	<string>Silly</string>
 	<key>Silver</key>
 	<string>Silver</string>
+	<key>Sip some water</key>
+	<string>Sip some water</string>
+	<key>Sip water</key>
+	<string>Sip water</string>
 	<key>Skip</key>
 	<string>Skip</string>
 	<key>Skip Setup</key>
@@ -2821,12 +2859,16 @@
 	<string>Skip the break</string>
 	<key>Skip the review</key>
 	<string>Skip the review</string>
+	<key>Skip this one; nothing is counted</key>
+	<string>Skip this one; nothing is counted</string>
 	<key>Skip to the break</key>
 	<string>Skip to the break</string>
 	<key>Sky</key>
 	<string>Sky</string>
 	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
 	<string>Sleep is part of the work. Go dream up tomorrow's moves.</string>
+	<key>Slow breath</key>
+	<string>Slow breath</string>
 	<key>Smooth</key>
 	<string>Smooth</string>
 	<key>Snowy Scarf</key>
@@ -2859,6 +2901,12 @@
 	<string>Springy, with a little bounce.</string>
 	<key>Sprint</key>
 	<string>Sprint</string>
+	<key>Stand up</key>
+	<string>Stand up</string>
+	<key>Stand up for a moment</key>
+	<string>Stand up for a moment</string>
+	<key>Stand, shake out your legs, and sit back down when you like.</key>
+	<string>Stand, shake out your legs, and sit back down when you like.</string>
 	<key>Star tag</key>
 	<string>Star tag</string>
 	<key>Stars don't rush. They just keep burning.</key>
@@ -2959,6 +3007,10 @@
 	<string>Streak</string>
 	<key>Streak unavailable</key>
 	<string>Streak unavailable</string>
+	<key>Stretch</key>
+	<string>Stretch</string>
+	<key>Stretch with %@</key>
+	<string>Stretch with %@</string>
 	<key>Studied today</key>
 	<string>Studied today</string>
 	<key>Study</key>
@@ -3251,6 +3303,8 @@
 	<string>Time</string>
 	<key>Time for a %lld-minute break.</key>
 	<string>Time for a %lld-minute break.</string>
+	<key>Time for a stretch</key>
+	<string>Time for a stretch</string>
 	<key>Time in these apps counts as drifting. Websites can't be told apart, since that would need Screen Recording, so pick apps rather than sites.</key>
 	<string>Time in these apps counts as drifting. Websites can't be told apart, since that would need Screen Recording, so pick apps rather than sites.</string>
 	<key>Time studied today and study sessions finished</key>
@@ -3683,6 +3737,12 @@
 	<string>Your pet</string>
 	<key>Your pet found this on its adventure. %@</key>
 	<string>Your pet found this on its adventure. %@</string>
+	<key>Your pet may suggest this move. Click to turn it off</key>
+	<string>Your pet may suggest this move. Click to turn it off</string>
+	<key>Your pet picks one move per break and keeps it short. Skipping is always fine, and nothing counts against you. Glasses of water stay on this Mac.</key>
+	<string>Your pet picks one move per break and keeps it short. Skipping is always fine, and nothing counts against you. Glasses of water stay on this Mac.</string>
+	<key>Your pet won't suggest this move. Click to turn it on</key>
+	<string>Your pet won't suggest this move. Click to turn it on</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>Your pet's name isn't allowed. Rename your pet in the Closet.</string>
 	<key>Your pet, today's streak and the running timer.</key>

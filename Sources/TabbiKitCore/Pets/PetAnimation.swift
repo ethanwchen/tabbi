@@ -141,6 +141,14 @@ public enum PetAnimation: String, CaseIterable, Codable, Sendable {
     /// away, the pet watches it, and it comes back to be caught. A ball
     /// bounces on the way.
     case play
+    /// A slow sip with the break buddy: the mug comes up from the lap with no
+    /// steam (it is water, not coffee), the eyes close for the sip, and it
+    /// goes back down with a happy look. Loops while the user sips too.
+    case sip
+    /// A slow breath with the break buddy: eyes closed, the head rises a
+    /// little on the breath in and settles on the long breath out, with a
+    /// soft "o" as it lets go. Loops.
+    case breathe
 
     /// Whether the clip repeats forever or stops on its last frame.
     public var loops: Bool { timeline.loops }

@@ -201,6 +201,8 @@
 	<string>%@은(는) 응용 프로그램 폴더에서 가장 잘 작동해요. 로그인할 때 열리고 스스로 업데이트할 수 있거든요. 그곳으로 복사한 뒤 다시 열려요.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · 일시정지</string>
+	<key>%@, %@ left</key>
+	<string>%1$@, %2$@ 남음</string>
 	<key>%@, %lld extra</key>
 	<string>%@, 추가 %lld개</string>
 	<key>%@, limited edition: %@</key>
@@ -359,6 +361,8 @@
 	<string>학교나 회사 설정 때문일 수 있어요. 시스템 설정에서 확인할 수 있어요.</string>
 	<key>A shorter timer</key>
 	<string>타이머 줄이기</string>
+	<key>A slow breath in, and out</key>
+	<string>천천히 들이쉬고, 내쉬어요</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
 	<string>아이템을 열거나 연속 기록을 달성하면 부드러운 소리가 나요.</string>
 	<key>AI</key>
@@ -631,6 +635,10 @@
 	<string>우주비행사 헬멧</string>
 	<key>At least one tab must stay</key>
 	<string>탭은 하나 이상 남겨야 해요</string>
+	<key>At the start of a break, %@ shows a short move you can copy</key>
+	<string>휴식이 시작되면 %@가 따라 할 수 있는 짧은 동작을 보여 줘요</string>
+	<key>At the start of a break, your pet shows a short move you can copy</key>
+	<string>휴식이 시작되면 펫이 따라 할 수 있는 짧은 동작을 보여 줘요</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>이 화면의 스크린샷 첨부 (Tabbi는 제외)</string>
 	<key>Automation</key>
@@ -697,8 +705,12 @@
 	<string>나비넥타이</string>
 	<key>Break</key>
 	<string>휴식</string>
+	<key>Break buddy</key>
+	<string>휴식 친구</string>
 	<key>Break's over</key>
 	<string>휴식 끝</string>
+	<key>Breathe in slowly, then let it all out.</key>
+	<string>천천히 들이쉬고, 모두 내쉬어요.</string>
 	<key>Breed</key>
 	<string>품종</string>
 	<key>Breed colors</key>
@@ -1047,6 +1059,8 @@
 	<string>플레이리스트를 시작하지 못했어요</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>스크린샷을 찍지 못했어요. 다시 시도하세요.</string>
+	<key>Count glasses of water</key>
+	<string>물 잔 수 세기</string>
 	<key>Count this session for you again</key>
 	<string>이 세션을 다시 내 기록에 포함</string>
 	<key>Count time in %@ as drifting</key>
@@ -1145,6 +1159,10 @@
 	<string>claude 자동으로 찾기</string>
 	<key>Development build</key>
 	<string>개발 빌드</string>
+	<key>Did it</key>
+	<string>했어요</string>
+	<key>Did it with %@</key>
+	<string>%@와 함께 했어요</string>
 	<key>Did you answer the age question?</key>
 	<string>나이 질문에 답했나요?</string>
 	<key>Did you let Tabbi control %@?</key>
@@ -1465,6 +1483,8 @@
 	<string>금빛 태그</string>
 	<key>Golden Laurel</key>
 	<string>황금 월계관</string>
+	<key>Grab your glass and take a few sips.</key>
+	<string>컵을 들고 몇 모금 마셔요.</string>
 	<key>Graduation Cap</key>
 	<string>학사모</string>
 	<key>Great job!</key>
@@ -1721,6 +1741,8 @@
 	<string>AI가 남은 할 일을 오늘 일정에 맞춰 배치해요</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>AI가 남은 할 일을 내일 일정에 맞춰 배치해요</string>
+	<key>Let your eyes rest on something across the room or out the window.</key>
+	<string>방 건너편이나 창밖을 바라보며 눈을 쉬어요.</string>
 	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
 	<string>집중 세션이 끝난 직후 펫이 가끔 응원의 한마디를 해요. 하루에 한 번까지</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
@@ -1747,6 +1769,8 @@
 	<string>불러오는 중…</string>
 	<key>Location</key>
 	<string>위치</string>
+	<key>Log a glass of water</key>
+	<string>물 한 잔 기록하기</string>
 	<key>Log in from Anki's Sync button once, then sync here.</key>
 	<string>Anki의 동기화 버튼에서 한 번 로그인한 다음 여기서 동기화하세요.</string>
 	<key>Long break</key>
@@ -1755,6 +1779,8 @@
 	<string>긴 하루, 가벼운 집중. 작은 리듬을 이어가요.</string>
 	<key>Look</key>
 	<string>모양</string>
+	<key>Look at something far away</key>
+	<string>멀리 있는 곳을 바라봐요</string>
 	<key>Looking for %@…</key>
 	<string>%@ 찾는 중…</string>
 	<key>Looking for Anki</key>
@@ -2481,6 +2507,8 @@
 	<string>빗소리</string>
 	<key>Rare</key>
 	<string>희귀</string>
+	<key>Reach your arms up high, then roll your shoulders back.</key>
+	<string>팔을 높이 뻗은 다음, 어깨를 뒤로 돌려요.</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>최신 Codex 로그 읽기 (아무것도 보내지 않음)</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2573,6 +2601,8 @@
 	<string>기본값으로 재설정</string>
 	<key>Reset to Kit Defaults</key>
 	<string>키트 기본값으로 재설정</string>
+	<key>Rest your eyes</key>
+	<string>눈 쉬기</string>
 	<key>Restart Anki</key>
 	<string>Anki 다시 시작</string>
 	<key>Restart Anki to load it</key>
@@ -2735,6 +2765,8 @@
 	<string>%@ 보기</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>Safari나 Chrome의 SoundCloud 보기</string>
+	<key>Show a break move</key>
+	<string>휴식 동작 보여 주기</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>일요일 오후 6시 이후 처음 노치를 열 때 한 주 돌아보기를 보여 줘요</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -2763,6 +2795,8 @@
 	<string>오늘 합계 옆에 주요 덱 보기</string>
 	<key>Show this in the live activity</key>
 	<string>실시간 현황에 표시</string>
+	<key>Show today's glasses on the break card, with a button to add one</key>
+	<string>휴식 카드에 오늘 마신 잔 수와 추가 버튼을 보여 줘요</string>
 	<key>Show tomorrow's calendar</key>
 	<string>내일 캘린더 보기</string>
 	<key>Show yesterday's calendar</key>
@@ -2811,6 +2845,10 @@
 	<string>엉뚱</string>
 	<key>Silver</key>
 	<string>은색</string>
+	<key>Sip some water</key>
+	<string>물 한 모금 마셔요</string>
+	<key>Sip water</key>
+	<string>물 마시기</string>
 	<key>Skip</key>
 	<string>건너뛰기</string>
 	<key>Skip Setup</key>
@@ -2821,12 +2859,16 @@
 	<string>휴식 건너뛰기</string>
 	<key>Skip the review</key>
 	<string>복습 건너뛰기</string>
+	<key>Skip this one; nothing is counted</key>
+	<string>이번엔 건너뛰기, 아무것도 기록되지 않아요</string>
 	<key>Skip to the break</key>
 	<string>휴식으로 건너뛰기</string>
 	<key>Sky</key>
 	<string>하늘색</string>
 	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
 	<string>잠도 노력의 일부예요. 가서 내일의 수를 꿈꿔 봐요.</string>
+	<key>Slow breath</key>
+	<string>천천히 숨쉬기</string>
 	<key>Smooth</key>
 	<string>부드럽게</string>
 	<key>Snowy Scarf</key>
@@ -2859,6 +2901,12 @@
 	<string>통통 튀듯 살짝 바운스해요.</string>
 	<key>Sprint</key>
 	<string>스프린트</string>
+	<key>Stand up</key>
+	<string>일어서기</string>
+	<key>Stand up for a moment</key>
+	<string>잠깐 일어나 봐요</string>
+	<key>Stand, shake out your legs, and sit back down when you like.</key>
+	<string>일어나서 다리를 털고, 원할 때 다시 앉아요.</string>
 	<key>Star tag</key>
 	<string>별 태그</string>
 	<key>Stars don't rush. They just keep burning.</key>
@@ -2959,6 +3007,10 @@
 	<string>연속 기록</string>
 	<key>Streak unavailable</key>
 	<string>연속 기록 없음</string>
+	<key>Stretch</key>
+	<string>스트레칭</string>
+	<key>Stretch with %@</key>
+	<string>%@와 함께 스트레칭</string>
 	<key>Studied today</key>
 	<string>오늘 공부 완료</string>
 	<key>Study</key>
@@ -3251,6 +3303,8 @@
 	<string>시간</string>
 	<key>Time for a %lld-minute break.</key>
 	<string>%lld분 휴식할 시간이에요.</string>
+	<key>Time for a stretch</key>
+	<string>스트레칭할 시간</string>
 	<key>Time in these apps counts as drifting. Websites can't be told apart, since that would need Screen Recording, so pick apps rather than sites.</key>
 	<string>이 앱을 쓰는 시간은 딴짓으로 쳐요. 웹사이트는 화면 기록 권한 없이 구분할 수 없으니 사이트 대신 앱을 고르세요.</string>
 	<key>Time studied today and study sessions finished</key>
@@ -3683,6 +3737,12 @@
 	<string>내 펫</string>
 	<key>Your pet found this on its adventure. %@</key>
 	<string>펫이 모험에서 찾아왔어요. %@</string>
+	<key>Your pet may suggest this move. Click to turn it off</key>
+	<string>펫이 이 동작을 제안할 수 있어요. 클릭하면 꺼져요</string>
+	<key>Your pet picks one move per break and keeps it short. Skipping is always fine, and nothing counts against you. Glasses of water stay on this Mac.</key>
+	<string>펫은 휴식마다 짧은 동작을 하나 골라요. 건너뛰어도 언제나 괜찮고, 불이익은 없어요. 물 기록은 이 Mac에만 남아요.</string>
+	<key>Your pet won't suggest this move. Click to turn it on</key>
+	<string>펫이 이 동작을 제안하지 않아요. 클릭하면 켜져요</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>펫 이름을 사용할 수 없어요. 옷장에서 펫 이름을 바꿔 주세요.</string>
 	<key>Your pet, today's streak and the running timer.</key>

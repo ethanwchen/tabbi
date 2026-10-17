@@ -233,6 +233,26 @@
         { "duration": 0.3, "pose": { "eyes": "happy", "prop": { "kind": "toy", "roll": 0 } } },
         { "duration": 0.2, "pose": { "prop": { "kind": "toy", "roll": 0 } } }
       ]
+    },
+    "sip": {
+      "loops": true,
+      "still": 2,
+      "frames": [
+        { "duration": 1.2, "pose": { "prop": { "kind": "mug", "raise": 0 } } },
+        { "duration": 0.15, "pose": { "prop": { "kind": "mug", "raise": 1 } } },
+        { "duration": 1.4, "pose": { "eyes": "closed", "prop": { "kind": "mug", "raise": 2 } } },
+        { "duration": 0.15, "pose": { "eyes": "happy", "prop": { "kind": "mug", "raise": 1 } } },
+        { "duration": 0.9, "pose": { "eyes": "happy", "prop": { "kind": "mug", "raise": 0 } } }
+      ]
+    },
+    "breathe": {
+      "loops": true,
+      "still": 0,
+      "frames": [
+        { "duration": 2.0, "pose": { "eyes": "closed" } },
+        { "duration": 1.6, "pose": { "eyes": "closed", "mouth": "open", "headDrop": 1 } },
+        { "duration": 0.8, "pose": { "eyes": "closed", "headDrop": 1 } }
+      ]
     }
   }
 }

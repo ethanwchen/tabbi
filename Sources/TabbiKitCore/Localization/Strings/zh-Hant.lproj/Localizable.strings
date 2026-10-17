@@ -201,6 +201,8 @@
 	<string>%@ 放在「應用程式」中最好用，這樣它能在登入時開啟並自動保持最新版本。它會把自己拷貝過去，然後重新開啟。</string>
 	<key>%@ · Paused</key>
 	<string>%@ · 已暫停</string>
+	<key>%@, %@ left</key>
+	<string>%1$@，還剩 %2$@</string>
 	<key>%@, %lld extra</key>
 	<string>%@，另有 %lld 次</string>
 	<key>%@, limited edition: %@</key>
@@ -359,6 +361,8 @@
 	<string>可能是學校或公司的設定封鎖了它，你可以到「系統設定」查看。</string>
 	<key>A shorter timer</key>
 	<string>縮短計時</string>
+	<key>A slow breath in, and out</key>
+	<string>慢慢吸氣，再吐氣</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
 	<string>解鎖物品或達成連續紀錄時，播放輕柔的聲音。</string>
 	<key>AI</key>
@@ -631,6 +635,10 @@
 	<string>太空人頭盔</string>
 	<key>At least one tab must stay</key>
 	<string>至少要保留一個標籤頁</string>
+	<key>At the start of a break, %@ shows a short move you can copy</key>
+	<string>休息開始時，%@會示範一個可以跟著做的小動作</string>
+	<key>At the start of a break, your pet shows a short move you can copy</key>
+	<string>休息開始時，寵物會示範一個可以跟著做的小動作</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>附加此螢幕的截圖（不會包含 Tabbi）</string>
 	<key>Automation</key>
@@ -697,8 +705,12 @@
 	<string>領結</string>
 	<key>Break</key>
 	<string>休息</string>
+	<key>Break buddy</key>
+	<string>休息夥伴</string>
 	<key>Break's over</key>
 	<string>休息結束</string>
+	<key>Breathe in slowly, then let it all out.</key>
+	<string>慢慢吸氣，再把氣全部吐出來。</string>
 	<key>Breed</key>
 	<string>品種</string>
 	<key>Breed colors</key>
@@ -1047,6 +1059,8 @@
 	<string>無法播放播放列表</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>無法截圖，請再試一次。</string>
+	<key>Count glasses of water</key>
+	<string>記錄喝水杯數</string>
 	<key>Count this session for you again</key>
 	<string>重新幫你計入這次專注</string>
 	<key>Count time in %@ as drifting</key>
@@ -1145,6 +1159,10 @@
 	<string>自動偵測 claude</string>
 	<key>Development build</key>
 	<string>開發版本</string>
+	<key>Did it</key>
+	<string>做完了</string>
+	<key>Did it with %@</key>
+	<string>和%@一起做完了</string>
 	<key>Did you answer the age question?</key>
 	<string>你回答年齡問題了嗎？</string>
 	<key>Did you let Tabbi control %@?</key>
@@ -1465,6 +1483,8 @@
 	<string>金色吊牌</string>
 	<key>Golden Laurel</key>
 	<string>金色桂冠</string>
+	<key>Grab your glass and take a few sips.</key>
+	<string>拿起杯子，喝幾口。</string>
 	<key>Graduation Cap</key>
 	<string>學士帽</string>
 	<key>Great job!</key>
@@ -1721,6 +1741,8 @@
 	<string>讓你的 AI 依今天的行事曆安排待辦任務</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>讓你的 AI 依明天的行事曆安排待辦任務</string>
+	<key>Let your eyes rest on something across the room or out the window.</key>
+	<string>把目光放在房間另一頭或窗外，讓眼睛歇一歇。</string>
 	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
 	<string>專注時段一結束，寵物偶爾會說一句鼓勵的話，每天最多一次</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
@@ -1747,6 +1769,8 @@
 	<string>載入中…</string>
 	<key>Location</key>
 	<string>位置</string>
+	<key>Log a glass of water</key>
+	<string>記一杯水</string>
 	<key>Log in from Anki's Sync button once, then sync here.</key>
 	<string>先在 Anki 的同步按鈕登入一次，然後在這裡同步。</string>
 	<key>Long break</key>
@@ -1755,6 +1779,8 @@
 	<string>白天長，專注輕。保持一點節奏。</string>
 	<key>Look</key>
 	<string>外觀</string>
+	<key>Look at something far away</key>
+	<string>看看遠處</string>
 	<key>Looking for %@…</key>
 	<string>正在尋找 %@…</string>
 	<key>Looking for Anki</key>
@@ -2481,6 +2507,8 @@
 	<string>雨聲</string>
 	<key>Rare</key>
 	<string>稀有</string>
+	<key>Reach your arms up high, then roll your shoulders back.</key>
+	<string>把手臂高高舉起，再向後轉轉肩膀。</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>讀取最新的 Codex 記錄（不會傳送任何內容）</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2573,6 +2601,8 @@
 	<string>回復預設值</string>
 	<key>Reset to Kit Defaults</key>
 	<string>回復套件預設值</string>
+	<key>Rest your eyes</key>
+	<string>休息眼睛</string>
 	<key>Restart Anki</key>
 	<string>重新啟動 Anki</string>
 	<key>Restart Anki to load it</key>
@@ -2735,6 +2765,8 @@
 	<string>顯示 %@</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>顯示 Safari 或 Chrome 中的 SoundCloud</string>
+	<key>Show a break move</key>
+	<string>休息時示範一個動作</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>週日下午 6 點後第一次打開瀏海時，顯示本週回顧</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -2763,6 +2795,8 @@
 	<string>在今日總數旁顯示主要牌組</string>
 	<key>Show this in the live activity</key>
 	<string>在即時動態中顯示</string>
+	<key>Show today's glasses on the break card, with a button to add one</key>
+	<string>在休息卡片上顯示今天的杯數，並提供新增按鈕</string>
 	<key>Show tomorrow's calendar</key>
 	<string>顯示明天的行事曆</string>
 	<key>Show yesterday's calendar</key>
@@ -2811,6 +2845,10 @@
 	<string>搞怪</string>
 	<key>Silver</key>
 	<string>銀色</string>
+	<key>Sip some water</key>
+	<string>喝點水吧</string>
+	<key>Sip water</key>
+	<string>喝水</string>
 	<key>Skip</key>
 	<string>跳過</string>
 	<key>Skip Setup</key>
@@ -2821,12 +2859,16 @@
 	<string>跳過休息</string>
 	<key>Skip the review</key>
 	<string>跳過複習</string>
+	<key>Skip this one; nothing is counted</key>
+	<string>這次跳過，不會記下任何東西</string>
 	<key>Skip to the break</key>
 	<string>直接休息</string>
 	<key>Sky</key>
 	<string>天藍色</string>
 	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
 	<string>睡覺也是功課的一部分。去夢裡想想明天的棋步吧。</string>
+	<key>Slow breath</key>
+	<string>慢慢呼吸</string>
 	<key>Smooth</key>
 	<string>流暢</string>
 	<key>Snowy Scarf</key>
@@ -2859,6 +2901,12 @@
 	<string>有彈性，輕輕回彈。</string>
 	<key>Sprint</key>
 	<string>衝刺</string>
+	<key>Stand up</key>
+	<string>站起來</string>
+	<key>Stand up for a moment</key>
+	<string>站起來一會兒</string>
+	<key>Stand, shake out your legs, and sit back down when you like.</key>
+	<string>站起來抖抖腿，想坐時再坐下。</string>
 	<key>Star tag</key>
 	<string>星星吊牌</string>
 	<key>Stars don't rush. They just keep burning.</key>
@@ -2959,6 +3007,10 @@
 	<string>連續</string>
 	<key>Streak unavailable</key>
 	<string>連續記錄無法取得</string>
+	<key>Stretch</key>
+	<string>伸展</string>
+	<key>Stretch with %@</key>
+	<string>和%@一起伸展</string>
 	<key>Studied today</key>
 	<string>今天已學習</string>
 	<key>Study</key>
@@ -3251,6 +3303,8 @@
 	<string>時間</string>
 	<key>Time for a %lld-minute break.</key>
 	<string>休息 %lld 分鐘吧。</string>
+	<key>Time for a stretch</key>
+	<string>伸展一下吧</string>
 	<key>Time in these apps counts as drifting. Websites can't be told apart, since that would need Screen Recording, so pick apps rather than sites.</key>
 	<string>在這些 App 的時間算作分心。網站需要「螢幕與系統錄音」才能分辨，所以請選 App 而非網站。</string>
 	<key>Time studied today and study sessions finished</key>
@@ -3683,6 +3737,12 @@
 	<string>你的寵物</string>
 	<key>Your pet found this on its adventure. %@</key>
 	<string>這是你的寵物在探險中找到的。%@</string>
+	<key>Your pet may suggest this move. Click to turn it off</key>
+	<string>寵物可能會建議這個動作。按一下即可關閉</string>
+	<key>Your pet picks one move per break and keeps it short. Skipping is always fine, and nothing counts against you. Glasses of water stay on this Mac.</key>
+	<string>寵物每次休息只選一個簡短的動作。隨時都可以跳過，不會對你有任何影響。喝水記錄只保存在這台 Mac 上。</string>
+	<key>Your pet won't suggest this move. Click to turn it on</key>
+	<string>寵物不會建議這個動作。按一下即可開啟</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>不能使用你寵物的名字。請在「衣櫥」中替寵物改名。</string>
 	<key>Your pet, today's streak and the running timer.</key>

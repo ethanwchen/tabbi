@@ -201,6 +201,8 @@
 	<string>%@ лучше всего работает из папки «Программы»: оттуда приложение открывается при входе в систему и само обновляется. Оно скопирует себя туда и откроется снова.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · Пауза</string>
+	<key>%@, %@ left</key>
+	<string>%1$@, осталось %2$@</string>
 	<key>%@, %lld extra</key>
 	<string>%@, еще %lld</string>
 	<key>%@, limited edition: %@</key>
@@ -359,6 +361,8 @@
 	<string>Его могут блокировать настройки школы или работы. Проверь в Системных настройках.</string>
 	<key>A shorter timer</key>
 	<string>Таймер короче</string>
+	<key>A slow breath in, and out</key>
+	<string>Медленный вдох и выдох</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
 	<string>Мягкий звук, когда ты открываешь предмет или достигаешь серии.</string>
 	<key>AI</key>
@@ -631,6 +635,10 @@
 	<string>Шлем астронавта</string>
 	<key>At least one tab must stay</key>
 	<string>Должна остаться хотя бы одна вкладка</string>
+	<key>At the start of a break, %@ shows a short move you can copy</key>
+	<string>В начале перерыва %@ показывает короткое движение, которое можно повторить</string>
+	<key>At the start of a break, your pet shows a short move you can copy</key>
+	<string>В начале перерыва питомец показывает короткое движение, которое можно повторить</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>Приложить снимок этого экрана (без Tabbi)</string>
 	<key>Automation</key>
@@ -697,8 +705,12 @@
 	<string>Бабочка</string>
 	<key>Break</key>
 	<string>Перерыв</string>
+	<key>Break buddy</key>
+	<string>Друг на перерыве</string>
 	<key>Break's over</key>
 	<string>Перерыв окончен</string>
+	<key>Breathe in slowly, then let it all out.</key>
+	<string>Медленно вдохни, а потом выдохни до конца.</string>
 	<key>Breed</key>
 	<string>Порода</string>
 	<key>Breed colors</key>
@@ -1047,6 +1059,8 @@
 	<string>Не удалось включить плейлист</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>Не удалось сделать снимок экрана. Попробуй еще раз.</string>
+	<key>Count glasses of water</key>
+	<string>Считать стаканы воды</string>
 	<key>Count this session for you again</key>
 	<string>Снова засчитывать тебе эту сессию</string>
 	<key>Count time in %@ as drifting</key>
@@ -1145,6 +1159,10 @@
 	<string>Находить claude автоматически</string>
 	<key>Development build</key>
 	<string>Сборка для разработки</string>
+	<key>Did it</key>
+	<string>Сделано</string>
+	<key>Did it with %@</key>
+	<string>Сделано вместе с %@</string>
 	<key>Did you answer the age question?</key>
 	<string>Ответ на вопрос о возрасте есть?</string>
 	<key>Did you let Tabbi control %@?</key>
@@ -1465,6 +1483,8 @@
 	<string>Золотой жетон</string>
 	<key>Golden Laurel</key>
 	<string>Золотой лавр</string>
+	<key>Grab your glass and take a few sips.</key>
+	<string>Возьми стакан и сделай пару глотков.</string>
 	<key>Graduation Cap</key>
 	<string>Шапочка выпускника</string>
 	<key>Great job!</key>
@@ -1721,6 +1741,8 @@
 	<string>Пусть ИИ разместит открытые задачи вокруг календаря на сегодня</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>Пусть ИИ разместит открытые задачи вокруг календаря на завтра</string>
+	<key>Let your eyes rest on something across the room or out the window.</key>
+	<string>Дай глазам отдохнуть на чем-нибудь в другом конце комнаты или за окном.</string>
 	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
 	<string>Питомец иногда скажет ободряющую фразу сразу после фокус-сессии, не чаще раза в день</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
@@ -1747,6 +1769,8 @@
 	<string>Загрузка…</string>
 	<key>Location</key>
 	<string>Расположение</string>
+	<key>Log a glass of water</key>
+	<string>Отметить стакан воды</string>
 	<key>Log in from Anki's Sync button once, then sync here.</key>
 	<string>Один раз войди через кнопку «Синхронизировать» в Anki, потом синхронизируй здесь.</string>
 	<key>Long break</key>
@@ -1755,6 +1779,8 @@
 	<string>Длинные дни, легкий фокус. Держи ритм.</string>
 	<key>Look</key>
 	<string>Оформление</string>
+	<key>Look at something far away</key>
+	<string>Посмотри вдаль</string>
 	<key>Looking for %@…</key>
 	<string>Поиск %@…</string>
 	<key>Looking for Anki</key>
@@ -2481,6 +2507,8 @@
 	<string>Дождь</string>
 	<key>Rare</key>
 	<string>Редкие</string>
+	<key>Reach your arms up high, then roll your shoulders back.</key>
+	<string>Потянись руками вверх, а потом покрути плечами назад.</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Прочитать свежие журналы Codex (ничего не отправляет)</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2573,6 +2601,8 @@
 	<string>Сбросить</string>
 	<key>Reset to Kit Defaults</key>
 	<string>Вернуть настройки набора</string>
+	<key>Rest your eyes</key>
+	<string>Отдых для глаз</string>
 	<key>Restart Anki</key>
 	<string>Перезапустить Anki</string>
 	<key>Restart Anki to load it</key>
@@ -2735,6 +2765,8 @@
 	<string>Показать %@</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>Показывать SoundCloud из Safari или Chrome</string>
+	<key>Show a break move</key>
+	<string>Показывать движение на перерыве</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>Показывать итоги недели при первом открытии выреза после 18:00 в воскресенье</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -2763,6 +2795,8 @@
 	<string>Показать главные колоды рядом с итогом дня</string>
 	<key>Show this in the live activity</key>
 	<string>Показывать в живом превью</string>
+	<key>Show today's glasses on the break card, with a button to add one</key>
+	<string>Показывать сегодняшние стаканы на карточке перерыва с кнопкой, чтобы добавить</string>
 	<key>Show tomorrow's calendar</key>
 	<string>Показать календарь на завтра</string>
 	<key>Show yesterday's calendar</key>
@@ -2811,6 +2845,10 @@
 	<string>Забавное</string>
 	<key>Silver</key>
 	<string>Серебристый</string>
+	<key>Sip some water</key>
+	<string>Выпей немного воды</string>
+	<key>Sip water</key>
+	<string>Глоток воды</string>
 	<key>Skip</key>
 	<string>Пропустить</string>
 	<key>Skip Setup</key>
@@ -2821,12 +2859,16 @@
 	<string>Пропустить перерыв</string>
 	<key>Skip the review</key>
 	<string>Пропустить повторение</string>
+	<key>Skip this one; nothing is counted</key>
+	<string>Пропустить; ничего не учитывается</string>
 	<key>Skip to the break</key>
 	<string>Перейти к перерыву</string>
 	<key>Sky</key>
 	<string>Небесный</string>
 	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
 	<string>Сон тоже часть работы. Иди и придумай во сне завтрашние ходы.</string>
+	<key>Slow breath</key>
+	<string>Медленный вдох</string>
 	<key>Smooth</key>
 	<string>Плавно</string>
 	<key>Snowy Scarf</key>
@@ -2859,6 +2901,12 @@
 	<string>Пружинисто, с легким отскоком.</string>
 	<key>Sprint</key>
 	<string>Спринт</string>
+	<key>Stand up</key>
+	<string>Встать</string>
+	<key>Stand up for a moment</key>
+	<string>Встань ненадолго</string>
+	<key>Stand, shake out your legs, and sit back down when you like.</key>
+	<string>Встань, разомни ноги и садись обратно, когда захочешь.</string>
 	<key>Star tag</key>
 	<string>Звездный жетон</string>
 	<key>Stars don't rush. They just keep burning.</key>
@@ -2959,6 +3007,10 @@
 	<string>Серия</string>
 	<key>Streak unavailable</key>
 	<string>Серия недоступна</string>
+	<key>Stretch</key>
+	<string>Потянуться</string>
+	<key>Stretch with %@</key>
+	<string>Потянись вместе с %@</string>
 	<key>Studied today</key>
 	<string>Сегодня есть занятия</string>
 	<key>Study</key>
@@ -3251,6 +3303,8 @@
 	<string>Время</string>
 	<key>Time for a %lld-minute break.</key>
 	<string>Пора сделать перерыв на %lld мин.</string>
+	<key>Time for a stretch</key>
+	<string>Время потянуться</string>
 	<key>Time in these apps counts as drifting. Websites can't be told apart, since that would need Screen Recording, so pick apps rather than sites.</key>
 	<string>Время в этих приложениях считается отвлечением. Сайты не различить без записи экрана, поэтому выбирай приложения, а не сайты.</string>
 	<key>Time studied today and study sessions finished</key>
@@ -3683,6 +3737,12 @@
 	<string>Твой питомец</string>
 	<key>Your pet found this on its adventure. %@</key>
 	<string>Питомец нашел это в приключении. %@</string>
+	<key>Your pet may suggest this move. Click to turn it off</key>
+	<string>Питомец может предлагать это движение. Нажмите, чтобы выключить</string>
+	<key>Your pet picks one move per break and keeps it short. Skipping is always fine, and nothing counts against you. Glasses of water stay on this Mac.</key>
+	<string>Питомец выбирает одно короткое движение на перерыв. Пропускать всегда можно, и ничего не идет вам в минус. Стаканы воды остаются на этом Mac.</string>
+	<key>Your pet won't suggest this move. Click to turn it on</key>
+	<string>Питомец не будет предлагать это движение. Нажмите, чтобы включить</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>Имя питомца недопустимо. Переименуй питомца в Гардеробе.</string>
 	<key>Your pet, today's streak and the running timer.</key>

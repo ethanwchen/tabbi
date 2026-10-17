@@ -47,7 +47,7 @@ function isSliding(animation: PetAnimation): boolean {
 
 function hidesTheNeck(animation: PetAnimation, accessories: readonly PetAccessory[]): boolean {
   return (
-    ((animation === "coffee" || animation === "nap") && accessories.some((a) => accessorySlot(a) === "neck")) ||
+    ((animation === "coffee" || animation === "sip" || animation === "nap") && accessories.some((a) => accessorySlot(a) === "neck")) ||
     (animation === "typing" && accessories.includes("foundersPin"))
   );
 }
@@ -57,7 +57,7 @@ function liesOnTheFloor(animation: PetAnimation, outfit: PetOutfit, accessories:
 }
 
 function isCovered(animation: PetAnimation, item: number, nose: number, sat: { item: number; nose: number }): boolean {
-  return (animation === "coffee" || animation === "wave") && (item < sat.item || nose < sat.nose);
+  return (animation === "coffee" || animation === "sip" || animation === "wave") && (item < sat.item || nose < sat.nose);
 }
 
 function eyesOf(canvas: PetCanvas): PetPoint[] {

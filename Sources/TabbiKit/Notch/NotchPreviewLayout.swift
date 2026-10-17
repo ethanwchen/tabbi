@@ -91,6 +91,10 @@ public enum NotchPreviewLayout {
             content = textWidth(highlight.text)
         case .pet(let pet) where pet.isSipping:
             content = max(chargingSymbolSize + Theme.Spacing.xxs + textWidth(TickerFormat.charging), NotchPetWing.side)
+        case .pet(let pet) where pet.breakMoment != nil:
+            // Only the countdown sits beside the pet, measured on a sample so
+            // the wing holds still as the digits change.
+            content = max(textWidth(TickerFormat.breakCountdownSample), NotchPetWing.side)
         case .pet(let pet):
             // Measured asleep (or out exploring, in a block with an
             // adventure) too, so the wing doesn't jump when the pet dozes off

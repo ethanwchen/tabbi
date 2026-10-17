@@ -36,7 +36,8 @@ extension ModuleContext {
 /// a middle-click on the closed notch moves on by hand (`cycle()`). A pet cheer from
 /// `CelebrationCenter` (a finished focus session, or a sip when the Mac
 /// starts charging) takes the notch for its few seconds, then the rotation
-/// carries on. About five minutes before a
+/// carries on, and so does the pet modeling a break move (the break
+/// buddy) for its moment. About five minutes before a
 /// meeting its preview glows once (`MeetingNudge`), unless Do Not Disturb
 /// is on.
 @MainActor
@@ -114,12 +115,13 @@ final class TickerStore: ObservableObject {
 
     /// Shows the next live activity now, for a swipe down or a middle-click
     /// on the closed notch. Returns whether the notch changed, so the
-    /// caller only gives feedback for a real step. A cheer playing keeps
-    /// the notch until it ends.
+    /// caller only gives feedback for a real step. A cheer playing, or the
+    /// pet modeling a break move, keeps the notch until it ends.
     @discardableResult
     func cycle() -> Bool {
         let now = Date()
-        guard isActive, sources.cheering(cheer, at: now, enabled: settings.showsPreview) == nil else { return false }
+        guard isActive, sources.cheering(cheer, at: now, enabled: settings.showsPreview) == nil,
+              sources.guiding(at: now, enabled: settings.showsPreview) == nil else { return false }
         let items = sources.items(at: now, enabled: settings.showsPreview)
         guard items.count > 1 else { return false }
         let next = nudging(rotation.advance(items: items, at: now), at: now)
@@ -138,7 +140,12 @@ final class TickerStore: ObservableObject {
             let items = sources.items(at: now, enabled: settings.showsPreview)
             var next = nudging(rotation.update(items: items, at: now), at: now)
             rotates = items.count > 1 && next?.isPinned == false
-            if let cheering = sources.cheering(cheer, at: now, enabled: settings.showsPreview) { next = cheering }
+            if let cheering = sources.cheering(cheer, at: now, enabled: settings.showsPreview) {
+                next = cheering
+            } else if let guiding = sources.guiding(at: now, enabled: settings.showsPreview) {
+                // The pet modeling a break move takes the notch for the moment.
+                next = guiding
+            }
             if next != item { item = next }
         }
         scheduleTimer(now: now)

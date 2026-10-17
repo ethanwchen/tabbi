@@ -6,39 +6,50 @@ import TabbiKit
 
 extension SettingsPane {
     /// Settings › Pet Coach, offered while the Closet (the pet's module) is on.
-    @MainActor static func petCoach(_ coach: PetCoachController, reminder: StudyReminderScheduler) -> SettingsPane {
+    @MainActor static func petCoach(_ coach: PetCoachController, reminder: StudyReminderScheduler,
+                                    breakBuddy: BreakBuddyController) -> SettingsPane {
         SettingsPane(id: "coach", title: String(localized: "Pet Coach", bundle: .tabbi), symbol: "pawprint",
-                     view: AnyView(PetCoachSettingsPane(coach: coach, reminder: reminder)))
+                     view: AnyView(PetCoachSettingsPane(coach: coach, reminder: reminder, breakBuddy: breakBuddy)))
     }
 }
 
 /// Settings › Pet Coach: whether the pet nudges during focus, and which apps
 /// count as distracting. Suggestions are opt-in chips; any other app can be
 /// added from the Applications folder. Edits go straight to
-/// `PetCoachController`, which saves them. The daily study reminder, in the
-/// pet's voice, sits below (`StudyReminderSettingsSection`).
+/// `PetCoachController`, which saves them. The break buddy's moves
+/// (`BreakBuddySettingsSection`) and the daily study reminder, in the pet's
+/// voice (`StudyReminderSettingsSection`), sit below.
 struct PetCoachSettingsPane: View {
     @ObservedObject var coach: PetCoachController
     @ObservedObject var reminder: StudyReminderScheduler
+    let breakBuddy: BreakBuddyController
 
     var body: some View {
         Form {
             nudgesSection
             appsSection
+            BreakBuddySettingsSection(buddy: breakBuddy)
             StudyReminderSettingsSection(reminder: reminder)
         }
         .formStyle(.grouped)
-        .scrollDisabled(true)
         .frame(width: 500, height: height)
         .motion(Motion.content, value: height)
     }
 
+    /// The tallest the pane grows: past it, the form scrolls, so the window
+    /// fits a small screen.
+    static let maxHeight: CGFloat = 640
+
     /// The grouped form doesn't report its content height, so add up the
-    /// rows that come and go; the window follows the pane's size.
+    /// rows that come and go; the window follows the pane's size. The form
+    /// scrolls rather than clipping when a language's longer footers need
+    /// more room than this guess, or the guess passes `maxHeight`.
     private var height: CGFloat {
         let chipRows = (CoachAppList.suggestedDistracting.count + 2) / 3
-        return 284 + CGFloat(chipRows) * 40 + CGFloat(coach.apps.addedDistracting.count) * 36
+        let content = 284 + CGFloat(chipRows) * 40 + CGFloat(coach.apps.addedDistracting.count) * 36
+            + BreakBuddySettingsSection.height
             + StudyReminderSettingsSection.height(blocked: reminder.isBlocked)
+        return min(content, Self.maxHeight)
     }
 
     // MARK: Nudges

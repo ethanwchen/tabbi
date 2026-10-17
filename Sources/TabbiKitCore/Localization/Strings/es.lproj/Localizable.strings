@@ -201,6 +201,8 @@
 	<string>%@ funciona mejor desde Aplicaciones, donde puede abrirse al iniciar sesión y mantenerse al día. Se copia allí y se vuelve a abrir.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · En pausa</string>
+	<key>%@, %@ left</key>
+	<string>%1$@, quedan %2$@</string>
 	<key>%@, %lld extra</key>
 	<string>%@, %lld extra</string>
 	<key>%@, limited edition: %@</key>
@@ -359,6 +361,8 @@
 	<string>Puede bloquearlo un ajuste de tu escuela o trabajo. Puedes revisarlo en Ajustes del Sistema.</string>
 	<key>A shorter timer</key>
 	<string>Temporizador más corto</string>
+	<key>A slow breath in, and out</key>
+	<string>Inhala despacio, y exhala</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
 	<string>Un sonido suave al desbloquear algo o alcanzar una racha.</string>
 	<key>AI</key>
@@ -631,6 +635,10 @@
 	<string>Casco de astronauta</string>
 	<key>At least one tab must stay</key>
 	<string>Debe quedar al menos una pestaña</string>
+	<key>At the start of a break, %@ shows a short move you can copy</key>
+	<string>Al empezar un descanso, %@ muestra un movimiento corto que puedes imitar</string>
+	<key>At the start of a break, your pet shows a short move you can copy</key>
+	<string>Al empezar un descanso, tu mascota muestra un movimiento corto que puedes imitar</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>Adjuntar una captura de esta pantalla (sin Tabbi)</string>
 	<key>Automation</key>
@@ -697,8 +705,12 @@
 	<string>Pajarita</string>
 	<key>Break</key>
 	<string>Descanso</string>
+	<key>Break buddy</key>
+	<string>Compañero de descanso</string>
 	<key>Break's over</key>
 	<string>Se acabó el descanso</string>
+	<key>Breathe in slowly, then let it all out.</key>
+	<string>Inhala despacio y luego suéltalo todo.</string>
 	<key>Breed</key>
 	<string>Raza</string>
 	<key>Breed colors</key>
@@ -1047,6 +1059,8 @@
 	<string>No se pudo iniciar la playlist</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>No se pudo hacer la captura. Inténtalo de nuevo.</string>
+	<key>Count glasses of water</key>
+	<string>Contar vasos de agua</string>
 	<key>Count this session for you again</key>
 	<string>Vuelve a contar esta sesión para ti</string>
 	<key>Count time in %@ as drifting</key>
@@ -1145,6 +1159,10 @@
 	<string>Detectar claude automáticamente</string>
 	<key>Development build</key>
 	<string>Versión de desarrollo</string>
+	<key>Did it</key>
+	<string>Hecho</string>
+	<key>Did it with %@</key>
+	<string>Lo hice con %@</string>
 	<key>Did you answer the age question?</key>
 	<string>¿Respondiste la pregunta de la edad?</string>
 	<key>Did you let Tabbi control %@?</key>
@@ -1465,6 +1483,8 @@
 	<string>Placa dorada</string>
 	<key>Golden Laurel</key>
 	<string>Laurel dorado</string>
+	<key>Grab your glass and take a few sips.</key>
+	<string>Toma tu vaso y da unos sorbos.</string>
 	<key>Graduation Cap</key>
 	<string>Birrete</string>
 	<key>Great job!</key>
@@ -1721,6 +1741,8 @@
 	<string>Deja que tu IA encaje tus tareas en el calendario de hoy</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>Deja que tu IA encaje tus tareas en el calendario de mañana</string>
+	<key>Let your eyes rest on something across the room or out the window.</key>
+	<string>Deja descansar la vista en algo al otro lado de la sala o por la ventana.</string>
 	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
 	<string>Deja que tu mascota diga de vez en cuando una frase de ánimo justo al terminar una sesión de enfoque, como mucho una vez al día</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
@@ -1747,6 +1769,8 @@
 	<string>Cargando…</string>
 	<key>Location</key>
 	<string>Ubicación</string>
+	<key>Log a glass of water</key>
+	<string>Anotar un vaso de agua</string>
 	<key>Log in from Anki's Sync button once, then sync here.</key>
 	<string>Inicia sesión una vez desde el botón Sincronizar de Anki y luego sincroniza aquí.</string>
 	<key>Long break</key>
@@ -1755,6 +1779,8 @@
 	<string>Días largos, foco ligero. Mantén un poco de ritmo.</string>
 	<key>Look</key>
 	<string>Aspecto</string>
+	<key>Look at something far away</key>
+	<string>Mira algo a lo lejos</string>
 	<key>Looking for %@…</key>
 	<string>Buscando %@…</string>
 	<key>Looking for Anki</key>
@@ -2481,6 +2507,8 @@
 	<string>Lluvia</string>
 	<key>Rare</key>
 	<string>Raros</string>
+	<key>Reach your arms up high, then roll your shoulders back.</key>
+	<string>Sube los brazos bien alto y luego gira los hombros hacia atrás.</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Leer los últimos registros de Codex (no envía nada)</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2573,6 +2601,8 @@
 	<string>Restablecer</string>
 	<key>Reset to Kit Defaults</key>
 	<string>Restablecer valores del kit</string>
+	<key>Rest your eyes</key>
+	<string>Descansar la vista</string>
 	<key>Restart Anki</key>
 	<string>Reinicia Anki</string>
 	<key>Restart Anki to load it</key>
@@ -2735,6 +2765,8 @@
 	<string>Mostrar %@</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>Mostrar SoundCloud de Safari o Chrome</string>
+	<key>Show a break move</key>
+	<string>Mostrar un movimiento en el descanso</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>Mostrar un resumen de tu semana la primera vez que abras el notch después del domingo a las 18:00</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -2763,6 +2795,8 @@
 	<string>Ver los mazos principales junto al total de hoy</string>
 	<key>Show this in the live activity</key>
 	<string>Mostrar en la actividad en vivo</string>
+	<key>Show today's glasses on the break card, with a button to add one</key>
+	<string>Mostrar los vasos de hoy en la tarjeta del descanso, con un botón para sumar uno</string>
 	<key>Show tomorrow's calendar</key>
 	<string>Ver el calendario de mañana</string>
 	<key>Show yesterday's calendar</key>
@@ -2811,6 +2845,10 @@
 	<string>Divertido</string>
 	<key>Silver</key>
 	<string>Plata</string>
+	<key>Sip some water</key>
+	<string>Bebe un poco de agua</string>
+	<key>Sip water</key>
+	<string>Beber agua</string>
 	<key>Skip</key>
 	<string>Omitir</string>
 	<key>Skip Setup</key>
@@ -2821,12 +2859,16 @@
 	<string>Saltar el descanso</string>
 	<key>Skip the review</key>
 	<string>Saltar el repaso</string>
+	<key>Skip this one; nothing is counted</key>
+	<string>Saltar esta vez; no se cuenta nada</string>
 	<key>Skip to the break</key>
 	<string>Saltar al descanso</string>
 	<key>Sky</key>
 	<string>Cielo</string>
 	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
 	<string>Dormir también es parte del trabajo. Ve a soñar las jugadas de mañana.</string>
+	<key>Slow breath</key>
+	<string>Respirar lento</string>
 	<key>Smooth</key>
 	<string>Suave</string>
 	<key>Snowy Scarf</key>
@@ -2859,6 +2901,12 @@
 	<string>Elástico, con un pequeño rebote.</string>
 	<key>Sprint</key>
 	<string>Sprint</string>
+	<key>Stand up</key>
+	<string>Levantarse</string>
+	<key>Stand up for a moment</key>
+	<string>Levántate un momento</string>
+	<key>Stand, shake out your legs, and sit back down when you like.</key>
+	<string>Levántate, sacude las piernas y vuelve a sentarte cuando quieras.</string>
 	<key>Star tag</key>
 	<string>Placa de estrella</string>
 	<key>Stars don't rush. They just keep burning.</key>
@@ -2959,6 +3007,10 @@
 	<string>Racha</string>
 	<key>Streak unavailable</key>
 	<string>Racha no disponible</string>
+	<key>Stretch</key>
+	<string>Estirar</string>
+	<key>Stretch with %@</key>
+	<string>Estírate con %@</string>
 	<key>Studied today</key>
 	<string>Hoy has estudiado</string>
 	<key>Study</key>
@@ -3251,6 +3303,8 @@
 	<string>Hora</string>
 	<key>Time for a %lld-minute break.</key>
 	<string>Hora de un descanso de %lld minutos.</string>
+	<key>Time for a stretch</key>
+	<string>Hora de estirarse</string>
 	<key>Time in these apps counts as drifting. Websites can't be told apart, since that would need Screen Recording, so pick apps rather than sites.</key>
 	<string>El tiempo en estas apps cuenta como distracción. Las webs no se distinguen sin Grabación de pantalla, así que elige apps, no sitios.</string>
 	<key>Time studied today and study sessions finished</key>
@@ -3683,6 +3737,12 @@
 	<string>Tu mascota</string>
 	<key>Your pet found this on its adventure. %@</key>
 	<string>Tu mascota lo encontró en su aventura. %@</string>
+	<key>Your pet may suggest this move. Click to turn it off</key>
+	<string>Tu mascota puede sugerir este movimiento. Haz clic para desactivarlo</string>
+	<key>Your pet picks one move per break and keeps it short. Skipping is always fine, and nothing counts against you. Glasses of water stay on this Mac.</key>
+	<string>Tu mascota elige un movimiento corto por descanso. Saltarlo siempre está bien y nada cuenta en tu contra. Los vasos de agua se quedan en este Mac.</string>
+	<key>Your pet won't suggest this move. Click to turn it on</key>
+	<string>Tu mascota no sugerirá este movimiento. Haz clic para activarlo</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>El nombre de tu mascota no está permitido. Cámbialo en Armario.</string>
 	<key>Your pet, today's streak and the running timer.</key>

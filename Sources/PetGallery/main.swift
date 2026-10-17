@@ -236,7 +236,7 @@ try writeSheet(stretchCells, columns: 9, title: "Stretch (play bow)",
 
 // Animation checks: every breed through every frame of the newer moves,
 // one row per breed, so each move is reviewed across all head shapes.
-for animation in [PetAnimation.yawn, .hop, .typing, .coffee, .wave, .groom, .tailSwish, .nap, .play] {
+for animation in [PetAnimation.yawn, .hop, .typing, .coffee, .wave, .groom, .tailSwish, .nap, .play, .sip, .breathe] {
     var cells: [Cell] = []
     var columns = 1
     for breed in PetBreed.allCases {
@@ -406,7 +406,7 @@ for (name, outfit, accessories) in contactGroups.flatMap(\.1) {
 // Notch-size check of the newer moves: one row per breed, the key (middle)
 // frame of each move, at 1x and 2x, so every breed is judged at the size the
 // closed notch really draws it.
-let newerMoves: [PetAnimation] = [.yawn, .hop, .typing, .coffee, .wave, .groom, .tailSwish, .nap, .play]
+let newerMoves: [PetAnimation] = [.yawn, .hop, .typing, .coffee, .wave, .groom, .tailSwish, .nap, .play, .sip, .breathe]
 let moveCells = PetBreed.allCases.flatMap { breed in
     newerMoves.map { animation in
         let frames = PetComposer.clip(animation, for: breed).frames

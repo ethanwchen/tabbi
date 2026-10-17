@@ -1,0 +1,845 @@
+{
+  "constants" : {
+    "glassUnit" : "glass",
+    "longBreak" : 600,
+    "minimumBreak" : 40,
+    "moveKind" : "break.move",
+    "moves" : [
+      {
+        "animation" : "stretch",
+        "id" : "stretch",
+        "length" : 40,
+        "symbol" : "figure.flexibility"
+      },
+      {
+        "animation" : "sip",
+        "id" : "sip",
+        "length" : 20,
+        "symbol" : "drop.fill"
+      },
+      {
+        "animation" : "sit",
+        "id" : "eyeRest",
+        "length" : 20,
+        "symbol" : "eye"
+      },
+      {
+        "animation" : "breathe",
+        "id" : "breathe",
+        "length" : 30,
+        "symbol" : "wind"
+      },
+      {
+        "animation" : "walk",
+        "id" : "standUp",
+        "length" : 60,
+        "symbol" : "figure.stand"
+      }
+    ],
+    "preferencesKey" : "breakBuddy.preferences",
+    "preferencesVersion" : 1,
+    "rotation" : [
+      "stretch",
+      "eyeRest",
+      "breathe"
+    ],
+    "sipEvery" : 3,
+    "source" : "closet",
+    "waterKind" : "water.logged"
+  },
+  "plans" : [
+    {
+      "input" : {
+        "breakLength" : 300,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "name" : "first-short-break",
+      "output" : {
+        "breakKey" : "focus@1791000000",
+        "moment" : {
+          "breakStartedAt" : 1791000000,
+          "endsAt" : 1791000040,
+          "move" : "stretch",
+          "source" : "focus",
+          "startedAt" : 1791000000
+        },
+        "preferences" : {
+          "breaksSinceSip" : 1,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "lastBreakKey" : "focus@1791000000",
+          "lastMove" : "stretch",
+          "tracksWater" : true
+        }
+      }
+    },
+    {
+      "input" : {
+        "breakLength" : 900,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "name" : "long-break-stands-up",
+      "output" : {
+        "breakKey" : "focus@1791000000",
+        "moment" : {
+          "breakStartedAt" : 1791000000,
+          "endsAt" : 1791000060,
+          "move" : "standUp",
+          "source" : "focus",
+          "startedAt" : 1791000000
+        },
+        "preferences" : {
+          "breaksSinceSip" : 1,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "lastBreakKey" : "focus@1791000000",
+          "tracksWater" : true
+        }
+      }
+    },
+    {
+      "input" : {
+        "breakLength" : 60,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "name" : "half-of-a-one-minute-break",
+      "output" : {
+        "breakKey" : "focus@1791000000",
+        "moment" : {
+          "breakStartedAt" : 1791000000,
+          "endsAt" : 1791000030,
+          "move" : "stretch",
+          "source" : "focus",
+          "startedAt" : 1791000000
+        },
+        "preferences" : {
+          "breaksSinceSip" : 1,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "lastBreakKey" : "focus@1791000000",
+          "lastMove" : "stretch",
+          "tracksWater" : true
+        }
+      }
+    },
+    {
+      "input" : {
+        "breakLength" : 40,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "name" : "forty-seconds-is-the-least",
+      "output" : {
+        "breakKey" : "focus@1791000000",
+        "moment" : {
+          "breakStartedAt" : 1791000000,
+          "endsAt" : 1791000020,
+          "move" : "stretch",
+          "source" : "focus",
+          "startedAt" : 1791000000
+        },
+        "preferences" : {
+          "breaksSinceSip" : 1,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "lastBreakKey" : "focus@1791000000",
+          "lastMove" : "stretch",
+          "tracksWater" : true
+        }
+      }
+    },
+    {
+      "input" : {
+        "breakLength" : 39,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "name" : "under-forty-seconds-gets-none",
+      "output" : {
+        "breakKey" : "focus@1791000000",
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        }
+      }
+    },
+    {
+      "input" : {
+        "breakLength" : 300,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000265,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "name" : "too-late-in-the-break",
+      "output" : {
+        "breakKey" : "focus@1791000000",
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        }
+      }
+    },
+    {
+      "input" : {
+        "breakLength" : 300,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000004,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "name" : "planned-a-few-seconds-in",
+      "output" : {
+        "breakKey" : "focus@1791000000",
+        "moment" : {
+          "breakStartedAt" : 1791000000,
+          "endsAt" : 1791000044,
+          "move" : "stretch",
+          "source" : "focus",
+          "startedAt" : 1791000004
+        },
+        "preferences" : {
+          "breaksSinceSip" : 1,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "lastBreakKey" : "focus@1791000000",
+          "lastMove" : "stretch",
+          "tracksWater" : true
+        }
+      }
+    },
+    {
+      "input" : {
+        "breakLength" : 300,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 2,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "lastBreakKey" : "focus@1",
+          "lastMove" : "eyeRest",
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "name" : "sip-comes-round",
+      "output" : {
+        "breakKey" : "focus@1791000000",
+        "moment" : {
+          "breakStartedAt" : 1791000000,
+          "endsAt" : 1791000020,
+          "move" : "sip",
+          "source" : "focus",
+          "startedAt" : 1791000000
+        },
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "lastBreakKey" : "focus@1791000000",
+          "lastMove" : "eyeRest",
+          "tracksWater" : true
+        }
+      }
+    },
+    {
+      "input" : {
+        "breakLength" : 300,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 1,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "lastMove" : "breathe",
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "name" : "rotation-after-breathe",
+      "output" : {
+        "breakKey" : "focus@1791000000",
+        "moment" : {
+          "breakStartedAt" : 1791000000,
+          "endsAt" : 1791000040,
+          "move" : "stretch",
+          "source" : "focus",
+          "startedAt" : 1791000000
+        },
+        "preferences" : {
+          "breaksSinceSip" : 2,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "lastBreakKey" : "focus@1791000000",
+          "lastMove" : "stretch",
+          "tracksWater" : true
+        }
+      }
+    },
+    {
+      "input" : {
+        "breakLength" : 300,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : false,
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "name" : "off",
+      "output" : {
+        "breakKey" : "focus@1791000000",
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : false,
+          "tracksWater" : true
+        }
+      }
+    },
+    {
+      "input" : {
+        "breakLength" : 300,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+            "breathe",
+            "eyeRest",
+            "sip",
+            "standUp",
+            "stretch"
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "name" : "every-move-off",
+      "output" : {
+        "breakKey" : "focus@1791000000",
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+            "breathe",
+            "eyeRest",
+            "sip",
+            "standUp",
+            "stretch"
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        }
+      }
+    },
+    {
+      "input" : {
+        "breakLength" : 300,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "lastBreakKey" : "focus@1791000000",
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "name" : "already-planned",
+      "output" : {
+        "breakKey" : "focus@1791000000",
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "lastBreakKey" : "focus@1791000000",
+          "tracksWater" : true
+        }
+      }
+    },
+    {
+      "input" : {
+        "breakLength" : 900,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+            "standUp"
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "name" : "long-break-standing-up-off",
+      "output" : {
+        "breakKey" : "focus@1791000000",
+        "moment" : {
+          "breakStartedAt" : 1791000000,
+          "endsAt" : 1791000040,
+          "move" : "stretch",
+          "source" : "focus",
+          "startedAt" : 1791000000
+        },
+        "preferences" : {
+          "breaksSinceSip" : 1,
+          "disabledMoves" : [
+            "standUp"
+          ],
+          "isOn" : true,
+          "lastBreakKey" : "focus@1791000000",
+          "lastMove" : "stretch",
+          "tracksWater" : true
+        }
+      }
+    },
+    {
+      "input" : {
+        "breakLength" : 300,
+        "breakStartedAt" : 1791000000,
+        "now" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+            "breathe",
+            "eyeRest",
+            "standUp",
+            "stretch"
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        },
+        "source" : "study"
+      },
+      "name" : "only-sip-left",
+      "output" : {
+        "breakKey" : "study@1791000000",
+        "moment" : {
+          "breakStartedAt" : 1791000000,
+          "endsAt" : 1791000020,
+          "move" : "sip",
+          "source" : "study",
+          "startedAt" : 1791000000
+        },
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+            "breathe",
+            "eyeRest",
+            "standUp",
+            "stretch"
+          ],
+          "isOn" : true,
+          "lastBreakKey" : "study@1791000000",
+          "tracksWater" : true
+        }
+      }
+    }
+  ],
+  "runs" : [
+    {
+      "input" : {
+        "breakLengths" : [
+          300,
+          300,
+          300,
+          1200,
+          300,
+          300,
+          300,
+          1200,
+          300
+        ],
+        "firstStart" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        },
+        "source" : "focus"
+      },
+      "moves" : [
+        "stretch",
+        "eyeRest",
+        "sip",
+        "standUp",
+        "breathe",
+        "sip",
+        "stretch",
+        "standUp",
+        "sip"
+      ],
+      "name" : "pomodoro-day"
+    },
+    {
+      "input" : {
+        "breakLengths" : [
+          300,
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "firstStart" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+            "eyeRest",
+            "sip"
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        },
+        "source" : "study"
+      },
+      "moves" : [
+        "stretch",
+        "breathe",
+        "stretch",
+        "breathe",
+        "stretch",
+        "breathe"
+      ],
+      "name" : "no-sip-no-eyes"
+    },
+    {
+      "input" : {
+        "breakLengths" : [
+          30,
+          300,
+          45,
+          20,
+          300,
+          600
+        ],
+        "firstStart" : 1791000000,
+        "preferences" : {
+          "breaksSinceSip" : 0,
+          "disabledMoves" : [
+
+          ],
+          "isOn" : true,
+          "tracksWater" : true
+        },
+        "source" : "study"
+      },
+      "moves" : [
+        null,
+        "stretch",
+        "eyeRest",
+        null,
+        "sip",
+        "standUp"
+      ],
+      "name" : "short-and-tiny-breaks"
+    }
+  ],
+  "schema" : "tabbi.break-buddy.golden",
+  "tallies" : [
+    {
+      "day" : "2026-10-03",
+      "glasses" : 4,
+      "moves" : [
+        "stretch",
+        "breathe"
+      ],
+      "name" : "berlin-day",
+      "records" : [
+        {
+          "end" : 1790978340,
+          "kind" : "water.logged",
+          "quantity" : 1,
+          "source" : "closet"
+        },
+        {
+          "end" : 1790978400,
+          "kind" : "water.logged",
+          "quantity" : 1,
+          "source" : "closet"
+        },
+        {
+          "end" : 1791010800,
+          "kind" : "water.logged",
+          "quantity" : 1,
+          "source" : "closet"
+        },
+        {
+          "end" : 1791032400,
+          "kind" : "water.logged",
+          "quantity" : 2,
+          "source" : "closet"
+        },
+        {
+          "end" : 1791014400,
+          "kind" : "water.logged",
+          "quantity" : 1,
+          "source" : "study"
+        },
+        {
+          "end" : 1791010800,
+          "kind" : "break.move",
+          "source" : "closet",
+          "subject" : "stretch"
+        },
+        {
+          "end" : 1791018000,
+          "kind" : "break.move",
+          "source" : "closet",
+          "subject" : "breathe"
+        },
+        {
+          "end" : 1791021600,
+          "kind" : "break.move",
+          "source" : "closet",
+          "subject" : "cartwheel"
+        },
+        {
+          "end" : 1791010800,
+          "kind" : "focus.completed",
+          "quantity" : 25,
+          "source" : "focus"
+        }
+      ],
+      "timeZone" : "Europe/Berlin"
+    },
+    {
+      "day" : "2026-10-02",
+      "glasses" : 1,
+      "moves" : [
+
+      ],
+      "name" : "berlin-day-before",
+      "records" : [
+        {
+          "end" : 1790978340,
+          "kind" : "water.logged",
+          "quantity" : 1,
+          "source" : "closet"
+        },
+        {
+          "end" : 1790978400,
+          "kind" : "water.logged",
+          "quantity" : 1,
+          "source" : "closet"
+        },
+        {
+          "end" : 1791010800,
+          "kind" : "water.logged",
+          "quantity" : 1,
+          "source" : "closet"
+        },
+        {
+          "end" : 1791032400,
+          "kind" : "water.logged",
+          "quantity" : 2,
+          "source" : "closet"
+        },
+        {
+          "end" : 1791014400,
+          "kind" : "water.logged",
+          "quantity" : 1,
+          "source" : "study"
+        },
+        {
+          "end" : 1791010800,
+          "kind" : "break.move",
+          "source" : "closet",
+          "subject" : "stretch"
+        },
+        {
+          "end" : 1791018000,
+          "kind" : "break.move",
+          "source" : "closet",
+          "subject" : "breathe"
+        },
+        {
+          "end" : 1791021600,
+          "kind" : "break.move",
+          "source" : "closet",
+          "subject" : "cartwheel"
+        },
+        {
+          "end" : 1791010800,
+          "kind" : "focus.completed",
+          "quantity" : 25,
+          "source" : "focus"
+        }
+      ],
+      "timeZone" : "Europe/Berlin"
+    },
+    {
+      "day" : "2026-10-03",
+      "glasses" : 3,
+      "moves" : [
+        "stretch",
+        "breathe"
+      ],
+      "name" : "utc-day",
+      "records" : [
+        {
+          "end" : 1790978340,
+          "kind" : "water.logged",
+          "quantity" : 1,
+          "source" : "closet"
+        },
+        {
+          "end" : 1790978400,
+          "kind" : "water.logged",
+          "quantity" : 1,
+          "source" : "closet"
+        },
+        {
+          "end" : 1791010800,
+          "kind" : "water.logged",
+          "quantity" : 1,
+          "source" : "closet"
+        },
+        {
+          "end" : 1791032400,
+          "kind" : "water.logged",
+          "quantity" : 2,
+          "source" : "closet"
+        },
+        {
+          "end" : 1791014400,
+          "kind" : "water.logged",
+          "quantity" : 1,
+          "source" : "study"
+        },
+        {
+          "end" : 1791010800,
+          "kind" : "break.move",
+          "source" : "closet",
+          "subject" : "stretch"
+        },
+        {
+          "end" : 1791018000,
+          "kind" : "break.move",
+          "source" : "closet",
+          "subject" : "breathe"
+        },
+        {
+          "end" : 1791021600,
+          "kind" : "break.move",
+          "source" : "closet",
+          "subject" : "cartwheel"
+        },
+        {
+          "end" : 1791010800,
+          "kind" : "focus.completed",
+          "quantity" : 25,
+          "source" : "focus"
+        }
+      ],
+      "timeZone" : "UTC"
+    }
+  ],
+  "version" : 1
+}

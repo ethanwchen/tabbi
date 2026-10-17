@@ -18,11 +18,13 @@ final class StudyModule: NotchModule {
     )
     private let store: StudyStore
     private let focusMode: FocusController
+    private let breakBuddy: BreakBuddyController
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
         let kit = context.activeKit?.defaults
         focusMode = context.focusMode
+        breakBuddy = context.breakBuddy
         store = StudyStore(menu: StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), storage: context.storage,
                            activity: context.activityLog, focusMode: focusMode,
                            petProfile: context.studyPet.profile, celebrations: context.celebrations,
@@ -40,7 +42,7 @@ final class StudyModule: NotchModule {
     }
 
     func makePanel() -> AnyView {
-        AnyView(StudyPanel(store: store, focusMode: focusMode))
+        AnyView(StudyPanel(store: store, focusMode: focusMode, breakBuddy: breakBuddy))
     }
 
     /// Snapshot runs only: the Timer in a party's shared session.

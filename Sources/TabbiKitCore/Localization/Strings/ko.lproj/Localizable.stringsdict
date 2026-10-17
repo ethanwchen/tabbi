@@ -143,6 +143,20 @@
 			<string>친구 %lld명이 함께하고 있어요.</string>
 		</dict>
 	</dict>
+	<key>%lld glasses of water today</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>오늘 물 %lld잔</string>
+		</dict>
+	</dict>
 	<key>%lld minutes in the bank.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

@@ -95,7 +95,7 @@ enum SnapshotRenderer {
             if case .pet(var pet) = item {
                 // They are drawn home: a demo focus block may have sent the
                 // pet off on its adventure (its own shots are below).
-                let looks = [(PetMood.studying, "studying"), (.onBreak, "break"), (.asleep, "asleep")]
+                let looks = [(PetMood.studying, "studying"), (.onBreak, "coffee"), (.asleep, "asleep")]
                 let wasHome = pet.adventure == nil
                 pet.adventure = nil
                 for (mood, name) in looks where mood != pet.mood || !wasHome {
@@ -104,6 +104,11 @@ enum SnapshotRenderer {
                     model.preview = .pet(pet)
                     shots.append(Shot("closed-pet-\(name)", model))
                 }
+                // The start of a break: the pet stretches for the user to
+                // copy, with the moment's countdown (stamped when rendered).
+                let guiding = NotchViewModel(geometry: geometry, layout: layout)
+                guiding.preview = .pet(TickerPet(profile: pet.profile, mood: .onBreak))
+                shots.append(Shot("closed-pet-break", guiding))
                 // A finished focus session: the pet hops among sparkles
                 // (stamped mid-cheer when rendered, see renderNotchShots).
                 let model = NotchViewModel(geometry: geometry, layout: layout)
@@ -192,6 +197,21 @@ enum SnapshotRenderer {
             var withModule = layout
             _ = withModule.setEnabled(module, true)
             let model = NotchViewModel(geometry: geometry, layout: withModule)
+            model.open(module)
+            shots.append(Shot(name, model))
+        }
+
+        // The break buddy's card in place of the timer at the start of a
+        // break, in Study and in Focus, and in the Compact panel, rendered
+        // after the others because the moment is the break buddy's state.
+        for (module, name, size) in [(ModuleID.study, "open-study-break", PanelSize.regular),
+                                     (.study, "open-compact-study-break", .compact),
+                                     (.focus, "open-focus-break", .regular)]
+        where layout.order.contains(module) && closet != nil {
+            var withModule = layout
+            _ = withModule.setEnabled(module, true)
+            let model = NotchViewModel(geometry: geometry, layout: withModule)
+            model.panelSize = size
             model.open(module)
             shots.append(Shot(name, model))
         }
@@ -411,6 +431,14 @@ enum SnapshotRenderer {
             print(url.path)
         }
         services.settings.settings.motionPace = pace
+        // Pet Coach's Break buddy section, below the fold of its pane.
+        if let buddy = closet?.breakBuddy,
+           let png = await sheetSnapshot(Form { BreakBuddySettingsSection(buddy: buddy) }.formStyle(.grouped)
+               .frame(width: paneWidth)) {
+            let url = outputDirectory.appendingPathComponent("settings-coach-break-buddy.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
         // The age check before Sign in with Apple: asked, passed, too young.
         let tooYoung = Calendar.current.date(byAdding: .month, value: 18, to: Date()) ?? Date()
         for (name, status) in [("ask", PartyAgeCheck.Status.unanswered), ("ready", .passed),
@@ -628,6 +656,10 @@ enum SnapshotRenderer {
                 : name == "open-claudeAsk-screenshot-sent" ? .sentScreenshot
                 : name == "open-claudeAsk-screen-access" ? .screenAccess : .chat)
             timer?.showForSnapshot(partySession: name == "open-study-party" ? partySession : nil)
+            // A stretch twelve seconds in, from the clock of the tab shown.
+            let breakSource: ModuleID? = name.hasPrefix("open-") && name.hasSuffix("study-break") ? .study
+                : name == "open-focus-break" ? .focus : nil
+            closet?.breakBuddy.showForSnapshot(breakSource.map { BreakMoment.sample(at: Date(), source: $0) })
             party?.showCelebrationForSnapshot(name == "open-party-celebrating")
             party?.showInviteForSnapshot(shot.invite)
             today?.showForSnapshot(name == "open-planner-yesterday" ? .yesterday
@@ -663,6 +695,11 @@ enum SnapshotRenderer {
                                    endsAt: now.addingTimeInterval(1.5))
                 model.preview = .pet(pet)
             }
+            if name == "closed-pet-break", case .pet(var pet) = model.preview {
+                // A stretch twelve seconds in.
+                pet.breakMoment = .sample(at: Date())
+                model.preview = .pet(pet)
+            }
             if name == "closed-pet-charging", case .pet(var pet) = model.preview {
                 // Past the hop, with the mug raised for the sip.
                 pet.cheer = PetCheer(kind: .sip, id: 1, startedAt: Date().addingTimeInterval(-3.5))
@@ -693,6 +730,7 @@ enum SnapshotRenderer {
         }
         services.onboarding.show(nil)
         timer?.showForSnapshot(partySession: nil)
+        closet?.breakBuddy.showForSnapshot(nil)
         party?.showCelebrationForSnapshot(false)
         party?.showInviteForSnapshot(nil)
         today?.show(.today)

@@ -35,6 +35,8 @@ final class ClosetModule: NotchModule {
     let greeter: SeasonalEventGreeter
     /// Surprise gifts after focus sessions; found rare furs show in Look.
     let gifts: SurpriseGiftKeeper
+    /// The break buddy, whose moves the closed notch's pet models.
+    let breakBuddy: BreakBuddyController
 
     init(context: ModuleContext) {
         let settings = context.settings
@@ -61,6 +63,7 @@ final class ClosetModule: NotchModule {
         )
         self.store = store
         self.gifts = gifts
+        breakBuddy = context.breakBuddy
         reminder = StudyReminderScheduler(storage: context.storage, runMode: context.runMode, pet: store,
                                           progress: context.providers.$snapshot.map(\.progress).eraseToAnyPublisher())
         recaps = context.weeklyRecaps
@@ -82,11 +85,18 @@ final class ClosetModule: NotchModule {
         greeter.stop()
     }
 
-    func makeSettingsPane() -> SettingsPane? { .petCoach(coach, reminder: reminder) }
+    func makeSettingsPane() -> SettingsPane? { .petCoach(coach, reminder: reminder, breakBuddy: breakBuddy) }
 
-    /// Shares the pet, so the closed notch can show it.
+    /// Shares the pet, so the closed notch can show it, with the break move
+    /// it is modeling, if any.
     var provision: AnyPublisher<ModuleProvision, Never>? {
-        store.$presence.map { ModuleProvision(pet: $0) }.eraseToAnyPublisher()
+        store.$presence.combineLatest(breakBuddy.$moment)
+            .map { presence, moment in
+                var presence = presence
+                presence.breakMoment = moment
+                return ModuleProvision(pet: presence)
+            }
+            .eraseToAnyPublisher()
     }
 
     func makePanel() -> AnyView {

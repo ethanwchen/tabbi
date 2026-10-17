@@ -39,7 +39,7 @@ final class PetCostumeFitTests: XCTestCase {
     /// The laptop stands in front of the chest, so it can hide the Founder's
     /// Pin, the one neck item worn on the chest instead of around the neck.
     private func hidesTheNeck(_ animation: PetAnimation, _ accessories: [PetAccessory]) -> Bool {
-        (animation == .coffee || animation == .nap) && accessories.contains { $0.slot == .neck }
+        (animation == .coffee || animation == .sip || animation == .nap) && accessories.contains { $0.slot == .neck }
             || animation == .typing && accessories.contains(.foundersPin)
     }
 
@@ -53,7 +53,7 @@ final class PetCostumeFitTests: XCTestCase {
     /// frame where it hides part of the item or of the nose, what shows
     /// can't say where the item sits.
     private func isCovered(_ animation: PetAnimation, item: Int, nose: Int, sitting: (item: Int, nose: Int)) -> Bool {
-        (animation == .coffee || animation == .wave) && (item < sitting.item || nose < sitting.nose)
+        (animation == .coffee || animation == .sip || animation == .wave) && (item < sitting.item || nose < sitting.nose)
     }
 
     func testEveryItemShowsAndStaysInsideTheFrameInEveryAnimation() {
