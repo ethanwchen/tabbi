@@ -33,7 +33,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#91806E"
+      "rim" : "#A99C8E",
+      "sheen" : "#91806E"
     },
     {
       "breed" : "grayTabby",
@@ -68,7 +69,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#727B8D"
+      "rim" : "#979EAC",
+      "sheen" : "#727B8D"
     },
     {
       "breed" : "blackCat",
@@ -99,11 +101,12 @@
         "metal" : "#C9D3DD",
         "mouth" : "#2A1A14",
         "nose" : "#E77A8C",
-        "outline" : "#7D748B",
+        "outline" : "#2A1A14",
         "pumpkin" : "#F08A24",
         "pupil" : "#1F6B3A"
       },
-      "rim" : "#7D748B"
+      "rim" : "#A29BAC",
+      "sheen" : "#7D748B"
     },
     {
       "breed" : "whiteCat",
@@ -138,7 +141,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#91846E"
+      "rim" : "#A79D8B",
+      "sheen" : "#91846E"
     },
     {
       "breed" : "tuxedo",
@@ -169,11 +173,12 @@
         "metal" : "#C9D3DD",
         "mouth" : "#2A1A14",
         "nose" : "#E77A8C",
-        "outline" : "#7D748B",
+        "outline" : "#2A1A14",
         "pumpkin" : "#F08A24",
         "pupil" : "#8A5A12"
       },
-      "rim" : "#7D748B"
+      "rim" : "#A29BAC",
+      "sheen" : "#7D748B"
     },
     {
       "breed" : "calico",
@@ -208,7 +213,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#91846E"
+      "rim" : "#A79D8B",
+      "sheen" : "#91846E"
     },
     {
       "breed" : "siamese",
@@ -243,7 +249,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#91836E"
+      "rim" : "#A89D8B",
+      "sheen" : "#91836E"
     },
     {
       "breed" : "britishShorthair",
@@ -278,7 +285,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#91826E"
+      "rim" : "#A99C8C",
+      "sheen" : "#91826E"
     },
     {
       "breed" : "sphynx",
@@ -313,7 +321,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#917B6E"
+      "rim" : "#AC9B91",
+      "sheen" : "#917B6E"
     },
     {
       "breed" : "scottishFold",
@@ -348,7 +357,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#737B8C"
+      "rim" : "#989EAA",
+      "sheen" : "#737B8C"
     },
     {
       "breed" : "britishLonghair",
@@ -379,11 +389,12 @@
         "metal" : "#C9D3DD",
         "mouth" : "#2A1A14",
         "nose" : "#C8737A",
-        "outline" : "#91776E",
+        "outline" : "#2A1610",
         "pumpkin" : "#F08A24",
         "pupil" : "#2A140A"
       },
-      "rim" : "#91776E"
+      "rim" : "#AD9A93",
+      "sheen" : "#91776E"
     },
     {
       "breed" : "goldenRetriever",
@@ -418,7 +429,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#91846E"
+      "rim" : "#A79D8B",
+      "sheen" : "#91846E"
     },
     {
       "breed" : "labrador",
@@ -453,7 +465,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#917B6E"
+      "rim" : "#AC9B90",
+      "sheen" : "#917B6E"
     },
     {
       "breed" : "frenchBulldog",
@@ -488,7 +501,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#91826E"
+      "rim" : "#A89D8C",
+      "sheen" : "#91826E"
     },
     {
       "breed" : "corgi",
@@ -523,7 +537,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#917E6E"
+      "rim" : "#AA9C8E",
+      "sheen" : "#917E6E"
     },
     {
       "breed" : "dachshund",
@@ -554,11 +569,12 @@
         "metal" : "#C9D3DD",
         "mouth" : "#2A1A14",
         "nose" : "#1E1618",
-        "outline" : "#8D7278",
+        "outline" : "#2A1A14",
         "pumpkin" : "#F08A24",
         "pupil" : "#4A2A1A"
       },
-      "rim" : "#8D7278"
+      "rim" : "#AC999E",
+      "sheen" : "#8D7278"
     },
     {
       "breed" : "beagle",
@@ -593,7 +609,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#91806E"
+      "rim" : "#A99C8D",
+      "sheen" : "#91806E"
     },
     {
       "breed" : "poodle",
@@ -628,7 +645,8 @@
         "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
-      "rim" : "#917F6E"
+      "rim" : "#AA9C8E",
+      "sheen" : "#917F6E"
     },
     {
       "breed" : "shihTzu",
@@ -659,11 +677,12 @@
         "metal" : "#C9D3DD",
         "mouth" : "#2A1A14",
         "nose" : "#1A1416",
-        "outline" : "#7D748B",
+        "outline" : "#2A1A14",
         "pumpkin" : "#F08A24",
         "pupil" : "#24160F"
       },
-      "rim" : "#7D748B"
+      "rim" : "#A29BAC",
+      "sheen" : "#7D748B"
     }
   ],
   "schema" : "tabbi.pets.golden",

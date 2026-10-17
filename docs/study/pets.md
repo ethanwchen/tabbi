@@ -51,7 +51,7 @@ Parse errors report the 1-based row and column of the problem.
 | `i` | pupil | dark center of an open eye (lowercase: the uppercase letters ran out) |
 | `L` | eyeLight | eye highlight |
 | `N` | nose | nose (and dog mouths) |
-| `R` | mouth | cat mouth lines; dark on light fur, warm rim on dark fur (picked per pixel from the 4 neighbors) |
+| `R` | mouth | cat mouth lines; dark on light fur, a soft light sheen on near-black fur (picked per pixel from the 4 neighbors) |
 | `P` | blush | cheeks, inner ears |
 | `C` | costumeBase | scrubs and the matching surgical cap |
 | `D` | costumeShade | scrubs shading and hems |
@@ -111,6 +111,7 @@ Layers are stamped in order, later layers painting over earlier ones:
 5. accessory
 
 After stamping, `PetCanvas.outlined()` adds a one-pixel outline around the whole silhouette using direct neighbors only, so corners stay round and every costume is outlined consistently.
+The renderer then decides, pixel by pixel, whether that outline stays dark or becomes a light rim (see [Dark coats on dark backdrops](#dark-coats-on-dark-backdrops)).
 
 ## Costumes
 
@@ -440,7 +441,7 @@ Its initializer and editing methods keep it valid at all times:
 - Names are trimmed, inner whitespace is collapsed, and the length is capped at 16; an empty name falls back to the breed name.
 - Only `PetPaletteRole.userEditable` roles can be overridden, so eyes, outline, and effects keep every pet readable.
 - Accessories always go through `PetAccessory.wearable(_:)`; `wear(_:)` replaces whatever is in the same slot.
-- `palette` is breed colors, then overrides, then `withVisibleRim()`, so a pet recolored black still gets its warm rim.
+- `palette` is breed colors, then the fur tint, then overrides; the renderer lights the edge of whatever comes out, so a pet recolored black still gets its rim.
 - `tintFur(_:)` recolors all fur from one picked color, and `tintFur(nil)` returns the fur to the breed colors without touching costume colors.
 - A pet still called by its breed name follows breed changes, so it never keeps a stale breed name; a name the user chose stays.
 
@@ -565,8 +566,31 @@ Costume and knit colors are recolored per role with `setColor(_:for:)`.
 
 `PetPalette` holds one color per role.
 Breeds define a default palette; a pet profile applies user overrides on top with `applying(_:)`.
-Always render through `withVisibleRim()`: when the fur is dark and the outline is too, the outline becomes a soft light rim (`PetPalette.rim`: the fur's own hue at a muted mid tone) so black and tuxedo cats never vanish on the black notch, and the rim reads as a gentle sheen rather than a frame.
-This also protects user recolors.
+The palette's `outline` stays the breed's dark line; how dark fur stays visible is the renderer's job, so it also protects user recolors.
+
+### Dark coats on dark backdrops
+
+Pets sit on the pure black closed notch and on dark theme cards, and a black cat, a tuxedo, a dachshund or a Shih Tzu has fur at about 1.3:1 against those.
+Their silhouette must still read, so `PetCanvas.colors(using:)` resolves outline and mouth pixels from what they sit on:
+
+- The silhouette's outer edge (outline pixels touching transparency) becomes `PetPalette.rim` where the fill inside it would melt into the backdrop.
+  The rim is the coat's own hue with little saturation, a soft moonlit gray on a black cat and a warm one on a chocolate coat, just light enough to reach 3:1 (WCAG's target for graphical objects) against `PetPalette.backdropCeiling`.
+- A coat that stands out by itself (`PetPalette.standsOut`: 3:1 against the ceiling) keeps its dark outline, pixel for pixel.
+  Only markings that do not stand out (Siamese points, a calico's black patch, a beagle's saddle and ears, a tabby's dark tail tip, a Scottish Fold's shaded feet) get the rim, and only where most of the eight neighbors are such markings, so it runs in clean stretches and a lone stripe end never lights a stray pixel.
+- A coat that does not stand out (black fur, a chocolate Labrador, a charcoal or chocolate tint) gets the rim all round, except where the pixel inside is clearly lighter than the rim, like a tuxedo's white paws, which keep a crisp dark line.
+- Inner outline lines and cat mouths on near-black fur take `PetPalette.sheen`, the coat's hue at a muted mid tone, so the edge reads brighter than the lines inside the coat and the face stays soft.
+- Every rim pixel is a whole sprite pixel in one opaque color, so the closed notch's 1 pt pet stays crisp; nothing is blurred or haloed, and eyes keep their own colors.
+
+`backdropCeiling` (relative luminance 0.08) is the brightest backdrop a pet may be drawn on.
+Each theme's `AppTheme.brightestPetBackdrop` (the glow at full strength under a hovered flat card, or under the top of a glass card's sheen) must stay under it; the brightest shipped card, Blueberry Milk's, is about 0.068, which leaves headroom for new pastel themes.
+One worst case instead of each theme's own keeps the renderer and its cache theme-independent, so a pet looks the same in every theme, on a friend's Party screen and in the widget.
+`PetVisibilityTests` (and `petVisibility.test.ts` on Windows) render every breed in its own colors, each Closet swatch and each rare fur on the black notch and on every theme's brightest card, and check that the coat's outline reads at 3:1 all the way round, that at least 90% of the silhouette does, and that no edge pixel falls under 1.35:1.
+A new breed, swatch or theme that breaks this fails there.
+Only the rendering changed, never the colors a pet sends to Party, so friends on older apps and on Windows see the same pet.
+
+`swift run PetGallery /tmp/petgallery backdrops` draws every breed and the darker swatches on each backdrop at 2 and 6 device pixels per sprite pixel and prints each one's weakest silhouette contrast.
+
+![Every breed and the darker swatches on the black notch and each theme's brightest card, at 2 device pixels per sprite pixel](images/backdrops.png)
 
 ## Rendering
 
@@ -595,7 +619,7 @@ Dogs need more, because their ears and snouts are what make them recognizable at
 | `shihTzuDog` | Shih Tzu | tied topknot, flat face with big round eyes, long ears and beard, floor-length coat |
 
 Dog heads have different heights, so the shared dog face is stamped on each head's eye row.
-The dog mouth is drawn in the nose color, not the outline, because on dark breeds the outline becomes a light rim that would look noisy on the muzzle.
+The dog mouth is drawn in the nose color, not the outline, because on dark breeds outline lines turn light and would look noisy on the muzzle.
 `PetBreed.hasTail` leaves the tail off stubby-tailed breeds (Corgi, French Bulldog), which also sets their silhouettes apart.
 
 ## Adding a breed
@@ -603,6 +627,6 @@ The dog mouth is drawn in the nose color, not the outline, because on dark breed
 1. Add a case to `PetBreed` with its `displayName`.
 2. Pick a `bodyShape`. Reuse an existing one if the silhouette fits; add a new shape (and its art) only when ears, snout, or body need to differ to be recognizable at 24-32 pt.
 3. Give it a `palette` with at least `furBase`, `furShade`, `furAccent`, and `belly`.
-   Keep the outline dark for light fur; dark fur gets the warm rim automatically.
+   Keep the outline dark; the renderer lights the edge of dark fur automatically.
 4. Map pattern zones in `pattern` to place its markings.
-5. Run `swift test` and `swift run PetGallery /tmp/petgallery`, then review the sheet on black at 1x and 4x.
+5. Run `swift test` (`PetVisibilityTests` checks the silhouette on every backdrop) and `swift run PetGallery /tmp/petgallery`, then review the sheet on black at 1x and 4x, and the `backdrops` sheet.

@@ -1,11 +1,11 @@
 import {
   DARK_MOUTH_BACKGROUND,
   PET_PALETTE_ROLES,
-  luminance,
   roleAt,
   roleIndex,
   roleSymbol,
   type PetColor,
+  type PetEdgeTable,
   type PetPalette,
   type PetPaletteRole,
 } from "./petPalette";
@@ -202,27 +202,76 @@ export class PetCanvas {
 
   /**
    * Resolves roles to colors, row-major, undefined for transparent pixels.
-   * Mouth pixels take the rim color on dark fur, so one face works on a
-   * white muzzle and a black cat alike.
+   * Port of PetCanvas.colors(using:): mouths and inner outline lines take the
+   * light sheen on near-black fur, and the silhouette's outer edge takes the
+   * light rim wherever the fill inside it would melt into a dark backdrop.
    */
   colors(palette: PetPalette): (PetColor | undefined)[] {
     const { width, height, pixels } = this;
     const colors: (PetColor | undefined)[] = Array.from(pixels, (pixel) =>
       pixel === 0 ? undefined : palette.colorAt(pixel - 1),
     );
+    let table: PetEdgeTable | undefined;
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        if (pixels[y * width + x] !== MOUTH) continue;
-        const around = [this.pixel(x - 1, y), this.pixel(x + 1, y), this.pixel(x, y - 1), this.pixel(x, y + 1)]
-          .filter((pixel) => pixel !== 0 && pixel !== MOUTH)
-          .map((pixel) => luminance(palette.colorAt(pixel - 1)));
-        if (around.length === 0) continue;
-        if (around.reduce((sum, value) => sum + value, 0) / around.length < DARK_MOUTH_BACKGROUND) {
-          colors[y * width + x] = palette.rim;
+        const index = y * width + x;
+        const pixel = pixels[index] ?? 0;
+        if (pixel !== MOUTH && pixel !== OUTLINE) continue;
+        table ??= palette.edgeTable;
+        const left = x > 0 ? (pixels[index - 1] ?? 0) : 0;
+        const right = x < width - 1 ? (pixels[index + 1] ?? 0) : 0;
+        const up = y > 0 ? (pixels[index - width] ?? 0) : 0;
+        const down = y < height - 1 ? (pixels[index + width] ?? 0) : 0;
+        if (pixel === OUTLINE && (left === 0 || right === 0 || up === 0 || down === 0)) {
+          if (this.edgeNeedsRim(x, y, table)) colors[index] = table.rim;
+          continue;
         }
+        // A mouth weighs everything but other mouth pixels (lines around steam count); an inner line only the fill.
+        let sum = 0;
+        let count = 0;
+        for (const value of [left, right, up, down]) {
+          if (value === 0 || value === MOUTH || (pixel === OUTLINE && value === OUTLINE)) continue;
+          sum += table.luminance[value - 1] ?? 0;
+          count++;
+        }
+        if (count === 0 && pixel === OUTLINE) {
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              if (dx === 0 && dy === 0) continue;
+              const value = this.pixel(x + dx, y + dy);
+              if (value === 0 || value === OUTLINE || value === MOUTH) continue;
+              sum += table.luminance[value - 1] ?? 0;
+              count++;
+            }
+          }
+        }
+        if (count > 0 && sum / count < DARK_MOUTH_BACKGROUND) colors[index] = table.sheen;
       }
     }
     return colors;
+  }
+
+  /**
+   * Whether the edge pixel at (x, y) gets the light rim: the fill around it
+   * (all eight neighbors on a coat that stands out, the four direct ones on a
+   * coat that does not) votes through the palette's `rimmedFill`, and a tie
+   * follows the coat. Port of PetCanvas.edgeNeedsRim.
+   */
+  private edgeNeedsRim(x: number, y: number, table: PetEdgeTable): boolean {
+    const diagonals = table.coatStandsOut;
+    let fill = 0;
+    let rimmed = 0;
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if ((dx === 0 && dy === 0) || (!diagonals && dx !== 0 && dy !== 0)) continue;
+        const value = this.pixel(x + dx, y + dy);
+        if (value === 0 || value === OUTLINE || value === MOUTH) continue;
+        fill++;
+        rimmed += table.rimmedFill[value - 1] ?? 0;
+      }
+    }
+    if (rimmed * 2 === fill) return !table.coatStandsOut;
+    return rimmed * 2 > fill;
   }
 
   /** The grid characters of every pixel, row-major (`.` for transparent). */

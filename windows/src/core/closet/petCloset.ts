@@ -39,7 +39,7 @@ export type PetClosetTapResult =
   | { readonly kind: "notEarnedYet" };
 
 /** A rare fur a surprise gift can bring, as the swatch names read it (the Mac's RareFur.all). */
-const RARE_FURS: readonly { readonly name: string; readonly color: PetColor }[] = [
+export const RARE_FURS: readonly { readonly name: string; readonly color: PetColor }[] = [
   { name: "Mint", hex: "#A9DCC4" },
   { name: "Honey", hex: "#E6C36A" },
   { name: "Midnight", hex: "#5C6A8E" },
