@@ -331,9 +331,28 @@ export function isLightPatch(color: PetColor, rim: PetColor): boolean {
  * A complete role to color table. Missing roles fall back to the base
  * palette, so rendering never hits a hole. Port of PetPalette.
  */
+/**
+ * What `PetCanvas.colors` needs to resolve outline and mouth pixels, worked
+ * out once per palette: the rim and sheen, and per palette index the color's
+ * luminance and whether an edge pixel beside it counts toward the rim.
+ */
+export interface PetEdgeTable {
+  readonly rim: PetColor;
+  readonly sheen: PetColor;
+  readonly coatStandsOut: boolean;
+  /** Relative luminance per palette index. */
+  readonly luminance: Float64Array;
+  /** 1 where fill of this palette index votes for the rim (see `PetCanvas.colors`). */
+  readonly rimmedFill: Uint8Array;
+}
+
 export class PetPalette {
   /** Every role's color, indexed like `PET_PALETTE_ROLES`. */
   private readonly table: readonly PetColor[];
+  /* Derived values, computed on first use; the palette never changes. */
+  private rimCache?: PetColor;
+  private sheenCache?: PetColor;
+  private edgeCache?: PetEdgeTable;
 
   constructor(colors: PaletteOverrides, base?: readonly PetColor[]) {
     const fallback = base ?? baseColors();
@@ -378,6 +397,11 @@ export class PetPalette {
    * and never darker than `sheen`. Port of PetPalette.rim.
    */
   get rim(): PetColor {
+    this.rimCache ??= this.solveRim();
+    return this.rimCache;
+  }
+
+  private solveRim(): PetColor {
     const fur = hsl(this.color("furBase"));
     const saturation = Math.min(fur.saturation, RIM_MAXIMUM_SATURATION);
     const color = (lightness: number): PetColor => colorFromHSL(fur.hue, saturation, lightness);
@@ -394,8 +418,27 @@ export class PetPalette {
 
   /** The soft light inner line and mouth color for near-black fur. Port of PetPalette.sheen. */
   get sheen(): PetColor {
-    const fur = hsl(this.color("furBase"));
-    return colorFromHSL(fur.hue, Math.min(fur.saturation, RIM_MAXIMUM_SATURATION), SHEEN_LIGHTNESS);
+    if (!this.sheenCache) {
+      const fur = hsl(this.color("furBase"));
+      this.sheenCache = colorFromHSL(fur.hue, Math.min(fur.saturation, RIM_MAXIMUM_SATURATION), SHEEN_LIGHTNESS);
+    }
+    return this.sheenCache;
+  }
+
+  /** The per-palette tables `PetCanvas.colors` resolves edges with, computed once. */
+  get edgeTable(): PetEdgeTable {
+    if (!this.edgeCache) {
+      const rim = this.rim;
+      const coatStandsOut = standsOut(this.color("furBase"));
+      const lum = new Float64Array(this.table.length);
+      const rimmedFill = new Uint8Array(this.table.length);
+      this.table.forEach((color, index) => {
+        lum[index] = luminance(color);
+        rimmedFill[index] = (coatStandsOut ? !standsOut(color) : !isLightPatch(color, rim)) ? 1 : 0;
+      });
+      this.edgeCache = { rim, sheen: this.sheen, coatStandsOut, luminance: lum, rimmedFill };
+    }
+    return this.edgeCache;
   }
 
   equals(other: PetPalette): boolean {

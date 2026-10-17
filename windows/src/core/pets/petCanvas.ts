@@ -1,13 +1,11 @@
 import {
   DARK_MOUTH_BACKGROUND,
   PET_PALETTE_ROLES,
-  isLightPatch,
-  luminance,
-  standsOut,
   roleAt,
   roleIndex,
   roleSymbol,
   type PetColor,
+  type PetEdgeTable,
   type PetPalette,
   type PetPaletteRole,
 } from "./petPalette";
@@ -213,54 +211,67 @@ export class PetCanvas {
     const colors: (PetColor | undefined)[] = Array.from(pixels, (pixel) =>
       pixel === 0 ? undefined : palette.colorAt(pixel - 1),
     );
-    const coatStandsOut = standsOut(palette.color("furBase"));
-    let rim: PetColor | undefined;
-    let sheen: PetColor | undefined;
+    let table: PetEdgeTable | undefined;
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        const pixel = pixels[y * width + x];
+        const index = y * width + x;
+        const pixel = pixels[index] ?? 0;
         if (pixel !== MOUTH && pixel !== OUTLINE) continue;
-        const direct = [this.pixel(x - 1, y), this.pixel(x + 1, y), this.pixel(x, y - 1), this.pixel(x, y + 1)];
-        if (pixel === OUTLINE && direct.includes(0)) {
-          rim ??= palette.rim;
-          if (this.edgeNeedsRim(x, y, palette, coatStandsOut, rim)) colors[y * width + x] = rim;
+        table ??= palette.edgeTable;
+        const left = x > 0 ? (pixels[index - 1] ?? 0) : 0;
+        const right = x < width - 1 ? (pixels[index + 1] ?? 0) : 0;
+        const up = y > 0 ? (pixels[index - width] ?? 0) : 0;
+        const down = y < height - 1 ? (pixels[index + width] ?? 0) : 0;
+        if (pixel === OUTLINE && (left === 0 || right === 0 || up === 0 || down === 0)) {
+          if (this.edgeNeedsRim(x, y, table)) colors[index] = table.rim;
           continue;
         }
         // A mouth weighs everything but other mouth pixels (lines around steam count); an inner line only the fill.
-        let around = direct.filter((value) => value !== 0 && value !== MOUTH && (pixel === MOUTH || value !== OUTLINE));
-        if (around.length === 0 && pixel === OUTLINE) around = this.fillAround(x, y, true);
-        if (around.length === 0) continue;
-        const average = around.reduce((sum, value) => sum + luminance(palette.colorAt(value - 1)), 0) / around.length;
-        if (average < DARK_MOUTH_BACKGROUND) {
-          sheen ??= palette.sheen;
-          colors[y * width + x] = sheen;
+        let sum = 0;
+        let count = 0;
+        for (const value of [left, right, up, down]) {
+          if (value === 0 || value === MOUTH || (pixel === OUTLINE && value === OUTLINE)) continue;
+          sum += table.luminance[value - 1] ?? 0;
+          count++;
         }
+        if (count === 0 && pixel === OUTLINE) {
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              if (dx === 0 && dy === 0) continue;
+              const value = this.pixel(x + dx, y + dy);
+              if (value === 0 || value === OUTLINE || value === MOUTH) continue;
+              sum += table.luminance[value - 1] ?? 0;
+              count++;
+            }
+          }
+        }
+        if (count > 0 && sum / count < DARK_MOUTH_BACKGROUND) colors[index] = table.sheen;
       }
     }
     return colors;
   }
 
-  /** The filled (non-line) pixels around (x, y): the four direct neighbors, or all eight. */
-  private fillAround(x: number, y: number, diagonals: boolean): number[] {
-    const out: number[] = [];
+  /**
+   * Whether the edge pixel at (x, y) gets the light rim: the fill around it
+   * (all eight neighbors on a coat that stands out, the four direct ones on a
+   * coat that does not) votes through the palette's `rimmedFill`, and a tie
+   * follows the coat. Port of PetCanvas.edgeNeedsRim.
+   */
+  private edgeNeedsRim(x: number, y: number, table: PetEdgeTable): boolean {
+    const diagonals = table.coatStandsOut;
+    let fill = 0;
+    let rimmed = 0;
     for (let dy = -1; dy <= 1; dy++) {
       for (let dx = -1; dx <= 1; dx++) {
         if ((dx === 0 && dy === 0) || (!diagonals && dx !== 0 && dy !== 0)) continue;
         const value = this.pixel(x + dx, y + dy);
-        if (value !== 0 && value !== OUTLINE && value !== MOUTH) out.push(value);
+        if (value === 0 || value === OUTLINE || value === MOUTH) continue;
+        fill++;
+        rimmed += table.rimmedFill[value - 1] ?? 0;
       }
     }
-    return out;
-  }
-
-  /** Whether the edge pixel at (x, y) gets the light rim. Port of PetCanvas.edgeNeedsRim. */
-  private edgeNeedsRim(x: number, y: number, palette: PetPalette, coatStandsOut: boolean, rim: PetColor): boolean {
-    const fill = this.fillAround(x, y, coatStandsOut).map((value) => palette.colorAt(value - 1));
-    const rimmed = coatStandsOut
-      ? fill.filter((color) => !standsOut(color)).length
-      : fill.filter((color) => !isLightPatch(color, rim)).length;
-    if (rimmed * 2 === fill.length) return !coatStandsOut;
-    return rimmed * 2 > fill.length;
+    if (rimmed * 2 === fill) return !table.coatStandsOut;
+    return rimmed * 2 > fill;
   }
 
   /** The grid characters of every pixel, row-major (`.` for transparent). */

@@ -125,45 +125,94 @@ public struct PetCanvas: Hashable, Sendable {
     ///   Elsewhere it stays the dark outline, so light coats look exactly as
     ///   drawn. Every rim pixel is a whole sprite pixel; nothing is blurred.
     public func colors(using palette: PetPalette) -> [PetColor?] {
-        var colors = pixels.map { $0.map { palette[$0] } }
+        // Each role is looked up, measured and classified once, into slots;
+        // pixels then work on plain arrays. A pet frame is rendered on every
+        // cache miss, so this stays as cheap as a plain role-to-color map.
+        var slotOf: [PetPaletteRole: Int] = [:]
+        var slotColor: [PetColor] = [], slotLuminance: [Double] = []
+        var codes = [Int](repeating: -1, count: pixels.count)
+        var colors = [PetColor?](repeating: nil, count: pixels.count)
+        var previous: (role: PetPaletteRole, slot: Int)?
+        for index in pixels.indices {
+            guard let role = pixels[index] else { continue }
+            let slot: Int
+            if let previous, previous.role == role {
+                // Runs of one role are the common case: skip the lookup.
+                slot = previous.slot
+            } else if let known = slotOf[role] {
+                slot = known
+            } else {
+                slot = slotColor.count
+                let color = palette[role]
+                slotOf[role] = slot
+                slotColor.append(color)
+                slotLuminance.append(color.luminance)
+            }
+            previous = (role, slot)
+            codes[index] = slot
+            colors[index] = slotColor[slot]
+        }
+        let outline = slotOf[.outline] ?? -2, mouth = slotOf[.mouth] ?? -2
+        guard outline >= 0 || mouth >= 0 else { return colors }
+
         let coatStandsOut = PetPalette.standsOut(palette[.furBase])
         lazy var rim = palette.rim
         lazy var sheen = palette.sheen
+        // Whether fill of each slot votes for the rim (see `edgeNeedsRim`).
+        lazy var rimmedFill: [Bool] = slotColor.map {
+            coatStandsOut ? !PetPalette.standsOut($0) : !PetPalette.isLightPatch($0, against: rim)
+        }
+        func code(_ x: Int, _ y: Int) -> Int {
+            x >= 0 && y >= 0 && x < width && y < height ? codes[y * width + x] : -1
+        }
+        func isFill(_ code: Int) -> Bool { code >= 0 && code != outline && code != mouth }
+
         for y in 0..<height {
             for x in 0..<width {
-                guard let role = self[x, y], role == .mouth || role == .outline else { continue }
-                let direct = [self[x - 1, y], self[x + 1, y], self[x, y - 1], self[x, y + 1]]
-                if role == .outline, direct.contains(nil) {
-                    if edgeNeedsRim(x, y, palette: palette, coatStandsOut: coatStandsOut, rim: rim) {
-                        colors[y * width + x] = rim
+                let index = y * width + x, own = codes[index]
+                guard own >= 0, own == outline || own == mouth else { continue }
+                let direct = (code(x - 1, y), code(x + 1, y), code(x, y - 1), code(x, y + 1))
+                if own == outline, direct.0 < 0 || direct.1 < 0 || direct.2 < 0 || direct.3 < 0 {
+                    // The silhouette's edge: the fill around it votes, a tie
+                    // follows the coat (see `edgeNeedsRim`).
+                    var fill = 0, rimmed = 0
+                    for dy in -1...1 {
+                        for dx in -1...1 where (dx != 0 || dy != 0) && (coatStandsOut || dx == 0 || dy == 0) {
+                            let neighbor = code(x + dx, y + dy)
+                            guard isFill(neighbor) else { continue }
+                            fill += 1
+                            if rimmedFill[neighbor] { rimmed += 1 }
+                        }
                     }
+                    if edgeNeedsRim(fill: fill, rimmed: rimmed, coatStandsOut: coatStandsOut) { colors[index] = rim }
                     continue
                 }
                 // A mouth weighs everything but other mouth pixels (lines
                 // around steam count); an inner line weighs only the fill.
-                var around = direct.compactMap { $0 }.filter { $0 != .mouth && (role == .mouth || $0 != .outline) }
-                if around.isEmpty, role == .outline { around = fill(around: x, y) }
-                guard !around.isEmpty else { continue }
-                let luminance = around.map { palette[$0].luminance }.reduce(0, +) / Double(around.count)
-                if luminance < PetPalette.darkMouthBackground { colors[y * width + x] = sheen }
+                var sum = 0.0, count = 0
+                for neighbor in [direct.0, direct.1, direct.2, direct.3]
+                where neighbor >= 0 && neighbor != mouth && (own == mouth || neighbor != outline) {
+                    sum += slotLuminance[neighbor]
+                    count += 1
+                }
+                if count == 0, own == outline {
+                    for dy in -1...1 {
+                        for dx in -1...1 where dx != 0 || dy != 0 {
+                            let neighbor = code(x + dx, y + dy)
+                            guard isFill(neighbor) else { continue }
+                            sum += slotLuminance[neighbor]
+                            count += 1
+                        }
+                    }
+                }
+                if count > 0, sum / Double(count) < PetPalette.darkMouthBackground { colors[index] = sheen }
             }
         }
         return colors
     }
 
-    /// The filled (non-line) pixels around (`x`, `y`): the four direct
-    /// neighbors, or all eight.
-    private func fill(around x: Int, _ y: Int, diagonals: Bool = true) -> [PetPaletteRole] {
-        var roles: [PetPaletteRole] = []
-        for dy in -1...1 {
-            for dx in -1...1 where (dx != 0 || dy != 0) && (diagonals || dx == 0 || dy == 0) {
-                if let role = self[x + dx, y + dy], role != .outline, role != .mouth { roles.append(role) }
-            }
-        }
-        return roles
-    }
-
-    /// Whether the edge pixel at (`x`, `y`) gets the light rim.
+    /// Whether an edge pixel gets the light rim, from how many of the fill
+    /// pixels around it vote for it (`rimmed` of `fill`).
     ///
     /// On a coat that stands out from dark backdrops by itself
     /// (`PetPalette.standsOut`), the dark outline stays except around
@@ -175,18 +224,11 @@ public struct PetCanvas: Hashable, Sendable {
     /// On a coat that does not stand out (black fur, a chocolate Labrador,
     /// a charcoal tint), the whole edge is rim except where the pixel
     /// directly inside it is clearly lighter than the rim (a tuxedo's white
-    /// paws), which a light rim would blur into. Lighter curl tips on a
-    /// charcoal poodle take the rim, so no dark nubs break the lit edge.
-    /// Ties follow the coat.
-    private func edgeNeedsRim(_ x: Int, _ y: Int, palette: PetPalette, coatStandsOut: Bool, rim: PetColor) -> Bool {
-        let fill = fill(around: x, y, diagonals: coatStandsOut).map { palette[$0] }
-        let rimmed: Int
-        if coatStandsOut {
-            rimmed = fill.filter { !PetPalette.standsOut($0) }.count
-        } else {
-            rimmed = fill.filter { !PetPalette.isLightPatch($0, against: rim) }.count
-        }
-        if rimmed * 2 == fill.count { return !coatStandsOut }
-        return rimmed * 2 > fill.count
+    /// paws), which a light rim would blur into; only the four direct
+    /// neighbors vote there. Lighter curl tips on a charcoal poodle take the
+    /// rim, so no dark nubs break the lit edge. Ties follow the coat.
+    private func edgeNeedsRim(fill: Int, rimmed: Int, coatStandsOut: Bool) -> Bool {
+        if rimmed * 2 == fill { return !coatStandsOut }
+        return rimmed * 2 > fill
     }
 }
