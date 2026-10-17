@@ -136,7 +136,7 @@ if arguments.dropFirst().first == "backdrops" {
         }
     }
     for pixel in [2, 6] {
-        let side = PetComposer.frameSize * pixel, pad = 4 * pixel, labelWidth = 200, header = 28
+        let side = PetComposer.frameSize * pixel, pad = max(4 * pixel, 24), labelWidth = 200, header = 28
         let cell = side + pad * 2
         let width = labelWidth + cell * backdrops.count, height = header + cell * rows.count
         guard let context = CGContext(

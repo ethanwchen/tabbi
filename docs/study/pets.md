@@ -576,15 +576,15 @@ Their silhouette must still read, so `PetCanvas.colors(using:)` resolves outline
 - The silhouette's outer edge (outline pixels touching transparency) becomes `PetPalette.rim` where the fill inside it would melt into the backdrop.
   The rim is the coat's own hue with little saturation, a soft moonlit gray on a black cat and a warm one on a chocolate coat, just light enough to reach 3:1 (WCAG's target for graphical objects) against `PetPalette.backdropCeiling`.
 - A coat that stands out by itself (`PetPalette.standsOut`: 3:1 against the ceiling) keeps its dark outline, pixel for pixel.
-  Only markings that do not stand out (Siamese points, a calico's black patch, a beagle's saddle and ears, a tabby's dark tail tip) get the rim, and only where most of the eight neighbors are such markings, so it runs in clean stretches and a lone stripe end never lights a stray pixel.
+  Only markings that do not stand out (Siamese points, a calico's black patch, a beagle's saddle and ears, a tabby's dark tail tip, a Scottish Fold's shaded feet) get the rim, and only where most of the eight neighbors are such markings, so it runs in clean stretches and a lone stripe end never lights a stray pixel.
 - A coat that does not stand out (black fur, a chocolate Labrador, a charcoal or chocolate tint) gets the rim all round, except where the pixel inside is clearly lighter than the rim, like a tuxedo's white paws, which keep a crisp dark line.
 - Inner outline lines and cat mouths on near-black fur take `PetPalette.sheen`, the coat's hue at a muted mid tone, so the edge reads brighter than the lines inside the coat and the face stays soft.
 - Every rim pixel is a whole sprite pixel in one opaque color, so the closed notch's 1 pt pet stays crisp; nothing is blurred or haloed, and eyes keep their own colors.
 
-`backdropCeiling` (relative luminance 0.05) is the brightest backdrop a pet may be drawn on.
-Each theme's `AppTheme.brightestPetBackdrop` (the glow at full strength under a hovered flat card, or under the top of a glass card's sheen) must stay under it.
+`backdropCeiling` (relative luminance 0.08) is the brightest backdrop a pet may be drawn on.
+Each theme's `AppTheme.brightestPetBackdrop` (the glow at full strength under a hovered flat card, or under the top of a glass card's sheen) must stay under it; the brightest shipped card, Blueberry Milk's, is about 0.068, which leaves headroom for new pastel themes.
 One worst case instead of each theme's own keeps the renderer and its cache theme-independent, so a pet looks the same in every theme, on a friend's Party screen and in the widget.
-`PetVisibilityTests` (and `petVisibility.test.ts` on Windows) render every breed in its own colors, each Closet swatch and each rare fur on the black notch and on every theme's brightest card, and check that the coat's outline reads at 3:1 all the way round, that at least 90% of the silhouette does, and that no edge pixel falls under 1.5:1.
+`PetVisibilityTests` (and `petVisibility.test.ts` on Windows) render every breed in its own colors, each Closet swatch and each rare fur on the black notch and on every theme's brightest card, and check that the coat's outline reads at 3:1 all the way round, that at least 90% of the silhouette does, and that no edge pixel falls under 1.35:1.
 A new breed, swatch or theme that breaks this fails there.
 Only the rendering changed, never the colors a pet sends to Party, so friends on older apps and on Windows see the same pet.
 

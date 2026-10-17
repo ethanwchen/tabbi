@@ -429,7 +429,7 @@ public struct PetPalette: Hashable, Codable, Sendable {
     /// worst case instead of each theme's own: the renderer and its cache
     /// stay theme-independent, and a pet looks the same in every theme, on
     /// a friend's screen and in the widget.
-    public static let backdropCeiling = 0.05
+    public static let backdropCeiling = 0.08
     /// The contrast a pet's silhouette keeps against any backdrop up to
     /// `backdropCeiling`: WCAG's 3:1 for graphical objects.
     public static let silhouetteContrast = 3.0

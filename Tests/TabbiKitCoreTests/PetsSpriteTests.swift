@@ -42,10 +42,10 @@ final class PetPaletteTests: XCTestCase {
 
     /// Light coats with no dark markings at the edge render exactly as
     /// drawn: every pixel is its role's color, the dark outline included.
-    /// (A tabby's dark tail tip gets a few rim pixels; see
-    /// `PetVisibilityTests`.)
+    /// (A tabby's dark tail tip and the Scottish Fold's shaded feet get a
+    /// few rim pixels; see `PetVisibilityTests`.)
     func testLightCoatsKeepTheirDarkOutlinePixelForPixel() {
-        for breed in [PetBreed.whiteCat, .britishShorthair, .sphynx, .scottishFold, .goldenRetriever, .corgi, .poodle] {
+        for breed in [PetBreed.whiteCat, .britishShorthair, .sphynx, .goldenRetriever, .corgi, .poodle] {
             let canvas = PetComposer.sitting(breed)
             let colors = canvas.colors(using: breed.palette)
             for index in canvas.pixels.indices where canvas.pixels[index] != .mouth {
@@ -384,7 +384,7 @@ final class PetBreedTests: XCTestCase {
             XCTAssertGreaterThan(rim.luminance, palette.sheen.luminance, "the edge reads brighter than inner lines: \(breed)")
             XCTAssertGreaterThan(rim.luminance, palette[.furBase].luminance * 4, "\(breed)")
             // ...but a gentle mid tone, not a bright frame that outshines the face.
-            XCTAssertLessThan(rim.luminance, palette[.eyeLight].luminance / 3, "\(breed)")
+            XCTAssertLessThan(rim.luminance, palette[.eyeLight].luminance / 2, "\(breed)")
             // A muted sheen, not a colored frame: no channel strays far from the others.
             let channels = [Int(rim.red), Int(rim.green), Int(rim.blue)]
             XCTAssertLessThan(channels.max()! - channels.min()!, 40, "\(breed)")

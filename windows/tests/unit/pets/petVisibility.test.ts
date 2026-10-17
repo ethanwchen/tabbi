@@ -43,7 +43,7 @@ describe("PetVisibility", () => {
           const report = visibilityReport(canvas, profile.palette, backdrop.color);
           expect(report.coatReadablePixels, `${label} on ${backdrop.name}`).toBe(report.coatEdgePixels);
           expect(readableShare(report), `${label} on ${backdrop.name}`).toBeGreaterThanOrEqual(0.9);
-          expect(report.weakest, `${label} on ${backdrop.name}`).toBeGreaterThanOrEqual(1.5);
+          expect(report.weakest, `${label} on ${backdrop.name}`).toBeGreaterThanOrEqual(1.35);
         }
       }
     }

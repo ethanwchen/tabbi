@@ -304,7 +304,7 @@ export class PetFurTone {
  * card in a theme with a glow, or the top of a glass card. Port of
  * PetPalette.backdropCeiling; every theme's `brightestPetBackdrop` stays under it.
  */
-export const PET_BACKDROP_CEILING = 0.05;
+export const PET_BACKDROP_CEILING = 0.08;
 /** The contrast a pet's silhouette keeps against any backdrop up to the ceiling (WCAG 3:1). */
 export const PET_SILHOUETTE_CONTRAST = 3;
 const SHEEN_LIGHTNESS = 0.5;

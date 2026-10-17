@@ -37,7 +37,7 @@ final class PetVisibilityTests: XCTestCase {
                     // short on the brightest cards...
                     XCTAssertGreaterThanOrEqual(report.readableShare, 0.9, "\(label) on \(backdrop.name)")
                     // ...but no part of the edge disappears.
-                    XCTAssertGreaterThanOrEqual(report.weakest, 1.5, "\(label) on \(backdrop.name)")
+                    XCTAssertGreaterThanOrEqual(report.weakest, 1.35, "\(label) on \(backdrop.name)")
                 }
             }
         }
