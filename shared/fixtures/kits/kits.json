@@ -4376,9 +4376,9 @@
             "value" : "pet"
           },
           {
-            "expected" : "one of \"orangeTabby\", \"grayTabby\", \"blackCat\", \"whiteCat\", \"tuxedo\", \"calico\", \"siamese\", \"britishShorthair\", \"sphynx\", \"scottishFold\", \"goldenRetriever\", \"labrador\", \"frenchBulldog\", \"corgi\", \"dachshund\", \"beagle\", \"poodle\", \"shihTzu\"",
+            "expected" : "one of \"orangeTabby\", \"grayTabby\", \"blackCat\", \"whiteCat\", \"tuxedo\", \"calico\", \"siamese\", \"britishShorthair\", \"sphynx\", \"scottishFold\", \"britishLonghair\", \"goldenRetriever\", \"labrador\", \"frenchBulldog\", \"corgi\", \"dachshund\", \"beagle\", \"poodle\", \"shihTzu\"",
             "kind" : "invalidModuleSetting",
-            "message" : "\"moduleSettings.closet.pet.breed\" should be one of \"orangeTabby\", \"grayTabby\", \"blackCat\", \"whiteCat\", \"tuxedo\", \"calico\", \"siamese\", \"britishShorthair\", \"sphynx\", \"scottishFold\", \"goldenRetriever\", \"labrador\", \"frenchBulldog\", \"corgi\", \"dachshund\", \"beagle\", \"poodle\", \"shihTzu\"; other values are skipped or kept in range.",
+            "message" : "\"moduleSettings.closet.pet.breed\" should be one of \"orangeTabby\", \"grayTabby\", \"blackCat\", \"whiteCat\", \"tuxedo\", \"calico\", \"siamese\", \"britishShorthair\", \"sphynx\", \"scottishFold\", \"britishLonghair\", \"goldenRetriever\", \"labrador\", \"frenchBulldog\", \"corgi\", \"dachshund\", \"beagle\", \"poodle\", \"shihTzu\"; other values are skipped or kept in range.",
             "path" : "moduleSettings.closet.pet.breed"
           },
           {
@@ -9805,6 +9805,7 @@
                       "britishShorthair",
                       "sphynx",
                       "scottishFold",
+                      "britishLonghair",
                       "goldenRetriever",
                       "labrador",
                       "frenchBulldog",
@@ -10090,6 +10091,7 @@
                       "britishShorthair",
                       "sphynx",
                       "scottishFold",
+                      "britishLonghair",
                       "goldenRetriever",
                       "labrador",
                       "frenchBulldog",

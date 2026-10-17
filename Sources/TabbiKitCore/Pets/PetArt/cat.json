@@ -171,6 +171,53 @@
       "..SSSBBBBBBBBBBSSSS..",
       "..SSBpppBBBBpppBSS...",
       "...Spppp....ppppS...."
+    ],
+    "headLonghair": [
+      "....................",
+      ".ee..............ee.",
+      ".ePe..BBBBBBBB..ePe.",
+      ".ePPBBBBBBBBBBBBPPe.",
+      ".BBBBaaBBBBBBBBBBBB.",
+      "BBBBaaaBBBBBBBBBBbBB",
+      "BBBaaaaBBBBBBBBBbbBB",
+      "BBBaaaBBffffBBBBbbBB",
+      "BBaaaBffffffffBBbbBB",
+      "BBaaBfffmmmmfffBbbBB",
+      "BBBBBBffmmmmffBBbBBB",
+      "sBsBBBmmmmmmmmBBBsBs",
+      "BsBsBBBmmmmmmBBBsBsB",
+      ".BsBsSBBmmmmBBSsBsB.",
+      "B.BB..SSBBBBSS..BB.B"
+    ],
+    "faceLonghair": [
+      "....................",
+      "....................",
+      "....................",
+      "....................",
+      "....................",
+      "....................",
+      "....................",
+      "....LiE......LiE....",
+      "....iiE......iiE....",
+      ".....E........E.....",
+      "..PP.....NN.....PP..",
+      "........S..S........",
+      "....................",
+      "....................",
+      "...................."
+    ],
+    "bodyLonghair": [
+      ".....BBBBBBBBBB......",
+      "....BBcccccccBBB...t.",
+      "...BBcccccccccBb..ttt",
+      "..BBBccccccccccbb.tBt",
+      "..saBBccccccccBbs.BBt",
+      "..SaaBBccccccBBbS.BbB",
+      "..SaaBBBccccBBBBSBbB.",
+      "..SsaaBBBccBBBBBsBBB.",
+      ".sSSaaBBBBBBBBBBSSB..",
+      "..SSBpppBBBBpppBSS...",
+      "...Spppp....ppppS...."
     ]
   }
 }

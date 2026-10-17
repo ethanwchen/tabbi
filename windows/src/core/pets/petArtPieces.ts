@@ -45,6 +45,9 @@ export const CatArt = {
   bodySphynx: memo(() => petArt("cat").grid("bodySphynx")),
   headFold: memo(() => petArt("cat").grid("headFold")),
   bodyFold: memo(() => petArt("cat").grid("bodyFold")),
+  headLonghair: memo(() => petArt("cat").grid("headLonghair")),
+  faceLonghair: memo(() => petArt("cat").grid("faceLonghair")),
+  bodyLonghair: memo(() => petArt("cat").grid("bodyLonghair")),
 };
 
 /** Port of DogArt. */
@@ -446,6 +449,8 @@ export const WalkArt = {
   sphynxTorso: memo(() => petArt("walk").grid("sphynxTorso")),
   sphynxTail: memo(() => petArt("walk").sequence("sphynxTail")),
   foldCatTail: memo(() => petArt("walk").sequence("foldCatTail")),
+  longhairCatTorso: memo(() => petArt("walk").grid("longhairCatTorso")),
+  longhairCatTail: memo(() => petArt("walk").sequence("longhairCatTail")),
   poodleTorso: memo(() => petArt("walk").grid("poodleTorso")),
   poodleTail: memo(() => petArt("walk").sequence("poodleTail")),
   shihTzuTorso: memo(() => petArt("walk").grid("shihTzuTorso")),

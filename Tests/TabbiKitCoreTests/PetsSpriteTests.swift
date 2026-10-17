@@ -205,8 +205,8 @@ final class PetRendererTests: XCTestCase {
 
 final class PetBreedTests: XCTestCase {
     func testCatalogHasEveryCatAndDogBreed() {
-        XCTAssertEqual(PetBreed.breeds(of: .cat).count, 10)
-        XCTAssertEqual(PetBreed.breeds(of: .cat).last, .scottishFold)
+        XCTAssertEqual(PetBreed.breeds(of: .cat).count, 11)
+        XCTAssertEqual(PetBreed.breeds(of: .cat).last, .britishLonghair)
         XCTAssertEqual(PetBreed.breeds(of: .dog), [
             .goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund, .beagle, .poodle, .shihTzu,
         ])

@@ -351,6 +351,41 @@
       "rim" : "#737B8C"
     },
     {
+      "breed" : "britishLonghair",
+      "colors" : {
+        "accessoryBase" : "#E0607A",
+        "accessoryShade" : "#B04460",
+        "belly" : "#9C6B53",
+        "blush" : "#E8868C",
+        "coat" : "#F6F8FB",
+        "coatShade" : "#C3CCD9",
+        "costumeBase" : "#5BC0BE",
+        "costumeShade" : "#3E9593",
+        "costumeTrim" : "#E8FFFB",
+        "crimson" : "#B8304C",
+        "effect" : "#F4F1FF",
+        "effectFaint" : "#F4F1FF66",
+        "eye" : "#E89A2C",
+        "eyeLight" : "#FFF6E0",
+        "furAccent" : "#86523D",
+        "furBase" : "#6B3E2E",
+        "furShade" : "#52301F",
+        "furSpot" : "#3A3036",
+        "gold" : "#F2C14E",
+        "heart" : "#FF5C7A",
+        "ink" : "#3F4A78",
+        "leaf" : "#6CC46A",
+        "leather" : "#A8683A",
+        "metal" : "#C9D3DD",
+        "mouth" : "#2A1A14",
+        "nose" : "#C8737A",
+        "outline" : "#91776E",
+        "pumpkin" : "#F08A24",
+        "pupil" : "#2A140A"
+      },
+      "rim" : "#91776E"
+    },
+    {
       "breed" : "goldenRetriever",
       "colors" : {
         "accessoryBase" : "#E0607A",

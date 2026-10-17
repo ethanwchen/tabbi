@@ -1,11 +1,12 @@
 {
-  "version": 2,
+  "version": 3,
   "species": ["cat", "dog"],
   "breeds": {
     "cat": [
       "domestic-shorthair", "domestic-longhair", "tabby", "tuxedo", "calico", "tortoiseshell",
       "siamese", "persian", "maine-coon", "british-shorthair", "ragdoll", "bengal",
-      "sphynx", "scottish-fold", "russian-blue", "abyssinian", "norwegian-forest", "black-cat"
+      "sphynx", "scottish-fold", "russian-blue", "abyssinian", "norwegian-forest", "black-cat",
+      "british-longhair"
     ],
     "dog": [
       "mixed", "labrador", "golden-retriever", "german-shepherd", "corgi", "shiba-inu",

@@ -6005,6 +6005,606 @@
         "accessories" : [
 
         ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d47cf5acfd4d58a148605df97f9c4f2096899816c7f225d18a032415469f763a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "072f860f63ea4f9c955cc09f236dd64edb14facb52467f6b3250d676dc10b09b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "e749608fbfa58d728b9ef5d986da0f52f24a51237799910353bbb436ca2eab3b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "ce515ba1f9d270f66f3e308751ff69b2542a7948367c95499aabb75ae414e867"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "cf55f9264291ec0ecc38661f8fd4fe4cb6839ec1228b06f844e3f8ca501be082"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "709b095105defcfeabd64e61d75f4caeab70f150888cc9a9f20316937db409be"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "43c2a0abe1f6bb80a1dd0f87daa2caeef01f7ac92dd8b2db3bf5809e93dc139e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "460b6ba3b23ec8be81d29d6dd759e27af7017ab33c2ed7854c127a9b2ba725c1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f9703f2442f82139b0bd97f148130fe63ec826666b219f5bbe8346cca8d40bc8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c2645b8eac4194f0def87a5997d825e240d0ce08568dc091b39a98e2ecf80911"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0b5c55ea6ee78f6133318ca3bd164fe049dd15007632aefd5e305762b1c89f29"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "cfedefca09344a5d946017ab2c6ab147d56d99640673318200fbf17b89b03c5a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "88d0d9dbabac637864250e31f701bf2fc94aea82b0047a9b3a17d270b8ca4186"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d31af1367a748955e3b47c9d1afbc3c30b1ccf444aad075911737578f6b5a683"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "25957177278c1b2064bef04da24b44bdf0c29265d6b63f1c30dd810626de0b63"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a8d0fdda8a8bd2a19b3ac1d499ea582e6cf107bd39a361987710cdb77061c67b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ae653f0ac4238bc9d793908ea5baa08201e9f893d467daa786ec51349f94fd33"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "608eda8bdc61b3f559f561fa43962f8c403554d6ce83f3278508901dded6deac"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "719499f8faee087cbfbd1d8bfe37d6d27f6aeeedc76cbff6a8ac95d96181bbdd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1b743cfe04375e8ed05952671d8bd3231eaee9195de54742b43b92c6e4215631"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4e3a19ff7577b3c23a43963203fde2b1cecb03812352892868848223c55bba18"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4aa1c3155296cfe16050c064c6feefe088d3179cbbdf0e0af13f19584060d6f5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e9e8387894f9677df022765bc1361f49608aa30a1b942ccc78fb15624c2c5eb2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f721a860f552d7a611b3bb2997b11cd002747e7c9310db1a00ddc6cbadb4b0ca"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9922aed0ddfc8d93d8bbaa39f95a2c6fde30ca9b79a79b1047a832d0b9211afe"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "40d6450f7578540f6af4581dda16c02e610b76a772c227c38118f7b43055a106"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f42587957d8a2463f6e06b0b43b74d13f2daf51e1a077f12fb17edaf207060e7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "eb48e90f1060aae5caf25cd6fd6488e1ad5327aa0aa33d73ba968f26aac96de2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5e8f56e4fd0c022490847119e844fe93b2e51d6bc25b955fe0a53976d0a00299"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "aebbe357a57cb862613c81c92cd398b01658039ebf5e80a72e59bc197f34d529"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a290cdea8fb623bb92540413036c2a26988fbd0b7e8ec4e1726de70492137a45"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "226241a8bb12cfcbce2e288652dd4a7afe586cd32e538ab9abf7d073f7e9530c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ae09973d229f466fa2400db9a033bc37f71bbcedbbf90261206162d29927536f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4f2b5213425508a7f5f920ac95cba10412b8db440791cd3b6df83554b09d99dd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ae386cea34d33719d0f4cefab10a7a0dcb0397acccb8090ce7261ae6e95f043f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1d8636f151329a09f3b73542a7de3f3b371c8b9cdaf11c497cb684016775ef7f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "044bbea9f7eac50cd64780d0bc69736b857735b4e595b25a9da418600230ac0c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "834874dc0927a44f81753321dd4448aff1044a31b255335b1f071fbafcd88644"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c6bf2104c498fc226cf5766c8378920e8d7f417811263320b665841975b258cf"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5918d26044762b1df169a1e90f0d5e7924556f7c2934d5aedc5ce5c26c7521be"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ae501fec8fe6b27e7c283a9fcb2a0c2c3c6c594575521dcddda092c1df8fd5ca"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d7a101af4fe876a5be6974a657ad34ccbf420358fbb24ba5d5041fa06e221485"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7ba57c418f6a85aa08076874df4d212ad8bd9b8b0ed115a739c3536c90ac38a0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "foundersPin"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5926e1200650b977140a1aec4a28ad9e70766d2e13e280ffd7e8b1741440bd32"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a2d1b2800b5c5e03afd41137ffd21f3a1b9cdcbe62dc182a034231f7c2dc37e3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "27d15ed69d43a6c71eb8c6c23f80c292cfeff537ae32b986cbf00d730288b776"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fe49cfac311285740732031f7f76c4a4e43894b7ea606704f95d4744c4e5c9a0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0c60d933aba69eec626b3f9f30a149397139b313f2a52786c625a7a32d5f22f7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d53de5371c6d5939caf56c1db71cb60b38cf6f8927235efc9c70aea1471de3cb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "51060ceb26dc84c35d6de01962b2f5b81a47f7a2b4da1159721aed7f9f389822"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "694a981c8705eeb548f8a717fac42c7a0a57e32bf9179351ee72cc0621f7eea0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "efe01441fe4acd96161ba4f2c76d671ee951efc4b380e7c5d7967988ccc854c9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "6abe423cc9b12b3a5af538ca59875f9c31e238c0d9eb66dfbb9d733589b69119"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "britishLonghair",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "e47d81427aee05cc1f00d09ebb5e07dd7ce378817832aeff4d7011e555a9c501"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
         "breed" : "goldenRetriever",
         "outfit" : "none"
       },

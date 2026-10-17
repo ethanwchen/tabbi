@@ -116,6 +116,18 @@ describe("a party across app versions", () => {
     }
   });
 
+  it("shows an older app a breed added after its catalog as it is, for the app to fall back on", async () => {
+    const current = await register({ name: "Cleo", ...NEW_LOOK, species: "cat", breed: "british-longhair" });
+    const old = await register({ name: "Olive", ...OLD_LOOK }, true);
+    const party = (await call("POST", "/v1/party", undefined, current.token)).body.party;
+    expect((await oldCall("POST", "/v1/party/join", { code: party.code }, old.token)).status).toBe(200);
+    const seen = (await oldCall("GET", "/v1/party", undefined, old.token)).body.party;
+    expect(check("party", seen)).toEqual([]);
+    const cleo = seen.members.find((m: { profile: { code: string } }) => m.profile.code === current.code);
+    expect(cleo.profile).toMatchObject({ species: "cat", breed: "british-longhair" });
+    expectOldProfile(cleo.profile);
+  });
+
   it("keeps taking what an older app sends: catalog version 1 ids and six colors", async () => {
     const old = await register({}, true);
     const patched = await oldCall("PATCH", "/v1/me", { costume: "pirate", accessories: ["crown", "bow", "halo", "glasses"], colors: OLD_LOOK.colors }, old.token);
@@ -128,6 +140,10 @@ describe("a party across app versions", () => {
       "sweater", "pajamas", "raincoat", "wizard", "chef", "pirate", "astronaut", "superhero", "witch", "santa", "pumpkin", "bunny"];
     const v1Accessories = ["glasses", "sunglasses", "headphones", "bow", "bandana", "scarf", "collar-bell", "crown", "flower",
       "party-hat", "beanie", "coffee-mug", "pencil", "book", "id-badge", "reflex-hammer", "face-mask", "halo"];
+    const v2CatBreeds = ["domestic-shorthair", "domestic-longhair", "tabby", "tuxedo", "calico", "tortoiseshell", "siamese",
+      "persian", "maine-coon", "british-shorthair", "ragdoll", "bengal", "sphynx", "scottish-fold", "russian-blue",
+      "abyssinian", "norwegian-forest", "black-cat"];
+    expect(catalog.breeds.cat).toEqual(expect.arrayContaining(v2CatBreeds));
     expect(catalog.costumes).toEqual(expect.arrayContaining(v1Costumes));
     expect(catalog.accessories).toEqual(expect.arrayContaining(v1Accessories));
     expect(catalog.limits.maxAccessories).toBeGreaterThanOrEqual(4);

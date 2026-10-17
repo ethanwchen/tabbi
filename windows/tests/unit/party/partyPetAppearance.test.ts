@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { partyProfile, type PartyProfile, type PartyProfileUpdate } from "../../../src/core/party/partyModels";
-import { PARTY_COLOR_ROLES, forCatalogVersion1, partyPet, partyPetUpdate, wireAccessory, wireOutfit } from "../../../src/core/party/partyPetAppearance";
+import { PARTY_COLOR_ROLES, forCatalogVersion1, localBreed, partyPet, partyPetUpdate, wireAccessory, wireOutfit } from "../../../src/core/party/partyPetAppearance";
 import { breedDisplayName } from "../../../src/core/pets/petBreed";
 import { PET_ACCESSORIES, PET_OUTFITS } from "../../../src/core/pets/petCostume";
 import { PET_BREEDS } from "../../../src/core/pets/petKinds";
@@ -167,6 +167,15 @@ describe("PartyPetAppearance", () => {
     const surgeon = partyPetUpdate(new PetProfile("Doc", "corgi", { accessories: ["surgicalCap"] }));
     expect(forCatalogVersion1(surgeon).costume).toBe("surgical-cap");
     expect(forCatalogVersion1(surgeon).accessories).toEqual([]);
+  });
+
+  it("sends the British Longhair to an older server as a longhair, and draws longhairs as one", () => {
+    const update = partyPetUpdate(new PetProfile("Mocha", "britishLonghair"));
+    expect(update.breed).toBe("british-longhair");
+    expect(forCatalogVersion1(update).breed).toBe("domestic-longhair");
+    expect(forCatalogVersion1(partyPetUpdate(new PetProfile("Nova", "corgi"))).breed).toBe("corgi");
+    expect(localBreed("british-longhair", "cat")).toBe("britishLonghair");
+    expect(localBreed("persian", "cat")).toBe("britishLonghair");
   });
 
   it("falls back on unknown server values instead of failing", () => {

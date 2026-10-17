@@ -1643,6 +1643,16 @@
         "accessories" : [
 
         ],
+        "breed" : "britishLonghair",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./32./32./32./32./7.2O14.2O7./6.O2BO2.8O2.O2BO6./6.OBPB2O8B2OBPBO6./6.OB2P12B2PBO6./6.O18BO6./5.O20BO5./5.O20BO5./5.O4BLiE6BLiE4BO5./5.O4B2iE6B2iE4BO5./5.O5BE2B4A2BE5BO5./5.O2B2P4BA2NA4B2P2BO5./5.OSBS3B2AS2AS2A3BSBSO5./5.OBSBS3B6A3BSBSBO5./6.OBSB2S2B4A2B2SBSBO6./5.OBO4B2S4B2S4BOBO5./6.O.O2B9W2B2O3BO4./7.O3B10W2BO3BO4./7.OS3B8W2BSO3BO4./7.OS4B6W3BSO3BO4./7.OS5B4W4BS3BO5./7.O2S5B2W5BS3BO5./6.O3S12B2SBO6./7.O2S12B2SO7./8.OS4B4O4BSO8./9.5O4.5O9."
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
         "breed" : "goldenRetriever",
         "outfit" : "none"
       },

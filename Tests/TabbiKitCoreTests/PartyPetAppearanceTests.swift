@@ -193,6 +193,20 @@ final class PartyPetAppearanceTests: XCTestCase {
         XCTAssertEqual(surgeon.forCatalogVersion1().accessories, [])
     }
 
+    /// A server that predates the British Longhair gets the breed it has
+    /// with the closest body, and a longhair from a breed without art comes
+    /// back as a British Longhair.
+    func testTheBritishLonghairReachesOlderServersAsALonghair() {
+        let update = PartyPetAppearance.update(for: PetProfile(name: "Mocha", breed: .britishLonghair))
+        XCTAssertEqual(update.breed, "british-longhair")
+        XCTAssertEqual(update.forCatalogVersion1().breed, "domestic-longhair")
+        XCTAssertEqual(PartyPetAppearance.update(for: PetProfile(name: "Nova", breed: .corgi)).forCatalogVersion1().breed, "corgi")
+        for wire in ["british-longhair", "persian"] {
+            let profile = PartyProfile(code: "K7QW2MZD", name: "Ana", petName: "Mocha", species: "cat", breed: wire)
+            XCTAssertEqual(PartyPetAppearance.pet(for: profile).breed, .britishLonghair, wire)
+        }
+    }
+
     func testUnknownServerValuesFallBackInsteadOfFailing() {
         let pet = PartyPetAppearance.pet(for: PartyProfile(
             code: "K7QW2MZD", name: "Ana", petName: "", species: "dragon", breed: "wyvern",

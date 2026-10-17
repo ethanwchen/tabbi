@@ -38,6 +38,13 @@ enum WalkArt {
     /// The Scottish Fold's thick plush tail, held high with a shaded tip.
     static let foldCatTail = PetArt.walk.sequence("foldCatTail")
 
+    /// British Longhair torso: a plush back over a fluffy chest ruff, with a
+    /// tufted fringe along the belly.
+    static let longhairCatTorso = PetArt.walk.grid("longhairCatTorso")
+
+    /// The British Longhair's big plumed tail, held high and swaying a pixel.
+    static let longhairCatTail = PetArt.walk.sequence("longhairCatTail")
+
     /// Poodle torso: the dog torso covered in curls, with a fluffy chest.
     static let poodleTorso = PetArt.walk.grid("poodleTorso")
 

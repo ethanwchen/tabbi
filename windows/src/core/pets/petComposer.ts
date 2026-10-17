@@ -109,9 +109,10 @@ function makeSitLayout(shape: PetBodyShape): SitLayout {
     case "cat":
     case "roundCat":
     case "sphynxCat":
-    case "foldCat": {
-      /* The British Shorthair's and Scottish Fold's plump bodies are a column wider, so their tails start one later. */
-      const plump = shape === "roundCat" || shape === "foldCat";
+    case "foldCat":
+    case "longhairCat": {
+      /* The British Shorthair's, Scottish Fold's and British Longhair's plump bodies are a column wider, so their tails start one later. */
+      const plump = shape === "roundCat" || shape === "foldCat" || shape === "longhairCat";
       const [body, head, face] =
         shape === "roundCat"
           ? [CatArt.bodyRound(), CatArt.headRound(), CatArt.faceRound()]
@@ -119,7 +120,9 @@ function makeSitLayout(shape: PetBodyShape): SitLayout {
             ? [CatArt.bodySphynx(), CatArt.headSphynx(), CatArt.faceSphynx()]
             : shape === "foldCat"
               ? [CatArt.bodyFold(), CatArt.headFold(), CatArt.faceOpen()]
-              : [CatArt.bodySit(), CatArt.head(), CatArt.faceOpen()];
+              : shape === "longhairCat"
+                ? [CatArt.bodyLonghair(), CatArt.headLonghair(), CatArt.faceLonghair()]
+                : [CatArt.bodySit(), CatArt.head(), CatArt.faceOpen()];
       return {
         family: "cat",
         body,
@@ -229,7 +232,9 @@ function makeWalkLayout(shape: PetBodyShape, family: Family): WalkLayout {
             ? [WalkArt.sphynxTorso(), WalkArt.sphynxTail()]
             : shape === "foldCat"
               ? [WalkArt.catTorso(), WalkArt.foldCatTail()]
-              : [WalkArt.catTorso(), WalkArt.catTail()];
+              : shape === "longhairCat"
+                ? [WalkArt.longhairCatTorso(), WalkArt.longhairCatTail()]
+                : [WalkArt.catTorso(), WalkArt.catTail()];
       return { ...shared, torso, tails, torsoY: 20, tailX: 26, legHeight: 4, backHip: 22, chinRow: 24 };
     }
     case "dog": {

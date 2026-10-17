@@ -3,12 +3,12 @@ import Foundation
 /// Translates between the local `PetProfile` and the server's pet fields.
 ///
 /// Friends see a pet exactly as its owner dressed it in the Closet: the
-/// server catalog (`backend/shared/catalog.json`, version 2) has an id for
+/// server catalog (`backend/shared/catalog.json`, version 3) has an id for
 /// every outfit and every accessory the app draws, so the outfit rides in
 /// `costume`, every worn accessory (hats, wings, auras and all) in
 /// `accessories`, and the effective colors of every recolorable role in
-/// `colors`. Breeds are the one lossy part: the server knows 36 and the app
-/// draws 18, so a breed without art falls back to the drawn breed with the
+/// `colors`. Breeds are the one lossy part: the server knows 37 and the app
+/// draws 19, so a breed without art falls back to the drawn breed with the
 /// closest body, and the sender's colors still make it look like theirs.
 ///
 /// Apps from before catalog version 2 only knew a few accessory ids and
@@ -75,6 +75,7 @@ public enum PartyPetAppearance {
         case .britishShorthair: "british-shorthair"
         case .sphynx: "sphynx"
         case .scottishFold: "scottish-fold"
+        case .britishLonghair: "british-longhair"
         case .goldenRetriever: "golden-retriever"
         case .labrador: "labrador"
         case .frenchBulldog: "french-bulldog"
@@ -91,15 +92,15 @@ public enum PartyPetAppearance {
     /// Server breeds the app has no art for, mapped to the drawn breed with
     /// the most similar body (ears, fluff, length).
     static let fallbackBreeds: [String: PetBreed] = [
-        "domestic-longhair": .britishShorthair,
+        "domestic-longhair": .britishLonghair,
         "tortoiseshell": .calico,
-        "persian": .britishShorthair,
-        "maine-coon": .britishShorthair,
-        "ragdoll": .britishShorthair,
+        "persian": .britishLonghair,
+        "maine-coon": .britishLonghair,
+        "ragdoll": .britishLonghair,
         "bengal": .orangeTabby,
         "russian-blue": .grayTabby,
         "abyssinian": .orangeTabby,
-        "norwegian-forest": .britishShorthair,
+        "norwegian-forest": .britishLonghair,
         "mixed": .beagle,
         "german-shepherd": .corgi,
         "shiba-inu": .corgi,
@@ -222,6 +223,10 @@ public enum PartyPetAppearance {
         "stethoscope", "surgical-cap", "graduation", "chef", "pirate", "witch", "astronaut", "bunny",
     ]
     static let version1MaxColors = 6
+    /// Breeds added after catalog version 2, sent to an older server as the
+    /// breed it has with the closest body (which older apps draw as a
+    /// British Shorthair).
+    static let olderCatalogBreeds: [String: String] = ["british-longhair": "domestic-longhair"]
     static let version1MaxAccessories = 4
 
     /// The server takes `#RRGGBB` only.
@@ -231,11 +236,13 @@ public enum PartyPetAppearance {
 }
 
 extension PartyProfileUpdate {
-    /// This update as a server on catalog version 1 takes it: accessories
-    /// it has no id for left out, the newer hoodies sent as the plain
-    /// hoodie, and only the first six colors.
+    /// This update as a server on catalog version 1 or 2 takes it:
+    /// accessories it has no id for left out, the newer hoodies sent as the
+    /// plain hoodie, newer breeds as their closest older one, and only the
+    /// first six colors.
     public func forCatalogVersion1() -> PartyProfileUpdate {
         var update = self
+        update.breed = breed.map { PartyPetAppearance.olderCatalogBreeds[$0] ?? $0 }
         update.colors = colors.map { Array($0.prefix(PartyPetAppearance.version1MaxColors)) }
         update.accessories = accessories.map { ids in
             Array(ids.filter(PartyPetAppearance.version1Accessories.contains).prefix(PartyPetAppearance.version1MaxAccessories))

@@ -36,6 +36,7 @@
     "roundCat": { "species": "cat" },
     "sphynxCat": { "species": "cat" },
     "foldCat": { "species": "cat" },
+    "longhairCat": { "species": "cat" },
     "floppyDog": { "species": "dog" },
     "fluffyDog": { "species": "dog" },
     "batEaredDog": { "species": "dog" },
@@ -128,6 +129,15 @@
       "hasTail": true,
       "palette": { "outline": "#2A2B31", "furBase": "#A3A8B3", "furShade": "#888D99", "furAccent": "#BCC0C9", "belly": "#E6E8EC", "eye": "#C67818", "eyeLight": "#FFF6DC", "nose": "#D58C90", "blush": "#F59AA8" },
       "pattern": { "muzzle": "belly", "chest": "belly", "paws": "belly", "tailTip": "furShade", "ears": "furAccent", "stripes": "furBase", "patchA": "furBase", "patchB": "furBase" }
+    },
+    {
+      "id": "britishLonghair",
+      "name": "British Longhair",
+      "note": "Chocolate: a deep, plush chocolate-brown coat with a lighter fluffy ruff and cheeks, a big plumed tail, copper eyes, and a rosy nose.",
+      "bodyShape": "longhairCat",
+      "hasTail": true,
+      "palette": { "outline": "#2A1610", "furBase": "#6B3E2E", "furShade": "#52301F", "furAccent": "#86523D", "belly": "#9C6B53", "eye": "#E89A2C", "pupil": "#2A140A", "eyeLight": "#FFF6E0", "nose": "#C8737A", "blush": "#E8868C" },
+      "pattern": { "muzzle": "furAccent", "chest": "belly", "stripes": "furShade" }
     },
     {
       "id": "goldenRetriever",
