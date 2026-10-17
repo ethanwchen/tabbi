@@ -29,6 +29,13 @@ export default defineConfig({
   reporter: "list",
   /* A few browsers at a time: each test walks many states, and more workers only queue on the CPU. */
   workers: 4,
+  /*
+   * Every test opens its own page and writes its own PNGs, so tests within a
+   * file run in parallel too, and CI's --shard splits the run by test rather
+   * than by file: by file, one shard got the 3 minute gallery and the others
+   * 20 minutes each of module panels and settings.
+   */
+  fullyParallel: true,
   /* Each test renders every state of its run in one page, so its budget grows with the list, not per page. */
   timeout: 10 * 60_000,
   use: {
