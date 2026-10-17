@@ -19,6 +19,16 @@ public struct ThemeID: RawRepresentable, Hashable, Codable, Sendable, Expressibl
     public static let cozy: ThemeID = "cozy"
     public static let sakura: ThemeID = "sakura"
     public static let forest: ThemeID = "forest"
+    public static let blueberryMilk: ThemeID = "blueberryMilk"
+    public static let strawberryMilk: ThemeID = "strawberryMilk"
+    public static let taro: ThemeID = "taro"
+    public static let matchaLatte: ThemeID = "matchaLatte"
+    public static let bananaMilk: ThemeID = "bananaMilk"
+    public static let deepSea: ThemeID = "deepSea"
+    public static let cherrySoda: ThemeID = "cherrySoda"
+    public static let stargazer: ThemeID = "stargazer"
+    public static let mintChoco: ThemeID = "mintChoco"
+    public static let cottonCandy: ThemeID = "cottonCandy"
 }
 
 /// An sRGB color with opacity, in 0...1 components, so themes can live in
@@ -113,11 +123,21 @@ public struct ThemePalette: Hashable, Sendable, Decodable {
     public var success: ThemeColor
     public var warning: ThemeColor
     public var danger: ThemeColor
+    /// The theme's own key color, nil when every module keeps its own accent
+    /// (as the theme's `accents` treats it). When set, the active module's
+    /// ring, selected tab, primary button and chips all wear it, so the
+    /// whole panel reads as one color (see `AppTheme.accent(_:)`).
+    public var accent: ThemeColor?
+    /// Text and symbols drawn on an `accent` fill (a primary button's
+    /// label); nil for the panel `background`, the black every theme used
+    /// before themes had accents.
+    public var onAccent: ThemeColor?
 
     public init(background: ThemeColor = ThemeColor(white: 0), glow: ThemeColor? = nil,
                 surface: ThemeColor, surfaceHover: ThemeColor, stroke: ThemeColor,
                 primaryText: ThemeColor, secondaryText: ThemeColor, tertiaryText: ThemeColor,
-                success: ThemeColor, warning: ThemeColor, danger: ThemeColor) {
+                success: ThemeColor, warning: ThemeColor, danger: ThemeColor,
+                accent: ThemeColor? = nil, onAccent: ThemeColor? = nil) {
         self.background = background
         self.glow = glow
         self.surface = surface
@@ -129,11 +149,16 @@ public struct ThemePalette: Hashable, Sendable, Decodable {
         self.success = success
         self.warning = warning
         self.danger = danger
+        self.accent = accent
+        self.onAccent = onAccent
     }
 }
 
 /// How a theme treats each module's accent color, so one theme can mute or
-/// warm every module without the modules knowing.
+/// warm every module without the modules knowing. A theme with its own
+/// `ThemePalette.accent` still names one: it colors what has to tell modules
+/// apart (`AppTheme.identityAccent(_:)`), and builds that predate theme
+/// accents use it for everything.
 public enum AccentTreatment: String, Hashable, Sendable, CaseIterable, Decodable {
     /// The module's own accent.
     case original
@@ -282,11 +307,23 @@ public struct GlassSheen: Hashable, Sendable, Decodable {
 }
 
 /// Which group a theme is listed under in the picker.
+///
+/// `themes.json` writes a theme's group as `family`, which every build reads
+/// and which stays `classic` or `cozy`, plus an optional `group` that builds
+/// knowing newer groups (`sweet`) prefer. So a file with a new group still
+/// decodes in a build that predates it, which lists the theme under its
+/// `family`.
 public enum ThemeFamily: String, Hashable, Sendable, CaseIterable, Decodable {
     /// Calm, hardware-black looks.
     case classic
     /// Warm, soft looks made for studying.
     case cozy
+    /// Milk, candy and soda colors, each owning its accent. Written as
+    /// `group`, with `family` `cozy` for older builds.
+    case sweet
+
+    /// The values `family` may take, which every build since themes reads.
+    public static let baseFamilies: [ThemeFamily] = [.classic, .cozy]
 }
 
 /// A complete look for the open panel: colors, accent treatment, type,
@@ -320,8 +357,66 @@ public struct AppTheme: Identifiable, Hashable, Sendable, Decodable {
         self.surfaces = surfaces
     }
 
-    /// The accent a module with `base` shows in this theme.
+    /// The name in the user's language. `themes.json` holds the English,
+    /// which the Windows port reads too, so the translation is looked up in
+    /// the catalog under `theme.<id>` (a name such as Midnight also names a
+    /// fur color, so the English text can't be the key); a theme the catalog
+    /// lacks shows its name as written.
+    public var displayName: String {
+        Bundle.tabbi.localizedString(forKey: "theme.\(id.rawValue)", value: name, table: nil)
+    }
+
+    /// The summary in the user's language, looked up by its English text
+    /// like the seasonal events' taglines.
+    public var displaySummary: String {
+        Bundle.tabbi.localizedString(forKey: summary, value: summary, table: nil)
+    }
+
+    /// The accent a module with `base` shows in this theme: the theme's own
+    /// key color when it has one (`palette.accent`), so the ring, the
+    /// selected tab, the primary button and the chips all match it, or else
+    /// `base` as `accents` treats it.
     public func accent(_ base: ModuleAccent) -> ThemeColor {
+        palette.accent ?? accents.apply(to: base)
+    }
+
+    /// `base` as `accents` treats it, even when the theme has a key color:
+    /// for what has to tell modules apart, such as module icons listed side
+    /// by side or another module's item in Today's list, and for colors with
+    /// a meaning of their own (the favorite heart).
+    public func identityAccent(_ base: ModuleAccent) -> ThemeColor {
         accents.apply(to: base)
+    }
+
+    /// Text and symbols on an `accent(_:)` fill: the palette's `onAccent`,
+    /// or the panel background when the theme doesn't set one.
+    public var onAccent: ThemeColor {
+        palette.onAccent ?? palette.background
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, name, summary, family, group, palette, accents, typeface, motion, controls, surfaces
+    }
+
+    /// Reads `family`, then `group` when it names a family this build knows,
+    /// so a group from a newer build falls back to the theme's `family`.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let family = try container.decode(ThemeFamily.self, forKey: .family)
+        guard ThemeFamily.baseFamilies.contains(family) else {
+            throw DecodingError.dataCorruptedError(forKey: .family, in: container,
+                                                   debugDescription: "family is classic or cozy; newer groups go in group")
+        }
+        let group = (try? container.decodeIfPresent(String.self, forKey: .group)).flatMap { $0 }
+        self.init(id: try container.decode(ThemeID.self, forKey: .id),
+                  name: try container.decode(String.self, forKey: .name),
+                  summary: try container.decode(String.self, forKey: .summary),
+                  family: group.flatMap(ThemeFamily.init(rawValue:)) ?? family,
+                  palette: try container.decode(ThemePalette.self, forKey: .palette),
+                  accents: try container.decode(AccentTreatment.self, forKey: .accents),
+                  typeface: try container.decode(ThemeTypeface.self, forKey: .typeface),
+                  motion: try container.decode(ThemeMotion.self, forKey: .motion),
+                  controls: try container.decode(ThemeControlStyle.self, forKey: .controls),
+                  surfaces: try container.decode(ThemeSurfaceStyle.self, forKey: .surfaces))
     }
 }

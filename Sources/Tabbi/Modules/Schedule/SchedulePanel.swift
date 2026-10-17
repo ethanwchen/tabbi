@@ -861,7 +861,7 @@ private struct SchedulePillButton: View {
                 Text(title)
             }
             .font(Theme.Typography.caption)
-            .foregroundStyle(isProminent ? Theme.Palette.background : accent)
+            .foregroundStyle(isProminent ? Theme.Palette.onAccent : accent)
             .padding(.horizontal, Theme.Spacing.s)
             .frame(height: 22)
             .background(Capsule().fill(isProminent ? accent.opacity(hovering ? 1 : 0.88)
@@ -892,7 +892,7 @@ private struct ScheduleAccessMessage: View {
                     Button { perform(action) } label: {
                         Text(state.actionTitle)
                             .font(Theme.Typography.caption)
-                            .foregroundStyle(Theme.Palette.background)
+                            .foregroundStyle(Theme.Palette.onAccent)
                             .padding(.horizontal, Theme.Spacing.m)
                             .frame(height: 24)
                             .background(Capsule().fill(accent.opacity(hovering ? 1 : 0.9)))

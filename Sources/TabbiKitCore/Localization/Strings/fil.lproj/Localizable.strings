@@ -645,6 +645,8 @@
 	<string>Automation</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>Available kapag tumatakbo ang %@ bilang app bundle.</string>
+	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
+	<string>Baby blue at puting ulap, parang isang karton ng blueberry milk.</string>
 	<key>Back</key>
 	<string>Bumalik</string>
 	<key>Back to %@.</key>
@@ -725,6 +727,8 @@
 	<string>Built-in na display</string>
 	<key>Bunny Ears</key>
 	<string>Tainga ng Kuneho</string>
+	<key>Butter yellow sunshine, happy and bright.</key>
+	<string>Butter yellow na sikat ng araw, masaya at maliwanag.</string>
 	<key>Buy freeze</key>
 	<string>Bumili ng freeze</string>
 	<key>By joining you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
@@ -765,6 +769,8 @@
 	<string>Kanselahin ang Request</string>
 	<key>Cancel your request to %@</key>
 	<string>Kanselahin ang request mo kay %@</string>
+	<key>Candy pink and milk, sweet but never loud.</key>
+	<string>Candy pink at gatas, matamis pero hindi maingay.</string>
 	<key>Caramel</key>
 	<string>Caramel</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -841,6 +847,8 @@
 	<string>Panahon ng Cherry Blossom</string>
 	<key>Cherry Petals</key>
 	<string>Talulot ng Cherry</string>
+	<key>Cherry blossom pink on warm black.</key>
+	<string>Pink ng cherry blossom sa mainit na itim.</string>
 	<key>Chocolate</key>
 	<string>Tsokolate</string>
 	<key>Choose AI</key>
@@ -999,6 +1007,8 @@
 	<string>Kontrolin ang Spotify o Apple Music mula sa notch.</string>
 	<key>Cool Sunglasses</key>
 	<string>Cool na Sunglasses</string>
+	<key>Cool gray surfaces and plain SF type.</key>
+	<string>Malamig na abong surface at simpleng SF na font.</string>
 	<key>Copied</key>
 	<string>Nakopya</string>
 	<key>Copy</key>
@@ -1105,6 +1115,8 @@
 	<string>Tanggihan ang request ni %@. Hindi nila malalaman.</string>
 	<key>Deep</key>
 	<string>Deep</string>
+	<key>Deep cherry red, fizzy and warm, made for late sessions.</key>
+	<string>Malalim na cherry red, mabula at mainit, para sa mga gabing session.</string>
 	<key>Deep focus</key>
 	<string>Deep focus</string>
 	<key>Deep focus is on: focus blocks bring %@. Click to turn it off</key>
@@ -1431,6 +1443,8 @@
 	<string>Friends server</string>
 	<key>Frog Hat</key>
 	<string>Sombrerong Palaka</string>
+	<key>Frosted glass cards over a cool blue glow.</key>
+	<string>Mga card na frosted glass sa ibabaw ng malamig na asul na liwanag.</string>
 	<key>Full</key>
 	<string>Puno</string>
 	<key>Full path to the claude binary. Leave empty to detect it automatically.</key>
@@ -1487,6 +1501,8 @@
 	<string>Kunin ang baso at uminom nang kaunti.</string>
 	<key>Graduation Cap</key>
 	<string>Graduation Cap</string>
+	<key>Grayscale everything, no distractions.</key>
+	<string>Lahat ay grayscale, walang istorbo.</string>
 	<key>Great job!</key>
 	<string>Galing mo!</string>
 	<key>Great job, team!</key>
@@ -1503,6 +1519,8 @@
 	<string>Harassment</string>
 	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
 	<string>Nagiging madali ang mahirap gaya ng pagbuo ng daan: isang hakbang, paulit-ulit.</string>
+	<key>Hardware black, calm and crisp.</key>
+	<string>Itim gaya ng hardware, kalmado at malinaw.</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>May code ka? I-type ang %lld-character na party code at pindutin ang Return para sumali</string>
 	<key>Head Mirror</key>
@@ -1583,6 +1601,8 @@
 	<string>Sa bukas na notch, lumilipat ng tab ang arrow keys o two-finger swipe, tumatalon sa tab ang 1-9, at nagsasara ang Esc o swipe pataas. Sa saradong notch, mag-swipe pababa o mag-middle-click para makita ang susunod na live activity.</string>
 	<key>Inappropriate name</key>
 	<string>Hindi angkop na pangalan</string>
+	<key>Indigo night sky with a little gold star.</key>
+	<string>Indigo na langit sa gabi na may maliit na gintong bituin.</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>Input, output at cache token sa lahat ng %@ session mula hatinggabi</string>
 	<key>Inseparable</key>
@@ -1753,6 +1773,8 @@
 	<string>Gaya ng Migs o Dr. Migs</string>
 	<key>Lilac</key>
 	<string>Lilac</string>
+	<key>Lilac bubble tea, dreamy and soft.</key>
+	<string>Lilac na bubble tea, malambot at parang panaginip.</string>
 	<key>Limited</key>
 	<string>Limitado</string>
 	<key>Limited edition</key>
@@ -1837,10 +1859,14 @@
 	<string>Paraan</string>
 	<key>Midnight</key>
 	<string>Hatinggabi</string>
+	<key>Midnight ocean blue with a soft periwinkle glow.</key>
+	<string>Asul ng karagatan sa hatinggabi na may malambot na periwinkle na liwanag.</string>
 	<key>Milestones</key>
 	<string>Mga Milestone</string>
 	<key>Mint</key>
 	<string>Mint</string>
+	<key>Mint chip ice cream: cool mint over a cocoa glow.</key>
+	<string>Mint chip ice cream: malamig na mint sa ibabaw ng cocoa na liwanag.</string>
 	<key>Model</key>
 	<string>Model</string>
 	<key>Month</key>
@@ -1861,6 +1887,8 @@
 	<string>Iba pang opsyon</string>
 	<key>More tabs</key>
 	<string>Iba pang tab</string>
+	<key>Mossy sage greens, quiet as a walk.</key>
+	<string>Lumot at sage na berde, tahimik gaya ng paglalakad.</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>Karamihan, naghihintay munang maging handa. Ikaw, nagsimula na lang. Iyan ang pagkakaiba.</string>
 	<key>Mostly convention</key>
@@ -2389,6 +2417,8 @@
 	<string>I-pin bilang paborito</string>
 	<key>Pink noise</key>
 	<string>Pink noise</string>
+	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
+	<string>Pink na langit, baby blue na asukal: ang perya sa takipsilim.</string>
 	<key>Pirate Hat</key>
 	<string>Sombrero ng Pirata</string>
 	<key>Plain collar</key>
@@ -3055,6 +3085,8 @@
 	<string>Kapa ng Superhero</string>
 	<key>Surgical Cap</key>
 	<string>Surgical Cap</string>
+	<key>Sweet</key>
+	<string>Matamis</string>
 	<key>Switch Kit</key>
 	<string>Magpalit ng Kit</string>
 	<key>Switch every</key>
@@ -3489,6 +3521,8 @@
 	<string>Version %1$@ (%2$@)</string>
 	<key>View on GitHub</key>
 	<string>Tingnan sa GitHub</string>
+	<key>Vivid accents with a violet glow.</key>
+	<string>Matitingkad na accent na may violet na liwanag.</string>
 	<key>Volume</key>
 	<string>Volume</string>
 	<key>Volume %@</key>
@@ -3513,6 +3547,8 @@
 	<string>Gustong makipagkaibigan</string>
 	<key>Wardrobe</key>
 	<string>Wardrobe</string>
+	<key>Warm cream and peach, soft and gentle.</key>
+	<string>Mainit na cream at peach, malambot at banayad.</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>Nakakaukit ng bangin ang tubig dahil hindi ito lumalaktaw ng araw.</string>
 	<key>Wearing</key>
@@ -3553,6 +3589,8 @@
 	<string>Kailan ka ipinanganak?</string>
 	<key>Whether a question grows the notch into the larger chat view</key>
 	<string>Kung lalaki ang notch sa malaking chat view kapag nagtanong</string>
+	<key>Whisked green tea and oat milk, fresh and grounded.</key>
+	<string>Binating green tea at oat milk, sariwa at panatag.</string>
 	<key>White Coat</key>
 	<string>Puting Coat</string>
 	<key>White noise</key>
@@ -3841,6 +3879,42 @@
 	<string>host</string>
 	<key>the rare %@ fur</key>
 	<string>rare fur na %@</string>
+	<key>theme.bananaMilk</key>
+	<string>Banana Milk</string>
+	<key>theme.blueberryMilk</key>
+	<string>Blueberry Milk</string>
+	<key>theme.cherrySoda</key>
+	<string>Cherry Soda</string>
+	<key>theme.cottonCandy</key>
+	<string>Cotton Candy</string>
+	<key>theme.cozy</key>
+	<string>Cozy</string>
+	<key>theme.deepSea</key>
+	<string>Malalim na Dagat</string>
+	<key>theme.forest</key>
+	<string>Gubat</string>
+	<key>theme.graphite</key>
+	<string>Graphite</string>
+	<key>theme.liquidGlass</key>
+	<string>Liquid Glass</string>
+	<key>theme.matchaLatte</key>
+	<string>Matcha Latte</string>
+	<key>theme.midnight</key>
+	<string>Hatinggabi</string>
+	<key>theme.mintChoco</key>
+	<string>Mint Choco</string>
+	<key>theme.monochrome</key>
+	<string>Monochrome</string>
+	<key>theme.neon</key>
+	<string>Neon</string>
+	<key>theme.sakura</key>
+	<string>Sakura</string>
+	<key>theme.stargazer</key>
+	<string>Stargazer</string>
+	<key>theme.strawberryMilk</key>
+	<string>Strawberry Milk</string>
+	<key>theme.taro</key>
+	<string>Taro</string>
 	<key>today</key>
 	<string>ngayon</string>
 	<key>tokens</key>

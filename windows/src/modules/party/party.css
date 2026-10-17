@@ -392,9 +392,10 @@
 .party-row-actions[data-busy] {
   opacity: 0.5;
 }
-.party-accept {
+/* Scoped to the root so the on-accent check beats the `.kit-root button` reset. */
+.kit-root .party-accept {
   background: var(--accent);
-  color: var(--background);
+  color: var(--on-accent);
 }
 .party-accept:hover {
   background: var(--accent);
@@ -609,7 +610,7 @@
 }
 .party-chip[data-selected] {
   background: var(--accent);
-  color: var(--background);
+  color: var(--on-accent);
 }
 .party-note {
   height: 24px;

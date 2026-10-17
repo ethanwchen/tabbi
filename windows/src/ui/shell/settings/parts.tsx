@@ -11,7 +11,7 @@ import type { ModuleDescriptor } from "../../../core/modules/moduleDescriptor";
 import { useTheme, useTransition } from "../../kit/context";
 import { Icon } from "../../kit/Icon";
 import { useTactile } from "../../kit/tactile";
-import { accentCss } from "../../kit/tokens";
+import { identityAccentCss } from "../../kit/tokens";
 import { Tooltip } from "../../kit/Tooltip";
 
 export interface SettingsButtonProps {
@@ -113,10 +113,10 @@ export function ResetToDefaultsRow({ isAtDefaults, help, title, reset, leading }
   );
 }
 
-/** A module's icon tile in the Tabs pane, in its accent color. */
+/** A module's icon tile in the Tabs pane, in its own color even in a theme with a key color. */
 export function ModuleIcon({ module, size = 24 }: { module: ModuleDescriptor; size?: number }) {
   const theme = useTheme();
-  const accent = accentCss(theme, module.accent);
+  const accent = identityAccentCss(theme, module.accent);
   const style: CSSProperties = {
     width: size,
     height: size,
@@ -136,7 +136,7 @@ export function TabIcons({ modules, size = 18 }: { modules: readonly ModuleDescr
   return (
     <span className="settings-tab-icons">
       {modules.map((module) => {
-        const accent = accentCss(theme, module.accent);
+        const accent = identityAccentCss(theme, module.accent);
         return (
           <Tooltip key={module.id} text={module.title}>
             <span className="settings-tab-icon" style={{ width: size, height: size, color: accent, background: `color-mix(in srgb, ${accent} 16%, transparent)` }}>

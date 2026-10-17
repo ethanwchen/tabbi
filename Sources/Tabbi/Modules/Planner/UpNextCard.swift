@@ -119,7 +119,7 @@ private struct UpNextJoinButton: View {
         Button(action: action) {
             Image(systemName: "video.fill")
                 .font(.system(size: 9, weight: .bold))
-                .foregroundStyle(isLive ? Theme.Palette.background : accent)
+                .foregroundStyle(isLive ? Theme.Palette.onAccent : accent)
                 .frame(width: 24, height: 24)
                 .background(Circle().fill(isLive ? accent.opacity(hovering ? 1 : 0.9)
                                           : accent.opacity(hovering ? 0.28 : 0.16)))

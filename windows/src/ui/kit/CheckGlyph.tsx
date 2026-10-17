@@ -17,6 +17,8 @@ export interface CheckGlyphProps {
   readonly tint?: string;
   /** The outline while off; null when the caller draws its own ring. */
   readonly ring?: string | null;
+  /** The check stroke: the theme's on-accent color by default, for a `tint` that is the accent. */
+  readonly mark?: string;
   readonly size?: number;
   /** Draws one frame at this progress (0 off, 1 on), for reviews. */
   readonly progress?: number;
@@ -26,7 +28,7 @@ export interface CheckGlyphProps {
 const CHECK = "M0.29 0.52 L0.44 0.67 L0.72 0.36";
 const CHECK_LENGTH = Math.hypot(0.15, 0.15) + Math.hypot(0.28, 0.31);
 
-export function CheckGlyph({ isOn, tint = "var(--accent)", ring = "var(--tertiary-text)", size = 16, progress }: CheckGlyphProps) {
+export function CheckGlyph({ isOn, tint = "var(--accent)", ring = "var(--tertiary-text)", mark = "var(--on-accent)", size = 16, progress }: CheckGlyphProps) {
   const { reduceMotion } = useKit();
   const animated = useSpringValue(isOn ? 1 : 0, isOn ? "check" : "snappy");
   const state = checkDraw(progress ?? animated, reduceMotion);
@@ -42,7 +44,7 @@ export function CheckGlyph({ isOn, tint = "var(--accent)", ring = "var(--tertiar
       <path
         d={CHECK}
         fill="none"
-        stroke="var(--background)"
+        stroke={mark}
         strokeWidth={0.12}
         strokeLinecap="round"
         strokeLinejoin="round"

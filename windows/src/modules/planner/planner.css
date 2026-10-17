@@ -495,7 +495,7 @@
 
 .planner-pill[data-prominent="true"] {
   background: color-mix(in srgb, var(--accent) 90%, transparent);
-  color: var(--background);
+  color: var(--on-accent);
 }
 
 .planner-pill[data-prominent="true"]:hover:not(:disabled) {
@@ -657,7 +657,7 @@
 
 .upnext-join[data-live="true"] {
   background: color-mix(in srgb, var(--accent) 90%, transparent);
-  color: var(--background);
+  color: var(--on-accent);
 }
 
 .upnext-join[data-live="true"]:hover {

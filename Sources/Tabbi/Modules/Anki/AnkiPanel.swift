@@ -947,11 +947,11 @@ private struct AnkiPrimaryButton: View {
                         .contentTransition(.numericText(countsDown: true))
                         .padding(.horizontal, Theme.Spacing.xs)
                         .frame(height: 16)
-                        .background(Capsule().fill(Theme.Palette.background.opacity(0.18)))
+                        .background(Capsule().fill(Theme.Palette.onAccent.opacity(0.18)))
                         .fixedSize()
                 }
             }
-            .foregroundStyle(Theme.Palette.background)
+            .foregroundStyle(Theme.Palette.onAccent)
             .padding(.horizontal, Theme.Spacing.m)
             .frame(height: 28)
             .background(Capsule().fill(accent.opacity(hovering ? 1 : 0.88)))

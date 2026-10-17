@@ -417,7 +417,7 @@ private struct KitStep: View {
         HStack(spacing: Theme.Spacing.s) {
             ForEach(store.settings.kits.kits) { kit in
                 let tabs = kit.layout(catalog: catalog).enabled
-                let tint = kit.accentModule(catalog: catalog).map { catalog.descriptor(for: $0).accentColor }
+                let tint = kit.accentModule(catalog: catalog).map { catalog.descriptor(for: $0).identityColor }
                     ?? Theme.Palette.primaryText
                 OnboardingTile(isSelected: kit == flow.kit && !flow.startedFromScratch, tint: tint,
                                help: "\(kit.name): \(tabs.map { catalog.descriptor(for: $0).title }.joined(separator: ", "))",
@@ -476,9 +476,9 @@ private struct TabSymbols: View {
             ForEach(modules.map(catalog.descriptor(for:))) { module in
                 Image(systemName: module.symbol)
                     .font(.system(size: 7.5, weight: .semibold))
-                    .foregroundStyle(module.accentColor)
+                    .foregroundStyle(module.identityColor)
                     .frame(width: 14, height: 14)
-                    .background(Circle().fill(module.accentColor.opacity(0.18)))
+                    .background(Circle().fill(module.identityColor.opacity(0.18)))
                     .transition(.scale.combined(with: .opacity))
             }
         }
@@ -494,7 +494,7 @@ private struct QuestionStep: View {
 
     var body: some View {
         let picked = flow.answers[question.id] ?? []
-        let tint = flow.kit?.accentModule(catalog: flow.catalog).map { flow.catalog.descriptor(for: $0).accentColor }
+        let tint = flow.kit?.accentModule(catalog: flow.catalog).map { flow.catalog.descriptor(for: $0).identityColor }
             ?? Theme.Palette.primaryText
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             Text(question.prompt)
@@ -616,14 +616,14 @@ private struct ModulesStep: View {
         let isOn = flow.layout.isEnabled(id)
         let canTurnOff = flow.layout.canDisable(id)
         let isStacked = rowHeight >= Self.stackedTileHeight
-        return OnboardingTile(isSelected: isOn, tint: module.accentColor.opacity(0.7),
+        return OnboardingTile(isSelected: isOn, tint: module.identityColor.opacity(0.7),
                               isCompact: rowHeight < Self.roomyTileHeight,
                               help: isOn ? (canTurnOff ? String(localized: "Turn \(module.title) off", bundle: .tabbi) : String(localized: "Keep at least one tab on", bundle: .tabbi))
                                          : String(localized: "Turn \(module.title) on", bundle: .tabbi),
                               action: { store.update { $0.setEnabled(id, !isOn) } }) {
             let symbol = Image(systemName: module.symbol)
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(isOn ? module.accentColor : Theme.Palette.tertiaryText)
+                .foregroundStyle(isOn ? module.identityColor : Theme.Palette.tertiaryText)
                 .frame(height: 16)
             let title = Text(module.title)
                 .font(Theme.Typography.caption)
@@ -692,7 +692,7 @@ private struct ExtrasStep: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
             ForEach(extras) { extra in
-                ExtraTile(extra: extra, tint: extra.module.map { catalog.descriptor(for: $0).accentColor },
+                ExtraTile(extra: extra, tint: extra.module.map { catalog.descriptor(for: $0).identityColor },
                           account: extra == .sync ? account : nil, signIn: signIn)
             }
         }

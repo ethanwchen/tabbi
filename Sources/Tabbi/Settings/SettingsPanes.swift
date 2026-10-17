@@ -665,7 +665,7 @@ private struct ModuleIcon: View {
             .frame(width: 24, height: 24)
             .background(
                 RoundedRectangle(cornerRadius: 6, style: .continuous)
-                    .fill(module.accentColor.gradient)
+                    .fill(module.identityColor.gradient)
             )
     }
 }

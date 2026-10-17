@@ -345,7 +345,7 @@ private struct PartyAcceptButton: View {
         Button(action: action) {
             Image(systemName: "checkmark")
                 .font(.system(size: 9.5, weight: .bold))
-                .foregroundStyle(Theme.Palette.background)
+                .foregroundStyle(Theme.Palette.onAccent)
                 .frame(width: 20, height: 20)
                 .background(Circle().fill(PartyStyle.accent.opacity(hovering ? 1 : 0.9)))
                 .contentShape(Circle())

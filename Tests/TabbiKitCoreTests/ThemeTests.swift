@@ -4,9 +4,16 @@ import XCTest
 final class ThemeCatalogTests: XCTestCase {
     func testShipsEveryThemeOnceInPickerOrder() {
         XCTAssertEqual(ThemeCatalog.all.map(\.id),
-                       [.midnight, .graphite, .liquidGlass, .neon, .monochrome, .cozy, .sakura, .forest])
+                       [.midnight, .graphite, .liquidGlass, .neon, .monochrome, .cozy, .sakura, .forest,
+                        .blueberryMilk, .strawberryMilk, .taro, .matchaLatte, .bananaMilk,
+                        .deepSea, .cherrySoda, .stargazer, .mintChoco, .cottonCandy])
         XCTAssertEqual(Set(ThemeCatalog.all.map(\.name)).count, ThemeCatalog.all.count)
         XCTAssertEqual(ThemeCatalog.all.filter { $0.family == .cozy }.map(\.id), [.cozy, .sakura, .forest])
+        // Five to a row: the pastels, then each one's deep or duo partner
+        // right below it.
+        XCTAssertEqual(ThemeCatalog.all.filter { $0.family == .sweet }.map(\.id),
+                       [.blueberryMilk, .strawberryMilk, .taro, .matchaLatte, .bananaMilk,
+                        .deepSea, .cherrySoda, .stargazer, .mintChoco, .cottonCandy])
     }
 
     func testEveryPanelBodyIsOpaqueBlackSoTheOpenNotchMeetsTheHardware() {
@@ -36,11 +43,78 @@ final class ThemeCatalogTests: XCTestCase {
         }
     }
 
-    func testCozyThemesMoveGentlyAndOnlyLiquidGlassUsesGlass() {
+    func testCozyAndSweetThemesMoveGentlyAndOnlyLiquidGlassUsesGlass() {
         for theme in ThemeCatalog.all {
-            XCTAssertEqual(theme.motion == .gentle, theme.family == .cozy, theme.name)
+            XCTAssertEqual(theme.motion == .gentle, theme.family != .classic, theme.name)
             XCTAssertEqual(theme.controls == .glass, theme.id == .liquidGlass, theme.name)
             XCTAssertEqual(theme.surfaces == .glass, theme.id == .liquidGlass, theme.name)
+        }
+    }
+
+    /// A theme's key color is what the active module's ring, selected tab,
+    /// primary button and chips wear, so it must hold up on every card the
+    /// panel draws (flat or hovered, over the black top or the full glow):
+    /// WCAG 4.5:1 where it is text (the method's rhythm, a chip's label) and
+    /// 3:1 for the ring arc against its 20% track; on-accent text keeps
+    /// 4.5:1 on the solid fill and on the 88% fill a button rests at.
+    func testThemeAccentsReadOnEveryCard() {
+        let accented = ThemeCatalog.all.filter { $0.palette.accent != nil }
+        XCTAssertGreaterThanOrEqual(accented.count, 10)
+        for theme in accented {
+            let palette = theme.palette
+            let accent = theme.accent(ModuleAccent(red: 1, green: 0.62, blue: 0.26))
+            XCTAssertEqual(accent, palette.accent, theme.name)
+            XCTAssertEqual(accent.opacity, 1, "\(theme.name) accent is opaque")
+            XCTAssertNotNil(palette.onAccent, "\(theme.name) sets onAccent with its accent")
+            let black = palette.background
+            let glow = (palette.glow ?? black).composited(over: black)
+            for body in [black, glow] {
+                for surface in [palette.surface, palette.surfaceHover] {
+                    let card = surface.composited(over: body)
+                    let label = "\(theme.name) on \(surface == palette.surface ? "surface" : "surfaceHover")"
+                        + (body == black ? "" : " over the glow")
+                    XCTAssertGreaterThanOrEqual(accent.contrast(with: card), 3, "\(label): accent as a UI part")
+                    XCTAssertGreaterThanOrEqual(accent.contrast(with: card), 4.5, "\(label): accent as text")
+                    let track = accent.opacity(0.2).composited(over: card)
+                    XCTAssertGreaterThanOrEqual(accent.contrast(with: track), 3, "\(label): ring arc vs track")
+                    let resting = accent.opacity(0.88).composited(over: card)
+                    XCTAssertGreaterThanOrEqual(theme.onAccent.composited(over: resting).contrast(with: resting), 4.5,
+                                                "\(label): on-accent text on a resting button")
+                }
+            }
+            XCTAssertGreaterThanOrEqual(theme.onAccent.contrast(with: accent), 4.5, "\(theme.name) on-accent")
+            // Status colors keep their meaning: the accent never passes for one.
+            for status in [palette.success, palette.warning, palette.danger] {
+                XCTAssertNotEqual(accent, status, theme.name)
+            }
+        }
+    }
+
+    /// Themes without a key color draw exactly what they did before theme
+    /// accents existed: the treated module accent, and the black body as
+    /// text on it. Midnight, the default, is one of them.
+    func testThemesWithoutAnAccentKeepTheirModuleAccents() {
+        let study = ModuleAccent(red: 1, green: 0.62, blue: 0.26)
+        XCTAssertNil(ThemeCatalog.midnight.palette.accent)
+        for theme in ThemeCatalog.all where theme.palette.accent == nil {
+            XCTAssertEqual(theme.accent(study), theme.accents.apply(to: study), theme.name)
+            XCTAssertEqual(theme.onAccent, theme.palette.background, theme.name)
+            XCTAssertNil(theme.palette.onAccent, theme.name)
+        }
+    }
+
+    /// The sweet family all own a key color, and module identity (icons
+    /// listed side by side) still follows the treatment.
+    func testSweetThemesOwnTheirAccentAndKeepModuleIdentity() {
+        let sweet = ThemeCatalog.all.filter { $0.family == .sweet }
+        XCTAssertEqual(sweet.count, 10)
+        let study = ModuleAccent(red: 1, green: 0.62, blue: 0.26)
+        let anki = ModuleAccent(red: 0.36, green: 0.62, blue: 1.00)
+        for theme in sweet {
+            XCTAssertNotNil(theme.palette.accent, theme.name)
+            XCTAssertEqual(theme.accent(study), theme.accent(anki), theme.name)
+            XCTAssertEqual(theme.identityAccent(study), theme.accents.apply(to: study), theme.name)
+            XCTAssertNotEqual(theme.identityAccent(study), theme.identityAccent(anki), theme.name)
         }
     }
 

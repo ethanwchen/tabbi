@@ -33,7 +33,7 @@ import { PetView } from "../kit/PetView";
 import { Pill } from "../kit/Pill";
 import { TextField } from "../kit/TextField";
 import { Toggle } from "../kit/Toggle";
-import { accentCss, accentVariables } from "../kit/tokens";
+import { identityAccentCss, identityAccentVariables } from "../kit/tokens";
 import { Tooltip } from "../kit/Tooltip";
 import { useTactile } from "../kit/tactile";
 import { setupStepView } from "../shell/SetupFallback";
@@ -420,7 +420,7 @@ function TabSymbols({ modules, catalog, size = 14 }: { modules: readonly ModuleI
         const descriptor = catalog.descriptor(id);
         return (
           <Tooltip key={id} text={descriptor.title}>
-            <span className="ob-tab-symbol" style={{ width: size, height: size, ...accentVariables(theme, descriptor.accent) } as CSSProperties}>
+            <span className="ob-tab-symbol" style={{ width: size, height: size, ...identityAccentVariables(theme, descriptor.accent) } as CSSProperties}>
               <Icon id={descriptor.symbol} size={Math.round(size * 0.55)} />
             </span>
           </Tooltip>
@@ -432,7 +432,7 @@ function TabSymbols({ modules, catalog, size = 14 }: { modules: readonly ModuleI
 
 function kitTint(kit: KitManifest, catalog: ModuleCatalog, theme: ReturnType<typeof useTheme>): string | undefined {
   const module = kitAccentModule(kit, catalog);
-  return module === undefined ? undefined : accentCss(theme, catalog.descriptor(module).accent);
+  return module === undefined ? undefined : identityAccentCss(theme, catalog.descriptor(module).accent);
 }
 
 /** Step 1: one card per kit with the tabs it turns on, and Start from Scratch. */
@@ -598,12 +598,12 @@ function ModulesStep({ flow, store }: { flow: OnboardingFlow; store: OnboardingS
         const shortcut = flow.layout.shortcut(id);
         const headerKey = flow.layout.headerKey(id);
         const key = shortcut !== undefined ? String(shortcut) : headerKey?.toUpperCase();
-        const accent = accentCss(theme, module.accent);
+        const accent = identityAccentCss(theme, module.accent);
         return (
           <OnboardingTile
             key={id}
             selected={isOn}
-            tint={accentCss(theme, module.accent, 0.7)}
+            tint={identityAccentCss(theme, module.accent, 0.7)}
             compact={compact}
             help={isOn ? (canTurnOff ? tr("Turn %@ off", module.title) : tr("Keep at least one tab on")) : tr("Turn %@ on", module.title)}
             onClick={() => {
@@ -640,7 +640,7 @@ function ExtrasStep({ extras, catalog }: { extras: readonly OnboardingExtra[]; c
     <div className="ob-extras">
       {extras.map((extra) => {
         const accent: ModuleAccent | undefined = extra.module === undefined ? undefined : catalog.descriptor(extra.module).accent;
-        const tint = accent === undefined ? "var(--secondary-text)" : accentCss(theme, accent);
+        const tint = accent === undefined ? "var(--secondary-text)" : identityAccentCss(theme, accent);
         return (
           <Tooltip key={extra.id} text={`${extra.title}: ${extra.detail}`}>
             <div className="ob-extra kit-card">

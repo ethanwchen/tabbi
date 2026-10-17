@@ -18,7 +18,7 @@ import { useTheme } from "../../ui/kit/context";
 import { EdgeFade } from "../../ui/kit/EdgeFade";
 import { Icon } from "../../ui/kit/Icon";
 import { MarqueeText } from "../../ui/kit/MarqueeText";
-import { accentCss, Spacing } from "../../ui/kit/tokens";
+import { identityAccentCss, Spacing } from "../../ui/kit/tokens";
 import { Tooltip } from "../../ui/kit/Tooltip";
 import type { FocusCardActions } from "./focusCardActions";
 import { PlannerGlyphButton } from "./plannerControls";
@@ -286,7 +286,8 @@ function PlannerSharedRow({ item, context, open }: { item: SharedTodayItem; cont
   const theme = useTheme();
   const [hovering, setHovering] = useState(false);
   const descriptor = context.settings.catalog.descriptor(item.source);
-  const accent = accentCss(theme, descriptor.accent);
+  /* The source's own color, so items from different tabs tell apart. */
+  const accent = identityAccentCss(theme, descriptor.accent);
   const action = item.action;
   const help =
     action !== undefined
@@ -306,7 +307,7 @@ function PlannerSharedRow({ item, context, open }: { item: SharedTodayItem; cont
           )}
           {item.isDone && (
             <span className="planner-shared-done">
-              <CheckGlyph isOn tint={accent} ring={null} size={16} />
+              <CheckGlyph isOn tint={accent} ring={null} mark="var(--background)" size={16} />
             </span>
           )}
         </span>

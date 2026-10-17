@@ -11,7 +11,7 @@ import { useStore } from "../../../app/useStore";
 import { tr } from "../../../core/localization/tr";
 import { motionPaceCaption, motionPaceTitle, MOTION_PACES } from "../../../core/motion/motionPace";
 import { PANEL_SIZES, panelSizeTitle } from "../../../core/settings/panelSize";
-import type { AppTheme, ThemeFamily } from "../../../core/themes/appTheme";
+import { themeDisplayName, themeDisplaySummary, type AppTheme, type ThemeFamily } from "../../../core/themes/appTheme";
 import { allThemes, resolveTheme } from "../../../core/themes/themeCatalog";
 import type { ModuleAccent } from "../../../core/themes/themeColor";
 import { useKit, useTransition } from "../../kit/context";
@@ -65,6 +65,7 @@ export function LookSection({ app }: SettingsSectionProps) {
 
   const family = (id: ThemeFamily, title: string, footer?: string) => (
     <SettingsGroup key={id} title={title} footer={footer} className="settings-theme-family">
+      {/* Five cards to a row in every family, so the cozy row's three line up with the others and the sweet ten pair up by column. */}
       <div className="settings-theme-row">
         {allThemes
           .filter((theme) => theme.family === id)
@@ -80,7 +81,8 @@ export function LookSection({ app }: SettingsSectionProps) {
   return (
     <SettingsPage>
       {family("classic", tr("Classic"))}
-      {family("cozy", tr("Cozy"), tr("%@ Themes style the open panel; the closed pill stays black.", selected.summary))}
+      {family("cozy", tr("Cozy"))}
+      {family("sweet", tr("Sweet"), tr("%@ Themes style the open panel; the closed pill stays black.", themeDisplaySummary(selected)))}
 
       <SettingsGroup>
         <SettingsRow label={tr("Panel size")} help={tr("Every tab uses the same size.")}>
@@ -117,7 +119,7 @@ export function LookSection({ app }: SettingsSectionProps) {
       <ResetToDefaultsRow
         isAtDefaults={settings.themeID === store.defaultTheme}
         title={tr("Reset to Default")}
-        help={tr("Go back to %@, the theme %@ starts with", defaultTheme.name, store.activeKit?.name ?? app.environment.edition.name)}
+        help={tr("Go back to %@, the theme %@ starts with", themeDisplayName(defaultTheme), store.activeKit?.name ?? app.environment.edition.name)}
         reset={() => store.update((value) => ({ ...value, themeID: store.defaultTheme }))}
       />
     </SettingsPage>
@@ -129,13 +131,14 @@ function ThemeChoice({ theme, accents, isSelected, onPick }: { theme: AppTheme; 
   const tactile = useTactile();
   const transition = useTransition("snappy", ["box-shadow", "transform", "color"]);
   const style: CSSProperties = { ...tactile.style, transition: [tactile.style.transition, transition].filter(Boolean).join(", ") };
+  const name = themeDisplayName(theme);
   return (
-    <Tooltip text={`${theme.name}: ${theme.summary}`}>
+    <Tooltip text={`${name}: ${themeDisplaySummary(theme)}`}>
       <button
         type="button"
         className="settings-theme-choice"
         data-selected={isSelected}
-        aria-label={theme.name}
+        aria-label={name}
         aria-pressed={isSelected}
         {...tactile.data}
         {...tactile.handlers}
@@ -143,9 +146,9 @@ function ThemeChoice({ theme, accents, isSelected, onPick }: { theme: AppTheme; 
         onClick={onPick}
       >
         <span className="settings-theme-preview">
-          <ThemePreview theme={theme} accents={accents} width={100} height={62} />
+          <ThemePreview theme={theme} accents={accents} width="100%" height={54} />
         </span>
-        <span className="settings-theme-name kit-caption">{theme.name}</span>
+        <span className="settings-theme-name kit-caption">{name}</span>
       </button>
     </Tooltip>
   );

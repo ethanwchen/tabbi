@@ -26,23 +26,61 @@ How to add a theme is in [CONTRIBUTING.md](../../CONTRIBUTING.md#add-a-theme).
 | Cozy | Cozy | Warm cream text, a peach glow, sage and honey status colors: the Med School default. |
 | Sakura | Cozy | Cherry blossom pink on warm black. |
 | Forest | Cozy | Mossy sage greens. |
+| Blueberry Milk | Sweet | Baby blue and cloud white, with a baby blue accent. |
+| Strawberry Milk | Sweet | Candy pink and milk, with a candy pink accent. |
+| Taro | Sweet | Lilac bubble tea, with a lilac accent. |
+| Matcha Latte | Sweet | Whisked green tea and oat milk, with a matcha green accent. |
+| Banana Milk | Sweet | Butter yellow sunshine, with a butter yellow accent. |
+| Deep Sea | Sweet | Midnight ocean blue under a periwinkle glow, with a periwinkle accent. |
+| Cherry Soda | Sweet | Deep cherry red, with a cherry pink accent. |
+| Stargazer | Sweet | An indigo night sky with a gold star accent. |
+| Mint Choco | Sweet | Cool mint over a cocoa glow, with a mint accent. |
+| Cotton Candy | Sweet | A pink sky with a baby blue sugar accent. |
+
+Settings > Look lists them in three rows of five cards, one section per family.
+The sweet family runs two rows: the five pastels on top, and each one's deep or duo partner right below it (Blueberry Milk over Deep Sea, Strawberry Milk over Cherry Soda, Taro over Stargazer, Matcha Latte over Mint Choco, Banana Milk over Cotton Candy).
+Names are translated (`AppTheme.displayName`, keyed `theme.<id>` in the catalog because a name like Midnight also names a fur color) and wrap to a second line rather than being cut, with room for two lines kept under every card so the rows stay aligned in every language.
 
 Each theme is a few independent choices:
 
-- `palette`: surfaces, text levels, status colors and an optional `glow` that rises softly from the bottom of the open panel, so the top still meets the hardware notch in black.
+- `palette`: surfaces, text levels, status colors, an optional `glow` that rises softly from the bottom of the open panel, so the top still meets the hardware notch in black, and an optional theme `accent` with its `onAccent` (see [Theme accents](#theme-accents)).
 - `accents`: how module accents are treated (`original`, `monochrome`, `vivid`, saturated and lifted until it reads on black at 4.5:1, or `pastel`, mixed toward cream for the cozy family), so one theme restyles every module without the module knowing.
+- `family`, and for the sweet themes `group`: the row the theme is listed in.
+  `family` is `classic` or `cozy` in every theme, because builds from before groups decode only those two; a newer group such as `sweet` goes in `group`, which those builds ignore and newer ones prefer, falling back to `family` for a group they don't know.
 - `typeface`: SF Pro Rounded (the default) or SF Pro.
 - `motion`: `standard`, or `gentle` for the cozy themes, which plays every motion token 30% longer with 0.08 less bounce (see [motion.md](motion.md)).
 - `controls`: `solid` surfaces, or `glass` for Liquid Glass.
 - `surfaces`: `flat` cards, or `glass` for frosted cards (`GlassSheen`).
 
+## Theme accents
+
+Without an accent of its own, a theme only treats each module's accent, so on the Study tab every theme looks amber: Sakura was pink only in its glow and text tint.
+A theme that sets `palette.accent` owns the key color instead.
+`AppTheme.accent(_:)` (and `Theme.Palette.accent`, which every module's `accentColor` goes through) returns it for every module, so the active module's ring and progress arcs, the selected tab pill, the primary buttons (Start, Done, Pause) and the selected chips all wear it.
+Text and symbols on an accent fill use `Theme.Palette.onAccent`: the palette's `onAccent`, a dark shade of the accent's hue that reads warmer than black, or the black body in a theme without one.
+
+Module identity stays where several modules show side by side, through `identityAccent` (`ModuleDescriptor.identityColor`), which is always the module accent as `accents` treats it:
+
+- the module icon tiles in Settings > Tabs and in the kit questions and import review sheets, and each kit's tint;
+- the onboarding kit, tab and extras tiles;
+- items another module shares into Today's list, so Anki's reviews still read as Anki's;
+- the closed notch's wings, which take turns between modules (the closed notch is the same in every theme);
+- the favorite heart, which means "loved" and is not a module's color.
+
+The tab bar's other tabs stay neutral gray as before, so the selected one is the only colored tab.
+Themes without an accent draw exactly what they drew before theme accents existed; Midnight, the default, is one of them.
+Sakura has a blossom pink accent; Forest keeps the treated module accents, because its sage success green is the color a sage accent would be, and status colors never double as decoration.
+
+`ThemeTests` (and the Windows port's copy) check every accent on each card the panel draws, flat or hovered and over the black top or the full glow: 4.5:1 as text (the method's rhythm, a chip's label), 3:1 for the ring arc against its 20% track, and 4.5:1 for on-accent text on the solid fill and on the 88% fill a button rests at.
+`themes.v1` stays additive, so older Mac and Windows builds still decode the file: they ignore `accent`, `onAccent` and `group`, and use the theme's `accents` and `family`.
+
 ## Rules every theme keeps
 
 - **An opaque black body.** Apple's Dynamic Island uses an opaque black background, not glass, so the panel body stays black and meets the hardware notch with no visible seam.
   A glow is a tint over the black, at most 0.3 opacity.
-- **Readable text.** On a card lit by the full glow, primary text reaches 7:1, secondary text 4.5:1 (the minimum for text up to 17 pt) and tertiary metadata 2.5:1.
+- **Readable text.** On a card lit by the full glow, primary text reaches 7:1, secondary text 6:1 and tertiary metadata 4.5:1 (the minimum for text up to 17 pt), with secondary a clear step above tertiary; a theme accent reaches 4.5:1 there too.
   `ThemeTests` checks every theme.
-- **Color means the same thing.** One accent per module, and status colors (success, warning, danger) are never reused for decoration.
+- **Color means the same thing.** One accent per module, or one per theme when the theme has its own, and status colors (success, warning, danger) are never reused for decoration.
 - **No thin weights.** Type uses regular to bold weights; SF Pro Rounded is Apple's sanctioned soft voice, which suits the cozy family without leaving the system font.
 
 ## Liquid Glass

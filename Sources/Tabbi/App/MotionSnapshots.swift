@@ -179,7 +179,7 @@ enum MotionSnapshots {
                                 .control, lifts: true, state)
                         tactile(Label("Start focus", systemImage: "play.fill")
                                     .font(Theme.Typography.bodyEmphasis)
-                                    .foregroundStyle(Theme.Palette.background)
+                                    .foregroundStyle(Theme.Palette.onAccent)
                                     .padding(.horizontal, Theme.Spacing.m)
                                     .frame(height: 28)
                                     .background(Capsule().fill(accent.opacity(state.hovering ? 1 : 0.88))),

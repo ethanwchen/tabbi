@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
+import { resetLanguage } from "../../../src/core/localization/lookup";
 import { adjustedSpring, FAST_SCALE } from "../../../src/core/motion/motionPace";
 import { MotionTokens } from "../../../src/core/motion/motionTokens";
 import { applyAccentTreatment, MINIMUM_ACCENT_CONTRAST } from "../../../src/core/themes/accentTreatment";
@@ -7,6 +8,11 @@ import {
   brightestSheen,
   resolveControlMaterial,
   REQUIRED_THEME_IDS,
+  themeAccent,
+  themeDisplayName,
+  themeDisplaySummary,
+  themeIdentityAccent,
+  themeOnAccent,
 } from "../../../src/core/themes/appTheme";
 import {
   allThemes,
@@ -24,8 +30,11 @@ import {
   luminance,
   mixed,
   rgb,
+  withOpacity,
   type ThemeColor,
 } from "../../../src/core/themes/themeColor";
+import { THEMES as SNAPSHOT_THEMES } from "../../snapshots/snapshot";
+import { switchLanguage } from "../../support/catalogs";
 
 /* Ports of ThemeCatalogTests, ThemeColorTests, AccentTreatmentTests and ControlMaterialTests. */
 
@@ -35,12 +44,34 @@ function theme(id: string) {
   return found;
 }
 
+const STUDY = { red: 1, green: 0.62, blue: 0.26 };
+const ANKI = { red: 0.36, green: 0.62, blue: 1.0 };
+
+const SWEET_IDS = [
+  "blueberryMilk",
+  "strawberryMilk",
+  "taro",
+  "matchaLatte",
+  "bananaMilk",
+  "deepSea",
+  "cherrySoda",
+  "stargazer",
+  "mintChoco",
+  "cottonCandy",
+];
+
 describe("theme catalog", () => {
   it("ships every theme once in picker order", () => {
-    expect(allThemes.map((t) => t.id)).toEqual(REQUIRED_THEME_IDS);
+    expect(allThemes.map((t) => t.id)).toEqual([...REQUIRED_THEME_IDS, ...SWEET_IDS]);
     expect(new Set(allThemes.map((t) => t.name)).size).toBe(allThemes.length);
     expect(allThemes.filter((t) => t.family === "cozy").map((t) => t.id)).toEqual(["cozy", "sakura", "forest"]);
+    /* Five to a row: the pastels, then each one's deep or duo partner right below it. */
+    expect(allThemes.filter((t) => t.family === "sweet").map((t) => t.id)).toEqual(SWEET_IDS);
     expect(DEFAULT_THEME_ID).toBe("midnight");
+  });
+
+  it("snapshots every theme the catalog ships", () => {
+    expect(SNAPSHOT_THEMES).toEqual(allThemes.map((t) => t.id));
   });
 
   it("keeps every panel body opaque black, with at most a hint of glow", () => {
@@ -63,11 +94,73 @@ describe("theme catalog", () => {
     }
   });
 
-  it("moves cozy themes gently and gives glass only to Liquid Glass", () => {
+  it("moves cozy and sweet themes gently and gives glass only to Liquid Glass", () => {
     for (const t of allThemes) {
-      expect(t.motion === "gentle", t.name).toBe(t.family === "cozy");
+      expect(t.motion === "gentle", t.name).toBe(t.family !== "classic");
       expect(t.controls === "glass", t.name).toBe(t.id === "liquidGlass");
       expect(t.surfaces === "glass", t.name).toBe(t.id === "liquidGlass");
+    }
+  });
+
+  /*
+   * A theme's key color is what the active module's ring, selected tab,
+   * primary button and chips wear, so it must hold up on every card the
+   * panel draws (flat or hovered, over the black top or the full glow):
+   * WCAG 4.5:1 where it is text and 3:1 for the ring arc against its 20%
+   * track; on-accent text keeps 4.5:1 on the solid fill and on the 88% fill
+   * a button rests at.
+   */
+  it("keeps theme accents readable on every card", () => {
+    const accented = allThemes.filter((t) => t.palette.accent !== undefined);
+    expect(accented.length).toBeGreaterThanOrEqual(10);
+    for (const t of accented) {
+      const palette = t.palette;
+      const accent = themeAccent(t, STUDY);
+      expect(accent, t.name).toEqual(palette.accent);
+      expect(accent.opacity, `${t.name} accent is opaque`).toBe(1);
+      expect(palette.onAccent, `${t.name} sets onAccent with its accent`).toBeDefined();
+      const black = palette.background;
+      const glow = composited(palette.glow ?? black, black);
+      for (const body of [black, glow]) {
+        for (const surface of [palette.surface, palette.surfaceHover]) {
+          const card = composited(surface, body);
+          const label = `${t.name} on ${surface === palette.surface ? "surface" : "surfaceHover"}${body === black ? "" : " over the glow"}`;
+          expect(contrast(accent, card), `${label}: accent as text`).toBeGreaterThanOrEqual(4.5);
+          const track = composited(withOpacity(accent, 0.2), card);
+          expect(contrast(accent, track), `${label}: ring arc vs track`).toBeGreaterThanOrEqual(3);
+          const resting = composited(withOpacity(accent, 0.88), card);
+          expect(contrast(composited(themeOnAccent(t), resting), resting), `${label}: on-accent text on a resting button`).toBeGreaterThanOrEqual(4.5);
+        }
+      }
+      expect(contrast(themeOnAccent(t), accent), `${t.name} on-accent`).toBeGreaterThanOrEqual(4.5);
+      /* Status colors keep their meaning: the accent never passes for one. */
+      for (const status of [palette.success, palette.warning, palette.danger]) expect(accent, t.name).not.toEqual(status);
+    }
+  });
+
+  /*
+   * Themes without a key color draw exactly what they did before theme
+   * accents existed: the treated module accent, and the black body as text
+   * on it. Midnight, the default, is one of them.
+   */
+  it("keeps module accents in themes without an accent", () => {
+    expect(theme("midnight").palette.accent).toBeUndefined();
+    for (const t of allThemes.filter((t) => t.palette.accent === undefined)) {
+      expect(themeAccent(t, STUDY), t.name).toEqual(applyAccentTreatment(t.accents, STUDY));
+      expect(themeOnAccent(t), t.name).toEqual(t.palette.background);
+      expect(t.palette.onAccent, t.name).toBeUndefined();
+    }
+  });
+
+  /* The sweet family all own a key color, and module identity (icons listed side by side) still follows the treatment. */
+  it("gives sweet themes their own accent and keeps module identity", () => {
+    const sweet = allThemes.filter((t) => t.family === "sweet");
+    expect(sweet.length).toBe(10);
+    for (const t of sweet) {
+      expect(t.palette.accent, t.name).toBeDefined();
+      expect(themeAccent(t, STUDY), t.name).toEqual(themeAccent(t, ANKI));
+      expect(themeIdentityAccent(t, STUDY), t.name).toEqual(applyAccentTreatment(t.accents, STUDY));
+      expect(themeIdentityAccent(t, STUDY), t.name).not.toEqual(themeIdentityAccent(t, ANKI));
     }
   });
 
@@ -182,5 +275,30 @@ describe("control material", () => {
 
   it("keeps solid themes on their opaque surface", () => {
     expect(resolveControlMaterial("solid", true, false)).toBe("opaque");
+  });
+});
+
+/* Port of LocalizationTests.testEveryThemeNameAndSummaryIsTranslated, through tr as the picker reads them. */
+describe("theme names", () => {
+  afterEach(resetLanguage);
+
+  it("shows the name and summary as written before a language is loaded", () => {
+    for (const t of allThemes) {
+      expect(themeDisplayName(t)).toBe(t.name);
+      expect(themeDisplaySummary(t)).toBe(t.summary);
+    }
+  });
+
+  it("are in English under theme.<id>, and translated in German", () => {
+    switchLanguage("en");
+    for (const t of allThemes) {
+      expect(themeDisplayName(t)).toBe(t.name);
+      expect(themeDisplaySummary(t)).toBe(t.summary);
+    }
+    switchLanguage("de");
+    expect(themeDisplayName(theme("strawberryMilk"))).toBe("Erdbeermilch");
+    for (const t of allThemes) {
+      expect(themeDisplaySummary(t), `de summary of ${t.id}`).not.toBe(t.summary);
+    }
   });
 });

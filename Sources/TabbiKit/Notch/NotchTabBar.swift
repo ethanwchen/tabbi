@@ -261,7 +261,7 @@ private struct TabBadge: View {
     var body: some View {
         Text(count > 9 ? "9+" : "\(count)")
             .font(.system(size: 8, weight: .bold, design: .rounded).monospacedDigit())
-            .foregroundStyle(Theme.Palette.background)
+            .foregroundStyle(Theme.Palette.onAccent)
             .padding(.horizontal, 3)
             .frame(minWidth: 12, minHeight: 12)
             .background(Capsule().fill(tint))
