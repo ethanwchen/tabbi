@@ -46,9 +46,14 @@ function linear(value: number): number {
   return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
 }
 
-/** Relative luminance (0...1, WCAG formula), to tell whether dark fur needs a light rim. */
+/** Relative luminance (0...1, WCAG formula), to tell whether a pet's edge needs a light rim. */
 export function luminance(color: PetColor): number {
   return 0.2126 * linear(color.red) + 0.7152 * linear(color.green) + 0.0722 * linear(color.blue);
+}
+
+/** WCAG contrast ratio (1...21) between two relative luminances. Port of PetColor.contrast. */
+export function contrastRatio(a: number, b: number): number {
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 }
 
 /** Swift's `truncatingRemainder(dividingBy:)`, which JavaScript's `%` matches for doubles. */
@@ -294,15 +299,33 @@ export class PetFurTone {
   }
 }
 
-/** Fur darker than this needs a rim (about #555 gray). */
-const DARK_FUR_THRESHOLD = 0.09;
-/** Outlines at least this bright already read on black. */
-const RIM_MINIMUM_LUMINANCE = 0.12;
-const RIM_LIGHTNESS = 0.5;
+/**
+ * The brightest backdrop (relative luminance) a pet may be drawn on: a hovered
+ * card in a theme with a glow, or the top of a glass card. Port of
+ * PetPalette.backdropCeiling; every theme's `brightestPetBackdrop` stays under it.
+ */
+export const PET_BACKDROP_CEILING = 0.05;
+/** The contrast a pet's silhouette keeps against any backdrop up to the ceiling (WCAG 3:1). */
+export const PET_SILHOUETTE_CONTRAST = 3;
+const SHEEN_LIGHTNESS = 0.5;
 const RIM_MAXIMUM_SATURATION = 0.14;
+/** How much lighter than the rim a patch on a dark coat must be to keep its dark outline. */
+const LIGHT_PATCH_CONTRAST = 2;
 
-/** Fur around a mouth darker than this (on average) gets a rim-colored mouth. */
+/** Fur around a mouth or an inner line darker than this (on average) gets the light sheen. */
 export const DARK_MOUTH_BACKGROUND = 0.08;
+
+/** Whether `color` alone parts a pet from every backdrop up to the ceiling. Port of PetPalette.standsOut. */
+export function standsOut(color: PetColor): boolean {
+  return contrastRatio(luminance(color), PET_BACKDROP_CEILING) >= PET_SILHOUETTE_CONTRAST;
+}
+
+/** Whether `color` is a patch on a dark coat light enough to keep its dark outline. Port of PetPalette.isLightPatch. */
+export function isLightPatch(color: PetColor, rim: PetColor): boolean {
+  const own = luminance(color);
+  const edge = luminance(rim);
+  return own > edge && contrastRatio(own, edge) >= LIGHT_PATCH_CONTRAST;
+}
 
 /**
  * A complete role to color table. Missing roles fall back to the base
@@ -349,17 +372,30 @@ export class PetPalette {
     return overrides;
   }
 
-  /** A copy whose outline stays visible on the black notch: dark fur gets a soft light rim. */
-  withVisibleRim(): PetPalette {
-    if (!(luminance(this.color("furBase")) < DARK_FUR_THRESHOLD)) return this;
-    if (!(luminance(this.color("outline")) < RIM_MINIMUM_LUMINANCE)) return this;
-    return this.applying({ outline: this.rim });
-  }
-
-  /** The light rim (and mouth color) for dark fur: the fur's hue at a soft mid tone. */
+  /**
+   * The light edge for dark fur: the coat's own hue with little saturation, just
+   * light enough to reach the silhouette contrast against the backdrop ceiling,
+   * and never darker than `sheen`. Port of PetPalette.rim.
+   */
   get rim(): PetColor {
     const fur = hsl(this.color("furBase"));
-    return colorFromHSL(fur.hue, Math.min(fur.saturation, RIM_MAXIMUM_SATURATION), RIM_LIGHTNESS);
+    const saturation = Math.min(fur.saturation, RIM_MAXIMUM_SATURATION);
+    const color = (lightness: number): PetColor => colorFromHSL(fur.hue, saturation, lightness);
+    let low = SHEEN_LIGHTNESS;
+    let high = 1;
+    if (standsOut(color(low))) return color(low);
+    for (let step = 0; step < 32; step++) {
+      const mid = (low + high) / 2;
+      if (standsOut(color(mid))) high = mid;
+      else low = mid;
+    }
+    return color(high);
+  }
+
+  /** The soft light inner line and mouth color for near-black fur. Port of PetPalette.sheen. */
+  get sheen(): PetColor {
+    const fur = hsl(this.color("furBase"));
+    return colorFromHSL(fur.hue, Math.min(fur.saturation, RIM_MAXIMUM_SATURATION), SHEEN_LIGHTNESS);
   }
 
   equals(other: PetPalette): boolean {

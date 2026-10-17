@@ -124,10 +124,10 @@ public struct PetProfile: Hashable, Codable, Sendable {
     // MARK: Rendering
 
     /// The colors to render with: breed defaults, the fur tint, then user
-    /// overrides, then the light rim for dark fur so a recolored black pet
-    /// never vanishes.
+    /// overrides. A recolored black pet never vanishes either: the renderer
+    /// lights its edge (`PetCanvas.colors(using:)`).
     public var palette: PetPalette {
-        breed.palette.applying(furTint.map(breed.furTint) ?? [:]).applying(paletteOverrides).withVisibleRim()
+        breed.palette.applying(furTint.map(breed.furTint) ?? [:]).applying(paletteOverrides)
     }
 
     /// The pet sitting in its current outfit and accessories.

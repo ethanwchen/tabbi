@@ -19,7 +19,7 @@ final class PetProfileTests: XCTestCase {
         XCTAssertEqual(starter.breed, .britishShorthair)
         XCTAssertEqual(starter.name, PetBreed.britishShorthair.displayName, "no made-up name until the user picks one")
         XCTAssertTrue(starter.hasDefaultName)
-        XCTAssertEqual(starter.palette, PetBreed.britishShorthair.palette.withVisibleRim())
+        XCTAssertEqual(starter.palette, PetBreed.britishShorthair.palette)
         XCTAssertEqual(PetProfile.starter(kit: nil), starter)
         XCTAssertFalse(PetProfile(name: "Earl Grey", breed: .britishShorthair).hasDefaultName)
     }
@@ -164,7 +164,9 @@ final class PetProfileTests: XCTestCase {
     func testRecoloringFurDarkAddsTheLightRim() {
         var profile = PetProfile(name: "Pip", breed: .whiteCat)
         profile.setColor(PetColor(hex: "#151217")!, for: .furBase)
-        XCTAssertEqual(profile.palette[.outline], profile.palette.rim)
+        // The white belly and paws keep their dark outline; the dark coat around them is rimmed.
+        let edge = PetVisibility.edgeColors(profile.sittingCanvas(), palette: profile.palette)
+        XCTAssertGreaterThan(edge.filter { $0 == profile.palette.rim }.count, edge.count * 3 / 4)
     }
 
     func testFurTintIsKeptAsThePickAndFollowsTheBreed() {
@@ -199,7 +201,8 @@ final class PetProfileTests: XCTestCase {
         var profile = PetProfile(name: "Pip", breed: .goldenRetriever)
         profile.setColor(pink, for: .costumeBase)
         profile.tintFur(PetColor(hex: "#1C1719")!)
-        XCTAssertEqual(profile.palette[.outline], profile.palette.rim, "black fur still gets the light rim")
+        XCTAssertTrue(PetVisibility.edgeColors(profile.sittingCanvas(), palette: profile.palette).contains(profile.palette.rim),
+                      "black fur still gets the light rim")
 
         profile.tintFur(nil)
         XCTAssertEqual(profile.paletteOverrides, [.costumeBase: pink])

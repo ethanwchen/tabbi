@@ -1,7 +1,9 @@
 import {
   DARK_MOUTH_BACKGROUND,
   PET_PALETTE_ROLES,
+  isLightPatch,
   luminance,
+  standsOut,
   roleAt,
   roleIndex,
   roleSymbol,
@@ -202,27 +204,63 @@ export class PetCanvas {
 
   /**
    * Resolves roles to colors, row-major, undefined for transparent pixels.
-   * Mouth pixels take the rim color on dark fur, so one face works on a
-   * white muzzle and a black cat alike.
+   * Port of PetCanvas.colors(using:): mouths and inner outline lines take the
+   * light sheen on near-black fur, and the silhouette's outer edge takes the
+   * light rim wherever the fill inside it would melt into a dark backdrop.
    */
   colors(palette: PetPalette): (PetColor | undefined)[] {
     const { width, height, pixels } = this;
     const colors: (PetColor | undefined)[] = Array.from(pixels, (pixel) =>
       pixel === 0 ? undefined : palette.colorAt(pixel - 1),
     );
+    const coatStandsOut = standsOut(palette.color("furBase"));
+    let rim: PetColor | undefined;
+    let sheen: PetColor | undefined;
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        if (pixels[y * width + x] !== MOUTH) continue;
-        const around = [this.pixel(x - 1, y), this.pixel(x + 1, y), this.pixel(x, y - 1), this.pixel(x, y + 1)]
-          .filter((pixel) => pixel !== 0 && pixel !== MOUTH)
-          .map((pixel) => luminance(palette.colorAt(pixel - 1)));
+        const pixel = pixels[y * width + x];
+        if (pixel !== MOUTH && pixel !== OUTLINE) continue;
+        const direct = [this.pixel(x - 1, y), this.pixel(x + 1, y), this.pixel(x, y - 1), this.pixel(x, y + 1)];
+        if (pixel === OUTLINE && direct.includes(0)) {
+          rim ??= palette.rim;
+          if (this.edgeNeedsRim(x, y, palette, coatStandsOut, rim)) colors[y * width + x] = rim;
+          continue;
+        }
+        // A mouth weighs everything but other mouth pixels (lines around steam count); an inner line only the fill.
+        let around = direct.filter((value) => value !== 0 && value !== MOUTH && (pixel === MOUTH || value !== OUTLINE));
+        if (around.length === 0 && pixel === OUTLINE) around = this.fillAround(x, y, true);
         if (around.length === 0) continue;
-        if (around.reduce((sum, value) => sum + value, 0) / around.length < DARK_MOUTH_BACKGROUND) {
-          colors[y * width + x] = palette.rim;
+        const average = around.reduce((sum, value) => sum + luminance(palette.colorAt(value - 1)), 0) / around.length;
+        if (average < DARK_MOUTH_BACKGROUND) {
+          sheen ??= palette.sheen;
+          colors[y * width + x] = sheen;
         }
       }
     }
     return colors;
+  }
+
+  /** The filled (non-line) pixels around (x, y): the four direct neighbors, or all eight. */
+  private fillAround(x: number, y: number, diagonals: boolean): number[] {
+    const out: number[] = [];
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if ((dx === 0 && dy === 0) || (!diagonals && dx !== 0 && dy !== 0)) continue;
+        const value = this.pixel(x + dx, y + dy);
+        if (value !== 0 && value !== OUTLINE && value !== MOUTH) out.push(value);
+      }
+    }
+    return out;
+  }
+
+  /** Whether the edge pixel at (x, y) gets the light rim. Port of PetCanvas.edgeNeedsRim. */
+  private edgeNeedsRim(x: number, y: number, palette: PetPalette, coatStandsOut: boolean, rim: PetColor): boolean {
+    const fill = this.fillAround(x, y, coatStandsOut).map((value) => palette.colorAt(value - 1));
+    const rimmed = coatStandsOut
+      ? fill.filter((color) => !standsOut(color)).length
+      : fill.filter((color) => !isLightPatch(color, rim)).length;
+    if (rimmed * 2 === fill.length) return !coatStandsOut;
+    return rimmed * 2 > fill.length;
   }
 
   /** The grid characters of every pixel, row-major (`.` for transparent). */

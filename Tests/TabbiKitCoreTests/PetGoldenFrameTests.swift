@@ -34,6 +34,10 @@ final class PetGoldenFrameTests: XCTestCase {
         try check(PetGoldenFixtures.palettes(), file: "palettes.json")
     }
 
+    func testRenderedColorsMatchGoldenFixture() throws {
+        try check(PetGoldenFixtures.rendered(), file: "rendered.json")
+    }
+
     func testRunLengthEncodingRoundTrips() {
         let canvas = PetComposer.sitting(.calico, outfit: .scrubs, accessories: [.stethoscope])
         let rows = PetGoldenFixtures.rows(canvas)
@@ -295,21 +299,80 @@ enum PetGoldenFixtures {
 
         struct Breed: Codable, Equatable {
             var breed: String
-            /// Role name to `#RRGGBB`, after `withVisibleRim()`.
+            /// Role name to `#RRGGBB`.
             var colors: [String: String]
+            /// The light edge `PetCanvas.colors(using:)` puts on dark fur.
             var rim: String
+            /// The soft light inner line and mouth color for near-black fur.
+            var sheen: String
         }
     }
 
     static func palettes() -> PaletteFile {
         PaletteFile(schema: schema, version: version, breeds: PetBreed.allCases.map { breed in
-            let palette = breed.palette.withVisibleRim()
+            let palette = breed.palette
             return .init(
                 breed: breed.rawValue,
                 colors: Dictionary(uniqueKeysWithValues: PetPaletteRole.allCases.map { ($0.rawValue, palette[$0].hex) }),
-                rim: palette.rim.hex
+                rim: palette.rim.hex,
+                sheen: palette.sheen.hex
             )
         })
+    }
+
+    // MARK: Rendered colors
+
+    /// The sitting frame resolved to colors, which pins the per-pixel color
+    /// choices of `PetCanvas.colors(using:)` (the light rim on dark edges,
+    /// light inner lines and mouths on near-black fur) and fur tints.
+    struct RenderedFile: Codable, Equatable {
+        var schema: String
+        var version: Int
+        var frameSize: Int
+        var frames: [Frame]
+
+        struct Frame: Codable, Equatable {
+            var dress: Dress
+            /// The Closet fur tint, `#RRGGBB`, or nil for the breed's colors.
+            var furTint: String?
+            /// The distinct colors, `#RRGGBB` or `#RRGGBBAA`, in order of
+            /// first appearance.
+            var colors: [String]
+            /// Run-length rows (see `runLength(_:)`) where each symbol is a
+            /// color's index in `colors` as a letter (`A`-`Z`, then `a`-`z`)
+            /// and `.` is transparent.
+            var rle: String
+        }
+    }
+
+    /// Every breed bare with its own colors and each Closet swatch, and the
+    /// orange tabby and golden retriever in every outfit and accessory.
+    static func rendered() -> RenderedFile {
+        let tints: [PetColor?] = [nil] + PetCloset.furSwatches
+        let bare = PetBreed.allCases.flatMap { breed in tints.map { (Dress(breed), $0) } }
+        let dressed = [PetBreed.orangeTabby, .goldenRetriever].flatMap { breed in
+            PetOutfit.allCases.dropFirst().map { (Dress(breed, $0), PetColor?.none) }
+                + PetAccessory.allCases.map { (Dress(breed, .none, [$0]), PetColor?.none) }
+        }
+        let letters = Array("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+        let frames = (bare + dressed).map { dress, tint in
+            var profile = PetProfile(
+                name: "", breed: PetBreed(rawValue: dress.breed)!, outfit: PetOutfit(rawValue: dress.outfit)!,
+                accessories: dress.accessories.map { PetAccessory(rawValue: $0)! }
+            )
+            profile.tintFur(tint)
+            let canvas = PetComposer.sitting(profile.breed, outfit: profile.outfit, accessories: profile.accessories)
+            var colors: [String] = []
+            let symbols = canvas.colors(using: profile.palette).map { color -> Character in
+                guard let color else { return "." }
+                if let index = colors.firstIndex(of: color.hex) { return letters[index] }
+                colors.append(color.hex)
+                return letters[colors.count - 1]
+            }
+            let rows = (0..<canvas.height).map { String(symbols[($0 * canvas.width)..<(($0 + 1) * canvas.width)]) }
+            return RenderedFile.Frame(dress: dress, furTint: tint?.hex, colors: colors, rle: runLength(rows))
+        }
+        return RenderedFile(schema: schema, version: version, frameSize: PetComposer.frameSize, frames: frames)
     }
 
     // MARK: Writing

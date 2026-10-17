@@ -120,9 +120,78 @@ if arguments.dropFirst().first == "accents" {
     exit(0)
 }
 
+// Backdrops: `swift run PetGallery out/ backdrops` draws every breed (and the
+// darker Closet swatches) on the black notch and on each theme's brightest
+// card, at 2 and 6 device pixels per sprite pixel (a 1 pt pet and the
+// 3 pt Break Buddy on a Retina screen), to check that dark coats keep a
+// readable silhouette (`PetVisibility`).
+if arguments.dropFirst().first == "backdrops" {
+    let backdrops = PetVisibility.backdrops
+    var rows: [(String, PetProfile)] = PetBreed.allCases.map { ($0.displayName, PetProfile(name: "", breed: $0)) }
+    for (name, tint) in [("Charcoal", "#5E5856"), ("Chocolate", "#8A5A3C"), ("Midnight", "#5C6A8E")] {
+        for breed in [PetBreed.orangeTabby, .calico, .goldenRetriever, .poodle] {
+            var profile = PetProfile(name: "", breed: breed)
+            profile.tintFur(PetColor(hex: tint))
+            rows.append(("\(breed.displayName), \(name)", profile))
+        }
+    }
+    for pixel in [2, 6] {
+        let side = PetComposer.frameSize * pixel, pad = 4 * pixel, labelWidth = 200, header = 28
+        let cell = side + pad * 2
+        let width = labelWidth + cell * backdrops.count, height = header + cell * rows.count
+        guard let context = CGContext(
+            data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
+            space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else { throw GalleryError.context }
+        context.interpolationQuality = .none
+        context.setFillColor(CGColor(gray: 0.16, alpha: 1))
+        context.fill(CGRect(x: 0, y: 0, width: width, height: height))
+        func flip(_ y: Int, _ h: Int) -> Int { height - y - h }
+        for (column, backdrop) in backdrops.enumerated() {
+            draw(backdrop.name, size: 12, color: CGColor(gray: 1, alpha: 0.8),
+                 at: CGPoint(x: labelWidth + column * cell + 6, y: flip(8, 12)), in: context)
+        }
+        for (row, (label, profile)) in rows.enumerated() {
+            let y = header + row * cell
+            draw(label, size: 12, color: CGColor(gray: 1, alpha: 0.8), at: CGPoint(x: 8, y: flip(y + cell / 2, 12)), in: context)
+            for (column, backdrop) in backdrops.enumerated() {
+                let x = labelWidth + column * cell
+                let color = backdrop.color
+                context.setFillColor(CGColor(red: CGFloat(color.red) / 255, green: CGFloat(color.green) / 255,
+                                             blue: CGFloat(color.blue) / 255, alpha: 1))
+                context.fill(CGRect(x: x, y: flip(y, cell), width: cell, height: cell))
+                if let image = PetRenderer.shared.image(for: profile.sittingCanvas(), palette: profile.palette, scale: pixel) {
+                    context.draw(image, in: CGRect(x: x + pad, y: flip(y + pad, side), width: side, height: side))
+                }
+            }
+        }
+        let url = outputDirectory.appendingPathComponent("backdrops-\(pixel)x.png")
+        guard let image = context.makeImage(),
+              let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)
+        else { throw GalleryError.encode }
+        CGImageDestinationAddImage(destination, image, nil)
+        guard CGImageDestinationFinalize(destination) else { throw GalleryError.encode }
+        print("wrote \(url.path)")
+    }
+    // The weakest silhouette per row: the share of its edge that reaches
+    // 3:1 and the weakest pixel's contrast, over every backdrop.
+    print("silhouette contrast (worst backdrop): readable share, weakest pixel, coat outline share")
+    for (label, profile) in rows {
+        let reports = backdrops.map {
+            PetVisibility.report(profile.sittingCanvas(), palette: profile.palette, on: $0.color)
+        }
+        let share = reports.map(\.readableShare).min() ?? 1
+        let weakest = reports.map(\.weakest).min() ?? 21
+        let coat = reports.map(\.coatReadableShare).min() ?? 1
+        print(label.padding(toLength: 32, withPad: " ", startingAt: 0)
+            + String(format: "%5.0f%%  %5.2f:1  %5.0f%%", share * 100, weakest, coat * 100))
+    }
+    exit(0)
+}
+
 for species in PetSpecies.allCases {
     let cells = PetBreed.breeds(of: species).map { breed in
-        Cell(label: breed.displayName, canvas: PetComposer.sitting(breed), palette: breed.palette.withVisibleRim())
+        Cell(label: breed.displayName, canvas: PetComposer.sitting(breed), palette: breed.palette)
     }
     try writeSheet(cells, columns: 4, title: "\(species.displayName) breeds",
                    to: outputDirectory.appendingPathComponent("breeds-\(species.rawValue).png"))
@@ -164,7 +233,7 @@ let looks: [(String, PetOutfit, [PetAccessory])] = [
 for breed in [PetBreed.orangeTabby, .goldenRetriever] {
     let cells = looks.map { label, outfit, accessories in
         Cell(label: label, canvas: PetComposer.sitting(breed, outfit: outfit, accessories: accessories),
-             palette: breed.palette.withVisibleRim())
+             palette: breed.palette)
     }
     try writeSheet(cells, columns: 5, title: "Costumes on \(breed.displayName)",
                    to: outputDirectory.appendingPathComponent("costumes-\(breed.rawValue).png"))
@@ -174,7 +243,7 @@ for breed in [PetBreed.orangeTabby, .goldenRetriever] {
 for (name, outfit, accessories) in [looks[looks.count - 4], looks[looks.count - 1]] {
     let cells = PetBreed.allCases.map { breed in
         Cell(label: breed.displayName, canvas: PetComposer.sitting(breed, outfit: outfit, accessories: accessories),
-             palette: breed.palette.withVisibleRim())
+             palette: breed.palette)
     }
     let slug = fileSlug(name)
     try writeSheet(cells, columns: 7, title: "Fit check: \(name)",
@@ -193,7 +262,7 @@ for (breed, outfit, accessories, suffix) in strips {
         let clip = PetComposer.clip(animation, for: breed, outfit: outfit, accessories: accessories)
         for (index, frame) in clip.frames.enumerated() {
             let label = "\(animation.rawValue) \(index + 1) · \(Int(frame.duration * 1000))ms"
-            cells.append(Cell(label: label, canvas: frame.canvas, palette: breed.palette.withVisibleRim()))
+            cells.append(Cell(label: label, canvas: frame.canvas, palette: breed.palette))
         }
     }
     try writeSheet(cells, columns: 8, title: "Animations: \(breed.displayName)\(suffix.isEmpty ? "" : ", dressed")",
@@ -206,7 +275,7 @@ for breed in PetBreed.allCases {
     let clip = PetComposer.clip(.walk, for: breed)
     for (index, frame) in clip.frames.enumerated() {
         walkCells.append(Cell(label: "\(breed.displayName) \(index + 1)", canvas: frame.canvas,
-                              palette: breed.palette.withVisibleRim()))
+                              palette: breed.palette))
     }
 }
 for (breed, look) in [(PetBreed.orangeTabby, looks[looks.count - 4]), (.goldenRetriever, looks[looks.count - 3]),
@@ -214,7 +283,7 @@ for (breed, look) in [(PetBreed.orangeTabby, looks[looks.count - 4]), (.goldenRe
     let clip = PetComposer.clip(.walk, for: breed, outfit: look.1, accessories: look.2)
     for (index, frame) in clip.frames.enumerated() {
         walkCells.append(Cell(label: "\(look.0) \(index + 1)", canvas: frame.canvas,
-                              palette: breed.palette.withVisibleRim()))
+                              palette: breed.palette))
     }
 }
 try writeSheet(walkCells, columns: 8, title: "Walk cycle (150ms per step)",
@@ -228,7 +297,7 @@ for (breed, name, outfit, accessories) in stretchRuns {
     let clip = PetComposer.clip(.stretch, for: breed, outfit: outfit, accessories: accessories)
     for (index, frame) in clip.frames.enumerated() {
         stretchCells.append(Cell(label: "\(name) \(index + 1)", canvas: frame.canvas,
-                                 palette: breed.palette.withVisibleRim()))
+                                 palette: breed.palette))
     }
 }
 try writeSheet(stretchCells, columns: 9, title: "Stretch (play bow)",
@@ -244,7 +313,7 @@ for animation in [PetAnimation.yawn, .hop, .typing, .coffee, .wave, .groom, .tai
         columns = clip.frames.count
         for (index, frame) in clip.frames.enumerated() {
             cells.append(Cell(label: "\(breed.displayName) \(index + 1)", canvas: frame.canvas,
-                              palette: breed.palette.withVisibleRim()))
+                              palette: breed.palette))
         }
     }
     let timing = PetComposer.clip(animation, for: .orangeTabby).frames.map { "\(Int($0.duration * 1000))" }
@@ -307,19 +376,19 @@ for animation in PetAnimation.allCases {
     let clip = PetComposer.clip(animation, for: focusBreed)
     for (index, frame) in clip.frames.enumerated() {
         focusCells.append(Cell(label: "\(animation.rawValue) \(index + 1)", canvas: frame.canvas,
-                               palette: focusBreed.palette.withVisibleRim()))
+                               palette: focusBreed.palette))
     }
 }
 try writeSheet(focusCells, columns: 8, title: "Animations: \(focusBreed.displayName)",
                to: outputDirectory.appendingPathComponent("animations-\(focusBreed.rawValue).png"))
 let focusLooks = looks.map { label, outfit, accessories in
     Cell(label: label, canvas: PetComposer.sitting(focusBreed, outfit: outfit, accessories: accessories),
-         palette: focusBreed.palette.withVisibleRim())
+         palette: focusBreed.palette)
 }
 try writeSheet(focusLooks, columns: 5, title: "Costumes on \(focusBreed.displayName)",
                to: outputDirectory.appendingPathComponent("costumes-\(focusBreed.rawValue).png"))
 let notchCells = PetBreed.breeds(of: focusBreed.species).map { breed in
-    Cell(label: "", canvas: PetComposer.sitting(breed), palette: breed.palette.withVisibleRim())
+    Cell(label: "", canvas: PetComposer.sitting(breed), palette: breed.palette)
 } + focusCells.filter { !$0.label.hasPrefix("walk") && !$0.label.hasPrefix("stretch") }.prefix(8)
     .map { Cell(label: "", canvas: $0.canvas, palette: $0.palette) }
 for notchScale in [1, 2] {
@@ -344,7 +413,7 @@ for (slot, items) in contactGroups {
         for (column, breed) in PetBreed.allCases.enumerated() {
             let label = column == 0 ? name : row == 0 ? breed.displayName : ""
             cells.append(Cell(label: label, canvas: PetComposer.sitting(breed, outfit: outfit, accessories: accessories),
-                              palette: breed.palette.withVisibleRim()))
+                              palette: breed.palette))
         }
     }
     try writeSheet(cells, columns: PetBreed.allCases.count, title: "Costume x breed: \(slot)", scale: 3,
@@ -367,7 +436,7 @@ for item in PetItem.allCases where item.loopFrameCount > 1 {
                 ? Array(repeating: frame.canvas, count: item.loopFrameCount) : frame.itemFrames
             for (tick, canvas) in canvases.enumerated() {
                 let label = tick == 0 ? "\(breed.displayName) \(animation.rawValue)" : "\(tick + 1)"
-                cells.append(Cell(label: label, canvas: canvas, palette: breed.palette.withVisibleRim()))
+                cells.append(Cell(label: label, canvas: canvas, palette: breed.palette))
             }
         }
     }
@@ -395,7 +464,7 @@ for (name, outfit, accessories) in contactGroups.flatMap(\.1) {
         })
         for (index, (animation, frame)) in keyFrames.enumerated() {
             cells.append(Cell(label: index == 0 ? breed.displayName : "\(animation.rawValue) \(frame + 1)",
-                              canvas: clips[animation]!.frames[frame].canvas, palette: breed.palette.withVisibleRim()))
+                              canvas: clips[animation]!.frames[frame].canvas, palette: breed.palette))
         }
     }
     let slug = fileSlug(name)
@@ -410,7 +479,7 @@ let newerMoves: [PetAnimation] = [.yawn, .hop, .typing, .coffee, .wave, .groom, 
 let moveCells = PetBreed.allCases.flatMap { breed in
     newerMoves.map { animation in
         let frames = PetComposer.clip(animation, for: breed).frames
-        return Cell(label: "", canvas: frames[frames.count / 2].canvas, palette: breed.palette.withVisibleRim())
+        return Cell(label: "", canvas: frames[frames.count / 2].canvas, palette: breed.palette)
     }
 }
 for notchScale in [1, 2] {

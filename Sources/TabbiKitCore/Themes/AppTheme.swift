@@ -320,6 +320,23 @@ public struct AppTheme: Identifiable, Hashable, Sendable, Decodable {
         self.surfaces = surfaces
     }
 
+    /// The brightest color this theme can put behind a pet, as an opaque
+    /// color: the glow at full strength (the panel's bottom edge) under a
+    /// hovered flat card, or under the top of a glass card's sheen. The
+    /// glint, a small highlight in a glass card's corner, is left out, since
+    /// no pet sits there. Pets are drawn so their silhouette keeps 3:1
+    /// against anything up to `PetPalette.backdropCeiling`, and
+    /// `PetVisibilityTests` checks that every theme's backdrop stays under
+    /// it.
+    public var brightestPetBackdrop: ThemeColor {
+        var body = palette.background.opacity(1)
+        if let glow = palette.glow { body = glow.composited(over: body) }
+        switch surfaces {
+        case .flat: return palette.surfaceHover.composited(over: body)
+        case .glass: return GlassSheen.standard.fillTop.composited(over: body)
+        }
+    }
+
     /// The accent a module with `base` shows in this theme.
     public func accent(_ base: ModuleAccent) -> ThemeColor {
         accents.apply(to: base)

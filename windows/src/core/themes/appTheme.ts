@@ -6,7 +6,7 @@
 
 import { SpringSpec } from "../motion/springSpec";
 import { applyAccentTreatment, type AccentTreatment } from "./accentTreatment";
-import { composited, type ModuleAccent, type ThemeColor } from "./themeColor";
+import { composited, withOpacity, type ModuleAccent, type ThemeColor } from "./themeColor";
 
 /** Identifies a theme. Open, so an id from a newer build or a kit survives a round trip. */
 export type ThemeID = string;
@@ -151,6 +151,18 @@ export interface AppTheme {
   readonly motion: ThemeMotion;
   readonly controls: ThemeControlStyle;
   readonly surfaces: ThemeSurfaceStyle;
+}
+
+/**
+ * The brightest color `theme` can put behind a pet, opaque: the glow at full
+ * strength under a hovered flat card, or under the top of a glass card's sheen
+ * (the corner glint is left out). Port of AppTheme.brightestPetBackdrop.
+ */
+export function brightestPetBackdrop(theme: AppTheme, sheen: GlassSheen): ThemeColor {
+  const palette = theme.palette;
+  let body = withOpacity(palette.background, 1);
+  if (palette.glow) body = composited(palette.glow, body);
+  return theme.surfaces === "glass" ? composited(sheen.fillTop, body) : composited(palette.surfaceHover, body);
 }
 
 /** The accent a module with `base` shows in `theme`. */

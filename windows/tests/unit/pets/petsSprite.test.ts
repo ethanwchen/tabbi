@@ -6,8 +6,11 @@ import { FRAME_SIZE, sitting } from "../../../src/core/pets/petComposer";
 import { PET_ACCESSORIES, PET_OUTFITS } from "../../../src/core/pets/petCostume";
 import { PET_ANIMATIONS, PET_BREEDS, type PetBreed } from "../../../src/core/pets/petKinds";
 import {
+  PET_BACKDROP_CEILING,
   PET_PALETTE_ROLES,
+  PET_SILHOUETTE_CONTRAST,
   PetPalette,
+  contrastRatio,
   colorFromHex,
   colorHex,
   luminance,
@@ -19,6 +22,7 @@ import {
 import { petPose, type PetEyes } from "../../../src/core/pets/petPose";
 import { PetProfile } from "../../../src/core/pets/petProfile";
 import { PetRenderCache, renderPet } from "../../../src/core/pets/petRenderer";
+import { silhouetteColors } from "../../../src/core/pets/petVisibility";
 import { PET_PATTERN_ZONES, SpriteGrid, zoneFromSymbol, zoneSymbol } from "../../../src/core/pets/spriteGrid";
 import { bounds, clip, contains, count, roles, silhouette } from "./support";
 
@@ -69,10 +73,22 @@ describe("PetPalette", () => {
   });
 
   it("dark fur gets a light rim so it never vanishes on black", () => {
-    const black = new PetPalette({ furBase: hex("#1A1A1A"), outline: hex("#000000") });
-    expect(black.withVisibleRim().color("outline")).toEqual(black.rim);
-    const orange = new PetPalette({ furBase: hex("#F2A65A"), outline: hex("#2A1A14") });
-    expect(orange.withVisibleRim().equals(orange)).toBe(true);
+    const black = breedPalette("blackCat").applying({ furBase: hex("#1A1A1A"), outline: hex("#000000") });
+    const edge = new Set(silhouetteColors(sitting("blackCat"), black).map(colorHex));
+    expect([...edge]).toEqual([colorHex(black.rim)]);
+  });
+
+  it("light coats keep their dark outline pixel for pixel", () => {
+    for (const breed of ["whiteCat", "britishShorthair", "sphynx", "scottishFold", "goldenRetriever", "corgi", "poodle"] as const) {
+      const canvas = sitting(breed);
+      const palette = breedPalette(breed);
+      const colors = canvas.colors(palette);
+      const all = roles(canvas);
+      all.forEach((role, index) => {
+        if (role === "mouth") return;
+        expect(colors[index], `${breed} pixel ${index}`).toEqual(role ? palette.color(role) : undefined);
+      });
+    }
   });
 
   it("cat mouth contrasts with the fur it sits on", () => {
@@ -94,7 +110,7 @@ describe("PetPalette", () => {
     expect(mouthColors("tuxedo")).toEqual([dark]);
     expect(mouthColors("orangeTabby")).toEqual([dark]);
     // A dark mouth vanishes into black fur.
-    expect(mouthColors("blackCat")).toEqual([colorHex(breedPalette("blackCat").rim)]);
+    expect(mouthColors("blackCat")).toEqual([colorHex(breedPalette("blackCat").sheen)]);
     // The Siamese mask is a soft mid-brown, light enough for the dark mouth.
     expect(mouthColors("siamese")).toEqual([dark]);
     expect(mouthColors("blackCat", hex("#F4F0EA")), "recolors adapt too").toEqual([dark]);
@@ -377,14 +393,18 @@ describe("PetBreed", () => {
   });
 
   it("dark dogs still get the light rim", () => {
-    expect(breedPalette("dachshund").withVisibleRim().color("outline")).toEqual(breedPalette("dachshund").rim);
+    const palette = breedPalette("dachshund");
+    expect(silhouetteColors(sitting("dachshund"), palette)).toContainEqual(palette.rim);
   });
 
   it("the rim is a soft sheen in the coat's own hue", () => {
     for (const breed of ["blackCat", "tuxedo", "dachshund"] as const) {
       const palette = breedPalette(breed);
-      const rim = palette.withVisibleRim().color("outline");
-      expect(luminance(rim), breed).toBeGreaterThan(0.15);
+      const rim = palette.rim;
+      expect(contrastRatio(luminance(rim), PET_BACKDROP_CEILING), breed).toBeGreaterThanOrEqual(PET_SILHOUETTE_CONTRAST);
+      expect(luminance(rim), `the edge reads brighter than inner lines: ${breed}`).toBeGreaterThan(
+        luminance(palette.sheen),
+      );
       expect(luminance(rim), breed).toBeGreaterThan(luminance(palette.color("furBase")) * 4);
       expect(luminance(rim), breed).toBeLessThan(luminance(palette.color("eyeLight")) / 3);
       const channels = [rim.red, rim.green, rim.blue];
@@ -416,7 +436,7 @@ describe("PetBreed", () => {
   it("breeds with the same art still look different", () => {
     const looks = PET_BREEDS.map((breed) =>
       sitting(breed)
-        .colors(breedPalette(breed).withVisibleRim())
+        .colors(breedPalette(breed))
         .map((color) => (color ? colorHex(color) : "-"))
         .join(","),
     );
@@ -427,7 +447,7 @@ describe("PetBreed", () => {
 describe("PetEyes", () => {
   it("every breed has a pupil and a white highlight", () => {
     for (const breed of PET_BREEDS) {
-      const palette = breedPalette(breed).withVisibleRim();
+      const palette = breedPalette(breed);
       const canvas = sitting(breed);
       expect(contains(canvas, "pupil"), breed).toBe(true);
       expect(contains(canvas, "eyeLight"), breed).toBe(true);
