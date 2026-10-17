@@ -186,7 +186,7 @@ private struct BreakCardButton: View {
                     .font(Theme.Typography.bodyEmphasis)
                     .fixedSize()
             }
-            .foregroundStyle(isPrimary ? Theme.Palette.background : Theme.Palette.secondaryText)
+            .foregroundStyle(isPrimary ? Theme.Palette.onAccent : Theme.Palette.secondaryText)
             .padding(.horizontal, Theme.Spacing.m)
             .frame(height: 28)
             .background(Capsule().fill(background))

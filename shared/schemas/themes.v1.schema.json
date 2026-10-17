@@ -68,11 +68,15 @@
         "name": { "type": "string", "minLength": 1 },
         "summary": { "description": "One line for the picker.", "type": "string", "minLength": 1 },
         "family": {
-          "description": "The picker group: calm hardware-black looks, or warm soft looks made for studying.",
+          "description": "The picker group every build reads: calm hardware-black looks, or warm soft looks made for studying. Stays one of these two so builds from before group still decode the file.",
           "enum": ["classic", "cozy"]
         },
+        "group": {
+          "description": "The picker group in builds that know it, in place of family: sweet for the milk, candy and soda themes. Optional; a value a build does not know falls back to family.",
+          "enum": ["sweet"]
+        },
         "accents": {
-          "description": "What the theme does to each module's accent: keeps it, grays it, saturates it (lifted to 4.5:1 on black) or mixes it toward warm cream.",
+          "description": "What the theme does to each module's accent: keeps it, grays it, saturates it (lifted to 4.5:1 on black) or mixes it toward warm cream. With a palette accent it still colors what tells modules apart, and builds from before palette accents use it for everything.",
           "enum": ["original", "monochrome", "vivid", "pastel"]
         },
         "typeface": { "description": "SF Pro Rounded or SF Pro.", "enum": ["rounded", "standard"] },
@@ -109,7 +113,15 @@
             "tertiaryText": { "$ref": "#/$defs/color" },
             "success": { "$ref": "#/$defs/color" },
             "warning": { "$ref": "#/$defs/color" },
-            "danger": { "$ref": "#/$defs/color" }
+            "danger": { "$ref": "#/$defs/color" },
+            "accent": {
+              "description": "The theme's own key color: the active module's ring, selected tab, primary button and chips wear it in place of the module's accent. Absent to keep each module's accent. Opaque, 4.5:1 on every card.",
+              "$ref": "#/$defs/color"
+            },
+            "onAccent": {
+              "description": "Text and symbols on an accent fill. Absent for the background (black), which is what builds from before palette accents draw.",
+              "$ref": "#/$defs/color"
+            }
           }
         }
       }

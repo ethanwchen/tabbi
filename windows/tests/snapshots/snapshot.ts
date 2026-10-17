@@ -7,7 +7,27 @@ import type { Page } from "@playwright/test";
  * PNGs and review them against docs/design/guidelines.md.
  */
 
-export const THEMES = ["midnight", "graphite", "liquidGlass", "neon", "monochrome", "cozy", "sakura", "forest"];
+/* Every theme in picker order, as the Mac's themes.json lists them (a unit test checks the two agree). */
+export const THEMES = [
+  "midnight",
+  "graphite",
+  "liquidGlass",
+  "neon",
+  "monochrome",
+  "cozy",
+  "sakura",
+  "forest",
+  "blueberryMilk",
+  "strawberryMilk",
+  "taro",
+  "matchaLatte",
+  "bananaMilk",
+  "deepSea",
+  "cherrySoda",
+  "stargazer",
+  "mintChoco",
+  "cottonCandy",
+];
 export const LANGUAGES = ["en", "de", "ja", "ar"];
 
 /** Every state the harness can draw, as it lists them. */

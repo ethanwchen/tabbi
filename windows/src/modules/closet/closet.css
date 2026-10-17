@@ -724,7 +724,7 @@
 
 .closet-streak-studied {
   background: var(--accent);
-  color: var(--background);
+  color: var(--on-accent);
 }
 
 .closet-streak-frozen {

@@ -79,7 +79,7 @@ struct PartyPillButton: View {
                 }
                 if let title { Text(title).font(Theme.Typography.caption) }
             }
-            .foregroundStyle(isProminent ? Theme.Palette.background : accent)
+            .foregroundStyle(isProminent ? Theme.Palette.onAccent : accent)
             .lineLimit(1)
             .fixedSize()
             .padding(.horizontal, Theme.Spacing.s + Theme.Spacing.xxs)

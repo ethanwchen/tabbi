@@ -32,6 +32,7 @@ Format dates, times, numbers and durations with Foundation formatters (`.formatt
 Lengths of time go through `DurationFormat` ("45 min", "1h 15m", "in 12 min"), whose units are catalog strings, and spans of days through `DateRangeFormat` ("Oct 5 - 11", "5.-11. Okt.", "10月5日～11日").
 When a paragraph is built from several translated sentences, join them with `Sentences.join`, which adds no space after a Japanese or Chinese full stop ("。").
 Seasonal event names and taglines stay in English in `events.json`, which the Windows port reads too; `SeasonalEvent.displayName` and `displayTagline` look the translation up in the catalog by that English text, and `LocalizationTests` fails when an event lacks one.
+Theme names and summaries stay in English in `themes.json` the same way: `AppTheme.displaySummary` looks a summary up by its text, and `AppTheme.displayName` looks a name up under `theme.<id>` (with the English name as its `en` value), because a theme called Midnight shares its English name with a fur color that translates differently; `LocalizationTests` fails when a theme lacks either.
 
 Add each new string to the catalog with a `comment` that says where it shows and anything a translator could misread (is "Look" a verb or a noun?).
 Mark it `"extractionState" : "manual"`, because SwiftPM does not extract keys from code the way Xcode does.

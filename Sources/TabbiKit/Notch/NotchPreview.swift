@@ -36,7 +36,9 @@ struct NotchPreview: View {
         .help(NotchPreviewLayout.summary(for: item))
     }
 
-    private var accent: Color { catalog.descriptor(for: item.module).accentColor }
+    /// The module's own color: the closed notch keeps module identity in
+    /// every theme, since its wings take turns between modules.
+    private var accent: Color { catalog.descriptor(for: item.module).identityColor }
 
     private var isNudging: Bool {
         if case .meeting(let meeting) = item { return meeting.isNudging }

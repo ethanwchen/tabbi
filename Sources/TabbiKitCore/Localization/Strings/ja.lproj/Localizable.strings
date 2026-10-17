@@ -645,6 +645,8 @@
 	<string>オートメーション</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>%@ をアプリバンドルとして実行しているときに使えます。</string>
+	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
+	<string>ベビーブルーと雲のような白、ブルーベリーミルクのパックみたい。</string>
 	<key>Back</key>
 	<string>戻る</string>
 	<key>Back to %@.</key>
@@ -725,6 +727,8 @@
 	<string>内蔵ディスプレイ</string>
 	<key>Bunny Ears</key>
 	<string>うさみみ</string>
+	<key>Butter yellow sunshine, happy and bright.</key>
+	<string>バターイエローのひだまり、明るくてハッピー。</string>
 	<key>Buy freeze</key>
 	<string>フリーズを購入</string>
 	<key>By joining you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
@@ -765,6 +769,8 @@
 	<string>申請を取り消す</string>
 	<key>Cancel your request to %@</key>
 	<string>%@への申請を取り消す</string>
+	<key>Candy pink and milk, sweet but never loud.</key>
+	<string>キャンディピンクとミルク、甘いけれど控えめ。</string>
 	<key>Caramel</key>
 	<string>キャラメル</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -841,6 +847,8 @@
 	<string>お花見シーズン</string>
 	<key>Cherry Petals</key>
 	<string>桜の花びら</string>
+	<key>Cherry blossom pink on warm black.</key>
+	<string>あたたかな黒に桜色。</string>
 	<key>Chocolate</key>
 	<string>チョコ</string>
 	<key>Choose AI</key>
@@ -999,6 +1007,8 @@
 	<string>ノッチから Spotify や Apple Music を操作。</string>
 	<key>Cool Sunglasses</key>
 	<string>クールなサングラス</string>
+	<key>Cool gray surfaces and plain SF type.</key>
+	<string>クールなグレーの面とシンプルなSFフォント。</string>
 	<key>Copied</key>
 	<string>コピーしました</string>
 	<key>Copy</key>
@@ -1105,6 +1115,8 @@
 	<string>%@の申請を拒否します。相手には通知されません。</string>
 	<key>Deep</key>
 	<string>ディープ</string>
+	<key>Deep cherry red, fizzy and warm, made for late sessions.</key>
+	<string>深いチェリーレッド、はじけてあたたか、夜ふかしの勉強に。</string>
 	<key>Deep focus</key>
 	<string>ディープフォーカス</string>
 	<key>Deep focus is on: focus blocks bring %@. Click to turn it off</key>
@@ -1431,6 +1443,8 @@
 	<string>フレンドサーバー</string>
 	<key>Frog Hat</key>
 	<string>カエル帽</string>
+	<key>Frosted glass cards over a cool blue glow.</key>
+	<string>クールな青い光に浮かぶすりガラスのカード。</string>
 	<key>Full</key>
 	<string>空きなし</string>
 	<key>Full path to the claude binary. Leave empty to detect it automatically.</key>
@@ -1487,6 +1501,8 @@
 	<string>コップを手に、何口か飲もう。</string>
 	<key>Graduation Cap</key>
 	<string>卒業帽</string>
+	<key>Grayscale everything, no distractions.</key>
+	<string>すべてグレースケール、気が散らない。</string>
 	<key>Great job!</key>
 	<string>よくがんばったね！</string>
 	<key>Great job, team!</key>
@@ -1503,6 +1519,8 @@
 	<string>嫌がらせ</string>
 	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
 	<string>難しいことが簡単になるのは、道ができるのと同じ。一歩を、何度も。</string>
+	<key>Hardware black, calm and crisp.</key>
+	<string>本体と同じ黒、静かでくっきり。</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>コードをお持ちですか？%lld文字のパーティコードを入力してReturnキーを押すと参加できます</string>
 	<key>Head Mirror</key>
@@ -1583,6 +1601,8 @@
 	<string>ノッチを開いているときは、矢印キーか2本指スワイプでタブを切り替え、1-9でタブへ移動、Escか上スワイプで閉じます。閉じたノッチでは、下スワイプか中クリックで次のライブアクティビティを表示します。</string>
 	<key>Inappropriate name</key>
 	<string>不適切な名前</string>
+	<key>Indigo night sky with a little gold star.</key>
+	<string>藍色の夜空に、小さな金色の星。</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>深夜0時以降のすべての%@セッションの入力・出力・キャッシュトークン</string>
 	<key>Inseparable</key>
@@ -1753,6 +1773,8 @@
 	<string>例：さくら、さくら先生</string>
 	<key>Lilac</key>
 	<string>ライラック</string>
+	<key>Lilac bubble tea, dreamy and soft.</key>
+	<string>ライラック色のタピオカミルクティー、夢見るようにやわらか。</string>
 	<key>Limited</key>
 	<string>限定</string>
 	<key>Limited edition</key>
@@ -1837,10 +1859,14 @@
 	<string>メソッド</string>
 	<key>Midnight</key>
 	<string>ミッドナイト</string>
+	<key>Midnight ocean blue with a soft periwinkle glow.</key>
+	<string>真夜中の海の青に、やわらかなペリウィンクルの光。</string>
 	<key>Milestones</key>
 	<string>マイルストーン</string>
 	<key>Mint</key>
 	<string>ミント</string>
+	<key>Mint chip ice cream: cool mint over a cocoa glow.</key>
+	<string>チョコミントアイス：ひんやりミントにココアの光。</string>
 	<key>Model</key>
 	<string>モデル</string>
 	<key>Month</key>
@@ -1861,6 +1887,8 @@
 	<string>その他のオプション</string>
 	<key>More tabs</key>
 	<string>その他のタブ</string>
+	<key>Mossy sage greens, quiet as a walk.</key>
+	<string>苔のようなセージグリーン、散歩のように静か。</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>多くの人は準備ができるのを待つ。あなたはもう始めた。それが違い。</string>
 	<key>Mostly convention</key>
@@ -2389,6 +2417,8 @@
 	<string>お気に入りにする</string>
 	<key>Pink noise</key>
 	<string>ピンクノイズ</string>
+	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
+	<string>ピンクの空にベビーブルーの綿菓子、夕暮れのお祭り。</string>
 	<key>Pirate Hat</key>
 	<string>海賊帽</string>
 	<key>Plain collar</key>
@@ -3055,6 +3085,8 @@
 	<string>ヒーローマント</string>
 	<key>Surgical Cap</key>
 	<string>手術帽</string>
+	<key>Sweet</key>
+	<string>スイーツ</string>
 	<key>Switch Kit</key>
 	<string>キットを切り替える</string>
 	<key>Switch every</key>
@@ -3489,6 +3521,8 @@
 	<string>バージョン %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>GitHubで見る</string>
+	<key>Vivid accents with a violet glow.</key>
+	<string>鮮やかなアクセントと紫の光。</string>
 	<key>Volume</key>
 	<string>音量</string>
 	<key>Volume %@</key>
@@ -3513,6 +3547,8 @@
 	<string>フレンド申請中</string>
 	<key>Wardrobe</key>
 	<string>ワードローブ</string>
+	<key>Warm cream and peach, soft and gentle.</key>
+	<string>あたたかなクリームとピーチ、やさしくて穏やか。</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>水が谷を刻めるのは、一日も休まないから。</string>
 	<key>Wearing</key>
@@ -3553,6 +3589,8 @@
 	<string>生まれた年月は?</string>
 	<key>Whether a question grows the notch into the larger chat view</key>
 	<string>質問するとノッチが大きなチャット表示に広がるかどうか</string>
+	<key>Whisked green tea and oat milk, fresh and grounded.</key>
+	<string>点てた抹茶とオーツミルク、さわやかで落ち着く。</string>
 	<key>White Coat</key>
 	<string>白衣</string>
 	<key>White noise</key>
@@ -3841,6 +3879,42 @@
 	<string>ホスト</string>
 	<key>the rare %@ fur</key>
 	<string>レア毛色「%@」</string>
+	<key>theme.bananaMilk</key>
+	<string>バナナミルク</string>
+	<key>theme.blueberryMilk</key>
+	<string>ブルーベリーミルク</string>
+	<key>theme.cherrySoda</key>
+	<string>チェリーソーダ</string>
+	<key>theme.cottonCandy</key>
+	<string>わたあめ</string>
+	<key>theme.cozy</key>
+	<string>ほっこり</string>
+	<key>theme.deepSea</key>
+	<string>深海</string>
+	<key>theme.forest</key>
+	<string>フォレスト</string>
+	<key>theme.graphite</key>
+	<string>グラファイト</string>
+	<key>theme.liquidGlass</key>
+	<string>Liquid Glass</string>
+	<key>theme.matchaLatte</key>
+	<string>抹茶ラテ</string>
+	<key>theme.midnight</key>
+	<string>ミッドナイト</string>
+	<key>theme.mintChoco</key>
+	<string>チョコミント</string>
+	<key>theme.monochrome</key>
+	<string>モノクロ</string>
+	<key>theme.neon</key>
+	<string>ネオン</string>
+	<key>theme.sakura</key>
+	<string>桜</string>
+	<key>theme.stargazer</key>
+	<string>星空</string>
+	<key>theme.strawberryMilk</key>
+	<string>いちごミルク</string>
+	<key>theme.taro</key>
+	<string>タロイモ</string>
 	<key>today</key>
 	<string>今日</string>
 	<key>tokens</key>

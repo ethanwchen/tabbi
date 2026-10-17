@@ -19,31 +19,33 @@ struct AppearanceSettingsPane: View {
     var body: some View {
         Form {
             family(.classic, title: String(localized: "Classic", bundle: .tabbi))
-            family(.cozy, title: String(localized: "Cozy", bundle: .tabbi), footer: footer)
+            family(.cozy, title: String(localized: "Cozy", bundle: .tabbi))
+            family(.sweet, title: String(localized: "Sweet", bundle: .tabbi), footer: footer)
             ResetToDefaultsRow(isAtDefaults: store.settings.themeID == store.defaultTheme,
-                               help: String(localized: "Go back to \(ThemeCatalog.resolve(store.defaultTheme).name), the theme \(store.activeKit?.name ?? Edition.current.name) starts with", bundle: .tabbi),
+                               help: String(localized: "Go back to \(ThemeCatalog.resolve(store.defaultTheme).displayName), the theme \(store.activeKit?.name ?? Edition.current.name) starts with", bundle: .tabbi),
                                title: String(localized: "Reset to Default", bundle: .tabbi)) {
                 store.settings.themeID = store.defaultTheme
             }
         }
         .formStyle(.grouped)
         .scrollDisabled(true)
-        .frame(width: paneWidth, height: 464)
+        // Fits two-line names in every row and, in the longest languages
+        // (Arabic, German), the footer with Liquid Glass's extra sentence.
+        .frame(width: paneWidth, height: 840)
     }
+
+    /// Five cards to a row in every family, so the cozy row's three line up
+    /// with the others and the sweet family's ten pair up by column (each
+    /// pastel above its deep or duo partner).
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 10, alignment: .top), count: 5)
 
     private func family(_ family: ThemeFamily, title: String, footer: String? = nil) -> some View {
         Section {
-            HStack(alignment: .top, spacing: 10) {
-                let themes = ThemeCatalog.all.filter { $0.family == family }
-                ForEach(themes) { theme in
+            LazyVGrid(columns: columns, alignment: .leading, spacing: 10) {
+                ForEach(ThemeCatalog.all.filter { $0.family == family }) { theme in
                     ThemeChoice(theme: theme, accents: accents, isSelected: theme.id == selected.id) {
                         store.settings.themeID = theme.id
                     }
-                }
-                // Keeps the cozy row's three cards the same width as the
-                // classic row's five.
-                ForEach(themes.count..<5, id: \.self) { _ in
-                    Color.clear.frame(maxWidth: .infinity)
                 }
             }
             .padding(.vertical, 2)
@@ -57,7 +59,7 @@ struct AppearanceSettingsPane: View {
     }
 
     private var footer: String {
-        var text = String(localized: "\(selected.summary) Themes style the open panel; the closed notch stays black.", bundle: .tabbi)
+        var text = String(localized: "\(selected.displaySummary) Themes style the open panel; the closed notch stays black.", bundle: .tabbi)
         if selected.controls == .glass {
             text += " " + String(localized: "Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.", bundle: .tabbi)
         }
@@ -86,21 +88,26 @@ private struct ThemeChoice: View {
                                            lineWidth: isSelected ? 2 : 1)
                     }
                     .scaleEffect(hovering && !isSelected ? 1.03 : 1)
-                Text(theme.name)
+                // Two lines, reserved in every card so a row's previews line
+                // up: longer names ("Клубничное молоко") wrap instead of
+                // being cut.
+                Text(theme.displayName)
                     .font(.caption)
                     .fontWeight(isSelected ? .semibold : .regular)
                     .foregroundStyle(isSelected ? .primary : .secondary)
-                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2, reservesSpace: true)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: isSelected)
-        .help(String(localized: "\(theme.name): \(theme.summary)", bundle: .tabbi))
-        .accessibilityLabel(theme.name)
+        .help(String(localized: "\(theme.displayName): \(theme.displaySummary)", bundle: .tabbi))
+        .accessibilityLabel(theme.displayName)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 }

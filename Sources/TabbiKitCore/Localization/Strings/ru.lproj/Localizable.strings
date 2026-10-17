@@ -645,6 +645,8 @@
 	<string>Автоматизация</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>Доступно, когда %@ запущен как пакет приложения.</string>
+	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
+	<string>Нежно-голубой и облачно-белый, как пакет черничного молока.</string>
 	<key>Back</key>
 	<string>Назад</string>
 	<key>Back to %@.</key>
@@ -725,6 +727,8 @@
 	<string>Встроенный дисплей</string>
 	<key>Bunny Ears</key>
 	<string>Заячьи ушки</string>
+	<key>Butter yellow sunshine, happy and bright.</key>
+	<string>Солнечный сливочно-жёлтый, радостный и яркий.</string>
 	<key>Buy freeze</key>
 	<string>Купить заморозку</string>
 	<key>By joining you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
@@ -765,6 +769,8 @@
 	<string>Отменить заявку</string>
 	<key>Cancel your request to %@</key>
 	<string>Отменить заявку: %@</string>
+	<key>Candy pink and milk, sweet but never loud.</key>
+	<string>Конфетно-розовый и молочный, сладко, но не крикливо.</string>
 	<key>Caramel</key>
 	<string>Карамельный</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -841,6 +847,8 @@
 	<string>Сезон сакуры</string>
 	<key>Cherry Petals</key>
 	<string>Лепестки сакуры</string>
+	<key>Cherry blossom pink on warm black.</key>
+	<string>Розовый цвет сакуры на тёплом чёрном.</string>
 	<key>Chocolate</key>
 	<string>Шоколадный</string>
 	<key>Choose AI</key>
@@ -999,6 +1007,8 @@
 	<string>Управляй Spotify или Apple Music из выреза.</string>
 	<key>Cool Sunglasses</key>
 	<string>Крутые очки</string>
+	<key>Cool gray surfaces and plain SF type.</key>
+	<string>Холодный серый и простой шрифт SF.</string>
 	<key>Copied</key>
 	<string>Скопировано</string>
 	<key>Copy</key>
@@ -1105,6 +1115,8 @@
 	<string>Отклонить заявку: %@. Человек об этом не узнает.</string>
 	<key>Deep</key>
 	<string>Глуб.</string>
+	<key>Deep cherry red, fizzy and warm, made for late sessions.</key>
+	<string>Глубокий вишнёвый, игристый и тёплый, для поздних занятий.</string>
 	<key>Deep focus</key>
 	<string>Глубокий фокус</string>
 	<key>Deep focus is on: focus blocks bring %@. Click to turn it off</key>
@@ -1431,6 +1443,8 @@
 	<string>Сервер друзей</string>
 	<key>Frog Hat</key>
 	<string>Шапка-лягушка</string>
+	<key>Frosted glass cards over a cool blue glow.</key>
+	<string>Матовое стекло над холодным голубым свечением.</string>
 	<key>Full</key>
 	<string>Занят</string>
 	<key>Full path to the claude binary. Leave empty to detect it automatically.</key>
@@ -1487,6 +1501,8 @@
 	<string>Возьми стакан и сделай пару глотков.</string>
 	<key>Graduation Cap</key>
 	<string>Шапочка выпускника</string>
+	<key>Grayscale everything, no distractions.</key>
+	<string>Всё в оттенках серого, ничто не отвлекает.</string>
 	<key>Great job!</key>
 	<string>Отлично!</string>
 	<key>Great job, team!</key>
@@ -1503,6 +1519,8 @@
 	<string>Травля</string>
 	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
 	<string>Трудное становится легким так же, как протаптываются тропы: шаг, много раз.</string>
+	<key>Hardware black, calm and crisp.</key>
+	<string>Глубокий чёрный, спокойный и чёткий.</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>Есть код? Введи %lld-значный код пати и нажми Return, чтобы присоединиться</string>
 	<key>Head Mirror</key>
@@ -1583,6 +1601,8 @@
 	<string>В открытом вырезе стрелки или смахивание двумя пальцами переключают вкладки, 1-9 открывают вкладку, а Esc или смахивание вверх закрывают. На закрытом вырезе смахни вниз или нажми средней кнопкой, чтобы увидеть следующую активность.</string>
 	<key>Inappropriate name</key>
 	<string>Неприемлемое имя</string>
+	<key>Indigo night sky with a little gold star.</key>
+	<string>Ночное небо цвета индиго и маленькая золотая звезда.</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>Токены ввода, вывода и кэша во всех сессиях %@ с полуночи</string>
 	<key>Inseparable</key>
@@ -1753,6 +1773,8 @@
 	<string>Например, Саша или Доктор Саша</string>
 	<key>Lilac</key>
 	<string>Сиреневый</string>
+	<key>Lilac bubble tea, dreamy and soft.</key>
+	<string>Сиреневый бабл-ти, мечтательный и мягкий.</string>
 	<key>Limited</key>
 	<string>Лимитированные</string>
 	<key>Limited edition</key>
@@ -1837,10 +1859,14 @@
 	<string>Метод</string>
 	<key>Midnight</key>
 	<string>Полночный</string>
+	<key>Midnight ocean blue with a soft periwinkle glow.</key>
+	<string>Полночная синева океана и мягкое сиреневато-голубое свечение.</string>
 	<key>Milestones</key>
 	<string>Рубежи</string>
 	<key>Mint</key>
 	<string>Мятный</string>
+	<key>Mint chip ice cream: cool mint over a cocoa glow.</key>
+	<string>Мятное мороженое с шоколадом: прохладная мята над какао-сиянием.</string>
 	<key>Model</key>
 	<string>Модель</string>
 	<key>Month</key>
@@ -1861,6 +1887,8 @@
 	<string>Другие параметры</string>
 	<key>More tabs</key>
 	<string>Другие вкладки</string>
+	<key>Mossy sage greens, quiet as a walk.</key>
+	<string>Мшистый шалфейный зелёный, тихий, как прогулка.</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>Многие ждут, когда почувствуют готовность. А ты просто начинаешь. В этом разница.</string>
 	<key>Mostly convention</key>
@@ -2389,6 +2417,8 @@
 	<string>Сделать избранной</string>
 	<key>Pink noise</key>
 	<string>Розовый шум</string>
+	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
+	<string>Розовое небо, голубой сахар: ярмарка в сумерках.</string>
 	<key>Pirate Hat</key>
 	<string>Пиратская шляпа</string>
 	<key>Plain collar</key>
@@ -3055,6 +3085,8 @@
 	<string>Плащ супергероя</string>
 	<key>Surgical Cap</key>
 	<string>Хирургическая шапочка</string>
+	<key>Sweet</key>
+	<string>Сладкие</string>
 	<key>Switch Kit</key>
 	<string>Сменить набор</string>
 	<key>Switch every</key>
@@ -3489,6 +3521,8 @@
 	<string>Версия %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>Открыть на GitHub</string>
+	<key>Vivid accents with a violet glow.</key>
+	<string>Яркие акценты и фиолетовое свечение.</string>
 	<key>Volume</key>
 	<string>Громкость</string>
 	<key>Volume %@</key>
@@ -3513,6 +3547,8 @@
 	<string>Хочет дружить</string>
 	<key>Wardrobe</key>
 	<string>Одежда</string>
+	<key>Warm cream and peach, soft and gentle.</key>
+	<string>Тёплый кремовый и персиковый, мягко и нежно.</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>Вода прорезает каньоны, потому что не пропускает ни дня.</string>
 	<key>Wearing</key>
@@ -3553,6 +3589,8 @@
 	<string>Твоя дата рождения?</string>
 	<key>Whether a question grows the notch into the larger chat view</key>
 	<string>Разворачивать ли вырез в большое окно чата при вопросе</string>
+	<key>Whisked green tea and oat milk, fresh and grounded.</key>
+	<string>Взбитый зелёный чай и овсяное молоко, свежо и спокойно.</string>
 	<key>White Coat</key>
 	<string>Белый халат</string>
 	<key>White noise</key>
@@ -3841,6 +3879,42 @@
 	<string>ведущий</string>
 	<key>the rare %@ fur</key>
 	<string>редкий мех «%@»</string>
+	<key>theme.bananaMilk</key>
+	<string>Банановое молоко</string>
+	<key>theme.blueberryMilk</key>
+	<string>Черничное молоко</string>
+	<key>theme.cherrySoda</key>
+	<string>Вишнёвая газировка</string>
+	<key>theme.cottonCandy</key>
+	<string>Сахарная вата</string>
+	<key>theme.cozy</key>
+	<string>Уютная</string>
+	<key>theme.deepSea</key>
+	<string>Морская глубь</string>
+	<key>theme.forest</key>
+	<string>Лес</string>
+	<key>theme.graphite</key>
+	<string>Графит</string>
+	<key>theme.liquidGlass</key>
+	<string>Liquid Glass</string>
+	<key>theme.matchaLatte</key>
+	<string>Матча-латте</string>
+	<key>theme.midnight</key>
+	<string>Полночь</string>
+	<key>theme.mintChoco</key>
+	<string>Мятный шоколад</string>
+	<key>theme.monochrome</key>
+	<string>Монохром</string>
+	<key>theme.neon</key>
+	<string>Неон</string>
+	<key>theme.sakura</key>
+	<string>Сакура</string>
+	<key>theme.stargazer</key>
+	<string>Звездочёт</string>
+	<key>theme.strawberryMilk</key>
+	<string>Клубничное молоко</string>
+	<key>theme.taro</key>
+	<string>Таро</string>
 	<key>today</key>
 	<string>сегодня</string>
 	<key>tokens</key>

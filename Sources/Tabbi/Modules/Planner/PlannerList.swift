@@ -315,7 +315,8 @@ private struct PlannerSharedCheck: View {
 
     var body: some View {
         let source = catalog.descriptor(for: item.source)
-        let accent = source.accentColor
+        // The source's own color, so items from different tabs tell apart.
+        let accent = source.identityColor
         ZStack {
             Circle()
                 .strokeBorder(accent.opacity(0.28), lineWidth: 1.5)
@@ -329,7 +330,7 @@ private struct PlannerSharedCheck: View {
                 .font(.system(size: 7, weight: .bold))
                 .foregroundStyle(accent)
                 .opacity(item.isDone ? 0 : 1)
-            CheckGlyph(isOn: item.isDone, tint: accent, ring: nil)
+            CheckGlyph(isOn: item.isDone, tint: accent, ring: nil, mark: Theme.Palette.background)
         }
         .frame(width: 16, height: 16)
         .frame(width: 20, height: 20)

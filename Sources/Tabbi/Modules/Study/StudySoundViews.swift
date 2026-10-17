@@ -280,7 +280,7 @@ private struct StudyMixPresetChip: View {
             // Hugs the name, cut short past 64 pt so three chips always fit.
             .frame(maxWidth: 64)
             .fixedSize()
-            .foregroundStyle(isOn ? Theme.Palette.background
+            .foregroundStyle(isOn ? Theme.Palette.onAccent
                                   : (hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText))
             .padding(.horizontal, Theme.Spacing.s)
             .frame(height: 18)
@@ -634,7 +634,7 @@ struct StudyCapsuleToggle: View {
                 Text(title)
                     .font(Theme.Typography.caption.weight(.semibold))
             }
-            .foregroundStyle(isOn ? Theme.Palette.background : Theme.Palette.secondaryText)
+            .foregroundStyle(isOn ? Theme.Palette.onAccent : Theme.Palette.secondaryText)
             .padding(.horizontal, Theme.Spacing.s)
             .frame(height: 20)
             .background(Capsule().fill(isOn ? mixerTint.opacity(hovering ? 1 : 0.88)

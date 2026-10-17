@@ -635,6 +635,8 @@
 	<string>الأتمتة</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>متاح عند تشغيل %@ كحزمة تطبيق.</string>
+	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
+	<string>أزرق فاتح وأبيض كالغيم، مثل علبة حليب بالتوت الأزرق.</string>
 	<key>Back</key>
 	<string>رجوع</string>
 	<key>Back to %@.</key>
@@ -715,6 +717,8 @@
 	<string>الشاشة المدمجة</string>
 	<key>Bunny Ears</key>
 	<string>أذنا أرنب</string>
+	<key>Butter yellow sunshine, happy and bright.</key>
+	<string>أشعة شمس بلون الزبدة، مبهجة ومشرقة.</string>
 	<key>Buy freeze</key>
 	<string>شراء تجميد</string>
 	<key>By joining you agree to the [Terms of Use](%@) and the [Privacy Policy](%@).</key>
@@ -755,6 +759,8 @@
 	<string>إلغاء الطلب</string>
 	<key>Cancel your request to %@</key>
 	<string>إلغاء طلبك إلى %@</string>
+	<key>Candy pink and milk, sweet but never loud.</key>
+	<string>وردي الحلوى والحليب، حلو دون صخب.</string>
 	<key>Caramel</key>
 	<string>كراميل</string>
 	<key>Cards due today and your daily review streak.</key>
@@ -829,6 +835,8 @@
 	<string>موسم أزهار الكرز</string>
 	<key>Cherry Petals</key>
 	<string>بتلات الكرز</string>
+	<key>Cherry blossom pink on warm black.</key>
+	<string>وردي أزهار الكرز على أسود دافئ.</string>
 	<key>Chocolate</key>
 	<string>شوكولاتة</string>
 	<key>Choose AI</key>
@@ -987,6 +995,8 @@
 	<string>تحكّم في Spotify أو Apple Music من النوتش.</string>
 	<key>Cool Sunglasses</key>
 	<string>نظارة شمسية أنيقة</string>
+	<key>Cool gray surfaces and plain SF type.</key>
+	<string>أسطح رمادية باردة وخط SF بسيط.</string>
 	<key>Copied</key>
 	<string>تم النسخ</string>
 	<key>Copy</key>
@@ -1093,6 +1103,8 @@
 	<string>رفض طلب %@. لن يُبلَّغ بذلك.</string>
 	<key>Deep</key>
 	<string>عميق</string>
+	<key>Deep cherry red, fizzy and warm, made for late sessions.</key>
+	<string>أحمر كرزي داكن، فوّار ودافئ، لجلسات السهر.</string>
 	<key>Deep focus</key>
 	<string>تركيز عميق</string>
 	<key>Deep focus is on: focus blocks bring %@. Click to turn it off</key>
@@ -1419,6 +1431,8 @@
 	<string>خادم الأصدقاء</string>
 	<key>Frog Hat</key>
 	<string>قبعة الضفدع</string>
+	<key>Frosted glass cards over a cool blue glow.</key>
+	<string>بطاقات زجاج مصنفر فوق توهج أزرق بارد.</string>
 	<key>Full</key>
 	<string>ممتلئ</string>
 	<key>Full path to the claude binary. Leave empty to detect it automatically.</key>
@@ -1475,6 +1489,8 @@
 	<string>أمسك كوبك واشرب بضع رشفات.</string>
 	<key>Graduation Cap</key>
 	<string>قبعة التخرج</string>
+	<key>Grayscale everything, no distractions.</key>
+	<string>كل شيء بدرجات الرمادي، بلا مشتتات.</string>
 	<key>Great job!</key>
 	<string>أحسنت!</string>
 	<key>Great job, team!</key>
@@ -1491,6 +1507,8 @@
 	<string>مضايقة</string>
 	<key>Hard things get easy the same way paths get worn: one step, many times.</key>
 	<string>الصعب يصير سهلًا كما تُرسم الدروب: خطوة واحدة، مرات كثيرة.</string>
+	<key>Hardware black, calm and crisp.</key>
+	<string>أسود مثل الجهاز، هادئ وواضح.</string>
 	<key>Head Mirror</key>
 	<string>مرآة الرأس</string>
 	<key>Heads down</key>
@@ -1569,6 +1587,8 @@
 	<string>في النوتش المفتوح، تبدّل الأسهم أو التمرير بإصبعين بين علامات التبويب، وتنتقل 1-9 إلى علامة تبويب، ويغلقه Esc أو التمرير لأعلى. في النوتش المغلق، مرّر لأسفل أو انقر بالزر الأوسط لرؤية النشاط المباشر التالي.</string>
 	<key>Inappropriate name</key>
 	<string>اسم غير لائق</string>
+	<key>Indigo night sky with a little gold star.</key>
+	<string>سماء ليلية نيلية مع نجمة ذهبية صغيرة.</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>رموز الإدخال والإخراج والتخزين المؤقت في كل جلسات %@ منذ منتصف الليل</string>
 	<key>Inseparable</key>
@@ -1737,6 +1757,8 @@
 	<string>مثل سام أو د. سام</string>
 	<key>Lilac</key>
 	<string>ليلكي</string>
+	<key>Lilac bubble tea, dreamy and soft.</key>
+	<string>شاي فقاعات بلون الليلك، حالم وناعم.</string>
 	<key>Limited</key>
 	<string>محدود</string>
 	<key>Limited edition</key>
@@ -1821,10 +1843,14 @@
 	<string>الطريقة</string>
 	<key>Midnight</key>
 	<string>منتصف الليل</string>
+	<key>Midnight ocean blue with a soft periwinkle glow.</key>
+	<string>أزرق محيط عند منتصف الليل مع توهج بنفسجي مزرق ناعم.</string>
 	<key>Milestones</key>
 	<string>المحطات</string>
 	<key>Mint</key>
 	<string>نعناعي</string>
+	<key>Mint chip ice cream: cool mint over a cocoa glow.</key>
+	<string>آيس كريم النعناع بالشوكولاتة: نعناع منعش فوق توهج كاكاو.</string>
 	<key>Model</key>
 	<string>النموذج</string>
 	<key>Month</key>
@@ -1845,6 +1871,8 @@
 	<string>خيارات إضافية</string>
 	<key>More tabs</key>
 	<string>مزيد من علامات التبويب</string>
+	<key>Mossy sage greens, quiet as a walk.</key>
+	<string>أخضر مريمية طحلبي، هادئ كنزهة.</string>
 	<key>Most people wait to feel ready. You just started. That's the difference.</key>
 	<string>ينتظر معظم الناس أن يشعروا بالاستعداد. أنت بدأت فحسب. هذا هو الفرق.</string>
 	<key>Mostly convention</key>
@@ -2373,6 +2401,8 @@
 	<string>تثبيت كمفضلة</string>
 	<key>Pink noise</key>
 	<string>ضوضاء وردية</string>
+	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
+	<string>سماء وردية وسكر أزرق فاتح: مدينة الملاهي عند الغروب.</string>
 	<key>Pirate Hat</key>
 	<string>قبعة قرصان</string>
 	<key>Plain collar</key>
@@ -3031,6 +3061,8 @@
 	<string>عباءة البطل الخارق</string>
 	<key>Surgical Cap</key>
 	<string>قبعة جراحية</string>
+	<key>Sweet</key>
+	<string>حلو</string>
 	<key>Switch Kit</key>
 	<string>تبديل الحزمة</string>
 	<key>Switch every</key>
@@ -3453,6 +3485,8 @@
 	<string>الإصدار %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>عرض على GitHub</string>
+	<key>Vivid accents with a violet glow.</key>
+	<string>ألوان مميزة زاهية مع توهج بنفسجي.</string>
 	<key>Volume</key>
 	<string>مستوى الصوت</string>
 	<key>Volume %@</key>
@@ -3477,6 +3511,8 @@
 	<string>يريد أن يصبح صديقك</string>
 	<key>Wardrobe</key>
 	<string>خزانة الملابس</string>
+	<key>Warm cream and peach, soft and gentle.</key>
+	<string>كريمي دافئ وخوخي، ناعم ولطيف.</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>يحفر الماء الوديان لأنه لا يتخلف يومًا.</string>
 	<key>Wearing</key>
@@ -3517,6 +3553,8 @@
 	<string>متى وُلدت؟</string>
 	<key>Whether a question grows the notch into the larger chat view</key>
 	<string>هل يوسّع السؤال النوتش إلى عرض الدردشة الأكبر</string>
+	<key>Whisked green tea and oat milk, fresh and grounded.</key>
+	<string>شاي أخضر مخفوق وحليب الشوفان، منعش ومتّزن.</string>
 	<key>White Coat</key>
 	<string>المعطف الأبيض</string>
 	<key>White noise</key>
@@ -3799,6 +3837,42 @@
 	<string>المضيف</string>
 	<key>the rare %@ fur</key>
 	<string>فرو %@ النادر</string>
+	<key>theme.bananaMilk</key>
+	<string>حليب الموز</string>
+	<key>theme.blueberryMilk</key>
+	<string>حليب التوت الأزرق</string>
+	<key>theme.cherrySoda</key>
+	<string>صودا الكرز</string>
+	<key>theme.cottonCandy</key>
+	<string>غزل البنات</string>
+	<key>theme.cozy</key>
+	<string>دافئ</string>
+	<key>theme.deepSea</key>
+	<string>أعماق البحر</string>
+	<key>theme.forest</key>
+	<string>غابة</string>
+	<key>theme.graphite</key>
+	<string>جرافيت</string>
+	<key>theme.liquidGlass</key>
+	<string>Liquid Glass</string>
+	<key>theme.matchaLatte</key>
+	<string>ماتشا لاتيه</string>
+	<key>theme.midnight</key>
+	<string>منتصف الليل</string>
+	<key>theme.mintChoco</key>
+	<string>نعناع وشوكولاتة</string>
+	<key>theme.monochrome</key>
+	<string>أحادي اللون</string>
+	<key>theme.neon</key>
+	<string>نيون</string>
+	<key>theme.sakura</key>
+	<string>ساكورا</string>
+	<key>theme.stargazer</key>
+	<string>تأمّل النجوم</string>
+	<key>theme.strawberryMilk</key>
+	<string>حليب الفراولة</string>
+	<key>theme.taro</key>
+	<string>تارو</string>
 	<key>today</key>
 	<string>اليوم</string>
 	<key>tokens</key>
