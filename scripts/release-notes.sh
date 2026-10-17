@@ -14,6 +14,12 @@
 # history is the whole development of the app, which means nothing to someone
 # installing it. The notes come from commit messages, so CHANGELOG.md is never
 # edited here.
+#
+# A release can ship hand-written notes instead: when
+# packaging/release-notes/<version>.md exists, its body is printed under the
+# heading as is. Commit subjects are not always conventional, and without it
+# such a release says only "Small improvements and fixes." in the update
+# window.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -24,6 +30,12 @@ name=${2:-Tabbi}
 previous=$(git describe --tags --abbrev=0 --match 'v*' --exclude "v$version" HEAD 2>/dev/null || true)
 
 echo "## $name $version"
+written="packaging/release-notes/$version.md"
+if [[ -f "$written" ]]; then
+    echo
+    cat "$written"
+    exit 0
+fi
 if [[ -z "$previous" ]]; then
     echo
     echo "The first release of $name: a small panel of tabs in your MacBook notch."
