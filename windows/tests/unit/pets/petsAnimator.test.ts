@@ -368,6 +368,8 @@ describe("PetAnimator", () => {
       if (animation === "sleep" || animation === "nap") {
         expect(built.stillFrame, `${animation} holds a bright z drifting up`).toBe(built.frames[1]);
         expect(opaqueCount(built.stillFrame.canvas)).toBeGreaterThan(opaqueCount(frameOf(animation, 3).canvas));
+      } else if (animation === "sip") {
+        expect(built.stillFrame, "a still sip holds the mug at the mouth").toBe(built.frames[2]);
       } else {
         expect(built.stillFrame, animation).toBe(animationLoops(animation) ? built.frames[0] : built.frames.at(-1));
       }

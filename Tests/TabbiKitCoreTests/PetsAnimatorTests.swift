@@ -331,6 +331,8 @@ final class PetAnimatorTests: XCTestCase {
                 // The same pose as the last frame, which has no z.
                 XCTAssertGreaterThan(clip.stillFrame.canvas.pixels.compactMap { $0 }.count,
                                      clip.frames[3].canvas.pixels.compactMap { $0 }.count)
+            case .sip:
+                XCTAssertEqual(clip.stillFrame, clip.frames[2], "a still sip holds the mug at the mouth")
             default:
                 XCTAssertEqual(clip.stillFrame, animation.loops ? clip.frames.first : clip.frames.last,
                                "\(animation)")

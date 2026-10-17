@@ -201,6 +201,8 @@
 	<string>يعمل %@ بأفضل شكل من مجلد التطبيقات، حيث يمكنه الفتح عند تسجيل الدخول وتحديث نفسه. سينسخ نفسه إلى هناك ثم يُفتح من جديد.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · متوقف مؤقتًا</string>
+	<key>%@, %@ left</key>
+	<string>%1$@، متبقٍّ %2$@</string>
 	<key>%@, %lld extra</key>
 	<string>%@، و%lld إضافية</string>
 	<key>%@, limited edition: %@</key>
@@ -349,6 +351,8 @@
 	<string>قد تحظره إعدادات المدرسة أو العمل. يمكنك التحقق في إعدادات النظام.</string>
 	<key>A shorter timer</key>
 	<string>مؤقت أقصر</string>
+	<key>A slow breath in, and out</key>
+	<string>شهيق بطيء، ثم زفير</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
 	<string>صوت ناعم عند فتح عنصر أو بلوغ سلسلة.</string>
 	<key>AI</key>
@@ -621,6 +625,10 @@
 	<string>خوذة رائد فضاء</string>
 	<key>At least one tab must stay</key>
 	<string>يجب أن تبقى علامة تبويب واحدة على الأقل</string>
+	<key>At the start of a break, %@ shows a short move you can copy</key>
+	<string>في بداية الاستراحة، يعرض %@ حركة قصيرة يمكنك تقليدها</string>
+	<key>At the start of a break, your pet shows a short move you can copy</key>
+	<string>في بداية الاستراحة، يعرض حيوانك حركة قصيرة يمكنك تقليدها</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>إرفاق لقطة لهذه الشاشة (دون Tabbi)</string>
 	<key>Automation</key>
@@ -687,8 +695,12 @@
 	<string>ربطة عنق فراشة</string>
 	<key>Break</key>
 	<string>استراحة</string>
+	<key>Break buddy</key>
+	<string>رفيق الاستراحة</string>
 	<key>Break's over</key>
 	<string>انتهت الاستراحة</string>
+	<key>Breathe in slowly, then let it all out.</key>
+	<string>خذ شهيقًا بطيئًا، ثم أخرجه كله.</string>
 	<key>Breed</key>
 	<string>السلالة</string>
 	<key>Breed colors</key>
@@ -1035,6 +1047,8 @@
 	<string>تعذّر تشغيل قائمة التشغيل</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>تعذّر التقاط لقطة الشاشة. حاول مجددًا.</string>
+	<key>Count glasses of water</key>
+	<string>عدّ أكواب الماء</string>
 	<key>Count this session for you again</key>
 	<string>احتساب هذه الجلسة لك مجددًا</string>
 	<key>Count time in %@ as drifting</key>
@@ -1133,6 +1147,10 @@
 	<string>اكتشاف claude تلقائيًا</string>
 	<key>Development build</key>
 	<string>إصدار تطوير</string>
+	<key>Did it</key>
+	<string>فعلتها</string>
+	<key>Did it with %@</key>
+	<string>فعلتها مع %@</string>
 	<key>Did you answer the age question?</key>
 	<string>هل أجبت عن سؤال العمر؟</string>
 	<key>Did you let Tabbi control %@?</key>
@@ -1453,6 +1471,8 @@
 	<string>قلادة ذهبية</string>
 	<key>Golden Laurel</key>
 	<string>إكليل الغار الذهبي</string>
+	<key>Grab your glass and take a few sips.</key>
+	<string>أمسك كوبك واشرب بضع رشفات.</string>
 	<key>Graduation Cap</key>
 	<string>قبعة التخرج</string>
 	<key>Great job!</key>
@@ -1705,6 +1725,8 @@
 	<string>دع الـ AI يرتّب مهامك المفتوحة حول تقويم اليوم</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>دع الـ AI يرتّب مهامك المفتوحة حول تقويم الغد</string>
+	<key>Let your eyes rest on something across the room or out the window.</key>
+	<string>أرح عينيك على شيء في الجهة الأخرى من الغرفة أو خارج النافذة.</string>
 	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
 	<string>دع رفيقك يقول عبارة تشجيع نادرة فور انتهاء جلسة تركيز، مرة في اليوم على الأكثر</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
@@ -1731,6 +1753,8 @@
 	<string>جارٍ التحميل…</string>
 	<key>Location</key>
 	<string>الموقع</string>
+	<key>Log a glass of water</key>
+	<string>سجّل كوب ماء</string>
 	<key>Log in from Anki's Sync button once, then sync here.</key>
 	<string>سجّل الدخول مرة من زر Sync في Anki، ثم زامن من هنا.</string>
 	<key>Long break</key>
@@ -1739,6 +1763,8 @@
 	<string>أيام طويلة وتركيز خفيف. حافظ على إيقاع بسيط.</string>
 	<key>Look</key>
 	<string>المظهر</string>
+	<key>Look at something far away</key>
+	<string>انظر إلى شيء بعيد</string>
 	<key>Looking for %@…</key>
 	<string>جارٍ البحث عن %@…</string>
 	<key>Looking for Anki</key>
@@ -2465,6 +2491,8 @@
 	<string>مطر</string>
 	<key>Rare</key>
 	<string>نادر</string>
+	<key>Reach your arms up high, then roll your shoulders back.</key>
+	<string>ارفع ذراعيك عاليًا، ثم حرّك كتفيك إلى الخلف.</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>قراءة أحدث سجلات Codex (لا يُرسل شيئًا)</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2555,6 +2583,8 @@
 	<string>استعادة الإعدادات الافتراضية</string>
 	<key>Reset to Kit Defaults</key>
 	<string>استعادة إعدادات الحزمة</string>
+	<key>Rest your eyes</key>
+	<string>أرح عينيك</string>
 	<key>Restart Anki</key>
 	<string>إعادة تشغيل Anki</string>
 	<key>Restart Anki to load it</key>
@@ -2715,6 +2745,8 @@
 	<string>إظهار %@</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>إظهار SoundCloud من Safari أو Chrome</string>
+	<key>Show a break move</key>
+	<string>اعرض حركة للاستراحة</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>عرض ملخص أسبوعك في أول مرة تفتح فيها النوتش بعد الأحد 6 مساءً</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -2743,6 +2775,8 @@
 	<string>عرض أهم الرزم بجانب إجمالي اليوم</string>
 	<key>Show this in the live activity</key>
 	<string>عرض هذا في النشاط الحي</string>
+	<key>Show today's glasses on the break card, with a button to add one</key>
+	<string>اعرض أكواب اليوم في بطاقة الاستراحة، مع زر لإضافة كوب</string>
 	<key>Show tomorrow's calendar</key>
 	<string>عرض تقويم الغد</string>
 	<key>Show yesterday's calendar</key>
@@ -2791,6 +2825,10 @@
 	<string>مرِح</string>
 	<key>Silver</key>
 	<string>فضي</string>
+	<key>Sip some water</key>
+	<string>اشرب بعض الماء</string>
+	<key>Sip water</key>
+	<string>رشفة ماء</string>
 	<key>Skip</key>
 	<string>تخطي</string>
 	<key>Skip Setup</key>
@@ -2801,12 +2839,16 @@
 	<string>تخطي الاستراحة</string>
 	<key>Skip the review</key>
 	<string>تخطي المراجعة</string>
+	<key>Skip this one; nothing is counted</key>
+	<string>تخطَّ هذه المرة؛ لا شيء يُحسب</string>
 	<key>Skip to the break</key>
 	<string>الانتقال إلى الاستراحة</string>
 	<key>Sky</key>
 	<string>سماوي</string>
 	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
 	<string>النوم جزء من العمل. اذهب واحلم بنقلات الغد.</string>
+	<key>Slow breath</key>
+	<string>نفس بطيء</string>
 	<key>Smooth</key>
 	<string>سلس</string>
 	<key>Snowy Scarf</key>
@@ -2839,6 +2881,12 @@
 	<string>مرن، مع ارتداد خفيف.</string>
 	<key>Sprint</key>
 	<string>انطلاقة</string>
+	<key>Stand up</key>
+	<string>الوقوف</string>
+	<key>Stand up for a moment</key>
+	<string>قف للحظة</string>
+	<key>Stand, shake out your legs, and sit back down when you like.</key>
+	<string>قف، وحرّك ساقيك، واجلس متى شئت.</string>
 	<key>Star tag</key>
 	<string>قلادة نجمة</string>
 	<key>Stars don't rush. They just keep burning.</key>
@@ -2935,6 +2983,10 @@
 	<string>السلسلة</string>
 	<key>Streak unavailable</key>
 	<string>السلسلة غير متاحة</string>
+	<key>Stretch</key>
+	<string>تمدّد</string>
+	<key>Stretch with %@</key>
+	<string>تمدّد مع %@</string>
 	<key>Studied today</key>
 	<string>درست اليوم</string>
 	<key>Study</key>
@@ -3219,6 +3271,8 @@
 	<string>هذا يعمل. لا شيء لفعله.</string>
 	<key>Time</key>
 	<string>الوقت</string>
+	<key>Time for a stretch</key>
+	<string>حان وقت التمدّد</string>
 	<key>Time in these apps counts as drifting. Websites can't be told apart, since that would need Screen Recording, so pick apps rather than sites.</key>
 	<string>الوقت في هذه التطبيقات يُعدّ تشتتًا. لا يمكن التمييز بين المواقع لأن ذلك يتطلب تسجيل الشاشة، لذا اختر تطبيقات لا مواقع.</string>
 	<key>Time studied today and study sessions finished</key>
@@ -3643,6 +3697,12 @@
 	<string>رفيقك</string>
 	<key>Your pet found this on its adventure. %@</key>
 	<string>وجد رفيقك هذا في مغامرته. %@</string>
+	<key>Your pet may suggest this move. Click to turn it off</key>
+	<string>قد يقترح حيوانك هذه الحركة. انقر لإيقافها</string>
+	<key>Your pet picks one move per break and keeps it short. Skipping is always fine, and nothing counts against you. Glasses of water stay on this Mac.</key>
+	<string>يختار حيوانك حركة واحدة لكل استراحة ويجعلها قصيرة. التخطي مقبول دائمًا، ولا شيء يُحسب ضدك. تبقى أكواب الماء على هذا الـ Mac.</string>
+	<key>Your pet won't suggest this move. Click to turn it on</key>
+	<string>لن يقترح حيوانك هذه الحركة. انقر لتشغيلها</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>اسم رفيقك غير مسموح. غيّر اسمه في الخزانة.</string>
 	<key>Your pet, today's streak and the running timer.</key>

@@ -70,6 +70,8 @@ export const PET_ANIMATIONS = [
   "tailSwish",
   "nap",
   "play",
+  "sip",
+  "breathe",
 ] as const;
 export type PetAnimation = (typeof PET_ANIMATIONS)[number];
 

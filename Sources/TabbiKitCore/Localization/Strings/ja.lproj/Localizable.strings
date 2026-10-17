@@ -201,6 +201,8 @@
 	<string>%@はアプリケーションフォルダから使うのがおすすめです。ログイン時に自動で開き、自分でアップデートできます。自分をそこにコピーして、もう一度開きます。</string>
 	<key>%@ · Paused</key>
 	<string>%@ · 一時停止中</string>
+	<key>%@, %@ left</key>
+	<string>%1$@、残り%2$@</string>
 	<key>%@, %lld extra</key>
 	<string>%@、追加%lld</string>
 	<key>%@, limited edition: %@</key>
@@ -359,6 +361,8 @@
 	<string>学校や職場の設定でブロックされている場合があります。システム設定で確認できます。</string>
 	<key>A shorter timer</key>
 	<string>タイマーを短く</string>
+	<key>A slow breath in, and out</key>
+	<string>ゆっくり吸って、吐いて</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
 	<string>アイテムを解除したり連続記録を達成したりすると、やさしい音が鳴ります。</string>
 	<key>AI</key>
@@ -631,6 +635,10 @@
 	<string>宇宙ヘルメット</string>
 	<key>At least one tab must stay</key>
 	<string>タブは1つ以上必要です</string>
+	<key>At the start of a break, %@ shows a short move you can copy</key>
+	<string>休憩の始めに、%@が真似できる短い動きを見せます</string>
+	<key>At the start of a break, your pet shows a short move you can copy</key>
+	<string>休憩の始めに、ペットが真似できる短い動きを見せます</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>この画面のスクリーンショットを添付(Tabbiは写りません)</string>
 	<key>Automation</key>
@@ -697,8 +705,12 @@
 	<string>蝶ネクタイ</string>
 	<key>Break</key>
 	<string>休憩</string>
+	<key>Break buddy</key>
+	<string>休憩バディ</string>
 	<key>Break's over</key>
 	<string>休憩おしまい</string>
+	<key>Breathe in slowly, then let it all out.</key>
+	<string>ゆっくり吸って、全部吐き出そう。</string>
 	<key>Breed</key>
 	<string>品種</string>
 	<key>Breed colors</key>
@@ -1047,6 +1059,8 @@
 	<string>プレイリストを再生できませんでした</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>スクリーンショットを撮れませんでした。もう一度お試しください。</string>
+	<key>Count glasses of water</key>
+	<string>水の杯数を数える</string>
 	<key>Count this session for you again</key>
 	<string>このセッションを再びカウントする</string>
 	<key>Count time in %@ as drifting</key>
@@ -1145,6 +1159,10 @@
 	<string>claudeを自動で検出</string>
 	<key>Development build</key>
 	<string>開発ビルド</string>
+	<key>Did it</key>
+	<string>できた</string>
+	<key>Did it with %@</key>
+	<string>%@と一緒にできた</string>
 	<key>Did you answer the age question?</key>
 	<string>年齢の質問に答えましたか？</string>
 	<key>Did you let Tabbi control %@?</key>
@@ -1465,6 +1483,8 @@
 	<string>金のチャーム</string>
 	<key>Golden Laurel</key>
 	<string>金の月桂冠</string>
+	<key>Grab your glass and take a few sips.</key>
+	<string>コップを手に、何口か飲もう。</string>
 	<key>Graduation Cap</key>
 	<string>卒業帽</string>
 	<key>Great job!</key>
@@ -1721,6 +1741,8 @@
 	<string>AIが未完了のタスクを今日の予定に合わせて配置</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>AIが未完了のタスクを明日の予定に合わせて配置</string>
+	<key>Let your eyes rest on something across the room or out the window.</key>
+	<string>部屋の向こうや窓の外に目を向けて休めよう。</string>
 	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
 	<string>集中セッションの直後に、ペットがときどき励ましのひとことを話します。1日に1回まで</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
@@ -1747,6 +1769,8 @@
 	<string>読み込み中…</string>
 	<key>Location</key>
 	<string>場所</string>
+	<key>Log a glass of water</key>
+	<string>水を1杯記録</string>
 	<key>Log in from Anki's Sync button once, then sync here.</key>
 	<string>Anki の同期ボタンから一度ログインしてから、ここで同期してください。</string>
 	<key>Long break</key>
@@ -1755,6 +1779,8 @@
 	<string>長い日、軽めの集中。少しずつリズムを保とう。</string>
 	<key>Look</key>
 	<string>外観</string>
+	<key>Look at something far away</key>
+	<string>遠くを見てみよう</string>
 	<key>Looking for %@…</key>
 	<string>%@を探しています…</string>
 	<key>Looking for Anki</key>
@@ -2481,6 +2507,8 @@
 	<string>雨</string>
 	<key>Rare</key>
 	<string>レア</string>
+	<key>Reach your arms up high, then roll your shoulders back.</key>
+	<string>腕を高く伸ばして、肩を後ろに回そう。</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>最新のCodexログを読む（何も送信しません）</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2573,6 +2601,8 @@
 	<string>デフォルトに戻す</string>
 	<key>Reset to Kit Defaults</key>
 	<string>キットの初期設定に戻す</string>
+	<key>Rest your eyes</key>
+	<string>目を休める</string>
 	<key>Restart Anki</key>
 	<string>Anki を再起動</string>
 	<key>Restart Anki to load it</key>
@@ -2735,6 +2765,8 @@
 	<string>%@を表示</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>SafariやChromeのSoundCloudを表示</string>
+	<key>Show a break move</key>
+	<string>休憩の動きを見せる</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>日曜18時以降に初めてノッチを開いたとき、1週間のふりかえりを表示する</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -2763,6 +2795,8 @@
 	<string>今日の合計の横に上位のデッキを表示</string>
 	<key>Show this in the live activity</key>
 	<string>ライブアクティビティに表示する</string>
+	<key>Show today's glasses on the break card, with a button to add one</key>
+	<string>休憩カードに今日の杯数と追加ボタンを表示します</string>
 	<key>Show tomorrow's calendar</key>
 	<string>明日のカレンダーを表示</string>
 	<key>Show yesterday's calendar</key>
@@ -2811,6 +2845,10 @@
 	<string>おもしろ</string>
 	<key>Silver</key>
 	<string>シルバー</string>
+	<key>Sip some water</key>
+	<string>お水をひと口</string>
+	<key>Sip water</key>
+	<string>水を飲む</string>
 	<key>Skip</key>
 	<string>スキップ</string>
 	<key>Skip Setup</key>
@@ -2821,12 +2859,16 @@
 	<string>休憩をスキップ</string>
 	<key>Skip the review</key>
 	<string>復習をスキップ</string>
+	<key>Skip this one; nothing is counted</key>
+	<string>今回はスキップ。何も記録されません</string>
 	<key>Skip to the break</key>
 	<string>休憩へスキップ</string>
 	<key>Sky</key>
 	<string>スカイ</string>
 	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
 	<string>眠るのも努力のうち。明日の一手を夢で考えよう。</string>
+	<key>Slow breath</key>
+	<string>深呼吸</string>
 	<key>Smooth</key>
 	<string>なめらか</string>
 	<key>Snowy Scarf</key>
@@ -2859,6 +2901,12 @@
 	<string>弾むように、少しだけバウンド。</string>
 	<key>Sprint</key>
 	<string>スプリント</string>
+	<key>Stand up</key>
+	<string>立ち上がる</string>
+	<key>Stand up for a moment</key>
+	<string>少し立ち上がろう</string>
+	<key>Stand, shake out your legs, and sit back down when you like.</key>
+	<string>立って脚を軽くほぐしたら、好きなときに座ろう。</string>
 	<key>Star tag</key>
 	<string>星のチャーム</string>
 	<key>Stars don't rush. They just keep burning.</key>
@@ -2959,6 +3007,10 @@
 	<string>連続記録</string>
 	<key>Streak unavailable</key>
 	<string>連続記録を取得できません</string>
+	<key>Stretch</key>
+	<string>ストレッチ</string>
+	<key>Stretch with %@</key>
+	<string>%@と一緒にストレッチ</string>
 	<key>Studied today</key>
 	<string>今日は勉強済み</string>
 	<key>Study</key>
@@ -3251,6 +3303,8 @@
 	<string>時刻</string>
 	<key>Time for a %lld-minute break.</key>
 	<string>%lld分間の休憩タイムです。</string>
+	<key>Time for a stretch</key>
+	<string>ストレッチの時間</string>
 	<key>Time in these apps counts as drifting. Websites can't be told apart, since that would need Screen Recording, so pick apps rather than sites.</key>
 	<string>これらのアプリでの時間は気がそれた扱いになります。Webサイトの区別には画面収録が必要なため、サイトではなくアプリを選んでください。</string>
 	<key>Time studied today and study sessions finished</key>
@@ -3683,6 +3737,12 @@
 	<string>あなたのペット</string>
 	<key>Your pet found this on its adventure. %@</key>
 	<string>ペットが冒険で見つけてきました。%@</string>
+	<key>Your pet may suggest this move. Click to turn it off</key>
+	<string>ペットがこの動きを提案します。クリックでオフ</string>
+	<key>Your pet picks one move per break and keeps it short. Skipping is always fine, and nothing counts against you. Glasses of water stay on this Mac.</key>
+	<string>ペットは休憩ごとに短い動きをひとつ選びます。スキップはいつでもOKで、何もマイナスにはなりません。水の記録はこのMacにだけ残ります。</string>
+	<key>Your pet won't suggest this move. Click to turn it on</key>
+	<string>ペットはこの動きを提案しません。クリックでオン</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>ペットの名前が使えません。クローゼットで名前を変えてください。</string>
 	<key>Your pet, today's streak and the running timer.</key>

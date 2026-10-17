@@ -6,19 +6,32 @@ import TabbiKit
 /// element), and on the right one card with what this session is for and
 /// what focus mode does while it runs, then the timer controls. The focus
 /// mode row opens the sound mixer Study uses in place of the timer, so the
-/// sound playing in a session can be changed without leaving it.
+/// sound playing in a session can be changed without leaving it. At the
+/// start of a break the break buddy's card (`BreakBuddyCard`) takes the
+/// timer's place while its moment lasts, as in Study.
 struct FocusPanel: View {
     @ObservedObject var store: FocusStore
     /// Focus mode, whose sound and Do Not Disturb settings the panel shows.
     let focusMode: FocusController
     /// What other modules share, for the task this session is linked to.
     let providers: ProviderHub
+    /// The break buddy, whose moment shows here for the Pomodoro's breaks.
+    @ObservedObject var breakBuddy: BreakBuddyController
+
+    /// The Pomodoro's clock, shared as Focus and as Today.
+    static let timerSources: Set<ModuleID> = [FocusModule.descriptor.id, TodayModule.descriptor.id]
     @State private var showsMixer = FocusPanel.snapshotShowsMixer
 
     var body: some View {
         Group {
             if showsMixer {
                 StudySoundMixer(focus: focusMode, tint: accent) { show(mixer: false) }
+            } else if let moment = breakBuddy.cardMoment, Self.timerSources.contains(moment.source),
+                      let pet = breakBuddy.cardPet {
+                BreakBuddyCard(moment: moment, pet: pet, petName: breakBuddy.petName, accent: accent,
+                               water: breakBuddy.shownWater, isFinishing: breakBuddy.isFinishing,
+                               done: breakBuddy.done, skip: breakBuddy.skip, addWater: breakBuddy.addWater)
+                    .transition(.opacity)
             } else {
                 HStack(spacing: Theme.Spacing.s) {
                     FocusDial(store: store)
@@ -31,6 +44,7 @@ struct FocusPanel: View {
             }
         }
         .transition(.opacity)
+        .motion(Theme.Motion.snappy, value: breakBuddy.cardMoment == nil)
         .onAppear { store.setVisible(true, viewer: .focus) }
         .onDisappear { store.setVisible(false, viewer: .focus) }
     }

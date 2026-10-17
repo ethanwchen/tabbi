@@ -46,6 +46,11 @@ public enum TickerFormat {
     /// The pet's line for tooltips and accessibility, e.g. "Mochi is napping".
     public static func petSummary(_ pet: TickerPet, at now: Date = .now) -> String {
         let name = pet.profile.name
+        if let moment = pet.breakMoment {
+            let clock = breakCountdown(moment.remaining(at: now))
+            let title = moment.move.title(petName: BreakMove.buddyName(for: pet.profile))
+            return String(localized: "\(title), \(clock) left", bundle: .tabbi)
+        }
         if pet.isSipping { return String(localized: "Your Mac is charging, and \(name) is having a sip", bundle: .tabbi) }
         if pet.adventure?.isExploring(at: now) == true {
             return String(localized: "\(name) is off on a little adventure and will be back as your session ends",
@@ -72,6 +77,17 @@ public enum TickerFormat {
 
     /// Shown beside the pet while it sips because the Mac started charging.
     public static var charging: String { String(localized: "Charging", bundle: .tabbi) }
+
+    /// The time left of a break move beside the closed notch's pet, digits
+    /// only ("0:42"), so it fits any language; the tooltip names the move.
+    public static func breakCountdown(_ remaining: TimeInterval) -> String {
+        StudyTimerFormat.clock(remaining)
+    }
+
+    /// A same-width stand-in for `breakCountdown`, which sizes the wing so
+    /// it doesn't breathe as the digits change (moments last at most a
+    /// minute, so "1:00" is as wide as "0:00").
+    public static let breakCountdownSample = "0:00"
 
     /// Shown after the name while the pet sleeps.
     public static let petSleeping = "zzz"

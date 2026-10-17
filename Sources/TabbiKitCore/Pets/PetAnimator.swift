@@ -142,12 +142,18 @@ public struct PetAnimator: Hashable, Sendable {
         case studying
         /// A break is running: sipping the tiny coffee mug.
         case onBreak
+        /// The break buddy: the pet models a break move (a stretch, a sip,
+        /// a slow breath) for the user to copy, playing its clip over and
+        /// over until the moment ends. A one-shot clip such as the stretch
+        /// starts again the moment it ends.
+        case guiding(PetAnimation)
 
         var restingAnimation: PetAnimation {
             switch self {
             case .free: .idle
             case .studying: .typing
             case .onBreak: .coffee
+            case .guiding(let animation): animation
             }
         }
 
@@ -182,6 +188,9 @@ public struct PetAnimator: Hashable, Sendable {
         /// The user started or stopped studying or a break. Leaving a focus
         /// stretch of at least `longSession` makes the pet yawn first.
         case activity(Activity)
+        /// Plain joy (beside the notch only): two springy hops, then back to
+        /// resting. The break buddy plays it when the user did the move.
+        case hop
     }
 
     /// What an idling pet plays between rests: a blink, or for a happy pet
@@ -362,6 +371,10 @@ public struct PetAnimator: Hashable, Sendable {
             guard place == .beside else { return false }
             isAsleep = false
             play(.celebrate, at: time)
+        case .hop:
+            guard place == .beside else { return false }
+            isAsleep = false
+            play(.hop, at: time)
         case .peekIn:
             guard place == .hidden else { return false }
             place = .hanging
@@ -374,10 +387,10 @@ public struct PetAnimator: Hashable, Sendable {
         return true
     }
 
-    /// Alert, celebrate, the wake-up stretch or a yawn still running (blinks
-    /// don't count: they yield).
+    /// Alert, celebrate, the wake-up stretch, a yawn or a happy hop still
+    /// running (blinks don't count: they yield).
     private func isPlayingOneShot(at time: TimeInterval) -> Bool {
-        guard let playback, [.alert, .celebrate, .stretch, .yawn].contains(playback.animation) else { return false }
+        guard let playback, [.alert, .celebrate, .stretch, .yawn, .hop].contains(playback.animation) else { return false }
         return playback.elapsed(at: time) < duration(playback.animation)
     }
 

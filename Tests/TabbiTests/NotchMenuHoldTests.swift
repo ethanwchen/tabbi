@@ -58,7 +58,13 @@ final class NotchMenuHoldTests: XCTestCase {
         let timer = Timer(timeInterval: 0.2, target: reach, selector: #selector(MenuReach.fire), userInfo: nil, repeats: false)
         RunLoop.main.add(timer, forMode: .common)
         menu.popUp(positioning: nil, at: NSPoint(x: view.bounds.midX, y: view.bounds.midY), in: view)
-        RunLoop.main.run(until: Date().addingTimeInterval(0.05))
+        // Under load (the parallel suite) the menu can return before the
+        // timer fires inside it, so keep the run loop going until the pick
+        // lands rather than giving it one fixed slice.
+        let deadline = Date().addingTimeInterval(3)
+        repeat {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.05))
+        } while !picked && Date() < deadline
         return picked
     }
 

@@ -3,7 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all eleven cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish, nap, play), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
+Status: the sprite format, palettes, pattern zones, renderer, all eleven cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish, nap, play, sip, breathe), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -223,7 +223,7 @@ The happier idle is in `PetAnimator`: a happy pet (`happy:`, from `PetBondLook.h
 
 `PetComposer.clip(_:for:outfit:accessories:)` builds a `PetClip`: a list of `PetFrame`s, each with its own `duration` in seconds.
 The timelines are data: `Pets/PetArt/animations.json` (`pets.v1`) lists, for every animation, whether it loops, the frame a still pet holds, and per frame the duration, pose, stance, effects (a "z", a heart), steam, dust and speech bubble.
-`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk, typing, coffee, nap) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop, wave, groom, tailSwish, play) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
+`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk, typing, coffee, nap, sip, breathe) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop, wave, groom, tailSwish, play) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
 
 Front-facing animations are not drawn frame by frame.
 Each frame is the sitting composition in a `PetPose`, so every breed and costume animates without extra art:
@@ -284,6 +284,8 @@ When the row under the nose carries nose-colored mouth corners (most dogs), a ro
 | groom | The left leg lifts to the chin, three licks (the paw rises under an open mouth for 180 ms, drops for 120 ms) with the eyes shut, two strokes over the left cheek with the head bent into them, then a contented look; about 2.3 s |
 | tailSwish | The tail sweeps out to the side and back twice, the first sweep slower (400 ms held at the far end) and the second quicker, everything else still; about 2.1 s |
 | nap | A deeper sleep than `sleep`, curled up on the floor (see below): sleepy eyes, the back swelling a pixel on each slow breath, and "z"s drifting up like `sleep`; four 1 s frames, loops |
+| sip | The break buddy's sip of water: the mug in the lap with no steam (1.2 s), raised to the mouth for a 1.4 s sip with closed eyes, lowered with happy eyes; about 3.8 s, loops. Reduce Motion holds the sip itself |
+| breathe | The break buddy's slow breath: eyes closed and head up on the breath in (2 s), then the head sinks a pixel with a soft "o" on the long breath out (1.6 s) and rests (0.8 s); about 4.4 s, loops |
 | play | Eyes the toy (350 ms), crouches, and pats it (160 ms); it rolls away with happy eyes (a ball bounces 2 px), is watched for 450 ms, rolls back (a ball bounces 3 px, then 1 px) and is caught under the paw (400 ms), then a happy look; about 2.5 s |
 | walk | Four 150 ms steps of a trot, side-on (see below) |
 | stretch | A side-on play bow: down in three steps, a held bow with happy eyes and a tail wag, then back up (see below) |
@@ -293,7 +295,7 @@ The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the b
 
 ![Every animation frame for the orange tabby](images/animations-cat.png)
 
-`PetGallery` also writes `yawn.png`, `hop.png`, `typing.png`, `coffee.png`, `wave.png`, `groom.png`, `tailSwish.png`, `nap.png` and `play.png`, every breed through every frame of each move, one row per breed:
+`PetGallery` also writes `yawn.png`, `hop.png`, `typing.png`, `coffee.png`, `wave.png`, `groom.png`, `tailSwish.png`, `nap.png`, `play.png`, `sip.png` and `breathe.png`, every breed through every frame of each move, one row per breed:
 
 ![The yawn for every breed](images/yawn.png)
 
@@ -369,7 +371,7 @@ The pet is always in one `Place`, and each place has a resting animation:
 
 | Place | Rests in |
 | --- | --- |
-| `beside` | `sleep` while asleep; awake, it follows the `Activity`: `typing` while `studying`, `coffee` while `onBreak`, and `idle` with a `blink` every 2.5-6 s (random) while `free` |
+| `beside` | `sleep` while asleep; awake, it follows the `Activity`: `typing` while `studying`, `coffee` while `onBreak`, the move's clip over and over while `guiding` (the break buddy; a one-shot clip such as the stretch starts again as it ends), and `idle` with a `blink` every 2.5-6 s (random) while `free` |
 | `hanging` | The held last frame of `peekIn` |
 | `hidden` | Nothing; `playback` is nil |
 
@@ -377,6 +379,7 @@ The pet is always in one `Place`, and each place has a resting animation:
 | --- | --- |
 | `nudge` | Beside: wakes and plays `alert`, except during a celebration. Hidden: peeks out |
 | `celebrate` | Beside only: wakes and plays `celebrate`, overriding an alert |
+| `hop` | Beside only: wakes and plays `hop`, plain joy (the break buddy's Done); a mood change waits for it to finish |
 | `sleep` / `wake` | Beside only; a running alert, celebration, or stretch finishes first. Waking plays `stretch`, then idles; a nudge still interrupts it |
 | `peekIn` / `peekOut` | Hidden to hanging and back |
 | `appear` / `disappear` | Cut straight to beside (awake) or hidden |
@@ -398,7 +401,13 @@ To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.
   Late at night (11 PM to 6 AM local time, `PetNightRhythm`) the Closet's `PetPresence` lets the pet doze after a 10 minute quiet spell instead of 20, with its drifting "z"s.
   Opening the notch or starting a session wakes it, and Reduce Motion holds the doze still.
   Snapshot runs leave the night out, so a shot looks the same at any hour.
-  Snapshot runs render it as `closed-pet-studying.png`, `closed-pet-break.png` and `closed-pet-asleep.png` (whichever differ from the pet's current mood in `closed-pet.png`, all drawn at home).
+  Snapshot runs render it as `closed-pet-studying.png`, `closed-pet-coffee.png` and `closed-pet-asleep.png` (whichever differ from the pet's current mood in `closed-pet.png`, all drawn at home).
+- At the start of a break the break buddy (`BreakBuddyController`, a shared service in `Modules/BreakBuddy/`, with its pure logic in `TabbiKitCore/BreakBuddy/`) may give the pet one short move to model for the user to copy: a stretch (`stretch`), a sip of water (`sip`), resting the eyes on something far away (`sit` for now), a slow breath (`breathe`) or standing up (`walk`).
+  `BreakBuddyPlanner` picks it from the break's length and a small saved history: a long break suggests standing up, every third break a sip, otherwise the pet rotates through the stretch, the eyes and the breath, and a moment never takes more than half the break.
+  The Closet passes the moment on as `PetPresence.breakMoment`, the ticker hands it to the wing as `TickerPet.breakMoment` and lets the pet take the notch for it, and the wing loops the move (`PetAnimator.Activity.guiding`) with a digits-only countdown beside it, then goes back to its coffee.
+  The open Study and Focus tabs show `BreakBuddyCard` in place of the timer meanwhile: the pet at 3 pt per pixel in a ring that fills as the moment passes, Done (logged as `break.move`, and the pet hops), Skip (logged nowhere) and, with the water tally on, today's glasses of water.
+  Neither record earns points or keeps a streak, and Settings > Pet Coach > Break buddy turns it off, turns moves off, or hides the water tally.
+  Snapshot runs render it as `closed-pet-break.png`, `open-study-break.png`, `open-compact-study-break.png`, `open-focus-break.png` and `settings-coach-break-buddy.png`.
 - In a running focus block of 15 minutes or more, the closed-notch pet goes on a little adventure (`PetAdventure`, carried on `TickerPet.adventure`).
   Partway through the block it trots into the notch, leaving a faint paw print and "exploring" beside its name, and it trots back out over the block's last 3 seconds, so its return is part of the finish.
   The timer keeps rotating through the closed notch while the pet is away, and under Reduce Motion the pet stays home.

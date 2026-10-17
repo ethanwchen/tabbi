@@ -6,11 +6,14 @@ import TabbiKit
 /// element), and on the right the method in use and the timer controls.
 /// Tapping the method swaps the panel for an in-notch method picker, and
 /// each method's (i) for its info popover, since system menus and popovers
-/// would pop outside the notch.
+/// would pop outside the notch. At the start of a break the break buddy's
+/// card (`BreakBuddyCard`) takes the timer's place while its moment lasts.
 struct StudyPanel: View {
     @ObservedObject var store: StudyStore
     /// Focus mode, whose sound and Do Not Disturb deep focus blocks use.
     let focusMode: FocusController
+    /// The break buddy, whose moment shows here for Study's breaks.
+    @ObservedObject var breakBuddy: BreakBuddyController
     @State private var overlay: StudyPanelOverlay? = StudyPanelOverlay(snapshot: StudySnapshotState.current)
 
     var body: some View {
@@ -34,6 +37,12 @@ struct StudyPanel: View {
                 if let party = store.partySession {
                     StudyPartySessionView(store: store, session: party)
                         .transition(.opacity)
+                } else if let moment = breakBuddy.cardMoment, moment.source == StudyModule.descriptor.id,
+                          let pet = breakBuddy.cardPet {
+                    BreakBuddyCard(moment: moment, pet: pet, petName: breakBuddy.petName, accent: accent,
+                                   water: breakBuddy.shownWater, isFinishing: breakBuddy.isFinishing,
+                                   done: breakBuddy.done, skip: breakBuddy.skip, addWater: breakBuddy.addWater)
+                        .transition(.opacity)
                 } else {
                     timer
                 }
@@ -41,6 +50,7 @@ struct StudyPanel: View {
         }
         .transition(.opacity)
         .motion(Theme.Motion.snappy, value: store.partySession == nil)
+        .motion(Theme.Motion.snappy, value: breakBuddy.cardMoment == nil)
         .onAppear { store.setVisible(true) }
         .onDisappear { store.setVisible(false) }
     }

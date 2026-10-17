@@ -201,6 +201,8 @@
 	<string>Mas maganda ang %@ kapag nasa Applications, kung saan puwede itong magbukas pag-log in mo at mag-update nang kusa. Kokopyahin nito ang sarili roon at magbubukas ulit.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · Naka-pause</string>
+	<key>%@, %@ left</key>
+	<string>%1$@, %2$@ pa</string>
 	<key>%@, %lld extra</key>
 	<string>%@, %lld extra</string>
 	<key>%@, limited edition: %@</key>
@@ -359,6 +361,8 @@
 	<string>Baka bina-block ito ng setting ng school o trabaho. Puwede mong i-check sa System Settings.</string>
 	<key>A shorter timer</key>
 	<string>Mas maikling timer</string>
+	<key>A slow breath in, and out</key>
+	<string>Huminga nang dahan-dahan, palabas</string>
 	<key>A soft sound when you unlock an item or reach a streak.</key>
 	<string>Isang mahinang tunog kapag may na-unlock kang item o naabot mo ang streak.</string>
 	<key>AI</key>
@@ -631,6 +635,10 @@
 	<string>Helmet ng Astronaut</string>
 	<key>At least one tab must stay</key>
 	<string>Kailangang may matirang isang tab</string>
+	<key>At the start of a break, %@ shows a short move you can copy</key>
+	<string>Sa simula ng break, magpapakita si %@ ng maikling galaw na puwede mong gayahin</string>
+	<key>At the start of a break, your pet shows a short move you can copy</key>
+	<string>Sa simula ng break, magpapakita ang alaga mo ng maikling galaw na puwede mong gayahin</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>Maglakip ng screenshot ng screen na ito (hindi kasama ang Tabbi)</string>
 	<key>Automation</key>
@@ -697,8 +705,12 @@
 	<string>Bow Tie</string>
 	<key>Break</key>
 	<string>Break</string>
+	<key>Break buddy</key>
+	<string>Break buddy</string>
 	<key>Break's over</key>
 	<string>Tapos na ang break</string>
+	<key>Breathe in slowly, then let it all out.</key>
+	<string>Huminga nang dahan-dahan, saka ilabas lahat.</string>
 	<key>Breed</key>
 	<string>Lahi</string>
 	<key>Breed colors</key>
@@ -1047,6 +1059,8 @@
 	<string>Hindi masimulan ang playlist</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>Hindi makakuha ng screenshot. Subukan ulit.</string>
+	<key>Count glasses of water</key>
+	<string>Bilangin ang baso ng tubig</string>
 	<key>Count this session for you again</key>
 	<string>Ibilang ulit para sa iyo ang session na ito</string>
 	<key>Count time in %@ as drifting</key>
@@ -1145,6 +1159,10 @@
 	<string>Kusang hanapin ang claude</string>
 	<key>Development build</key>
 	<string>Development build</string>
+	<key>Did it</key>
+	<string>Nagawa ko</string>
+	<key>Did it with %@</key>
+	<string>Nagawa kasama si %@</string>
 	<key>Did you answer the age question?</key>
 	<string>Nasagot mo na ba ang tanong tungkol sa edad?</string>
 	<key>Did you let Tabbi control %@?</key>
@@ -1465,6 +1483,8 @@
 	<string>Gintong tag</string>
 	<key>Golden Laurel</key>
 	<string>Gintong Laurel</string>
+	<key>Grab your glass and take a few sips.</key>
+	<string>Kunin ang baso at uminom nang kaunti.</string>
 	<key>Graduation Cap</key>
 	<string>Graduation Cap</string>
 	<key>Great job!</key>
@@ -1721,6 +1741,8 @@
 	<string>Hayaan ang AI mo na ilagay ang mga natitira mong task sa paligid ng calendar ngayon</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
 	<string>Hayaan ang AI mo na ilagay ang mga natitira mong task sa paligid ng calendar bukas</string>
+	<key>Let your eyes rest on something across the room or out the window.</key>
+	<string>Ipahinga ang mata sa isang bagay sa kabilang dulo ng kwarto o sa labas ng bintana.</string>
 	<key>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</key>
 	<string>Hayaang magsabi ang pet mo ng pampalakas-loob paminsan-minsan pagkatapos ng focus session, hanggang isang beses kada araw</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
@@ -1747,6 +1769,8 @@
 	<string>Naglo-load…</string>
 	<key>Location</key>
 	<string>Lokasyon</string>
+	<key>Log a glass of water</key>
+	<string>Itala ang isang baso ng tubig</string>
 	<key>Log in from Anki's Sync button once, then sync here.</key>
 	<string>Mag-log in nang isang beses mula sa Sync button ng Anki, tapos mag-sync dito.</string>
 	<key>Long break</key>
@@ -1755,6 +1779,8 @@
 	<string>Mahahabang araw, magaan na focus. Panatilihin ang kaunting ritmo.</string>
 	<key>Look</key>
 	<string>Look</string>
+	<key>Look at something far away</key>
+	<string>Tumingin sa malayo</string>
 	<key>Looking for %@…</key>
 	<string>Hinahanap ang %@…</string>
 	<key>Looking for Anki</key>
@@ -2481,6 +2507,8 @@
 	<string>Ulan</string>
 	<key>Rare</key>
 	<string>Rare</string>
+	<key>Reach your arms up high, then roll your shoulders back.</key>
+	<string>Itaas ang mga braso, saka iikot ang balikat paatras.</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Basahin ang pinakabagong Codex log (walang ipinapadala)</string>
 	<key>Read through AnkiConnect on this Mac</key>
@@ -2573,6 +2601,8 @@
 	<string>Ibalik sa Defaults</string>
 	<key>Reset to Kit Defaults</key>
 	<string>Ibalik sa Kit Defaults</string>
+	<key>Rest your eyes</key>
+	<string>Ipahinga ang mata</string>
 	<key>Restart Anki</key>
 	<string>I-restart ang Anki</string>
 	<key>Restart Anki to load it</key>
@@ -2735,6 +2765,8 @@
 	<string>Ipakita ang %@</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>Ipakita ang SoundCloud mula sa Safari o Chrome</string>
+	<key>Show a break move</key>
+	<string>Magpakita ng galaw sa break</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>Magpakita ng recap ng linggo mo sa unang bukas mo ng notch pagkalipas ng Linggo 6 pm</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -2763,6 +2795,8 @@
 	<string>Ipakita ang mga top deck sa tabi ng total ngayon</string>
 	<key>Show this in the live activity</key>
 	<string>Ipakita ito sa live activity</string>
+	<key>Show today's glasses on the break card, with a button to add one</key>
+	<string>Ipakita ang mga baso ngayong araw sa break card, may button para magdagdag</string>
 	<key>Show tomorrow's calendar</key>
 	<string>Ipakita ang calendar bukas</string>
 	<key>Show yesterday's calendar</key>
@@ -2811,6 +2845,10 @@
 	<string>Kalokohan</string>
 	<key>Silver</key>
 	<string>Pilak</string>
+	<key>Sip some water</key>
+	<string>Uminom ng kaunting tubig</string>
+	<key>Sip water</key>
+	<string>Uminom</string>
 	<key>Skip</key>
 	<string>I-skip</string>
 	<key>Skip Setup</key>
@@ -2821,12 +2859,16 @@
 	<string>I-skip ang break</string>
 	<key>Skip the review</key>
 	<string>I-skip ang review</string>
+	<key>Skip this one; nothing is counted</key>
+	<string>Laktawan muna; walang binibilang</string>
 	<key>Skip to the break</key>
 	<string>Lumaktaw sa break</string>
 	<key>Sky</key>
 	<string>Sky</string>
 	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
 	<string>Bahagi ng trabaho ang tulog. Mangarap ka na ng mga galaw para bukas.</string>
+	<key>Slow breath</key>
+	<string>Mabagal na hinga</string>
 	<key>Smooth</key>
 	<string>Smooth</string>
 	<key>Snowy Scarf</key>
@@ -2859,6 +2901,12 @@
 	<string>Malambot, may kaunting talbog.</string>
 	<key>Sprint</key>
 	<string>Sprint</string>
+	<key>Stand up</key>
+	<string>Tumayo</string>
+	<key>Stand up for a moment</key>
+	<string>Tumayo sandali</string>
+	<key>Stand, shake out your legs, and sit back down when you like.</key>
+	<string>Tumayo, igalaw-galaw ang mga binti, at umupo ulit kapag gusto mo na.</string>
 	<key>Star tag</key>
 	<string>Tag na bituin</string>
 	<key>Stars don't rush. They just keep burning.</key>
@@ -2959,6 +3007,10 @@
 	<string>Streak</string>
 	<key>Streak unavailable</key>
 	<string>Walang streak data</string>
+	<key>Stretch</key>
+	<string>Stretch</string>
+	<key>Stretch with %@</key>
+	<string>Mag-stretch kasama si %@</string>
 	<key>Studied today</key>
 	<string>Nag-aral ngayon</string>
 	<key>Study</key>
@@ -3251,6 +3303,8 @@
 	<string>Oras</string>
 	<key>Time for a %lld-minute break.</key>
 	<string>Oras na para sa %lld-minutong break.</string>
+	<key>Time for a stretch</key>
+	<string>Oras na para mag-stretch</string>
 	<key>Time in these apps counts as drifting. Websites can't be told apart, since that would need Screen Recording, so pick apps rather than sites.</key>
 	<string>Bilang na paglihis ang oras sa mga app na ito. Hindi makikilala ang websites dahil kailangan ng Screen Recording, kaya app ang piliin.</string>
 	<key>Time studied today and study sessions finished</key>
@@ -3683,6 +3737,12 @@
 	<string>Pet mo</string>
 	<key>Your pet found this on its adventure. %@</key>
 	<string>Napulot ito ng pet mo sa pakikipagsapalaran niya. %@</string>
+	<key>Your pet may suggest this move. Click to turn it off</key>
+	<string>Puwedeng imungkahi ng alaga mo ang galaw na ito. I-click para i-off</string>
+	<key>Your pet picks one move per break and keeps it short. Skipping is always fine, and nothing counts against you. Glasses of water stay on this Mac.</key>
+	<string>Isang maikling galaw bawat break ang pinipili ng alaga mo. Laging okay lang lumaktaw, at walang binibilang laban sa iyo. Nananatili sa Mac na ito ang mga baso ng tubig.</string>
+	<key>Your pet won't suggest this move. Click to turn it on</key>
+	<string>Hindi ito imumungkahi ng alaga mo. I-click para i-on</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>Hindi puwede ang pangalan ng pet mo. Palitan ito sa Closet.</string>
 	<key>Your pet, today's streak and the running timer.</key>

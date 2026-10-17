@@ -141,15 +141,20 @@ public struct TickerPet: Hashable, Sendable {
     /// change as the pet leaves and returns; the wing asks it where the pet
     /// is (`PetAdventure.phase(at:)`), and keeps it home under Reduce Motion.
     public var adventure: PetAdventure?
+    /// The break move the pet is modeling for the user to copy, while it
+    /// shows (`PetPresence.breakMoment`); nil otherwise. The wing loops the
+    /// move's clip with its countdown beside it.
+    public var breakMoment: BreakMoment?
 
     public init(profile: PetProfile, mood: PetMood, moodSince: Date? = nil, cheer: PetCheer? = nil,
-                unlock: UnlockProgress? = nil, adventure: PetAdventure? = nil) {
+                unlock: UnlockProgress? = nil, adventure: PetAdventure? = nil, breakMoment: BreakMoment? = nil) {
         self.profile = profile
         self.mood = mood
         self.moodSince = moodSince
         self.cheer = cheer
         self.unlock = unlock
         self.adventure = adventure
+        self.breakMoment = breakMoment
     }
 
     /// The unlock hint to draw now: only while the pet is awake between
@@ -157,7 +162,9 @@ public struct TickerPet: Hashable, Sendable {
     /// break, a nap or night doze, or a sip, so it stays out of the way of
     /// work and of the pet's own states.
     public var unlockHint: UnlockProgress? {
-        guard mood == .awake, adventure == nil, !isSipping, let unlock, unlock.isNear else { return nil }
+        guard mood == .awake, adventure == nil, breakMoment == nil, !isSipping, let unlock, unlock.isNear else {
+            return nil
+        }
         return unlock
     }
 
@@ -391,6 +398,9 @@ public struct TickerSources: Equatable, Sendable {
         if enabled(.pet), let sleepsAt = pet?.sleepsAt(focus: focus, after: now) {
             dates.append(sleepsAt)
         }
+        if enabled(.pet), let moment = pet?.breakMoment {
+            dates += [moment.startedAt, moment.endsAt].filter { $0 > now }
+        }
         return dates.min()
     }
 
@@ -458,7 +468,8 @@ public struct TickerSources: Equatable, Sendable {
             // one the pet follows when it may move.
             return .pet(TickerPet(profile: pet.profile, mood: pet.mood(focus: focus, at: now), moodSince: since,
                                   unlock: pet.nextUnlock.flatMap { $0.isNear ? $0 : nil },
-                                  adventure: PetAdventure.plan(for: focus, reduceMotion: false)))
+                                  adventure: PetAdventure.plan(for: focus, reduceMotion: false),
+                                  breakMoment: pet.breakMoment.flatMap { $0.isShowing(at: now) ? $0 : nil }))
         case .party:
             // Alone in a party there are no other pets to show.
             guard let party, party.memberCount > 1 else { return nil }

@@ -11,7 +11,10 @@ import TabbiKitCore
 /// ticker shows it on a break), without sparkles. Partway through a long
 /// focus block it trots off into the notch on a little adventure
 /// (`PetAdventure`), leaving a paw print in its spot, and trots back out as
-/// the block ends; under Reduce Motion it stays.
+/// the block ends; under Reduce Motion it stays. At the start of a break
+/// the break buddy may give it a move to model (`TickerPet.breakMoment`):
+/// it loops the move's clip (`PetAnimator.Activity.guiding`) until the
+/// moment ends, then goes back to its coffee.
 ///
 /// Owns its own `PetPlayer`, kept for as long as the pet stays on screen,
 /// so mood changes play the real fall-asleep and stretch-awake clips
@@ -41,11 +44,13 @@ struct NotchPetWing: View {
         // A wing that appears mid-cheer (the ticker switched to the pet for
         // it) starts the hop at the cheer's start, so it never lags.
         let cheer = pet.cheer.flatMap { $0.isShowing(at: .now) ? $0 : nil }
+        // Likewise a wing drawn mid-moment picks the move up where it is.
+        let moment = pet.breakMoment.flatMap { $0.isShowing(at: .now) ? $0 : nil }
         _cheered = State(initialValue: cheer?.id)
         _player = StateObject(wrappedValue: {
             let player = PetPlayer(
-                profile: pet.profile, asleep: pet.mood == .asleep, activity: PetAnimator.Activity(pet.mood),
-                activitySince: pet.moodSince, at: cheer?.startedAt ?? .now,
+                profile: pet.profile, asleep: pet.mood == .asleep, activity: Self.activity(for: pet),
+                activitySince: pet.moodSince, at: cheer?.startedAt ?? moment?.startedAt ?? .now,
                 ceiling: NotchPreviewLayout.petCeilingRow)
             if let cheer { player.send(.celebrate, at: cheer.startedAt) }
             return player
@@ -67,11 +72,16 @@ struct NotchPetWing: View {
             }
         }
         .onChange(of: pet.profile) { _, profile in player.update(profile: profile) }
-        .onChange(of: pet.mood) { _, mood in
-            player.send(.activity(PetAnimator.Activity(mood)))
-            player.send(mood == .asleep ? .sleep : .wake)
-        }
+        .onChange(of: Self.activity(for: pet)) { _, activity in player.send(.activity(activity)) }
+        .onChange(of: pet.mood) { _, mood in player.send(mood == .asleep ? .sleep : .wake) }
         .task(id: pet.cheer) { await dance() }
+    }
+
+    /// What the pet rests in: the break move it models while a moment
+    /// shows, otherwise what its mood calls for.
+    static func activity(for pet: TickerPet) -> PetAnimator.Activity {
+        if let moment = pet.breakMoment { return .guiding(BreakProps.standard.animation(for: moment.move)) }
+        return PetAnimator.Activity(pet.mood)
     }
 
     /// How far the pet trots toward the notch before it is out of sight.
@@ -107,6 +117,8 @@ struct NotchPetWing: View {
             // pixels empty, so lift the pet off the notch's bottom edge and
             // line its fur up with the inset the trailing text keeps.
             .offset(x: -3, y: -NotchPreviewLayout.petLift)
+            .accessibilityLabel(pet.breakMoment.map { $0.move.title(petName: BreakMove.buddyName(for: pet.profile)) }
+                ?? "\(pet.profile.name), \(pet.profile.breed.displayName)")
     }
 
     /// Plays the cheer's hops: two for a dance, one for a crown or a sip, and only

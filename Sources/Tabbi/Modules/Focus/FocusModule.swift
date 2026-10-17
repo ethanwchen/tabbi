@@ -20,6 +20,7 @@ final class FocusModule: NotchModule {
     /// Internal so app tests can drive focus mode.
     let focusMode: FocusController
     private let providers: ProviderHub
+    private let breakBuddy: BreakBuddyController
     /// Focus mode as it was before the last kit switch, for undo.
     private var settingsBeforeSwitch: FocusSettings?
     private var cancellables: Set<AnyCancellable> = []
@@ -28,6 +29,7 @@ final class FocusModule: NotchModule {
         store = context.focusTimer
         focusMode = context.focusMode
         providers = context.providers
+        breakBuddy = context.breakBuddy
         // A kit's focus sounds and mode defaults, also while this tab is off,
         // since Today and Study run focus mode too.
         // Undo puts back the sound the user had before the switch.
@@ -48,7 +50,7 @@ final class FocusModule: NotchModule {
     }
 
     func makePanel() -> AnyView {
-        AnyView(FocusPanel(store: store, focusMode: focusMode, providers: providers))
+        AnyView(FocusPanel(store: store, focusMode: focusMode, providers: providers, breakBuddy: breakBuddy))
     }
 
     func makeSettingsPane() -> SettingsPane? { .focus(focusMode) }
