@@ -1,4 +1,5 @@
 import { test } from "@playwright/test";
+import { LANGUAGES, THEMES } from "./snapshot";
 
 /*
  * Renders the kit gallery (gallery.html) to tests/snapshots/output/<scale>/gallery-*.png:
@@ -7,8 +8,6 @@ import { test } from "@playwright/test";
  * frame). Open the PNGs and review them against docs/design/guidelines.md;
  * nothing here compares pixels.
  */
-const THEMES = ["midnight", "graphite", "liquidGlass", "neon", "monochrome", "cozy", "sakura", "forest"];
-const LANGUAGES = ["en", "de", "ja", "ar"];
 
 const PAGES: Record<string, string> = {};
 for (const lang of LANGUAGES) PAGES[`gallery-midnight-${lang}`] = `theme=midnight&lang=${lang}`;

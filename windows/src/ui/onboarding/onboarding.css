@@ -506,7 +506,7 @@
   width: 16px;
   height: 16px;
   border-radius: 4px;
-  color: var(--background);
+  color: var(--on-accent);
   background: var(--accent);
 }
 

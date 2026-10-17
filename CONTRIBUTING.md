@@ -90,13 +90,16 @@ Most additions are a few lines in one place, plus a test.
 Themes are data in `Sources/TabbiKitCore/Themes/themes.json`, which the Windows app will read too; `shared/schemas/themes.v1.schema.json` describes the format.
 [docs/design/themes.md](docs/design/themes.md) explains what a theme controls and the rules every theme keeps.
 
-1. Add the theme to the `themes` list in `themes.json`, in picker order, with an `id`, a name, a one-line summary, a `family` (`classic` or `cozy`, which picks its group in Settings > Look) and a `palette` (each color is `{"white": w}` or `red`, `green` and `blue`, with an optional `opacity`).
+1. Add the theme to the `themes` list in `themes.json`, in picker order, with an `id`, a name, a one-line summary, a `family` (`classic` or `cozy`) and a `palette` (each color is `{"white": w}` or `red`, `green` and `blue`, with an optional `opacity`).
+   A sweet theme also sets `"group": "sweet"`, which picks its row in Settings > Look; keep its `family` `cozy`, since builds from before groups only know `classic` and `cozy`.
 2. Choose its `accents` (`original`, `monochrome`, `vivid` or `pastel`), `typeface`, `motion`, `controls` (`glass` draws Liquid Glass on macOS 26, a translucent material on macOS 14 and 15, and a solid surface when Reduce Transparency is on) and `surfaces`.
+   To give the theme a key color of its own, add `accent` and `onAccent` to the palette (see [docs/design/themes.md](docs/design/themes.md#theme-accents)).
 3. Update the order in `ThemeTests`, add the id to the `theme` row in [docs/kits.md](docs/kits.md), and re-record the theme golden fixture with `TABBI_RECORD_FIXTURES=1 swift test --filter ThemeGoldenTests`.
    Swift code only needs a `ThemeID` constant in `AppTheme.swift` if it names the theme.
+4. Translate its name (key `theme.<id>`) and its summary (keyed by its English text) in every language with `scripts/l10n-add.py` (see [docs/localization.md](docs/localization.md)); `LocalizationTests` checks both.
 
 Keep the panel `background` opaque black and any `glow` at 0.3 opacity or less, so the open panel still meets the hardware notch.
-`ThemeTests` checks both, and checks that primary, secondary and tertiary text stay readable on a card lit by the glow.
+`ThemeTests` checks both, and checks that primary, secondary and tertiary text stay readable on a card lit by the glow, and that a theme accent reads on every card.
 Render every panel in the new theme and look at each one:
 
 ```sh

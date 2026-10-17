@@ -550,6 +550,26 @@
           "red" : 1
         }
       },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0.26,
+          "green" : 0.62,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "identityAccent" : {
+          "blue" : 0.26,
+          "green" : 0.62,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        }
+      },
       "summary" : "Hardware black, calm and crisp.",
       "surfaces" : "flat",
       "typeface" : "rounded"
@@ -627,6 +647,26 @@
           "green" : 0.74,
           "opacity" : 1,
           "red" : 1
+        }
+      },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0.26,
+          "green" : 0.62,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "identityAccent" : {
+          "blue" : 0.26,
+          "green" : 0.62,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
         }
       },
       "summary" : "Cool gray surfaces and plain SF type.",
@@ -708,6 +748,26 @@
           "red" : 1
         }
       },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0.26,
+          "green" : 0.62,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "identityAccent" : {
+          "blue" : 0.26,
+          "green" : 0.62,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        }
+      },
       "summary" : "Frosted glass cards over a cool blue glow.",
       "surfaces" : "glass",
       "typeface" : "standard"
@@ -787,6 +847,26 @@
           "red" : 1
         }
       },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0,
+          "green" : 0.48648648648648646,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "identityAccent" : {
+          "blue" : 0,
+          "green" : 0.48648648648648646,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        }
+      },
       "summary" : "Vivid accents with a violet glow.",
       "surfaces" : "flat",
       "typeface" : "rounded"
@@ -858,6 +938,26 @@
           "green" : 0.78,
           "opacity" : 1,
           "red" : 0.78
+        }
+      },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0.827032,
+          "green" : 0.827032,
+          "opacity" : 1,
+          "red" : 0.827032
+        },
+        "identityAccent" : {
+          "blue" : 0.827032,
+          "green" : 0.827032,
+          "opacity" : 1,
+          "red" : 0.827032
+        },
+        "onAccent" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
         }
       },
       "summary" : "Grayscale everything, no distractions.",
@@ -939,6 +1039,26 @@
           "red" : 0.98
         }
       },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "identityAccent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        }
+      },
       "summary" : "Warm cream and peach, soft and gentle.",
       "surfaces" : "flat",
       "typeface" : "rounded"
@@ -951,6 +1071,12 @@
       "motion" : "gentle",
       "name" : "Sakura",
       "palette" : {
+        "accent" : {
+          "blue" : 0.69,
+          "green" : 0.62,
+          "opacity" : 1,
+          "red" : 1
+        },
         "background" : {
           "blue" : 0,
           "green" : 0,
@@ -968,6 +1094,12 @@
           "green" : 0.52,
           "opacity" : 0.18,
           "red" : 0.98
+        },
+        "onAccent" : {
+          "blue" : 0.12,
+          "green" : 0.06,
+          "opacity" : 1,
+          "red" : 0.3
         },
         "primaryText" : {
           "blue" : 0.964,
@@ -1016,6 +1148,26 @@
           "green" : 0.78,
           "opacity" : 1,
           "red" : 0.98
+        }
+      },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0.69,
+          "green" : 0.62,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "identityAccent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0.12,
+          "green" : 0.06,
+          "opacity" : 1,
+          "red" : 0.3
         }
       },
       "summary" : "Cherry blossom pink on warm black.",
@@ -1097,7 +1249,1137 @@
           "red" : 0.98
         }
       },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "identityAccent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        }
+      },
       "summary" : "Mossy sage greens, quiet as a walk.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "pastel",
+      "controls" : "solid",
+      "family" : "sweet",
+      "id" : "blueberryMilk",
+      "motion" : "gentle",
+      "name" : "Blueberry Milk",
+      "palette" : {
+        "accent" : {
+          "blue" : 1,
+          "green" : 0.824,
+          "opacity" : 1,
+          "red" : 0.62
+        },
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.612,
+          "green" : 0.612,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "glow" : {
+          "blue" : 1,
+          "green" : 0.722,
+          "opacity" : 0.26,
+          "red" : 0.424
+        },
+        "onAccent" : {
+          "blue" : 0.251,
+          "green" : 0.145,
+          "opacity" : 1,
+          "red" : 0.043
+        },
+        "primaryText" : {
+          "blue" : 1,
+          "green" : 0.98,
+          "opacity" : 1,
+          "red" : 0.961
+        },
+        "secondaryText" : {
+          "blue" : 1,
+          "green" : 0.961,
+          "opacity" : 0.83,
+          "red" : 0.918
+        },
+        "stroke" : {
+          "blue" : 1,
+          "green" : 0.961,
+          "opacity" : 0.11,
+          "red" : 0.918
+        },
+        "success" : {
+          "blue" : 0.71,
+          "green" : 0.89,
+          "opacity" : 1,
+          "red" : 0.608
+        },
+        "surface" : {
+          "blue" : 1,
+          "green" : 0.961,
+          "opacity" : 0.08,
+          "red" : 0.918
+        },
+        "surfaceHover" : {
+          "blue" : 1,
+          "green" : 0.961,
+          "opacity" : 0.14,
+          "red" : 0.918
+        },
+        "tertiaryText" : {
+          "blue" : 1,
+          "green" : 0.961,
+          "opacity" : 0.67,
+          "red" : 0.918
+        },
+        "warning" : {
+          "blue" : 0.541,
+          "green" : 0.851,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "resolved" : {
+        "accent" : {
+          "blue" : 1,
+          "green" : 0.824,
+          "opacity" : 1,
+          "red" : 0.62
+        },
+        "identityAccent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0.251,
+          "green" : 0.145,
+          "opacity" : 1,
+          "red" : 0.043
+        }
+      },
+      "summary" : "Baby blue and cloud white, like a carton of blueberry milk.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "pastel",
+      "controls" : "solid",
+      "family" : "sweet",
+      "id" : "strawberryMilk",
+      "motion" : "gentle",
+      "name" : "Strawberry Milk",
+      "palette" : {
+        "accent" : {
+          "blue" : 0.816,
+          "green" : 0.702,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.612,
+          "green" : 0.612,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "glow" : {
+          "blue" : 0.749,
+          "green" : 0.561,
+          "opacity" : 0.26,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0.157,
+          "green" : 0.063,
+          "opacity" : 1,
+          "red" : 0.29
+        },
+        "primaryText" : {
+          "blue" : 0.98,
+          "green" : 0.965,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "secondaryText" : {
+          "blue" : 0.953,
+          "green" : 0.922,
+          "opacity" : 0.84,
+          "red" : 1
+        },
+        "stroke" : {
+          "blue" : 0.953,
+          "green" : 0.922,
+          "opacity" : 0.11,
+          "red" : 1
+        },
+        "success" : {
+          "blue" : 0.69,
+          "green" : 0.902,
+          "opacity" : 1,
+          "red" : 0.659
+        },
+        "surface" : {
+          "blue" : 0.953,
+          "green" : 0.922,
+          "opacity" : 0.08,
+          "red" : 1
+        },
+        "surfaceHover" : {
+          "blue" : 0.953,
+          "green" : 0.922,
+          "opacity" : 0.14,
+          "red" : 1
+        },
+        "tertiaryText" : {
+          "blue" : 0.953,
+          "green" : 0.922,
+          "opacity" : 0.68,
+          "red" : 1
+        },
+        "warning" : {
+          "blue" : 0.541,
+          "green" : 0.851,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0.816,
+          "green" : 0.702,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "identityAccent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0.157,
+          "green" : 0.063,
+          "opacity" : 1,
+          "red" : 0.29
+        }
+      },
+      "summary" : "Candy pink and milk, sweet but never loud.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "pastel",
+      "controls" : "solid",
+      "family" : "sweet",
+      "id" : "taro",
+      "motion" : "gentle",
+      "name" : "Taro",
+      "palette" : {
+        "accent" : {
+          "blue" : 1,
+          "green" : 0.714,
+          "opacity" : 1,
+          "red" : 0.804
+        },
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.612,
+          "green" : 0.612,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "glow" : {
+          "blue" : 1,
+          "green" : 0.549,
+          "opacity" : 0.26,
+          "red" : 0.682
+        },
+        "onAccent" : {
+          "blue" : 0.29,
+          "green" : 0.082,
+          "opacity" : 1,
+          "red" : 0.137
+        },
+        "primaryText" : {
+          "blue" : 1,
+          "green" : 0.965,
+          "opacity" : 1,
+          "red" : 0.976
+        },
+        "secondaryText" : {
+          "blue" : 1,
+          "green" : 0.925,
+          "opacity" : 0.81,
+          "red" : 0.949
+        },
+        "stroke" : {
+          "blue" : 1,
+          "green" : 0.925,
+          "opacity" : 0.11,
+          "red" : 0.949
+        },
+        "success" : {
+          "blue" : 0.69,
+          "green" : 0.902,
+          "opacity" : 1,
+          "red" : 0.659
+        },
+        "surface" : {
+          "blue" : 1,
+          "green" : 0.925,
+          "opacity" : 0.08,
+          "red" : 0.949
+        },
+        "surfaceHover" : {
+          "blue" : 1,
+          "green" : 0.925,
+          "opacity" : 0.14,
+          "red" : 0.949
+        },
+        "tertiaryText" : {
+          "blue" : 1,
+          "green" : 0.925,
+          "opacity" : 0.65,
+          "red" : 0.949
+        },
+        "warning" : {
+          "blue" : 0.541,
+          "green" : 0.851,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "resolved" : {
+        "accent" : {
+          "blue" : 1,
+          "green" : 0.714,
+          "opacity" : 1,
+          "red" : 0.804
+        },
+        "identityAccent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0.29,
+          "green" : 0.082,
+          "opacity" : 1,
+          "red" : 0.137
+        }
+      },
+      "summary" : "Lilac bubble tea, dreamy and soft.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "pastel",
+      "controls" : "solid",
+      "family" : "sweet",
+      "id" : "matchaLatte",
+      "motion" : "gentle",
+      "name" : "Matcha Latte",
+      "palette" : {
+        "accent" : {
+          "blue" : 0.549,
+          "green" : 0.89,
+          "opacity" : 1,
+          "red" : 0.761
+        },
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.612,
+          "green" : 0.612,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "glow" : {
+          "blue" : 0.322,
+          "green" : 0.757,
+          "opacity" : 0.22,
+          "red" : 0.549
+        },
+        "onAccent" : {
+          "blue" : 0.047,
+          "green" : 0.18,
+          "opacity" : 1,
+          "red" : 0.118
+        },
+        "primaryText" : {
+          "blue" : 0.949,
+          "green" : 0.988,
+          "opacity" : 1,
+          "red" : 0.973
+        },
+        "secondaryText" : {
+          "blue" : 0.894,
+          "green" : 0.973,
+          "opacity" : 0.77,
+          "red" : 0.941
+        },
+        "stroke" : {
+          "blue" : 0.894,
+          "green" : 0.973,
+          "opacity" : 0.11,
+          "red" : 0.941
+        },
+        "success" : {
+          "blue" : 0.753,
+          "green" : 0.89,
+          "opacity" : 1,
+          "red" : 0.561
+        },
+        "surface" : {
+          "blue" : 0.894,
+          "green" : 0.973,
+          "opacity" : 0.08,
+          "red" : 0.941
+        },
+        "surfaceHover" : {
+          "blue" : 0.894,
+          "green" : 0.973,
+          "opacity" : 0.14,
+          "red" : 0.941
+        },
+        "tertiaryText" : {
+          "blue" : 0.894,
+          "green" : 0.973,
+          "opacity" : 0.63,
+          "red" : 0.941
+        },
+        "warning" : {
+          "blue" : 0.541,
+          "green" : 0.851,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0.549,
+          "green" : 0.89,
+          "opacity" : 1,
+          "red" : 0.761
+        },
+        "identityAccent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0.047,
+          "green" : 0.18,
+          "opacity" : 1,
+          "red" : 0.118
+        }
+      },
+      "summary" : "Whisked green tea and oat milk, fresh and grounded.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "pastel",
+      "controls" : "solid",
+      "family" : "sweet",
+      "id" : "bananaMilk",
+      "motion" : "gentle",
+      "name" : "Banana Milk",
+      "palette" : {
+        "accent" : {
+          "blue" : 0.541,
+          "green" : 0.878,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.612,
+          "green" : 0.612,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "glow" : {
+          "blue" : 0.369,
+          "green" : 0.824,
+          "opacity" : 0.2,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0,
+          "green" : 0.165,
+          "opacity" : 1,
+          "red" : 0.227
+        },
+        "primaryText" : {
+          "blue" : 0.941,
+          "green" : 0.984,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "secondaryText" : {
+          "blue" : 0.878,
+          "green" : 0.969,
+          "opacity" : 0.79,
+          "red" : 1
+        },
+        "stroke" : {
+          "blue" : 0.878,
+          "green" : 0.969,
+          "opacity" : 0.11,
+          "red" : 1
+        },
+        "success" : {
+          "blue" : 0.69,
+          "green" : 0.902,
+          "opacity" : 1,
+          "red" : 0.659
+        },
+        "surface" : {
+          "blue" : 0.878,
+          "green" : 0.969,
+          "opacity" : 0.08,
+          "red" : 1
+        },
+        "surfaceHover" : {
+          "blue" : 0.878,
+          "green" : 0.969,
+          "opacity" : 0.14,
+          "red" : 1
+        },
+        "tertiaryText" : {
+          "blue" : 0.878,
+          "green" : 0.969,
+          "opacity" : 0.64,
+          "red" : 1
+        },
+        "warning" : {
+          "blue" : 0.42,
+          "green" : 0.722,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0.541,
+          "green" : 0.878,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "identityAccent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0,
+          "green" : 0.165,
+          "opacity" : 1,
+          "red" : 0.227
+        }
+      },
+      "summary" : "Butter yellow sunshine, happy and bright.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "pastel",
+      "controls" : "solid",
+      "family" : "sweet",
+      "id" : "deepSea",
+      "motion" : "gentle",
+      "name" : "Deep Sea",
+      "palette" : {
+        "accent" : {
+          "blue" : 1,
+          "green" : 0.682,
+          "opacity" : 1,
+          "red" : 0.498
+        },
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.612,
+          "green" : 0.612,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "glow" : {
+          "blue" : 0.941,
+          "green" : 0.337,
+          "opacity" : 0.3,
+          "red" : 0.118
+        },
+        "onAccent" : {
+          "blue" : 0.204,
+          "green" : 0.086,
+          "opacity" : 1,
+          "red" : 0.024
+        },
+        "primaryText" : {
+          "blue" : 1,
+          "green" : 0.969,
+          "opacity" : 1,
+          "red" : 0.953
+        },
+        "secondaryText" : {
+          "blue" : 1,
+          "green" : 0.91,
+          "opacity" : 0.77,
+          "red" : 0.867
+        },
+        "stroke" : {
+          "blue" : 1,
+          "green" : 0.91,
+          "opacity" : 0.11,
+          "red" : 0.867
+        },
+        "success" : {
+          "blue" : 0.718,
+          "green" : 0.906,
+          "opacity" : 1,
+          "red" : 0.431
+        },
+        "surface" : {
+          "blue" : 1,
+          "green" : 0.91,
+          "opacity" : 0.09,
+          "red" : 0.867
+        },
+        "surfaceHover" : {
+          "blue" : 1,
+          "green" : 0.91,
+          "opacity" : 0.15,
+          "red" : 0.867
+        },
+        "tertiaryText" : {
+          "blue" : 1,
+          "green" : 0.91,
+          "opacity" : 0.62,
+          "red" : 0.867
+        },
+        "warning" : {
+          "blue" : 0.541,
+          "green" : 0.851,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "resolved" : {
+        "accent" : {
+          "blue" : 1,
+          "green" : 0.682,
+          "opacity" : 1,
+          "red" : 0.498
+        },
+        "identityAccent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0.204,
+          "green" : 0.086,
+          "opacity" : 1,
+          "red" : 0.024
+        }
+      },
+      "summary" : "Midnight ocean blue with a soft periwinkle glow.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "pastel",
+      "controls" : "solid",
+      "family" : "sweet",
+      "id" : "cherrySoda",
+      "motion" : "gentle",
+      "name" : "Cherry Soda",
+      "palette" : {
+        "accent" : {
+          "blue" : 0.612,
+          "green" : 0.49,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.627,
+          "green" : 0.69,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "glow" : {
+          "blue" : 0.31,
+          "green" : 0.125,
+          "opacity" : 0.28,
+          "red" : 0.851
+        },
+        "onAccent" : {
+          "blue" : 0.063,
+          "green" : 0.02,
+          "opacity" : 1,
+          "red" : 0.18
+        },
+        "primaryText" : {
+          "blue" : 0.969,
+          "green" : 0.957,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "secondaryText" : {
+          "blue" : 0.922,
+          "green" : 0.894,
+          "opacity" : 0.74,
+          "red" : 1
+        },
+        "stroke" : {
+          "blue" : 0.922,
+          "green" : 0.894,
+          "opacity" : 0.11,
+          "red" : 1
+        },
+        "success" : {
+          "blue" : 0.659,
+          "green" : 0.89,
+          "opacity" : 1,
+          "red" : 0.561
+        },
+        "surface" : {
+          "blue" : 0.922,
+          "green" : 0.894,
+          "opacity" : 0.08,
+          "red" : 1
+        },
+        "surfaceHover" : {
+          "blue" : 0.922,
+          "green" : 0.894,
+          "opacity" : 0.14,
+          "red" : 1
+        },
+        "tertiaryText" : {
+          "blue" : 0.922,
+          "green" : 0.894,
+          "opacity" : 0.6,
+          "red" : 1
+        },
+        "warning" : {
+          "blue" : 0.478,
+          "green" : 0.824,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0.612,
+          "green" : 0.49,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "identityAccent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0.063,
+          "green" : 0.02,
+          "opacity" : 1,
+          "red" : 0.18
+        }
+      },
+      "summary" : "Deep cherry red, fizzy and warm, made for late sessions.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "pastel",
+      "controls" : "solid",
+      "family" : "sweet",
+      "id" : "stargazer",
+      "motion" : "gentle",
+      "name" : "Stargazer",
+      "palette" : {
+        "accent" : {
+          "blue" : 0.431,
+          "green" : 0.827,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.612,
+          "green" : 0.612,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "glow" : {
+          "blue" : 0.851,
+          "green" : 0.208,
+          "opacity" : 0.3,
+          "red" : 0.29
+        },
+        "onAccent" : {
+          "blue" : 0,
+          "green" : 0.11,
+          "opacity" : 1,
+          "red" : 0.165
+        },
+        "primaryText" : {
+          "blue" : 1,
+          "green" : 0.957,
+          "opacity" : 1,
+          "red" : 0.965
+        },
+        "secondaryText" : {
+          "blue" : 1,
+          "green" : 0.886,
+          "opacity" : 0.75,
+          "red" : 0.902
+        },
+        "stroke" : {
+          "blue" : 1,
+          "green" : 0.886,
+          "opacity" : 0.11,
+          "red" : 0.902
+        },
+        "success" : {
+          "blue" : 0.722,
+          "green" : 0.89,
+          "opacity" : 1,
+          "red" : 0.561
+        },
+        "surface" : {
+          "blue" : 1,
+          "green" : 0.886,
+          "opacity" : 0.09,
+          "red" : 0.902
+        },
+        "surfaceHover" : {
+          "blue" : 1,
+          "green" : 0.886,
+          "opacity" : 0.15,
+          "red" : 0.902
+        },
+        "tertiaryText" : {
+          "blue" : 1,
+          "green" : 0.886,
+          "opacity" : 0.61,
+          "red" : 0.902
+        },
+        "warning" : {
+          "blue" : 0.42,
+          "green" : 0.722,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0.431,
+          "green" : 0.827,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "identityAccent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0,
+          "green" : 0.11,
+          "opacity" : 1,
+          "red" : 0.165
+        }
+      },
+      "summary" : "Indigo night sky with a little gold star.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "pastel",
+      "controls" : "solid",
+      "family" : "sweet",
+      "id" : "mintChoco",
+      "motion" : "gentle",
+      "name" : "Mint Choco",
+      "palette" : {
+        "accent" : {
+          "blue" : 0.812,
+          "green" : 0.937,
+          "opacity" : 1,
+          "red" : 0.549
+        },
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.612,
+          "green" : 0.612,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "glow" : {
+          "blue" : 0.204,
+          "green" : 0.357,
+          "opacity" : 0.3,
+          "red" : 0.604
+        },
+        "onAccent" : {
+          "blue" : 0.125,
+          "green" : 0.165,
+          "opacity" : 1,
+          "red" : 0.039
+        },
+        "primaryText" : {
+          "blue" : 0.98,
+          "green" : 1,
+          "opacity" : 1,
+          "red" : 0.949
+        },
+        "secondaryText" : {
+          "blue" : 0.965,
+          "green" : 1,
+          "opacity" : 0.74,
+          "red" : 0.902
+        },
+        "stroke" : {
+          "blue" : 0.741,
+          "green" : 0.851,
+          "opacity" : 0.11,
+          "red" : 1
+        },
+        "success" : {
+          "blue" : 0.561,
+          "green" : 0.91,
+          "opacity" : 1,
+          "red" : 0.788
+        },
+        "surface" : {
+          "blue" : 0.741,
+          "green" : 0.851,
+          "opacity" : 0.1,
+          "red" : 1
+        },
+        "surfaceHover" : {
+          "blue" : 0.741,
+          "green" : 0.851,
+          "opacity" : 0.16,
+          "red" : 1
+        },
+        "tertiaryText" : {
+          "blue" : 0.965,
+          "green" : 1,
+          "opacity" : 0.6,
+          "red" : 0.902
+        },
+        "warning" : {
+          "blue" : 0.541,
+          "green" : 0.851,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "resolved" : {
+        "accent" : {
+          "blue" : 0.812,
+          "green" : 0.937,
+          "opacity" : 1,
+          "red" : 0.549
+        },
+        "identityAccent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0.125,
+          "green" : 0.165,
+          "opacity" : 1,
+          "red" : 0.039
+        }
+      },
+      "summary" : "Mint chip ice cream: cool mint over a cocoa glow.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "pastel",
+      "controls" : "solid",
+      "family" : "sweet",
+      "id" : "cottonCandy",
+      "motion" : "gentle",
+      "name" : "Cotton Candy",
+      "palette" : {
+        "accent" : {
+          "blue" : 1,
+          "green" : 0.824,
+          "opacity" : 1,
+          "red" : 0.62
+        },
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.612,
+          "green" : 0.612,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "glow" : {
+          "blue" : 0.796,
+          "green" : 0.549,
+          "opacity" : 0.24,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0.251,
+          "green" : 0.145,
+          "opacity" : 1,
+          "red" : 0.043
+        },
+        "primaryText" : {
+          "blue" : 1,
+          "green" : 0.973,
+          "opacity" : 1,
+          "red" : 0.988
+        },
+        "secondaryText" : {
+          "blue" : 1,
+          "green" : 0.933,
+          "opacity" : 0.81,
+          "red" : 0.969
+        },
+        "stroke" : {
+          "blue" : 1,
+          "green" : 0.933,
+          "opacity" : 0.11,
+          "red" : 0.969
+        },
+        "success" : {
+          "blue" : 0.69,
+          "green" : 0.902,
+          "opacity" : 1,
+          "red" : 0.659
+        },
+        "surface" : {
+          "blue" : 1,
+          "green" : 0.933,
+          "opacity" : 0.08,
+          "red" : 0.969
+        },
+        "surfaceHover" : {
+          "blue" : 1,
+          "green" : 0.933,
+          "opacity" : 0.14,
+          "red" : 0.969
+        },
+        "tertiaryText" : {
+          "blue" : 1,
+          "green" : 0.933,
+          "opacity" : 0.65,
+          "red" : 0.969
+        },
+        "warning" : {
+          "blue" : 0.541,
+          "green" : 0.851,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "resolved" : {
+        "accent" : {
+          "blue" : 1,
+          "green" : 0.824,
+          "opacity" : 1,
+          "red" : 0.62
+        },
+        "identityAccent" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "onAccent" : {
+          "blue" : 0.251,
+          "green" : 0.145,
+          "opacity" : 1,
+          "red" : 0.043
+        }
+      },
+      "summary" : "Pink sky, baby blue sugar: the fair at dusk.",
       "surfaces" : "flat",
       "typeface" : "rounded"
     }

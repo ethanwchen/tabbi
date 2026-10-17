@@ -402,7 +402,7 @@ private struct StudyTimerChip: View {
             Text(title)
                 .font(Theme.Typography.caption.weight(.semibold))
                 .monospacedDigit()
-                .foregroundStyle(isOn ? Theme.Palette.background : Theme.Palette.secondaryText)
+                .foregroundStyle(isOn ? Theme.Palette.onAccent : Theme.Palette.secondaryText)
                 .padding(.horizontal, Theme.Spacing.s)
                 .frame(height: 22)
                 .background(Capsule().fill(isOn ? accent : (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)))
@@ -697,7 +697,7 @@ private struct StudyPrimaryButton: View {
                     .font(Theme.Typography.bodyEmphasis)
                     .contentTransition(.opacity)
             }
-            .foregroundStyle(Theme.Palette.background)
+            .foregroundStyle(Theme.Palette.onAccent)
             .padding(.horizontal, Theme.Spacing.m)
             .frame(height: 28)
             .background(Capsule().fill(accent.opacity(hovering ? 1 : 0.88)))

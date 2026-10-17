@@ -23,13 +23,12 @@ import type { ModuleDescriptor } from "../../../core/modules/moduleDescriptor";
 import type { ModuleID } from "../../../core/modules/moduleId";
 import type { ModuleLayout } from "../../../core/modules/moduleLayout";
 import { RowReorderDrag } from "../../../core/modules/rowReorderDrag";
-import { useTheme, useTransition } from "../../kit/context";
+import { useTransition } from "../../kit/context";
 import { Icon } from "../../kit/Icon";
 import { Picker } from "../../kit/Picker";
 import { SettingsGroup } from "../../kit/SettingsGroup";
 import { Sheet } from "../../kit/Sheet";
 import { useTactile } from "../../kit/tactile";
-import { accentCss } from "../../kit/tokens";
 import { Tooltip } from "../../kit/Tooltip";
 import { KitImportReviewSheet, KitQuestionsSheet } from "./KitSheets";
 import { ModuleIcon, SettingsButton, SettingsMessage } from "./parts";
@@ -347,7 +346,6 @@ interface TabReorderListProps {
  */
 function TabReorderList({ app, layout, onChange, onOptions }: TabReorderListProps) {
   const catalog = app.settings.catalog;
-  const theme = useTheme();
   const tabs = layout.tabs;
   const [drag, setDrag] = useState<{ module: ModuleID; geometry: RowReorderDrag } | undefined>(undefined);
   const dragRef = useRef(drag);
@@ -420,7 +418,6 @@ function TabReorderList({ app, layout, onChange, onOptions }: TabReorderListProp
               return value;
             })
           }
-          accent={accentCss(theme, catalog.descriptor(module).accent)}
         />
       ))}
       {layout.headerShortcuts.map((module) => (
@@ -440,7 +437,6 @@ function TabReorderList({ app, layout, onChange, onOptions }: TabReorderListProp
               return value;
             })
           }
-          accent={accentCss(theme, catalog.descriptor(module).accent)}
         />
       ))}
     </div>
@@ -456,7 +452,6 @@ interface TabRowProps {
   readonly transition?: string;
   readonly separator: boolean;
   readonly isHeaderShortcut?: boolean;
-  readonly accent: string;
   readonly onPointerDown?: (event: ReactPointerEvent<HTMLElement>) => void;
   readonly onKeyDown?: (event: ReactKeyboardEvent<HTMLElement>) => void;
   readonly onOptions: () => void;

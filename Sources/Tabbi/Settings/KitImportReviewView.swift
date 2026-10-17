@@ -25,7 +25,7 @@ struct KitImportReviewView: View {
     private var kit: KitManifest { candidate.kit }
 
     var body: some View {
-        let tint = kit.accentModule(catalog: catalog).map { catalog.descriptor(for: $0).accentColor } ?? .accentColor
+        let tint = kit.accentModule(catalog: catalog).map { catalog.descriptor(for: $0).identityColor } ?? .accentColor
         VStack(spacing: 0) {
             VStack(spacing: 8) {
                 Image(systemName: kit.symbol)

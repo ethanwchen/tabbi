@@ -4,6 +4,7 @@
  * island is pure black in every theme.
  */
 
+import { tr } from "../localization/tr";
 import { SpringSpec } from "../motion/springSpec";
 import { applyAccentTreatment, type AccentTreatment } from "./accentTreatment";
 import { composited, type ModuleAccent, type ThemeColor } from "./themeColor";
@@ -23,9 +24,18 @@ export const REQUIRED_THEME_IDS: readonly ThemeID[] = [
   "forest",
 ];
 
-/** Which group a theme is listed under in the picker (port of ThemeFamily). */
-export const THEME_FAMILIES = ["classic", "cozy"] as const;
+/*
+ * Which group a theme is listed under in the picker (port of ThemeFamily).
+ * themes.json writes a theme's group as `family`, which every build reads
+ * and which stays classic or cozy, plus an optional `group` that builds
+ * knowing newer groups (sweet) prefer, so a file with a new group still
+ * decodes in a build that predates it.
+ */
+export const THEME_FAMILIES = ["classic", "cozy", "sweet"] as const;
 export type ThemeFamily = (typeof THEME_FAMILIES)[number];
+
+/** The values `family` may take, which every build since themes reads (ThemeFamily.baseFamilies). */
+export const BASE_THEME_FAMILIES = ["classic", "cozy"] as const satisfies readonly ThemeFamily[];
 
 /** The type family a theme sets in (port of ThemeTypeface): rounded is the Tabbi default. */
 export const THEME_TYPEFACES = ["rounded", "standard"] as const;
@@ -92,9 +102,20 @@ export interface ThemePalette {
   readonly success: ThemeColor;
   readonly warning: ThemeColor;
   readonly danger: ThemeColor;
+  /*
+   * The theme's own key color, absent when every module keeps its own accent
+   * (as the theme's `accents` treats it). When set, the active module's ring,
+   * selected tab, primary button and chips all wear it (see themeAccent).
+   */
+  readonly accent?: ThemeColor;
+  /** Text and symbols drawn on an `accent` fill; absent for the panel background. */
+  readonly onAccent?: ThemeColor;
 }
 
-/** The palette's required roles, in declaration order (glow is optional and follows background). */
+/*
+ * The palette's required roles, in declaration order (glow is optional and
+ * follows background; accent and onAccent are optional and come last).
+ */
 export const PALETTE_ROLES = [
   "background",
   "surface",
@@ -108,13 +129,18 @@ export const PALETTE_ROLES = [
   "danger",
 ] as const;
 
-export type PaletteRole = (typeof PALETTE_ROLES)[number] | "glow";
+/** The palette's optional roles. */
+export const OPTIONAL_PALETTE_ROLES = ["glow", "accent", "onAccent"] as const;
 
-/** Every color by its themes.json key, in declaration order; glow only when set. */
+export type PaletteRole = (typeof PALETTE_ROLES)[number] | (typeof OPTIONAL_PALETTE_ROLES)[number];
+
+/** Every color by its themes.json key, in declaration order; glow, accent and onAccent only when set. */
 export function paletteRoles(palette: ThemePalette): [PaletteRole, ThemeColor][] {
   const roles: [PaletteRole, ThemeColor][] = [["background", palette.background]];
   if (palette.glow) roles.push(["glow", palette.glow]);
   for (const role of PALETTE_ROLES.slice(1)) roles.push([role, palette[role]]);
+  if (palette.accent) roles.push(["accent", palette.accent]);
+  if (palette.onAccent) roles.push(["onAccent", palette.onAccent]);
   return roles;
 }
 
@@ -153,7 +179,44 @@ export interface AppTheme {
   readonly surfaces: ThemeSurfaceStyle;
 }
 
-/** The accent a module with `base` shows in `theme`. */
+/*
+ * The accent a module with `base` shows in `theme`: the theme's own key
+ * color when it has one (palette.accent), so the ring, the selected tab, the
+ * primary button and the chips all match it, or else `base` as the theme's
+ * `accents` treats it.
+ */
 export function themeAccent(theme: AppTheme, base: ModuleAccent): ThemeColor {
+  return theme.palette.accent ?? themeIdentityAccent(theme, base);
+}
+
+/*
+ * `base` as the theme's `accents` treats it, even when the theme has a key
+ * color: for what has to tell modules apart, such as module icons listed
+ * side by side or another module's item in Today's list, and for colors
+ * with a meaning of their own (the favorite heart).
+ */
+export function themeIdentityAccent(theme: AppTheme, base: ModuleAccent): ThemeColor {
   return applyAccentTreatment(theme.accents, base);
+}
+
+/** Text and symbols on a themeAccent fill: the palette's onAccent, or the panel background. */
+export function themeOnAccent(theme: AppTheme): ThemeColor {
+  return theme.palette.onAccent ?? theme.palette.background;
+}
+
+/*
+ * The theme's name in the user's language. themes.json holds the English,
+ * so the translation is looked up under `theme.<id>` (a name such as
+ * Midnight also names a fur color, so the English text cannot be the key);
+ * a theme the catalog lacks shows its name as written.
+ */
+export function themeDisplayName(theme: AppTheme): string {
+  const key = `theme.${theme.id}`;
+  const name = tr(key);
+  return name === key ? theme.name : name;
+}
+
+/** The theme's summary in the user's language, looked up by its English text. */
+export function themeDisplaySummary(theme: AppTheme): string {
+  return tr(theme.summary);
 }

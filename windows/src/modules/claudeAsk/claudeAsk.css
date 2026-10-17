@@ -283,7 +283,7 @@
 }
 .ask-send[data-active="true"] {
   background: var(--accent);
-  color: var(--background);
+  color: var(--on-accent);
 }
 .ask-send[data-active="true"]:hover,
 .ask-send[data-active="true"][data-hover="true"] {

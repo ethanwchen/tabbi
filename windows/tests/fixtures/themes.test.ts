@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ACCENT_TREATMENTS, applyAccentTreatment } from "../../src/core/themes/accentTreatment";
-import { GLASS_SHEEN_ROLES, paletteRoles } from "../../src/core/themes/appTheme";
+import { GLASS_SHEEN_ROLES, paletteRoles, themeAccent, themeIdentityAccent, themeOnAccent } from "../../src/core/themes/appTheme";
 import { allThemes, DEFAULT_THEME_ID, standardGlassSheen, themeFile } from "../../src/core/themes/themeCatalog";
 import type { ThemeColor } from "../../src/core/themes/themeColor";
 import { loadFixture } from "../support/fixtures";
@@ -28,8 +28,14 @@ interface GoldenTheme {
   readonly motion: string;
   readonly controls: string;
   readonly surfaces: string;
+  /* glow, accent and onAccent are absent when the theme doesn't set them. */
   readonly palette: Readonly<Record<string, GoldenColor>>;
+  /* What the theme draws for RESOLVED_SAMPLE: accent, identityAccent and onAccent. */
+  readonly resolved: Readonly<Record<string, GoldenColor>>;
 }
+
+/* The module accent each theme's `resolved` colors are drawn for: Study's amber, the brand color. */
+const RESOLVED_SAMPLE = { red: 1.0, green: 0.62, blue: 0.26 };
 
 interface Golden {
   readonly schema: string;
@@ -75,14 +81,23 @@ describe("themes fixture", () => {
       expect(theme).toBeDefined();
       if (!theme) return;
       const { palette, ...fields } = theme;
-      const { palette: expectedPalette, ...expectedFields } = expected;
+      const { palette: expectedPalette, resolved: expectedResolved, ...expectedFields } = expected;
       expect(fields, theme.id).toEqual(expectedFields);
       const roles = Object.fromEntries(paletteRoles(palette));
-      expect(Object.keys(roles).sort(), `${theme.id} roles (glow only when set)`).toEqual(
+      expect(Object.keys(roles).sort(), `${theme.id} roles (glow, accent and onAccent only when set)`).toEqual(
         Object.keys(expectedPalette).sort(),
       );
       for (const [role, color] of Object.entries(expectedPalette)) {
         expectColor(roles[role], color, `${theme.id}.palette.${role}`);
+      }
+      const resolved: Record<string, ThemeColor> = {
+        accent: themeAccent(theme, RESOLVED_SAMPLE),
+        identityAccent: themeIdentityAccent(theme, RESOLVED_SAMPLE),
+        onAccent: themeOnAccent(theme),
+      };
+      expect(Object.keys(expectedResolved).sort(), `${theme.id} resolved`).toEqual(Object.keys(resolved).sort());
+      for (const [name, color] of Object.entries(expectedResolved)) {
+        expectColor(resolved[name], color, `${theme.id}.resolved.${name}`);
       }
     });
   });

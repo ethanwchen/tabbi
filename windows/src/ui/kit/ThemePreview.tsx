@@ -7,7 +7,7 @@
  */
 
 import type { CSSProperties } from "react";
-import { themeAccent, type AppTheme } from "../../core/themes/appTheme";
+import { themeAccent, themeIdentityAccent, type AppTheme } from "../../core/themes/appTheme";
 import type { ModuleAccent } from "../../core/themes/themeColor";
 import { cssColor } from "./tokens";
 
@@ -15,7 +15,8 @@ export interface ThemePreviewProps {
   readonly theme: AppTheme;
   /** The module accents to sample, in tab order; the first is the selected tab. Only four are drawn. */
   readonly accents: readonly ModuleAccent[];
-  readonly width?: number;
+  /* Pixels, or a CSS length such as "100%" to fill a grid column. */
+  readonly width?: number | string;
   readonly height?: number;
   readonly className?: string;
 }
@@ -46,7 +47,11 @@ export function ThemePreview({ theme, accents, width = 112, height = 60, classNa
               boxShadow: index === 0 && theme.controls === "glass" ? "inset 0 0 0 0.5px rgb(255 255 255 / 0.24)" : undefined,
             }}
           >
-            <span className="kit-theme-preview-dot" style={{ background: cssColor(themeAccent(theme, accent)) }} />
+            {/* The selected tab wears the theme's accent; the others keep their module's own, as the real tab bar's icons do. */}
+            <span
+              className="kit-theme-preview-dot"
+              style={{ background: cssColor(index === 0 ? themeAccent(theme, accent) : themeIdentityAccent(theme, accent)) }}
+            />
           </span>
         ))}
       </div>

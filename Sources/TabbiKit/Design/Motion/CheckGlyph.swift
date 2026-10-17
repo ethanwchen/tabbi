@@ -8,23 +8,28 @@ import TabbiKitCore
 ///
 /// It is only the glyph; wrap it in a button (or nothing, for a check that
 /// follows other state). `ring` is the outline while off; pass nil when the
-/// caller draws its own.
+/// caller draws its own. `mark` is the check stroke, the theme's on-accent
+/// color by default, for a `tint` that is the accent.
 public struct CheckGlyph: View {
     let isOn: Bool
     let tint: Color
     let ring: Color?
+    let mark: Color
     let size: CGFloat
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    public init(isOn: Bool, tint: Color, ring: Color? = Theme.Palette.tertiaryText, size: CGFloat = 16) {
+    public init(isOn: Bool, tint: Color, ring: Color? = Theme.Palette.tertiaryText,
+                mark: Color = Theme.Palette.onAccent, size: CGFloat = 16) {
         self.isOn = isOn
         self.tint = tint
         self.ring = ring
+        self.mark = mark
         self.size = size
     }
 
     public var body: some View {
-        CheckGlyphFrame(progress: isOn ? 1 : 0, tint: tint, ring: ring, size: size, reduceMotion: reduceMotion)
+        CheckGlyphFrame(progress: isOn ? 1 : 0, tint: tint, ring: ring, mark: mark, size: size,
+                        reduceMotion: reduceMotion)
             .animation(Motion.adapted(isOn ? Motion.check : Motion.snappy, reduceMotion: reduceMotion), value: isOn)
     }
 }
@@ -36,14 +41,16 @@ public struct CheckGlyphFrame: View, Animatable {
     var progress: Double
     let tint: Color
     let ring: Color?
+    let mark: Color
     let size: CGFloat
     let reduceMotion: Bool
 
     public init(progress: Double, tint: Color, ring: Color? = Theme.Palette.tertiaryText,
-                size: CGFloat = 16, reduceMotion: Bool = false) {
+                mark: Color = Theme.Palette.onAccent, size: CGFloat = 16, reduceMotion: Bool = false) {
         self.progress = progress
         self.tint = tint
         self.ring = ring
+        self.mark = mark
         self.size = size
         self.reduceMotion = reduceMotion
     }
@@ -67,7 +74,7 @@ public struct CheckGlyphFrame: View, Animatable {
                 .opacity(state.fillOpacity)
             CheckStroke()
                 .trim(from: 0, to: state.checkTrim)
-                .stroke(Theme.Palette.background,
+                .stroke(mark,
                         style: StrokeStyle(lineWidth: size * 0.12, lineCap: .round, lineJoin: .round))
                 .scaleEffect(min(state.fillScale, 1))
                 .opacity(state.checkOpacity)

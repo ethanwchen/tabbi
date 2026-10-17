@@ -126,6 +126,30 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(String.localizedStringWithFormat(hat, 90, "ハロウィン"), "ハロウィンの期間中に90分集中しよう。")
     }
 
+    /// Theme names and summaries live in themes.json, in English, which the
+    /// Windows port reads too; names are looked up under `theme.<id>` and
+    /// summaries by their text, so a new theme needs its translations added
+    /// with it.
+    func testEveryThemeNameAndSummaryIsTranslated() throws {
+        let missing = "\u{0}missing"
+        for language in L10n.languages {
+            let bundle = try XCTUnwrap(L10n.strings(for: language))
+            for theme in ThemeCatalog.all {
+                for key in ["theme.\(theme.id.rawValue)", theme.summary] {
+                    XCTAssertNotEqual(bundle.localizedString(forKey: key, value: missing, table: nil), missing,
+                                      "\(language) lacks \"\(key)\"")
+                }
+            }
+        }
+        let english = try XCTUnwrap(L10n.strings(for: L10n.sourceLanguage))
+        for theme in ThemeCatalog.all {
+            XCTAssertEqual(english.localizedString(forKey: "theme.\(theme.id.rawValue)", value: nil, table: nil),
+                           theme.name)
+        }
+        let german = try XCTUnwrap(L10n.strings(for: "de"))
+        XCTAssertEqual(german.localizedString(forKey: "theme.strawberryMilk", value: nil, table: nil), "Erdbeermilch")
+    }
+
     /// The calendar sentences name each bundled kit's word for events
     /// ("lectures, labs, and shifts"), looked up in the catalog like the
     /// seasonal events, so every language needs each phrase.

@@ -135,7 +135,7 @@ private struct PartyChoiceChip: View {
         Button(action: action) {
             Text(title)
                 .font(Theme.Typography.caption)
-                .foregroundStyle(isSelected ? Theme.Palette.background
+                .foregroundStyle(isSelected ? Theme.Palette.onAccent
                                  : hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
                 .lineLimit(1)
                 .fixedSize()

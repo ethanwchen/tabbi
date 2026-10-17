@@ -48,7 +48,9 @@ public struct ThemePreview: View {
     private var tabBar: some View {
         HStack(spacing: 3) {
             ForEach(Array(accents.prefix(4).enumerated()), id: \.offset) { index, accent in
-                let color = Color(theme.accent(accent))
+                // The selected tab wears the theme's accent; the others keep
+                // their module's own, as the real tab bar's icons do.
+                let color = Color(index == 0 ? theme.accent(accent) : theme.identityAccent(accent))
                 Circle()
                     .fill(color)
                     .frame(width: 5, height: 5)

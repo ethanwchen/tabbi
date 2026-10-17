@@ -672,7 +672,7 @@ private struct SpotifyActionButton: View {
                 Text(action.title)
                     .font(Theme.Typography.bodyEmphasis)
             }
-            .foregroundStyle(isAppLauncher ? Theme.Palette.primaryText : Theme.Palette.background)
+            .foregroundStyle(isAppLauncher ? Theme.Palette.primaryText : Theme.Palette.onAccent)
             .padding(.leading, isAppLauncher ? Theme.Spacing.xs + Theme.Spacing.xxs : Theme.Spacing.m)
             .padding(.trailing, Theme.Spacing.m)
             .frame(height: 28)
