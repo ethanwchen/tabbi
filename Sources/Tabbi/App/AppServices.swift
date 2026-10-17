@@ -37,8 +37,17 @@ final class AppServices {
     let recaps: RecapMoment
 
     private var cancellables: Set<AnyCancellable> = []
-    /// Created on first use so launching never builds a window nobody opens.
+    /// Drops caches that rebuild themselves when macOS runs short of memory.
+    private let memoryPressure = MemoryRelief.onMemoryPressure { PetRenderer.shared.removeAll() }
+    /// Created on first use so launching never builds a window nobody opens,
+    /// and let go once it closes: a Settings window that has shown its five
+    /// panes keeps about 20 MB of SwiftUI views alive, which a closed window
+    /// must not hold for the rest of the day.
     private var settingsWindow: SettingsWindowController?
+    /// Watches the open Settings window for its close.
+    private var settingsWindowClose: NSObjectProtocol?
+    /// The pane Settings showed when it closed, shown again when it reopens.
+    private var lastSettingsPane: String?
 
     /// - Parameter moduleTypes: the modules to create, `ModuleList.all` in
     ///   the app; `settings` must resolve layouts against their catalog.
@@ -101,14 +110,54 @@ final class AppServices {
         }
     }
 
+    deinit {
+        memoryPressure.cancel()
+    }
+
     /// Shows the Settings window (from the notch's gear button or context
     /// menu), at `pane` when given.
     func openSettings(pane: String? = nil) {
-        let controller = settingsWindow ?? SettingsWindowController(settings: settings, modules: modules,
-                                                                    onboarding: onboarding, account: accountSync,
-                                                                    ai: ai)
-        settingsWindow = controller
-        if let pane { controller.select(pane) }
+        let controller = settingsWindow ?? makeSettingsWindow()
+        if let pane = pane ?? lastSettingsPane { controller.select(pane) }
+        lastSettingsPane = nil
         controller.present()
+    }
+
+    /// Closes the Settings window as its close button would.
+    func closeSettings() {
+        settingsWindow?.window?.performClose(nil)
+    }
+
+    /// True while a Settings window exists, open or not yet let go.
+    var hasSettingsWindow: Bool { settingsWindow != nil }
+
+    /// The pane the Settings window shows, nil while it is closed.
+    var settingsPaneOnScreen: String? { settingsWindow?.selectedPaneID }
+
+    private func makeSettingsWindow() -> SettingsWindowController {
+        let controller = SettingsWindowController(settings: settings, modules: modules, onboarding: onboarding,
+                                                  account: accountSync, ai: ai)
+        settingsWindow = controller
+        settingsWindowClose = NotificationCenter.default.addObserver(
+            forName: NSWindow.willCloseNotification, object: controller.window, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.settingsWindowWillClose() }
+        }
+        return controller
+    }
+
+    /// Lets the window go once AppKit has finished closing it; freeing it
+    /// inside its own close notification would pull it out from under AppKit.
+    private func settingsWindowWillClose() {
+        lastSettingsPane = settingsWindow?.selectedPaneID
+        DispatchQueue.main.async { [weak self] in
+            // Reopened meanwhile: keep it, and let a later close free it.
+            guard let self, settingsWindow?.window?.isVisible != true else { return }
+            if let settingsWindowClose { NotificationCenter.default.removeObserver(settingsWindowClose) }
+            settingsWindowClose = nil
+            settingsWindow?.releasePanes()
+            settingsWindow = nil
+            MemoryRelief.returnFreedPages()
+        }
     }
 }

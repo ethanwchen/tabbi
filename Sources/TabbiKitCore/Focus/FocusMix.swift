@@ -182,6 +182,22 @@ public struct FocusMixer: Sendable {
         }
     }
 
+    /// Makes sure the current mix's recorded sounds have their recordings,
+    /// after `releaseRecordings()`. Decodes them unless
+    /// `preloadRecordings(for:)` already did.
+    public mutating func prepareRecordings() {
+        for (index, sound) in FocusSound.allCases.enumerated() where mix.contains(sound) {
+            generators[index].prepareRecording()
+        }
+    }
+
+    /// Lets go of every recording while the mixer is silent, so a stopped
+    /// focus sound holds no decoded audio; `prepareRecordings()` (or the
+    /// next `setMix`) takes them back.
+    public mutating func releaseRecordings() {
+        for index in generators.indices { generators[index].releaseRecording() }
+    }
+
     /// Decodes the recordings `mix` plays, so `setMix` finds them ready.
     /// Takes tens of milliseconds the first time and nothing after.
     public static func preloadRecordings(for mix: FocusMix) {

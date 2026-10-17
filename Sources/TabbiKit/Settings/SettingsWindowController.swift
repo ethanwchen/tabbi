@@ -67,6 +67,26 @@ public final class SettingsWindowController: NSWindowController {
     /// Ids of the panes in toolbar order.
     public var paneIDs: [String] { tabs.tabViewItems.compactMap { $0.identifier as? String } }
 
+    /// Frees the panes (their SwiftUI views hold most of the window's memory)
+    /// once the window has closed for good; the controller can't show them
+    /// again afterwards. AppKit may keep the closed window itself alive a
+    /// while longer, so letting go of the controller alone frees nothing.
+    public func releasePanes() {
+        cancellable = nil
+        for item in tabs.tabViewItems { tabs.removeTabViewItem(item) }
+        panes = [:]
+        window?.contentViewController = nil
+        // A window that outlives this would keep the autosave name, and AppKit
+        // refuses a name in use, so the next Settings window could not save its frame.
+        window?.setFrameAutosaveName("")
+    }
+
+    /// The id of the pane on screen.
+    public var selectedPaneID: String? {
+        let index = tabs.selectedTabViewItemIndex
+        return tabs.tabViewItems.indices.contains(index) ? tabs.tabViewItems[index].identifier as? String : nil
+    }
+
     /// Shows the pane with `id`, or the first pane if there is none.
     public func select(_ id: String) {
         guard !tabs.tabViewItems.isEmpty else { return }

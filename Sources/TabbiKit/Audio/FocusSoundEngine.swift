@@ -121,7 +121,13 @@ public final class FocusSoundEngine {
         if isPlaying && !mix.isOff {
             shutdownTask?.cancel()
             shutdownTask = nil
-            box.withMixer { $0.play() }
+            // The recordings were let go at the last shutdown; decode them
+            // before taking the lock, as `setMix` does.
+            FocusMixer.preloadRecordings(for: mix)
+            box.withMixer {
+                $0.prepareRecordings()
+                $0.play()
+            }
             startEngineIfNeeded()
         } else {
             box.withMixer { $0.stop() }
@@ -156,11 +162,19 @@ public final class FocusSoundEngine {
                 if self.isSilent {
                     self.engine.stop()
                     self.shutdownTask = nil
+                    self.releaseRecordings()
                     return
                 }
                 try? await Task.sleep(for: .milliseconds(250))
             }
         }
+    }
+
+    /// With the engine stopped, frees the decoded recordings (the cafe loop
+    /// is 11 MB), which `play()` decodes again when a mix needs them.
+    private func releaseRecordings() {
+        box.withMixer { $0.releaseRecordings() }
+        FocusRecording.releaseDecoded()
     }
 
     private func handleConfigurationChange() {

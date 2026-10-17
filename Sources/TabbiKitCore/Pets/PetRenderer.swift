@@ -36,6 +36,14 @@ public final class PetRenderer: @unchecked Sendable {
         return cache.count
     }
 
+    /// Drops every cached image (on memory pressure); frames render again
+    /// as they are drawn.
+    public func removeAll() {
+        lock.lock(); defer { lock.unlock() }
+        cache.removeAll()
+        order.removeAll()
+    }
+
     /// Renders `canvas` with `palette`, scaled up by an integer factor.
     public func image(for canvas: PetCanvas, palette: PetPalette, scale: Int = 1) -> CGImage? {
         let key = Key(canvas: canvas, palette: palette, scale: max(1, scale))
