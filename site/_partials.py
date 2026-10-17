@@ -7,6 +7,13 @@ from _releases import VERSION
 ORIGIN = 'https://tabbinotch.com'
 # The newest DMG itself: every release also uploads it as Tabbi.dmg (scripts/release.sh).
 DOWNLOAD = 'https://github.com/ethanwchen/tabbi/releases/latest/download/Tabbi.dmg'
+# The newest Windows installer: Windows has its own fixed release, windows-latest,
+# which the Windows release job refreshes on every publish
+# (.github/workflows/windows-release.yml), so Mac releases never move it.
+DOWNLOAD_WINDOWS = 'https://github.com/ethanwchen/tabbi/releases/download/windows-latest/Tabbi-Setup.exe'
+# The header's Download: a Pages Function (functions/download.js) sends each
+# visitor the installer for their computer, Windows or Mac.
+DOWNLOAD_PAGE = '/download'
 RELEASES_URL = 'https://github.com/ethanwchen/tabbi/releases'
 GITHUB = 'https://github.com/ethanwchen/tabbi'
 ISSUES = 'https://github.com/ethanwchen/tabbi/issues'
@@ -28,7 +35,7 @@ SUGGESTIONS = BACKEND + '/v1/suggestions'
 NAV = [
     ('/about', 'About'),
     ('/support', 'Help'),
-    (DOWNLOAD, 'Download'),
+    (DOWNLOAD_PAGE, 'Download'),
 ]
 
 BRAND = '<img src="/img/icon-256.webp" width="36" height="36" alt="" class="mark">'
@@ -51,7 +58,18 @@ PAW = (
 
 
 def download_button():
-    return f'<a class="btn" href="{DOWNLOAD}">{DOWNLOAD_ICON}<span>Download for Mac</span></a>'
+    """The page's one big Download button. It offers the Mac download, and
+    the home page's script (js/demo.js) swaps in the Windows one on Windows:
+    every `data-windows-href` and `data-windows-text` takes that value there."""
+    return (f'<a class="btn" href="{DOWNLOAD}" data-windows-href="{DOWNLOAD_WINDOWS}">{DOWNLOAD_ICON}'
+            '<span data-windows-text="Download for Windows">Download for Mac</span></a>')
+
+
+def other_platform_link():
+    """The quiet link to the other platform's download, beside the note under
+    the button, swapped on Windows like the button itself."""
+    return (f'<a class="other-platform" href="{DOWNLOAD_WINDOWS}" data-windows-href="{DOWNLOAD}">'
+            '<span data-windows-text="Also for Mac">Also for Windows</span></a>')
 
 
 def canonical(slug):

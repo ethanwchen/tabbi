@@ -209,6 +209,9 @@ nav.site a[aria-current='page'] { background: var(--ink); color: var(--btn-ink);
 /* "10,000+ downloads" (_downloads.py), kept whole on one line when the note wraps. */
 .cta-note .downloads { white-space: nowrap; }
 .cta-note .sep { margin: 0 0.15em; }
+/* The quiet link to the other platform's download, after the note. */
+.cta-note .other-platform { white-space: nowrap; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.cta-note .other-platform:hover { color: var(--ink); }
 
 /* --- home tabs --------------------------------------------------------- */
 main { padding: 0 0 64px; }
