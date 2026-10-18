@@ -65,6 +65,7 @@ Never commit the private key.
 ## Ship a release
 
 1. Set the version in `Resources/Info.plist` (`CFBundleShortVersionString`), commit and push.
+   Add the notes people see in the update window as `packaging/release-notes/<version>.md` (New, Better and Fixed lists in plain words).
    The first release is 1.0.0, which is already set.
 2. With a clean working tree, run:
 
@@ -96,6 +97,7 @@ Without `--publish`, the script builds everything in `build/release/` and upload
 - `release-notes.md`: the notes, written from the commit history by `scripts/release-notes.sh`.
   The draft release and the update window both show them.
   Only `feat`, `fix` and `perf` commits since the previous release appear, and the first release gets a short welcome instead.
+  To write them by hand, add `packaging/release-notes/<version>.md` before you run the script: its text replaces the generated lists, under the same heading.
 - `tabbi.rb`: the Homebrew cask for this DMG (it stays local).
 
 The build number (`CFBundleVersion`) is the commit count, so every release needs a full clone.

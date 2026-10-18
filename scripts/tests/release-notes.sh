@@ -73,6 +73,18 @@ expect "changes since the last tag, grouped, user facing only" 0.2.0 "## Tabbi 0
 
 - Draw the ticker once per second"
 
+new_repo written
+commit "feat: notch window"
+tag v0.1.0
+commit "Add Break Buddy (#142)"
+mkdir -p "$repo/packaging/release-notes"
+printf '### New\n\n- **Break Buddy:** a short move at each break.\n' > "$repo/packaging/release-notes/0.2.0.md"
+expect "hand-written notes for the version win over the history" 0.2.0 "## Tabbi 0.2.0
+
+### New
+
+- **Break Buddy:** a short move at each break."
+
 new_repo retagged
 commit "feat: notch window"
 tag v0.1.0
