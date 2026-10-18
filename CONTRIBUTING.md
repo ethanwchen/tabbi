@@ -12,8 +12,8 @@ You need macOS 14 Sonoma or later and Xcode 26 or later (its SDK has the Liquid 
 A MacBook with a notch is nice to have but not required: other displays get a virtual notch at the top center of the screen.
 
 ```sh
-git clone https://github.com/ethanwchen/notchdeck.git
-cd notchdeck
+git clone https://github.com/ethanwchen/tabbi.git
+cd tabbi
 swift build                     # compile; must stay warning-free
 swift test                      # unit tests for TabbiKitCore and the app wiring
 scripts/run.sh                  # bundle build/Tabbi.app (debug) and launch it
@@ -175,7 +175,7 @@ After regenerating it, upload it under the repository's Settings > General > Soc
 Maintainers cut releases with `scripts/release.sh`.
 It builds a universal (Apple silicon and Intel), stripped app, signs it with the maintainer's Developer ID under the Hardened Runtime (`packaging/Tabbi.entitlements`), notarizes and staples it, and writes `Tabbi-<version>.dmg`, `Tabbi-<version>.zip` and `SHA256SUMS` to `build/release/`.
 The version comes from `CFBundleShortVersionString` in `Resources/Info.plist`.
-Signing needs three one-time steps (a Developer ID Application certificate, `xcrun notarytool store-credentials notchdeck`, and an update signing key from Sparkle's `generate_keys`, whose public half goes in `packaging/updates.env`); the script checks all three before building and explains what is missing.
+Signing needs three one-time steps (a Developer ID Application certificate, `xcrun notarytool store-credentials tabbi`, and an update signing key from Sparkle's `generate_keys`, whose public half goes in `packaging/updates.env`); the script checks all three before building and explains what is missing.
 `packaging/signing.env` picks the identity and notary profile when the defaults do not fit.
 The release app checks the appcast in `packaging/updates.env` through Sparkle (Settings > About > Check for Updates, and the notch's context menu); development builds carry no feed and never update themselves.
 It also writes `release-notes.md`, made from the `feat`, `fix` and `perf` commits since the previous `v*` tag by `scripts/release-notes.sh`, and `appcast.xml`, which offers the zip as the update with those notes and is signed with the update key from the login keychain (or `SPARKLE_PRIVATE_KEY` in CI).
