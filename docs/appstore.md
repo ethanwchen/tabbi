@@ -278,9 +278,11 @@ Version 1.0.0 (build 130) was rejected on 19 October 2026, reviewed on a MacBook
 2. Guideline 5.1.1(iv), "Allow Access" before the calendar prompt: the onboarding step's button now says Continue, with Not now in the footer.
    The same pass changed every screen before a macOS prompt: Settings > Connections' priming sheets lost "Click Allow." and gained Not now, Ask AI's Screen Recording card says Continue, and the study mixer's denied chip says "Spotify access is off" instead of "Allow Spotify access".
    The AI consent alert keeps Allow, since it is the consent itself (guideline 5.1.2(i)), not a step before a system prompt.
-3. Guideline 2.1(a), nothing happened after the birthday: the age question lived in a sheet whose Continue swapped in SwiftUI's `SignInWithAppleButton`, which ran Apple's native request from inside that sheet, without making the Dock-less app active.
-   The same code works with the web flow on macOS 26.6 (ad-hoc App Store build, driven step by step), and the native flow needs the signed build, so it could not be run here; it is the only part the reviewer ran that the check did not, and it had two ways to end with nothing on screen: Apple's sheet with no active window to appear over, and a failure reported in the row behind the sheet.
-   The sheet is gone, the button sits in the Settings window itself, and `AppleNativeSignIn` makes the app active and hands Apple's sheet that window before it asks; a failure now shows in the row.
+3. Guideline 2.1(a), nothing happened after the birthday: the age question lived in a sheet whose Continue swapped in SwiftUI's `SignInWithAppleButton`, so Apple's native request ran from inside that sheet.
+   Reproduced on macOS 27.0.1 with the 1.0.2 code, driven step by step from a fresh sandbox container: onboarding, the calendar prompt and the birthday sheet all work, and with the web flow (ad-hoc builds) Continue shows Apple's button.
+   With the native flow forced on (the reviewed build's path; an ad-hoc build cannot get the entitlement, so Apple refuses the request), pressing Apple's button in the sheet changes nothing in the sheet: the failure lands as an unlocalized line in the dimmed row behind it, and the sheet just sits there.
+   The signed build's request may fail for another reason, but whatever it was, the reviewer could only see the sheet.
+   The sheet is gone, the button sits in the Settings window itself, and `AppleNativeSignIn` makes the app active and hands Apple's sheet that window before it asks; a failure now shows in the row the user is looking at, in their language.
 
 The reply to App Review is in the 1.0.3 submission notes.
 
