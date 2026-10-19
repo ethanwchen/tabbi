@@ -34,7 +34,10 @@ final class ClosetLimitedEditionAppTests: XCTestCase {
         XCTAssertTrue(store.closet.save.ledger.owns(.accessory(.flameHeadband)))
         XCTAssertEqual(store.closet.balance, 0, "history counts toward milestones, not points")
         XCTAssertEqual(store.milestones.currentStreak(today: .now), 7)
-        XCTAssertEqual(try savedLedger()?.granted, [.accessory(.flameHeadband)])
+        // The week's focus can also earn a seasonal event's item when the
+        // test runs during one (Halloween, say); only the milestone counts here.
+        let seasonal = Set(SeasonalEventCatalog.bundled.events.flatMap(\.rewards).map(\.item))
+        XCTAssertEqual(try savedLedger()?.granted.subtracting(seasonal), [.accessory(.flameHeadband)])
     }
 
     func testANewPartyRecordUnlocksTheTeamMedal() throws {

@@ -141,12 +141,10 @@ export function PartySettingsPane({ store, account }: { store: PartyStore; accou
         </SettingsRow>
       </SettingsGroup>
 
-      <SettingsGroup title={tr("Account")} footer={sync.phase === "signedOut" && sync.notice === undefined && sync.ageStatus.kind === "passed" ? undefined : undefined}>
+      <SettingsGroup title={tr("Account")}>
         <SettingsRow label={accountTitle(sync)} help={accountCaption(sync, store)} className={sync.notice === undefined ? undefined : "party-settings-warning"}>
-          {sync.phase === "signedOut" && sync.ageStatus.kind === "unanswered" && (
-            <Pill title={tr("Sign In…")} help={tr("Sign in with your Apple Account to sync your pet across your devices")} onClick={() => store.askAgeFirst()} />
-          )}
-          {sync.phase === "signedOut" && sync.ageStatus.kind === "passed" && (
+          {/* Signing in never asks for a birthday; only an under-13 answer given in Party hides the button. */}
+          {sync.phase === "signedOut" && sync.ageStatus.kind !== "tooYoung" && (
             <Pill title={tr("Sign in with Apple")} help={tr("Sign in with your Apple Account to sync your pet across your devices")} className="party-apple-button" onClick={() => void account.signInOnWeb()} />
           )}
           {sync.phase === "signingIn" && <Pill title={tr("Cancel")} help={tr("Stop waiting for the browser")} onClick={() => account.cancelSignIn()} />}
@@ -163,7 +161,7 @@ export function PartySettingsPane({ store, account }: { store: PartyStore; accou
             </>
           )}
         </SettingsRow>
-        {sync.phase === "signedOut" && sync.ageStatus.kind === "passed" && sync.notice === undefined && (
+        {sync.phase === "signedOut" && sync.ageStatus.kind !== "tooYoung" && sync.notice === undefined && (
           <SettingsRow label="" className="party-settings-agreement">
             <span className="kit-caption kit-tertiary party-agreement">
               <Agreement signingIn onOpen={(url) => store.openURL(url)} />

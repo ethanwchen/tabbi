@@ -31,7 +31,7 @@ extension SnapshotRenderer {
             ("spotify", .spotify, .automation(.spotify)), ("music", .music, .automation(.music)),
         ]
         for (name, kind, permission) in permissions {
-            let view = ConnectionPrimingView(kind: kind, priming: permission.priming, proceed: {})
+            let view = ConnectionPrimingView(kind: kind, priming: permission.priming, proceed: {}, close: {})
             await write(render(view), named: "connections-priming-\(name)", to: outputDirectory)
         }
 

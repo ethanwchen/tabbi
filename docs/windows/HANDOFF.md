@@ -24,7 +24,8 @@ These are not style preferences; each one is a promise already made to users or 
 - Privacy by default: no network call except what a feature inherently needs, and every host a module connects to is listed in its descriptor's `network` field (the kit import sheet shows that list before a kit turns a module on).
 - Crash reports go out only after the person agrees, after a crash or through an "always send" switch in Settings > About, and never contain typed text, names, tasks, tokens or home folder paths.
 - No account is needed for anything local; Party works without an account, and Sign in with Apple only adds sync.
-- Party and Sign in with Apple are for people 13 and older: ask birth month and year on the device before Party or sign-in sends anything, and never send a birth date or age to the server.
+- Party and Sign in with Apple are for people 13 and older: ask birth month and year on the device before Party sends anything, and never send a birth date or age to the server.
+  Sign in with Apple never asks for a birthday (App Review guideline 5.1.1(v), October 2026); only an under-13 answer given in Party keeps it off and deletes a signed-in account.
 - AI goes only to the provider the user picked, with the user's own key or local model, and nothing is sent before a provider is picked.
 - Pricing copy is exactly "Tabbi is free. Optional extras may come later, and the core will stay free."
   Never write "free forever", "always free" or a promise of that shape anywhere (UI, installer, Store listing, site, release notes).

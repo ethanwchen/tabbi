@@ -34,8 +34,11 @@ final class SyncStore: ObservableObject {
     @Published private(set) var isSyncing = false
     /// The last failure, in a sentence for the account row; nil when fine.
     @Published private(set) var notice: String?
-    /// The age check (`PartyAgeCheck`): accounts are for people 13 and
-    /// older, so signing in waits until it passed.
+    /// What Party's age check (`PartyAgeCheck`) learned on this Mac.
+    /// Accounts are for people 13 and older, as the Terms say, but signing
+    /// in never asks for a birthday (App Review guideline 5.1.1(v)): only
+    /// an answer given in Party that says the user is under 13 keeps
+    /// signing in off, until the day they turn 13.
     @Published private(set) var ageStatus: PartyAgeCheck.Status
     /// Whether the pet holds the Founder's Pin (`PetSave.isFoundingMember`),
     /// which the Account row shows as the Founding badge while signed in.
@@ -44,9 +47,6 @@ final class SyncStore: ObservableObject {
     /// Sent after the stored Party credentials changed (sign in, sign out,
     /// delete), so Party reconnects with the new identity.
     let identityChanged = PassthroughSubject<Void, Never>()
-    /// Sent with `eligibleFrom` when the age question was answered before
-    /// signing in, so Party adopts the same answer.
-    let ageAnswered = PassthroughSubject<Date, Never>()
 
     /// How long the save stays quiet before a change is pushed.
     static let debounce: TimeInterval = 5
@@ -60,6 +60,7 @@ final class SyncStore: ObservableObject {
     /// Native sheet or Apple's web page; the row looks the same either way.
     let signInMethod: AppleSignInMethod
     private let webCallback: @MainActor (URL) async throws -> URL?
+    private let nativeCredential: @MainActor (NSWindow?) async throws -> AppleNativeCredential?
     private let pet: ClosetStore
     private var foundingWatch: AnyCancellable?
     private let stateURL: URL?
@@ -93,15 +94,21 @@ final class SyncStore: ObservableObject {
     ///   - webCallback: opens Apple's page for a web sign-in and returns the
     ///     `tabbi://auth/apple` link it ended on, or nil when the user
     ///     closed it (`AppleWebAuthentication`; tests fake it).
+    ///   - nativeCredential: shows Apple's native sheet over the given
+    ///     window and returns what it signed, or nil when the user cancelled
+    ///     (`AppleNativeSignIn`; tests fake it).
     ///   - server: the friends server Party uses now.
     ///   - credentials: where Party keeps its identity; the account replaces it.
-    ///   - ageAnswer: where the age check's answer is kept, shared with Party.
+    ///   - ageAnswer: where Party keeps its age check's answer.
     ///   - transport: replaces HTTPS (tests).
     ///   - studyDays: local days with focus time on this Mac, for the streak.
     ///   - sleep: waits before a debounced or post-wake sync (tests).
     init(storage: EditionStorage, runMode: RunMode, pet: ClosetStore, signInMethod: AppleSignInMethod,
          webCallback: @escaping @MainActor (URL) async throws -> URL? = { url in
              try await AppleWebAuthentication().callback(from: url)
+         },
+         nativeCredential: @escaping @MainActor (NSWindow?) async throws -> AppleNativeCredential? = { window in
+             try await AppleNativeSignIn().credential(from: window)
          },
          server: @escaping () -> URL?, credentials: any PartyCredentialStore, ageAnswer: AccountAgeAnswer,
          transport: ((URL) -> any PartyTransport)? = nil,
@@ -110,6 +117,7 @@ final class SyncStore: ObservableObject {
         isDemo = runMode.isDemo
         self.signInMethod = signInMethod
         self.webCallback = webCallback
+        self.nativeCredential = nativeCredential
         self.pet = pet
         self.server = server
         self.credentials = credentials
@@ -206,11 +214,11 @@ final class SyncStore: ObservableObject {
 
     /// Reads the answer again, since Party may have taken it meanwhile or
     /// the day the user turns 13 may have come. Signed in and under 13 (an
-    /// account made before the age check, or an answer given later in
-    /// Party), syncing stops and the account is deleted on the server, as
-    /// Party deletes an identity of its own: the server keeps nothing about
-    /// an under-13 user. The pet stays on this Mac. A delete that fails is
-    /// tried again on the next refresh.
+    /// answer given in Party after signing in), syncing stops and the
+    /// account is deleted on the server, as Party deletes an identity of
+    /// its own: the server keeps nothing about an under-13 user. The pet
+    /// stays on this Mac. A delete that fails is tried again on the next
+    /// refresh.
     func refreshAgeStatus() {
         guard !isDemo else { return }
         ageStatus = PartyAgeCheck.status(eligibleFrom: ageAnswer.load(), at: clock())
@@ -224,19 +232,34 @@ final class SyncStore: ObservableObject {
         return false
     }
 
-    /// The age question asked before Sign in with Apple, once, as Party
-    /// asks it: only the day the user is surely 13 is saved, on this Mac,
-    /// and nothing is sent. Under 13, signing in stays off until that day.
-    func answerAge(birthMonth month: Int, year: Int) {
-        refreshAgeStatus()
-        guard !isDemo, ageStatus == .unanswered,
-              let eligibleFrom = PartyAgeCheck.eligibleFrom(birthMonth: month, year: year) else { return }
-        ageAnswer.save(eligibleFrom)
-        ageStatus = PartyAgeCheck.status(eligibleFrom: eligibleFrom, at: clock())
-        ageAnswered.send(eligibleFrom)
+    // MARK: Account
+
+    /// Apple's button in the account row: the native sheet over `window`
+    /// where the build has the entitlement, Apple's web page elsewhere.
+    func signInWithApple(from window: NSWindow?) async {
+        switch signInMethod {
+        case .native: await signInNatively(from: window)
+        case .web: await signInOnWeb()
+        }
     }
 
-    // MARK: Account
+    /// Shows Apple's native sheet and signs in with what it returns.
+    /// Cancelling is not an error; any other failure says so in the row.
+    func signInNatively(from window: NSWindow?) async {
+        refreshAgeStatus()
+        guard !isDemo, phase == .signedOut, !isTooYoung else { return }
+        notice = nil
+        let credential: AppleNativeCredential?
+        do {
+            credential = try await nativeCredential(window)
+        } catch {
+            appleSignInFailed()
+            return
+        }
+        guard let credential else { return }
+        await signIn(identityToken: credential.identityToken, authorizationCode: credential.authorizationCode,
+                     name: credential.name)
+    }
 
     /// Signs in with what `ASAuthorizationAppleIDCredential` returned:
     /// links (or adopts) the account, stores its Party identity and syncs,
@@ -254,7 +277,7 @@ final class SyncStore: ObservableObject {
     /// Closing the page is not an error.
     func signInOnWeb() async {
         refreshAgeStatus()
-        guard !isDemo, phase == .signedOut, ageStatus == .passed, let server = server() else { return }
+        guard !isDemo, phase == .signedOut, !isTooYoung, let server = server() else { return }
         notice = nil
         phase = .signingIn
         let attempt = AppleWebSignIn()
@@ -289,7 +312,7 @@ final class SyncStore: ObservableObject {
     /// stores its Party identity and syncs.
     private func signIn(name: String?, exchange: (SyncClient) async throws -> AppleSignInReply) async {
         refreshAgeStatus()
-        guard !isDemo, phase == .signedOut, ageStatus == .passed, let server = server() else { return }
+        guard !isDemo, phase == .signedOut, !isTooYoung, let server = server() else { return }
         notice = nil
         phase = .signingIn
         do {
@@ -314,7 +337,7 @@ final class SyncStore: ObservableObject {
     /// Apple's sheet failed before anything reached the server.
     func appleSignInFailed() {
         guard !isDemo else { return }
-        notice = "Couldn't sign in with Apple. Try again."
+        notice = String(localized: "Couldn't sign in with Apple. Try again.", bundle: .tabbi)
     }
 
     /// Signs out: this Mac keeps its pet and progress, and Party goes back

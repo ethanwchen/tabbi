@@ -323,10 +323,9 @@ final class PartyStore: ObservableObject {
         ageAnswered()
     }
 
-    /// Takes an answer already given, also the one asked before Sign in
-    /// with Apple (`SyncStore.ageAnswered`), as `answerAge` does, so the
-    /// question is asked once.
-    func adoptAgeAnswer(eligibleFrom: Date) {
+    /// Saves the answer once; a later one never replaces it, so someone
+    /// told they are too young can't just answer again.
+    private func adoptAgeAnswer(eligibleFrom: Date) {
         guard settings.ageStatus(at: Date()) == .unanswered else { return }
         var new = settings
         new.ageEligibleFrom = eligibleFrom

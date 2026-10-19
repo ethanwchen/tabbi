@@ -57,7 +57,7 @@ public struct UpNextEmptyState: Hashable, Sendable {
                             bundle: .tabbi)
             action = .requestAccess
             actionTitle = String(localized: "Show calendar", bundle: .tabbi)
-            actionHelp = String(localized: "Allow \(appName) to read your calendars", bundle: .tabbi)
+            actionHelp = String(localized: "Your Mac asks next whether \(appName) can read your calendars", bundle: .tabbi)
         case .denied:
             symbol = "calendar.badge.exclamationmark"
             title = String(localized: "Calendar access is off", bundle: .tabbi)

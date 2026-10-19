@@ -244,7 +244,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       <p class="measure">Tabbi's study tools work on your Mac and send us nothing, so anyone can use them.
         Party and Sign in with Apple are for people 13 and older. If you are under the age where your country lets you agree to an online service on your own (up to 16 in some European countries), use them only with a parent's or guardian's permission.</p>
       <p class="measure">We do not knowingly collect personal information from children under 13.
-        Party, and Sign in with Apple, ask your birth month and year once before anything is sent, and the answer counts for both; only the date you are old enough (the first day of the month after you turn 13) is kept, on your Mac. If the answer is under 13, both stay off on that Mac until you turn 13, send nothing, and the Party data this Mac had already created is deleted from our server. If you are signed in with Apple, syncing stops and the account is deleted too; your pet stays on your Mac.
+        Party asks your birth month and year once before anything is sent; only the date you are old enough (the first day of the month after you turn 13) is kept, on your Mac. If the answer is under 13, Party stays off on that Mac until you turn 13, sends nothing, and the Party data this Mac had already created is deleted from our server. Sign in with Apple does not ask for your birthday, but it follows that answer: after an answer under 13, signing in stays off on that Mac until you turn 13, and if you are already signed in, syncing stops and the account is deleted too; your pet stays on your Mac.
         If we learn that a child under 13 has used Party or signed in, we delete their data.
         If you are a parent or guardian and think your child has, email {MAIL} with the friend code shown in their Party tab, or open <strong>Delete my Party data</strong> on their Mac yourself.</p>
 
@@ -284,7 +284,7 @@ TERMS = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
 
       <h2 id="age">2. Who can use Tabbi</h2>
       <p class="measure">Anyone can use the app's study tools, which work on your Mac and send us nothing.
-        The friends service and Sign in with Apple are only for people 13 and older, and the app asks your birth month and year before you join Party or sign in.
+        The friends service and Sign in with Apple are only for people 13 and older. The app asks your birth month and year before you join Party; Sign in with Apple does not ask, and by signing in you confirm that you are old enough.
         If you are under 18 (or the age of majority where you live), use them only with a parent's or guardian's permission; that parent or guardian accepts these terms for you and is responsible for your use.
         If we learn that someone under 13 uses the friends service or an account, we delete their data, as the <a href="/privacy#children">Privacy Policy</a> describes.</p>
       <p class="measure">You may not use the friends service if you are barred from receiving it under the laws that apply to you, including US sanctions (see section 14).</p>

@@ -2,10 +2,17 @@ import SwiftUI
 import TabbiKitCore
 import TabbiKit
 
-/// Onboarding's calendar step: what Today does with the calendar, one tap
-/// to allow access (or the way back to it when it's off), and beside it the
-/// day as Up next will show it. Before access it shows the kit's sample day,
-/// marked as an example, so the step explains itself.
+/// Onboarding's calendar step: what Today does with the calendar, a
+/// Continue that lets macOS ask for access (or the way to System Settings
+/// when it's off), and beside it the day as Up next will show it. Before
+/// access it shows the kit's sample day, marked as an example, so the step
+/// explains itself.
+///
+/// App Review guideline 5.1.1(iv): the button before the macOS prompt says
+/// Continue, never Allow, since it only leads to the prompt, and the footer
+/// offers Not now beside it, so declining here is as easy as going on.
+/// Whatever the user answers, the step shows it (their day, or the way to
+/// System Settings) and the footer's Continue goes on.
 struct TodayCalendarSetupView: View {
     @ObservedObject var store: PlannerStore
 
@@ -90,6 +97,7 @@ private struct TodayCalendarSetupContent: View {
         }
         .motion(Theme.Motion.content, value: upNext.access)
         .motion(Theme.Motion.content, value: upNext.events)
+        .onboardingForward(upNext.access == .notDetermined ? .notNow : .standard)
         // Visible like the panel, so access and events are read fresh.
         .onAppear { upNext.setVisible(true) }
         .onDisappear { upNext.setVisible(false) }
@@ -140,8 +148,8 @@ private struct TodayCalendarSetupContent: View {
     @ViewBuilder private var action: some View {
         switch upNext.access {
         case .notDetermined:
-            PlannerPillButton(title: String(localized: "Allow Access", bundle: .tabbi), symbol: "calendar", isProminent: true, height: 24,
-                              help: String(localized: "Allow \(Edition.current.name) to read your calendars. macOS asks once.",
+            PlannerPillButton(title: String(localized: "Continue", bundle: .tabbi), symbol: "calendar", isProminent: true, height: 24,
+                              help: String(localized: "Your Mac asks next whether \(Edition.current.name) can read your calendars",
                                            bundle: .tabbi)) {
                 Task { _ = await upNext.ensureAccess() }
             }

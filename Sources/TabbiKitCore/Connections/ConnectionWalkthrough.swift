@@ -205,17 +205,21 @@ extension ConnectionStatus {
 }
 
 /// The short screen Tabbi shows just before a macOS permission prompt, so
-/// the prompt is expected and the user knows which button to click. Per
-/// Apple's guidance it has one button that leads straight to the prompt.
+/// the prompt is expected. Per App Review guideline 5.1.1(iv) it leaves
+/// the answer to the user: it never says which button to click, its button
+/// says Continue (it leads to the prompt, it doesn't grant anything), and
+/// Not now beside it closes the screen without asking.
 public struct ConnectionPriming: Hashable, Sendable {
     public var symbol: String
     public var title: String
-    /// What the prompt will ask and which button to click.
+    /// What macOS asks next, and that the answer can change later.
     public var message: String
     /// Short reassurances: what Tabbi does and doesn't do with it.
     public var points: [String]
     /// Always "Continue": the button leads to the prompt, it doesn't grant.
     public let button = String(localized: "Continue", bundle: .tabbi)
+    /// Closes the screen without asking.
+    public let notNow = String(localized: "Not now", bundle: .tabbi)
 }
 
 extension ConnectionPermission {
@@ -225,15 +229,15 @@ extension ConnectionPermission {
             ConnectionPriming(
                 symbol: "calendar",
                 title: String(localized: "Show your calendar in Tabbi", bundle: .tabbi),
-                message: String(localized: "Next, your Mac asks if Tabbi can use your calendar. Click Allow.", bundle: .tabbi),
+                message: String(localized: "Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.", bundle: .tabbi),
                 points: [String(localized: "Tabbi only reads events to show today's plan.", bundle: .tabbi),
-                         String(localized: "Claude only sees your events when you ask it to plan your day.", bundle: .tabbi)]
+                         String(localized: "The AI you pick only sees your events when you ask it to plan your day.", bundle: .tabbi)]
             )
         case .notifications:
             ConnectionPriming(
                 symbol: "bell.badge.fill",
                 title: String(localized: "Get a heads-up when time's up", bundle: .tabbi),
-                message: String(localized: "Next, your Mac asks if Tabbi can send alerts. Click Allow.", bundle: .tabbi),
+                message: String(localized: "Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.", bundle: .tabbi),
                 points: [String(localized: "Tabbi only alerts you when a focus block or break ends.", bundle: .tabbi),
                          String(localized: "You can turn alerts off any time in System Settings.", bundle: .tabbi)]
             )
@@ -241,7 +245,7 @@ extension ConnectionPermission {
             ConnectionPriming(
                 symbol: "music.note",
                 title: String(localized: "Control \(app.displayName) from the notch", bundle: .tabbi),
-                message: String(localized: "Next, your Mac asks if Tabbi can control \(app.displayName). Click Allow.", bundle: .tabbi),
+                message: String(localized: "Next, your Mac asks if Tabbi can control \(app.displayName). You can change your answer any time in System Settings.", bundle: .tabbi),
                 points: [String(localized: "Tabbi only plays, pauses, skips and shows what's playing.", bundle: .tabbi),
                          String(localized: "If \(app.displayName) isn't open, Tabbi opens it first so your Mac can ask.", bundle: .tabbi)]
             )

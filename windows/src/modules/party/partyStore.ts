@@ -270,11 +270,6 @@ export class PartyStore extends Store<PartyStoreState> {
     void this.context.host.openUrl(url).catch((error: unknown) => this.context.logger.error("Could not open a link", error));
   }
 
-  /** The account's Sign In before the age check: the question belongs to Party, so its tab asks it. */
-  askAgeFirst(): void {
-    this.setNotice(tr("Open the Party tab to answer when you were born, then sign in here."), false);
-  }
-
   get party(): PartyState {
     return this.state.party;
   }
@@ -426,8 +421,8 @@ export class PartyStore extends Store<PartyStoreState> {
     this.ageAnswered();
   }
 
-  /** Takes an answer already given (also the one asked before Sign in with Apple), so the question is asked once. */
-  adoptAgeAnswer(eligible: Instant): void {
+  /** Saves the answer once; a later one never replaces it, so someone told they are too young can't just answer again. */
+  private adoptAgeAnswer(eligible: Instant): void {
     const now = this.context.now();
     if (partyAgeStatus(this.state.settings, now).kind !== "unanswered") return;
     const settings = { ...this.state.settings, ageEligibleFrom: eligible };

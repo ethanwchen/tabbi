@@ -8,12 +8,12 @@ import TabbiKitCore
 /// button is Apple's in both editions: it opens the native sheet where the
 /// build has the entitlement and Apple's web page elsewhere
 /// (`AppleSignInMethod`). Signed out, everything works as without an account.
-/// Accounts are for people 13 and older, so until the age check
-/// (`PartyAgeCheck`) passed, Sign In opens `AccountAgeSheet` first.
+/// Accounts are for people 13 and older, as the Terms beside the button
+/// say, but signing in never asks for a birthday (App Review guideline
+/// 5.1.1(v)); only an answer under 13 given in Party hides the button.
 struct AccountSettingsRow: View {
     @ObservedObject var account: SyncStore
     @State private var confirmsDelete = false
-    @State private var asksAge = false
 
     var body: some View {
         LabeledContent {
@@ -26,8 +26,6 @@ struct AccountSettingsRow: View {
             Text(caption)
                 .foregroundStyle(account.notice == nil ? .secondary : Color.orange)
             if showsAgreement {
-                // The age check can pass in Party, so the sheet that shows
-                // these links may never open before the user signs in here.
                 Text(LocalizedStringKey(AccountAgeText.agreement))
             }
         }
@@ -40,28 +38,14 @@ struct AccountSettingsRow: View {
         } message: {
             Text(Self.deleteMessage)
         }
-        .sheet(isPresented: $asksAge) {
-            AccountAgeSheet(status: account.ageStatus,
-                            answer: { account.answerAge(birthMonth: $0.month, year: $0.year) },
-                            close: { asksAge = false }) {
-                AppleSignInButton(account: account)
-            }
-        }
         .onAppear(perform: account.refreshAgeStatus)
-        // The sheet goes once Apple's sign-in takes over.
-        .onChange(of: account.phase) { _, phase in
-            if phase != .signedOut { asksAge = false }
-        }
     }
 
     @ViewBuilder
     private var controls: some View {
         switch account.phase {
-        case .signedOut where account.ageStatus == .unanswered:
-            Button(String(localized: "Sign In…", bundle: .tabbi)) { asksAge = true }
-                .help(String(localized: "Sign in with your Apple Account to sync your pet across your Macs", bundle: .tabbi))
-        case .signedOut where account.ageStatus != .passed:
-            // Too young: the caption says when signing in opens.
+        case .signedOut where isTooYoung:
+            // The caption says when signing in opens.
             EmptyView()
         case .signedOut, .signingIn:
             AppleSignInButton(account: account)
@@ -93,8 +77,13 @@ struct AccountSettingsRow: View {
     }
 
     private var showsAgreement: Bool {
-        account.notice == nil && account.ageStatus == .passed
+        account.notice == nil && !isTooYoung
             && (account.phase == .signedOut || account.phase == .signingIn)
+    }
+
+    private var isTooYoung: Bool {
+        if case .tooYoung = account.ageStatus { return true }
+        return false
     }
 
     private var caption: String {
@@ -131,73 +120,60 @@ struct AccountSettingsRow: View {
 
 /// Apple's Sign in with Apple button, which signs `account` in: the native
 /// sheet where the build has the entitlement, Apple's web page elsewhere.
+/// Both start from the window the button is in, so the native sheet always
+/// has a window to appear over.
 struct AppleSignInButton: View {
     @ObservedObject var account: SyncStore
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        switch account.signInMethod {
-        case .native:
-            SignInWithAppleButton(.signIn) { request in
-                // The name greets the user; no email is asked for or kept.
-                request.requestedScopes = [.fullName]
-            } onCompletion: { result in
-                signIn(with: result)
-            }
-            .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-        case .web:
-            WebSignInWithAppleButton(style: colorScheme == .dark ? .white : .black) {
-                Task { await account.signInOnWeb() }
-            }
-            // The style is fixed when the button is made.
-            .id(colorScheme)
+        AppleIDButton(style: colorScheme == .dark ? .white : .black) { window in
+            Task { await account.signInWithApple(from: window) }
         }
-    }
-
-    private func signIn(with result: Result<ASAuthorization, any Error>) {
-        switch result {
-        case .success(let authorization):
-            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
-                  let tokenData = credential.identityToken,
-                  let token = String(data: tokenData, encoding: .utf8) else {
-                account.appleSignInFailed()
-                return
-            }
-            let code = credential.authorizationCode.flatMap { String(data: $0, encoding: .utf8) }
-            let name = credential.fullName
-                .map { PersonNameComponentsFormatter.localizedString(from: $0, style: .default) }
-                .flatMap { $0.isEmpty ? nil : $0 }
-            Task { await account.signIn(identityToken: token, authorizationCode: code, name: name) }
-        case .failure(let error):
-            // Cancelling is a choice, not an error.
-            if (error as? ASAuthorizationError)?.code != .canceled { account.appleSignInFailed() }
-        }
+        // The style is fixed when the button is made.
+        .id(colorScheme)
     }
 }
 
-/// Apple's Sign in with Apple button for the web flow: the same look as the
-/// native `SignInWithAppleButton`, which only starts the native sheet, with
-/// an action of our own.
-private struct WebSignInWithAppleButton: NSViewRepresentable {
+/// Apple's own `ASAuthorizationAppleIDButton`, with an action of our own
+/// that gets the button's window. SwiftUI's `SignInWithAppleButton` runs
+/// the native request itself, with no say in where its sheet goes.
+private struct AppleIDButton: NSViewRepresentable {
     let style: ASAuthorizationAppleIDButton.Style
-    let action: () -> Void
+    let action: (NSWindow?) -> Void
 
     func makeNSView(context: Context) -> ASAuthorizationAppleIDButton {
         let button = ASAuthorizationAppleIDButton(authorizationButtonType: .signIn, authorizationButtonStyle: style)
         button.target = context.coordinator
-        button.action = #selector(Coordinator.press)
+        button.action = #selector(Coordinator.press(_:))
         return button
     }
 
     func updateNSView(_ button: ASAuthorizationAppleIDButton, context: Context) {
         context.coordinator.action = action
+        // An AppKit control doesn't follow SwiftUI's .disabled by itself.
+        button.isEnabled = context.environment.isEnabled
     }
 
     func makeCoordinator() -> Coordinator { Coordinator(action: action) }
 
+    @MainActor
     final class Coordinator: NSObject {
-        var action: () -> Void
-        init(action: @escaping () -> Void) { self.action = action }
-        @objc func press() { action() }
+        var action: (NSWindow?) -> Void
+        init(action: @escaping (NSWindow?) -> Void) { self.action = action }
+        @objc func press(_ sender: NSView) { action(sender.window) }
+    }
+}
+
+/// What the account says about age, in the row.
+enum AccountAgeText {
+    /// The links the user agrees to by signing in, as Markdown.
+    static var agreement: String {
+        String(localized: "By signing in you agree to the [Terms of Use](\(SupportContact.termsURL.absoluteString)) and the [Privacy Policy](\(SupportContact.privacyURL.absoluteString)).", bundle: .tabbi)
+    }
+
+    /// What the account row says to someone Party found too young.
+    static func tooYoung(until date: Date) -> String {
+        String(localized: "Accounts are for people \(PartyAgeCheck.minimumAge) and older. Signing in opens in \(PartyAgeCheck.opensText(date)).", bundle: .tabbi)
     }
 }

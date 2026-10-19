@@ -19,6 +19,8 @@
 	<string>%@ Designs gestalten das offene Panel, die geschlossene Notch bleibt schwarz.</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ Neuer Versuch im Hintergrund.</string>
+	<key>%@ access is off</key>
+	<string>Kein Zugriff auf %@</string>
 	<key>%@ and brought back %@</key>
 	<string>%1$@ und brachte %2$@ mit</string>
 	<key>%@ brought back a shiny acorn</key>
@@ -485,8 +487,6 @@
 	<string>Alles optional. Nichts zu tun.</string>
 	<key>Allow</key>
 	<string>Erlauben</string>
-	<key>Allow %@ access</key>
-	<string>Zugriff auf %@ erlauben</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>Erlaube %@ unter Datenschutz &amp; Sicherheit, um um Meetings herum zu planen.</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -495,18 +495,12 @@
 	<string>Erlaube %@ in Systemeinstellungen › Allgemein › Anmeldeobjekte.</string>
 	<key>Allow %@ to read your calendars</key>
 	<string>Erlaube %@, deine Kalender zu lesen</string>
-	<key>Allow %@ to read your calendars. macOS asks once.</key>
-	<string>Erlaube %@, deine Kalender zu lesen. macOS fragt einmal.</string>
-	<key>Allow Access</key>
-	<string>Zugriff erlauben</string>
 	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
 	<string>Erlaube Tabbi in den Einstellungen von AnkiConnect und versuch es dann erneut.</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>Erlaube Tabbis Mitteilungen in den Systemeinstellungen</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
 	<string>Erlaube den Zugriff unter Datenschutz &amp; Sicherheit › Automation.</string>
-	<key>Allow screenshots</key>
-	<string>Screenshots erlauben</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>Notch auch auf anderen Displays als dem integrierten erlauben</string>
 	<key>Almost there: one thing left to do</key>
@@ -641,6 +635,8 @@
 	<string>Zu Beginn einer Pause zeigt dein Haustier eine kurze Übung zum Mitmachen</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>Screenshot dieses Bildschirms anhängen (ohne Tabbi)</string>
+	<key>Attach your screen</key>
+	<string>Bildschirm anhängen</string>
 	<key>Automation</key>
 	<string>Automation</string>
 	<key>Available when %@ runs as an app bundle.</key>
@@ -885,8 +881,6 @@
 	<string>Claude ist bereit</string>
 	<key>Claude location</key>
 	<string>Claude-Speicherort</string>
-	<key>Claude only sees your events when you ask it to plan your day.</key>
-	<string>Claude sieht deine Termine nur, wenn du es deinen Tag planen lässt.</string>
 	<key>Clear "%@"</key>
 	<string>„%@“ abwählen</string>
 	<key>Clear All</key>
@@ -955,12 +949,12 @@
 	<string>Anleitung schließen</string>
 	<key>Close this guide. You can come back any time.</key>
 	<string>Anleitung schließen. Du kannst jederzeit zurückkommen.</string>
+	<key>Close this without asking. You can connect it later.</key>
+	<string>Schließen, ohne zu fragen. Du kannst es später verbinden.</string>
 	<key>Close this. Party keeps trying by itself.</key>
 	<string>Schließen. Party versucht es von selbst weiter.</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>Schließen. Du kannst Party jederzeit einrichten.</string>
-	<key>Close this. You can sign in any time.</key>
-	<string>Schließen. Du kannst dich jederzeit anmelden.</string>
 	<key>Closet</key>
 	<string>Garderobe</string>
 	<key>Code</key>
@@ -999,8 +993,6 @@
 	<string>Verbindungen</string>
 	<key>Continue</key>
 	<string>Weiter</string>
-	<key>Continue to Sign in with Apple</key>
-	<string>Weiter zu „Mit Apple anmelden“</string>
 	<key>Control %@ from the notch</key>
 	<string>%@ über die Notch steuern</string>
 	<key>Control Spotify or Apple Music from the notch.</key>
@@ -1065,6 +1057,8 @@
 	<string>Gestrige Liste nicht lesbar</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>%1$@ konnte nicht entfernt werden: %2$@</string>
+	<key>Couldn't sign in with Apple. Try again.</key>
+	<string>Anmeldung mit Apple fehlgeschlagen. Versuch es noch einmal.</string>
 	<key>Couldn't start the playlist</key>
 	<string>Playlist ließ sich nicht starten</string>
 	<key>Couldn't take a screenshot. Try again.</key>
@@ -1931,12 +1925,12 @@
 	<string>Nächster Titel</string>
 	<key>Next unlock</key>
 	<string>Als Nächstes</string>
-	<key>Next, your Mac asks if Tabbi can control %@. Click Allow.</key>
-	<string>Gleich fragt dein Mac, ob Tabbi %@ steuern darf. Klicke auf Erlauben.</string>
-	<key>Next, your Mac asks if Tabbi can send alerts. Click Allow.</key>
-	<string>Gleich fragt dein Mac, ob Tabbi Mitteilungen senden darf. Klicke auf Erlauben.</string>
-	<key>Next, your Mac asks if Tabbi can use your calendar. Click Allow.</key>
-	<string>Gleich fragt dein Mac, ob Tabbi deinen Kalender nutzen darf. Klicke auf Erlauben.</string>
+	<key>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</key>
+	<string>Gleich fragt dein Mac, ob Tabbi %@ steuern darf. Deine Antwort kannst du jederzeit in den Systemeinstellungen ändern.</string>
+	<key>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</key>
+	<string>Gleich fragt dein Mac, ob Tabbi Mitteilungen senden darf. Deine Antwort kannst du jederzeit in den Systemeinstellungen ändern.</string>
+	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
+	<string>Gleich fragt dein Mac, ob Tabbi deinen Kalender nutzen darf. Deine Antwort kannst du jederzeit in den Systemeinstellungen ändern.</string>
 	<key>Ninja Headband</key>
 	<string>Ninja-Stirnband</string>
 	<key>No answer</key>
@@ -2217,8 +2211,6 @@
 	<string>Internetaccounts öffnen, um einen Google-, Exchange- oder iCloud-Kalender hinzuzufügen</string>
 	<key>Open Party</key>
 	<string>Party öffnen</string>
-	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
-	<string>Datenschutz &amp; Sicherheit &gt; Bildschirmaufnahme in den Systemeinstellungen öffnen</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
 	<string>Datenschutz &amp; Sicherheit öffnen, um Kalenderzugriff zu erlauben</string>
 	<key>Open Settings</key>
@@ -2847,8 +2839,6 @@
 	<string>Zufallswiedergabe</string>
 	<key>Sign In</key>
 	<string>Anmelden</string>
-	<key>Sign In…</key>
-	<string>Anmelden …</string>
 	<key>Sign Out</key>
 	<string>Abmelden</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
@@ -3199,6 +3189,8 @@
 	<string>Die KI</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
 	<string>Die KI hinter KI fragen, Tag planen und Verfeinern</string>
+	<key>The AI you pick only sees your events when you ask it to plan your day.</key>
+	<string>Die KI deiner Wahl sieht deine Termine nur, wenn du sie deinen Tag planen lässt.</string>
 	<key>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</key>
 	<string>Der Anki-Tab zeigt deine fälligen Karten, Top-Stapel und deine Serie, und Heute zählt deine Wiederholungen zum Tag.</string>
 	<key>The Claude row below shows how to sign in, if you still need to.</key>
@@ -3711,6 +3703,10 @@
 	<string>Dein %@-Schlüssel. Er bleibt in deinem Schlüsselbund.</string>
 	<key>Your Mac asks next</key>
 	<string>Gleich fragt dein Mac</string>
+	<key>Your Mac asks next whether %@ can read your calendars</key>
+	<string>Gleich fragt dein Mac, ob %@ deine Kalender lesen darf</string>
+	<key>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</key>
+	<string>Gleich fragt dein Mac, dann öffnet sich Datenschutz &amp; Sicherheit &gt; Bildschirmaufnahme in den Systemeinstellungen</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Dein Mac lädt, und %@ nimmt einen Schluck</string>
 	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>

@@ -543,7 +543,7 @@ private struct StudyPlaylistIssueRow: View {
     private var title: String {
         switch issue {
         case .permissionDenied(let source):
-            String(localized: "Allow \(source.displayName) access", bundle: .tabbi)
+            String(localized: "\(source.displayName) access is off", bundle: .tabbi)
         case .notInstalled(let source):
             String(localized: "\(source.displayName) isn't installed", bundle: .tabbi)
         case .failed:

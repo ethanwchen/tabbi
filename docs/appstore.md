@@ -72,7 +72,7 @@ In the Apple Developer portal, under Certificates, Identifiers & Profiles:
 4. App Store Connect: create the app (platform macOS, bundle id `dev.tabbi.Tabbi`, SKU `tabbi-mac`), and an API key under Users and Access > Integrations for `altool`.
 
 `packaging/Tabbi-AppStore.entitlements` claims `com.apple.developer.applesignin`.
-The script signs with it for the App Store and leaves it out of `--adhoc` builds, since macOS does not launch an app that claims it without a matching profile; there the Account row in Settings > General says that sign-in is not available in this build.
+The script signs with it for the App Store and leaves it out of `--adhoc` builds, since macOS does not launch an app that claims it without a matching profile; there Apple's button in Settings > General signs in on Apple's web page instead (`AppleSignInMethod`).
 
 ## Sandbox check
 
@@ -227,6 +227,7 @@ Device ID and Product Interaction are the cautious reading: Apple's definitions 
 Why nothing else is declared:
 
 - Name and Email Address: the app asks Apple only for the name, keeps it on the Mac, and the server never stores a name or an email.
+- Birthday or age: the App Store edition never asks for one (signing in does not, and Party, which does, is left out). When Party comes back, its age check keeps only the date the user turns 13 on the Mac and sends nothing, so it is still not collected.
 - Calendar events, tasks, focus history, study tallies, the activity log and AI chats stay on the Mac in the app's container.
 - Album artwork is loaded from the address the player reports (Spotify's `i.scdn.co`, SoundCloud's `i1.sndcdn.com`) with no identifier of the user.
 - AnkiConnect and Ollama are reached on `localhost` only.
@@ -250,7 +251,7 @@ Before submitting, check that the Worker has the Sign in with Apple secrets ([sy
 > On a Mac without a notch, Tabbi draws a small black pill at the top center of the menu bar; click it the same way.
 > The first launch shows a short setup inside the panel (pick a kit, then tabs).
 > Settings open from the gear button at the right of the panel's header.
-> Calendar access is optional and only used to show today's events in the Today tab and to plan the day.
+> Calendar access is optional and only used to show today's events in the Today tab and to plan the day. Setup's calendar step explains it with a Continue button, which lets macOS ask, and Not now beside it; declining keeps Today working, with a note and a button to System Settings > Privacy & Security > Calendars.
 > Automation access to Music or Spotify is optional and only used to show and control what is playing; macOS asks for it the first time Now Playing reaches either app.
 > Notifications are optional: alerts when a focus timer ends, a daily study reminder the user turns on, and the weekly recap.
 > The flashcards tab reads review counts from the free AnkiConnect add-on of the Anki desktop app over localhost (127.0.0.1:8765). Tabbi downloads and runs no code; without Anki it shows how to set it up.
@@ -258,14 +259,32 @@ Before submitting, check that the Worker has the Sign in with Apple secrets ([sy
 > Guideline 5.1.2(i): picking Anthropic, OpenAI or Gemini first shows a one-time consent alert that names the company receiving the data and lists what each AI feature sends (Ask AI: questions, the chat and any screenshot attached; Refine: calendar event titles and times, tasks, goals and the plan; day review: focus and study minutes, sessions and points, goal counts and the titles of finished and carried-over tasks). Nothing is sent unless the user taps Allow, and Cancel keeps None. Ollama runs on the Mac, so it needs no consent.
 > No account is needed.
 > Signing in with Apple (Settings > General > Account) is optional and only syncs the pet and study streaks between the user's Macs.
-> Accounts are for people 13 and older: the first Sign In asks the birth month and year (a neutral question, kept on the Mac), then shows Apple's button with links to the Terms and Privacy Policy. An under-13 answer keeps signing in off until the first day of the month after the user turns 13.
+> Signing in asks for no personal information: the Account row shows Apple's button directly, with links to the Terms and Privacy Policy. The app never asks for a birthday.
 > Delete Account in the same place deletes everything the server holds and revokes the Sign in with Apple grant (Guideline 5.1.1(v)).
 > The Privacy Policy and Terms of Use are linked from Settings > About.
 
 When Party comes back, add these lines to the notes:
 
-> Party (the friends tab) asks for the user's birth month and year before it contacts the server, and stays off for anyone under 13; only the date signing up opens (the first day of the month after the user turns 13) is saved, on the Mac.
+> Party (the friends tab) asks for the user's birth month and year only when the user turns Party on, before it contacts the server, and Not now skips it; it stays off for anyone under 13, and only the date signing up opens (the first day of the month after the user turns 13) is saved, on the Mac. Nothing else in the app asks for a birthday.
 > To report someone, right-click their name in Party and choose Report; Block in the same menu hides them at once. Names pass a filter, and the maintainer reviews reports and can rename or ban an identity. Contact: support@tabbinotch.com.
+
+### App Review history
+
+Version 1.0.0 (build 130) was rejected on 19 October 2026, reviewed on a MacBook Air with macOS 27.0, for three things, all fixed in 1.0.3:
+
+1. Guideline 5.1.1(v), a required birthday: Sign In in Settings > General asked for the birth month and year before Apple's button.
+   Signing in now never asks; the Account row shows Apple's button straight away, with the Terms and Privacy Policy links.
+   The birthday is Party's alone (direct download only), asked when Party is turned on, with Not now beside it.
+2. Guideline 5.1.1(iv), "Allow Access" before the calendar prompt: the onboarding step's button now says Continue, with Not now in the footer.
+   The same pass changed every screen before a macOS prompt: Settings > Connections' priming sheets lost "Click Allow." and gained Not now, Ask AI's Screen Recording card says Continue, and the study mixer's denied chip says "Spotify access is off" instead of "Allow Spotify access".
+   The AI consent alert keeps Allow, since it is the consent itself (guideline 5.1.2(i)), not a step before a system prompt.
+3. Guideline 2.1(a), nothing happened after the birthday: the age question lived in a sheet whose Continue swapped in SwiftUI's `SignInWithAppleButton`, so Apple's native request ran from inside that sheet.
+   Reproduced on macOS 27.0.1 with the 1.0.2 code, driven step by step from a fresh sandbox container: onboarding, the calendar prompt and the birthday sheet all work, and with the web flow (ad-hoc builds) Continue shows Apple's button.
+   With the native flow forced on (the reviewed build's path; an ad-hoc build cannot get the entitlement, so Apple refuses the request), pressing Apple's button in the sheet changes nothing in the sheet: the failure lands as an unlocalized line in the dimmed row behind it, and the sheet just sits there.
+   The signed build's request may fail for another reason, but whatever it was, the reviewer could only see the sheet.
+   The sheet is gone, the button sits in the Settings window itself, and `AppleNativeSignIn` makes the app active and hands Apple's sheet that window before it asks; a failure now shows in the row the user is looking at, in their language.
+
+The reply to App Review is in the 1.0.3 submission notes.
 
 ### Screenshots
 

@@ -131,8 +131,10 @@ struct AttachButton: View {
 }
 
 /// Shown before the system is asked for Screen Recording: what it is for,
-/// where the image goes, and one button to the exact Settings pane. Not Now
-/// goes back to the chat, and the question can still be sent without one.
+/// where the image goes, and Continue, which lets macOS ask and opens the
+/// exact Settings pane (never "Allow", App Review guideline 5.1.1(iv)).
+/// Not Now goes back to the chat, and the question can still be sent
+/// without one.
 struct ScreenAccessView: View {
     @ObservedObject var session: ClaudeAskSession
     let accent: Color
@@ -143,7 +145,7 @@ struct ScreenAccessView: View {
                 .font(.system(size: 20, weight: .semibold))
                 .foregroundStyle(accent)
             VStack(spacing: Theme.Spacing.xs) {
-                Text("Allow screenshots", bundle: .tabbi)
+                Text("Attach your screen", bundle: .tabbi)
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
                 Text("To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to \(session.ai.assistantName) with your question.", bundle: .tabbi)
@@ -157,9 +159,9 @@ struct ScreenAccessView: View {
                 PillButton(title: String(localized: "Not Now", bundle: .tabbi), help: String(localized: "Back to the chat without a screenshot", bundle: .tabbi)) {
                     session.isAskingScreenAccess = false
                 }
-                PillButton(title: String(localized: "Open System Settings", bundle: .tabbi), symbol: "arrow.up.forward.app",
+                PillButton(title: String(localized: "Continue", bundle: .tabbi), symbol: "arrow.up.forward.app",
                            tint: Theme.Palette.primaryText,
-                           help: String(localized: "Open Privacy & Security > Screen Recording in System Settings", bundle: .tabbi)) {
+                           help: String(localized: "Your Mac asks next, then Privacy & Security > Screen Recording opens in System Settings", bundle: .tabbi)) {
                     session.openScreenRecordingSettings()
                 }
             }

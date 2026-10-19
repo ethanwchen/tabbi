@@ -19,6 +19,8 @@
 	<string>%@ テーマは開いたパネルに適用され、閉じたノッチは黒のままです。</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ バックグラウンドで再試行しています。</string>
+	<key>%@ access is off</key>
+	<string>%@へのアクセスなし</string>
 	<key>%@ and brought back %@</key>
 	<string>%1$@。おみやげは%2$@</string>
 	<key>%@ brought back a shiny acorn</key>
@@ -485,8 +487,6 @@
 	<string>どれも任意です。今は何もしなくて大丈夫。</string>
 	<key>Allow</key>
 	<string>許可</string>
-	<key>Allow %@ access</key>
-	<string>%@へのアクセスを許可</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>会議に合わせて計画するには、「プライバシーとセキュリティ」で %@ を許可してください。</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -495,18 +495,12 @@
 	<string>システム設定 › 一般 › ログイン項目で %@ を許可してください。</string>
 	<key>Allow %@ to read your calendars</key>
 	<string>%@ にカレンダーの読み取りを許可</string>
-	<key>Allow %@ to read your calendars. macOS asks once.</key>
-	<string>%@ にカレンダーの読み取りを許可します。macOS が一度だけ確認します。</string>
-	<key>Allow Access</key>
-	<string>アクセスを許可</string>
 	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
 	<string>AnkiConnect の設定で Tabbi を許可してから、もう一度お試しください。</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>システム設定でTabbiの通知を許可してください</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
 	<string>プライバシーとセキュリティ › オートメーションで許可してください。</string>
-	<key>Allow screenshots</key>
-	<string>スクリーンショットを許可</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>内蔵ディスプレイ以外にもノッチを表示します</string>
 	<key>Almost there: one thing left to do</key>
@@ -641,6 +635,8 @@
 	<string>休憩の始めに、ペットが真似できる短い動きを見せます</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>この画面のスクリーンショットを添付(Tabbiは写りません)</string>
+	<key>Attach your screen</key>
+	<string>画面を添付</string>
 	<key>Automation</key>
 	<string>オートメーション</string>
 	<key>Available when %@ runs as an app bundle.</key>
@@ -885,8 +881,6 @@
 	<string>Claudeの準備OK</string>
 	<key>Claude location</key>
 	<string>Claudeの場所</string>
-	<key>Claude only sees your events when you ask it to plan your day.</key>
-	<string>Claudeが予定を見るのは、1日の計画を頼んだときだけです。</string>
 	<key>Clear "%@"</key>
 	<string>「%@」を外す</string>
 	<key>Clear All</key>
@@ -955,12 +949,12 @@
 	<string>このガイドを閉じる</string>
 	<key>Close this guide. You can come back any time.</key>
 	<string>このガイドを閉じます。いつでも戻ってこられます。</string>
+	<key>Close this without asking. You can connect it later.</key>
+	<string>確認せずに閉じます。あとで接続できます。</string>
 	<key>Close this. Party keeps trying by itself.</key>
 	<string>閉じます。パーティは自動で接続を続けます。</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>閉じます。パーティはいつでも設定できます。</string>
-	<key>Close this. You can sign in any time.</key>
-	<string>閉じます。いつでもサインインできます。</string>
 	<key>Closet</key>
 	<string>クローゼット</string>
 	<key>Code</key>
@@ -999,8 +993,6 @@
 	<string>接続</string>
 	<key>Continue</key>
 	<string>続ける</string>
-	<key>Continue to Sign in with Apple</key>
-	<string>「Appleでサインイン」に進む</string>
 	<key>Control %@ from the notch</key>
 	<string>ノッチから %@ を操作</string>
 	<key>Control Spotify or Apple Music from the notch.</key>
@@ -1065,6 +1057,8 @@
 	<string>昨日のリストを読み込めません</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>%1$@を削除できませんでした: %2$@</string>
+	<key>Couldn't sign in with Apple. Try again.</key>
+	<string>Appleでサインインできませんでした。もう一度お試しください。</string>
 	<key>Couldn't start the playlist</key>
 	<string>プレイリストを再生できませんでした</string>
 	<key>Couldn't take a screenshot. Try again.</key>
@@ -1931,12 +1925,12 @@
 	<string>次の曲</string>
 	<key>Next unlock</key>
 	<string>次の解放</string>
-	<key>Next, your Mac asks if Tabbi can control %@. Click Allow.</key>
-	<string>次に、Tabbiが %@ を操作してよいかMacが確認します。「許可」をクリックしてください。</string>
-	<key>Next, your Mac asks if Tabbi can send alerts. Click Allow.</key>
-	<string>次に、Tabbiが通知を送ってよいかMacが確認します。「許可」をクリックしてください。</string>
-	<key>Next, your Mac asks if Tabbi can use your calendar. Click Allow.</key>
-	<string>次に、TabbiがカレンダーにアクセスしてよいかMacが確認します。「許可」をクリックしてください。</string>
+	<key>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</key>
+	<string>次に、Tabbiが %@ を操作してよいかMacが確認します。答えはいつでもシステム設定で変更できます。</string>
+	<key>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</key>
+	<string>次に、Tabbiが通知を送ってよいかMacが確認します。答えはいつでもシステム設定で変更できます。</string>
+	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
+	<string>次に、TabbiがカレンダーにアクセスしてよいかMacが確認します。答えはいつでもシステム設定で変更できます。</string>
 	<key>Ninja Headband</key>
 	<string>忍者のはちまき</string>
 	<key>No answer</key>
@@ -2217,8 +2211,6 @@
 	<string>「インターネットアカウント」を開いて Google、Exchange、iCloud のカレンダーを追加</string>
 	<key>Open Party</key>
 	<string>パーティを開く</string>
-	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
-	<string>システム設定の「プライバシーとセキュリティ」&gt;「画面収録」を開く</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
 	<string>「プライバシーとセキュリティ」を開いてカレンダーへのアクセスを許可</string>
 	<key>Open Settings</key>
@@ -2847,8 +2839,6 @@
 	<string>シャッフル</string>
 	<key>Sign In</key>
 	<string>サインイン</string>
-	<key>Sign In…</key>
-	<string>サインイン…</string>
 	<key>Sign Out</key>
 	<string>サインアウト</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
@@ -3199,6 +3189,8 @@
 	<string>AI</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
 	<string>AIに質問、1日を計画、調整で答えるAI</string>
+	<key>The AI you pick only sees your events when you ask it to plan your day.</key>
+	<string>選んだAIが予定を見るのは、1日の計画を頼んだときだけです。</string>
 	<key>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</key>
 	<string>Ankiタブには期限のカード、主なデッキ、連続記録が表示され、今日の画面で復習数がその日の分に加算されます。</string>
 	<key>The Claude row below shows how to sign in, if you still need to.</key>
@@ -3711,6 +3703,10 @@
 	<string>%@のキー。キーチェーンに保存されます。</string>
 	<key>Your Mac asks next</key>
 	<string>次にMacが確認します</string>
+	<key>Your Mac asks next whether %@ can read your calendars</key>
+	<string>次に、%@ がカレンダーを読み取ってよいかMacが確認します</string>
+	<key>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</key>
+	<string>Macが確認したあと、システム設定の「プライバシーとセキュリティ」&gt;「画面収録」が開きます</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Macを充電中、%@もひと休みで一口</string>
 	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>

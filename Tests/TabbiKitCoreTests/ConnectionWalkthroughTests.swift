@@ -102,11 +102,18 @@ final class ConnectionWalkthroughTests: XCTestCase {
         XCTAssertEqual(custom.steps.compactMap(\.copyable), ["Quiet", "Loud"])
     }
 
-    func testPrimingLeadsToThePromptWithContinue() {
+    /// App Review guideline 5.1.1(iv): the button before a macOS prompt
+    /// says Continue, Not now is beside it, and nothing tells the user
+    /// which answer to give.
+    func testPrimingLeadsToThePromptWithContinueAndNeverSteersTheAnswer() {
         for permission in permissions {
             let priming = permission.priming
             XCTAssertEqual(priming.button, "Continue")
-            XCTAssertTrue(priming.message.contains("Click Allow"), "\(permission) doesn't say which button to click")
+            XCTAssertEqual(priming.notNow, "Not now")
+            for text in [priming.title, priming.message] + priming.points {
+                XCTAssertFalse(text.localizedCaseInsensitiveContains("allow"), "\(permission) steers the answer: \(text)")
+            }
+            XCTAssertTrue(priming.message.contains("System Settings"), "\(permission) doesn't say the answer can change")
             XCTAssertFalse(priming.points.isEmpty)
             for text in [priming.title, priming.message] + priming.points {
                 assertPlain(text)

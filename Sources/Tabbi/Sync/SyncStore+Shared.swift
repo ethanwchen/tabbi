@@ -16,7 +16,7 @@ extension ModuleContext {
                              signInMethod: snapshot ? .web : AppleSignInMethod.current,
                              server: { snapshot ? nil : PartySettingsRepository().load().serverURL },
                              credentials: credentials,
-                             ageAnswer: snapshot ? .inMemory() : .partySettings())
+                             ageAnswer: snapshot ? .fixed() : .partySettings())
         }
     }
 }

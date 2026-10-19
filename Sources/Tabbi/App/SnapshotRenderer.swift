@@ -439,22 +439,8 @@ enum SnapshotRenderer {
             try? png.write(to: url)
             print(url.path)
         }
-        // The age check before Sign in with Apple: asked, passed, too young.
-        let tooYoung = Calendar.current.date(byAdding: .month, value: 18, to: Date()) ?? Date()
-        for (name, status) in [("ask", PartyAgeCheck.Status.unanswered), ("ready", .passed),
-                               ("too-young", .tooYoung(until: tooYoung))] {
-            let sheet = AccountAgeSheet(status: status, answer: { _ in }, close: {}) {
-                AppleSignInButton(account: services.accountSync)
-            }
-            if let png = await sheetSnapshot(sheet) {
-                let url = outputDirectory.appendingPathComponent("settings-account-age-\(name).png")
-                try? png.write(to: url)
-                print(url.path)
-            }
-        }
-        // The Account row once the age check passed in Party: the Apple
-        // button with the Terms and Privacy Policy it agrees to.
-        services.accountSync.answerAge(birthMonth: 1, year: 1990)
+        // The Account row signed out: Apple's button with the Terms and
+        // Privacy Policy it agrees to, and no question before it.
         if let png = await settingsWindow.snapshot(of: AppSettingsPane.general.rawValue) {
             let url = outputDirectory.appendingPathComponent("settings-general-account-ready.png")
             try? png.write(to: url)

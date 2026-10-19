@@ -66,15 +66,11 @@ export const PartyModule = defineModule(
     const account = accountSync(context, () => ({
       server: () => store.serverURL,
       credentials: partyCredentialStore(context),
-      ageAnswer: {
-        load: () => store.state.settings.ageEligibleFrom,
-        save: (eligible) => store.adoptAgeAnswer(eligible),
-      },
+      ageAnswer: { load: () => store.state.settings.ageEligibleFrom },
     }));
     store.isSignedIn = () => account.isSignedIn;
     store.ageAnswered = () => account.refreshAgeStatus();
     account.identityChanged.on(() => store.identityDidChange());
-    account.ageAnswered.on((eligible) => store.adoptAgeAnswer(eligible));
     store.follow();
     /* A stay in a shared session ended: the activity log records the focus stretch, and a finished session celebrates; a hidden panel gets a toast instead. */
     store.onCompletion((completion) => {

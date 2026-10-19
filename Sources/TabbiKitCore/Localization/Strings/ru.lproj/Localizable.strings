@@ -19,6 +19,8 @@
 	<string>%@ Темы меняют открытую панель, закрытый вырез остается черным.</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ Повторяем в фоне.</string>
+	<key>%@ access is off</key>
+	<string>Нет доступа к %@</string>
 	<key>%@ and brought back %@</key>
 	<string>%1$@. Находка: %2$@</string>
 	<key>%@ brought back a shiny acorn</key>
@@ -485,8 +487,6 @@
 	<string>Все по желанию. Сейчас ничего делать не нужно.</string>
 	<key>Allow</key>
 	<string>Разрешить</string>
-	<key>Allow %@ access</key>
-	<string>Разрешить доступ к %@</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>Разреши доступ для %@ в разделе «Конфиденциальность и безопасность», чтобы планировать с учетом встреч.</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -495,18 +495,12 @@
 	<string>Разреши %@ в «Системные настройки» › «Основные» › «Объекты входа».</string>
 	<key>Allow %@ to read your calendars</key>
 	<string>Разрешить %@ читать твои календари</string>
-	<key>Allow %@ to read your calendars. macOS asks once.</key>
-	<string>Разреши %@ читать твои календари. macOS спросит один раз.</string>
-	<key>Allow Access</key>
-	<string>Разрешить</string>
 	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
 	<string>Разреши Tabbi в настройках AnkiConnect и попробуй снова.</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>Разреши уведомления Tabbi в Системных настройках</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
 	<string>Разреши доступ в «Конфиденциальность и безопасность» › «Автоматизация».</string>
-	<key>Allow screenshots</key>
-	<string>Разрешить снимки экрана</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>Показывать вырез не только на встроенном дисплее</string>
 	<key>Almost there: one thing left to do</key>
@@ -641,6 +635,8 @@
 	<string>В начале перерыва питомец показывает короткое движение, которое можно повторить</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>Приложить снимок этого экрана (без Tabbi)</string>
+	<key>Attach your screen</key>
+	<string>Прикрепить экран</string>
 	<key>Automation</key>
 	<string>Автоматизация</string>
 	<key>Available when %@ runs as an app bundle.</key>
@@ -885,8 +881,6 @@
 	<string>Claude готов</string>
 	<key>Claude location</key>
 	<string>Путь к Claude</string>
-	<key>Claude only sees your events when you ask it to plan your day.</key>
-	<string>Claude видит твои события, только когда ты просишь его спланировать день.</string>
 	<key>Clear "%@"</key>
 	<string>Убрать «%@»</string>
 	<key>Clear All</key>
@@ -955,12 +949,12 @@
 	<string>Закрыть руководство</string>
 	<key>Close this guide. You can come back any time.</key>
 	<string>Закрыть руководство. Вернуться можно в любой момент.</string>
+	<key>Close this without asking. You can connect it later.</key>
+	<string>Закрыть, ничего не спрашивая. Подключить можно и позже.</string>
 	<key>Close this. Party keeps trying by itself.</key>
 	<string>Закрыть. Party продолжит попытки сама.</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>Закрыть. Настроить Party можно в любой момент.</string>
-	<key>Close this. You can sign in any time.</key>
-	<string>Закрыть. Войти можно в любой момент.</string>
 	<key>Closet</key>
 	<string>Гардероб</string>
 	<key>Code</key>
@@ -999,8 +993,6 @@
 	<string>Подключения</string>
 	<key>Continue</key>
 	<string>Далее</string>
-	<key>Continue to Sign in with Apple</key>
-	<string>Продолжить со входом с Apple</string>
 	<key>Control %@ from the notch</key>
 	<string>Управление %@ из выреза</string>
 	<key>Control Spotify or Apple Music from the notch.</key>
@@ -1065,6 +1057,8 @@
 	<string>Не удалось прочитать вчерашний список</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>Не удалось удалить %1$@: %2$@</string>
+	<key>Couldn't sign in with Apple. Try again.</key>
+	<string>Не удалось войти через Apple. Попробуй ещё раз.</string>
 	<key>Couldn't start the playlist</key>
 	<string>Не удалось включить плейлист</string>
 	<key>Couldn't take a screenshot. Try again.</key>
@@ -1931,12 +1925,12 @@
 	<string>Следующий трек</string>
 	<key>Next unlock</key>
 	<string>Следующая награда</string>
-	<key>Next, your Mac asks if Tabbi can control %@. Click Allow.</key>
-	<string>Сейчас Mac спросит, можно ли Tabbi управлять %@. Нажми «Разрешить».</string>
-	<key>Next, your Mac asks if Tabbi can send alerts. Click Allow.</key>
-	<string>Сейчас Mac спросит, можно ли Tabbi присылать уведомления. Нажми «Разрешить».</string>
-	<key>Next, your Mac asks if Tabbi can use your calendar. Click Allow.</key>
-	<string>Сейчас Mac спросит, можно ли Tabbi пользоваться календарем. Нажми «Разрешить».</string>
+	<key>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</key>
+	<string>Сейчас Mac спросит, можно ли Tabbi управлять %@. Ответ можно изменить в любой момент в Системных настройках.</string>
+	<key>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</key>
+	<string>Сейчас Mac спросит, можно ли Tabbi присылать уведомления. Ответ можно изменить в любой момент в Системных настройках.</string>
+	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
+	<string>Сейчас Mac спросит, можно ли Tabbi пользоваться календарем. Ответ можно изменить в любой момент в Системных настройках.</string>
 	<key>Ninja Headband</key>
 	<string>Повязка ниндзя</string>
 	<key>No answer</key>
@@ -2217,8 +2211,6 @@
 	<string>Открыть «Учетные записи интернета», чтобы добавить календарь Google, Exchange или iCloud</string>
 	<key>Open Party</key>
 	<string>Открыть Party</string>
-	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
-	<string>Открыть «Конфиденциальность и безопасность» &gt; «Запись экрана» в Системных настройках</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
 	<string>Открыть «Конфиденциальность и безопасность», чтобы разрешить доступ к календарю</string>
 	<key>Open Settings</key>
@@ -2847,8 +2839,6 @@
 	<string>Перемешать</string>
 	<key>Sign In</key>
 	<string>Войти</string>
-	<key>Sign In…</key>
-	<string>Войти…</string>
 	<key>Sign Out</key>
 	<string>Выйти</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
@@ -3199,6 +3189,8 @@
 	<string>ИИ</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
 	<string>ИИ для вопросов, плана дня и улучшения</string>
+	<key>The AI you pick only sees your events when you ask it to plan your day.</key>
+	<string>Выбранный ИИ видит твои события, только когда ты просишь его спланировать день.</string>
 	<key>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</key>
 	<string>Вкладка Anki показывает карточки к повторению, главные колоды и серию, а Сегодня засчитывает повторения в твой день.</string>
 	<key>The Claude row below shows how to sign in, if you still need to.</key>
@@ -3711,6 +3703,10 @@
 	<string>Твой ключ %@. Он хранится в Связке ключей.</string>
 	<key>Your Mac asks next</key>
 	<string>Дальше спросит Mac</string>
+	<key>Your Mac asks next whether %@ can read your calendars</key>
+	<string>Сейчас Mac спросит, можно ли %@ читать твои календари</string>
+	<key>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</key>
+	<string>Сначала спросит Mac, затем откроется «Конфиденциальность и безопасность» &gt; «Запись экрана» в Системных настройках</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Mac заряжается, а %@ немного попьет</string>
 	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>

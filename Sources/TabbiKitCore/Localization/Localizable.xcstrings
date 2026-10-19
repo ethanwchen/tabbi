@@ -579,6 +579,78 @@
         }
       }
     },
+    "%@ access is off" : {
+      "comment" : "Focus sound mixer: the playlist issue row when Tabbi has no Automation access to the music app; clicking it opens Privacy & Security > Automation. %@ is Spotify or Music. Keep it short.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا وصول إلى %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Zugriff auf %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin acceso a %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Walang access sa %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas d'accès à %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@へのアクセスなし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 접근 꺼짐"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem acesso ao %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет доступа к %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法访问%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法取用%@"
+          }
+        }
+      }
+    },
     "%@ and brought back %@" : {
       "comment" : "Adventure journal line with the surprise gift the pet carried home. The first %@ is the journal line (\"Mochi found a perfect leaf\"), the second the gift (\"15 bonus points\").",
       "extractionState" : "manual",
@@ -25969,78 +26041,6 @@
         }
       }
     },
-    "Allow %@ access" : {
-      "comment" : "Focus sound mixer: the playlist issue row when Tabbi has no Automation access to the music app. %@ is Spotify or Music.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اسمح بالوصول إلى %@"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zugriff auf %@ erlauben"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permitir acceso a %@"
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Payagan ang access sa %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autoriser l'accès à %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@へのアクセスを許可"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 접근 허용"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permitir acesso ao %@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Разрешить доступ к %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "允许访问%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "允許取用%@"
-          }
-        }
-      }
-    },
     "Allow %@ in Privacy & Security to plan around meetings." : {
       "comment" : "Today panel, Plan my day (AI or on-device plan of focus blocks around calendar events). %@ is the app name Tabbi. Privacy & Security is the macOS System Settings pane, use its localized name.",
       "extractionState" : "manual",
@@ -26329,150 +26329,6 @@
         }
       }
     },
-    "Allow %@ to read your calendars. macOS asks once." : {
-      "comment" : "Onboarding calendar step. Tooltip. %@ is the app name.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اسمح لـ %@ بقراءة تقاويمك. يسأل macOS مرة واحدة."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erlaube %@, deine Kalender zu lesen. macOS fragt einmal."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permite que %@ lea tus calendarios. macOS lo pregunta una vez."
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Payagan ang %@ na basahin ang mga calendar mo. Isang beses lang magtatanong ang macOS."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autorise %@ à lire tes calendriers. macOS ne le demande qu'une fois."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ にカレンダーの読み取りを許可します。macOS が一度だけ確認します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@가 캘린더를 읽도록 허용해요. macOS가 한 번만 물어봐요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permita que o %@ leia suas agendas. O macOS pergunta uma vez."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Разреши %@ читать твои календари. macOS спросит один раз."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "允许 %@ 读取你的日历。macOS 只会询问一次。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "允許 %@ 讀取你的行事曆。macOS 只會詢問一次。"
-          }
-        }
-      }
-    },
-    "Allow Access" : {
-      "comment" : "Onboarding calendar step. Button that asks macOS for calendar access.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "السماح بالوصول"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zugriff erlauben"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permitir acceso"
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Payagan"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autoriser l'accès"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アクセスを許可"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "접근 허용"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permitir acesso"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Разрешить"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "允许访问"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "允許取用"
-          }
-        }
-      }
-    },
     "Allow Tabbi in AnkiConnect's settings, then try again." : {
       "comment" : "Anki: what to do when AnkiConnect refused access.",
       "extractionState" : "manual",
@@ -26685,78 +26541,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請在「隱私權與安全性」›「自動化」中允許取用。"
-          }
-        }
-      }
-    },
-    "Allow screenshots" : {
-      "comment" : "Ask AI: heading of the card asking for Screen Recording permission.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "السماح بلقطات الشاشة"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Screenshots erlauben"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permitir capturas"
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Payagan ang mga screenshot"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autoriser les captures"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "スクリーンショットを許可"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "스크린샷 허용"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permitir capturas"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Разрешить снимки экрана"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "允许截图"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "允許截圖"
           }
         }
       }
@@ -31583,6 +31367,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "附加此螢幕的截圖（不會包含 Tabbi）"
+          }
+        }
+      }
+    },
+    "Attach your screen" : {
+      "comment" : "Ask AI: heading of the card shown before the Screen Recording prompt, when the user wants to attach a screenshot.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إرفاق شاشتك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirm anhängen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adjuntar tu pantalla"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-attach ang screen mo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joindre ton écran"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画面を添付"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 첨부"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anexar sua tela"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прикрепить экран"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "附加屏幕截图"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "附加螢幕截圖"
           }
         }
       }
@@ -40645,78 +40501,6 @@
         }
       }
     },
-    "Claude only sees your events when you ask it to plan your day." : {
-      "comment" : "Setup walkthrough or permission priming sheet in Settings > Connections.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لا يرى Claude أحداثك إلا عندما تطلب منه تخطيط يومك."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude sieht deine Termine nur, wenn du es deinen Tag planen lässt."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude solo ve tus eventos cuando le pides que planee tu día."
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nakikita lang ni Claude ang events mo kapag pinaplano mo sa kanya ang araw mo."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude ne voit tes événements que si tu lui demandes de planifier ta journée."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claudeが予定を見るのは、1日の計画を頼んだときだけです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude는 하루 계획을 부탁할 때만 일정을 봐요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O Claude só vê seus eventos quando você pede para ele planejar seu dia."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude видит твои события, только когда ты просишь его спланировать день."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "只有在你让 Claude 规划今天时，它才会看到你的日程。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "只有在你請 Claude 規劃今天時，它才會看到你的行程。"
-          }
-        }
-      }
-    },
     "Clear \"%@\"" : {
       "comment" : "Tooltip on a picked answer; clicking unpicks it. The argument is the answer.",
       "extractionState" : "manual",
@@ -43166,6 +42950,78 @@
         }
       }
     },
+    "Close this without asking. You can connect it later." : {
+      "comment" : "Permission priming sheet in Settings > Connections: tooltip on Not now, which closes the sheet without showing the macOS prompt.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أغلق هذا دون أن يُطرح السؤال. يمكنك الربط لاحقًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließen, ohne zu fragen. Du kannst es später verbinden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar sin preguntar. Puedes conectarlo más tarde."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isara ito nang hindi nagtatanong. Puwede mo itong i-connect mamaya."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer sans demander. Tu pourras le connecter plus tard."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確認せずに閉じます。あとで接続できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "묻지 않고 닫아요. 나중에 연결할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fechar sem perguntar. Você pode conectar depois."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрыть, ничего не спрашивая. Подключить можно и позже."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭且不询问。你可以稍后再连接。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉且不詢問。你可以稍後再連接。"
+          }
+        }
+      }
+    },
     "Close this. Party keeps trying by itself." : {
       "comment" : "Party setup sheet in Settings > Connections.",
       "extractionState" : "manual",
@@ -43306,78 +43162,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "關閉。你隨時都能設定派對。"
-          }
-        }
-      }
-    },
-    "Close this. You can sign in any time." : {
-      "comment" : "Tooltip of Cancel in the account sheet.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أغلق هذا. يمكنك تسجيل الدخول في أي وقت."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schließen. Du kannst dich jederzeit anmelden."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cerrar. Puedes iniciar sesión cuando quieras."
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Isara ito. Puwede kang mag-sign in anumang oras."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fermer. Tu peux te connecter à tout moment."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "閉じます。いつでもサインインできます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "닫기. 언제든지 로그인할 수 있어요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fechar. Você pode entrar quando quiser."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Закрыть. Войти можно в любой момент."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "关闭。你可以随时登录。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "關閉。你隨時都可以登入。"
           }
         }
       }
@@ -44747,78 +44531,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "繼續"
-          }
-        }
-      }
-    },
-    "Continue to Sign in with Apple" : {
-      "comment" : "Tooltip of Continue in the account sheet.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "المتابعة إلى تسجيل الدخول باستخدام Apple"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weiter zu „Mit Apple anmelden“"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuar con Iniciar sesión con Apple"
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Magpatuloy sa Sign in with Apple"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuer vers Se connecter avec Apple"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「Appleでサインイン」に進む"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple로 로그인으로 계속"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuar para Iniciar sessão com a Apple"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Продолжить со входом с Apple"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "继续通过 Apple 登录"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "繼續「使用 Apple 登入」"
           }
         }
       }
@@ -47123,6 +46835,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "無法移除 %1$@：%2$@"
+          }
+        }
+      }
+    },
+    "Couldn't sign in with Apple. Try again." : {
+      "comment" : "The Account row (Settings > General on the Mac, Party settings on Windows): Apple's sign-in sheet or page failed before anything reached the server.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر تسجيل الدخول بحساب Apple. حاول مجددًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmeldung mit Apple fehlgeschlagen. Versuch es noch einmal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo iniciar sesión con Apple. Inténtalo de nuevo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi makapag-sign in gamit ang Apple. Subukan ulit."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de se connecter avec Apple. Réessaie."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appleでサインインできませんでした。もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple로 로그인하지 못했어요. 다시 시도해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível entrar com a Apple. Tente de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось войти через Apple. Попробуй ещё раз."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法通过 Apple 登录。请再试一次。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法透過 Apple 登入。請再試一次。"
           }
         }
       }
@@ -79082,218 +78866,218 @@
         }
       }
     },
-    "Next, your Mac asks if Tabbi can control %@. Click Allow." : {
-      "comment" : "Setup walkthrough or permission priming sheet in Settings > Connections.",
+    "Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings." : {
+      "comment" : "Permission priming sheet in Settings > Connections, just before the macOS Automation prompt. %@ is Spotify or Apple Music. It must not tell the user which answer to give (App Review guideline 5.1.1(iv)).",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع التحكم في %@. انقر سماح."
+            "value" : "بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع التحكم في %@. يمكنك تغيير إجابتك في أي وقت من إعدادات النظام."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gleich fragt dein Mac, ob Tabbi %@ steuern darf. Klicke auf Erlauben."
+            "value" : "Gleich fragt dein Mac, ob Tabbi %@ steuern darf. Deine Antwort kannst du jederzeit in den Systemeinstellungen ändern."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ahora tu Mac preguntará si Tabbi puede controlar %@. Haz clic en Permitir."
+            "value" : "Ahora tu Mac preguntará si Tabbi puede controlar %@. Puedes cambiar tu respuesta cuando quieras en Ajustes del Sistema."
           }
         },
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Susunod, tatanungin ng Mac mo kung puwedeng kontrolin ng Tabbi ang %@. I-click ang Allow."
+            "value" : "Susunod, tatanungin ng Mac mo kung puwedeng kontrolin ng Tabbi ang %@. Puwede mong baguhin ang sagot mo anumang oras sa System Settings."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ton Mac va demander si Tabbi peut contrôler %@. Clique sur Autoriser."
+            "value" : "Ton Mac va demander si Tabbi peut contrôler %@. Tu peux changer ta réponse à tout moment dans Réglages Système."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "次に、Tabbiが %@ を操作してよいかMacが確認します。「許可」をクリックしてください。"
+            "value" : "次に、Tabbiが %@ を操作してよいかMacが確認します。答えはいつでもシステム設定で変更できます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이제 Mac이 Tabbi의 %@ 제어를 허용할지 물어봐요. '허용'을 클릭하세요."
+            "value" : "이제 Mac이 Tabbi의 %@ 제어를 허용할지 물어봐요. 답은 언제든 시스템 설정에서 바꿀 수 있어요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Agora seu Mac vai perguntar se o Tabbi pode controlar o %@. Clique em Permitir."
+            "value" : "Agora seu Mac vai perguntar se o Tabbi pode controlar o %@. Você pode mudar sua resposta quando quiser nos Ajustes do Sistema."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сейчас Mac спросит, можно ли Tabbi управлять %@. Нажми «Разрешить»."
+            "value" : "Сейчас Mac спросит, можно ли Tabbi управлять %@. Ответ можно изменить в любой момент в Системных настройках."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "接下来，Mac 会询问是否允许 Tabbi 控制 %@。请点按“允许”。"
+            "value" : "接下来，Mac 会询问是否允许 Tabbi 控制 %@。你可以随时在系统设置中更改。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "接下來，Mac 會詢問是否允許 Tabbi 控制 %@。請按一下「允許」。"
+            "value" : "接下來，Mac 會詢問是否允許 Tabbi 控制 %@。你可以隨時在「系統設定」中更改。"
           }
         }
       }
     },
-    "Next, your Mac asks if Tabbi can send alerts. Click Allow." : {
-      "comment" : "Setup walkthrough or permission priming sheet in Settings > Connections.",
+    "Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings." : {
+      "comment" : "Permission priming sheet in Settings > Connections, just before the macOS notifications prompt. It must not tell the user which answer to give (App Review guideline 5.1.1(iv)).",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع إرسال التنبيهات. انقر سماح."
+            "value" : "بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع إرسال التنبيهات. يمكنك تغيير إجابتك في أي وقت من إعدادات النظام."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gleich fragt dein Mac, ob Tabbi Mitteilungen senden darf. Klicke auf Erlauben."
+            "value" : "Gleich fragt dein Mac, ob Tabbi Mitteilungen senden darf. Deine Antwort kannst du jederzeit in den Systemeinstellungen ändern."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ahora tu Mac preguntará si Tabbi puede enviar alertas. Haz clic en Permitir."
+            "value" : "Ahora tu Mac preguntará si Tabbi puede enviar alertas. Puedes cambiar tu respuesta cuando quieras en Ajustes del Sistema."
           }
         },
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Susunod, tatanungin ng Mac mo kung puwedeng magpadala ng alerto ang Tabbi. I-click ang Allow."
+            "value" : "Susunod, tatanungin ng Mac mo kung puwedeng magpadala ng alerto ang Tabbi. Puwede mong baguhin ang sagot mo anumang oras sa System Settings."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ton Mac va demander si Tabbi peut envoyer des alertes. Clique sur Autoriser."
+            "value" : "Ton Mac va demander si Tabbi peut envoyer des alertes. Tu peux changer ta réponse à tout moment dans Réglages Système."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "次に、Tabbiが通知を送ってよいかMacが確認します。「許可」をクリックしてください。"
+            "value" : "次に、Tabbiが通知を送ってよいかMacが確認します。答えはいつでもシステム設定で変更できます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이제 Mac이 Tabbi의 알림을 허용할지 물어봐요. '허용'을 클릭하세요."
+            "value" : "이제 Mac이 Tabbi의 알림을 허용할지 물어봐요. 답은 언제든 시스템 설정에서 바꿀 수 있어요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Agora seu Mac vai perguntar se o Tabbi pode enviar alertas. Clique em Permitir."
+            "value" : "Agora seu Mac vai perguntar se o Tabbi pode enviar alertas. Você pode mudar sua resposta quando quiser nos Ajustes do Sistema."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сейчас Mac спросит, можно ли Tabbi присылать уведомления. Нажми «Разрешить»."
+            "value" : "Сейчас Mac спросит, можно ли Tabbi присылать уведомления. Ответ можно изменить в любой момент в Системных настройках."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "接下来，Mac 会询问是否允许 Tabbi 发送提醒。请点按“允许”。"
+            "value" : "接下来，Mac 会询问是否允许 Tabbi 发送提醒。你可以随时在系统设置中更改。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "接下來，Mac 會詢問是否允許 Tabbi 傳送提醒。請按一下「允許」。"
+            "value" : "接下來，Mac 會詢問是否允許 Tabbi 傳送提醒。你可以隨時在「系統設定」中更改。"
           }
         }
       }
     },
-    "Next, your Mac asks if Tabbi can use your calendar. Click Allow." : {
-      "comment" : "Setup walkthrough or permission priming sheet in Settings > Connections.",
+    "Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings." : {
+      "comment" : "Permission priming sheet in Settings > Connections, just before the macOS calendar prompt. It must not tell the user which answer to give (App Review guideline 5.1.1(iv)).",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع استخدام تقويمك. انقر سماح."
+            "value" : "بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع استخدام تقويمك. يمكنك تغيير إجابتك في أي وقت من إعدادات النظام."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gleich fragt dein Mac, ob Tabbi deinen Kalender nutzen darf. Klicke auf Erlauben."
+            "value" : "Gleich fragt dein Mac, ob Tabbi deinen Kalender nutzen darf. Deine Antwort kannst du jederzeit in den Systemeinstellungen ändern."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ahora tu Mac preguntará si Tabbi puede usar tu calendario. Haz clic en Permitir."
+            "value" : "Ahora tu Mac preguntará si Tabbi puede usar tu calendario. Puedes cambiar tu respuesta cuando quieras en Ajustes del Sistema."
           }
         },
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Susunod, tatanungin ng Mac mo kung puwedeng gamitin ng Tabbi ang calendar mo. I-click ang Allow."
+            "value" : "Susunod, tatanungin ng Mac mo kung puwedeng gamitin ng Tabbi ang calendar mo. Puwede mong baguhin ang sagot mo anumang oras sa System Settings."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ton Mac va demander si Tabbi peut utiliser ton calendrier. Clique sur Autoriser."
+            "value" : "Ton Mac va demander si Tabbi peut utiliser ton calendrier. Tu peux changer ta réponse à tout moment dans Réglages Système."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "次に、TabbiがカレンダーにアクセスしてよいかMacが確認します。「許可」をクリックしてください。"
+            "value" : "次に、TabbiがカレンダーにアクセスしてよいかMacが確認します。答えはいつでもシステム設定で変更できます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이제 Mac이 Tabbi의 캘린더 사용을 허용할지 물어봐요. '허용'을 클릭하세요."
+            "value" : "이제 Mac이 Tabbi의 캘린더 사용을 허용할지 물어봐요. 답은 언제든 시스템 설정에서 바꿀 수 있어요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Agora seu Mac vai perguntar se o Tabbi pode usar sua agenda. Clique em Permitir."
+            "value" : "Agora seu Mac vai perguntar se o Tabbi pode usar sua agenda. Você pode mudar sua resposta quando quiser nos Ajustes do Sistema."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сейчас Mac спросит, можно ли Tabbi пользоваться календарем. Нажми «Разрешить»."
+            "value" : "Сейчас Mac спросит, можно ли Tabbi пользоваться календарем. Ответ можно изменить в любой момент в Системных настройках."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "接下来，Mac 会询问是否允许 Tabbi 使用你的日历。请点按“允许”。"
+            "value" : "接下来，Mac 会询问是否允许 Tabbi 使用你的日历。你可以随时在系统设置中更改。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "接下來，Mac 會詢問是否允許 Tabbi 使用你的行事曆。請按一下「允許」。"
+            "value" : "接下來，Mac 會詢問是否允許 Tabbi 使用你的行事曆。你可以隨時在「系統設定」中更改。"
           }
         }
       }
@@ -89610,78 +89394,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打開派對"
-          }
-        }
-      }
-    },
-    "Open Privacy & Security > Screen Recording in System Settings" : {
-      "comment" : "Ask AI: tooltip on Open System Settings.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "فتح الخصوصية والأمن > تسجيل الشاشة في إعدادات النظام"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Datenschutz & Sicherheit > Bildschirmaufnahme in den Systemeinstellungen öffnen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir Privacidad y seguridad > Grabación de pantalla en Ajustes del Sistema"
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buksan ang Privacy & Security > Screen Recording sa System Settings"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrir Confidentialité et sécurité > Enregistrement de l'écran dans Réglages Système"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "システム設定の「プライバシーとセキュリティ」>「画面収録」を開く"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "시스템 설정에서 개인정보 보호 및 보안 > 화면 기록 열기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir Privacidade e Segurança > Gravação de Tela nos Ajustes do Sistema"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Открыть «Конфиденциальность и безопасность» > «Запись экрана» в Системных настройках"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在系统设置中打开“隐私与安全性”>“录屏与系统录音”"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在「系統設定」中打開「隱私權與安全性」>「螢幕與系統錄音」"
           }
         }
       }
@@ -112602,79 +112314,6 @@
         }
       }
     },
-    "Sign In…" : {
-      "comment" : "Settings > Account: button that asks the age check, then signs in with Apple.",
-      "extractionState" : "manual",
-      "generatesSymbol" : false,
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تسجيل الدخول…"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anmelden …"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Iniciar sesión…"
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mag-sign In…"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connexion…"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サインイン…"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "로그인…"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Entrar…"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Войти…"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "登录…"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "登入…"
-          }
-        }
-      }
-    },
     "Sign Out" : {
       "comment" : "Button in the Account row of Settings > General.",
       "extractionState" : "manual",
@@ -125344,6 +124983,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "為「問 AI」、「規劃今天」和「優化」提供回答的 AI"
+          }
+        }
+      }
+    },
+    "The AI you pick only sees your events when you ask it to plan your day." : {
+      "comment" : "Permission priming sheet in Settings > Connections, before the calendar prompt: a reassurance. The AI is whichever provider the user picked in Settings > Connections.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يرى الذكاء الاصطناعي الذي تختاره أحداثك إلا عندما تطلب منه تخطيط يومك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die KI deiner Wahl sieht deine Termine nur, wenn du sie deinen Tag planen lässt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La IA que elijas solo ve tus eventos cuando le pides que planee tu día."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakikita lang ng AI na pinili mo ang events mo kapag pinaplano mo sa kanya ang araw mo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'IA que tu choisis ne voit tes événements que si tu lui demandes de planifier ta journée."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選んだAIが予定を見るのは、1日の計画を頼んだときだけです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 AI는 하루 계획을 부탁할 때만 일정을 봐요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A IA que você escolher só vê seus eventos quando você pede para ela planejar seu dia."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбранный ИИ видит твои события, только когда ты просишь его спланировать день."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只有在你让所选的 AI 规划今天时，它才会看到你的日程。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只有在你請所選的 AI 規劃今天時，它才會看到你的行程。"
           }
         }
       }
@@ -144966,6 +144677,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "接下來 Mac 會詢問你"
+          }
+        }
+      }
+    },
+    "Your Mac asks next whether %@ can read your calendars" : {
+      "comment" : "Onboarding's calendar step and Today's Up next card: tooltip on the Continue or Show calendar button, which leads to the macOS calendar prompt. %@ is the app name (Tabbi). It must not tell the user which answer to give.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سيسألك جهاز Mac بعد ذلك إن كان %@ يستطيع قراءة تقاويمك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gleich fragt dein Mac, ob %@ deine Kalender lesen darf"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora tu Mac preguntará si %@ puede leer tus calendarios"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Susunod, tatanungin ng Mac mo kung puwedeng basahin ng %@ ang mga calendar mo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton Mac va demander si %@ peut lire tes calendriers"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次に、%@ がカレンダーを読み取ってよいかMacが確認します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이제 Mac이 %@의 캘린더 읽기를 허용할지 물어봐요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agora seu Mac vai perguntar se o %@ pode ler suas agendas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сейчас Mac спросит, можно ли %@ читать твои календари"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接下来，Mac 会询问是否允许 %@ 读取你的日历"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接下來，Mac 會詢問是否允許 %@ 讀取你的行事曆"
+          }
+        }
+      }
+    },
+    "Your Mac asks next, then Privacy & Security > Screen Recording opens in System Settings" : {
+      "comment" : "Ask AI: tooltip on Continue in the card before the Screen Recording prompt. Privacy & Security and Screen Recording are macOS System Settings names.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سيسألك جهاز Mac بعد ذلك، ثم يُفتح الخصوصية والأمن > تسجيل الشاشة في إعدادات النظام"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gleich fragt dein Mac, dann öffnet sich Datenschutz & Sicherheit > Bildschirmaufnahme in den Systemeinstellungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora pregunta tu Mac y luego se abre Privacidad y seguridad > Grabación de pantalla en Ajustes del Sistema"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Magtatanong ang Mac mo, tapos bubukas ang Privacy & Security > Screen Recording sa System Settings"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton Mac va demander, puis Confidentialité et sécurité > Enregistrement de l'écran s'ouvre dans Réglages Système"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Macが確認したあと、システム設定の「プライバシーとセキュリティ」>「画面収録」が開きます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac이 물어본 뒤 시스템 설정에서 개인정보 보호 및 보안 > 화면 기록이 열려요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu Mac pergunta e depois abre Privacidade e Segurança > Gravação de Tela nos Ajustes do Sistema"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сначала спросит Mac, затем откроется «Конфиденциальность и безопасность» > «Запись экрана» в Системных настройках"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac 会先询问你，然后在系统设置中打开“隐私与安全性”>“录屏与系统录音”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac 會先詢問你，然後在「系統設定」中打開「隱私權與安全性」>「螢幕與系統錄音」"
           }
         }
       }
