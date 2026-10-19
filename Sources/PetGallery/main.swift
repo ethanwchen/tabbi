@@ -120,6 +120,45 @@ if arguments.dropFirst().first == "accents" {
     exit(0)
 }
 
+// Store lineup: `swift run PetGallery out/ store` writes the pets the second
+// App Store set shows (docs/appstore/screenshots-v2), each a breed in a look,
+// as single transparent 32x32 frames, `store-<pet>-<animation>-<frame>.png`,
+// for docs/appstore/screens-v2/build.mjs to scale up with nearest neighbor.
+// Every look is one the Closet sells; none wears a cape or wings.
+if arguments.dropFirst().first == "store" {
+    let lineup: [(String, PetBreed, PetOutfit, [PetAccessory])] = [
+        ("mochi", .britishShorthair, .cozyHoodie, [.beanie]),
+        ("cocoa", .britishLonghair, .cozyHoodie, [.beanie]),
+        ("cocoa-scarf", .britishLonghair, .none, [.scarf, .roundGlasses]),
+        ("mochi-headphones", .britishShorthair, .none, [.chunkyHeadphones, .coolSunglasses]),
+        ("mochi-scholar", .britishShorthair, .none, [.graduationCap, .roundGlasses]),
+        ("mochi-flowers", .britishShorthair, .none, [.flowerCrown]),
+        ("mochi-party", .britishShorthair, .none, [.partyHat, .bowTie]),
+        ("ginger", .orangeTabby, .studyHoodie, [.frogHat]),
+        ("biscuit", .corgi, .none, [.bowTie, .backwardsCap]),
+        ("bean", .frenchBulldog, .dinosaurHoodie, []),
+        ("luna", .tuxedo, .none, [.wizardHat]),
+        ("pip", .siamese, .none, [.chefHat]),
+    ]
+    for (name, breed, outfit, accessories) in lineup {
+        let palette = PetProfile(name: "", breed: breed).palette
+        for animation in [PetAnimation.idle, .typing, .celebrate, .sleep, .coffee] {
+            let clip = PetComposer.clip(animation, for: breed, outfit: outfit, accessories: PetAccessory.wearable(accessories))
+            for (index, frame) in clip.frames.enumerated() {
+                guard let image = PetRenderer.shared.image(for: frame.itemFrames.first ?? frame.canvas, palette: palette, scale: 1),
+                      let destination = CGImageDestinationCreateWithURL(
+                          outputDirectory.appendingPathComponent("store-\(name)-\(animation.rawValue)-\(index).png")
+                              as CFURL, UTType.png.identifier as CFString, 1, nil)
+                else { throw GalleryError.encode }
+                CGImageDestinationAddImage(destination, image, nil)
+                guard CGImageDestinationFinalize(destination) else { throw GalleryError.encode }
+            }
+        }
+    }
+    print("wrote the store lineup to \(outputDirectory.path)")
+    exit(0)
+}
+
 // Backdrops: `swift run PetGallery out/ backdrops` draws every breed (and the
 // darker Closet swatches) on the black notch and on each theme's brightest
 // card, at 2 and 6 device pixels per sprite pixel (a 1 pt pet and the

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tabbi App Store screenshots</title>
+<!--
+  The second App Store screenshot set. build.sh opens this page once per shot
+  (shots.html?shot=01-cozy-timer) at 1440x900 CSS pixels and 2x, so the app's
+  3x panel snapshots land 1:1 and the 32x32 pets scale by whole numbers with
+  nearest neighbor. Panels and pets come from build/, which build.sh renders
+  with the app's own snapshot tooling in demo mode. Open it with ?shot=all to
+  see every shot on one page.
+-->
+<style>
+@font-face { font-family: "Bagel Fat One"; src: url("../fonts/BagelFatOne-Regular.ttf"); }
+@font-face { font-family: "Fredoka"; src: url("../fonts/Fredoka.ttf"); font-weight: 300 700; }
+html, body { margin: 0; background: #222; }
+.shot {
+  position: relative; width: 1440px; height: 900px; overflow: hidden;
+  background:
+    radial-gradient(900px 520px at 50% 220px, var(--glow) 0%, transparent 70%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg) 40%, var(--deep) 100%);
+  font-family: "Fredoka", sans-serif; color: var(--ink);
+}
+/* A plain menu bar as tall as the notch (32 pt at 1.5 CSS px per point). */
+.menubar { position: absolute; left: 0; right: 0; top: 0; height: 48px; background: var(--bar); }
+.notch { position: absolute; top: 0; left: 50%; width: 285px; height: 48px; margin-left: -142.5px;
+  background: #000; border-radius: 0 0 18px 18px; }
+.panel { position: absolute; top: 0; left: 50%; transform: translateX(-50%); display: block; }
+.copy { position: absolute; left: 0; right: 0; text-align: center; }
+h1 { margin: 0; font-family: "Bagel Fat One", sans-serif; font-weight: 400; font-size: 92px;
+  line-height: 1.02; letter-spacing: 0.5px; color: var(--ink); }
+p.sub { margin: 18px 0 0; font-weight: 600; font-size: 34px; line-height: 1.25; color: var(--sub); }
+img.pet { position: absolute; image-rendering: pixelated; image-rendering: crisp-edges; }
+.shadow { position: absolute; height: 28px; border-radius: 50%; background: var(--shade); }
+svg.spark { position: absolute; shape-rendering: crispEdges; }
+/* Theme grid */
+.grid { position: absolute; left: 62px; top: 170px; display: grid;
+  grid-template-columns: repeat(3, 420px); column-gap: 28px; row-gap: 22px; }
+.cell { position: relative; width: 420px; height: 220px; border-radius: 22px; overflow: hidden;
+  background: linear-gradient(180deg, var(--bg), var(--deep)); box-shadow: 0 6px 18px rgba(80, 50, 30, 0.10); }
+.cell .bar { position: absolute; left: 0; right: 0; top: 0; height: 22px; background: var(--bar); }
+.cell img { position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
+.cell span { position: absolute; left: 0; right: 0; bottom: 12px; text-align: center;
+  font-weight: 600; font-size: 25px; color: var(--ink); }
+.pets { position: absolute; left: 0; right: 0; display: flex; justify-content: center; align-items: flex-end; gap: 30px; }
+.pets img { position: static; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// Each theme's canvas: light ground, deeper floor, the glow behind the panel,
+// headline ink and subline color, picked from the theme's own glow color.
+const T = {
+  cozy:           { bg: "#FFF3E7", deep: "#FAD3B4", glow: "rgba(245,153,107,0.30)", ink: "#4E2616", sub: "#7A4630", spark: "#F29A6A" },
+  strawberryMilk: { bg: "#FFF1F6", deep: "#FFC9DD", glow: "rgba(255,143,191,0.32)", ink: "#6A1E3E", sub: "#93405F", spark: "#FF8FBF" },
+  matchaLatte:    { bg: "#F6F9EC", deep: "#D5E8B4", glow: "rgba(140,193,82,0.30)",  ink: "#2E4214", sub: "#55692F", spark: "#8CC152" },
+  taro:           { bg: "#F6F2FF", deep: "#D9CCFF", glow: "rgba(174,140,255,0.32)", ink: "#3A2470", sub: "#5E4A96", spark: "#AE8CFF" },
+  blueberryMilk:  { bg: "#F0F7FF", deep: "#C7E0FF", glow: "rgba(108,184,255,0.34)", ink: "#173764", sub: "#3D5E8C", spark: "#6CB8FF" },
+  bananaMilk:     { bg: "#FFF9E6", deep: "#FFE59A", glow: "rgba(255,210,94,0.36)",  ink: "#5A3E06", sub: "#7E5F1C", spark: "#F5BE3A" },
+  deepSea:        { bg: "#EEF3FF", deep: "#C3D3FF", glow: "rgba(61,107,240,0.26)",  ink: "#132A66", sub: "#3A4F8A", spark: "#5C84F2" },
+  stargazer:      { bg: "#221C52", deep: "#120E33", glow: "rgba(110,90,240,0.45)",  ink: "#FFF8E8", sub: "#D6CFFF", spark: "#FFD36B", dark: true },
+  cherrySoda:     { bg: "#FFF0F3", deep: "#FFC2CF", glow: "rgba(217,32,79,0.22)",   ink: "#5E0C22", sub: "#8A3148", spark: "#E8496F" },
+  mintChoco:      { bg: "#EEFBF5", deep: "#BFEBD8", glow: "rgba(94,214,168,0.32)",  ink: "#3A2216", sub: "#5C4436", spark: "#4CC79A" },
+  neutral:        { bg: "#FFF6EC", deep: "#F6E2CF", glow: "rgba(255,190,150,0.25)", ink: "#4E2616", sub: "#7A4630", spark: "#F29A6A" },
+};
+const NAMES = { strawberryMilk: "Strawberry Milk", blueberryMilk: "Blueberry Milk", matchaLatte: "Matcha Latte",
+  taro: "Taro", bananaMilk: "Banana Milk", deepSea: "Deep Sea", cherrySoda: "Cherry Soda", stargazer: "Stargazer",
+  mintChoco: "Mint Choco" };
+
+// The shots, in upload order. panel: a snapshot file drawn 1:1 from the top;
+// pet: [lineup name, animation, frame, scale, x, side]; sparks: [x, y, size].
+const SHOTS = [
+  { id: "01-cozy-timer", theme: "cozy", panel: "open-large-study.png",
+    title: "Your notch, but cozy", sub: "A focus timer with a pixel cat who cheers you on.",
+    pet: ["mochi", "celebrate", 0, 8, 1088], pet2: ["cocoa", "idle", 0, 8, 96], sparks: [[150, 150, 6], [1270, 110, 5], [96, 330, 4], [1330, 300, 6]] },
+  { id: "02-themes", theme: "neutral", grid: true,
+    title: "Pick from 18 cozy themes" },
+  { id: "03-plan-today", theme: "matchaLatte", panel: "open-large-planner.png",
+    title: "Your whole day, one glance", sub: "To-dos, calendar and a gentle Plan my day.",
+    pet: ["mochi-flowers", "idle", 0, 8, 96], sparks: [[130, 120, 5], [1290, 160, 6], [1350, 360, 4], [400, 760, 4]] },
+  { id: "04-closet", theme: "strawberryMilk", panel: "open-large-closet-look.png",
+    title: "Dress up your own pet", sub: "Earn outfits by focusing. Pick a cat or a dog.",
+    lineup: [["ginger", "idle"], ["biscuit", "celebrate"], ["cocoa", "idle"], ["mochi", "celebrate"], ["bean", "idle"], ["luna", "idle"], ["pip", "celebrate"]],
+    sparks: [[120, 140, 6], [1300, 120, 5], [1340, 330, 4], [80, 340, 4]] },
+  { id: "05-break-buddy", theme: "taro", panel: "open-study-break.png", top: 480,
+    title: "Stretch breaks with a friend", sub: "Your cat leads a little stretch, then back to it.",
+    pet: ["mochi", "coffee", 0, 8, 1088], sparks: [[180, 130, 6], [1230, 120, 5], [130, 330, 4], [1300, 320, 4]] },
+  { id: "06-flashcards", theme: "blueberryMilk", panel: "open-large-anki.png",
+    title: "Flashcards due, at a glance", sub: "See what is due and jump into a deck.",
+    pet: ["mochi-scholar", "typing", 0, 8, 96], sparks: [[140, 150, 5], [1290, 130, 6], [1340, 340, 4], [400, 760, 4]] },
+  { id: "07-music", theme: "stargazer", panel: "open-large-spotify.png", stars: true,
+    title: "Music without switching apps", sub: "Play, skip and like songs from your notch.",
+    pet: ["cocoa-scarf", "sleep", 0, 8, 1088] },
+  { id: "08-ask-ai", theme: "deepSea", panel: "open-large-claudeAsk.png",
+    title: "Ask AI, right from the notch", sub: "With the AI you pick. Nothing is sent until you do.",
+    pet: ["mochi", "typing", 0, 8, 96], sparks: [[150, 140, 6], [1280, 120, 5], [1340, 330, 4], [400, 760, 4]] },
+  { id: "09-week-recap", theme: "bananaMilk", panel: "open-recap-large-heavy.png",
+    title: "Your week, wrapped up", sub: "Gentle streaks that never punish a day off.",
+    pet: ["mochi-party", "celebrate", 0, 8, 1088], sparks: [[140, 130, 6], [1290, 140, 5], [110, 330, 4], [1330, 330, 4], [1010, 760, 4]] },
+];
+
+// A little 7x7 pixel sparkle, drawn crisp.
+function spark(x, y, px, color) {
+  const cells = ["...#...", "...#...", "..###..", "#######", "..###..", "...#...", "...#..."];
+  let rects = "";
+  cells.forEach((row, r) => [...row].forEach((c, k) => { if (c === "#") rects += `<rect x="${k}" y="${r}" width="1" height="1"/>`; }));
+  return `<svg class="spark" style="left:${x}px;top:${y}px;width:${7 * px}px;height:${7 * px}px" viewBox="0 0 7 7" fill="${color}" aria-hidden="true">${rects}</svg>`;
+}
+function vars(t) {
+  return `--bg:${t.bg};--deep:${t.deep};--glow:${t.glow};--ink:${t.ink};--sub:${t.sub};` +
+    `--bar:${t.dark ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.45)"};--shade:${t.dark ? "rgba(0,0,0,0.35)" : "rgba(90,50,30,0.13)"}`;
+}
+function petImg(name, anim, frame, scale, style) {
+  const s = 32 * scale;
+  return `<img class="pet" src="build/pets/store-${name}-${anim}-${frame}.png" width="${s}" height="${s}" style="${style}" alt="">`;
+}
+// Night sky: a scatter of single pixel stars, fixed so every render matches.
+function stars() {
+  let out = "", seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 70; i++) {
+    const x = Math.round(rnd() * 1440), y = Math.round(60 + rnd() * 820), s = rnd() < 0.2 ? 6 : 4;
+    if ((x > 200 && x < 1240 && y < 420) || (x > 60 && x < 1380 && y > 520 && y < 700)) continue;
+    out += `<div style="position:absolute;left:${x}px;top:${y}px;width:${s}px;height:${s}px;background:rgba(255,248,232,${(0.35 + rnd() * 0.5).toFixed(2)})"></div>`;
+  }
+  return out;
+}
+
+function render(shot) {
+  const t = T[shot.theme];
+  let html = `<div class="shot" style="${vars(t)}">${shot.grid ? "" : '<div class="menubar"></div><div class="notch"></div>'}`;
+  if (shot.stars) html += stars() + spark(150, 130, 6, t.spark) + spark(1290, 150, 5, t.spark) + spark(1340, 380, 4, t.spark);
+  (shot.sparks || []).forEach(([x, y, s]) => { html += spark(x, y, s, t.spark); });
+  if (shot.grid) {
+    html += `<div class="copy" style="top:46px"><h1 style="font-size:80px">${shot.title}</h1></div><div class="grid">`;
+    for (const id of Object.keys(NAMES)) {
+      const g = T[id];
+      html += `<div class="cell" style="${vars(g)}"><div class="bar"></div>` +
+        `<img src="build/grid-${id}/open-study.png" width="420" height="182" alt=""><span>${NAMES[id]}</span></div>`;
+    }
+    html += `</div>`;
+  } else {
+    // 3x snapshots at 2x device pixels: half the file's pixel size in CSS.
+    html += `<img class="panel" src="build/snap-${shot.theme}/${shot.panel}" onload="this.width=this.naturalWidth/2" alt="">`;
+    const top = shot.lineup ? 446 : shot.top || 528;
+    html += `<div class="copy" style="top:${top}px"><h1>${shot.title}</h1><p class="sub">${shot.sub}</p></div>`;
+  }
+  for (const pet of [shot.pet, shot.pet2].filter(Boolean)) {
+    const [name, anim, frame, scale, x] = pet, s = 32 * scale;
+    html += `<div class="shadow" style="left:${x + s * 0.16}px;width:${s * 0.68}px;top:${900 - 34}px"></div>`;
+    html += petImg(name, anim, frame, scale, `left:${x}px;top:${900 - s - 16}px`);
+  }
+  if (shot.lineup) {
+    html += `<div class="pets" style="bottom:22px">` +
+      shot.lineup.map(([n, a]) => petImg(n, a, 0, 5, "")).join("") + `</div>`;
+  }
+  return html + `</div>`;
+}
+
+const want = new URLSearchParams(location.search).get("shot") || SHOTS[0].id;
+const root = document.getElementById("root");
+root.innerHTML = (want === "all" ? SHOTS : SHOTS.filter((s) => s.id === want)).map(render).join("");
+</script>
+</body>
+</html>
