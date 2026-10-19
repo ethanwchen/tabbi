@@ -19,6 +19,8 @@
 	<string>%@ 主題會改變展開的面板，收起的瀏海仍維持黑色。</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ 正在背景重試。</string>
+	<key>%@ access is off</key>
+	<string>無法取用%@</string>
 	<key>%@ and brought back %@</key>
 	<string>%1$@，還帶回了%2$@</string>
 	<key>%@ brought back a shiny acorn</key>
@@ -485,8 +487,6 @@
 	<string>都是選用的，現在不用做什麼。</string>
 	<key>Allow</key>
 	<string>允許</string>
-	<key>Allow %@ access</key>
-	<string>允許取用%@</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>請在「隱私權與安全性」中允許 %@，以便配合會議規劃。</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -495,18 +495,12 @@
 	<string>請在「系統設定」›「一般」›「登入項目」中允許 %@。</string>
 	<key>Allow %@ to read your calendars</key>
 	<string>允許 %@ 讀取你的行事曆</string>
-	<key>Allow %@ to read your calendars. macOS asks once.</key>
-	<string>允許 %@ 讀取你的行事曆。macOS 只會詢問一次。</string>
-	<key>Allow Access</key>
-	<string>允許取用</string>
 	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
 	<string>在 AnkiConnect 的設定中允許 Tabbi，然後再試一次。</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>在「系統設定」中允許 Tabbi 的通知</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
 	<string>請在「隱私權與安全性」›「自動化」中允許取用。</string>
-	<key>Allow screenshots</key>
-	<string>允許截圖</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>允許在內建顯示器以外的顯示器上顯示瀏海</string>
 	<key>Almost there: one thing left to do</key>
@@ -641,6 +635,8 @@
 	<string>休息開始時，寵物會示範一個可以跟著做的小動作</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>附加此螢幕的截圖（不會包含 Tabbi）</string>
+	<key>Attach your screen</key>
+	<string>附加螢幕截圖</string>
 	<key>Automation</key>
 	<string>自動化</string>
 	<key>Available when %@ runs as an app bundle.</key>
@@ -885,8 +881,6 @@
 	<string>Claude 已就緒</string>
 	<key>Claude location</key>
 	<string>Claude 位置</string>
-	<key>Claude only sees your events when you ask it to plan your day.</key>
-	<string>只有在你請 Claude 規劃今天時，它才會看到你的行程。</string>
 	<key>Clear "%@"</key>
 	<string>清除「%@」</string>
 	<key>Clear All</key>
@@ -955,12 +949,12 @@
 	<string>關閉本指南</string>
 	<key>Close this guide. You can come back any time.</key>
 	<string>關閉本指南。你隨時可以回來。</string>
+	<key>Close this without asking. You can connect it later.</key>
+	<string>關閉且不詢問。你可以稍後再連接。</string>
 	<key>Close this. Party keeps trying by itself.</key>
 	<string>關閉。派對會自動繼續嘗試。</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>關閉。你隨時都能設定派對。</string>
-	<key>Close this. You can sign in any time.</key>
-	<string>關閉。你隨時都可以登入。</string>
 	<key>Closet</key>
 	<string>衣櫥</string>
 	<key>Code</key>
@@ -999,8 +993,6 @@
 	<string>連線</string>
 	<key>Continue</key>
 	<string>繼續</string>
-	<key>Continue to Sign in with Apple</key>
-	<string>繼續「使用 Apple 登入」</string>
 	<key>Control %@ from the notch</key>
 	<string>從瀏海控制 %@</string>
 	<key>Control Spotify or Apple Music from the notch.</key>
@@ -1065,6 +1057,8 @@
 	<string>無法讀取昨天的清單</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>無法移除 %1$@：%2$@</string>
+	<key>Couldn't sign in with Apple. Try again.</key>
+	<string>無法透過 Apple 登入。請再試一次。</string>
 	<key>Couldn't start the playlist</key>
 	<string>無法播放播放列表</string>
 	<key>Couldn't take a screenshot. Try again.</key>
@@ -1931,12 +1925,12 @@
 	<string>下一首</string>
 	<key>Next unlock</key>
 	<string>下一個解鎖</string>
-	<key>Next, your Mac asks if Tabbi can control %@. Click Allow.</key>
-	<string>接下來，Mac 會詢問是否允許 Tabbi 控制 %@。請按一下「允許」。</string>
-	<key>Next, your Mac asks if Tabbi can send alerts. Click Allow.</key>
-	<string>接下來，Mac 會詢問是否允許 Tabbi 傳送提醒。請按一下「允許」。</string>
-	<key>Next, your Mac asks if Tabbi can use your calendar. Click Allow.</key>
-	<string>接下來，Mac 會詢問是否允許 Tabbi 使用你的行事曆。請按一下「允許」。</string>
+	<key>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</key>
+	<string>接下來，Mac 會詢問是否允許 Tabbi 控制 %@。你可以隨時在「系統設定」中更改。</string>
+	<key>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</key>
+	<string>接下來，Mac 會詢問是否允許 Tabbi 傳送提醒。你可以隨時在「系統設定」中更改。</string>
+	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
+	<string>接下來，Mac 會詢問是否允許 Tabbi 使用你的行事曆。你可以隨時在「系統設定」中更改。</string>
 	<key>Ninja Headband</key>
 	<string>忍者頭帶</string>
 	<key>No answer</key>
@@ -2217,8 +2211,6 @@
 	<string>打開「網際網路帳號」加入 Google、Exchange 或 iCloud 行事曆</string>
 	<key>Open Party</key>
 	<string>打開派對</string>
-	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
-	<string>在「系統設定」中打開「隱私權與安全性」&gt;「螢幕與系統錄音」</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
 	<string>打開「隱私權與安全性」允許取用行事曆</string>
 	<key>Open Settings</key>
@@ -2847,8 +2839,6 @@
 	<string>隨機播放</string>
 	<key>Sign In</key>
 	<string>登入</string>
-	<key>Sign In…</key>
-	<string>登入…</string>
 	<key>Sign Out</key>
 	<string>登出</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
@@ -3199,6 +3189,8 @@
 	<string>AI</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
 	<string>為「問 AI」、「規劃今天」和「優化」提供回答的 AI</string>
+	<key>The AI you pick only sees your events when you ask it to plan your day.</key>
+	<string>只有在你請所選的 AI 規劃今天時，它才會看到你的行程。</string>
 	<key>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</key>
 	<string>Anki 標籤頁會顯示待複習的卡片、常用牌組和連續紀錄，「今天」會把你的複習算進當天。</string>
 	<key>The Claude row below shows how to sign in, if you still need to.</key>
@@ -3711,6 +3703,10 @@
 	<string>你的 %@ 密鑰，保存在鑰匙圈中。</string>
 	<key>Your Mac asks next</key>
 	<string>接下來 Mac 會詢問你</string>
+	<key>Your Mac asks next whether %@ can read your calendars</key>
+	<string>接下來，Mac 會詢問是否允許 %@ 讀取你的行事曆</string>
+	<key>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</key>
+	<string>Mac 會先詢問你，然後在「系統設定」中打開「隱私權與安全性」&gt;「螢幕與系統錄音」</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Mac 正在充電，%@ 也在喝一小口</string>
 	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>

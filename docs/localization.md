@@ -63,7 +63,7 @@ The writing rules in AGENTS.md hold in every language: no emojis and no em dashe
 
 The onboarding, the tab titles and module summaries, the notch's context menu and header controls, and Settings (General, Tabs, Look, Connections, About and the Account row) are translated.
 So are the notifications (focus timer, weekly recap, study reminder, Party), the recap's cheer lines, the Party celebration, and the Closet: its sections and labels, every outfit, accessory, theme, species and fur color name, and the seasonal events and limited items.
-The AI consent alert, the AI provider row in Settings > Connections and the age check before Party and Sign in with Apple are translated too; their legal meaning must stay exact.
+The AI consent alert, the AI provider row in Settings > Connections and the age check before Party are translated too; their legal meaning must stay exact.
 The main controls of every tab's panel (Today, Focus, Now Playing, System, AI Usage, Ask AI, Study, Anki, Party and Schedule) are translated too, with the calendar card, the focus and study timer labels and the Ask AI setup screen.
 Today's Plan my day, Wrap-up and calendar onboarding step are translated as well; the summaries the AI writes there follow its English prompt, so they stay English.
 The bundled kits' words for calendar events ("meetings and calls") are looked up in the catalog like the seasonal events (`UpNextEmptyState.localizedEvents`), and a kit's own phrase stays as written.

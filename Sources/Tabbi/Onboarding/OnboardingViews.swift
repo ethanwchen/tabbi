@@ -106,12 +106,40 @@ private struct OnboardingProgress: View {
     }
 }
 
+/// How a step wants the footer's forward button. A setup step that leads
+/// to a macOS permission prompt has its own Continue, which lets macOS ask,
+/// so the footer offers an equally visible Not now beside it rather than a
+/// second Continue (App Review guideline 5.1.1(iv)).
+enum OnboardingForward: Equatable {
+    /// Continue or Skip, as the step's kind says.
+    case standard
+    /// Not now: go on without answering this step.
+    case notNow
+}
+
+/// Carries a step's `OnboardingForward` up to the footer.
+struct OnboardingForwardKey: PreferenceKey {
+    static let defaultValue = OnboardingForward.standard
+    static func reduce(value: inout OnboardingForward, nextValue: () -> OnboardingForward) {
+        let next = nextValue()
+        if next != .standard { value = next }
+    }
+}
+
+extension View {
+    /// Sets how onboarding's footer moves on from the step this view draws.
+    func onboardingForward(_ forward: OnboardingForward) -> some View {
+        preference(key: OnboardingForwardKey.self, value: forward)
+    }
+}
+
 /// The current step above a footer with Back and Skip or Continue.
 private struct OnboardingBody: View {
     @EnvironmentObject private var store: OnboardingStore
     let modules: ModuleRegistry
     let account: SyncStore?
     let openSettings: (String) -> Void
+    @State private var forward = OnboardingForward.standard
 
     var body: some View {
         if let flow = store.flow {
@@ -122,9 +150,10 @@ private struct OnboardingBody: View {
                     .id(flow.stage)
                     .transition(AsymmetricTransition(insertion: .motionRow(from: .trailing),
                                                      removal: .opacity))
-                OnboardingFooter(flow: flow, hasSetupView: setup != nil)
+                OnboardingFooter(flow: flow, hasSetupView: setup != nil, forward: forward)
             }
             .motion(Theme.Motion.content, value: flow.stage)
+            .onPreferenceChange(OnboardingForwardKey.self) { forward = $0 }
         }
     }
 
@@ -172,6 +201,8 @@ private struct OnboardingFooter: View {
     /// True when the setup step is drawn by its module (and so has
     /// something to keep), false for the pointer-to-the-tab fallback.
     var hasSetupView = false
+    /// What the step asked the forward button to be.
+    var forward = OnboardingForward.standard
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
@@ -200,7 +231,8 @@ private struct OnboardingFooter: View {
 
     /// Steps without a one-tap answer say Continue; one-tap steps say Skip.
     private var forwardIsPrimary: Bool {
-        switch flow.stage {
+        if forward == .notNow { return false }
+        return switch flow.stage {
         case .modules, .extras: true
         case .name: settings.settings.cleanedDisplayName != nil
         case .question: flow.currentQuestion?.allowsMultiple == true
@@ -210,12 +242,14 @@ private struct OnboardingFooter: View {
     }
 
     private var forwardTitle: String {
+        if forward == .notNow { return String(localized: "Not now", bundle: .tabbi) }
         if isLastStep { return forwardIsPrimary ? String(localized: "Done", bundle: .tabbi) : String(localized: "Skip and Finish", bundle: .tabbi) }
         return forwardIsPrimary ? String(localized: "Continue", bundle: .tabbi) : String(localized: "Skip", bundle: .tabbi)
     }
 
     private var forwardHelp: String {
-        switch flow.stage {
+        if forward == .notNow { return String(localized: "Set this up later from its tab", bundle: .tabbi) }
+        return switch flow.stage {
         case .name: forwardIsPrimary ? String(localized: "Keep this name", bundle: .tabbi) : String(localized: "Go on without a name", bundle: .tabbi)
         case .kit, .finished: flow.kit.map { String(localized: "Keep the \($0.name) kit", bundle: .tabbi) } ?? String(localized: "Keep the suggested kit", bundle: .tabbi)
         case .question: String(localized: "Leave this question unanswered", bundle: .tabbi)

@@ -159,6 +159,41 @@ describe("PartyStore against recorded replies", () => {
 });
 
 describe("SyncService", () => {
+  /* Signing in never asks for a birthday (App Review guideline 5.1.1(v)); only an under-13 answer given in Party keeps it off. */
+  async function webService(ageEligibleFrom: number | undefined) {
+    const made = await testApp({ moduleTypes: MODULE_LIST }, NOW);
+    apps.push(made);
+    const context = new ModuleContext("party", made.app.environment);
+    const service = new SyncService(context, {
+      server: () => "https://tabbi-friends.example",
+      credentials: partyCredentialStore(context),
+      ageAnswer: { load: () => ageEligibleFrom },
+      transport: () => new FakePartyTransport({}).send,
+    });
+    service.start();
+    await settle();
+    return { made, service };
+  }
+
+  it("opens Apple's page with no age answer at all", async () => {
+    const { made, service } = await webService(undefined);
+    expect(service.state.ageStatus).toEqual({ kind: "unanswered" });
+    await service.signInOnWeb();
+    expect(service.state.phase).toBe("signingIn");
+    expect(made.host.calls.some((call) => call.name === "openUrl")).toBe(true);
+    service.cancelSignIn();
+    service.stop();
+  });
+
+  it("keeps signing in off after an under-13 answer in Party", async () => {
+    const { made, service } = await webService(NOW + 365 * 24 * 60 * 60);
+    expect(service.state.ageStatus.kind).toBe("tooYoung");
+    await service.signInOnWeb();
+    expect(service.state.phase).toBe("signedOut");
+    expect(made.host.calls.some((call) => call.name === "openUrl")).toBe(false);
+    service.stop();
+  });
+
   it("opens Apple's page in the browser and trades the callback's code for the account", async () => {
     const made = await testApp({ moduleTypes: MODULE_LIST }, NOW);
     apps.push(made);
@@ -173,7 +208,7 @@ describe("SyncService", () => {
     const service = new SyncService(context, {
       server: () => "https://tabbi-friends.example",
       credentials,
-      ageAnswer: { load: () => Number.NEGATIVE_INFINITY, save: () => {} },
+      ageAnswer: { load: () => Number.NEGATIVE_INFINITY },
       transport: () => transport.send,
     });
     service.identityChanged.on(() => identities.push(1));

@@ -19,6 +19,8 @@
 	<string>%@ 主题会改变展开的面板，收起的刘海保持黑色。</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ 正在后台重试。</string>
+	<key>%@ access is off</key>
+	<string>无法访问%@</string>
 	<key>%@ and brought back %@</key>
 	<string>%1$@，还带回了%2$@</string>
 	<key>%@ brought back a shiny acorn</key>
@@ -485,8 +487,6 @@
 	<string>都是可选的，现在无需操作。</string>
 	<key>Allow</key>
 	<string>允许</string>
-	<key>Allow %@ access</key>
-	<string>允许访问%@</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>请在“隐私与安全性”中允许 %@，以便围绕会议规划。</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -495,18 +495,12 @@
 	<string>请在“系统设置” › “通用” › “登录项”中允许 %@。</string>
 	<key>Allow %@ to read your calendars</key>
 	<string>允许 %@ 读取你的日历</string>
-	<key>Allow %@ to read your calendars. macOS asks once.</key>
-	<string>允许 %@ 读取你的日历。macOS 只会询问一次。</string>
-	<key>Allow Access</key>
-	<string>允许访问</string>
 	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
 	<string>在 AnkiConnect 的设置中允许 Tabbi，然后重试。</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>在系统设置中允许 Tabbi 的通知</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
 	<string>请在“隐私与安全性 › 自动化”中允许访问。</string>
-	<key>Allow screenshots</key>
-	<string>允许截图</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>允许在内建显示器以外的显示器上显示刘海</string>
 	<key>Almost there: one thing left to do</key>
@@ -641,6 +635,8 @@
 	<string>休息开始时，宠物会示范一个可以跟着做的小动作</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>附加此屏幕的截图(不含 Tabbi)</string>
+	<key>Attach your screen</key>
+	<string>附加屏幕截图</string>
 	<key>Automation</key>
 	<string>自动化</string>
 	<key>Available when %@ runs as an app bundle.</key>
@@ -885,8 +881,6 @@
 	<string>Claude 已就绪</string>
 	<key>Claude location</key>
 	<string>Claude 位置</string>
-	<key>Claude only sees your events when you ask it to plan your day.</key>
-	<string>只有在你让 Claude 规划今天时，它才会看到你的日程。</string>
 	<key>Clear "%@"</key>
 	<string>取消“%@”</string>
 	<key>Clear All</key>
@@ -955,12 +949,12 @@
 	<string>关闭本指南</string>
 	<key>Close this guide. You can come back any time.</key>
 	<string>关闭本指南。你随时可以回来。</string>
+	<key>Close this without asking. You can connect it later.</key>
+	<string>关闭且不询问。你可以稍后再连接。</string>
 	<key>Close this. Party keeps trying by itself.</key>
 	<string>关闭。派对会自动继续尝试。</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>关闭。随时都可以设置派对。</string>
-	<key>Close this. You can sign in any time.</key>
-	<string>关闭。你可以随时登录。</string>
 	<key>Closet</key>
 	<string>衣橱</string>
 	<key>Code</key>
@@ -999,8 +993,6 @@
 	<string>连接</string>
 	<key>Continue</key>
 	<string>继续</string>
-	<key>Continue to Sign in with Apple</key>
-	<string>继续通过 Apple 登录</string>
 	<key>Control %@ from the notch</key>
 	<string>在刘海里控制 %@</string>
 	<key>Control Spotify or Apple Music from the notch.</key>
@@ -1065,6 +1057,8 @@
 	<string>无法读取昨天的清单</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>无法移除 %1$@：%2$@</string>
+	<key>Couldn't sign in with Apple. Try again.</key>
+	<string>无法通过 Apple 登录。请再试一次。</string>
 	<key>Couldn't start the playlist</key>
 	<string>无法播放播放列表</string>
 	<key>Couldn't take a screenshot. Try again.</key>
@@ -1931,12 +1925,12 @@
 	<string>下一首</string>
 	<key>Next unlock</key>
 	<string>下一个解锁</string>
-	<key>Next, your Mac asks if Tabbi can control %@. Click Allow.</key>
-	<string>接下来，Mac 会询问是否允许 Tabbi 控制 %@。请点按“允许”。</string>
-	<key>Next, your Mac asks if Tabbi can send alerts. Click Allow.</key>
-	<string>接下来，Mac 会询问是否允许 Tabbi 发送提醒。请点按“允许”。</string>
-	<key>Next, your Mac asks if Tabbi can use your calendar. Click Allow.</key>
-	<string>接下来，Mac 会询问是否允许 Tabbi 使用你的日历。请点按“允许”。</string>
+	<key>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</key>
+	<string>接下来，Mac 会询问是否允许 Tabbi 控制 %@。你可以随时在系统设置中更改。</string>
+	<key>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</key>
+	<string>接下来，Mac 会询问是否允许 Tabbi 发送提醒。你可以随时在系统设置中更改。</string>
+	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
+	<string>接下来，Mac 会询问是否允许 Tabbi 使用你的日历。你可以随时在系统设置中更改。</string>
 	<key>Ninja Headband</key>
 	<string>忍者头带</string>
 	<key>No answer</key>
@@ -2217,8 +2211,6 @@
 	<string>打开“互联网账户”添加 Google、Exchange 或 iCloud 日历</string>
 	<key>Open Party</key>
 	<string>打开派对</string>
-	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
-	<string>在系统设置中打开“隐私与安全性”&gt;“录屏与系统录音”</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
 	<string>打开“隐私与安全性”允许日历访问</string>
 	<key>Open Settings</key>
@@ -2847,8 +2839,6 @@
 	<string>随机播放</string>
 	<key>Sign In</key>
 	<string>登录</string>
-	<key>Sign In…</key>
-	<string>登录…</string>
 	<key>Sign Out</key>
 	<string>退出登录</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
@@ -3199,6 +3189,8 @@
 	<string>AI</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
 	<string>为问 AI、规划今天和优化提供回答的 AI</string>
+	<key>The AI you pick only sees your events when you ask it to plan your day.</key>
+	<string>只有在你让所选的 AI 规划今天时，它才会看到你的日程。</string>
 	<key>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</key>
 	<string>Anki 标签页显示待复习的卡片、常用牌组和连续记录，“今天”会把你的复习计入当天。</string>
 	<key>The Claude row below shows how to sign in, if you still need to.</key>
@@ -3711,6 +3703,10 @@
 	<string>你的 %@ 密钥,保存在钥匙串中。</string>
 	<key>Your Mac asks next</key>
 	<string>接下来 Mac 会询问你</string>
+	<key>Your Mac asks next whether %@ can read your calendars</key>
+	<string>接下来，Mac 会询问是否允许 %@ 读取你的日历</string>
+	<key>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</key>
+	<string>Mac 会先询问你，然后在系统设置中打开“隐私与安全性”&gt;“录屏与系统录音”</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Mac 正在充电，%@ 也在喝一小口</string>
 	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>

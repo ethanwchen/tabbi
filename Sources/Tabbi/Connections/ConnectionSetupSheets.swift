@@ -58,10 +58,10 @@ struct ConnectionSheetView: View {
             .onAppear { store.beginWaiting(for: kind) }
             .onDisappear { store.endWaiting(for: kind) }
         case .priming(let permission, let kind):
-            ConnectionPrimingView(kind: kind, priming: permission.priming) {
+            ConnectionPrimingView(kind: kind, priming: permission.priming, proceed: {
                 dismiss()
                 Task { await store.request(permission, for: kind) }
-            }
+            }, close: { dismiss() })
         case .troubleshoot(let kind):
             ConnectionTroubleshootView(
                 kind: kind, diagnosis: store.diagnosis(of: kind), isChecking: store.running.contains(kind),
@@ -251,12 +251,14 @@ struct CopyableValue: View {
     }
 }
 
-/// The screen just before a macOS prompt: what it will ask, which button
-/// to click, and why it's safe. Its only button leads to the prompt.
+/// The screen just before a macOS prompt: what it will ask and why it's
+/// safe, with Continue, which leads to the prompt, and Not now, which
+/// closes it without asking.
 struct ConnectionPrimingView: View {
     let kind: ConnectionKind
     let priming: ConnectionPriming
     let proceed: () -> Void
+    let close: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -271,8 +273,11 @@ struct ConnectionPrimingView: View {
                 }
             }
             .font(.callout)
-            HStack {
+            HStack(spacing: 12) {
                 Spacer()
+                Button(priming.notNow, action: close)
+                    .keyboardShortcut(.cancelAction)
+                    .help(String(localized: "Close this without asking. You can connect it later.", bundle: .tabbi))
                 Button(priming.button, action: proceed)
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)

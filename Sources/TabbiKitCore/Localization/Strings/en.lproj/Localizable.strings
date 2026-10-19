@@ -19,6 +19,8 @@
 	<string>%@ Themes style the open panel; the closed notch stays black.</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ Trying again in the background.</string>
+	<key>%@ access is off</key>
+	<string>%@ access is off</string>
 	<key>%@ and brought back %@</key>
 	<string>%@ and brought back %@</string>
 	<key>%@ brought back a shiny acorn</key>
@@ -485,8 +487,6 @@
 	<string>All optional. Nothing to do now.</string>
 	<key>Allow</key>
 	<string>Allow</string>
-	<key>Allow %@ access</key>
-	<string>Allow %@ access</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>Allow %@ in Privacy &amp; Security to plan around meetings.</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -495,18 +495,12 @@
 	<string>Allow %@ in System Settings › General › Login Items.</string>
 	<key>Allow %@ to read your calendars</key>
 	<string>Allow %@ to read your calendars</string>
-	<key>Allow %@ to read your calendars. macOS asks once.</key>
-	<string>Allow %@ to read your calendars. macOS asks once.</string>
-	<key>Allow Access</key>
-	<string>Allow Access</string>
 	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
 	<string>Allow Tabbi in AnkiConnect's settings, then try again.</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>Allow Tabbi's notifications in System Settings</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
 	<string>Allow access in Privacy &amp; Security › Automation.</string>
-	<key>Allow screenshots</key>
-	<string>Allow screenshots</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>Allow the notch on displays other than the built-in one</string>
 	<key>Almost there: one thing left to do</key>
@@ -641,6 +635,8 @@
 	<string>At the start of a break, your pet shows a short move you can copy</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>Attach a screenshot of this screen (Tabbi stays out of it)</string>
+	<key>Attach your screen</key>
+	<string>Attach your screen</string>
 	<key>Automation</key>
 	<string>Automation</string>
 	<key>Available when %@ runs as an app bundle.</key>
@@ -885,8 +881,6 @@
 	<string>Claude is ready</string>
 	<key>Claude location</key>
 	<string>Claude location</string>
-	<key>Claude only sees your events when you ask it to plan your day.</key>
-	<string>Claude only sees your events when you ask it to plan your day.</string>
 	<key>Clear "%@"</key>
 	<string>Clear "%@"</string>
 	<key>Clear All</key>
@@ -955,12 +949,12 @@
 	<string>Close this guide</string>
 	<key>Close this guide. You can come back any time.</key>
 	<string>Close this guide. You can come back any time.</string>
+	<key>Close this without asking. You can connect it later.</key>
+	<string>Close this without asking. You can connect it later.</string>
 	<key>Close this. Party keeps trying by itself.</key>
 	<string>Close this. Party keeps trying by itself.</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>Close this. You can set up Party any time.</string>
-	<key>Close this. You can sign in any time.</key>
-	<string>Close this. You can sign in any time.</string>
 	<key>Closet</key>
 	<string>Closet</string>
 	<key>Code</key>
@@ -999,8 +993,6 @@
 	<string>Connections</string>
 	<key>Continue</key>
 	<string>Continue</string>
-	<key>Continue to Sign in with Apple</key>
-	<string>Continue to Sign in with Apple</string>
 	<key>Control %@ from the notch</key>
 	<string>Control %@ from the notch</string>
 	<key>Control Spotify or Apple Music from the notch.</key>
@@ -1065,6 +1057,8 @@
 	<string>Couldn't read yesterday's list</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>Couldn't remove %@: %@</string>
+	<key>Couldn't sign in with Apple. Try again.</key>
+	<string>Couldn't sign in with Apple. Try again.</string>
 	<key>Couldn't start the playlist</key>
 	<string>Couldn't start the playlist</string>
 	<key>Couldn't take a screenshot. Try again.</key>
@@ -1931,12 +1925,12 @@
 	<string>Next track</string>
 	<key>Next unlock</key>
 	<string>Next unlock</string>
-	<key>Next, your Mac asks if Tabbi can control %@. Click Allow.</key>
-	<string>Next, your Mac asks if Tabbi can control %@. Click Allow.</string>
-	<key>Next, your Mac asks if Tabbi can send alerts. Click Allow.</key>
-	<string>Next, your Mac asks if Tabbi can send alerts. Click Allow.</string>
-	<key>Next, your Mac asks if Tabbi can use your calendar. Click Allow.</key>
-	<string>Next, your Mac asks if Tabbi can use your calendar. Click Allow.</string>
+	<key>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</key>
+	<string>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</string>
+	<key>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</key>
+	<string>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</string>
+	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
+	<string>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</string>
 	<key>Ninja Headband</key>
 	<string>Ninja Headband</string>
 	<key>No answer</key>
@@ -2217,8 +2211,6 @@
 	<string>Open Internet Accounts to add a Google, Exchange or iCloud calendar</string>
 	<key>Open Party</key>
 	<string>Open Party</string>
-	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
-	<string>Open Privacy &amp; Security &gt; Screen Recording in System Settings</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
 	<string>Open Privacy &amp; Security to allow Calendar access</string>
 	<key>Open Settings</key>
@@ -2847,8 +2839,6 @@
 	<string>Shuffle</string>
 	<key>Sign In</key>
 	<string>Sign In</string>
-	<key>Sign In…</key>
-	<string>Sign In…</string>
 	<key>Sign Out</key>
 	<string>Sign Out</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
@@ -3199,6 +3189,8 @@
 	<string>The AI</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
 	<string>The AI that answers Ask, Plan my day and Refine</string>
+	<key>The AI you pick only sees your events when you ask it to plan your day.</key>
+	<string>The AI you pick only sees your events when you ask it to plan your day.</string>
 	<key>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</key>
 	<string>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</string>
 	<key>The Claude row below shows how to sign in, if you still need to.</key>
@@ -3711,6 +3703,10 @@
 	<string>Your %@ key. It is kept in your Keychain.</string>
 	<key>Your Mac asks next</key>
 	<string>Your Mac asks next</string>
+	<key>Your Mac asks next whether %@ can read your calendars</key>
+	<string>Your Mac asks next whether %@ can read your calendars</string>
+	<key>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</key>
+	<string>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Your Mac is charging, and %@ is having a sip</string>
 	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>

@@ -22,7 +22,7 @@ final class SyncStoreTests: XCTestCase {
                            pet: ClosetStore, method: AppleSignInMethod = .native,
                            webPage: @escaping @MainActor (URL) async throws -> URL? = { _ in nil }) -> SyncStore {
         SyncStore(storage: storage, runMode: .live, pet: pet, signInMethod: method, webCallback: webPage,
-                  server: { [serverURL] in serverURL }, credentials: credentials, ageAnswer: .inMemory(.distantPast),
+                  server: { [serverURL] in serverURL }, credentials: credentials, ageAnswer: .fixed(.distantPast),
                   transport: { _ in server }, studyDays: { ["2026-10-08"] })
     }
 
@@ -297,7 +297,7 @@ final class SyncStoreTests: XCTestCase {
         let store = SyncStore(storage: storage, runMode: .live, pet: petStore(earned: 0), signInMethod: .web,
                               webCallback: { _ in opened = true; return nil },
                               server: { nil }, credentials: InMemoryPartyCredentialStore(),
-                              ageAnswer: .inMemory(.distantPast))
+                              ageAnswer: .fixed(.distantPast))
         await store.signInOnWeb()
         XCTAssertFalse(opened)
         XCTAssertEqual(store.phase, .signedOut)
@@ -309,7 +309,7 @@ final class SyncStoreTests: XCTestCase {
         let store = SyncStore(storage: storage, runMode: .demo, pet: pet, signInMethod: .web,
                               webCallback: { _ in XCTFail("demo opens no page"); return nil },
                               server: { [serverURL] in serverURL }, credentials: InMemoryPartyCredentialStore(),
-                              ageAnswer: .inMemory(), transport: { _ in server })
+                              ageAnswer: .fixed(), transport: { _ in server })
         XCTAssertEqual(store.phase, .signedIn)
         XCTAssertEqual(store.name, "Sam Rivera")
         XCTAssertNotNil(store.lastSyncedAt)
@@ -348,7 +348,7 @@ final class SyncStoreTests: XCTestCase {
     private func lifecycleStore(server: FakeAccountServer, pet: ClosetStore, sleeper: ManualSleeper) -> SyncStore {
         SyncStore(storage: storage, runMode: .live, pet: pet, signInMethod: .native,
                   server: { [serverURL] in serverURL }, credentials: InMemoryPartyCredentialStore(),
-                  ageAnswer: .inMemory(.distantPast), transport: { _ in server }, sleep: { await sleeper.sleep($0) })
+                  ageAnswer: .fixed(.distantPast), transport: { _ in server }, sleep: { await sleeper.sleep($0) })
     }
 
     /// Lets queued main actor work (Combine sinks, new tasks) run.

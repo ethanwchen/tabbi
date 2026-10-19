@@ -19,6 +19,8 @@
 	<string>%@ Binabago ng mga theme ang bukas na panel; nananatiling itim ang saradong notch.</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ Sinusubukan ulit sa background.</string>
+	<key>%@ access is off</key>
+	<string>Walang access sa %@</string>
 	<key>%@ and brought back %@</key>
 	<string>%1$@ at nag-uwi ng %2$@</string>
 	<key>%@ brought back a shiny acorn</key>
@@ -485,8 +487,6 @@
 	<string>Opsyonal lahat. Wala pang kailangang gawin.</string>
 	<key>Allow</key>
 	<string>Payagan</string>
-	<key>Allow %@ access</key>
-	<string>Payagan ang access sa %@</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>Payagan ang %@ sa Privacy &amp; Security para makapagplano sa paligid ng mga meeting.</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -495,18 +495,12 @@
 	<string>Payagan ang %@ sa System Settings › General › Login Items.</string>
 	<key>Allow %@ to read your calendars</key>
 	<string>Payagan ang %@ na basahin ang mga calendar mo</string>
-	<key>Allow %@ to read your calendars. macOS asks once.</key>
-	<string>Payagan ang %@ na basahin ang mga calendar mo. Isang beses lang magtatanong ang macOS.</string>
-	<key>Allow Access</key>
-	<string>Payagan</string>
 	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
 	<string>Payagan ang Tabbi sa settings ng AnkiConnect, tapos subukan ulit.</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>Payagan ang notifications ng Tabbi sa System Settings</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
 	<string>Payagan ang access sa Privacy &amp; Security › Automation.</string>
-	<key>Allow screenshots</key>
-	<string>Payagan ang mga screenshot</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>Payagan ang notch sa mga display bukod sa built-in</string>
 	<key>Almost there: one thing left to do</key>
@@ -641,6 +635,8 @@
 	<string>Sa simula ng break, magpapakita ang alaga mo ng maikling galaw na puwede mong gayahin</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>Maglakip ng screenshot ng screen na ito (hindi kasama ang Tabbi)</string>
+	<key>Attach your screen</key>
+	<string>I-attach ang screen mo</string>
 	<key>Automation</key>
 	<string>Automation</string>
 	<key>Available when %@ runs as an app bundle.</key>
@@ -885,8 +881,6 @@
 	<string>Handa na si Claude</string>
 	<key>Claude location</key>
 	<string>Lokasyon ng Claude</string>
-	<key>Claude only sees your events when you ask it to plan your day.</key>
-	<string>Nakikita lang ni Claude ang events mo kapag pinaplano mo sa kanya ang araw mo.</string>
 	<key>Clear "%@"</key>
 	<string>Alisin ang "%@"</string>
 	<key>Clear All</key>
@@ -955,12 +949,12 @@
 	<string>Isara ang gabay na ito</string>
 	<key>Close this guide. You can come back any time.</key>
 	<string>Isara ang gabay na ito. Puwede kang bumalik kahit kailan.</string>
+	<key>Close this without asking. You can connect it later.</key>
+	<string>Isara ito nang hindi nagtatanong. Puwede mo itong i-connect mamaya.</string>
 	<key>Close this. Party keeps trying by itself.</key>
 	<string>Isara ito. Patuloy na susubok ang Party nang kusa.</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>Isara ito. Puwede mong i-set up ang Party kahit kailan.</string>
-	<key>Close this. You can sign in any time.</key>
-	<string>Isara ito. Puwede kang mag-sign in anumang oras.</string>
 	<key>Closet</key>
 	<string>Closet</string>
 	<key>Code</key>
@@ -999,8 +993,6 @@
 	<string>Connections</string>
 	<key>Continue</key>
 	<string>Magpatuloy</string>
-	<key>Continue to Sign in with Apple</key>
-	<string>Magpatuloy sa Sign in with Apple</string>
 	<key>Control %@ from the notch</key>
 	<string>Kontrolin ang %@ mula sa notch</string>
 	<key>Control Spotify or Apple Music from the notch.</key>
@@ -1065,6 +1057,8 @@
 	<string>Hindi mabasa ang listahan kahapon</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>Hindi maalis ang %1$@: %2$@</string>
+	<key>Couldn't sign in with Apple. Try again.</key>
+	<string>Hindi makapag-sign in gamit ang Apple. Subukan ulit.</string>
 	<key>Couldn't start the playlist</key>
 	<string>Hindi masimulan ang playlist</string>
 	<key>Couldn't take a screenshot. Try again.</key>
@@ -1931,12 +1925,12 @@
 	<string>Susunod na track</string>
 	<key>Next unlock</key>
 	<string>Susunod na unlock</string>
-	<key>Next, your Mac asks if Tabbi can control %@. Click Allow.</key>
-	<string>Susunod, tatanungin ng Mac mo kung puwedeng kontrolin ng Tabbi ang %@. I-click ang Allow.</string>
-	<key>Next, your Mac asks if Tabbi can send alerts. Click Allow.</key>
-	<string>Susunod, tatanungin ng Mac mo kung puwedeng magpadala ng alerto ang Tabbi. I-click ang Allow.</string>
-	<key>Next, your Mac asks if Tabbi can use your calendar. Click Allow.</key>
-	<string>Susunod, tatanungin ng Mac mo kung puwedeng gamitin ng Tabbi ang calendar mo. I-click ang Allow.</string>
+	<key>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</key>
+	<string>Susunod, tatanungin ng Mac mo kung puwedeng kontrolin ng Tabbi ang %@. Puwede mong baguhin ang sagot mo anumang oras sa System Settings.</string>
+	<key>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</key>
+	<string>Susunod, tatanungin ng Mac mo kung puwedeng magpadala ng alerto ang Tabbi. Puwede mong baguhin ang sagot mo anumang oras sa System Settings.</string>
+	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
+	<string>Susunod, tatanungin ng Mac mo kung puwedeng gamitin ng Tabbi ang calendar mo. Puwede mong baguhin ang sagot mo anumang oras sa System Settings.</string>
 	<key>Ninja Headband</key>
 	<string>Headband ng Ninja</string>
 	<key>No answer</key>
@@ -2217,8 +2211,6 @@
 	<string>Buksan ang Internet Accounts para magdagdag ng Google, Exchange o iCloud calendar</string>
 	<key>Open Party</key>
 	<string>Buksan ang Party</string>
-	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
-	<string>Buksan ang Privacy &amp; Security &gt; Screen Recording sa System Settings</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
 	<string>Buksan ang Privacy &amp; Security para payagan ang access sa Calendar</string>
 	<key>Open Settings</key>
@@ -2847,8 +2839,6 @@
 	<string>Shuffle</string>
 	<key>Sign In</key>
 	<string>Mag-sign In</string>
-	<key>Sign In…</key>
-	<string>Mag-sign In…</string>
 	<key>Sign Out</key>
 	<string>Mag-sign Out</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
@@ -3199,6 +3189,8 @@
 	<string>Ang AI</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
 	<string>Ang AI na sumasagot sa Ask, Planuhin ang araw at Refine</string>
+	<key>The AI you pick only sees your events when you ask it to plan your day.</key>
+	<string>Nakikita lang ng AI na pinili mo ang events mo kapag pinaplano mo sa kanya ang araw mo.</string>
 	<key>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</key>
 	<string>Ipinapakita ng Anki tab ang mga due card mo, top decks at streak, at binibilang ng Ngayon ang reviews mo para sa araw.</string>
 	<key>The Claude row below shows how to sign in, if you still need to.</key>
@@ -3711,6 +3703,10 @@
 	<string>Ang %@ key mo. Nakatago ito sa Keychain mo.</string>
 	<key>Your Mac asks next</key>
 	<string>Magtatanong ang Mac mo</string>
+	<key>Your Mac asks next whether %@ can read your calendars</key>
+	<string>Susunod, tatanungin ng Mac mo kung puwedeng basahin ng %@ ang mga calendar mo</string>
+	<key>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</key>
+	<string>Magtatanong ang Mac mo, tapos bubukas ang Privacy &amp; Security &gt; Screen Recording sa System Settings</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Nagcha-charge ang Mac mo, at umiinom si %@</string>
 	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>

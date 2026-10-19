@@ -23,6 +23,9 @@ struct PartyOnboardingView: View {
                 }
             }
         }
+        // The birthday is Party's alone and never required: until it is
+        // answered, onboarding's footer offers Not now beside the question.
+        .onboardingForward(store.state.connection == .ageCheck(tooYoungUntil: nil) ? .notNow : .standard)
         .motion(Theme.Motion.content, value: store.state.awaitsAgeCheck)
         .motion(Theme.Motion.content, value: store.state.connection)
         .motion(Theme.Motion.snappy, value: store.notice)

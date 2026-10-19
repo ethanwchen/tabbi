@@ -19,6 +19,8 @@
 	<string>%@ السمات تغيّر مظهر اللوحة المفتوحة؛ ويبقى النوتش المغلق أسود.</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ نعيد المحاولة في الخلفية.</string>
+	<key>%@ access is off</key>
+	<string>لا وصول إلى %@</string>
 	<key>%@ and brought back %@</key>
 	<string>%1$@، وعاد ومعه %2$@</string>
 	<key>%@ brought back a shiny acorn</key>
@@ -475,8 +477,6 @@
 	<string>كله اختياري. لا شيء مطلوب الآن.</string>
 	<key>Allow</key>
 	<string>سماح</string>
-	<key>Allow %@ access</key>
-	<string>اسمح بالوصول إلى %@</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>اسمح لـ %@ في الخصوصية والأمن ليخطط حول اجتماعاتك.</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -485,18 +485,12 @@
 	<string>اسمح لـ %@ في إعدادات النظام › عام › عناصر تسجيل الدخول.</string>
 	<key>Allow %@ to read your calendars</key>
 	<string>السماح لـ %@ بقراءة تقاويمك</string>
-	<key>Allow %@ to read your calendars. macOS asks once.</key>
-	<string>اسمح لـ %@ بقراءة تقاويمك. يسأل macOS مرة واحدة.</string>
-	<key>Allow Access</key>
-	<string>السماح بالوصول</string>
 	<key>Allow Tabbi in AnkiConnect's settings, then try again.</key>
 	<string>اسمح لـ Tabbi في إعدادات AnkiConnect، ثم حاول مجددًا.</string>
 	<key>Allow Tabbi's notifications in System Settings</key>
 	<string>اسمح بإشعارات Tabbi في إعدادات النظام</string>
 	<key>Allow access in Privacy &amp; Security › Automation.</key>
 	<string>اسمح بالوصول في الخصوصية والأمن › الأتمتة.</string>
-	<key>Allow screenshots</key>
-	<string>السماح بلقطات الشاشة</string>
 	<key>Allow the notch on displays other than the built-in one</key>
 	<string>إظهار النوتش على شاشات غير الشاشة المدمجة</string>
 	<key>Almost there: one thing left to do</key>
@@ -631,6 +625,8 @@
 	<string>في بداية الاستراحة، يعرض حيوانك حركة قصيرة يمكنك تقليدها</string>
 	<key>Attach a screenshot of this screen (Tabbi stays out of it)</key>
 	<string>إرفاق لقطة لهذه الشاشة (دون Tabbi)</string>
+	<key>Attach your screen</key>
+	<string>إرفاق شاشتك</string>
 	<key>Automation</key>
 	<string>الأتمتة</string>
 	<key>Available when %@ runs as an app bundle.</key>
@@ -873,8 +869,6 @@
 	<string>Claude جاهز</string>
 	<key>Claude location</key>
 	<string>موقع Claude</string>
-	<key>Claude only sees your events when you ask it to plan your day.</key>
-	<string>لا يرى Claude أحداثك إلا عندما تطلب منه تخطيط يومك.</string>
 	<key>Clear "%@"</key>
 	<string>إزالة “%@”</string>
 	<key>Clear All</key>
@@ -943,12 +937,12 @@
 	<string>إغلاق هذا الدليل</string>
 	<key>Close this guide. You can come back any time.</key>
 	<string>أغلق هذا الدليل. يمكنك العودة في أي وقت.</string>
+	<key>Close this without asking. You can connect it later.</key>
+	<string>أغلق هذا دون أن يُطرح السؤال. يمكنك الربط لاحقًا.</string>
 	<key>Close this. Party keeps trying by itself.</key>
 	<string>أغلق هذا. تواصل المجموعة المحاولة وحدها.</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>أغلق هذا. يمكنك إعداد المجموعة في أي وقت.</string>
-	<key>Close this. You can sign in any time.</key>
-	<string>أغلق هذا. يمكنك تسجيل الدخول في أي وقت.</string>
 	<key>Closet</key>
 	<string>الخزانة</string>
 	<key>Code</key>
@@ -987,8 +981,6 @@
 	<string>الاتصالات</string>
 	<key>Continue</key>
 	<string>متابعة</string>
-	<key>Continue to Sign in with Apple</key>
-	<string>المتابعة إلى تسجيل الدخول باستخدام Apple</string>
 	<key>Control %@ from the notch</key>
 	<string>تحكّم في %@ من النوتش</string>
 	<key>Control Spotify or Apple Music from the notch.</key>
@@ -1053,6 +1045,8 @@
 	<string>تعذّرت قراءة قائمة الأمس</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>تعذّرت إزالة %@: %@</string>
+	<key>Couldn't sign in with Apple. Try again.</key>
+	<string>تعذّر تسجيل الدخول بحساب Apple. حاول مجددًا.</string>
 	<key>Couldn't start the playlist</key>
 	<string>تعذّر تشغيل قائمة التشغيل</string>
 	<key>Couldn't take a screenshot. Try again.</key>
@@ -1915,12 +1909,12 @@
 	<string>المقطع التالي</string>
 	<key>Next unlock</key>
 	<string>الفتح التالي</string>
-	<key>Next, your Mac asks if Tabbi can control %@. Click Allow.</key>
-	<string>بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع التحكم في %@. انقر سماح.</string>
-	<key>Next, your Mac asks if Tabbi can send alerts. Click Allow.</key>
-	<string>بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع إرسال التنبيهات. انقر سماح.</string>
-	<key>Next, your Mac asks if Tabbi can use your calendar. Click Allow.</key>
-	<string>بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع استخدام تقويمك. انقر سماح.</string>
+	<key>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</key>
+	<string>بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع التحكم في %@. يمكنك تغيير إجابتك في أي وقت من إعدادات النظام.</string>
+	<key>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</key>
+	<string>بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع إرسال التنبيهات. يمكنك تغيير إجابتك في أي وقت من إعدادات النظام.</string>
+	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
+	<string>بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع استخدام تقويمك. يمكنك تغيير إجابتك في أي وقت من إعدادات النظام.</string>
 	<key>Ninja Headband</key>
 	<string>عصابة النينجا</string>
 	<key>No answer</key>
@@ -2201,8 +2195,6 @@
 	<string>فتح حسابات الإنترنت لإضافة تقويم Google أو Exchange أو iCloud</string>
 	<key>Open Party</key>
 	<string>فتح المجموعة</string>
-	<key>Open Privacy &amp; Security &gt; Screen Recording in System Settings</key>
-	<string>فتح الخصوصية والأمن &gt; تسجيل الشاشة في إعدادات النظام</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
 	<string>فتح الخصوصية والأمن للسماح بالوصول إلى التقويم</string>
 	<key>Open Settings</key>
@@ -2827,8 +2819,6 @@
 	<string>ترتيب عشوائي</string>
 	<key>Sign In</key>
 	<string>تسجيل الدخول</string>
-	<key>Sign In…</key>
-	<string>تسجيل الدخول…</string>
 	<key>Sign Out</key>
 	<string>تسجيل الخروج</string>
 	<key>Sign in on the page that opens. Tabbi notices by itself.</key>
@@ -3175,6 +3165,8 @@
 	<string>الذكاء الاصطناعي</string>
 	<key>The AI that answers Ask, Plan my day and Refine</key>
 	<string>الـAI الذي يجيب في اسأل وخطّط يومي والتحسين</string>
+	<key>The AI you pick only sees your events when you ask it to plan your day.</key>
+	<string>لا يرى الذكاء الاصطناعي الذي تختاره أحداثك إلا عندما تطلب منه تخطيط يومك.</string>
 	<key>The Anki tab shows your due cards, top decks and streak, and Today counts your reviews toward the day.</key>
 	<string>تعرض علامة تبويب Anki بطاقاتك المستحقة وأهم رزمك وسلسلتك، ويحتسب اليوم مراجعاتك ضمن يومك.</string>
 	<key>The Claude row below shows how to sign in, if you still need to.</key>
@@ -3673,6 +3665,10 @@
 	<string>مفتاح %@ الخاص بك. يُحفظ في سلسلة المفاتيح.</string>
 	<key>Your Mac asks next</key>
 	<string>جهاز Mac سيسأل بعد ذلك</string>
+	<key>Your Mac asks next whether %@ can read your calendars</key>
+	<string>سيسألك جهاز Mac بعد ذلك إن كان %@ يستطيع قراءة تقاويمك</string>
+	<key>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</key>
+	<string>سيسألك جهاز Mac بعد ذلك، ثم يُفتح الخصوصية والأمن &gt; تسجيل الشاشة في إعدادات النظام</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>جهاز Mac يُشحن، و%@ يرتشف رشفة</string>
 	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>

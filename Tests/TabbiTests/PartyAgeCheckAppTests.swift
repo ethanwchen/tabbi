@@ -45,23 +45,12 @@ final class PartyAgeCheckAppTests: XCTestCase {
         XCTAssertEqual(party.settings.ageStatus(at: Date()), .passed)
         XCTAssertEqual(party.state.connection, .connected)
     }
-
-    /// An answer given before Sign in with Apple (`SyncStore.ageAnswered`)
-    /// counts for Party too, so the question is asked once.
-    func testPartyAdoptsTheAnswerGivenAtSignIn() {
-        let party = makeStore()
-        party.adoptAgeAnswer(eligibleFrom: .distantPast)
-        XCTAssertEqual(party.state.connection, .connected)
-
-        // An answer is never replaced.
-        party.adoptAgeAnswer(eligibleFrom: .distantFuture)
-        XCTAssertEqual(party.settings.ageStatus(at: Date()), .passed)
-    }
 }
 
-/// The same age check before Sign in with Apple: nothing reaches the
-/// friends server until it passed, under 13 keeps signing in off for good,
-/// and the answer is the one Party keeps.
+/// Sign in with Apple never asks for a birthday (App Review guideline
+/// 5.1.1(v)): signing in works with no answer at all, and only an answer
+/// under 13 given in Party keeps it off, deleting an account that was
+/// already signed in.
 @MainActor
 final class AccountAgeCheckTests: XCTestCase {
     private let folder = FileManager.default.temporaryDirectory.appendingPathComponent("account-age-\(UUID().uuidString)")
@@ -82,58 +71,48 @@ final class AccountAgeCheckTests: XCTestCase {
                          ageAnswer: ageAnswer, transport: { _ in server })
     }
 
-    func testSigningInWaitsForTheAgeCheck() async {
+    /// The App Store build has no Party, so nothing ever answers there.
+    func testSigningInNeedsNoBirthday() async {
+        let server = FakeAccountServer()
+        let store = makeStore(.fixed(), server: server)
+        XCTAssertEqual(store.ageStatus, .unanswered)
+
+        await store.signIn(identityToken: "jwt", authorizationCode: nil, name: "Ana")
+        XCTAssertEqual(store.phase, .signedIn)
+        XCTAssertGreaterThan(server.requestCount, 0)
+    }
+
+    func testAppleWebPageOpensWithoutAnAnswer() async {
+        var opened = 0
+        let store = makeStore(.fixed(), server: FakeAccountServer(), pagesOpened: { opened += 1 })
+        await store.signInOnWeb()
+        XCTAssertEqual(opened, 1)
+        XCTAssertEqual(store.phase, .signedOut, "closing the page is not an error")
+        XCTAssertNil(store.notice)
+    }
+
+    func testAnUnderThirteenAnswerFromPartyKeepsSigningInOff() async throws {
         let server = FakeAccountServer()
         var opened = 0
-        let store = makeStore(.inMemory(), server: server, pagesOpened: { opened += 1 })
-        XCTAssertEqual(store.ageStatus, .unanswered)
+        let eligibleFrom = try XCTUnwrap(PartyAgeCheck.eligibleFrom(birthMonth: 3, year: thisYear - 9))
+        let store = makeStore(.fixed(eligibleFrom), server: server, pagesOpened: { opened += 1 })
+        XCTAssertEqual(store.ageStatus, .tooYoung(until: eligibleFrom))
 
         await store.signIn(identityToken: "jwt", authorizationCode: nil, name: nil)
         await store.signInOnWeb()
         XCTAssertEqual(store.phase, .signedOut)
         XCTAssertEqual(server.requestCount, 0)
         XCTAssertEqual(opened, 0, "Apple's page does not open either")
+        XCTAssertTrue(AccountAgeText.tooYoung(until: eligibleFrom).contains("13 and older"))
     }
 
-    func testAnOldEnoughAnswerLetsTheUserSignInAndTellsParty() async {
-        let server = FakeAccountServer()
-        let answer = AccountAgeAnswer.inMemory()
-        let store = makeStore(answer, server: server)
-        var told: [Date] = []
-        let watch = store.ageAnswered.sink { told.append($0) }
-        defer { watch.cancel() }
-
-        store.answerAge(birthMonth: 3, year: thisYear - 20)
-        XCTAssertEqual(store.ageStatus, .passed)
-        XCTAssertEqual(told.count, 1)
-        XCTAssertEqual(answer.load(), told.first, "only the day the user is surely 13 is kept")
-
-        await store.signIn(identityToken: "jwt", authorizationCode: nil, name: "Ana")
-        XCTAssertEqual(store.phase, .signedIn)
-    }
-
-    func testAnUnderThirteenAnswerKeepsSigningInOffForGood() async {
-        let server = FakeAccountServer()
-        let store = makeStore(.inMemory(), server: server)
-        store.answerAge(birthMonth: 3, year: thisYear - 9)
-        guard case .tooYoung(let until) = store.ageStatus else {
-            return XCTFail("expected too young, got \(store.ageStatus)")
-        }
-
-        store.answerAge(birthMonth: 3, year: thisYear - 30)
-        XCTAssertEqual(store.ageStatus, .tooYoung(until: until), "no second try")
-        await store.signIn(identityToken: "jwt", authorizationCode: nil, name: nil)
-        XCTAssertEqual(store.phase, .signedOut)
-        XCTAssertEqual(server.requestCount, 0)
-        XCTAssertTrue(AccountAgeText.tooYoung(until: until).contains("13 and older"))
-    }
-
-    /// Someone signed in before the age check who later answers under 13 in
-    /// Party: syncing stops and the account is deleted on the server.
+    /// Someone signed in who later answers under 13 in Party: syncing stops
+    /// and the account is deleted on the server.
     func testAnUnderThirteenAnswerGivenWhileSignedInDeletesTheAccount() async throws {
+        final class Box { var value: Date? }
+        let box = Box()
         let server = FakeAccountServer()
-        let answer = AccountAgeAnswer.inMemory(.distantPast)
-        let store = makeStore(answer, server: server)
+        let store = makeStore(AccountAgeAnswer(load: { box.value }), server: server)
         await store.signIn(identityToken: "jwt", authorizationCode: nil, name: "Ana")
         XCTAssertEqual(store.phase, .signedIn)
         for _ in 0..<200 where store.isSyncing || store.lastSyncedAt == nil {
@@ -141,7 +120,7 @@ final class AccountAgeCheckTests: XCTestCase {
         }
 
         let eligibleFrom = try XCTUnwrap(PartyAgeCheck.eligibleFrom(birthMonth: 3, year: thisYear - 9))
-        answer.save(eligibleFrom)
+        box.value = eligibleFrom
         store.refreshAgeStatus()
         for _ in 0..<200 where store.phase != .signedOut {
             try await Task.sleep(nanoseconds: 10_000_000)
@@ -155,22 +134,86 @@ final class AccountAgeCheckTests: XCTestCase {
         XCTAssertEqual(server.requestCount, before, "nothing more is sent")
     }
 
-    /// The account reads Party's saved answer, so someone who answered in
-    /// Party is not asked again, and the answer it takes Party reads too.
+    /// The account reads the answer Party keeps.
     func testTheAnswerIsTheOnePartyKeeps() throws {
         let suite = "account-age-\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
         let repository = PartySettingsRepository(defaults: defaults)
-        repository.save(PartySettings(name: "Ana"))
+        XCTAssertEqual(makeStore(.partySettings(repository), server: FakeAccountServer()).ageStatus, .unanswered)
 
-        let store = makeStore(.partySettings(repository), server: FakeAccountServer())
-        store.answerAge(birthMonth: 3, year: thisYear - 20)
-        XCTAssertEqual(repository.load().ageStatus(at: Date()), .passed)
-        XCTAssertEqual(repository.load().name, "Ana", "the rest of Party's settings stay")
+        var settings = PartySettings(name: "Ana")
+        settings.ageEligibleFrom = try XCTUnwrap(PartyAgeCheck.eligibleFrom(birthMonth: 3, year: thisYear - 20))
+        repository.save(settings)
+        XCTAssertEqual(makeStore(.partySettings(repository), server: FakeAccountServer()).ageStatus, .passed)
+    }
+}
 
-        let answeredInParty = PartySettingsRepository(defaults: defaults)
-        let again = makeStore(.partySettings(answeredInParty), server: FakeAccountServer())
-        XCTAssertEqual(again.ageStatus, .passed)
+/// Apple's button in the account row, in the App Store build's native flow:
+/// it goes straight to Apple's sheet (no question first), a cancel is no
+/// error, and a failure says so in the row instead of doing nothing.
+@MainActor
+final class AppleNativeSignInFlowTests: XCTestCase {
+    private let folder = FileManager.default.temporaryDirectory.appendingPathComponent("native-sign-in-\(UUID().uuidString)")
+    private let serverURL = URL(string: "https://party.example.test")!
+
+    override func tearDown() async throws {
+        try? FileManager.default.removeItem(at: folder)
+    }
+
+    private struct SheetFailed: Error {}
+
+    private func makeStore(method: AppleSignInMethod = .native, server: FakeAccountServer,
+                           pagesOpened: @escaping @MainActor () -> Void = {},
+                           sheet: @escaping @MainActor (NSWindow?) async throws -> AppleNativeCredential?) -> SyncStore {
+        let storage = EditionStorage(root: folder)
+        let pet = ClosetStore(storage: storage, runMode: .live, starter: .starter(.cat))
+        return SyncStore(storage: storage, runMode: .live, pet: pet, signInMethod: method,
+                         webCallback: { _ in pagesOpened(); return nil },
+                         nativeCredential: sheet,
+                         server: { [serverURL] in serverURL }, credentials: InMemoryPartyCredentialStore(),
+                         ageAnswer: .fixed(), transport: { _ in server })
+    }
+
+    func testTheButtonOpensApplesSheetAndSignsIn() async {
+        let server = FakeAccountServer()
+        var sheets = 0
+        let store = makeStore(server: server) { _ in
+            sheets += 1
+            return AppleNativeCredential(identityToken: "jwt", authorizationCode: "code", name: "Ana")
+        }
+        await store.signInWithApple(from: nil)
+        XCTAssertEqual(sheets, 1)
+        XCTAssertEqual(store.phase, .signedIn)
+        XCTAssertEqual(store.name, "Ana")
+        XCTAssertNil(store.notice)
+    }
+
+    func testCancellingTheSheetIsNotAnError() async {
+        let server = FakeAccountServer()
+        let store = makeStore(server: server) { _ in nil }
+        await store.signInWithApple(from: nil)
+        XCTAssertEqual(store.phase, .signedOut)
+        XCTAssertNil(store.notice)
+        XCTAssertEqual(server.requestCount, 0)
+    }
+
+    func testASheetThatFailsSaysSoInTheRow() async {
+        let server = FakeAccountServer()
+        let store = makeStore(server: server) { _ in throw SheetFailed() }
+        await store.signInWithApple(from: nil)
+        XCTAssertEqual(store.phase, .signedOut)
+        XCTAssertEqual(store.notice, "Couldn't sign in with Apple. Try again.")
+        XCTAssertEqual(server.requestCount, 0)
+    }
+
+    func testTheWebBuildOpensApplesPageInstead() async {
+        var opened = 0
+        let store = makeStore(method: .web, server: FakeAccountServer(), pagesOpened: { opened += 1 }) { _ in
+            XCTFail("the web build has no native sheet")
+            return nil
+        }
+        await store.signInWithApple(from: nil)
+        XCTAssertEqual(opened, 1)
     }
 }

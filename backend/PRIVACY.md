@@ -3,7 +3,8 @@
 The Tabbi friends service exists so you can see which friends are studying, study together in a party where everyone's pets sit side by side, and compare weekly study minutes.
 It is designed to know as little as possible.
 Party and Sign in with Apple are for people 13 and older.
-Before Party or Sign in with Apple sends anything, the app asks the user's birth month and year and keeps the answer on the Mac; the service never receives a birth date or an age.
+Before Party sends anything, the app asks the user's birth month and year and keeps the answer on the Mac; the service never receives a birth date or an age.
+Sign in with Apple does not ask for a birthday, but an answer under 13 given in Party keeps signing in off on that Mac and deletes an account that was already signed in.
 
 ## What is stored
 

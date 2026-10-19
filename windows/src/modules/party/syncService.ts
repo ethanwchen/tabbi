@@ -56,7 +56,11 @@ export interface SyncServiceState {
   readonly isSyncing: boolean;
   /** The last failure, in a sentence for the account row; undefined when fine. */
   readonly notice: string | undefined;
-  /** Accounts are for people 13 and older, so signing in waits until the age check passed. */
+  /**
+   * What Party's age check learned on this device. Accounts are for people 13 and older, as the Terms say, but signing in
+   * never asks for a birthday (App Review guideline 5.1.1(v), kept the same as the Mac): only an answer under 13 given in
+   * Party keeps signing in off, until the day the user turns 13.
+   */
   readonly ageStatus: PartyAgeStatus;
 }
 
@@ -73,8 +77,8 @@ export interface SyncServiceDependencies {
   readonly server: () => string | undefined;
   /** Where Party keeps its identity; the account replaces it. */
   readonly credentials: PartyCredentialStore;
-  /** Where the age check's answer is kept, shared with Party. */
-  readonly ageAnswer: { load(): Instant | undefined; save(eligible: Instant): void };
+  /** Where Party keeps its age check's answer; the account only reads it. */
+  readonly ageAnswer: { load(): Instant | undefined };
   readonly progress?: SyncProgressSource;
   /** Replaces the host's HTTP (tests). */
   readonly transport?: (server: string) => PartyTransport;
@@ -99,8 +103,6 @@ export class SyncService extends Store<SyncServiceState> {
   readonly isDemo: boolean;
   /** Sent after the stored Party credentials changed (sign in, sign out, delete), so Party reconnects with the new identity. */
   readonly identityChanged = new Emitter<void>();
-  /** Sent with the eligible-from instant when the age question was answered before signing in, so Party adopts the same answer. */
-  readonly ageAnswered = new Emitter<Instant>();
   private readonly documents: DocumentStore | undefined;
   private readonly progressSource: SyncProgressSource;
   private readonly schedule = new SyncSchedule();
@@ -209,22 +211,13 @@ export class SyncService extends Store<SyncServiceState> {
     return this.state.ageStatus.kind === "tooYoung";
   }
 
-  /** The age question asked before Sign in with Apple, once, as Party asks it. */
-  answerAge(eligible: Instant): void {
-    this.refreshAgeStatus();
-    if (this.isDemo || this.state.ageStatus.kind !== "unanswered") return;
-    this.deps.ageAnswer.save(eligible);
-    this.setState({ ageStatus: ageStatus(eligible, this.context.now()) });
-    this.ageAnswered.emit(eligible);
-  }
-
   /* MARK: Account */
 
   /** Opens Apple's sign-in page in the browser and waits for the `tabbi://auth/apple` link. */
   async signInOnWeb(): Promise<void> {
     this.refreshAgeStatus();
     const server = this.deps.server();
-    if (this.isDemo || this.state.phase !== "signedOut" || this.state.ageStatus.kind !== "passed" || server === undefined) return;
+    if (this.isDemo || this.state.phase !== "signedOut" || this.isTooYoung || server === undefined) return;
     this.setState({ notice: undefined, phase: "signingIn" });
     const attempt = await AppleWebSignIn.start();
     this.attempt = attempt;
@@ -263,7 +256,7 @@ export class SyncService extends Store<SyncServiceState> {
   /** Trades what Apple returned for the account through `exchange`, then stores its Party identity and syncs. */
   private async signIn(exchange: (client: SyncClient) => Promise<AppleSignInReply>): Promise<void> {
     const server = this.deps.server();
-    if (this.isDemo || this.state.phase !== "signedOut" || this.state.ageStatus.kind !== "passed" || server === undefined) return;
+    if (this.isDemo || this.state.phase !== "signedOut" || this.isTooYoung || server === undefined) return;
     this.setState({ notice: undefined, phase: "signingIn" });
     try {
       const token = (await this.deps.credentials.load(server))?.token;
