@@ -269,9 +269,44 @@ When Party comes back, add these lines to the notes:
 
 ### Screenshots
 
+Upload the second set, in [`appstore/screenshots-v2`](appstore/screenshots-v2), from 1.0.3 on.
+They are nine 2880x1800 (16:10) flattened 8-bit PNGs in sRGB IEC61966-2.1 with no alpha.
+Upload them in file name order; the first two show in search results, so they carry the story (the cozy notch and the themes).
+
+1. `01-cozy-timer`: "Your notch, but cozy" with "A focus timer with a pixel cat who cheers you on.", the Timer in round 2 of 4 in the Cozy theme, with Mochi and the chocolate British Longhair, both in the Cozy Hoodie and Beanie.
+2. `02-themes`: "Pick from 18 cozy themes", the same Timer in nine Sweet themes (Strawberry Milk, Blueberry Milk, Matcha Latte, Taro, Banana Milk, Deep Sea, Cherry Soda, Stargazer and Mint Choco), each hanging in a small screen tinted to match and named below it.
+3. `03-plan-today`: "Your whole day, one glance" with "To-dos, calendar and a gentle Plan my day.", Today in Matcha Latte.
+4. `04-closet`: "Dress up your own pet" with "Earn outfits by focusing. Pick a cat or a dog.", the Closet's Look section in Strawberry Milk over a lineup of seven pets (an orange tabby, a corgi, the chocolate British Longhair, Mochi, a French Bulldog in the Dinosaur Hoodie, a tuxedo cat and a Siamese).
+5. `05-break-buddy`: "Stretch breaks with a friend" with "Your cat leads a little stretch, then back to it.", the Break Buddy card in Taro.
+6. `06-flashcards`: "Flashcards due, at a glance" with "See what is due and jump into a deck.", the flashcards tab in Blueberry Milk (the tab shows the module's real name; captions never name it).
+7. `07-music`: "Music without switching apps" with "Play, skip and like songs from your notch.", Now Playing with the fictional "Golden Hour Drive" in Stargazer, on a night sky (the Dark Mode shot).
+8. `08-ask-ai`: "Ask AI, right from the notch" with "With the AI you pick. Nothing is sent until you do.", Ask AI in Deep Sea.
+9. `09-week-recap`: "Your week, wrapped up" with "Gentle streaks that never punish a day off.", the weekly recap card in Banana Milk.
+
+Every panel is the app's own snapshot of the App Store edition in demo mode, drawn 1:1 at 3 pixels per point (the theme grid at 1.4), so no UI is redrawn and no real data shows.
+Party, AI Usage, birthdays and permission pre-prompts appear nowhere, and no pet wears a cape or wings.
+The design: each shot takes the colors of the theme its panel wears (a light ground, a deeper floor and a soft glow of the theme's color behind the panel), with a plain translucent menu bar and the panel hanging from the top center like the open notch (no device, no Apple logo, no menus).
+Below it sit a one-line Bagel Fat One headline (92 CSS px on a 1440x900 page at 2x) and a Fredoka SemiBold subline (34 px), with the pet on the floor and a few pixel sparkles in the theme's color.
+Pets are drawn by the app's renderer (`swift run PetGallery <folder> store`, which writes the lineup this set uses) and scaled by whole numbers with nearest neighbor, so the pixel art stays sharp.
+Both fonts are bundled in [`appstore/fonts`](appstore/fonts) with their SIL Open Font Licenses.
+[`appstore/screenshots-v2/review/contact-sheet.png`](appstore/screenshots-v2/review/contact-sheet.png) is a review copy of the whole set; do not upload it.
+
+To render the set again after a UI change, run:
+
+```sh
+docs/appstore/screens-v2/build.sh
+```
+
+It builds the app, renders the demo snapshots once per theme the set uses (`--edition appstore --tabs study,planner,anki,spotify,claudeAsk,closet --transparent --scale 3 --theme <id>`, in parallel) and the pet lineup into `docs/appstore/screens-v2/build`, then has headless Chrome screenshot [`appstore/screens-v2/shots.html`](appstore/screens-v2/shots.html) once per shot and flattens each PNG with `sips`.
+`--compose` skips the rendering and composes from the last render, which is the quick way to try a headline.
+The headlines, sublines, themes, panels and pets of every shot are one list at the top of `shots.html`; open it in a browser with `?shot=all` to see the whole set.
+The clocks in the demo panels are live, so every run changes the shots that show a timer; commit only the images you meant to change.
+
+The first set, in [`appstore/screenshots`](appstore/screenshots), is kept below for reference and for the App Preview, which `make-media.swift` still composes.
+
 The screenshots in [`appstore/screenshots`](appstore/screenshots) follow the production spec (`research/screenshots.md` in the runs folder).
 They are 2880x1800 (16:10) flattened 8-bit PNGs in sRGB IEC61966-2.1 with no alpha, as App Store Connect requires for Mac apps.
-Upload them in file name order:
+In file name order:
 
 1. `1-timer`: "A cozy timer in your notch", the Timer running in round 2 of 4 with two focus sounds on.
 2. `2-cheer`: "Every session ends in a cheer" with the subcaption "Earn points, unlock outfits, and hear from your cat.", the closed notch centered at the top edge with the session-end card hanging below it ("That's a wrap. Well done!", +35 and the bar toward the next unlock, "1 more session to Ninja Headband"), and the big cheering cat on the dunes saying a Cat wisdom line ("The pawn keeps moving forward. One square at a time, it can become anything it wants.").

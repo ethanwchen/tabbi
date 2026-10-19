@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tabbi App Store screenshots: contact sheet</title>
+<!-- build.sh screenshots this page at 1440x1000 and 2x into screenshots-v2/review/contact-sheet.png. -->
+<style>
+@font-face { font-family: "Fredoka"; src: url("../fonts/Fredoka.ttf"); font-weight: 300 700; }
+body { margin: 0; background: #FFF6EC; font-family: "Fredoka", sans-serif; color: #4E2616; }
+.grid { display: grid; grid-template-columns: repeat(3, 448px); gap: 20px 20px; padding: 24px; }
+figure { margin: 0; }
+img { display: block; width: 448px; height: 280px; border-radius: 10px; box-shadow: 0 4px 14px rgba(80, 50, 30, 0.14); }
+figcaption { margin-top: 8px; font-weight: 600; font-size: 17px; }
+</style>
+</head>
+<body>
+<div class="grid" id="grid"></div>
+<script>
+const shots = ["01-cozy-timer", "02-themes", "03-plan-today", "04-closet", "05-break-buddy", "06-flashcards",
+  "07-music", "08-ask-ai", "09-week-recap"];
+document.getElementById("grid").innerHTML = shots.map((s) =>
+  `<figure><img src="../screenshots-v2/${s}.png" alt=""><figcaption>${s}.png</figcaption></figure>`).join("");
+</script>
+</body>
+</html>
