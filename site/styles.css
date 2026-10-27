@@ -213,6 +213,30 @@ nav.site a[aria-current='page'] { background: var(--ink); color: var(--btn-ink);
 .cta-note .other-platform { white-space: nowrap; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .cta-note .other-platform:hover { color: var(--ink); }
 
+/* The two ways to get Tabbi on a Mac: Apple's Mac App Store badge, then
+   the direct download button. The App Store Marketing Guidelines ask for the
+   badge as Apple draws it, at least 40 px tall on screen, with a quarter of
+   its height kept clear on every side, so the gaps around it are never
+   smaller than that (62 px tall here, so 15.5 px). It does not lift like the
+   toy buttons: Apple's artwork stays still. */
+.store-badge { display: inline-flex; flex: none; border-radius: 10px; }
+.store-badge img { display: block; width: auto; height: 62px; max-width: none; }
+.store-badge:hover { text-decoration: none; }
+.store-badge[hidden], .editions[hidden] { display: none; }
+.cta.get { gap: 20px; align-items: center; }
+/* One line on how the two Mac editions differ, so people can pick. */
+.editions {
+  font-size: 15px; font-weight: 600; line-height: 1.5; color: var(--on-ground-2);
+  margin: 20px auto 0; text-wrap: balance;
+}
+.editions strong { color: var(--on-ground); font-weight: 800; }
+.editions .edition { display: block; }
+.editions + .cta-note { margin-top: 6px; }
+/* On the Support page the badge sits in an answer, at a calmer size
+   (44 px tall, so 11 px kept clear). */
+.faq-badge { margin: 12px 0; }
+.faq-badge .store-badge img { height: 44px; }
+
 /* --- home tabs --------------------------------------------------------- */
 main { padding: 0 0 64px; }
 main.home .wrap { max-width: 1120px; }
@@ -444,6 +468,12 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
   .hero-home .lede { font-size: 18px; }
   .hero-home .cta { margin-top: 28px; }
   .btn { width: 100%; min-height: 58px; font-size: 20px; padding: 0 24px; }
+  /* The badge over the button, about as wide as each other rather than a
+     small badge over a full-width bar (64 px tall, so 16 px kept clear
+     around the badge). */
+  .cta.get { flex-direction: column; gap: 16px; }
+  .cta.get .store-badge img { height: 64px; }
+  .cta.get .btn { width: auto; min-width: 250px; }
   .feature-row { grid-template-columns: 1fr; gap: 16px; }
   .thanks { margin-top: 48px; }
   /* Cards nest inside the sheet, so their padding adds up twice: keep it
@@ -483,13 +513,21 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
 @media (max-width: 420px) {
   .brand .name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
-/* Below 720px the seven footer links wrap unevenly (6 + 1, 3 + 3 + 1).
-   A zero-height break after the fourth link keeps them in two rows. */
-@media (max-width: 719px) {
+/* Below 800px the eight footer links wrap unevenly (7 + 1, 3 + 3 + 2).
+   A zero-height break after the fourth link keeps them in two rows of four. */
+@media (max-width: 799px) {
   footer.site nav { gap: 0 4px; }
   footer.site nav::after { content: ''; flex-basis: 100%; order: 1; }
   footer.site nav a { padding: 0 10px; }
   footer.site nav a:nth-child(n+5) { order: 2; }
+}
+/* Phones cannot fit four of them in a row: three, three and two, with a
+   second break from the nav's ::before. */
+@media (max-width: 479px) {
+  footer.site nav::before { content: ''; flex-basis: 100%; order: 1; }
+  footer.site nav::after { order: 3; }
+  footer.site nav a:nth-child(n+4) { order: 2; }
+  footer.site nav a:nth-child(n+7) { order: 4; }
 }
 
 @media (max-width: 350px) {

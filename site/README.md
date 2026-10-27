@@ -12,7 +12,7 @@ The only JavaScript in the browser is the home page's notch demo, one self-hoste
 ## Files
 
 - `build.py` - the home, about, support, what's new, suggest, thank-you and 404 pages, the build and its checks.
-  The home page is deliberately short: the icon beside one line, the page's one download button, the interactive notch demo, then a few cards and stickers.
+  The home page is deliberately short: the icon beside one line, the two ways to get Tabbi on a Mac (see Mac App Store), the interactive notch demo, then a few cards and stickers.
   A page has one big Download button at most (the build checks it); the header's Download is a quiet nav link.
 - `_partials.py` - the shared head, header and footer, plus the download, GitHub and Support Tabbi links.
 - `_downloads.py` - the home page's "10,000+ downloads" line, read from the backend when the site builds (see Download count).
@@ -30,7 +30,24 @@ The only JavaScript in the browser is the home page's notch demo, one self-hoste
 - `test/downloads.test.mjs` - tests `_downloads.py` (it runs python3).
 - `functions/suggest.js` and `_suggest_prefill.mjs` - the Pages Function that fills the Suggest form's app facts; `test/` tests it.
 - `functions/add/[code].js`, `functions/join/[code].js` and `_invite.mjs` - the Pages Functions that serve Party invite links (see Party invites); `test/` tests them.
+- `functions/download.js`, `functions/appstore.js` and `_download.mjs` - the `/download` and `/appstore` redirects (see Mac App Store); `test/download.test.mjs` tests them.
 - `deploy.sh` - builds and deploys to the Cloudflare Pages project `tabbi`.
+
+## Mac App Store
+
+Tabbi comes to Macs two ways, and the site offers both wherever it offers the download: the [Mac App Store edition](https://apps.apple.com/app/tabbi-notch-timer-study-pet/id6821088964) (`APP_STORE` in `_partials.py`) and the direct download (`DOWNLOAD`).
+The home page shows Apple's badge first, then the big Direct download button, and one line on how they differ: the App Store edition is sandboxed and updated by the App Store, and the direct download adds Party and AI Usage and updates itself ([docs/appstore.md](../docs/appstore.md) has every difference).
+On Windows, `js/demo.js` hides the badge and that line (`data-windows-hidden`) and swaps in the Windows installer as before.
+The Support page explains which to pick and how to switch, the footer links the App Store, and the About page's press kit names both.
+The App Store link has no storefront in its path, so Apple opens each visitor's own country's store.
+
+`/download` keeps sending Mac visitors the direct download (and Windows visitors the installer): older links and the Party invite pages depend on it, and Party is not in the App Store edition.
+`/appstore` is the short link to the App Store page, a `302` from `functions/appstore.js`; `--serve` answers both the same way.
+
+The badge is Apple's "Download on the Mac App Store" artwork (black, US English), fetched from Apple's marketing tools (`https://toolbox.marketingtools.apple.com/api/badges/download-on-the-mac-app-store/black/en-us`) and saved as `img/mac-app-store-badge.svg`.
+The only change is that its `style="fill: ..."` attributes became `fill` attributes, which draw the same pixels, because the site's CSP (`style-src 'self'`) also reaches the SVG file.
+Apple's App Store Marketing Guidelines ask for the artwork unmodified, at least 40 px tall on screen, with a quarter of its height kept clear around it and, when other options sit beside it, placed first; `styles.css` (`.store-badge`) sets 62 px on wide screens, 64 px on phones and 44 px in a Support answer, with gaps at least that quarter.
+`app_store_badge()` in `_partials.py` writes it with the alt text "Download on the Mac App Store", and the build checks every badge links to the App Store page with that alt text.
 
 ## Build and preview
 
@@ -52,6 +69,7 @@ The build stops with an error when:
 - a page and everything it loads (its stylesheets, script, fonts and images, counting both sizes of a `srcset` and every pet look the demo can show) passes 500 KB, which keeps the home page under about 600 KB (the home page is about 285 KB, the demo's markup, data, stylesheet, script and sprites included);
 - a page has a `<video>` or `<audio>` (the CSP allows no media);
 - a page has more than one big Download button;
+- an App Store badge is not a link to Tabbi's App Store page with Apple's alt text;
 - any output file is over 20 MB (Cloudflare Pages refuses files over 25 MB).
 
 ## Download count

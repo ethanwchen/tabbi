@@ -15,7 +15,7 @@ import sys
 import zipfile
 from html.parser import HTMLParser
 
-from _partials import page, download_button, other_platform_link, PAW, DOWNLOAD, DOWNLOAD_PAGE, DOWNLOAD_WINDOWS, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, RELEASES_URL, SUGGESTIONS, SUPPORT_EMAIL, SUPPORT_TABBI
+from _partials import page, download_button, other_platform_link, app_store_badge, PAW, APP_STORE, APP_STORE_BADGE_ALT, APP_STORE_PAGE, EDITIONS_LINE, DOWNLOAD, DOWNLOAD_PAGE, DOWNLOAD_WINDOWS, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, RELEASES_URL, SUGGESTIONS, SUPPORT_EMAIL, SUPPORT_TABBI
 from _downloads import current_milestone, downloads_note
 from _releases import RELEASES, VERSION
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
@@ -66,12 +66,17 @@ FEATURES = [
 ]
 
 # The icon beside the line on wide screens, above it on narrow ones, then
-# the page's one download button. The notch demo right below is the show.
+# the two ways to get Tabbi on a Mac: Apple's App Store badge first (as
+# Apple asks when it stands beside other options), then the page's one
+# download button, the direct download, with one line on how they differ.
+# Windows visitors get only the Windows button (js/demo.js hides every
+# `data-windows-hidden`). The notch demo right below is the show.
 # From 10,000 downloads the note under the button says so (_downloads.py).
 HOME_HERO = {
     'title': '<span class="ln">Focus with a cat</span> <span class="ln">in your <span class="hl">notch</span>.</span>',
     'subtitle': 'A cozy study timer with a pixel pet, <span data-windows-text="for your PC.">for your Mac.</span>',
-    'cta': f'''<div class="cta">{download_button()}</div>
+    'cta': f'''<div class="cta get">{app_store_badge(' data-windows-hidden')}{download_button()}</div>
+        <p class="editions" data-windows-hidden>{EDITIONS_LINE}</p>
         <p class="cta-note"><span data-windows-text="Free, Windows 10 and 11">Free, macOS 14+</span>{downloads_note(current_milestone())} <span class="sep" aria-hidden="true">&middot;</span> {other_platform_link()}</p>''',
     'icon': '<img class="hero-icon" src="/img/icon-256.webp" width="256" height="256" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
 }
@@ -140,6 +145,7 @@ SOFTWARE_APP = {
     'operatingSystem': 'macOS 14 or later, Windows 10 or later',
     'softwareVersion': VERSION,
     'downloadUrl': [DOWNLOAD, DOWNLOAD_WINDOWS],
+    'installUrl': APP_STORE,
     'softwareHelp': ORIGIN + '/support',
     'isAccessibleForFree': True,
     'offers': {'@type': 'Offer', 'price': '0', 'priceCurrency': 'USD'},
@@ -178,14 +184,36 @@ SUPPORT = f'''
 
       <h2>Common questions</h2>
 
-{faq('How do I install Tabbi?', f"""          <ol>
-            <li>Click <a href="{DOWNLOAD}">Download for Mac</a> to get <strong>Tabbi.dmg</strong>, the newest version.</li>
+{faq('How do I install Tabbi?', f"""          <p>Tabbi comes two ways, both free. <a href="#editions">Not sure which?</a></p>
+          <h3>From the Mac App Store</h3>
+          <div class="faq-badge">{app_store_badge()}</div>
+          <p>Click <strong>Get</strong> on Tabbi&rsquo;s App Store page, then <strong>Open</strong>. The App Store keeps it up to date.</p>
+          <h3>As a direct download</h3>
+          <ol>
+            <li>Click <a href="{DOWNLOAD}">Direct download</a> to get <strong>Tabbi.dmg</strong>, the newest version.</li>
             <li>Open it and drag <strong>Tabbi</strong> onto the <strong>Applications</strong> folder.</li>
             <li>Open Tabbi from Applications. macOS asks once whether to open an app downloaded from the Internet: click <strong>Open</strong>.</li>
           </ol>
-          <p>Tabbi has no Dock icon and no menu bar item. Move the pointer to the notch and click it.
-            The first time, a short welcome inside the notch helps you pick your tabs.</p>
-          <p>With Homebrew you can run <code>brew install --cask ethanwchen/tap/tabbi</code> instead.</p>""", 'install')}
+          <p>With Homebrew you can run <code>brew install --cask ethanwchen/tap/tabbi</code> instead.</p>
+          <p>Either way, Tabbi has no Dock icon and no menu bar item. Move the pointer to the notch and click it.
+            The first time, a short welcome inside the notch helps you pick your tabs.</p>""", 'install')}
+
+{faq('Should I get the App Store edition or the direct download?', f"""          <p>Both are Tabbi, free, with the same timers, Today, music, Anki, Closet and pet. They differ in a few places:</p>
+          <ul>
+            <li><strong>Mac App Store</strong>: sandboxed by Apple and updated by the App Store. It leaves out Party, the AI Usage tab, Do Not Disturb during focus and SoundCloud in Now Playing. Ask AI works with your own API key or Ollama instead.</li>
+            <li><strong>Direct download</strong>: everything, including Party with friends, AI Usage, and the Claude Code, Codex and Gemini command line tools as your AI. It is notarized by Apple and updates itself.</li>
+          </ul>
+          <p>Not sure? The App Store edition suits most people. Pick the direct download to study with friends in Party or to keep an eye on your Claude Code or Codex limits.</p>""", 'editions')}
+
+{faq('How do I switch between the two?', f"""          <p>Both install as Tabbi in Applications, so keep one at a time.</p>
+          <ol>
+            <li>To bring your pet along, choose <strong>Sign in with Apple</strong> in <strong>Settings &gt; General</strong> first, in the Tabbi you have now.</li>
+            <li>Quit Tabbi (right-click the notch, then <strong>Quit Tabbi</strong>) and drag it from Applications to the Trash.</li>
+            <li>Install the other one: <a href="{APP_STORE}">from the Mac App Store</a> or as a <a href="{DOWNLOAD}">direct download</a>.</li>
+            <li>Open it and sign in with the same Apple Account in <strong>Settings &gt; General</strong>.</li>
+          </ol>
+          <p>Your pet, points, unlocked items and streaks then follow you through your account, and in the direct download so do your Party friend code and friends.
+            Nothing else moves over: your tasks, settings, activity history and AI keys stay with the edition you left, in its own folder, until you <a href="#uninstall">delete them</a>.</p>""", 'switch')}
 
 {faq('What if macOS will not open Tabbi?', """          <p>Releases downloaded from GitHub are signed by the developer and notarized by Apple, so they open normally.
             The warning appears only for a copy built without a Developer ID, such as a test build.
@@ -205,7 +233,7 @@ SUPPORT = f'''
             Compact, Regular or Large. Every tab uses the same size, so switching tabs never jumps.</p>
           <p>In the same place you can turn on <strong>Open on hover</strong>, hide the notch in fullscreen apps, and choose which display it appears on.</p>""", 'resize')}
 
-{faq('How do friend codes work in Party?', """          <p>Party is an optional tab: add it from <strong>Settings &gt; Tabs &gt; Add more</strong>.
+{faq('How do friend codes work in Party?', """          <p>Party is an optional tab in the <a href="#editions">direct download</a>: add it from <strong>Settings &gt; Tabs &gt; Add more</strong>.
             Party is for people 13 and older: when you turn it on, it first asks the month and year you were born, which stay on your Mac.
             Then Tabbi gives you an 8-character <strong>friend code</strong>. Copy it from the Party tab and send it to a friend. Once they add it, you see each other.
             Friendship is always mutual, and nobody can find you without your code: there is no directory or search.</p>
@@ -263,8 +291,8 @@ SUPPORT = f'''
             Open a new Terminal window, or type <code>~/.local/bin/claude</code> instead of <code>claude</code>.</p>
           <p><strong>Settings &gt; Connections</strong> can walk you through the same steps, and <a href="https://code.claude.com/docs/en/setup">Claude Code's setup guide</a> has other ways to install it.</p>""", 'claude')}
 
-{faq('How do I update or uninstall Tabbi?', f"""          <p>Tabbi checks for updates once a day and installs them in a few seconds. To check now, right-click the notch and choose <strong>Check for Updates</strong>.</p>
-          <p>The Mac App Store edition is updated by the App Store instead.</p>
+{faq('How do I update or uninstall Tabbi?', f"""          <p>The direct download checks for updates once a day and installs them in a few seconds. To check now, right-click the notch and choose <strong>Check for Updates</strong>.</p>
+          <p>The Mac App Store edition is updated by the App Store instead, like your other apps.</p>
           <p>To uninstall, quit Tabbi and drag it from Applications to the Trash. Your tabs, tasks and settings stay in <code>~/Library/Application Support/Tabbi</code> in case you come back; delete that folder to remove them too.
             The App Store edition keeps them in <code>~/Library/Containers/dev.tabbi.Tabbi</code> instead.
             The <a href="{GITHUB}/blob/main/docs/install.md#uninstall">install guide</a> lists every folder.</p>""", 'uninstall')}
@@ -292,6 +320,7 @@ ABOUT = f'''
         <div class="press" id="press">
           <h2>Press kit</h2>
           <p>Tabbi is a free, open source app for macOS 14 or later. It turns the laptop notch into a cozy panel of tabs: a focus timer, your day, music, AI, Anki flashcards and a pet cat or dog. No ads, no tracking.</p>
+          <p>Get it on the <a href="{APP_STORE}">Mac App Store</a> or as a <a href="{DOWNLOAD}">direct download</a> from this site.</p>
           <div class="cta center">
             <a class="btn soft" href="/press/{PRESS_KIT}" download title="A ZIP of the icon and four screenshots">Get the kit ({PRESS_MB})</a>
           </div>
@@ -420,12 +449,12 @@ def invite_body(label, note):
 
 INVITE_ADD = invite_body(
     'Friend code',
-    'New to Tabbi? Download it, then open this link again. Tabbi asks before it adds anyone.',
+    'New to Tabbi? Download it, then open this link again. Tabbi asks before it adds anyone. Party is in the direct download, not the App Store edition.',
 ).replace('ACTION', 'add')
 
 INVITE_JOIN = invite_body(
     'Party code',
-    'New to Tabbi? Download it, then open this link again. Tabbi asks before you join.',
+    'New to Tabbi? Download it, then open this link again. Tabbi asks before you join. Party is in the direct download, not the App Store edition.',
 ).replace('ACTION', 'join')
 
 INVITE_INVALID = f'''
@@ -466,7 +495,7 @@ def invite_page(templates, action, raw, user_agent=''):
 
 pages = [
     ('index.html', 'Tabbi: focus with a cat in your notch',
-     'Tabbi turns your laptop notch into a cozy panel of tabs: a focus timer, your day, music, AI, Anki flashcards and a pet cat or dog. Free and open source for macOS.',
+     'Tabbi turns your laptop notch into a cozy panel of tabs: a focus timer, your day, music, AI, Anki flashcards and a pet cat or dog. Free and open source for macOS, on the Mac App Store or as a direct download.',
      HOME, HOME_HERO, True, True),
     ('about.html', 'About | Tabbi',
      'Who makes Tabbi, and why.',
@@ -549,7 +578,7 @@ def resolve(path):
 
 
 # Paths a Pages Function answers, with no file behind them.
-FUNCTION_ROUTES = {DOWNLOAD_PAGE}
+FUNCTION_ROUTES = {DOWNLOAD_PAGE, APP_STORE_PAGE}
 
 
 def check_links():
@@ -677,6 +706,21 @@ def check_download_buttons():
             raise SystemExit(f'{html_file.name}: has {count} Download buttons; a page has one at most')
 
 
+# Apple's badge as a link to Tabbi's App Store page, with Apple's alt text.
+BADGE_IMG_RE = re.compile(r'<img src="/img/mac-app-store-badge\.[0-9a-f]{8}\.svg"[^>]*>')
+BADGE_LINK_RE = re.compile(r'<a class="store-badge" href="' + re.escape(APP_STORE) + r'"[^>]*><img src="/img/mac-app-store-badge\.[0-9a-f]{8}\.svg" [^>]*alt="' + re.escape(APP_STORE_BADGE_ALT) + '">')
+
+
+def check_store_badges():
+    """Every App Store badge is Apple's artwork, links to Tabbi's App Store
+    page and says what it is (the App Store Marketing Guidelines' alt text).
+    Its size and clear space are in styles.css (.store-badge)."""
+    for html_file in sorted(OUT.glob('*.html')):
+        html = html_file.read_text()
+        if len(BADGE_IMG_RE.findall(html)) != len(BADGE_LINK_RE.findall(html)):
+            raise SystemExit(f'{html_file.name}: an App Store badge is not a .store-badge link to {APP_STORE} with the alt text {APP_STORE_BADGE_ALT!r}')
+
+
 # --------------------------------------------------------------------------
 # Build
 # --------------------------------------------------------------------------
@@ -755,6 +799,7 @@ def build():
     check_forms()
     check_weight()
     check_download_buttons()
+    check_store_badges()
 
     # The invite pages passed every check; without a code they mean
     # nothing, so they leave dist for the Function (see INVITE_SLUGS).
@@ -802,8 +847,8 @@ def write_function_facts():
     which Cloudflare Pages does not apply to a Function's response, the
     Suggest form's hidden app facts (functions/suggest.js), and the invite
     pages with their code rules (functions/add, functions/join), so the
-    pages and the Functions cannot drift apart, and the two download links
-    for functions/download.js."""
+    pages and the Functions cannot drift apart, the two download links
+    for functions/download.js and the App Store link for functions/appstore.js."""
     invite = {
         'alphabet': INVITE_ALPHABET,
         'lengths': INVITE_CODE_LENGTHS,
@@ -812,11 +857,12 @@ def write_function_facts():
         'pages': INVITE_TEMPLATES,
     }
     (HERE / '_generated.mjs').write_text(
-        '// Written by build.py from _headers, SUGGEST_APP_FACTS, the invite pages and the download links. Do not edit.\n'
+        '// Written by build.py from _headers, SUGGEST_APP_FACTS, the invite pages, the download links and the App Store link. Do not edit.\n'
         f'export const SITE_HEADERS = {json.dumps(SITE_HEADERS)};\n'
         f'export const SUGGEST_APP_FACTS = {json.dumps(SUGGEST_APP_FACTS)};\n'
         f'export const INVITE = {json.dumps(invite)};\n'
         f'export const DOWNLOADS = {json.dumps({"mac": DOWNLOAD, "windows": DOWNLOAD_WINDOWS})};\n'
+        f'export const APP_STORE = {json.dumps(APP_STORE)};\n'
     )
 
 
@@ -845,6 +891,13 @@ class PagesHandler(http.server.SimpleHTTPRequestHandler):
             # What functions/download.js answers: the installer for this computer.
             self.send_response(302)
             self.send_header('Location', download_for(self.headers.get('Sec-CH-UA-Platform', ''), self.headers.get('User-Agent', '')))
+            self.send_header('Content-Length', '0')
+            self.end_headers()
+            return None
+        if path == APP_STORE_PAGE:
+            # What functions/appstore.js answers: Tabbi's App Store page.
+            self.send_response(302)
+            self.send_header('Location', APP_STORE)
             self.send_header('Content-Length', '0')
             self.end_headers()
             return None
