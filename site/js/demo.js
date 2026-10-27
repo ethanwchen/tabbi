@@ -15,7 +15,9 @@
 // Windows visitors see the Windows download first. The page is written for
 // the Mac (the no-script default); on Windows every element with a
 // data-windows-href or data-windows-text takes that value instead: the big
-// button, the note under it and the quiet link to the other platform.
+// button, the note under it and the quiet link to the other platform. The
+// Mac App Store badge and the line comparing the two Mac editions carry
+// data-windows-hidden and are hidden there.
 (() => {
   'use strict';
 
@@ -27,6 +29,9 @@
   }
   for (const element of document.querySelectorAll('[data-windows-text]')) {
     element.textContent = element.dataset.windowsText;
+  }
+  for (const element of document.querySelectorAll('[data-windows-hidden]')) {
+    element.hidden = true;
   }
 })();
 

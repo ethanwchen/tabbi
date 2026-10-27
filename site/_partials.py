@@ -11,9 +11,18 @@ DOWNLOAD = 'https://github.com/ethanwchen/tabbi/releases/latest/download/Tabbi.d
 # which the Windows release job refreshes on every publish
 # (.github/workflows/windows-release.yml), so Mac releases never move it.
 DOWNLOAD_WINDOWS = 'https://github.com/ethanwchen/tabbi/releases/download/windows-latest/Tabbi-Setup.exe'
+# The Mac App Store edition: sandboxed, updated by the App Store, without
+# Party or AI Usage (docs/appstore.md, What differs). No storefront in the
+# path, so Apple opens each visitor's own country's store.
+APP_STORE_ID = '6821088964'
+APP_STORE = f'https://apps.apple.com/app/tabbi-notch-timer-study-pet/id{APP_STORE_ID}'
 # The header's Download: a Pages Function (functions/download.js) sends each
-# visitor the installer for their computer, Windows or Mac.
+# visitor the installer for their computer, Windows or Mac. Mac visitors keep
+# getting the direct download there, since older links and the invite pages
+# (Party is direct download only) rely on it; /appstore is the short link to
+# the App Store (functions/appstore.js).
 DOWNLOAD_PAGE = '/download'
+APP_STORE_PAGE = '/appstore'
 RELEASES_URL = 'https://github.com/ethanwchen/tabbi/releases'
 GITHUB = 'https://github.com/ethanwchen/tabbi'
 ISSUES = 'https://github.com/ethanwchen/tabbi/issues'
@@ -58,11 +67,34 @@ PAW = (
 
 
 def download_button():
-    """The page's one big Download button. It offers the Mac download, and
-    the home page's script (js/demo.js) swaps in the Windows one on Windows:
-    every `data-windows-href` and `data-windows-text` takes that value there."""
+    """The page's one big Download button. It offers the Mac's direct
+    download, and the home page's script (js/demo.js) swaps in the Windows
+    one on Windows: every `data-windows-href` and `data-windows-text` takes
+    that value there."""
     return (f'<a class="btn" href="{DOWNLOAD}" data-windows-href="{DOWNLOAD_WINDOWS}">{DOWNLOAD_ICON}'
-            '<span data-windows-text="Download for Windows">Download for Mac</span></a>')
+            '<span data-windows-text="Download for Windows">Direct download</span></a>')
+
+
+# Apple's "Download on the Mac App Store" badge, black, as the App Store
+# Marketing Guidelines ask: Apple's own artwork, unmodified (the Images
+# section of site/README.md says where it came from), at least 40 px tall on screen,
+# with a quarter of its height kept clear around it (styles.css), and this
+# alt text. Its size comes from the CSS; these attributes only reserve the
+# space before it loads.
+APP_STORE_BADGE_ALT = 'Download on the Mac App Store'
+
+
+def app_store_badge(extra=''):
+    """The badge as a link to the App Store. `extra` adds attributes, such as
+    the home page's `data-windows-hidden`, which hides it on Windows."""
+    return (f'<a class="store-badge" href="{APP_STORE}"{extra}>'
+            f'<img src="/img/mac-app-store-badge.svg" width="156" height="40" alt="{APP_STORE_BADGE_ALT}"></a>')
+
+
+# The one honest line on how the two Mac editions differ, so people can pick.
+# Each edition on its own row, so neither half breaks in the middle.
+EDITIONS_LINE = ('<span class="edition"><strong>App Store:</strong> sandboxed, updated by the App Store.</span> '
+                 '<span class="edition"><strong>Direct download:</strong> adds Party with friends and AI Usage, and updates itself.</span>')
 
 
 def other_platform_link():
@@ -171,6 +203,7 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True, 
       <a href="/terms">Terms</a>
       <a href="/whats-new">What&rsquo;s new</a>
       <a href="{GITHUB}">GitHub</a>
+      <a href="{APP_STORE}">App Store</a>
       <a href="{SUPPORT_TABBI}">Support Tabbi</a>
     </nav>
     <p class="made">Made with care by <a href="https://www.linkedin.com/in/ethanwchen/">Ethan</a>
