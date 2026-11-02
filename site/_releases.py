@@ -15,6 +15,8 @@ with open(pathlib.Path(__file__).parent.parent / 'Resources' / 'Info.plist', 'rb
 # (version, when, one sentence). Keep each line short and warm: the details
 # live in the GitHub release notes, which the page links to.
 RELEASES = [
+    ('1.0.4', 'Party everywhere',
+     'The App Store version gets Party, AI Usage and Do Not Disturb, and Party speaks every language Tabbi does.'),
     ('1.0.3', 'Kinder permissions',
      'Sign in without a birthday, clearer Continue or Not now steps before macOS asks for access, and a sign-in fix.'),
     ('1.0.2', 'Break Buddy and sweet themes',
