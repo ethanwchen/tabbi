@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "stats": "node scripts/stats.ts",
     "loadtest": "node scripts/loadtest.ts",
-    "e2e": "node scripts/e2e.ts"
+    "e2e": "node scripts/e2e.ts",
+    "demo-friend": "node scripts/demo-friend.ts"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.22.0",
