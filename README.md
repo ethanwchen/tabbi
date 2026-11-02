@@ -131,7 +131,8 @@ Tabbi needs no account and has no analytics and no telemetry.
 It connects only for these features: album artwork for Now Playing, AnkiConnect on your own Mac, the friends server while Party or Sign in with Apple is on, update checks, crash reports you allow, and the AI you pick.
 The [Privacy Policy](https://tabbinotch.com/privacy) has the details.
 Signing in with Apple is optional: it backs up your pet, streaks and Party name to the friends server so they follow you to another Mac.
-After a crash, the direct download asks before it sends a report to the friends server (stack trace and versions only); you can change that in **Settings > About**.
+After a crash, Tabbi asks before it sends a report to the friends server (stack trace and versions only); you can change that in **Settings > About**.
+The App Store edition does the same from version 1.0.4.
 The direct download checks Tabbi's release feed on GitHub once a day; you can turn this off in **Settings > About**.
 AI features talk only to the AI you pick in **Settings > Connections**: a command line tool you already use (Claude Code, Codex or Gemini CLI), a hosted API with your own key, which stays in your keychain, or Ollama on your own Mac.
 Your prompts go to that provider and fall under its terms, and Tabbi never reads a command line tool's credentials.
@@ -149,11 +150,13 @@ Tabbi asks for a permission only when the tab that needs it is first used.
 | Calendars | Today, Schedule | Show your events and add the planned blocks you accept. Event titles and times leave your Mac only when you ask the AI you picked to plan or refine your day. |
 | Notifications | Today, Focus, Closet, Party, weekly recap | Tell you when a timer ends while the notch is closed, send the optional daily study reminder, and say when your weekly recap is ready or a study party you joined finishes while the notch is closed. |
 | Screen Recording | Ask AI | Attach a screenshot to a question. The image goes only to the AI you picked. |
+| Automation: Shortcuts Events | Focus, in the App Store edition, once you turn on Do Not Disturb | Run your two Do Not Disturb shortcuts in the background. The direct download runs them with the `shortcuts` command instead. |
 
 AI Usage needs no system permission.
 Plan my day plans on your Mac without an AI.
 Refine and Wrap up send your task titles and today's events to the AI you picked in Settings > Connections, only when you press them.
 AI Usage reads token counts from `~/.claude/projects`, or from `~/.codex/sessions` while Codex is your AI, read-only.
+The App Store edition reads only the Claude Code or Codex folder you choose for it, once, in an open panel.
 
 </details>
 

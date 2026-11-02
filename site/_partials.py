@@ -11,16 +11,17 @@ DOWNLOAD = 'https://github.com/ethanwchen/tabbi/releases/latest/download/Tabbi.d
 # which the Windows release job refreshes on every publish
 # (.github/workflows/windows-release.yml), so Mac releases never move it.
 DOWNLOAD_WINDOWS = 'https://github.com/ethanwchen/tabbi/releases/download/windows-latest/Tabbi-Setup.exe'
-# The Mac App Store edition: sandboxed, updated by the App Store, without
-# Party or AI Usage (docs/appstore.md, What differs). No storefront in the
-# path, so Apple opens each visitor's own country's store.
+# The Mac App Store edition: sandboxed and updated by the App Store; from
+# 1.0.4 it has Party and AI Usage too, and only the command line AI tools and
+# SoundCloud stay direct-only (docs/appstore.md, What differs). No storefront
+# in the path, so Apple opens each visitor's own country's store.
 APP_STORE_ID = '6821088964'
 APP_STORE = f'https://apps.apple.com/app/tabbi-notch-timer-study-pet/id{APP_STORE_ID}'
 # The header's Download: a Pages Function (functions/download.js) sends each
 # visitor the installer for their computer, Windows or Mac. Mac visitors keep
 # getting the direct download there, since older links and the invite pages
-# (Party is direct download only) rely on it; /appstore is the short link to
-# the App Store (functions/appstore.js).
+# rely on it; /appstore is the short link to the App Store
+# (functions/appstore.js).
 DOWNLOAD_PAGE = '/download'
 APP_STORE_PAGE = '/appstore'
 RELEASES_URL = 'https://github.com/ethanwchen/tabbi/releases'
@@ -93,8 +94,8 @@ def app_store_badge(extra=''):
 
 # The one honest line on how the two Mac editions differ, so people can pick.
 # Each edition on its own row, so neither half breaks in the middle.
-EDITIONS_LINE = ('<span class="edition"><strong>App Store:</strong> sandboxed, updated by the App Store.</span> '
-                 '<span class="edition"><strong>Direct download:</strong> adds Party with friends and AI Usage, and updates itself.</span>')
+EDITIONS_LINE = ('<span class="edition"><strong>App Store:</strong> sandboxed, updated by the App Store, Party from version 1.0.4.</span> '
+                 '<span class="edition"><strong>Direct download:</strong> adds SoundCloud and command line AI tools, and updates itself.</span>')
 
 
 def other_platform_link():

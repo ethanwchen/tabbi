@@ -198,12 +198,12 @@ SUPPORT = f'''
           <p>Either way, Tabbi has no Dock icon and no menu bar item. Move the pointer to the notch and click it.
             The first time, a short welcome inside the notch helps you pick your tabs.</p>""", 'install')}
 
-{faq('Should I get the App Store edition or the direct download?', f"""          <p>Both are Tabbi, free, with the same timers, Today, music, Anki, Closet and pet. They differ in a few places:</p>
+{faq('Should I get the App Store edition or the direct download?', f"""          <p>Both are Tabbi, free, with the same timers, Today, music, Anki, Closet and pet. From version 1.0.4 both have Party with friends, AI Usage and Do Not Disturb during focus too. They differ in a few places:</p>
           <ul>
-            <li><strong>Mac App Store</strong>: sandboxed by Apple and updated by the App Store. It leaves out Party, the AI Usage tab, Do Not Disturb during focus and SoundCloud in Now Playing. Ask AI works with your own API key or Ollama instead.</li>
-            <li><strong>Direct download</strong>: everything, including Party with friends, AI Usage, and the Claude Code, Codex and Gemini command line tools as your AI. It is notarized by Apple and updates itself.</li>
+            <li><strong>Mac App Store</strong>: sandboxed by Apple and updated by the App Store. Ask AI works with your own API key or Ollama, AI Usage reads the Claude Code or Codex folder you pick and shows Claude Code&rsquo;s tokens rather than its live limits, and Now Playing works with Spotify and Apple Music.</li>
+            <li><strong>Direct download</strong>: everything, including SoundCloud in Now Playing, Claude Code&rsquo;s live limits in AI Usage, and the Claude Code, Codex and Gemini command line tools as your AI. It is notarized by Apple and updates itself.</li>
           </ul>
-          <p>Not sure? The App Store edition suits most people. Pick the direct download to study with friends in Party or to keep an eye on your Claude Code or Codex limits.</p>""", 'editions')}
+          <p>Not sure? The App Store edition suits most people. Pick the direct download to use a command line AI tool you already pay for, or SoundCloud in your browser.</p>""", 'editions')}
 
 {faq('How do I switch between the two?', f"""          <p>Both install as Tabbi in Applications, so keep one at a time.</p>
           <ol>
@@ -212,7 +212,7 @@ SUPPORT = f'''
             <li>Install the other one: <a href="{APP_STORE}">from the Mac App Store</a> or as a <a href="{DOWNLOAD}">direct download</a>.</li>
             <li>Open it and sign in with the same Apple Account in <strong>Settings &gt; General</strong>.</li>
           </ol>
-          <p>Your pet, points, unlocked items and streaks then follow you through your account, and in the direct download so do your Party friend code and friends.
+          <p>Your pet, points, unlocked items and streaks then follow you through your account, and so do your Party friend code and friends.
             Nothing else moves over: your tasks, settings, activity history and AI keys stay with the edition you left, in its own folder, until you <a href="#uninstall">delete them</a>.</p>""", 'switch')}
 
 {faq('What if macOS will not open Tabbi?', """          <p>Releases downloaded from GitHub are signed by the developer and notarized by Apple, so they open normally.
@@ -233,7 +233,7 @@ SUPPORT = f'''
             Compact, Regular or Large. Every tab uses the same size, so switching tabs never jumps.</p>
           <p>In the same place you can turn on <strong>Open on hover</strong>, hide the notch in fullscreen apps, and choose which display it appears on.</p>""", 'resize')}
 
-{faq('How do friend codes work in Party?', """          <p>Party is an optional tab in the <a href="#editions">direct download</a>: add it from <strong>Settings &gt; Tabs &gt; Add more</strong>.
+{faq('How do friend codes work in Party?', """          <p>Party is an optional tab in the direct download and, from version 1.0.4, the <a href="#editions">App Store edition</a>: add it from <strong>Settings &gt; Tabs &gt; Add more</strong>.
             Party is for people 13 and older: when you turn it on, it first asks the month and year you were born, which stay on your Mac.
             Then Tabbi gives you an 8-character <strong>friend code</strong>. Copy it from the Party tab and send it to a friend. Once they add it, you see each other.
             Friendship is always mutual, and nobody can find you without your code: there is no directory or search.</p>
@@ -449,12 +449,12 @@ def invite_body(label, note):
 
 INVITE_ADD = invite_body(
     'Friend code',
-    'New to Tabbi? Download it, then open this link again. Tabbi asks before it adds anyone. Party is in the direct download, not the App Store edition.',
+    'New to Tabbi? Download it, then open this link again. Tabbi asks before it adds anyone. Party is in the direct download and, from version 1.0.4, the App Store edition.',
 ).replace('ACTION', 'add')
 
 INVITE_JOIN = invite_body(
     'Party code',
-    'New to Tabbi? Download it, then open this link again. Tabbi asks before you join. Party is in the direct download, not the App Store edition.',
+    'New to Tabbi? Download it, then open this link again. Tabbi asks before you join. Party is in the direct download and, from version 1.0.4, the App Store edition.',
 ).replace('ACTION', 'join')
 
 INVITE_INVALID = f'''
