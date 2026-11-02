@@ -234,13 +234,13 @@
 			<key>many</key>
 			<string>%lld صديقًا</string>
 			<key>one</key>
-			<string>صديق واحد</string>
+			<string>%lld صديق</string>
 			<key>other</key>
 			<string>%lld صديق</string>
 			<key>two</key>
-			<string>صديقان</string>
+			<string>%lld صديقان</string>
 			<key>zero</key>
-			<string>لا أصدقاء</string>
+			<string>%lld صديق</string>
 		</dict>
 	</dict>
 	<key>%lld friends are here with you.</key>

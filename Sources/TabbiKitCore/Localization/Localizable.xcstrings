@@ -10487,7 +10487,7 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "صديق واحد"
+                  "value" : "%lld صديق"
                 }
               },
               "other" : {
@@ -10499,13 +10499,13 @@
               "two" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "صديقان"
+                  "value" : "%lld صديقان"
                 }
               },
               "zero" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "لا أصدقاء"
+                  "value" : "%lld صديق"
                 }
               }
             }

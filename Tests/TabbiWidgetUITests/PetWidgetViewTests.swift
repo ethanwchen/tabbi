@@ -80,14 +80,32 @@ final class PetWidgetViewTests: XCTestCase {
         stopped.timer = nil
         let later = now.addingTimeInterval(30 * 60)
         for size in [PetWidgetSize.small, .medium] {
-            // The first render in a process can still be drawing with fonts
-            // and sprites that load lazily, which under a busy parallel run
-            // changed a few pixels; a throwaway render warms them first.
-            _ = try render(stopped, at: later, size: size, scheme: .light)
-            let finished = try png(render(running, at: later, size: size, scheme: .light))
-            XCTAssertEqual(finished, try png(render(stopped, at: later, size: size, scheme: .light)))
-            XCTAssertNotEqual(finished, try png(render(running, at: now, size: size, scheme: .light)))
+            let finished = try render(running, at: later, size: size, scheme: .light)
+            // The same picture, compared by pixel: a busy parallel run can
+            // composite text a level of color apart, so bytes may differ.
+            XCTAssertEqual(try changedPixels(finished, try render(stopped, at: later, size: size, scheme: .light)), 0,
+                           "\(size) finished countdown")
+            XCTAssertGreaterThan(try changedPixels(finished, try render(running, at: now, size: size, scheme: .light)), 100,
+                                 "\(size) running countdown")
         }
+    }
+
+    /// Pixels whose color differs by more than `tolerance` levels in any
+    /// channel; antialiasing noise from the compositor stays under it.
+    private func changedPixels(_ a: CGImage, _ b: CGImage, tolerance: Int = 4) throws -> Int {
+        XCTAssertEqual(a.width, b.width)
+        XCTAssertEqual(a.height, b.height)
+        let lhs = try XCTUnwrap(RGBA(a)), rhs = try XCTUnwrap(RGBA(b))
+        var changed = 0
+        for y in 0..<min(a.height, b.height) {
+            for x in 0..<min(a.width, b.width) {
+                let p = lhs[x, y], q = rhs[x, y]
+                let delta = max(abs(Int(p.r) - Int(q.r)), abs(Int(p.g) - Int(q.g)),
+                                abs(Int(p.b) - Int(q.b)), abs(Int(p.a) - Int(q.a)))
+                if delta > tolerance { changed += 1 }
+            }
+        }
+        return changed
     }
 
     // MARK: Helpers
