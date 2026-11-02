@@ -54,4 +54,18 @@ final class ConnectionGalleryTests: XCTestCase {
             XCTAssertTrue(kind.everyState.map(\.status).contains(kind.demoStatus), "\(kind) demo state missing")
         }
     }
+
+    /// App Review guideline 5.1.1(iv): a row that leads to a macOS prompt
+    /// never tells the user which answer to give there.
+    func testNoRowBeforeAPromptSaysWhichButtonToClick() {
+        for kind in ConnectionKind.allCases {
+            for state in kind.everyState {
+                guard case .askPermission = state.status.action else { continue }
+                for text in [state.status.headline, state.status.detail] {
+                    XCTAssertNil(text.range(of: "\\bAllow\\b", options: .regularExpression),
+                                 "\(kind) steers the answer: \(text)")
+                }
+            }
+        }
+    }
 }

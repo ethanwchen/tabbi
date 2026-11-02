@@ -113,6 +113,10 @@ public enum ConnectionPermission: Hashable, Sendable {
     case notifications
     /// Letting Tabbi control a music app (play, pause, skip).
     case automation(ConnectionApp)
+    /// Letting Tabbi run the user's Focus shortcuts through Shortcuts
+    /// Events (Apple Events), how the sandboxed App Store build switches Do
+    /// Not Disturb.
+    case runShortcuts
 }
 
 /// The one button a Connections row shows for its current state.

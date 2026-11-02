@@ -29,6 +29,7 @@ extension SnapshotRenderer {
         let permissions: [(String, ConnectionKind, ConnectionPermission)] = [
             ("calendar", .calendar, .calendar), ("notifications", .notifications, .notifications),
             ("spotify", .spotify, .automation(.spotify)), ("music", .music, .automation(.music)),
+            ("shortcuts", .doNotDisturb, .runShortcuts),
         ]
         for (name, kind, permission) in permissions {
             let view = ConnectionPrimingView(kind: kind, priming: permission.priming, proceed: {}, close: {})
@@ -47,6 +48,9 @@ extension SnapshotRenderer {
             ("dnd-one-left", FocusShortcutsState(onName: FocusSettings.suggestedOnShortcut,
                                                  offName: FocusSettings.suggestedOffShortcut,
                                                  installed: [FocusSettings.suggestedOnShortcut]).diagnosis),
+            ("dnd-access-denied", FocusShortcutsState(onName: FocusSettings.suggestedOnShortcut,
+                                                      offName: FocusSettings.suggestedOffShortcut,
+                                                      installed: nil, access: .denied).diagnosis),
         ]
         for (name, diagnosis) in checkups {
             let view = ConnectionTroubleshootView(kind: diagnosis.kind, diagnosis: diagnosis, isChecking: false,

@@ -18,14 +18,20 @@ public struct FocusShortcutsState: Hashable, Sendable {
     /// Tabbi never runs the shortcuts, so the row must not read as working
     /// even when both shortcuts exist.
     public var isTurnedOn: Bool
+    /// Whether macOS lets Tabbi send Apple Events to Shortcuts Events, which
+    /// is how the sandboxed App Store build runs shortcuts. Nil where no
+    /// permission is involved (the direct download runs the command line
+    /// tool).
+    public var access: AutomationPermission?
 
     public init(onName: String, offName: String, installed: Set<String>?, couldNotList: Bool = false,
-                isTurnedOn: Bool = true) {
+                isTurnedOn: Bool = true, access: AutomationPermission? = nil) {
         self.onName = onName
         self.offName = offName
         self.installed = installed
         self.couldNotList = couldNotList
         self.isTurnedOn = isTurnedOn
+        self.access = access
     }
 
     /// Reads `shortcuts list` output: one shortcut name per line.
@@ -46,6 +52,18 @@ public struct FocusShortcutsState: Hashable, Sendable {
             return ConnectionStatus(light: .notSetUp, headline: String(localized: "Do Not Disturb is off", bundle: .tabbi),
                                     detail: String(localized: "Tabbi leaves your alerts alone until you turn it on.", bundle: .tabbi),
                                     action: .turnOnDoNotDisturb)
+        }
+        switch access {
+        case .notAsked?, .appClosed?:
+            return ConnectionStatus(light: .needsStep, headline: String(localized: "Tabbi needs to ask first", bundle: .tabbi),
+                                    detail: String(localized: "Your Mac asks once before Tabbi can run your shortcuts.", bundle: .tabbi),
+                                    action: .askPermission(.runShortcuts))
+        case .denied?:
+            return ConnectionStatus(light: .needsStep, headline: String(localized: "Shortcuts access is off", bundle: .tabbi),
+                                    detail: String(localized: "Turn on Shortcuts Events for Tabbi in Automation settings.", bundle: .tabbi),
+                                    action: .openSettings(.automationPrivacy))
+        case .granted?, nil:
+            break
         }
         if couldNotList {
             return ConnectionStatus(light: .needsStep, headline: String(localized: "Couldn't check your shortcuts", bundle: .tabbi),
@@ -113,6 +131,7 @@ public enum DoNotDisturbTest: Equatable, Sendable {
                 case .unavailable: "unavailable"
                 case .timedOut: "timedOut"
                 case .failed: "failed"
+                case .notAllowed: "notAllowed"
                 }
             }()
         }
@@ -131,6 +150,7 @@ public enum DoNotDisturbTest: Equatable, Sendable {
             case .unavailable: String(localized: "This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.", bundle: .tabbi)
             case .timedOut: String(localized: "\u{201C}\(name)\u{201D} took too long. Open it in Shortcuts and run it once yourself.", bundle: .tabbi)
             case .failed: String(localized: "\u{201C}\(name)\u{201D} didn't finish. Open it in Shortcuts and run it once to see why.", bundle: .tabbi)
+            case .notAllowed: String(localized: "Tabbi isn't allowed to run shortcuts yet. Turn on Shortcuts Events for Tabbi in Automation settings.", bundle: .tabbi)
             }
         }
     }
@@ -141,7 +161,8 @@ public enum DoNotDisturbTest: Equatable, Sendable {
          .failed(.on, name: onName, .notFound(name: onName)),
          .failed(.off, name: offName, .timedOut),
          .failed(.on, name: onName, .failed(message: "Couldn't communicate with a helper application.")),
-         .failed(.on, name: onName, .unavailable)]
+         .failed(.on, name: onName, .unavailable),
+         .failed(.on, name: onName, .notAllowed)]
     }
 
     /// Runs the test with `run`, reporting each stage to `update`. Stops at

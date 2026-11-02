@@ -48,7 +48,7 @@ public actor ClaudeUsageLogScanner {
         var identity: UInt64
     }
 
-    private let root: URL
+    public nonisolated let root: URL
     private let indexURL: URL?
     private let chunkSize: Int
     private var files: [String: FileState] = [:]

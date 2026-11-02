@@ -46,7 +46,7 @@ public struct MusicConnectionState: Hashable, Sendable {
                                     action: .openSettings(.automationPrivacy))
         case .notAsked, .appClosed:
             return ConnectionStatus(light: .notSetUp, headline: String(localized: "\(name) isn't connected", bundle: .tabbi),
-                                    detail: String(localized: "Click Connect, then Allow when your Mac asks if Tabbi can control \(name).", bundle: .tabbi),
+                                    detail: String(localized: "Click Connect and your Mac asks if Tabbi can control \(name).", bundle: .tabbi),
                                     action: .askPermission(.automation(app)))
         }
     }

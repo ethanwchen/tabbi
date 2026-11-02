@@ -1,5 +1,3 @@
-// The Usage tab isn't in the App Store build (`ModuleList` leaves it out).
-#if !APPSTORE
 import XCTest
 import TabbiKitCore
 @testable import Tabbi
@@ -49,4 +47,3 @@ final class ClaudeUsageSnapshotTraceTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: index.path))
     }
 }
-#endif

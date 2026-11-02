@@ -52,7 +52,7 @@ public struct CalendarConnectionState: Hashable, Sendable {
                                     detail: String(localized: "Open Tabbi from your Applications folder to connect your calendar.", bundle: .tabbi))
         case .notDetermined:
             return ConnectionStatus(light: .notSetUp, headline: String(localized: "Calendar isn't connected", bundle: .tabbi),
-                                    detail: String(localized: "Click Connect, then Allow when your Mac asks. It only asks once.", bundle: .tabbi),
+                                    detail: String(localized: "Click Connect and your Mac asks. It only asks once.", bundle: .tabbi),
                                     action: .askPermission(.calendar))
         case .denied:
             return ConnectionStatus(light: .needsStep, headline: String(localized: "Calendar access is off", bundle: .tabbi),

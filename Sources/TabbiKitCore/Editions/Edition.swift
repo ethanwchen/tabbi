@@ -10,8 +10,9 @@ import Foundation
 /// can still switch to any kit: a kit's excluded modules are skipped.
 ///
 /// The `appstore` edition is the Mac App Store build of Tabbi: the same app
-/// and bundle id as `tabbi`, sandboxed, without the modules that need the
-/// `claude` CLI and with Party off until it has moderation (docs/appstore.md).
+/// and bundle id as `tabbi`, sandboxed, with every module; features that
+/// would start a helper program take a sandboxed path there
+/// (docs/appstore.md).
 ///
 /// Editions are data: each is a `<id>.json` in `Editions/BundledEditions`,
 /// which the app reads through `builtIn` and `scripts/assemble.sh` reads to
@@ -72,10 +73,11 @@ public struct Edition: Sendable, Hashable, Identifiable, Decodable {
     /// Whether this is the sandboxed Mac App Store build.
     public var isAppStore: Bool { distribution == .appStore }
 
-    /// Whether the app may run helper programs on this Mac: the `claude` CLI
-    /// (Plan my day with Claude, Refine, the Wrap up summary) and Shortcuts
-    /// (Do Not Disturb). A sandboxed App Store build can't, so those features
-    /// are hidden there rather than failing.
+    /// Whether the app may run helper programs on this Mac: the `claude`,
+    /// `codex` and `gemini` CLIs as AI providers, AI Usage's live limit probe
+    /// and `/usr/bin/shortcuts`. A sandboxed App Store build can't, so it
+    /// hides the CLIs and takes another path for the rest (AI Usage reads
+    /// picked folders, Do Not Disturb goes through Shortcuts Events).
     public var runsLocalTools: Bool { distribution == .direct }
 
     /// The modules this edition offers: `catalog` without `excludedModules`,

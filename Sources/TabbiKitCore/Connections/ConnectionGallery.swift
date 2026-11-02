@@ -46,7 +46,11 @@ extension ConnectionKind {
             let unknown = [FocusShortcutsState(onName: on, offName: off, installed: nil),
                            FocusShortcutsState(onName: on, offName: off, installed: nil, couldNotList: true)]
             let turnedOff = FocusShortcutsState(onName: on, offName: off, installed: [on, off], isTurnedOn: false)
-            return ([turnedOff] + unknown + lists.map { FocusShortcutsState(onName: on, offName: off, installed: $0) })
+            // The App Store build's Automation step for Shortcuts Events.
+            let access = [AutomationPermission.notAsked, .denied].map {
+                FocusShortcutsState(onName: on, offName: off, installed: nil, access: $0)
+            }
+            return ([turnedOff] + access + unknown + lists.map { FocusShortcutsState(onName: on, offName: off, installed: $0) })
                 .map(\.diagnosis)
         case .claude:
             let states: [ClaudeConnectionState] = [.checking, .notInstalled, .signedOut, .ready]

@@ -5,9 +5,12 @@ The App Store edition's privacy manifest, which scripts/assemble.sh copies to
 Contents/Resources/PrivacyInfo.xcprivacy. The collected data types must match
 the App Privacy answer sheet in docs/appstore.md, and the required reason APIs
 must cover what the binary links (docs/legal/app-audit.md). Change both
-together. FileTimestamp covers stat and the content modification date that
-TabbiKitCore's AI Usage scanners link; the App Store edition never runs them,
-and its sandbox would keep them inside the app's container if it did.
+together. Name, Contacts, Other User Content and Product Interaction cover
+Party (the name, friend list, pet, reports and study presence it shares) and
+the optional account's sync; Crash Data and Performance Data are the crash
+and hang reports sent only after the user says Send, with no identifier.
+FileTimestamp: C617.1 for files in the app's container, and 3B52.1 for the
+Claude Code and Codex logs AI Usage scans in the folder the user picked.
 -->
 <plist version="1.0">
 <dict>
@@ -65,6 +68,54 @@ and its sandbox would keep them inside the app's container if it did.
 				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
 			</array>
 		</dict>
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeName</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<true/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeContacts</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<true/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeCrashData</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypePerformanceData</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+			</array>
+		</dict>
 	</array>
 	<key>NSPrivacyAccessedAPITypes</key>
 	<array>
@@ -82,6 +133,7 @@ and its sandbox would keep them inside the app's container if it did.
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
 				<string>C617.1</string>
+				<string>3B52.1</string>
 			</array>
 		</dict>
 	</array>

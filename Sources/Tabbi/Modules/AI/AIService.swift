@@ -99,13 +99,8 @@ extension ModuleContext {
             // local tools offers only the API and Ollama providers. An App
             // Store build is sandboxed whatever edition it resolves to.
             // The demo names Claude, through a provider this build can run.
-            #if APPSTORE
-            let sandboxed = true
-            let sample: AIProviderID = .anthropic
-            #else
-            let sandboxed = !edition.runsLocalTools
+            let sandboxed = edition.isSandboxed
             let sample: AIProviderID = sandboxed ? .anthropic : .claudeCLI
-            #endif
             return AIService(settings: settings, keys: keys, sandboxed: sandboxed,
                              sampleProvider: runMode.isDemo ? sample : nil)
         }

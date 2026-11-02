@@ -309,6 +309,22 @@ enum SnapshotRenderer {
         }
         #endif
 
+        // AI Usage in the sandboxed App Store build: Codex's limits, and the
+        // first view of each tool before its folder is picked, rendered
+        // after the others because the panel shown is store state.
+        if layout.order.contains(.claudeUsage), Edition.current.isSandboxed {
+            var withUsage = layout
+            _ = withUsage.setEnabled(.claudeUsage, true)
+            for (name, size) in [("open-claudeUsage-codex", PanelSize.regular), ("open-claudeUsage-folder", .regular),
+                                 ("open-claudeUsage-folder-codex", .regular), ("open-claudeUsage-wrong-folder", .regular),
+                                 ("open-compact-claudeUsage-folder", .compact), ("open-large-claudeUsage-folder", .large)] {
+                let model = NotchViewModel(geometry: geometry, layout: withUsage)
+                model.panelSize = size
+                model.open(.claudeUsage)
+                shots.append(Shot(name, model))
+            }
+        }
+
         // Schedule's Day view stepped back to yesterday and ahead to tomorrow,
         // with a plan for tomorrow on offer.
         if layout.order.contains(.schedule) {
@@ -472,6 +488,28 @@ enum SnapshotRenderer {
             print(url.path)
         }
 
+        // The App Store build's sandboxed settings: Focus once Shortcuts
+        // Events access was turned off, and AI Usage with both folders picked.
+        if let focusMode = services.modules.module(FocusModule.self)?.focusMode, focusMode.needsShortcutsAccess {
+            focusMode.showShortcutsAccessForSnapshot(.denied)
+            if let png = await sheetSnapshot(ModuleOptionsSheet(pane: .focus(focusMode), done: {})) {
+                let url = outputDirectory.appendingPathComponent("settings-tabs-focus-shortcuts-off.png")
+                try? png.write(to: url)
+                print(url.path)
+            }
+            focusMode.showShortcutsAccessForSnapshot(.granted)
+        }
+        if let usage = services.modules.module(ClaudeUsageModule.self), let folders = usage.store.folders,
+           let pane = usage.makeSettingsPane() {
+            // In the home folder, which Settings shows as ~, so no name shows.
+            folders.showForSnapshot()
+            if let png = await sheetSnapshot(ModuleOptionsSheet(pane: pane, done: {})) {
+                let url = outputDirectory.appendingPathComponent("settings-tabs-aiUsage-chosen.png")
+                try? png.write(to: url)
+                print(url.path)
+            }
+        }
+
         let kitID = services.settings.settings.kitID
         // The same questions as the sheet Settings shows when switching kits.
         if let kit = services.settings.kits[kitID], !kit.onboarding.isEmpty,
@@ -632,6 +670,7 @@ enum SnapshotRenderer {
         let party = services.modules.module(PartyModule.self)?.store
         let schedule = services.modules.module(ScheduleModule.self)
         let nowPlaying = services.modules.module(NowPlayingModule.self)
+        let usage = services.modules.module(ClaudeUsageModule.self)?.store
         let now = Date()
         let partySession = PartyState.demo(.member, now: now).session(at: now)
         for shot in shots {
@@ -654,6 +693,10 @@ enum SnapshotRenderer {
             schedule?.showForSnapshot(name == "open-schedule-yesterday" ? .yesterday
                 : name.hasPrefix("open-schedule-tomorrow") ? .tomorrow : .today,
                 planning: name == "open-schedule-tomorrow-plan")
+            usage?.showForSnapshot(name == "open-claudeUsage-codex" ? .usage(.codex)
+                : name == "open-claudeUsage-folder-codex" ? .folder(.codex)
+                : name == "open-claudeUsage-wrong-folder" ? .wrongFolder(.claudeCode)
+                : name.hasSuffix("claudeUsage-folder") ? .folder(.claudeCode) : .usage(.claudeCode))
             nowPlaying?.showForSnapshot(name == "open-spotify-soundcloud" ? .soundCloud
                 : name == "open-spotify-soundcloud-javascript-off" ? .soundCloudJavaScriptOff : .players)
             if let firstSection { closet?.store.section = shot.closet?.section ?? firstSection }
@@ -722,6 +765,7 @@ enum SnapshotRenderer {
         today?.show(.today)
         schedule?.showForSnapshot(.today)
         nowPlaying?.showForSnapshot(.players)
+        usage?.showForSnapshot(.usage(.claudeCode))
     }
 
     /// The review Settings shows before applying an imported kit: another

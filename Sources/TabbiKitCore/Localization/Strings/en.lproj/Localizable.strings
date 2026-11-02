@@ -35,6 +35,8 @@
 	<string>%@ checkup</string>
 	<key>%@ climbed onto the rooftop</key>
 	<string>%@ climbed onto the rooftop</string>
+	<key>%@ closed unexpectedly. Send a crash report?</key>
+	<string>%@ closed unexpectedly. Send a crash report?</string>
 	<key>%@ collected a smooth pebble</key>
 	<string>%@ collected a smooth pebble</string>
 	<key>%@ could not be copied to Applications. %@</key>
@@ -73,6 +75,8 @@
 	<string>%@ is already used by another app. Record a different shortcut.</string>
 	<key>%@ is already your friend</key>
 	<string>%@ is already your friend</string>
+	<key>%@ is away</key>
+	<string>%@ is away</string>
 	<key>%@ is connected</key>
 	<string>%@ is connected</string>
 	<key>%@ is damaged, so it's left untouched.</key>
@@ -227,6 +231,8 @@
 	<string>%@: %@ done today</string>
 	<key>%@: %@ left</key>
 	<string>%@: %@ left</string>
+	<key>%@: %@ tokens</key>
+	<string>%@: %@ tokens</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: you earned every item. They stay yours after the event.</string>
 	<key>%lld h</key>
@@ -355,6 +361,8 @@
 	<string>A quiet day. Rest up and start fresh tomorrow.</string>
 	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
 	<string>A rare fur color from your pet. Try it in the Closet under Look.</string>
+	<key>A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:</key>
+	<string>A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>A restful week. A fresh start awaits.</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
@@ -457,6 +465,8 @@
 	<string>Add your Google or school account to see its events here.</string>
 	<key>Add your calendar</key>
 	<string>Add your calendar</string>
+	<key>Add your name</key>
+	<string>Add your name</string>
 	<key>Add…</key>
 	<string>Add…</string>
 	<key>After %@ closes unexpectedly, ask before sending a crash report, send it without asking, or never send one</key>
@@ -509,6 +519,8 @@
 	<string>Already playing during focus</string>
 	<key>Already playing: focus is running</key>
 	<string>Already playing: focus is running</string>
+	<key>Also block %@</key>
+	<string>Also block %@</string>
 	<key>Always</key>
 	<string>Always</string>
 	<key>Always Visible</key>
@@ -791,6 +803,8 @@
 	<string>Change your answers</string>
 	<key>Changes appear at once, with no animation.</key>
 	<string>Changes appear at once, with no animation.</string>
+	<key>Change…</key>
+	<string>Change…</string>
 	<key>Charcoal</key>
 	<string>Charcoal</string>
 	<key>Charging</key>
@@ -827,6 +841,8 @@
 	<string>Check the server in Party options.</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>Check your internet connection. Friends and parties show up once it's back.</string>
+	<key>Check your internet connection. You can also set up Party later in its tab.</key>
+	<string>Check your internet connection. You can also set up Party later in its tab.</string>
 	<key>Checking</key>
 	<string>Checking</string>
 	<key>Checking %@</key>
@@ -847,6 +863,8 @@
 	<string>Cherry blossom pink on warm black.</string>
 	<key>Chocolate</key>
 	<string>Chocolate</string>
+	<key>Choose</key>
+	<string>Choose</string>
 	<key>Choose AI</key>
 	<string>Choose AI</string>
 	<key>Choose a method</key>
@@ -859,6 +877,14 @@
 	<string>Choose how big the open notch is. Every tab uses the same size.</string>
 	<key>Choose how lively the notch's animations are</key>
 	<string>Choose how lively the notch's animations are</string>
+	<key>Choose the %@ folder in your home folder</key>
+	<string>Choose the %@ folder in your home folder</string>
+	<key>Choose the %@ folder in your home folder. Tabbi reads only token counts and model names from Claude Code's logs.</key>
+	<string>Choose the %@ folder in your home folder. Tabbi reads only token counts and model names from Claude Code's logs.</string>
+	<key>Choose the %@ folder in your home folder. Tabbi reads only token counts, model names and plan limits from Codex's logs.</key>
+	<string>Choose the %@ folder in your home folder. Tabbi reads only token counts, model names and plan limits from Codex's logs.</string>
+	<key>Choose the %@ folder next</key>
+	<string>Choose the %@ folder next</string>
 	<key>Choose when the notch is drawn. The shortcut always opens it.</key>
 	<string>Choose when the notch is drawn. The shortcut always opens it.</string>
 	<key>Choose which display shows the notch. It falls back to the built-in display when this one is disconnected.</key>
@@ -881,6 +907,8 @@
 	<string>Claude is ready</string>
 	<key>Claude location</key>
 	<string>Claude location</string>
+	<key>Claude usage</key>
+	<string>Claude usage</string>
 	<key>Clear "%@"</key>
 	<string>Clear "%@"</string>
 	<key>Clear All</key>
@@ -893,10 +921,10 @@
 	<string>Click %@ for the official steps, then come back here.</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
 	<string>Click AnkiConnect in the list, then click Check for Updates.</string>
-	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
-	<string>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</string>
-	<key>Click Connect, then Allow when your Mac asks. It only asks once.</key>
-	<string>Click Connect, then Allow when your Mac asks. It only asks once.</string>
+	<key>Click Connect and your Mac asks if Tabbi can control %@.</key>
+	<string>Click Connect and your Mac asks if Tabbi can control %@.</string>
+	<key>Click Connect and your Mac asks. It only asks once.</key>
+	<string>Click Connect and your Mac asks. It only asks once.</string>
 	<key>Click Get Add-ons, paste this code, then click OK.</key>
 	<string>Click Get Add-ons, paste this code, then click OK.</string>
 	<key>Click Restore Defaults, then OK</key>
@@ -955,10 +983,14 @@
 	<string>Close this. Party keeps trying by itself.</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>Close this. You can set up Party any time.</string>
+	<key>Close without reporting (Esc)</key>
+	<string>Close without reporting (Esc)</string>
 	<key>Closet</key>
 	<string>Closet</string>
 	<key>Code</key>
 	<string>Code</string>
+	<key>Codex usage</key>
+	<string>Codex usage</string>
 	<key>Command</key>
 	<string>Command</string>
 	<key>Compact</key>
@@ -1205,6 +1237,8 @@
 	<string>Does your Mac have any calendars?</string>
 	<key>Dog</key>
 	<string>Dog</string>
+	<key>Don't Send</key>
+	<string>Don't Send</string>
 	<key>Don't ask again</key>
 	<string>Don't ask again</string>
 	<key>Done</key>
@@ -1317,6 +1351,8 @@
 	<string>Fitting your work and breaks around today's events</string>
 	<key>Fitting your work and breaks around tomorrow's events</key>
 	<string>Fitting your work and breaks around tomorrow's events</string>
+	<key>Fix it in Settings &gt; Tabs &gt; Party &gt; Options.</key>
+	<string>Fix it in Settings &gt; Tabs &gt; Party &gt; Options.</string>
 	<key>Fix the shortcut in the Shortcuts app, then test again</key>
 	<string>Fix the shortcut in the Shortcuts app, then test again</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
@@ -1437,6 +1473,8 @@
 	<string>Friends server</string>
 	<key>Frog Hat</key>
 	<string>Frog Hat</string>
+	<key>From your Claude Code logs</key>
+	<string>From your Claude Code logs</string>
 	<key>Frosted glass cards over a cool blue glow.</key>
 	<string>Frosted glass cards over a cool blue glow.</string>
 	<key>Full</key>
@@ -1483,6 +1521,8 @@
 	<string>Go back to the tabs and kit you had before %@</string>
 	<key>Go invisible</key>
 	<string>Go invisible</string>
+	<key>Go invisible. Your study minutes still count.</key>
+	<string>Go invisible. Your study minutes still count.</string>
 	<key>Go on without a name</key>
 	<string>Go on without a name</string>
 	<key>Goals left today</key>
@@ -1529,6 +1569,8 @@
 	<string>Hidden</string>
 	<key>Hide %@ Until I Press %@</key>
 	<string>Hide %@ Until I Press %@</string>
+	<key>Hide each other everywhere in Party. You can unblock in Party options.</key>
+	<string>Hide each other everywhere in Party. You can unblock in Party options.</string>
 	<key>Hide from screen sharing</key>
 	<string>Hide from screen sharing</string>
 	<key>Hide in Mission Control</key>
@@ -1629,6 +1671,10 @@
 	<string>Instant</string>
 	<key>Internet Accounts</key>
 	<string>Internet Accounts</string>
+	<key>Invisible to friends</key>
+	<string>Invisible to friends</string>
+	<key>Invisible: friends see you as away</key>
+	<string>Invisible: friends see you as away</string>
 	<key>Invite links</key>
 	<string>Invite links</string>
 	<key>Is %@ on this Mac?</key>
@@ -1687,6 +1733,8 @@
 	<string>Join this party?</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>Joining Party. This takes a second.</string>
+	<key>Joining the party server</key>
+	<string>Joining the party server</string>
 	<key>Joining the party server…</key>
 	<string>Joining the party server…</string>
 	<key>Just met</key>
@@ -1751,6 +1799,8 @@
 	<string>Let %@ find you again. You won't be friends until one of you adds the other.</string>
 	<key>Let Tabbi into Anki</key>
 	<string>Let Tabbi into Anki</string>
+	<key>Let Tabbi run your Focus shortcuts</key>
+	<string>Let Tabbi run your Focus shortcuts</string>
 	<key>Let your AI fit your open tasks around today's calendar</key>
 	<string>Let your AI fit your open tasks around today's calendar</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
@@ -1829,6 +1879,8 @@
 	<string>Mark as done</string>
 	<key>Mark as not done</key>
 	<string>Mark as not done</string>
+	<key>May Tabbi run your shortcuts?</key>
+	<string>May Tabbi run your shortcuts?</string>
 	<key>Measuring cores...</key>
 	<string>Measuring cores...</string>
 	<key>Media</key>
@@ -1927,6 +1979,8 @@
 	<string>Next unlock</string>
 	<key>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</key>
 	<string>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</string>
+	<key>Next, your Mac asks if Tabbi can control Shortcuts Events. You can change your answer any time in System Settings.</key>
+	<string>Next, your Mac asks if Tabbi can control Shortcuts Events. You can change your answer any time in System Settings.</string>
 	<key>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</key>
 	<string>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
@@ -2025,6 +2079,8 @@
 	<string>No. This copy is too old for Tabbi.</string>
 	<key>No. This copy of Tabbi can't ask for it.</key>
 	<string>No. This copy of Tabbi can't ask for it.</string>
+	<key>No. Turn on Shortcuts Events for Tabbi in System Settings &gt; Privacy &amp; Security &gt; Automation.</key>
+	<string>No. Turn on Shortcuts Events for Tabbi in System Settings &gt; Privacy &amp; Security &gt; Automation.</string>
 	<key>Nobody sees roots growing. Then one day there's a tree.</key>
 	<string>Nobody sees roots growing. Then one day there's a tree.</string>
 	<key>None</key>
@@ -2047,6 +2103,8 @@
 	<string>Not checked yet · refresh to load your live limits</string>
 	<key>Not checked yet. Fix the step above first.</key>
 	<string>Not checked yet. Fix the step above first.</string>
+	<key>Not chosen</key>
+	<string>Not chosen</string>
 	<key>Not connected</key>
 	<string>Not connected</string>
 	<key>Not connected to Tabbi yet</key>
@@ -2073,6 +2131,8 @@
 	<string>Not set up</string>
 	<key>Not synced yet</key>
 	<string>Not synced yet</string>
+	<key>Not yet. Click the button so your Mac can ask.</key>
+	<string>Not yet. Click the button so your Mac can ask.</string>
 	<key>Not yet. Open the Party tab to answer.</key>
 	<string>Not yet. Open the Party tab to answer.</string>
 	<key>Not yet. Pick a name and a pet to start.</key>
@@ -2089,6 +2149,8 @@
 	<string>Nothing checked off</string>
 	<key>Nothing due today</key>
 	<string>Nothing due today</string>
+	<key>Nothing is read until you choose</key>
+	<string>Nothing is read until you choose</string>
 	<key>Nothing left to plan</key>
 	<string>Nothing left to plan</string>
 	<key>Nothing listed yesterday</key>
@@ -2211,6 +2273,8 @@
 	<string>Open Internet Accounts to add a Google, Exchange or iCloud calendar</string>
 	<key>Open Party</key>
 	<string>Open Party</string>
+	<key>Open Privacy &amp; Security &gt; Automation in System Settings</key>
+	<string>Open Privacy &amp; Security &gt; Automation in System Settings</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
 	<string>Open Privacy &amp; Security to allow Calendar access</string>
 	<key>Open Settings</key>
@@ -2383,6 +2447,8 @@
 	<string>Pick a name and a pet to start. No account needed.</string>
 	<key>Pick a name and a pet, and say when you were born.</key>
 	<string>Pick a name and a pet, and say when you were born.</string>
+	<key>Pick a reason first</key>
+	<string>Pick a reason first</string>
 	<key>Pick a sound to preview it</key>
 	<string>Pick a sound to preview it</string>
 	<key>Pick a sound, then save the blend here</key>
@@ -2401,6 +2467,8 @@
 	<string>Pick the month and year you were born</string>
 	<key>Pick the name and pet your friends will see. No account or password needed.</key>
 	<string>Pick the name and pet your friends will see. No account or password needed.</string>
+	<key>Pick whose usage to show</key>
+	<string>Pick whose usage to show</string>
 	<key>Pin %@ to the Study button</key>
 	<string>Pin %@ to the Study button</string>
 	<key>Pin as Favorite Deck</key>
@@ -2531,12 +2599,16 @@
 	<string>Rare</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
 	<string>Reach your arms up high, then roll your shoulders back.</string>
+	<key>Read the latest Claude Code logs (sends nothing)</key>
+	<string>Read the latest Claude Code logs (sends nothing)</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Read the latest Codex logs (sends nothing)</string>
 	<key>Read through AnkiConnect on this Mac</key>
 	<string>Read through AnkiConnect on this Mac</string>
 	<key>Reading %@ sessions…</key>
 	<string>Reading %@ sessions…</string>
+	<key>Reading Claude Code logs…</key>
+	<string>Reading Claude Code logs…</string>
 	<key>Reading Codex logs…</key>
 	<string>Reading Codex logs…</string>
 	<key>Reading what's playing.</key>
@@ -2569,6 +2641,8 @@
 	<string>Rejoin</string>
 	<key>Released under the MIT License.</key>
 	<string>Released under the MIT License.</string>
+	<key>Remember this answer and stop asking after a crash</key>
+	<string>Remember this answer and stop asking after a crash</string>
 	<key>Remind me to study</key>
 	<string>Remind me to study</string>
 	<key>Reminders</key>
@@ -2605,6 +2679,8 @@
 	<string>Repeat this song</string>
 	<key>Report %@</key>
 	<string>Report %@</string>
+	<key>Report %@: %@</key>
+	<string>Report %@: %@</string>
 	<key>Report %@…</key>
 	<string>Report %@…</string>
 	<key>Report a problem: %@</key>
@@ -2719,16 +2795,24 @@
 	<string>See what's next</string>
 	<key>See your %@ here. It only takes a moment.</key>
 	<string>See your %@ here. It only takes a moment.</string>
+	<key>See your %@ usage</key>
+	<string>See your %@ usage</string>
 	<key>See your day at a glance</key>
 	<string>See your day at a glance</string>
 	<key>Select AnkiConnect and click Check for Updates</key>
 	<string>Select AnkiConnect and click Check for Updates</string>
+	<key>Send</key>
+	<string>Send</string>
 	<key>Send (Return)</key>
 	<string>Send (Return)</string>
+	<key>Send Report</key>
+	<string>Send Report</string>
 	<key>Send a friend request with this code</key>
 	<string>Send a friend request with this code</string>
 	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
 	<string>Send friends your code so they can add you. They see your name, pet and study timer.</string>
+	<key>Send this report to the Tabbi team</key>
+	<string>Send this report to the Tabbi team</string>
 	<key>Send your AI requests to %@?</key>
 	<string>Send your AI requests to %@?</string>
 	<key>Sends what you ask to %@.</key>
@@ -2771,6 +2855,8 @@
 	<string>Share it with a friend so they can add you.</string>
 	<key>Share your code above, or add theirs below.</key>
 	<string>Share your code above, or add theirs below.</string>
+	<key>Share your code, or add theirs below. Start a party from the Party tab.</key>
+	<string>Share your code, or add theirs below. Start a party from the Party tab.</string>
 	<key>Shared focus: %@ left</key>
 	<string>Shared focus: %@ left</string>
 	<key>Shortcut</key>
@@ -2783,6 +2869,10 @@
 	<string>Shortcut ran.</string>
 	<key>Shortcuts</key>
 	<string>Shortcuts</string>
+	<key>Shortcuts access is off</key>
+	<string>Shortcuts access is off</string>
+	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</string>
 	<key>Show %@</key>
 	<string>Show %@</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
@@ -2799,6 +2889,8 @@
 	<string>Show calendar</string>
 	<key>Show every deck with cards due</key>
 	<string>Show every deck with cards due</string>
+	<key>Show friends when you study again</key>
+	<string>Show friends when you study again</string>
 	<key>Show less</key>
 	<string>Show less</string>
 	<key>Show live activity</key>
@@ -2821,6 +2913,8 @@
 	<string>Show today's glasses on the break card, with a button to add one</string>
 	<key>Show tomorrow's calendar</key>
 	<string>Show tomorrow's calendar</string>
+	<key>Show usage for</key>
+	<string>Show usage for</string>
 	<key>Show yesterday's calendar</key>
 	<string>Show yesterday's calendar</string>
 	<key>Show yesterday's list</key>
@@ -2861,6 +2955,8 @@
 	<string>Signing in…</string>
 	<key>Signing you in so friends can find you.</key>
 	<string>Signing you in so friends can find you.</string>
+	<key>Signing you in so friends can find you. Your code shows here in a moment.</key>
+	<string>Signing you in so friends can find you. Your code shows here in a moment.</string>
 	<key>Silly</key>
 	<string>Silly</string>
 	<key>Silver</key>
@@ -3017,6 +3113,8 @@
 	<string>Stop counting %@ as distracting</string>
 	<key>Stop focusing on this task</key>
 	<string>Stop focusing on this task</string>
+	<key>Stop reading this folder</key>
+	<string>Stop reading this folder</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>Stop syncing on this Mac. Your pet and progress stay here.</string>
 	<key>Stop the preview</key>
@@ -3103,6 +3201,10 @@
 	<string>Syncing…</string>
 	<key>System</key>
 	<string>System</string>
+	<key>Tabbi can count your tokens from the logs Claude Code keeps in the %@ folder. Choose it next. Nothing leaves your Mac.</key>
+	<string>Tabbi can count your tokens from the logs Claude Code keeps in the %@ folder. Choose it next. Nothing leaves your Mac.</string>
+	<key>Tabbi can show your limits and tokens from the logs Codex keeps in the %@ folder. Choose it next. Nothing leaves your Mac.</key>
+	<string>Tabbi can show your limits and tokens from the logs Codex keeps in the %@ folder. Choose it next. Nothing leaves your Mac.</string>
 	<key>Tabbi can't control %@</key>
 	<string>Tabbi can't control %@</string>
 	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
@@ -3117,16 +3219,26 @@
 	<string>Tabbi is checking this right now</string>
 	<key>Tabbi is still checking. This takes a second.</key>
 	<string>Tabbi is still checking. This takes a second.</string>
+	<key>Tabbi isn't allowed to run shortcuts yet. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>Tabbi isn't allowed to run shortcuts yet. Turn on Shortcuts Events for Tabbi in Automation settings.</string>
+	<key>Tabbi isn't allowed to run shortcuts. Turn on Shortcuts Events for Tabbi in System Settings &gt; Privacy &amp; Security &gt; Automation.</key>
+	<string>Tabbi isn't allowed to run shortcuts. Turn on Shortcuts Events for Tabbi in System Settings &gt; Privacy &amp; Security &gt; Automation.</string>
 	<key>Tabbi leaves your alerts alone until you turn it on.</key>
 	<string>Tabbi leaves your alerts alone until you turn it on.</string>
+	<key>Tabbi needs to ask first</key>
+	<string>Tabbi needs to ask first</string>
 	<key>Tabbi only alerts you when a focus block or break ends.</key>
 	<string>Tabbi only alerts you when a focus block or break ends.</string>
 	<key>Tabbi only plays, pauses, skips and shows what's playing.</key>
 	<string>Tabbi only plays, pauses, skips and shows what's playing.</string>
 	<key>Tabbi only reads events to show today's plan.</key>
 	<string>Tabbi only reads events to show today's plan.</string>
+	<key>Tabbi only runs the two shortcuts named in Focus settings, when focus starts and ends.</key>
+	<string>Tabbi only runs the two shortcuts named in Focus settings, when focus starts and ends.</string>
 	<key>Tabbi reads %@ and sends nothing.</key>
 	<string>Tabbi reads %@ and sends nothing.</string>
+	<key>Tabbi reads only token counts, model names and Codex's plan limits from these folders, and nothing leaves your Mac. Remove a folder to stop Tabbi from reading it.</key>
+	<string>Tabbi reads only token counts, model names and Codex's plan limits from these folders, and nothing leaves your Mac. Remove a folder to stop Tabbi from reading it.</string>
 	<key>Tabbi shows the calendars your Mac knows about. Add your Google account once and its events show up.</key>
 	<string>Tabbi shows the calendars your Mac knows about. Add your Google account once and its events show up.</string>
 	<key>Tabbi tells you when a focus block or break ends.</key>
@@ -3161,6 +3273,8 @@
 	<string>Thanks. Your report was sent and %@ is blocked.</string>
 	<key>Thanks. Your report was sent.</key>
 	<string>Thanks. Your report was sent.</string>
+	<key>That folder has no %@ logs. Choose the %@ folder in your home folder.</key>
+	<string>That folder has no %@ logs. Choose the %@ folder in your home folder.</string>
 	<key>That friend request is no longer there.</key>
 	<string>That friend request is no longer there.</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
@@ -3291,6 +3405,8 @@
 	<string>This Mac can't run shortcuts for Tabbi. Make sure macOS is up to date.</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>This account can no longer use Party. If you think that's a mistake, write to %@.</string>
+	<key>This account can no longer use Party. Write to %@ if that's a mistake.</key>
+	<string>This account can no longer use Party. Write to %@ if that's a mistake.</string>
 	<key>This chat is open</key>
 	<string>This chat is open</string>
 	<key>This copy can't use the calendar</key>
@@ -3345,6 +3461,8 @@
 	<string>Tips to focus better</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
 	<string>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</string>
+	<key>To check they exist it looks up their names, and it never changes a shortcut.</key>
+	<string>To check they exist it looks up their names, and it never changes a shortcut.</string>
 	<key>To install it, click %@ on the Claude row below.</key>
 	<string>To install it, click %@ on the Claude row below.</string>
 	<key>To sign in with Google, run %@ in Terminal once.</key>
@@ -3365,6 +3483,8 @@
 	<string>Today's events and the free time between them. Google calendars show up once added in Internet Accounts.</string>
 	<key>Today's events show up in Tabbi.</key>
 	<string>Today's events show up in Tabbi.</string>
+	<key>Tokens per day</key>
+	<string>Tokens per day</string>
 	<key>Tomorrow</key>
 	<string>Tomorrow</string>
 	<key>Tomorrow has no free time worth a block before the evening.</key>
@@ -3421,6 +3541,8 @@
 	<string>Turn on JavaScript for SoundCloud</string>
 	<key>Turn on Party?</key>
 	<string>Turn on Party?</string>
+	<key>Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>Turn on Shortcuts Events for Tabbi in Automation settings.</string>
 	<key>Turn on Tabbi under Calendars in System Settings.</key>
 	<string>Turn on Tabbi under Calendars in System Settings.</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -3487,6 +3609,16 @@
 	<string>Updated %@ and applied it.</string>
 	<key>Updated %@; your tabs are unchanged.</key>
 	<string>Updated %@; your tabs are unchanged.</string>
+	<key>Updated %lldd ago</key>
+	<string>Updated %lldd ago</string>
+	<key>Updated %lldh ago</key>
+	<string>Updated %lldh ago</string>
+	<key>Updated %lldm ago</key>
+	<string>Updated %lldm ago</string>
+	<key>Updated just now</key>
+	<string>Updated just now</string>
+	<key>Usage logs</key>
+	<string>Usage logs</string>
 	<key>Usage of your rolling 5-hour limit</key>
 	<string>Usage of your rolling 5-hour limit</string>
 	<key>Usage of your weekly limit</key>
@@ -3513,6 +3645,8 @@
 	<string>Version %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>View on GitHub</string>
+	<key>Visible: friends see when you study</key>
+	<string>Visible: friends see when you study</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>Vivid accents with a violet glow.</string>
 	<key>Volume</key>
@@ -3707,6 +3841,8 @@
 	<string>Your Mac asks next whether %@ can read your calendars</string>
 	<key>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</key>
 	<string>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</string>
+	<key>Your Mac asks once before Tabbi can run your shortcuts.</key>
+	<string>Your Mac asks once before Tabbi can run your shortcuts.</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Your Mac is charging, and %@ is having a sip</string>
 	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>
@@ -3855,6 +3991,12 @@
 	<string>pts</string>
 	<key>ready to unlock</key>
 	<string>ready to unlock</string>
+	<key>resets %@</key>
+	<string>resets %@</string>
+	<key>resets in %@</key>
+	<string>resets in %@</string>
+	<key>resets now</key>
+	<string>resets now</string>
 	<key>session</key>
 	<string>session</string>
 	<key>sessions</key>

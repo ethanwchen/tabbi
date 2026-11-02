@@ -35,6 +35,8 @@
 	<string>Проверка: %@</string>
 	<key>%@ climbed onto the rooftop</key>
 	<string>%@ забирается на крышу</string>
+	<key>%@ closed unexpectedly. Send a crash report?</key>
+	<string>%@ неожиданно закрылось. Отправить отчет о сбое?</string>
 	<key>%@ collected a smooth pebble</key>
 	<string>%@ собирает гладкий камешек</string>
 	<key>%@ could not be copied to Applications. %@</key>
@@ -73,6 +75,8 @@
 	<string>%@ уже занято другим приложением. Запиши другое сочетание клавиш.</string>
 	<key>%@ is already your friend</key>
 	<string>%@ уже твой друг</string>
+	<key>%@ is away</key>
+	<string>%@ не в сети</string>
 	<key>%@ is connected</key>
 	<string>%@: подключено</string>
 	<key>%@ is damaged, so it's left untouched.</key>
@@ -227,6 +231,8 @@
 	<string>%1$@: сегодня сделано %2$@</string>
 	<key>%@: %@ left</key>
 	<string>%@: осталось %@</string>
+	<key>%@: %@ tokens</key>
+	<string>%1$@: токенов %2$@</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: все предметы получены. Они останутся у тебя и после события.</string>
 	<key>%lld h</key>
@@ -355,6 +361,8 @@
 	<string>Тихий день. Отдохни, а завтра начнешь с новыми силами.</string>
 	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
 	<string>Редкий цвет меха от питомца. Примерь его в Гардеробе, в разделе «Оформление».</string>
+	<key>A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:</key>
+	<string>Отчет помогает исправить проблему. В нем версия приложения, версия macOS, редакция, стек сбоя и имена потоков, и никогда нет твоих данных, имен, задач или токенов. Вот что именно будет отправлено:</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>Неделя отдыха. Впереди новое начало.</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
@@ -457,6 +465,8 @@
 	<string>Добавь аккаунт Google или школьный аккаунт, чтобы видеть события здесь.</string>
 	<key>Add your calendar</key>
 	<string>Добавь свой календарь</string>
+	<key>Add your name</key>
+	<string>Добавь имя</string>
 	<key>Add…</key>
 	<string>Добавить…</string>
 	<key>After %@ closes unexpectedly, ask before sending a crash report, send it without asking, or never send one</key>
@@ -509,6 +519,8 @@
 	<string>Уже звучит во время фокуса</string>
 	<key>Already playing: focus is running</key>
 	<string>Уже играет: идёт фокус</string>
+	<key>Also block %@</key>
+	<string>Также заблокировать: %@</string>
 	<key>Always</key>
 	<string>Всегда</string>
 	<key>Always Visible</key>
@@ -791,6 +803,8 @@
 	<string>Изменить ответы</string>
 	<key>Changes appear at once, with no animation.</key>
 	<string>Изменения видны сразу, без анимации.</string>
+	<key>Change…</key>
+	<string>Изменить…</string>
 	<key>Charcoal</key>
 	<string>Угольный</string>
 	<key>Charging</key>
@@ -827,6 +841,8 @@
 	<string>Проверь сервер в настройках Party.</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>Проверь подключение к интернету. Друзья и пати появятся, когда оно вернется.</string>
+	<key>Check your internet connection. You can also set up Party later in its tab.</key>
+	<string>Проверь подключение к интернету. Настроить Party можно и позже на его вкладке.</string>
 	<key>Checking</key>
 	<string>Проверка</string>
 	<key>Checking %@</key>
@@ -847,6 +863,8 @@
 	<string>Розовый цвет сакуры на тёплом чёрном.</string>
 	<key>Chocolate</key>
 	<string>Шоколадный</string>
+	<key>Choose</key>
+	<string>Выбрать</string>
 	<key>Choose AI</key>
 	<string>Выбрать ИИ</string>
 	<key>Choose a method</key>
@@ -859,6 +877,14 @@
 	<string>Выбери размер открытого выреза. У всех вкладок он одинаковый.</string>
 	<key>Choose how lively the notch's animations are</key>
 	<string>Выбери, насколько живыми будут анимации выреза</string>
+	<key>Choose the %@ folder in your home folder</key>
+	<string>Выбери папку %@ в домашней папке</string>
+	<key>Choose the %@ folder in your home folder. Tabbi reads only token counts and model names from Claude Code's logs.</key>
+	<string>Выбери папку %@ в своей домашней папке. Tabbi читает из журналов Claude Code только число токенов и названия моделей.</string>
+	<key>Choose the %@ folder in your home folder. Tabbi reads only token counts, model names and plan limits from Codex's logs.</key>
+	<string>Выбери папку %@ в своей домашней папке. Tabbi читает из журналов Codex только число токенов, названия моделей и лимиты тарифа.</string>
+	<key>Choose the %@ folder next</key>
+	<string>Дальше выбери папку %@</string>
 	<key>Choose when the notch is drawn. The shortcut always opens it.</key>
 	<string>Выбери, когда показывать вырез. Сочетание клавиш открывает его всегда.</string>
 	<key>Choose which display shows the notch. It falls back to the built-in display when this one is disconnected.</key>
@@ -881,6 +907,8 @@
 	<string>Claude готов</string>
 	<key>Claude location</key>
 	<string>Путь к Claude</string>
+	<key>Claude usage</key>
+	<string>Использование Claude</string>
 	<key>Clear "%@"</key>
 	<string>Убрать «%@»</string>
 	<key>Clear All</key>
@@ -893,10 +921,10 @@
 	<string>Нажми %@, чтобы увидеть официальные шаги, и вернись сюда.</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
 	<string>Выбери AnkiConnect в списке и нажми «Check for Updates».</string>
-	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
-	<string>Нажми «Подключить», а затем «Разрешить», когда Mac спросит, может ли Tabbi управлять %@.</string>
-	<key>Click Connect, then Allow when your Mac asks. It only asks once.</key>
-	<string>Нажми «Подключить», а затем «Разрешить», когда Mac спросит. Он спросит только раз.</string>
+	<key>Click Connect and your Mac asks if Tabbi can control %@.</key>
+	<string>Нажми «Подключить», и Mac спросит, может ли Tabbi управлять %@.</string>
+	<key>Click Connect and your Mac asks. It only asks once.</key>
+	<string>Нажми «Подключить», и Mac спросит. Он спросит только раз.</string>
 	<key>Click Get Add-ons, paste this code, then click OK.</key>
 	<string>Нажми «Get Add-ons», вставь этот код и нажми «OK».</string>
 	<key>Click Restore Defaults, then OK</key>
@@ -955,10 +983,14 @@
 	<string>Закрыть. Party продолжит попытки сама.</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>Закрыть. Настроить Party можно в любой момент.</string>
+	<key>Close without reporting (Esc)</key>
+	<string>Закрыть без жалобы (Esc)</string>
 	<key>Closet</key>
 	<string>Гардероб</string>
 	<key>Code</key>
 	<string>Код</string>
+	<key>Codex usage</key>
+	<string>Использование Codex</string>
 	<key>Command</key>
 	<string>Команда</string>
 	<key>Compact</key>
@@ -1205,6 +1237,8 @@
 	<string>На Mac есть календари?</string>
 	<key>Dog</key>
 	<string>Собака</string>
+	<key>Don't Send</key>
+	<string>Не отправлять</string>
 	<key>Don't ask again</key>
 	<string>Больше не спрашивать</string>
 	<key>Done</key>
@@ -1317,6 +1351,8 @@
 	<string>Распределяем дела и перерывы вокруг событий на сегодня</string>
 	<key>Fitting your work and breaks around tomorrow's events</key>
 	<string>Распределяем дела и перерывы вокруг событий на завтра</string>
+	<key>Fix it in Settings &gt; Tabs &gt; Party &gt; Options.</key>
+	<string>Исправь в Настройки › Вкладки › Party › Параметры.</string>
 	<key>Fix the shortcut in the Shortcuts app, then test again</key>
 	<string>Исправь команду в «Быстрых командах» и проверь снова</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
@@ -1437,6 +1473,8 @@
 	<string>Сервер друзей</string>
 	<key>Frog Hat</key>
 	<string>Шапка-лягушка</string>
+	<key>From your Claude Code logs</key>
+	<string>Из твоих журналов Claude Code</string>
 	<key>Frosted glass cards over a cool blue glow.</key>
 	<string>Матовое стекло над холодным голубым свечением.</string>
 	<key>Full</key>
@@ -1483,6 +1521,8 @@
 	<string>Вернуть вкладки и набор, которые были до %@</string>
 	<key>Go invisible</key>
 	<string>Стать невидимкой</string>
+	<key>Go invisible. Your study minutes still count.</key>
+	<string>Стань невидимкой. Минуты учебы все равно считаются.</string>
 	<key>Go on without a name</key>
 	<string>Продолжить без имени</string>
 	<key>Goals left today</key>
@@ -1529,6 +1569,8 @@
 	<string>Скрыт</string>
 	<key>Hide %@ Until I Press %@</key>
 	<string>Скрыть %1$@, пока я не нажму %2$@</string>
+	<key>Hide each other everywhere in Party. You can unblock in Party options.</key>
+	<string>Вы перестанете видеть друг друга в Party. Разблокировать можно в настройках Party.</string>
 	<key>Hide from screen sharing</key>
 	<string>Скрывать при демонстрации экрана</string>
 	<key>Hide in Mission Control</key>
@@ -1629,6 +1671,10 @@
 	<string>Мгновенно</string>
 	<key>Internet Accounts</key>
 	<string>Учетные записи интернета</string>
+	<key>Invisible to friends</key>
+	<string>Невидимка для друзей</string>
+	<key>Invisible: friends see you as away</key>
+	<string>Скрыто от друзей</string>
 	<key>Invite links</key>
 	<string>Ссылки-приглашения</string>
 	<key>Is %@ on this Mac?</key>
@@ -1687,6 +1733,8 @@
 	<string>Присоединиться к группе?</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>Подключаемся к Party. Это займет секунду.</string>
+	<key>Joining the party server</key>
+	<string>Подключение к серверу пати</string>
 	<key>Joining the party server…</key>
 	<string>Подключение к серверу пати…</string>
 	<key>Just met</key>
@@ -1751,6 +1799,8 @@
 	<string>%@ снова сможет тебя найти. Друзьями вы станете, когда кто-то добавит другого.</string>
 	<key>Let Tabbi into Anki</key>
 	<string>Пустить Tabbi в Anki</string>
+	<key>Let Tabbi run your Focus shortcuts</key>
+	<string>Пусть Tabbi запускает твои команды для фокуса</string>
 	<key>Let your AI fit your open tasks around today's calendar</key>
 	<string>Пусть ИИ разместит открытые задачи вокруг календаря на сегодня</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
@@ -1829,6 +1879,8 @@
 	<string>Отметить как выполненное</string>
 	<key>Mark as not done</key>
 	<string>Отметить как невыполненное</string>
+	<key>May Tabbi run your shortcuts?</key>
+	<string>Может ли Tabbi запускать твои быстрые команды?</string>
 	<key>Measuring cores...</key>
 	<string>Замер ядер...</string>
 	<key>Media</key>
@@ -1927,6 +1979,8 @@
 	<string>Следующая награда</string>
 	<key>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</key>
 	<string>Сейчас Mac спросит, можно ли Tabbi управлять %@. Ответ можно изменить в любой момент в Системных настройках.</string>
+	<key>Next, your Mac asks if Tabbi can control Shortcuts Events. You can change your answer any time in System Settings.</key>
+	<string>Сейчас Mac спросит, можно ли Tabbi управлять Shortcuts Events. Ответ можно изменить в любой момент в Системных настройках.</string>
 	<key>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</key>
 	<string>Сейчас Mac спросит, можно ли Tabbi присылать уведомления. Ответ можно изменить в любой момент в Системных настройках.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
@@ -2025,6 +2079,8 @@
 	<string>Нет. Эта версия слишком старая для Tabbi.</string>
 	<key>No. This copy of Tabbi can't ask for it.</key>
 	<string>Нет. Эта версия Tabbi не может запросить доступ.</string>
+	<key>No. Turn on Shortcuts Events for Tabbi in System Settings &gt; Privacy &amp; Security &gt; Automation.</key>
+	<string>Нет. Включи Shortcuts Events для Tabbi в Системных настройках › «Конфиденциальность и безопасность» › «Автоматизация».</string>
 	<key>Nobody sees roots growing. Then one day there's a tree.</key>
 	<string>Никто не видит, как растут корни. А потом однажды там стоит дерево.</string>
 	<key>None</key>
@@ -2047,6 +2103,8 @@
 	<string>Еще не проверено · обнови, чтобы загрузить лимиты</string>
 	<key>Not checked yet. Fix the step above first.</key>
 	<string>Еще не проверено. Сначала исправь шаг выше.</string>
+	<key>Not chosen</key>
+	<string>Не выбрана</string>
 	<key>Not connected</key>
 	<string>Не подключен</string>
 	<key>Not connected to Tabbi yet</key>
@@ -2073,6 +2131,8 @@
 	<string>Не настроено</string>
 	<key>Not synced yet</key>
 	<string>Еще не синхронизировано</string>
+	<key>Not yet. Click the button so your Mac can ask.</key>
+	<string>Пока нет. Нажми кнопку, чтобы Mac мог спросить.</string>
 	<key>Not yet. Open the Party tab to answer.</key>
 	<string>Пока нет. Открой вкладку Party, чтобы ответить.</string>
 	<key>Not yet. Pick a name and a pet to start.</key>
@@ -2089,6 +2149,8 @@
 	<string>Ничего не отмечено</string>
 	<key>Nothing due today</key>
 	<string>На сегодня ничего нет</string>
+	<key>Nothing is read until you choose</key>
+	<string>Ничего не читается, пока ты не выберешь</string>
 	<key>Nothing left to plan</key>
 	<string>Нечего планировать</string>
 	<key>Nothing listed yesterday</key>
@@ -2211,6 +2273,8 @@
 	<string>Открыть «Учетные записи интернета», чтобы добавить календарь Google, Exchange или iCloud</string>
 	<key>Open Party</key>
 	<string>Открыть Party</string>
+	<key>Open Privacy &amp; Security &gt; Automation in System Settings</key>
+	<string>Открыть «Конфиденциальность и безопасность» › «Автоматизация» в Системных настройках</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
 	<string>Открыть «Конфиденциальность и безопасность», чтобы разрешить доступ к календарю</string>
 	<key>Open Settings</key>
@@ -2383,6 +2447,8 @@
 	<string>Выбери имя и питомца. Аккаунт не нужен.</string>
 	<key>Pick a name and a pet, and say when you were born.</key>
 	<string>Выбери имя и питомца и укажи дату рождения.</string>
+	<key>Pick a reason first</key>
+	<string>Сначала выбери причину</string>
 	<key>Pick a sound to preview it</key>
 	<string>Выбери звук, чтобы прослушать</string>
 	<key>Pick a sound, then save the blend here</key>
@@ -2401,6 +2467,8 @@
 	<string>Выбери месяц и год рождения</string>
 	<key>Pick the name and pet your friends will see. No account or password needed.</key>
 	<string>Выбери имя и питомца, которых увидят друзья. Аккаунт и пароль не нужны.</string>
+	<key>Pick whose usage to show</key>
+	<string>Выбери, чье использование показывать</string>
 	<key>Pin %@ to the Study button</key>
 	<string>Закрепить %@ на кнопке «Учить»</string>
 	<key>Pin as Favorite Deck</key>
@@ -2531,12 +2599,16 @@
 	<string>Редкие</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
 	<string>Потянись руками вверх, а потом покрути плечами назад.</string>
+	<key>Read the latest Claude Code logs (sends nothing)</key>
+	<string>Прочитать свежие журналы Claude Code (ничего не отправляет)</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Прочитать свежие журналы Codex (ничего не отправляет)</string>
 	<key>Read through AnkiConnect on this Mac</key>
 	<string>Прочитано через AnkiConnect на этом Mac</string>
 	<key>Reading %@ sessions…</key>
 	<string>Чтение сеансов %@…</string>
+	<key>Reading Claude Code logs…</key>
+	<string>Чтение журналов Claude Code…</string>
 	<key>Reading Codex logs…</key>
 	<string>Чтение журналов Codex…</string>
 	<key>Reading what's playing.</key>
@@ -2569,6 +2641,8 @@
 	<string>Вернуться</string>
 	<key>Released under the MIT License.</key>
 	<string>Выпущено по лицензии MIT.</string>
+	<key>Remember this answer and stop asking after a crash</key>
+	<string>Запомнить ответ и больше не спрашивать после сбоя</string>
 	<key>Remind me to study</key>
 	<string>Напоминать об учебе</string>
 	<key>Reminders</key>
@@ -2605,6 +2679,8 @@
 	<string>Повторять эту песню</string>
 	<key>Report %@</key>
 	<string>Пожаловаться: %@</string>
+	<key>Report %@: %@</key>
+	<string>Пожаловаться на %1$@: %2$@</string>
 	<key>Report %@…</key>
 	<string>Пожаловаться: %@…</string>
 	<key>Report a problem: %@</key>
@@ -2719,16 +2795,24 @@
 	<string>Узнай, что дальше</string>
 	<key>See your %@ here. It only takes a moment.</key>
 	<string>Смотри здесь свои %@. Это займет минуту.</string>
+	<key>See your %@ usage</key>
+	<string>Твое использование %@</string>
 	<key>See your day at a glance</key>
 	<string>Весь день на одном экране</string>
 	<key>Select AnkiConnect and click Check for Updates</key>
 	<string>Выбери AnkiConnect и нажми «Проверить обновления»</string>
+	<key>Send</key>
+	<string>Отправить</string>
 	<key>Send (Return)</key>
 	<string>Отправить (Return)</string>
+	<key>Send Report</key>
+	<string>Отправить жалобу</string>
 	<key>Send a friend request with this code</key>
 	<string>Отправить запрос в друзья по этому коду</string>
 	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
 	<string>Отправь друзьям свой код, чтобы они тебя добавили. Они видят твое имя, питомца и таймер учебы.</string>
+	<key>Send this report to the Tabbi team</key>
+	<string>Отправить жалобу команде Tabbi</string>
 	<key>Send your AI requests to %@?</key>
 	<string>Отправлять запросы к ИИ в %@?</string>
 	<key>Sends what you ask to %@.</key>
@@ -2771,6 +2855,8 @@
 	<string>Поделись ею с другом, чтобы он мог тебя добавить.</string>
 	<key>Share your code above, or add theirs below.</key>
 	<string>Поделись своим кодом выше или введи код друга ниже.</string>
+	<key>Share your code, or add theirs below. Start a party from the Party tab.</key>
+	<string>Поделись своим кодом или добавь их код ниже. Пати можно начать на вкладке Party.</string>
 	<key>Shared focus: %@ left</key>
 	<string>Общий фокус: осталось %@</string>
 	<key>Shortcut</key>
@@ -2783,6 +2869,10 @@
 	<string>Команда выполнена.</string>
 	<key>Shortcuts</key>
 	<string>Быстрые команды</string>
+	<key>Shortcuts access is off</key>
+	<string>Доступ к Быстрым командам выключен</string>
+	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>Доступ к Быстрым командам выключен. Включи Shortcuts Events для Tabbi в настройках «Автоматизация».</string>
 	<key>Show %@</key>
 	<string>Показать %@</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
@@ -2799,6 +2889,8 @@
 	<string>Показать календарь</string>
 	<key>Show every deck with cards due</key>
 	<string>Показать все колоды с карточками на сегодня</string>
+	<key>Show friends when you study again</key>
+	<string>Снова показывать друзьям, когда ты учишься</string>
 	<key>Show less</key>
 	<string>Свернуть</string>
 	<key>Show live activity</key>
@@ -2821,6 +2913,8 @@
 	<string>Показывать сегодняшние стаканы на карточке перерыва с кнопкой, чтобы добавить</string>
 	<key>Show tomorrow's calendar</key>
 	<string>Показать календарь на завтра</string>
+	<key>Show usage for</key>
+	<string>Показывать использование</string>
 	<key>Show yesterday's calendar</key>
 	<string>Показать вчерашний календарь</string>
 	<key>Show yesterday's list</key>
@@ -2861,6 +2955,8 @@
 	<string>Вход…</string>
 	<key>Signing you in so friends can find you.</key>
 	<string>Выполняем вход, чтобы друзья могли тебя найти.</string>
+	<key>Signing you in so friends can find you. Your code shows here in a moment.</key>
+	<string>Регистрируем тебя, чтобы друзья могли тебя найти. Код скоро появится здесь.</string>
 	<key>Silly</key>
 	<string>Забавное</string>
 	<key>Silver</key>
@@ -3017,6 +3113,8 @@
 	<string>Не считать %@ отвлекающим</string>
 	<key>Stop focusing on this task</key>
 	<string>Перестать фокусироваться на задаче</string>
+	<key>Stop reading this folder</key>
+	<string>Больше не читать эту папку</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>Остановить синхронизацию на этом Mac. Питомец и прогресс останутся здесь.</string>
 	<key>Stop the preview</key>
@@ -3103,6 +3201,10 @@
 	<string>Синхронизация…</string>
 	<key>System</key>
 	<string>Система</string>
+	<key>Tabbi can count your tokens from the logs Claude Code keeps in the %@ folder. Choose it next. Nothing leaves your Mac.</key>
+	<string>Tabbi может считать твои токены по журналам, которые Claude Code хранит в папке %@. Выбери ее дальше. Ничего не покидает твой Mac.</string>
+	<key>Tabbi can show your limits and tokens from the logs Codex keeps in the %@ folder. Choose it next. Nothing leaves your Mac.</key>
+	<string>Tabbi может показывать твои лимиты и токены по журналам, которые Codex хранит в папке %@. Выбери ее дальше. Ничего не покидает твой Mac.</string>
 	<key>Tabbi can't control %@</key>
 	<string>Tabbi не может управлять: %@</string>
 	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
@@ -3117,16 +3219,26 @@
 	<string>Tabbi проверяет это прямо сейчас</string>
 	<key>Tabbi is still checking. This takes a second.</key>
 	<string>Tabbi еще проверяет. Это займет секунду.</string>
+	<key>Tabbi isn't allowed to run shortcuts yet. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>Tabbi пока не может запускать быстрые команды. Включи Shortcuts Events для Tabbi в настройках «Автоматизация».</string>
+	<key>Tabbi isn't allowed to run shortcuts. Turn on Shortcuts Events for Tabbi in System Settings &gt; Privacy &amp; Security &gt; Automation.</key>
+	<string>Tabbi не может запускать быстрые команды. Включи Shortcuts Events для Tabbi в Системных настройках › «Конфиденциальность и безопасность» › «Автоматизация».</string>
 	<key>Tabbi leaves your alerts alone until you turn it on.</key>
 	<string>Пока ты его не включишь, Tabbi не трогает уведомления.</string>
+	<key>Tabbi needs to ask first</key>
+	<string>Tabbi нужно сначала спросить</string>
 	<key>Tabbi only alerts you when a focus block or break ends.</key>
 	<string>Tabbi пришлет уведомление, только когда закончится блок фокуса или перерыв.</string>
 	<key>Tabbi only plays, pauses, skips and shows what's playing.</key>
 	<string>Tabbi только включает, ставит на паузу, переключает треки и показывает, что играет.</string>
 	<key>Tabbi only reads events to show today's plan.</key>
 	<string>Tabbi читает события, только чтобы показать план на сегодня.</string>
+	<key>Tabbi only runs the two shortcuts named in Focus settings, when focus starts and ends.</key>
+	<string>Tabbi запускает только две команды из настроек фокуса, когда фокус начинается и заканчивается.</string>
 	<key>Tabbi reads %@ and sends nothing.</key>
 	<string>Tabbi читает %@ и ничего не отправляет.</string>
+	<key>Tabbi reads only token counts, model names and Codex's plan limits from these folders, and nothing leaves your Mac. Remove a folder to stop Tabbi from reading it.</key>
+	<string>Tabbi читает из этих папок только число токенов, названия моделей и лимиты тарифа Codex, и ничего не покидает твой Mac. Удали папку, чтобы Tabbi перестал ее читать.</string>
 	<key>Tabbi shows the calendars your Mac knows about. Add your Google account once and its events show up.</key>
 	<string>Tabbi показывает календари, которые есть на Mac. Добавь аккаунт Google один раз, и его события появятся.</string>
 	<key>Tabbi tells you when a focus block or break ends.</key>
@@ -3161,6 +3273,8 @@
 	<string>Спасибо. Жалоба отправлена, %@ заблокирован.</string>
 	<key>Thanks. Your report was sent.</key>
 	<string>Спасибо. Жалоба отправлена.</string>
+	<key>That folder has no %@ logs. Choose the %@ folder in your home folder.</key>
+	<string>В этой папке нет журналов %1$@. Выбери папку %2$@ в домашней папке.</string>
 	<key>That friend request is no longer there.</key>
 	<string>Этой заявки в друзья больше нет.</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
@@ -3291,6 +3405,8 @@
 	<string>Этот Mac не может запускать команды для Tabbi. Обнови macOS.</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>Этот аккаунт больше не может пользоваться Party. Если считаешь, что это ошибка, напиши на %@.</string>
+	<key>This account can no longer use Party. Write to %@ if that's a mistake.</key>
+	<string>Этот аккаунт больше не может пользоваться Party. Напиши на %@, если это ошибка.</string>
 	<key>This chat is open</key>
 	<string>Этот чат открыт</string>
 	<key>This copy can't use the calendar</key>
@@ -3345,6 +3461,8 @@
 	<string>Как лучше сосредоточиться</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
 	<string>Чтобы прикрепить экран, включи Tabbi в разделе «Запись экрана». Снимок уйдет только %@ вместе с вопросом.</string>
+	<key>To check they exist it looks up their names, and it never changes a shortcut.</key>
+	<string>Чтобы проверить, что они есть, он смотрит их названия и никогда не меняет команды.</string>
 	<key>To install it, click %@ on the Claude row below.</key>
 	<string>Чтобы установить, нажми %@ в строке Claude ниже.</string>
 	<key>To sign in with Google, run %@ in Terminal once.</key>
@@ -3365,6 +3483,8 @@
 	<string>События дня и свободное время между ними. Календари Google появятся после добавления в «Учетных записях интернета».</string>
 	<key>Today's events show up in Tabbi.</key>
 	<string>События на сегодня видны в Tabbi.</string>
+	<key>Tokens per day</key>
+	<string>Токены по дням</string>
 	<key>Tomorrow</key>
 	<string>Завтра</string>
 	<key>Tomorrow has no free time worth a block before the evening.</key>
@@ -3421,6 +3541,8 @@
 	<string>Включи JavaScript для SoundCloud</string>
 	<key>Turn on Party?</key>
 	<string>Включить Party?</string>
+	<key>Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>Включи Shortcuts Events для Tabbi в настройках «Автоматизация».</string>
 	<key>Turn on Tabbi under Calendars in System Settings.</key>
 	<string>Включи Tabbi в разделе «Календари» в Системных настройках.</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -3487,6 +3609,16 @@
 	<string>Набор %@ обновлен и применен.</string>
 	<key>Updated %@; your tabs are unchanged.</key>
 	<string>Набор %@ обновлен, вкладки не изменились.</string>
+	<key>Updated %lldd ago</key>
+	<string>Обновлено %lld дн назад</string>
+	<key>Updated %lldh ago</key>
+	<string>Обновлено %lld ч назад</string>
+	<key>Updated %lldm ago</key>
+	<string>Обновлено %lld мин назад</string>
+	<key>Updated just now</key>
+	<string>Обновлено только что</string>
+	<key>Usage logs</key>
+	<string>Журналы использования</string>
 	<key>Usage of your rolling 5-hour limit</key>
 	<string>Расход скользящего 5-часового лимита</string>
 	<key>Usage of your weekly limit</key>
@@ -3513,6 +3645,8 @@
 	<string>Версия %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>Открыть на GitHub</string>
+	<key>Visible: friends see when you study</key>
+	<string>Видно друзьям</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>Яркие акценты и фиолетовое свечение.</string>
 	<key>Volume</key>
@@ -3707,6 +3841,8 @@
 	<string>Сейчас Mac спросит, можно ли %@ читать твои календари</string>
 	<key>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</key>
 	<string>Сначала спросит Mac, затем откроется «Конфиденциальность и безопасность» &gt; «Запись экрана» в Системных настройках</string>
+	<key>Your Mac asks once before Tabbi can run your shortcuts.</key>
+	<string>Mac один раз спросит, прежде чем Tabbi сможет запускать твои команды.</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Mac заряжается, а %@ немного попьет</string>
 	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>
@@ -3855,6 +3991,12 @@
 	<string>оч.</string>
 	<key>ready to unlock</key>
 	<string>можно открыть</string>
+	<key>resets %@</key>
+	<string>сброс %@</string>
+	<key>resets in %@</key>
+	<string>сброс через %@</string>
+	<key>resets now</key>
+	<string>сброс сейчас</string>
 	<key>session</key>
 	<string>сессия</string>
 	<key>sessions</key>

@@ -35,6 +35,8 @@
 	<string>チェック：%@</string>
 	<key>%@ climbed onto the rooftop</key>
 	<string>%@が屋根にのぼった</string>
+	<key>%@ closed unexpectedly. Send a crash report?</key>
+	<string>%@が予期せず終了しました。クラッシュレポートを送信しますか？</string>
 	<key>%@ collected a smooth pebble</key>
 	<string>%@がすべすべの石を拾った</string>
 	<key>%@ could not be copied to Applications. %@</key>
@@ -73,6 +75,8 @@
 	<string>%@は別のアプリで使われています。別のショートカットを登録してください。</string>
 	<key>%@ is already your friend</key>
 	<string>%@はもうフレンドです</string>
+	<key>%@ is away</key>
+	<string>%@は離席中</string>
 	<key>%@ is connected</key>
 	<string>%@に接続済み</string>
 	<key>%@ is damaged, so it's left untouched.</key>
@@ -227,6 +231,8 @@
 	<string>%1$@: 今日 %2$@ 完了</string>
 	<key>%@: %@ left</key>
 	<string>%@: 残り %@</string>
+	<key>%@: %@ tokens</key>
+	<string>%1$@：%2$@トークン</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: すべてのアイテムを獲得しました。イベント後もずっとあなたのものです。</string>
 	<key>%lld h</key>
@@ -355,6 +361,8 @@
 	<string>静かな1日でした。ゆっくり休んで、明日また始めましょう。</string>
 	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
 	<string>ペットからのレアな毛色。クローゼットの「外観」で試してみて。</string>
+	<key>A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:</key>
+	<string>レポートは問題の修正に役立ちます。含まれるのはAppのバージョン、macOSのバージョン、エディション、クラッシュ時のスタックとスレッド名だけで、内容、名前、タスク、トークンは一切含まれません。送信される内容は次のとおりです：</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>ひと休みの1週間。新しいスタートが待ってるよ。</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
@@ -457,6 +465,8 @@
 	<string>Googleや学校のアカウントを追加すると、その予定がここに表示されます。</string>
 	<key>Add your calendar</key>
 	<string>カレンダーを追加しよう</string>
+	<key>Add your name</key>
+	<string>名前を追加</string>
 	<key>Add…</key>
 	<string>追加…</string>
 	<key>After %@ closes unexpectedly, ask before sending a crash report, send it without asking, or never send one</key>
@@ -509,6 +519,8 @@
 	<string>集中中はすでに再生しています</string>
 	<key>Already playing: focus is running</key>
 	<string>再生中: 集中しています</string>
+	<key>Also block %@</key>
+	<string>%@もブロック</string>
 	<key>Always</key>
 	<string>常に</string>
 	<key>Always Visible</key>
@@ -791,6 +803,8 @@
 	<string>回答を変更</string>
 	<key>Changes appear at once, with no animation.</key>
 	<string>変化がアニメーションなしですぐに表示されます。</string>
+	<key>Change…</key>
+	<string>変更…</string>
 	<key>Charcoal</key>
 	<string>チャコール</string>
 	<key>Charging</key>
@@ -827,6 +841,8 @@
 	<string>パーティのオプションでサーバを確認してください。</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>インターネット接続を確認してください。接続が戻るとフレンドとパーティが表示されます。</string>
+	<key>Check your internet connection. You can also set up Party later in its tab.</key>
+	<string>インターネット接続を確認してください。パーティはあとでタブから設定することもできます。</string>
 	<key>Checking</key>
 	<string>確認中</string>
 	<key>Checking %@</key>
@@ -847,6 +863,8 @@
 	<string>あたたかな黒に桜色。</string>
 	<key>Chocolate</key>
 	<string>チョコ</string>
+	<key>Choose</key>
+	<string>選択</string>
 	<key>Choose AI</key>
 	<string>AI を選ぶ</string>
 	<key>Choose a method</key>
@@ -859,6 +877,14 @@
 	<string>開いたノッチの大きさを選びます。すべてのタブで同じサイズです。</string>
 	<key>Choose how lively the notch's animations are</key>
 	<string>ノッチのアニメーションの動きの大きさを選ぶ</string>
+	<key>Choose the %@ folder in your home folder</key>
+	<string>ホームフォルダ内の%@フォルダを選択</string>
+	<key>Choose the %@ folder in your home folder. Tabbi reads only token counts and model names from Claude Code's logs.</key>
+	<string>ホームフォルダ内の%@フォルダを選択してください。TabbiがClaude Codeのログから読み取るのは、トークン数とモデル名だけです。</string>
+	<key>Choose the %@ folder in your home folder. Tabbi reads only token counts, model names and plan limits from Codex's logs.</key>
+	<string>ホームフォルダ内の%@フォルダを選択してください。TabbiがCodexのログから読み取るのは、トークン数、モデル名、プランの上限だけです。</string>
+	<key>Choose the %@ folder next</key>
+	<string>次に%@フォルダを選択します</string>
 	<key>Choose when the notch is drawn. The shortcut always opens it.</key>
 	<string>ノッチを表示するタイミングを選びます。ショートカットではいつでも開けます。</string>
 	<key>Choose which display shows the notch. It falls back to the built-in display when this one is disconnected.</key>
@@ -881,6 +907,8 @@
 	<string>Claudeの準備OK</string>
 	<key>Claude location</key>
 	<string>Claudeの場所</string>
+	<key>Claude usage</key>
+	<string>Claudeの使用量</string>
 	<key>Clear "%@"</key>
 	<string>「%@」を外す</string>
 	<key>Clear All</key>
@@ -893,10 +921,10 @@
 	<string>%@をクリックして公式の手順を確認し、ここに戻ってきてください。</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
 	<string>リストでAnkiConnectをクリックし、「Check for Updates」をクリックします。</string>
-	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
-	<string>「接続」をクリックし、Tabbiが%@を操作してよいか尋ねられたら「許可」を選んでください。</string>
-	<key>Click Connect, then Allow when your Mac asks. It only asks once.</key>
-	<string>「接続」をクリックし、Macに尋ねられたら「許可」を選んでください。確認は一度だけです。</string>
+	<key>Click Connect and your Mac asks if Tabbi can control %@.</key>
+	<string>「接続」をクリックすると、Tabbiが%@を操作してよいかMacが確認します。</string>
+	<key>Click Connect and your Mac asks. It only asks once.</key>
+	<string>「接続」をクリックするとMacが確認します。確認は一度だけです。</string>
 	<key>Click Get Add-ons, paste this code, then click OK.</key>
 	<string>「Get Add-ons」をクリックし、このコードをペーストして「OK」をクリックします。</string>
 	<key>Click Restore Defaults, then OK</key>
@@ -955,10 +983,14 @@
 	<string>閉じます。パーティは自動で接続を続けます。</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>閉じます。パーティはいつでも設定できます。</string>
+	<key>Close without reporting (Esc)</key>
+	<string>報告せずに閉じる（esc）</string>
 	<key>Closet</key>
 	<string>クローゼット</string>
 	<key>Code</key>
 	<string>コード</string>
+	<key>Codex usage</key>
+	<string>Codexの使用量</string>
 	<key>Command</key>
 	<string>コマンド</string>
 	<key>Compact</key>
@@ -1205,6 +1237,8 @@
 	<string>Macにカレンダーはありますか？</string>
 	<key>Dog</key>
 	<string>イヌ</string>
+	<key>Don't Send</key>
+	<string>送信しない</string>
 	<key>Don't ask again</key>
 	<string>今後確認しない</string>
 	<key>Done</key>
@@ -1317,6 +1351,8 @@
 	<string>今日の予定に合わせて作業と休憩を配置しています</string>
 	<key>Fitting your work and breaks around tomorrow's events</key>
 	<string>明日の予定に合わせて作業と休憩を配置しています</string>
+	<key>Fix it in Settings &gt; Tabs &gt; Party &gt; Options.</key>
+	<string>設定 › タブ › パーティ › オプションで修正してください。</string>
 	<key>Fix the shortcut in the Shortcuts app, then test again</key>
 	<string>ショートカットAppでショートカットを修正してから、もう一度テストしてください</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
@@ -1437,6 +1473,8 @@
 	<string>フレンドサーバー</string>
 	<key>Frog Hat</key>
 	<string>カエル帽</string>
+	<key>From your Claude Code logs</key>
+	<string>Claude Codeのログから</string>
 	<key>Frosted glass cards over a cool blue glow.</key>
 	<string>クールな青い光に浮かぶすりガラスのカード。</string>
 	<key>Full</key>
@@ -1483,6 +1521,8 @@
 	<string>%@ にする前のタブとキットに戻します</string>
 	<key>Go invisible</key>
 	<string>オフライン表示</string>
+	<key>Go invisible. Your study minutes still count.</key>
+	<string>非表示にします。勉強時間は記録され続けます。</string>
 	<key>Go on without a name</key>
 	<string>名前なしで進む</string>
 	<key>Goals left today</key>
@@ -1529,6 +1569,8 @@
 	<string>非表示</string>
 	<key>Hide %@ Until I Press %@</key>
 	<string>%2$@ を押すまで %1$@ を隠す</string>
+	<key>Hide each other everywhere in Party. You can unblock in Party options.</key>
+	<string>パーティのどこでもお互いに表示されなくなります。パーティのオプションで解除できます。</string>
 	<key>Hide from screen sharing</key>
 	<string>画面共有で隠す</string>
 	<key>Hide in Mission Control</key>
@@ -1629,6 +1671,10 @@
 	<string>即時</string>
 	<key>Internet Accounts</key>
 	<string>インターネットアカウント</string>
+	<key>Invisible to friends</key>
+	<string>フレンドに非表示</string>
+	<key>Invisible: friends see you as away</key>
+	<string>フレンドに非表示</string>
 	<key>Invite links</key>
 	<string>招待リンク</string>
 	<key>Is %@ on this Mac?</key>
@@ -1687,6 +1733,8 @@
 	<string>このパーティに参加しますか？</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>パーティに参加中です。少しお待ちください。</string>
+	<key>Joining the party server</key>
+	<string>パーティサーバーに接続中</string>
 	<key>Joining the party server…</key>
 	<string>パーティサーバーに接続中…</string>
 	<key>Just met</key>
@@ -1751,6 +1799,8 @@
 	<string>%@が再びあなたを見つけられるようにします。どちらかが追加するまでフレンドにはなりません。</string>
 	<key>Let Tabbi into Anki</key>
 	<string>AnkiへのTabbiの接続を許可</string>
+	<key>Let Tabbi run your Focus shortcuts</key>
+	<string>Tabbiに集中用のショートカットを実行させる</string>
 	<key>Let your AI fit your open tasks around today's calendar</key>
 	<string>AIが未完了のタスクを今日の予定に合わせて配置</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
@@ -1829,6 +1879,8 @@
 	<string>完了にする</string>
 	<key>Mark as not done</key>
 	<string>未完了にする</string>
+	<key>May Tabbi run your shortcuts?</key>
+	<string>Tabbiはショートカットを実行できますか？</string>
 	<key>Measuring cores...</key>
 	<string>コアを計測中...</string>
 	<key>Media</key>
@@ -1927,6 +1979,8 @@
 	<string>次の解放</string>
 	<key>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</key>
 	<string>次に、Tabbiが %@ を操作してよいかMacが確認します。答えはいつでもシステム設定で変更できます。</string>
+	<key>Next, your Mac asks if Tabbi can control Shortcuts Events. You can change your answer any time in System Settings.</key>
+	<string>次に、TabbiがShortcuts Eventsを操作してよいかMacが確認します。答えはいつでもシステム設定で変更できます。</string>
 	<key>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</key>
 	<string>次に、Tabbiが通知を送ってよいかMacが確認します。答えはいつでもシステム設定で変更できます。</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
@@ -2025,6 +2079,8 @@
 	<string>いいえ。このバージョンはTabbiには古すぎます。</string>
 	<key>No. This copy of Tabbi can't ask for it.</key>
 	<string>いいえ。このTabbiではアクセスを求められません。</string>
+	<key>No. Turn on Shortcuts Events for Tabbi in System Settings &gt; Privacy &amp; Security &gt; Automation.</key>
+	<string>いいえ。システム設定 › プライバシーとセキュリティ › オートメーションで、TabbiのShortcuts Eventsをオンにしてください。</string>
 	<key>Nobody sees roots growing. Then one day there's a tree.</key>
 	<string>根が伸びるのは誰にも見えない。でもある日、そこに木が立っている。</string>
 	<key>None</key>
@@ -2047,6 +2103,8 @@
 	<string>未確認 · 更新すると上限を読み込みます</string>
 	<key>Not checked yet. Fix the step above first.</key>
 	<string>まだ確認していません。先に上のステップを解決してください。</string>
+	<key>Not chosen</key>
+	<string>未選択</string>
 	<key>Not connected</key>
 	<string>未接続</string>
 	<key>Not connected to Tabbi yet</key>
@@ -2073,6 +2131,8 @@
 	<string>未設定</string>
 	<key>Not synced yet</key>
 	<string>まだ同期していません</string>
+	<key>Not yet. Click the button so your Mac can ask.</key>
+	<string>まだです。ボタンをクリックすると、Macが確認できます。</string>
 	<key>Not yet. Open the Party tab to answer.</key>
 	<string>まだです。パーティタブを開いて答えてください。</string>
 	<key>Not yet. Pick a name and a pet to start.</key>
@@ -2089,6 +2149,8 @@
 	<string>完了した項目なし</string>
 	<key>Nothing due today</key>
 	<string>今日の復習はありません</string>
+	<key>Nothing is read until you choose</key>
+	<string>選択するまで何も読み取りません</string>
 	<key>Nothing left to plan</key>
 	<string>計画できる時間がありません</string>
 	<key>Nothing listed yesterday</key>
@@ -2211,6 +2273,8 @@
 	<string>「インターネットアカウント」を開いて Google、Exchange、iCloud のカレンダーを追加</string>
 	<key>Open Party</key>
 	<string>パーティを開く</string>
+	<key>Open Privacy &amp; Security &gt; Automation in System Settings</key>
+	<string>システム設定の「プライバシーとセキュリティ › オートメーション」を開く</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
 	<string>「プライバシーとセキュリティ」を開いてカレンダーへのアクセスを許可</string>
 	<key>Open Settings</key>
@@ -2383,6 +2447,8 @@
 	<string>名前とペットを選んで始めましょう。アカウントは不要です。</string>
 	<key>Pick a name and a pet, and say when you were born.</key>
 	<string>名前とペットを選び、生年月日を入力してください。</string>
+	<key>Pick a reason first</key>
+	<string>先に理由を選んでください</string>
 	<key>Pick a sound to preview it</key>
 	<string>試聴するサウンドを選んでください</string>
 	<key>Pick a sound, then save the blend here</key>
@@ -2401,6 +2467,8 @@
 	<string>生まれた月と年を選んでください</string>
 	<key>Pick the name and pet your friends will see. No account or password needed.</key>
 	<string>友達に表示される名前とペットを選んでください。アカウントもパスワードも不要です。</string>
+	<key>Pick whose usage to show</key>
+	<string>表示する使用状況を選択</string>
 	<key>Pin %@ to the Study button</key>
 	<string>%@ を学習ボタンに固定</string>
 	<key>Pin as Favorite Deck</key>
@@ -2531,12 +2599,16 @@
 	<string>レア</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
 	<string>腕を高く伸ばして、肩を後ろに回そう。</string>
+	<key>Read the latest Claude Code logs (sends nothing)</key>
+	<string>最新のClaude Codeログを読む（何も送信しません）</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>最新のCodexログを読む（何も送信しません）</string>
 	<key>Read through AnkiConnect on this Mac</key>
 	<string>このMacのAnkiConnect経由で読み込み</string>
 	<key>Reading %@ sessions…</key>
 	<string>%@のセッションを読み込み中…</string>
+	<key>Reading Claude Code logs…</key>
+	<string>Claude Codeのログを読み込み中…</string>
 	<key>Reading Codex logs…</key>
 	<string>Codexのログを読み込み中…</string>
 	<key>Reading what's playing.</key>
@@ -2569,6 +2641,8 @@
 	<string>再参加</string>
 	<key>Released under the MIT License.</key>
 	<string>MITライセンスで公開しています。</string>
+	<key>Remember this answer and stop asking after a crash</key>
+	<string>この回答を記憶し、クラッシュ後に尋ねないようにします</string>
 	<key>Remind me to study</key>
 	<string>勉強をリマインド</string>
 	<key>Reminders</key>
@@ -2605,6 +2679,8 @@
 	<string>この曲をリピート</string>
 	<key>Report %@</key>
 	<string>%@を報告</string>
+	<key>Report %@: %@</key>
+	<string>%1$@を報告：%2$@</string>
 	<key>Report %@…</key>
 	<string>%@を報告…</string>
 	<key>Report a problem: %@</key>
@@ -2719,16 +2795,24 @@
 	<string>次の予定を見よう</string>
 	<key>See your %@ here. It only takes a moment.</key>
 	<string>%@をここで確認できます。設定はすぐ終わります。</string>
+	<key>See your %@ usage</key>
+	<string>%@の使用状況を見る</string>
 	<key>See your day at a glance</key>
 	<string>一日をひと目で</string>
 	<key>Select AnkiConnect and click Check for Updates</key>
 	<string>AnkiConnect を選んで アップデートを確認 をクリック</string>
+	<key>Send</key>
+	<string>送信</string>
 	<key>Send (Return)</key>
 	<string>送信(Return)</string>
+	<key>Send Report</key>
+	<string>報告を送信</string>
 	<key>Send a friend request with this code</key>
 	<string>このコードでフレンド申請を送る</string>
 	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
 	<string>コードを友達に送って追加してもらいましょう。名前、ペット、勉強タイマーが友達に表示されます。</string>
+	<key>Send this report to the Tabbi team</key>
+	<string>この報告をTabbiチームに送信</string>
 	<key>Send your AI requests to %@?</key>
 	<string>AIへのリクエストを%@に送信しますか?</string>
 	<key>Sends what you ask to %@.</key>
@@ -2771,6 +2855,8 @@
 	<string>友達に共有して、あなたを追加してもらいましょう。</string>
 	<key>Share your code above, or add theirs below.</key>
 	<string>上のコードを共有するか、下に相手のコードを入力しましょう。</string>
+	<key>Share your code, or add theirs below. Start a party from the Party tab.</key>
+	<string>コードを共有するか、下に相手のコードを追加しましょう。パーティはパーティタブで始められます。</string>
 	<key>Shared focus: %@ left</key>
 	<string>みんなで集中: 残り%@</string>
 	<key>Shortcut</key>
@@ -2783,6 +2869,10 @@
 	<string>ショートカットを実行しました。</string>
 	<key>Shortcuts</key>
 	<string>ショートカット</string>
+	<key>Shortcuts access is off</key>
+	<string>ショートカットへのアクセスがオフ</string>
+	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>ショートカットへのアクセスがオフです。オートメーションの設定でTabbiのShortcuts Eventsをオンにしてください。</string>
 	<key>Show %@</key>
 	<string>%@を表示</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
@@ -2799,6 +2889,8 @@
 	<string>カレンダーを表示</string>
 	<key>Show every deck with cards due</key>
 	<string>カードがあるすべてのデッキを表示</string>
+	<key>Show friends when you study again</key>
+	<string>勉強中であることを再びフレンドに表示</string>
 	<key>Show less</key>
 	<string>表示を減らす</string>
 	<key>Show live activity</key>
@@ -2821,6 +2913,8 @@
 	<string>休憩カードに今日の杯数と追加ボタンを表示します</string>
 	<key>Show tomorrow's calendar</key>
 	<string>明日のカレンダーを表示</string>
+	<key>Show usage for</key>
+	<string>使用状況を表示</string>
 	<key>Show yesterday's calendar</key>
 	<string>昨日のカレンダーを表示</string>
 	<key>Show yesterday's list</key>
@@ -2861,6 +2955,8 @@
 	<string>サインイン中…</string>
 	<key>Signing you in so friends can find you.</key>
 	<string>友達があなたを見つけられるようサインインしています。</string>
+	<key>Signing you in so friends can find you. Your code shows here in a moment.</key>
+	<string>フレンドに見つけてもらえるよう登録しています。まもなくここにコードが表示されます。</string>
 	<key>Silly</key>
 	<string>おもしろ</string>
 	<key>Silver</key>
@@ -3017,6 +3113,8 @@
 	<string>%@を気が散るアプリから外す</string>
 	<key>Stop focusing on this task</key>
 	<string>このタスクへの集中をやめる</string>
+	<key>Stop reading this folder</key>
+	<string>このフォルダの読み取りをやめる</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>このMacでの同期を停止します。ペットと進捗はこのMacに残ります。</string>
 	<key>Stop the preview</key>
@@ -3103,6 +3201,10 @@
 	<string>同期中…</string>
 	<key>System</key>
 	<string>システム</string>
+	<key>Tabbi can count your tokens from the logs Claude Code keeps in the %@ folder. Choose it next. Nothing leaves your Mac.</key>
+	<string>TabbiはClaude Codeが%@フォルダに保存するログからトークンを数えられます。次にこのフォルダを選択してください。Macの外には何も送られません。</string>
+	<key>Tabbi can show your limits and tokens from the logs Codex keeps in the %@ folder. Choose it next. Nothing leaves your Mac.</key>
+	<string>TabbiはCodexが%@フォルダに保存するログから上限とトークンを表示できます。次にこのフォルダを選択してください。Macの外には何も送られません。</string>
 	<key>Tabbi can't control %@</key>
 	<string>Tabbiは%@を操作できません</string>
 	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
@@ -3117,16 +3219,26 @@
 	<string>Tabbiが今確認しています</string>
 	<key>Tabbi is still checking. This takes a second.</key>
 	<string>Tabbiが確認中です。少しお待ちください。</string>
+	<key>Tabbi isn't allowed to run shortcuts yet. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>Tabbiはまだショートカットを実行できません。オートメーションの設定でTabbiのShortcuts Eventsをオンにしてください。</string>
+	<key>Tabbi isn't allowed to run shortcuts. Turn on Shortcuts Events for Tabbi in System Settings &gt; Privacy &amp; Security &gt; Automation.</key>
+	<string>Tabbiはショートカットを実行できません。システム設定 › プライバシーとセキュリティ › オートメーションで、TabbiのShortcuts Eventsをオンにしてください。</string>
 	<key>Tabbi leaves your alerts alone until you turn it on.</key>
 	<string>オンにするまで、Tabbiは通知に触れません。</string>
+	<key>Tabbi needs to ask first</key>
+	<string>Tabbiは先に確認が必要です</string>
 	<key>Tabbi only alerts you when a focus block or break ends.</key>
 	<string>Tabbiが通知するのは、集中時間や休憩が終わったときだけです。</string>
 	<key>Tabbi only plays, pauses, skips and shows what's playing.</key>
 	<string>Tabbiが行うのは、再生、一時停止、スキップ、再生中の曲の表示だけです。</string>
 	<key>Tabbi only reads events to show today's plan.</key>
 	<string>Tabbiは今日の予定を表示するためだけにイベントを読み取ります。</string>
+	<key>Tabbi only runs the two shortcuts named in Focus settings, when focus starts and ends.</key>
+	<string>Tabbiが実行するのは、集中の設定で指定した2つのショートカットだけで、集中の開始時と終了時に限られます。</string>
 	<key>Tabbi reads %@ and sends nothing.</key>
 	<string>Tabbiは%@を読み取るだけで、何も送信しません。</string>
+	<key>Tabbi reads only token counts, model names and Codex's plan limits from these folders, and nothing leaves your Mac. Remove a folder to stop Tabbi from reading it.</key>
+	<string>Tabbiがこれらのフォルダから読み取るのは、トークン数、モデル名、Codexのプラン上限だけで、Macの外には何も送られません。読み取りをやめるにはフォルダを削除してください。</string>
 	<key>Tabbi shows the calendars your Mac knows about. Add your Google account once and its events show up.</key>
 	<string>TabbiはMacに登録されたカレンダーを表示します。Googleアカウントを一度追加すれば、その予定が表示されます。</string>
 	<key>Tabbi tells you when a focus block or break ends.</key>
@@ -3161,6 +3273,8 @@
 	<string>ありがとうございます。報告を送信し、%@をブロックしました。</string>
 	<key>Thanks. Your report was sent.</key>
 	<string>ありがとうございます。報告を送信しました。</string>
+	<key>That folder has no %@ logs. Choose the %@ folder in your home folder.</key>
+	<string>そのフォルダには%1$@のログがありません。ホームフォルダ内の%2$@フォルダを選択してください。</string>
 	<key>That friend request is no longer there.</key>
 	<string>そのフレンド申請はもうありません。</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
@@ -3291,6 +3405,8 @@
 	<string>このMacではTabbiのショートカットを実行できません。macOSを最新にしてください。</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>このアカウントはパーティを利用できなくなりました。誤りだと思う場合は%@までご連絡ください。</string>
+	<key>This account can no longer use Party. Write to %@ if that's a mistake.</key>
+	<string>このアカウントはパーティを利用できなくなりました。間違いの場合は %@ までご連絡ください。</string>
 	<key>This chat is open</key>
 	<string>このチャットを表示中</string>
 	<key>This copy can't use the calendar</key>
@@ -3345,6 +3461,8 @@
 	<string>集中力を上げるコツ</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
 	<string>画面を添付するには、画面収録でTabbiをオンにしてください。スクリーンショットは質問と一緒に%@にだけ送られます。</string>
+	<key>To check they exist it looks up their names, and it never changes a shortcut.</key>
+	<string>存在を確認するために名前を調べるだけで、ショートカットを変更することはありません。</string>
 	<key>To install it, click %@ on the Claude row below.</key>
 	<string>インストールするには、下のClaudeの行で%@をクリックしてください。</string>
 	<key>To sign in with Google, run %@ in Terminal once.</key>
@@ -3365,6 +3483,8 @@
 	<string>今日の予定とその間の空き時間。Google カレンダーはインターネットアカウントに追加すると表示されます。</string>
 	<key>Today's events show up in Tabbi.</key>
 	<string>今日の予定がTabbiに表示されます。</string>
+	<key>Tokens per day</key>
+	<string>1日あたりのトークン</string>
 	<key>Tomorrow</key>
 	<string>明日</string>
 	<key>Tomorrow has no free time worth a block before the evening.</key>
@@ -3421,6 +3541,8 @@
 	<string>SoundCloud用にJavaScriptをオンにしてください</string>
 	<key>Turn on Party?</key>
 	<string>パーティをオンにしますか？</string>
+	<key>Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>オートメーションの設定でTabbiのShortcuts Eventsをオンにしてください。</string>
 	<key>Turn on Tabbi under Calendars in System Settings.</key>
 	<string>システム設定の「カレンダー」で、Tabbiをオンにしてください。</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -3487,6 +3609,16 @@
 	<string>%@を更新して適用しました。</string>
 	<key>Updated %@; your tabs are unchanged.</key>
 	<string>%@を更新しました。タブはそのままです。</string>
+	<key>Updated %lldd ago</key>
+	<string>%lld日前に更新</string>
+	<key>Updated %lldh ago</key>
+	<string>%lld時間前に更新</string>
+	<key>Updated %lldm ago</key>
+	<string>%lld分前に更新</string>
+	<key>Updated just now</key>
+	<string>たった今更新</string>
+	<key>Usage logs</key>
+	<string>使用状況のログ</string>
 	<key>Usage of your rolling 5-hour limit</key>
 	<string>5時間ごとの上限の使用量</string>
 	<key>Usage of your weekly limit</key>
@@ -3513,6 +3645,8 @@
 	<string>バージョン %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>GitHubで見る</string>
+	<key>Visible: friends see when you study</key>
+	<string>フレンドに表示中</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>鮮やかなアクセントと紫の光。</string>
 	<key>Volume</key>
@@ -3707,6 +3841,8 @@
 	<string>次に、%@ がカレンダーを読み取ってよいかMacが確認します</string>
 	<key>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</key>
 	<string>Macが確認したあと、システム設定の「プライバシーとセキュリティ」&gt;「画面収録」が開きます</string>
+	<key>Your Mac asks once before Tabbi can run your shortcuts.</key>
+	<string>Tabbiがショートカットを実行する前に、Macが一度だけ確認します。</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Macを充電中、%@もひと休みで一口</string>
 	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>
@@ -3855,6 +3991,12 @@
 	<string>pt</string>
 	<key>ready to unlock</key>
 	<string>解放できます</string>
+	<key>resets %@</key>
+	<string>%@にリセット</string>
+	<key>resets in %@</key>
+	<string>%@後にリセット</string>
+	<key>resets now</key>
+	<string>まもなくリセット</string>
 	<key>session</key>
 	<string>セッション</string>
 	<key>sessions</key>

@@ -1,12 +1,32 @@
 import XCTest
 @testable import TabbiKitCore
 
-/// An edition that leaves modules out (the App Store edition) must still
-/// apply every kit cleanly: the left-out tabs are skipped without a warning,
-/// and nothing offers them.
+/// An edition that leaves modules out must still apply every kit cleanly:
+/// the left-out tabs are skipped without a warning, and nothing offers them.
+/// The App Store edition left out Party and AI Usage until 1.0.4; the
+/// mechanism stays for future editions, so these tests use one of their own.
 final class EditionCatalogTests: XCTestCase {
+    /// An edition without Party and AI Usage, as the App Store edition was.
     private var appStore: Edition {
-        get throws { try XCTUnwrap(Edition.named("appstore")) }
+        get throws {
+            let real = try XCTUnwrap(Edition.named("appstore"))
+            return Edition(id: "lean", name: "Lean", bundleIdentifier: real.bundleIdentifier,
+                           defaultKitID: real.defaultKitID, distribution: .appStore,
+                           excludedModules: [.claudeUsage, .party])
+        }
+    }
+
+    func testTheAppStoreEditionOffersEveryModule() throws {
+        let edition = try XCTUnwrap(Edition.named("appstore"))
+        let catalog = edition.catalog(from: .builtIn)
+        XCTAssertEqual(catalog, .builtIn)
+        XCTAssertTrue(catalog.contains(.party))
+        XCTAssertTrue(catalog.contains(.claudeUsage))
+        XCTAssertTrue(TickerKind.all(in: catalog).contains(.party))
+        for kit in KitLibrary.bundled.kits {
+            XCTAssertEqual(kit.issues(catalog: catalog), [], kit.id)
+            XCTAssertEqual(kit.layout(catalog: catalog), kit.layout(catalog: .builtIn), kit.id)
+        }
     }
 
     func testExcludingDropsModulesAndRemembersThemAsUnavailable() {
@@ -27,7 +47,7 @@ final class EditionCatalogTests: XCTestCase {
         XCTAssertEqual(catalog.unavailableIDs, ["chess"])
     }
 
-    func testEveryBundledKitAppliesCleanlyInTheAppStoreEdition() throws {
+    func testEveryBundledKitAppliesCleanlyInAnEditionThatLeavesModulesOut() throws {
         let edition = try appStore
         let catalog = edition.catalog(from: .builtIn)
         XCTAssertFalse(KitLibrary.bundled.kits.isEmpty)
@@ -44,7 +64,7 @@ final class EditionCatalogTests: XCTestCase {
         }
     }
 
-    func testEssentialsKeepsAskAIInTheAppStoreEdition() throws {
+    func testEssentialsKeepsAskAIInAnEditionThatLeavesModulesOut() throws {
         // Ask answers through API keys or Ollama there, so no tab is lost.
         let essentials = try XCTUnwrap(KitLibrary.bundled["essentials"])
         let full = essentials.layout(catalog: .builtIn)
@@ -67,7 +87,7 @@ final class EditionCatalogTests: XCTestCase {
         XCTAssertEqual(kit.defaults.resolvedTicker(catalog: catalog), [.tasks])
     }
 
-    func testTyposAreStillReportedInTheAppStoreEdition() throws {
+    func testTyposAreStillReportedInAnEditionThatLeavesModulesOut() throws {
         let kit = try KitManifest.decode(from: Data(#"""
         {"formatVersion": 1, "id": "typo", "name": "Typo", "modules": ["planner", "claudeAks"],
          "defaults": {"ticker": ["partty"]}}

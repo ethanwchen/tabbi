@@ -100,6 +100,30 @@ final class ClaudeLocalStatsTests: XCTestCase {
         XCTAssertEqual(stats.lastSevenDays.topModel, "sonnet")
     }
 
+    func testCountsTokensPerCalendarDayOldestFirst() {
+        let now = date("2026-10-01T15:00:00Z")
+        let stats = ClaudeLocalStats.aggregate([
+            record("a", "opus", "2026-10-01T09:00:00Z", tokens: 100),
+            record("b", "haiku", "2026-10-01T10:00:00Z", tokens: 50),
+            record("c", "opus", "2026-09-30T23:59:59Z", tokens: 1000),
+            record("d", "opus", "2026-09-25T00:00:00Z", tokens: 7), // first day of the window
+            record("e", "opus", "2026-09-24T23:59:59Z", tokens: 9999), // just outside
+            record("f", "opus", "2026-10-01T16:00:00Z", tokens: 9999), // in the future
+        ], now: now, calendar: utc)
+        XCTAssertEqual(stats.daily, [7, 0, 0, 0, 0, 1000, 150])
+        XCTAssertEqual(stats.daily.reduce(0, +), stats.lastSevenDays.tokens.total)
+        XCTAssertEqual(stats.daily.last, stats.today.tokens.total)
+        XCTAssertEqual(ClaudeLocalStats.aggregate([], now: now, calendar: utc).daily, Array(repeating: 0, count: 7))
+    }
+
+    func testStatsSavedBeforeDailyTotalsStillDecode() throws {
+        let old = #"{"today": {"models": []}, "lastSevenDays": {"models": []}}"#
+        let stats = try JSONDecoder().decode(ClaudeLocalStats.self, from: Data(old.utf8))
+        XCTAssertEqual(stats.today, .empty)
+        XCTAssertEqual(stats.lastSevenDays, .empty)
+        XCTAssertEqual(stats.daily, [])
+    }
+
     func testEmptyInputHasNoTopModel() {
         let stats = ClaudeLocalStats.aggregate([], now: Date(), calendar: utc)
         XCTAssertEqual(stats, .empty)

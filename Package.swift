@@ -5,8 +5,9 @@ import PackageDescription
 // The Mac App Store build (scripts/release-appstore.sh, docs/appstore.md):
 // `TABBI_APPSTORE=1 swift build` compiles the app with the APPSTORE flag and
 // leaves out what App Review refuses in a sandboxed app: Sparkle (not even
-// linked), install hygiene (it moves the app and reads a private API) and
-// the modules that run the claude CLI. Everything else is the same code.
+// linked) and install hygiene (it moves the app and reads a private API).
+// Everything else is the same code; features that would start a helper
+// program take their sandboxed path there (`Edition.isSandboxed`).
 // Pass `--only-use-versions-from-resolved-file` too: without Sparkle the
 // manifest has no dependencies, and SwiftPM would delete Package.resolved.
 let appStore = ProcessInfo.processInfo.environment["TABBI_APPSTORE"] == "1"
@@ -23,12 +24,10 @@ let swiftSettings: [SwiftSetting] = [
 ] + (appStore ? [.define("APPSTORE")] : [])
 
 /// Sources the App Store build leaves out, relative to Sources/Tabbi. Their
-/// few call sites sit behind `#if !APPSTORE`, and `ModuleList` drops the
-/// modules' lines.
+/// few call sites sit behind `#if !APPSTORE`.
 let appStoreExcludedSources = [
     "Updates",
     "InstallHygiene",
-    "Modules/ClaudeUsage",
 ]
 
 let package = Package(

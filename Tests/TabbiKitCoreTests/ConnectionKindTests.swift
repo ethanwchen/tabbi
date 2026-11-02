@@ -28,10 +28,12 @@ final class ConnectionKindTests: XCTestCase {
         XCTAssertEqual(ConnectionKind.relevant(to: [.planner]), [.calendar, .notifications, .doNotDisturb])
     }
 
-    func testABuildWithoutLocalToolsHidesClaudeAndDoNotDisturb() {
-        XCTAssertEqual(ConnectionKind.relevant(to: [.planner], localTools: false), [.calendar, .notifications])
+    func testABuildWithoutLocalToolsHidesOnlyClaude() {
+        // Do Not Disturb runs through Shortcuts Events in the sandbox.
+        XCTAssertEqual(ConnectionKind.relevant(to: [.planner], localTools: false),
+                       [.calendar, .notifications, .doNotDisturb])
         XCTAssertEqual(ConnectionKind.relevant(to: [.claudeAsk, .claudeUsage], localTools: false), [])
-        XCTAssertEqual(ConnectionKind.allCases.filter(\.needsLocalTools), [.doNotDisturb, .claude])
+        XCTAssertEqual(ConnectionKind.allCases.filter(\.needsLocalTools), [.claude])
     }
 
     func testEveryRowExplainsWhatItUnlocksInPlainWords() {

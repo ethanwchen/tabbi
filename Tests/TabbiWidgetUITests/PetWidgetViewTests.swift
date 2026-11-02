@@ -80,6 +80,10 @@ final class PetWidgetViewTests: XCTestCase {
         stopped.timer = nil
         let later = now.addingTimeInterval(30 * 60)
         for size in [PetWidgetSize.small, .medium] {
+            // The first render in a process can still be drawing with fonts
+            // and sprites that load lazily, which under a busy parallel run
+            // changed a few pixels; a throwaway render warms them first.
+            _ = try render(stopped, at: later, size: size, scheme: .light)
             let finished = try png(render(running, at: later, size: size, scheme: .light))
             XCTAssertEqual(finished, try png(render(stopped, at: later, size: size, scheme: .light)))
             XCTAssertNotEqual(finished, try png(render(running, at: now, size: size, scheme: .light)))

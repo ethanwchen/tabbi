@@ -183,6 +183,26 @@
 			<string>%lld фокус-сессии</string>
 		</dict>
 	</dict>
+	<key>%lld friends</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld друга</string>
+			<key>many</key>
+			<string>%lld друзей</string>
+			<key>one</key>
+			<string>%lld друг</string>
+			<key>other</key>
+			<string>%lld друга</string>
+		</dict>
+	</dict>
 	<key>%lld friends are here with you.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

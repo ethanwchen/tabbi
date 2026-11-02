@@ -305,6 +305,11 @@ extension FocusShortcutsState {
         if !isTurnedOn {
             checks = [ConnectionCheck(String(localized: "Is Do Not Disturb turned on in Tabbi?", bundle: .tabbi), .failed,
                                       String(localized: "No. Click Turn on, or switch it on in Settings under Focus.", bundle: .tabbi))]
+        } else if let access, access != .granted {
+            let question = String(localized: "May Tabbi run your shortcuts?", bundle: .tabbi)
+            checks = [access == .denied
+                ? ConnectionCheck(question, .failed, String(localized: "No. Turn on Shortcuts Events for Tabbi in System Settings > Privacy & Security > Automation.", bundle: .tabbi))
+                : ConnectionCheck(question, .failed, String(localized: "Not yet. Click the button so your Mac can ask.", bundle: .tabbi))]
         } else if couldNotList {
             checks = [ConnectionCheck(String(localized: "Can Tabbi see your shortcuts?", bundle: .tabbi), .failed,
                                       String(localized: "No. The Shortcuts app didn't answer. Click Check again.", bundle: .tabbi))]
@@ -320,8 +325,9 @@ extension FocusShortcutsState {
             checks = ConnectionCheck.chain([(String(localized: "Is the \u{201C}\(onName)\u{201D} shortcut there?", bundle: .tabbi), nil, "")])
         }
         // Says which shortcut is missing without repeating the user's names.
-        let technical = !isTurnedOn ? "doNotDisturb.off" : couldNotList ? "doNotDisturb.listFailed" : installed.map { "doNotDisturb.on=\($0.contains(onName)) off=\($0.contains(offName))" }
-            ?? "doNotDisturb.checking"
+        let accessLabel = access.flatMap { $0 == .granted ? nil : "doNotDisturb.access=\($0.rawValue)" }
+        let technical = !isTurnedOn ? "doNotDisturb.off" : accessLabel ?? (couldNotList ? "doNotDisturb.listFailed" : installed.map { "doNotDisturb.on=\($0.contains(onName)) off=\($0.contains(offName))" }
+            ?? "doNotDisturb.checking")
         return ConnectionDiagnosis(kind: .doNotDisturb, status: connectionStatus, checks: checks, technical: technical)
     }
 }

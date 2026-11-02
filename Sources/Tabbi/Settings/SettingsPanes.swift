@@ -1276,12 +1276,13 @@ struct AboutSettingsPane: View {
             }
             .help(String(localized: "Opens the Suggest page with your app version, macOS version and edition filled in", bundle: .tabbi))
             .padding(.top, 8)
+            // The App Store updates its build itself.
             #if !APPSTORE
             UpdatesSettingsSection()
                 .padding(.top, 16)
+            #endif
             CrashReportSettingsSection()
                 .padding(.top, 12)
-            #endif
             Text("Released under the MIT License.", bundle: .tabbi)
                 .font(.caption)
                 .foregroundStyle(.tertiary)

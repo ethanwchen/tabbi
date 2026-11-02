@@ -5,7 +5,7 @@ final class ConnectionWalkthroughTests: XCTestCase {
     private let banned = ["CLI", "API", "localhost", "port", "error", "TCC", "EventKit", "JSON", "HTTP", "\u{2014}"]
 
     private var permissions: [ConnectionPermission] {
-        [.calendar, .notifications, .automation(.spotify), .automation(.music)]
+        [.calendar, .notifications, .automation(.spotify), .automation(.music), .runShortcuts]
     }
 
     private func assertPlain(_ text: String, file: StaticString = #filePath, line: UInt = #line) {
@@ -121,6 +121,8 @@ final class ConnectionWalkthroughTests: XCTestCase {
             }
         }
         XCTAssertTrue(ConnectionPermission.automation(.spotify).priming.message.contains("control Spotify"))
+        XCTAssertTrue(ConnectionPermission.runShortcuts.priming.message.contains("Shortcuts Events"),
+                      "the priming names the app macOS asks about")
     }
 
     func testGuidesFinishWhenTheirRowIsDone() {

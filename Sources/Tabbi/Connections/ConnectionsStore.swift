@@ -363,7 +363,7 @@ final class ConnectionsStore: ObservableObject {
         // Shown right away so a quick second click finds the test running.
         doNotDisturbTest = .turningOn
         Task { [weak self] in
-            let runner = FocusShortcutRunner()
+            let runner = ShortcutsEvents.runner(for: Edition.current)
             let result = await DoNotDisturbTest.run(onName: names.on, offName: names.off,
                                                     run: { await runner.run($0) },
                                                     update: { @MainActor [weak self] stage in self?.showTest(stage) })
@@ -432,6 +432,8 @@ final class ConnectionsStore: ObservableObject {
                 _ = try? await NSWorkspace.shared.openApplication(at: url, configuration: configuration)
             }
             _ = await ConnectionProbes.automationPermission(for: bundleID, askIfNeeded: true)
+        case .runShortcuts:
+            _ = await ShortcutsEvents.permission(askIfNeeded: true)
         }
         refresh([kind])
     }

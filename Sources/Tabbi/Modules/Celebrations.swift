@@ -6,8 +6,8 @@ extension SharedServices {
     /// The one `CelebrationCenter`, so every module shares its frequency
     /// limits. Snapshot runs celebrate nothing; haptics and sound follow
     /// Settings, and sounds hush while focus mode holds Do Not Disturb.
-    func celebrations(settings: SettingsStore, runMode: RunMode) -> CelebrationCenter {
-        let focusMode = resolve { FocusController(runMode: runMode) }
+    func celebrations(settings: SettingsStore, runMode: RunMode, edition: Edition) -> CelebrationCenter {
+        let focusMode = focusMode(runMode: runMode, edition: edition)
         return resolve {
             CelebrationCenter(isEnabled: !runMode.isSnapshot,
                               hapticsEnabled: { [weak settings] in settings?.settings.hapticsEnabled ?? false },
@@ -21,7 +21,7 @@ extension ModuleContext {
     /// Where a module asks for a celebration of a real event (a finished
     /// focus session, a level up). It plays over the open panel, within the
     /// shared limits in docs/design/motion.md.
-    var celebrations: CelebrationCenter { shared.celebrations(settings: settings, runMode: runMode) }
+    var celebrations: CelebrationCenter { shared.celebrations(settings: settings, runMode: runMode, edition: edition) }
 }
 
 /// Puts a tiny crown on the pet beside the closed notch when a goal for

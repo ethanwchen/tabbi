@@ -40,7 +40,7 @@
         </dict>
     </array>
     <key>NSAppleEventsUsageDescription</key>
-    <string>Tabbi controls Spotify and Music playback and shows what's playing in your notch.</string>
+    <string>Tabbi controls Spotify and Music playback, shows what's playing in your notch, and runs your Do Not Disturb shortcuts while you focus.</string>
     <key>NSCalendarsFullAccessUsageDescription</key>
     <string>Tabbi shows your next events today, lets you join video calls from the notch, and adds the Plan my day blocks you accept to your default calendar.</string>
 </dict>

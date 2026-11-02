@@ -23,8 +23,8 @@ public enum AIUsageSource: String, Equatable, Sendable {
     /// The plan's name in the ticker tooltip, e.g. "Codex usage 5h 86%".
     public var usageName: String {
         switch self {
-        case .claudeCode: "Claude usage"
-        case .codex: "Codex usage"
+        case .claudeCode: String(localized: "Claude usage", bundle: .tabbi)
+        case .codex: String(localized: "Codex usage", bundle: .tabbi)
         }
     }
 
