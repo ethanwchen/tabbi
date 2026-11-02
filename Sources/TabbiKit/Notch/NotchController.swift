@@ -161,6 +161,20 @@ public final class NotchController {
             }
             .store(in: &cancellables)
 
+        // An open or save panel or an alert the app shows (AI Usage's folder
+        // picker, saving the recap, the crash report question) would sit under
+        // the open notch, which floats above other windows, so the notch makes
+        // way for it.
+        NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)
+            .sink { [weak self] note in
+                MainActor.assumeIsolated {
+                    guard let self, self.model.isOpen, let window = note.object as? NSWindow,
+                          Self.isModalPanel(window) else { return }
+                    self.model.close()
+                }
+            }
+            .store(in: &cancellables)
+
         NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)
             .sink { [weak self] _ in
                 MainActor.assumeIsolated { self?.screensChanged() }
@@ -272,6 +286,13 @@ public final class NotchController {
             guard let self, !Task.isCancelled, self.pointerInside, !self.model.isOpen else { return }
             self.model.open()
         }
+    }
+
+    /// Whether `window` is an open or save panel or an app-modal alert,
+    /// which the notch makes way for. The sandbox shows open panels through a
+    /// stand-in window of its own class, so the level is checked too.
+    static func isModalPanel(_ window: NSWindow) -> Bool {
+        window is NSSavePanel || window.level == .modalPanel
     }
 
     private func scheduleClose() {

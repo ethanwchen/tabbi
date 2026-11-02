@@ -11,6 +11,9 @@ public enum FocusShortcutResult: Equatable, Sendable {
     case timedOut
     /// The shortcut ran and failed; `message` is the tool's own explanation.
     case failed(message: String)
+    /// macOS doesn't let Tabbi run shortcuts: the App Store build runs them
+    /// through Shortcuts Events, which needs the user's Automation consent.
+    case notAllowed
 
     public var succeeded: Bool { self == .succeeded }
 
@@ -23,6 +26,8 @@ public enum FocusShortcutResult: Equatable, Sendable {
         case .unavailable: String(localized: "The Shortcuts command line tool isn't available on this Mac.", bundle: .tabbi)
         case .timedOut: String(localized: "The shortcut took too long and was stopped.", bundle: .tabbi)
         case .failed(let message): message.isEmpty ? String(localized: "The shortcut failed.", bundle: .tabbi) : message
+        case .notAllowed:
+            String(localized: "Tabbi isn't allowed to run shortcuts. Turn on Shortcuts Events for Tabbi in System Settings > Privacy & Security > Automation.", bundle: .tabbi)
         }
     }
 
@@ -37,13 +42,22 @@ public enum FocusShortcutResult: Equatable, Sendable {
     }
 }
 
+/// Something that runs a named shortcut for focus mode: the command line
+/// tool in the direct download (`FocusShortcutRunner`), Shortcuts Events
+/// through Apple Events in the sandboxed App Store build.
+public protocol FocusShortcutRunning: Sendable {
+    /// Runs `name` and waits for it to finish. Never throws: every outcome
+    /// is a `FocusShortcutResult`.
+    func run(_ name: String) async -> FocusShortcutResult
+}
+
 /// Runs a named Shortcuts shortcut with `/usr/bin/shortcuts run`.
 ///
 /// macOS has no public API for Do Not Disturb, but the Shortcuts "Set Focus"
 /// action can toggle it, so focus mode runs user-made shortcuts instead.
 /// Never throws: every outcome is a `FocusShortcutResult`, so a missing or
 /// broken shortcut can't interrupt a focus session.
-public struct FocusShortcutRunner: Sendable {
+public struct FocusShortcutRunner: FocusShortcutRunning {
     public static let systemExecutable = URL(fileURLWithPath: "/usr/bin/shortcuts")
 
     public var executable: URL

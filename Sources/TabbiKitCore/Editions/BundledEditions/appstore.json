@@ -5,7 +5,6 @@
   "bundleIdentifier": "dev.tabbi.Tabbi",
   "defaultKitID": "essentials",
   "distribution": "appStore",
-  "excludedModules": ["claudeUsage", "party"],
   "infoPlist": {
     "LSApplicationCategoryType": "public.app-category.productivity"
   }

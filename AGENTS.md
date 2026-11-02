@@ -150,8 +150,11 @@ Judge them against the design rules below before you call the work done.
   `UserDefaults` or a file; demo and snapshot runs keep them in memory.
   Nothing is sent before a provider is picked: ask `readyProvider()` and
   show the shared setup state (`setupState`) when it is nil. The App Store
-  build is sandboxed, so it offers only the API providers and Ollama, and
-  leaves out AI Usage, which reads the claude CLI (and Codex's logs).
+  build is sandboxed (`Edition.isSandboxed`), so it offers only the API
+  providers and Ollama, its AI Usage reads only the Claude Code or Codex
+  folder the user picks (`AIUsageFolderAccess`, a security-scoped bookmark)
+  and never runs a CLI, and Do Not Disturb runs the user's shortcuts through
+  Shortcuts Events (`ShortcutsEvents`) instead of `/usr/bin/shortcuts`.
   `TabbiKitCore/Claude` keeps `ClaudeCLI` (locate + stream `claude -p`) and
   `ClaudeStreamEvent` (stream-json parser) for the Claude Code provider and
   AI Usage.

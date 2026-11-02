@@ -54,13 +54,13 @@ public enum ClaudeUsageFormat {
     ) -> String? {
         guard let resetsAt else { return nil }
         let seconds = resetsAt.timeIntervalSince(now)
-        if seconds <= 0 { return "resets now" }
-        if seconds < 24 * 3600 { return "resets in " + duration(seconds) }
+        if seconds <= 0 { return String(localized: "resets now", bundle: .tabbi) }
+        if seconds < 24 * 3600 { return String(localized: "resets in \(duration(seconds))", bundle: .tabbi) }
         let style = Date.FormatStyle(locale: locale, calendar: calendar, timeZone: calendar.timeZone)
             .weekday(.abbreviated)
             .hour(.defaultDigits(amPM: .abbreviated))
             .minute(.twoDigits)
-        return "resets " + resetsAt.formatted(style)
+        return String(localized: "resets \(resetsAt.formatted(style))", bundle: .tabbi)
     }
 
     /// Short duration rounded up to the minute: "<1 min", "14 min", "2h 14m", "3h".
@@ -72,10 +72,10 @@ public enum ClaudeUsageFormat {
     public static func updatedDescription(fetchedAt: Date, now: Date) -> String {
         let seconds = max(now.timeIntervalSince(fetchedAt), 0)
         switch seconds {
-        case ..<60: return "Updated just now"
-        case ..<3600: return "Updated \(Int(seconds / 60))m ago"
-        case ..<(24 * 3600): return "Updated \(Int(seconds / 3600))h ago"
-        default: return "Updated \(Int(seconds / 86400))d ago"
+        case ..<60: return String(localized: "Updated just now", bundle: .tabbi)
+        case ..<3600: return String(localized: "Updated \(Int(seconds / 60))m ago", bundle: .tabbi)
+        case ..<(24 * 3600): return String(localized: "Updated \(Int(seconds / 3600))h ago", bundle: .tabbi)
+        default: return String(localized: "Updated \(Int(seconds / 86400))d ago", bundle: .tabbi)
         }
     }
 

@@ -84,4 +84,37 @@ final class DoNotDisturbTestTests: XCTestCase {
         let unlisted = FocusShortcutsState(onName: "On", offName: "Off", installed: nil, isTurnedOn: false)
         XCTAssertEqual(unlisted.connectionStatus.light, .notSetUp)
     }
+
+    /// The App Store build runs the shortcuts through Shortcuts Events, which
+    /// macOS lets it do only after asking once (Automation).
+    func testTheSandboxedRowAsksForShortcutsAccessFirst() {
+        let notAsked = FocusShortcutsState(onName: "On", offName: "Off", installed: nil, access: .notAsked)
+        XCTAssertEqual(notAsked.connectionStatus.action, .askPermission(.runShortcuts))
+        XCTAssertEqual(notAsked.connectionStatus.light, .needsStep)
+        XCTAssertEqual(notAsked.diagnosis.technical, "doNotDisturb.access=notAsked")
+        XCTAssertEqual(notAsked.diagnosis.firstFailure?.question, "May Tabbi run your shortcuts?")
+        let closed = FocusShortcutsState(onName: "On", offName: "Off", installed: nil, access: .appClosed)
+        XCTAssertEqual(closed.connectionStatus.action, .askPermission(.runShortcuts))
+
+        let denied = FocusShortcutsState(onName: "On", offName: "Off", installed: nil, access: .denied)
+        XCTAssertEqual(denied.connectionStatus.action, .openSettings(.automationPrivacy))
+        XCTAssertEqual(denied.connectionStatus.headline, "Shortcuts access is off")
+        XCTAssertEqual(denied.diagnosis.technical, "doNotDisturb.access=denied")
+
+        // Granted reads like the direct download from there on.
+        let granted = FocusShortcutsState(onName: "On", offName: "Off", installed: ["On", "Off"], access: .granted)
+        XCTAssertEqual(granted.connectionStatus, FocusShortcutsState(onName: "On", offName: "Off", installed: ["On", "Off"]).connectionStatus)
+        XCTAssertTrue(granted.connectionStatus.isConnected)
+        // The switch being off still comes first.
+        let off = FocusShortcutsState(onName: "On", offName: "Off", installed: nil, isTurnedOn: false, access: .denied)
+        XCTAssertEqual(off.connectionStatus.action, .turnOnDoNotDisturb)
+    }
+
+    func testANotAllowedRunSaysWhereToTurnItOn() {
+        let failed = DoNotDisturbTest.failed(.on, name: "On", .notAllowed)
+        XCTAssertEqual(failed.technical, "test.on.notAllowed")
+        XCTAssertTrue(failed.message.contains("Automation"))
+        XCTAssertTrue(FocusShortcutResult.notAllowed.message.contains("Shortcuts Events"))
+        XCTAssertFalse(FocusShortcutResult.notAllowed.succeeded)
+    }
 }

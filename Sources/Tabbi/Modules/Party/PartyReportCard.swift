@@ -51,7 +51,7 @@ struct PartyReportCard: View {
         HStack(spacing: Theme.Spacing.xs) {
             ForEach(PartyReportReason.allCases, id: \.self) { option in
                 PartyChoiceChip(title: option.title, isSelected: reason == option,
-                                help: "Report \(profile.name) for \(option.title.lowercased())") {
+                                help: String(localized: "Report \(profile.name): \(option.title)", bundle: .tabbi)) {
                     reason = option
                 }
             }
@@ -60,14 +60,16 @@ struct PartyReportCard: View {
 
     private var footer: some View {
         HStack(spacing: Theme.Spacing.s) {
-            PartyCheckbox(title: "Also block \(profile.name)", isOn: $alsoBlock,
-                          help: "Hide each other everywhere in Party. You can unblock in Party options.")
+            PartyCheckbox(title: String(localized: "Also block \(profile.name)", bundle: .tabbi), isOn: $alsoBlock,
+                          help: String(localized: "Hide each other everywhere in Party. You can unblock in Party options.", bundle: .tabbi))
             Spacer(minLength: Theme.Spacing.s)
-            PartyTextButton(title: "Cancel", isBusy: isSending, help: "Close without reporting (Esc)") {
+            PartyTextButton(title: String(localized: "Cancel", bundle: .tabbi), isBusy: isSending,
+                            help: String(localized: "Close without reporting (Esc)", bundle: .tabbi)) {
                 store.cancelReport()
             }
-            PartyPillButton(title: "Send Report", isProminent: true, isBusy: isSending || reason == nil, height: 20,
-                            help: reason == nil ? "Pick a reason first" : "Send this report to the Tabbi team") {
+            PartyPillButton(title: String(localized: "Send Report", bundle: .tabbi), isProminent: true, isBusy: isSending || reason == nil, height: 20,
+                            help: reason == nil ? String(localized: "Pick a reason first", bundle: .tabbi)
+                                : String(localized: "Send this report to the Tabbi team", bundle: .tabbi)) {
                 guard let reason else { return }
                 store.sendReport(reason: reason, note: note, alsoBlock: alsoBlock)
             }

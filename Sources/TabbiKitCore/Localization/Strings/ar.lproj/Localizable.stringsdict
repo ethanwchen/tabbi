@@ -219,6 +219,30 @@
 			<string>%lld جلسة تركيز</string>
 		</dict>
 	</dict>
+	<key>%lld friends</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld أصدقاء</string>
+			<key>many</key>
+			<string>%lld صديقًا</string>
+			<key>one</key>
+			<string>%lld صديق</string>
+			<key>other</key>
+			<string>%lld صديق</string>
+			<key>two</key>
+			<string>%lld صديقان</string>
+			<key>zero</key>
+			<string>%lld صديق</string>
+		</dict>
+	</dict>
 	<key>%lld friends are here with you.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

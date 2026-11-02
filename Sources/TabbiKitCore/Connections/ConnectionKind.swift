@@ -72,9 +72,11 @@ public enum ConnectionKind: String, CaseIterable, Identifiable, Hashable, Sendab
         }
     }
 
-    /// Whether the connection runs a helper program (the `claude` CLI or
-    /// Shortcuts), which a sandboxed build can't (`Edition.runsLocalTools`).
-    public var needsLocalTools: Bool { self == .claude || self == .doNotDisturb }
+    /// Whether the connection runs a helper program (the `claude` CLI),
+    /// which a sandboxed build can't (`Edition.runsLocalTools`). Do Not
+    /// Disturb works in both: the sandboxed build runs the shortcuts through
+    /// Shortcuts Events instead of the `shortcuts` tool.
+    public var needsLocalTools: Bool { self == .claude }
 
     /// The connections the enabled modules use, in row order, leaving out
     /// those that need helper programs when `localTools` is false.

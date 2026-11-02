@@ -174,6 +174,16 @@ struct ConnectionProbes: Sendable {
         guard FocusSettingsRepository().load().doNotDisturb else {
             return FocusShortcutsState(onName: onName, offName: offName, installed: nil, isTurnedOn: false)
         }
+        // The sandboxed build asks Shortcuts Events, once the user allowed it.
+        if Edition.current.isSandboxed {
+            let access = await ShortcutsEvents.permission(askIfNeeded: false)
+            guard access == .granted else {
+                return FocusShortcutsState(onName: onName, offName: offName, installed: nil, access: access)
+            }
+            let names = await ShortcutsEvents.names()
+            return FocusShortcutsState(onName: onName, offName: offName, installed: names,
+                                       couldNotList: names == nil, access: access)
+        }
         let output = await Task.detached(priority: .userInitiated) {
             run(FocusShortcutRunner.systemExecutable, ["list"])
         }.value

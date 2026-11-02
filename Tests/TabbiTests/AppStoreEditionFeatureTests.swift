@@ -2,10 +2,12 @@ import XCTest
 import TabbiKitCore
 @testable import Tabbi
 
-/// A sandboxed App Store build can't run command line tools or Shortcuts,
-/// so focus mode hides what needs them instead of offering buttons that
-/// can't work. Today's and the Schedule's AI features stay, since they
-/// reach the AI through the provider the user picks (an API or Ollama there).
+/// A sandboxed App Store build can't run command line tools, so each
+/// feature takes its sandboxed path instead of offering buttons that can't
+/// work: Do Not Disturb runs through Shortcuts Events after macOS asks, AI
+/// Usage reads the folders the user picks, and Today's and the Schedule's AI
+/// features reach the AI through the provider the user picks (an API or
+/// Ollama there). Party is the same as in the direct download.
 @MainActor
 final class AppStoreEditionFeatureTests: XCTestCase {
     private func context(_ id: ModuleID, edition: Edition) -> ModuleContext {
@@ -17,15 +19,68 @@ final class AppStoreEditionFeatureTests: XCTestCase {
         get throws { try XCTUnwrap(Edition.named("appstore")) }
     }
 
-    func testTheAppStoreEditionHidesDoNotDisturb() throws {
+    func testTheAppStoreEditionRunsDoNotDisturbThroughShortcutsEvents() throws {
         let focusMode = context(.focus, edition: try appStore).focusMode
-        XCTAssertFalse(focusMode.offersDoNotDisturb)
-        XCTAssertTrue(focusMode.settings.doNotDisturb, "the demo settings have it on")
-        XCTAssertFalse(focusMode.doNotDisturb, "but focus phases never turn it on")
+        XCTAssertTrue(focusMode.offersDoNotDisturb)
+        XCTAssertTrue(focusMode.needsShortcutsAccess, "macOS asks before the first shortcut runs")
+        XCTAssertEqual(focusMode.shortcutsAccess, .granted, "demo runs show it ready")
+        XCTAssertTrue(focusMode.doNotDisturb)
+        XCTAssertTrue(ShortcutsEvents.runner(for: try appStore) is ShortcutsEvents.Runner)
 
+        // The direct download runs `/usr/bin/shortcuts`; an App Store build is
+        // sandboxed whatever edition it resolves to.
         let direct = context(.focus, edition: .tabbi).focusMode
         XCTAssertTrue(direct.offersDoNotDisturb)
         XCTAssertTrue(direct.doNotDisturb)
+        #if APPSTORE
+        XCTAssertTrue(direct.needsShortcutsAccess)
+        XCTAssertTrue(ShortcutsEvents.runner(for: .tabbi) is ShortcutsEvents.Runner)
+        #else
+        XCTAssertFalse(direct.needsShortcutsAccess)
+        XCTAssertNil(direct.shortcutsAccess)
+        XCTAssertTrue(ShortcutsEvents.runner(for: .tabbi) is FocusShortcutRunner)
+        #endif
+    }
+
+    func testCelebrationsAndModulesShareOneFocusModeBuiltForTheEdition() throws {
+        // Whichever asks first, the celebrations or Focus, gets the same
+        // focus mode, set up for the App Store's Shortcuts Events.
+        let shared = SharedServices()
+        let settings = SettingsStore.ephemeral(catalog: ModuleList.catalog)
+        _ = shared.celebrations(settings: settings, runMode: .demo, edition: try appStore)
+        let focus = ModuleContext(id: .focus, edition: try appStore, settings: settings, providers: ProviderHub(),
+                                  shared: shared, runMode: .demo).focusMode
+        XCTAssertTrue(focus.needsShortcutsAccess)
+    }
+
+    func testTheAppStoreEditionIsSandboxed() throws {
+        XCTAssertTrue(try appStore.isSandboxed)
+        #if APPSTORE
+        XCTAssertTrue(Edition.tabbi.isSandboxed, "an App Store build is sandboxed whatever edition it resolves to")
+        #else
+        XCTAssertFalse(Edition.tabbi.isSandboxed)
+        #endif
+    }
+
+    func testTheAppStoreEditionHasPartyWithItsAgeCheck() throws {
+        let edition = try appStore
+        XCTAssertTrue(ModuleList.catalog(for: edition).contains(.party))
+        let party = PartyModule(context: context(.party, edition: edition))
+        XCTAssertEqual(PartyModule.descriptor.setup, [.party], "onboarding asks about Party only when it is on")
+        XCTAssertNotNil(party.makeSettingsPane(), "report, block and the friends server live there")
+    }
+
+    func testTheAppStoreEditionReadsAIUsageOnlyFromPickedFolders() throws {
+        let module = ClaudeUsageModule(context: context(.claudeUsage, edition: try appStore))
+        XCTAssertTrue(module.store.isSandboxed)
+        XCTAssertEqual(module.makeSettingsPane()?.id, "aiUsage")
+        let direct = ClaudeUsageModule(context: context(.claudeUsage, edition: .tabbi))
+        #if APPSTORE
+        XCTAssertTrue(direct.store.isSandboxed, "an App Store build is sandboxed whatever edition it resolves to")
+        #else
+        XCTAssertFalse(direct.store.isSandboxed)
+        XCTAssertNil(direct.makeSettingsPane())
+        #endif
     }
 
     func testBothEditionsOfferToRefineAPlanWithTheirAI() throws {

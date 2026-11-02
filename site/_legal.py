@@ -9,7 +9,7 @@ the same at the top.
 
 from _partials import GITHUB, SUPPORT_EMAIL
 
-EFFECTIVE = '10 October 2026'
+EFFECTIVE = '2 November 2026'
 
 MAIL = f'<a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>'
 
@@ -39,7 +39,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
         He also runs the friends service and this website, and is the controller of the personal data described here.
         Contact {MAIL} about anything in this policy.</p>
       <p class="measure">Tabbi comes as a direct download from tabbinotch.com and as a Mac App Store edition.
-        The App Store edition has no Party tab, no AI Usage tab, no SoundCloud and no crash reports of its own; where the two differ, this policy says so.</p>
+        The App Store edition has no SoundCloud, and before version 1.0.4 it also had no Party tab, no AI Usage tab and no crash reports of its own; where the two differ, this policy says so.</p>
 
       <h2 id="mac">2. What stays on your Mac</h2>
       <p class="measure">Most of Tabbi never leaves your computer. We cannot see any of the following, because it is never sent to us.</p>
@@ -68,21 +68,22 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
           With Ollama, it goes to a model running on your own Mac and does not leave it. The App Store edition offers only API keys and Ollama. We never see these requests or the answers.</li>
         <li><strong>Your keys and accounts.</strong> An API key you enter is stored in your Mac's Keychain, never in a file, and is sent only to its provider. Tabbi never reads a command-line tool's own sign-in or credentials.</li>
         <li><strong>On your Mac.</strong> Ask AI's chat history is saved on your Mac, and you can delete chats one by one or all at once.</li>
-        <li><strong>AI Usage</strong> (direct download only) reads token counts from Claude Code's and Codex's logs on your Mac. To show your current limits, it also sends Claude Code a one-word request ("ok") through your own Claude account when you open it.</li>
+        <li><strong>AI Usage</strong> reads token counts from Claude Code's and Codex's logs on your Mac. In the direct download, to show your current limits, it also sends Claude Code a one-word request ("ok") through your own Claude account when you open it.
+          The App Store edition (from version 1.0.4) reads only the folder you choose for it, sends nothing, and forgets the folder when you remove it in its options.</li>
       </ul>
       <p class="measure"><strong>Updates.</strong> The direct download asks GitHub for a new version when it starts and once a day. Nothing about you is sent, though GitHub sees the request like any web server. You can turn this off in <strong>Settings &gt; About</strong>.
         The App Store edition is updated by the App Store.</p>
 
       <h2 id="crashes">3. Crash reports</h2>
-      <p class="measure">After a crash or a freeze, the direct download asks before sending a report, and shows you exactly what it would send.
+      <p class="measure">After a crash or a freeze, Tabbi asks before sending a report, and shows you exactly what it would send.
         A report holds only the Tabbi and macOS versions, the edition, the kind of crash, and the names of the app's threads and functions at that moment, with your home folder's name replaced by <code>~</code>.
         The app leaves out your tasks, events, names, notes and tokens, and the server refuses a report whose stack trace still contains a home folder path.
         Reports go to our server on Cloudflare, are not linked to a friend code, an account or an IP address, and are deleted after 90 days.
         You can switch between asking, always sending and never sending in <strong>Settings &gt; About</strong>.
-        The App Store edition sends none and relies on Apple's crash reports, which you control in macOS.</p>
+        The App Store edition does the same from version 1.0.4; before, it sent none and relied on Apple's crash reports, which you control in macOS.</p>
 
       <h2 id="friends">4. The friends service (Party)</h2>
-      <p class="measure">Party is optional and off unless you turn it on, and it is only in the direct download.
+      <p class="measure">Party is optional and off unless you turn it on. It is in the direct download and, from version 1.0.4, in the App Store edition.
         When it is on, Tabbi talks to a small server we run on Cloudflare so you can see which friends are studying, study together in a party, and compare weekly study minutes.
         Before Party sends anything, it asks the month and year you were born and links these terms and this policy.
         Tabbi keeps only the date you are old enough for Party, on your Mac, and never sends your answer.

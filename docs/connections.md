@@ -89,10 +89,11 @@ Each outcome is one plain sentence that names the shortcut to fix; the shortcuts
 | Claude | `claude` found, then `claude auth status --json` (only `loggedIn` is read) | Show me how (official setup page and a copyable install line), Sign in, Check again |
 | Spotify, Music | Installed, then Automation permission | Connect (priming screen, then the macOS prompt), Open Settings if denied |
 | Alerts | Notification permission | Connect (priming screen, then the macOS prompt), Open Settings if denied |
-| Do Not Disturb | `shortcuts list` contains the two Tabbi Focus shortcuts | Show me how, then Test |
+| Do Not Disturb | `shortcuts list` contains the two Tabbi Focus shortcuts; in the App Store edition, Automation access to Shortcuts Events, then its list of shortcut names | Connect (App Store edition: priming screen, then the macOS prompt; Open Settings if denied), Show me how, then Test |
 | Party | A chosen name and the server connection | Set up (name and pet), then the friend code to share |
 
 Claude is optional: its row shows while the Usage tab is on or Claude Code is the chosen AI, and Tabbi never reads Claude Code's credentials.
+The App Store edition has no Claude row, since it runs no command line tool; its AI Usage reads the folder the user picks instead ([appstore.md](appstore.md#ai-usage-in-the-sandbox)).
 API keys for the other AIs are typed by the user into the AI section and kept in the Keychain.
 
 ## Research notes

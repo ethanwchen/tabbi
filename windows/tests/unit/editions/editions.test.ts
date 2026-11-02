@@ -85,14 +85,14 @@ describe("Edition", () => {
     expect(same.unavailableIDs.size).toBe(0);
   });
 
-  it("makes the App Store edition Tabbi without AI Usage and Party", () => {
+  it("makes the App Store edition Tabbi with every module, sandboxed", () => {
     const store = appStore();
     expect(isAppStoreEdition(store)).toBe(true);
     expect(editionRunsLocalTools(store)).toBe(false);
     expect(store.name).toBe(TABBI_EDITION.name);
     expect(store.bundleIdentifier).toBe(TABBI_EDITION.bundleIdentifier);
     expect(store.defaultKitID).toBe(DEFAULT_KIT_ID);
-    expect(new Set(store.excludedModules)).toEqual(new Set(["claudeUsage", "party"]));
+    expect(store.excludedModules).toEqual([]);
     expect(store.infoPlist.LSApplicationCategoryType).toBe("public.app-category.productivity");
     expect(resolveEdition("appstore")).toEqual(store);
     expect(resolveEdition(undefined, store)).toEqual(store);
@@ -164,7 +164,21 @@ describe("Edition", () => {
 });
 
 describe("edition catalogs", () => {
-  const storeCatalog = () => editionCatalog(appStore(), BUILT_IN_CATALOG);
+  /*
+   * The App Store edition left out Party and AI Usage until 1.0.4; the
+   * mechanism stays for future editions, so these tests use one of their own.
+   */
+  const lean = () =>
+    decode(`{"formatVersion": 1, "id": "lean", "name": "Lean", "bundleIdentifier": "dev.tabbi.Tabbi",
+      "defaultKitID": "essentials", "distribution": "appStore", "excludedModules": ["claudeUsage", "party"]}`);
+  const storeCatalog = () => editionCatalog(lean(), BUILT_IN_CATALOG);
+
+  it("offers every module in the App Store edition", () => {
+    const catalog = editionCatalog(appStore(), BUILT_IN_CATALOG);
+    expect(catalog.ids).toEqual(BUILT_IN_CATALOG.ids);
+    expect(catalog.unavailableIDs.size).toBe(0);
+    expect(allTickerKinds(catalog)).toContain("party");
+  });
 
   it("drops excluded modules and remembers them as unavailable", () => {
     const catalog = BUILT_IN_CATALOG.excluding(["claudeAsk", "chess"]);
@@ -179,7 +193,7 @@ describe("edition catalogs", () => {
     expect(catalog.unavailableIDs).toEqual(new Set(["chess"]));
   });
 
-  it("applies every bundled kit cleanly in the App Store edition", () => {
+  it("applies every bundled kit cleanly in an edition that leaves modules out", () => {
     const catalog = storeCatalog();
     expect(BUNDLED_KITS.kits.length).toBeGreaterThan(0);
     for (const kit of BUNDLED_KITS.kits) {
@@ -187,7 +201,7 @@ describe("edition catalogs", () => {
       expect(missingKitRequirements(kit, catalog), kit.id).toEqual([]);
       const layout = kitLayout(kit, catalog);
       expect(new Set(layout.order)).toEqual(new Set(catalog.ids));
-      expect(layout.order.some((id) => appStore().excludedModules.includes(id))).toBe(false);
+      expect(layout.order.some((id) => lean().excludedModules.includes(id))).toBe(false);
       expect(layout.tabs.length).toBeGreaterThan(0);
       const ticker = resolvedKitTicker(kit.defaults, catalog);
       expect(ticker?.has("party")).toBe(false);
@@ -198,7 +212,7 @@ describe("edition catalogs", () => {
     }
   });
 
-  it("keeps Ask AI in Essentials in the App Store edition", () => {
+  it("keeps Ask AI in Essentials in an edition that leaves modules out", () => {
     const essentials = BUNDLED_KITS.get("essentials");
     expect(essentials).toBeDefined();
     if (!essentials) return;
@@ -221,7 +235,7 @@ describe("edition catalogs", () => {
     expect(resolvedKitTicker(result.kit.defaults, catalog)).toEqual(new Set(["tasks"]));
   });
 
-  it("still reports typos in the App Store edition", () => {
+  it("still reports typos in an edition that leaves modules out", () => {
     const result = decodeKit(`{"formatVersion": 1, "id": "typo", "name": "Typo", "modules": ["planner", "claudeAks"],
       "defaults": {"ticker": ["partty"]}}`);
     expect(result.ok && kitIssues(result.kit, storeCatalog())).toEqual([

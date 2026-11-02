@@ -39,16 +39,24 @@ final class FocusController: ObservableObject {
 
     /// False in demo and snapshot runs, where focus mode only shows sample settings.
     let isLive: Bool
-    /// Whether this build can switch Do Not Disturb, which runs Shortcuts
-    /// (`Edition.runsLocalTools`). Without it the switch is hidden and the
-    /// saved value is ignored.
+    /// Whether this build can switch Do Not Disturb, which runs the user's
+    /// shortcuts. Without it the switch is hidden and the saved value is
+    /// ignored.
     let offersDoNotDisturb: Bool
     /// Whether focus phases turn on Do Not Disturb, as views should show it.
     var doNotDisturb: Bool { offersDoNotDisturb && settings.doNotDisturb }
+    /// True where the shortcuts run through Shortcuts Events (the sandboxed
+    /// App Store build), which macOS lets Tabbi do only after it asked the
+    /// user once (Automation). Settings then shows a priming screen before
+    /// the switch turns on.
+    let needsShortcutsAccess: Bool
+    /// Where macOS stands on that Automation permission; nil until checked
+    /// and where no permission is involved.
+    @Published private(set) var shortcutsAccess: AutomationPermission?
 
     private let repository: FocusSettingsRepository
     private let musicApps: FocusMusicApps
-    private let shortcuts = FocusShortcutRunner()
+    private let shortcuts: any FocusShortcutRunning
     private var session = FocusSession()
     /// Created on first use, so an app that never plays focus sound never
     /// builds an audio graph.
@@ -67,10 +75,15 @@ final class FocusController: ObservableObject {
     private var observers: [NSObjectProtocol] = []
 
     init(runMode: RunMode, offersDoNotDisturb: Bool = true,
+         shortcuts: any FocusShortcutRunning = FocusShortcutRunner(), needsShortcutsAccess: Bool = false,
          repository: FocusSettingsRepository = FocusSettingsRepository(),
          musicApps: FocusMusicApps = .live) {
         isLive = !runMode.isEphemeral
         self.offersDoNotDisturb = offersDoNotDisturb
+        self.shortcuts = shortcuts
+        self.needsShortcutsAccess = needsShortcutsAccess
+        // Demo and snapshot runs show the switch ready to use.
+        if needsShortcutsAccess, !isLive { shortcutsAccess = .granted }
         self.repository = repository
         self.musicApps = musicApps
         settings = isLive ? repository.load() : Self.sampleSettings
@@ -234,7 +247,35 @@ final class FocusController: ObservableObject {
     /// Runs a shortcut by name for the Settings Test button.
     func testShortcut(_ name: String) async -> FocusShortcutResult {
         guard isLive else { return .succeeded }
-        return await shortcuts.run(name)
+        let result = await shortcuts.run(name)
+        if result == .notAllowed { refreshShortcutsAccess() }
+        return result
+    }
+
+    // MARK: - Shortcuts Events access
+
+    /// Reads the Automation permission without asking, for Settings.
+    func refreshShortcutsAccess() {
+        guard needsShortcutsAccess, isLive else { return }
+        Task { shortcutsAccess = await ShortcutsEvents.permission(askIfNeeded: false) }
+    }
+
+    /// Shows `access` as the Automation answer, for the snapshot run.
+    func showShortcutsAccessForSnapshot(_ access: AutomationPermission) {
+        guard !isLive, needsShortcutsAccess else { return }
+        shortcutsAccess = access
+    }
+
+    /// Lets macOS ask for the Automation permission, after the priming
+    /// screen's Continue, and turns Do Not Disturb on once it is granted.
+    func requestShortcutsAccess() async {
+        guard needsShortcutsAccess, isLive else {
+            settings.doNotDisturb = true
+            return
+        }
+        let access = await ShortcutsEvents.permission(askIfNeeded: true)
+        shortcutsAccess = access
+        if access == .granted { settings.doNotDisturb = true }
     }
 
     private func settingsChanged(from old: FocusSettings) {

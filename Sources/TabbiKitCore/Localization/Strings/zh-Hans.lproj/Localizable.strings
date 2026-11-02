@@ -35,6 +35,8 @@
 	<string>检查：%@</string>
 	<key>%@ climbed onto the rooftop</key>
 	<string>%@ 爬上了屋顶</string>
+	<key>%@ closed unexpectedly. Send a crash report?</key>
+	<string>%@ 意外退出。要发送崩溃报告吗？</string>
 	<key>%@ collected a smooth pebble</key>
 	<string>%@ 捡了一颗光滑的小石子</string>
 	<key>%@ could not be copied to Applications. %@</key>
@@ -73,6 +75,8 @@
 	<string>%@ 已被其他 App 占用，请录制其他快捷键。</string>
 	<key>%@ is already your friend</key>
 	<string>%@ 已经是你的好友了</string>
+	<key>%@ is away</key>
+	<string>%@ 不在</string>
 	<key>%@ is connected</key>
 	<string>%@ 已连接</string>
 	<key>%@ is damaged, so it's left untouched.</key>
@@ -227,6 +231,8 @@
 	<string>%1$@：今天完成 %2$@</string>
 	<key>%@: %@ left</key>
 	<string>%@：剩余 %@</string>
+	<key>%@: %@ tokens</key>
+	<string>%1$@：%2$@ Token</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@:你已获得所有物品。活动结束后它们依然属于你。</string>
 	<key>%lld h</key>
@@ -355,6 +361,8 @@
 	<string>平静的一天。好好休息，明天重新出发。</string>
 	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
 	<string>宠物送来的稀有毛色。到衣橱的“外观”里试试。</string>
+	<key>A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:</key>
+	<string>报告有助于修复问题。它只包含 App 版本、macOS 版本、版本类型、崩溃堆栈和线程名称，绝不包含你的内容、名字、任务或令牌。以下就是将发送的全部内容：</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>休息的一周，新的开始在等你。</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
@@ -457,6 +465,8 @@
 	<string>添加 Google 或学校账户，就能在这里看到日程。</string>
 	<key>Add your calendar</key>
 	<string>添加你的日历</string>
+	<key>Add your name</key>
+	<string>添加你的名字</string>
 	<key>Add…</key>
 	<string>添加…</string>
 	<key>After %@ closes unexpectedly, ask before sending a crash report, send it without asking, or never send one</key>
@@ -509,6 +519,8 @@
 	<string>专注期间已在播放</string>
 	<key>Already playing: focus is running</key>
 	<string>正在播放：专注进行中</string>
+	<key>Also block %@</key>
+	<string>同时屏蔽 %@</string>
 	<key>Always</key>
 	<string>始终</string>
 	<key>Always Visible</key>
@@ -791,6 +803,8 @@
 	<string>修改你的回答</string>
 	<key>Changes appear at once, with no animation.</key>
 	<string>变化立即呈现，没有动画。</string>
+	<key>Change…</key>
+	<string>更改…</string>
 	<key>Charcoal</key>
 	<string>炭灰色</string>
 	<key>Charging</key>
@@ -827,6 +841,8 @@
 	<string>请在派对选项中检查服务器。</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>请检查网络连接。恢复后会显示好友和派对。</string>
+	<key>Check your internet connection. You can also set up Party later in its tab.</key>
+	<string>请检查网络连接。你也可以稍后在派对标签页中设置。</string>
 	<key>Checking</key>
 	<string>正在检查</string>
 	<key>Checking %@</key>
@@ -847,6 +863,8 @@
 	<string>暖黑底上的樱花粉。</string>
 	<key>Chocolate</key>
 	<string>巧克力色</string>
+	<key>Choose</key>
+	<string>选择</string>
 	<key>Choose AI</key>
 	<string>选择 AI</string>
 	<key>Choose a method</key>
@@ -859,6 +877,14 @@
 	<string>选择展开后刘海的大小，所有标签页大小相同。</string>
 	<key>Choose how lively the notch's animations are</key>
 	<string>选择刘海动画的活跃程度</string>
+	<key>Choose the %@ folder in your home folder</key>
+	<string>选择个人文件夹中的 %@ 文件夹</string>
+	<key>Choose the %@ folder in your home folder. Tabbi reads only token counts and model names from Claude Code's logs.</key>
+	<string>请选择个人文件夹中的 %@ 文件夹。Tabbi 只从 Claude Code 的日志中读取 Token 数和模型名称。</string>
+	<key>Choose the %@ folder in your home folder. Tabbi reads only token counts, model names and plan limits from Codex's logs.</key>
+	<string>请选择个人文件夹中的 %@ 文件夹。Tabbi 只从 Codex 的日志中读取 Token 数、模型名称和套餐额度。</string>
+	<key>Choose the %@ folder next</key>
+	<string>接下来选择 %@ 文件夹</string>
 	<key>Choose when the notch is drawn. The shortcut always opens it.</key>
 	<string>选择何时显示刘海。快捷键始终可以打开它。</string>
 	<key>Choose which display shows the notch. It falls back to the built-in display when this one is disconnected.</key>
@@ -881,6 +907,8 @@
 	<string>Claude 已就绪</string>
 	<key>Claude location</key>
 	<string>Claude 位置</string>
+	<key>Claude usage</key>
+	<string>Claude 用量</string>
 	<key>Clear "%@"</key>
 	<string>取消“%@”</string>
 	<key>Clear All</key>
@@ -893,10 +921,10 @@
 	<string>点按“%@”查看官方步骤，然后回到这里。</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
 	<string>在列表中点按 AnkiConnect，然后点按“Check for Updates”。</string>
-	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
-	<string>点按“连接”，当 Mac 询问 Tabbi 能否控制 %@ 时，点按“允许”。</string>
-	<key>Click Connect, then Allow when your Mac asks. It only asks once.</key>
-	<string>点按“连接”，Mac 询问时点按“允许”。只会问一次。</string>
+	<key>Click Connect and your Mac asks if Tabbi can control %@.</key>
+	<string>点按“连接”，Mac 会询问 Tabbi 能否控制 %@。</string>
+	<key>Click Connect and your Mac asks. It only asks once.</key>
+	<string>点按“连接”，Mac 就会询问。只会问一次。</string>
 	<key>Click Get Add-ons, paste this code, then click OK.</key>
 	<string>点按“Get Add-ons”，粘贴此代码，然后点按“OK”。</string>
 	<key>Click Restore Defaults, then OK</key>
@@ -955,10 +983,14 @@
 	<string>关闭。派对会自动继续尝试。</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>关闭。随时都可以设置派对。</string>
+	<key>Close without reporting (Esc)</key>
+	<string>关闭且不举报（Esc）</string>
 	<key>Closet</key>
 	<string>衣橱</string>
 	<key>Code</key>
 	<string>代码</string>
+	<key>Codex usage</key>
+	<string>Codex 用量</string>
 	<key>Command</key>
 	<string>命令</string>
 	<key>Compact</key>
@@ -1205,6 +1237,8 @@
 	<string>你的 Mac 上有日历吗？</string>
 	<key>Dog</key>
 	<string>狗</string>
+	<key>Don't Send</key>
+	<string>不发送</string>
 	<key>Don't ask again</key>
 	<string>不再询问</string>
 	<key>Done</key>
@@ -1317,6 +1351,8 @@
 	<string>正在按今天的日程安排工作和休息</string>
 	<key>Fitting your work and breaks around tomorrow's events</key>
 	<string>正在按明天的日程安排工作和休息</string>
+	<key>Fix it in Settings &gt; Tabs &gt; Party &gt; Options.</key>
+	<string>请在“设置 › 标签页 › 派对 › 选项”中修正。</string>
 	<key>Fix the shortcut in the Shortcuts app, then test again</key>
 	<string>在“快捷指令”App 中修好快捷指令，然后再测试</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
@@ -1437,6 +1473,8 @@
 	<string>好友服务器</string>
 	<key>Frog Hat</key>
 	<string>青蛙帽</string>
+	<key>From your Claude Code logs</key>
+	<string>来自你的 Claude Code 日志</string>
 	<key>Frosted glass cards over a cool blue glow.</key>
 	<string>冷蓝光晕上的磨砂玻璃卡片。</string>
 	<key>Full</key>
@@ -1483,6 +1521,8 @@
 	<string>恢复到 %@ 之前的标签页和套件</string>
 	<key>Go invisible</key>
 	<string>隐身</string>
+	<key>Go invisible. Your study minutes still count.</key>
+	<string>隐身。你的学习时间仍会计入。</string>
 	<key>Go on without a name</key>
 	<string>不填名字继续</string>
 	<key>Goals left today</key>
@@ -1529,6 +1569,8 @@
 	<string>隐藏</string>
 	<key>Hide %@ Until I Press %@</key>
 	<string>隐藏 %1$@，直到我按下 %2$@</string>
+	<key>Hide each other everywhere in Party. You can unblock in Party options.</key>
+	<string>你们在派对中将互相看不到。可在派对选项中解除屏蔽。</string>
 	<key>Hide from screen sharing</key>
 	<string>在屏幕共享中隐藏</string>
 	<key>Hide in Mission Control</key>
@@ -1629,6 +1671,10 @@
 	<string>即时</string>
 	<key>Internet Accounts</key>
 	<string>互联网账户</string>
+	<key>Invisible to friends</key>
+	<string>对好友隐身</string>
+	<key>Invisible: friends see you as away</key>
+	<string>对好友隐身</string>
 	<key>Invite links</key>
 	<string>邀请链接</string>
 	<key>Is %@ on this Mac?</key>
@@ -1687,6 +1733,8 @@
 	<string>加入这个派对？</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>正在加入派对，马上就好。</string>
+	<key>Joining the party server</key>
+	<string>正在连接派对服务器</string>
 	<key>Joining the party server…</key>
 	<string>正在连接派对服务器…</string>
 	<key>Just met</key>
@@ -1751,6 +1799,8 @@
 	<string>让 %@ 能再次找到你。你们需要有一方重新添加才会成为好友。</string>
 	<key>Let Tabbi into Anki</key>
 	<string>允许 Tabbi 连接 Anki</string>
+	<key>Let Tabbi run your Focus shortcuts</key>
+	<string>让 Tabbi 运行你的专注快捷指令</string>
 	<key>Let your AI fit your open tasks around today's calendar</key>
 	<string>让 AI 按今天的日程安排待办</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
@@ -1829,6 +1879,8 @@
 	<string>标记为已完成</string>
 	<key>Mark as not done</key>
 	<string>标记为未完成</string>
+	<key>May Tabbi run your shortcuts?</key>
+	<string>Tabbi 可以运行你的快捷指令吗？</string>
 	<key>Measuring cores...</key>
 	<string>正在测量核心...</string>
 	<key>Media</key>
@@ -1927,6 +1979,8 @@
 	<string>下一个解锁</string>
 	<key>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</key>
 	<string>接下来，Mac 会询问是否允许 Tabbi 控制 %@。你可以随时在系统设置中更改。</string>
+	<key>Next, your Mac asks if Tabbi can control Shortcuts Events. You can change your answer any time in System Settings.</key>
+	<string>接下来，Mac 会询问是否允许 Tabbi 控制 Shortcuts Events。你可以随时在系统设置中更改。</string>
 	<key>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</key>
 	<string>接下来，Mac 会询问是否允许 Tabbi 发送提醒。你可以随时在系统设置中更改。</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
@@ -2025,6 +2079,8 @@
 	<string>不是。这个版本太旧，Tabbi 用不了。</string>
 	<key>No. This copy of Tabbi can't ask for it.</key>
 	<string>没有。这个版本的 Tabbi 无法请求此权限。</string>
+	<key>No. Turn on Shortcuts Events for Tabbi in System Settings &gt; Privacy &amp; Security &gt; Automation.</key>
+	<string>否。请在“系统设置 › 隐私与安全性 › 自动化”中为 Tabbi 打开 Shortcuts Events。</string>
 	<key>Nobody sees roots growing. Then one day there's a tree.</key>
 	<string>没人看见根在生长。直到有一天，那里长出了一棵树。</string>
 	<key>None</key>
@@ -2047,6 +2103,8 @@
 	<string>尚未检查 · 刷新以加载实时限额</string>
 	<key>Not checked yet. Fix the step above first.</key>
 	<string>还没检查。请先解决上一步。</string>
+	<key>Not chosen</key>
+	<string>未选择</string>
 	<key>Not connected</key>
 	<string>未连接</string>
 	<key>Not connected to Tabbi yet</key>
@@ -2073,6 +2131,8 @@
 	<string>未设置</string>
 	<key>Not synced yet</key>
 	<string>尚未同步</string>
+	<key>Not yet. Click the button so your Mac can ask.</key>
+	<string>还没有。点按按钮，Mac 就能询问。</string>
 	<key>Not yet. Open the Party tab to answer.</key>
 	<string>还没有。打开“派对”标签页来回答。</string>
 	<key>Not yet. Pick a name and a pet to start.</key>
@@ -2089,6 +2149,8 @@
 	<string>还没完成任何项</string>
 	<key>Nothing due today</key>
 	<string>今天没有待复习的卡片</string>
+	<key>Nothing is read until you choose</key>
+	<string>在你选择之前不会读取任何内容</string>
 	<key>Nothing left to plan</key>
 	<string>没有可规划的了</string>
 	<key>Nothing listed yesterday</key>
@@ -2211,6 +2273,8 @@
 	<string>打开“互联网账户”添加 Google、Exchange 或 iCloud 日历</string>
 	<key>Open Party</key>
 	<string>打开派对</string>
+	<key>Open Privacy &amp; Security &gt; Automation in System Settings</key>
+	<string>在系统设置中打开“隐私与安全性 › 自动化”</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
 	<string>打开“隐私与安全性”允许日历访问</string>
 	<key>Open Settings</key>
@@ -2383,6 +2447,8 @@
 	<string>选个名字和宠物就能开始，无需账户。</string>
 	<key>Pick a name and a pet, and say when you were born.</key>
 	<string>选个名字和宠物，再填写出生年月。</string>
+	<key>Pick a reason first</key>
+	<string>请先选择原因</string>
 	<key>Pick a sound to preview it</key>
 	<string>选择一种声音来试听</string>
 	<key>Pick a sound, then save the blend here</key>
@@ -2401,6 +2467,8 @@
 	<string>选择你出生的月份和年份</string>
 	<key>Pick the name and pet your friends will see. No account or password needed.</key>
 	<string>选择朋友会看到的名字和宠物，无需账户或密码。</string>
+	<key>Pick whose usage to show</key>
+	<string>选择要显示哪个工具的用量</string>
 	<key>Pin %@ to the Study button</key>
 	<string>将 %@ 固定到学习按钮</string>
 	<key>Pin as Favorite Deck</key>
@@ -2531,12 +2599,16 @@
 	<string>稀有</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
 	<string>把手臂高高举起，再向后转转肩膀。</string>
+	<key>Read the latest Claude Code logs (sends nothing)</key>
+	<string>读取最新的 Claude Code 日志（不发送任何内容）</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>读取最新的 Codex 日志（不发送任何内容）</string>
 	<key>Read through AnkiConnect on this Mac</key>
 	<string>通过这台 Mac 上的 AnkiConnect 读取</string>
 	<key>Reading %@ sessions…</key>
 	<string>正在读取 %@ 会话…</string>
+	<key>Reading Claude Code logs…</key>
+	<string>正在读取 Claude Code 日志…</string>
 	<key>Reading Codex logs…</key>
 	<string>正在读取 Codex 日志…</string>
 	<key>Reading what's playing.</key>
@@ -2569,6 +2641,8 @@
 	<string>重新加入</string>
 	<key>Released under the MIT License.</key>
 	<string>基于 MIT 许可证发布。</string>
+	<key>Remember this answer and stop asking after a crash</key>
+	<string>记住这个回答，崩溃后不再询问</string>
 	<key>Remind me to study</key>
 	<string>提醒我学习</string>
 	<key>Reminders</key>
@@ -2605,6 +2679,8 @@
 	<string>重复这首歌</string>
 	<key>Report %@</key>
 	<string>举报 %@</string>
+	<key>Report %@: %@</key>
+	<string>举报 %1$@：%2$@</string>
 	<key>Report %@…</key>
 	<string>举报 %@…</string>
 	<key>Report a problem: %@</key>
@@ -2719,16 +2795,24 @@
 	<string>看看接下来有什么</string>
 	<key>See your %@ here. It only takes a moment.</key>
 	<string>在这里查看你的%@，只需片刻。</string>
+	<key>See your %@ usage</key>
+	<string>查看你的 %@ 用量</string>
 	<key>See your day at a glance</key>
 	<string>一眼看清你的一天</string>
 	<key>Select AnkiConnect and click Check for Updates</key>
 	<string>选择 AnkiConnect 并点按 检查更新</string>
+	<key>Send</key>
+	<string>发送</string>
 	<key>Send (Return)</key>
 	<string>发送(Return)</string>
+	<key>Send Report</key>
+	<string>发送举报</string>
 	<key>Send a friend request with this code</key>
 	<string>用这个代码发送好友请求</string>
 	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
 	<string>把好友码发给朋友，他们就能加你。他们会看到你的名字、宠物和学习计时。</string>
+	<key>Send this report to the Tabbi team</key>
+	<string>将此举报发送给 Tabbi 团队</string>
 	<key>Send your AI requests to %@?</key>
 	<string>将你的 AI 请求发送给 %@?</string>
 	<key>Sends what you ask to %@.</key>
@@ -2771,6 +2855,8 @@
 	<string>分享给好友，让他们添加你。</string>
 	<key>Share your code above, or add theirs below.</key>
 	<string>分享上方的代码，或在下方添加对方的代码。</string>
+	<key>Share your code, or add theirs below. Start a party from the Party tab.</key>
+	<string>分享你的代码，或在下方添加好友的代码。可在派对标签页中发起派对。</string>
 	<key>Shared focus: %@ left</key>
 	<string>共同专注：剩余 %@</string>
 	<key>Shortcut</key>
@@ -2783,6 +2869,10 @@
 	<string>快捷指令已运行。</string>
 	<key>Shortcuts</key>
 	<string>快捷指令</string>
+	<key>Shortcuts access is off</key>
+	<string>快捷指令访问已关闭</string>
+	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>快捷指令访问已关闭。请在“自动化”设置中为 Tabbi 打开 Shortcuts Events。</string>
 	<key>Show %@</key>
 	<string>显示 %@</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
@@ -2799,6 +2889,8 @@
 	<string>显示日历</string>
 	<key>Show every deck with cards due</key>
 	<string>显示所有待复习的牌组</string>
+	<key>Show friends when you study again</key>
+	<string>重新向好友显示你何时在学习</string>
 	<key>Show less</key>
 	<string>收起</string>
 	<key>Show live activity</key>
@@ -2821,6 +2913,8 @@
 	<string>在休息卡片上显示今天的杯数，并提供添加按钮</string>
 	<key>Show tomorrow's calendar</key>
 	<string>显示明天的日历</string>
+	<key>Show usage for</key>
+	<string>显示用量</string>
 	<key>Show yesterday's calendar</key>
 	<string>显示昨天的日历</string>
 	<key>Show yesterday's list</key>
@@ -2861,6 +2955,8 @@
 	<string>正在登录…</string>
 	<key>Signing you in so friends can find you.</key>
 	<string>正在登录，方便好友找到你。</string>
+	<key>Signing you in so friends can find you. Your code shows here in a moment.</key>
+	<string>正在为你登录，好让好友找到你。你的代码稍后会显示在这里。</string>
 	<key>Silly</key>
 	<string>搞怪</string>
 	<key>Silver</key>
@@ -3017,6 +3113,8 @@
 	<string>不再将 %@ 算作分心</string>
 	<key>Stop focusing on this task</key>
 	<string>停止专注此任务</string>
+	<key>Stop reading this folder</key>
+	<string>停止读取此文件夹</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>在这台 Mac 上停止同步。你的宠物和进度会保留在这里。</string>
 	<key>Stop the preview</key>
@@ -3103,6 +3201,10 @@
 	<string>正在同步…</string>
 	<key>System</key>
 	<string>系统</string>
+	<key>Tabbi can count your tokens from the logs Claude Code keeps in the %@ folder. Choose it next. Nothing leaves your Mac.</key>
+	<string>Tabbi 可以根据 Claude Code 保存在 %@ 文件夹中的日志统计你的 Token。接下来请选择它。任何内容都不会离开你的 Mac。</string>
+	<key>Tabbi can show your limits and tokens from the logs Codex keeps in the %@ folder. Choose it next. Nothing leaves your Mac.</key>
+	<string>Tabbi 可以根据 Codex 保存在 %@ 文件夹中的日志显示你的额度和 Token。接下来请选择它。任何内容都不会离开你的 Mac。</string>
 	<key>Tabbi can't control %@</key>
 	<string>Tabbi 无法控制 %@</string>
 	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
@@ -3117,16 +3219,26 @@
 	<string>Tabbi 正在检查</string>
 	<key>Tabbi is still checking. This takes a second.</key>
 	<string>Tabbi 正在检查，马上就好。</string>
+	<key>Tabbi isn't allowed to run shortcuts yet. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>Tabbi 还不能运行快捷指令。请在“自动化”设置中为 Tabbi 打开 Shortcuts Events。</string>
+	<key>Tabbi isn't allowed to run shortcuts. Turn on Shortcuts Events for Tabbi in System Settings &gt; Privacy &amp; Security &gt; Automation.</key>
+	<string>Tabbi 无法运行快捷指令。请在“系统设置 › 隐私与安全性 › 自动化”中为 Tabbi 打开 Shortcuts Events。</string>
 	<key>Tabbi leaves your alerts alone until you turn it on.</key>
 	<string>打开之前，Tabbi 不会改动你的通知。</string>
+	<key>Tabbi needs to ask first</key>
+	<string>Tabbi 需要先询问</string>
 	<key>Tabbi only alerts you when a focus block or break ends.</key>
 	<string>Tabbi 只在专注时段或休息结束时提醒你。</string>
 	<key>Tabbi only plays, pauses, skips and shows what's playing.</key>
 	<string>Tabbi 只会播放、暂停、跳过和显示正在播放的内容。</string>
 	<key>Tabbi only reads events to show today's plan.</key>
 	<string>Tabbi 只读取日程来显示今天的安排。</string>
+	<key>Tabbi only runs the two shortcuts named in Focus settings, when focus starts and ends.</key>
+	<string>Tabbi 只会在专注开始和结束时，运行专注设置中指定的两个快捷指令。</string>
 	<key>Tabbi reads %@ and sends nothing.</key>
 	<string>Tabbi 只读取 %@，不会发送任何内容。</string>
+	<key>Tabbi reads only token counts, model names and Codex's plan limits from these folders, and nothing leaves your Mac. Remove a folder to stop Tabbi from reading it.</key>
+	<string>Tabbi 只从这些文件夹读取 Token 数、模型名称和 Codex 的套餐额度，任何内容都不会离开你的 Mac。移除文件夹即可让 Tabbi 停止读取。</string>
 	<key>Tabbi shows the calendars your Mac knows about. Add your Google account once and its events show up.</key>
 	<string>Tabbi 会显示你的 Mac 上的日历。添加一次 Google 账户，其中的日程就会出现。</string>
 	<key>Tabbi tells you when a focus block or break ends.</key>
@@ -3161,6 +3273,8 @@
 	<string>谢谢。举报已发送，%@ 已被屏蔽。</string>
 	<key>Thanks. Your report was sent.</key>
 	<string>谢谢。举报已发送。</string>
+	<key>That folder has no %@ logs. Choose the %@ folder in your home folder.</key>
+	<string>该文件夹中没有 %1$@ 日志。请选择个人文件夹中的 %2$@ 文件夹。</string>
 	<key>That friend request is no longer there.</key>
 	<string>这条好友请求已不存在。</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
@@ -3291,6 +3405,8 @@
 	<string>这台 Mac 无法为 Tabbi 运行快捷指令。请更新 macOS。</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>此账户已无法使用派对。如果你认为这是误判，请写信至 %@。</string>
+	<key>This account can no longer use Party. Write to %@ if that's a mistake.</key>
+	<string>此账户已无法使用派对。如有误，请发邮件至 %@。</string>
 	<key>This chat is open</key>
 	<string>此聊天已打开</string>
 	<key>This copy can't use the calendar</key>
@@ -3345,6 +3461,8 @@
 	<string>提高专注力的小技巧</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
 	<string>要附加屏幕,请在“录屏与系统录音”中打开 Tabbi。截图只会随问题发送给 %@。</string>
+	<key>To check they exist it looks up their names, and it never changes a shortcut.</key>
+	<string>为确认它们存在，它只会查找名称，绝不会修改快捷指令。</string>
 	<key>To install it, click %@ on the Claude row below.</key>
 	<string>要安装，请点按下方 Claude 一行中的“%@”。</string>
 	<key>To sign in with Google, run %@ in Terminal once.</key>
@@ -3365,6 +3483,8 @@
 	<string>今天的日程及其间的空闲时间。Google 日历在“互联网账户”中添加后即会显示。</string>
 	<key>Today's events show up in Tabbi.</key>
 	<string>今天的日程会显示在 Tabbi 中。</string>
+	<key>Tokens per day</key>
+	<string>每日 Token</string>
 	<key>Tomorrow</key>
 	<string>明天</string>
 	<key>Tomorrow has no free time worth a block before the evening.</key>
@@ -3421,6 +3541,8 @@
 	<string>为 SoundCloud 开启 JavaScript</string>
 	<key>Turn on Party?</key>
 	<string>要开启派对吗？</string>
+	<key>Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>请在“自动化”设置中为 Tabbi 打开 Shortcuts Events。</string>
 	<key>Turn on Tabbi under Calendars in System Settings.</key>
 	<string>在系统设置的“日历”中打开 Tabbi。</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -3487,6 +3609,16 @@
 	<string>已更新并应用 %@。</string>
 	<key>Updated %@; your tabs are unchanged.</key>
 	<string>已更新 %@，你的标签页不变。</string>
+	<key>Updated %lldd ago</key>
+	<string>%lld 天前更新</string>
+	<key>Updated %lldh ago</key>
+	<string>%lld 小时前更新</string>
+	<key>Updated %lldm ago</key>
+	<string>%lld 分钟前更新</string>
+	<key>Updated just now</key>
+	<string>刚刚更新</string>
+	<key>Usage logs</key>
+	<string>用量日志</string>
 	<key>Usage of your rolling 5-hour limit</key>
 	<string>滚动 5 小时限额的使用量</string>
 	<key>Usage of your weekly limit</key>
@@ -3513,6 +3645,8 @@
 	<string>版本 %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>在 GitHub 上查看</string>
+	<key>Visible: friends see when you study</key>
+	<string>好友可见</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>鲜艳的强调色，配上紫色光晕。</string>
 	<key>Volume</key>
@@ -3707,6 +3841,8 @@
 	<string>接下来，Mac 会询问是否允许 %@ 读取你的日历</string>
 	<key>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</key>
 	<string>Mac 会先询问你，然后在系统设置中打开“隐私与安全性”&gt;“录屏与系统录音”</string>
+	<key>Your Mac asks once before Tabbi can run your shortcuts.</key>
+	<string>在 Tabbi 运行你的快捷指令之前，Mac 会询问一次。</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Mac 正在充电，%@ 也在喝一小口</string>
 	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>
@@ -3855,6 +3991,12 @@
 	<string>分</string>
 	<key>ready to unlock</key>
 	<string>可以解锁</string>
+	<key>resets %@</key>
+	<string>%@重置</string>
+	<key>resets in %@</key>
+	<string>%@后重置</string>
+	<key>resets now</key>
+	<string>即将重置</string>
 	<key>session</key>
 	<string>次专注</string>
 	<key>sessions</key>

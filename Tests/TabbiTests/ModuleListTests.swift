@@ -23,13 +23,9 @@ final class ModuleListTests: XCTestCase {
     func testKeepsTheShippedTabOrder() {
         // Modules a kit doesn't list are appended in this order, so it is
         // user-visible in Settings. New modules go at the end.
-        #if APPSTORE
-        XCTAssertEqual(ModuleList.catalog.ids, [.spotify, .system, .planner, .claudeAsk,
-                                                .focus, .study, .anki, .party, .closet, .schedule])
-        #else
+        // The App Store build has the same tabs (docs/appstore.md).
         XCTAssertEqual(ModuleList.catalog.ids, [.spotify, .system, .claudeUsage, .planner, .claudeAsk,
                                                 .focus, .study, .anki, .party, .closet, .schedule])
-        #endif
     }
 
     func testOnlyClaudeUsageRequiresTheClaudeCLI() {
@@ -104,10 +100,13 @@ final class ModuleListTests: XCTestCase {
             .layout(catalog: ModuleList.catalog).enabled)
     }
 
-    /// The App Store edition runs without its excluded modules: they get no
-    /// tab, no Settings row and no instance, so none of their code runs.
-    func testAppStoreEditionNeitherShowsNorCreatesExcludedModules() throws {
-        let edition = try XCTUnwrap(Edition.named("appstore"))
+    /// An edition runs without its excluded modules: they get no tab, no
+    /// Settings row and no instance, so none of their code runs.
+    func testAnEditionNeitherShowsNorCreatesExcludedModules() throws {
+        let real = try XCTUnwrap(Edition.named("appstore"))
+        let edition = Edition(id: "lean", name: "Lean", bundleIdentifier: real.bundleIdentifier,
+                              defaultKitID: real.defaultKitID, distribution: .appStore,
+                              excludedModules: [.claudeUsage, .party])
         let catalog = ModuleList.catalog(for: edition)
         XCTAssertEqual(catalog.unavailableIDs, Set(edition.excludedModules))
         for kit in KitLibrary.bundled.kits {
@@ -121,11 +120,24 @@ final class ModuleListTests: XCTestCase {
             }
         }
     }
+
+    /// The App Store edition has every tab since 1.0.4, Party and AI Usage
+    /// included (docs/appstore.md).
+    func testTheAppStoreEditionCreatesEveryModule() throws {
+        let edition = try XCTUnwrap(Edition.named("appstore"))
+        let catalog = ModuleList.catalog(for: edition)
+        XCTAssertEqual(catalog.ids, ModuleList.catalog.ids)
+        let store = SettingsStore.ephemeral(catalog: catalog)
+        let services = AppServices(settings: store, edition: edition,
+                                   environment: ["TABBI_DEMO": "1"], arguments: ["--snapshot", "out"])
+        XCTAssertNotNil(services.modules[.party])
+        XCTAssertNotNil(services.modules[.claudeUsage])
+    }
 }
 
 extension Array where Element == ModuleID {
     /// These ids without the modules this build leaves out, so a test reads
-    /// the same in the direct build and the App Store build (`APPSTORE`),
-    /// which has no Claude modules.
+    /// the same with any module list (the App Store build once had no AI
+    /// Usage).
     @MainActor var inThisBuild: [ModuleID] { filter(ModuleList.catalog.contains) }
 }

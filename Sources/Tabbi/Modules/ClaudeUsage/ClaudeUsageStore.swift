@@ -12,6 +12,11 @@ import SwiftUI
 /// than `ClaudeLimitsRecord.staleAfter`; never on a timer. The last snapshot
 /// is persisted so the panel is instant on launch. Codex logs its limits
 /// itself, so for Codex a refresh only re-reads the logs.
+///
+/// Sandboxed (the App Store build, `folders` set) it never looks for or runs
+/// a CLI: it reads only the folders the user picked (`AIUsageFolderAccess`),
+/// the user chooses which tool to show, and Claude Code shows its tokens by
+/// day in place of the live limits, which only the CLI can report.
 @MainActor
 final class ClaudeUsageStore: ObservableObject {
     enum CLIStatus: Equatable {
@@ -28,22 +33,39 @@ final class ClaudeUsageStore: ObservableObject {
     @Published private(set) var probeError: String?
     /// nil until the first transcript scan finishes.
     @Published private(set) var stats: ClaudeLocalStats?
-    /// Whose logs the panel shows; follows the chosen AI.
+    /// Whose logs the panel shows; follows the chosen AI, or the user's
+    /// pick when sandboxed.
     @Published private(set) var source: AIUsageSource
+    /// Sandboxed: no folder was picked for `source` yet, so the panel asks
+    /// for one. Always false in the direct download.
+    @Published private(set) var needsFolder = false
+    /// Sandboxed: the last pick for this source held none of its logs.
+    @Published private(set) var pickedWrongFolder = false
+    /// Sandboxed: when Claude Code's logs were last read, for the footer.
+    @Published private(set) var readAt: Date?
 
     private static let defaultsKey = "claudeUsage.limitsRecord"
+    /// The tool a sandboxed build shows, which the user picks.
+    static let sourceKey = "claudeUsage.source"
 
     private let isDemo: Bool
     /// A snapshot run shows the user's stats but saves nothing and never
     /// probes, so it leaves no trace and spends none of the user's usage.
     private let isSnapshot: Bool
-    private let defaults = UserDefaults.standard
-    private let scanner: ClaudeUsageLogScanner
+    private let defaults: UserDefaults
+    private var scanner: ClaudeUsageLogScanner
+    /// Where the scan keeps its index; nil in snapshot runs.
+    private let indexURL: URL?
+    /// The folders the user let the sandboxed build read; nil in the direct
+    /// download, which reads the default folders and runs the CLI.
+    let folders: AIUsageFolderAccess?
+    /// Whether this store lives in the sandbox (see `folders`).
+    var isSandboxed: Bool { folders != nil }
     private var statusTask: Task<Void, Never>?
     private var probeTask: Task<Void, Never>?
     private var scanTask: Task<Void, Never>?
     private var codexTask: Task<Void, Never>?
-    private let codexRoot: URL
+    private var codexRoot: URL
     /// Where Codex's sessions are read from, as the panel shows it
     /// (`~/.codex/sessions`, or the folder under `CODEX_HOME`).
     var codexFolder: String { (codexRoot.path as NSString).abbreviatingWithTildeInPath }
@@ -58,57 +80,123 @@ final class ClaudeUsageStore: ObservableObject {
     init(storage: EditionStorage, runMode: RunMode, source: AIUsageSource = .claudeCode,
          transcripts: URL = ClaudeUsageLogScanner.defaultRoot,
          codexRoot: URL = CodexUsageLog.defaultRoot(),
+         folders: AIUsageFolderAccess? = nil,
+         defaults: UserDefaults = .standard,
          environment: [String: String] = ProcessInfo.processInfo.environment) {
+        self.defaults = defaults
         isDemo = runMode.isDemo
         isSnapshot = runMode.isSnapshot
-        self.source = source
-        self.codexRoot = codexRoot
-        scanner = ClaudeUsageLogScanner(
-            root: transcripts,
-            indexURL: runMode.isSnapshot ? nil : ClaudeUsageLogScanner.indexURL(in: storage)
-        )
+        self.folders = folders
+        indexURL = runMode.isSnapshot ? nil : ClaudeUsageLogScanner.indexURL(in: storage)
+        if let folders {
+            self.source = defaults.string(forKey: Self.sourceKey).flatMap(AIUsageSource.init(rawValue:))
+                ?? (folders.logRoot(for: .claudeCode) == nil && folders.logRoot(for: .codex) != nil ? .codex : .claudeCode)
+            self.codexRoot = folders.logRoot(for: .codex) ?? codexRoot
+            scanner = ClaudeUsageLogScanner(root: folders.logRoot(for: .claudeCode) ?? transcripts, indexURL: indexURL)
+        } else {
+            self.source = source
+            self.codexRoot = codexRoot
+            scanner = ClaudeUsageLogScanner(root: transcripts, indexURL: indexURL)
+        }
         if isDemo {
-            // TABBI_USAGE_PREVIEW=codex renders the Codex panel.
-            if environment["TABBI_USAGE_PREVIEW"] == "codex" { self.source = .codex }
+            // TABBI_USAGE_PREVIEW=codex renders the Codex panel, and
+            // =folder the sandboxed build before a folder is picked.
+            switch environment["TABBI_USAGE_PREVIEW"] {
+            case "codex": self.source = .codex
+            case "folder" where folders != nil: needsFolder = true
+            default: break
+            }
             loadDemoData()
             return
         }
-        claudeLimits = ClaudeLimitsRecord(encoded: defaults.data(forKey: Self.defaultsKey))
+        // The CLI's snapshot means nothing where it can't run.
+        if folders == nil { claudeLimits = ClaudeLimitsRecord(encoded: defaults.data(forKey: Self.defaultsKey)) }
         load()
     }
 
-    /// Called when the chosen AI changes, so the panel shows its logs.
+    /// Called when the chosen AI changes, so the panel shows its logs, or
+    /// when the user picks the other tool in the sandboxed build.
     func setSource(_ newSource: AIUsageSource) {
-        guard !isDemo, newSource != source else { return }
+        guard newSource != source else { return }
+        if isSandboxed { defaults.set(newSource.rawValue, forKey: Self.sourceKey) }
+        guard !isDemo else {
+            source = newSource
+            loadDemoData()
+            return
+        }
         source = newSource
         probeError = nil
+        pickedWrongFolder = false
         stats = nil
         isFetching = (newSource == .codex ? codexTask : probeTask) != nil
         load()
     }
 
+    /// Sandboxed: shows the open panel for `source`'s folder and starts
+    /// reading it once picked.
+    func pickFolder() {
+        guard let folders, !isDemo else { return }
+        let source = source
+        switch folders.pick(source) {
+        case .cancelled: return
+        case .wrongFolder: pickedWrongFolder = true
+        case .chosen:
+            pickedWrongFolder = false
+            followFolders()
+        }
+    }
+
+    /// Sandboxed: forgets the folder picked for `source`.
+    func removeFolder(_ source: AIUsageSource) {
+        guard let folders, !isDemo else { return }
+        folders.remove(source)
+        if source == self.source { stats = nil }
+        followFolders()
+    }
+
+    /// Points the readers at the folders now picked and reloads.
+    private func followFolders() {
+        guard let folders else { return }
+        if let root = folders.logRoot(for: .claudeCode), root != scanner.root {
+            scanner = ClaudeUsageLogScanner(root: root, indexURL: indexURL)
+        }
+        if let root = folders.logRoot(for: .codex) { codexRoot = root }
+        load()
+    }
+
     /// Shows what is already known for `source` and starts reading the rest.
     private func load() {
+        if let folders {
+            needsFolder = folders.logRoot(for: source) == nil
+            // Sandboxed, there is no CLI to find: the folder is the source.
+            cliStatus = needsFolder ? .missing : .available
+            guard !needsFolder else {
+                limits = nil
+                stats = nil
+                isFetching = false
+                return
+            }
+        }
         switch source {
         case .claudeCode:
             limits = claudeLimits
-            updateCLIStatus()
+            if !isSandboxed { updateCLIStatus() }
             // Warm the stats so the first open is instant; later scans are incremental.
             scanLocalStats()
         case .codex:
             limits = nil
-            updateCLIStatus()
+            if !isSandboxed { updateCLIStatus() }
             readCodexLogs()
         }
     }
 
     /// Called when the panel becomes visible.
     func panelDidAppear() {
-        guard !isDemo else { return }
+        guard !isDemo, !needsFolder else { return }
         switch source {
         case .claudeCode:
             scanLocalStats()
-            if ClaudeLimitsRecord.shouldRefreshOnOpen(limits, now: Date()) { refresh() }
+            if !isSandboxed, ClaudeLimitsRecord.shouldRefreshOnOpen(limits, now: Date()) { refresh() }
         case .codex:
             readCodexLogs()
         }
@@ -117,9 +205,15 @@ final class ClaudeUsageStore: ObservableObject {
     /// Probes the CLI for live limits, or re-reads the Codex logs. No-op
     /// while a probe is running.
     func refresh() {
-        guard !isDemo else { return }
+        guard !isDemo, !needsFolder else { return }
         guard source.probesLimits else {
             readCodexLogs()
+            return
+        }
+        // Sandboxed, nothing may start the CLI: a refresh only reads the logs.
+        guard !isSandboxed else {
+            isFetching = true
+            scanLocalStats()
             return
         }
         guard !isSnapshot, probeTask == nil else { return }
@@ -139,7 +233,7 @@ final class ClaudeUsageStore: ObservableObject {
 
     /// Called when the user changes the `claude` path in Settings.
     func claudePathDidChange() {
-        guard !isDemo, source == .claudeCode else { return }
+        guard !isDemo, !isSandboxed, source == .claudeCode else { return }
         updateCLIStatus()
     }
 
@@ -156,14 +250,19 @@ final class ClaudeUsageStore: ObservableObject {
         }
     }
 
-    /// Off the main thread: a cache miss may consult the login shell.
+    /// Off the main thread: a cache miss may consult the login shell. The App
+    /// Store build never looks: nothing there may start a command line tool.
     private static func locateCLI(for source: AIUsageSource = .claudeCode) async -> URL? {
-        await Task.detached(priority: .utility) {
+        #if APPSTORE
+        return nil
+        #else
+        return await Task.detached(priority: .utility) {
             switch source {
             case .claudeCode: ClaudeExecutableResolver.shared.resolve()
             case .codex: AIProviderFactory.defaultLocate(.codexCLI)
             }
         }.value
+        #endif
     }
 
     /// Reads Codex's session logs off the main thread. Reading is free, so
@@ -214,7 +313,13 @@ final class ClaudeUsageStore: ObservableObject {
         scanTask = Task(priority: .utility) { [weak self, scanner] in
             let result = await scanner.scan()
             guard let self else { return }
-            if source == .claudeCode { stats = result }
+            if source == .claudeCode {
+                stats = result
+                if isSandboxed {
+                    isFetching = false
+                    readAt = Date()
+                }
+            }
             scanTask = nil
             if rescanPending {
                 rescanPending = false
@@ -235,6 +340,30 @@ final class ClaudeUsageStore: ObservableObject {
             return message.isEmpty || message.count > 60 ? "Claude returned an error" : message
         default:
             return "Couldn't reach Claude"
+        }
+    }
+
+    // MARK: Snapshots
+
+    /// What a snapshot shows of the sandboxed panel (demo runs only).
+    enum SnapshotState {
+        case usage(AIUsageSource)
+        case folder(AIUsageSource)
+        case wrongFolder(AIUsageSource)
+    }
+
+    /// Puts the demo panel in `state`, for the snapshot run.
+    func showForSnapshot(_ state: SnapshotState) {
+        guard isDemo else { return }
+        switch state {
+        case .usage(let source):
+            needsFolder = false
+            pickedWrongFolder = false
+            source == self.source ? loadDemoData() : setSource(source)
+        case .folder(let source), .wrongFolder(let source):
+            if source != self.source { setSource(source) }
+            needsFolder = isSandboxed
+            if case .wrongFolder = state { pickedWrongFolder = true } else { pickedWrongFolder = false }
         }
     }
 
@@ -280,7 +409,8 @@ final class ClaudeUsageStore: ObservableObject {
                 messages: 297
             ),
         ])
-        stats = ClaudeLocalStats(today: today, lastSevenDays: week)
+        stats = ClaudeLocalStats(today: today, lastSevenDays: week,
+                                 daily: [1_420_000, 2_310_000, 980_000, 1_870_000, 2_640_000, 1_249_900, 2_167_100])
     }
 
     /// Codex turns: cached input is counted as cache reads, as in its logs.
@@ -299,7 +429,8 @@ final class ClaudeUsageStore: ObservableObject {
                 messages: 612
             ),
         ])
-        stats = ClaudeLocalStats(today: today, lastSevenDays: week)
+        stats = ClaudeLocalStats(today: today, lastSevenDays: week,
+                                 daily: [1_210_000, 1_640_000, 0, 1_980_000, 1_502_400, 1_270_000, 1_438_600])
     }
 
     /// Next Thursday 9:00, so the weekly label reads like "resets Thu 9:00 AM".

@@ -1155,6 +1155,78 @@
         }
       }
     },
+    "%@ closed unexpectedly. Send a crash report?" : {
+      "comment" : "Title of the alert after a crash. %@ is the app name (Tabbi).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أُغلق %@ بشكل غير متوقع. هل تريد إرسال تقرير عطل؟"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ wurde unerwartet beendet. Absturzbericht senden?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ se cerró inesperadamente. ¿Enviar un informe de fallo?"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biglang nagsara ang %@. Magpadala ng crash report?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ s'est fermé de façon inattendue. Envoyer un rapport de plantage ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@が予期せず終了しました。クラッシュレポートを送信しますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@이(가) 예기치 않게 종료되었어요. 충돌 보고서를 보낼까요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O %@ fechou inesperadamente. Enviar um relatório de falha?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ неожиданно закрылось. Отправить отчет о сбое?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 意外退出。要发送崩溃报告吗？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 意外結束。要傳送當機報告嗎？"
+          }
+        }
+      }
+    },
     "%@ collected a smooth pebble" : {
       "comment" : "Adventure journal line on the Closet pet card and its tooltip: what the pet did on its adventure during a long focus block. %@ is the pet's name. Short and cute; the card shows one line.",
       "extractionState" : "manual",
@@ -2519,6 +2591,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ 已經是你的好友了"
+          }
+        }
+      }
+    },
+    "%@ is away" : {
+      "comment" : "Tooltip on a friend's sleeping pet in Party onboarding. %@ is the friend's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ غير متصل"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ist weg"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ está ausente"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wala si %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ est absent"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@は離席中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 님은 자리 비움"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ está ausente"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ не в сети"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 不在"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 不在"
           }
         }
       }
@@ -8071,6 +8215,78 @@
         }
       }
     },
+    "%@: %@ tokens" : {
+      "comment" : "Tooltip of one bar in AI Usage's week chart. First %@ is the weekday (Monday), second a compact count (1.2M).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@ رمز"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@ Tokens"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@ tokens"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@ token"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ : %2$@ jetons"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@：%2$@トークン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@ 토큰"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@ tokens"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: токенов %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@：%2$@ Token"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@：%2$@ Token"
+          }
+        }
+      }
+    },
     "%@: you earned every item. They stay yours after the event." : {
       "comment" : "Seasonal event banner tooltip. The argument is the event name.",
       "extractionState" : "manual",
@@ -10242,6 +10458,240 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "專注 %lld 次"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld friends" : {
+      "comment" : "Party onboarding: how many friends the user has. A count above zero.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld أصدقاء"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld صديقًا"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld صديق"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld صديق"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld صديقان"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld صديق"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Freund"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Freunde"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld friend"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld friends"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld amigo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld amigos"
+                }
+              }
+            }
+          }
+        },
+        "fil" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld kaibigan"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld kaibigan"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ami"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld amis"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "フレンド%lld人"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "친구 %lld명"
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld amigo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld amigos"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld друга"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld друзей"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld друг"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld друга"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 位好友"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hant" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 位好友"
                 }
               }
             }
@@ -20819,6 +21269,78 @@
         }
       }
     },
+    "A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:" : {
+      "comment" : "Body of the alert after a crash, above a box with the exact report.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يساعد التقرير على إصلاح المشكلة. يتضمن إصدار التطبيق وإصدار macOS والنسخة ومكدس العطل وأسماء السلاسل، ولا يتضمن أبدًا محتواك أو الأسماء أو المهام أو الرموز. هذا بالضبط ما سيُرسل:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Bericht hilft, das Problem zu beheben. Er enthält App-Version, macOS-Version, Edition, den Absturz-Stack und Thread-Namen, aber nie deine Inhalte, Namen, Aufgaben oder Tokens. Genau das wird gesendet:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un informe ayuda a arreglar el problema. Incluye la versión de la app, la versión de macOS, la edición, la pila del fallo y los nombres de los hilos, y nunca tu contenido, nombres, tareas ni tokens. Esto es exactamente lo que se envía:"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakakatulong ang report para maayos ang problema. Laman nito ang bersyon ng app, bersyon ng macOS, edition, crash stack at mga pangalan ng thread, at hindi kailanman ang content, mga pangalan, task o token mo. Ito mismo ang ipapadala:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un rapport aide à corriger le problème. Il contient la version de l'app, la version de macOS, l'édition, la pile du plantage et les noms des fils, et jamais ton contenu, tes noms, tes tâches ou tes jetons. Voici exactement ce qui est envoyé :"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "レポートは問題の修正に役立ちます。含まれるのはAppのバージョン、macOSのバージョン、エディション、クラッシュ時のスタックとスレッド名だけで、内容、名前、タスク、トークンは一切含まれません。送信される内容は次のとおりです："
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보고서는 문제를 고치는 데 도움이 돼요. 앱 버전, macOS 버전, 에디션, 충돌 스택과 스레드 이름만 담기고, 콘텐츠, 이름, 할 일, 토큰은 절대 담기지 않아요. 보내는 내용은 정확히 다음과 같아요:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um relatório ajuda a corrigir o problema. Ele traz a versão do app, a versão do macOS, a edição, a pilha da falha e os nomes das threads, e nunca seu conteúdo, nomes, tarefas ou tokens. Isto é exatamente o que será enviado:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отчет помогает исправить проблему. В нем версия приложения, версия macOS, редакция, стек сбоя и имена потоков, и никогда нет твоих данных, имен, задач или токенов. Вот что именно будет отправлено:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "报告有助于修复问题。它只包含 App 版本、macOS 版本、版本类型、崩溃堆栈和线程名称，绝不包含你的内容、名字、任务或令牌。以下就是将发送的全部内容："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "報告有助於修正問題。它只包含 App 版本、macOS 版本、版本類型、當機堆疊和執行緒名稱，絕不包含你的內容、名稱、待辦事項或權杖。以下就是將傳送的完整內容："
+          }
+        }
+      }
+    },
     "A restful week. A fresh start awaits." : {
       "comment" : "Weekly recap card: the one warm line about the week.",
       "extractionState" : "manual",
@@ -24491,6 +25013,78 @@
         }
       }
     },
+    "Add your name" : {
+      "comment" : "Party onboarding: shown in place of the name before the user typed one.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أضف اسمك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füge deinen Namen hinzu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade tu nombre"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilagay ang pangalan mo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute ton nom"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名前を追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이름 추가"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione seu nome"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь имя"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加你的名字"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入你的名字"
+          }
+        }
+      }
+    },
     "Add…" : {
       "comment" : "Shortest placeholder of the Today add field in a narrow panel.",
       "extractionState" : "manual",
@@ -26829,6 +27423,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在播放：專注進行中"
+          }
+        }
+      }
+    },
+    "Also block %@" : {
+      "comment" : "Checkbox in Party's report card. %@ is the reported person's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "احظر %@ أيضًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ auch blockieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquear también a %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-block din si %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquer aussi %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@もブロック"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 님도 차단"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquear %@ também"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Также заблокировать: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同时屏蔽 %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同時封鎖 %@"
           }
         }
       }
@@ -37258,6 +37924,78 @@
         }
       }
     },
+    "Change…" : {
+      "comment" : "Button in Settings > AI Usage that picks another folder.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تغيير…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ändern …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar…"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palitan…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifier…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "変更…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "변경…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alterar…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изменить…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更改…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更改…"
+          }
+        }
+      }
+    },
     "Charcoal" : {
       "comment" : "Closet: a fur color.",
       "extractionState" : "manual",
@@ -38555,6 +39293,78 @@
         }
       }
     },
+    "Check your internet connection. You can also set up Party later in its tab." : {
+      "comment" : "Party onboarding when the server can't be reached. Use the Party tab's name as elsewhere.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحقق من اتصالك بالإنترنت. يمكنك أيضًا إعداد المجموعة لاحقًا من علامة تبويبها."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe deine Internetverbindung. Du kannst Party auch später in seinem Tab einrichten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisa tu conexión a internet. También puedes configurar Grupo más tarde en su pestaña."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tingnan ang internet connection mo. Puwede mo ring i-set up ang Party mamaya sa tab nito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifie ta connexion Internet. Tu peux aussi configurer Groupe plus tard dans son onglet."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インターネット接続を確認してください。パーティはあとでタブから設定することもできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인터넷 연결을 확인하세요. 파티는 나중에 해당 탭에서 설정할 수도 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confira sua conexão com a internet. Você também pode configurar o Grupo depois, na aba dele."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Проверь подключение к интернету. Настроить Party можно и позже на его вкладке."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请检查网络连接。你也可以稍后在派对标签页中设置。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請檢查網路連線。你也可以稍後在派對標籤頁中設定。"
+          }
+        }
+      }
+    },
     "Checking" : {
       "comment" : "Connection status light in Settings > Connections while checking.",
       "extractionState" : "manual",
@@ -39277,6 +40087,79 @@
         }
       }
     },
+    "Choose" : {
+      "comment" : "Default button of the open panel where the user picks the Claude Code or Codex folder for AI Usage.",
+      "extractionState" : "manual",
+      "generatesSymbol" : false,
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختيار"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auswählen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elegir"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piliin"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisir"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolher"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбрать"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇"
+          }
+        }
+      }
+    },
     "Choose AI" : {
       "comment" : "Ask AI setup button that opens Connections to pick an AI.",
       "extractionState" : "manual",
@@ -39705,6 +40588,294 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選擇瀏海動畫的活潑程度"
+          }
+        }
+      }
+    },
+    "Choose the %@ folder in your home folder" : {
+      "comment" : "Tooltip of the Choose button in Settings > AI Usage. %@ is .claude or .codex.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر المجلد %@ في مجلد الصفحة الرئيسية"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle den Ordner %@ in deinem Benutzerordner"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige la carpeta %@ de tu carpeta de inicio"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piliin ang folder na %@ sa home folder mo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis le dossier %@ dans ton dossier de départ"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホームフォルダ内の%@フォルダを選択"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "홈 폴더에서 %@ 폴더 선택"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha a pasta %@ na sua pasta de início"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери папку %@ в домашней папке"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择个人文件夹中的 %@ 文件夹"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇個人專屬資料夾中的 %@ 資料夾"
+          }
+        }
+      }
+    },
+    "Choose the %@ folder in your home folder. Tabbi reads only token counts and model names from Claude Code's logs." : {
+      "comment" : "Message at the top of the open panel for AI Usage. %@ is the folder name (.claude), keep it as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر المجلد %@ في مجلد الصفحة الرئيسية. يقرأ Tabbi من سجلات Claude Code عدد الرموز وأسماء النماذج فقط."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle den Ordner %@ in deinem Benutzerordner. Tabbi liest aus den Logs von Claude Code nur Token-Zahlen und Modellnamen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige la carpeta %@ de tu carpeta de inicio. Tabbi solo lee recuentos de tokens y nombres de modelos de los registros de Claude Code."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piliin ang folder na %@ sa home folder mo. Bilang ng token at pangalan ng model lang ang binabasa ng Tabbi sa mga log ng Claude Code."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis le dossier %@ dans ton dossier de départ. Tabbi lit seulement le nombre de jetons et les noms de modèles dans les journaux de Claude Code."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホームフォルダ内の%@フォルダを選択してください。TabbiがClaude Codeのログから読み取るのは、トークン数とモデル名だけです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "홈 폴더에서 %@ 폴더를 선택하세요. Tabbi는 Claude Code 로그에서 토큰 수와 모델 이름만 읽어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha a pasta %@ na sua pasta de início. O Tabbi lê só contagens de tokens e nomes de modelos dos logs do Claude Code."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери папку %@ в своей домашней папке. Tabbi читает из журналов Claude Code только число токенов и названия моделей."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择个人文件夹中的 %@ 文件夹。Tabbi 只从 Claude Code 的日志中读取 Token 数和模型名称。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請選擇個人專屬資料夾中的 %@ 資料夾。Tabbi 只會從 Claude Code 的記錄中讀取 Token 數量和模型名稱。"
+          }
+        }
+      }
+    },
+    "Choose the %@ folder in your home folder. Tabbi reads only token counts, model names and plan limits from Codex's logs." : {
+      "comment" : "Message at the top of the open panel for AI Usage. %@ is the folder name (.codex), keep it as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر المجلد %@ في مجلد الصفحة الرئيسية. يقرأ Tabbi من سجلات Codex عدد الرموز وأسماء النماذج وحدود الخطة فقط."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle den Ordner %@ in deinem Benutzerordner. Tabbi liest aus den Logs von Codex nur Token-Zahlen, Modellnamen und Tariflimits."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige la carpeta %@ de tu carpeta de inicio. Tabbi solo lee recuentos de tokens, nombres de modelos y límites del plan de los registros de Codex."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piliin ang folder na %@ sa home folder mo. Bilang ng token, pangalan ng model at limit ng plan lang ang binabasa ng Tabbi sa mga log ng Codex."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis le dossier %@ dans ton dossier de départ. Tabbi lit seulement le nombre de jetons, les noms de modèles et les limites du forfait dans les journaux de Codex."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホームフォルダ内の%@フォルダを選択してください。TabbiがCodexのログから読み取るのは、トークン数、モデル名、プランの上限だけです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "홈 폴더에서 %@ 폴더를 선택하세요. Tabbi는 Codex 로그에서 토큰 수, 모델 이름, 요금제 한도만 읽어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha a pasta %@ na sua pasta de início. O Tabbi lê só contagens de tokens, nomes de modelos e limites do plano dos logs do Codex."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери папку %@ в своей домашней папке. Tabbi читает из журналов Codex только число токенов, названия моделей и лимиты тарифа."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择个人文件夹中的 %@ 文件夹。Tabbi 只从 Codex 的日志中读取 Token 数、模型名称和套餐额度。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請選擇個人專屬資料夾中的 %@ 資料夾。Tabbi 只會從 Codex 的記錄中讀取 Token 數量、模型名稱和方案上限。"
+          }
+        }
+      }
+    },
+    "Choose the %@ folder next" : {
+      "comment" : "Tooltip of the Continue button on AI Usage's first card. %@ is .claude or .codex.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر المجلد %@ بعد ذلك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als Nächstes den Ordner %@ wählen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora elige la carpeta %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Susunod, piliin ang folder na %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis ensuite le dossier %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次に%@フォルダを選択します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음으로 %@ 폴더 선택"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em seguida, escolha a pasta %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дальше выбери папку %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接下来选择 %@ 文件夹"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接下來選擇 %@ 資料夾"
           }
         }
       }
@@ -40501,6 +41672,78 @@
         }
       }
     },
+    "Claude usage" : {
+      "comment" : "Ticker tooltip before a limit, for example: Claude usage 5h 86%.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استخدام Claude"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude-Nutzung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso de Claude"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usage ng Claude"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisation de Claude"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claudeの使用量"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude 사용량"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso do Claude"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Использование Claude"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude 用量"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude 用量"
+          }
+        }
+      }
+    },
     "Clear \"%@\"" : {
       "comment" : "Tooltip on a picked answer; clicking unpicks it. The argument is the answer.",
       "extractionState" : "manual",
@@ -40933,146 +42176,146 @@
         }
       }
     },
-    "Click Connect, then Allow when your Mac asks if Tabbi can control %@." : {
-      "comment" : "Connection status line in Settings > Connections (Music). %@ is an app or connection name, %lld a number.",
+    "Click Connect and your Mac asks if Tabbi can control %@." : {
+      "comment" : "Settings > Connections row detail before macOS asks to let Tabbi control a music app. %@ is Spotify or Apple Music. Never tell the user which button to click (App Review 5.1.1(iv)).",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "انقر اتصال، ثم سماح عندما يسألك جهازك إن كان Tabbi يستطيع التحكم في %@."
+            "value" : "انقر اتصال وسيسألك جهاز Mac إن كان Tabbi يستطيع التحكم في %@."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klick auf Verbinden und dann auf Erlauben, wenn dein Mac fragt, ob Tabbi %@ steuern darf."
+            "value" : "Klick auf Verbinden, dann fragt dein Mac, ob Tabbi %@ steuern darf."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Haz clic en Conectar y luego en Permitir cuando tu Mac pregunte si Tabbi puede controlar %@."
+            "value" : "Haz clic en Conectar y tu Mac preguntará si Tabbi puede controlar %@."
           }
         },
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I-click ang Ikonekta, tapos Allow kapag tinanong ng Mac mo kung puwedeng kontrolin ng Tabbi ang %@."
+            "value" : "I-click ang Ikonekta at tatanungin ng Mac mo kung puwedeng kontrolin ng Tabbi ang %@."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clique sur Connecter, puis sur Autoriser quand ton Mac demande si Tabbi peut contrôler %@."
+            "value" : "Clique sur Connecter et ton Mac demandera si Tabbi peut contrôler %@."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "「接続」をクリックし、Tabbiが%@を操作してよいか尋ねられたら「許可」を選んでください。"
+            "value" : "「接続」をクリックすると、Tabbiが%@を操作してよいかMacが確認します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "연결을 클릭한 다음, Tabbi가 %@ 앱을 제어해도 되는지 Mac이 물으면 허용을 클릭하세요."
+            "value" : "연결을 클릭하면 Tabbi가 %@ 앱을 제어해도 되는지 Mac이 물어봐요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clique em Conectar e depois em Permitir quando o Mac perguntar se o Tabbi pode controlar %@."
+            "value" : "Clique em Conectar e o Mac vai perguntar se o Tabbi pode controlar %@."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нажми «Подключить», а затем «Разрешить», когда Mac спросит, может ли Tabbi управлять %@."
+            "value" : "Нажми «Подключить», и Mac спросит, может ли Tabbi управлять %@."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点按“连接”，当 Mac 询问 Tabbi 能否控制 %@ 时，点按“允许”。"
+            "value" : "点按“连接”，Mac 会询问 Tabbi 能否控制 %@。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "按一下「連接」，當 Mac 詢問 Tabbi 是否可以控制 %@ 時，選擇「允許」。"
+            "value" : "按一下「連接」，Mac 會詢問 Tabbi 是否可以控制 %@。"
           }
         }
       }
     },
-    "Click Connect, then Allow when your Mac asks. It only asks once." : {
-      "comment" : "Connection status line in Settings > Connections (Notifications). %@ is an app or connection name, %lld a number.",
+    "Click Connect and your Mac asks. It only asks once." : {
+      "comment" : "Settings > Connections row detail before a macOS permission prompt. Never tell the user which button to click there (App Review 5.1.1(iv)).",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "انقر اتصال، ثم سماح عندما يسألك جهازك. يسأل مرة واحدة فقط."
+            "value" : "انقر اتصال وسيسألك جهاز Mac. يسأل مرة واحدة فقط."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klick auf Verbinden und dann auf Erlauben, wenn dein Mac fragt. Er fragt nur einmal."
+            "value" : "Klick auf Verbinden, dann fragt dein Mac. Er fragt nur einmal."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Haz clic en Conectar y luego en Permitir cuando tu Mac pregunte. Solo pregunta una vez."
+            "value" : "Haz clic en Conectar y tu Mac preguntará. Solo pregunta una vez."
           }
         },
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I-click ang Ikonekta, tapos Allow kapag nagtanong ang Mac mo. Isang beses lang itong magtatanong."
+            "value" : "I-click ang Ikonekta at magtatanong ang Mac mo. Isang beses lang itong magtatanong."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clique sur Connecter, puis sur Autoriser quand ton Mac le demande. Il ne demande qu'une fois."
+            "value" : "Clique sur Connecter et ton Mac te posera la question. Il ne demande qu'une fois."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "「接続」をクリックし、Macに尋ねられたら「許可」を選んでください。確認は一度だけです。"
+            "value" : "「接続」をクリックするとMacが確認します。確認は一度だけです。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "연결을 클릭한 다음, Mac이 물으면 허용을 클릭하세요. 한 번만 물어요."
+            "value" : "연결을 클릭하면 Mac이 물어봐요. 한 번만 물어요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clique em Conectar e depois em Permitir quando o Mac perguntar. Ele só pergunta uma vez."
+            "value" : "Clique em Conectar e o Mac vai perguntar. Ele só pergunta uma vez."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нажми «Подключить», а затем «Разрешить», когда Mac спросит. Он спросит только раз."
+            "value" : "Нажми «Подключить», и Mac спросит. Он спросит только раз."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点按“连接”，Mac 询问时点按“允许”。只会问一次。"
+            "value" : "点按“连接”，Mac 就会询问。只会问一次。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "按一下「連接」，當 Mac 詢問時選擇「允許」。只會問一次。"
+            "value" : "按一下「連接」，Mac 就會詢問。只會問一次。"
           }
         }
       }
@@ -43166,6 +44409,78 @@
         }
       }
     },
+    "Close without reporting (Esc)" : {
+      "comment" : "Tooltip of Cancel in Party's report card.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإغلاق دون إبلاغ (Esc)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließen, ohne zu melden (Esc)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar sin denunciar (Esc)"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isara nang hindi nagre-report (Esc)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer sans signaler (Échap)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "報告せずに閉じる（esc）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신고하지 않고 닫기 (esc)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fechar sem denunciar (Esc)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрыть без жалобы (Esc)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭且不举报（Esc）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉且不檢舉（esc）"
+          }
+        }
+      }
+    },
     "Closet" : {
       "comment" : "Tab title of the pet's wardrobe, where you name your pet and dress it. Keep it short: it sits in the open notch's header.",
       "extractionState" : "manual",
@@ -43306,6 +44621,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "程式碼"
+          }
+        }
+      }
+    },
+    "Codex usage" : {
+      "comment" : "Ticker tooltip before a limit, for example: Codex usage 5h 86%.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استخدام Codex"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex-Nutzung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso de Codex"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usage ng Codex"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisation de Codex"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codexの使用量"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 사용량"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso do Codex"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Использование Codex"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 用量"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codex 用量"
           }
         }
       }
@@ -52169,6 +53556,78 @@
         }
       }
     },
+    "Don't Send" : {
+      "comment" : "Button in the crash report alert that sends nothing.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عدم الإرسال"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht senden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No enviar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huwag Ipadala"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne pas envoyer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送信しない"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보내지 않기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não Enviar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не отправлять"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不发送"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不要傳送"
+          }
+        }
+      }
+    },
     "Don't ask again" : {
       "comment" : "Alert offered when the app runs outside the Applications folder (%@ is the app name Tabbi): checkbox.",
       "extractionState" : "manual",
@@ -56198,6 +57657,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在依明天的行程安排工作和休息"
+          }
+        }
+      }
+    },
+    "Fix it in Settings > Tabs > Party > Options." : {
+      "comment" : "Party onboarding, after a message about a wrong server address.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أصلحه من الإعدادات › علامات التبويب › المجموعة › الخيارات."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Korrigiere es unter Einstellungen › Tabs › Party › Optionen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arréglalo en Ajustes › Pestañas › Grupo › Opciones."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayusin ito sa Settings › Tabs › Party › Options."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrige-le dans Réglages › Onglets › Groupe › Options."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定 › タブ › パーティ › オプションで修正してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 › 탭 › 파티 › 옵션에서 고치세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrija em Ajustes › Abas › Grupo › Opções."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Исправь в Настройки › Вкладки › Party › Параметры."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在“设置 › 标签页 › 派对 › 选项”中修正。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請到「設定」›「標籤頁」›「派對」›「選項」修正。"
           }
         }
       }
@@ -61224,6 +62755,78 @@
         }
       }
     },
+    "From your Claude Code logs" : {
+      "comment" : "AI Usage footer before the first read of the user's Claude Code logs.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "من سجلات Claude Code لديك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus deinen Claude-Code-Logs"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De tus registros de Claude Code"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mula sa mga Claude Code log mo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depuis tes journaux Claude Code"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Codeのログから"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 Claude Code 로그 기준"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dos seus logs do Claude Code"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Из твоих журналов Claude Code"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "来自你的 Claude Code 日志"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "來自你的 Claude Code 記錄"
+          }
+        }
+      }
+    },
     "Frosted glass cards over a cool blue glow." : {
       "comment" : "Settings > Look: one-line description of a theme, shown in its tooltip and under the theme picker.",
       "extractionState" : "manual",
@@ -62876,6 +64479,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "隱身"
+          }
+        }
+      }
+    },
+    "Go invisible. Your study minutes still count." : {
+      "comment" : "Tooltip of Party's visibility button.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختفِ عن الأنظار. دقائق دراستك تُحتسب مع ذلك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Werde unsichtbar. Deine Lernminuten zählen trotzdem."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hazte invisible. Tus minutos de estudio siguen contando."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maging invisible. Bilang pa rin ang mga minuto mo sa pag-aaral."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deviens invisible. Tes minutes d'étude comptent toujours."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非表示にします。勉強時間は記録され続けます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "숨김 상태로 바꿔요. 공부 시간은 계속 기록돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fique invisível. Seus minutos de estudo continuam contando."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стань невидимкой. Минуты учебы все равно считаются."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐身。你的学习时间仍会计入。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隱身。你的讀書時間仍會計入。"
           }
         }
       }
@@ -64568,6 +66243,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "隱藏 %1$@，直到我按下 %2$@"
+          }
+        }
+      }
+    },
+    "Hide each other everywhere in Party. You can unblock in Party options." : {
+      "comment" : "Tooltip of Also block in Party's report card.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تختفيان عن بعضكما في كل مكان في المجموعة. يمكنك إلغاء الحظر من خيارات المجموعة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ihr seht euch nirgends mehr in Party. Aufheben kannst du das in den Party-Optionen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya no se verán en ningún lugar de Grupo. Puedes desbloquear en las opciones de Grupo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi na kayo makikita ng isa't isa saanman sa Party. Puwede mong i-unblock sa Party options."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous ne vous verrez plus nulle part dans Groupe. Tu peux débloquer dans les options de Groupe."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パーティのどこでもお互いに表示されなくなります。パーティのオプションで解除できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파티 어디에서도 서로 보이지 않아요. 파티 옵션에서 해제할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vocês deixam de se ver em todo o Grupo. Você pode desbloquear nas opções do Grupo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вы перестанете видеть друг друга в Party. Разблокировать можно в настройках Party."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你们在派对中将互相看不到。可在派对选项中解除屏蔽。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你們在派對中將互相看不到。可到派對選項解除封鎖。"
           }
         }
       }
@@ -68172,6 +69919,150 @@
         }
       }
     },
+    "Invisible to friends" : {
+      "comment" : "Party status line while the user is invisible.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مخفي عن الأصدقاء"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für Freunde unsichtbar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisible para tus amigos"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisible sa mga kaibigan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisible pour tes amis"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フレンドに非表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구에게 숨김"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisível para os amigos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Невидимка для друзей"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对好友隐身"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "對好友隱身"
+          }
+        }
+      }
+    },
+    "Invisible: friends see you as away" : {
+      "comment" : "Party visibility button while invisible.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مخفي عن الأصدقاء"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für Freunde unsichtbar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisible para tus amigos"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi kita ng mga kaibigan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisible pour tes amis"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フレンドに非表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구에게 숨김"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invisível para os amigos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрыто от друзей"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对好友隐身"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "對好友隱身"
+          }
+        }
+      }
+    },
     "Invite links" : {
       "comment" : "Onboarding extra: Party invite links.",
       "extractionState" : "manual",
@@ -70292,6 +72183,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在加入派對，馬上就好。"
+          }
+        }
+      }
+    },
+    "Joining the party server" : {
+      "comment" : "Party status while it connects to the server.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ الاتصال بخادم المجموعة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinde mit dem Party-Server"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectando con el servidor"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kumokonekta sa party server"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion au serveur de groupes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パーティサーバーに接続中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파티 서버에 연결하는 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectando ao servidor"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подключение к серверу пати"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在连接派对服务器"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在連線至派對伺服器"
           }
         }
       }
@@ -72596,6 +74559,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "允許 Tabbi 連線到 Anki"
+          }
+        }
+      }
+    },
+    "Let Tabbi run your Focus shortcuts" : {
+      "comment" : "Title of the screen before macOS asks to let Tabbi control Shortcuts Events (Do Not Disturb, App Store build).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دع Tabbi يشغّل اختصارات التركيز"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi deine Fokus-Kurzbefehle ausführen lassen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deja que Tabbi ejecute tus atajos de enfoque"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hayaang patakbuhin ng Tabbi ang mga Focus shortcut mo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laisser Tabbi lancer tes raccourcis de concentration"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiに集中用のショートカットを実行させる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi가 집중 단축어를 실행하게 하기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixe o Tabbi executar seus atalhos de foco"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пусть Tabbi запускает твои команды для фокуса"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "让 Tabbi 运行你的专注快捷指令"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "讓 Tabbi 執行你的專注捷徑"
           }
         }
       }
@@ -75406,6 +77441,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "標示為未完成"
+          }
+        }
+      }
+    },
+    "May Tabbi run your shortcuts?" : {
+      "comment" : "Troubleshooter question for Do Not Disturb in the App Store build.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل يُسمح لـ Tabbi بتشغيل اختصاراتك؟"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darf Tabbi deine Kurzbefehle ausführen?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Puede Tabbi ejecutar tus atajos?"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puwede bang patakbuhin ng Tabbi ang mga shortcut mo?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi peut-il lancer tes raccourcis ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiはショートカットを実行できますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi가 단축어를 실행할 수 있나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi pode executar seus atalhos?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Может ли Tabbi запускать твои быстрые команды?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 可以运行你的快捷指令吗？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 可以執行你的捷徑嗎？"
           }
         }
       }
@@ -78934,6 +81041,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "接下來，Mac 會詢問是否允許 Tabbi 控制 %@。你可以隨時在「系統設定」中更改。"
+          }
+        }
+      }
+    },
+    "Next, your Mac asks if Tabbi can control Shortcuts Events. You can change your answer any time in System Settings." : {
+      "comment" : "Screen before macOS asks about Shortcuts Events. Keep \"Shortcuts Events\" as is: the macOS prompt shows it in English.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع التحكم في Shortcuts Events. يمكنك تغيير إجابتك في أي وقت من إعدادات النظام."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gleich fragt dein Mac, ob Tabbi Shortcuts Events steuern darf. Deine Antwort kannst du jederzeit in den Systemeinstellungen ändern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora tu Mac preguntará si Tabbi puede controlar Shortcuts Events. Puedes cambiar tu respuesta cuando quieras en Ajustes del Sistema."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Susunod, tatanungin ng Mac mo kung puwedeng kontrolin ng Tabbi ang Shortcuts Events. Puwede mong baguhin ang sagot mo anumang oras sa System Settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton Mac va demander si Tabbi peut contrôler Shortcuts Events. Tu peux changer ta réponse à tout moment dans Réglages Système."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次に、TabbiがShortcuts Eventsを操作してよいかMacが確認します。答えはいつでもシステム設定で変更できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이제 Mac이 Tabbi의 Shortcuts Events 제어를 허용할지 물어봐요. 답은 언제든 시스템 설정에서 바꿀 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agora seu Mac vai perguntar se o Tabbi pode controlar o Shortcuts Events. Você pode mudar sua resposta quando quiser nos Ajustes do Sistema."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сейчас Mac спросит, можно ли Tabbi управлять Shortcuts Events. Ответ можно изменить в любой момент в Системных настройках."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接下来，Mac 会询问是否允许 Tabbi 控制 Shortcuts Events。你可以随时在系统设置中更改。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接下來，Mac 會詢問是否允許 Tabbi 控制 Shortcuts Events。你可以隨時在「系統設定」中更改。"
           }
         }
       }
@@ -82467,6 +84646,78 @@
         }
       }
     },
+    "No. Turn on Shortcuts Events for Tabbi in System Settings > Privacy & Security > Automation." : {
+      "comment" : "Troubleshooter answer when macOS denies Tabbi control of Shortcuts Events. Keep \"Shortcuts Events\" as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا. شغّل Shortcuts Events لـ Tabbi في إعدادات النظام › الخصوصية والأمن › الأتمتة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein. Schalte Shortcuts Events für Tabbi unter Systemeinstellungen › Datenschutz & Sicherheit › Automation ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. Activa Shortcuts Events para Tabbi en Ajustes del Sistema › Privacidad y seguridad › Automatización."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi. I-on ang Shortcuts Events para sa Tabbi sa System Settings › Privacy & Security › Automation."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non. Active Shortcuts Events pour Tabbi dans Réglages Système › Confidentialité et sécurité › Automatisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ。システム設定 › プライバシーとセキュリティ › オートメーションで、TabbiのShortcuts Eventsをオンにしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아니요. 시스템 설정 › 개인정보 보호 및 보안 › 자동화에서 Tabbi의 Shortcuts Events를 켜세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. Ative Shortcuts Events para o Tabbi em Ajustes do Sistema › Privacidade e Segurança › Automação."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет. Включи Shortcuts Events для Tabbi в Системных настройках › «Конфиденциальность и безопасность» › «Автоматизация»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "否。请在“系统设置 › 隐私与安全性 › 自动化”中为 Tabbi 打开 Shortcuts Events。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "否。請在「系統設定」›「隱私權與安全性」›「自動化」中為 Tabbi 開啟 Shortcuts Events。"
+          }
+        }
+      }
+    },
     "Nobody sees roots growing. Then one day there's a tree." : {
       "comment" : "Cat wisdom: a line the pet says in its speech bubble after a focus session, shown in at most three short lines, so keep it about as long as the English. Warm and quiet, like a friend. ",
       "extractionState" : "manual",
@@ -83255,6 +85506,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "還沒檢查。請先解決上一步。"
+          }
+        }
+      }
+    },
+    "Not chosen" : {
+      "comment" : "Settings > AI Usage, beside a tool whose folder the user hasn't picked yet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يُختر"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht gewählt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin elegir"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi pa napipili"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non choisi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未選択"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택 안 됨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não escolhida"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не выбрана"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未选择"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未選擇"
           }
         }
       }
@@ -84430,6 +86753,78 @@
         }
       }
     },
+    "Not yet. Click the button so your Mac can ask." : {
+      "comment" : "Troubleshooter answer before macOS asked about Shortcuts Events. Don't tell the user which answer to give.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ليس بعد. انقر الزر ليتمكن جهاز Mac من السؤال."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch nicht. Klick auf den Knopf, damit dein Mac fragen kann."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no. Haz clic en el botón para que tu Mac pueda preguntar."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi pa. I-click ang button para makapagtanong ang Mac mo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas encore. Clique sur le bouton pour que ton Mac puisse demander."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まだです。ボタンをクリックすると、Macが確認できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직이요. 버튼을 클릭하면 Mac이 물어볼 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não. Clique no botão para o Mac poder perguntar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пока нет. Нажми кнопку, чтобы Mac мог спросить."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还没有。点按按钮，Mac 就能询问。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "還沒有。按一下按鈕，Mac 就能詢問。"
+          }
+        }
+      }
+    },
     "Not yet. Open the Party tab to answer." : {
       "comment" : "Troubleshooter (Something not working?) in Settings > Connections: a yes-or-no check question or its short answer.",
       "extractionState" : "manual",
@@ -85002,6 +87397,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今天沒有待複習的卡片"
+          }
+        }
+      }
+    },
+    "Nothing is read until you choose" : {
+      "comment" : "AI Usage footer before the user picked a folder: nothing is read yet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يُقرأ شيء حتى تختار"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nichts wird gelesen, bis du wählst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se lee nada hasta que elijas"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Walang binabasa hangga't hindi ka pumipili"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rien n'est lu tant que tu ne choisis pas"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択するまで何も読み取りません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택하기 전에는 아무것도 읽지 않아요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada é lido até você escolher"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ничего не читается, пока ты не выберешь"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在你选择之前不会读取任何内容"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在你選擇之前不會讀取任何內容"
           }
         }
       }
@@ -89394,6 +91861,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打開派對"
+          }
+        }
+      }
+    },
+    "Open Privacy & Security > Automation in System Settings" : {
+      "comment" : "Tooltip of Open Settings beside the Focus pane's Shortcuts access warning.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح الخصوصية والأمن › الأتمتة في إعدادات النظام"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenschutz & Sicherheit › Automation in den Systemeinstellungen öffnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Privacidad y seguridad › Automatización en Ajustes del Sistema"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buksan ang Privacy & Security › Automation sa System Settings"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir Confidentialité et sécurité › Automatisation dans Réglages Système"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム設定の「プライバシーとセキュリティ › オートメーション」を開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시스템 설정에서 개인정보 보호 및 보안 › 자동화 열기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Privacidade e Segurança › Automação nos Ajustes do Sistema"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть «Конфиденциальность и безопасность» › «Автоматизация» в Системных настройках"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在系统设置中打开“隐私与安全性 › 自动化”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在「系統設定」中打開「隱私權與安全性」›「自動化」"
           }
         }
       }
@@ -95590,6 +98129,78 @@
         }
       }
     },
+    "Pick a reason first" : {
+      "comment" : "Tooltip of Send Report before a reason is picked.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر سببًا أولًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle zuerst einen Grund"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige primero un motivo"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pumili muna ng dahilan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis d'abord une raison"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先に理由を選んでください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "먼저 이유를 선택하세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um motivo primeiro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сначала выбери причину"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请先选择原因"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請先選擇原因"
+          }
+        }
+      }
+    },
     "Pick a sound to preview it" : {
       "comment" : "Preview button tooltip when no sound is picked.",
       "extractionState" : "manual",
@@ -96234,6 +98845,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選擇朋友會看到的名字和寵物，不需要帳號或密碼。"
+          }
+        }
+      }
+    },
+    "Pick whose usage to show" : {
+      "comment" : "Tooltip of the tool picker (Claude Code or Codex) in AI Usage.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر الأداة التي يُعرض استخدامها"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle, wessen Nutzung du sehen willst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige de qué herramienta ver el uso"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piliin kung kaninong usage ang ipapakita"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis l'outil dont afficher l'utilisation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示する使用状況を選択"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "어떤 도구의 사용량을 볼지 선택"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha de qual ferramenta ver o uso"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери, чье использование показывать"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择要显示哪个工具的用量"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇要顯示哪個工具的用量"
           }
         }
       }
@@ -100918,6 +103601,78 @@
         }
       }
     },
+    "Read the latest Claude Code logs (sends nothing)" : {
+      "comment" : "Tooltip of AI Usage's refresh button in the App Store build.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قراءة أحدث سجلات Claude Code (لا يُرسل شيئًا)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neueste Claude-Code-Logs lesen (sendet nichts)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leer los últimos registros de Claude Code (no envía nada)"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Basahin ang pinakabagong Claude Code log (walang ipinapadala)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lire les derniers journaux Claude Code (n'envoie rien)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新のClaude Codeログを読む（何も送信しません）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최신 Claude Code 로그 읽기 (아무것도 보내지 않음)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ler os logs mais recentes do Claude Code (não envia nada)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прочитать свежие журналы Claude Code (ничего не отправляет)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "读取最新的 Claude Code 日志（不发送任何内容）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "讀取最新的 Claude Code 記錄（不會傳送任何內容）"
+          }
+        }
+      }
+    },
     "Read the latest Codex logs (sends nothing)" : {
       "comment" : "Tooltip on the AI Usage refresh button for Codex.",
       "extractionState" : "manual",
@@ -101130,6 +103885,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在讀取 %@ 工作階段…"
+          }
+        }
+      }
+    },
+    "Reading Claude Code logs…" : {
+      "comment" : "AI Usage footer while it reads Claude Code's logs.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ قراءة سجلات Claude Code…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lese Claude-Code-Logs…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leyendo registros de Claude Code…"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Binabasa ang mga Claude Code log…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture des journaux Claude Code…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Codeのログを読み込み中…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude Code 로그 읽는 중…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lendo logs do Claude Code…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтение журналов Claude Code…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在读取 Claude Code 日志…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在讀取 Claude Code 記錄…"
           }
         }
       }
@@ -102318,6 +105145,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "以 MIT 授權條款發布。"
+          }
+        }
+      }
+    },
+    "Remember this answer and stop asking after a crash" : {
+      "comment" : "Tooltip of the crash alert's Don't ask again checkbox.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تذكّر هذه الإجابة وتوقف عن السؤال بعد العطل"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Antwort merken und nach einem Absturz nicht mehr fragen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recordar esta respuesta y no volver a preguntar tras un fallo"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tandaan ang sagot na ito at huwag nang magtanong pagkatapos ng crash"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retenir cette réponse et ne plus demander après un plantage"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この回答を記憶し、クラッシュ後に尋ねないようにします"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 답을 기억하고 충돌 후에 더 묻지 않기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lembrar esta resposta e não perguntar mais depois de uma falha"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запомнить ответ и больше не спрашивать после сбоя"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "记住这个回答，崩溃后不再询问"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "記住這個回答，當機後不再詢問"
           }
         }
       }
@@ -103614,6 +106513,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "檢舉 %@"
+          }
+        }
+      }
+    },
+    "Report %@: %@" : {
+      "comment" : "Tooltip of a reason chip in Party's report card. First %@ is the person's name, second the reason (Spam).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإبلاغ عن %1$@: %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ melden: %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denunciar a %1$@: %2$@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-report si %1$@: %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signaler %1$@ : %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@を報告：%2$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 신고: %2$@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denunciar %1$@: %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пожаловаться на %1$@: %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "举报 %1$@：%2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檢舉 %1$@：%2$@"
           }
         }
       }
@@ -107993,6 +110964,78 @@
         }
       }
     },
+    "See your %@ usage" : {
+      "comment" : "Title of AI Usage's first card. %@ is Claude Code or Codex. Keep it short.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اعرض استخدامك لـ %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Nutzung von %@ sehen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mira tu uso de %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tingnan ang usage mo sa %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voir ton utilisation de %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の使用状況を見る"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 %@ 사용량 보기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veja seu uso do %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твое использование %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看你的 %@ 用量"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看你的 %@ 用量"
+          }
+        }
+      }
+    },
     "See your day at a glance" : {
       "comment" : "Schedule panel: empty state title before calendar access.",
       "extractionState" : "manual",
@@ -108137,6 +111180,78 @@
         }
       }
     },
+    "Send" : {
+      "comment" : "Button in the crash report alert that sends the report.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إرسال"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ipadala"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보내기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "傳送"
+          }
+        }
+      }
+    },
     "Send (Return)" : {
       "comment" : "Ask AI: tooltip on the send button.",
       "extractionState" : "manual",
@@ -108205,6 +111320,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "傳送（Return）"
+          }
+        }
+      }
+    },
+    "Send Report" : {
+      "comment" : "Button in Party's report card.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إرسال البلاغ"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldung senden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar denuncia"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ipadala ang Report"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer le signalement"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "報告を送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신고 보내기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar denúncia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить жалобу"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送举报"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "傳送檢舉"
           }
         }
       }
@@ -108349,6 +111536,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "把代碼傳給朋友，他們就能加你。朋友會看到你的名字、寵物和讀書計時器。"
+          }
+        }
+      }
+    },
+    "Send this report to the Tabbi team" : {
+      "comment" : "Tooltip of Send Report.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أرسل هذا البلاغ إلى فريق Tabbi"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Meldung an das Tabbi-Team senden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar esta denuncia al equipo de Tabbi"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ipadala ang report na ito sa Tabbi team"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer ce signalement à l'équipe Tabbi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この報告をTabbiチームに送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 신고를 Tabbi 팀에 보내기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar esta denúncia à equipe do Tabbi"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить жалобу команде Tabbi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将此举报发送给 Tabbi 团队"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將此檢舉傳送給 Tabbi 團隊"
           }
         }
       }
@@ -109865,6 +113124,78 @@
         }
       }
     },
+    "Share your code, or add theirs below. Start a party from the Party tab." : {
+      "comment" : "Party onboarding before the user has friends.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شارك رمزك أو أضف رمزهم أدناه. ابدأ مجموعة من علامة تبويب المجموعة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teile deinen Code oder füge unten ihren hinzu. Starte eine Party im Party-Tab."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte tu código o añade el suyo abajo. Crea un grupo desde la pestaña Grupo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ibahagi ang code mo, o idagdag ang sa kanila sa ibaba. Magsimula ng party sa Party tab."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partage ton code ou ajoute le leur ci-dessous. Lance un groupe depuis l'onglet Groupe."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コードを共有するか、下に相手のコードを追加しましょう。パーティはパーティタブで始められます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 코드를 공유하거나 아래에 친구 코드를 추가하세요. 파티는 파티 탭에서 시작해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhe seu código ou adicione o deles abaixo. Comece um grupo na aba Grupo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поделись своим кодом или добавь их код ниже. Пати можно начать на вкладке Party."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享你的代码，或在下方添加好友的代码。可在派对标签页中发起派对。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享你的代碼，或在下方加入好友的代碼。可在派對標籤頁發起派對。"
+          }
+        }
+      }
+    },
     "Shared focus: %@ left" : {
       "comment" : "Tooltip on a Party shared session ring. %@ is the remaining time, e.g. 12:30.",
       "extractionState" : "manual",
@@ -110294,6 +113625,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "捷徑"
+          }
+        }
+      }
+    },
+    "Shortcuts access is off" : {
+      "comment" : "Settings > Connections Do Not Disturb row headline when macOS denies Tabbi control of Shortcuts Events.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الوصول إلى الاختصارات متوقف"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugriff auf Kurzbefehle ist aus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El acceso a Atajos está desactivado"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naka-off ang access sa Shortcuts"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'accès aux Raccourcis est désactivé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ショートカットへのアクセスがオフ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단축어 접근이 꺼져 있음"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O acesso aos Atalhos está desativado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ к Быстрым командам выключен"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷指令访问已关闭"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捷徑取用權限已關閉"
+          }
+        }
+      }
+    },
+    "Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings." : {
+      "comment" : "Warning in Settings > Focus (App Store build) when macOS denies Tabbi control of Shortcuts Events. Keep \"Shortcuts Events\" as is: macOS shows it in English.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الوصول إلى الاختصارات متوقف. شغّل Shortcuts Events لـ Tabbi في إعدادات الأتمتة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Zugriff auf Kurzbefehle ist aus. Schalte Shortcuts Events für Tabbi in den Automation-Einstellungen ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El acceso a Atajos está desactivado. Activa Shortcuts Events para Tabbi en los ajustes de Automatización."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naka-off ang access sa Shortcuts. I-on ang Shortcuts Events para sa Tabbi sa Automation settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'accès aux Raccourcis est désactivé. Active Shortcuts Events pour Tabbi dans les réglages d'Automatisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ショートカットへのアクセスがオフです。オートメーションの設定でTabbiのShortcuts Eventsをオンにしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단축어 접근이 꺼져 있어요. 자동화 설정에서 Tabbi의 Shortcuts Events를 켜세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O acesso aos Atalhos está desativado. Ative Shortcuts Events para o Tabbi nos ajustes de Automação."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ к Быстрым командам выключен. Включи Shortcuts Events для Tabbi в настройках «Автоматизация»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷指令访问已关闭。请在“自动化”设置中为 Tabbi 打开 Shortcuts Events。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捷徑取用權限已關閉。請在「自動化」設定中為 Tabbi 開啟 Shortcuts Events。"
           }
         }
       }
@@ -110870,6 +114345,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示所有有待複習卡片的牌組"
+          }
+        }
+      }
+    },
+    "Show friends when you study again" : {
+      "comment" : "Tooltip of Party's visibility button while invisible.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أظهر للأصدقاء وقت دراستك مجددًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freunden wieder zeigen, wann du lernst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a mostrar a tus amigos cuándo estudias"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ipakita ulit sa mga kaibigan kung kailan ka nag-aaral"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montrer de nouveau à tes amis quand tu étudies"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "勉強中であることを再びフレンドに表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공부 중인 모습을 다시 친구에게 보여 주기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voltar a mostrar aos amigos quando você estuda"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снова показывать друзьям, когда ты учишься"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新向好友显示你何时在学习"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新讓好友看到你何時在讀書"
           }
         }
       }
@@ -111662,6 +115209,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示明天的行事曆"
+          }
+        }
+      }
+    },
+    "Show usage for" : {
+      "comment" : "Settings > AI Usage: label of the picker with Claude Code and Codex.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عرض استخدام"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzung zeigen für"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar el uso de"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ipakita ang usage ng"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher l'utilisation de"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用状況を表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용량 표시"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar uso de"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показывать использование"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示用量"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示用量"
           }
         }
       }
@@ -113102,6 +116721,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在登入，讓好友找得到你。"
+          }
+        }
+      }
+    },
+    "Signing you in so friends can find you. Your code shows here in a moment." : {
+      "comment" : "Party onboarding while it registers.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ تسجيل دخولك ليتمكن الأصدقاء من إيجادك. سيظهر رمزك هنا بعد لحظات."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du wirst angemeldet, damit Freunde dich finden. Gleich erscheint hier dein Code."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te estamos dando de alta para que tus amigos te encuentren. Tu código aparecerá aquí en un momento."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sina-sign in ka para mahanap ka ng mga kaibigan. Lalabas dito ang code mo maya-maya."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inscription en cours pour que tes amis puissent te trouver. Ton code s'affiche ici dans un instant."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フレンドに見つけてもらえるよう登録しています。まもなくここにコードが表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구가 찾을 수 있도록 등록하는 중이에요. 곧 여기에 코드가 나타나요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fazendo seu cadastro para os amigos te encontrarem. Seu código aparece aqui em instantes."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Регистрируем тебя, чтобы друзья могли тебя найти. Код скоро появится здесь."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在为你登录，好让好友找到你。你的代码稍后会显示在这里。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在為你登入，讓好友能找到你。你的代碼稍後會顯示在這裡。"
           }
         }
       }
@@ -118794,6 +122485,78 @@
         }
       }
     },
+    "Stop reading this folder" : {
+      "comment" : "Tooltip of the Remove button in Settings > AI Usage.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التوقف عن قراءة هذا المجلد"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diesen Ordner nicht mehr lesen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dejar de leer esta carpeta"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huwag nang basahin ang folder na ito"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne plus lire ce dossier"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このフォルダの読み取りをやめる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 폴더 읽기 중단"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parar de ler esta pasta"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Больше не читать эту папку"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止读取此文件夹"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止讀取此資料夾"
+          }
+        }
+      }
+    },
     "Stop syncing on this Mac. Your pet and progress stay here." : {
       "comment" : "Tooltip on the Sign Out button in Settings > General.",
       "extractionState" : "manual",
@@ -121890,6 +125653,150 @@
         }
       }
     },
+    "Tabbi can count your tokens from the logs Claude Code keeps in the %@ folder. Choose it next. Nothing leaves your Mac." : {
+      "comment" : "Body of AI Usage's first card for Claude Code, before the open panel. %@ is the folder name (.claude).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستطيع Tabbi عدّ الرموز من سجلات Claude Code في المجلد %@ على جهازك. اختره بعد ذلك. لا يغادر شيء جهاز Mac."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi kann deine Tokens aus den Logs zählen, die Claude Code im Ordner %@ ablegt. Wähle ihn als Nächstes. Nichts verlässt deinen Mac."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi puede contar tus tokens con los registros que Claude Code guarda en la carpeta %@. Elígela a continuación. Nada sale de tu Mac."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayang bilangin ng Tabbi ang mga token mo mula sa mga log na itinatago ng Claude Code sa folder na %@. Piliin ito sa susunod. Walang lumalabas sa Mac mo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi peut compter tes jetons à partir des journaux que Claude Code garde dans le dossier %@. Choisis-le ensuite. Rien ne quitte ton Mac."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TabbiはClaude Codeが%@フォルダに保存するログからトークンを数えられます。次にこのフォルダを選択してください。Macの外には何も送られません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi는 Claude Code가 %@ 폴더에 남기는 로그로 토큰을 셀 수 있어요. 다음에 이 폴더를 선택하세요. Mac 밖으로는 아무것도 나가지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi pode contar seus tokens pelos logs que o Claude Code guarda na pasta %@. Escolha-a em seguida. Nada sai do seu Mac."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi может считать твои токены по журналам, которые Claude Code хранит в папке %@. Выбери ее дальше. Ничего не покидает твой Mac."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 可以根据 Claude Code 保存在 %@ 文件夹中的日志统计你的 Token。接下来请选择它。任何内容都不会离开你的 Mac。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 可以根據 Claude Code 存放在 %@ 資料夾中的記錄計算你的 Token。接下來請選擇它。任何內容都不會離開你的 Mac。"
+          }
+        }
+      }
+    },
+    "Tabbi can show your limits and tokens from the logs Codex keeps in the %@ folder. Choose it next. Nothing leaves your Mac." : {
+      "comment" : "Body of AI Usage's first card for Codex, before the open panel. %@ is the folder name (.codex).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستطيع Tabbi عرض حدودك ورموزك من سجلات Codex في المجلد %@ على جهازك. اختره بعد ذلك. لا يغادر شيء جهاز Mac."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi kann deine Limits und Tokens aus den Logs zeigen, die Codex im Ordner %@ ablegt. Wähle ihn als Nächstes. Nichts verlässt deinen Mac."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi puede mostrar tus límites y tokens con los registros que Codex guarda en la carpeta %@. Elígela a continuación. Nada sale de tu Mac."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayang ipakita ng Tabbi ang mga limit at token mo mula sa mga log na itinatago ng Codex sa folder na %@. Piliin ito sa susunod. Walang lumalabas sa Mac mo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi peut afficher tes limites et tes jetons à partir des journaux que Codex garde dans le dossier %@. Choisis-le ensuite. Rien ne quitte ton Mac."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TabbiはCodexが%@フォルダに保存するログから上限とトークンを表示できます。次にこのフォルダを選択してください。Macの外には何も送られません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi는 Codex가 %@ 폴더에 남기는 로그로 한도와 토큰을 보여 줄 수 있어요. 다음에 이 폴더를 선택하세요. Mac 밖으로는 아무것도 나가지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi pode mostrar seus limites e tokens pelos logs que o Codex guarda na pasta %@. Escolha-a em seguida. Nada sai do seu Mac."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi может показывать твои лимиты и токены по журналам, которые Codex хранит в папке %@. Выбери ее дальше. Ничего не покидает твой Mac."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 可以根据 Codex 保存在 %@ 文件夹中的日志显示你的额度和 Token。接下来请选择它。任何内容都不会离开你的 Mac。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 可以根據 Codex 存放在 %@ 資料夾中的記錄顯示你的上限和 Token。接下來請選擇它。任何內容都不會離開你的 Mac。"
+          }
+        }
+      }
+    },
     "Tabbi can't control %@" : {
       "comment" : "Connection status line in Settings > Connections (Music). %@ is an app or connection name, %lld a number.",
       "extractionState" : "manual",
@@ -122394,6 +126301,150 @@
         }
       }
     },
+    "Tabbi isn't allowed to run shortcuts yet. Turn on Shortcuts Events for Tabbi in Automation settings." : {
+      "comment" : "Do Not Disturb test result when macOS hasn't let Tabbi control Shortcuts Events.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يُسمح لـ Tabbi بتشغيل الاختصارات بعد. شغّل Shortcuts Events لـ Tabbi في إعدادات الأتمتة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi darf noch keine Kurzbefehle ausführen. Schalte Shortcuts Events für Tabbi in den Automation-Einstellungen ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi aún no puede ejecutar atajos. Activa Shortcuts Events para Tabbi en los ajustes de Automatización."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi pa puwedeng magpatakbo ng shortcut ang Tabbi. I-on ang Shortcuts Events para sa Tabbi sa Automation settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi n'a pas encore le droit de lancer des raccourcis. Active Shortcuts Events pour Tabbi dans les réglages d'Automatisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiはまだショートカットを実行できません。オートメーションの設定でTabbiのShortcuts Eventsをオンにしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi가 아직 단축어를 실행할 수 없어요. 자동화 설정에서 Tabbi의 Shortcuts Events를 켜세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi ainda não pode executar atalhos. Ative Shortcuts Events para o Tabbi nos ajustes de Automação."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi пока не может запускать быстрые команды. Включи Shortcuts Events для Tabbi в настройках «Автоматизация»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 还不能运行快捷指令。请在“自动化”设置中为 Tabbi 打开 Shortcuts Events。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 還不能執行捷徑。請在「自動化」設定中為 Tabbi 開啟 Shortcuts Events。"
+          }
+        }
+      }
+    },
+    "Tabbi isn't allowed to run shortcuts. Turn on Shortcuts Events for Tabbi in System Settings > Privacy & Security > Automation." : {
+      "comment" : "Settings > Focus Test result when macOS doesn't let Tabbi control Shortcuts Events (App Store build). Keep \"Shortcuts Events\" as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يُسمح لـ Tabbi بتشغيل الاختصارات. شغّل Shortcuts Events لـ Tabbi في إعدادات النظام › الخصوصية والأمن › الأتمتة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi darf keine Kurzbefehle ausführen. Schalte Shortcuts Events für Tabbi unter Systemeinstellungen › Datenschutz & Sicherheit › Automation ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi no puede ejecutar atajos. Activa Shortcuts Events para Tabbi en Ajustes del Sistema › Privacidad y seguridad › Automatización."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi puwedeng magpatakbo ng shortcut ang Tabbi. I-on ang Shortcuts Events para sa Tabbi sa System Settings › Privacy & Security › Automation."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi n'a pas le droit de lancer des raccourcis. Active Shortcuts Events pour Tabbi dans Réglages Système › Confidentialité et sécurité › Automatisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiはショートカットを実行できません。システム設定 › プライバシーとセキュリティ › オートメーションで、TabbiのShortcuts Eventsをオンにしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi가 단축어를 실행할 수 없어요. 시스템 설정 › 개인정보 보호 및 보안 › 자동화에서 Tabbi의 Shortcuts Events를 켜세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi não pode executar atalhos. Ative Shortcuts Events para o Tabbi em Ajustes do Sistema › Privacidade e Segurança › Automação."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi не может запускать быстрые команды. Включи Shortcuts Events для Tabbi в Системных настройках › «Конфиденциальность и безопасность» › «Автоматизация»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 无法运行快捷指令。请在“系统设置 › 隐私与安全性 › 自动化”中为 Tabbi 打开 Shortcuts Events。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 無法執行捷徑。請在「系統設定」›「隱私權與安全性」›「自動化」中為 Tabbi 開啟 Shortcuts Events。"
+          }
+        }
+      }
+    },
     "Tabbi leaves your alerts alone until you turn it on." : {
       "comment" : "Connection status line in Settings > Connections (FocusShortcuts). %@ is an app or connection name, %lld a number.",
       "extractionState" : "manual",
@@ -122462,6 +126513,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在你開啟之前，Tabbi 不會動到你的通知。"
+          }
+        }
+      }
+    },
+    "Tabbi needs to ask first" : {
+      "comment" : "Settings > Connections Do Not Disturb row headline before macOS asked about Shortcuts Events.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتاج Tabbi إلى السؤال أولًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi muss erst fragen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi tiene que preguntar primero"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kailangan munang magtanong ng Tabbi"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi doit d'abord demander"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiは先に確認が必要です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi가 먼저 물어봐야 해요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi precisa perguntar primeiro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi нужно сначала спросить"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 需要先询问"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 需要先詢問"
           }
         }
       }
@@ -122682,6 +126805,78 @@
         }
       }
     },
+    "Tabbi only runs the two shortcuts named in Focus settings, when focus starts and ends." : {
+      "comment" : "Reassurance on the screen before macOS asks about Shortcuts Events.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يشغّل Tabbi إلا الاختصارين المسمّيين في إعدادات التركيز، عند بدء التركيز وانتهائه."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi führt nur die beiden Kurzbefehle aus den Fokus-Einstellungen aus, wenn der Fokus beginnt und endet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi solo ejecuta los dos atajos indicados en los ajustes de Enfoque, cuando el enfoque empieza y termina."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ang dalawang shortcut lang na nakapangalan sa Focus settings ang pinapatakbo ng Tabbi, kapag nagsimula at natapos ang focus."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi lance seulement les deux raccourcis indiqués dans les réglages Focus, quand le focus commence et se termine."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiが実行するのは、集中の設定で指定した2つのショートカットだけで、集中の開始時と終了時に限られます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi는 집중 설정에 적힌 두 단축어만, 집중이 시작되고 끝날 때 실행해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi só executa os dois atalhos indicados nos ajustes de Foco, quando o foco começa e termina."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi запускает только две команды из настроек фокуса, когда фокус начинается и заканчивается."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 只会在专注开始和结束时，运行专注设置中指定的两个快捷指令。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 只會在專注開始和結束時，執行專注設定中指定的兩個捷徑。"
+          }
+        }
+      }
+    },
     "Tabbi reads %@ and sends nothing." : {
       "comment" : "AI Usage note under the Codex missing card. %@ is a folder path shown in monospace. Tabbi is the app name.",
       "extractionState" : "manual",
@@ -122750,6 +126945,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tabbi 只會讀取 %@，不會傳送任何內容。"
+          }
+        }
+      }
+    },
+    "Tabbi reads only token counts, model names and Codex's plan limits from these folders, and nothing leaves your Mac. Remove a folder to stop Tabbi from reading it." : {
+      "comment" : "Footer of Settings > AI Usage's folder section.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يقرأ Tabbi من هذه المجلدات عدد الرموز وأسماء النماذج وحدود خطة Codex فقط، ولا يغادر شيء جهاز Mac. أزل مجلدًا لتوقف Tabbi عن قراءته."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi liest aus diesen Ordnern nur Token-Zahlen, Modellnamen und die Tariflimits von Codex, und nichts verlässt deinen Mac. Entferne einen Ordner, damit Tabbi ihn nicht mehr liest."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi solo lee de estas carpetas recuentos de tokens, nombres de modelos y los límites del plan de Codex, y nada sale de tu Mac. Quita una carpeta para que Tabbi deje de leerla."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilang ng token, pangalan ng model at limit ng plan ng Codex lang ang binabasa ng Tabbi sa mga folder na ito, at walang lumalabas sa Mac mo. Alisin ang folder para hindi na ito basahin ng Tabbi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi lit seulement dans ces dossiers le nombre de jetons, les noms de modèles et les limites du forfait Codex, et rien ne quitte ton Mac. Retire un dossier pour que Tabbi arrête de le lire."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiがこれらのフォルダから読み取るのは、トークン数、モデル名、Codexのプラン上限だけで、Macの外には何も送られません。読み取りをやめるにはフォルダを削除してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi는 이 폴더들에서 토큰 수, 모델 이름, Codex 요금제 한도만 읽고, Mac 밖으로는 아무것도 보내지 않아요. 폴더를 제거하면 더 이상 읽지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Tabbi lê destas pastas só contagens de tokens, nomes de modelos e os limites do plano do Codex, e nada sai do seu Mac. Remova uma pasta para o Tabbi parar de lê-la."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi читает из этих папок только число токенов, названия моделей и лимиты тарифа Codex, и ничего не покидает твой Mac. Удали папку, чтобы Tabbi перестал ее читать."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 只从这些文件夹读取 Token 数、模型名称和 Codex 的套餐额度，任何内容都不会离开你的 Mac。移除文件夹即可让 Tabbi 停止读取。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi 只會從這些資料夾讀取 Token 數量、模型名稱和 Codex 的方案上限，任何內容都不會離開你的 Mac。移除資料夾即可讓 Tabbi 停止讀取。"
           }
         }
       }
@@ -123974,6 +128241,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "謝謝。檢舉已送出。"
+          }
+        }
+      }
+    },
+    "That folder has no %@ logs. Choose the %@ folder in your home folder." : {
+      "comment" : "AI Usage card after the user picked a wrong folder. First %@ is Claude Code or Codex, second the folder name (.claude or .codex).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يحتوي هذا المجلد على سجلات %1$@. اختر المجلد %2$@ في مجلد الصفحة الرئيسية."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In diesem Ordner sind keine %1$@-Logs. Wähle den Ordner %2$@ in deinem Benutzerordner."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esa carpeta no tiene registros de %1$@. Elige la carpeta %2$@ de tu carpeta de inicio."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Walang %1$@ log sa folder na iyan. Piliin ang folder na %2$@ sa home folder mo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce dossier ne contient aucun journal %1$@. Choisis le dossier %2$@ dans ton dossier de départ."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "そのフォルダには%1$@のログがありません。ホームフォルダ内の%2$@フォルダを選択してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그 폴더에는 %1$@ 로그가 없어요. 홈 폴더에서 %2$@ 폴더를 선택하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essa pasta não tem logs do %1$@. Escolha a pasta %2$@ na sua pasta de início."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В этой папке нет журналов %1$@. Выбери папку %2$@ в домашней папке."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "该文件夹中没有 %1$@ 日志。请选择个人文件夹中的 %2$@ 文件夹。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "該資料夾中沒有 %1$@ 記錄。請選擇個人專屬資料夾中的 %2$@ 資料夾。"
           }
         }
       }
@@ -128767,6 +133106,78 @@
         }
       }
     },
+    "This account can no longer use Party. Write to %@ if that's a mistake." : {
+      "comment" : "Party onboarding for a banned account. %@ is the support email address.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يعد بإمكان هذا الحساب استخدام المجموعة. راسل %@ إن كان ذلك خطأ."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Konto kann Party nicht mehr nutzen. Schreib an %@, falls das ein Fehler ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta cuenta ya no puede usar Grupo. Escribe a %@ si es un error."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi na puwedeng gumamit ng Party ang account na ito. Sumulat sa %@ kung mali ito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce compte ne peut plus utiliser Groupe. Écris à %@ si c'est une erreur."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアカウントはパーティを利用できなくなりました。間違いの場合は %@ までご連絡ください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 계정은 더 이상 파티를 사용할 수 없어요. 오류라면 %@로 연락해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta conta não pode mais usar o Grupo. Escreva para %@ se for um engano."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот аккаунт больше не может пользоваться Party. Напиши на %@, если это ошибка."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此账户已无法使用派对。如有误，请发邮件至 %@。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此帳號已無法使用派對。如有誤，請寄信至 %@。"
+          }
+        }
+      }
+    },
     "This chat is open" : {
       "comment" : "Ask AI: tooltip on the open chat in history.",
       "extractionState" : "manual",
@@ -130747,6 +135158,78 @@
         }
       }
     },
+    "To check they exist it looks up their names, and it never changes a shortcut." : {
+      "comment" : "Reassurance on the screen before macOS asks about Shortcuts Events.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "للتحقق من وجودهما يبحث عن أسمائهما، ولا يغيّر أي اختصار أبدًا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um zu prüfen, ob es sie gibt, schaut Tabbi nach ihren Namen, und es ändert nie einen Kurzbefehl."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para comprobar que existen, busca sus nombres, y nunca cambia un atajo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para matiyak na nandiyan sila, hinahanap nito ang mga pangalan nila, at hindi nito kailanman binabago ang isang shortcut."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour vérifier qu'ils existent, il regarde leurs noms, et il ne modifie jamais un raccourci."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "存在を確認するために名前を調べるだけで、ショートカットを変更することはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단축어가 있는지 확인하려고 이름만 찾아보고, 단축어를 바꾸는 일은 없어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para conferir se eles existem, ele procura os nomes, e nunca altera um atalho."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы проверить, что они есть, он смотрит их названия и никогда не меняет команды."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为确认它们存在，它只会查找名称，绝不会修改快捷指令。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "為確認它們存在，它只會查找名稱，絕不會修改捷徑。"
+          }
+        }
+      }
+    },
     "To install it, click %@ on the Claude row below." : {
       "comment" : "Setup hint in Settings > Connections > AI when Claude Code is not installed. The argument is the Show me how button's title.",
       "extractionState" : "manual",
@@ -131463,6 +135946,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今天的行程會顯示在 Tabbi 中。"
+          }
+        }
+      }
+    },
+    "Tokens per day" : {
+      "comment" : "AI Usage in the App Store build: caption of the bar chart of the week's tokens per day.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الرموز يوميًا"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tokens pro Tag"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tokens por día"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token bawat araw"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetons par jour"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1日あたりのトークン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일별 토큰"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tokens por dia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Токены по дням"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每日 Token"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每日 Token"
           }
         }
       }
@@ -133481,6 +138036,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "要開啟派對嗎？"
+          }
+        }
+      }
+    },
+    "Turn on Shortcuts Events for Tabbi in Automation settings." : {
+      "comment" : "Settings > Connections Do Not Disturb row detail when Shortcuts Events access is off. Keep \"Shortcuts Events\" as is.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغّل Shortcuts Events لـ Tabbi في إعدادات الأتمتة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schalte Shortcuts Events für Tabbi in den Automation-Einstellungen ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa Shortcuts Events para Tabbi en los ajustes de Automatización."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I-on ang Shortcuts Events para sa Tabbi sa Automation settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active Shortcuts Events pour Tabbi dans les réglages d'Automatisation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オートメーションの設定でTabbiのShortcuts Eventsをオンにしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자동화 설정에서 Tabbi의 Shortcuts Events를 켜세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ative Shortcuts Events para o Tabbi nos ajustes de Automação."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включи Shortcuts Events для Tabbi в настройках «Автоматизация»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在“自动化”设置中为 Tabbi 打开 Shortcuts Events。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請在「自動化」設定中為 Tabbi 開啟 Shortcuts Events。"
           }
         }
       }
@@ -135933,6 +140560,366 @@
         }
       }
     },
+    "Updated %lldd ago" : {
+      "comment" : "AI Usage footer: days since the numbers were read, abbreviated.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حُدّث منذ %lld يوم"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vor %lld Tg. aktualisiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizado hace %lld d"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na-update %lld araw ang nakalipas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mis à jour il y a %lld j"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld日前に更新"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld일 전 업데이트됨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualizado há %lld d"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обновлено %lld дн назад"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 天前更新"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 天前更新"
+          }
+        }
+      }
+    },
+    "Updated %lldh ago" : {
+      "comment" : "AI Usage footer: hours since the numbers were read, abbreviated.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حُدّث منذ %lld س"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vor %lld Std. aktualisiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizado hace %lld h"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na-update %lld oras ang nakalipas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mis à jour il y a %lld h"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld時間前に更新"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld시간 전 업데이트됨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualizado há %lld h"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обновлено %lld ч назад"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 小时前更新"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 小時前更新"
+          }
+        }
+      }
+    },
+    "Updated %lldm ago" : {
+      "comment" : "AI Usage footer: minutes since the numbers were read, abbreviated.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حُدّث منذ %lld د"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vor %lld Min. aktualisiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizado hace %lld min"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na-update %lld min ang nakalipas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mis à jour il y a %lld min"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld分前に更新"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld분 전 업데이트됨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualizado há %lld min"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обновлено %lld мин назад"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 分钟前更新"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 分鐘前更新"
+          }
+        }
+      }
+    },
+    "Updated just now" : {
+      "comment" : "AI Usage footer: the numbers were just read.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حُدّث الآن"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerade aktualisiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizado ahora mismo"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na-update ngayon lang"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mis à jour à l'instant"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "たった今更新"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "방금 업데이트됨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualizado agora mesmo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обновлено только что"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刚刚更新"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剛剛更新"
+          }
+        }
+      }
+    },
+    "Usage logs" : {
+      "comment" : "Settings > AI Usage: header of the section with the Claude Code and Codex folders.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سجلات الاستخدام"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzungs-Logs"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registros de uso"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mga usage log"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Journaux d'utilisation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用状況のログ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용량 로그"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logs de uso"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Журналы использования"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用量日志"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用量記錄"
+          }
+        }
+      }
+    },
     "Usage of your rolling 5-hour limit" : {
       "comment" : "Tooltip on the AI Usage 5-hour ring.",
       "extractionState" : "manual",
@@ -136865,6 +141852,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 GitHub 上查看"
+          }
+        }
+      }
+    },
+    "Visible: friends see when you study" : {
+      "comment" : "Party visibility button while visible.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ظاهر للأصدقاء"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für Freunde sichtbar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visible para tus amigos"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kita ng mga kaibigan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visible pour tes amis"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フレンドに表示中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "친구에게 공개"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visível para os amigos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видно друзьям"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "好友可见"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "好友可見"
           }
         }
       }
@@ -144825,6 +149884,78 @@
         }
       }
     },
+    "Your Mac asks once before Tabbi can run your shortcuts." : {
+      "comment" : "Settings > Connections Do Not Disturb row detail before macOS asked about Shortcuts Events.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يسألك جهاز Mac مرة واحدة قبل أن يتمكن Tabbi من تشغيل اختصاراتك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Mac fragt einmal, bevor Tabbi deine Kurzbefehle ausführen kann."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu Mac pregunta una vez antes de que Tabbi pueda ejecutar tus atajos."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isang beses magtatanong ang Mac mo bago mapatakbo ng Tabbi ang mga shortcut mo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton Mac demande une fois avant que Tabbi puisse lancer tes raccourcis."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiがショートカットを実行する前に、Macが一度だけ確認します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi가 단축어를 실행하기 전에 Mac이 한 번 물어봐요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Mac pergunta uma vez antes de o Tabbi poder executar seus atalhos."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac один раз спросит, прежде чем Tabbi сможет запускать твои команды."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Tabbi 运行你的快捷指令之前，Mac 会询问一次。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Tabbi 執行你的捷徑之前，Mac 會詢問一次。"
+          }
+        }
+      }
+    },
     "Your Mac is charging, and %@ is having a sip" : {
       "comment" : "Closed notch tooltip; %@ is the pet's name.",
       "extractionState" : "manual",
@@ -150926,6 +156057,222 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "可以解鎖"
+          }
+        }
+      }
+    },
+    "resets %@" : {
+      "comment" : "AI Usage: under the weekly ring. %@ is a weekday and time (Thu 9:00 AM).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتجدد %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "neu ab %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "se renueva el %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reset sa %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "repart %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@にリセット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 초기화"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "renova %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сброс %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@重置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@重置"
+          }
+        }
+      }
+    },
+    "resets in %@" : {
+      "comment" : "AI Usage: under a limit ring. %@ is a short duration (2h 14m).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتجدد بعد %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "neu in %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "se renueva en %@"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reset sa %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "repart dans %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@後にリセット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 후 초기화"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "renova em %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сброс через %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@后重置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@後重置"
+          }
+        }
+      }
+    },
+    "resets now" : {
+      "comment" : "AI Usage: under a limit ring when the window resets now.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتجدد الآن"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "jetzt neu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "se renueva ahora"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reset ngayon"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "repart maintenant"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まもなくリセット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 초기화"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "renova agora"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сброс сейчас"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "即将重置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "即將重置"
           }
         }
       }

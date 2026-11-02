@@ -36,13 +36,30 @@ public struct ClaudeLocalStats: Equatable, Sendable, Codable {
     public var today: ClaudeUsagePeriod
     /// Today plus the six calendar days before it.
     public var lastSevenDays: ClaudeUsagePeriod
+    /// Total tokens on each of those seven days, oldest first and today
+    /// last, for the week's bar chart. Empty when unknown (older callers).
+    public var daily: [Int]
 
-    public init(today: ClaudeUsagePeriod, lastSevenDays: ClaudeUsagePeriod) {
+    public init(today: ClaudeUsagePeriod, lastSevenDays: ClaudeUsagePeriod, daily: [Int] = []) {
         self.today = today
         self.lastSevenDays = lastSevenDays
+        self.daily = daily
     }
 
-    public static let empty = ClaudeLocalStats(today: .empty, lastSevenDays: .empty)
+    public static let empty = ClaudeLocalStats(today: .empty, lastSevenDays: .empty,
+                                               daily: Array(repeating: 0, count: 7))
+
+    private enum CodingKeys: String, CodingKey {
+        case today, lastSevenDays, daily
+    }
+
+    /// `daily` came later; a value saved without it decodes with none.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        today = try container.decode(ClaudeUsagePeriod.self, forKey: .today)
+        lastSevenDays = try container.decode(ClaudeUsagePeriod.self, forKey: .lastSevenDays)
+        daily = try container.decodeIfPresent([Int].self, forKey: .daily) ?? []
+    }
 
     /// Start of the seven-day window: midnight six days before `now`.
     public static func windowStart(now: Date, calendar: Calendar = .current) -> Date {
@@ -61,6 +78,7 @@ public struct ClaudeLocalStats: Equatable, Sendable, Codable {
         let weekStart = windowStart(now: now, calendar: calendar)
         var today: [String: ClaudeModelUsage] = [:]
         var week: [String: ClaudeModelUsage] = [:]
+        var daily = [Int](repeating: 0, count: 7)
 
         func add(_ record: ClaudeUsageRecord, to bucket: inout [String: ClaudeModelUsage]) {
             bucket[record.model, default: ClaudeModelUsage(model: record.model, tokens: .zero, messages: 0)]
@@ -71,6 +89,10 @@ public struct ClaudeLocalStats: Equatable, Sendable, Codable {
         for record in records where record.timestamp >= weekStart && record.timestamp <= now {
             add(record, to: &week)
             if record.timestamp >= todayStart { add(record, to: &today) }
+            // Calendar days, so a day that lost an hour to daylight saving
+            // still counts as one.
+            let day = calendar.dateComponents([.day], from: weekStart, to: calendar.startOfDay(for: record.timestamp)).day ?? 0
+            daily[min(max(day, 0), 6)] += record.usage.total
         }
 
         func period(_ bucket: [String: ClaudeModelUsage]) -> ClaudeUsagePeriod {
@@ -78,6 +100,6 @@ public struct ClaudeLocalStats: Equatable, Sendable, Codable {
                 ($0.tokens.total, $1.model) > ($1.tokens.total, $0.model)
             })
         }
-        return ClaudeLocalStats(today: period(today), lastSevenDays: period(week))
+        return ClaudeLocalStats(today: period(today), lastSevenDays: period(week), daily: daily)
     }
 }

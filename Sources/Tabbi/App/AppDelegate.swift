@@ -27,12 +27,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // Before any store opens a file: adopts NotchDeck's data once.
             LegacyDataMigration.tabbi(storage: EditionStorage(edition: edition)).runIfNeeded()
         }
-        #if !APPSTORE
-        // The App Store build relies on Apple's crash reports instead.
+        // Both builds keep a crash log in the app's own folder (inside the
+        // container in the App Store build) and send it only with consent.
         if Self.watchesForCrashes(in: RunMode.current) {
             CrashHandler.install(in: EditionStorage(edition: edition), environment: Feedback.environment)
         }
-        #endif
         let settings = SettingsStore(catalog: ModuleList.catalog(for: edition), defaultKitID: edition.defaultKitID, kitStore: .standard(for: edition))
         #if !APPSTORE
         guard InstallHygiene.settle(settings: settings) == .proceed else {
@@ -110,7 +109,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let links = pendingLinks
         pendingLinks = []
         application(NSApp, open: links)
-        #if !APPSTORE
         if Self.watchesForCrashes(in: RunMode.current) {
             // Asked once the notch is up, so the prompt never holds up launch.
             let report = CrashHandler.takePendingReport(in: EditionStorage(edition: edition))
@@ -118,7 +116,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             HangWatchdog.shared.start()
             DispatchQueue.main.async { CrashReportFlow.live.run(with: report) }
         }
-        #endif
     }
 
     /// Only the real app installs the crash handler, offers a pending report

@@ -19,6 +19,9 @@ struct FocusSettingsPane: View {
     @ObservedObject var controller: FocusController
     @State private var testing: ShortcutKind?
     @State private var testResult: (kind: ShortcutKind, result: FocusShortcutResult)?
+    /// The priming screen before macOS asks to let Tabbi run shortcuts
+    /// through Shortcuts Events (the App Store build only).
+    @State private var primingShortcuts = false
 
     var body: some View {
         Form {
@@ -30,7 +33,15 @@ struct FocusSettingsPane: View {
         .scrollDisabled(true)
         .frame(width: 500, height: height)
         .motion(Motion.content, value: height)
+        // Only while the switch is on: checking starts Shortcuts Events.
+        .onAppear { if controller.settings.doNotDisturb { controller.refreshShortcutsAccess() } }
         .onDisappear { controller.setPreviewing(false) }
+        .sheet(isPresented: $primingShortcuts) {
+            ConnectionPrimingView(kind: .doNotDisturb, priming: ConnectionPermission.runShortcuts.priming, proceed: {
+                primingShortcuts = false
+                Task { await controller.requestShortcutsAccess() }
+            }, close: { primingShortcuts = false })
+        }
         .onChange(of: controller.settings.mix.isOff) { _, isOff in
             if isOff { controller.setPreviewing(false) }
         }
@@ -43,6 +54,7 @@ struct FocusSettingsPane: View {
         if mix.layers.count > 1 { height += CGFloat(mix.layers.count) * 37 }
         if playlistStatus != nil { height += 40 }
         if testResult != nil { height += 40 }
+        if showsAccessWarning { height += 52 }
         return height
     }
 
@@ -213,8 +225,9 @@ struct FocusSettingsPane: View {
 
     private var doNotDisturbSection: some View {
         Section {
-            Toggle(String(localized: "Turn on Do Not Disturb during focus", bundle: .tabbi), isOn: $controller.settings.doNotDisturb)
+            Toggle(String(localized: "Turn on Do Not Disturb during focus", bundle: .tabbi), isOn: doNotDisturbBinding)
             .help(String(localized: "Run your Focus shortcuts when the focus timer starts and stops", bundle: .tabbi))
+            if showsAccessWarning { accessWarning }
             shortcutRow(.on)
             shortcutRow(.off)
             if let testResult {
@@ -232,6 +245,44 @@ struct FocusSettingsPane: View {
             Text("Do Not Disturb", bundle: .tabbi)
         } footer: {
             SectionFooter(guide)
+        }
+    }
+
+    /// The switch. Where the shortcuts run through Shortcuts Events (the
+    /// App Store build), turning it on first shows the priming screen, so
+    /// macOS asks for Automation access now and not when focus next starts.
+    private var doNotDisturbBinding: Binding<Bool> {
+        Binding {
+            controller.settings.doNotDisturb
+        } set: { isOn in
+            if isOn, controller.needsShortcutsAccess, controller.shortcutsAccess != .granted {
+                primingShortcuts = true
+            } else {
+                controller.settings.doNotDisturb = isOn
+            }
+        }
+    }
+
+    /// Shortcuts Events access was turned off in System Settings.
+    private var showsAccessWarning: Bool {
+        controller.needsShortcutsAccess && controller.shortcutsAccess == .denied
+    }
+
+    private var accessWarning: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Label {
+                Text("Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.", bundle: .tabbi)
+                    .fixedSize(horizontal: false, vertical: true)
+            } icon: {
+                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+            }
+            .font(.callout)
+            .foregroundStyle(.secondary)
+            Spacer(minLength: 8)
+            Button(String(localized: "Open Settings", bundle: .tabbi)) {
+                NSWorkspace.shared.open(SystemSettingsLink.automationPrivacy.url)
+            }
+            .help(String(localized: "Open Privacy & Security > Automation in System Settings", bundle: .tabbi))
         }
     }
 

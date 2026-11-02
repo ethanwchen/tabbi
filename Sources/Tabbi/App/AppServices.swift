@@ -67,7 +67,7 @@ final class AppServices {
         })
         providers.attach(modules)
         self.providers = providers
-        celebrations = shared.celebrations(settings: settings, runMode: runMode)
+        celebrations = shared.celebrations(settings: settings, runMode: runMode, edition: edition)
         ticker = TickerStore(settings: settings, providers: providers, preview: shared.closedNotchPreview,
                              celebrations: celebrations)
         goalCrowns = GoalCrowns(providers: providers, celebrations: celebrations)

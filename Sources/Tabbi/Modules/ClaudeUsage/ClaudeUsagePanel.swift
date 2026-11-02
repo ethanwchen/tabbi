@@ -3,7 +3,9 @@ import TabbiKitCore
 import TabbiKit
 
 /// Live 5-hour and weekly limits as rings, today's local usage in a card,
-/// and a footer with freshness and a manual refresh.
+/// and a footer with freshness and a manual refresh. Sandboxed (the App
+/// Store build) it first asks for the tool's folder, and shows Claude Code's
+/// tokens by day in place of the live limits only its CLI can report.
 struct ClaudeUsagePanel: View {
     @ObservedObject var store: ClaudeUsageStore
 
@@ -12,16 +14,21 @@ struct ClaudeUsagePanel: View {
         // minute precision, and the timeline pauses when the panel is hidden.
         TimelineView(.periodic(from: .now, by: 30)) { context in
             VStack(spacing: Theme.Spacing.s) {
-                HStack(spacing: Theme.Spacing.l) {
-                    limitsArea(now: context.date)
-                    // A shorter panel (Compact) packs the card's lines closer
-                    // instead of clipping it.
-                    ViewThatFits(in: .vertical) {
-                        TodayCard(stats: store.stats, source: store.source, spacing: Theme.Spacing.s)
-                        TodayCard(stats: store.stats, source: store.source, spacing: Theme.Spacing.xs)
+                if store.needsFolder {
+                    UsageFolderCard(store: store)
+                        .frame(maxHeight: .infinity)
+                } else {
+                    HStack(spacing: Theme.Spacing.l) {
+                        limitsArea(now: context.date)
+                        // A shorter panel (Compact) packs the card's lines closer
+                        // instead of clipping it.
+                        ViewThatFits(in: .vertical) {
+                            TodayCard(stats: store.stats, source: store.source, spacing: Theme.Spacing.s)
+                            TodayCard(stats: store.stats, source: store.source, spacing: Theme.Spacing.xs)
+                        }
                     }
+                    .frame(maxHeight: .infinity)
                 }
-                .frame(maxHeight: .infinity)
                 UsageFooter(store: store, now: context.date)
             }
         }
@@ -30,7 +37,9 @@ struct ClaudeUsagePanel: View {
 
     @ViewBuilder
     private func limitsArea(now: Date) -> some View {
-        if store.cliStatus == .missing && store.limits == nil {
+        if store.isSandboxed && store.source == .claudeCode {
+            DailyTokensCard(stats: store.stats)
+        } else if store.cliStatus == .missing && store.limits == nil {
             CLIMissingCard(source: store.source, codexFolder: store.codexFolder)
         } else {
             let snapshot = store.limits?.snapshot
@@ -81,6 +90,8 @@ private struct UsageRing: View {
                 .font(Theme.Typography.caption.monospacedDigit())
                 .foregroundStyle(Theme.Palette.tertiaryText)
                 .lineLimit(1)
+                // A longer language shrinks a little rather than clipping.
+                .minimumScaleFactor(0.8)
         }
         // Fixed width so the layout doesn't shift as the reset label changes.
         .frame(width: 120)
@@ -216,6 +227,10 @@ private struct UsageFooter: View {
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xs) {
+            if store.isSandboxed {
+                UsageSourceMenu(store: store)
+                    .padding(.trailing, Theme.Spacing.xxs)
+            }
             if store.probeError != nil && !store.isFetching {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .foregroundStyle(Theme.Palette.warning)
@@ -225,8 +240,9 @@ private struct UsageFooter: View {
                 .lineLimit(1)
                 .truncationMode(.tail)
             Spacer(minLength: Theme.Spacing.s)
-            if store.cliStatus != .missing {
-                RefreshButton(isFetching: store.isFetching, source: store.source, action: store.refresh)
+            if store.cliStatus != .missing && !store.needsFolder {
+                RefreshButton(isFetching: store.isFetching, source: store.source,
+                              readsOnly: store.isSandboxed, action: store.refresh)
             }
         }
         .font(Theme.Typography.caption.monospacedDigit())
@@ -236,6 +252,7 @@ private struct UsageFooter: View {
     }
 
     private var status: String {
+        if store.isSandboxed { return sandboxedStatus }
         if store.isFetching {
             return store.source == .codex ? String(localized: "Reading Codex logs…", bundle: .tabbi) : String(localized: "Checking limits…", bundle: .tabbi)
         }
@@ -251,6 +268,24 @@ private struct UsageFooter: View {
         case .available: return String(localized: "Not checked yet · refresh to load your live limits", bundle: .tabbi)
         }
     }
+
+    /// Sandboxed, the panel only ever reads logs, so it says when it last
+    /// did, and that nothing was sent.
+    private var sandboxedStatus: String {
+        if store.needsFolder { return String(localized: "Nothing is read until you choose", bundle: .tabbi) }
+        if store.isFetching {
+            return store.source == .codex ? String(localized: "Reading Codex logs…", bundle: .tabbi)
+                : String(localized: "Reading Claude Code logs…", bundle: .tabbi)
+        }
+        switch store.source {
+        case .codex:
+            return store.limits.map { ClaudeUsageFormat.updatedDescription(fetchedAt: $0.fetchedAt, now: now) }
+                ?? String(localized: "No limits in your Codex logs yet", bundle: .tabbi)
+        case .claudeCode:
+            return store.readAt.map { ClaudeUsageFormat.updatedDescription(fetchedAt: $0, now: now) }
+                ?? String(localized: "From your Claude Code logs", bundle: .tabbi)
+        }
+    }
 }
 
 /// The shared `IconButton`, spinning while a probe runs. Rotating the whole
@@ -258,13 +293,15 @@ private struct UsageFooter: View {
 private struct RefreshButton: View {
     let isFetching: Bool
     let source: AIUsageSource
+    /// Sandboxed, a refresh only reads the logs, whatever the tool.
+    var readsOnly = false
     let action: () -> Void
 
     var body: some View {
         IconButton(symbol: "arrow.clockwise", size: 24,
-                   help: source.probesLimits
-                       ? String(localized: "Check live limits (sends a tiny request with your claude CLI)", bundle: .tabbi)
-                       : String(localized: "Read the latest Codex logs (sends nothing)", bundle: .tabbi),
+                   help: source == .codex ? String(localized: "Read the latest Codex logs (sends nothing)", bundle: .tabbi)
+                       : readsOnly ? String(localized: "Read the latest Claude Code logs (sends nothing)", bundle: .tabbi)
+                       : String(localized: "Check live limits (sends a tiny request with your claude CLI)", bundle: .tabbi),
                    action: action)
             .spinning(isFetching)
         .disabled(isFetching)

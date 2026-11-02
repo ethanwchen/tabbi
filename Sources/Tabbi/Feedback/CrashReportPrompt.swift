@@ -23,14 +23,14 @@ enum CrashReportPrompt {
     static func makeAlert(for report: CrashReport) -> NSAlert {
         let name = Edition.current.name
         let alert = NSAlert()
-        alert.messageText = "\(name) closed unexpectedly. Send a crash report?"
-        alert.informativeText = "A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:"
+        alert.messageText = String(localized: "\(name) closed unexpectedly. Send a crash report?", bundle: .tabbi)
+        alert.informativeText = String(localized: "A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:", bundle: .tabbi)
         alert.accessoryView = disclosureView(report.disclosure)
-        alert.addButton(withTitle: "Send")
-        alert.addButton(withTitle: "Don't Send")
+        alert.addButton(withTitle: String(localized: "Send", bundle: .tabbi))
+        alert.addButton(withTitle: String(localized: "Don't Send", bundle: .tabbi))
         alert.showsSuppressionButton = true
-        alert.suppressionButton?.title = "Don't ask again"
-        alert.suppressionButton?.toolTip = "Remember this answer and stop asking after a crash"
+        alert.suppressionButton?.title = String(localized: "Don't ask again", bundle: .tabbi)
+        alert.suppressionButton?.toolTip = String(localized: "Remember this answer and stop asking after a crash", bundle: .tabbi)
         return alert
     }
 

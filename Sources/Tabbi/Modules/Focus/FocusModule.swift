@@ -87,7 +87,18 @@ extension ModuleContext {
     /// Focus mode (sound, playlist, Do Not Disturb), which follows the
     /// Pomodoro and Study's deep focus blocks alike. One per app, since it
     /// owns the audio engine and the saved focus settings.
-    var focusMode: FocusController { shared.resolve {
-        FocusController(runMode: runMode, offersDoNotDisturb: edition.runsLocalTools)
-    } }
+    var focusMode: FocusController { shared.focusMode(runMode: runMode, edition: edition) }
+}
+
+extension SharedServices {
+    /// The one focus mode, however it is reached first (a module, or the
+    /// celebrations, which hush while it holds Do Not Disturb), so it is
+    /// always built for the edition. The App Store build runs the
+    /// shortcuts through Shortcuts Events.
+    func focusMode(runMode: RunMode, edition: Edition) -> FocusController {
+        resolve {
+            FocusController(runMode: runMode, shortcuts: ShortcutsEvents.runner(for: edition),
+                            needsShortcutsAccess: edition.isSandboxed)
+        }
+    }
 }

@@ -249,6 +249,14 @@ extension ConnectionPermission {
                 points: [String(localized: "Tabbi only plays, pauses, skips and shows what's playing.", bundle: .tabbi),
                          String(localized: "If \(app.displayName) isn't open, Tabbi opens it first so your Mac can ask.", bundle: .tabbi)]
             )
+        case .runShortcuts:
+            ConnectionPriming(
+                symbol: "moon.fill",
+                title: String(localized: "Let Tabbi run your Focus shortcuts", bundle: .tabbi),
+                message: String(localized: "Next, your Mac asks if Tabbi can control Shortcuts Events. You can change your answer any time in System Settings.", bundle: .tabbi),
+                points: [String(localized: "Tabbi only runs the two shortcuts named in Focus settings, when focus starts and ends.", bundle: .tabbi),
+                         String(localized: "To check they exist it looks up their names, and it never changes a shortcut.", bundle: .tabbi)]
+            )
         }
     }
 }

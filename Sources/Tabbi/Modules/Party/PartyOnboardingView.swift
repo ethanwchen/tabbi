@@ -102,7 +102,7 @@ private struct PartySetupProfileCard: View {
 
     @ViewBuilder private var nameRow: some View {
         if isRenaming {
-            TextField("Name", text: $draft)
+            TextField(String(localized: "Name", bundle: .tabbi), text: $draft)
                 .textFieldStyle(.plain)
                 .font(Theme.Typography.bodyEmphasis)
                 .foregroundStyle(Theme.Palette.primaryText)
@@ -150,17 +150,17 @@ private struct PartySetupProfileCard: View {
     private var status: (text: String, color: Color) {
         switch store.state.connection {
         case .connected where store.settings.invisible:
-            ("Invisible to friends", Theme.Palette.tertiaryText)
+            (String(localized: "Invisible to friends", bundle: .tabbi), Theme.Palette.tertiaryText)
         case .connected:
-            ("Online", Theme.Palette.success)
+            (String(localized: "Online", bundle: .tabbi), Theme.Palette.success)
         case .ageCheck:
-            ("Not joined yet", Theme.Palette.tertiaryText)
+            (String(localized: "Not joined yet", bundle: .tabbi), Theme.Palette.tertiaryText)
         case .connecting:
-            ("Joining the party server", Theme.Palette.tertiaryText)
+            (String(localized: "Joining the party server", bundle: .tabbi), Theme.Palette.tertiaryText)
         case .unreachable(.banned):
-            ("Not available", Theme.Palette.tertiaryText)
+            (String(localized: "Not available", bundle: .tabbi), Theme.Palette.tertiaryText)
         case .unreachable, .invalidServer:
-            ("Offline", Theme.Palette.warning)
+            (String(localized: "Offline", bundle: .tabbi), Theme.Palette.warning)
         }
     }
 }
@@ -175,7 +175,7 @@ private struct PartySetupNameButton: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: Theme.Spacing.xs) {
-                Text(name ?? "Add your name")
+                Text(name ?? String(localized: "Add your name", bundle: .tabbi))
                     .font(Theme.Typography.bodyEmphasis)
                     .foregroundStyle(name == nil ? Theme.Palette.secondaryText : Theme.Palette.primaryText)
                     .lineLimit(1)
@@ -212,7 +212,8 @@ private struct PartySetupVisibilityButton: View {
                     .foregroundStyle(invisible ? Theme.Palette.secondaryText : PartyStyle.accent)
                     .frame(width: 14)
                     .contentTransition(.symbolEffect(.replace))
-                Text(invisible ? "Invisible: friends see you as away" : "Visible: friends see when you study")
+                Text(invisible ? String(localized: "Invisible: friends see you as away", bundle: .tabbi)
+                     : String(localized: "Visible: friends see when you study", bundle: .tabbi))
                     .font(Theme.Typography.caption)
                     .foregroundStyle(hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
                     .lineLimit(1)
@@ -223,7 +224,8 @@ private struct PartySetupVisibilityButton: View {
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
-        .help(invisible ? "Show friends when you study again" : "Go invisible. Your study minutes still count.")
+        .help(invisible ? String(localized: "Show friends when you study again", bundle: .tabbi)
+              : String(localized: "Go invisible. Your study minutes still count.", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: invisible)
@@ -248,7 +250,7 @@ private struct PartySetupFriendsCard: View {
                     Spacer(minLength: Theme.Spacing.xs)
                     if let code = state.friendCode {
                         PartyCopyCode(code: code, showsLabel: true,
-                                      help: "Your friend code. Copy it and send it to a friend.")
+                                      help: String(localized: "Your friend code. Copy it and send it to a friend.", bundle: .tabbi))
                     }
                 }
                 .frame(height: 20)
@@ -257,9 +259,9 @@ private struct PartySetupFriendsCard: View {
                     .padding(.horizontal, Theme.Spacing.xs)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 if state.connection == .connected {
-                    PartyCodeField(placeholder: "Friend's code", symbol: "person.badge.plus",
+                    PartyCodeField(placeholder: String(localized: "Friend's code", bundle: .tabbi), symbol: "person.badge.plus",
                                    length: PartyCode.friendCodeLength, field: .friendCode, focus: focus,
-                                   help: "Type or paste a friend's \(PartyCode.friendCodeLength)-character code and press Return") {
+                                   help: String(localized: "Type or paste a friend's \(PartyCode.friendCodeLength)-character code and press Return", bundle: .tabbi)) {
                         store.addFriend(code: $0)
                     }
                 }
@@ -273,7 +275,7 @@ private struct PartySetupFriendsCard: View {
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 message(symbol: "person.2.fill", title: friendsTitle,
                         detail: store.notice ?? (state.friends.isEmpty
-                            ? "Share your code, or add theirs below. Start a party from the Party tab."
+                            ? String(localized: "Share your code, or add theirs below. Start a party from the Party tab.", bundle: .tabbi)
                             : nil),
                         isNotice: store.notice != nil)
                 if !state.friends.isEmpty {
@@ -281,21 +283,21 @@ private struct PartySetupFriendsCard: View {
                 }
             }
         case .connecting, .ageCheck:
-            message(symbol: "antenna.radiowaves.left.and.right", title: "Joining the party server",
-                    detail: "Signing you in so friends can find you. Your code shows here in a moment.")
+            message(symbol: "antenna.radiowaves.left.and.right", title: String(localized: "Joining the party server", bundle: .tabbi),
+                    detail: String(localized: "Signing you in so friends can find you. Your code shows here in a moment.", bundle: .tabbi))
         case .unreachable(.banned):
-            message(symbol: "hand.raised.fill", title: "Party isn't available",
-                    detail: "This account can no longer use Party. Write to \(SupportContact.email) if that's a mistake.")
+            message(symbol: "hand.raised.fill", title: String(localized: "Party isn't available", bundle: .tabbi),
+                    detail: String(localized: "This account can no longer use Party. Write to \(SupportContact.email) if that's a mistake.", bundle: .tabbi))
         case .unreachable:
             VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-                message(symbol: "wifi.slash", title: "Can't reach the party server",
-                        detail: "Check your internet connection. You can also set up Party later in its tab.")
-                PartyPillButton(title: "Try Again", symbol: "arrow.clockwise",
-                                help: "Connect to the party server now") { store.retry() }
+                message(symbol: "wifi.slash", title: String(localized: "Can't reach the party server", bundle: .tabbi),
+                        detail: String(localized: "Check your internet connection. You can also set up Party later in its tab.", bundle: .tabbi))
+                PartyPillButton(title: String(localized: "Try Again", bundle: .tabbi), symbol: "arrow.clockwise",
+                                help: String(localized: "Connect to the party server now", bundle: .tabbi)) { store.retry() }
             }
         case .invalidServer(let message):
-            self.message(symbol: "exclamationmark.triangle.fill", title: "Check the party server",
-                         detail: message + " Fix it in Settings > Tabs > Party > Options.")
+            self.message(symbol: "exclamationmark.triangle.fill", title: String(localized: "Check the party server", bundle: .tabbi),
+                         detail: Sentences.join([message, String(localized: "Fix it in Settings > Tabs > Party > Options.", bundle: .tabbi)]))
         }
     }
 
@@ -304,7 +306,7 @@ private struct PartySetupFriendsCard: View {
         HStack(spacing: Theme.Spacing.s) {
             ForEach(state.friends.prefix(Self.shownPets)) { friend in
                 PartyPet(profile: friend.profile, asleep: !friend.online)
-                    .help(friend.online ? friend.profile.name : "\(friend.profile.name) is away")
+                    .help(friend.online ? friend.profile.name : String(localized: "\(friend.profile.name) is away", bundle: .tabbi))
             }
             if state.friends.count > Self.shownPets {
                 Text("+\(state.friends.count - Self.shownPets)")
@@ -317,8 +319,8 @@ private struct PartySetupFriendsCard: View {
     private static let shownPets = 6
 
     private var friendsTitle: String {
-        guard state.friendsLoaded, !state.friends.isEmpty else { return "No friends yet" }
-        return state.friends.count == 1 ? "1 friend" : "\(state.friends.count) friends"
+        guard state.friendsLoaded, !state.friends.isEmpty else { return String(localized: "No friends yet", bundle: .tabbi) }
+        return String(localized: "\(state.friends.count) friends", bundle: .tabbi)
     }
 
     private func message(symbol: String, title: String, detail: String?, isNotice: Bool = false) -> some View {

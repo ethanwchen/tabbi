@@ -21,3 +21,18 @@ extension Edition {
         return Edition.resolve(infoDictionary: Bundle.main.infoDictionary, fallback: fallback)
     }()
 }
+
+extension Edition {
+    /// Whether the app lives by the App Sandbox's rules here: always in an
+    /// App Store build (`APPSTORE`), and for the App Store edition in any
+    /// build, so `swift run Tabbi --edition appstore` and its snapshots show
+    /// what the store build shows. Features that need a helper program or
+    /// files outside the container take their sandboxed path when it is on.
+    var isSandboxed: Bool {
+        #if APPSTORE
+        true
+        #else
+        !runsLocalTools
+        #endif
+    }
+}

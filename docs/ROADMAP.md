@@ -90,6 +90,6 @@ Possible paid layers on top:
 
 Constraints to keep in mind:
 
-- **App Store sandboxing conflicts with some integrations.** The App Store edition leaves out AI Usage, the AI command line tools, SoundCloud, Do Not Disturb and Party (see [appstore.md](appstore.md)), so the direct download stays the full-featured channel.
+- **App Store sandboxing conflicts with some integrations.** Since 1.0.4 the App Store edition has Party, AI Usage (reading folders the user picks) and Do Not Disturb (through Shortcuts Events), but it still leaves out the AI command line tools and SoundCloud in browsers (see [appstore.md](appstore.md)), so the direct download stays the channel with every integration.
 - **Protect the name.** A trademark on Tabbi lets forks exist under the MIT license while keeping the official builds and marketplace recognizable.
 - **No telemetry, ever,** paid tier or not. Any hosted feature is opt-in and documented in the README's privacy section.

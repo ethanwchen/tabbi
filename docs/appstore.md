@@ -7,6 +7,9 @@ This page says what differs, how to build and upload it, and what to enter in Ap
 
 ## What differs
 
+Since 1.0.4 the App Store edition has every tab and nearly every feature of the direct download.
+What a sandboxed app cannot do takes a sandboxed path instead (AI Usage, Do Not Disturb), and only two things stay direct-only: the AI command line tools and SoundCloud in a browser (see What stays direct-only).
+
 | | Direct download | Mac App Store |
 | --- | --- | --- |
 | Build | `swift build` | `TABBI_APPSTORE=1 swift build` (defines `APPSTORE`) |
@@ -14,22 +17,23 @@ This page says what differs, how to build and upload it, and what to enter in Ap
 | App Sandbox | no | yes (`packaging/Tabbi-AppStore.entitlements`) |
 | Updates | Sparkle | the App Store (Sparkle is not linked at all) |
 | Move to Applications, single instance, quarantine checks | InstallHygiene | left out (the App Store installs the app) |
-| AI Usage | yes | compiled out (it reads the `claude` CLI and Codex logs) |
+| Party | yes | yes, the same tab, age check, invite links, reporting and blocking (from 1.0.4) |
+| AI Usage | reads `~/.claude` and `~/.codex`, and asks the `claude` CLI for live limits | reads only the Claude Code or Codex folder the user picks; Claude Code shows tokens per day in place of live limits, Codex shows its limits from its logs (from 1.0.4) |
 | AI providers (Settings > Connections > AI) | Claude Code, Codex and Gemini CLI, the Anthropic, OpenAI and Gemini APIs, Ollama | the Anthropic, OpenAI and Gemini APIs with the user's key, and Ollama on `localhost` |
 | Ask AI | yes | yes, through the API providers and Ollama |
 | Plan my day and Refine | on the Mac, or with the picked AI | the same, with an API provider or Ollama |
 | Wrap up (day review) | local summary, refined by the picked AI | the same, with an API provider or Ollama |
-| Now Playing | Spotify, Music, and SoundCloud in Safari or Chrome (opt-in) | Spotify and Music (a sandboxed app cannot script browsers) |
-| Do Not Disturb during focus | through Shortcuts | hidden (it runs `/usr/bin/shortcuts`) |
-| Settings > Connections | all rows | no command line tools in the AI picker, no Claude or Do Not Disturb rows |
-| Party | yes | left out by the edition for now (one switch turns it on) |
-| Crash reports | asks after a crash, then sends to `POST /v1/crashes` with consent | none of its own (Apple's crash reports, which users share through macOS, already cover it) |
+| Now Playing | Spotify, Music, and SoundCloud in Safari or Chrome (opt-in) | Spotify and Music |
+| Do Not Disturb during focus | runs the two shortcuts with `/usr/bin/shortcuts` | runs the same two shortcuts through Shortcuts Events, after macOS asks once (from 1.0.4) |
+| Settings > Connections | all rows | no command line tools in the AI picker and no Claude row |
+| Crash reports | asks after a crash, then sends to `POST /v1/crashes` with consent | the same (from 1.0.4; before, none of its own) |
 | Sign in with Apple and sync ([sync.md](sync.md)) | yes, on the web (no profile needed) | yes, natively with the App Store profile (on the web in `--adhoc` builds) |
 
-The compile-time switch sits in these places: `Package.swift` (the define and the Sparkle dependency), `ModuleList.swift` (AI Usage), `AIService.swift` (the sandboxed provider list), `AppDelegate.swift` (updater and install hygiene), `Edition+Current.swift` (the default edition) and a few spots in Settings and the snapshot renderer.
+The compile-time switch sits in these places: `Package.swift` (the define, the Sparkle dependency and the excluded `Updates` and `InstallHygiene` folders), `AppDelegate.swift` (updater and install hygiene), `Edition+Current.swift` (the default edition and `Edition.isSandboxed`), `ClaudeUsageStore` (the App Store build never even looks for a CLI) and a few spots in Settings and the snapshot renderer.
 Everything else follows the edition at run time.
-`Edition.excludedModules` removes modules from the catalog, so kits, onboarding, Settings > Tabs and the closed-notch ticker never offer them, and a kit that lists one still applies without a warning.
-`Edition.runsLocalTools` is false for the App Store edition, which hides every feature that would start a helper program.
+`Edition.isSandboxed` is true in every App Store build and for the App Store edition in any build, so `swift run Tabbi --edition appstore` and its snapshots show what the store build shows.
+`Edition.runsLocalTools` is false for the App Store edition, which hides the command line AI tools and the Claude row.
+`Edition.excludedModules` can still remove modules from an edition's catalog, so kits, onboarding, Settings > Tabs and the closed-notch ticker never offer them; the App Store edition excludes none since 1.0.4.
 
 ### AI in the sandbox
 
@@ -39,8 +43,46 @@ A command line tool saved by a direct download counts as no choice here, so Ask 
 Nothing is sent anywhere until the user picks a provider: a fresh install starts with None, Ask shows "Choose an AI to ask questions", and Plan my day and Wrap up stay on the Mac.
 Picking a provider that sends data off the Mac (every one but Ollama) first shows a one-time consent alert naming the company and what each feature sends (Guideline 5.1.2(i)); the permission is saved per provider in `AISettings.consented`.
 
-Party comes back by removing `"party"` from `excludedModules` in `appstore.json`.
-Party now has reporting, blocking, a name filter (App Review guideline 1.2) and an age check that keeps it off for anyone under 13, so the remaining work before turning it on is a sandboxed run of Party, a privacy label that declares the display name and party activity it shares, a new age rating answer (see App information), and reviewer notes on the age check and how to report and block someone (see Notes for the reviewer).
+### Party in the sandbox
+
+Party is the same code in both editions, with nothing behind `#if APPSTORE`: the friends server is reached over HTTPS through `network.client`, the secret token lives in the Keychain under the edition's own service, invite links arrive through the `tabbi://` URL scheme in `Resources/Info.plist` (the website's `/add/<code>` and `/join/<code>` pages open them), and the optional account signs in with Apple's native sheet.
+It keeps every safeguard App Review asked for in guideline 1.2: reporting (right-click a friend or party member, then Report), blocking (the same menu, or Also block in the report sheet), the name filter (`PartyNameFilter`, the same list as the server's), and the maintainer's moderation queue, which can rename or ban an identity ([study/backend-api.md](study/backend-api.md#moderation-maintainer)).
+The age question is Party's alone and optional: it shows only when the user turns Party on (onboarding's Party step, the Party tab or the Party setup sheet in Connections), with Not now beside it, and it keeps Party off for anyone under 13.
+Only the date the user surely turns 13 is kept, on the Mac; nothing about it is sent (guideline 5.1.1(v)).
+The wire protocol is untouched, so App Store users party with every other version on the Mac and on Windows ([party-compatibility.md](party-compatibility.md)).
+No kit turns Party on, so a fresh install never shows it or the age question unless the user picks it.
+
+### AI Usage in the sandbox
+
+The sandbox keeps the app out of `~/.claude` and `~/.codex`, so AI Usage starts with a card that says what it reads and where ("Tabbi can count your tokens from the logs Claude Code keeps in the .claude folder. Choose it next. Nothing leaves your Mac.") and one Continue button.
+Continue opens the standard open panel in the home folder with the tool's folder selected and hidden folders shown; the panel's own line repeats what is read.
+The pick is kept as a security-scoped bookmark (`files.user-selected.read-only` and `files.bookmarks.app-scope`), so it is asked once, and Settings > Tabs > AI Usage > Options shows each folder with Change and Remove (Remove forgets the bookmark at once).
+A folder without the tool's logs is refused with a line saying which folder to pick.
+Nothing is read until the user picks, and declining (closing the panel, or never pressing Continue) leaves the card in place; every other tab works the same.
+The App Store build never looks for or runs a command line tool here (`ClaudeUsageStore.locateCLI` returns nothing under `APPSTORE`), so Claude Code's live 5-hour and weekly limits, which only its CLI reports, are replaced by the week's tokens per day, read from the logs.
+Codex writes its limits into its own logs, so the Codex view keeps its rings.
+A footer menu switches between Claude Code and Codex, since no command line AI can be the chosen provider in this build.
+
+### Do Not Disturb in the sandbox
+
+macOS has no public Do Not Disturb API, so both editions run two shortcuts the user makes with the Shortcuts app's Set Focus action, and the setup (names, the walkthrough, Test it) is the same.
+A sandboxed app cannot start `/usr/bin/shortcuts`, and opening a `shortcuts://run-shortcut` link brings the Shortcuts app's window up every time a focus block starts or ends, so the App Store build sends Apple Events to Shortcuts Events, the background half of Shortcuts, which runs a shortcut without opening any window (`ShortcutsEvents`, scripts in `ShortcutsEventsScript`).
+Shortcuts Events' scripting definition puts running shortcuts and reading their names in the `com.apple.shortcuts.run` access group, which the entitlements name under `com.apple.security.scripting-targets`; that is the sanctioned way to script another app from the sandbox and needs no temporary exception.
+macOS asks once before the first event (Automation).
+Turning the switch on in Settings > Tabs > Today (or Focus) > Options first shows a priming sheet ("Let Tabbi run your Focus shortcuts") with Continue and Not now, and Continue lets macOS ask; Not now leaves the switch off.
+The Do Not Disturb row in Connections does the same through its own priming sheet, and its troubleshooter says where to turn access back on.
+Nothing ever sends an Apple Event before the user allowed it: a focus block with access off runs no shortcut and logs why, and the switch shows "Shortcuts access is off" with a button to System Settings.
+
+### What stays direct-only
+
+- **The Claude Code, Codex and Gemini command line tools as AI providers.**
+  A child process inherits the app's sandbox, so a CLI started from the App Store build cannot read its own sign-in (Claude Code keeps it in the login Keychain and `~/.claude`, Codex in `~/.codex`, Gemini in `~/.gemini`), cannot write its session files, and cannot reach tools the user installed in `/opt/homebrew` or `~/.local` without temporary file exceptions App Review does not grant for this.
+  Asking the user to pick those folders would still leave the Keychain sign-in out of reach, so the provider would half work at best.
+  The API providers (with the user's own key) and Ollama cover the same features.
+- **SoundCloud in Safari or Chrome.**
+  It runs JavaScript in the user's browser tab through Apple Events.
+  Safari's `do JavaScript` command has no scripting access group, so it would need `com.apple.security.temporary-exception.apple-events` for Safari and Chrome, an exception App Review questions closely, for an app that would read the user's browser tabs.
+  That risk is not worth one more player; Spotify and Music cover Now Playing.
 
 ## Build and upload
 
@@ -86,12 +128,27 @@ Run this after changing entitlements, the edition or anything that touches files
 
 Sign in with Apple needs the signed build: install the package from a TestFlight build to try it sandboxed.
 
+On a Mac that also runs Tabbi, check under a throwaway identity so nothing touches the real app's container, Keychain items or widget group: add a temporary edition file next to `appstore.json` with its own `id`, `name` and `bundleIdentifier` (and `"distribution": "appStore"`), build it with `TABBI_APPSTORE=1 swift build -c release`, assemble it with `scripts/assemble.sh <binary> <folder> <id>`, delete the edition file again, remove the widget (`Contents/PlugIns`), and ad-hoc sign the app with `Tabbi-AppStore.entitlements` minus `applesignin` and `application-groups`.
+Start that copy with `open -n -a <app>`, not from Terminal: a process started from Terminal makes macOS ask for Automation access in Terminal's name.
+For Party, point it at a local server first: run `npm run dev` in `backend/`, start the copy once, quit it, and set its Party server with `defaults write ~/Library/Containers/<bundle id>/Data/Library/Preferences/<bundle id> party.settings -data <hex>`, the hex of `{"serverText":"http://localhost:8787"}`; a second Party user is a few `curl` calls with `Tabbi-Protocol: 2`, or `npm run demo-friend` against the local server.
+Afterwards delete the copy, its container and its Keychain items (service `<bundle id>.party`).
+
 The last check (October 2026) found no sandbox denials and no process launches.
 Clicking the notch opened the panel and moving the pointer away closed it (global mouse monitors work), the hotkey uses `RegisterEventHotKey` (no permission needed), Today read the calendar through EventKit, and Now Playing reached Music through the Apple Events exception (macOS then asks for Automation permission, as it does for the direct download).
 
+The check for 1.0.4 (November 2026, macOS 27.0.1) ran the release App Store build sandboxed under a throwaway bundle id against a local friends server, driven through onboarding with the accessibility API, and found no sandbox denials:
+
+- Onboarding offered Party and AI Usage; with Party on, its step asked the birth month and year with Not now beside it, and answering an adult date registered the identity on the server and showed the friend code.
+- A friend request from the app reached a second user, who accepted; a `tabbi://join/<code>` link opened the invite in the running app and joined that user's party, where both pets showed and the host's shared session counted down.
+- Report (spam, with Also block) reached the moderation queue, ended the friendship and left the party; a `tabbi://add/<code>` link added the demo friend at once (it speaks protocol 1), its party showed a Join button that worked, and Block in the context menu removed it.
+- AI Usage showed its card, Continue opened the open panel in the home folder, choosing `.claude` showed the week's tokens from the real logs, and after a relaunch the bookmark still worked without asking.
+- Turning on Do Not Disturb showed the priming sheet, and Continue brought up macOS's Automation prompt for Shortcuts Events.
+  Running a shortcut once access is allowed is covered by unit tests and gets one manual run on the TestFlight build (see the checklist).
+
 ## App Store Connect
 
-Everything in this section is paste-ready for the App Store edition as it builds today: AI Usage, the command line AI tools, SoundCloud, Do Not Disturb and Party are not in it, so the copy below does not promise them (the keyword note explains why `party` is not a keyword).
+Everything in this section is paste-ready for the App Store edition from 1.0.4, which has Party, AI Usage and Do Not Disturb; the command line AI tools and SoundCloud are not in it, so the copy below does not promise them.
+For 1.0.3, which is live, the earlier copy without Party stays in git history (this file before 1.0.4).
 Character counts were checked with Python `len`, and every field is plain ASCII, so bytes equal characters.
 The listing copy comes from the listing research (October 2026), with only the facts that did not match the App Store build changed.
 
@@ -104,9 +161,15 @@ The listing copy comes from the listing research (October 2026), with only the f
 - Support URL: https://tabbinotch.com/support
 - Marketing URL: https://tabbinotch.com
 - Copyright: the maintainer's name and the year
-- Age rating: 4+ (no user-generated content while Party is out, no web browsing, no ads).
-  Answer the questionnaire as the build stands, and say yes wherever it asks about AI-generated content or chat, since Ask AI shows a provider's answers that Tabbi does not filter; if that answer raises the rating, accept the higher rating rather than leave it out.
-  When Party comes back it adds user content (display names, study presence and reports), so answer yes to user-generated content and expect a rating of at least 13+, which matches the 13+ age check in the app and the Terms.
+- Age rating: update the questionnaire for 1.0.4, since Party adds content made by other users, and expect 13+ (the age the app's Party check and the Terms ask for); accept a higher rating if the answers give one.
+  The answers (App Store Connect > App Information > Age Ratings > Edit):
+  - User-Generated Content: Yes. Other users' display names and pet names show in Party; they pass a name filter on the Mac and on the server, every user can report and block, and the maintainer reviews reports and can rename or ban an identity.
+  - Messaging and Chat: No. Party has no messages between users; the optional note in a report goes only to the maintainer.
+  - Unrestricted Web Access: No. Links open in the user's browser.
+  - Advertising: No.
+  - Contests, Gambling, Loot boxes and the content-frequency questions (violence, sexual content, profanity, mature themes, horror, medical, alcohol and tobacco and drugs, weapons): None.
+  - Parental Controls: No. Age Assurance: No (the app does not verify age; Party asks the user's birth month and year and stays off under 13).
+  - Answer yes wherever the questionnaire asks about AI-generated content, since Ask AI shows a provider's answers that Tabbi does not filter.
 - Sign-in information: not required (signing in is optional and only syncs the pet and streaks)
 - Pricing: free.
   The app has no tip, coffee or other external payment link in either edition, and this listing has none (Guideline 3.1.1); the website's optional Support Tabbi link lives only on the website.
@@ -121,18 +184,19 @@ The description names Apple Music and Spotify once, only to say what Now Playing
 ### Keywords (100 of 100 bytes)
 
 ```
-cute,cat,dog,cozy,planner,calendar,flashcard,music,widget,student,todo,task,streak,menubar,habit,day
+cute,cat,dog,cozy,planner,calendar,flashcard,music,widget,student,todo,task,streak,friends,habit,day
 ```
 
 No word repeats the name or subtitle (tabbi, notch, timer, study, pet, focus, pomodoro, to-do, list).
 `todo` stays as a hedge, since Apple may index "To-Do" only as "to do".
 `productivity` is left out because it is the category name, which Apple already indexes.
-`party` is left out while the App Store edition leaves Party out (see Party above), since App Review asks keywords to describe the app as submitted.
+`friends` replaced `menubar` in 1.0.4, when Party came to the App Store edition: people search "study with friends", and Tabbi lives in the notch rather than the menu bar.
+`party` is left out on purpose: it mostly matches party games and event planners.
 
-### Promotional text (157 of 170)
+### Promotional text (162 of 170)
 
 ```
-Your notch, but cozy. Focus with calming sounds, plan your day, and earn outfits for your pixel cat or dog. Gentle streaks. No ads, no tracking, open source.
+Your notch, but cozy. Focus with calming sounds, study with friends, and earn outfits for your pixel cat or dog. Gentle streaks. No ads, no tracking, open source.
 ```
 
 Promotional text can change at any time without a review, so use it for seasonal items and events.
@@ -150,6 +214,12 @@ FOCUS
 - Calming focus sounds, with presets for your favorite mix
 - Music controls with a like button. Works with Apple Music and Spotify
 - Review flashcards from the notch with an optional local add-on
+- Optional Do Not Disturb while you focus, through two shortcuts you make
+
+STUDY WITH FRIENDS
+- Party: see when friends are focusing and study side by side, pets and all
+- Invite friends with a link or an eight-character friend code
+- Report or block anyone in one click
 
 PLAN YOUR DAY
 - Today's to-dos and calendar in one glance
@@ -188,85 +258,132 @@ Hello from Tabbi! Your laptop notch is now a cozy home for focus, planning and a
 
 For later versions, one warm line naming the headline change, then short New, Better and Fixed lists in plain words, ending with "Thanks for focusing with Tabbi. Your pet says hi."
 
+For 1.0.4:
+
+```
+Study with friends! Party comes to the App Store edition, so you can see when friends are focusing and study side by side.
+
+New
+- Party: friend codes, invite links and study parties, with report and block
+- AI Usage: see your Claude Code or Codex usage from the folder you pick
+- Do Not Disturb during focus, through two shortcuts you make
+- Optional crash reports, sent only when you say so
+
+Better
+- Settings say plainly what happens before your Mac asks for permission
+
+Thanks for focusing with Tabbi. Your pet says hi.
+```
+
 ### App Privacy (nutrition label answer sheet)
 
-Without an account, the App Store edition sends nothing to the Tabbi server.
-The optional Sign in with Apple account stores a little there ([backend/PRIVACY.md](../backend/PRIVACY.md) lists all of it).
-Answer App Store Connect's questions exactly like this:
+From 1.0.4 the App Store edition sends data to the Tabbi friends server in three optional cases: Party (once the user turns it on and answers the age question), the Sign in with Apple account, and a crash or hang report the user chose to send.
+[backend/PRIVACY.md](../backend/PRIVACY.md) lists everything the server stores.
+App Store Connect's App Privacy answers cannot be set through the API, so enter them by hand (App Store Connect > the app > App Privacy > Edit), exactly like this:
 
 1. "Do you or your third-party partners collect data from this app?" Yes, we collect data from this app.
 2. Data types to select (and nothing else):
+   - Contact Info > Name
+   - Contacts
    - Identifiers > User ID
    - Identifiers > Device ID
    - User Content > Other User Content
    - Usage Data > Product Interaction
-3. For **User ID** (Apple's app-specific user id, and the random friend code the account is filed under):
+   - Diagnostics > Crash Data
+   - Diagnostics > Performance Data
+3. For **Name** (the display name Party shows to friends and party members; any nickname works, up to 24 characters, and the server keeps it with the Party identity):
    - Usage: App Functionality only.
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
-4. For **Device ID** (the random id each Mac's points are filed under in the sync document, and the per-Mac sign-in token, which the server keeps only as a hash):
+4. For **Contacts** (the friend list Party keeps on the server: the friend codes the user is friends with, friend requests sent and received, and the codes the user blocked; Apple's definition counts a social graph):
    - Usage: App Functionality only.
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
-5. For **Other User Content** (the synced pet's look and name, and unlocked and granted items):
+5. For **User ID** (the random Party friend code the user's data is filed under, and, with the optional account, Apple's app-specific user id):
    - Usage: App Functionality only.
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
-6. For **Product Interaction** (points earned and spent per Mac, the days the user studied and the longest streak, which are records of how the app was used):
+6. For **Device ID** (the random id each Mac's points are filed under in the sync document, and the per-Mac sign-in token, which the server keeps only as a hash):
    - Usage: App Functionality only.
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
+7. For **Other User Content** (the pet's look and name that Party shows and the account syncs, unlocked and granted items, and the reports the user files about another user: the reason and an optional note, which only the maintainer reads):
+   - Usage: App Functionality only.
+   - Linked to the user's identity: Yes.
+   - Used for tracking: No.
+8. For **Product Interaction** (Party presence that friends and party members see: studying, on a break or away, the study method, when the phase ends, minutes today and the streak; the party the user is in and its shared session; study minutes per day for the weekly leaderboard; and, with the account, points per Mac, the days the user studied and the longest streak):
+   - Usage: App Functionality only.
+   - Linked to the user's identity: Yes.
+   - Used for tracking: No.
+9. For **Crash Data** (a crash report, sent only after the user clicks Send in the alert after a crash or chose to always send: app and macOS version, edition, crash type and the app's stack frames, with no identifier):
+   - Usage: App Functionality only.
+   - Linked to the user's identity: No.
+   - Used for tracking: No.
+10. For **Performance Data** (a hang report, the same consent and contents when the main thread stopped answering):
+    - Usage: App Functionality only.
+    - Linked to the user's identity: No.
+    - Used for tracking: No.
 
-The privacy manifest the build ships (`packaging/PrivacyInfo-AppStore.xcprivacy`, copied into the app by `scripts/assemble.sh`) declares these same four types with the same answers, so change both together.
-It also gives the required reasons for the APIs the binary links: UserDefaults (CA92.1, the app's own settings) and file timestamps (C617.1: the AI Usage log scanners in TabbiKitCore are linked but never run in this edition, and the sandbox keeps any file they could reach inside the app's container).
+The privacy manifest the build ships (`packaging/PrivacyInfo-AppStore.xcprivacy`, copied into the app by `scripts/assemble.sh`) declares these same eight types with the same answers, and `AppStoreEntitlementsTests` checks it, so change all three together.
+It also gives the required reasons for the APIs the binary links: UserDefaults (CA92.1, the app's own settings) and file timestamps (C617.1 for files in the app's container, and 3B52.1 for the Claude Code and Codex logs AI Usage scans in the folder the user picked).
 The widget extension has its own manifest (`PrivacyInfo-AppStore-Widget.xcprivacy`) with the same reasons and no collected data.
 If App Store Connect warns about a required reason API (ITMS-91053), add it to both manifests with the reason that matches the code.
 
-Device ID and Product Interaction are the cautious reading: Apple's definitions are loose, and declaring a type the app arguably does not need costs nothing, while leaving out one it does is a mislabel.
+Name, Contacts, Device ID and Product Interaction are the cautious reading: Apple's definitions are loose, and declaring a type the app arguably does not need costs nothing, while leaving out one it does is a mislabel.
+Party works without an account: its identity is a random token on the Mac and a friend code on the server, and "linked" means linked to that identity, which Apple counts as the user's identity.
 
 Why nothing else is declared:
 
-- Name and Email Address: the app asks Apple only for the name, keeps it on the Mac, and the server never stores a name or an email.
-- Birthday or age: the App Store edition never asks for one (signing in does not, and Party, which does, is left out). When Party comes back, its age check keeps only the date the user turns 13 on the Mac and sends nothing, so it is still not collected.
+- Email Address: never asked for or stored; Sign in with Apple asks Apple only for the name, which stays on the Mac.
+- Birthday or age: Party's age question keeps only the date the user surely turns 13, on the Mac, and sends nothing, so it is not collected.
 - Calendar events, tasks, focus history, study tallies, the activity log and AI chats stay on the Mac in the app's container.
-- Album artwork is loaded from the address the player reports (Spotify's `i.scdn.co`, SoundCloud's `i1.sndcdn.com`) with no identifier of the user.
+- AI Usage reads the Claude Code or Codex logs in the folder the user picked and keeps its totals on the Mac; nothing from them is sent.
+- Do Not Disturb runs the user's shortcuts on the Mac through Shortcuts Events; nothing is sent.
+- Album artwork is loaded from the address the player reports (Spotify's `i.scdn.co`) with no identifier of the user.
 - AnkiConnect and Ollama are reached on `localhost` only.
 - Ask AI, Plan my day, Refine and Wrap up send text only to the AI provider the user picks, with the user's own key (Anthropic, OpenAI or Google), or to Ollama on the Mac.
   The request goes straight from the Mac to that provider under its own terms; there is no Tabbi server in between and no partner SDK in the app, so Tabbi does not collect it.
-- Diagnostics: the App Store edition has no crash reporting of its own (`AppDelegate` installs no `CrashHandler` and shows no crash prompt under `APPSTORE`), so crashes reach the developer only through Apple's reports, which the user shares in macOS.
-  The server's short request logs hold only the kind of request, its status and duration, with no identifier, and are deleted within 7 days.
+- The server's short request logs hold only the kind of request, its status and duration, with no identifier, and are deleted within 7 days; IP addresses are used only in memory for rate limits.
 - The Suggest page opens in the browser with the app version, macOS version and edition in its address, and nothing is sent unless the user submits the web form, so it is the website's collection, not the app's (the site Privacy Policy covers it).
 - There is no analytics, advertising or tracking of any kind.
-
-When Party comes back, also declare its display name and study presence: Contact Info > Name (or User Content > Other User Content) and Usage Data > Product Interaction, both App Functionality, linked, not tracking.
-Its anonymous Party identity is a random id with a secret token, which Identifiers > User ID already covers; reports a user files are Other User Content.
 
 Before submitting, check that the Worker has the Sign in with Apple secrets ([sync.md](sync.md), step 5): without them Delete Account still erases the server's data but cannot revoke the Apple grant, and the reviewer note below would then promise more than the app does.
 
 ### Notes for the reviewer
 
-> Tabbi turns the area around the notch at the top of a MacBook screen into a small panel of tabs: a focus timer, today's tasks and calendar, now playing, study tools and a pixel pet.
-> There is no Dock icon and no window at launch; the app lives at the top center of the screen.
-> To open the panel, click the black notch area at the top center of the screen, or press Control-Option-Space.
-> On a Mac without a notch, Tabbi draws a small black pill at the top center of the menu bar; click it the same way.
-> The first launch shows a short setup inside the panel (pick a kit, then tabs).
-> Settings open from the gear button at the right of the panel's header.
-> Calendar access is optional and only used to show today's events in the Today tab and to plan the day. Setup's calendar step explains it with a Continue button, which lets macOS ask, and Not now beside it; declining keeps Today working, with a note and a button to System Settings > Privacy & Security > Calendars.
-> Automation access to Music or Spotify is optional and only used to show and control what is playing; macOS asks for it the first time Now Playing reaches either app.
-> Notifications are optional: alerts when a focus timer ends, a daily study reminder the user turns on, and the weekly recap.
-> The flashcards tab reads review counts from the free AnkiConnect add-on of the Anki desktop app over localhost (127.0.0.1:8765). Tabbi downloads and runs no code; without Anki it shows how to set it up.
-> AI features (Ask AI, Plan my day's Refine and the day review) stay off until the user picks an AI in Settings > Connections > AI. The Settings footer says nothing is sent until then. They use the user's own API key (Anthropic, OpenAI or Google Gemini), saved in the Keychain, or Ollama running on the Mac. To try them, pick Ollama with a local model, or paste a key.
-> Guideline 5.1.2(i): picking Anthropic, OpenAI or Gemini first shows a one-time consent alert that names the company receiving the data and lists what each AI feature sends (Ask AI: questions, the chat and any screenshot attached; Refine: calendar event titles and times, tasks, goals and the plan; day review: focus and study minutes, sessions and points, goal counts and the titles of finished and carried-over tasks). Nothing is sent unless the user taps Allow, and Cancel keeps None. Ollama runs on the Mac, so it needs no consent.
-> No account is needed.
-> Signing in with Apple (Settings > General > Account) is optional and only syncs the pet and study streaks between the user's Macs.
-> Signing in asks for no personal information: the Account row shows Apple's button directly, with links to the Terms and Privacy Policy. The app never asks for a birthday.
-> Delete Account in the same place deletes everything the server holds and revokes the Sign in with Apple grant (Guideline 5.1.1(v)).
+Paste these lines into App Store Connect > the version > App Review Information > Notes (2815 characters with single spaces, of the 4000 allowed), after replacing `DEMO_CODE` with the demo friend's code (below).
+
+> Tabbi turns the area around the notch at the top of a MacBook screen into a small panel of tabs: a focus timer, today's tasks and calendar, now playing, study tools, study with friends and a pixel pet.
+> There is no Dock icon and no window at launch; the app lives at the top center of the screen. Click the black notch area to open the panel, or press Control-Option-Space. On a Mac without a notch, Tabbi draws a small black pill at the top center of the menu bar.
+> The first launch shows a short setup inside the panel (name, kit, tabs). Settings open from the gear at the right of the panel's header.
+> Permissions are optional and each has a screen with Continue (macOS asks next) and Not now: Calendar (today's events), Automation for Music or Spotify (now playing), notifications (timer alerts), and Automation for Shortcuts Events (Do Not Disturb during focus runs two shortcuts the user makes; Settings > Tabs > Today > gear > Do Not Disturb). Declining keeps everything else working.
+> AI features stay off until the user picks an AI in Settings > Connections > AI: their own API key (Anthropic, OpenAI or Gemini, in the Keychain) or Ollama on the Mac. Guideline 5.1.2(i): picking a company first shows a consent alert naming it and what each feature sends; Cancel keeps None.
+> AI Usage (optional tab) shows Claude Code or Codex usage from the logs those tools keep on the Mac. It reads nothing until the user presses Continue and picks the folder in the standard open panel; nothing is sent.
+> PARTY (study with friends, optional, needs no account). To test it alone:
+> 1. Settings > Tabs > Add more > Party (or turn it on in setup). Open the Party tab.
+> 2. It asks for birth month and year, only now and with Not now beside it; it stays off for anyone under 13 and keeps only the date the user turns 13, on the Mac. Pick any adult date and Continue.
+> 3. In Friends, type our demo friend's code DEMO_CODE and press Return. It accepts at once and shows in the list.
+> 4. Right-click Demo Friend > Report: pick a reason, Send Report (Also block is on by default). The report reaches our moderation queue. Or right-click > Block.
+> 5. Start a party for a party code and invite link (tabbi:// links open the app).
+> Names pass a filter on the Mac and the server; the maintainer reviews every report and can rename or ban an identity. Contact: support@tabbinotch.com.
+> Signing in with Apple (Settings > General > Account) is optional, only syncs the pet, streaks and Party identity between the user's Macs, and asks for no personal information or birthday. Delete Account there deletes everything the server holds and revokes the grant (5.1.1(v)).
+> After a crash, an alert asks before sending a crash report (Send or Don't Send), and shows exactly what is sent.
 > The Privacy Policy and Terms of Use are linked from Settings > About.
 
-When Party comes back, add these lines to the notes:
+Party needs a second person for its friend, report and block steps, so the reviewer gets a demo friend: an ordinary Party account on the production server that the maintainer creates once with `backend/scripts/demo-friend.ts`.
+It registers as a protocol 1 app, so a friend request to it becomes a friendship at once ([party-compatibility.md](party-compatibility.md)) and nobody has to accept it; it shares only the name Demo Friend and a cat called Mochi, never adds anyone, and can be reported and blocked like anyone else.
+Its secret token stays in a file of the maintainer's, outside the repository.
 
-> Party (the friends tab) asks for the user's birth month and year only when the user turns Party on, before it contacts the server, and Not now skips it; it stays off for anyone under 13, and only the date signing up opens (the first day of the month after the user turns 13) is saved, on the Mac. Nothing else in the app asks for a birthday.
-> To report someone, right-click their name in Party and choose Report; Block in the same menu hides them at once. Names pass a filter, and the maintainer reviews reports and can rename or ban an identity. Contact: support@tabbinotch.com.
+```sh
+cd backend
+npm run demo-friend -- create --url https://tabbi-friends.drosophil-anki-friends-backend.workers.dev --token-file ~/.tabbi-demo-friend.json
+# prints the friend code for the notes; once is enough, the account stays
+npm run demo-friend -- study --url https://tabbi-friends.drosophil-anki-friends-backend.workers.dev --token-file ~/.tabbi-demo-friend.json --hours 48 --party
+# optional, while the build is in review: shows it studying in a party the reviewer can join from the friend list
+```
+
+Reports the reviewer files about the demo friend land in the moderation queue like any other; resolve them as "no action" and never ban it.
+If a later protocol ever drops protocol 1 (`minProtocol` above 1), the demo friend needs a server-side way to accept requests at once before that release.
 
 ### App Review history
 
@@ -274,7 +391,7 @@ Version 1.0.0 (build 130) was rejected on 19 October 2026, reviewed on a MacBook
 
 1. Guideline 5.1.1(v), a required birthday: Sign In in Settings > General asked for the birth month and year before Apple's button.
    Signing in now never asks; the Account row shows Apple's button straight away, with the Terms and Privacy Policy links.
-   The birthday is Party's alone (direct download only), asked when Party is turned on, with Not now beside it.
+   The birthday is Party's alone (then direct download only; in the App Store edition too from 1.0.4), asked when Party is turned on, with Not now beside it.
 2. Guideline 5.1.1(iv), "Allow Access" before the calendar prompt: the onboarding step's button now says Continue, with Not now in the footer.
    The same pass changed every screen before a macOS prompt: Settings > Connections' priming sheets lost "Click Allow." and gained Not now, Ask AI's Screen Recording card says Continue, and the study mixer's denied chip says "Spotify access is off" instead of "Allow Spotify access".
    The AI consent alert keeps Allow, since it is the consent itself (guideline 5.1.2(i)), not a step before a system prompt.
@@ -285,6 +402,21 @@ Version 1.0.0 (build 130) was rejected on 19 October 2026, reviewed on a MacBook
    The sheet is gone, the button sits in the Settings window itself, and `AppleNativeSignIn` makes the app active and hands Apple's sheet that window before it asks; a failure now shows in the row the user is looking at, in their language.
 
 The reply to App Review is in the 1.0.3 submission notes.
+
+### Checklist for 1.0.4 (what the maintainer sets by hand)
+
+App Store Connect's App Privacy and Age Rating answers cannot be set through the API, so these steps are by hand, in this order:
+
+1. Deploy the website first (`site/deploy.sh`): its Privacy Policy and FAQ now say the App Store edition has Party, AI Usage, Do Not Disturb and crash reports from 1.0.4, and the reviewer reads the policy at the Privacy Policy URL.
+2. Create the demo friend on the production server (Notes for the reviewer above) and keep its token file in the password manager.
+3. Raise `CFBundleShortVersionString` to 1.0.4 in the release change, run `scripts/release-appstore.sh`, validate and upload the package.
+4. On the TestFlight build, check what an ad-hoc build cannot: Apple's native Sign in with Apple sheet; Do Not Disturb (turn it on, Continue, allow Shortcuts Events when macOS asks, and press Test with two real shortcuts); and Party against the production server with the demo friend (add, report, block).
+5. App Privacy > Edit: select the eight data types in the answer sheet above, answer each one as written, and Publish (the label applies to every version once published, so do it just before submitting).
+6. App Information > Age Ratings > Edit: the answers under App information above; confirm the result (13+ expected).
+7. Version 1.0.4: What's New, Promotional text, Description and Keywords from this page.
+8. App Review Information > Notes: the reviewer notes above, with `DEMO_CODE` replaced; Sign-in required stays off.
+9. Keep an eye on the moderation queue (`GET /v1/admin/reports`) while the build is in review, and resolve the reviewer's test report as "no action".
+10. Optional, while in review: run the demo friend's `study --party` for 48 hours so the reviewer sees it online in a party.
 
 ### Screenshots
 
@@ -304,6 +436,7 @@ Upload them in file name order; the first two show in search results, so they ca
 
 Every panel is the app's own snapshot of the App Store edition in demo mode, drawn 1:1 at 3 pixels per point (the theme grid at 1.4), so no UI is redrawn and no real data shows.
 Party, AI Usage, birthdays and permission pre-prompts appear nowhere, and no pet wears a cape or wings.
+The set stays accurate for 1.0.4, which only adds features; a Party shot (`open-party` in the demo snapshots) could replace one of the last three later.
 The design: each shot takes the colors of the theme its panel wears (a light ground, a deeper floor and a soft glow of the theme's color behind the panel), with a plain translucent menu bar and the panel hanging from the top center like the open notch (no device, no Apple logo, no menus).
 Below it sit a one-line Bagel Fat One headline (92 CSS px on a 1440x900 page at 2x) and a Fredoka SemiBold subline (34 px), with the pet on the floor and a few pixel sparkles in the theme's color.
 Pets are drawn by the app's renderer (`swift run PetGallery <folder> store`, which writes the lineup this set uses) and scaled by whole numbers with nearest neighbor, so the pixel art stays sharp.
@@ -342,7 +475,7 @@ In file name order:
 Localized sets (`appstore/screenshots/<locale>/`) are not rendered yet: the app has no localizations on main so far, so only the English set exists.
 
 Every shot uses one layout: the tabs Timer, Today, Flashcards and Now Playing plus the Closet paw, at the Large panel size.
-Party and the AI usage tab are left out of the App Store edition, so neither appears.
+Party and the AI usage tab were left out of the App Store edition when this set was made, so neither appears.
 All names, songs and decks in the demo data are fictional, and no caption has a price or a third-party name.
 [`appstore/screenshots/small`](appstore/screenshots/small) (1280x800) and [`appstore/screenshots/gallery`](appstore/screenshots/gallery) (540x338, the size the web product page shows) hold review copies; do not upload those.
 

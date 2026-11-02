@@ -35,6 +35,8 @@
 	<string>Revisión: %@</string>
 	<key>%@ climbed onto the rooftop</key>
 	<string>%@ se subió al tejado</string>
+	<key>%@ closed unexpectedly. Send a crash report?</key>
+	<string>%@ se cerró inesperadamente. ¿Enviar un informe de fallo?</string>
 	<key>%@ collected a smooth pebble</key>
 	<string>%@ recogió una piedrita lisa</string>
 	<key>%@ could not be copied to Applications. %@</key>
@@ -73,6 +75,8 @@
 	<string>Otra app ya usa %@. Graba otro atajo.</string>
 	<key>%@ is already your friend</key>
 	<string>%@ ya está entre tus amigos</string>
+	<key>%@ is away</key>
+	<string>%@ está ausente</string>
 	<key>%@ is connected</key>
 	<string>%@ está conectado</string>
 	<key>%@ is damaged, so it's left untouched.</key>
@@ -227,6 +231,8 @@
 	<string>%1$@: %2$@ hoy</string>
 	<key>%@: %@ left</key>
 	<string>%@: quedan %@</string>
+	<key>%@: %@ tokens</key>
+	<string>%1$@: %2$@ tokens</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: ganaste todos los artículos. Seguirán siendo tuyos después del evento.</string>
 	<key>%lld h</key>
@@ -355,6 +361,8 @@
 	<string>Un día tranquilo. Descansa y empieza con energía mañana.</string>
 	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
 	<string>Un color de pelo raro de tu mascota. Pruébalo en el Armario, en Aspecto.</string>
+	<key>A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:</key>
+	<string>Un informe ayuda a arreglar el problema. Incluye la versión de la app, la versión de macOS, la edición, la pila del fallo y los nombres de los hilos, y nunca tu contenido, nombres, tareas ni tokens. Esto es exactamente lo que se envía:</string>
 	<key>A restful week. A fresh start awaits.</key>
 	<string>Una semana de descanso. Te espera un nuevo comienzo.</string>
 	<key>A sample day. Your own events show here once the calendar is connected.</key>
@@ -457,6 +465,8 @@
 	<string>Agrega tu cuenta de Google o de la escuela para ver sus eventos aquí.</string>
 	<key>Add your calendar</key>
 	<string>Añade tu calendario</string>
+	<key>Add your name</key>
+	<string>Añade tu nombre</string>
 	<key>Add…</key>
 	<string>Añadir…</string>
 	<key>After %@ closes unexpectedly, ask before sending a crash report, send it without asking, or never send one</key>
@@ -509,6 +519,8 @@
 	<string>Ya suena durante el enfoque</string>
 	<key>Already playing: focus is running</key>
 	<string>Ya suena: el enfoque está en marcha</string>
+	<key>Also block %@</key>
+	<string>Bloquear también a %@</string>
 	<key>Always</key>
 	<string>Siempre</string>
 	<key>Always Visible</key>
@@ -791,6 +803,8 @@
 	<string>Cambiar tus respuestas</string>
 	<key>Changes appear at once, with no animation.</key>
 	<string>Los cambios aparecen al momento, sin animación.</string>
+	<key>Change…</key>
+	<string>Cambiar…</string>
 	<key>Charcoal</key>
 	<string>Carbón</string>
 	<key>Charging</key>
@@ -827,6 +841,8 @@
 	<string>Revisa el servidor en las opciones de Grupo.</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>Revisa tu conexión a internet. Amigos y grupos aparecerán cuando vuelva.</string>
+	<key>Check your internet connection. You can also set up Party later in its tab.</key>
+	<string>Revisa tu conexión a internet. También puedes configurar Grupo más tarde en su pestaña.</string>
 	<key>Checking</key>
 	<string>Comprobando</string>
 	<key>Checking %@</key>
@@ -847,6 +863,8 @@
 	<string>Rosa flor de cerezo sobre negro cálido.</string>
 	<key>Chocolate</key>
 	<string>Chocolate</string>
+	<key>Choose</key>
+	<string>Elegir</string>
 	<key>Choose AI</key>
 	<string>Elegir IA</string>
 	<key>Choose a method</key>
@@ -859,6 +877,14 @@
 	<string>Elige el tamaño del notch abierto. Todas las pestañas usan el mismo.</string>
 	<key>Choose how lively the notch's animations are</key>
 	<string>Elige qué tan animado se mueve el notch</string>
+	<key>Choose the %@ folder in your home folder</key>
+	<string>Elige la carpeta %@ de tu carpeta de inicio</string>
+	<key>Choose the %@ folder in your home folder. Tabbi reads only token counts and model names from Claude Code's logs.</key>
+	<string>Elige la carpeta %@ de tu carpeta de inicio. Tabbi solo lee recuentos de tokens y nombres de modelos de los registros de Claude Code.</string>
+	<key>Choose the %@ folder in your home folder. Tabbi reads only token counts, model names and plan limits from Codex's logs.</key>
+	<string>Elige la carpeta %@ de tu carpeta de inicio. Tabbi solo lee recuentos de tokens, nombres de modelos y límites del plan de los registros de Codex.</string>
+	<key>Choose the %@ folder next</key>
+	<string>Ahora elige la carpeta %@</string>
 	<key>Choose when the notch is drawn. The shortcut always opens it.</key>
 	<string>Elige cuándo se muestra el notch. El atajo siempre lo abre.</string>
 	<key>Choose which display shows the notch. It falls back to the built-in display when this one is disconnected.</key>
@@ -881,6 +907,8 @@
 	<string>Claude está listo</string>
 	<key>Claude location</key>
 	<string>Ubicación de Claude</string>
+	<key>Claude usage</key>
+	<string>Uso de Claude</string>
 	<key>Clear "%@"</key>
 	<string>Quitar «%@»</string>
 	<key>Clear All</key>
@@ -893,10 +921,10 @@
 	<string>Haz clic en %@ para ver los pasos oficiales y luego vuelve aquí.</string>
 	<key>Click AnkiConnect in the list, then click Check for Updates.</key>
 	<string>Haz clic en AnkiConnect en la lista y luego en Buscar actualizaciones.</string>
-	<key>Click Connect, then Allow when your Mac asks if Tabbi can control %@.</key>
-	<string>Haz clic en Conectar y luego en Permitir cuando tu Mac pregunte si Tabbi puede controlar %@.</string>
-	<key>Click Connect, then Allow when your Mac asks. It only asks once.</key>
-	<string>Haz clic en Conectar y luego en Permitir cuando tu Mac pregunte. Solo pregunta una vez.</string>
+	<key>Click Connect and your Mac asks if Tabbi can control %@.</key>
+	<string>Haz clic en Conectar y tu Mac preguntará si Tabbi puede controlar %@.</string>
+	<key>Click Connect and your Mac asks. It only asks once.</key>
+	<string>Haz clic en Conectar y tu Mac preguntará. Solo pregunta una vez.</string>
 	<key>Click Get Add-ons, paste this code, then click OK.</key>
 	<string>Haz clic en Obtener complementos, pega este código y haz clic en OK.</string>
 	<key>Click Restore Defaults, then OK</key>
@@ -955,10 +983,14 @@
 	<string>Cierra esto. Grupo sigue intentándolo solo.</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>Cierra esto. Puedes configurar Grupo cuando quieras.</string>
+	<key>Close without reporting (Esc)</key>
+	<string>Cerrar sin denunciar (Esc)</string>
 	<key>Closet</key>
 	<string>Armario</string>
 	<key>Code</key>
 	<string>Código</string>
+	<key>Codex usage</key>
+	<string>Uso de Codex</string>
 	<key>Command</key>
 	<string>Comando</string>
 	<key>Compact</key>
@@ -1205,6 +1237,8 @@
 	<string>¿Tu Mac tiene calendarios?</string>
 	<key>Dog</key>
 	<string>Perro</string>
+	<key>Don't Send</key>
+	<string>No enviar</string>
 	<key>Don't ask again</key>
 	<string>No volver a preguntar</string>
 	<key>Done</key>
@@ -1317,6 +1351,8 @@
 	<string>Encajando tu trabajo y descansos entre los eventos de hoy</string>
 	<key>Fitting your work and breaks around tomorrow's events</key>
 	<string>Encajando tu trabajo y descansos entre los eventos de mañana</string>
+	<key>Fix it in Settings &gt; Tabs &gt; Party &gt; Options.</key>
+	<string>Arréglalo en Ajustes › Pestañas › Grupo › Opciones.</string>
 	<key>Fix the shortcut in the Shortcuts app, then test again</key>
 	<string>Arregla el atajo en la app Atajos y vuelve a probar</string>
 	<key>Fixed something in another app? Come back here and the light updates by itself.</key>
@@ -1437,6 +1473,8 @@
 	<string>Servidor de amigos</string>
 	<key>Frog Hat</key>
 	<string>Gorro de rana</string>
+	<key>From your Claude Code logs</key>
+	<string>De tus registros de Claude Code</string>
 	<key>Frosted glass cards over a cool blue glow.</key>
 	<string>Tarjetas de vidrio esmerilado sobre un brillo azul frío.</string>
 	<key>Full</key>
@@ -1483,6 +1521,8 @@
 	<string>Volver a las pestañas y el kit que tenías antes de %@</string>
 	<key>Go invisible</key>
 	<string>Modo invisible</string>
+	<key>Go invisible. Your study minutes still count.</key>
+	<string>Hazte invisible. Tus minutos de estudio siguen contando.</string>
 	<key>Go on without a name</key>
 	<string>Seguir sin nombre</string>
 	<key>Goals left today</key>
@@ -1529,6 +1569,8 @@
 	<string>Oculto</string>
 	<key>Hide %@ Until I Press %@</key>
 	<string>Ocultar %1$@ hasta que pulse %2$@</string>
+	<key>Hide each other everywhere in Party. You can unblock in Party options.</key>
+	<string>Ya no se verán en ningún lugar de Grupo. Puedes desbloquear en las opciones de Grupo.</string>
 	<key>Hide from screen sharing</key>
 	<string>Ocultar al compartir pantalla</string>
 	<key>Hide in Mission Control</key>
@@ -1629,6 +1671,10 @@
 	<string>Instantáneo</string>
 	<key>Internet Accounts</key>
 	<string>Cuentas de internet</string>
+	<key>Invisible to friends</key>
+	<string>Invisible para tus amigos</string>
+	<key>Invisible: friends see you as away</key>
+	<string>Invisible para tus amigos</string>
 	<key>Invite links</key>
 	<string>Enlaces de invitación</string>
 	<key>Is %@ on this Mac?</key>
@@ -1687,6 +1733,8 @@
 	<string>¿Unirte a este grupo?</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>Uniéndote a Grupo. Esto tarda un segundo.</string>
+	<key>Joining the party server</key>
+	<string>Conectando con el servidor</string>
 	<key>Joining the party server…</key>
 	<string>Conectando al servidor de grupos…</string>
 	<key>Just met</key>
@@ -1751,6 +1799,8 @@
 	<string>Deja que %@ te encuentre de nuevo. No seréis amigos hasta que uno añada al otro.</string>
 	<key>Let Tabbi into Anki</key>
 	<string>Deja entrar a Tabbi en Anki</string>
+	<key>Let Tabbi run your Focus shortcuts</key>
+	<string>Deja que Tabbi ejecute tus atajos de enfoque</string>
 	<key>Let your AI fit your open tasks around today's calendar</key>
 	<string>Deja que tu IA encaje tus tareas en el calendario de hoy</string>
 	<key>Let your AI fit your open tasks around tomorrow's calendar</key>
@@ -1829,6 +1879,8 @@
 	<string>Marcar como hecho</string>
 	<key>Mark as not done</key>
 	<string>Marcar como pendiente</string>
+	<key>May Tabbi run your shortcuts?</key>
+	<string>¿Puede Tabbi ejecutar tus atajos?</string>
 	<key>Measuring cores...</key>
 	<string>Midiendo núcleos...</string>
 	<key>Media</key>
@@ -1927,6 +1979,8 @@
 	<string>Próximo desbloqueo</string>
 	<key>Next, your Mac asks if Tabbi can control %@. You can change your answer any time in System Settings.</key>
 	<string>Ahora tu Mac preguntará si Tabbi puede controlar %@. Puedes cambiar tu respuesta cuando quieras en Ajustes del Sistema.</string>
+	<key>Next, your Mac asks if Tabbi can control Shortcuts Events. You can change your answer any time in System Settings.</key>
+	<string>Ahora tu Mac preguntará si Tabbi puede controlar Shortcuts Events. Puedes cambiar tu respuesta cuando quieras en Ajustes del Sistema.</string>
 	<key>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</key>
 	<string>Ahora tu Mac preguntará si Tabbi puede enviar alertas. Puedes cambiar tu respuesta cuando quieras en Ajustes del Sistema.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
@@ -2025,6 +2079,8 @@
 	<string>No. Esta versión es demasiado antigua para Tabbi.</string>
 	<key>No. This copy of Tabbi can't ask for it.</key>
 	<string>No. Esta versión de Tabbi no puede pedirlo.</string>
+	<key>No. Turn on Shortcuts Events for Tabbi in System Settings &gt; Privacy &amp; Security &gt; Automation.</key>
+	<string>No. Activa Shortcuts Events para Tabbi en Ajustes del Sistema › Privacidad y seguridad › Automatización.</string>
 	<key>Nobody sees roots growing. Then one day there's a tree.</key>
 	<string>Nadie ve crecer las raíces. Y un día, ahí hay un árbol.</string>
 	<key>None</key>
@@ -2047,6 +2103,8 @@
 	<string>Sin comprobar · actualiza para ver tus límites</string>
 	<key>Not checked yet. Fix the step above first.</key>
 	<string>Aún sin comprobar. Primero arregla el paso de arriba.</string>
+	<key>Not chosen</key>
+	<string>Sin elegir</string>
 	<key>Not connected</key>
 	<string>No conectado</string>
 	<key>Not connected to Tabbi yet</key>
@@ -2073,6 +2131,8 @@
 	<string>Sin configurar</string>
 	<key>Not synced yet</key>
 	<string>Aún sin sincronizar</string>
+	<key>Not yet. Click the button so your Mac can ask.</key>
+	<string>Aún no. Haz clic en el botón para que tu Mac pueda preguntar.</string>
 	<key>Not yet. Open the Party tab to answer.</key>
 	<string>Aún no. Abre la pestaña Grupo para responder.</string>
 	<key>Not yet. Pick a name and a pet to start.</key>
@@ -2089,6 +2149,8 @@
 	<string>Nada tachado</string>
 	<key>Nothing due today</key>
 	<string>Nada pendiente hoy</string>
+	<key>Nothing is read until you choose</key>
+	<string>No se lee nada hasta que elijas</string>
 	<key>Nothing left to plan</key>
 	<string>Nada más que planear</string>
 	<key>Nothing listed yesterday</key>
@@ -2211,6 +2273,8 @@
 	<string>Abre Cuentas de internet para añadir un calendario de Google, Exchange o iCloud</string>
 	<key>Open Party</key>
 	<string>Abrir Grupo</string>
+	<key>Open Privacy &amp; Security &gt; Automation in System Settings</key>
+	<string>Abrir Privacidad y seguridad › Automatización en Ajustes del Sistema</string>
 	<key>Open Privacy &amp; Security to allow Calendar access</key>
 	<string>Abre Privacidad y seguridad para permitir el acceso al calendario</string>
 	<key>Open Settings</key>
@@ -2383,6 +2447,8 @@
 	<string>Elige un nombre y una mascota para empezar. No necesitas cuenta.</string>
 	<key>Pick a name and a pet, and say when you were born.</key>
 	<string>Elige un nombre y una mascota, y di cuándo naciste.</string>
+	<key>Pick a reason first</key>
+	<string>Elige primero un motivo</string>
 	<key>Pick a sound to preview it</key>
 	<string>Elige un sonido para escucharlo</string>
 	<key>Pick a sound, then save the blend here</key>
@@ -2401,6 +2467,8 @@
 	<string>Elige el mes y el año en que naciste</string>
 	<key>Pick the name and pet your friends will see. No account or password needed.</key>
 	<string>Elige el nombre y la mascota que verán tus amigos. Sin cuenta ni contraseña.</string>
+	<key>Pick whose usage to show</key>
+	<string>Elige de qué herramienta ver el uso</string>
 	<key>Pin %@ to the Study button</key>
 	<string>Fijar %@ en el botón Estudiar</string>
 	<key>Pin as Favorite Deck</key>
@@ -2531,12 +2599,16 @@
 	<string>Raros</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
 	<string>Sube los brazos bien alto y luego gira los hombros hacia atrás.</string>
+	<key>Read the latest Claude Code logs (sends nothing)</key>
+	<string>Leer los últimos registros de Claude Code (no envía nada)</string>
 	<key>Read the latest Codex logs (sends nothing)</key>
 	<string>Leer los últimos registros de Codex (no envía nada)</string>
 	<key>Read through AnkiConnect on this Mac</key>
 	<string>Leído con AnkiConnect en este Mac</string>
 	<key>Reading %@ sessions…</key>
 	<string>Leyendo sesiones de %@…</string>
+	<key>Reading Claude Code logs…</key>
+	<string>Leyendo registros de Claude Code…</string>
 	<key>Reading Codex logs…</key>
 	<string>Leyendo registros de Codex…</string>
 	<key>Reading what's playing.</key>
@@ -2569,6 +2641,8 @@
 	<string>Volver</string>
 	<key>Released under the MIT License.</key>
 	<string>Publicado bajo la licencia MIT.</string>
+	<key>Remember this answer and stop asking after a crash</key>
+	<string>Recordar esta respuesta y no volver a preguntar tras un fallo</string>
 	<key>Remind me to study</key>
 	<string>Recuérdame estudiar</string>
 	<key>Reminders</key>
@@ -2605,6 +2679,8 @@
 	<string>Repetir esta canción</string>
 	<key>Report %@</key>
 	<string>Denunciar a %@</string>
+	<key>Report %@: %@</key>
+	<string>Denunciar a %1$@: %2$@</string>
 	<key>Report %@…</key>
 	<string>Denunciar a %@…</string>
 	<key>Report a problem: %@</key>
@@ -2719,16 +2795,24 @@
 	<string>Mira lo que viene</string>
 	<key>See your %@ here. It only takes a moment.</key>
 	<string>Ve tus %@ aquí. Solo lleva un momento.</string>
+	<key>See your %@ usage</key>
+	<string>Mira tu uso de %@</string>
 	<key>See your day at a glance</key>
 	<string>Tu día de un vistazo</string>
 	<key>Select AnkiConnect and click Check for Updates</key>
 	<string>Selecciona AnkiConnect y haz clic en Buscar actualizaciones</string>
+	<key>Send</key>
+	<string>Enviar</string>
 	<key>Send (Return)</key>
 	<string>Enviar (Retorno)</string>
+	<key>Send Report</key>
+	<string>Enviar denuncia</string>
 	<key>Send a friend request with this code</key>
 	<string>Enviar una solicitud de amistad con este código</string>
 	<key>Send friends your code so they can add you. They see your name, pet and study timer.</key>
 	<string>Envía tu código a tus amigos para que te agreguen. Ven tu nombre, tu mascota y tu temporizador de estudio.</string>
+	<key>Send this report to the Tabbi team</key>
+	<string>Enviar esta denuncia al equipo de Tabbi</string>
 	<key>Send your AI requests to %@?</key>
 	<string>¿Enviar tus solicitudes de IA a %@?</string>
 	<key>Sends what you ask to %@.</key>
@@ -2771,6 +2855,8 @@
 	<string>Compártelo con un amigo para que te añada.</string>
 	<key>Share your code above, or add theirs below.</key>
 	<string>Comparte tu código arriba o añade el suyo abajo.</string>
+	<key>Share your code, or add theirs below. Start a party from the Party tab.</key>
+	<string>Comparte tu código o añade el suyo abajo. Crea un grupo desde la pestaña Grupo.</string>
 	<key>Shared focus: %@ left</key>
 	<string>Enfoque compartido: quedan %@</string>
 	<key>Shortcut</key>
@@ -2783,6 +2869,10 @@
 	<string>El atajo se ejecutó.</string>
 	<key>Shortcuts</key>
 	<string>Atajos</string>
+	<key>Shortcuts access is off</key>
+	<string>El acceso a Atajos está desactivado</string>
+	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>El acceso a Atajos está desactivado. Activa Shortcuts Events para Tabbi en los ajustes de Automatización.</string>
 	<key>Show %@</key>
 	<string>Mostrar %@</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
@@ -2799,6 +2889,8 @@
 	<string>Mostrar calendario</string>
 	<key>Show every deck with cards due</key>
 	<string>Ver todos los mazos con tarjetas pendientes</string>
+	<key>Show friends when you study again</key>
+	<string>Volver a mostrar a tus amigos cuándo estudias</string>
 	<key>Show less</key>
 	<string>Ver menos</string>
 	<key>Show live activity</key>
@@ -2821,6 +2913,8 @@
 	<string>Mostrar los vasos de hoy en la tarjeta del descanso, con un botón para sumar uno</string>
 	<key>Show tomorrow's calendar</key>
 	<string>Ver el calendario de mañana</string>
+	<key>Show usage for</key>
+	<string>Mostrar el uso de</string>
 	<key>Show yesterday's calendar</key>
 	<string>Ver el calendario de ayer</string>
 	<key>Show yesterday's list</key>
@@ -2861,6 +2955,8 @@
 	<string>Iniciando sesión…</string>
 	<key>Signing you in so friends can find you.</key>
 	<string>Iniciando sesión para que tus amigos te encuentren.</string>
+	<key>Signing you in so friends can find you. Your code shows here in a moment.</key>
+	<string>Te estamos dando de alta para que tus amigos te encuentren. Tu código aparecerá aquí en un momento.</string>
 	<key>Silly</key>
 	<string>Divertido</string>
 	<key>Silver</key>
@@ -3017,6 +3113,8 @@
 	<string>Dejar de contar %@ como distracción</string>
 	<key>Stop focusing on this task</key>
 	<string>Dejar de enfocarte en esta tarea</string>
+	<key>Stop reading this folder</key>
+	<string>Dejar de leer esta carpeta</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>Deja de sincronizar en este Mac. Tu mascota y tu progreso se quedan aquí.</string>
 	<key>Stop the preview</key>
@@ -3103,6 +3201,10 @@
 	<string>Sincronizando…</string>
 	<key>System</key>
 	<string>Sistema</string>
+	<key>Tabbi can count your tokens from the logs Claude Code keeps in the %@ folder. Choose it next. Nothing leaves your Mac.</key>
+	<string>Tabbi puede contar tus tokens con los registros que Claude Code guarda en la carpeta %@. Elígela a continuación. Nada sale de tu Mac.</string>
+	<key>Tabbi can show your limits and tokens from the logs Codex keeps in the %@ folder. Choose it next. Nothing leaves your Mac.</key>
+	<string>Tabbi puede mostrar tus límites y tokens con los registros que Codex guarda en la carpeta %@. Elígela a continuación. Nada sale de tu Mac.</string>
 	<key>Tabbi can't control %@</key>
 	<string>Tabbi no puede controlar %@</string>
 	<key>Tabbi can't find “%@”. Check its name in Shortcuts.</key>
@@ -3117,16 +3219,26 @@
 	<string>Tabbi lo está revisando ahora</string>
 	<key>Tabbi is still checking. This takes a second.</key>
 	<string>Tabbi sigue comprobando. Esto tarda un segundo.</string>
+	<key>Tabbi isn't allowed to run shortcuts yet. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>Tabbi aún no puede ejecutar atajos. Activa Shortcuts Events para Tabbi en los ajustes de Automatización.</string>
+	<key>Tabbi isn't allowed to run shortcuts. Turn on Shortcuts Events for Tabbi in System Settings &gt; Privacy &amp; Security &gt; Automation.</key>
+	<string>Tabbi no puede ejecutar atajos. Activa Shortcuts Events para Tabbi en Ajustes del Sistema › Privacidad y seguridad › Automatización.</string>
 	<key>Tabbi leaves your alerts alone until you turn it on.</key>
 	<string>Tabbi no toca tus alertas hasta que lo actives.</string>
+	<key>Tabbi needs to ask first</key>
+	<string>Tabbi tiene que preguntar primero</string>
 	<key>Tabbi only alerts you when a focus block or break ends.</key>
 	<string>Tabbi solo te avisa cuando termina un bloque de enfoque o un descanso.</string>
 	<key>Tabbi only plays, pauses, skips and shows what's playing.</key>
 	<string>Tabbi solo reproduce, pausa, salta y muestra lo que suena.</string>
 	<key>Tabbi only reads events to show today's plan.</key>
 	<string>Tabbi solo lee eventos para mostrar el plan de hoy.</string>
+	<key>Tabbi only runs the two shortcuts named in Focus settings, when focus starts and ends.</key>
+	<string>Tabbi solo ejecuta los dos atajos indicados en los ajustes de Enfoque, cuando el enfoque empieza y termina.</string>
 	<key>Tabbi reads %@ and sends nothing.</key>
 	<string>Tabbi lee %@ y no envía nada.</string>
+	<key>Tabbi reads only token counts, model names and Codex's plan limits from these folders, and nothing leaves your Mac. Remove a folder to stop Tabbi from reading it.</key>
+	<string>Tabbi solo lee de estas carpetas recuentos de tokens, nombres de modelos y los límites del plan de Codex, y nada sale de tu Mac. Quita una carpeta para que Tabbi deje de leerla.</string>
 	<key>Tabbi shows the calendars your Mac knows about. Add your Google account once and its events show up.</key>
 	<string>Tabbi muestra los calendarios que conoce tu Mac. Añade tu cuenta de Google una vez y aparecerán sus eventos.</string>
 	<key>Tabbi tells you when a focus block or break ends.</key>
@@ -3161,6 +3273,8 @@
 	<string>Gracias. Se envió tu denuncia y %@ está bloqueado.</string>
 	<key>Thanks. Your report was sent.</key>
 	<string>Gracias. Se envió tu denuncia.</string>
+	<key>That folder has no %@ logs. Choose the %@ folder in your home folder.</key>
+	<string>Esa carpeta no tiene registros de %1$@. Elige la carpeta %2$@ de tu carpeta de inicio.</string>
 	<key>That friend request is no longer there.</key>
 	<string>Esa solicitud de amistad ya no existe.</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
@@ -3291,6 +3405,8 @@
 	<string>Este Mac no puede ejecutar atajos para Tabbi. Comprueba que macOS esté al día.</string>
 	<key>This account can no longer use Party. If you think that's a mistake, write to %@.</key>
 	<string>Esta cuenta ya no puede usar Grupo. Si crees que es un error, escribe a %@.</string>
+	<key>This account can no longer use Party. Write to %@ if that's a mistake.</key>
+	<string>Esta cuenta ya no puede usar Grupo. Escribe a %@ si es un error.</string>
 	<key>This chat is open</key>
 	<string>Este chat está abierto</string>
 	<key>This copy can't use the calendar</key>
@@ -3345,6 +3461,8 @@
 	<string>Consejos para concentrarme mejor</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
 	<string>Para adjuntar tu pantalla, activa Tabbi en Grabación de pantalla. La captura solo va a %@ con tu pregunta.</string>
+	<key>To check they exist it looks up their names, and it never changes a shortcut.</key>
+	<string>Para comprobar que existen, busca sus nombres, y nunca cambia un atajo.</string>
 	<key>To install it, click %@ on the Claude row below.</key>
 	<string>Para instalarlo, haz clic en %@ en la fila de Claude de abajo.</string>
 	<key>To sign in with Google, run %@ in Terminal once.</key>
@@ -3365,6 +3483,8 @@
 	<string>Los eventos de hoy y el tiempo libre entre ellos. Los calendarios de Google aparecen al añadirlos en Cuentas de internet.</string>
 	<key>Today's events show up in Tabbi.</key>
 	<string>Los eventos de hoy aparecen en Tabbi.</string>
+	<key>Tokens per day</key>
+	<string>Tokens por día</string>
 	<key>Tomorrow</key>
 	<string>Mañana</string>
 	<key>Tomorrow has no free time worth a block before the evening.</key>
@@ -3421,6 +3541,8 @@
 	<string>Activa JavaScript para SoundCloud</string>
 	<key>Turn on Party?</key>
 	<string>¿Activar Grupo?</string>
+	<key>Turn on Shortcuts Events for Tabbi in Automation settings.</key>
+	<string>Activa Shortcuts Events para Tabbi en los ajustes de Automatización.</string>
 	<key>Turn on Tabbi under Calendars in System Settings.</key>
 	<string>Activa Tabbi en Calendarios, en Ajustes del Sistema.</string>
 	<key>Turn on deep focus: focus blocks bring %@</key>
@@ -3487,6 +3609,16 @@
 	<string>Se actualizó %@ y se aplicó.</string>
 	<key>Updated %@; your tabs are unchanged.</key>
 	<string>Se actualizó %@; tus pestañas no cambian.</string>
+	<key>Updated %lldd ago</key>
+	<string>Actualizado hace %lld d</string>
+	<key>Updated %lldh ago</key>
+	<string>Actualizado hace %lld h</string>
+	<key>Updated %lldm ago</key>
+	<string>Actualizado hace %lld min</string>
+	<key>Updated just now</key>
+	<string>Actualizado ahora mismo</string>
+	<key>Usage logs</key>
+	<string>Registros de uso</string>
 	<key>Usage of your rolling 5-hour limit</key>
 	<string>Uso de tu límite móvil de 5 horas</string>
 	<key>Usage of your weekly limit</key>
@@ -3513,6 +3645,8 @@
 	<string>Versión %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>Ver en GitHub</string>
+	<key>Visible: friends see when you study</key>
+	<string>Visible para tus amigos</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>Acentos vivos con un brillo violeta.</string>
 	<key>Volume</key>
@@ -3707,6 +3841,8 @@
 	<string>Ahora tu Mac preguntará si %@ puede leer tus calendarios</string>
 	<key>Your Mac asks next, then Privacy &amp; Security &gt; Screen Recording opens in System Settings</key>
 	<string>Ahora pregunta tu Mac y luego se abre Privacidad y seguridad &gt; Grabación de pantalla en Ajustes del Sistema</string>
+	<key>Your Mac asks once before Tabbi can run your shortcuts.</key>
+	<string>Tu Mac pregunta una vez antes de que Tabbi pueda ejecutar tus atajos.</string>
 	<key>Your Mac is charging, and %@ is having a sip</key>
 	<string>Tu Mac se está cargando y %@ toma un sorbito</string>
 	<key>Your Mac lets apps switch Do Not Disturb only through shortcuts you make. Two small ones do it.</key>
@@ -3855,6 +3991,12 @@
 	<string>pts</string>
 	<key>ready to unlock</key>
 	<string>listo para desbloquear</string>
+	<key>resets %@</key>
+	<string>se renueva el %@</string>
+	<key>resets in %@</key>
+	<string>se renueva en %@</string>
+	<key>resets now</key>
+	<string>se renueva ahora</string>
 	<key>session</key>
 	<string>sesión</string>
 	<key>sessions</key>
