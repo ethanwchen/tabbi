@@ -28,7 +28,7 @@ public enum CodexUsageLog {
     /// `$CODEX_HOME/sessions`, or `~/.codex/sessions` when CODEX_HOME is unset.
     public static func defaultRoot(environment: [String: String] = ProcessInfo.processInfo.environment) -> URL {
         let home = environment["CODEX_HOME"].flatMap { $0.isEmpty ? nil : URL(fileURLWithPath: $0, isDirectory: true) }
-            ?? FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".codex", isDirectory: true)
+            ?? FileManager.default.userHome.appendingPathComponent(".codex", isDirectory: true)
         return home.appendingPathComponent("sessions", isDirectory: true)
     }
 

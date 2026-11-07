@@ -23,6 +23,7 @@ public enum NotchVisibility {
         }
     }
 
+    #if os(macOS)
     /// True when an app other than `ownPID` shows a visible, ordinary window
     /// that fills `displayBounds` (same coordinate space as the window
     /// bounds): a native fullscreen space, a fullscreen game or video. On a
@@ -57,6 +58,7 @@ public enum NotchVisibility {
     static let statusItemLayer = Int(CGWindowLevelForKey(.statusWindow))
     /// The level of the Dock's display-sized window (`kCGDockWindowLevel`).
     static let dockLayer = Int(CGWindowLevelForKey(.dockWindow))
+    #endif
 
     /// The screen the notch should appear on, or nil when it should not appear
     /// at all: with `showOnExternalDisplays` off only built-in screens qualify,

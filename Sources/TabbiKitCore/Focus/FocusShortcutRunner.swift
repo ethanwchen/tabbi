@@ -73,6 +73,7 @@ public struct FocusShortcutRunner: FocusShortcutRunning {
     public func run(_ name: String) async -> FocusShortcutResult {
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty else { return .notFound(name: name) }
+        #if os(macOS)
         guard FileManager.default.isExecutableFile(atPath: executable.path) else { return .unavailable }
 
         let process = Process()
@@ -108,9 +109,14 @@ public struct FocusShortcutRunner: FocusShortcutRunning {
         }
         let message = String(data: stderr.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
         return FocusShortcutResult.classify(status: process.terminationStatus, stderr: message, name: name)
+        #else
+        // iOS has no `shortcuts` command line tool.
+        return .unavailable
+        #endif
     }
 }
 
+#if os(macOS)
 /// Lets the timeout task stop a process it doesn't own.
 private final class ProcessBox: @unchecked Sendable {
     private let process: Process
@@ -123,6 +129,7 @@ private final class ProcessBox: @unchecked Sendable {
         if process.isRunning { process.terminate() }
     }
 }
+#endif
 
 /// Resumes a continuation exactly once, whichever of exit, launch failure
 /// or timeout happens first.

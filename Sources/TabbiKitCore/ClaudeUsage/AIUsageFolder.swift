@@ -59,7 +59,7 @@ public enum AIUsageFolder {
         if let entry = getpwuid(getuid()), let dir = entry.pointee.pw_dir {
             return URL(fileURLWithPath: String(cString: dir), isDirectory: true)
         }
-        return FileManager.default.homeDirectoryForCurrentUser
+        return FileManager.default.userHome
     }
 
     public static func isDirectory(_ url: URL) -> Bool {

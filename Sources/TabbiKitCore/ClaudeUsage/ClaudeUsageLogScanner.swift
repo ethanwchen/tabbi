@@ -26,7 +26,7 @@ import Foundation
 public actor ClaudeUsageLogScanner {
     /// `~/.claude/projects`, where Claude Code stores session transcripts.
     public static var defaultRoot: URL {
-        FileManager.default.homeDirectoryForCurrentUser
+        FileManager.default.userHome
             .appendingPathComponent(".claude/projects", isDirectory: true)
     }
 
