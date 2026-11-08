@@ -93,6 +93,38 @@ final class PetCamEngineTests: XCTestCase {
         XCTAssertEqual(room.wrecks.map(\.blockID), ["t0", "s3", "s4"], "each spot keeps its own, oldest first")
     }
 
+    func testNoFreshObjectStandsNextToTheWreckOfOneLikeIt() {
+        // Hundreds of strikes on random spots: whatever is left out is never
+        // a kind whose wreck is still on the floor, three different things
+        // always wait, and the floor never holds more than it shows.
+        var room = PetCamRoom.starter(at: Self.monday)
+        var random = PetCamRandom(seed: 0xC0)
+        var spots = PetCamRandom(seed: 0xC1)
+        var tidied = 0
+        for index in 0..<400 {
+            let spot = PetCamSpot.allCases[Int(spots.next() % 3)]
+            let before = room.wrecks.count
+            room.strike(spot, at: Self.monday.addingTimeInterval(Double(index) * 600), blockID: "b\(index)",
+                        random: &random)
+            if room.wrecks.count < min(before + 1, 3 * PetCamRoom.visibleWrecksPerSpot) { tidied += 1 }
+            let standing = room.objects.values.map(\.kind)
+            XCTAssertEqual(Set(standing).count, 3)
+            XCTAssertTrue(Set(standing).isDisjoint(with: room.wrecks.map(\.object.kind)),
+                          "block \(index): \(standing) beside \(room.wrecks.map(\.object.kind))")
+            for spot in PetCamSpot.allCases {
+                XCTAssertLessThanOrEqual(room.visibleWrecks(at: spot).count, PetCamRoom.visibleWrecksPerSpot)
+            }
+        }
+        XCTAssertGreaterThan(tidied, 0, "when every free kind has a wreck in view, the oldest mess is cleared")
+        // An empty spot is refilled by the same rule.
+        var refilled = PetCamRoom(objects: [.counter: PetCamObject(kind: .mug, placedAt: Self.monday, serial: 0)],
+                                  wrecks: [PetCamWreck(object: PetCamObject(kind: .vase, placedAt: Self.monday, serial: 1),
+                                                       spot: .table, wreckedAt: Self.monday, blockID: "v")])
+        refilled.refill(at: Self.monday, random: &random)
+        XCTAssertFalse(refilled.objects.values.contains { $0.kind == .vase })
+        XCTAssertEqual(refilled.objects.count, 3)
+    }
+
     func testARoomFromANewerBuildStillLoads() throws {
         let json = """
         {"spots":[{"spot":"counter","object":{"kind":"mug","placedAt":0,"serial":0}},
@@ -121,9 +153,9 @@ final class PetCamEngineTests: XCTestCase {
         XCTAssertEqual(plain[.shelf]!, 0.19, accuracy: 1e-9)
         XCTAssertEqual(plain[.table]!, 0.19, accuracy: 1e-9)
         let wobble = tuning.strikeChances(stare: .counter, exception: .table)
-        XCTAssertEqual(wobble[.table]!, 0.919, accuracy: 1e-9, "the wobble decides it")
-        XCTAssertEqual(wobble[.counter]!, 0.062, accuracy: 1e-9)
-        XCTAssertEqual(wobble[.shelf]!, 0.019, accuracy: 1e-9)
+        XCTAssertEqual(wobble[.table]!, 0.7975, accuracy: 1e-9, "the wobble is a strong lean, not a sure thing")
+        XCTAssertEqual(wobble[.counter]!, 0.155, accuracy: 1e-9)
+        XCTAssertEqual(wobble[.shelf]!, 0.0475, accuracy: 1e-9)
         for chances in [plain, wobble] {
             XCTAssertEqual(chances.values.reduce(0, +), 1, accuracy: 1e-9)
         }
@@ -231,7 +263,7 @@ final class PetCamEngineTests: XCTestCase {
             XCTAssertEqual(record.outcome, .caught)
             XCTAssertEqual(record.strike, strike)
             XCTAssertEqual(game.log.mugshots.map(\.id), ["b"])
-            XCTAssertEqual(record.captions.charge, "CHARGE: MY ESSAY")
+            XCTAssertEqual(record.captions.charge, "CHARGE: OBSTRUCTION OF MY ESSAY")
             XCTAssertFalse(record.captions.publicCharge?.contains("ESSAY") ?? true)
         }
     }
@@ -337,7 +369,8 @@ final class PetCamEngineTests: XCTestCase {
         XCTAssertEqual(a, b)
         XCTAssertEqual(a.log.blocks.count, 40)
         XCTAssertEqual(a.log.blocks.filter { $0.strike != nil }.count, 35)
-        XCTAssertEqual(a.room.wrecks.count, 3 * PetCamRoom.visibleWrecksPerSpot)
+        // Three kinds stand, so at most the other three lie on the floor.
+        XCTAssertTrue((2...3 * PetCamRoom.visibleWrecksPerSpot).contains(a.room.wrecks.count))
         XCTAssertEqual(Set(a.room.objects.values.map(\.kind)).count, 3)
     }
 

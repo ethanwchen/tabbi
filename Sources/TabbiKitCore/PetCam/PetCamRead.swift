@@ -11,15 +11,18 @@ import Foundation
 /// home screen) or, as an alternative to try, the breed's appetite (scent
 /// lines over its favorite object). When it shows it decides the strike
 /// with `exceptionPull`; otherwise the stare rule still applies. So the
-/// defaults read as "where she stares, unless something wobbles":
+/// defaults read as "where she stares, unless something wobbles", and a
+/// wobble is a strong lean rather than a sure thing:
 ///
 /// - nothing wobbling: 62% the stare, 19% each other spot;
-/// - a wobble: 91.9% the wobble, 6.2% the stare, 1.9% the third spot.
+/// - a wobble: 79.75% the wobble, 15.5% the stare, 4.75% the third spot.
 ///
-/// A player who always follows the stare catches about 43%, one who picks
-/// at random 33%, and one who reads the wobble when it shows about 72%
+/// A player who always follows the stare catches about 46%, one who picks
+/// at random 33%, and one who reads the wobble when it shows about 68%
 /// (`PetCamReadTests` pins those bands), so reading the room is worth it
-/// without the stare ever being a coin flip.
+/// without the stare ever being a coin flip, and IT WAS ALREADY WOBBLING.
+/// stays a punchline. The stake that makes the other blocks a choice is
+/// not in the read at all: it is the WANTED object (`PetCamSetup.wanted`).
 public struct PetCamTuning: Codable, Hashable, Sendable {
     /// Which visible exception can override the stare.
     public enum Exception: String, Codable, CaseIterable, Hashable, Sendable {
@@ -45,7 +48,7 @@ public struct PetCamTuning: Codable, Hashable, Sendable {
     public var dogAppetite: PetCamObjectKind
 
     public init(followStare: Double = 0.62, exception: Exception = .wobble, exceptionChance: Double = 0.34,
-                exceptionPull: Double = 0.9, catAppetite: PetCamObjectKind = .fishbowl,
+                exceptionPull: Double = 0.75, catAppetite: PetCamObjectKind = .fishbowl,
                 dogAppetite: PetCamObjectKind = .donut) {
         self.followStare = Self.chance(followStare)
         self.exception = exception
@@ -112,8 +115,8 @@ public struct PetCamTell: Codable, Hashable, Sendable {
 }
 
 /// A block as the home screen shows it before Start: the seed, where the
-/// pet stares, and any exception, all drawn from the seed, plus the tuning
-/// in force when it was prepared.
+/// pet stares, and any exception, all drawn from the seed, the WANTED
+/// object, plus the tuning in force when it was prepared.
 ///
 /// The setup is saved, so reopening the app shows the same frozen frame,
 /// and it survives a block stopped early: stopping never rerolls the tell,
@@ -122,13 +125,22 @@ public struct PetCamSetup: Codable, Hashable, Sendable {
     public var seed: UInt64
     public var stare: PetCamSpot
     public var tell: PetCamTell?
+    /// The spot whose object wears the WANTED tag: from the second block
+    /// on, the object in the room the pet has gone longest without being
+    /// caught with (a kind never caught with counts as longest), ties broken
+    /// by the seed. It never changes where the pet strikes; it is the stake
+    /// that makes the blocks with nothing wobbling a choice between the
+    /// likely catch on the stare and a long shot at the one the wall lacks.
+    public var wanted: PetCamSpot?
     public var tuning: PetCamTuning
     public var preparedAt: Date
 
-    public init(seed: UInt64, stare: PetCamSpot, tell: PetCamTell?, tuning: PetCamTuning, preparedAt: Date) {
+    public init(seed: UInt64, stare: PetCamSpot, tell: PetCamTell?, wanted: PetCamSpot? = nil, tuning: PetCamTuning,
+                preparedAt: Date) {
         self.seed = seed
         self.stare = stare
         self.tell = tell
+        self.wanted = wanted
         self.tuning = tuning
         self.preparedAt = preparedAt
     }
@@ -138,9 +150,10 @@ public struct PetCamSetup: Codable, Hashable, Sendable {
     /// `tuning.exceptionChance`, never on the stared spot (it would tell
     /// nothing the stare does not): a wobble on one of the other two, or
     /// the appetite on the spot holding the species' favorite object (none
-    /// if that object is not in the room or is the one stared at).
+    /// if that object is not in the room or is the one stared at). The
+    /// WANTED object comes from `history` (none before the first tape).
     public static func prepare(seed: UInt64, room: PetCamRoom, species: PetSpecies, tuning: PetCamTuning,
-                               at date: Date) -> PetCamSetup {
+                               history: [PetCamBlockRecord] = [], at date: Date) -> PetCamSetup {
         var stareRoll = PetCamRandom(seed: seed, stream: "stare")
         let spots = PetCamSpot.allCases
         let stare = spots[Int(stareRoll.next() % UInt64(spots.count))]
@@ -160,7 +173,33 @@ public struct PetCamSetup: Codable, Hashable, Sendable {
                 }
             }
         }
-        return PetCamSetup(seed: seed, stare: stare, tell: tell, tuning: tuning, preparedAt: date)
+        return PetCamSetup(seed: seed, stare: stare, tell: tell,
+                           wanted: wanted(seed: seed, room: room, history: history, at: date), tuning: tuning,
+                           preparedAt: date)
+    }
+
+    /// The WANTED spot for `room` after `history` (see `wanted`).
+    static func wanted(seed: UInt64, room: PetCamRoom, history: [PetCamBlockRecord], at date: Date) -> PetCamSpot? {
+        guard history.contains(where: \.outcome.hasTape) else { return nil }
+        let waits = PetCamSpot.allCases.compactMap { spot in
+            room.object(at: spot).map { (spot, wantedSince($0.kind, history: history, before: date) ?? .distantPast) }
+        }
+        guard let longest = waits.map(\.1).min() else { return nil }
+        let tied = waits.filter { $0.1 == longest }.map(\.0)
+        var roll = PetCamRandom(seed: seed, stream: "wanted")
+        return tied[Int(roll.next() % UInt64(tied.count))]
+    }
+
+    /// Since when the pet has gone without being caught with `kind` before
+    /// `date`: its last catch with one, or (never caught with one) the
+    /// first tape, when the surveillance began. Nil on a fresh history.
+    public static func wantedSince(_ kind: PetCamObjectKind, history: [PetCamBlockRecord], before date: Date) -> Date? {
+        // The log is sorted, so look back from the end and stop at the
+        // first catch with one.
+        for record in history.reversed() where record.endedAt < date {
+            if record.outcome == .caught, record.struck?.kind == kind { return record.endedAt }
+        }
+        return history.first { $0.outcome.hasTape && $0.endedAt < date }?.startedAt
     }
 
     /// The chance of a strike on each spot in this block.
@@ -188,7 +227,7 @@ public struct PetCamSetup: Codable, Hashable, Sendable {
     // The seed is written as hex text: a JSON number above 2^53 loses its
     // low bits in a JavaScript port.
     private enum CodingKeys: String, CodingKey {
-        case seed, stare, tell, tuning, preparedAt
+        case seed, stare, tell, wanted, tuning, preparedAt
     }
 
     public init(from decoder: Decoder) throws {
@@ -198,6 +237,7 @@ public struct PetCamSetup: Codable, Hashable, Sendable {
         }
         self.init(seed: seed, stare: try container.decode(PetCamSpot.self, forKey: .stare),
                   tell: try? container.decode(PetCamTell.self, forKey: .tell),
+                  wanted: try? container.decode(PetCamSpot.self, forKey: .wanted),
                   tuning: (try? container.decode(PetCamTuning.self, forKey: .tuning)) ?? .standard,
                   preparedAt: try container.decode(Date.self, forKey: .preparedAt))
     }
@@ -207,6 +247,7 @@ public struct PetCamSetup: Codable, Hashable, Sendable {
         try container.encode(PetCamSeed.text(seed), forKey: .seed)
         try container.encode(stare, forKey: .stare)
         try container.encodeIfPresent(tell, forKey: .tell)
+        try container.encodeIfPresent(wanted, forKey: .wanted)
         try container.encode(tuning, forKey: .tuning)
         try container.encode(preparedAt, forKey: .preparedAt)
     }

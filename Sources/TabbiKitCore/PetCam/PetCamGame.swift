@@ -71,7 +71,8 @@ public struct PetCamGame: Codable, Hashable, Sendable {
     public mutating func reprepare(species: PetSpecies? = nil, at date: Date) {
         guard active == nil else { return }
         if let species { self.species = species }
-        setup = PetCamSetup.prepare(seed: setup.seed, room: room, species: self.species, tuning: tuning, at: date)
+        setup = PetCamSetup.prepare(seed: setup.seed, room: room, species: self.species, tuning: tuning,
+                                    history: log.blocks, at: date)
     }
 
     /// Arms the camera for a block that just started. `pick` is the tapped
@@ -121,13 +122,17 @@ public struct PetCamGame: Codable, Hashable, Sendable {
             outcome: outcome, setup: block.setup, camera: block.camera, strike: strike, struck: struck,
             room: block.room, dodge: block.dodge, history: log.blocks, at: endedAt, calendar: calendar
         )
-        // Never the same tape shape twice in a row for the same outcome.
-        let previous = log.blocks.last { $0.outcome == outcome }?.shape.flatMap(PetCamTape.Shape.init(rawValue:))
+        // Never one of the last two tape shapes of the same outcome.
+        var recent: [PetCamTape.Shape] = []
+        for earlier in log.blocks.reversed() where earlier.outcome == outcome {
+            if let shape = earlier.shape.flatMap(PetCamTape.Shape.init(rawValue:)) { recent.append(shape) }
+            if recent.count == 2 { break }
+        }
         let record = PetCamBlockRecord(
             id: block.id, setup: block.setup, camera: block.camera, picked: block.picked, dodge: block.dodge,
             dare: block.dare, plannedLength: block.plannedLength, startedAt: block.startedAt, endedAt: endedAt,
             worked: worked, outcome: outcome, strike: strike, struck: struck, room: block.room, pet: block.pet,
-            captions: captions, shape: PetCamTape.shape(seed: block.setup.seed, previous: previous).rawValue
+            captions: captions, shape: PetCamTape.shape(seed: block.setup.seed, recent: recent).rawValue
         )
         active = nil
         absorb(record)
@@ -167,7 +172,7 @@ public struct PetCamGame: Codable, Hashable, Sendable {
         room.strike(strike, at: record.endedAt, blockID: record.id, random: &refill)
         if active == nil, record.setup.seed == setup.seed {
             setup = PetCamSetup.prepare(seed: record.setup.nextSeed, room: room, species: species, tuning: tuning,
-                                        at: record.endedAt)
+                                        history: log.blocks, at: record.endedAt)
         }
         unwatched.append(record.id)
         return true

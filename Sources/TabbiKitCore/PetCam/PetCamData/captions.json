@@ -3,7 +3,7 @@
   "language": "en",
   "objects": {
     "mug": { "name": "MUG", "plural": "MUGS", "sound": "[CRASH]", "remains": "MUG SHARDS", "charge": "KNOCKING A MUG OFF THE {spot}" },
-    "plant": { "name": "PLANT", "plural": "PLANTS", "sound": "[THUD]", "remains": "POTTING SOIL", "charge": "UNLICENSED GARDENING" },
+    "plant": { "name": "PLANT", "plural": "PLANTS", "sound": "[DIG DIG THUD]", "remains": "POTTING SOIL", "charge": "UNLICENSED GARDENING" },
     "fishbowl": { "name": "FISHBOWL", "plural": "FISHBOWLS", "sound": "[SPLASH]", "remains": "PUDDLE", "charge": "FISHING WITHOUT A LICENSE" },
     "vase": { "name": "VASE", "plural": "VASES", "sound": "[SMASH]", "remains": "PETALS", "charge": "SMASHING A PERFECTLY GOOD VASE" },
     "tissues": { "name": "TISSUE BOX", "plural": "TISSUE BOXES", "sound": "[FWIP FWIP FWIP]", "remains": "TISSUES", "charge": "SHREDDING EVERY TISSUE" },
@@ -24,6 +24,7 @@
   "noticed": ["THEN IT SAW THE CAMERA.", "EYE CONTACT.", "IT KNOWS."],
   "caught": "CAUGHT",
   "charge": "CHARGE: {charge}",
+  "obstruction": "OBSTRUCTION OF {dodge}",
   "priors": "PRIOR OFFENSES: {count}",
   "firstOffense": "FIRST OFFENSE",
   "innocent": ["NOTHING TO SEE HERE.", "INNOCENT. ALLEGEDLY.", "WHO, ME?", "NO WITNESSES."],
@@ -33,6 +34,11 @@
   "enhance": ["ENHANCE.", "ZOOM IN."],
   "reaction": ["IT SEES US.", "DON'T MOVE."],
   "alibiOpen": ["CAM {cam}. ALL QUIET.", "CAM {cam}. NOTHING TO REPORT."],
+  "windUp": ["WAIT FOR IT.", "IT'S PLANNING SOMETHING.", "DON'T DO IT."],
+  "wantedDays": "WANTED FOR {days} DAYS.",
+  "wantedYesterday": "WANTED SINCE YESTERDAY.",
+  "wantedSince": "WANTED SINCE {time}.",
+  "ownerAway": "OWNER AWAY {length}.",
   "meanwhile": "MEANWHILE, BY THE {spot}: {remains}.",
   "tells": {
     "wobble": "IT WAS ALREADY WOBBLING.",

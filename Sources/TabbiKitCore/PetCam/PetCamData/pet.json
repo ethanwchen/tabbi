@@ -30,6 +30,54 @@
       ".EE.",
       ".iE.",
       ".EE."
+    ],
+    "heldDonut": [
+      ".IIII.",
+      "IPPPPI",
+      "IP..PI",
+      "IPPYP.",
+      ".III.."
+    ],
+    "markFish": [
+      "..OOOO.OO.",
+      ".OooooOooO",
+      "OoioooooO.",
+      ".OooooOooO",
+      "..OOOO.OO."
+    ],
+    "markFrosting": [
+      "OOOOOOO",
+      "OPYPFPO",
+      ".OPPPO.",
+      "..OOO.."
+    ],
+    "markTissue": [
+      ".OOOO.",
+      "OUUUVO",
+      "OUVUUO",
+      "OUUUUO",
+      ".OUVO.",
+      "..OO.."
+    ],
+    "markSoil": [
+      ".OOO.",
+      "OINIO",
+      "OIIIO",
+      ".OOO."
+    ],
+    "markCoffee": [
+      ".OO.OO.",
+      "OIIOIIO",
+      ".OO.OIO",
+      "....OIO",
+      ".....O."
+    ],
+    "markPetal": [
+      ".OO.OO.",
+      "OHHOHHO",
+      "OHHYHHO",
+      ".OHHHO.",
+      "..OOO.."
     ]
   }
 }

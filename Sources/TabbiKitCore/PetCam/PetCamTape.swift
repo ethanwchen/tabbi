@@ -9,8 +9,13 @@ public enum PetCamPose: Hashable, Sendable {
     case sneak(step: Int)
     /// Sitting up on the furniture, a paw raised at the object.
     case swipe
-    /// The strike: the paw through the object, mouth open.
-    case midAct
+    /// The strike, as the object calls for it: a swat at the mug, a paw in
+    /// the fishbowl, a chomp of the donut, a shred of the tissues, a dig in
+    /// the plant, a head-shove at the vase.
+    case act(PetCamObjectKind)
+    /// Frozen mid-act with its eyes on the lens: in mid-air off the spot,
+    /// paw out, or (the donut) with its mouth full.
+    case caughtMidAct(PetCamObjectKind)
     /// Looking straight into the camera.
     case lensStare
     /// Curled up on the floor, wide awake, looking into the camera.
@@ -51,8 +56,10 @@ public enum PetCamObjectState: Hashable, Sendable {
     case wobbling
     /// Scent lines: the appetite exception.
     case scented
-    /// Tipping off the edge mid-strike.
-    case tipping
+    /// Mid-strike, as the act leaves it: knocked flying (the mug and the
+    /// vase), splashing (the fishbowl), torn at (the tissues), spraying soil
+    /// (the plant), or in the pet's mouth (the donut).
+    case struck
     /// Gone from its spot (it is a wreck now, or eaten).
     case gone
 }
@@ -66,9 +73,27 @@ public struct PetCamShot: Hashable, Sendable {
         case wide
         /// A spot's hidden camera, close on that spot: a 2x crop.
         case spot(PetCamSpot)
-        /// The same camera pushed in on the pet at a place: a 4x crop
-        /// ("ENHANCE").
+        /// The camera filming a place re-aimed at the pet there: a 2x crop,
+        /// like a spot camera's, centered on the whole pet.
         case closeUp(PetCamPlace)
+        /// Pushed in on the newest wreck under a spot, a 2x crop centered on
+        /// it: from that spot's own hidden camera, or (`hidden` false) from
+        /// CAM 1 in the corner.
+        case wreck(PetCamSpot, hidden: Bool)
+    }
+
+    /// A nudge of the pet off its place, in sprite pixels, for the
+    /// in-between frames of an export.
+    public struct Offset: Hashable, Sendable {
+        public var x: Int
+        public var y: Int
+
+        public init(x: Int, y: Int) {
+            self.x = x
+            self.y = y
+        }
+
+        public static let zero = Offset(x: 0, y: 0)
     }
 
     public var framing: Framing
@@ -81,10 +106,14 @@ public struct PetCamShot: Hashable, Sendable {
     /// Bits flying in from the edge of the frame: the miss's off-camera
     /// strike.
     public var debrisFrom: PetCamSpot?
+    /// How far the debris has slid in: 0 just over the edge, 1 skidding
+    /// into the frame.
+    public var debrisStep: Int
+    public var petOffset: Offset
 
     public init(framing: Framing, objects: [PetCamSpot: PetCamObject], states: [PetCamSpot: PetCamObjectState] = [:],
                 wrecks: [PetCamWreck] = [], pet: PetCamPose? = nil, place: PetCamPlace? = nil,
-                debrisFrom: PetCamSpot? = nil) {
+                debrisFrom: PetCamSpot? = nil, debrisStep: Int = 0, petOffset: Offset = .zero) {
         self.framing = framing
         self.objects = objects
         self.states = states
@@ -92,6 +121,8 @@ public struct PetCamShot: Hashable, Sendable {
         self.pet = pet
         self.place = place
         self.debrisFrom = debrisFrom
+        self.debrisStep = debrisStep
+        self.petOffset = petOffset
     }
 
     /// The frozen frame on the home screen: the pet on the floor staring
@@ -120,6 +151,23 @@ public struct PetCamShot: Hashable, Sendable {
 ///   at second three, plays a double take into the lens, or opens cold on
 ///   the alibi and rewinds; the straight and cold versions end on the
 ///   corner camera's view of what really happened.
+/// A tape: five to seven timestamped stills with cuts and captions, ten to
+/// fifteen seconds long, that ends by itself. Built from a block record
+/// alone, so a mugshot on the wall replays exactly the tape it came from.
+///
+/// Each outcome has three shapes, picked by the block's seed when it
+/// resolves and never one of the last two of the same outcome
+/// (`PetCamBlockRecord.shape`), so the tapes do not settle into one rhythm.
+/// The act in every catch is the object's own (a swat, a paw in the bowl, a
+/// chomp, a shred, a dig, a head-shove):
+///
+/// - a catch plays straight through to the eye contact and the freeze,
+///   opens cold on a close-up of the wreck with no pet in frame and
+///   rewinds, or freezes on the act itself, mid-air or with its mouth full;
+/// - a miss hears the crash as debris skids into the wrong camera's frame
+///   and the pet walks in at second three, adds a double take into the
+///   lens, or opens cold on the alibi and rewinds; every miss ends on
+///   CAM 1 pushed in on the wreck it did not see.
 public struct PetCamTape: Hashable, Sendable {
     /// What a still stamps over the picture.
     public enum Stamp: Hashable, Sendable {
@@ -137,8 +185,19 @@ public struct PetCamTape: Hashable, Sendable {
         case straight
         /// Starts on the result, rewinds, and plays up to it.
         case coldOpen
-        /// A catch pushes in on the face; a miss does a double take.
+        /// A catch freezes on the act; a miss does a double take.
         case closer
+    }
+
+    /// The sound a still cuts in on, for a player or export with sound:
+    /// the motion beep, the object's own strike, the same strike muffled
+    /// off camera, and the thud of the CAUGHT stamp. Tape hiss runs under
+    /// all of it.
+    public enum Cue: Hashable, Sendable {
+        case motion
+        case strike(PetCamObjectKind)
+        case offCamera(PetCamObjectKind)
+        case stamp
     }
 
     public struct Still: Hashable, Sendable {
@@ -153,10 +212,13 @@ public struct PetCamTape: Hashable, Sendable {
         public var detail: String?
         public var stamp: Stamp?
         /// The camera jolts as the still cuts in: something just hit hard.
-        public var shake = false
+        public var shake: Bool
+        public var cue: Cue?
+        /// Eye contact: an export pushes in on the pet while it holds.
+        public var punchIn: Bool
 
         public init(shot: PetCamShot, time: Date, duration: TimeInterval, caption: String, detail: String? = nil,
-                    stamp: Stamp? = nil, shake: Bool = false) {
+                    stamp: Stamp? = nil, shake: Bool = false, cue: Cue? = nil, punchIn: Bool = false) {
             self.shot = shot
             self.time = time
             self.duration = duration
@@ -164,6 +226,8 @@ public struct PetCamTape: Hashable, Sendable {
             self.detail = detail
             self.stamp = stamp
             self.shake = shake
+            self.cue = cue
+            self.punchIn = punchIn
         }
 
         /// The camera's label ("CAM 1").
@@ -172,6 +236,7 @@ public struct PetCamTape: Hashable, Sendable {
             case .wide: "CAM 1"
             case .spot(let spot): "CAM \(spot.cameraNumber)"
             case .closeUp(let place): place.spot.map { "CAM \($0.cameraNumber)" } ?? "CAM 1"
+            case .wreck(let spot, let hidden): hidden ? "CAM \(spot.cameraNumber)" : "CAM 1"
             }
         }
     }
@@ -190,10 +255,13 @@ public struct PetCamTape: Hashable, Sendable {
     /// The longest any tape may run.
     public static let maximumDuration: TimeInterval = 20
 
-    /// The shape a block's tape takes: its seed's pick, never the shape of
-    /// `previous` (the last tape with the same outcome).
-    public static func shape(seed: UInt64, previous: Shape?) -> Shape {
-        let choices = Shape.allCases.filter { $0 != previous }
+    /// The shape a block's tape takes: its seed's pick of the shapes not in
+    /// `recent` (the last tapes with the same outcome, newest first; only
+    /// the last two count), so three tapes in a row of one outcome play all
+    /// three shapes.
+    public static func shape(seed: UInt64, recent: [Shape]) -> Shape {
+        var choices = Shape.allCases.filter { !recent.prefix(2).contains($0) }
+        if choices.isEmpty { choices = Shape.allCases.filter { $0 != recent.first } }
         var roll = PetCamRandom(seed: seed, stream: "shape")
         return choices[Int(roll.next() % UInt64(choices.count))]
     }
@@ -207,7 +275,7 @@ public struct PetCamTape: Hashable, Sendable {
         let captions = record.captions
         let wide = PetCamShot(framing: .wide, objects: room.objects, wrecks: room.wrecks)
         let start = record.startedAt
-        guard let strike = record.strike, record.struck != nil, record.outcome.hasTape else {
+        guard let strike = record.strike, let struck = record.struck, record.outcome.hasTape else {
             // Stopped early: the pet frozen mid-sneak toward the spot it was
             // staring at, which the frozen frame already showed, so a stop
             // never gives away where it would have struck.
@@ -217,108 +285,130 @@ public struct PetCamTape: Hashable, Sendable {
                             stamp: .frozen)]
             return
         }
-        shape = record.shape.flatMap(Shape.init(rawValue:)) ?? Self.shape(seed: record.setup.seed, previous: nil)
+        shape = record.shape.flatMap(Shape.init(rawValue:)) ?? Self.shape(seed: record.setup.seed, recent: [])
+        let kind = struck.kind
         let camera = record.camera
         let plan = Self.timeline(record)
-        // The floor after the strike, exactly as the room kept it.
-        var struckRoom = room
-        var refill = PetCamRandom(seed: record.setup.seed, stream: "refill")
-        struckRoom.strike(strike, at: record.endedAt, blockID: record.id, random: &refill)
+        // The floor right after the strike: the new wreck down, nothing
+        // tidied away or left out yet.
+        var wrecked = room
+        wrecked.wreck(strike, at: record.endedAt, blockID: record.id)
         let close = PetCamShot(framing: .spot(camera), objects: room.objects, wrecks: room.wrecks)
         var after = close
         after.states = [strike: .gone]
-        after.wrecks = struckRoom.wrecks
-        let opener = Still(shot: Self.with(wide, pet: .stare(record.setup.stare), at: .home, states: Self.tellStates(record)),
-                           time: start, duration: 1.8, caption: captions.opener)
-        let rewind = Still(shot: Self.with(wide, pet: .stare(record.setup.stare), at: .home, states: Self.tellStates(record)),
-                           time: start, duration: 1.4, caption: captions.rewind ?? captions.opener, stamp: .rewind)
-        let struckDetail = captions.tell ?? record.struck.map { PetCamCaptions.sound(of: $0.kind) }
+        after.wrecks = wrecked.wrecks
+        let stare = Self.with(wide, pet: .stare(record.setup.stare), at: .home, states: Self.tellStates(record))
+        let opener = Still(shot: stare, time: start, duration: 1.8, caption: captions.opener)
+        let rewind = Still(shot: stare, time: start, duration: 1.4, caption: captions.rewind ?? captions.opener,
+                           stamp: .rewind)
+        let struckDetail = captions.tell ?? PetCamCaptions.sound(of: kind)
+        var exhibit = after
+        exhibit.framing = .wreck(strike, hidden: record.outcome == .caught)
 
         if record.outcome == .caught {
             let sneak = Still(shot: Self.with(close, pet: .sneak(step: 0), at: .approach(strike)), time: plan.watch,
-                              duration: 1.8, caption: captions.watch)
-            let swat = Still(shot: Self.with(close, pet: .midAct, at: .strike(strike), states: [strike: .tipping]),
-                             time: plan.strike, duration: 2.2, caption: captions.strike, detail: struckDetail, shake: true)
-            let lens = Still(shot: Self.with(after, pet: .lensStare, at: .strike(strike)), time: plan.turn, duration: 2.0,
-                             caption: captions.turn, detail: captions.callback)
+                              duration: 1.8, caption: captions.watch, cue: .motion)
+            let windUp = Still(shot: Self.with(close, pet: .swipe, at: .strike(strike)),
+                               time: plan.strike.addingTimeInterval(-2), duration: 1.6,
+                               caption: captions.age ?? captions.windUp ?? captions.watch)
+            let act = Still(shot: Self.with(close, pet: .act(kind), at: .strike(strike), states: [strike: .struck]),
+                            time: plan.strike, duration: 2.2, caption: captions.strike, detail: struckDetail,
+                            shake: true, cue: .strike(kind))
+            let lens = Still(shot: Self.with(after, pet: .lensStare, at: .strike(strike)), time: plan.turn,
+                             duration: 2.0, caption: captions.turn, detail: captions.callback, punchIn: true)
             var freeze = Still(shot: Self.with(after, pet: .lensStare, at: .strike(strike)), time: plan.turn,
-                               duration: 3.2, caption: captions.charge ?? captions.closer, detail: captions.priors,
-                               stamp: .caught)
+                               duration: 3.2, caption: captions.charge ?? captions.closer,
+                               detail: captions.wanted ?? captions.priors, stamp: .caught, cue: .stamp)
             switch shape {
             case .straight:
-                let windUp = Still(shot: Self.with(close, pet: .swipe, at: .strike(strike)),
-                                   time: plan.strike.addingTimeInterval(-2), duration: 1.6,
-                                   caption: captions.age ?? captions.watch)
                 var opening = opener
                 opening.duration = 2.0
-                stills = [opening, sneak, windUp, swat, lens, freeze]
+                stills = [opening, sneak, windUp, act, lens, freeze]
             case .coldOpen:
-                let scene = Still(shot: Self.with(after, pet: .lensStare, at: .strike(strike)), time: plan.turn,
-                                  duration: 2.0, caption: captions.aftermath ?? captions.turn,
-                                  detail: captions.callback ?? captions.age)
+                // The wreck alone, as the hidden camera found it.
+                let scene = Still(shot: exhibit, time: plan.turn, duration: 2.2,
+                                  caption: captions.aftermath ?? captions.turn, detail: captions.callback ?? captions.age)
                 freeze.duration = 3.4
-                stills = [scene, rewind, sneak, swat, freeze]
+                freeze.punchIn = true
+                stills = [scene, rewind, sneak, act, freeze]
             case .closer:
-                var push = close
-                push.framing = .closeUp(.strike(strike))
-                push.states = after.states
-                push.wrecks = after.wrecks
-                let enhance = Still(shot: Self.with(push, pet: .lensStare, at: .strike(strike)), time: plan.turn,
-                                    duration: 1.6, caption: captions.enhance ?? captions.turn, detail: captions.age)
-                freeze.shot = enhance.shot
-                freeze.duration = 3.4
-                var lensFirst = lens
-                lensFirst.duration = 1.8
-                stills = [opener, sneak, swat, lensFirst, enhance, freeze]
+                // The freeze lands on the act itself.
+                var midAct = Self.with(close, pet: .caughtMidAct(kind), at: .strike(strike),
+                                       states: [strike: .struck])
+                midAct.framing = .closeUp(.strike(strike))
+                freeze.shot = midAct
+                freeze.duration = 3.6
+                var quick = act
+                quick.duration = 2.0
+                stills = [opener, sneak, windUp, quick, freeze]
             }
             return
         }
 
         // A miss: the camera holds on the wrong spot while the strike happens
-        // somewhere else; the pet strolls in and lies down for it.
+        // somewhere else; debris skids into its frame, then the pet strolls
+        // in and lies down for it, and CAM 1 shows what really happened.
         var heard = close
         heard.debrisFrom = strike
-        let crash = Still(shot: heard, time: plan.strike, duration: 1.6, caption: captions.strike,
-                          detail: PetCamCaptions.offCamera, shake: true)
+        let crash = Still(shot: heard, time: plan.strike, duration: 0.6, caption: captions.strike,
+                          detail: PetCamCaptions.offCamera, shake: true, cue: .offCamera(kind))
+        var skid = crash
+        skid.shot.debrisStep = 1
+        skid.duration = 1.0
+        skid.shake = false
+        skid.cue = nil
+        skid.time = plan.strike.addingTimeInterval(1)
         var later = close
         later.states = [strike: .gone]
-        later.wrecks = struckRoom.wrecks
-        let stroll = Still(shot: Self.with(later, pet: .stroll(step: 1), at: .enter(camera)), time: plan.turn,
-                           duration: 2.2, caption: captions.turn, detail: captions.callback)
-        let alibi = Still(shot: Self.with(later, pet: .lieDown, at: .lounge(camera)), time: plan.alibi, duration: 3.4,
+        later.wrecks = wrecked.wrecks
+        let walkIn = Still(shot: Self.with(later, pet: .stroll(step: 1), at: .enter(camera)), time: plan.turn,
+                           duration: 2.0, caption: captions.turn, detail: captions.callback)
+        let alibi = Still(shot: Self.with(later, pet: .lieDown, at: .lounge(camera)), time: plan.alibi, duration: 3.0,
                           caption: captions.closer, detail: captions.age)
-        var everywhere = wide
-        everywhere.states = [strike: .gone]
-        everywhere.wrecks = struckRoom.wrecks
-        let reveal = Still(shot: Self.with(everywhere, pet: .lieDown, at: .lounge(camera)), time: plan.alibi,
-                           duration: 2.4, caption: captions.reveal ?? captions.age ?? captions.closer,
-                           detail: captions.tell)
+        let reveal = Still(shot: Self.with(exhibit, pet: .lieDown, at: .lounge(camera)), time: plan.alibi,
+                           duration: 2.6, caption: captions.reveal ?? captions.closer, detail: captions.tell)
         var opening = opener
         opening.duration = 1.4
         switch shape {
         case .straight:
-            stills = [opening, crash, stroll, alibi, reveal]
+            stills = [opening, crash, skid, walkIn, alibi, reveal]
         case .closer:
-            var walkIn = stroll
-            walkIn.duration = 2.0
+            var quickWalk = walkIn
+            quickWalk.duration = 1.8
             let look = Still(shot: Self.with(later, pet: .lensStare, at: .enter(camera)), time: plan.turn,
-                             duration: 1.4, caption: captions.reaction ?? captions.turn)
-            var tight = later
-            tight.framing = .closeUp(.enter(camera))
-            let again = Still(shot: Self.with(tight, pet: .lensStare, at: .enter(camera)), time: plan.turn,
-                              duration: 1.2, caption: captions.enhance ?? captions.closer)
+                             duration: 1.4, caption: captions.reaction ?? captions.turn, punchIn: true)
             var lieDown = alibi
-            lieDown.duration = 3.2
-            lieDown.detail = captions.tell ?? captions.age
-            stills = [opening, crash, walkIn, look, again, lieDown]
+            lieDown.duration = 2.6
+            var ending = reveal
+            ending.duration = 2.4
+            stills = [opening, crash, skid, quickWalk, look, lieDown, ending]
         case .coldOpen:
             let open = Still(shot: alibi.shot, time: plan.alibi, duration: 2.4,
                              caption: captions.alibi ?? captions.closer, detail: captions.closer)
-            var walkIn = stroll
-            walkIn.duration = 2.0
             var ending = reveal
             ending.duration = 3.0
-            stills = [open, rewind, crash, walkIn, ending]
+            ending.detail = captions.tell ?? captions.age
+            stills = [open, rewind, crash, skid, walkIn, ending]
+        }
+    }
+
+    /// The in-between pictures from one still to the next, for an export
+    /// that moves rather than cuts: the next still's pet slid (with a small
+    /// hop) from where it stood in this one, `count` of them, when both
+    /// are the same camera's view of the pet in two places; empty for a cut.
+    public static func tweens(from: Still, to: Still, count: Int) -> [PetCamShot] {
+        guard count > 0, from.shot.framing == to.shot.framing,
+              let fromPose = from.shot.pet, let fromPlace = from.shot.place,
+              let toPose = to.shot.pet, let toPlace = to.shot.place, fromPlace != toPlace else { return [] }
+        let a = PetCamScene.placement(for: fromPlace, pose: fromPose)
+        let b = PetCamScene.placement(for: toPlace, pose: toPose)
+        let dx = Double(a.x - b.x), dy = Double(a.y - b.y)
+        return (1...count).map { step in
+            let left = 1 - Double(step) / Double(count + 1)
+            let hop = sin(Double.pi * left) * min(6, abs(dy) / 4 + 2)
+            var shot = to.shot
+            shot.petOffset = PetCamShot.Offset(x: Int((dx * left).rounded()), y: Int((dy * left - hop).rounded()))
+            return shot
         }
     }
 

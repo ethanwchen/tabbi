@@ -14,7 +14,9 @@ public struct PetCamCaptionSet: Codable, Hashable, Sendable {
     public var watch: String
     /// The strike itself (catch) or the off-camera sound (miss).
     public var strike: String
-    /// The struck object's age: the callback every tape has.
+    /// The struck object's age. "LEFT OUT SINCE 14:02", the form every
+    /// object placed within the last two hours gets, runs at most one tape
+    /// in three, so this is often nil.
     public var age: String?
     /// A callback to earlier blocks, when the history has one.
     public var callback: String?
@@ -35,11 +37,17 @@ public struct PetCamCaptionSet: Codable, Hashable, Sendable {
     /// When the visible exception decided the strike, the line that says so
     /// ("IT WAS ALREADY WOBBLING."), which teaches the read after a miss.
     public var tell: String?
+    /// The beat before the act when there is no age line ("WAIT FOR IT.").
+    public var windUp: String?
+    /// On a catch with the WANTED object, how long it was wanted
+    /// ("WANTED FOR 3 DAYS.").
+    public var wanted: String?
 
     public init(opener: String, watch: String, strike: String, age: String? = nil, callback: String? = nil,
                 turn: String, closer: String, charge: String? = nil, publicCharge: String? = nil, priors: String? = nil,
                 aftermath: String? = nil, rewind: String? = nil, enhance: String? = nil, reaction: String? = nil,
-                alibi: String? = nil, reveal: String? = nil, tell: String? = nil) {
+                alibi: String? = nil, reveal: String? = nil, tell: String? = nil, windUp: String? = nil,
+                wanted: String? = nil) {
         self.opener = opener
         self.watch = watch
         self.strike = strike
@@ -57,6 +65,8 @@ public struct PetCamCaptionSet: Codable, Hashable, Sendable {
         self.alibi = alibi
         self.reveal = reveal
         self.tell = tell
+        self.windUp = windUp
+        self.wanted = wanted
     }
 }
 
@@ -76,8 +86,9 @@ struct PetCamCaptionGrammar: Decodable, Sendable {
     let objects: [String: ObjectWords]
     let spots: [String: String]
     let opener, openerDays, motion, quiet, act, eaten, offCamera, noticed, innocent, returns: [String]
-    let aftermath, rewind, enhance, reaction, alibiOpen: [String]
-    let caught, charge, priors, firstOffense, frozen, noTape, meanwhile: String
+    let aftermath, rewind, enhance, reaction, alibiOpen, windUp: [String]
+    let caught, charge, obstruction, priors, firstOffense, frozen, noTape, meanwhile, ownerAway: String
+    let wantedDays, wantedYesterday, wantedSince: String
     let tells: [String: String]
     let callbacks: Callbacks
     let ordinals: [String]
@@ -215,12 +226,15 @@ public enum PetCamCaptions {
         return fill(lines.leftOutSince, ["object": name, "time": clock(object.placedAt, calendar: calendar)])
     }
 
-    /// The strongest callback to earlier blocks, or nil on a fresh history:
-    /// a repeat of the same kind today or this week, a strike right beside
-    /// an old wreck, the same spot as last time, or (on a miss) where the
-    /// pet was last caught. Ties go to the seed.
-    static func callback(strike: PetCamSpot, struck: PetCamObject, room: PetCamRoom, outcome: PetCamBlockRecord.Outcome,
-                         history: [PetCamBlockRecord], at date: Date, seed: UInt64, calendar: Calendar) -> String? {
+    /// The strongest callback to earlier blocks, or nil on a fresh history.
+    /// A repeat of the same kind today, the same spot as last time, and (on
+    /// a miss) where the pet was last caught come first; a repeat this week
+    /// or a strike right beside an old wreck only when none of those is
+    /// true, and the wreck only when `camera` can see it. Ties go to the
+    /// seed.
+    static func callback(strike: PetCamSpot, struck: PetCamObject, room: PetCamRoom, camera: PetCamSpot,
+                         outcome: PetCamBlockRecord.Outcome, history: [PetCamBlockRecord], at date: Date, seed: UInt64,
+                         calendar: Calendar) -> String? {
         let lines = grammar.callbacks
         // Only the last week matters to a callback, and the log is sorted,
         // so this stays cheap however long the history grows.
@@ -233,17 +247,13 @@ public enum PetCamCaptions {
         let sameKind = finished.filter { $0.struck?.kind == struck.kind }
         let name = grammar.words(struck.kind).name
         var strong: [String] = []
+        var weak: [String] = []
         let midnight = calendar.startOfDay(for: date)
         let today = sameKind.filter { $0.endedAt >= midnight }
-        let week = sameKind
         if !today.isEmpty {
             strong.append(fill(lines.repeatToday, ["ordinal": grammar.ordinal(today.count + 1), "object": name]))
-        } else if !week.isEmpty {
-            strong.append(fill(lines.repeatWeek, ["ordinal": grammar.ordinal(week.count + 1), "object": name]))
-        }
-        if let old = room.visibleWrecks(at: strike).last {
-            strong.append(fill(lines.besideWreck, ["remains": grammar.words(old.object.kind).remains,
-                                                   "when": when(old.wreckedAt, from: date, calendar: calendar)]))
+        } else if !sameKind.isEmpty {
+            weak.append(fill(lines.repeatWeek, ["ordinal": grammar.ordinal(sameKind.count + 1), "object": name]))
         }
         if let last = finished.last, last.strike == strike {
             strong.append(fill(lines.sameSpot, ["spot": grammar.name(strike)]))
@@ -252,9 +262,76 @@ public enum PetCamCaptions {
             strong.append(fill(lines.lastSeen, ["spot": grammar.name(spot),
                                                 "when": when(caught.endedAt, from: date, calendar: calendar)]))
         }
-        guard !strong.isEmpty else { return nil }
+        if let old = room.visibleWrecks(at: strike).last, PetCamScene.shows(old, in: .spot(camera)) {
+            weak.append(fill(lines.besideWreck, ["remains": grammar.words(old.object.kind).remains,
+                                                 "when": when(old.wreckedAt, from: date, calendar: calendar)]))
+        }
+        let tier = strong.isEmpty ? weak : strong
+        guard !tier.isEmpty else { return nil }
         var roll = PetCamRandom(seed: seed, stream: "callback")
-        return strong[Int(roll.next() % UInt64(strong.count))]
+        return tier[Int(roll.next() % UInt64(tier.count))]
+    }
+
+    /// Whether `text` was filled in from `template`: every fixed part of the
+    /// template is in it, in order.
+    static func matches(_ text: String, template: String) -> Bool {
+        var parts: [String] = []
+        for (index, piece) in template.split(separator: "{", omittingEmptySubsequences: false).enumerated() {
+            if index == 0 {
+                parts.append(String(piece))
+            } else if let close = piece.firstIndex(of: "}") {
+                parts.append(String(piece[piece.index(after: close)...]))
+            }
+        }
+        var rest = Substring(text)
+        for part in parts where !part.isEmpty {
+            guard let range = rest.range(of: part) else { return false }
+            rest = rest[range.upperBound...]
+        }
+        return true
+    }
+
+    /// Whether an age line is the "LEFT OUT SINCE 14:02" form.
+    static func isSinceForm(_ age: String?) -> Bool {
+        age.map { matches($0, template: grammar.callbacks.leftOutSince) } ?? false
+    }
+
+    /// How long the WANTED object was wanted when the pet was caught with
+    /// it at `date`.
+    static func wanted(since: Date, at date: Date, calendar: Calendar) -> String {
+        let days = calendarDays(from: since, to: date, calendar: calendar)
+        if days >= 2 { return fill(grammar.wantedDays, ["days": "\(days)"]) }
+        if days == 1 { return grammar.wantedYesterday }
+        return fill(grammar.wantedSince, ["time": clock(since, calendar: calendar)])
+    }
+
+    /// A charge as the wall files it: the phrase without its "CHARGE:"
+    /// label, with the player's own words (after "OBSTRUCTION OF") kept on
+    /// one line when they are short, so MY TAX never splits from RETURN.
+    public static func filedCharge(_ caption: String) -> String {
+        let label = fill(grammar.charge, ["charge": ""])
+        var phrase = caption.hasPrefix(label) ? String(caption.dropFirst(label.count)) : caption
+        let lead = fill(grammar.obstruction, ["dodge": ""])
+        if phrase.hasPrefix(lead) {
+            let dodge = phrase.dropFirst(lead.count)
+            if dodge.count <= 22 { phrase = lead + dodge.replacingOccurrences(of: " ", with: "\u{00A0}") }
+        }
+        return phrase
+    }
+
+    /// The label the wall prints over a charge ("CHARGE").
+    public static var chargeLabel: String {
+        fill(grammar.charge, ["charge": ""]).trimmingCharacters(in: CharacterSet(charactersIn: ": "))
+    }
+
+    /// The export's opening card: "OWNER AWAY 25:00." for a block that ran
+    /// `seconds` of focus.
+    public static func ownerAway(_ seconds: TimeInterval) -> String {
+        let total = max(Int(seconds.rounded()), 0)
+        let length = total >= 3600
+            ? String(format: "%d:%02d:%02d", total / 3600, total / 60 % 60, total % 60)
+            : String(format: "%02d:%02d", total / 60, total % 60)
+        return fill(grammar.ownerAway, ["length": length])
     }
 
     /// One line from `choices`, picked by the seed's `stream` roll.
@@ -278,7 +355,14 @@ public enum PetCamCaptions {
             ? one(grammar.openerDays, seed: seed, stream: "opener", ["days": "\(days)"])
             : one(grammar.opener, seed: seed, stream: "opener")
         let cam = "\(camera.cameraNumber)"
-        let age = age(of: struck, at: date, calendar: calendar)
+        // "LEFT OUT SINCE" at most one tape in three.
+        var recent: [PetCamBlockRecord] = []
+        for record in history.reversed() where record.outcome.hasTape && record.endedAt <= date {
+            recent.append(record)
+            if recent.count == 2 { break }
+        }
+        let sinceAge = age(of: struck, at: date, calendar: calendar)
+        let age = isSinceForm(sinceAge) && recent.contains(where: { isSinceForm($0.captions.age) }) ? nil : sinceAge
         let shapeLines = (
             aftermath: one(grammar.aftermath, seed: seed, stream: "aftermath", ["cam": cam]),
             rewind: one(grammar.rewind, seed: seed, stream: "rewind"),
@@ -288,12 +372,17 @@ public enum PetCamCaptions {
             reveal: fill(grammar.meanwhile, ["spot": grammar.name(strike), "remains": words.remains]),
             tell: setup.tell.flatMap { $0.spot == strike ? grammar.tells[$0.exception.rawValue] : nil }
         )
-        let callback = callback(strike: strike, struck: struck, room: room, outcome: outcome, history: history,
-                                at: date, seed: seed, calendar: calendar)
+        let callback = callback(strike: strike, struck: struck, room: room, camera: camera, outcome: outcome,
+                                history: history, at: date, seed: seed, calendar: calendar)
+        let windUp = one(grammar.windUp, seed: seed, stream: "windUp")
         let object = words.name
         if outcome == .caught {
             let action = fill(words.charge, ["spot": grammar.name(strike)])
             let priors = history.filter { $0.outcome == .caught && $0.endedAt <= date }.count
+            let wanted = setup.wanted == strike
+                ? Self.wanted(since: PetCamSetup.wantedSince(struck.kind, history: history, before: date) ?? date,
+                              at: date, calendar: calendar)
+                : nil
             return PetCamCaptionSet(
                 opener: opener,
                 watch: one(grammar.motion, seed: seed, stream: "watch", ["cam": cam]),
@@ -302,11 +391,12 @@ public enum PetCamCaptions {
                 age: age, callback: callback,
                 turn: one(grammar.noticed, seed: seed, stream: "turn"),
                 closer: grammar.caught,
-                charge: fill(grammar.charge, ["charge": cleanDodge(dodge) ?? action]),
+                charge: fill(grammar.charge, ["charge": cleanDodge(dodge).map { fill(grammar.obstruction, ["dodge": $0]) }
+                    ?? action]),
                 publicCharge: fill(grammar.charge, ["charge": action]),
                 priors: priors > 0 ? fill(grammar.priors, ["count": "\(priors)"]) : grammar.firstOffense,
                 aftermath: shapeLines.aftermath, rewind: shapeLines.rewind, enhance: shapeLines.enhance,
-                tell: shapeLines.tell
+                tell: shapeLines.tell, windUp: windUp, wanted: wanted
             )
         }
         return PetCamCaptionSet(

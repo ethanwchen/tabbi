@@ -106,23 +106,45 @@ public enum PetCamScene {
         return (rect.width, rect.height)
     }
 
-    /// The part of the room a framing shows. A spot camera is half the room
-    /// across and a close-up a quarter, so every framing scales by a whole
-    /// multiple of the wide shot and the pixels stay square and even.
-    static func crop(of framing: PetCamShot.Framing) -> PetCamLayout.Rect {
+    /// The part of the room a framing shows, given the wrecks on the floor
+    /// (a wreck close-up centers on the newest under its spot). Every
+    /// framing but the wide shot is half the room across, so each scales by
+    /// exactly twice the wide shot and the pixels stay square and even, and
+    /// no close-up ever cuts the pet off.
+    static func crop(of framing: PetCamShot.Framing, wrecks: [PetCamWreck] = []) -> PetCamLayout.Rect {
+        let width = layout.width / 2, height = layout.height / 2
+        func centered(x: Int, y: Int) -> PetCamLayout.Rect {
+            PetCamLayout.Rect(x: min(max(x - width / 2, 0), layout.width - width),
+                              y: min(max(y - height / 2, 0), layout.height - height), width: width, height: height)
+        }
         switch framing {
         case .wide:
             return PetCamLayout.Rect(x: 0, y: 0, width: layout.width, height: layout.height)
         case .spot(let spot):
             return layout.spot(spot).crop
         case .closeUp(let place):
-            // Centered on the pet's head and chest at that place.
+            // The whole 32x32 frame, centered.
             let pet = placement(for: place, pose: .lensStare)
-            let width = layout.width / 4, height = layout.height / 4
-            let x = min(max(pet.x + 16 - width / 2, 0), layout.width - width)
-            let y = min(max(pet.y + 17 - height / 2, 0), layout.height - height)
-            return PetCamLayout.Rect(x: x, y: y, width: width, height: height)
+            return centered(x: pet.x + 16, y: pet.y + 16)
+        case .wreck(let spot, _):
+            let anchor = wrecks.last { $0.spot == spot }.map(wreckAnchor) ?? layout.spot(spot).object
+            return centered(x: anchor.x, y: anchor.y - 4)
         }
+    }
+
+    /// Where a wreck lies on the floor (its bottom center).
+    static func wreckAnchor(_ wreck: PetCamWreck) -> PetCamLayout.Point {
+        let anchors = layout.spot(wreck.spot).wrecks
+        return anchors[min(max(wreck.slot, 0), anchors.count - 1)]
+    }
+
+    /// Whether `wreck` lies inside what `framing` shows, so a caption about
+    /// it ("RIGHT NEXT TO THE PUDDLE") only plays over a picture of it.
+    static func shows(_ wreck: PetCamWreck, in framing: PetCamShot.Framing) -> Bool {
+        let rect = crop(of: framing, wrecks: [wreck])
+        let anchor = wreckAnchor(wreck)
+        return anchor.x >= rect.x + 3 && anchor.x < rect.x + rect.width - 3
+            && anchor.y - 3 >= rect.y && anchor.y - 3 < rect.y + rect.height
     }
 
     /// The part of the wide shot a spot covers, in sprite pixels: its
@@ -139,7 +161,70 @@ public enum PetCamScene {
         let grid = wrecked ? wreck(kind) : object(kind)
         var canvas = PetCanvas(width: grid.width + 2, height: grid.height + 2)
         canvas.stamp(grid, x: 1, y: 1)
-        return (canvas.outlined(with: .ink).colors(using: palette), canvas.width, canvas.height)
+        return (canvas.outlined(with: wrecked ? .coatShade : .ink).colors(using: palette), canvas.width, canvas.height)
+    }
+
+    /// A quarter of a picture.
+    public enum Quadrant: CaseIterable, Hashable, Sendable {
+        case topLeading, topTrailing, bottomLeading, bottomTrailing
+    }
+
+    /// The quarter of `shot`'s picture that the pet and the evidence (the
+    /// object being struck and the wrecks on the floor) leave most empty,
+    /// where the CAUGHT stamp lands so the last frame shows suspect,
+    /// evidence and verdict together. The top quarters count the burn-in
+    /// band as taken; ties go to the bottom, then the trailing side.
+    public static func emptyQuadrant(of shot: PetCamShot, pet: PetProfile) -> Quadrant {
+        let crop = crop(of: shot.framing, wrecks: shot.wrecks)
+        var taken: [PetCamLayout.Rect] = []
+        if let pose = shot.pet, let place = shot.place {
+            let at = placement(for: place, pose: pose)
+            let canvas = PetCamPetArt.canvas(pose, profile: pet, facingRight: at.facingRight)
+            if let box = canvas.opaqueBounds {
+                taken.append(PetCamLayout.Rect(x: at.x + shot.petOffset.x + box.minX, y: at.y + shot.petOffset.y + box.minY,
+                                               width: box.maxX - box.minX + 1, height: box.maxY - box.minY + 1))
+            }
+        }
+        for wreck in shot.wrecks {
+            let grid = Self.wreck(wreck.object.kind), base = wreckAnchor(wreck)
+            taken.append(PetCamLayout.Rect(x: base.x - grid.width / 2 - 1, y: base.y - grid.height - 1,
+                                           width: grid.width + 2, height: grid.height + 2))
+        }
+        for (spot, state) in shot.states where state == .struck {
+            guard let kind = shot.objects[spot]?.kind else { continue }
+            let grid = object(kind), place = layout.spot(spot)
+            let base = flies(kind) ? PetCamLayout.Point(x: place.object.x + (place.strike.facingRight ? 7 : -7),
+                                                        y: place.object.y - 5) : place.object
+            let side = max(grid.width, grid.height) + 2
+            taken.append(PetCamLayout.Rect(x: base.x - side / 2, y: base.y - side, width: side, height: side))
+        }
+        // The burn-in's band across the top.
+        taken.append(PetCamLayout.Rect(x: crop.x, y: crop.y, width: crop.width, height: crop.height / 8))
+        func overlap(_ a: PetCamLayout.Rect, _ b: PetCamLayout.Rect) -> Int {
+            max(0, min(a.x + a.width, b.x + b.width) - max(a.x, b.x)) * max(0, min(a.y + a.height, b.y + b.height) - max(a.y, b.y))
+        }
+        let halfW = crop.width / 2, halfH = crop.height / 2
+        let order: [Quadrant] = [.bottomTrailing, .bottomLeading, .topTrailing, .topLeading]
+        let areas = order.map { quadrant -> Int in
+            let right = quadrant == .topTrailing || quadrant == .bottomTrailing
+            let bottom = quadrant == .bottomLeading || quadrant == .bottomTrailing
+            let rect = PetCamLayout.Rect(x: crop.x + (right ? halfW : 0), y: crop.y + (bottom ? halfH : 0),
+                                         width: halfW, height: halfH)
+            return taken.reduce(0) { $0 + overlap($1, rect) }
+        }
+        let best = areas.min() ?? 0
+        return order[areas.firstIndex(of: best) ?? 0]
+    }
+
+    /// The middle of the pet in `shot`'s picture, as fractions of its width
+    /// and height, for a push-in centered on it; nil with no pet in the shot.
+    public static func petCenter(in shot: PetCamShot) -> (x: Double, y: Double)? {
+        guard let pose = shot.pet, let place = shot.place else { return nil }
+        let crop = crop(of: shot.framing, wrecks: shot.wrecks)
+        let at = placement(for: place, pose: pose)
+        let x = Double(at.x + shot.petOffset.x + 16 - crop.x) / Double(crop.width)
+        let y = Double(at.y + shot.petOffset.y + 14 - crop.y) / Double(crop.height)
+        return (min(max(x, 0), 1), min(max(y, 0), 1))
     }
 
     /// Whether the burn-in hour is daylight (07:00 to 18:59), when the
@@ -152,24 +237,54 @@ public enum PetCamScene {
     /// frozen frame (a wobbling object rocks a pixel each tick).
     public static func frame(_ shot: PetCamShot, pet: PetProfile, daylight: Bool, tick: Int = 0) -> Frame {
         var picture = Picture(room: daylight ? Self.dayRoom : Self.nightRoom, daylight: daylight)
+        // Wrecks lie flat on the floor, under everything, each ringed in a
+        // light line so it reads against the dark boards.
         for wreck in shot.wrecks {
-            let anchors = layout.spot(wreck.spot).wrecks
-            picture.sprite(Self.wreck(wreck.object.kind), base: anchors[min(max(wreck.slot, 0), anchors.count - 1)],
-                           light: .wreck)
+            picture.sprite(Self.wreck(wreck.object.kind), base: wreckAnchor(wreck), light: .wreck, outline: .coatShade)
         }
+        // The objects and the pet by where they stand, the nearest drawn
+        // last, so the pet sits behind a plate at the front of its table.
+        // Whatever is in mid-air or flying off a strike is drawn on top.
+        var layers: [(depth: Int, draw: (inout Picture) -> Void)] = []
         for spot in PetCamSpot.allCases {
             guard let object = shot.objects[spot] else { continue }
-            picture.object(object.kind, state: shot.states[spot] ?? .still, at: layout.spot(spot), tick: tick)
+            let state = shot.states[spot] ?? .still
+            let flying = state == .struck && Self.flies(object.kind)
+            layers.append((flying ? Int.max : layout.spot(spot).object.y, { picture in
+                picture.object(object.kind, state: state, at: layout.spot(spot), tick: tick)
+            }))
         }
         if let pose = shot.pet, let place = shot.place {
             let placement = Self.placement(for: place, pose: pose)
             let canvas = PetCamPetArt.canvas(pose, profile: pet, facingRight: placement.facingRight)
-            picture.pet(canvas.colors(using: pet.palette), width: canvas.width, at: placement)
+            let at = PetCamLayout.Placement(x: placement.x + shot.petOffset.x, y: placement.y + shot.petOffset.y,
+                                            facingRight: placement.facingRight)
+            let feet = at.y + (canvas.opaqueBounds?.maxY ?? PetComposer.frameSize - 1)
+            let airborne = if case .caughtMidAct(let kind) = pose { !kind.isEaten } else { false }
+            layers.append((airborne ? Int.max - 1 : feet, { picture in
+                // In mid-air its shadow stays on the ground below it.
+                if airborne { picture.shadow(x: at.x + 16, y: placement.y + PetComposer.frameSize - 1) }
+                picture.pet(canvas.colors(using: pet.palette), width: canvas.width, at: at)
+            }))
+        }
+        for layer in layers.enumerated().sorted(by: {
+            $0.element.depth != $1.element.depth ? $0.element.depth < $1.element.depth : $0.offset < $1.offset
+        }) {
+            layer.element.draw(&picture)
+        }
+        for spot in PetCamSpot.allCases where shot.states[spot] == .struck {
+            if let kind = shot.objects[spot]?.kind { picture.act(kind, at: layout.spot(spot)) }
         }
         if let from = shot.debrisFrom, case .spot(let camera) = shot.framing {
-            picture.debris(from: from, toward: camera, kind: shot.objects[from]?.kind)
+            picture.debris(from: from, toward: camera, kind: shot.objects[from]?.kind, step: shot.debrisStep)
         }
-        return picture.cropped(to: shot.framing)
+        return picture.cropped(to: shot.framing, wrecks: shot.wrecks)
+    }
+
+    /// Whether a strike sends the object flying off its spot (a swat or a
+    /// shove) rather than leaving it standing as the pet works on it.
+    static func flies(_ kind: PetCamObjectKind) -> Bool {
+        kind == .mug || kind == .vase
     }
 
     /// Where the pet's frame goes for `place`, and which way it faces.
@@ -281,11 +396,13 @@ public enum PetCamScene {
                                      blue: mix(shaded.blue, under.blue))
         }
 
-        /// A room-palette sprite outlined in ink, its bottom center at `base`.
-        mutating func sprite(_ grid: SpriteGrid, base: PetCamLayout.Point, light: Light, dx: Int = 0, dy: Int = 0) {
+        /// A room-palette sprite outlined (in ink unless `outline` says),
+        /// its bottom center at `base`.
+        mutating func sprite(_ grid: SpriteGrid, base: PetCamLayout.Point, light: Light, outline: PetPaletteRole = .ink,
+                             dx: Int = 0, dy: Int = 0) {
             var canvas = PetCanvas(width: grid.width + 2, height: grid.height + 2)
             canvas.stamp(grid, x: 1, y: 1)
-            let colors = canvas.outlined(with: .ink).colors(using: PetCamScene.palette)
+            let colors = canvas.outlined(with: outline).colors(using: PetCamScene.palette)
             let originX = base.x - canvas.width / 2 + dx, originY = base.y - canvas.height + 1 + dy
             for y in 0..<canvas.height {
                 for x in 0..<canvas.width {
@@ -295,8 +412,10 @@ public enum PetCamScene {
         }
 
         /// An effect grid (white marks), not outlined, top-left at (x, y);
-        /// `fragments` recolors its solid white marks.
-        mutating func effect(_ grid: SpriteGrid, x originX: Int, y originY: Int, fragments: PetPaletteRole? = nil) {
+        /// `fragments` recolors its solid white marks, and `light` shades
+        /// them like the room (effects that are light themselves stay bright).
+        mutating func effect(_ grid: SpriteGrid, x originX: Int, y originY: Int, fragments: PetPaletteRole? = nil,
+                             light: Light? = nil) {
             var canvas = PetCanvas(width: grid.width, height: grid.height)
             canvas.stamp(grid, x: 0, y: 0)
             if let fragments {
@@ -307,7 +426,7 @@ public enum PetCamScene {
             let colors = canvas.colors(using: PetCamScene.palette)
             for y in 0..<canvas.height {
                 for x in 0..<canvas.width {
-                    if let color = colors[y * canvas.width + x] { blend(color, x: originX + x, y: originY + y, light: nil) }
+                    if let color = colors[y * canvas.width + x] { blend(color, x: originX + x, y: originY + y, light: light) }
                 }
             }
         }
@@ -331,17 +450,50 @@ public enum PetCamScene {
                 sprite(grid, base: spot.object, light: .room)
                 let scent = PetCamScene.effect("scent")
                 effect(scent, x: spot.object.x - scent.width / 2, y: top - scent.height - 1 - tick % 2)
-            case .tipping:
-                // Swatted off its spot: turned over in mid-air, flying away
-                // from the paw, with a swoosh where the paw hit it.
+            case .struck where PetCamScene.flies(kind):
+                // Swatted or shoved off its spot: turned over in mid-air,
+                // flying away from the pet, with a swoosh where it was hit.
                 let fliesRight = spot.strike.facingRight
                 let turned = fliesRight ? grid.rotatedClockwise() : grid.rotatedCounterclockwise()
-                let base = PetCamLayout.Point(x: spot.object.x + (fliesRight ? 7 : -7), y: spot.object.y - 5)
+                let base = flyingBase(spot)
                 sprite(turned, base: base, light: .room)
                 let motion = PetCamScene.effect(fliesRight ? "motionLeft" : "motionRight")
                 let x = fliesRight ? base.x - (turned.width + 2) / 2 - motion.width - 1 : base.x + (turned.width + 2) / 2 + 1
                 effect(motion, x: x, y: base.y - (turned.height + 2) / 2 - motion.height / 2)
+            case .struck where kind.isEaten:
+                // In the pet's mouth: the plate is bare.
+                return
+            case .struck:
+                // Still standing while the pet works on it, rocked a pixel.
+                sprite(grid, base: spot.object, light: .room, dx: spot.strike.facingRight ? 1 : -1)
             }
+        }
+
+        /// Where an object knocked off `spot` is in mid-air.
+        func flyingBase(_ spot: PetCamLayout.Spot) -> PetCamLayout.Point {
+            PetCamLayout.Point(x: spot.object.x + (spot.strike.facingRight ? 7 : -7), y: spot.object.y - 5)
+        }
+
+        /// What the act throws up, over everything: water out of the bowl,
+        /// shreds of tissue, soil, crumbs, petals off the vase, coffee off the
+        /// mug. Drawn above the object, thrown away from the pet.
+        mutating func act(_ kind: PetCamObjectKind, at spot: PetCamLayout.Spot) {
+            let grid = PetCamScene.art.grid("act.\(kind.rawValue)")
+            // The pet faces the object, so whatever flies off goes the way
+            // the pet faces.
+            let away = spot.strike.facingRight
+            let flecks = away ? grid : grid.mirrored()
+            let flying = PetCamScene.flies(kind)
+            let object = flying ? flyingBase(spot) : spot.object
+            let top = object.y - (flying ? PetCamScene.object(kind).width : PetCamScene.object(kind).height)
+            sprite(flecks, base: PetCamLayout.Point(x: object.x + (away ? 4 : -4), y: top + 3), light: .room)
+        }
+
+        /// A soft oval of shade on the floor, centered at (x, y).
+        mutating func shadow(x: Int, y: Int) {
+            let shade = PetColor(red: 0, green: 0, blue: 0, alpha: 110)
+            for dx in -7...7 { blend(shade, x: x + dx, y: y, light: nil) }
+            for dx in -5...5 { blend(shade, x: x + dx, y: y - 1, light: nil) }
         }
 
         mutating func pet(_ colors: [PetColor?], width canvasWidth: Int, at placement: PetCamLayout.Placement) {
@@ -354,13 +506,15 @@ public enum PetCamScene {
         /// Dust and fragments rolling in from the edge of `camera`'s frame
         /// nearest `spot`: a strike heard, not seen. The fragments take the
         /// broken object's main color (white shards, green leaves, water).
-        mutating func debris(from spot: PetCamSpot, toward camera: PetCamSpot, kind: PetCamObjectKind?) {
+        mutating func debris(from spot: PetCamSpot, toward camera: PetCamSpot, kind: PetCamObjectKind?, step: Int) {
             let crop = PetCamScene.layout.spot(camera).crop
             let source = PetCamScene.layout.spot(spot).object
             let fromRight = source.x > crop.x + crop.width / 2
             var grid = PetCamScene.effect("debris")
             if fromRight { grid = grid.mirrored() }
-            let x = fromRight ? crop.x + crop.width - grid.width : crop.x
+            // Just over the edge as it lands, then skidding a few pixels in.
+            let inset = step <= 0 ? -grid.width / 3 : 4
+            let x = fromRight ? crop.x + crop.width - grid.width - inset : crop.x + inset
             let y = crop.y + min(max(source.y - crop.y + 4, 6), crop.height - grid.height - 6)
             effect(grid, x: x, y: y, fragments: kind.map(Self.fragmentRole))
         }
@@ -374,9 +528,9 @@ public enum PetCamScene {
             }
         }
 
-        func cropped(to framing: PetCamShot.Framing) -> Frame {
+        func cropped(to framing: PetCamShot.Framing, wrecks: [PetCamWreck]) -> Frame {
             if case .wide = framing { return Frame(width: width, height: height, pixels: pixels) }
-            let crop = PetCamScene.crop(of: framing)
+            let crop = PetCamScene.crop(of: framing, wrecks: wrecks)
             var cut: [PetColor] = []
             cut.reserveCapacity(crop.width * crop.height)
             for y in crop.y..<(crop.y + crop.height) {

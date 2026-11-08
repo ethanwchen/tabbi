@@ -17,8 +17,14 @@ enum PetCamSheets {
         ("sneak", .sneak(step: 0), false),
         ("sneak 2", .sneak(step: 1), false),
         ("swipe", .swipe, false),
-        ("mid-act", .midAct, false),
-        ("mid-act right", .midAct, true),
+        ("swat mug", .act(.mug), false),
+        ("fish bowl", .act(.fishbowl), false),
+        ("chomp donut", .act(.donut), false),
+        ("shred tissues", .act(.tissues), false),
+        ("dig plant", .act(.plant), false),
+        ("shove vase", .act(.vase), true),
+        ("caught leap", .caughtMidAct(.mug), false),
+        ("caught donut", .caughtMidAct(.donut), false),
         ("lens stare", .lensStare, false),
         ("lie down", .lieDown, false),
         ("stroll", .stroll(step: 1), false),
@@ -48,9 +54,13 @@ enum PetCamSheets {
             for breed in PetBreed.allCases {
                 let profile = PetProfile(name: "", breed: breed, outfit: demo.outfit, accessories: demo.accessories)
                 rows.append((0..<PetCamPetArt.mugshotLooks).map { (PetCamPetArt.mugshot($0, profile: profile), profile.palette) }
-                    + [(PetCamPetArt.mugshotProfile(profile), profile.palette)])
+                    + [(PetCamPetArt.mugshotProfile(profile), profile.palette)]
+                    + PetCamObjectKind.allCases.enumerated().map { look, kind in
+                        (PetCamPetArt.mugshot(look, profile: profile, evidence: kind), profile.palette)
+                    })
             }
-            try sheet(rows, columns: ["deadpan", "smug", "side-eye", "unbothered", "yawn", "profile"],
+            try sheet(rows, columns: ["deadpan", "smug", "side-eye", "unbothered", "yawn", "profile"]
+                        + PetCamObjectKind.allCases.map { "guilty \($0.rawValue)" },
                       rowLabels: PetBreed.allCases.map(\.displayName), scale: scale,
                       to: folder.appendingPathComponent("petcam-mugshots-\(scale)x.png"))
         }
@@ -96,6 +106,30 @@ enum PetCamSheets {
                 shots.append(("home \(label) \(seed)", PetCamShot.frozenFrame(room: game.room, setup: game.setup), daylight))
             }
         }
+        // Every wreck on the floor at once, at the wide shot's 1x.
+        let kinds = PetCamObjectKind.allCases
+        let messy = PetCamRoom(objects: [:], wrecks: kinds.enumerated().map { index, kind in
+            PetCamWreck(object: PetCamObject(kind: kind, placedAt: start, serial: index),
+                        spot: PetCamSpot.allCases[index % 3], wreckedAt: start.addingTimeInterval(Double(index)),
+                        blockID: "w\(index)", slot: index / 3)
+        })
+        shots.append(("all wrecks", PetCamShot(framing: .wide, objects: [:], wrecks: messy.wrecks), false))
+        // Each object's act and its freeze, on each spot in turn.
+        for (index, kind) in kinds.enumerated() {
+            let spot = PetCamSpot.allCases[index % 3]
+            let object = PetCamObject(kind: kind, placedAt: start, serial: 0)
+            let act = PetCamShot(framing: .spot(spot), objects: [spot: object], states: [spot: .struck],
+                                 pet: .act(kind), place: .strike(spot))
+            var freeze = act
+            freeze.framing = .closeUp(.strike(spot))
+            freeze.pet = .caughtMidAct(kind)
+            var wreck = PetCamShot(framing: .wreck(spot, hidden: true), objects: [:], wrecks: [
+                PetCamWreck(object: object, spot: spot, wreckedAt: start, blockID: "x", slot: 0),
+            ])
+            wreck.states = [spot: .gone]
+            shots += [("act \(kind.rawValue)", act, false), ("freeze \(kind.rawValue)", freeze, false),
+                      ("wreck \(kind.rawValue)", wreck, false)]
+        }
         // Plays until it has one catch and one miss on every spot.
         var game = PetCamGame(seed: 0x9E7, at: start)
         var seen: Set<String> = []
@@ -123,8 +157,8 @@ enum PetCamSheets {
             let context = try canvas(width: columns * (cellWidth + pad) + pad, height: rows * (cellHeight + pad + header) + pad)
             for (n, (title, shot, daylight)) in shots.enumerated() {
                 let frame = PetCamScene.frame(shot, pet: pet, daylight: daylight)
-                // Spot shots are half the size and close-ups a quarter, so
-                // they draw at two and four times the scale.
+                // Spot shots and close-ups are half the size, so they draw
+                // at twice the scale.
                 let zoom = scale * max(1, 100 / frame.width)
                 guard let image = frame.image(scale: zoom) else { continue }
                 let x = pad + (n % columns) * (cellWidth + pad)

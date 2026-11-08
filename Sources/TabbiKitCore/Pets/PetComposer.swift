@@ -80,6 +80,32 @@ public enum PetComposer {
         /// mirrored), in place of the open eyes, like `PetPose.Eyes`
         /// states: 4x3, centered on a 2x3 open eye.
         var eyes: EyeOverlays?
+        /// Pixels the face (eyes, nose, mouth, cheeks and face items) slides
+        /// sideways inside the head, negative to the left: a head turned
+        /// three quarters toward something.
+        var faceShift = 0
+        /// Something held up to the mouth in both paws, placed like a mug
+        /// raised for a sip (a donut mid-bite).
+        var held: SpriteGrid?
+        /// Small marks laid over the head after everything else (a fish on
+        /// top, frosting on the mouth), each at its anchor.
+        var marks: [Mark] = []
+
+        struct Mark: Hashable {
+            enum Anchor: Hashable {
+                /// Centered on top of the skull, resting on it like a hat.
+                case crown
+                /// Over the left ear, as drawn.
+                case leftEar
+                /// Centered on the mouth, found like an open mouth.
+                case mouth
+                /// Centered just under the eyes, on the nose.
+                case nose
+            }
+
+            var grid: SpriteGrid
+            var anchor: Anchor
+        }
 
         struct EyeOverlays: Hashable {
             var left: SpriteGrid
@@ -215,9 +241,10 @@ public enum PetComposer {
         let eyeRow = layout.eyeRow - layout.faceRow
         let face = extras.eyes.map { EffectArt.face(layout.face, eyeRow: eyeRow, left: $0.left, right: $0.right) }
             ?? EffectArt.face(layout.face, eyeRow: eyeRow, eyes: pose.eyes)
-        canvas.stamp(face, x: headX, y: headY + layout.faceRow, pattern: pattern)
+        let faceX = headX + extras.faceShift
+        canvas.stamp(face, x: faceX, y: headY + layout.faceRow, pattern: pattern)
         if let (grid, origin) = EffectArt.mouth(pose.mouth, in: layout.face) {
-            canvas.stamp(grid, x: headX + origin.x, y: headY + layout.faceRow + origin.y, pattern: pattern)
+            canvas.stamp(grid, x: faceX + origin.x, y: headY + layout.faceRow + origin.y, pattern: pattern)
         }
         if case .curled = stance, breed.hasTail {
             // The tail comes round from the rump and runs along the floor
@@ -232,7 +259,7 @@ public enum PetComposer {
 
         func stampFace(_ item: CostumeArt.FaceItem) {
             let face = item.frame(phase)
-            canvas.stamp(layout.family == .cat ? face.cat : face.dog, x: headX, y: headY + layout.eyeRow - item.eyeRow)
+            canvas.stamp(layout.family == .cat ? face.cat : face.dog, x: faceX, y: headY + layout.eyeRow - item.eyeRow)
         }
         func stampHead(_ item: CostumeArt.HeadItem) {
             canvas.stamp(item.grid(phase), x: headX, y: headY + layout.skullTop - item.sitRow)
@@ -271,6 +298,27 @@ public enum PetComposer {
         }
         if stance == .sitting, let gesture = pose.gesture {
             stampGesture(gesture, on: &canvas, layout: layout, headX: headX, headY: headY, pattern: pattern)
+        }
+        if stance == .sitting, let held = extras.held, let (_, mouth) = EffectArt.mouth(.open, in: layout.face) {
+            // Up at the mouth like a mug mid-sip, paws on either side.
+            let x = faceX + mouth.x + 2 - held.width / 2
+            let y = headY + layout.faceRow + mouth.y - 1
+            canvas.stamp(PropArt.mugPaw, x: x - 3, y: y + 1, pattern: pattern)
+            canvas.stamp(PropArt.mugPaw, x: x + held.width - 1, y: y + 1, pattern: pattern)
+            canvas.stamp(held, x: x, y: y)
+        }
+        for mark in extras.marks {
+            let grid = mark.grid
+            let (x, y): (Int, Int) = switch mark.anchor {
+            case .crown: (headX + layout.head.width / 2 - grid.width / 2, headY + layout.skullTop - grid.height + 1)
+            case .leftEar: (headX, headY + max(layout.skullTop - 3, 0))
+            case .mouth:
+                EffectArt.mouth(.open, in: layout.face).map {
+                    (faceX + $0.origin.x + 2 - grid.width / 2, headY + layout.faceRow + $0.origin.y)
+                } ?? (faceX + layout.head.width / 2 - grid.width / 2, headY + layout.eyeRow + 4)
+            case .nose: (faceX + layout.head.width / 2 - grid.width / 2, headY + layout.eyeRow + 2)
+            }
+            canvas.stamp(grid, x: x, y: y)
         }
 
         // Aura items float in the air, so they are placed in the frame and

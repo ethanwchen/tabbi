@@ -7,8 +7,16 @@ import XCTest
 final class PetCamArtTests: XCTestCase {
     static let poses: [PetCamPose] = [
         .stare(.counter), .stare(.shelf), .stare(.table), .sneak(step: 0), .sneak(step: 1), .sneak(step: 2),
-        .sneak(step: 3), .swipe, .midAct, .lensStare, .lieDown, .stroll(step: 0), .stroll(step: 1),
-    ]
+        .sneak(step: 3), .swipe, .lensStare, .lieDown, .stroll(step: 0), .stroll(step: 1),
+    ] + PetCamObjectKind.allCases.map(PetCamPose.act) + [.caughtMidAct(.mug), .caughtMidAct(.donut)]
+
+    /// Poses whose eyes are shut or squeezed against a splash, a chomp or
+    /// soil: they show no eye pixels to count, so the outfit check reads the
+    /// whole face instead.
+    static func eyesShut(_ pose: PetCamPose) -> Bool {
+        if case .act(let kind) = pose { return kind != .mug && kind != .tissues }
+        return false
+    }
     let eyeRoles: Set<PetPaletteRole> = [.eye, .pupil, .eyeLight]
 
     func eyePixels(_ canvas: PetCanvas) -> Int {
@@ -20,7 +28,7 @@ final class PetCamArtTests: XCTestCase {
             for pose in Self.poses {
                 let bare = PetCamPetArt.canvas(pose, profile: PetProfile(name: "", breed: breed))
                 let eyes = eyePixels(bare)
-                XCTAssertGreaterThanOrEqual(eyes, 4, "\(breed) \(pose) shows its eyes")
+                if !Self.eyesShut(pose) { XCTAssertGreaterThanOrEqual(eyes, 4, "\(breed) \(pose) shows its eyes") }
                 for outfit in PetOutfit.allCases where outfit != .none {
                     let dressed = PetCamPetArt.canvas(pose, profile: PetProfile(name: "", breed: breed, outfit: outfit))
                     XCTAssertEqual(eyePixels(dressed), eyes, "\(outfit) covers an eye on \(breed) in \(pose)")
@@ -46,21 +54,94 @@ final class PetCamArtTests: XCTestCase {
                 XCTAssertEqual(eyePixels(demo), eyes, "the demo look covers an eye on \(breed) look \(index)")
             }
             XCTAssertNotEqual(PetCamPetArt.mugshotProfile(bare), looks[0], "a side view as well as the front")
+            // The evidence a guilty pet wears never covers an eye, and each
+            // object leaves its own mark.
+            for look in 0..<PetCamPetArt.mugshotLooks {
+                let demo = PetProfile(name: "", breed: breed, outfit: .cozyHoodie, accessories: [.beanie])
+                let clean = PetCamPetArt.mugshot(look, profile: demo)
+                let guilty = PetCamObjectKind.allCases.map { PetCamPetArt.mugshot(look, profile: demo, evidence: $0) }
+                XCTAssertEqual(Set(guilty).count, guilty.count, "\(breed) look \(look): one mark per object")
+                for (kind, picture) in zip(PetCamObjectKind.allCases, guilty) {
+                    XCTAssertNotEqual(picture, clean, "\(breed) wears the \(kind)")
+                    let covered = clean.pixels.indices.filter {
+                        (clean.pixels[$0].map(eyeRoles.contains) ?? false) && picture.pixels[$0] != clean.pixels[$0]
+                    }
+                    XCTAssertEqual(covered, [], "the \(kind) mark covers an eye on \(breed) look \(look)")
+                }
+            }
         }
     }
 
-    func testEveryFramingIsAWholeMultipleOfTheWideShot() {
+    func testNoFramingZoomsPastTwiceTheWideShotOrCutsThePetOff() {
         let wide = PetCamScene.size(of: .wide)
+        func inRoom(_ rect: PetCamLayout.Rect) -> Bool {
+            rect.x >= 0 && rect.y >= 0 && rect.x + rect.width <= wide.width && rect.y + rect.height <= wide.height
+        }
         for spot in PetCamSpot.allCases {
             let crop = PetCamScene.size(of: .spot(spot))
             XCTAssertEqual(crop.width * 2, wide.width)
             XCTAssertEqual(crop.height * 2, wide.height)
             for place in [PetCamPlace.strike(spot), .enter(spot), .lounge(spot)] {
                 let rect = PetCamScene.crop(of: .closeUp(place))
-                XCTAssertEqual(rect.width * 4, wide.width)
-                XCTAssertEqual(rect.height * 4, wide.height)
-                XCTAssertTrue(rect.x >= 0 && rect.y >= 0 && rect.x + rect.width <= wide.width
-                    && rect.y + rect.height <= wide.height, "\(place) close-up stays in the room")
+                XCTAssertEqual(rect.width * 2, wide.width, "a close-up is at most 2x")
+                XCTAssertEqual(rect.height * 2, wide.height)
+                XCTAssertTrue(inRoom(rect), "\(place) close-up stays in the room")
+                let pet = PetCamScene.placement(for: place, pose: .lensStare)
+                XCTAssertTrue(pet.x >= rect.x && pet.y >= rect.y && pet.x + PetComposer.frameSize <= rect.x + rect.width
+                    && pet.y + PetComposer.frameSize <= rect.y + rect.height, "the whole pet is in the \(place) close-up")
+            }
+            for slot in 0..<PetCamRoom.visibleWrecksPerSpot {
+                let wreck = PetCamWreck(object: PetCamObject(kind: .vase, placedAt: .distantPast, serial: 0), spot: spot,
+                                        wreckedAt: .distantPast, blockID: "w", slot: slot)
+                for hidden in [true, false] {
+                    let rect = PetCamScene.crop(of: .wreck(spot, hidden: hidden), wrecks: [wreck])
+                    XCTAssertEqual(rect.width * 2, wide.width)
+                    XCTAssertTrue(inRoom(rect))
+                    XCTAssertTrue(PetCamScene.shows(wreck, in: .wreck(spot, hidden: hidden)), "the close-up shows it")
+                }
+                XCTAssertTrue(PetCamScene.shows(wreck, in: .spot(spot)), "its own camera sees the wreck")
+                XCTAssertTrue(PetCamScene.shows(wreck, in: .wide))
+            }
+        }
+    }
+
+    func testWrecksAreRingedInLightAndObjectsInInk() {
+        let ink = PetCamScene.palette[.ink]
+        let light = PetCamScene.palette[.coatShade]
+        for kind in PetCamObjectKind.allCases {
+            for wrecked in [false, true] {
+                let sprite = PetCamScene.sprite(kind, wrecked: wrecked)
+                // The leftmost opaque pixel is always part of the outline.
+                let edge = (0..<sprite.width).lazy.compactMap { x in
+                    (0..<sprite.height).compactMap { sprite.colors[$0 * sprite.width + x] }.first
+                }.first
+                XCTAssertEqual(edge, wrecked ? light : ink, "\(kind) \(wrecked ? "wreck" : "object") outline")
+            }
+        }
+    }
+
+    func testThePetStandsBehindWhatIsInFrontOfIt() {
+        // On the counter the pet sits behind the object (its feet are
+        // higher up the frame than the object's base), so wherever both
+        // draw, the object wins; on the shelf the pet is in front.
+        let pet = PetProfile(name: "", breed: .britishShorthair, outfit: .cozyHoodie, accessories: [.beanie])
+        for (spot, objectInFront) in [(PetCamSpot.counter, true), (.shelf, false)] {
+            let objects = [spot: PetCamObject(kind: .donut, placedAt: .distantPast, serial: 0)]
+            let both = PetCamShot(framing: .wide, objects: objects, pet: .swipe, place: .strike(spot))
+            var objectOnly = both
+            objectOnly.pet = nil
+            var petOnly = both
+            petOnly.objects = [:]
+            var empty = petOnly
+            empty.pet = nil
+            let a = PetCamScene.frame(both, pet: pet, daylight: false)
+            let o = PetCamScene.frame(objectOnly, pet: pet, daylight: false)
+            let p = PetCamScene.frame(petOnly, pet: pet, daylight: false)
+            let e = PetCamScene.frame(empty, pet: pet, daylight: false)
+            let overlap = a.pixels.indices.filter { o.pixels[$0] != e.pixels[$0] && p.pixels[$0] != e.pixels[$0] }
+            XCTAssertFalse(overlap.isEmpty, "the pet and the object overlap on the \(spot)")
+            for index in overlap {
+                XCTAssertEqual(a.pixels[index], objectInFront ? o.pixels[index] : p.pixels[index], "\(spot) at \(index)")
             }
         }
     }
@@ -72,9 +153,17 @@ final class PetCamArtTests: XCTestCase {
                 let canvas = PetCamPetArt.canvas(pose, profile: profile)
                 XCTAssertEqual(canvas.width, PetComposer.frameSize)
                 let bounds = try XCTUnwrap(canvas.opaqueBounds)
-                XCTAssertEqual(bounds.maxY, PetComposer.frameSize - 1 - (pose == .midAct ? 1 : 0),
-                               "\(breed) \(pose) stands on the bottom row (the swat hops a pixel)")
+                switch pose {
+                case .caughtMidAct(let kind) where !kind.isEaten:
+                    XCTAssertLessThanOrEqual(bounds.maxY, PetComposer.frameSize - 3, "\(breed) is caught in mid-air")
+                default:
+                    XCTAssertEqual(bounds.maxY, PetComposer.frameSize - 1 - (pose == .act(.mug) ? 1 : 0),
+                                   "\(breed) \(pose) stands on the bottom row (the swat hops a pixel)")
+                }
                 XCTAssertGreaterThan(bounds.minY, 0, "\(breed) \(pose) keeps its head in the frame")
+                let demo = PetCamPetArt.canvas(pose, profile: PetProfile(name: "", breed: breed, outfit: .cozyHoodie,
+                                                                         accessories: [.beanie]))
+                XCTAssertGreaterThan(try XCTUnwrap(demo.opaqueBounds).minY, 0, "the beanie stays in frame: \(pose)")
             }
             // Facing right is the exact mirror image.
             let left = PetCamPetArt.canvas(.sneak(step: 1), profile: profile)

@@ -146,43 +146,66 @@ public struct PetCamRoom: Codable, Hashable, Sendable {
     }
 
     /// The pet strikes `spot` at `date` in block `blockID`: the object there
-    /// becomes a wreck on the floor and a new object is left out in its
-    /// place, picked by `random` from the kinds not already in the room (and
-    /// never the kind just wrecked), so three different things always wait.
-    /// Applying the same block twice changes nothing.
+    /// becomes a wreck on the floor (`wreck`) and a new object is left out
+    /// in its place (`leaveOut`). Applying the same block twice changes
+    /// nothing.
     @discardableResult
     public mutating func strike(_ spot: PetCamSpot, at date: Date, blockID: String,
                                 random: inout PetCamRandom) -> PetCamWreck? {
         guard !hasWreck(from: blockID) else { return nil }
-        let struck = objects[spot]
-        var wreck: PetCamWreck?
-        if let struck {
-            // The new wreck takes the place on the floor the one that stays
-            // is not using.
-            let staying = wrecks.filter { $0.spot == spot }.suffix(Self.visibleWrecksPerSpot - 1).map(\.slot)
-            let slot = (0..<Self.visibleWrecksPerSpot).first { !staying.contains($0) } ?? 0
-            let made = PetCamWreck(object: struck, spot: spot, wreckedAt: date, blockID: blockID, slot: slot)
-            wrecks = Self.swept(wrecks + [made])
-            wreck = made
-        }
-        let inRoom = Set(objects.filter { $0.key != spot }.values.map(\.kind))
-        let choices = PetCamObjectKind.allCases.filter { !inRoom.contains($0) && $0 != struck?.kind }
-        let pool = choices.isEmpty ? PetCamObjectKind.allCases : choices
-        let kind = pool[Int(random.next() % UInt64(pool.count))]
-        objects[spot] = PetCamObject(kind: kind, placedAt: date, serial: nextSerial)
-        nextSerial += 1
+        let struck = objects[spot]?.kind
+        let wreck = wreck(spot, at: date, blockID: blockID)
+        leaveOut(at: spot, replacing: struck, date: date, random: &random)
         return wreck
     }
 
+    /// The first half of a strike, and the room a tape shows right after
+    /// it: the object on `spot` goes down as a wreck in the place on the
+    /// floor the wreck that stays is not using, and the spot stands empty.
+    @discardableResult
+    public mutating func wreck(_ spot: PetCamSpot, at date: Date, blockID: String) -> PetCamWreck? {
+        guard !hasWreck(from: blockID), let struck = objects[spot] else { return nil }
+        let staying = wrecks.filter { $0.spot == spot }.suffix(Self.visibleWrecksPerSpot - 1).map(\.slot)
+        let slot = (0..<Self.visibleWrecksPerSpot).first { !staying.contains($0) } ?? 0
+        let made = PetCamWreck(object: struck, spot: spot, wreckedAt: date, blockID: blockID, slot: slot)
+        wrecks = Self.swept(wrecks + [made])
+        objects[spot] = nil
+        return made
+    }
+
+    /// Leaves a new object out on the empty `spot`, picked by `random` from
+    /// the kinds not already in the room, never `replacing` (the kind just
+    /// wrecked there), and never a kind whose wreck is still on the floor, so
+    /// a fresh fishbowl never stands next to the puddle of the last one.
+    /// When every such kind still has a wreck in view, the one whose newest
+    /// wreck is oldest comes back and its old mess is cleared away first.
+    private mutating func leaveOut(at spot: PetCamSpot, replacing: PetCamObjectKind?, date: Date,
+                                   random: inout PetCamRandom) {
+        let inRoom = Set(objects.filter { $0.key != spot }.values.map(\.kind))
+        var choices = PetCamObjectKind.allCases.filter { !inRoom.contains($0) && $0 != replacing }
+        if choices.isEmpty { choices = PetCamObjectKind.allCases.filter { !inRoom.contains($0) } }
+        let onFloor = Set(wrecks.map(\.object.kind))
+        let clean = choices.filter { !onFloor.contains($0) }
+        let kind: PetCamObjectKind
+        if !clean.isEmpty {
+            kind = clean[Int(random.next() % UInt64(clean.count))]
+        } else {
+            func newest(_ kind: PetCamObjectKind) -> Date {
+                wrecks.filter { $0.object.kind == kind }.map(\.wreckedAt).max() ?? .distantPast
+            }
+            kind = choices.min { newest($0) != newest($1) ? newest($0) < newest($1) : $0.rawValue < $1.rawValue }
+                ?? .mug
+            wrecks.removeAll { $0.object.kind == kind }
+        }
+        objects[spot] = PetCamObject(kind: kind, placedAt: date, serial: nextSerial)
+        nextSerial += 1
+    }
+
     /// Fills any empty spot (after decoding an unknown kind) so every block
-    /// has three objects to choose from.
+    /// has three objects to choose from, by the same rule as a strike.
     public mutating func refill(at date: Date, random: inout PetCamRandom) {
         for spot in PetCamSpot.allCases where objects[spot] == nil {
-            let inRoom = Set(objects.values.map(\.kind))
-            let pool = PetCamObjectKind.allCases.filter { !inRoom.contains($0) }
-            let kind = pool.isEmpty ? .mug : pool[Int(random.next() % UInt64(pool.count))]
-            objects[spot] = PetCamObject(kind: kind, placedAt: date, serial: nextSerial)
-            nextSerial += 1
+            leaveOut(at: spot, replacing: nil, date: date, random: &random)
         }
     }
 
