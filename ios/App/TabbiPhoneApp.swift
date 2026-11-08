@@ -18,6 +18,12 @@ struct TabbiPhoneApp: App {
         let study = StudyStore(observer: cam)
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("-TabbiDemoPet") { study.useDemoPet() }
+        // `-TabbiTimerMinutes <n>` starts on the Timer at that length, for
+        // UI tests that cannot reach the stepper (the largest text size).
+        if let text = DebugLaunch.value(after: "-TabbiTimerMinutes"), let minutes = Int(text) {
+            study.choose(.timer)
+            study.setTimer(StudyTimerLength(minutes: minutes))
+        }
         #endif
         cam.petChanged(study.pet)
         _cam = State(initialValue: cam)

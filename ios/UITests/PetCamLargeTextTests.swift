@@ -13,33 +13,25 @@ final class PetCamLargeTextTests: XCTestCase {
     override func setUp() async throws {
         continueAfterFailure = false
         app.launchArguments = ["-TabbiResetState", "-TabbiDemoPet", "-PetCamQuickBlocks", "-PetCamTestHooks",
-                               "-PetCamSeed", "00000000000051de"]
+                               "-PetCamSeed", "00000000000051d5", "-TabbiTimerMinutes", "1"]
     }
 
     func testEveryScreenAtTheLargestTextSize() throws {
         app.launch()
-        XCTAssertTrue(app.buttons["Start focus"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["Start timer"].waitForExistence(timeout: 10))
         checkpoint("ax-01-home")
         app.swipeUp()
         checkpoint("ax-02-home-scrolled")
         app.swipeDown()
 
-        app.buttons["Pomodoro"].tap()
-        let timerRow = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Timer'")).firstMatch
-        let list = app.collectionViews.firstMatch
-        XCTAssertTrue(list.waitForExistence(timeout: 5))
-        for _ in 0..<8 where !timerRow.isHittable { list.swipeUp() }
-        timerRow.tap()
-        let shorter = app.buttons["A shorter timer"]
-        XCTAssertTrue(shorter.waitForExistence(timeout: 5))
-        while shorter.isEnabled { shorter.tap() }
-
+        // The Timer is already at one minute (`-TabbiTimerMinutes`).
+        let page = app.scrollViews.firstMatch
         let hook = app.staticTexts["debug.strike"]
         XCTAssertTrue(hook.waitForExistence(timeout: 5))
         let spots = ["counter": "counter", "shelf": "shelf", "table": "side table"]
         app.buttons["Hide the camera at the \(spots[hook.label] ?? hook.label)"].tap()
         let start = app.buttons["Start timer"]
-        for _ in 0..<4 where !start.isHittable { app.swipeUp() }
+        for _ in 0..<10 where !start.isHittable { page.swipeUp(velocity: .slow) }
         start.tap()
         let allow = springboard.alerts.buttons["Allow"]
         if allow.waitForExistence(timeout: 5) { allow.tap() }
@@ -65,7 +57,7 @@ final class PetCamLargeTextTests: XCTestCase {
         sleep(1)
 
         let wall = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Mugshot wall'")).firstMatch
-        for _ in 0..<4 where !wall.isHittable { app.swipeDown() }
+        for _ in 0..<10 where !wall.isHittable { page.swipeUp(velocity: .slow) }
         wall.tap()
         XCTAssertTrue(app.navigationBars["Mugshots"].waitForExistence(timeout: 5))
         sleep(1)

@@ -35,13 +35,12 @@ struct TuningPanel: View {
                 } header: { Text(verbatim: "This frozen frame") }
 
                 Section {
-                    slider("Stare weight", value: $tuning.stareWeight, range: 0...PetCamTuning.maximumWeight)
-                    slider("Other spot weight", value: $tuning.otherWeight, range: 0...PetCamTuning.maximumWeight)
+                    slider("Follows its stare", value: $tuning.followStare)
                     Picker(selection: $tuning.exception) {
                         ForEach(PetCamTuning.Exception.allCases, id: \.self) { Text(verbatim: $0.rawValue).tag($0) }
                     } label: { Text(verbatim: "Exception") }
-                    slider("Exception chance", value: $tuning.exceptionChance, range: 0...1, step: 0.05)
-                    slider("Exception weight", value: $tuning.exceptionWeight, range: 0...PetCamTuning.maximumWeight)
+                    slider("Exception shows", value: $tuning.exceptionChance)
+                    slider("Exception decides", value: $tuning.exceptionPull)
                     Button { tuning = .standard } label: { Text(verbatim: "Back to the default read") }
                 } header: { Text(verbatim: "The read") } footer: {
                     Text(verbatim: summary)
@@ -88,10 +87,8 @@ struct TuningPanel: View {
     private var summary: String {
         let plain = tuning.strikeChances(stare: .counter, exception: nil)
         let apart = tuning.strikeChances(stare: .counter, exception: .table)
-        let together = tuning.strikeChances(stare: .counter, exception: .counter)
-        return "No exception: \(percent(plain[.counter] ?? 0)) on the stare. Exception elsewhere: "
-            + "\(percent(apart[.counter] ?? 0)) stare, \(percent(apart[.table] ?? 0)) exception. "
-            + "Exception on the stare: \(percent(together[.counter] ?? 0))."
+        return "No exception: \(percent(plain[.counter] ?? 0)) on the stare. With the exception showing "
+            + "(always off the stare): \(percent(apart[.table] ?? 0)) there, \(percent(apart[.counter] ?? 0)) the stare."
     }
 
     private func label(_ player: String) -> String {
@@ -102,11 +99,10 @@ struct TuningPanel: View {
         }
     }
 
-    private func slider(_ title: String, value: Binding<Double>, range: ClosedRange<Double>, step: Double = 0.5)
-        -> some View {
+    private func slider(_ title: String, value: Binding<Double>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            LabeledContent(title) { Text(verbatim: String(format: "%.2f", value.wrappedValue)).monospacedDigit() }
-            Slider(value: value, in: range, step: step) { Text(verbatim: title) }
+            LabeledContent(title) { Text(verbatim: percent(value.wrappedValue)).monospacedDigit() }
+            Slider(value: value, in: 0...1, step: 0.01) { Text(verbatim: title) }
         }
     }
 

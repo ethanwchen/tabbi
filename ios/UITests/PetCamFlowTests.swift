@@ -21,7 +21,7 @@ final class PetCamFlowTests: XCTestCase {
     override func setUp() async throws {
         continueAfterFailure = false
         app.launchArguments = ["-TabbiResetState", "-TabbiDemoPet", "-PetCamQuickBlocks", "-PetCamTestHooks",
-                               "-PetCamSeed", "00000000000051de"]
+                               "-PetCamSeed", "00000000000051d5"]
     }
 
     func testPlayingSeveralLoops() throws {
@@ -45,7 +45,8 @@ final class PetCamFlowTests: XCTestCase {
         timerRow.tap()
         let shorter = app.buttons["A shorter timer"]
         XCTAssertTrue(shorter.waitForExistence(timeout: 5))
-        while shorter.isEnabled { shorter.tap() }
+        for _ in 0..<6 where !shorter.isHittable { app.swipeUp() }
+        for _ in 0..<60 where shorter.isEnabled { shorter.tap() }
         XCTAssertTrue(app.staticTexts["1 min"].exists)
 
         // Loop 1: a catch. Hide the camera where the pet will strike and

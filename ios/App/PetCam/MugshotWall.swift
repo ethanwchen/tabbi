@@ -64,7 +64,8 @@ struct MugshotWall: View {
     }
 }
 
-/// One mugshot: the pet in front of a height chart and its placard.
+/// One mugshot: the pet's front and side in front of a height chart, its
+/// face different from case to case, and the placard with the evidence.
 struct MugshotCard: View {
     let record: PetCamBlockRecord
     let caseNumber: Int
@@ -73,18 +74,14 @@ struct MugshotCard: View {
         VStack(spacing: 0) {
             ZStack(alignment: .bottom) {
                 HeightChart()
-                PixelPet(canvas: PetCamPetArt.canvas(.lensStare, profile: record.pet).trimmed(margin: 1),
-                         palette: record.pet.palette, pixelSize: 4)
-                    .padding(.bottom, 6)
-                if let kind = record.struck?.kind {
-                    // The evidence, bagged beside the suspect.
-                    Evidence(kind: kind)
-                        .frame(maxWidth: .infinity, alignment: .bottomTrailing)
-                        .padding(8)
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .bottom, spacing: 6) { front; side }
+                    front
                 }
+                .padding(.bottom, 6)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 150)
+            .frame(height: 124)
             .clipped()
             VStack(alignment: .leading, spacing: 4) {
                 Text(verbatim: String(format: "CASE %03d", caseNumber))
@@ -99,6 +96,10 @@ struct MugshotCard: View {
                         .foregroundStyle(CCTV.burnIn)
                         .fixedSize(horizontal: false, vertical: true)
                 }
+                if let kind = record.struck?.kind {
+                    Evidence(kind: kind)
+                        .padding(.top, 4)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(12)
@@ -107,32 +108,49 @@ struct MugshotCard: View {
         .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(CCTV.burnIn.opacity(0.08)))
         .accessibilityElement(children: .combine)
     }
+
+    private var front: some View {
+        PixelPet(canvas: PetCamPetArt.mugshot(caseNumber - 1, profile: record.pet).trimmed(margin: 1),
+                 palette: record.pet.palette, pixelSize: 3)
+    }
+
+    private var side: some View {
+        PixelPet(canvas: PetCamPetArt.mugshotProfile(record.pet).trimmed(margin: 1), palette: record.pet.palette,
+                 pixelSize: 3)
+    }
 }
 
-/// The struck object in an evidence tag: its wreck, drawn in the room's
-/// palette at whole pixels.
+/// Exhibit A: the object the pet went for, whole, at a size you can read,
+/// with its name.
 private struct Evidence: View {
     let kind: PetCamObjectKind
     @Environment(\.displayScale) private var displayScale
 
     var body: some View {
-        let sprite = PetCamScene.sprite(kind, wrecked: true)
-        let scale = max(1, Int((2 * displayScale).rounded(.down)))
-        VStack(spacing: 2) {
+        let sprite = PetCamScene.sprite(kind, wrecked: false)
+        let scale = max(1, Int((3 * displayScale).rounded(.down)))
+        HStack(spacing: 10) {
             if let image = PetRenderer.render(colors: sprite.colors, width: sprite.width, height: sprite.height,
                                               scale: scale) {
                 Image(decorative: image, scale: max(displayScale, 1))
                     .interpolation(.none)
+                    .padding(6)
+                    .background(Color.white.opacity(0.07), in: .rect(cornerRadius: 6, style: .continuous))
             }
-            Text(verbatim: "EVIDENCE")
-                .font(.system(size: 8, weight: .heavy, design: .monospaced))
-                .foregroundStyle(CCTV.screen)
-                .padding(.horizontal, 3)
-                .background(Color(red: 0.95, green: 0.84, blue: 0.45), in: .rect(cornerRadius: 2))
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: "EXHIBIT A")
+                    .font(.system(.caption2, design: .monospaced).weight(.heavy))
+                    .foregroundStyle(CCTV.screen)
+                    .padding(.horizontal, 4)
+                    .background(Color(red: 0.95, green: 0.84, blue: 0.45), in: .rect(cornerRadius: 2))
+                Text(verbatim: PetCamCaptions.name(of: kind))
+                    .font(CCTV.font(.caption, weight: .bold))
+                    .foregroundStyle(CCTV.burnIn.opacity(0.85))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
-        .padding(4)
-        .background(Color.white.opacity(0.08), in: .rect(cornerRadius: 4, style: .continuous))
-        .accessibilityHidden(true)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: "Exhibit A: \(PetCamCaptions.name(of: kind).lowercased())"))
     }
 }
 

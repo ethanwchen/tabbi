@@ -82,14 +82,14 @@ Nothing about the room shows while the block runs; at its planned end a CCTV tap
 The game is pure Swift in `Sources/TabbiKitCore/PetCam`, so the Mac can share it, with its tests in `Tests/TabbiKitCoreTests/PetCam*Tests.swift`.
 
 - `PetCamRoom` holds one object on each of three spots (counter, shelf, side table) out of six kinds (mug, plant, fishbowl, vase, tissue box, donut), and the wrecks on the floor; a strike leaves a wreck and a new object of another kind, so the room drifts.
-- `PetCamTuning` is the read as data: a weight for the stared spot and for the others, and one visible exception (a wobbling object by default, or the breed's appetite) that adds weight to its spot. The defaults give 60% on the stare with nothing wobbling, 50% on a wobble elsewhere and 75% on a wobble at the stare.
+- `PetCamTuning` is the read as data, one tell and one exception: with nothing else showing the pet strikes where it stares 62% of the time; in about one block in three a visible exception shows on a spot it is not staring at (a wobbling object by default, or the breed's appetite), and then it decides the strike 90% of the time.
 - `PetCamSetup` is the frozen frame: a seed, the stare and the exception, all drawn from the seed and saved, so reopening the app shows the same frame and a stopped block never rerolls it.
 - `PetCamGame` arms the camera at Start (blocks of 10 minutes or more, or 5 for the very first), resolves a block that ran to its end into a catch or a miss, turns one cut short into the frozen still (or nothing before the 5-minute commit point), and prepares the next frame from the seed chain, so a whole run replays from its first seed.
 - `PetCamLog` is the sync-ready history: versioned, additive (unknown fields and records are skipped, never the file), and credited once per block id, with a commutative union as its merge.
 - `PetCamCaptions` fills the grammar in `PetCamData/captions.json` from the room and the log: the object's age ("MUG, LEFT OUT 3 DAYS AGO"), repeats ("2ND PLANT TODAY"), old wrecks ("RIGHT NEXT TO THE MUG SHARDS FROM 21:05") and the same spot again; a catch's charge is the dodge line, or what the pet did.
-- `PetCamTape` turns a record into its stills, and `PetCamScene` draws each one.
+- `PetCamTape` turns a record into its stills, and `PetCamScene` draws each one. Each outcome has three shapes, picked by the seed and never the same twice in a row: a catch plays straight, opens cold on the aftermath and rewinds, or pushes in on the pet's face; a miss cuts from the crash to the pet walking in at second three, plays a double take into the lens, or opens cold on the alibi. Every tape runs 10 to 15 seconds, and a miss ends on what really happened ("MEANWHILE, BY THE COUNTER: MUG SHARDS.", and "IT WAS ALREADY WOBBLING." when the exception decided it).
 
-Scripted players through the real game loop under the default tuning (`PetCamReadTests`, 3000 blocks each): always following the stare catches 55.8%, a random spot 31.6%, and reading the wobble too 59.0%.
+Scripted players through the real game loop under the default tuning (`PetCamReadTests`, 3000 blocks each): always following the stare catches 42.4%, a random spot 33.1%, and reading the exception when it shows 72.1%.
 
 ### The art
 
@@ -103,15 +103,15 @@ The six new poses (stare, sneak, swipe, mid-act, lens stare, innocent lie-down) 
 - `PetCamStore` follows the `StudyStore` through `StudyObserver`: Start arms the camera at the very moment the session starts, and the focus record that begins at that moment resolves it, in the app or on the next launch, at its real end time.
 - `HomeScreen` is the frozen frame with its burn-in, grain and scanlines, the three spots as buttons with a viewfinder on the camera's spot, the dodge line and the "Just 5 minutes" dare; `RecordingScreen` is the monitor during a block, with REC and the countdown only.
 - `TapePlayer` plays the stills with cuts of static and ends by itself; `TapeExporter` makes the muted 1080 by 1920 video with the burn-in, captions and a small Tabbi mark, without the dodge line unless the player opts in.
-- `MugshotWall` shows every catch with its case number, date and charge, and replays its tape; `PetPicker` is the breed picker.
+- `MugshotWall` shows every catch with its case number, date and charge, the pet's front (a different face from case to case: deadpan, smug, side-eye, unbothered, mid-yawn) and side, and the struck object as Exhibit A, and replays its tape; `PetPicker` is the breed picker.
 - The Live Activity and the Dynamic Island are a static CCTV frame (REC, the countdown from `Text(timerInterval:)`, scanlines), and a filmed block's end notification says only "Block done. The tape is ready."
 
-Debug builds take `-PetCamQuickBlocks` (one-minute blocks arm the camera and a stop counts after 10 seconds), `-PetCamSeed <hex>` (a fresh game's first seed), `-PetCamTestHooks` (exposes the next strike to UI tests) and `-TabbiDemoPet` (Mochi in the Cozy Hoodie and Beanie), and a long press on the camera's burn-in opens the tuning panel: the weights, the exception and its chance, live strike chances, scripted players, one-minute blocks, the demo pet, a replay and a new room.
+Debug builds take `-PetCamQuickBlocks` (one-minute blocks arm the camera and a stop counts after 10 seconds), `-PetCamSeed <hex>` (a fresh game's first seed), `-PetCamTestHooks` (exposes the next strike to UI tests), `-TabbiTimerMinutes <n>` (starts on the Timer at that length) and `-TabbiDemoPet` (Mochi in the Cozy Hoodie and Beanie), and a long press on the camera's burn-in opens the tuning panel: the weights, the exception and its chance, live strike chances, scripted players, one-minute blocks, the demo pet, a replay and a new room.
 
 ### Strings for translation
 
 The Pet Cam's strings are English only for now and are written inline (`Text(verbatim:)`) so they are easy to find; they need adding to the String Catalog before a release.
-On screen: "What are you avoiding?", "Just 5 minutes", "Camera follows the stare. Tap a lit spot to hide it there.", "Camera hidden at the {spot}. Tap it again to follow the stare.", "Blocks under {n} minutes are not filmed.", "Recording. The tape plays when the block is done.", "Just 5 minutes. After that you can stop any time.", "The camera only films blocks of {n} minutes or more.", "Share", "Share video", "Share with what I was avoiding", "The video could not be made.", "Mugshots", "No mugshots yet", "Hide the camera where your pet strikes and catch it in the act. Every catch gets a mugshot here.", "Your pet", "STOPPED", "TABBI CAM", "Tape ready", "Block done", "The tape is ready."
+On screen: "What are you avoiding?", "EXHIBIT A", "REW", "Just 5 minutes", "Camera follows the stare. Tap a lit spot to hide it there.", "Camera hidden at the {spot}. Tap it again to follow the stare.", "Blocks under {n} minutes are not filmed.", "Recording. The tape plays when the block is done.", "Just 5 minutes. After that you can stop any time.", "The camera only films blocks of {n} minutes or more.", "Share", "Share video", "Share with what I was avoiding", "The video could not be made.", "Mugshots", "No mugshots yet", "Hide the camera where your pet strikes and catch it in the act. Every catch gets a mugshot here.", "Your pet", "STOPPED", "TABBI CAM", "Tape ready", "Block done", "The tape is ready."
 For VoiceOver: "Live camera", "Camera 1, the living room.", the frozen frame's description ("{pet} is staring at the {object} on the {spot}." and "... is wobbling." or "... smells too good."), "Hide the camera at the {spot}", "Mugshot wall, {n}", "Still {n} of {m}", "Plays the tape again", "Makes a muted video of this tape", "Optional. Only the tape and the mugshot show it.", "Starts now. You can stop after five minutes.", "Choose your pet", and each still's description in `TapeStillView.describe`.
 The tape captions are the grammar in `TabbiKitCore/PetCam/PetCamData/captions.json`; a translation is a grammar file per language, and the burn-in (timestamps, "CAM 2", "REC", "LIVE") stays as cameras write it.
 The debug tuning panel's strings are not shipped.
@@ -126,6 +126,7 @@ Every foundation string on screen comes from TabbiKitCore's String Catalog, so i
 
 The Pet Cam's screens borrow a security monitor instead: a near-black screen, pale burn-in text in a monospaced face, a red REC dot, scanlines and grain, with the room as the one hero and the controls on Liquid Glass below it.
 The feed is drawn at whole device pixels per sprite pixel and never resized, and it steps down a whole pixel at a time when larger text needs room, so the art stays crisp and nothing truncates.
+A spot camera draws at exactly twice the wide shot's scale and a close-up at four times, the scanlines run along the wide shot's pixel rows, and grain lands on whole device pixels, so the room's dither and the pet are equally sharp in every framing.
 
 ## Planned Mac connection
 

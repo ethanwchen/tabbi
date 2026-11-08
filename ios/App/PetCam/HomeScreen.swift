@@ -127,7 +127,6 @@ struct HomeScreen: View {
         .accessibilityLabel(Text(verbatim: "Camera 1, the living room. "
             + PetCamCaptions.describe(cam.game.setup, room: cam.game.room, petName: study.pet.name)))
         .overlay { Grain().clipped() }
-        .overlay { Scanlines() }
         .overlay {
             // A soft fade into the monitor at the bottom, under the controls.
             LinearGradient(colors: [.clear, CCTV.screen.opacity(0.85)], startPoint: UnitPoint(x: 0.5, y: 0.82),
@@ -193,6 +192,14 @@ struct HomeScreen: View {
                     wallButton
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            // The largest text sizes: one chip per line.
+            VStack(alignment: .leading, spacing: 8) {
+                MethodButton(showsMethods: $showsMethods)
+                PointsButton { showsPets = true }
+                wallButton
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
@@ -374,21 +381,23 @@ private struct Viewfinder: View {
 
     var body: some View {
         let color = picked ? CCTV.rec : CCTV.burnIn
-        ZStack(alignment: labelBelow ? .bottomLeading : .topLeading) {
-            Corners()
-                .stroke(color, style: StrokeStyle(lineWidth: 2, lineCap: .square))
-                .opacity(shown ? 1 : 0)
-            if shown {
-                Text(verbatim: label)
-                    .font(.system(size: 10, weight: .bold, design: .monospaced))
-                    .foregroundStyle(color)
-                    .padding(.horizontal, 3)
-                    .background(CCTV.screen.opacity(0.65))
-                    .offset(x: 4, y: labelBelow ? 14 : -14)
-                    .fixedSize()
+        Corners()
+            .stroke(color, style: StrokeStyle(lineWidth: 2, lineCap: .square))
+            .opacity(shown ? 1 : 0)
+            .overlay(alignment: labelBelow ? .bottomLeading : .topLeading) {
+                if shown {
+                    Text(verbatim: label)
+                        .font(.system(size: 10, weight: .bold, design: .monospaced))
+                        .foregroundStyle(color)
+                        .padding(.horizontal, 3)
+                        .background(CCTV.screen.opacity(0.65))
+                        .fixedSize()
+                        // Fully outside the brackets (the label is about
+                        // 13 points tall), with air between it and the stroke.
+                        .offset(y: labelBelow ? 17 : -17)
+                }
             }
-        }
-        .shadow(color: .black.opacity(0.6), radius: 0, x: 1, y: 1)
+            .shadow(color: .black.opacity(0.6), radius: 0, x: 1, y: 1)
     }
 }
 

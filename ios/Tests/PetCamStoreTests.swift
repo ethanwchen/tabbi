@@ -170,6 +170,21 @@ import TabbiKitCore
         #expect(!onBreak.filming, "a break is never filmed")
     }
 
+    @Test func everyFramingDrawsAtAWholeMultipleOfTheWideShot() {
+        for width: CGFloat in [233, 300, 342, 366, 400, 402, 1000] {
+            for displayScale: CGFloat in [1, 2, 3] {
+                let wide = FeedView.devicePixels(spriteWidth: 100, width: width, displayScale: displayScale)
+                #expect(FeedView.devicePixels(spriteWidth: 50, width: width, displayScale: displayScale) == wide * 2)
+                #expect(FeedView.devicePixels(spriteWidth: 25, width: width, displayScale: displayScale) == wide * 4)
+                // So a cut between cameras never changes the picture's size.
+                let sizes = [PetCamShot.Framing.wide, .spot(.table), .closeUp(.strike(.table))].map {
+                    FeedView.pictureSize($0, width: width, displayScale: displayScale)
+                }
+                #expect(Set(sizes.map(\.width)).count == 1 && Set(sizes.map(\.height)).count == 1)
+            }
+        }
+    }
+
     @Test func aTapeExportsAsAMutedVerticalVideoUnderTwentySeconds() async throws {
         let rig = Rig()
         defer { try? FileManager.default.removeItem(at: rig.folder) }
@@ -186,6 +201,7 @@ import TabbiKitCore
         let tape = try #require(PetCamTape(record: record))
         #expect(abs(duration - tape.duration) < 1, "\(duration) s for a \(tape.duration) s tape")
         #expect(duration < PetCamTape.maximumDuration)
+        #expect(PetCamTape.durationRange.contains(tape.duration))
         #expect(try await asset.loadTracks(withMediaType: .audio).isEmpty, "muted: no audio track at all")
         let video = try #require(try await asset.loadTracks(withMediaType: .video).first)
         let size = try await video.load(.naturalSize)

@@ -270,7 +270,6 @@ struct TapeStillView: View {
                     Grain()
                 }
             }
-            .overlay { Scanlines() }
             .overlay(alignment: .top) { burnIn.dynamicTypeSize(...DynamicTypeSize.large) }
             .overlay { stamp.dynamicTypeSize(...DynamicTypeSize.large) }
             .frame(width: picture.width, height: picture.height)
@@ -294,7 +293,14 @@ struct TapeStillView: View {
                     .opacity(0.85)
             }
             Spacer(minLength: 8)
-            if still.stamp == nil || still.stamp == .caught {
+            if still.stamp == .rewind {
+                HStack(spacing: 5) {
+                    Image(systemName: "backward.fill")
+                    Text(verbatim: "REW")
+                }
+                .font(font(.caption, 1, weight: .bold))
+                .accessibilityHidden(true)
+            } else if still.stamp == nil || still.stamp == .caught {
                 RecLabel(text: "REC", isRecording: true)
                     .scaleEffect(burnInSize.map { $0 / 12 } ?? 1, anchor: .topTrailing)
             }
@@ -336,6 +342,8 @@ struct TapeStillView: View {
                 .rotationEffect(.degrees(-7))
                 .frame(maxHeight: .infinity, alignment: .bottom)
                 .padding(.bottom, burnInSize.map { $0 * 3 } ?? 36)
+        case .rewind:
+            TrackingBands(seed: grainFrame ?? 3)
         case nil:
             EmptyView()
         }
@@ -357,6 +365,27 @@ struct TapeStillView: View {
     }
 }
 
+/// The bright bands that roll through a tape while it rewinds.
+private struct TrackingBands: View {
+    let seed: Int
+
+    var body: some View {
+        Canvas { context, size in
+            var roll = PetCamRandom(seed: UInt64(truncatingIfNeeded: seed), stream: "tracking")
+            for _ in 0..<3 {
+                let y = (roll.unit() * size.height).rounded(.down)
+                let height = (4 + roll.unit() * 10).rounded(.down)
+                context.fill(Path(CGRect(x: 0, y: y, width: size.width, height: height)),
+                             with: .color(.white.opacity(0.16)))
+                context.fill(Path(CGRect(x: 0, y: y + height, width: size.width, height: 2)),
+                             with: .color(.black.opacity(0.35)))
+            }
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+}
+
 /// A split second of static between two stills.
 private struct Static: View {
     var body: some View {
@@ -375,9 +404,9 @@ struct StaticGrain: View {
     var body: some View {
         Canvas { canvas, size in
             var roll = PetCamRandom(seed: UInt64(truncatingIfNeeded: frame), stream: "grain")
-            let dot = max(size.width / 400, 1)
+            let dot = max((size.width / 400).rounded(), 1)
             for _ in 0..<Int(size.width * size.height / 260) {
-                let x = roll.unit() * size.width, y = roll.unit() * size.height
+                let x = (roll.unit() * size.width).rounded(.down), y = (roll.unit() * size.height).rounded(.down)
                 canvas.fill(Path(CGRect(x: x, y: y, width: dot, height: dot)),
                             with: .color(roll.unit() > 0.5 ? .white.opacity(amount) : .black.opacity(amount * 1.6)))
             }
