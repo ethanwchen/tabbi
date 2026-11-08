@@ -1,9 +1,14 @@
 import SwiftUI
 import TabbiKitCore
 
-/// Every catch as a mugshot: the pet staring into the lens in front of a
-/// height chart, with its case number, the date and the charge (the dodge
-/// line, or what it did). Tapping one replays its tape exactly.
+/// The case file: six object slots across the top (a silhouette until the
+/// pet is first caught with that object), then every tape watched, newest
+/// first. A catch is a mugshot (the pet wearing the evidence, its case
+/// number, the charge, the wreck as Exhibit A), filed as a WANTED card when
+/// it was the object the wall lacked longest. A miss is a cold case: the
+/// wreck, SUSPECT: UNKNOWN and the pet's innocent lie-down as the only
+/// witness, with no count of unsolved cases anywhere. Tapping a card
+/// replays its tape exactly.
 struct MugshotWall: View {
     @Environment(PetCamStore.self) private var cam
     @Environment(\.dismiss) private var dismiss
@@ -13,25 +18,32 @@ struct MugshotWall: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                if cam.mugshots.isEmpty {
-                    empty
-                } else {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: typeSize.isAccessibilitySize ? 280 : 160), spacing: 14,
-                                                 alignment: .top)],
-                              alignment: .center, spacing: 14) {
-                        ForEach(Array(cam.mugshots.enumerated()), id: \.element.id) { offset, record in
-                            Button { replaying = record } label: {
-                                MugshotCard(record: record, caseNumber: cam.mugshots.count - offset)
+                VStack(alignment: .leading, spacing: 18) {
+                    ObjectSlots(caught: cam.caughtKinds)
+                    if cam.cases.isEmpty {
+                        empty
+                    } else {
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: typeSize.isAccessibilitySize ? 280 : 160),
+                                                     spacing: 14, alignment: .top)],
+                                  alignment: .center, spacing: 14) {
+                            ForEach(cam.cases) { record in
+                                Button { replaying = record } label: {
+                                    if let number = cam.caseNumber(of: record) {
+                                        MugshotCard(record: record, caseNumber: number)
+                                    } else {
+                                        ColdCaseCard(record: record)
+                                    }
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityHint(Text(verbatim: "Plays the tape again"))
                             }
-                            .buttonStyle(.plain)
-                            .accessibilityHint(Text(verbatim: "Plays the tape again"))
                         }
                     }
-                    .padding(16)
                 }
+                .padding(CCTV.gutter)
             }
             .background(CCTV.screen.ignoresSafeArea())
-            .navigationTitle(Text(verbatim: "Mugshots"))
+            .navigationTitle(Text(verbatim: "Case file"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -49,29 +61,79 @@ struct MugshotWall: View {
                 .font(.system(size: 44))
                 .foregroundStyle(CCTV.burnIn.opacity(0.5))
                 .accessibilityHidden(true)
-            Text(verbatim: "No mugshots yet")
+            Text(verbatim: "No cases yet")
                 .font(.title3.weight(.semibold))
                 .foregroundStyle(CCTV.burnIn)
-            Text(verbatim: "Hide the camera where your pet strikes and catch it in the act. Every catch gets a mugshot here.")
+            Text(verbatim: "Hide the camera where your pet strikes and catch it in the act. Every tape is filed here.")
                 .font(.body)
                 .foregroundStyle(CCTV.burnIn.opacity(0.65))
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(.horizontal, 32)
-        .padding(.top, 80)
+        .padding(.horizontal, 16)
+        .padding(.top, 40)
         .frame(maxWidth: .infinity)
     }
 }
 
-/// One mugshot: the pet's front and side in front of a height chart, its
-/// face different from case to case, and the placard with the evidence.
+/// The six objects the pet can be caught with: each one drawn once it has
+/// been, a dark silhouette until then.
+private struct ObjectSlots: View {
+    let caught: Set<PetCamObjectKind>
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(verbatim: "CAUGHT WITH \(caught.count) OF \(PetCamObjectKind.allCases.count)")
+                .font(CCTV.font(.caption, weight: .heavy))
+                .foregroundStyle(CCTV.burnIn.opacity(0.7))
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8, alignment: .top),
+                                     count: typeSize.isAccessibilitySize ? 2 : 3),
+                      spacing: 8) {
+                ForEach(PetCamObjectKind.allCases, id: \.self) { kind in
+                    let known = caught.contains(kind)
+                    VStack(spacing: 6) {
+                        ObjectSprite(kind: kind, wrecked: false, silhouette: !known, points: 3)
+                            .frame(height: 54)
+                        Text(verbatim: known ? PetCamCaptions.name(of: kind) : "???")
+                            .font(CCTV.font(.caption2, weight: .bold))
+                            .foregroundStyle(CCTV.burnIn.opacity(known ? 0.85 : 0.4))
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                    .background(CCTV.panel, in: .rect(cornerRadius: 10, style: .continuous))
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(Text(verbatim: known
+                        ? "\(PetCamCaptions.name(of: kind).lowercased()), caught"
+                        : "Not caught with this one yet"))
+                }
+            }
+        }
+    }
+}
+
+/// One mugshot: the pet's front and side in front of a height chart,
+/// wearing the evidence, and the placard with the case. A WANTED catch
+/// gets the poster's yellow band and says how long it was wanted.
 struct MugshotCard: View {
     let record: PetCamBlockRecord
     let caseNumber: Int
 
+    private var wanted: Bool { record.strike != nil && record.setup.wanted == record.strike }
+
     var body: some View {
         VStack(spacing: 0) {
+            if wanted {
+                Text(verbatim: "WANTED")
+                    .font(CCTV.font(.headline, weight: .heavy))
+                    .kerning(2)
+                    .foregroundStyle(CCTV.screen)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 4)
+                    .background(CCTV.wanted)
+            }
             ZStack(alignment: .bottom) {
                 HeightChart()
                 ViewThatFits(in: .horizontal) {
@@ -91,9 +153,19 @@ struct MugshotCard: View {
                     .font(CCTV.font(.caption2, weight: .medium))
                     .foregroundStyle(CCTV.burnIn.opacity(0.7))
                 if let charge = record.captions.charge {
-                    Text(verbatim: charge)
+                    Text(verbatim: PetCamCaptions.chargeLabel)
+                        .font(CCTV.font(.caption2, weight: .heavy))
+                        .foregroundStyle(CCTV.burnIn.opacity(0.55))
+                        .padding(.top, 2)
+                    Text(verbatim: PetCamCaptions.filedCharge(charge))
                         .font(CCTV.font(.footnote, weight: .semibold))
                         .foregroundStyle(CCTV.burnIn)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                if wanted, let line = record.captions.wanted {
+                    Text(verbatim: line)
+                        .font(CCTV.font(.caption2, weight: .bold))
+                        .foregroundStyle(CCTV.wanted)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 if let kind = record.struck?.kind {
@@ -105,13 +177,15 @@ struct MugshotCard: View {
             .padding(12)
         }
         .background(CCTV.panel, in: .rect(cornerRadius: 14, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(CCTV.burnIn.opacity(0.08)))
+        .clipShape(.rect(cornerRadius: 14, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
+            .stroke(wanted ? CCTV.wanted.opacity(0.6) : CCTV.burnIn.opacity(0.08)))
         .accessibilityElement(children: .combine)
     }
 
     private var front: some View {
-        PixelPet(canvas: PetCamPetArt.mugshot(caseNumber - 1, profile: record.pet).trimmed(margin: 1),
-                 palette: record.pet.palette, pixelSize: 3)
+        PixelPet(canvas: PetCamPetArt.mugshot(caseNumber - 1, profile: record.pet, evidence: record.struck?.kind)
+            .trimmed(margin: 1), palette: record.pet.palette, pixelSize: 3)
     }
 
     private var side: some View {
@@ -120,29 +194,84 @@ struct MugshotCard: View {
     }
 }
 
-/// Exhibit A: the object the pet went for, whole, at a size you can read,
-/// with its name.
-private struct Evidence: View {
+/// A miss, filed: the wreck nobody filmed, no suspect, and the pet lying
+/// on the floor as the only witness.
+struct ColdCaseCard: View {
+    let record: PetCamBlockRecord
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(verbatim: "COLD CASE")
+                .font(CCTV.font(.headline, weight: .heavy))
+                .foregroundStyle(CCTV.standby)
+            Text(verbatim: CCTV.timestamp(record.endedAt))
+                .font(CCTV.font(.caption2, weight: .medium))
+                .foregroundStyle(CCTV.burnIn.opacity(0.7))
+            Text(verbatim: "SUSPECT: UNKNOWN")
+                .font(CCTV.font(.footnote, weight: .semibold))
+                .foregroundStyle(CCTV.burnIn)
+                .padding(.top, 2)
+                .fixedSize(horizontal: false, vertical: true)
+            if let kind = record.struck?.kind {
+                Evidence(kind: kind)
+                    .padding(.top, 4)
+            }
+            HStack(alignment: .bottom, spacing: 10) {
+                PixelPet(canvas: PetCamPetArt.canvas(.lieDown, profile: record.pet).trimmed(margin: 1),
+                         palette: record.pet.palette, pixelSize: 2)
+                Text(verbatim: "WITNESS")
+                    .font(.system(.caption2, design: .monospaced).weight(.heavy))
+                    .foregroundStyle(CCTV.burnIn.opacity(0.6))
+            }
+            .padding(.top, 6)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(verbatim: "Witness: \(record.pet.name), lying on the floor"))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(CCTV.panel.opacity(0.7), in: .rect(cornerRadius: 14, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
+            .stroke(CCTV.burnIn.opacity(0.08), style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// An object from the room as crisp pixel art: whole, wrecked, or (not
+/// caught with yet) as a dark silhouette.
+private struct ObjectSprite: View {
     let kind: PetCamObjectKind
+    let wrecked: Bool
+    var silhouette = false
+    var points: CGFloat = 3
     @Environment(\.displayScale) private var displayScale
 
     var body: some View {
-        let sprite = PetCamScene.sprite(kind, wrecked: false)
-        let scale = max(1, Int((3 * displayScale).rounded(.down)))
+        let sprite = PetCamScene.sprite(kind, wrecked: wrecked)
+        let colors = silhouette ? sprite.colors.map { $0.map { _ in PetColor(red: 46, green: 52, blue: 50) } } : sprite.colors
+        let scale = max(1, Int((points * displayScale).rounded(.down)))
+        if let image = PetRenderer.render(colors: colors, width: sprite.width, height: sprite.height, scale: scale) {
+            Image(decorative: image, scale: max(displayScale, 1))
+                .interpolation(.none)
+        }
+    }
+}
+
+/// Exhibit A: what the pet left of the object, at a size you can read,
+/// with its name.
+private struct Evidence: View {
+    let kind: PetCamObjectKind
+
+    var body: some View {
         HStack(spacing: 10) {
-            if let image = PetRenderer.render(colors: sprite.colors, width: sprite.width, height: sprite.height,
-                                              scale: scale) {
-                Image(decorative: image, scale: max(displayScale, 1))
-                    .interpolation(.none)
-                    .padding(6)
-                    .background(Color.white.opacity(0.07), in: .rect(cornerRadius: 6, style: .continuous))
-            }
+            ObjectSprite(kind: kind, wrecked: true)
+                .padding(6)
+                .background(Color.white.opacity(0.07), in: .rect(cornerRadius: 6, style: .continuous))
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: "EXHIBIT A")
                     .font(.system(.caption2, design: .monospaced).weight(.heavy))
                     .foregroundStyle(CCTV.screen)
                     .padding(.horizontal, 4)
-                    .background(Color(red: 0.95, green: 0.84, blue: 0.45), in: .rect(cornerRadius: 2))
+                    .background(CCTV.wanted, in: .rect(cornerRadius: 2))
                 Text(verbatim: PetCamCaptions.name(of: kind))
                     .font(CCTV.font(.caption, weight: .bold))
                     .foregroundStyle(CCTV.burnIn.opacity(0.85))
@@ -150,7 +279,7 @@ private struct Evidence: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: "Exhibit A: \(PetCamCaptions.name(of: kind).lowercased())"))
+        .accessibilityLabel(Text(verbatim: "Exhibit A: what is left of the \(PetCamCaptions.name(of: kind).lowercased())"))
     }
 }
 
@@ -182,6 +311,7 @@ struct PetPicker: View {
 
     var body: some View {
         NavigationStack {
+            ScrollViewReader { proxy in
             List(PetBreed.allCases, id: \.self) { breed in
                 Button {
                     study.setBreed(breed)
@@ -208,6 +338,13 @@ struct PetPicker: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(study.pet.breed == breed ? .isSelected : [])
+                .id(breed)
+            }
+            // Opaque, so nothing on the home screen glows through the rows,
+            // and opened on the current pet with its checkmark in view.
+            .scrollContentBackground(.hidden)
+            .background(CCTV.panel)
+            .onAppear { proxy.scrollTo(study.pet.breed, anchor: .center) }
             }
             .navigationTitle(Text(verbatim: "Your pet"))
             .navigationBarTitleDisplayMode(.inline)
@@ -217,5 +354,6 @@ struct PetPicker: View {
                 }
             }
         }
+        .presentationBackground(CCTV.panel)
     }
 }

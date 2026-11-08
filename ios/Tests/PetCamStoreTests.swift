@@ -7,7 +7,8 @@ import TabbiKitCore
 /// The Pet Cam on the iPhone: the camera arms with the study session's
 /// own start, resolves when that block's focus ends (in the app, or after a
 /// relaunch), saves its game, words the end notification and the Live
-/// Activity, and exports a tape as a muted vertical video.
+/// Activity, keeps the tape's secret until it is watched, and exports a
+/// tape as a vertical video with its own sound.
 @Suite @MainActor struct PetCamStoreTests {
     nonisolated static let t0 = Date(timeIntervalSince1970: 1_790_000_000)
 
@@ -71,13 +72,58 @@ import TabbiKitCore
         let record = try #require(rig.cam.reveal)
         #expect(record.outcome == .caught)
         #expect(record.endedAt == Self.t0.addingTimeInterval(600), "stamped with the real end, not when it was noticed")
-        #expect(rig.cam.mugshots.map(\.id) == [record.id])
         // Points paid exactly as in the foundation: 10 minutes, no bonus.
         #expect(rig.study.balance == PetCloset(save: PetSave(profile: .starter(.cat))).balance + 10)
         rig.cam.watched(record)
         #expect(rig.cam.reveal == nil)
         rig.study.catchUp(at: Self.t0.addingTimeInterval(700))
         #expect(rig.cam.game.log.blocks.count == 1, "credited once")
+    }
+
+    @Test func theHomeScreenKeepsTheTapesSecretUntilItIsWatched() throws {
+        let rig = Rig()
+        defer { try? FileManager.default.removeItem(at: rig.folder) }
+        rig.timer(10)
+        let before = rig.cam.frozenShot
+        let room = rig.cam.game.room
+        rig.cam.pick = rig.cam.game.setup.strike
+        rig.cam.start(study: rig.study, now: Self.t0)
+        rig.study.catchUp(at: Self.t0.addingTimeInterval(601))
+        let record = try #require(rig.cam.reveal)
+        #expect(record.outcome == .caught)
+        // The game has moved on: the wreck is down and a new object is out.
+        #expect(rig.cam.game.room != room)
+        // But the home screen still shows the room, the stare and the wall
+        // from before the block, so a glance at it gives nothing away.
+        #expect(rig.cam.frozenShot == before)
+        #expect(rig.cam.shownRoom == room)
+        #expect(rig.cam.mugshots.isEmpty)
+        #expect(rig.cam.cases.isEmpty)
+        // Once watched, everything catches up at once.
+        rig.cam.watched(record)
+        #expect(rig.cam.shownRoom == rig.cam.game.room)
+        #expect(rig.cam.frozenShot == PetCamShot.frozenFrame(room: rig.cam.game.room, setup: rig.cam.game.setup))
+        #expect(rig.cam.mugshots.map(\.id) == [record.id])
+        #expect(rig.cam.cases.map(\.id) == [record.id])
+        #expect(rig.cam.caseNumber(of: record) == 1)
+        #expect(rig.cam.caughtKinds == [try #require(record.struck?.kind)])
+    }
+
+    @Test func aMissIsFiledAsAColdCaseWithNoCaseNumber() throws {
+        let rig = Rig()
+        defer { try? FileManager.default.removeItem(at: rig.folder) }
+        rig.timer(10)
+        let strike = rig.cam.game.setup.strike
+        rig.cam.pick = PetCamSpot.allCases.first { $0 != strike }
+        rig.cam.start(study: rig.study, now: Self.t0)
+        rig.study.catchUp(at: Self.t0.addingTimeInterval(601))
+        let record = try #require(rig.cam.reveal)
+        #expect(record.outcome == .missed)
+        rig.cam.watched(record)
+        #expect(rig.cam.cases.map(\.id) == [record.id])
+        #expect(rig.cam.mugshots.isEmpty, "the wall's count is catches only")
+        #expect(rig.cam.caseNumber(of: record) == nil)
+        #expect(rig.cam.caughtKinds.isEmpty)
     }
 
     @Test func stoppingEarlyGivesTheFrozenStillAndKeepsTheFrame() throws {
@@ -159,25 +205,27 @@ import TabbiKitCore
     @Test func theLiveActivityShowsTheCameraOnlyForAFilmedFocusBlock() throws {
         var session = StudySession(method: .pomodoro)
         session.start(at: Self.t0)
-        let filmed = try #require(StudyActivityAttributes.ContentState(session, at: Self.t0, filming: true))
+        let filmed = try #require(StudyActivityAttributes.ContentState(session, at: Self.t0, camera: 3))
         #expect(filmed.filming)
+        #expect(filmed.camera == 3, "the hidden camera's number")
         #expect(filmed.doneLine == "Tape ready")
         let plain = try #require(StudyActivityAttributes.ContentState(session, at: Self.t0))
         #expect(!plain.filming)
         _ = session.advance(to: Self.t0.addingTimeInterval(1500))
         let onBreak = try #require(StudyActivityAttributes.ContentState(session, at: Self.t0.addingTimeInterval(1501),
-                                                                        filming: true))
+                                                                        camera: 3))
         #expect(!onBreak.filming, "a break is never filmed")
+        #expect(onBreak.camera == nil)
     }
 
     @Test func everyFramingDrawsAtAWholeMultipleOfTheWideShot() {
-        for width: CGFloat in [233, 300, 342, 366, 400, 402, 1000] {
+        for width: CGFloat in [233, 300, 342, 366, 370, 400, 402, 1000] {
             for displayScale: CGFloat in [1, 2, 3] {
                 let wide = FeedView.devicePixels(spriteWidth: 100, width: width, displayScale: displayScale)
                 #expect(FeedView.devicePixels(spriteWidth: 50, width: width, displayScale: displayScale) == wide * 2)
-                #expect(FeedView.devicePixels(spriteWidth: 25, width: width, displayScale: displayScale) == wide * 4)
                 // So a cut between cameras never changes the picture's size.
-                let sizes = [PetCamShot.Framing.wide, .spot(.table), .closeUp(.strike(.table))].map {
+                let sizes = [PetCamShot.Framing.wide, .spot(.table), .closeUp(.strike(.table)),
+                             .wreck(.counter, hidden: false)].map {
                     FeedView.pictureSize($0, width: width, displayScale: displayScale)
                 }
                 #expect(Set(sizes.map(\.width)).count == 1 && Set(sizes.map(\.height)).count == 1)
@@ -185,7 +233,35 @@ import TabbiKitCore
         }
     }
 
-    @Test func aTapeExportsAsAMutedVerticalVideoUnderTwentySeconds() async throws {
+    @Test func theHomeFeedCropsTheFloorRatherThanShrinking() {
+        // Room for all of it: all of it.
+        #expect(HomeScreen.feedHeight(picture: 586, room: 700) == 586)
+        // Less room (the Timer's stepper): the bottom is cropped.
+        #expect(HomeScreen.feedHeight(picture: 586, room: 520) == 516)
+        // Never past the rug; the page scrolls instead.
+        #expect(HomeScreen.feedHeight(picture: 586, room: 200) == (586 * 0.74).rounded(.down))
+    }
+
+    @Test func everyCueHasASoundAndTheBedIsQuiet() {
+        let cues: [PetCamTape.Cue] = [.motion, .stamp] + PetCamObjectKind.allCases.flatMap {
+            [PetCamTape.Cue.strike($0), .offCamera($0)]
+        }
+        for cue in cues {
+            let samples = TapeSound.samples(cue)
+            #expect(samples.count > 1000, "\(cue) is a real sound")
+            #expect(samples.allSatisfy { $0.isFinite })
+            #expect(samples.map(abs).max() ?? 0 > 0.05, "\(cue) is audible: \(samples.map(abs).max() ?? 0)")
+            #expect(TapeSound.samples(cue) == samples, "the same every time")
+        }
+        for kind in PetCamObjectKind.allCases {
+            let loud = TapeSound.samples(.strike(kind)).map(abs).max() ?? 0
+            let muffled = TapeSound.samples(.offCamera(kind)).map(abs).max() ?? 0
+            #expect(muffled < loud, "off camera is quieter: \(kind)")
+        }
+        #expect(TapeSound.hiss(seconds: 1).map(abs).max() ?? 1 < 0.1, "the hiss sits under everything")
+    }
+
+    @Test func aTapeExportsAsAVerticalVideoWithSoundUnderTwentySeconds() async throws {
         let rig = Rig()
         defer { try? FileManager.default.removeItem(at: rig.folder) }
         rig.timer(10)
@@ -199,10 +275,13 @@ import TabbiKitCore
         let asset = AVURLAsset(url: url)
         let duration = try await asset.load(.duration).seconds
         let tape = try #require(PetCamTape(record: record))
-        #expect(abs(duration - tape.duration) < 1, "\(duration) s for a \(tape.duration) s tape")
+        // OWNER AWAY, the tape with its cuts, and the TABBI CAM slate.
+        let cards = Double(TapeExporter.openerFrames + TapeExporter.slateFrames) / Double(TapeExporter.framesPerSecond)
+        #expect(abs(duration - tape.duration - cards) < 1, "\(duration) s for a \(tape.duration) s tape")
         #expect(duration < PetCamTape.maximumDuration)
         #expect(PetCamTape.durationRange.contains(tape.duration))
-        #expect(try await asset.loadTracks(withMediaType: .audio).isEmpty, "muted: no audio track at all")
+        let sound = try #require(try await asset.loadTracks(withMediaType: .audio).first, "the tape's own sound")
+        #expect(abs(try await sound.load(.timeRange).duration.seconds - duration) < 0.5)
         let video = try #require(try await asset.loadTracks(withMediaType: .video).first)
         let size = try await video.load(.naturalSize)
         #expect(size == CGSize(width: 1080, height: 1920))

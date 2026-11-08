@@ -41,8 +41,11 @@ struct StudyActivityAttributes: ActivityAttributes {
         /// was away, which stays on the Lock Screen for a while.
         var isDone = false
         /// The Pet Cam is filming this focus block: the activity shows the
-        /// camera recording (a REC dot and the countdown, nothing else).
+        /// camera recording (a REC dot, the camera, the countdown and the
+        /// pet lying still, nothing that changes).
         var filming = false
+        /// The number of the camera filming it ("CAM 3"); nil when none is.
+        var camera: Int?
 
         /// When a running countdown ends; nil otherwise.
         var endsAt: Date? {
@@ -55,7 +58,7 @@ struct StudyActivityAttributes: ActivityAttributes {
 extension StudyActivityAttributes.ContentState {
     /// The Live Activity for `session` at `now`, or nil while it is idle
     /// (nothing to show, so the activity ends).
-    init?(_ session: StudySession, at now: Date, filming: Bool = false) {
+    init?(_ session: StudySession, at now: Date, camera: Int? = nil) {
         guard session.runState != .idle else { return nil }
         let clock: Clock
         if let end = session.endsAt, let length = session.phaseDuration {
@@ -65,7 +68,8 @@ extension StudyActivityAttributes.ContentState {
         } else {
             clock = .paused(shown: session.remaining(at: now) ?? session.elapsed(at: now))
         }
-        let filming = filming && session.phase == .focus
+        let camera = session.phase == .focus ? camera : nil
+        let filming = camera != nil
         let doneLine = if filming {
             "Tape ready"
         } else if session.phase.isBreak {
@@ -77,6 +81,6 @@ extension StudyActivityAttributes.ContentState {
         }
         self.init(phaseName: StudyTimerFormat.phaseName(session.phase, method: session.method),
                   isBreak: session.phase.isBreak, clock: clock, phaseLength: session.phaseDuration, doneLine: doneLine,
-                  filming: filming)
+                  filming: filming, camera: camera)
     }
 }

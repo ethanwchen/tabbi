@@ -16,6 +16,15 @@ enum CCTV {
     /// The dot when the camera is not filming (a break, a short block).
     static let standby = Color(red: 0.55, green: 0.60, blue: 0.57)
 
+    /// The feed's margin from the screen's edges, in every mode.
+    static let gutter: CGFloat = 16
+    /// The feed's corner radius, the same on the home screen and the tape.
+    static let feedRadius: CGFloat = 8
+    /// The plate behind burn-in text, so it reads on a lit wall.
+    static let plate = Color.black.opacity(0.6)
+    /// The WANTED tag's poster yellow.
+    static let wanted = Color(red: 0.97, green: 0.83, blue: 0.30)
+
     /// Burn-in type at a text style, so it follows Dynamic Type.
     static func font(_ style: Font.TextStyle, weight: Font.Weight = .semibold) -> Font {
         .system(style, design: .monospaced).weight(weight)

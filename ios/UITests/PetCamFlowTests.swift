@@ -1,10 +1,12 @@
 import XCTest
 
-/// Plays the Pet Cam like a person, with one-minute blocks
-/// (`-PetCamQuickBlocks`, debug builds only): a catch, a miss, an early
-/// stop, more blocks until a callback caption shows, the mugshot wall, a
-/// replay and a video export, with the Lock Screen, the Dynamic Island and
-/// the end notification along the way.
+/// Plays the Pet Cam like a person: a first ten-minute block (so the
+/// points visibly move), then one-minute blocks (`-PetCamQuickBlocks`,
+/// debug builds only) until three catches and three misses have played,
+/// which shows every tape shape once (a shape is never one of the last two
+/// of its outcome), with an early stop, the case file, a replay, a video
+/// export, the Lock Screen, the Dynamic Island and the end notification
+/// along the way.
 ///
 /// `-PetCamTestHooks` lets the test read where the pet will strike, so it
 /// can play a sure catch and a sure miss. With `TABBI_E2E_DIR` set it pauses
@@ -36,7 +38,7 @@ final class PetCamFlowTests: XCTestCase {
             app.buttons["Done"].firstMatch.tap()
         }
 
-        // One-minute Timer blocks.
+        // The Timer, at its ten minutes for the first block.
         app.buttons["Pomodoro"].tap()
         let timerRow = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Timer'")).firstMatch
         let list = app.collectionViews.firstMatch
@@ -46,11 +48,11 @@ final class PetCamFlowTests: XCTestCase {
         let shorter = app.buttons["A shorter timer"]
         XCTAssertTrue(shorter.waitForExistence(timeout: 5))
         for _ in 0..<6 where !shorter.isHittable { app.swipeUp() }
-        for _ in 0..<60 where shorter.isEnabled { shorter.tap() }
-        XCTAssertTrue(app.staticTexts["1 min"].exists)
+        for _ in 0..<40 where !app.staticTexts["10 min"].exists && shorter.isEnabled { shorter.tap() }
+        XCTAssertTrue(app.staticTexts["10 min"].exists)
 
-        // Loop 1: a catch. Hide the camera where the pet will strike and
-        // say what is being avoided.
+        // Catch 1, a ten-minute block: hide the camera where the pet will
+        // strike and say what is being avoided.
         hideCamera(catching: true)
         type(dodge: "my tax return")
         checkpoint("03-home-camera-hidden")
@@ -60,9 +62,9 @@ final class PetCamFlowTests: XCTestCase {
         checkpoint("04-recording")
         let started = Date()
         visitLockScreenAndIsland()
-        // The minute runs out while locked: the end notification.
+        // The block runs out while locked: the end notification.
         lock()
-        wait(untilSecondsSince: started, 63)
+        wait(untilSecondsSince: started, 603)
         wake()
         sleep(2)
         checkpoint("08-lock-screen-tape-ready")
@@ -70,20 +72,19 @@ final class PetCamFlowTests: XCTestCase {
         checkpoint("video-start-tape-catch")
         app.activate()
         watchTape(named: "catch", first: 9)
-
         checkpoint("20-home-after-catch")
 
-        // Loop 2: a miss, in the app the whole time.
-        hideCamera(catching: false)
-        app.buttons["Start timer"].tap()
-        let missStart = Date()
-        XCTAssertTrue(app.staticTexts["Recording. The tape plays when the block is done."].waitForExistence(timeout: 5))
-        wait(untilSecondsSince: missStart, 56)
-        checkpoint("video-start-tape-miss")
-        watchTape(named: "miss", first: 21)
+        // One-minute blocks from here on.
+        for _ in 0..<6 where !shorter.isHittable { app.swipeUp() }
+        for _ in 0..<30 where shorter.isEnabled { shorter.tap() }
+        XCTAssertTrue(app.staticTexts["1 min"].exists)
+        for _ in 0..<6 where !app.buttons["Start timer"].isHittable { app.swipeDown() }
+
+        // Miss 1, in the app the whole time.
+        play(catching: false, name: "miss", first: 21)
         checkpoint("30-home-after-miss")
 
-        // Loop 3: stopped early. One frozen still, no tape.
+        // Stopped early: one frozen still, no tape.
         app.buttons["Start timer"].tap()
         let stopStart = Date()
         XCTAssertTrue(app.buttons["Stop"].waitForExistence(timeout: 5))
@@ -98,29 +99,31 @@ final class PetCamFlowTests: XCTestCase {
         XCTAssertTrue(still.waitForNonExistence(timeout: 10))
         sleep(1)
 
-        // Loops 4 and 5: keep catching until the history gives a callback.
-        for (loop, step) in [(4, 40), (5, 60)] {
-            hideCamera(catching: true)
-            app.buttons["Start timer"].tap()
-            let start = Date()
-            XCTAssertTrue(app.buttons["Stop"].waitForExistence(timeout: 5))
-            wait(untilSecondsSince: start, 56)
-            checkpoint("video-start-tape-catch-\(loop)")
-            watchTape(named: "catch-\(loop)", first: step, share: loop == 5)
-        }
+        // Two more catches and two more misses: every shape of both.
+        play(catching: true, name: "catch-2", first: 40)
+        play(catching: false, name: "miss-2", first: 50)
+        play(catching: true, name: "catch-3", first: 60, share: true)
+        play(catching: false, name: "miss-3", first: 90)
+        checkpoint("97-home-after-six-tapes")
+
         let callbacks = captions.filter {
             $0.contains(" TODAY") || $0.contains(" AGAIN") || $0.contains("RIGHT NEXT TO") || $0.contains("LAST CAUGHT")
         }
         print("Pet Cam UI test captions: \(captions)")
         XCTAssertFalse(callbacks.isEmpty, "a callback caption after several blocks: \(captions)")
 
-        // The mugshot wall, and a replay from it.
+        // The case file, and a replay from it.
         let wall = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Mugshot wall'")).firstMatch
         XCTAssertTrue(wall.waitForExistence(timeout: 5))
         wall.tap()
         let first = app.buttons.matching(NSPredicate(format: "label CONTAINS 'CASE 001'")).firstMatch
         XCTAssertTrue(first.waitForExistence(timeout: 5))
+        sleep(1)
         checkpoint("80-mugshot-wall")
+        app.swipeUp()
+        sleep(1)
+        checkpoint("80-mugshot-wall-scrolled")
+        app.swipeDown()
         first.tap()
         XCTAssertTrue(app.buttons["Done"].firstMatch.waitForExistence(timeout: 5))
         sleep(1)
@@ -132,8 +135,21 @@ final class PetCamFlowTests: XCTestCase {
         // The breed picker.
         app.buttons.matching(NSPredicate(format: "label ENDSWITH 'pts'")).firstMatch.tap()
         XCTAssertTrue(app.navigationBars["Your pet"].waitForExistence(timeout: 5))
+        sleep(1)
         checkpoint("82-pet-picker")
         app.buttons["Done"].firstMatch.tap()
+    }
+
+    /// One one-minute block, filmed where the pet strikes or elsewhere,
+    /// recorded and watched to its end.
+    private func play(catching: Bool, name: String, first: Int, share: Bool = false) {
+        hideCamera(catching: catching)
+        app.buttons["Start timer"].tap()
+        let start = Date()
+        XCTAssertTrue(app.buttons["Stop"].waitForExistence(timeout: 5))
+        wait(untilSecondsSince: start, 56)
+        checkpoint("video-start-tape-\(name)")
+        watchTape(named: name, first: first, share: share)
     }
 
     // MARK: Steps

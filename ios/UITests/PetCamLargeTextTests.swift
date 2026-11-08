@@ -59,7 +59,7 @@ final class PetCamLargeTextTests: XCTestCase {
         let wall = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Mugshot wall'")).firstMatch
         for _ in 0..<10 where !wall.isHittable { page.swipeUp(velocity: .slow) }
         wall.tap()
-        XCTAssertTrue(app.navigationBars["Mugshots"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Case file"].waitForExistence(timeout: 5))
         sleep(1)
         checkpoint("ax-05-mugshot-wall")
         app.buttons["Done"].firstMatch.tap()

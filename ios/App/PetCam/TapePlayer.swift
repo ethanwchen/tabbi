@@ -1,64 +1,83 @@
 import SwiftUI
 import TabbiKitCore
 
-/// The tape: four to six stills with hard cuts and burned-in captions,
+/// The tape: five to seven stills with hard cuts and burned-in captions,
 /// under twenty seconds, which plays by itself and closes by itself. A
 /// catch ends on the freeze with the CAUGHT stamp and the charge; a miss
-/// ends on the alibi. A block stopped early shows its one frozen still.
+/// ends on the wreck it did not see. A block stopped early shows its one
+/// frozen still. With the ringer on it plays the tape's own sounds.
+///
+/// The feed, its captions and the buttons always fit on one screen: the
+/// buttons are pinned at the bottom, the caption area is as tall as the
+/// tape's longest caption at the current text size, and the feed takes
+/// what is left (so it shrinks at the largest text sizes rather than
+/// cutting a caption off), centered in the space above the buttons.
 struct TapePlayer: View {
     let record: PetCamBlockRecord
+    /// Called when the tape is over (or closed); without it the player
+    /// dismisses its own presentation.
+    var onFinish: (() -> Void)?
 
     @Environment(\.dismiss) private var dismiss
     @Environment(PetCamStore.self) private var cam
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.displayScale) private var displayScale
     @State private var index = 0
-    @State private var cut = false
+    @State private var cut = true
     @State private var holding = false
     @State private var exporting = false
     @State private var shared: SharedTape?
     @State private var includeDodge = false
     @State private var exportFailed = false
     @State private var jolt: CGFloat = 0
+    @State private var captionHeight: CGFloat = 80
+    @State private var buttonsHeight: CGFloat = 60
+    @State private var finished = false
+    @State private var screenSize: CGSize = .zero
 
     private var tape: PetCamTape? { PetCamTape(record: record) }
 
     var body: some View {
         GeometryReader { geometry in
-            ScrollView {
-                VStack(spacing: 0) {
-                    if let tape {
-                        progress(tape)
-                            .padding(.horizontal, 16)
-                            .padding(.top, 8)
-                            .padding(.bottom, 10)
-                        let still = tape.stills[min(index, tape.stills.count - 1)]
-                        TapeStillView(record: record, still: still, caseNumber: caseNumber,
-                                      width: pictureWidth(in: geometry.size), publicOnly: false,
-                                      frozen: still.stamp == .caught)
-                            .overlay { if cut { Static() } }
-                            .offset(x: jolt)
-                            .frame(maxWidth: .infinity)
-                        captions(still)
-                            .padding(.horizontal, 20)
-                            .padding(.top, 14)
-                        Spacer(minLength: 12)
-                        buttons(tape)
-                            .padding(.horizontal, 16)
-                            .padding(.bottom, 8)
-                    }
+            let width = pictureWidth(in: geometry.size)
+            VStack(spacing: 0) {
+                if let tape {
+                    progress(tape)
+                        .padding(.horizontal, CCTV.gutter)
+                        .padding(.top, 8)
+                    Spacer(minLength: 10)
+                    let still = tape.stills[min(index, tape.stills.count - 1)]
+                    TapeStillView(record: record, still: still, caseNumber: caseNumber, width: width, publicOnly: false,
+                                  frozen: still.stamp == .caught)
+                        .overlay { if cut { Static() } }
+                        .offset(x: jolt)
+                        .frame(maxWidth: .infinity)
+                    captions(tape, current: still)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 14)
+                    Spacer(minLength: 10)
                 }
-                .frame(minHeight: geometry.size.height)
             }
-            .scrollBounceBehavior(.basedOnSize)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onAppear {
                 screenSize = geometry.size
                 prefetch()
+            }
+            .onChange(of: width) { prefetch() }
+        }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if let tape {
+                buttons(tape)
+                    .padding(.horizontal, CCTV.gutter)
+                    .padding(.top, 8)
+                    .padding(.bottom, 8)
+                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { buttonsHeight = $0 }
             }
         }
         .background(CCTV.screen.ignoresSafeArea())
         .preferredColorScheme(.dark)
         .task(id: record.id) { await play() }
+        .onDisappear { TapeAudio.shared.stop() }
         .sheet(item: $shared) { file in ShareSheet(items: [file.url]) }
         .alert(Text(verbatim: "The video could not be made."), isPresented: $exportFailed) {
             Button(role: .cancel) {} label: { Text("Done", bundle: .tabbi) }
@@ -66,54 +85,54 @@ struct TapePlayer: View {
         .sensoryFeedback(.impact(weight: .light), trigger: index)
     }
 
-    /// The picture leaves room for the captions and buttons below it; at
-    /// the accessibility text sizes it keeps the full width and the page
-    /// scrolls.
+    /// The widest picture that leaves room above for the progress bar and
+    /// below for the tallest caption (the buttons are pinned outside this
+    /// space), inside the 16 point gutter.
     private func pictureWidth(in size: CGSize) -> CGFloat {
-        typeSize.isAccessibilitySize ? size.width : min(size.width, (size.height - 230) * 100 / 160)
+        let height = size.height - captionHeight - 14 - 8 - 3 - 20
+        return max(min(size.width - 2 * CCTV.gutter, height * 100 / 160), 120)
     }
 
     /// The wall's case number of a catch (1 for the first).
-    private var caseNumber: Int? {
-        guard record.outcome == .caught else { return nil }
-        return (cam.game.log.mugshots.firstIndex { $0.id == record.id } ?? 0) + 1
-    }
-
-    @Environment(\.displayScale) private var displayScale
-    @State private var screenSize: CGSize = .zero
+    private var caseNumber: Int? { cam.caseNumber(of: record) }
 
     /// Renders every still ahead, off the main actor, at the scale the
     /// player draws it.
     private func prefetch() {
         guard let tape, screenSize.width > 0 else { return }
+        let width = pictureWidth(in: screenSize)
         for framing in Set(tape.stills.map(\.shot.framing)) {
             let size = PetCamScene.size(of: framing)
-            let scale = FeedView.devicePixels(spriteWidth: size.width, width: pictureWidth(in: screenSize),
-                                              displayScale: displayScale)
+            let scale = FeedView.devicePixels(spriteWidth: size.width, width: width, displayScale: displayScale)
             let jobs = tape.stills.filter { $0.shot.framing == framing }
                 .map { (shot: $0.shot, daylight: PetCamScene.isDaylight($0.time)) }
             FeedCache.shared.prefetch(jobs, pet: record.pet, scale: scale)
         }
     }
 
-    /// Steps through the stills, each for its own time, with a split
-    /// second of static at each cut, then closes on its own.
+    /// A moment of static as the monitor switches to the tape, then the
+    /// stills, each for its own time, with a split second of static at
+    /// each cut and its sound; then it closes on its own.
     private func play() async {
         guard let tape else {
-            dismiss()
+            finish()
             return
         }
+        TapeAudio.shared.start()
+        try? await Task.sleep(for: .milliseconds(reduceMotion ? 150 : 600))
         for (position, still) in tape.stills.enumerated() {
             if position > 0, !reduceMotion {
                 cut = true
                 try? await Task.sleep(for: .milliseconds(90))
-                cut = false
             }
+            cut = false
             index = position
+            if let cue = still.cue { TapeAudio.shared.play(cue) }
             if still.shake, !reduceMotion { await shake() }
             try? await Task.sleep(for: .seconds(still.shake && !reduceMotion ? still.duration - 0.3 : still.duration))
             if Task.isCancelled { return }
         }
+        TapeAudio.shared.stop()
         // Hold the last frame while a share sheet is up or the user chose
         // to keep watching.
         while holding || shared != nil || exporting {
@@ -121,7 +140,14 @@ struct TapePlayer: View {
             if Task.isCancelled { return }
         }
         try? await Task.sleep(for: .milliseconds(500))
-        if !Task.isCancelled { dismiss() }
+        if !Task.isCancelled { finish() }
+    }
+
+    private func finish() {
+        guard !finished else { return }
+        finished = true
+        TapeAudio.shared.stop()
+        if let onFinish { onFinish() } else { dismiss() }
     }
 
     /// The camera jolts: a few quick knocks either way that settle.
@@ -146,12 +172,29 @@ struct TapePlayer: View {
         .accessibilityLabel(Text(verbatim: "Still \(index + 1) of \(tape.stills.count)"))
     }
 
-    private func captions(_ still: PetCamTape.Still) -> some View {
+    /// Every still's captions laid on top of each other, only the current
+    /// one shown, so the area is always as tall as the longest and the feed
+    /// above it never jumps between cuts.
+    private func captions(_ tape: PetCamTape, current: PetCamTape.Still) -> some View {
+        ZStack(alignment: .top) {
+            ForEach(Array(tape.stills.enumerated()), id: \.offset) { position, still in
+                let shown = position == min(index, tape.stills.count - 1)
+                caption(still)
+                    .opacity(shown ? 1 : 0)
+                    .accessibilityHidden(!shown)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { captionHeight = $0 }
+        .animation(.easeOut(duration: 0.15), value: index)
+    }
+
+    private func caption(_ still: PetCamTape.Still) -> some View {
         VStack(spacing: 6) {
             Text(verbatim: still.caption)
                 .font(CCTV.font(.title3, weight: .bold))
                 .foregroundStyle(CCTV.burnIn)
-            if let detail = detailText(still) {
+            if let detail = still.detail {
                 Text(verbatim: detail)
                     .font(CCTV.font(.subheadline, weight: .medium))
                     .foregroundStyle(CCTV.burnIn.opacity(0.75))
@@ -160,61 +203,64 @@ struct TapePlayer: View {
         .multilineTextAlignment(.center)
         .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity)
-        .id(index)
-        .transition(.opacity)
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("tape.caption")
     }
 
-    private func detailText(_ still: PetCamTape.Still) -> String? { still.detail }
-
     private func buttons(_ tape: PetCamTape) -> some View {
-        HStack(spacing: 12) {
-            if tape.outcome.hasTape {
-                Menu {
-                    Button {
-                        includeDodge = false
-                        share()
-                    } label: { Text(verbatim: "Share video") }
-                    if record.dodge != nil {
-                        Button {
-                            includeDodge = true
-                            share()
-                        } label: { Text(verbatim: "Share with what I was avoiding") }
-                    }
-                } label: {
-                    HStack(spacing: 8) {
-                        if exporting {
-                            ProgressView().tint(CCTV.burnIn)
-                        } else {
-                            Image(systemName: "square.and.arrow.up").accessibilityHidden(true)
-                        }
-                        Text(verbatim: "Share")
-                            .font(.headline)
-                    }
-                    .foregroundStyle(CCTV.burnIn)
-                    .frame(maxWidth: .infinity, minHeight: 52)
-                } primaryAction: {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) { buttonRow(tape) }
+            VStack(spacing: 10) { buttonRow(tape) }
+        }
+    }
+
+    @ViewBuilder private func buttonRow(_ tape: PetCamTape) -> some View {
+        if tape.outcome.hasTape {
+            Menu {
+                Button {
                     includeDodge = false
                     share()
+                } label: { Text(verbatim: "Share video") }
+                if record.dodge != nil {
+                    Button {
+                        includeDodge = true
+                        share()
+                    } label: { Text(verbatim: "Share with what I was avoiding") }
                 }
-                .buttonStyle(.glass)
-                .buttonBorderShape(.capsule)
-                .disabled(exporting)
-                .accessibilityHint(Text(verbatim: "Makes a muted video of this tape"))
-            }
-            Button {
-                dismiss()
             } label: {
-                Text("Done", bundle: .tabbi)
-                    .font(.headline)
-                    .foregroundStyle(Color.black.opacity(0.85))
-                    .frame(maxWidth: .infinity, minHeight: 52)
+                HStack(spacing: 8) {
+                    if exporting {
+                        ProgressView().tint(CCTV.burnIn)
+                    } else {
+                        Image(systemName: "square.and.arrow.up").accessibilityHidden(true)
+                    }
+                    Text(verbatim: "Share")
+                        .font(.headline)
+                        .fixedSize()
+                }
+                .foregroundStyle(CCTV.burnIn)
+                .frame(maxWidth: .infinity, minHeight: 52)
+            } primaryAction: {
+                includeDodge = false
+                share()
             }
-            .buttonStyle(.glassProminent)
+            .buttonStyle(.glass)
             .buttonBorderShape(.capsule)
-            .tint(CCTV.burnIn)
+            .disabled(exporting)
+            .accessibilityHint(Text(verbatim: "Makes a video of this tape"))
         }
+        Button {
+            finish()
+        } label: {
+            Text("Done", bundle: .tabbi)
+                .font(.headline)
+                .fixedSize()
+                .foregroundStyle(Color.black.opacity(0.85))
+                .frame(maxWidth: .infinity, minHeight: 52)
+        }
+        .buttonStyle(.glassProminent)
+        .buttonBorderShape(.capsule)
+        .tint(CCTV.burnIn)
     }
 
     private func share() {
@@ -257,12 +303,18 @@ struct TapeStillView: View {
     /// Fixed text sizes for the exporter's 1080 by 1920 frame; nil follows
     /// Dynamic Type.
     var burnInSize: CGFloat?
+    /// The exporter's push-in on the pet (1 is none); the burn-in stays put.
+    var zoom: CGFloat = 1
 
     @Environment(\.displayScale) private var displayScale
 
     var body: some View {
         let picture = FeedView.pictureSize(still.shot.framing, width: width, displayScale: displayScale)
+        let center = PetCamScene.petCenter(in: still.shot) ?? (0.5, 0.5)
         FeedView(shot: still.shot, pet: record.pet, daylight: PetCamScene.isDaylight(still.time), width: width)
+            .scaleEffect(zoom, anchor: UnitPoint(x: center.x, y: center.y))
+            .frame(width: picture.width, height: picture.height)
+            .clipped()
             .overlay {
                 if let grainFrame {
                     StaticGrain(frame: grainFrame)
@@ -273,7 +325,7 @@ struct TapeStillView: View {
             .overlay(alignment: .top) { burnIn.dynamicTypeSize(...DynamicTypeSize.large) }
             .overlay { stamp.dynamicTypeSize(...DynamicTypeSize.large) }
             .frame(width: picture.width, height: picture.height)
-            .clipShape(.rect(cornerRadius: burnInSize == nil ? 6 : 0, style: .continuous))
+            .clipShape(.rect(cornerRadius: burnInSize == nil ? CCTV.feedRadius : 0, style: .continuous))
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text(verbatim: "\(still.cameraLabel). " + Self.describe(still, pet: record.pet.name)))
     }
@@ -283,7 +335,8 @@ struct TapeStillView: View {
     }
 
     private var burnIn: some View {
-        HStack(alignment: .top) {
+        let plate = burnInSize.map { $0 * 0.3 } ?? 4
+        return HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: CCTV.timestamp(still.time))
                     .font(font(.caption, 1))
@@ -292,23 +345,43 @@ struct TapeStillView: View {
                     .font(font(.caption2, 0.85))
                     .opacity(0.85)
             }
+            .padding(.horizontal, plate * 1.3)
+            .padding(.vertical, plate * 0.8)
+            .background(CCTV.plate, in: .rect(cornerRadius: plate * 0.8))
             Spacer(minLength: 8)
-            if still.stamp == .rewind {
-                HStack(spacing: 5) {
-                    Image(systemName: "backward.fill")
-                    Text(verbatim: "REW")
+            Group {
+                if still.stamp == .rewind {
+                    HStack(spacing: 5) {
+                        Image(systemName: "backward.fill")
+                        Text(verbatim: "REW")
+                    }
+                    .font(font(.caption, 1, weight: .bold))
+                    .accessibilityHidden(true)
+                } else if still.stamp == nil || still.stamp == .caught {
+                    RecLabel(text: "REC", isRecording: true)
+                        .scaleEffect(burnInSize.map { $0 / 12 } ?? 1, anchor: .topTrailing)
+                        .frame(width: burnInSize.map { $0 * 4.6 }, height: burnInSize.map { $0 * 1.3 },
+                               alignment: .topTrailing)
                 }
-                .font(font(.caption, 1, weight: .bold))
-                .accessibilityHidden(true)
-            } else if still.stamp == nil || still.stamp == .caught {
-                RecLabel(text: "REC", isRecording: true)
-                    .scaleEffect(burnInSize.map { $0 / 12 } ?? 1, anchor: .topTrailing)
             }
+            .padding(.horizontal, plate * 1.3)
+            .padding(.vertical, plate * 0.8)
+            .background(CCTV.plate, in: .rect(cornerRadius: plate * 0.8))
         }
         .foregroundStyle(CCTV.burnIn)
-        .shadow(color: .black.opacity(0.8), radius: 0, x: 1, y: 1)
-        .padding(.horizontal, burnInSize.map { $0 * 1.2 } ?? 12)
-        .padding(.top, burnInSize.map { $0 * 1.0 } ?? 10)
+        .padding(.horizontal, burnInSize.map { $0 * 0.8 } ?? 8)
+        .padding(.top, burnInSize.map { $0 * 0.8 } ?? 8)
+    }
+
+    /// Where the CAUGHT stamp sits: the quarter of the picture the pet and
+    /// the evidence leave empty.
+    private var stampAlignment: Alignment {
+        switch PetCamScene.emptyQuadrant(of: still.shot, pet: record.pet) {
+        case .topLeading: .topLeading
+        case .topTrailing: .topTrailing
+        case .bottomLeading: .bottomLeading
+        case .bottomTrailing: .bottomTrailing
+        }
     }
 
     @ViewBuilder private var stamp: some View {
@@ -329,8 +402,10 @@ struct TapeStillView: View {
             .background(CCTV.screen.opacity(0.35), in: .rect(cornerRadius: 6, style: .continuous))
             .rotationEffect(.degrees(-9))
             .shadow(color: .black.opacity(0.5), radius: 0, x: 2, y: 2)
-            .frame(maxHeight: .infinity, alignment: .bottom)
-            .padding(.bottom, burnInSize.map { $0 * 3 } ?? 36)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: stampAlignment)
+            // Clear of the burn-in along the top and of the frame's edge.
+            .padding(.top, burnInSize.map { $0 * 3.2 } ?? 48)
+            .padding([.horizontal, .bottom], burnInSize.map { $0 * 1.2 } ?? 14)
             .transition(.scale(scale: 1.6).combined(with: .opacity))
         case .frozen:
             Text(verbatim: "STOPPED")
@@ -352,12 +427,30 @@ struct TapeStillView: View {
     /// What a still shows, in words, for VoiceOver.
     static func describe(_ still: PetCamTape.Still, pet name: String) -> String {
         let spot: (PetCamSpot) -> String = { "the \(PetCamCaptions.name(of: $0).lowercased())" }
-        guard let pose = still.shot.pet else { return "Nobody in the picture." }
+        guard let pose = still.shot.pet else {
+            if case .wreck(let target, _) = still.shot.framing,
+               let wreck = still.shot.wrecks.last(where: { $0.spot == target }) {
+                return "The \(PetCamCaptions.name(of: wreck.object.kind).lowercased()) lies wrecked on the floor."
+            }
+            return "Nobody in the picture."
+        }
         switch pose {
         case .stare(let target): return "\(name) sits on the rug, staring at \(spot(target))."
         case .sneak: return "\(name) creeps along the floor."
         case .swipe: return "\(name) raises a paw."
-        case .midAct: return "\(name) swats something off its spot."
+        case .act(let kind):
+            let verb = switch kind {
+            case .mug: "swats the mug off its spot"
+            case .fishbowl: "paws at the fish in the bowl"
+            case .donut: "chomps the donut"
+            case .tissues: "shreds the tissues"
+            case .plant: "digs in the plant pot"
+            case .vase: "head-shoves the vase off its spot"
+            }
+            return "\(name) \(verb)."
+        case .caughtMidAct(let kind):
+            return kind.isEaten ? "\(name) stares into the camera, mouth full of donut."
+                : "\(name) is caught in mid-air, staring into the camera."
         case .lensStare: return "\(name) stares straight into the camera."
         case .lieDown: return "\(name) lies on the floor, staring into the camera."
         case .stroll: return "\(name) strolls into the picture."

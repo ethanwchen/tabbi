@@ -42,16 +42,52 @@ final class PetCamStore: StudyObserver {
 
     // MARK: Reading
 
+    /// The oldest block that resolved but whose tape (or still) has not
+    /// been watched. Until it is, the home screen keeps the room, the
+    /// frozen frame and the wall as they were before that block, so
+    /// nothing on it gives the tape away.
+    private var unseen: PetCamBlockRecord? { game.nextUnwatched }
+
+    /// The room the home screen shows.
+    var shownRoom: PetCamRoom { unseen?.room ?? game.room }
+
     /// The frozen frame the home screen shows.
-    var frozenShot: PetCamShot { PetCamShot.frozenFrame(room: game.room, setup: game.setup) }
+    var shownSetup: PetCamSetup { unseen?.setup ?? game.setup }
+
+    /// The frozen frame the home screen draws.
+    var frozenShot: PetCamShot { PetCamShot.frozenFrame(room: shownRoom, setup: shownSetup) }
+
+    /// The camera that films the block under way, by its number; nil when
+    /// no block is armed.
+    var filmingCamera: Int? { game.active?.camera.cameraNumber }
 
     var isFilming: Bool { game.active != nil }
 
     /// The camera's spot for the next block: the tap, or the stare.
-    var cameraSpot: PetCamSpot { pick ?? game.setup.stare }
+    var cameraSpot: PetCamSpot { pick ?? shownSetup.stare }
 
-    /// The catches, newest first: the mugshot wall.
-    var mugshots: [PetCamBlockRecord] { game.log.mugshots.reversed() }
+    /// Blocks watched so far (the wall only files what was seen).
+    private var seen: [PetCamBlockRecord] {
+        let waiting = Set(game.unwatched)
+        return game.log.blocks.filter { !waiting.contains($0.id) }
+    }
+
+    /// The catches, newest first: the mugshots on the wall.
+    var mugshots: [PetCamBlockRecord] { seen.filter { $0.outcome == .caught }.reversed() }
+
+    /// Every tape watched, newest first: the wall's case log, catches and
+    /// cold cases (misses) alike.
+    var cases: [PetCamBlockRecord] { seen.filter(\.outcome.hasTape).reversed() }
+
+    /// The objects the pet has been caught with at least once.
+    var caughtKinds: Set<PetCamObjectKind> { Set(mugshots.compactMap(\.struck?.kind)) }
+
+    /// A catch's case number on the wall (1 for the first), counting every
+    /// catch however it was filed; nil for anything else.
+    func caseNumber(of record: PetCamBlockRecord) -> Int? {
+        guard record.outcome == .caught else { return nil }
+        return (game.log.mugshots.firstIndex { $0.id == record.id } ?? 0) + 1
+    }
 
     // MARK: Actions
 

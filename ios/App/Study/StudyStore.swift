@@ -8,10 +8,10 @@ import TabbiKitCore
 @MainActor
 protocol StudyObserver: AnyObject {
     func studyDidChange(_ update: StudyEngine.Update, engine: StudyEngine, at now: Date)
-    /// Whether the focus phase under way is being filmed: its end
-    /// notification then says the tape is ready, and the Live Activity
-    /// shows the camera recording.
-    var isFilming: Bool { get }
+    /// The camera filming the focus phase under way, by its number (nil
+    /// when it is not filmed): its end notification then says the tape is
+    /// ready, and the Live Activity shows that camera recording.
+    var filmingCamera: Int? { get }
 }
 
 /// The app's one store: runs the `StudyEngine` and carries out what each
@@ -126,10 +126,10 @@ final class StudyStore {
         }
         if let last = update.awards.last { celebrate(last) }
         observer?.studyDidChange(update, engine: after, at: now)
-        let filming = observer?.isFilming ?? false
-        alerts?.schedule(PhaseAlert.upcoming(for: after.session, filming: filming), now: now)
+        let camera = observer?.filmingCamera
+        alerts?.schedule(PhaseAlert.upcoming(for: after.session, filming: camera != nil), now: now)
         liveActivity?.sync(after.session, pet: after.pet, at: now, finishedAway: !isActive && update.phaseCompleted,
-                           filming: filming)
+                           camera: camera)
         armPhaseEnd()
     }
 

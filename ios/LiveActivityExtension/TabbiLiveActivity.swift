@@ -11,16 +11,18 @@ struct TabbiLiveActivityBundle: WidgetBundle {
 }
 
 /// The running study session on the Lock Screen and in the Dynamic Island,
-/// as a dark, static CCTV frame: scanlines, the REC dot and the countdown.
-/// It never shows the room or a caption, so a glance gives nothing to think
-/// about. The countdown is drawn by the system from the phase's dates
+/// as a dark, static CCTV frame: scanlines, the REC dot, the hidden
+/// camera's number, the countdown and the pet lying still. It never shows
+/// the room or a caption, and nothing in it moves or changes during the
+/// block, so a glance gives nothing to think about. The countdown is drawn by the system from the phase's dates
 /// (`Text(timerInterval:)`), so it keeps moving while the app is suspended;
 /// once the phase's end passes, the activity goes stale and says the tape is
 /// ready (or the phase is done) until the app moves it on.
 struct StudySessionActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: StudyActivityAttributes.self) { context in
-            LockScreenView(state: context.state, isStale: context.isStale || context.state.isDone)
+            LockScreenView(state: context.state, pet: context.attributes.pet,
+                           isStale: context.isStale || context.state.isDone)
                 .activityBackgroundTint(CCTV.screen)
                 .activitySystemActionForegroundColor(CCTV.burnIn)
         } dynamicIsland: { context in
@@ -28,9 +30,15 @@ struct StudySessionActivity: Widget {
             let stale = context.isStale || context.state.isDone
             return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    CameraLabel(state: state, isStale: stale)
-                        .frame(maxHeight: .infinity)
-                        .padding(.leading, 6)
+                    HStack(spacing: 10) {
+                        RestingPet(pet: context.attributes.pet, pixelSize: 1.5)
+                        VStack(alignment: .leading, spacing: 4) {
+                            CameraLabel(state: state, isStale: stale)
+                            CameraNumber(state: state)
+                        }
+                    }
+                    .frame(maxHeight: .infinity)
+                    .padding(.leading, 6)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     ClockText(state: state, isStale: stale)
@@ -64,16 +72,21 @@ struct StudySessionActivity: Widget {
 
 private struct LockScreenView: View {
     let state: StudyActivityAttributes.ContentState
+    let pet: PetProfile
     let isStale: Bool
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
+            RestingPet(pet: pet, pixelSize: 2)
             VStack(alignment: .leading, spacing: 6) {
                 CameraLabel(state: state, isStale: isStale)
-                Text(verbatim: "TABBI CAM")
-                    .font(.system(.caption2, design: .monospaced).weight(.semibold))
-                    .kerning(1.4)
-                    .foregroundStyle(CCTV.burnIn.opacity(0.55))
+                HStack(spacing: 8) {
+                    CameraNumber(state: state)
+                    Text(verbatim: "TABBI CAM")
+                        .font(.system(.caption2, design: .monospaced).weight(.semibold))
+                        .kerning(1.4)
+                        .foregroundStyle(CCTV.burnIn.opacity(0.55))
+                }
             }
             Spacer(minLength: 8)
             ClockText(state: state, isStale: isStale)
@@ -100,6 +113,32 @@ private struct CameraLabel: View {
 }
 
 // MARK: Pieces
+
+/// The pet lying on the floor, wide awake, the way it waits on the tape: a
+/// still picture that never changes during the block.
+private struct RestingPet: View {
+    let pet: PetProfile
+    let pixelSize: CGFloat
+
+    var body: some View {
+        PixelPet(canvas: PetCamPetArt.canvas(.lieDown, profile: pet).trimmed(margin: 1), palette: pet.palette,
+                 pixelSize: pixelSize)
+            .accessibilityHidden(true)
+    }
+}
+
+/// "CAM 3", the hidden camera filming the block; nothing when none is.
+private struct CameraNumber: View {
+    let state: StudyActivityAttributes.ContentState
+
+    var body: some View {
+        if let camera = state.camera {
+            Text(verbatim: "CAM \(camera)")
+                .font(.system(.caption2, design: .monospaced).weight(.bold))
+                .foregroundStyle(CCTV.burnIn)
+        }
+    }
+}
 
 /// The phase's clock: counting down to the end, counting up for an open
 /// stretch, frozen while paused, and the done line once it went stale.

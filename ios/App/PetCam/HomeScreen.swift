@@ -13,26 +13,41 @@ import TabbiKitCore
 
 /// The app's root: the frozen frame between blocks, the recording screen
 /// while a focus block runs, and the tape as soon as one is ready.
+///
+/// The tape lies over everything rather than sliding up as a sheet: a block
+/// that ends goes from the recording screen through a moment of static
+/// straight to the tape, never past the home screen, and the tape fades
+/// back out to the home screen. Until it has been watched the home screen
+/// still shows the room and the wall from before the block (`PetCamStore`).
 struct PetCamRoot: View {
     @Environment(StudyStore.self) private var study
     @Environment(PetCamStore.self) private var cam
 
     var body: some View {
-        Group {
-            if study.session.phase == .focus, study.session.runState != .idle {
-                RecordingScreen()
+        ZStack {
+            Group {
+                if cam.reveal != nil {
+                    // Under the tape while it fades in and out: the
+                    // monitor between two feeds.
+                    StaticScreen()
+                        .transition(.opacity)
+                } else if study.session.phase == .focus, study.session.runState != .idle {
+                    RecordingScreen()
+                        .transition(.opacity)
+                } else {
+                    HomeScreen()
+                        .transition(.opacity)
+                }
+            }
+            if let record = cam.reveal {
+                TapePlayer(record: record) { cam.watched(record) }
+                    .id(record.id)
                     .transition(.opacity)
-            } else {
-                HomeScreen()
-                    .transition(.opacity)
+                    .zIndex(1)
             }
         }
         .animation(.spring(duration: 0.4), value: study.session.runState)
-        .fullScreenCover(item: Binding(get: { cam.reveal }, set: { record in
-            if record == nil, let shown = cam.reveal { cam.watched(shown) }
-        })) { record in
-            TapePlayer(record: record)
-        }
+        .animation(.easeInOut(duration: 0.35), value: cam.reveal?.id)
         .preferredColorScheme(.dark)
         .sensoryFeedback(trigger: study.session.runState) { old, new in
             switch (old, new) {
@@ -66,13 +81,19 @@ struct HomeScreen: View {
 
     var body: some View {
         GeometryReader { geometry in
-            // At the accessibility text sizes the page scrolls instead, so
-            // the room stays the hero at full width.
-            let feedWidth = typeSize.isAccessibilitySize ? geometry.size.width
-                : Self.feedWidth(in: geometry.size, controls: controlsHeight)
+            // The feed keeps the same width, gutter and pixel scale in every
+            // mode; when the controls need more room (the Timer's stepper)
+            // it crops the empty floor at the bottom instead of shrinking.
+            // At the accessibility text sizes the page scrolls instead and
+            // Start stays pinned above the home indicator.
+            let width = geometry.size.width - 2 * CCTV.gutter
+            let picture = FeedView.pictureSize(.wide, width: width, displayScale: displayScale)
+            let shown = typeSize.isAccessibilitySize ? picture.height
+                : Self.feedHeight(picture: picture.height, room: geometry.size.height - controlsHeight)
             ScrollView {
                 VStack(spacing: 0) {
-                    feed(width: feedWidth)
+                    feed(width: width, height: shown)
+                        .padding(.top, 4)
                         .frame(maxWidth: .infinity)
                     controls
                         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { controlsHeight = $0 }
@@ -81,6 +102,15 @@ struct HomeScreen: View {
             }
             .scrollBounceBehavior(.basedOnSize)
             .scrollDismissesKeyboard(.interactively)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                if typeSize.isAccessibilitySize, !onBreak {
+                    startButton
+                        .padding(.horizontal, CCTV.gutter)
+                        .padding(.top, 10)
+                        .padding(.bottom, 4)
+                        .background(CCTV.screen.opacity(0.94).ignoresSafeArea())
+                }
+            }
         }
         .background(CCTV.screen.ignoresSafeArea())
         .sheet(isPresented: $showsMethods) {
@@ -107,16 +137,16 @@ struct HomeScreen: View {
         #endif
     }
 
-    /// The widest feed that leaves room for the controls (it may overlap
-    /// them by a little, over the empty floor), snapped later to whole pixels.
-    static func feedWidth(in size: CGSize, controls: CGFloat) -> CGFloat {
-        let height = max(size.height - controls + 36, 200)
-        return min(size.width, height * 100 / 160)
+    /// How much of the feed shows: all of it when it fits above the
+    /// controls, else cropped at the bottom (the empty near floor), but
+    /// never past the rug; below that the page scrolls.
+    static func feedHeight(picture: CGFloat, room: CGFloat) -> CGFloat {
+        min(picture, max(room - 4, picture * 0.74)).rounded(.down)
     }
 
     // MARK: The feed
 
-    private func feed(width: CGFloat) -> some View {
+    private func feed(width: CGFloat, height: CGFloat) -> some View {
         let picture = FeedView.pictureSize(.wide, width: width, displayScale: displayScale)
         return TimelineView(.periodic(from: .now, by: 0.45)) { context in
             let tick = reduceMotion ? 0 : Int(context.date.timeIntervalSinceReferenceDate / 0.45) % 2
@@ -125,22 +155,27 @@ struct HomeScreen: View {
         }
         .accessibilityElement()
         .accessibilityLabel(Text(verbatim: "Camera 1, the living room. "
-            + PetCamCaptions.describe(cam.game.setup, room: cam.game.room, petName: study.pet.name)))
+            + PetCamCaptions.describe(cam.shownSetup, room: cam.shownRoom, petName: study.pet.name)
+            + (cam.shownSetup.wanted.flatMap { cam.shownRoom.object(at: $0) }.map {
+                " The \(PetCamCaptions.name(of: $0.kind).lowercased()) is wanted."
+            } ?? "")))
+        .overlay { SpotTargets(size: picture) }
+        .frame(width: picture.width, height: picture.height)
+        .frame(height: height, alignment: .top)
+        .clipped()
         .overlay { Grain().clipped() }
         .overlay {
-            // A soft fade into the monitor at the bottom, under the controls.
-            LinearGradient(colors: [.clear, CCTV.screen.opacity(0.85)], startPoint: UnitPoint(x: 0.5, y: 0.82),
+            // A soft fade into the monitor at the bottom, under the chips.
+            LinearGradient(colors: [.clear, CCTV.screen.opacity(0.85)], startPoint: UnitPoint(x: 0.5, y: 0.80),
                            endPoint: .bottom)
                 .allowsHitTesting(false)
                 .accessibilityHidden(true)
         }
-        .overlay { SpotTargets(size: picture) }
         .overlay(alignment: .topLeading) { burnIn }
         .overlay(alignment: .bottomLeading) {
-            if !typeSize.isAccessibilitySize { chips.padding(12).padding(.bottom, 30) }
+            if !typeSize.isAccessibilitySize { chips.padding(12).padding(.bottom, 18) }
         }
-        .frame(width: picture.width, height: picture.height)
-        .clipShape(.rect(cornerRadius: 6, style: .continuous))
+        .clipShape(.rect(cornerRadius: CCTV.feedRadius, style: .continuous))
     }
 
     /// The camera's burn-in: the date and time, the camera, and REC.
@@ -156,15 +191,21 @@ struct HomeScreen: View {
                     .font(CCTV.font(.caption2))
                     .opacity(0.8)
             }
+            .padding(.horizontal, 5)
+            .padding(.vertical, 3)
+            .background(CCTV.plate, in: .rect(cornerRadius: 3))
             Spacer(minLength: 8)
             RecLabel(text: "LIVE", isRecording: true)
+                .padding(.horizontal, 5)
+                .padding(.vertical, 3)
+                .background(CCTV.plate, in: .rect(cornerRadius: 3))
         }
         .foregroundStyle(CCTV.burnIn)
         .shadow(color: .black.opacity(0.8), radius: 0, x: 1, y: 1)
         // A camera's burn-in has one size; VoiceOver reads it in full.
         .dynamicTypeSize(...DynamicTypeSize.large)
-        .padding(.horizontal, 12)
-        .padding(.top, 10)
+        .padding(.horizontal, 8)
+        .padding(.top, 8)
         .contentShape(.rect)
         .onLongPressGesture(minimumDuration: 0.8) {
             #if DEBUG
@@ -224,7 +265,9 @@ struct HomeScreen: View {
 
     private var controls: some View {
         VStack(spacing: 12) {
-            if typeSize.isAccessibilitySize { chips }
+            if typeSize.isAccessibilitySize {
+                chips.frame(maxWidth: .infinity, alignment: .leading)
+            }
             if onBreak {
                 breakControls
             } else {
@@ -232,7 +275,8 @@ struct HomeScreen: View {
                     TimerLengthPicker(length: study.engine.timer) { study.setTimer($0) }
                 }
                 dodgeRow
-                startButton
+                // At the largest sizes Start is pinned below instead.
+                if !typeSize.isAccessibilitySize { startButton }
                 cameraLine
             }
             if let award = study.award {
@@ -240,8 +284,8 @@ struct HomeScreen: View {
                     .transition(.scale(scale: 0.9).combined(with: .opacity))
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 4)
+        .padding(.horizontal, CCTV.gutter)
+        .padding(.top, 10)
         .padding(.bottom, 12)
         .animation(.spring(duration: 0.4), value: study.award)
     }
@@ -356,6 +400,14 @@ private struct SpotTargets: View {
                     Viewfinder(label: "CAM \(spot.cameraNumber)", picked: cam.pick == spot, shown: isCamera,
                                labelBelow: frame.minY < 64)
                         .frame(width: frame.width, height: frame.height)
+                        .overlay(alignment: .top) {
+                            // The stake: the object the wall is missing longest.
+                            if cam.shownSetup.wanted == spot {
+                                WantedTag()
+                                    .padding(.top, unit * 2)
+                                    .accessibilityHidden(true)
+                            }
+                        }
                         .contentShape(.rect)
                 }
                 .buttonStyle(.plain)
@@ -366,6 +418,24 @@ private struct SpotTargets: View {
         }
         .frame(width: size.width, height: size.height, alignment: .topLeading)
         .animation(.spring(duration: 0.3), value: cam.cameraSpot)
+    }
+}
+
+/// The small yellow tag over the WANTED object on the frozen frame.
+private struct WantedTag: View {
+    var body: some View {
+        Text(verbatim: "WANTED")
+            .font(.system(size: 9, weight: .heavy, design: .monospaced))
+            .kerning(0.6)
+            .foregroundStyle(CCTV.screen)
+            .padding(.horizontal, 4)
+            .padding(.vertical, 1.5)
+            .background(CCTV.wanted, in: .rect(cornerRadius: 2))
+            .overlay(RoundedRectangle(cornerRadius: 2).stroke(CCTV.screen.opacity(0.7), lineWidth: 1))
+            .rotationEffect(.degrees(-5))
+            .shadow(color: .black.opacity(0.6), radius: 0, x: 1, y: 1)
+            .fixedSize()
+            .accessibilityIdentifier("feed.wanted")
     }
 }
 
@@ -414,6 +484,20 @@ private struct Corners: Shape {
             path.addLine(to: CGPoint(x: corner.x, y: corner.y + arm * dy))
         }
         return path
+    }
+}
+
+/// The monitor between feeds, under the tape as it fades in and out.
+private struct StaticScreen: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 0.08)) { context in
+            StaticGrain(frame: reduceMotion ? 1 : Int(context.date.timeIntervalSinceReferenceDate / 0.08), amount: 0.4)
+        }
+        .background(Color(white: 0.14))
+        .ignoresSafeArea()
+        .accessibilityHidden(true)
     }
 }
 
