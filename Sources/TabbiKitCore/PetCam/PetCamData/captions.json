@@ -25,6 +25,7 @@
   "caught": "CAUGHT",
   "charge": "CHARGE: {charge}",
   "priors": "PRIOR OFFENSES: {count}",
+  "firstOffense": "FIRST OFFENSE",
   "innocent": ["NOTHING TO SEE HERE.", "INNOCENT. ALLEGEDLY.", "WHO, ME?", "NO WITNESSES."],
   "returns": ["SUSPECT RETURNS.", "OH. HELLO."],
   "frozen": "STOPPED AT {time}. SUSPECT FROZE MID-SNEAK.",

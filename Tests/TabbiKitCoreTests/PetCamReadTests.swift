@@ -193,6 +193,9 @@ final class PetCamReadTests: XCTestCase {
                               "the strike is only heard")
                 XCTAssertFalse(tape.stills.contains { $0.shot.pet == .midAct }, "and never seen")
             }
+            for (a, b) in zip(tape.stills, tape.stills.dropFirst()) {
+                XCTAssertNotEqual(a.caption, b.caption, "each cut says something new")
+            }
             // A replay from the record is the same tape.
             XCTAssertEqual(PetCamTape(record: record), tape)
         }

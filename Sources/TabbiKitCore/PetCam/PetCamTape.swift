@@ -116,6 +116,8 @@ public struct PetCamTape: Hashable, Sendable {
         /// A smaller line under it.
         public var detail: String?
         public var stamp: Stamp?
+        /// The camera jolts as the still cuts in: something just hit hard.
+        public var shake = false
 
         /// The camera's label ("CAM 1").
         public var cameraLabel: String {
@@ -170,13 +172,16 @@ public struct PetCamTape: Hashable, Sendable {
                 Still(shot: Self.with(close, pet: .sneak(step: 0), at: .approach(strike)), time: plan.watch,
                       duration: 2.2, caption: record.captions.watch),
                 Still(shot: Self.with(close, pet: .swipe, at: .strike(strike)), time: plan.strike.addingTimeInterval(-2),
-                      duration: 1.8, caption: record.captions.watch),
+                      duration: 2.0, caption: record.captions.age ?? record.captions.watch),
                 Still(shot: Self.with(close, pet: .midAct, at: .strike(strike), states: [strike: .tipping]),
-                      time: plan.strike, duration: 2.4, caption: record.captions.strike, detail: record.captions.age),
+                      time: plan.strike, duration: 2.4, caption: record.captions.strike,
+                      detail: record.struck.map { PetCamCaptions.sound(of: $0.kind) }, shake: true),
                 Still(shot: Self.with(after, pet: .lensStare, at: .strike(strike)), time: plan.turn, duration: 2.6,
                       caption: record.captions.turn, detail: record.captions.callback),
+                // The stamp says CAUGHT; the caption reads the charge.
                 Still(shot: Self.with(after, pet: .lensStare, at: .strike(strike)), time: plan.turn, duration: 3.6,
-                      caption: record.captions.closer, detail: record.captions.charge, stamp: .caught),
+                      caption: record.captions.charge ?? record.captions.closer, detail: record.captions.priors,
+                      stamp: .caught),
             ]
         } else {
             // The camera holds on the wrong spot while the strike happens
@@ -191,7 +196,7 @@ public struct PetCamTape: Hashable, Sendable {
                 opener,
                 Still(shot: quiet, time: plan.watch, duration: 2.2, caption: record.captions.watch),
                 Still(shot: heard, time: plan.strike, duration: 2.6, caption: record.captions.strike,
-                      detail: PetCamCaptions.offCamera),
+                      detail: PetCamCaptions.offCamera, shake: true),
                 Still(shot: Self.with(later, pet: .stroll(step: 1), at: .enter(camera)), time: plan.turn, duration: 2.4,
                       caption: record.captions.turn, detail: record.captions.callback),
                 Still(shot: Self.with(later, pet: .lieDown, at: .lounge(camera)), time: plan.alibi, duration: 3.8,

@@ -108,6 +108,23 @@ public enum PetCamScene {
         }
     }
 
+    /// The part of the wide shot a spot covers, in sprite pixels: its
+    /// object with room around it, for a tap target and the viewfinder.
+    public static func spotRect(_ spot: PetCamSpot) -> CGRect {
+        let base = layout.spot(spot).object
+        return CGRect(x: base.x - 12, y: base.y - 21, width: 24, height: 26)
+    }
+
+    /// One object on its own, intact or wrecked, outlined in ink and in the
+    /// room's palette (colors row-major, nil for transparent), for the
+    /// mugshot's evidence tag.
+    public static func sprite(_ kind: PetCamObjectKind, wrecked: Bool) -> (colors: [PetColor?], width: Int, height: Int) {
+        let grid = wrecked ? wreck(kind) : object(kind)
+        var canvas = PetCanvas(width: grid.width + 2, height: grid.height + 2)
+        canvas.stamp(grid, x: 1, y: 1)
+        return (canvas.outlined(with: .ink).colors(using: palette), canvas.width, canvas.height)
+    }
+
     /// Whether the burn-in hour is daylight (07:00 to 18:59), when the
     /// window shows a blue sky and the room is less dark.
     public static func isDaylight(_ date: Date, calendar: Calendar = .current) -> Bool {
@@ -133,7 +150,7 @@ public enum PetCamScene {
             picture.pet(canvas.colors(using: pet.palette), width: canvas.width, at: placement)
         }
         if let from = shot.debrisFrom, case .spot(let camera) = shot.framing {
-            picture.debris(from: from, toward: camera)
+            picture.debris(from: from, toward: camera, kind: shot.objects[from]?.kind)
         }
         return picture.cropped(to: shot.framing)
     }
@@ -260,10 +277,16 @@ public enum PetCamScene {
             }
         }
 
-        /// An effect grid (white marks), not outlined, top-left at (x, y).
-        mutating func effect(_ grid: SpriteGrid, x originX: Int, y originY: Int) {
+        /// An effect grid (white marks), not outlined, top-left at (x, y);
+        /// `fragments` recolors its solid white marks.
+        mutating func effect(_ grid: SpriteGrid, x originX: Int, y originY: Int, fragments: PetPaletteRole? = nil) {
             var canvas = PetCanvas(width: grid.width, height: grid.height)
             canvas.stamp(grid, x: 0, y: 0)
+            if let fragments {
+                for y in 0..<canvas.height {
+                    for x in 0..<canvas.width where canvas[x, y] == .effect { canvas[x, y] = fragments }
+                }
+            }
             let colors = canvas.colors(using: PetCamScene.palette)
             for y in 0..<canvas.height {
                 for x in 0..<canvas.width {
@@ -310,17 +333,27 @@ public enum PetCamScene {
             }
         }
 
-        /// Bits flying in from the edge of `camera`'s frame nearest `spot`:
-        /// a strike heard, not seen.
-        mutating func debris(from spot: PetCamSpot, toward camera: PetCamSpot) {
+        /// Dust and fragments rolling in from the edge of `camera`'s frame
+        /// nearest `spot`: a strike heard, not seen. The fragments take the
+        /// broken object's main color (white shards, green leaves, water).
+        mutating func debris(from spot: PetCamSpot, toward camera: PetCamSpot, kind: PetCamObjectKind?) {
             let crop = PetCamScene.layout.spot(camera).crop
             let source = PetCamScene.layout.spot(spot).object
             let fromRight = source.x > crop.x + crop.width / 2
             var grid = PetCamScene.effect("debris")
             if fromRight { grid = grid.mirrored() }
-            let x = fromRight ? crop.x + crop.width - grid.width - 1 : crop.x + 1
-            let y = max(crop.y + 2, min(source.y - crop.y, crop.height - grid.height - 2) + crop.y - 8)
-            effect(grid, x: x, y: y)
+            let x = fromRight ? crop.x + crop.width - grid.width : crop.x
+            let y = crop.y + min(max(source.y - crop.y + 4, 6), crop.height - grid.height - 6)
+            effect(grid, x: x, y: y, fragments: kind.map(Self.fragmentRole))
+        }
+
+        static func fragmentRole(_ kind: PetCamObjectKind) -> PetPaletteRole {
+            switch kind {
+            case .mug, .tissues: .coat
+            case .plant: .leaf
+            case .fishbowl, .vase: .eye
+            case .donut: .blush
+            }
         }
 
         func cropped(to framing: PetCamShot.Framing) -> Frame {

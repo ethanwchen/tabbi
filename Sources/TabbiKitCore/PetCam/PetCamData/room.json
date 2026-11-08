@@ -430,12 +430,14 @@
    "...ZZ"
   ],
   "effect.debris": [
-   "Z.....",
-   "..Z..V",
-   "Z..ZZ.",
-   ".V....",
-   "...Z..",
-   "Z....."
+   "zz.......Z...",
+   "zzzz..Z......",
+   "zzzzzz...Z...",
+   "zzzzzzz.....Z",
+   "zzzzzz..Z....",
+   "zzzzz.Z......",
+   "zzz......Z...",
+   "zz...Z......."
   ]
  },
  "layout": {
@@ -603,13 +605,13 @@
       "y": 100
      },
      {
-      "x": 88,
-      "y": 108
+      "x": 86,
+      "y": 104
      }
     ],
     "crop": {
      "x": 50,
-     "y": 40,
+     "y": 30,
      "width": 50,
      "height": 80
     },
@@ -619,18 +621,18 @@
      "facingRight": true
     },
     "approach": {
-     "x": 52,
-     "y": 82,
+     "x": 50,
+     "y": 70,
      "facingRight": true
     },
     "enter": {
-     "x": 54,
-     "y": 84,
+     "x": 52,
+     "y": 72,
      "facingRight": true
     },
     "lounge": {
-     "x": 58,
-     "y": 84,
+     "x": 56,
+     "y": 74,
      "facingRight": true
     }
    }

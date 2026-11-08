@@ -26,7 +26,7 @@ public struct PetCamCaptionSet: Codable, Hashable, Sendable {
     public var charge: String?
     /// The mugshot's charge without the dodge line, for sharing.
     public var publicCharge: String?
-    /// "PRIOR OFFENSES: 2", from the wall.
+    /// "PRIOR OFFENSES: 2" from the wall, or "FIRST OFFENSE".
     public var priors: String?
 
     public init(opener: String, watch: String, strike: String, age: String? = nil, callback: String? = nil,
@@ -60,7 +60,7 @@ struct PetCamCaptionGrammar: Decodable, Sendable {
     let objects: [String: ObjectWords]
     let spots: [String: String]
     let opener, openerDays, motion, quiet, act, eaten, offCamera, noticed, innocent, returns: [String]
-    let caught, charge, priors, frozen, noTape: String
+    let caught, charge, priors, firstOffense, frozen, noTape: String
     let callbacks: Callbacks
     let ordinals: [String]
     let ordinalMore: String
@@ -107,6 +107,21 @@ public enum PetCamCaptions {
 
     /// The sound a miss hears from off camera ("[SPLASH]").
     public static func sound(of kind: PetCamObjectKind) -> String { grammar.words(kind).sound }
+
+    /// The frozen frame in words, for VoiceOver: where the pet stares and
+    /// what (if anything) wobbles or smells good. English only for now.
+    public static func describe(_ setup: PetCamSetup, room: PetCamRoom, petName: String) -> String {
+        func thing(_ spot: PetCamSpot) -> String {
+            let object = room.object(at: spot).map { grammar.words($0.kind).name.lowercased() } ?? "nothing"
+            return "the \(object) on the \(grammar.name(spot).lowercased())"
+        }
+        var line = "\(petName) is staring at \(thing(setup.stare))."
+        if let tell = setup.tell {
+            let verb = tell.exception == .appetite ? "smells too good" : "is wobbling"
+            line += " " + thing(tell.spot).prefix(1).uppercased() + thing(tell.spot).dropFirst() + " \(verb)."
+        }
+        return line
+    }
 
     /// "OFF CAMERA", under the sound.
     public static var offCamera: String { grammar.offCamera.first ?? "" }
@@ -262,7 +277,7 @@ public enum PetCamCaptions {
                 closer: grammar.caught,
                 charge: fill(grammar.charge, ["charge": cleanDodge(dodge) ?? action]),
                 publicCharge: fill(grammar.charge, ["charge": action]),
-                priors: priors > 0 ? fill(grammar.priors, ["count": "\(priors)"]) : nil
+                priors: priors > 0 ? fill(grammar.priors, ["count": "\(priors)"]) : grammar.firstOffense
             )
         }
         return PetCamCaptionSet(
