@@ -35,6 +35,30 @@ public enum PetCamPetArt {
         return facingRight ? composed.mirroredHorizontally() : composed
     }
 
+    /// How many mugshot expressions there are (`mugshot(_:profile:)`).
+    public static let mugshotLooks = 5
+
+    /// The front view for a mugshot, its expression one of
+    /// `mugshotLooks` by `look` (the wall uses the case number, so two
+    /// cases side by side never pull the same face): the deadpan stare into
+    /// the lens, smug, side-eye, unbothered, and mid-yawn.
+    public static func mugshot(_ look: Int, profile: PetProfile) -> PetCanvas {
+        let (pose, extras): (PetPose, PetComposer.Extras) = switch ((look % mugshotLooks) + mugshotLooks) % mugshotLooks {
+        case 0: (PetPose(headDrop: -1), PetComposer.Extras(eyes: lens))
+        case 1: (PetPose(eyes: .happy), PetComposer.Extras())
+        case 2: (PetPose(), PetComposer.Extras(eyes: lookLeft))
+        case 3: (PetPose(eyes: .sleepy, headDrop: 1), PetComposer.Extras())
+        default: (PetPose(eyes: .squeezed, mouth: .wide, headDrop: -1), PetComposer.Extras())
+        }
+        return PetComposer.compose(profile.breed, pose: pose, outfit: profile.outfit, accessories: profile.accessories,
+                                   bond: profile.bondLook, extras: extras).picture
+    }
+
+    /// The side view for a mugshot: standing side-on, facing left.
+    public static func mugshotProfile(_ profile: PetProfile) -> PetCanvas {
+        canvas(.stroll(step: 1), profile: profile)
+    }
+
     /// Which way the pet faces when it stares at `spot` from the middle
     /// of the floor: the counter is to its left, the side table to its
     /// right, and the bookcase behind it (it sits facing the camera).

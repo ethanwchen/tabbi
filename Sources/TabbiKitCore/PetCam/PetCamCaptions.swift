@@ -28,9 +28,18 @@ public struct PetCamCaptionSet: Codable, Hashable, Sendable {
     public var publicCharge: String?
     /// "PRIOR OFFENSES: 2" from the wall, or "FIRST OFFENSE".
     public var priors: String?
+    /// The lines only some tape shapes use: a cold open on the aftermath,
+    /// the rewind, the push-in, the double take, a cold open on the alibi,
+    /// and the miss's last look at what really happened.
+    public var aftermath, rewind, enhance, reaction, alibi, reveal: String?
+    /// When the visible exception decided the strike, the line that says so
+    /// ("IT WAS ALREADY WOBBLING."), which teaches the read after a miss.
+    public var tell: String?
 
     public init(opener: String, watch: String, strike: String, age: String? = nil, callback: String? = nil,
-                turn: String, closer: String, charge: String? = nil, publicCharge: String? = nil, priors: String? = nil) {
+                turn: String, closer: String, charge: String? = nil, publicCharge: String? = nil, priors: String? = nil,
+                aftermath: String? = nil, rewind: String? = nil, enhance: String? = nil, reaction: String? = nil,
+                alibi: String? = nil, reveal: String? = nil, tell: String? = nil) {
         self.opener = opener
         self.watch = watch
         self.strike = strike
@@ -41,6 +50,13 @@ public struct PetCamCaptionSet: Codable, Hashable, Sendable {
         self.charge = charge
         self.publicCharge = publicCharge
         self.priors = priors
+        self.aftermath = aftermath
+        self.rewind = rewind
+        self.enhance = enhance
+        self.reaction = reaction
+        self.alibi = alibi
+        self.reveal = reveal
+        self.tell = tell
     }
 }
 
@@ -60,7 +76,9 @@ struct PetCamCaptionGrammar: Decodable, Sendable {
     let objects: [String: ObjectWords]
     let spots: [String: String]
     let opener, openerDays, motion, quiet, act, eaten, offCamera, noticed, innocent, returns: [String]
-    let caught, charge, priors, firstOffense, frozen, noTape: String
+    let aftermath, rewind, enhance, reaction, alibiOpen: [String]
+    let caught, charge, priors, firstOffense, frozen, noTape, meanwhile: String
+    let tells: [String: String]
     let callbacks: Callbacks
     let ordinals: [String]
     let ordinalMore: String
@@ -261,6 +279,15 @@ public enum PetCamCaptions {
             : one(grammar.opener, seed: seed, stream: "opener")
         let cam = "\(camera.cameraNumber)"
         let age = age(of: struck, at: date, calendar: calendar)
+        let shapeLines = (
+            aftermath: one(grammar.aftermath, seed: seed, stream: "aftermath", ["cam": cam]),
+            rewind: one(grammar.rewind, seed: seed, stream: "rewind"),
+            enhance: one(grammar.enhance, seed: seed, stream: "enhance"),
+            reaction: one(grammar.reaction, seed: seed, stream: "reaction"),
+            alibi: one(grammar.alibiOpen, seed: seed, stream: "alibi", ["cam": cam]),
+            reveal: fill(grammar.meanwhile, ["spot": grammar.name(strike), "remains": words.remains]),
+            tell: setup.tell.flatMap { $0.spot == strike ? grammar.tells[$0.exception.rawValue] : nil }
+        )
         let callback = callback(strike: strike, struck: struck, room: room, outcome: outcome, history: history,
                                 at: date, seed: seed, calendar: calendar)
         let object = words.name
@@ -277,7 +304,9 @@ public enum PetCamCaptions {
                 closer: grammar.caught,
                 charge: fill(grammar.charge, ["charge": cleanDodge(dodge) ?? action]),
                 publicCharge: fill(grammar.charge, ["charge": action]),
-                priors: priors > 0 ? fill(grammar.priors, ["count": "\(priors)"]) : grammar.firstOffense
+                priors: priors > 0 ? fill(grammar.priors, ["count": "\(priors)"]) : grammar.firstOffense,
+                aftermath: shapeLines.aftermath, rewind: shapeLines.rewind, enhance: shapeLines.enhance,
+                tell: shapeLines.tell
             )
         }
         return PetCamCaptionSet(
@@ -286,7 +315,9 @@ public enum PetCamCaptions {
             strike: words.sound,
             age: age, callback: callback,
             turn: one(grammar.returns, seed: seed, stream: "turn"),
-            closer: one(grammar.innocent, seed: seed, stream: "closer")
+            closer: one(grammar.innocent, seed: seed, stream: "closer"),
+            rewind: shapeLines.rewind, enhance: shapeLines.enhance, reaction: shapeLines.reaction,
+            alibi: shapeLines.alibi, reveal: shapeLines.reveal, tell: shapeLines.tell
         )
     }
 

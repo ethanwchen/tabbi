@@ -28,6 +28,16 @@
   "firstOffense": "FIRST OFFENSE",
   "innocent": ["NOTHING TO SEE HERE.", "INNOCENT. ALLEGEDLY.", "WHO, ME?", "NO WITNESSES."],
   "returns": ["SUSPECT RETURNS.", "OH. HELLO."],
+  "aftermath": ["THE SCENE, CAM {cam}.", "EXHIBIT A, CAM {cam}."],
+  "rewind": ["REWIND.", "EARLIER."],
+  "enhance": ["ENHANCE.", "ZOOM IN."],
+  "reaction": ["IT SEES US.", "DON'T MOVE."],
+  "alibiOpen": ["CAM {cam}. ALL QUIET.", "CAM {cam}. NOTHING TO REPORT."],
+  "meanwhile": "MEANWHILE, BY THE {spot}: {remains}.",
+  "tells": {
+    "wobble": "IT WAS ALREADY WOBBLING.",
+    "appetite": "IT SMELLED TOO GOOD."
+  },
   "frozen": "STOPPED AT {time}. SUSPECT FROZE MID-SNEAK.",
   "noTape": "NO TAPE THIS TIME.",
   "callbacks": {

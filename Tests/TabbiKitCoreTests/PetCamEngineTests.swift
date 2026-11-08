@@ -117,56 +117,71 @@ final class PetCamEngineTests: XCTestCase {
     func testTheDefaultReadMatchesItsDocumentedNumbers() {
         let tuning = PetCamTuning.standard
         let plain = tuning.strikeChances(stare: .counter, exception: nil)
-        XCTAssertEqual(plain[.counter]!, 0.6, accuracy: 1e-9)
-        XCTAssertEqual(plain[.shelf]!, 0.2, accuracy: 1e-9)
-        let elsewhere = tuning.strikeChances(stare: .counter, exception: .table)
-        XCTAssertEqual(elsewhere[.counter]!, 0.375, accuracy: 1e-9)
-        XCTAssertEqual(elsewhere[.table]!, 0.5, accuracy: 1e-9)
-        XCTAssertEqual(elsewhere[.shelf]!, 0.125, accuracy: 1e-9)
-        let together = tuning.strikeChances(stare: .shelf, exception: .shelf)
-        XCTAssertEqual(together[.shelf]!, 0.75, accuracy: 1e-9)
-        for chances in [plain, elsewhere, together] {
+        XCTAssertEqual(plain[.counter]!, 0.62, accuracy: 1e-9)
+        XCTAssertEqual(plain[.shelf]!, 0.19, accuracy: 1e-9)
+        XCTAssertEqual(plain[.table]!, 0.19, accuracy: 1e-9)
+        let wobble = tuning.strikeChances(stare: .counter, exception: .table)
+        XCTAssertEqual(wobble[.table]!, 0.919, accuracy: 1e-9, "the wobble decides it")
+        XCTAssertEqual(wobble[.counter]!, 0.062, accuracy: 1e-9)
+        XCTAssertEqual(wobble[.shelf]!, 0.019, accuracy: 1e-9)
+        for chances in [plain, wobble] {
             XCTAssertEqual(chances.values.reduce(0, +), 1, accuracy: 1e-9)
         }
     }
 
     func testTuningIsClampedAndDecodesForgivingly() throws {
-        let wild = PetCamTuning(stareWeight: -3, otherWeight: .nan, exceptionChance: 4, exceptionWeight: 999)
-        XCTAssertEqual(wild.stareWeight, 0)
-        XCTAssertEqual(wild.otherWeight, 0)
+        let wild = PetCamTuning(followStare: -3, exceptionChance: 4, exceptionPull: .nan)
+        XCTAssertEqual(wild.followStare, 0)
         XCTAssertEqual(wild.exceptionChance, 1)
-        XCTAssertEqual(wild.exceptionWeight, PetCamTuning.maximumWeight)
-        let flat = wild.strikeChances(stare: .counter, exception: nil)
-        XCTAssertEqual(flat[.counter]!, 1.0 / 3, accuracy: 1e-9, "all-zero weights fall back to fair")
-        let partial = try JSONDecoder().decode(PetCamTuning.self, from: Data(#"{"stareWeight":9,"exception":"tea"}"#.utf8))
-        XCTAssertEqual(partial.stareWeight, 9)
+        XCTAssertEqual(wild.exceptionPull, 0)
+        let away = wild.strikeChances(stare: .counter, exception: nil)
+        XCTAssertEqual(away[.counter]!, 0, accuracy: 1e-9, "a pet that never follows its stare")
+        XCTAssertEqual(away[.shelf]!, 0.5, accuracy: 1e-9)
+        let partial = try JSONDecoder().decode(PetCamTuning.self, from: Data(#"{"followStare":0.9,"exception":"tea"}"#.utf8))
+        XCTAssertEqual(partial.followStare, 0.9)
         XCTAssertEqual(partial.exception, .wobble, "an unknown exception keeps the default")
-        XCTAssertEqual(partial.otherWeight, PetCamTuning.standard.otherWeight)
+        XCTAssertEqual(partial.exceptionPull, PetCamTuning.standard.exceptionPull)
+        // A tuning saved by the first prototype (weights) loads as the default read.
+        let old = try JSONDecoder().decode(PetCamTuning.self, from: Data(#"{"stareWeight":6,"otherWeight":2}"#.utf8))
+        XCTAssertEqual(old, .standard)
     }
 
-    func testTheStareIsFairAndTheWobbleShowsAtItsChance() {
+    func testTheStareIsFairAndTheExceptionShowsAboutOneBlockInThreeOffTheStare() {
         var stares: [PetCamSpot: Int] = [:]
         var tells = 0
         let room = PetCamRoom.starter(at: Self.monday)
         for seed in 0..<9000 as Range<UInt64> {
             let setup = PetCamSetup.prepare(seed: seed, room: room, species: .cat, tuning: .standard, at: Self.monday)
             stares[setup.stare, default: 0] += 1
-            if setup.tell != nil { tells += 1 }
+            if let tell = setup.tell {
+                tells += 1
+                XCTAssertNotEqual(tell.spot, setup.stare, "the exception tells something the stare does not")
+            }
         }
         for spot in PetCamSpot.allCases {
             XCTAssertEqual(Double(stares[spot] ?? 0) / 9000, 1.0 / 3, accuracy: 0.02)
         }
         XCTAssertEqual(Double(tells) / 9000, PetCamTuning.standard.exceptionChance, accuracy: 0.02)
+        XCTAssertEqual(PetCamTuning.standard.exceptionChance, 1.0 / 3, accuracy: 0.01)
     }
 
-    func testTheAppetiteOnlyShowsOnTheFavoriteObject() {
+    func testTheAppetiteOnlyShowsOnTheFavoriteObjectAwayFromTheStare() throws {
         var tuning = PetCamTuning.standard
         tuning.exception = .appetite
         tuning.exceptionChance = 1
         let room = PetCamRoom.starter(at: Self.monday)
-        let cat = PetCamSetup.prepare(seed: 5, room: room, species: .cat, tuning: tuning, at: Self.monday)
+        let seeds = 0..<200 as Range<UInt64>
+        let away = try XCTUnwrap(seeds.first {
+            PetCamSetup.prepare(seed: $0, room: room, species: .cat, tuning: tuning, at: Self.monday).stare != .table
+        })
+        let cat = PetCamSetup.prepare(seed: away, room: room, species: .cat, tuning: tuning, at: Self.monday)
         XCTAssertEqual(cat.tell, PetCamTell(exception: .appetite, spot: .table), "the starter fishbowl is on the table")
-        let dog = PetCamSetup.prepare(seed: 5, room: room, species: .dog, tuning: tuning, at: Self.monday)
+        let at = try XCTUnwrap(seeds.first {
+            PetCamSetup.prepare(seed: $0, room: room, species: .cat, tuning: tuning, at: Self.monday).stare == .table
+        })
+        XCTAssertNil(PetCamSetup.prepare(seed: at, room: room, species: .cat, tuning: tuning, at: Self.monday).tell,
+                     "staring at its favorite already says it")
+        let dog = PetCamSetup.prepare(seed: away, room: room, species: .dog, tuning: tuning, at: Self.monday)
         XCTAssertNil(dog.tell, "no donut in the starter room")
     }
 

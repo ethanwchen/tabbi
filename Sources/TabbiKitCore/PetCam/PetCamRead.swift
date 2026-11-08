@@ -3,20 +3,23 @@ import Foundation
 /// How the pet decides where to strike, as data, so playtests can compare
 /// variants without a code change (the debug tuning panel edits it).
 ///
-/// The base rule is a weight per spot: the spot the pet stares at gets
-/// `stareWeight`, the other two `otherWeight` each. One visible exception
-/// can add `exceptionWeight` to a spot: a wobbling object (it teeters on
-/// the home screen) or, as an alternative to try, the breed's appetite
-/// (scent lines over its favorite object). The chance of each spot is its
-/// weight over the total, so the default reads as "usually where she
-/// stares, unless something wobbles":
+/// One tell and one exception. The tell is the stare: with nothing else
+/// showing, the pet strikes the spot it stares at with `followStare` and
+/// splits the rest between the other two. The exception is visible on the
+/// frozen frame in about one block in three (`exceptionChance`), always on
+/// a spot the pet is not staring at: a wobbling object (it teeters on the
+/// home screen) or, as an alternative to try, the breed's appetite (scent
+/// lines over its favorite object). When it shows it decides the strike
+/// with `exceptionPull`; otherwise the stare rule still applies. So the
+/// defaults read as "where she stares, unless something wobbles":
 ///
-/// - nothing wobbling: 60% the stare, 20% each other spot;
-/// - a wobble elsewhere: 37.5% the stare, 50% the wobble, 12.5% the rest;
-/// - a wobble on the stared spot: 75% there.
+/// - nothing wobbling: 62% the stare, 19% each other spot;
+/// - a wobble: 91.9% the wobble, 6.2% the stare, 1.9% the third spot.
 ///
-/// `PetCamReadTests` plays scripted players against these numbers and
-/// keeps the read between a coin flip and a solved puzzle.
+/// A player who always follows the stare catches about 43%, one who picks
+/// at random 33%, and one who reads the wobble when it shows about 72%
+/// (`PetCamReadTests` pins those bands), so reading the room is worth it
+/// without the stare ever being a coin flip.
 public struct PetCamTuning: Codable, Hashable, Sendable {
     /// Which visible exception can override the stare.
     public enum Exception: String, Codable, CaseIterable, Hashable, Sendable {
@@ -25,29 +28,29 @@ public struct PetCamTuning: Codable, Hashable, Sendable {
         /// Some blocks, one object teeters on its spot.
         case wobble
         /// Some blocks, the pet's favorite object (by species) smells too
-        /// good, shown as scent lines, if it is in the room.
+        /// good, shown as scent lines, if it is in the room and not where
+        /// the pet stares.
         case appetite
     }
 
-    public var stareWeight: Double
-    public var otherWeight: Double
+    /// With no exception showing, the chance the pet strikes where it stares.
+    public var followStare: Double
     public var exception: Exception
     /// Chance per block that the exception shows at all.
     public var exceptionChance: Double
-    /// Weight the exception adds to its spot.
-    public var exceptionWeight: Double
+    /// When the exception shows, the chance it decides the strike.
+    public var exceptionPull: Double
     /// The object each species cannot resist, for the appetite exception.
     public var catAppetite: PetCamObjectKind
     public var dogAppetite: PetCamObjectKind
 
-    public init(stareWeight: Double = 6, otherWeight: Double = 2, exception: Exception = .wobble,
-                exceptionChance: Double = 0.35, exceptionWeight: Double = 6,
-                catAppetite: PetCamObjectKind = .fishbowl, dogAppetite: PetCamObjectKind = .donut) {
-        self.stareWeight = Self.weight(stareWeight)
-        self.otherWeight = Self.weight(otherWeight)
+    public init(followStare: Double = 0.62, exception: Exception = .wobble, exceptionChance: Double = 0.34,
+                exceptionPull: Double = 0.9, catAppetite: PetCamObjectKind = .fishbowl,
+                dogAppetite: PetCamObjectKind = .donut) {
+        self.followStare = Self.chance(followStare)
         self.exception = exception
-        self.exceptionChance = min(max(exceptionChance.isFinite ? exceptionChance : 0, 0), 1)
-        self.exceptionWeight = Self.weight(exceptionWeight)
+        self.exceptionChance = Self.chance(exceptionChance)
+        self.exceptionPull = Self.chance(exceptionPull)
         self.catAppetite = catAppetite
         self.dogAppetite = dogAppetite
     }
@@ -55,12 +58,8 @@ public struct PetCamTuning: Codable, Hashable, Sendable {
     /// The tuning every prototype build starts from.
     public static let standard = PetCamTuning()
 
-    /// The heaviest weight the panel allows, so a typo cannot make one
-    /// spot certain by accident.
-    public static let maximumWeight = 20.0
-
-    private static func weight(_ value: Double) -> Double {
-        min(max(value.isFinite ? value : 0, 0), maximumWeight)
+    private static func chance(_ value: Double) -> Double {
+        min(max(value.isFinite ? value : 0, 0), 1)
     }
 
     public func appetite(for species: PetSpecies) -> PetCamObjectKind {
@@ -70,34 +69,31 @@ public struct PetCamTuning: Codable, Hashable, Sendable {
     /// The chance of a strike on each spot, given the stare and the
     /// exception's spot (nil when none shows). Always sums to 1.
     public func strikeChances(stare: PetCamSpot, exception spot: PetCamSpot?) -> [PetCamSpot: Double] {
-        var weights: [PetCamSpot: Double] = [:]
+        var chances: [PetCamSpot: Double] = [:]
         for candidate in PetCamSpot.allCases {
-            var weight = candidate == stare ? stareWeight : otherWeight
-            if candidate == spot { weight += exceptionWeight }
-            weights[candidate] = weight
+            chances[candidate] = candidate == stare ? followStare : (1 - followStare) / 2
         }
-        let total = weights.values.reduce(0, +)
-        guard total > 0 else {
-            return Dictionary(uniqueKeysWithValues: PetCamSpot.allCases.map { ($0, 1.0 / 3) })
-        }
-        return weights.mapValues { $0 / total }
+        guard let spot else { return chances }
+        // The exception wins with its pull; the rest of the time the stare
+        // rule plays out as if it were not there.
+        return chances.mapValues { $0 * (1 - exceptionPull) }
+            .merging([spot: exceptionPull]) { $0 + $1 }
     }
 
     // Forgiving decoding: a missing key keeps its default, so a tuning
     // saved by an older panel still loads.
     private enum CodingKeys: String, CodingKey {
-        case stareWeight, otherWeight, exception, exceptionChance, exceptionWeight, catAppetite, dogAppetite
+        case followStare, exception, exceptionChance, exceptionPull, catAppetite, dogAppetite
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let standard = PetCamTuning.standard
         self.init(
-            stareWeight: (try? container.decode(Double.self, forKey: .stareWeight)) ?? standard.stareWeight,
-            otherWeight: (try? container.decode(Double.self, forKey: .otherWeight)) ?? standard.otherWeight,
+            followStare: (try? container.decode(Double.self, forKey: .followStare)) ?? standard.followStare,
             exception: (try? container.decode(Exception.self, forKey: .exception)) ?? standard.exception,
             exceptionChance: (try? container.decode(Double.self, forKey: .exceptionChance)) ?? standard.exceptionChance,
-            exceptionWeight: (try? container.decode(Double.self, forKey: .exceptionWeight)) ?? standard.exceptionWeight,
+            exceptionPull: (try? container.decode(Double.self, forKey: .exceptionPull)) ?? standard.exceptionPull,
             catAppetite: (try? container.decode(PetCamObjectKind.self, forKey: .catAppetite)) ?? standard.catAppetite,
             dogAppetite: (try? container.decode(PetCamObjectKind.self, forKey: .dogAppetite)) ?? standard.dogAppetite
         )
@@ -139,9 +135,10 @@ public struct PetCamSetup: Codable, Hashable, Sendable {
 
     /// Draws the stare and the exception for `room` from `seed`. The stare
     /// is a fair pick of the three spots; the exception shows with
-    /// `tuning.exceptionChance`: a wobble on any spot, or the appetite on
-    /// the spot holding the species' favorite object (none if it is not in
-    /// the room).
+    /// `tuning.exceptionChance`, never on the stared spot (it would tell
+    /// nothing the stare does not): a wobble on one of the other two, or
+    /// the appetite on the spot holding the species' favorite object (none
+    /// if that object is not in the room or is the one stared at).
     public static func prepare(seed: UInt64, room: PetCamRoom, species: PetSpecies, tuning: PetCamTuning,
                                at date: Date) -> PetCamSetup {
         var stareRoll = PetCamRandom(seed: seed, stream: "stare")
@@ -154,10 +151,11 @@ public struct PetCamSetup: Codable, Hashable, Sendable {
             case .none:
                 break
             case .wobble:
-                tell = PetCamTell(exception: .wobble, spot: spots[Int(tellRoll.next() % UInt64(spots.count))])
+                let others = spots.filter { $0 != stare }
+                tell = PetCamTell(exception: .wobble, spot: others[Int(tellRoll.next() % UInt64(others.count))])
             case .appetite:
                 let favorite = tuning.appetite(for: species)
-                if let spot = spots.first(where: { room.object(at: $0)?.kind == favorite }) {
+                if let spot = spots.first(where: { $0 != stare && room.object(at: $0)?.kind == favorite }) {
                     tell = PetCamTell(exception: .appetite, spot: spot)
                 }
             }

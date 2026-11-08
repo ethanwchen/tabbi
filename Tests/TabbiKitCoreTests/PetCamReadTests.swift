@@ -44,7 +44,7 @@ final class PetCamReadTests: XCTestCase {
         return Double(caught) / Double(blocks)
     }
 
-    func testScriptedPlayersFindTheReadFunButNotSolved() {
+    func testScriptedPlayersFindTheReadWorthReadingButNotSolved() {
         let follow = catchRate(.followsTheStare)
         let random = catchRate(.random)
         let expert = catchRate(.expert)
@@ -54,16 +54,16 @@ final class PetCamReadTests: XCTestCase {
         print(line(.followsTheStare, follow))
         print(line(.random, random))
         print(line(.expert, expert))
-        // Not a coin flip: reading the pet beats guessing by a wide margin.
+        // Not a coin flip: the stare alone beats guessing.
         XCTAssertEqual(random, 1.0 / 3, accuracy: 0.04)
-        XCTAssertGreaterThan(follow - random, 0.15)
-        // Not solved: even the expert misses about two blocks in five, so
+        XCTAssertGreaterThan(follow, 0.39)
+        XCTAssertLessThan(follow, 0.46)
+        // Reading the one exception is worth about thirty points.
+        XCTAssertGreaterThanOrEqual(expert, 0.70)
+        XCTAssertGreaterThan(expert - follow, 0.25)
+        // Not solved: even the expert misses about one block in four, so
         // the miss stays the regular laugh it is meant to be.
-        XCTAssertLessThan(follow, 0.65)
-        XCTAssertLessThan(expert, 0.68)
-        XCTAssertGreaterThan(follow, 0.5)
-        // The exception is worth reading, but only a little.
-        XCTAssertGreaterThanOrEqual(expert, follow - 0.01)
+        XCTAssertLessThan(expert, 0.78)
     }
 
     func testTheExceptionChangesTheReadOnlyWhenItIsOn() {
@@ -72,7 +72,7 @@ final class PetCamReadTests: XCTestCase {
         let plain = catchRate(.followsTheStare, tuning: off, blocks: 2000)
         print("Pet Cam catch rate, no exception, 2000 blocks: always follows the stare "
             + String(format: "%.1f%%", plain * 100))
-        XCTAssertEqual(plain, 0.6, accuracy: 0.04)
+        XCTAssertEqual(plain, off.followStare, accuracy: 0.04)
         XCTAssertEqual(catchRate(.expert, tuning: off, blocks: 2000), plain, accuracy: 1e-9,
                        "with no exception the expert is the stare follower")
     }
@@ -110,7 +110,7 @@ final class PetCamReadTests: XCTestCase {
     func testRepeatOffensesAreCounted() throws {
         // A pet that always strikes where it stares, filmed every time: by
         // the seventh wreck of the day some kind has come round again.
-        let tuning = PetCamTuning(stareWeight: 20, otherWeight: 0, exception: .none)
+        let tuning = PetCamTuning(followStare: 1, exception: .none)
         var game = PetCamGame(seed: 3, tuning: tuning, at: monday)
         var lines: [String] = []
         for index in 0..<12 {
@@ -160,46 +160,78 @@ final class PetCamReadTests: XCTestCase {
 
     // MARK: Tapes
 
-    func testEveryTapeIsFourToSixStillsUnderTwentySeconds() throws {
+    func testEveryTapeIsFourToSixStillsOfTenToFifteenSeconds() throws {
         var game = PetCamGame(seed: 0x7A9E, at: monday)
-        var outcomes: Set<PetCamBlockRecord.Outcome> = []
-        for index in 0..<40 {
+        var shapes: [PetCamBlockRecord.Outcome: [PetCamTape.Shape]] = [:]
+        for index in 0..<60 {
             let start = monday.addingTimeInterval(Double(index) * 3600)
             game.start(id: "b\(index)", pick: PetCamSpot.allCases[index % 3], dodge: "x", dare: false,
                        plannedLength: 1500, pet: pet, at: start)
             let record = try XCTUnwrap(game.finish(endedAt: start.addingTimeInterval(1500), worked: 1500,
                                                    calendar: calendar))
             let tape = try XCTUnwrap(PetCamTape(record: record))
-            outcomes.insert(tape.outcome)
+            shapes[tape.outcome, default: []].append(tape.shape)
             XCTAssertTrue((4...6).contains(tape.stills.count))
-            XCTAssertLessThan(tape.duration, PetCamTape.maximumDuration)
-            XCTAssertEqual(tape.stills.first?.shot.framing, .wide, "it opens on the corner camera")
-            XCTAssertEqual(tape.stills.first?.time, record.startedAt)
-            let times = tape.stills.map(\.time)
-            XCTAssertEqual(times, times.sorted(), "timestamps run forward")
-            XCTAssertTrue(times.allSatisfy { $0 >= record.startedAt && $0 <= record.endedAt })
-            XCTAssertTrue(tape.stills.dropFirst().allSatisfy { $0.shot.framing == .spot(record.camera) },
-                          "then the hidden camera")
+            XCTAssertTrue(PetCamTape.durationRange.contains(tape.duration), "\(tape.shape) runs \(tape.duration) s")
+            // Timestamps run forward, except where the tape rewinds.
+            for (a, b) in zip(tape.stills, tape.stills.dropFirst()) where b.stamp != .rewind {
+                XCTAssertLessThanOrEqual(a.time, b.time)
+            }
+            XCTAssertTrue(tape.stills.allSatisfy { $0.time >= record.startedAt && $0.time <= record.endedAt })
+            for still in tape.stills {
+                switch still.shot.framing {
+                case .wide: break
+                case .spot(let spot): XCTAssertEqual(spot, record.camera, "the hidden camera's own view")
+                case .closeUp(let place): XCTAssertEqual(place.spot, record.camera, "pushed in on its own view")
+                }
+            }
+            XCTAssertEqual(tape.stills.filter { $0.stamp == .rewind }.count, tape.shape == .coldOpen ? 1 : 0)
+            for (a, b) in zip(tape.stills, tape.stills.dropFirst()) {
+                XCTAssertNotEqual(a.caption, b.caption, "each cut says something new")
+            }
             let last = try XCTUnwrap(tape.stills.last)
             if record.outcome == .caught {
                 XCTAssertEqual(last.stamp, .caught)
                 XCTAssertEqual(last.shot.pet, .lensStare)
-                XCTAssertEqual(last.shot.place, .strike(record.camera))
                 XCTAssertTrue(tape.stills.contains { $0.shot.pet == .midAct })
             } else {
-                XCTAssertNil(last.stamp)
-                XCTAssertEqual(last.shot.pet, .lieDown, "the alibi: lying down, staring into the lens")
+                XCTAssertTrue(tape.stills.contains { $0.shot.pet == .lieDown }, "the alibi: lying down, staring")
                 XCTAssertTrue(tape.stills.contains { $0.shot.debrisFrom == record.strike && $0.caption.hasPrefix("[") },
                               "the strike is only heard")
                 XCTAssertFalse(tape.stills.contains { $0.shot.pet == .midAct }, "and never seen")
-            }
-            for (a, b) in zip(tape.stills, tape.stills.dropFirst()) {
-                XCTAssertNotEqual(a.caption, b.caption, "each cut says something new")
+                // The pet is on camera by about second three.
+                var elapsed = 0.0
+                for still in tape.stills {
+                    if let place = still.shot.place, place.spot == record.camera { break }
+                    elapsed += still.duration
+                }
+                XCTAssertLessThanOrEqual(elapsed, 3.0, "\(tape.shape): the pet walks in at \(elapsed) s")
+                XCTAssertEqual(tape.stills.filter { $0.shot.debrisFrom != nil }.count, 1, "one short beat on the crash")
             }
             // A replay from the record is the same tape.
             XCTAssertEqual(PetCamTape(record: record), tape)
         }
-        XCTAssertEqual(outcomes, [.caught, .missed])
+        for (outcome, sequence) in shapes {
+            XCTAssertEqual(Set(sequence).count, PetCamTape.Shape.allCases.count, "\(outcome) uses every shape")
+            for (a, b) in zip(sequence, sequence.dropFirst()) {
+                XCTAssertNotEqual(a, b, "never the same \(outcome) shape twice in a row")
+            }
+            print("Pet Cam tape shapes, \(outcome.rawValue): \(sequence.prefix(8).map { "\($0)" })")
+        }
+        XCTAssertEqual(Set(shapes.keys), [.caught, .missed])
+    }
+
+    func testTheTellIsNamedWhenItDecidedTheStrike() throws {
+        let tuning = PetCamTuning(exceptionChance: 1, exceptionPull: 1)
+        var game = PetCamGame(seed: 0xBEE, tuning: tuning, at: monday)
+        let tell = try XCTUnwrap(game.setup.tell)
+        XCTAssertEqual(game.setup.strike, tell.spot)
+        game.start(id: "w", pick: game.setup.stare, dodge: nil, dare: false, plannedLength: 600, pet: pet, at: monday)
+        let record = try XCTUnwrap(game.finish(endedAt: monday.addingTimeInterval(600), worked: 600, calendar: calendar))
+        XCTAssertEqual(record.outcome, .missed, "following the stare against a wobble misses")
+        XCTAssertEqual(record.captions.tell, "IT WAS ALREADY WOBBLING.")
+        let tape = try XCTUnwrap(PetCamTape(record: record))
+        XCTAssertEqual(tape.stills.last?.detail, "IT WAS ALREADY WOBBLING.", "the miss's last still says why")
     }
 
     func testAStopShowsOneFrozenStillThatGivesNothingAway() throws {

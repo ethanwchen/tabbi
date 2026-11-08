@@ -42,6 +42,18 @@ enum PetCamSheets {
             }
         }
         try scenes(to: folder, pet: demo)
+        // Every mugshot face and the side view, per breed.
+        for scale in [1, 4] {
+            var rows: [[(PetCanvas, PetPalette)]] = []
+            for breed in PetBreed.allCases {
+                let profile = PetProfile(name: "", breed: breed, outfit: demo.outfit, accessories: demo.accessories)
+                rows.append((0..<PetCamPetArt.mugshotLooks).map { (PetCamPetArt.mugshot($0, profile: profile), profile.palette) }
+                    + [(PetCamPetArt.mugshotProfile(profile), profile.palette)])
+            }
+            try sheet(rows, columns: ["deadpan", "smug", "side-eye", "unbothered", "yawn", "profile"],
+                      rowLabels: PetBreed.allCases.map(\.displayName), scale: scale,
+                      to: folder.appendingPathComponent("petcam-mugshots-\(scale)x.png"))
+        }
     }
 
     /// A grid of pet frames on a dark ground, one row per breed.
@@ -88,14 +100,14 @@ enum PetCamSheets {
         var game = PetCamGame(seed: 0x9E7, at: start)
         var seen: Set<String> = []
         var index = 0
-        while seen.count < 6, index < 200 {
+        while seen.count < 6, index < 400 {
             let begin = start.addingTimeInterval(Double(index) * 1800)
             let pick = PetCamSpot.allCases[index % 3]
             game.start(id: "g\(index)", pick: pick, dodge: "the tax forms", dare: false, plannedLength: 1500, pet: pet,
                        at: begin)
             if let record = game.finish(endedAt: begin.addingTimeInterval(1500), worked: 1500, calendar: calendar),
                let tape = PetCamTape(record: record) {
-                let key = "\(record.outcome.rawValue) \(record.camera.rawValue)"
+                let key = "\(record.outcome.rawValue) \(tape.shape)"
                 if seen.insert(key).inserted {
                     for (n, still) in tape.stills.enumerated() {
                         shots.append(("\(key) \(n + 1)", still.shot, false))
@@ -111,8 +123,9 @@ enum PetCamSheets {
             let context = try canvas(width: columns * (cellWidth + pad) + pad, height: rows * (cellHeight + pad + header) + pad)
             for (n, (title, shot, daylight)) in shots.enumerated() {
                 let frame = PetCamScene.frame(shot, pet: pet, daylight: daylight)
-                // Spot shots are half the size, so they draw at twice the scale.
-                let zoom = frame.width == 100 ? scale : scale * 2
+                // Spot shots are half the size and close-ups a quarter, so
+                // they draw at two and four times the scale.
+                let zoom = scale * max(1, 100 / frame.width)
                 guard let image = frame.image(scale: zoom) else { continue }
                 let x = pad + (n % columns) * (cellWidth + pad)
                 let y = context.height - (n / columns + 1) * (cellHeight + pad + header)

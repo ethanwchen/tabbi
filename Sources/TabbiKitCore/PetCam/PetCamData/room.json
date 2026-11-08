@@ -279,20 +279,20 @@
    ".VVVVVVV...."
   ],
   "object.plant": [
-   "...F....F...",
-   "..FFF..FFF..",
-   ".FFDFF.FDFF.",
-   "FFDFFFFFFDFF",
-   ".FFFFDFFFFF.",
-   "..FFDFFDFF..",
-   "....DFFD....",
-   ".oooooooooo.",
-   ".oIIIIIIIIo.",
-   "..oooooooo..",
-   "..oooooooo..",
-   "..XXXXXXXX..",
-   "...oooooo...",
-   "....oooo...."
+   "...FF.....FF..",
+   "..FFFF...FFFF.",
+   "..FFDF...FDFF.",
+   "FF...D.F.D...F",
+   "FFF...DFD..FFF",
+   "FFDF..FDF.FDFF",
+   ".FF.D.FDF.D.F.",
+   "....DD.D.DD...",
+   "..UUUUUUUUUU..",
+   "..VIIIIIIIIV..",
+   "...UUUUUUUU...",
+   "...UVVVVVVU...",
+   "...UUUUUUUU...",
+   "....VVVVVV...."
   ],
   "object.fishbowl": [
    "...VVVVVV...",
@@ -353,14 +353,14 @@
    ".UV..IIII.UV"
   ],
   "wreck.plant": [
-   ".....F.F......",
-   "..oo.FFFF.....",
-   ".ooooFDFF.....",
-   "ooooIIFF......",
-   "oooIIIIIII....",
-   ".ooIIIIIIIII..",
-   "...IIIIIIIII..",
-   "......F..I...."
+   "......F..F....",
+   "..UUU.FFFF....",
+   ".UUUUUFDF.F...",
+   "UVVVU.DFFFF...",
+   "UUUUUIIDD.....",
+   ".VUUIIIIIIII..",
+   "...IIIIIIIIII.",
+   "......F...I..."
   ],
   "wreck.fishbowl": [
    "...VVVVVV...",
@@ -400,14 +400,16 @@
    ".VVVVVVVVVV."
   ],
   "effect.wobbleLeft": [
-   ".Z",
-   "Z.",
-   ".Z"
+   "..Z..Z",
+   ".Z..Z.",
+   ".Z..Z.",
+   "..Z..Z"
   ],
   "effect.wobbleRight": [
-   "Z.",
-   ".Z",
-   "Z."
+   "Z..Z..",
+   ".Z..Z.",
+   ".Z..Z.",
+   "Z..Z.."
   ],
   "effect.scent": [
    ".z..z..",

@@ -121,11 +121,13 @@ public struct PetCamGame: Codable, Hashable, Sendable {
             outcome: outcome, setup: block.setup, camera: block.camera, strike: strike, struck: struck,
             room: block.room, dodge: block.dodge, history: log.blocks, at: endedAt, calendar: calendar
         )
+        // Never the same tape shape twice in a row for the same outcome.
+        let previous = log.blocks.last { $0.outcome == outcome }?.shape.flatMap(PetCamTape.Shape.init(rawValue:))
         let record = PetCamBlockRecord(
             id: block.id, setup: block.setup, camera: block.camera, picked: block.picked, dodge: block.dodge,
             dare: block.dare, plannedLength: block.plannedLength, startedAt: block.startedAt, endedAt: endedAt,
             worked: worked, outcome: outcome, strike: strike, struck: struck, room: block.room, pet: block.pet,
-            captions: captions
+            captions: captions, shape: PetCamTape.shape(seed: block.setup.seed, previous: previous).rawValue
         )
         active = nil
         absorb(record)

@@ -32,6 +32,39 @@ final class PetCamArtTests: XCTestCase {
         }
     }
 
+    func testEveryMugshotLookShowsTheEyesAndDiffersFromTheNext() {
+        for breed in PetBreed.allCases {
+            let bare = PetProfile(name: "", breed: breed)
+            let looks = (0..<PetCamPetArt.mugshotLooks).map { PetCamPetArt.mugshot($0, profile: bare) }
+            XCTAssertEqual(Set(looks).count, looks.count, "\(breed) pulls a different face for each case")
+            XCTAssertEqual(PetCamPetArt.mugshot(PetCamPetArt.mugshotLooks, profile: bare), looks[0], "the looks cycle")
+            for (index, look) in looks.enumerated() {
+                let eyes = eyePixels(look)
+                XCTAssertGreaterThanOrEqual(eyes, 4, "\(breed) look \(index) shows its eyes")
+                let demo = PetCamPetArt.mugshot(index, profile: PetProfile(name: "", breed: breed, outfit: .cozyHoodie,
+                                                                           accessories: [.beanie]))
+                XCTAssertEqual(eyePixels(demo), eyes, "the demo look covers an eye on \(breed) look \(index)")
+            }
+            XCTAssertNotEqual(PetCamPetArt.mugshotProfile(bare), looks[0], "a side view as well as the front")
+        }
+    }
+
+    func testEveryFramingIsAWholeMultipleOfTheWideShot() {
+        let wide = PetCamScene.size(of: .wide)
+        for spot in PetCamSpot.allCases {
+            let crop = PetCamScene.size(of: .spot(spot))
+            XCTAssertEqual(crop.width * 2, wide.width)
+            XCTAssertEqual(crop.height * 2, wide.height)
+            for place in [PetCamPlace.strike(spot), .enter(spot), .lounge(spot)] {
+                let rect = PetCamScene.crop(of: .closeUp(place))
+                XCTAssertEqual(rect.width * 4, wide.width)
+                XCTAssertEqual(rect.height * 4, wide.height)
+                XCTAssertTrue(rect.x >= 0 && rect.y >= 0 && rect.x + rect.width <= wide.width
+                    && rect.y + rect.height <= wide.height, "\(place) close-up stays in the room")
+            }
+        }
+    }
+
     func testPosesKeepTheFrameAndTheFloor() throws {
         for breed in PetBreed.allCases {
             let profile = PetProfile(name: "", breed: breed)

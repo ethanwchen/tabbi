@@ -115,10 +115,15 @@ public struct PetCamBlockRecord: Codable, Hashable, Sendable, Identifiable {
     /// The words the tape burns in, chosen when the block resolved, so a
     /// replay reads the same however much history comes after it.
     public var captions: PetCamCaptionSet
+    /// The tape's shape (`PetCamTape.Shape`), chosen when the block
+    /// resolved so it differs from the last tape of the same outcome; nil
+    /// for a block without a tape.
+    public var shape: Int?
 
     public init(id: String, setup: PetCamSetup, camera: PetCamSpot, picked: Bool, dodge: String?, dare: Bool,
                 plannedLength: TimeInterval?, startedAt: Date, endedAt: Date, worked: TimeInterval, outcome: Outcome,
-                strike: PetCamSpot?, struck: PetCamObject?, room: PetCamRoom, pet: PetProfile, captions: PetCamCaptionSet) {
+                strike: PetCamSpot?, struck: PetCamObject?, room: PetCamRoom, pet: PetProfile, captions: PetCamCaptionSet,
+                shape: Int? = nil) {
         self.id = id
         version = Self.currentVersion
         self.setup = setup
@@ -136,6 +141,7 @@ public struct PetCamBlockRecord: Codable, Hashable, Sendable, Identifiable {
         self.room = room
         self.pet = pet
         self.captions = captions
+        self.shape = shape
     }
 }
 

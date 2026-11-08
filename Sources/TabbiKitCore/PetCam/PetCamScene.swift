@@ -102,9 +102,26 @@ public enum PetCamScene {
 
     /// The size of a framing's picture in sprite pixels.
     public static func size(of framing: PetCamShot.Framing) -> (width: Int, height: Int) {
+        let rect = crop(of: framing)
+        return (rect.width, rect.height)
+    }
+
+    /// The part of the room a framing shows. A spot camera is half the room
+    /// across and a close-up a quarter, so every framing scales by a whole
+    /// multiple of the wide shot and the pixels stay square and even.
+    static func crop(of framing: PetCamShot.Framing) -> PetCamLayout.Rect {
         switch framing {
-        case .wide: (layout.width, layout.height)
-        case .spot(let spot): (layout.spot(spot).crop.width, layout.spot(spot).crop.height)
+        case .wide:
+            return PetCamLayout.Rect(x: 0, y: 0, width: layout.width, height: layout.height)
+        case .spot(let spot):
+            return layout.spot(spot).crop
+        case .closeUp(let place):
+            // Centered on the pet's head and chest at that place.
+            let pet = placement(for: place, pose: .lensStare)
+            let width = layout.width / 4, height = layout.height / 4
+            let x = min(max(pet.x + 16 - width / 2, 0), layout.width - width)
+            let y = min(max(pet.y + 17 - height / 2, 0), layout.height - height)
+            return PetCamLayout.Rect(x: x, y: y, width: width, height: height)
         }
     }
 
@@ -307,7 +324,8 @@ public enum PetCamScene {
             case .wobbling:
                 // Rocks a pixel either way, with tick marks at its sides.
                 sprite(grid, base: spot.object, light: .room, dx: tick % 2 == 0 ? 1 : -1)
-                effect(PetCamScene.effect("wobbleLeft"), x: left - 3, y: top + 1)
+                let arcs = PetCamScene.effect("wobbleLeft")
+                effect(arcs, x: left - arcs.width - 1, y: top + 1)
                 effect(PetCamScene.effect("wobbleRight"), x: left + grid.width + 3, y: top + 1)
             case .scented:
                 sprite(grid, base: spot.object, light: .room)
@@ -357,8 +375,8 @@ public enum PetCamScene {
         }
 
         func cropped(to framing: PetCamShot.Framing) -> Frame {
-            guard case .spot(let spot) = framing else { return Frame(width: width, height: height, pixels: pixels) }
-            let crop = PetCamScene.layout.spot(spot).crop
+            if case .wide = framing { return Frame(width: width, height: height, pixels: pixels) }
+            let crop = PetCamScene.crop(of: framing)
             var cut: [PetColor] = []
             cut.reserveCapacity(crop.width * crop.height)
             for y in crop.y..<(crop.y + crop.height) {
