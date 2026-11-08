@@ -18,17 +18,26 @@ struct PhaseAlert: Equatable {
     /// The notifications for every phase end `session` will reach without
     /// another tap, soonest first, worded like the Mac's focus timer. Empty
     /// while it is idle, paused or counting up.
-    static func upcoming(for session: StudySession) -> [PhaseAlert] {
+    ///
+    /// When `filming`, the focus block under way has the Pet Cam armed, and
+    /// its end says only that the block is done and the tape is ready.
+    static func upcoming(for session: StudySession, filming: Bool = false) -> [PhaseAlert] {
         var future = session
         var alerts: [PhaseAlert] = []
         while alerts.count < lookahead, let end = future.endsAt {
             guard let ended = future.advance(to: end).last else { break }
-            let (title, body) = message(after: ended, next: future)
+            let (title, body) = filming && alerts.isEmpty && ended.phase == .focus ? tapeReady
+                : message(after: ended, next: future)
             alerts.append(PhaseAlert(id: "\(idPrefix).\(Int64(end.timeIntervalSinceReferenceDate * 1000))",
                                      fireAt: end, title: title, body: body))
         }
         return alerts
     }
+
+    /// The end of a filmed block: nothing about the room, just that it is
+    /// done and there is something to watch. English only for now (see
+    /// ios/README.md, Pet Cam strings).
+    static let tapeReady = (title: "Block done", body: "The tape is ready.")
 
     /// The Mac's wording (`FocusTimerFormat.completionMessage`): "Focus
     /// session done" and the break ahead, "Break's over" and the next
@@ -106,8 +115,12 @@ final class PhaseAlertScheduler: NSObject, UNUserNotificationCenterDelegate {
     }
 
     /// In the foreground the banner still shows: it is the phase-end sound.
+    /// A filmed block's end is the exception: the tape plays at once, so a
+    /// banner would only cover its burn-in.
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification)
         async -> UNNotificationPresentationOptions {
-        [.banner, .sound, .list]
+        let content = notification.request.content
+        if content.title == PhaseAlert.tapeReady.title, content.body == PhaseAlert.tapeReady.body { return [.list] }
+        return [.banner, .sound, .list]
     }
 }

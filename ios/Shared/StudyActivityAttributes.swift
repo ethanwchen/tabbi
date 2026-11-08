@@ -40,6 +40,9 @@ struct StudyActivityAttributes: ActivityAttributes {
         /// Set on the final content of a phase that ran out while the app
         /// was away, which stays on the Lock Screen for a while.
         var isDone = false
+        /// The Pet Cam is filming this focus block: the activity shows the
+        /// camera recording (a REC dot and the countdown, nothing else).
+        var filming = false
 
         /// When a running countdown ends; nil otherwise.
         var endsAt: Date? {
@@ -52,7 +55,7 @@ struct StudyActivityAttributes: ActivityAttributes {
 extension StudyActivityAttributes.ContentState {
     /// The Live Activity for `session` at `now`, or nil while it is idle
     /// (nothing to show, so the activity ends).
-    init?(_ session: StudySession, at now: Date) {
+    init?(_ session: StudySession, at now: Date, filming: Bool = false) {
         guard session.runState != .idle else { return nil }
         let clock: Clock
         if let end = session.endsAt, let length = session.phaseDuration {
@@ -62,7 +65,10 @@ extension StudyActivityAttributes.ContentState {
         } else {
             clock = .paused(shown: session.remaining(at: now) ?? session.elapsed(at: now))
         }
-        let doneLine = if session.phase.isBreak {
+        let filming = filming && session.phase == .focus
+        let doneLine = if filming {
+            "Tape ready"
+        } else if session.phase.isBreak {
             String(localized: "Break's over", bundle: .tabbi)
         } else if session.method.kind == .timer {
             String(localized: "Session done. Nice work!", bundle: .tabbi)
@@ -70,6 +76,7 @@ extension StudyActivityAttributes.ContentState {
             String(localized: "Focus session done", bundle: .tabbi)
         }
         self.init(phaseName: StudyTimerFormat.phaseName(session.phase, method: session.method),
-                  isBreak: session.phase.isBreak, clock: clock, phaseLength: session.phaseDuration, doneLine: doneLine)
+                  isBreak: session.phase.isBreak, clock: clock, phaseLength: session.phaseDuration, doneLine: doneLine,
+                  filming: filming)
     }
 }
