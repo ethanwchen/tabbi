@@ -288,7 +288,7 @@ private struct TapeCard: View {
                 .offset(x: offset)
                 .padding(.top, 70)
             VStack(spacing: 14) {
-                Text(verbatim: caption)
+                Text(verbatim: PetCamCaptions.keepingDodgeTogether(caption))
                     .font(.system(size: 50, weight: .bold, design: .monospaced))
                     .foregroundStyle(CCTV.burnIn)
                 if let detail = still.detail {

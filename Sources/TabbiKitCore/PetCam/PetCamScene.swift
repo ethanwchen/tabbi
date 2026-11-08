@@ -164,31 +164,35 @@ public enum PetCamScene {
         return (canvas.outlined(with: wrecked ? .coatShade : .ink).colors(using: palette), canvas.width, canvas.height)
     }
 
-    /// A quarter of a picture.
-    public enum Quadrant: CaseIterable, Hashable, Sendable {
-        case topLeading, topTrailing, bottomLeading, bottomTrailing
-    }
+    /// The share of a picture the CAUGHT stamp covers, across and down.
+    public static let stampSize = (width: 0.56, height: 0.17)
 
-    /// The quarter of `shot`'s picture that the pet and the evidence (the
-    /// object being struck and the wrecks on the floor) leave most empty,
-    /// where the CAUGHT stamp lands so the last frame shows suspect,
-    /// evidence and verdict together. The top quarters count the burn-in
-    /// band as taken; ties go to the bottom, then the trailing side.
-    public static func emptyQuadrant(of shot: PetCamShot, pet: PetProfile) -> Quadrant {
+    /// Where the CAUGHT stamp's center goes in `shot`'s picture, as
+    /// fractions of its width and height: of a few places low and high, the
+    /// one where a stamp of `stampSize` covers least of the pet and the
+    /// evidence (the object being struck and every wreck on the floor),
+    /// counting the burn-in band along the top as taken, so the last frame
+    /// shows suspect, evidence and verdict together. Ties go to the lowest
+    /// place, then the trailing side.
+    public static func stampCenter(of shot: PetCamShot, pet: PetProfile) -> (x: Double, y: Double) {
         let crop = crop(of: shot.framing, wrecks: shot.wrecks)
-        var taken: [PetCamLayout.Rect] = []
+        func unit(_ x: Int, _ y: Int, _ width: Int, _ height: Int) -> CGRect {
+            CGRect(x: Double(x - crop.x) / Double(crop.width), y: Double(y - crop.y) / Double(crop.height),
+                   width: Double(width) / Double(crop.width), height: Double(height) / Double(crop.height))
+        }
+        var taken: [(rect: CGRect, weight: Double)] = [(CGRect(x: 0, y: 0, width: 1, height: 0.13), 1)]
         if let pose = shot.pet, let place = shot.place {
             let at = placement(for: place, pose: pose)
             let canvas = PetCamPetArt.canvas(pose, profile: pet, facingRight: at.facingRight)
             if let box = canvas.opaqueBounds {
-                taken.append(PetCamLayout.Rect(x: at.x + shot.petOffset.x + box.minX, y: at.y + shot.petOffset.y + box.minY,
-                                               width: box.maxX - box.minX + 1, height: box.maxY - box.minY + 1))
+                taken.append((unit(at.x + shot.petOffset.x + box.minX, at.y + shot.petOffset.y + box.minY,
+                                   box.maxX - box.minX + 1, box.maxY - box.minY + 1), 1))
             }
         }
+        // The evidence counts double: the stamp must never hide Exhibit A.
         for wreck in shot.wrecks {
             let grid = Self.wreck(wreck.object.kind), base = wreckAnchor(wreck)
-            taken.append(PetCamLayout.Rect(x: base.x - grid.width / 2 - 1, y: base.y - grid.height - 1,
-                                           width: grid.width + 2, height: grid.height + 2))
+            taken.append((unit(base.x - grid.width / 2 - 1, base.y - grid.height - 1, grid.width + 2, grid.height + 2), 2))
         }
         for (spot, state) in shot.states where state == .struck {
             guard let kind = shot.objects[spot]?.kind else { continue }
@@ -196,24 +200,24 @@ public enum PetCamScene {
             let base = flies(kind) ? PetCamLayout.Point(x: place.object.x + (place.strike.facingRight ? 7 : -7),
                                                         y: place.object.y - 5) : place.object
             let side = max(grid.width, grid.height) + 2
-            taken.append(PetCamLayout.Rect(x: base.x - side / 2, y: base.y - side, width: side, height: side))
+            taken.append((unit(base.x - side / 2, base.y - side, side, side), 2))
         }
-        // The burn-in's band across the top.
-        taken.append(PetCamLayout.Rect(x: crop.x, y: crop.y, width: crop.width, height: crop.height / 8))
-        func overlap(_ a: PetCamLayout.Rect, _ b: PetCamLayout.Rect) -> Int {
-            max(0, min(a.x + a.width, b.x + b.width) - max(a.x, b.x)) * max(0, min(a.y + a.height, b.y + b.height) - max(a.y, b.y))
+        var best = (x: 0.5, y: 0.8), least = Double.infinity
+        for y in [0.84, 0.7, 0.56, 0.42, 0.26] {
+            for x in [0.68, 0.32, 0.5] {
+                let stamp = CGRect(x: x - stampSize.width / 2, y: y - stampSize.height / 2, width: stampSize.width,
+                                   height: stampSize.height)
+                let covered = taken.reduce(0.0) { total, item in
+                    let overlap = stamp.intersection(item.rect)
+                    return total + (overlap.isNull ? 0 : overlap.width * overlap.height * item.weight)
+                }
+                if covered < least - 1e-9 {
+                    least = covered
+                    best = (x, y)
+                }
+            }
         }
-        let halfW = crop.width / 2, halfH = crop.height / 2
-        let order: [Quadrant] = [.bottomTrailing, .bottomLeading, .topTrailing, .topLeading]
-        let areas = order.map { quadrant -> Int in
-            let right = quadrant == .topTrailing || quadrant == .bottomTrailing
-            let bottom = quadrant == .bottomLeading || quadrant == .bottomTrailing
-            let rect = PetCamLayout.Rect(x: crop.x + (right ? halfW : 0), y: crop.y + (bottom ? halfH : 0),
-                                         width: halfW, height: halfH)
-            return taken.reduce(0) { $0 + overlap($1, rect) }
-        }
-        let best = areas.min() ?? 0
-        return order[areas.firstIndex(of: best) ?? 0]
+        return best
     }
 
     /// The middle of the pet in `shot`'s picture, as fractions of its width

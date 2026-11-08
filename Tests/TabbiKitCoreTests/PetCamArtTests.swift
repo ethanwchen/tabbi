@@ -105,6 +105,44 @@ final class PetCamArtTests: XCTestCase {
         }
     }
 
+    func testTheCaughtStampNeverCoversTheEvidence() throws {
+        // Every catch's last frame over a long run: wherever the stamp lands,
+        // it covers none of the wreck (Exhibit A) or the object mid-strike.
+        let monday = PetCamEngineTests.monday
+        let pet = PetProfile(name: "", breed: .britishShorthair, outfit: .cozyHoodie, accessories: [.beanie])
+        var game = PetCamGame(seed: 0x57A, tuning: PetCamTuning(followStare: 1, exception: .none), at: monday)
+        for index in 0..<24 {
+            let start = monday.addingTimeInterval(Double(index) * 2400)
+            game.start(id: "s\(index)", pick: nil, dodge: nil, dare: false, plannedLength: 600, pet: pet, at: start)
+            let record = try XCTUnwrap(game.finish(endedAt: start.addingTimeInterval(600), worked: 600,
+                                                   calendar: PetCamEngineTests.calendar))
+            let freeze = try XCTUnwrap(PetCamTape(record: record)?.stills.last)
+            let shot = freeze.shot
+            let center = PetCamScene.stampCenter(of: shot, pet: pet)
+            let crop = PetCamScene.crop(of: shot.framing, wrecks: shot.wrecks)
+            let stamp = CGRect(x: (center.x - PetCamScene.stampSize.width / 2) * Double(crop.width) + Double(crop.x),
+                               y: (center.y - PetCamScene.stampSize.height / 2) * Double(crop.height) + Double(crop.y),
+                               width: PetCamScene.stampSize.width * Double(crop.width),
+                               height: PetCamScene.stampSize.height * Double(crop.height))
+            let strike = try XCTUnwrap(record.strike), kind = try XCTUnwrap(record.struck?.kind)
+            let exhibit: CGRect
+            if case .closeUp = shot.framing {
+                // The closer freezes on the act: the evidence is the object
+                // itself, mid-strike, where it stands or flies.
+                let grid = PetCamScene.object(kind), place = PetCamScene.layout.spot(strike)
+                let x = place.object.x + (PetCamScene.flies(kind) ? (place.strike.facingRight ? 7 : -7) : 0)
+                let y = place.object.y - (PetCamScene.flies(kind) ? 5 : 0)
+                let side = max(grid.width, grid.height)
+                exhibit = CGRect(x: x - side / 2, y: y - side, width: side, height: side)
+            } else {
+                let newest = try XCTUnwrap(shot.wrecks.last { $0.spot == strike })
+                let grid = PetCamScene.wreck(newest.object.kind), base = PetCamScene.wreckAnchor(newest)
+                exhibit = CGRect(x: base.x - grid.width / 2, y: base.y - grid.height, width: grid.width, height: grid.height)
+            }
+            XCTAssertFalse(stamp.intersects(exhibit), "\(kind) on the \(strike) (\(shot.framing)): \(center)")
+        }
+    }
+
     func testWrecksAreRingedInLightAndObjectsInInk() {
         let ink = PetCamScene.palette[.ink]
         let light = PetCamScene.palette[.coatShade]

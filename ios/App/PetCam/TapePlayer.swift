@@ -191,7 +191,7 @@ struct TapePlayer: View {
 
     private func caption(_ still: PetCamTape.Still) -> some View {
         VStack(spacing: 6) {
-            Text(verbatim: still.caption)
+            Text(verbatim: PetCamCaptions.keepingDodgeTogether(still.caption))
                 .font(CCTV.font(.title3, weight: .bold))
                 .foregroundStyle(CCTV.burnIn)
             if let detail = still.detail {
@@ -373,39 +373,16 @@ struct TapeStillView: View {
         .padding(.top, burnInSize.map { $0 * 0.8 } ?? 8)
     }
 
-    /// Where the CAUGHT stamp sits: the quarter of the picture the pet and
-    /// the evidence leave empty.
-    private var stampAlignment: Alignment {
-        switch PetCamScene.emptyQuadrant(of: still.shot, pet: record.pet) {
-        case .topLeading: .topLeading
-        case .topTrailing: .topTrailing
-        case .bottomLeading: .bottomLeading
-        case .bottomTrailing: .bottomTrailing
-        }
-    }
-
     @ViewBuilder private var stamp: some View {
         switch still.stamp {
         case .caught:
-            VStack(spacing: 4) {
-                Text(verbatim: PetCamCaptions.caughtStamp)
-                    .font(font(.largeTitle, 3.2, weight: .heavy))
-                if let caseNumber {
-                    Text(verbatim: String(format: "CASE %03d", caseNumber))
-                        .font(font(.headline, 1.3, weight: .bold))
-                }
+            // Where the pet and the evidence leave room, so the last frame
+            // shows suspect, evidence and verdict together.
+            GeometryReader { geometry in
+                let center = PetCamScene.stampCenter(of: still.shot, pet: record.pet)
+                caughtStamp
+                    .position(x: geometry.size.width * center.x, y: geometry.size.height * center.y)
             }
-            .foregroundStyle(CCTV.rec)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-            .overlay(RoundedRectangle(cornerRadius: 6, style: .continuous).stroke(CCTV.rec, lineWidth: 4))
-            .background(CCTV.screen.opacity(0.35), in: .rect(cornerRadius: 6, style: .continuous))
-            .rotationEffect(.degrees(-9))
-            .shadow(color: .black.opacity(0.5), radius: 0, x: 2, y: 2)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: stampAlignment)
-            // Clear of the burn-in along the top and of the frame's edge.
-            .padding(.top, burnInSize.map { $0 * 3.2 } ?? 48)
-            .padding([.horizontal, .bottom], burnInSize.map { $0 * 1.2 } ?? 14)
             .transition(.scale(scale: 1.6).combined(with: .opacity))
         case .frozen:
             Text(verbatim: "STOPPED")
@@ -422,6 +399,25 @@ struct TapeStillView: View {
         case nil:
             EmptyView()
         }
+    }
+
+    private var caughtStamp: some View {
+        VStack(spacing: 4) {
+            Text(verbatim: PetCamCaptions.caughtStamp)
+                .font(font(.largeTitle, 3.2, weight: .heavy))
+            if let caseNumber {
+                Text(verbatim: String(format: "CASE %03d", caseNumber))
+                    .font(font(.headline, 1.3, weight: .bold))
+            }
+        }
+        .foregroundStyle(CCTV.rec)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .overlay(RoundedRectangle(cornerRadius: 6, style: .continuous).stroke(CCTV.rec, lineWidth: 4))
+        .background(CCTV.screen.opacity(0.35), in: .rect(cornerRadius: 6, style: .continuous))
+        .rotationEffect(.degrees(-9))
+        .shadow(color: .black.opacity(0.5), radius: 0, x: 2, y: 2)
+        .fixedSize()
     }
 
     /// What a still shows, in words, for VoiceOver.

@@ -153,16 +153,26 @@ struct HomeScreen: View {
             FeedView(shot: cam.frozenShot, pet: study.pet, daylight: PetCamScene.isDaylight(context.date),
                      width: width, tick: tick)
         }
-        .accessibilityElement()
-        .accessibilityLabel(Text(verbatim: "Camera 1, the living room. "
-            + PetCamCaptions.describe(cam.shownSetup, room: cam.shownRoom, petName: study.pet.name)
-            + (cam.shownSetup.wanted.flatMap { cam.shownRoom.object(at: $0) }.map {
-                " The \(PetCamCaptions.name(of: $0.kind).lowercased()) is wanted."
-            } ?? "")))
-        .overlay { SpotTargets(size: picture) }
         .frame(width: picture.width, height: picture.height)
+        // The picture takes no taps and is described by the shown frame
+        // below, so nothing of the cropped floor (not even an accessibility
+        // frame, which clipping does not cut) covers the controls under it.
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
         .frame(height: height, alignment: .top)
         .clipped()
+        .overlay {
+            Color.clear
+                .allowsHitTesting(false)
+                .accessibilityElement()
+                .accessibilityLabel(Text(verbatim: "Camera 1, the living room. "
+                    + PetCamCaptions.describe(cam.shownSetup, room: cam.shownRoom, petName: study.pet.name)
+                    + (cam.shownSetup.wanted.flatMap { cam.shownRoom.object(at: $0) }.map {
+                        " The \(PetCamCaptions.name(of: $0.kind).lowercased()) is wanted."
+                    } ?? "")))
+                .accessibilityAddTraits(.isImage)
+        }
+        .overlay(alignment: .top) { SpotTargets(size: picture, shownHeight: height) }
         .overlay { Grain().clipped() }
         .overlay {
             // A soft fade into the monitor at the bottom, under the chips.
@@ -383,7 +393,10 @@ struct HomeScreen: View {
 /// The three spots as buttons over the feed, and the viewfinder that shows
 /// where the camera will hide: the tapped spot, or the stare.
 private struct SpotTargets: View {
+    /// The whole picture's size, which the spots are placed in.
     let size: CGSize
+    /// How much of it shows (the bottom may be cropped).
+    let shownHeight: CGFloat
     @Environment(PetCamStore.self) private var cam
 
     var body: some View {
@@ -416,7 +429,7 @@ private struct SpotTargets: View {
                 .accessibilityAddTraits(cam.pick == spot ? .isSelected : [])
             }
         }
-        .frame(width: size.width, height: size.height, alignment: .topLeading)
+        .frame(width: size.width, height: min(size.height, shownHeight), alignment: .topLeading)
         .animation(.spring(duration: 0.3), value: cam.cameraSpot)
     }
 }

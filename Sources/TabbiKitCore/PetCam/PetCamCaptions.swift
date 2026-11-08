@@ -306,17 +306,21 @@ public enum PetCamCaptions {
     }
 
     /// A charge as the wall files it: the phrase without its "CHARGE:"
-    /// label, with the player's own words (after "OBSTRUCTION OF") kept on
-    /// one line when they are short, so MY TAX never splits from RETURN.
+    /// label, the player's own words kept together (`keepingDodgeTogether`).
     public static func filedCharge(_ caption: String) -> String {
         let label = fill(grammar.charge, ["charge": ""])
-        var phrase = caption.hasPrefix(label) ? String(caption.dropFirst(label.count)) : caption
+        return keepingDodgeTogether(caption.hasPrefix(label) ? String(caption.dropFirst(label.count)) : caption)
+    }
+
+    /// A charge with the player's own words (after "OBSTRUCTION OF") on one
+    /// line when they are short, so it wraps before them and MY TAX never
+    /// splits from RETURN; any other text as it is.
+    public static func keepingDodgeTogether(_ text: String) -> String {
         let lead = fill(grammar.obstruction, ["dodge": ""])
-        if phrase.hasPrefix(lead) {
-            let dodge = phrase.dropFirst(lead.count)
-            if dodge.count <= 22 { phrase = lead + dodge.replacingOccurrences(of: " ", with: "\u{00A0}") }
-        }
-        return phrase
+        guard let range = text.range(of: lead) else { return text }
+        let dodge = text[range.upperBound...]
+        guard dodge.count <= 22 else { return text }
+        return String(text[..<range.upperBound]) + dodge.replacingOccurrences(of: " ", with: "\u{00A0}")
     }
 
     /// The label the wall prints over a charge ("CHARGE").

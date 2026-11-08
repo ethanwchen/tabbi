@@ -252,6 +252,8 @@ final class PetCamReadTests: XCTestCase {
         XCTAssertEqual(PetCamCaptions.filedCharge("CHARGE: OBSTRUCTION OF MY TAX RETURN"),
                        "OBSTRUCTION OF MY\u{00A0}TAX\u{00A0}RETURN")
         XCTAssertEqual(PetCamCaptions.filedCharge("CHARGE: FISHING WITHOUT A LICENSE"), "FISHING WITHOUT A LICENSE")
+        XCTAssertEqual(PetCamCaptions.keepingDodgeTogether("CHARGE: OBSTRUCTION OF MY TAX RETURN"),
+                       "CHARGE: OBSTRUCTION OF MY\u{00A0}TAX\u{00A0}RETURN", "the tape wraps before the dodge too")
         XCTAssertEqual(PetCamCaptions.ownerAway(1500), "OWNER AWAY 25:00.")
         XCTAssertEqual(PetCamCaptions.ownerAway(3725), "OWNER AWAY 1:02:05.")
     }

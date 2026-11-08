@@ -79,15 +79,18 @@ private struct LockScreenView: View {
         HStack(alignment: .center, spacing: 12) {
             RestingPet(pet: pet, pixelSize: 2)
             VStack(alignment: .leading, spacing: 6) {
-                CameraLabel(state: state, isStale: isStale)
-                HStack(spacing: 8) {
+                HStack(spacing: 10) {
+                    CameraLabel(state: state, isStale: isStale)
                     CameraNumber(state: state)
-                    Text(verbatim: "TABBI CAM")
-                        .font(.system(.caption2, design: .monospaced).weight(.semibold))
-                        .kerning(1.4)
-                        .foregroundStyle(CCTV.burnIn.opacity(0.55))
                 }
+                Text(verbatim: "TABBI CAM")
+                    .font(.system(.caption2, design: .monospaced).weight(.semibold))
+                    .kerning(1.4)
+                    .foregroundStyle(CCTV.burnIn.opacity(0.55))
+                    .lineLimit(1)
+                    .fixedSize()
             }
+            .layoutPriority(1)
             Spacer(minLength: 8)
             ClockText(state: state, isStale: isStale)
                 .font(.system(size: 40, weight: .semibold, design: .monospaced))
