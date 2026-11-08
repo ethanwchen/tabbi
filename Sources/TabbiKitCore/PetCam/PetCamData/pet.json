@@ -1,0 +1,35 @@
+{
+  "schema": "pets.v1",
+  "grids": {
+    "eyesLookLeft": [
+      ".OO.",
+      ".iE.",
+      ".EE."
+    ],
+    "eyesLookRight": [
+      ".OO.",
+      ".Ei.",
+      ".EE."
+    ],
+    "eyesLookUp": [
+      ".ii.",
+      ".iL.",
+      ".EE."
+    ],
+    "eyesLensLeft": [
+      ".Li.",
+      ".ii.",
+      ".ii."
+    ],
+    "eyesLensRight": [
+      ".Li.",
+      ".ii.",
+      ".ii."
+    ],
+    "eyesWild": [
+      ".EE.",
+      ".iE.",
+      ".EE."
+    ]
+  }
+}

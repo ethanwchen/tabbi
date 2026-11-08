@@ -85,6 +85,12 @@ let arguments = CommandLine.arguments.dropFirst()
 let outputDirectory = URL(fileURLWithPath: arguments.first ?? "out", isDirectory: true)
 try FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
 
+// Pet Cam review sheets (PetCamSheets.swift).
+if arguments.dropFirst().first == "petcam" {
+    try PetCamSheets.write(to: outputDirectory)
+    exit(0)
+}
+
 // App Store accents: `swift run PetGallery out/ accents` writes the demo pet
 // (Mochi in the demo Closet's look, and in the other looks the store shots
 // dress it in) as single transparent 32x32 frames,

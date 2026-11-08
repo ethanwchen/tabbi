@@ -1,0 +1,45 @@
+{
+  "schema": "petcam.captions.v1",
+  "language": "en",
+  "objects": {
+    "mug": { "name": "MUG", "plural": "MUGS", "sound": "[CRASH]", "remains": "MUG SHARDS", "charge": "KNOCKING A MUG OFF THE {spot}" },
+    "plant": { "name": "PLANT", "plural": "PLANTS", "sound": "[THUD]", "remains": "POTTING SOIL", "charge": "UNLICENSED GARDENING" },
+    "fishbowl": { "name": "FISHBOWL", "plural": "FISHBOWLS", "sound": "[SPLASH]", "remains": "PUDDLE", "charge": "FISHING WITHOUT A LICENSE" },
+    "vase": { "name": "VASE", "plural": "VASES", "sound": "[SMASH]", "remains": "PETALS", "charge": "SMASHING A PERFECTLY GOOD VASE" },
+    "tissues": { "name": "TISSUE BOX", "plural": "TISSUE BOXES", "sound": "[FWIP FWIP FWIP]", "remains": "TISSUES", "charge": "SHREDDING EVERY TISSUE" },
+    "donut": { "name": "DONUT", "plural": "DONUTS", "sound": "[CHOMP]", "remains": "CRUMBS", "charge": "EATING SOMEONE ELSE'S DONUT" }
+  },
+  "spots": {
+    "counter": "COUNTER",
+    "shelf": "SHELF",
+    "table": "SIDE TABLE"
+  },
+  "opener": ["HOME ALONE.", "THE HUMAN HAS LEFT.", "ALL QUIET. FOR NOW."],
+  "openerDays": ["DAY {days} OF SURVEILLANCE."],
+  "motion": ["MOTION ON CAM {cam}.", "SOMETHING MOVED."],
+  "quiet": ["CAM {cam}. ALL QUIET.", "CAM {cam}. NOTHING YET."],
+  "act": ["THE {object} NEVER SAW IT COMING.", "GOODBYE, {object}."],
+  "eaten": ["THE {object} NEVER STOOD A CHANCE.", "GOODBYE, {object}."],
+  "offCamera": ["OFF CAMERA"],
+  "noticed": ["THEN IT SAW THE CAMERA.", "EYE CONTACT.", "IT KNOWS."],
+  "caught": "CAUGHT",
+  "charge": "CHARGE: {charge}",
+  "priors": "PRIOR OFFENSES: {count}",
+  "innocent": ["NOTHING TO SEE HERE.", "INNOCENT. ALLEGEDLY.", "WHO, ME?", "NO WITNESSES."],
+  "returns": ["SUSPECT RETURNS.", "OH. HELLO."],
+  "frozen": "STOPPED AT {time}. SUSPECT FROZE MID-SNEAK.",
+  "noTape": "NO TAPE THIS TIME.",
+  "callbacks": {
+    "leftOutDays": "{object}, LEFT OUT {days} DAYS AGO",
+    "leftOutYesterday": "{object}, LEFT OUT YESTERDAY",
+    "leftOutHours": "{object}, LEFT OUT {hours} HOURS AGO",
+    "leftOutSince": "{object}, LEFT OUT SINCE {time}",
+    "repeatToday": "{ordinal} {object} TODAY",
+    "repeatWeek": "{ordinal} {object} THIS WEEK",
+    "sameSpot": "THE {spot} AGAIN",
+    "besideWreck": "RIGHT NEXT TO THE {remains} FROM {when}",
+    "lastSeen": "LAST CAUGHT AT THE {spot}, {when}"
+  },
+  "ordinals": ["1ST", "2ND", "3RD", "4TH", "5TH", "6TH", "7TH", "8TH", "9TH"],
+  "ordinalMore": "{count}TH"
+}
