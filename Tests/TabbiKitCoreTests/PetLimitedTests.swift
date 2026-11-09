@@ -32,15 +32,17 @@ final class PetLimitedTests: XCTestCase {
     }
 
     /// The server grants exactly the limited items the app can show, with the same source, so an admin
-    /// grant always lands on a real item and never on a shop item.
+    /// grant always lands on a real item and never on a shop item. Mastery outfits are earned on the
+    /// Goals shelf only, so the server can never grant one.
     func testServerGrantListMatchesTheLimitedEditions() throws {
         let url = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
             .appendingPathComponent("backend/shared/limited-items.json")
         struct File: Decodable { var items: [ServerLimitedItem] }
         let server = try JSONDecoder().decode(File.self, from: Data(contentsOf: url)).items
-        XCTAssertEqual(server.map(\.id), PetLimitedEdition.allCases.map(\.item.id))
-        for (entry, edition) in zip(server, PetLimitedEdition.allCases) {
+        let grantable = PetLimitedEdition.allCases.filter { !$0.isMastery }
+        XCTAssertEqual(server.map(\.id), grantable.map(\.item.id))
+        for (entry, edition) in zip(server, grantable) {
             switch edition.source {
             case .event(let id):
                 XCTAssertEqual(entry.source, "event", entry.id)
@@ -51,6 +53,8 @@ final class PetLimitedTests: XCTestCase {
             case .season(let id):
                 XCTAssertEqual(entry.source, "season", entry.id)
                 XCTAssertEqual(entry.season, id, entry.id)
+            case .mastery:
+                XCTFail("\(entry.id) is a mastery outfit, which the server never grants")
             }
         }
     }
@@ -66,9 +70,11 @@ final class PetLimitedTests: XCTestCase {
             XCTAssertEqual(PetItem(id: item.id), item)
             XCTAssertFalse(edition.howToEarn.isEmpty)
         }
-        XCTAssertEqual(PetCloset.limitedShelf, PetLimitedEdition.allCases.map(\.item))
-        XCTAssertEqual(Array(PetItem.allCases.suffix(PetLimitedEdition.allCases.count)), PetCloset.limitedShelf)
-        XCTAssertEqual(PetItem.shopItems + PetCloset.limitedShelf, PetItem.allCases)
+        XCTAssertEqual(PetCloset.limitedShelf, PetLimitedEdition.allCases.filter { !$0.isMastery }.map(\.item))
+        XCTAssertEqual(PetCloset.masteryShelf, PetLimitedEdition.mastery.map(\.item))
+        XCTAssertEqual(Array(PetItem.allCases.suffix(PetLimitedEdition.allCases.count)),
+                       PetCloset.limitedShelf + PetCloset.masteryShelf)
+        XCTAssertEqual(PetItem.shopItems + PetCloset.limitedShelf + PetCloset.masteryShelf, PetItem.allCases)
     }
 
     func testEveryMilestoneHasOneItemAndTheCapIsTheLaunchWeekEvent() {

@@ -535,6 +535,146 @@
 			<string>最多混合 %lld 種聲音，請先移除一種</string>
 		</dict>
 	</dict>
+	<key>Check off %lld tasks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>完成 %lld 項任務</string>
+		</dict>
+	</dict>
+	<key>Check off %lld tasks.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>完成 %lld 項任務。</string>
+		</dict>
+	</dict>
+	<key>Do %lld break moves with your pet</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>和寵物做 %lld 次休息動作</string>
+		</dict>
+	</dict>
+	<key>Do %lld break moves with your pet.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>和寵物一起做 %lld 次休息動作。</string>
+		</dict>
+	</dict>
+	<key>Finish %lld Party sessions with friends</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>和朋友完成 %lld 次派對學習</string>
+		</dict>
+	</dict>
+	<key>Finish %lld Party sessions with friends.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>和朋友完成 %lld 次派對學習。</string>
+		</dict>
+	</dict>
+	<key>Finish %lld focus sessions</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>完成 %lld 個專注時段</string>
+		</dict>
+	</dict>
+	<key>Finish %lld focus sessions.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>完成 %lld 個專注時段。</string>
+		</dict>
+	</dict>
+	<key>Finish every monthly quest in %lld months.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>在 %lld 個月裡完成所有每月任務。</string>
+		</dict>
+	</dict>
+	<key>Focus for %lld hours</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>專注 %lld 小時</string>
+		</dict>
+	</dict>
 	<key>Focus for %lld hours during %@.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -547,6 +687,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>在%2$@期間專注 %1$lld 小時。</string>
+		</dict>
+	</dict>
+	<key>Focus for %lld hours in total.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>累計專注 %lld 小時。</string>
 		</dict>
 	</dict>
 	<key>Focus for %lld minutes during %@.</key>
@@ -577,6 +731,48 @@
 			<string>帶回：額外 %lld 點數</string>
 		</dict>
 	</dict>
+	<key>Keep a %lld-day streak. Freezes count.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>保持 %lld 天連續學習。凍結也算。</string>
+		</dict>
+	</dict>
+	<key>Log %lld glasses of water</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>記錄 %lld 杯水</string>
+		</dict>
+	</dict>
+	<key>Log %lld glasses of water.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>記錄 %lld 杯水。</string>
+		</dict>
+	</dict>
 	<key>Not every day is a checklist day. Tomorrow starts with %lld tasks ready to go.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -591,6 +787,34 @@
 			<string>不是每天都要完成清單。明天已有 %lld 項任務準備就緒。</string>
 		</dict>
 	</dict>
+	<key>Review %lld flashcards</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>複習 %lld 張閃卡</string>
+		</dict>
+	</dict>
+	<key>Review %lld flashcards.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>複習 %lld 張閃卡。</string>
+		</dict>
+	</dict>
 	<key>Review today to keep your %lld-day streak</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -603,6 +827,62 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>今天複習，保住 %lld 天連續紀錄</string>
+		</dict>
+	</dict>
+	<key>Study 3 days or more in %lld different weeks.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>在 %lld 個不同的週裡，每週學習 3 天或以上。</string>
+		</dict>
+	</dict>
+	<key>Study on %lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>學習 %lld 天</string>
+		</dict>
+	</dict>
+	<key>Study on %lld different days.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>在 %lld 個不同的日子學習。</string>
+		</dict>
+	</dict>
+	<key>Try %lld different study methods.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>嘗試 %lld 種不同的學習方法。</string>
 		</dict>
 	</dict>
 	<key>Yes, from %lld accounts.</key>

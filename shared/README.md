@@ -31,12 +31,13 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
   `kits/` pins kits: every bundled kit and malformed ones, the errors and warnings validation gives, and the layout and settings applying them gives;
   `onboarding/` pins first-run setup: step order and skipping for different kits, answers and tab choices;
   `formatting/` pins durations and date ranges in all 12 languages;
-  `break-buddy/` pins the break buddy: its moves, which move the planner picks for a break and the water tally's counts.
+  `break-buddy/` pins the break buddy: its moves, which move the planner picks for a break and the water tally's counts;
+  `progression/` pins the Closet's Goals section: badge tiers, the tally read from activity logs, the gentle streak, monthly quests, the mastery outfits each tier unlocks and the progression save.
 
 Fixtures are regenerated only on purpose, after an intended change:
 
 ```sh
-TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|ThemeGoldenTests|StudyMethodGoldenTests|ClaudeStreamGoldenTests|FocusTimerGoldenTests|StudySessionGoldenTests|TickerGoldenTests|PlanMyDayGoldenTests|PartyProtocolGoldenTests|SyncDocumentGoldenTests|ClosetGoldenTests|ActivityLogGoldenTests|StreaksRecapGoldenTests|AnkiGoldenTests|KitGoldenTests|OnboardingGoldenTests|FormattingGoldenTests|BreakBuddyGoldenTests'
+TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|ThemeGoldenTests|StudyMethodGoldenTests|ClaudeStreamGoldenTests|FocusTimerGoldenTests|StudySessionGoldenTests|TickerGoldenTests|PlanMyDayGoldenTests|PartyProtocolGoldenTests|SyncDocumentGoldenTests|ClosetGoldenTests|ActivityLogGoldenTests|StreaksRecapGoldenTests|AnkiGoldenTests|KitGoldenTests|OnboardingGoldenTests|FormattingGoldenTests|BreakBuddyGoldenTests|ProgressionGoldenTests'
 ```
 
 A push to a branch named `shared/...` runs `.github/workflows/record-fixtures.yml`, which records the newer fixtures on a Mac runner, uploads `shared/fixtures/` as the `fixtures` artifact and then checks the tests against that recording.

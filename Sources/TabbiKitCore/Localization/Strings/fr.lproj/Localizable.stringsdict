@@ -611,6 +611,166 @@
 			<string>Jusqu'à %lld sons par mélange ; retires-en un d'abord</string>
 		</dict>
 	</dict>
+	<key>Check off %lld tasks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Coche %lld tâche</string>
+			<key>other</key>
+			<string>Coche %lld tâches</string>
+		</dict>
+	</dict>
+	<key>Check off %lld tasks.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Coche %lld tâche.</string>
+			<key>other</key>
+			<string>Coche %lld tâches.</string>
+		</dict>
+	</dict>
+	<key>Do %lld break moves with your pet</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Fais %lld geste de pause avec ton compagnon</string>
+			<key>other</key>
+			<string>Fais %lld gestes de pause avec ton compagnon</string>
+		</dict>
+	</dict>
+	<key>Do %lld break moves with your pet.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Fais %lld geste de pause avec ton compagnon.</string>
+			<key>other</key>
+			<string>Fais %lld gestes de pause avec ton compagnon.</string>
+		</dict>
+	</dict>
+	<key>Finish %lld Party sessions with friends</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Termine %lld session Party entre amis</string>
+			<key>other</key>
+			<string>Termine %lld sessions Party entre amis</string>
+		</dict>
+	</dict>
+	<key>Finish %lld Party sessions with friends.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Termine %lld session Party avec des amis.</string>
+			<key>other</key>
+			<string>Termine %lld sessions Party avec des amis.</string>
+		</dict>
+	</dict>
+	<key>Finish %lld focus sessions</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Termine %lld session</string>
+			<key>other</key>
+			<string>Termine %lld sessions</string>
+		</dict>
+	</dict>
+	<key>Finish %lld focus sessions.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Termine %lld session de concentration.</string>
+			<key>other</key>
+			<string>Termine %lld sessions de concentration.</string>
+		</dict>
+	</dict>
+	<key>Finish every monthly quest in %lld months.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Réussis toutes les quêtes du mois sur %lld mois.</string>
+			<key>other</key>
+			<string>Réussis toutes les quêtes du mois sur %lld mois.</string>
+		</dict>
+	</dict>
+	<key>Focus for %lld hours</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Concentre-toi %lld heure</string>
+			<key>other</key>
+			<string>Concentre-toi %lld heures</string>
+		</dict>
+	</dict>
 	<key>Focus for %lld hours during %@.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -625,6 +785,22 @@
 			<string>Concentre-toi %lld heure pendant %@.</string>
 			<key>other</key>
 			<string>Concentre-toi %lld heures pendant %@.</string>
+		</dict>
+	</dict>
+	<key>Focus for %lld hours in total.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Concentre-toi %lld heure au total.</string>
+			<key>other</key>
+			<string>Concentre-toi %lld heures au total.</string>
 		</dict>
 	</dict>
 	<key>Focus for %lld minutes during %@.</key>
@@ -659,6 +835,54 @@
 			<string>Trouvé : %lld points bonus</string>
 		</dict>
 	</dict>
+	<key>Keep a %lld-day streak. Freezes count.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Tiens une série de %lld jour. Les gels comptent.</string>
+			<key>other</key>
+			<string>Tiens une série de %lld jours. Les gels comptent.</string>
+		</dict>
+	</dict>
+	<key>Log %lld glasses of water</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Note %lld verre d'eau</string>
+			<key>other</key>
+			<string>Note %lld verres d'eau</string>
+		</dict>
+	</dict>
+	<key>Log %lld glasses of water.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Note %lld verre d'eau.</string>
+			<key>other</key>
+			<string>Note %lld verres d'eau.</string>
+		</dict>
+	</dict>
 	<key>Not every day is a checklist day. Tomorrow starts with %lld tasks ready to go.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -675,6 +899,38 @@
 			<string>Chaque jour n'est pas fait pour cocher des cases. Demain commence avec %lld tâches prêtes.</string>
 		</dict>
 	</dict>
+	<key>Review %lld flashcards</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Révise %lld carte</string>
+			<key>other</key>
+			<string>Révise %lld cartes</string>
+		</dict>
+	</dict>
+	<key>Review %lld flashcards.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Révise %lld carte.</string>
+			<key>other</key>
+			<string>Révise %lld cartes.</string>
+		</dict>
+	</dict>
 	<key>Review today to keep your %lld-day streak</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -689,6 +945,70 @@
 			<string>Révise aujourd'hui pour garder ta série de %lld jour</string>
 			<key>other</key>
 			<string>Révise aujourd'hui pour garder ta série de %lld jours</string>
+		</dict>
+	</dict>
+	<key>Study 3 days or more in %lld different weeks.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Étudie 3 jours ou plus sur %lld semaine.</string>
+			<key>other</key>
+			<string>Étudie 3 jours ou plus sur %lld semaines différentes.</string>
+		</dict>
+	</dict>
+	<key>Study on %lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Étudie %lld jour</string>
+			<key>other</key>
+			<string>Étudie %lld jours</string>
+		</dict>
+	</dict>
+	<key>Study on %lld different days.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Étudie %lld jour.</string>
+			<key>other</key>
+			<string>Étudie %lld jours différents.</string>
+		</dict>
+	</dict>
+	<key>Try %lld different study methods.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Essaie %lld méthode d'étude.</string>
+			<key>other</key>
+			<string>Essaie %lld méthodes d'étude différentes.</string>
 		</dict>
 	</dict>
 	<key>Yes, from %lld accounts.</key>

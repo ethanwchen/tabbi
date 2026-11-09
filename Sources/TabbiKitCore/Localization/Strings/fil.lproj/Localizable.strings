@@ -5,8 +5,12 @@
 <dict>
 	<key>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</key>
 	<string>"Miss ka na ni %@. 10 minuto?" Isang beses lang kada araw, kung hindi ka pa nag-aral o naabot ang goal. Tahimik ito sa Focus.</string>
+	<key>%@ %@</key>
+	<string>%1$@ %2$@</string>
 	<key>%@ %@ so far</key>
 	<string>%1$@ %2$@ na</string>
+	<key>%@ %@ so far.</key>
+	<string>%1$@ %2$@ sa ngayon.</string>
 	<key>%@ (paused)</key>
 	<string>%@ (naka-pause)</string>
 	<key>%@ Fix it in Settings &gt; Tabs &gt; Party &gt; Options, or clear it to use the Tabbi server.</key>
@@ -153,6 +157,8 @@
 	<string>%@ ng focus.</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>Magbubukas ang %@ sa Music; pindutin ang play doon.</string>
+	<key>%@ quests</key>
+	<string>Mga quest ng %@</string>
 	<key>%@ raced a snail and let it win</key>
 	<string>Nakipagkarera si %@ sa suso at pinanalo ito</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
@@ -181,6 +187,10 @@
 	<string>Walang mungkahing pagbabago ang %@</string>
 	<key>%@ suggests no changes.</key>
 	<string>Walang iminumungkahing pagbabago ang %@.</string>
+	<key>%@ this month.</key>
+	<string>%@ ngayong buwan.</string>
+	<key>%@ to %@</key>
+	<string>%1$@ papuntang %2$@</string>
 	<key>%@ today</key>
 	<string>%@ ngayon</string>
 	<key>%@ tokens</key>
@@ -189,6 +199,8 @@
 	<string>Mabubuksan ang %1$@ pagkatapos ng %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>Mabubuksan ang %1$@ sa %2$lld</string>
+	<key>%@ unlocks with %@. %@</key>
+	<string>Mabubuksan ang %1$@ sa %2$@. %3$@</string>
 	<key>%@ uses it to greet you.</key>
 	<string>Gagamitin ito ng %@ para batiin ka.</string>
 	<key>%@ visited the bakery</key>
@@ -207,10 +219,18 @@
 	<string>Mas maganda ang %@ kapag nasa Applications, kung saan puwede itong magbukas pag-log in mo at mag-update nang kusa. Kokopyahin nito ang sarili roon at magbubukas ulit.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · Naka-pause</string>
+	<key>%@, %@</key>
+	<string>%1$@, %2$@</string>
 	<key>%@, %@ left</key>
 	<string>%1$@, %2$@ pa</string>
+	<key>%@, %@ to %@</key>
+	<string>%1$@, %2$@ papuntang %3$@</string>
 	<key>%@, %lld extra</key>
 	<string>%@, %lld extra</string>
+	<key>%@, earned: click to take off</key>
+	<string>%@, nakuha na: i-click para tanggalin</string>
+	<key>%@, earned: click to wear</key>
+	<string>%@, nakuha na: i-click para isuot</string>
 	<key>%@, limited edition: %@</key>
 	<string>%1$@, limited edition: %2$@</string>
 	<key>%@, limited edition: %@ Its event starts %@.</key>
@@ -231,8 +251,16 @@
 	<string>%1$@: %2$@ natapos ngayon</string>
 	<key>%@: %@ left</key>
 	<string>%1$@: %2$@ na lang</string>
+	<key>%@: %@ this month</key>
+	<string>%1$@: %2$@ ngayong buwan</string>
 	<key>%@: %@ tokens</key>
 	<string>%1$@: %2$@ token</string>
+	<key>%@: %@. Something new since you last looked.</key>
+	<string>%1$@: %2$@. May bago mula noong huli mong tingin.</string>
+	<key>%@: Starlight, every tier earned</key>
+	<string>%@: Starlight, nakuha lahat ng tier</string>
+	<key>%@: done this month</key>
+	<string>%@: tapos na ngayong buwan</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: nakuha mo ang lahat ng item. Sa iyo pa rin sila pagkatapos ng event.</string>
 	<key>%lld h</key>
@@ -255,12 +283,16 @@
 	<string>%1$lld bago, %2$lld inaaral, %3$lld review</string>
 	<key>%lld of %lld</key>
 	<string>%1$lld ng %2$lld</string>
+	<key>%lld of %lld badges</key>
+	<string>%1$lld sa %2$lld badge</string>
 	<key>%lld of %lld cards reviewed today</key>
 	<string>%lld sa %lld card ang na-review ngayon</string>
 	<key>%lld of %lld done</key>
 	<string>%lld/%lld tapos</string>
 	<key>%lld of %lld earned</key>
 	<string>%1$lld ng %2$lld ang nakuha</string>
+	<key>%lld of %lld outfits</key>
+	<string>%1$lld sa %2$lld outfit</string>
 	<key>%lld pts to go</key>
 	<string>%lld pts pa</string>
 	<key>%lld pts, %@ to go</key>
@@ -281,6 +313,8 @@
 	<string>%lldh %lldm</string>
 	<key>%lldh ago</key>
 	<string>%lld oras ang nakalipas</string>
+	<key>%lldk</key>
+	<string>%lldk</string>
 	<key>%lldm</key>
 	<string>%lldm</string>
 	<key>%lldm ago</key>
@@ -491,6 +525,8 @@
 	<string>Lahat ng deck na may due na card</string>
 	<key>All done</key>
 	<string>Tapos lahat</string>
+	<key>All done. New quests on %@.</key>
+	<string>Tapos na lahat. Bagong quest sa %@.</string>
 	<key>All earned</key>
 	<string>Nakuha lahat</string>
 	<key>All optional. Nothing to do now.</key>
@@ -607,6 +643,8 @@
 	<string>App</string>
 	<key>Appears when the pointer reaches the top center.</key>
 	<string>Lumalabas kapag umabot ang pointer sa itaas na gitna.</string>
+	<key>Apprentice Robe</key>
+	<string>Robe ng Apprentice</string>
 	<key>Apps and permissions</key>
 	<string>Mga app at pahintulot</string>
 	<key>Are you signed in to Claude?</key>
@@ -639,6 +677,8 @@
 	<string>Hinihiling sa Anki na buksan ang deck para sa review.</string>
 	<key>Astronaut Helmet</key>
 	<string>Helmet ng Astronaut</string>
+	<key>Astronaut Suit</key>
+	<string>Astronaut Suit</string>
 	<key>At least one tab must stay</key>
 	<string>Kailangang may matirang isang tab</string>
 	<key>At the start of a break, %@ shows a short move you can copy</key>
@@ -675,6 +715,10 @@
 	<string>Balik sa ngayon</string>
 	<key>Backwards Cap</key>
 	<string>Baligtad na Cap</string>
+	<key>Badges</key>
+	<string>Mga badge</string>
+	<key>Baker's Apron</key>
+	<string>Apron ng Panadero</string>
 	<key>Beanie</key>
 	<string>Beanie</string>
 	<key>Bell collar</key>
@@ -699,6 +743,8 @@
 	<string>Hindi ka makikita, ma-add o masasalihan ng naka-block. Para mag-block o mag-report, i-right-click sila sa Party.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>Mapupunta sa calendar mo.</string>
+	<key>Blossom Sprout</key>
+	<string>Namumulaklak na Usbong</string>
 	<key>Bond %lld</key>
 	<string>Bond %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -717,6 +763,8 @@
 	<string>Break</string>
 	<key>Break buddy</key>
 	<string>Break buddy</string>
+	<key>Break moves</key>
+	<string>Mga galaw sa break</string>
 	<key>Break's over</key>
 	<string>Tapos na ang break</string>
 	<key>Breathe in slowly, then let it all out.</key>
@@ -735,6 +783,8 @@
 	<string>Built-in na display</string>
 	<key>Bunny Ears</key>
 	<string>Tainga ng Kuneho</string>
+	<key>Busy Bee Antennae</key>
+	<string>Antena ng Bubuyog</string>
 	<key>Butter yellow sunshine, happy and bright.</key>
 	<string>Butter yellow na sikat ng araw, masaya at maliwanag.</string>
 	<key>Buy freeze</key>
@@ -1107,6 +1157,8 @@
 	<string>Cozy</string>
 	<key>Cozy Hoodie</key>
 	<string>Cozy na Hoodie</string>
+	<key>Cozy Pajamas</key>
+	<string>Maaliwalas na Pajama</string>
 	<key>Cozy Scarf</key>
 	<string>Cozy na Scarf</string>
 	<key>Cozy days and quiet focus before the new year.</key>
@@ -1243,6 +1295,8 @@
 	<string>Huwag nang itanong ulit</string>
 	<key>Done</key>
 	<string>Tapos</string>
+	<key>Done this month.</key>
+	<string>Tapos na ngayong buwan.</string>
 	<key>Done! You stuck with it.</key>
 	<string>Tapos! Hindi ka sumuko.</string>
 	<key>Drag to reorder</key>
@@ -1319,6 +1373,8 @@
 	<string>Panahon ng Exam</string>
 	<key>Example</key>
 	<string>Halimbawa</string>
+	<key>Explorer's Hat</key>
+	<string>Sombrero ng Explorer</string>
 	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
 	<string>Hindi pagkabigo ang mahinto. Ang hindi na bumalik, iyon. At tingnan mo, nandito ka ulit.</string>
 	<key>Fantasy</key>
@@ -1335,6 +1391,8 @@
 	<string>Punuin ang libreng oras bukas ng mga natitira mong task at review. Pinaplano sa Mac na ito, walang idadagdag hangga't hindi mo sinasabi</string>
 	<key>Finish a Party session with friends.</key>
 	<string>Tapusin ang isang Party session kasama ang mga kaibigan.</string>
+	<key>Finish all three to count the month toward the Monthly quests badge.</key>
+	<string>Tapusin ang tatlo para mabilang ang buwan sa badge na Buwanang quest.</string>
 	<key>Finish setup</key>
 	<string>Tapusin ang setup</string>
 	<key>Fireplace</key>
@@ -1359,6 +1417,8 @@
 	<string>May inayos sa ibang app? Bumalik dito at kusang mag-a-update ang ilaw.</string>
 	<key>Flame Headband</key>
 	<string>Headband na Apoy</string>
+	<key>Flashcards</key>
+	<string>Flashcards</string>
 	<key>Flow</key>
 	<string>Flow</string>
 	<key>Flower Crown</key>
@@ -1471,6 +1531,8 @@
 	<string>Nakikita ng mga kaibigan ang pangalan mo, ang pet mo at kung kailan ka nag-aaral. Walang lumalabas sa Mac mo tungkol sa cards o decks mo.</string>
 	<key>Friends server</key>
 	<string>Friends server</string>
+	<key>Friendship Bandana</key>
+	<string>Bandana ng Pagkakaibigan</string>
 	<key>Frog Hat</key>
 	<string>Sombrerong Palaka</string>
 	<key>From your Claude Code logs</key>
@@ -1493,6 +1555,8 @@
 	<string>Paggamit ng GPU, huling 60 segundo</string>
 	<key>General</key>
 	<string>General</string>
+	<key>Gentle streak</key>
+	<string>Banayad na streak</string>
 	<key>Get %@</key>
 	<string>Kunin ang %@</string>
 	<key>Get %@ to control your music from the notch.</key>
@@ -1525,6 +1589,8 @@
 	<string>Maging invisible. Bilang pa rin ang mga minuto mo sa pag-aaral.</string>
 	<key>Go on without a name</key>
 	<string>Magpatuloy nang walang pangalan</string>
+	<key>Goals</key>
+	<string>Mga Layunin</string>
 	<key>Goals left today</key>
 	<string>Mga goal na natitira ngayon</string>
 	<key>Gold tag</key>
@@ -1823,10 +1889,14 @@
 	<string>Limitado</string>
 	<key>Limited edition</key>
 	<string>Limitadong edisyon</string>
+	<key>Limited edition items, earned by studying, never sold</key>
+	<string>Mga limited edition item, nakukuha sa pag-aaral, hindi ibinebenta</string>
 	<key>Lion Dance Hat</key>
 	<string>Sombrero ng Lion Dance</string>
 	<key>Listen to %@</key>
 	<string>Pakinggan ang %@</string>
+	<key>Little Sprout</key>
+	<string>Munting Usbong</string>
 	<key>Live activity</key>
 	<string>Live activity</string>
 	<key>Loading</key>
@@ -1879,6 +1949,8 @@
 	<string>Markahang tapos</string>
 	<key>Mark as not done</key>
 	<string>Markahang hindi tapos</string>
+	<key>Mastery outfits: each unlocks with a badge tier, never with points</key>
+	<string>Mastery outfits: bawat isa ay nabubuksan sa isang badge tier, hindi kailanman sa points</string>
 	<key>May Tabbi run your shortcuts?</key>
 	<string>Puwede bang patakbuhin ng Tabbi ang mga shortcut mo?</string>
 	<key>Measuring cores...</key>
@@ -1917,6 +1989,10 @@
 	<string>Model</string>
 	<key>Month</key>
 	<string>Buwan</string>
+	<key>Monthly quests</key>
+	<string>Buwanang quest</string>
+	<key>Monthly quests, badges and outfits earned from long goals</key>
+	<string>Buwanang quest, mga badge at outfit mula sa mahahabang layunin</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Sombrero ng Bruha sa Buwan</string>
 	<key>Moonstone</key>
@@ -1985,6 +2061,10 @@
 	<string>Susunod, tatanungin ng Mac mo kung puwedeng magpadala ng alerto ang Tabbi. Puwede mong baguhin ang sagot mo anumang oras sa System Settings.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>Susunod, tatanungin ng Mac mo kung puwedeng gamitin ng Tabbi ang calendar mo. Puwede mong baguhin ang sagot mo anumang oras sa System Settings.</string>
+	<key>Next: %@, %@</key>
+	<string>Susunod: %1$@, %2$@</string>
+	<key>Nightcap</key>
+	<string>Nightcap</string>
 	<key>Ninja Headband</key>
 	<string>Headband ng Ninja</string>
 	<key>No answer</key>
@@ -2197,6 +2277,8 @@
 	<string>Nasa ngayon na</string>
 	<key>One add-on to go</key>
 	<string>Isang add-on na lang</string>
+	<key>One badge for each habit, from Bronze to Starlight</key>
+	<string>Isang badge sa bawat gawi, mula Bronze hanggang Starlight</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>Isang kalmadong session sa bawat pagkakataon. Kaya mo 'to.</string>
 	<key>One countdown, no breaks</key>
@@ -2345,6 +2427,12 @@
 	<string>Iba pa</string>
 	<key>Out of sight. Press %@ to open it.</key>
 	<string>Nakatago. Pindutin ang %@ para buksan ito.</string>
+	<key>Outfits and accessories to unlock with study points</key>
+	<string>Mga outfit at accessory na nabubuksan gamit ang study points</string>
+	<key>Outfits to earn</key>
+	<string>Mga outfit na makukuha</string>
+	<key>Owl Spectacles</key>
+	<string>Salamin ng Kuwago</string>
 	<key>Owned</key>
 	<string>Iyo na</string>
 	<key>Pals</key>
@@ -2759,6 +2847,8 @@
 	<string>Tumatakbo sa %@</string>
 	<key>Runs on this Mac</key>
 	<string>Tumatakbo sa Mac na ito</string>
+	<key>Sage's Robe</key>
+	<string>Robe ng Pantas</string>
 	<key>Sakura Sprig</key>
 	<string>Sanga ng Sakura</string>
 	<key>Save</key>
@@ -2779,6 +2869,8 @@
 	<string>Naka-save sa Keychain mo</string>
 	<key>Schedule</key>
 	<string>Schedule</string>
+	<key>Scholar's Robe</key>
+	<string>Robe ng Iskolar</string>
 	<key>Screenshot sent with this question</key>
 	<string>Screenshot na ipinadala kasama ng tanong na ito</string>
 	<key>Scrubs</key>
@@ -2823,6 +2915,8 @@
 	<string>Server</string>
 	<key>Session done. Nice work!</key>
 	<string>Tapos na! Ang galing!</string>
+	<key>Sessions</key>
+	<string>Mga session</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>Gawing null ang "apiKey", tapos i-click ang OK</string>
 	<key>Set this up later from its tab</key>
@@ -3005,8 +3099,12 @@
 	<string>Kislap</string>
 	<key>Sparkle Trail</key>
 	<string>Bakas ng Kislap</string>
+	<key>Species, breed and fur color</key>
+	<string>Uri, lahi at kulay ng balahibo</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>Spooky season na. Mag-focus para bihisan ang pet mo.</string>
+	<key>Sporty Sweatband</key>
+	<string>Sporty na Sweatband</string>
 	<key>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</key>
 	<string>Laging lumalabas ang Spotify at Apple Music. Sa SoundCloud, papayagan mo ang %@ na kontrolin ang browser, at i-on doon ang Allow JavaScript from Apple Events.</string>
 	<key>Spotify link or Music playlist name</key>
@@ -3025,6 +3123,10 @@
 	<string>Tumayo, igalaw-galaw ang mga binti, at umupo ulit kapag gusto mo na.</string>
 	<key>Star tag</key>
 	<string>Tag na bituin</string>
+	<key>Starlight, every tier earned</key>
+	<string>Starlight, nakuha lahat ng tier</string>
+	<key>Starry Cloak</key>
+	<string>Mabituing Balabal</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>Hindi nagmamadali ang mga bituin. Patuloy lang silang nagliliyab.</string>
 	<key>Start %@ automatically when you log in</key>
@@ -3081,6 +3183,8 @@
 	<string>Magsisimula sa focus kung walang tumutugtog, at hihinto sa break mo.</string>
 	<key>Stays on this Mac</key>
 	<string>Nasa Mac lang na ito</string>
+	<key>Steady weeks</key>
+	<string>Tuloy-tuloy na linggo</string>
 	<key>Step %lld of %lld</key>
 	<string>Hakbang %1$lld sa %2$lld</string>
 	<key>Step away for a bit</key>
@@ -3143,6 +3247,10 @@
 	<string>Study block</string>
 	<key>Study buddies</key>
 	<string>Study buddy</string>
+	<key>Study days</key>
+	<string>Mga araw ng pag-aaral</string>
+	<key>Study methods</key>
+	<string>Mga paraan ng pag-aaral</string>
 	<key>Study parties</key>
 	<string>Study party</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3255,6 +3363,8 @@
 	<string>Ang talento ay maagang simula. Ang pagsipot ang buong karera.</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>Mag-tap sa trackpad pag umabot ang pointer sa notch o may celebration</string>
+	<key>Tasks</key>
+	<string>Mga task</string>
 	<key>Tasks left today</key>
 	<string>Natitirang task ngayon</string>
 	<key>Team Medal</key>
@@ -3439,6 +3549,8 @@
 	<string>Nasa listahan ngayon ang task na ito</string>
 	<key>This works. Nothing to do.</key>
 	<string>Gumagana ito. Wala ka nang gagawin.</string>
+	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
+	<string>Tatlong maliliit na layunin bawat buwan. Opsyonal ang mga ito, at walang mawawala kapag may buwang nalaktawan.</string>
 	<key>Time</key>
 	<string>Oras</string>
 	<key>Time for a %lld-minute break.</key>
@@ -3455,6 +3567,8 @@
 	<string>Timer: %@</string>
 	<key>Tiny Crown</key>
 	<string>Maliit na Korona</string>
+	<key>Tiny Lantern</key>
+	<string>Munting Parol</string>
 	<key>Tiny Rain Cloud</key>
 	<string>Maliit na Ulap-ulan</string>
 	<key>Tips to focus better</key>
@@ -3675,6 +3789,8 @@
 	<string>Wardrobe</string>
 	<key>Warm cream and peach, soft and gentle.</key>
 	<string>Mainit na cream at peach, malambot at banayad.</string>
+	<key>Water</key>
+	<string>Tubig</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>Nakakaukit ng bangin ang tubig dahil hindi ito lumalaktaw ng araw.</string>
 	<key>Wearing</key>
@@ -3923,6 +4039,10 @@
 	<string>Ang playlist mo</string>
 	<key>Your setup already matches %@</key>
 	<string>Tugma na ang setup mo sa %@</string>
+	<key>Your study day by day, with the time studied on each</key>
+	<string>Ang pag-aaral mo araw-araw, kasama ang oras bawat araw</string>
+	<key>Your study streak and the freezes that protect it</key>
+	<string>Ang study streak mo at ang freezes na nagpoprotekta rito</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>
 	<string>Study streak mo: sunod-sunod na araw na may hindi bababa sa %lld minutong focus</string>
 	<key>Your tabs</key>
@@ -3935,8 +4055,18 @@
 	<string>Linggo mo</string>
 	<key>Your week with Tabbi is ready</key>
 	<string>Handa na ang linggo mo kasama ang Tabbi</string>
+	<key>Your weekly recaps with your pet</key>
+	<string>Mga lingguhang recap mo kasama ang pet mo</string>
 	<key>all day: %@</key>
 	<string>buong araw: %@</string>
+	<key>badge.tier.bronze</key>
+	<string>Bronze</string>
+	<key>badge.tier.gold</key>
+	<string>Gold</string>
+	<key>badge.tier.silver</key>
+	<string>Silver</string>
+	<key>badge.tier.starlight</key>
+	<string>Starlight</string>
 	<key>best day</key>
 	<string>best na araw</string>
 	<key>card</key>

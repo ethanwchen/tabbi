@@ -48,3 +48,7 @@ Since catalog version 2, `costume` carries the outfit and `accessories` every wo
 An app on catalog version 1 drops the ids it does not know and still draws the rest of the pet.
 When no outfit is worn, the app also puts a medical or costume hat in `costume`, as catalog version 1 apps did, so their users still see it.
 A self-hosted server still on catalog version 1 refuses the newer ids, and the app then sends the profile again with only what that catalog has.
+
+Catalog version 4 adds the mastery outfits from the Closet's Goals section (`docs/design/progression.md`): six outfits and eight accessories with new ids, while the Cozy Pajamas and the Friendship Bandana reuse `pajamas` and `bandana`, which catalog version 1 already listed and nothing drew.
+Older apps drop the new ids and draw the rest of the pet.
+A server still on catalog version 3 refuses them, so the app first sends the profile again without just those ids (`PartyProfileUpdate.forCatalogVersion3()`) and only falls back to what catalog version 1 takes if that is refused too.

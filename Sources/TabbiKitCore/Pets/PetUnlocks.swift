@@ -68,6 +68,12 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
              .accessory(.reindeerAntlers), .accessory(.snowScarf), .accessory(.heartGlasses),
              .accessory(.summerShades), .accessory(.lionDanceHat), .accessory(.sakuraSprig), .outfit(.studyHoodie),
              .accessory(.foundersPin): 0
+        // Mastery items: earned from a badge tier, never sold.
+        case .outfit(.astronautSuit), .outfit(.starryCloak), .outfit(.apprenticeRobe), .outfit(.scholarsRobe),
+             .outfit(.sagesRobe), .outfit(.cozyPajamas), .outfit(.bakersApron), .accessory(.littleSprout),
+             .accessory(.blossomSprout), .accessory(.nightcap), .accessory(.explorersHat), .accessory(.beeAntennae),
+             .accessory(.sportySweatband), .accessory(.owlSpectacles), .accessory(.friendshipBandana),
+             .accessory(.tinyLantern): 0
         // Starters: up to one typical day (105).
         case .accessory(.beanie): 35
         case .accessory(.roundGlasses): 50

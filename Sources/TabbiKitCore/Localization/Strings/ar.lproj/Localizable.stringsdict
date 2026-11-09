@@ -1059,6 +1059,246 @@
 			<string>غيّر العد التنازلي إلى %lld دقيقة، أو إلى دقيقة من الآن إن كان هذا الوقت قد مضى</string>
 		</dict>
 	</dict>
+	<key>Check off %lld tasks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>أنجز %lld مهام</string>
+			<key>many</key>
+			<string>أنجز %lld مهمةً</string>
+			<key>one</key>
+			<string>أنجز %lld مهمة</string>
+			<key>other</key>
+			<string>أنجز %lld مهمة</string>
+			<key>two</key>
+			<string>أنجز %lld مهمتين</string>
+			<key>zero</key>
+			<string>أنجز %lld مهمة</string>
+		</dict>
+	</dict>
+	<key>Check off %lld tasks.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>أنجز %lld مهام.</string>
+			<key>many</key>
+			<string>أنجز %lld مهمةً.</string>
+			<key>one</key>
+			<string>أنجز %lld مهمة.</string>
+			<key>other</key>
+			<string>أنجز %lld مهمة.</string>
+			<key>two</key>
+			<string>أنجز %lld مهمتين.</string>
+			<key>zero</key>
+			<string>أنجز %lld مهمة.</string>
+		</dict>
+	</dict>
+	<key>Do %lld break moves with your pet</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>قم بـ %lld حركات استراحة مع حيوانك</string>
+			<key>many</key>
+			<string>قم بـ %lld حركةً مع حيوانك</string>
+			<key>one</key>
+			<string>قم بـ %lld حركة استراحة مع حيوانك</string>
+			<key>other</key>
+			<string>قم بـ %lld حركة استراحة مع حيوانك</string>
+			<key>two</key>
+			<string>قم بـ %lld حركتي استراحة مع حيوانك</string>
+			<key>zero</key>
+			<string>قم بـ %lld حركة استراحة مع حيوانك</string>
+		</dict>
+	</dict>
+	<key>Do %lld break moves with your pet.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>قم بـ %lld حركات استراحة مع حيوانك.</string>
+			<key>many</key>
+			<string>قم بـ %lld حركةً مع حيوانك.</string>
+			<key>one</key>
+			<string>قم بـ %lld حركة استراحة مع حيوانك.</string>
+			<key>other</key>
+			<string>قم بـ %lld حركة استراحة مع حيوانك.</string>
+			<key>two</key>
+			<string>قم بـ %lld حركتي استراحة مع حيوانك.</string>
+			<key>zero</key>
+			<string>قم بـ %lld حركة استراحة مع حيوانك.</string>
+		</dict>
+	</dict>
+	<key>Finish %lld Party sessions with friends</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>أنهِ %lld جلسات مجموعة مع الأصدقاء</string>
+			<key>many</key>
+			<string>أنهِ %lld جلسة مجموعة مع الأصدقاء</string>
+			<key>one</key>
+			<string>أنهِ %lld جلسة مجموعة مع الأصدقاء</string>
+			<key>other</key>
+			<string>أنهِ %lld جلسة مجموعة مع الأصدقاء</string>
+			<key>two</key>
+			<string>أنهِ %lld جلستي مجموعة مع الأصدقاء</string>
+			<key>zero</key>
+			<string>أنهِ %lld جلسة مجموعة مع الأصدقاء</string>
+		</dict>
+	</dict>
+	<key>Finish %lld Party sessions with friends.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>أنهِ %lld جلسات مجموعة مع الأصدقاء.</string>
+			<key>many</key>
+			<string>أنهِ %lld جلسة مجموعة مع الأصدقاء.</string>
+			<key>one</key>
+			<string>أنهِ %lld جلسة مجموعة مع الأصدقاء.</string>
+			<key>other</key>
+			<string>أنهِ %lld جلسة مجموعة مع الأصدقاء.</string>
+			<key>two</key>
+			<string>أنهِ %lld جلستي مجموعة مع الأصدقاء.</string>
+			<key>zero</key>
+			<string>أنهِ %lld جلسة مجموعة مع الأصدقاء.</string>
+		</dict>
+	</dict>
+	<key>Finish %lld focus sessions</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>أنهِ %lld جلسات تركيز</string>
+			<key>many</key>
+			<string>أنهِ %lld جلسة تركيز</string>
+			<key>one</key>
+			<string>أنهِ %lld جلسة تركيز</string>
+			<key>other</key>
+			<string>أنهِ %lld جلسة تركيز</string>
+			<key>two</key>
+			<string>أنهِ %lld جلستي تركيز</string>
+			<key>zero</key>
+			<string>أنهِ %lld جلسة تركيز</string>
+		</dict>
+	</dict>
+	<key>Finish %lld focus sessions.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>أنهِ %lld جلسات تركيز.</string>
+			<key>many</key>
+			<string>أنهِ %lld جلسة تركيز.</string>
+			<key>one</key>
+			<string>أنهِ %lld جلسة تركيز.</string>
+			<key>other</key>
+			<string>أنهِ %lld جلسة تركيز.</string>
+			<key>two</key>
+			<string>أنهِ %lld جلستي تركيز.</string>
+			<key>zero</key>
+			<string>أنهِ %lld جلسة تركيز.</string>
+		</dict>
+	</dict>
+	<key>Finish every monthly quest in %lld months.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>أنهِ كل المهام الشهرية في %lld أشهر.</string>
+			<key>many</key>
+			<string>أنهِ كل المهام الشهرية في %lld شهرًا.</string>
+			<key>one</key>
+			<string>أنهِ كل المهام الشهرية في %lld شهر.</string>
+			<key>other</key>
+			<string>أنهِ كل المهام الشهرية في %lld شهر.</string>
+			<key>two</key>
+			<string>أنهِ كل المهام الشهرية في %lld شهرين.</string>
+			<key>zero</key>
+			<string>أنهِ كل المهام الشهرية في %lld شهر.</string>
+		</dict>
+	</dict>
+	<key>Focus for %lld hours</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>ركّز %lld ساعات</string>
+			<key>many</key>
+			<string>ركّز %lld ساعةً</string>
+			<key>one</key>
+			<string>ركّز %lld ساعة</string>
+			<key>other</key>
+			<string>ركّز %lld ساعة</string>
+			<key>two</key>
+			<string>ركّز %lld ساعتين</string>
+			<key>zero</key>
+			<string>ركّز %lld ساعة</string>
+		</dict>
+	</dict>
 	<key>Focus for %lld hours during %@.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1081,6 +1321,30 @@
 			<string>ركّز %lld ساعتين خلال %@.</string>
 			<key>zero</key>
 			<string>ركّز %lld ساعة خلال %@.</string>
+		</dict>
+	</dict>
+	<key>Focus for %lld hours in total.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>ركّز %lld ساعات إجمالًا.</string>
+			<key>many</key>
+			<string>ركّز %lld ساعةً إجمالًا.</string>
+			<key>one</key>
+			<string>ركّز %lld ساعة إجمالًا.</string>
+			<key>other</key>
+			<string>ركّز %lld ساعة إجمالًا.</string>
+			<key>two</key>
+			<string>ركّز %lld ساعتين إجمالًا.</string>
+			<key>zero</key>
+			<string>ركّز %lld ساعة إجمالًا.</string>
 		</dict>
 	</dict>
 	<key>Focus for %lld minutes during %@.</key>
@@ -1179,6 +1443,78 @@
 			<string>إنه لمن بلغ %lld عام فأكثر.</string>
 		</dict>
 	</dict>
+	<key>Keep a %lld-day streak. Freezes count.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>حافظ على سلسلة من %lld أيام. التجميد يُحتسب.</string>
+			<key>many</key>
+			<string>حافظ على سلسلة من %lld يومًا. التجميد يُحتسب.</string>
+			<key>one</key>
+			<string>حافظ على سلسلة من %lld يوم. التجميد يُحتسب.</string>
+			<key>other</key>
+			<string>حافظ على سلسلة من %lld يوم. التجميد يُحتسب.</string>
+			<key>two</key>
+			<string>حافظ على سلسلة من %lld يومين. التجميد يُحتسب.</string>
+			<key>zero</key>
+			<string>حافظ على سلسلة من %lld يوم. التجميد يُحتسب.</string>
+		</dict>
+	</dict>
+	<key>Log %lld glasses of water</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>سجّل %lld أكواب ماء</string>
+			<key>many</key>
+			<string>سجّل %lld كوبًا من الماء</string>
+			<key>one</key>
+			<string>سجّل %lld كوب ماء</string>
+			<key>other</key>
+			<string>سجّل %lld كوب ماء</string>
+			<key>two</key>
+			<string>سجّل %lld كوبي ماء</string>
+			<key>zero</key>
+			<string>سجّل %lld كوب ماء</string>
+		</dict>
+	</dict>
+	<key>Log %lld glasses of water.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>سجّل %lld أكواب ماء.</string>
+			<key>many</key>
+			<string>سجّل %lld كوبًا من الماء.</string>
+			<key>one</key>
+			<string>سجّل %lld كوب ماء.</string>
+			<key>other</key>
+			<string>سجّل %lld كوب ماء.</string>
+			<key>two</key>
+			<string>سجّل %lld كوبي ماء.</string>
+			<key>zero</key>
+			<string>سجّل %lld كوب ماء.</string>
+		</dict>
+	</dict>
 	<key>Not every day is a checklist day. Tomorrow starts with %lld tasks ready to go.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1251,6 +1587,54 @@
 			<string>راجع %1$@ في Anki: %2$lld بطاقة مستحقة. ثبّت رزمة أخرى بنجمتها.</string>
 		</dict>
 	</dict>
+	<key>Review %lld flashcards</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>راجع %lld بطاقات</string>
+			<key>many</key>
+			<string>راجع %lld بطاقةً</string>
+			<key>one</key>
+			<string>راجع %lld بطاقة</string>
+			<key>other</key>
+			<string>راجع %lld بطاقة</string>
+			<key>two</key>
+			<string>راجع %lld بطاقتين</string>
+			<key>zero</key>
+			<string>راجع %lld بطاقة</string>
+		</dict>
+	</dict>
+	<key>Review %lld flashcards.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>راجع %lld بطاقات.</string>
+			<key>many</key>
+			<string>راجع %lld بطاقةً.</string>
+			<key>one</key>
+			<string>راجع %lld بطاقة.</string>
+			<key>other</key>
+			<string>راجع %lld بطاقة.</string>
+			<key>two</key>
+			<string>راجع %lld بطاقتين.</string>
+			<key>zero</key>
+			<string>راجع %lld بطاقة.</string>
+		</dict>
+	</dict>
 	<key>Review today to keep your %lld-day streak</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1321,6 +1705,78 @@
 			<string>ابدأ جلسة تركيز لمدة %lld دقيقتين للجميع في المجموعة</string>
 			<key>zero</key>
 			<string>ابدأ جلسة تركيز لمدة %lld دقيقة للجميع في المجموعة</string>
+		</dict>
+	</dict>
+	<key>Study 3 days or more in %lld different weeks.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>ادرس 3 أيام أو أكثر في %lld أسابيع.</string>
+			<key>many</key>
+			<string>ادرس 3 أيام أو أكثر في %lld أسبوعًا.</string>
+			<key>one</key>
+			<string>ادرس 3 أيام أو أكثر في %lld أسبوع.</string>
+			<key>other</key>
+			<string>ادرس 3 أيام أو أكثر في %lld أسبوع.</string>
+			<key>two</key>
+			<string>ادرس 3 أيام أو أكثر في %lld أسبوعين.</string>
+			<key>zero</key>
+			<string>ادرس 3 أيام أو أكثر في %lld أسبوع.</string>
+		</dict>
+	</dict>
+	<key>Study on %lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>ادرس %lld أيام</string>
+			<key>many</key>
+			<string>ادرس %lld يومًا</string>
+			<key>one</key>
+			<string>ادرس %lld يوم</string>
+			<key>other</key>
+			<string>ادرس %lld يوم</string>
+			<key>two</key>
+			<string>ادرس %lld يومين</string>
+			<key>zero</key>
+			<string>ادرس %lld يوم</string>
+		</dict>
+	</dict>
+	<key>Study on %lld different days.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>ادرس في %lld أيام مختلفة.</string>
+			<key>many</key>
+			<string>ادرس في %lld يومًا مختلفًا.</string>
+			<key>one</key>
+			<string>ادرس في %lld يوم.</string>
+			<key>other</key>
+			<string>ادرس في %lld يوم مختلف.</string>
+			<key>two</key>
+			<string>ادرس في %lld يومين مختلفين.</string>
+			<key>zero</key>
+			<string>ادرس في %lld يوم مختلف.</string>
 		</dict>
 	</dict>
 	<key>The name friends see, up to %lld characters</key>
@@ -1417,6 +1873,30 @@
 			<string>حان وقت استراحة لمدة %lld دقيقتين.</string>
 			<key>zero</key>
 			<string>حان وقت استراحة لمدة %lld دقيقة.</string>
+		</dict>
+	</dict>
+	<key>Try %lld different study methods.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>جرّب %lld طرق دراسة مختلفة.</string>
+			<key>many</key>
+			<string>جرّب %lld طريقة دراسة مختلفة.</string>
+			<key>one</key>
+			<string>جرّب %lld طريقة دراسة.</string>
+			<key>other</key>
+			<string>جرّب %lld طريقة دراسة مختلفة.</string>
+			<key>two</key>
+			<string>جرّب %lld طريقتي دراسة.</string>
+			<key>zero</key>
+			<string>جرّب %lld طريقة دراسة.</string>
 		</dict>
 	</dict>
 	<key>Type or paste a friend's %lld-character code and press Return</key>

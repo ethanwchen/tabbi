@@ -385,3 +385,65 @@ extension CostumeArt {
     /// sparkle trail, two at a time.
     static let bondSparkle = PetArt.costume.auraItem("bondSparkle")
 }
+
+// MARK: - Mastery items
+
+extension CostumeArt {
+    /// A white space suit with a navy collar ring and belt, a chest panel
+    /// with a gold and a crimson light, and a crimson mission patch. Navy
+    /// lines keep it apart from white fur.
+    static let astronautSuit = PetArt.costume.bodyItem("astronautSuit")
+
+    /// A violet cloak closed at the chest with a gold star clasp, stars
+    /// scattered over it that twinkle one after another. It hangs on the
+    /// body like a robe and never streams behind, so it is no cape.
+    static let starryCloak = PetArt.costume.bodyItem("starryCloak")
+
+    /// The first robe: plain brown with a white collar and a gold rope belt.
+    static let apprenticeRobe = PetArt.costume.bodyItem("apprenticeRobe")
+
+    /// The second robe: navy with a crimson stole edged in gold.
+    static let scholarsRobe = PetArt.costume.bodyItem("scholarsRobe")
+
+    /// The third robe: white with a gold stole that a glint runs down.
+    static let sagesRobe = PetArt.costume.bodyItem("sagesRobe")
+
+    /// Sky blue pajamas with a white collar, white buttons down the front
+    /// and little gold moons.
+    static let cozyPajamas = PetArt.costume.bodyItem("cozyPajamas")
+
+    /// A white apron with a crimson trim, holding a tiny strawberry cake
+    /// low in front.
+    static let bakersApron = PetArt.costume.bodyItem("bakersApron")
+
+    /// A green seedling with two round leaves on a short stem.
+    static let littleSprout = PetArt.costume.headItem("littleSprout")
+
+    /// The seedling grown taller with a pink blossom, which lets a petal go
+    /// now and then.
+    static let blossomSprout = PetArt.costume.headItem("blossomSprout")
+
+    /// A floppy sky blue nightcap whose tip droops to the side, with a
+    /// white band and pom.
+    static let nightcap = PetArt.costume.headItem("nightcap")
+
+    /// A white pith helmet with a brown band and a wide brim.
+    static let explorersHat = PetArt.costume.headItem("explorersHat")
+
+    /// A gold and navy striped headband with two antennae tipped in gold.
+    static let beeAntennae = PetArt.costume.headItem("beeAntennae")
+
+    /// A crimson terry sweatband with a white stripe.
+    static let sportySweatband = PetArt.costume.headItem("sportySweatband")
+
+    /// Big round spectacles in a brown frame with a gold bridge, ringing the
+    /// eyes like an owl's.
+    static let owlSpectacles = PetArt.costume.faceItem("owlSpectacles")
+
+    /// A crimson bandana with white dots, its knot at the side of the neck.
+    static let friendshipBandana = PetArt.costume.bodyItem("friendshipBandana")
+
+    /// A tiny lantern on a navy frame hanging beside the head (over the
+    /// back on a walk), its flame flickering.
+    static let tinyLantern = PetArt.costume.auraItem("tinyLantern")
+}

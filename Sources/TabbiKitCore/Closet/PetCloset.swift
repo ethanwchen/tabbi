@@ -54,8 +54,13 @@ public struct PetCloset: Hashable, Sendable {
     /// takes it off instead. Limited edition items are on `limitedShelf`.
     public static let wardrobe: [PetItem] = PetItem.shopItems.filter { $0 != .outfit(.none) }
 
-    /// The limited edition items, in `PetLimitedEdition` order.
-    public static let limitedShelf: [PetItem] = PetLimitedEdition.allCases.map(\.item)
+    /// The limited edition items, in `PetLimitedEdition` order. Mastery
+    /// outfits are on `masteryShelf` instead.
+    public static let limitedShelf: [PetItem] = PetLimitedEdition.allCases.filter { !$0.isMastery }.map(\.item)
+
+    /// The mastery outfits, in Goals shelf order: earned from badge tiers
+    /// (`PetProgression`), never sold.
+    public static let masteryShelf: [PetItem] = PetLimitedEdition.mastery.map(\.item)
 
     /// The wardrobe grouped by theme in shelf order, each shelf cheapest
     /// first. Together the shelves hold every wardrobe item once.
@@ -239,6 +244,17 @@ public struct PetCloset: Hashable, Sendable {
                                           calendar: Calendar = .current) -> [PetItem] {
         PetLimitedEdition.allCases.compactMap { edition in
             guard let milestone = edition.milestone, progress.isReached(milestone, calendar: calendar),
+                  save.ledger.grant(edition.item) else { return nil }
+            return edition.item
+        }
+    }
+
+    /// Grants the mastery outfits whose badge tiers `progression` has
+    /// reached and returns the ones that are new, for the celebration.
+    @discardableResult
+    public mutating func unlockMastery(_ progression: PetProgression) -> [PetItem] {
+        PetLimitedEdition.mastery.compactMap { edition in
+            guard let badge = edition.masteryBadge, progression.isReached(badge),
                   save.ledger.grant(edition.item) else { return nil }
             return edition.item
         }

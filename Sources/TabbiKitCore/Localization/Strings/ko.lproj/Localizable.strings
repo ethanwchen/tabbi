@@ -5,8 +5,12 @@
 <dict>
 	<key>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</key>
 	<string>“%@이(가) 보고 싶어 해요. 10분만 할까요?” 하루 최대 한 번, 아직 공부하지 않았거나 목표를 못 채운 날에만 와요. 집중 모드에서는 울리지 않아요.</string>
+	<key>%@ %@</key>
+	<string>%1$@ %2$@</string>
 	<key>%@ %@ so far</key>
 	<string>%1$@ %2$@ 경과</string>
+	<key>%@ %@ so far.</key>
+	<string>%1$@ 지금까지 %2$@.</string>
 	<key>%@ (paused)</key>
 	<string>%@ (일시정지)</string>
 	<key>%@ Fix it in Settings &gt; Tabs &gt; Party &gt; Options, or clear it to use the Tabbi server.</key>
@@ -153,6 +157,8 @@
 	<string>%@ 집중했어요.</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>%@은(는) 음악 앱에서 열립니다. 거기서 재생하세요.</string>
+	<key>%@ quests</key>
+	<string>%@ 퀘스트</string>
 	<key>%@ raced a snail and let it win</key>
 	<string>%@가 달팽이에게 져 줬어요</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
@@ -181,6 +187,10 @@
 	<string>%@가 바꿀 점이 없대요</string>
 	<key>%@ suggests no changes.</key>
 	<string>%@의 변경 제안이 없어요.</string>
+	<key>%@ this month.</key>
+	<string>이번 달 %@.</string>
+	<key>%@ to %@</key>
+	<string>%2$@까지 %1$@</string>
 	<key>%@ today</key>
 	<string>오늘 %@</string>
 	<key>%@ tokens</key>
@@ -189,6 +199,8 @@
 	<string>%2$@ 후 %1$@ 해제</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%2$lld점에 %1$@ 해제</string>
+	<key>%@ unlocks with %@. %@</key>
+	<string>%1$@은(는) %2$@에서 열려요. %3$@</string>
 	<key>%@ uses it to greet you.</key>
 	<string>%@가 인사할 때 불러요.</string>
 	<key>%@ visited the bakery</key>
@@ -207,10 +219,18 @@
 	<string>%@은(는) 응용 프로그램 폴더에서 가장 잘 작동해요. 로그인할 때 열리고 스스로 업데이트할 수 있거든요. 그곳으로 복사한 뒤 다시 열려요.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · 일시정지</string>
+	<key>%@, %@</key>
+	<string>%1$@, %2$@</string>
 	<key>%@, %@ left</key>
 	<string>%1$@, %2$@ 남음</string>
+	<key>%@, %@ to %@</key>
+	<string>%1$@, %3$@까지 %2$@</string>
 	<key>%@, %lld extra</key>
 	<string>%@, 추가 %lld개</string>
+	<key>%@, earned: click to take off</key>
+	<string>%@, 획득함: 클릭해서 벗기</string>
+	<key>%@, earned: click to wear</key>
+	<string>%@, 획득함: 클릭해서 입기</string>
 	<key>%@, limited edition: %@</key>
 	<string>%1$@, 한정판: %2$@</string>
 	<key>%@, limited edition: %@ Its event starts %@.</key>
@@ -231,8 +251,16 @@
 	<string>%1$@: 오늘 %2$@ 완료</string>
 	<key>%@: %@ left</key>
 	<string>%@: %@ 남음</string>
+	<key>%@: %@ this month</key>
+	<string>%1$@: 이번 달 %2$@</string>
 	<key>%@: %@ tokens</key>
 	<string>%1$@: %2$@ 토큰</string>
+	<key>%@: %@. Something new since you last looked.</key>
+	<string>%1$@: %2$@. 지난번 이후 새로운 게 있어요.</string>
+	<key>%@: Starlight, every tier earned</key>
+	<string>%@: 별빛, 모든 단계 달성</string>
+	<key>%@: done this month</key>
+	<string>%@: 이번 달 완료</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: 모든 아이템을 획득했어요. 이벤트가 끝나도 계속 내 거예요.</string>
 	<key>%lld h</key>
@@ -255,12 +283,16 @@
 	<string>새 카드 %1$lld, 학습 중 %2$lld, 복습 %3$lld</string>
 	<key>%lld of %lld</key>
 	<string>%1$lld/%2$lld명</string>
+	<key>%lld of %lld badges</key>
+	<string>배지 %1$lld/%2$lld</string>
 	<key>%lld of %lld cards reviewed today</key>
 	<string>오늘 %2$lld장 중 %1$lld장 복습</string>
 	<key>%lld of %lld done</key>
 	<string>%lld/%lld 완료</string>
 	<key>%lld of %lld earned</key>
 	<string>%2$lld개 중 %1$lld개 획득</string>
+	<key>%lld of %lld outfits</key>
+	<string>의상 %1$lld/%2$lld</string>
 	<key>%lld pts to go</key>
 	<string>%lld점 남음</string>
 	<key>%lld pts, %@ to go</key>
@@ -281,6 +313,8 @@
 	<string>%lld시간 %lld분</string>
 	<key>%lldh ago</key>
 	<string>%lld시간 전</string>
+	<key>%lldk</key>
+	<string>%lldk</string>
 	<key>%lldm</key>
 	<string>%lld분</string>
 	<key>%lldm ago</key>
@@ -491,6 +525,8 @@
 	<string>카드가 남은 모든 덱</string>
 	<key>All done</key>
 	<string>모두 완료</string>
+	<key>All done. New quests on %@.</key>
+	<string>모두 완료! 새 퀘스트는 %@에 와요.</string>
 	<key>All earned</key>
 	<string>모두 획득</string>
 	<key>All optional. Nothing to do now.</key>
@@ -607,6 +643,8 @@
 	<string>앱</string>
 	<key>Appears when the pointer reaches the top center.</key>
 	<string>포인터가 화면 위쪽 가운데에 닿으면 나타나요.</string>
+	<key>Apprentice Robe</key>
+	<string>견습생 로브</string>
 	<key>Apps and permissions</key>
 	<string>앱 및 권한</string>
 	<key>Are you signed in to Claude?</key>
@@ -639,6 +677,8 @@
 	<string>Anki에 덱을 열어 달라고 요청 중이에요.</string>
 	<key>Astronaut Helmet</key>
 	<string>우주비행사 헬멧</string>
+	<key>Astronaut Suit</key>
+	<string>우주복</string>
 	<key>At least one tab must stay</key>
 	<string>탭은 하나 이상 남겨야 해요</string>
 	<key>At the start of a break, %@ shows a short move you can copy</key>
@@ -675,6 +715,10 @@
 	<string>오늘로 돌아가기</string>
 	<key>Backwards Cap</key>
 	<string>뒤로 쓴 모자</string>
+	<key>Badges</key>
+	<string>배지</string>
+	<key>Baker's Apron</key>
+	<string>제빵사 앞치마</string>
 	<key>Beanie</key>
 	<string>비니</string>
 	<key>Bell collar</key>
@@ -699,6 +743,8 @@
 	<string>차단한 사람은 나를 보거나 추가하거나 내 파티에 참여할 수 없어요. 차단이나 신고는 파티에서 오른쪽 클릭하세요.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>블록은 캘린더에 추가돼요.</string>
+	<key>Blossom Sprout</key>
+	<string>꽃 핀 새싹</string>
 	<key>Bond %lld</key>
 	<string>유대 %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -717,6 +763,8 @@
 	<string>휴식</string>
 	<key>Break buddy</key>
 	<string>휴식 친구</string>
+	<key>Break moves</key>
+	<string>휴식 동작</string>
 	<key>Break's over</key>
 	<string>휴식 끝</string>
 	<key>Breathe in slowly, then let it all out.</key>
@@ -735,6 +783,8 @@
 	<string>내장 디스플레이</string>
 	<key>Bunny Ears</key>
 	<string>토끼 귀</string>
+	<key>Busy Bee Antennae</key>
+	<string>꿀벌 더듬이</string>
 	<key>Butter yellow sunshine, happy and bright.</key>
 	<string>버터 옐로 햇살, 밝고 행복하게.</string>
 	<key>Buy freeze</key>
@@ -1107,6 +1157,8 @@
 	<string>포근함</string>
 	<key>Cozy Hoodie</key>
 	<string>포근한 후드티</string>
+	<key>Cozy Pajamas</key>
+	<string>포근한 잠옷</string>
 	<key>Cozy Scarf</key>
 	<string>포근한 목도리</string>
 	<key>Cozy days and quiet focus before the new year.</key>
@@ -1243,6 +1295,8 @@
 	<string>다시 묻지 않기</string>
 	<key>Done</key>
 	<string>완료</string>
+	<key>Done this month.</key>
+	<string>이번 달 완료!</string>
 	<key>Done! You stuck with it.</key>
 	<string>완료! 끝까지 해냈어요.</string>
 	<key>Drag to reorder</key>
@@ -1319,6 +1373,8 @@
 	<string>시험 기간</string>
 	<key>Example</key>
 	<string>예시</string>
+	<key>Explorer's Hat</key>
+	<string>탐험가 모자</string>
 	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
 	<string>멈추는 건 실패가 아니에요. 계속 멈춰 있는 게 실패죠. 봐요, 다시 왔잖아요.</string>
 	<key>Fantasy</key>
@@ -1335,6 +1391,8 @@
 	<string>내일 여유 시간을 할 일과 복습으로 채워요. 이 Mac에서 계획하며, 허락 전엔 아무것도 추가하지 않아요</string>
 	<key>Finish a Party session with friends.</key>
 	<string>친구들과 파티 세션을 끝내세요.</string>
+	<key>Finish all three to count the month toward the Monthly quests badge.</key>
+	<string>세 가지를 모두 마치면 그 달이 월간 퀘스트 배지에 반영돼요.</string>
 	<key>Finish setup</key>
 	<string>설정 완료</string>
 	<key>Fireplace</key>
@@ -1359,6 +1417,8 @@
 	<string>다른 앱에서 고쳤나요? 여기로 돌아오면 표시등이 알아서 바뀌어요.</string>
 	<key>Flame Headband</key>
 	<string>불꽃 머리띠</string>
+	<key>Flashcards</key>
+	<string>플래시카드</string>
 	<key>Flow</key>
 	<string>몰입</string>
 	<key>Flower Crown</key>
@@ -1471,6 +1531,8 @@
 	<string>친구에게는 이름, 펫, 공부 중인지만 보여요. 카드나 덱 정보는 Mac 밖으로 나가지 않아요.</string>
 	<key>Friends server</key>
 	<string>친구 서버</string>
+	<key>Friendship Bandana</key>
+	<string>우정 반다나</string>
 	<key>Frog Hat</key>
 	<string>개구리 모자</string>
 	<key>From your Claude Code logs</key>
@@ -1493,6 +1555,8 @@
 	<string>GPU 사용률, 최근 60초</string>
 	<key>General</key>
 	<string>일반</string>
+	<key>Gentle streak</key>
+	<string>느긋한 연속 기록</string>
 	<key>Get %@</key>
 	<string>%@ 받기</string>
 	<key>Get %@ to control your music from the notch.</key>
@@ -1525,6 +1589,8 @@
 	<string>숨김 상태로 바꿔요. 공부 시간은 계속 기록돼요.</string>
 	<key>Go on without a name</key>
 	<string>이름 없이 계속</string>
+	<key>Goals</key>
+	<string>목표</string>
 	<key>Goals left today</key>
 	<string>오늘 남은 목표</string>
 	<key>Gold tag</key>
@@ -1823,10 +1889,14 @@
 	<string>한정</string>
 	<key>Limited edition</key>
 	<string>한정판</string>
+	<key>Limited edition items, earned by studying, never sold</key>
+	<string>한정판 아이템, 공부로 얻고 절대 팔지 않아요</string>
 	<key>Lion Dance Hat</key>
 	<string>사자춤 모자</string>
 	<key>Listen to %@</key>
 	<string>%@ 미리 듣기</string>
+	<key>Little Sprout</key>
+	<string>작은 새싹</string>
 	<key>Live activity</key>
 	<string>실시간 현황</string>
 	<key>Loading</key>
@@ -1879,6 +1949,8 @@
 	<string>완료로 표시</string>
 	<key>Mark as not done</key>
 	<string>미완료로 표시</string>
+	<key>Mastery outfits: each unlocks with a badge tier, never with points</key>
+	<string>마스터 의상: 배지 단계로만 열리고 포인트로는 열 수 없어요</string>
 	<key>May Tabbi run your shortcuts?</key>
 	<string>Tabbi가 단축어를 실행할 수 있나요?</string>
 	<key>Measuring cores...</key>
@@ -1917,6 +1989,10 @@
 	<string>모델</string>
 	<key>Month</key>
 	<string>월</string>
+	<key>Monthly quests</key>
+	<string>월간 퀘스트</string>
+	<key>Monthly quests, badges and outfits earned from long goals</key>
+	<string>월간 퀘스트, 배지, 긴 목표로 얻는 의상</string>
 	<key>Moonlit Witch Hat</key>
 	<string>달빛 마녀 모자</string>
 	<key>Moonstone</key>
@@ -1985,6 +2061,10 @@
 	<string>이제 Mac이 Tabbi의 알림을 허용할지 물어봐요. 답은 언제든 시스템 설정에서 바꿀 수 있어요.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>이제 Mac이 Tabbi의 캘린더 사용을 허용할지 물어봐요. 답은 언제든 시스템 설정에서 바꿀 수 있어요.</string>
+	<key>Next: %@, %@</key>
+	<string>다음: %1$@, %2$@</string>
+	<key>Nightcap</key>
+	<string>수면 모자</string>
 	<key>Ninja Headband</key>
 	<string>닌자 머리띠</string>
 	<key>No answer</key>
@@ -2197,6 +2277,8 @@
 	<string>오늘에 있음</string>
 	<key>One add-on to go</key>
 	<string>애드온 하나 남음</string>
+	<key>One badge for each habit, from Bronze to Starlight</key>
+	<string>습관마다 배지 하나, 브론즈부터 별빛까지</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>한 번에 한 세션씩 차분하게. 할 수 있어요.</string>
 	<key>One countdown, no breaks</key>
@@ -2345,6 +2427,12 @@
 	<string>기타</string>
 	<key>Out of sight. Press %@ to open it.</key>
 	<string>보이지 않아요. %@을(를) 누르면 열려요.</string>
+	<key>Outfits and accessories to unlock with study points</key>
+	<string>공부 포인트로 여는 의상과 액세서리</string>
+	<key>Outfits to earn</key>
+	<string>모을 수 있는 의상</string>
+	<key>Owl Spectacles</key>
+	<string>부엉이 안경</string>
 	<key>Owned</key>
 	<string>보유</string>
 	<key>Pals</key>
@@ -2759,6 +2847,8 @@
 	<string>%@에서 진행 중</string>
 	<key>Runs on this Mac</key>
 	<string>이 Mac에서 실행</string>
+	<key>Sage's Robe</key>
+	<string>현자의 로브</string>
 	<key>Sakura Sprig</key>
 	<string>벚꽃 가지</string>
 	<key>Save</key>
@@ -2779,6 +2869,8 @@
 	<string>키체인에 저장됨</string>
 	<key>Schedule</key>
 	<string>일정</string>
+	<key>Scholar's Robe</key>
+	<string>학자의 로브</string>
 	<key>Screenshot sent with this question</key>
 	<string>이 질문과 함께 보낸 스크린샷</string>
 	<key>Scrubs</key>
@@ -2823,6 +2915,8 @@
 	<string>서버</string>
 	<key>Session done. Nice work!</key>
 	<string>세션 완료. 잘했어요!</string>
+	<key>Sessions</key>
+	<string>세션</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>"apiKey"를 null로 바꾸고 OK 클릭</string>
 	<key>Set this up later from its tab</key>
@@ -3005,8 +3099,12 @@
 	<string>반짝임</string>
 	<key>Sparkle Trail</key>
 	<string>반짝이 꼬리</string>
+	<key>Species, breed and fur color</key>
+	<string>종, 품종, 털 색</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>으스스한 시즌이 왔어요. 집중해서 펫을 꾸며 봐요.</string>
+	<key>Sporty Sweatband</key>
+	<string>스포츠 헤어밴드</string>
 	<key>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</key>
 	<string>Spotify와 Apple Music은 항상 표시됩니다. SoundCloud는 macOS가 %@의 브라우저 제어 허용을 묻고, 브라우저에서 ‘Apple Events의 JavaScript 허용’을 켜야 합니다.</string>
 	<key>Spotify link or Music playlist name</key>
@@ -3025,6 +3123,10 @@
 	<string>일어나서 다리를 털고, 원할 때 다시 앉아요.</string>
 	<key>Star tag</key>
 	<string>별 태그</string>
+	<key>Starlight, every tier earned</key>
+	<string>별빛, 모든 단계 달성</string>
+	<key>Starry Cloak</key>
+	<string>별빛 망토</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>별은 서두르지 않아요. 그저 계속 타오를 뿐이죠.</string>
 	<key>Start %@ automatically when you log in</key>
@@ -3081,6 +3183,8 @@
 	<string>이미 음악이 재생 중이 아니면 집중과 함께 시작하고, 휴식 때 일시정지합니다.</string>
 	<key>Stays on this Mac</key>
 	<string>이 Mac에만 저장</string>
+	<key>Steady weeks</key>
+	<string>꾸준한 주</string>
 	<key>Step %lld of %lld</key>
 	<string>%2$lld단계 중 %1$lld단계</string>
 	<key>Step away for a bit</key>
@@ -3143,6 +3247,10 @@
 	<string>공부 블록</string>
 	<key>Study buddies</key>
 	<string>공부 메이트</string>
+	<key>Study days</key>
+	<string>공부한 날</string>
+	<key>Study methods</key>
+	<string>공부 방법</string>
 	<key>Study parties</key>
 	<string>스터디 파티</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3255,6 +3363,8 @@
 	<string>재능은 조금 앞선 출발일 뿐. 꾸준히 나오는 게 경주의 전부예요.</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>포인터가 노치에 닿거나 축하할 때 트랙패드를 톡 울려요</string>
+	<key>Tasks</key>
+	<string>할 일</string>
 	<key>Tasks left today</key>
 	<string>오늘 남은 할 일</string>
 	<key>Team Medal</key>
@@ -3439,6 +3549,8 @@
 	<string>이 할 일은 오늘 목록에 있어요</string>
 	<key>This works. Nothing to do.</key>
 	<string>잘 작동해요. 할 일이 없어요.</string>
+	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
+	<string>매달 작은 목표 세 가지. 선택 사항이고, 놓친 달이 있어도 잃는 건 없어요.</string>
 	<key>Time</key>
 	<string>시간</string>
 	<key>Time for a %lld-minute break.</key>
@@ -3455,6 +3567,8 @@
 	<string>타이머: %@</string>
 	<key>Tiny Crown</key>
 	<string>꼬마 왕관</string>
+	<key>Tiny Lantern</key>
+	<string>작은 랜턴</string>
 	<key>Tiny Rain Cloud</key>
 	<string>꼬마 비구름</string>
 	<key>Tips to focus better</key>
@@ -3675,6 +3789,8 @@
 	<string>옷장</string>
 	<key>Warm cream and peach, soft and gentle.</key>
 	<string>따뜻한 크림과 복숭아색, 부드럽고 포근하게.</string>
+	<key>Water</key>
+	<string>물</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>물이 협곡을 만드는 건 하루도 빠지지 않아서예요.</string>
 	<key>Wearing</key>
@@ -3923,6 +4039,10 @@
 	<string>내 플레이리스트</string>
 	<key>Your setup already matches %@</key>
 	<string>이미 %@과(와) 같은 설정이에요</string>
+	<key>Your study day by day, with the time studied on each</key>
+	<string>하루하루의 공부와 매일의 공부 시간</string>
+	<key>Your study streak and the freezes that protect it</key>
+	<string>공부 연속 기록과 이를 지켜 주는 프리즈</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>
 	<string>연속 공부: 하루 %lld분 이상 집중한 날이 이어진 일수</string>
 	<key>Your tabs</key>
@@ -3935,8 +4055,18 @@
 	<string>이번 주</string>
 	<key>Your week with Tabbi is ready</key>
 	<string>Tabbi와 함께한 한 주가 준비됐어요</string>
+	<key>Your weekly recaps with your pet</key>
+	<string>펫과 함께 보는 주간 요약</string>
 	<key>all day: %@</key>
 	<string>하루 종일: %@</string>
+	<key>badge.tier.bronze</key>
+	<string>브론즈</string>
+	<key>badge.tier.gold</key>
+	<string>골드</string>
+	<key>badge.tier.silver</key>
+	<string>실버</string>
+	<key>badge.tier.starlight</key>
+	<string>별빛</string>
 	<key>best day</key>
 	<string>최고의 날</string>
 	<key>card</key>

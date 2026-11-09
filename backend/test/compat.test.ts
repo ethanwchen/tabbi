@@ -128,6 +128,33 @@ describe("a party across app versions", () => {
     expectOldProfile(cleo.profile);
   });
 
+  it("carries the mastery outfits of catalog version 4 to friends and party members on older apps", async () => {
+    const MASTERY_LOOK = {
+      petName: "Sage", species: "cat", breed: "tuxedo", costume: "sages-robe",
+      accessories: ["bandana", "owl-spectacles", "nightcap", "tiny-lantern"],
+      colors: NEW_LOOK.colors,
+    };
+    expect(catalog.version).toBe(4);
+    const current = await register({ name: "Mia", ...MASTERY_LOOK });
+    const old = await register({ name: "Olive", ...OLD_LOOK }, true);
+    expect((await call("POST", "/v1/friends", { code: old.code }, current.token)).body).toMatchObject({ added: true });
+    const friends = (await oldCall("GET", "/v1/friends", undefined, old.token)).body.friends;
+    expect(friends[0].profile).toMatchObject(MASTERY_LOOK);
+    expectOldProfile(friends[0].profile);
+
+    const party = (await call("POST", "/v1/party", undefined, current.token)).body.party;
+    expect((await oldCall("POST", "/v1/party/join", { code: party.code }, old.token)).status).toBe(200);
+    for (const [viewer, fetch] of [[old, oldCall], [current, call]] as const) {
+      const seen = (await fetch("GET", "/v1/party", undefined, viewer.token)).body.party;
+      expect(check("party", seen)).toEqual([]);
+      const mia = seen.members.find((m: { profile: { code: string } }) => m.profile.code === current.code);
+      expect(mia.profile).toMatchObject(MASTERY_LOOK);
+    }
+    // The pajamas and the bandana reuse ids every catalog had, so an older server takes them too.
+    const patched = await oldCall("PATCH", "/v1/me", { costume: "pajamas", accessories: ["bandana"] }, old.token);
+    expect(patched.body.profile).toMatchObject({ costume: "pajamas", accessories: ["bandana"] });
+  });
+
   it("keeps taking what an older app sends: catalog version 1 ids and six colors", async () => {
     const old = await register({}, true);
     const patched = await oldCall("PATCH", "/v1/me", { costume: "pirate", accessories: ["crown", "bow", "halo", "glasses"], colors: OLD_LOOK.colors }, old.token);

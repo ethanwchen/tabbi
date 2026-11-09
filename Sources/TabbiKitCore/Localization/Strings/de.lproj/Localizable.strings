@@ -5,8 +5,12 @@
 <dict>
 	<key>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</key>
 	<string>„%@ vermisst dich. 10 Minuten?“ Höchstens einmal am Tag, nur wenn du noch nicht gelernt oder dein Ziel erreicht hast. Fokus stellt sie stumm.</string>
+	<key>%@ %@</key>
+	<string>%1$@ %2$@</string>
 	<key>%@ %@ so far</key>
 	<string>%1$@ %2$@ bisher</string>
+	<key>%@ %@ so far.</key>
+	<string>%1$@ Bisher %2$@.</string>
 	<key>%@ (paused)</key>
 	<string>%@ (pausiert)</string>
 	<key>%@ Fix it in Settings &gt; Tabs &gt; Party &gt; Options, or clear it to use the Tabbi server.</key>
@@ -153,6 +157,8 @@
 	<string>%@ Fokus.</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>%@ öffnet sich in Musik; starte sie dort.</string>
+	<key>%@ quests</key>
+	<string>Quests im %@</string>
 	<key>%@ raced a snail and let it win</key>
 	<string>%@ ließ eine Schnecke beim Rennen gewinnen</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
@@ -181,6 +187,10 @@
 	<string>%@ schlägt keine Änderungen vor</string>
 	<key>%@ suggests no changes.</key>
 	<string>%@ schlägt keine Änderungen vor.</string>
+	<key>%@ this month.</key>
+	<string>%@ diesen Monat.</string>
+	<key>%@ to %@</key>
+	<string>%1$@ bis %2$@</string>
 	<key>%@ today</key>
 	<string>Heute %@</string>
 	<key>%@ tokens</key>
@@ -189,6 +199,8 @@
 	<string>%1$@: noch %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%1$@ ab %2$lld</string>
+	<key>%@ unlocks with %@. %@</key>
+	<string>%1$@ gibt es mit %2$@. %3$@</string>
 	<key>%@ uses it to greet you.</key>
 	<string>%@ begrüßt dich damit.</string>
 	<key>%@ visited the bakery</key>
@@ -207,10 +219,18 @@
 	<string>%@ läuft am besten aus „Programme“: Dort kann die App beim Anmelden starten und sich selbst aktuell halten. Sie kopiert sich dorthin und öffnet sich neu.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · Pausiert</string>
+	<key>%@, %@</key>
+	<string>%1$@, %2$@</string>
 	<key>%@, %@ left</key>
 	<string>%1$@, noch %2$@</string>
+	<key>%@, %@ to %@</key>
+	<string>%1$@, %2$@ bis %3$@</string>
 	<key>%@, %lld extra</key>
 	<string>%@, %lld extra</string>
+	<key>%@, earned: click to take off</key>
+	<string>%@, verdient: Klicke zum Ablegen</string>
+	<key>%@, earned: click to wear</key>
+	<string>%@, verdient: Klicke zum Anziehen</string>
 	<key>%@, limited edition: %@</key>
 	<string>%1$@, limitierte Edition: %2$@</string>
 	<key>%@, limited edition: %@ Its event starts %@.</key>
@@ -231,8 +251,16 @@
 	<string>%@: heute %@ geschafft</string>
 	<key>%@: %@ left</key>
 	<string>%@: noch %@</string>
+	<key>%@: %@ this month</key>
+	<string>%1$@: %2$@ diesen Monat</string>
 	<key>%@: %@ tokens</key>
 	<string>%1$@: %2$@ Tokens</string>
+	<key>%@: %@. Something new since you last looked.</key>
+	<string>%1$@: %2$@. Seit deinem letzten Blick gibt es Neues.</string>
+	<key>%@: Starlight, every tier earned</key>
+	<string>%@: Sternenlicht, alle Stufen geschafft</string>
+	<key>%@: done this month</key>
+	<string>%@: diesen Monat geschafft</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: Du hast alle Items verdient. Sie bleiben auch nach dem Event deine.</string>
 	<key>%lld h</key>
@@ -255,12 +283,16 @@
 	<string>%1$lld neu, %2$lld lernen, %3$lld wiederholen</string>
 	<key>%lld of %lld</key>
 	<string>%1$lld von %2$lld</string>
+	<key>%lld of %lld badges</key>
+	<string>%1$lld von %2$lld Abzeichen</string>
 	<key>%lld of %lld cards reviewed today</key>
 	<string>Heute %lld von %lld Karten wiederholt</string>
 	<key>%lld of %lld done</key>
 	<string>%lld/%lld erledigt</string>
 	<key>%lld of %lld earned</key>
 	<string>%1$lld von %2$lld verdient</string>
+	<key>%lld of %lld outfits</key>
+	<string>%1$lld von %2$lld Outfits</string>
 	<key>%lld pts to go</key>
 	<string>noch %lld Pkt.</string>
 	<key>%lld pts, %@ to go</key>
@@ -281,6 +313,8 @@
 	<string>%lld h %lld min</string>
 	<key>%lldh ago</key>
 	<string>vor %lld h</string>
+	<key>%lldk</key>
+	<string>%lldk</string>
 	<key>%lldm</key>
 	<string>%lldm</string>
 	<key>%lldm ago</key>
@@ -491,6 +525,8 @@
 	<string>Alle Stapel mit fälligen Karten</string>
 	<key>All done</key>
 	<string>Alles erledigt</string>
+	<key>All done. New quests on %@.</key>
+	<string>Alles geschafft. Neue Quests am %@.</string>
 	<key>All earned</key>
 	<string>Alles verdient</string>
 	<key>All optional. Nothing to do now.</key>
@@ -607,6 +643,8 @@
 	<string>App</string>
 	<key>Appears when the pointer reaches the top center.</key>
 	<string>Erscheint, wenn der Zeiger oben in die Mitte kommt.</string>
+	<key>Apprentice Robe</key>
+	<string>Lehrlingsrobe</string>
 	<key>Apps and permissions</key>
 	<string>Apps und Berechtigungen</string>
 	<key>Are you signed in to Claude?</key>
@@ -639,6 +677,8 @@
 	<string>Anki öffnet den Stapel zum Lernen.</string>
 	<key>Astronaut Helmet</key>
 	<string>Astronautenhelm</string>
+	<key>Astronaut Suit</key>
+	<string>Raumanzug</string>
 	<key>At least one tab must stay</key>
 	<string>Mindestens ein Tab muss bleiben</string>
 	<key>At the start of a break, %@ shows a short move you can copy</key>
@@ -675,6 +715,10 @@
 	<string>Zurück zu heute</string>
 	<key>Backwards Cap</key>
 	<string>Verkehrte Kappe</string>
+	<key>Badges</key>
+	<string>Abzeichen</string>
+	<key>Baker's Apron</key>
+	<string>Bäckerschürze</string>
 	<key>Beanie</key>
 	<string>Mütze</string>
 	<key>Bell collar</key>
@@ -699,6 +743,8 @@
 	<string>Blockierte sehen dich nicht, fügen dich nicht hinzu und treten keiner Party bei. Blockieren oder melden: Rechtsklick in Party.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>Für deinen Kalender.</string>
+	<key>Blossom Sprout</key>
+	<string>Blühender Keimling</string>
 	<key>Bond %lld</key>
 	<string>Bindung %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -717,6 +763,8 @@
 	<string>Pause</string>
 	<key>Break buddy</key>
 	<string>Pausen-Buddy</string>
+	<key>Break moves</key>
+	<string>Pausenübungen</string>
 	<key>Break's over</key>
 	<string>Pause vorbei</string>
 	<key>Breathe in slowly, then let it all out.</key>
@@ -735,6 +783,8 @@
 	<string>Integriertes Display</string>
 	<key>Bunny Ears</key>
 	<string>Hasenohren</string>
+	<key>Busy Bee Antennae</key>
+	<string>Bienenfühler</string>
 	<key>Butter yellow sunshine, happy and bright.</key>
 	<string>Butterweicher gelber Sonnenschein, fröhlich und hell.</string>
 	<key>Buy freeze</key>
@@ -1107,6 +1157,8 @@
 	<string>Gemütlich</string>
 	<key>Cozy Hoodie</key>
 	<string>Kuschelhoodie</string>
+	<key>Cozy Pajamas</key>
+	<string>Kuschelpyjama</string>
 	<key>Cozy Scarf</key>
 	<string>Kuschelschal</string>
 	<key>Cozy days and quiet focus before the new year.</key>
@@ -1243,6 +1295,8 @@
 	<string>Nicht mehr fragen</string>
 	<key>Done</key>
 	<string>Fertig</string>
+	<key>Done this month.</key>
+	<string>Diesen Monat geschafft.</string>
 	<key>Done! You stuck with it.</key>
 	<string>Geschafft. Durchgezogen!</string>
 	<key>Drag to reorder</key>
@@ -1319,6 +1373,8 @@
 	<string>Prüfungszeit</string>
 	<key>Example</key>
 	<string>Beispiel</string>
+	<key>Explorer's Hat</key>
+	<string>Forscherhut</string>
 	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
 	<string>Rausfallen ist kein Scheitern. Draußen bleiben schon. Und schau, du bist zurück.</string>
 	<key>Fantasy</key>
@@ -1335,6 +1391,8 @@
 	<string>Fülle die freie Zeit von morgen mit offenen Aufgaben und Wiederholungen. Auf diesem Mac geplant, nichts wird ohne dich eingetragen</string>
 	<key>Finish a Party session with friends.</key>
 	<string>Schließ eine Party-Sitzung mit Freunden ab.</string>
+	<key>Finish all three to count the month toward the Monthly quests badge.</key>
+	<string>Schaff alle drei, dann zählt der Monat für das Abzeichen Monatsquests.</string>
 	<key>Finish setup</key>
 	<string>Einrichtung abschließen</string>
 	<key>Fireplace</key>
@@ -1359,6 +1417,8 @@
 	<string>Etwas in einer anderen App behoben? Komm zurück, die Anzeige aktualisiert sich von selbst.</string>
 	<key>Flame Headband</key>
 	<string>Flammen-Stirnband</string>
+	<key>Flashcards</key>
+	<string>Karteikarten</string>
 	<key>Flow</key>
 	<string>Flow</string>
 	<key>Flower Crown</key>
@@ -1471,6 +1531,8 @@
 	<string>Freunde sehen deinen Namen, dein Haustier und wann du lernst. Nichts über deine Karten oder Stapel verlässt deinen Mac.</string>
 	<key>Friends server</key>
 	<string>Freundesserver</string>
+	<key>Friendship Bandana</key>
+	<string>Freundschaftstuch</string>
 	<key>Frog Hat</key>
 	<string>Froschmütze</string>
 	<key>From your Claude Code logs</key>
@@ -1493,6 +1555,8 @@
 	<string>GPU-Auslastung, letzte 60 Sekunden</string>
 	<key>General</key>
 	<string>Allgemein</string>
+	<key>Gentle streak</key>
+	<string>Sanfte Serie</string>
 	<key>Get %@</key>
 	<string>%@ laden</string>
 	<key>Get %@ to control your music from the notch.</key>
@@ -1525,6 +1589,8 @@
 	<string>Werde unsichtbar. Deine Lernminuten zählen trotzdem.</string>
 	<key>Go on without a name</key>
 	<string>Ohne Namen weitermachen</string>
+	<key>Goals</key>
+	<string>Ziele</string>
 	<key>Goals left today</key>
 	<string>Offene Ziele heute</string>
 	<key>Gold tag</key>
@@ -1823,10 +1889,14 @@
 	<string>Limitiert</string>
 	<key>Limited edition</key>
 	<string>Limitierte Edition</string>
+	<key>Limited edition items, earned by studying, never sold</key>
+	<string>Limitierte Teile, durch Lernen verdient, nie verkauft</string>
 	<key>Lion Dance Hat</key>
 	<string>Löwentanz-Mütze</string>
 	<key>Listen to %@</key>
 	<string>%@ anhören</string>
+	<key>Little Sprout</key>
+	<string>Kleiner Keimling</string>
 	<key>Live activity</key>
 	<string>Live-Aktivität</string>
 	<key>Loading</key>
@@ -1879,6 +1949,8 @@
 	<string>Als erledigt markieren</string>
 	<key>Mark as not done</key>
 	<string>Als nicht erledigt markieren</string>
+	<key>Mastery outfits: each unlocks with a badge tier, never with points</key>
+	<string>Meister-Outfits: Jedes schaltest du mit einer Abzeichenstufe frei, nie mit Punkten</string>
 	<key>May Tabbi run your shortcuts?</key>
 	<string>Darf Tabbi deine Kurzbefehle ausführen?</string>
 	<key>Measuring cores...</key>
@@ -1917,6 +1989,10 @@
 	<string>Modell</string>
 	<key>Month</key>
 	<string>Monat</string>
+	<key>Monthly quests</key>
+	<string>Monatsquests</string>
+	<key>Monthly quests, badges and outfits earned from long goals</key>
+	<string>Monatsquests, Abzeichen und Outfits aus langen Zielen</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Mondschein-Hexenhut</string>
 	<key>Moonstone</key>
@@ -1985,6 +2061,10 @@
 	<string>Gleich fragt dein Mac, ob Tabbi Mitteilungen senden darf. Deine Antwort kannst du jederzeit in den Systemeinstellungen ändern.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>Gleich fragt dein Mac, ob Tabbi deinen Kalender nutzen darf. Deine Antwort kannst du jederzeit in den Systemeinstellungen ändern.</string>
+	<key>Next: %@, %@</key>
+	<string>Als Nächstes: %1$@, %2$@</string>
+	<key>Nightcap</key>
+	<string>Schlafmütze</string>
 	<key>Ninja Headband</key>
 	<string>Ninja-Stirnband</string>
 	<key>No answer</key>
@@ -2197,6 +2277,8 @@
 	<string>Auf heute</string>
 	<key>One add-on to go</key>
 	<string>Noch ein Add-on</string>
+	<key>One badge for each habit, from Bronze to Starlight</key>
+	<string>Ein Abzeichen pro Gewohnheit, von Bronze bis Sternenlicht</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>Immer eine ruhige Sitzung. Du schaffst das.</string>
 	<key>One countdown, no breaks</key>
@@ -2345,6 +2427,12 @@
 	<string>Sonstiges</string>
 	<key>Out of sight. Press %@ to open it.</key>
 	<string>Unsichtbar. Drück %@, um sie zu öffnen.</string>
+	<key>Outfits and accessories to unlock with study points</key>
+	<string>Outfits und Accessoires, die du mit Lernpunkten freischaltest</string>
+	<key>Outfits to earn</key>
+	<string>Outfits zum Verdienen</string>
+	<key>Owl Spectacles</key>
+	<string>Eulenbrille</string>
 	<key>Owned</key>
 	<string>Deins</string>
 	<key>Pals</key>
@@ -2759,6 +2847,8 @@
 	<string>Läuft in %@</string>
 	<key>Runs on this Mac</key>
 	<string>Läuft auf diesem Mac</string>
+	<key>Sage's Robe</key>
+	<string>Weisenrobe</string>
 	<key>Sakura Sprig</key>
 	<string>Kirschblütenzweig</string>
 	<key>Save</key>
@@ -2779,6 +2869,8 @@
 	<string>Im Schlüsselbund gesichert</string>
 	<key>Schedule</key>
 	<string>Zeitplan</string>
+	<key>Scholar's Robe</key>
+	<string>Gelehrtenrobe</string>
 	<key>Screenshot sent with this question</key>
 	<string>Mit dieser Frage gesendeter Screenshot</string>
 	<key>Scrubs</key>
@@ -2823,6 +2915,8 @@
 	<string>Server</string>
 	<key>Session done. Nice work!</key>
 	<string>Geschafft. Stark!</string>
+	<key>Sessions</key>
+	<string>Sitzungen</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>Setze "apiKey" auf null und klicke auf OK</string>
 	<key>Set this up later from its tab</key>
@@ -3005,8 +3099,12 @@
 	<string>Funkeln</string>
 	<key>Sparkle Trail</key>
 	<string>Glitzerspur</string>
+	<key>Species, breed and fur color</key>
+	<string>Tierart, Rasse und Fellfarbe</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>Gruselzeit! Mit Fokus verkleidest du dein Tier.</string>
+	<key>Sporty Sweatband</key>
+	<string>Schweißband</string>
 	<key>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</key>
 	<string>Spotify und Apple Music werden immer gezeigt. Für SoundCloud fragt macOS, ob %@ deinen Browser steuern darf, und im Browser muss „JavaScript von Apple Events erlauben“ an sein.</string>
 	<key>Spotify link or Music playlist name</key>
@@ -3025,6 +3123,10 @@
 	<string>Steh auf, schüttel die Beine aus und setz dich wieder, wann du magst.</string>
 	<key>Star tag</key>
 	<string>Sternanhänger</string>
+	<key>Starlight, every tier earned</key>
+	<string>Sternenlicht, alle Stufen geschafft</string>
+	<key>Starry Cloak</key>
+	<string>Sternenumhang</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>Sterne hetzen nicht. Sie leuchten einfach weiter.</string>
 	<key>Start %@ automatically when you log in</key>
@@ -3081,6 +3183,8 @@
 	<string>Startet mit dem Fokus, falls keine Musik läuft, und pausiert zur Pause.</string>
 	<key>Stays on this Mac</key>
 	<string>Bleibt auf dem Mac</string>
+	<key>Steady weeks</key>
+	<string>Stetige Wochen</string>
 	<key>Step %lld of %lld</key>
 	<string>Schritt %1$lld von %2$lld</string>
 	<key>Step away for a bit</key>
@@ -3143,6 +3247,10 @@
 	<string>Lernblock</string>
 	<key>Study buddies</key>
 	<string>Lernbuddys</string>
+	<key>Study days</key>
+	<string>Lerntage</string>
+	<key>Study methods</key>
+	<string>Lernmethoden</string>
 	<key>Study parties</key>
 	<string>Lerngruppen</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3255,6 +3363,8 @@
 	<string>Talent ist ein Vorsprung. Dranbleiben ist das ganze Rennen.</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>Trackpad tippt, wenn der Zeiger die Notch erreicht oder gefeiert wird</string>
+	<key>Tasks</key>
+	<string>Aufgaben</string>
 	<key>Tasks left today</key>
 	<string>Offene Aufgaben heute</string>
 	<key>Team Medal</key>
@@ -3439,6 +3549,8 @@
 	<string>Diese Aufgabe steht auf der heutigen Liste</string>
 	<key>This works. Nothing to do.</key>
 	<string>Das funktioniert. Nichts zu tun.</string>
+	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
+	<string>Drei kleine Ziele pro Monat. Sie sind freiwillig, und ein verpasster Monat kostet nichts.</string>
 	<key>Time</key>
 	<string>Uhrzeit</string>
 	<key>Time for a %lld-minute break.</key>
@@ -3455,6 +3567,8 @@
 	<string>Timer: %@</string>
 	<key>Tiny Crown</key>
 	<string>Mini-Krone</string>
+	<key>Tiny Lantern</key>
+	<string>Kleine Laterne</string>
 	<key>Tiny Rain Cloud</key>
 	<string>Mini-Regenwolke</string>
 	<key>Tips to focus better</key>
@@ -3675,6 +3789,8 @@
 	<string>Kleidung</string>
 	<key>Warm cream and peach, soft and gentle.</key>
 	<string>Warme Creme- und Pfirsichtöne, sanft und weich.</string>
+	<key>Water</key>
+	<string>Wasser</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>Wasser gräbt Schluchten, weil es keinen Tag auslässt.</string>
 	<key>Wearing</key>
@@ -3923,6 +4039,10 @@
 	<string>Deine Playlist</string>
 	<key>Your setup already matches %@</key>
 	<string>Deine Einrichtung entspricht schon %@</string>
+	<key>Your study day by day, with the time studied on each</key>
+	<string>Dein Lernen Tag für Tag, mit der Lernzeit an jedem Tag</string>
+	<key>Your study streak and the freezes that protect it</key>
+	<string>Deine Lernserie und die Freezes, die sie schützen</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>
 	<string>Deine Lernserie: Tage in Folge mit mindestens %lld Fokusminuten</string>
 	<key>Your tabs</key>
@@ -3935,8 +4055,18 @@
 	<string>Deine Woche</string>
 	<key>Your week with Tabbi is ready</key>
 	<string>Deine Woche mit Tabbi ist da</string>
+	<key>Your weekly recaps with your pet</key>
+	<string>Deine Wochenrückblicke mit deinem Haustier</string>
 	<key>all day: %@</key>
 	<string>ganztägig: %@</string>
+	<key>badge.tier.bronze</key>
+	<string>Bronze</string>
+	<key>badge.tier.gold</key>
+	<string>Gold</string>
+	<key>badge.tier.silver</key>
+	<string>Silber</string>
+	<key>badge.tier.starlight</key>
+	<string>Sternenlicht</string>
 	<key>best day</key>
 	<string>bester Tag</string>
 	<key>card</key>

@@ -29,7 +29,9 @@
     "leaf": "#6CC46A",
     "leather": "#A8683A",
     "crimson": "#B8304C",
-    "pumpkin": "#F08A24"
+    "pumpkin": "#F08A24",
+    "violet": "#7C63C8",
+    "sky": "#86C7EE"
   },
   "bodyShapes": {
     "cat": { "species": "cat" },

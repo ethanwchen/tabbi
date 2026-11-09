@@ -120,6 +120,12 @@ if arguments.dropFirst().first == "accents" {
     exit(0)
 }
 
+// Mastery outfits: `swift run PetGallery out/ mastery` (MasterySheets.swift).
+if arguments.dropFirst().first == "mastery" {
+    try MasterySheets.write(to: outputDirectory)
+    exit(0)
+}
+
 // Store lineup: `swift run PetGallery out/ store` writes the pets the second
 // App Store set shows (docs/appstore/screenshots-v2), each a breed in a look,
 // as single transparent 32x32 frames, `store-<pet>-<animation>-<frame>.png`,

@@ -5,8 +5,12 @@
 <dict>
 	<key>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</key>
 	<string>「%@が会いたがってるよ。10分だけどう?」1日1回まで、まだ勉強も目標達成もしていない日だけ。集中モード中は届きません。</string>
+	<key>%@ %@</key>
+	<string>%1$@ %2$@</string>
 	<key>%@ %@ so far</key>
 	<string>%1$@ %2$@ 経過</string>
+	<key>%@ %@ so far.</key>
+	<string>%1$@ いまは%2$@。</string>
 	<key>%@ (paused)</key>
 	<string>%@（一時停止中）</string>
 	<key>%@ Fix it in Settings &gt; Tabs &gt; Party &gt; Options, or clear it to use the Tabbi server.</key>
@@ -153,6 +157,8 @@
 	<string>%@ 集中しました。</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>%@はミュージックで開きます。そこで再生してください。</string>
+	<key>%@ quests</key>
+	<string>%@のクエスト</string>
 	<key>%@ raced a snail and let it win</key>
 	<string>%@がカタツムリに勝たせた</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
@@ -181,6 +187,10 @@
 	<string>%@ からの変更提案はありません</string>
 	<key>%@ suggests no changes.</key>
 	<string>%@ からの変更提案はありません。</string>
+	<key>%@ this month.</key>
+	<string>今月は%@。</string>
+	<key>%@ to %@</key>
+	<string>%2$@まで %1$@</string>
 	<key>%@ today</key>
 	<string>今日%@</string>
 	<key>%@ tokens</key>
@@ -189,6 +199,8 @@
 	<string>%2$@で%1$@を解放</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%2$lldで%1$@を解放</string>
+	<key>%@ unlocks with %@. %@</key>
+	<string>%1$@は%2$@で手に入ります。%3$@</string>
 	<key>%@ uses it to greet you.</key>
 	<string>%@のあいさつに使われます。</string>
 	<key>%@ visited the bakery</key>
@@ -207,10 +219,18 @@
 	<string>%@はアプリケーションフォルダから使うのがおすすめです。ログイン時に自動で開き、自分でアップデートできます。自分をそこにコピーして、もう一度開きます。</string>
 	<key>%@ · Paused</key>
 	<string>%@ · 一時停止中</string>
+	<key>%@, %@</key>
+	<string>%1$@、%2$@</string>
 	<key>%@, %@ left</key>
 	<string>%1$@、残り%2$@</string>
+	<key>%@, %@ to %@</key>
+	<string>%1$@、%3$@まで %2$@</string>
 	<key>%@, %lld extra</key>
 	<string>%@、追加%lld</string>
+	<key>%@, earned: click to take off</key>
+	<string>%@（獲得済み）：クリックで外す</string>
+	<key>%@, earned: click to wear</key>
+	<string>%@（獲得済み）：クリックで着る</string>
 	<key>%@, limited edition: %@</key>
 	<string>%1$@(限定): %2$@</string>
 	<key>%@, limited edition: %@ Its event starts %@.</key>
@@ -231,8 +251,16 @@
 	<string>%1$@: 今日 %2$@ 完了</string>
 	<key>%@: %@ left</key>
 	<string>%@: 残り %@</string>
+	<key>%@: %@ this month</key>
+	<string>%1$@：今月は%2$@</string>
 	<key>%@: %@ tokens</key>
 	<string>%1$@：%2$@トークン</string>
+	<key>%@: %@. Something new since you last looked.</key>
+	<string>%1$@：%2$@。前回見てから新しいものがあります。</string>
+	<key>%@: Starlight, every tier earned</key>
+	<string>%@：スターライト、すべての段階を達成</string>
+	<key>%@: done this month</key>
+	<string>%@：今月は達成済み</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: すべてのアイテムを獲得しました。イベント後もずっとあなたのものです。</string>
 	<key>%lld h</key>
@@ -255,12 +283,16 @@
 	<string>新規 %1$lld、学習中 %2$lld、復習 %3$lld</string>
 	<key>%lld of %lld</key>
 	<string>%1$lld/%2$lld人</string>
+	<key>%lld of %lld badges</key>
+	<string>バッジ %1$lld/%2$lld</string>
 	<key>%lld of %lld cards reviewed today</key>
 	<string>今日は%2$lld枚中%1$lld枚を復習</string>
 	<key>%lld of %lld done</key>
 	<string>%lld/%lld完了</string>
 	<key>%lld of %lld earned</key>
 	<string>%2$lld個中%1$lld個ゲット</string>
+	<key>%lld of %lld outfits</key>
+	<string>衣装 %1$lld/%2$lld</string>
 	<key>%lld pts to go</key>
 	<string>あと%lldpt</string>
 	<key>%lld pts, %@ to go</key>
@@ -281,6 +313,8 @@
 	<string>%lld時間%lld分</string>
 	<key>%lldh ago</key>
 	<string>%lld時間前</string>
+	<key>%lldk</key>
+	<string>%lldk</string>
 	<key>%lldm</key>
 	<string>%lld分</string>
 	<key>%lldm ago</key>
@@ -491,6 +525,8 @@
 	<string>カードがあるすべてのデッキ</string>
 	<key>All done</key>
 	<string>すべて完了</string>
+	<key>All done. New quests on %@.</key>
+	<string>すべて達成。新しいクエストは%@から。</string>
 	<key>All earned</key>
 	<string>すべて獲得</string>
 	<key>All optional. Nothing to do now.</key>
@@ -607,6 +643,8 @@
 	<string>アプリ</string>
 	<key>Appears when the pointer reaches the top center.</key>
 	<string>ポインタが画面上部の中央に来ると表示されます。</string>
+	<key>Apprentice Robe</key>
+	<string>見習いのローブ</string>
 	<key>Apps and permissions</key>
 	<string>アプリと権限</string>
 	<key>Are you signed in to Claude?</key>
@@ -639,6 +677,8 @@
 	<string>Anki にデッキを開くよう依頼しています。</string>
 	<key>Astronaut Helmet</key>
 	<string>宇宙ヘルメット</string>
+	<key>Astronaut Suit</key>
+	<string>宇宙服</string>
 	<key>At least one tab must stay</key>
 	<string>タブは1つ以上必要です</string>
 	<key>At the start of a break, %@ shows a short move you can copy</key>
@@ -675,6 +715,10 @@
 	<string>今日に戻る</string>
 	<key>Backwards Cap</key>
 	<string>後ろかぶりキャップ</string>
+	<key>Badges</key>
+	<string>バッジ</string>
+	<key>Baker's Apron</key>
+	<string>パティシエのエプロン</string>
 	<key>Beanie</key>
 	<string>ニット帽</string>
 	<key>Bell collar</key>
@@ -699,6 +743,8 @@
 	<string>ブロックした人はあなたを見たり、追加したり、パーティに参加したりできません。ブロックや報告はパーティで右クリック。</string>
 	<key>Blocks go to your calendar.</key>
 	<string>ブロックはカレンダーに追加されます。</string>
+	<key>Blossom Sprout</key>
+	<string>花咲く芽</string>
 	<key>Bond %lld</key>
 	<string>絆 %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -717,6 +763,8 @@
 	<string>休憩</string>
 	<key>Break buddy</key>
 	<string>休憩バディ</string>
+	<key>Break moves</key>
+	<string>休憩ムーブ</string>
 	<key>Break's over</key>
 	<string>休憩おしまい</string>
 	<key>Breathe in slowly, then let it all out.</key>
@@ -735,6 +783,8 @@
 	<string>内蔵ディスプレイ</string>
 	<key>Bunny Ears</key>
 	<string>うさみみ</string>
+	<key>Busy Bee Antennae</key>
+	<string>はたらきバチの触角</string>
 	<key>Butter yellow sunshine, happy and bright.</key>
 	<string>バターイエローのひだまり、明るくてハッピー。</string>
 	<key>Buy freeze</key>
@@ -1107,6 +1157,8 @@
 	<string>ほっこり</string>
 	<key>Cozy Hoodie</key>
 	<string>もこもこパーカー</string>
+	<key>Cozy Pajamas</key>
+	<string>ふわふわパジャマ</string>
 	<key>Cozy Scarf</key>
 	<string>ぬくぬくマフラー</string>
 	<key>Cozy days and quiet focus before the new year.</key>
@@ -1243,6 +1295,8 @@
 	<string>今後確認しない</string>
 	<key>Done</key>
 	<string>完了</string>
+	<key>Done this month.</key>
+	<string>今月は達成済み。</string>
 	<key>Done! You stuck with it.</key>
 	<string>最後までやりきったね！</string>
 	<key>Drag to reorder</key>
@@ -1319,6 +1373,8 @@
 	<string>試験シーズン</string>
 	<key>Example</key>
 	<string>例</string>
+	<key>Explorer's Hat</key>
+	<string>探検家の帽子</string>
 	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
 	<string>離れるのは失敗じゃない。戻らないことが失敗。ほら、ちゃんと戻ってきた。</string>
 	<key>Fantasy</key>
@@ -1335,6 +1391,8 @@
 	<string>明日の空き時間を未完了のタスクと復習で埋めます。この Mac 上で計画し、許可するまで何も追加しません</string>
 	<key>Finish a Party session with friends.</key>
 	<string>友だちとパーティのセッションを1回終えよう。</string>
+	<key>Finish all three to count the month toward the Monthly quests badge.</key>
+	<string>3つすべて達成すると、その月が「今月のクエスト」バッジに数えられます。</string>
 	<key>Finish setup</key>
 	<string>セットアップを完了</string>
 	<key>Fireplace</key>
@@ -1359,6 +1417,8 @@
 	<string>別のアプリで直したら、ここに戻ってきてください。ランプは自動で更新されます。</string>
 	<key>Flame Headband</key>
 	<string>炎のはちまき</string>
+	<key>Flashcards</key>
+	<string>フラッシュカード</string>
 	<key>Flow</key>
 	<string>フロー</string>
 	<key>Flower Crown</key>
@@ -1471,6 +1531,8 @@
 	<string>フレンドに見えるのは名前、ペット、勉強中かどうかだけです。カードやデッキの情報はMacから出ません。</string>
 	<key>Friends server</key>
 	<string>フレンドサーバー</string>
+	<key>Friendship Bandana</key>
+	<string>友情のバンダナ</string>
 	<key>Frog Hat</key>
 	<string>カエル帽</string>
 	<key>From your Claude Code logs</key>
@@ -1493,6 +1555,8 @@
 	<string>GPU使用率（直近60秒）</string>
 	<key>General</key>
 	<string>一般</string>
+	<key>Gentle streak</key>
+	<string>ゆるっと連続記録</string>
 	<key>Get %@</key>
 	<string>%@を入手</string>
 	<key>Get %@ to control your music from the notch.</key>
@@ -1525,6 +1589,8 @@
 	<string>非表示にします。勉強時間は記録され続けます。</string>
 	<key>Go on without a name</key>
 	<string>名前なしで進む</string>
+	<key>Goals</key>
+	<string>目標</string>
 	<key>Goals left today</key>
 	<string>今日の残り目標</string>
 	<key>Gold tag</key>
@@ -1823,10 +1889,14 @@
 	<string>限定</string>
 	<key>Limited edition</key>
 	<string>限定アイテム</string>
+	<key>Limited edition items, earned by studying, never sold</key>
+	<string>限定アイテム。勉強で手に入り、販売はしません</string>
 	<key>Lion Dance Hat</key>
 	<string>獅子舞の帽子</string>
 	<key>Listen to %@</key>
 	<string>%@を試聴</string>
+	<key>Little Sprout</key>
+	<string>ちいさな芽</string>
 	<key>Live activity</key>
 	<string>ライブアクティビティ</string>
 	<key>Loading</key>
@@ -1879,6 +1949,8 @@
 	<string>完了にする</string>
 	<key>Mark as not done</key>
 	<string>未完了にする</string>
+	<key>Mastery outfits: each unlocks with a badge tier, never with points</key>
+	<string>マスター衣装：バッジの段階で手に入り、ポイントでは買えません</string>
 	<key>May Tabbi run your shortcuts?</key>
 	<string>Tabbiはショートカットを実行できますか？</string>
 	<key>Measuring cores...</key>
@@ -1917,6 +1989,10 @@
 	<string>モデル</string>
 	<key>Month</key>
 	<string>月</string>
+	<key>Monthly quests</key>
+	<string>今月のクエスト</string>
+	<key>Monthly quests, badges and outfits earned from long goals</key>
+	<string>今月のクエスト、バッジ、長い目標で手に入る衣装</string>
 	<key>Moonlit Witch Hat</key>
 	<string>月夜の魔女の帽子</string>
 	<key>Moonstone</key>
@@ -1985,6 +2061,10 @@
 	<string>次に、Tabbiが通知を送ってよいかMacが確認します。答えはいつでもシステム設定で変更できます。</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>次に、TabbiがカレンダーにアクセスしてよいかMacが確認します。答えはいつでもシステム設定で変更できます。</string>
+	<key>Next: %@, %@</key>
+	<string>次：%1$@、%2$@</string>
+	<key>Nightcap</key>
+	<string>ナイトキャップ</string>
 	<key>Ninja Headband</key>
 	<string>忍者のはちまき</string>
 	<key>No answer</key>
@@ -2197,6 +2277,8 @@
 	<string>今日に追加済み</string>
 	<key>One add-on to go</key>
 	<string>アドオンがあと1つ</string>
+	<key>One badge for each habit, from Bronze to Starlight</key>
+	<string>習慣ごとにひとつのバッジ。ブロンズからスターライトまで</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>一回ずつ、落ち着いて。きっと大丈夫。</string>
 	<key>One countdown, no breaks</key>
@@ -2345,6 +2427,12 @@
 	<string>その他</string>
 	<key>Out of sight. Press %@ to open it.</key>
 	<string>非表示です。%@ を押すと開きます。</string>
+	<key>Outfits and accessories to unlock with study points</key>
+	<string>勉強ポイントで手に入る衣装とアクセサリー</string>
+	<key>Outfits to earn</key>
+	<string>手に入る衣装</string>
+	<key>Owl Spectacles</key>
+	<string>フクロウのメガネ</string>
 	<key>Owned</key>
 	<string>所持</string>
 	<key>Pals</key>
@@ -2759,6 +2847,8 @@
 	<string>%@で実行中</string>
 	<key>Runs on this Mac</key>
 	<string>このMacで動作</string>
+	<key>Sage's Robe</key>
+	<string>賢者のローブ</string>
 	<key>Sakura Sprig</key>
 	<string>桜のひと枝</string>
 	<key>Save</key>
@@ -2779,6 +2869,8 @@
 	<string>キーチェーンに保存済み</string>
 	<key>Schedule</key>
 	<string>スケジュール</string>
+	<key>Scholar's Robe</key>
+	<string>学者のローブ</string>
 	<key>Screenshot sent with this question</key>
 	<string>この質問と一緒に送ったスクリーンショット</string>
 	<key>Scrubs</key>
@@ -2823,6 +2915,8 @@
 	<string>サーバー</string>
 	<key>Session done. Nice work!</key>
 	<string>完了！よくがんばったね！</string>
+	<key>Sessions</key>
+	<string>セッション</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>"apiKey" を null にして OK をクリック</string>
 	<key>Set this up later from its tab</key>
@@ -3005,8 +3099,12 @@
 	<string>キラキラ</string>
 	<key>Sparkle Trail</key>
 	<string>キラキラの軌跡</string>
+	<key>Species, breed and fur color</key>
+	<string>種類、品種、毛の色</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>ハロウィンの季節。集中してペットを仮装させよう。</string>
+	<key>Sporty Sweatband</key>
+	<string>スポーツヘアバンド</string>
 	<key>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</key>
 	<string>SpotifyとApple Musicは常に表示されます。SoundCloudでは、macOSが%@によるブラウザの操作の許可を求めます。ブラウザで「AppleEventからのJavaScriptを許可」をオンにする必要があります。</string>
 	<key>Spotify link or Music playlist name</key>
@@ -3025,6 +3123,10 @@
 	<string>立って脚を軽くほぐしたら、好きなときに座ろう。</string>
 	<key>Star tag</key>
 	<string>星のチャーム</string>
+	<key>Starlight, every tier earned</key>
+	<string>スターライト、すべての段階を達成</string>
+	<key>Starry Cloak</key>
+	<string>星空のクローク</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>星は急がない。ただ燃え続けるだけ。</string>
 	<key>Start %@ automatically when you log in</key>
@@ -3081,6 +3183,8 @@
 	<string>音楽が再生中でなければ集中と同時に始まり、休憩で一時停止します。</string>
 	<key>Stays on this Mac</key>
 	<string>この Mac 内のみ</string>
+	<key>Steady weeks</key>
+	<string>コツコツ週</string>
 	<key>Step %lld of %lld</key>
 	<string>ステップ %1$lld/%2$lld</string>
 	<key>Step away for a bit</key>
@@ -3143,6 +3247,10 @@
 	<string>勉強ブロック</string>
 	<key>Study buddies</key>
 	<string>勉強仲間</string>
+	<key>Study days</key>
+	<string>勉強した日</string>
+	<key>Study methods</key>
+	<string>勉強法</string>
 	<key>Study parties</key>
 	<string>スタディパーティー</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3255,6 +3363,8 @@
 	<string>才能はスタートの差にすぎない。来続けることがレースのすべて。</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>ポインタがノッチに届いたときやお祝いのときにトラックパッドを振動させる</string>
+	<key>Tasks</key>
+	<string>タスク</string>
 	<key>Tasks left today</key>
 	<string>今日の残りタスク</string>
 	<key>Team Medal</key>
@@ -3439,6 +3549,8 @@
 	<string>このタスクは今日のリストにあります</string>
 	<key>This works. Nothing to do.</key>
 	<string>正常に動作しています。操作は不要です。</string>
+	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
+	<string>毎月3つの小さな目標。どれも自由参加で、できなかった月があっても何も失いません。</string>
 	<key>Time</key>
 	<string>時刻</string>
 	<key>Time for a %lld-minute break.</key>
@@ -3455,6 +3567,8 @@
 	<string>タイマー: %@</string>
 	<key>Tiny Crown</key>
 	<string>ちびクラウン</string>
+	<key>Tiny Lantern</key>
+	<string>ちいさなランタン</string>
 	<key>Tiny Rain Cloud</key>
 	<string>ちびあめ雲</string>
 	<key>Tips to focus better</key>
@@ -3675,6 +3789,8 @@
 	<string>ワードローブ</string>
 	<key>Warm cream and peach, soft and gentle.</key>
 	<string>あたたかなクリームとピーチ、やさしくて穏やか。</string>
+	<key>Water</key>
+	<string>水分</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>水が谷を刻めるのは、一日も休まないから。</string>
 	<key>Wearing</key>
@@ -3923,6 +4039,10 @@
 	<string>あなたのプレイリスト</string>
 	<key>Your setup already matches %@</key>
 	<string>すでに %@ と同じ設定です</string>
+	<key>Your study day by day, with the time studied on each</key>
+	<string>毎日の勉強と、その日の勉強時間</string>
+	<key>Your study streak and the freezes that protect it</key>
+	<string>勉強の連続記録と、それを守るフリーズ</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>
 	<string>連続学習: %lld分以上集中した日が続いた日数</string>
 	<key>Your tabs</key>
@@ -3935,8 +4055,18 @@
 	<string>今週</string>
 	<key>Your week with Tabbi is ready</key>
 	<string>Tabbiとの1週間をまとめました</string>
+	<key>Your weekly recaps with your pet</key>
+	<string>ペットと振り返る毎週のまとめ</string>
 	<key>all day: %@</key>
 	<string>終日: %@</string>
+	<key>badge.tier.bronze</key>
+	<string>ブロンズ</string>
+	<key>badge.tier.gold</key>
+	<string>ゴールド</string>
+	<key>badge.tier.silver</key>
+	<string>シルバー</string>
+	<key>badge.tier.starlight</key>
+	<string>スターライト</string>
 	<key>best day</key>
 	<string>最高の日</string>
 	<key>card</key>

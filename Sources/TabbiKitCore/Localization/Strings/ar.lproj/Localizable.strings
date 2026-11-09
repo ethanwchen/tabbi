@@ -5,8 +5,12 @@
 <dict>
 	<key>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</key>
 	<string>"%@ يشتاق إليك. 10 دقائق؟" مرة واحدة في اليوم على الأكثر، وفقط إن لم تدرس أو تحقق هدفك بعد. أوضاع التركيز تُسكته.</string>
+	<key>%@ %@</key>
+	<string>%1$@ %2$@</string>
 	<key>%@ %@ so far</key>
 	<string>%1$@ %2$@ حتى الآن</string>
+	<key>%@ %@ so far.</key>
+	<string>%1$@ حتى الآن %2$@.</string>
 	<key>%@ (paused)</key>
 	<string>%@ (متوقف مؤقتًا)</string>
 	<key>%@ Fix it in Settings &gt; Tabs &gt; Party &gt; Options, or clear it to use the Tabbi server.</key>
@@ -153,6 +157,8 @@
 	<string>%@ من التركيز.</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>يُفتح %@ في الموسيقى؛ اضغط تشغيل هناك.</string>
+	<key>%@ quests</key>
+	<string>مهام %@</string>
 	<key>%@ raced a snail and let it win</key>
 	<string>%@ سابق حلزونًا وتركه يفوز</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
@@ -181,6 +187,10 @@
 	<string>%@ لا يقترح أي تغييرات</string>
 	<key>%@ suggests no changes.</key>
 	<string>%@ لا يقترح أي تغييرات.</string>
+	<key>%@ this month.</key>
+	<string>%@ هذا الشهر.</string>
+	<key>%@ to %@</key>
+	<string>%1$@ نحو %2$@</string>
 	<key>%@ today</key>
 	<string>%@ اليوم</string>
 	<key>%@ tokens</key>
@@ -189,6 +199,8 @@
 	<string>يُفتح %1$@ بعد %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>يُفتح %1$@ عند %2$lld</string>
+	<key>%@ unlocks with %@. %@</key>
+	<string>%1$@ يُفتح مع %2$@. %3$@</string>
 	<key>%@ uses it to greet you.</key>
 	<string>يستخدمه %@ لتحيتك.</string>
 	<key>%@ visited the bakery</key>
@@ -207,10 +219,18 @@
 	<string>يعمل %@ بأفضل شكل من مجلد التطبيقات، حيث يمكنه الفتح عند تسجيل الدخول وتحديث نفسه. سينسخ نفسه إلى هناك ثم يُفتح من جديد.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · متوقف مؤقتًا</string>
+	<key>%@, %@</key>
+	<string>%1$@، %2$@</string>
 	<key>%@, %@ left</key>
 	<string>%1$@، متبقٍّ %2$@</string>
+	<key>%@, %@ to %@</key>
+	<string>%1$@، %2$@ نحو %3$@</string>
 	<key>%@, %lld extra</key>
 	<string>%@، و%lld إضافية</string>
+	<key>%@, earned: click to take off</key>
+	<string>%@، مكتسب: انقر لنزعه</string>
+	<key>%@, earned: click to wear</key>
+	<string>%@، مكتسب: انقر لارتدائه</string>
 	<key>%@, limited edition: %@</key>
 	<string>%1$@، إصدار محدود: %2$@</string>
 	<key>%@, limited edition: %@ Its event starts %@.</key>
@@ -231,8 +251,16 @@
 	<string>%1$@: %2$@ اليوم</string>
 	<key>%@: %@ left</key>
 	<string>%1$@: باقي %2$@</string>
+	<key>%@: %@ this month</key>
+	<string>%1$@: %2$@ هذا الشهر</string>
 	<key>%@: %@ tokens</key>
 	<string>%1$@: %2$@ رمز</string>
+	<key>%@: %@. Something new since you last looked.</key>
+	<string>%1$@: %2$@. هناك جديد منذ آخر مرة.</string>
+	<key>%@: Starlight, every tier earned</key>
+	<string>%@: ضوء النجوم، كل المستويات مكتسبة</string>
+	<key>%@: done this month</key>
+	<string>%@: تم هذا الشهر</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: حصلت على كل العناصر. ستبقى لك بعد انتهاء الفعالية.</string>
 	<key>%lld h</key>
@@ -255,12 +283,16 @@
 	<string>%1$lld جديدة، %2$lld قيد التعلم، %3$lld للمراجعة</string>
 	<key>%lld of %lld</key>
 	<string>%1$lld من %2$lld</string>
+	<key>%lld of %lld badges</key>
+	<string>%1$lld من %2$lld شارات</string>
 	<key>%lld of %lld cards reviewed today</key>
 	<string>بطاقات رُوجعت اليوم: %1$lld من %2$lld</string>
 	<key>%lld of %lld done</key>
 	<string>أُنجز %1$lld من %2$lld</string>
 	<key>%lld of %lld earned</key>
 	<string>حصلت على %1$lld من %2$lld</string>
+	<key>%lld of %lld outfits</key>
+	<string>%1$lld من %2$lld أزياء</string>
 	<key>%lld/%lld days</key>
 	<string>الأيام: %lld/%lld</string>
 	<key>%lld/%lld h</key>
@@ -275,6 +307,8 @@
 	<string>%lld س %lld د</string>
 	<key>%lldh ago</key>
 	<string>قبل %lld س</string>
+	<key>%lldk</key>
+	<string>%lldk</string>
 	<key>%lldm</key>
 	<string>%lld د</string>
 	<key>%lldm ago</key>
@@ -481,6 +515,8 @@
 	<string>كل الرزم التي بها بطاقات مستحقة</string>
 	<key>All done</key>
 	<string>تم كل شيء</string>
+	<key>All done. New quests on %@.</key>
+	<string>تم كل شيء. مهام جديدة في %@.</string>
 	<key>All earned</key>
 	<string>حصلت على كل شيء</string>
 	<key>All optional. Nothing to do now.</key>
@@ -597,6 +633,8 @@
 	<string>التطبيق</string>
 	<key>Appears when the pointer reaches the top center.</key>
 	<string>يظهر عندما يصل المؤشر إلى أعلى المنتصف.</string>
+	<key>Apprentice Robe</key>
+	<string>رداء المتدرب</string>
 	<key>Apps and permissions</key>
 	<string>التطبيقات والأذونات</string>
 	<key>Are you signed in to Claude?</key>
@@ -629,6 +667,8 @@
 	<string>جارٍ طلب فتح الرزمة للمراجعة من Anki.</string>
 	<key>Astronaut Helmet</key>
 	<string>خوذة رائد فضاء</string>
+	<key>Astronaut Suit</key>
+	<string>بدلة رائد الفضاء</string>
 	<key>At least one tab must stay</key>
 	<string>يجب أن تبقى علامة تبويب واحدة على الأقل</string>
 	<key>At the start of a break, %@ shows a short move you can copy</key>
@@ -665,6 +705,10 @@
 	<string>العودة إلى اليوم</string>
 	<key>Backwards Cap</key>
 	<string>قبعة معكوسة</string>
+	<key>Badges</key>
+	<string>الشارات</string>
+	<key>Baker's Apron</key>
+	<string>مريلة الخبّاز</string>
 	<key>Beanie</key>
 	<string>قبعة صوفية</string>
 	<key>Bell collar</key>
@@ -689,6 +733,8 @@
 	<string>لا يستطيع المحظورون رؤيتك أو إضافتك أو الانضمام إلى مجموعاتك. للحظر أو الإبلاغ، انقر بزر الماوس الأيمن على الشخص في المجموعة.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>تُضاف الكتل إلى تقويمك.</string>
+	<key>Blossom Sprout</key>
+	<string>برعم مزهر</string>
 	<key>Bond %lld</key>
 	<string>الرابطة %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -707,6 +753,8 @@
 	<string>استراحة</string>
 	<key>Break buddy</key>
 	<string>رفيق الاستراحة</string>
+	<key>Break moves</key>
+	<string>حركات الاستراحة</string>
 	<key>Break's over</key>
 	<string>انتهت الاستراحة</string>
 	<key>Breathe in slowly, then let it all out.</key>
@@ -725,6 +773,8 @@
 	<string>الشاشة المدمجة</string>
 	<key>Bunny Ears</key>
 	<string>أذنا أرنب</string>
+	<key>Busy Bee Antennae</key>
+	<string>قرون النحلة النشيطة</string>
 	<key>Butter yellow sunshine, happy and bright.</key>
 	<string>أشعة شمس بلون الزبدة، مبهجة ومشرقة.</string>
 	<key>Buy freeze</key>
@@ -1095,6 +1145,8 @@
 	<string>دافئ</string>
 	<key>Cozy Hoodie</key>
 	<string>هودي دافئ</string>
+	<key>Cozy Pajamas</key>
+	<string>بيجامة دافئة</string>
 	<key>Cozy Scarf</key>
 	<string>وشاح دافئ</string>
 	<key>Cozy days and quiet focus before the new year.</key>
@@ -1231,6 +1283,8 @@
 	<string>لا تسأل مجددًا</string>
 	<key>Done</key>
 	<string>تم</string>
+	<key>Done this month.</key>
+	<string>تم هذا الشهر.</string>
 	<key>Done! You stuck with it.</key>
 	<string>انتهيت! لقد صمدت.</string>
 	<key>Drag to reorder</key>
@@ -1307,6 +1361,8 @@
 	<string>موسم الامتحانات</string>
 	<key>Example</key>
 	<string>مثال</string>
+	<key>Explorer's Hat</key>
+	<string>قبعة المستكشف</string>
 	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
 	<string>التعثّر ليس فشلًا، البقاء بعيدًا هو الفشل. وها أنت قد عدت.</string>
 	<key>Fantasy</key>
@@ -1323,6 +1379,8 @@
 	<string>املأ وقت الغد الحر بمهامك المفتوحة ومراجعاتك. يُخطّط على هذا الـ Mac، ولا يُضاف شيء حتى توافق</string>
 	<key>Finish a Party session with friends.</key>
 	<string>أنهِ جلسة في المجموعة مع أصدقائك.</string>
+	<key>Finish all three to count the month toward the Monthly quests badge.</key>
+	<string>أنهِ الثلاثة ليُحتسب الشهر لشارة المهام الشهرية.</string>
 	<key>Finish setup</key>
 	<string>إنهاء الإعداد</string>
 	<key>Fireplace</key>
@@ -1347,6 +1405,8 @@
 	<string>أصلحت شيئًا في تطبيق آخر؟ عد إلى هنا وسيتحدّث المؤشر وحده.</string>
 	<key>Flame Headband</key>
 	<string>عصابة اللهب</string>
+	<key>Flashcards</key>
+	<string>البطاقات</string>
 	<key>Flow</key>
 	<string>تدفّق</string>
 	<key>Flower Crown</key>
@@ -1459,6 +1519,8 @@
 	<string>يرى أصدقاؤك اسمك وحيوانك الأليف ووقت دراستك. لا شيء عن بطاقاتك أو رزمك يغادر جهاز Mac.</string>
 	<key>Friends server</key>
 	<string>خادم الأصدقاء</string>
+	<key>Friendship Bandana</key>
+	<string>باندانا الصداقة</string>
 	<key>Frog Hat</key>
 	<string>قبعة الضفدع</string>
 	<key>From your Claude Code logs</key>
@@ -1481,6 +1543,8 @@
 	<string>استخدام GPU، آخر 60 ثانية</string>
 	<key>General</key>
 	<string>عام</string>
+	<key>Gentle streak</key>
+	<string>سلسلة لطيفة</string>
 	<key>Get %@</key>
 	<string>احصل على %@</string>
 	<key>Get %@ to control your music from the notch.</key>
@@ -1513,6 +1577,8 @@
 	<string>اختفِ عن الأنظار. دقائق دراستك تُحتسب مع ذلك.</string>
 	<key>Go on without a name</key>
 	<string>المتابعة بلا اسم</string>
+	<key>Goals</key>
+	<string>الأهداف</string>
 	<key>Goals left today</key>
 	<string>الأهداف المتبقية اليوم</string>
 	<key>Gold tag</key>
@@ -1807,10 +1873,14 @@
 	<string>محدود</string>
 	<key>Limited edition</key>
 	<string>إصدار محدود</string>
+	<key>Limited edition items, earned by studying, never sold</key>
+	<string>عناصر إصدار محدود، تُكتسب بالدراسة ولا تُباع أبدًا</string>
 	<key>Lion Dance Hat</key>
 	<string>قبعة رقصة الأسد</string>
 	<key>Listen to %@</key>
 	<string>استمع إلى %@</string>
+	<key>Little Sprout</key>
+	<string>برعم صغير</string>
 	<key>Live activity</key>
 	<string>النشاط المباشر</string>
 	<key>Loading</key>
@@ -1863,6 +1933,8 @@
 	<string>وضع علامة كمنجز</string>
 	<key>Mark as not done</key>
 	<string>وضع علامة كغير منجز</string>
+	<key>Mastery outfits: each unlocks with a badge tier, never with points</key>
+	<string>أزياء الإتقان: كل زي يُفتح بمستوى شارة، لا بالنقاط أبدًا</string>
 	<key>May Tabbi run your shortcuts?</key>
 	<string>هل يُسمح لـ Tabbi بتشغيل اختصاراتك؟</string>
 	<key>Measuring cores...</key>
@@ -1901,6 +1973,10 @@
 	<string>النموذج</string>
 	<key>Month</key>
 	<string>الشهر</string>
+	<key>Monthly quests</key>
+	<string>مهام شهرية</string>
+	<key>Monthly quests, badges and outfits earned from long goals</key>
+	<string>مهام شهرية وشارات وأزياء تُكتسب من أهداف طويلة</string>
 	<key>Moonlit Witch Hat</key>
 	<string>قبعة ساحرة القمر</string>
 	<key>Moonstone</key>
@@ -1969,6 +2045,10 @@
 	<string>بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع إرسال التنبيهات. يمكنك تغيير إجابتك في أي وقت من إعدادات النظام.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع استخدام تقويمك. يمكنك تغيير إجابتك في أي وقت من إعدادات النظام.</string>
+	<key>Next: %@, %@</key>
+	<string>التالي: %1$@، %2$@</string>
+	<key>Nightcap</key>
+	<string>قبعة النوم</string>
 	<key>Ninja Headband</key>
 	<string>عصابة النينجا</string>
 	<key>No answer</key>
@@ -2181,6 +2261,8 @@
 	<string>ضمن اليوم</string>
 	<key>One add-on to go</key>
 	<string>تبقّت إضافة واحدة</string>
+	<key>One badge for each habit, from Bronze to Starlight</key>
+	<string>شارة لكل عادة، من البرونزي إلى ضوء النجوم</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>جلسة هادئة تلو الأخرى. النجاح قريب.</string>
 	<key>One countdown, no breaks</key>
@@ -2329,6 +2411,12 @@
 	<string>أخرى</string>
 	<key>Out of sight. Press %@ to open it.</key>
 	<string>مخفي. اضغط %@ لفتحه.</string>
+	<key>Outfits and accessories to unlock with study points</key>
+	<string>أزياء وإكسسوارات تُفتح بنقاط الدراسة</string>
+	<key>Outfits to earn</key>
+	<string>أزياء تُكتسب</string>
+	<key>Owl Spectacles</key>
+	<string>نظارة البومة</string>
 	<key>Owned</key>
 	<string>مملوك</string>
 	<key>Pals</key>
@@ -2739,6 +2827,8 @@
 	<string>يعمل في %@</string>
 	<key>Runs on this Mac</key>
 	<string>يعمل على هذا الـMac</string>
+	<key>Sage's Robe</key>
+	<string>رداء الحكيم</string>
 	<key>Sakura Sprig</key>
 	<string>غصن ساكورا</string>
 	<key>Save</key>
@@ -2759,6 +2849,8 @@
 	<string>محفوظ في سلسلة المفاتيح</string>
 	<key>Schedule</key>
 	<string>الجدول</string>
+	<key>Scholar's Robe</key>
+	<string>رداء العالِم</string>
 	<key>Screenshot sent with this question</key>
 	<string>لقطة شاشة أُرسلت مع هذا السؤال</string>
 	<key>Scrubs</key>
@@ -2803,6 +2895,8 @@
 	<string>الخادم</string>
 	<key>Session done. Nice work!</key>
 	<string>انتهت الجلسة. أحسنت!</string>
+	<key>Sessions</key>
+	<string>الجلسات</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>اضبط "apiKey" على null، ثم انقر OK</string>
 	<key>Set this up later from its tab</key>
@@ -2985,8 +3079,12 @@
 	<string>لمعان</string>
 	<key>Sparkle Trail</key>
 	<string>أثر لامع</string>
+	<key>Species, breed and fur color</key>
+	<string>النوع والسلالة ولون الفرو</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>موسم الرعب هنا. ركّز لتُلبس رفيقك زيًا.</string>
+	<key>Sporty Sweatband</key>
+	<string>عصابة رياضية</string>
 	<key>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</key>
 	<string>يظهر Spotify وApple Music دائمًا. أما SoundCloud، فسيطلب macOS السماح لـ%@ بالتحكم في متصفحك، ويجب تفعيل السماح بتنفيذ JavaScript من أحداث Apple في المتصفح.</string>
 	<key>Spotify link or Music playlist name</key>
@@ -3005,6 +3103,10 @@
 	<string>قف، وحرّك ساقيك، واجلس متى شئت.</string>
 	<key>Star tag</key>
 	<string>قلادة نجمة</string>
+	<key>Starlight, every tier earned</key>
+	<string>ضوء النجوم، كل المستويات مكتسبة</string>
+	<key>Starry Cloak</key>
+	<string>عباءة النجوم</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>النجوم لا تستعجل، إنها تواصل التوهّج فحسب.</string>
 	<key>Start %@ automatically when you log in</key>
@@ -3057,6 +3159,8 @@
 	<string>تبدأ مع التركيز ما لم تكن الموسيقى تعمل، وتتوقف مؤقتًا عند الاستراحة.</string>
 	<key>Stays on this Mac</key>
 	<string>يبقى على هذا الـMac</string>
+	<key>Steady weeks</key>
+	<string>أسابيع منتظمة</string>
 	<key>Step %lld of %lld</key>
 	<string>الخطوة %lld من %lld</string>
 	<key>Step away for a bit</key>
@@ -3119,6 +3223,10 @@
 	<string>فترة دراسة</string>
 	<key>Study buddies</key>
 	<string>رفاق دراسة</string>
+	<key>Study days</key>
+	<string>أيام الدراسة</string>
+	<key>Study methods</key>
+	<string>طرق الدراسة</string>
 	<key>Study parties</key>
 	<string>مجموعات الدراسة</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3231,6 +3339,8 @@
 	<string>الموهبة بداية مبكرة، أما الحضور فهو السباق كله.</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>انقر لوحة التعقب عند وصول المؤشر إلى النوتش أو عند عرض احتفال</string>
+	<key>Tasks</key>
+	<string>المهام</string>
 	<key>Tasks left today</key>
 	<string>المهام المتبقية اليوم</string>
 	<key>Team Medal</key>
@@ -3409,6 +3519,8 @@
 	<string>هذه المهمة في قائمة اليوم</string>
 	<key>This works. Nothing to do.</key>
 	<string>هذا يعمل. لا شيء لفعله.</string>
+	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
+	<string>ثلاثة أهداف صغيرة كل شهر. هي اختيارية، والشهر الذي يفوتك لا يكلّفك شيئًا.</string>
 	<key>Time</key>
 	<string>الوقت</string>
 	<key>Time for a stretch</key>
@@ -3423,6 +3535,8 @@
 	<string>المؤقت: %@</string>
 	<key>Tiny Crown</key>
 	<string>تاج صغير</string>
+	<key>Tiny Lantern</key>
+	<string>فانوس صغير</string>
 	<key>Tiny Rain Cloud</key>
 	<string>غيمة مطر صغيرة</string>
 	<key>Tips to focus better</key>
@@ -3639,6 +3753,8 @@
 	<string>خزانة الملابس</string>
 	<key>Warm cream and peach, soft and gentle.</key>
 	<string>كريمي دافئ وخوخي، ناعم ولطيف.</string>
+	<key>Water</key>
+	<string>الماء</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>يحفر الماء الوديان لأنه لا يتخلف يومًا.</string>
 	<key>Wearing</key>
@@ -3883,6 +3999,10 @@
 	<string>قائمة التشغيل لديك</string>
 	<key>Your setup already matches %@</key>
 	<string>إعداداتك تطابق %@ بالفعل</string>
+	<key>Your study day by day, with the time studied on each</key>
+	<string>دراستك يومًا بيوم، مع وقت الدراسة في كل يوم</string>
+	<key>Your study streak and the freezes that protect it</key>
+	<string>سلسلة دراستك والتجميدات التي تحميها</string>
 	<key>Your tabs</key>
 	<string>علامات التبويب لديك</string>
 	<key>Your timer</key>
@@ -3893,8 +4013,18 @@
 	<string>أسبوعك</string>
 	<key>Your week with Tabbi is ready</key>
 	<string>أسبوعك مع Tabbi جاهز</string>
+	<key>Your weekly recaps with your pet</key>
+	<string>ملخّصاتك الأسبوعية مع حيوانك</string>
 	<key>all day: %@</key>
 	<string>طوال اليوم: %@</string>
+	<key>badge.tier.bronze</key>
+	<string>برونزي</string>
+	<key>badge.tier.gold</key>
+	<string>ذهبي</string>
+	<key>badge.tier.silver</key>
+	<string>فضي</string>
+	<key>badge.tier.starlight</key>
+	<string>ضوء النجوم</string>
 	<key>best day</key>
 	<string>أفضل يوم</string>
 	<key>card</key>

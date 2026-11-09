@@ -763,6 +763,206 @@
 			<string>Можно смешать до %lld звука, сначала убери один</string>
 		</dict>
 	</dict>
+	<key>Check off %lld tasks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Отметь %lld задачи</string>
+			<key>many</key>
+			<string>Отметь %lld задач</string>
+			<key>one</key>
+			<string>Отметь %lld задачу</string>
+			<key>other</key>
+			<string>Отметь %lld задачи</string>
+		</dict>
+	</dict>
+	<key>Check off %lld tasks.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Отметь %lld задачи.</string>
+			<key>many</key>
+			<string>Отметь %lld задач.</string>
+			<key>one</key>
+			<string>Отметь %lld задачу.</string>
+			<key>other</key>
+			<string>Отметь %lld задачи.</string>
+		</dict>
+	</dict>
+	<key>Do %lld break moves with your pet</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Сделай %lld разминки с питомцем</string>
+			<key>many</key>
+			<string>Сделай %lld разминок с питомцем</string>
+			<key>one</key>
+			<string>Сделай %lld разминку с питомцем</string>
+			<key>other</key>
+			<string>Сделай %lld разминки с питомцем</string>
+		</dict>
+	</dict>
+	<key>Do %lld break moves with your pet.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Сделай %lld разминки с питомцем.</string>
+			<key>many</key>
+			<string>Сделай %lld разминок с питомцем.</string>
+			<key>one</key>
+			<string>Сделай %lld разминку с питомцем.</string>
+			<key>other</key>
+			<string>Сделай %lld разминки с питомцем.</string>
+		</dict>
+	</dict>
+	<key>Finish %lld Party sessions with friends</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Заверши %lld сессии в Party с друзьями</string>
+			<key>many</key>
+			<string>Заверши %lld сессий в Party с друзьями</string>
+			<key>one</key>
+			<string>Заверши %lld сессию в Party с друзьями</string>
+			<key>other</key>
+			<string>Заверши %lld сессии в Party с друзьями</string>
+		</dict>
+	</dict>
+	<key>Finish %lld Party sessions with friends.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Заверши %lld сессии в Party с друзьями.</string>
+			<key>many</key>
+			<string>Заверши %lld сессий в Party с друзьями.</string>
+			<key>one</key>
+			<string>Заверши %lld сессию в Party с друзьями.</string>
+			<key>other</key>
+			<string>Заверши %lld сессии в Party с друзьями.</string>
+		</dict>
+	</dict>
+	<key>Finish %lld focus sessions</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Заверши %lld сессии</string>
+			<key>many</key>
+			<string>Заверши %lld сессий</string>
+			<key>one</key>
+			<string>Заверши %lld сессию</string>
+			<key>other</key>
+			<string>Заверши %lld сессии</string>
+		</dict>
+	</dict>
+	<key>Finish %lld focus sessions.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Заверши %lld сессии фокуса.</string>
+			<key>many</key>
+			<string>Заверши %lld сессий фокуса.</string>
+			<key>one</key>
+			<string>Заверши %lld сессию фокуса.</string>
+			<key>other</key>
+			<string>Заверши %lld сессии фокуса.</string>
+		</dict>
+	</dict>
+	<key>Finish every monthly quest in %lld months.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Выполни все задания месяца за %lld месяца.</string>
+			<key>many</key>
+			<string>Выполни все задания месяца за %lld месяцев.</string>
+			<key>one</key>
+			<string>Выполни все задания месяца за %lld месяц.</string>
+			<key>other</key>
+			<string>Выполни все задания месяца за %lld месяца.</string>
+		</dict>
+	</dict>
+	<key>Focus for %lld hours</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Фокус %lld часа</string>
+			<key>many</key>
+			<string>Фокус %lld часов</string>
+			<key>one</key>
+			<string>Фокус %lld час</string>
+			<key>other</key>
+			<string>Фокус %lld часа</string>
+		</dict>
+	</dict>
 	<key>Focus for %lld hours during %@.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -781,6 +981,26 @@
 			<string>Фокусируйся %lld час во время события «%@».</string>
 			<key>other</key>
 			<string>Фокусируйся %lld часа во время события «%@».</string>
+		</dict>
+	</dict>
+	<key>Focus for %lld hours in total.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Фокусируйся %lld часа в сумме.</string>
+			<key>many</key>
+			<string>Фокусируйся %lld часов в сумме.</string>
+			<key>one</key>
+			<string>Фокусируйся %lld час в сумме.</string>
+			<key>other</key>
+			<string>Фокусируйся %lld часа в сумме.</string>
 		</dict>
 	</dict>
 	<key>Focus for %lld minutes during %@.</key>
@@ -823,6 +1043,66 @@
 			<string>Находка: %lld бонусного очка</string>
 		</dict>
 	</dict>
+	<key>Keep a %lld-day streak. Freezes count.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Держи серию %lld дня. Заморозки считаются.</string>
+			<key>many</key>
+			<string>Держи серию %lld дней. Заморозки считаются.</string>
+			<key>one</key>
+			<string>Держи серию %lld день. Заморозки считаются.</string>
+			<key>other</key>
+			<string>Держи серию %lld дня. Заморозки считаются.</string>
+		</dict>
+	</dict>
+	<key>Log %lld glasses of water</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Отметь %lld стакана воды</string>
+			<key>many</key>
+			<string>Отметь %lld стаканов воды</string>
+			<key>one</key>
+			<string>Отметь %lld стакан воды</string>
+			<key>other</key>
+			<string>Отметь %lld стакана воды</string>
+		</dict>
+	</dict>
+	<key>Log %lld glasses of water.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Отметь %lld стакана воды.</string>
+			<key>many</key>
+			<string>Отметь %lld стаканов воды.</string>
+			<key>one</key>
+			<string>Отметь %lld стакан воды.</string>
+			<key>other</key>
+			<string>Отметь %lld стакана воды.</string>
+		</dict>
+	</dict>
 	<key>Not every day is a checklist day. Tomorrow starts with %lld tasks ready to go.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -843,6 +1123,46 @@
 			<string>Не каждый день для списка дел. Завтра тебя ждут %lld задачи.</string>
 		</dict>
 	</dict>
+	<key>Review %lld flashcards</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Повтори %lld карточки</string>
+			<key>many</key>
+			<string>Повтори %lld карточек</string>
+			<key>one</key>
+			<string>Повтори %lld карточку</string>
+			<key>other</key>
+			<string>Повтори %lld карточки</string>
+		</dict>
+	</dict>
+	<key>Review %lld flashcards.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Повтори %lld карточки.</string>
+			<key>many</key>
+			<string>Повтори %lld карточек.</string>
+			<key>one</key>
+			<string>Повтори %lld карточку.</string>
+			<key>other</key>
+			<string>Повтори %lld карточки.</string>
+		</dict>
+	</dict>
 	<key>Review today to keep your %lld-day streak</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -861,6 +1181,86 @@
 			<string>Позанимайся сегодня, чтобы сохранить серию в %lld день</string>
 			<key>other</key>
 			<string>Позанимайся сегодня, чтобы сохранить серию в %lld дня</string>
+		</dict>
+	</dict>
+	<key>Study 3 days or more in %lld different weeks.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Учись 3 дня или больше в %lld разные недели.</string>
+			<key>many</key>
+			<string>Учись 3 дня или больше в %lld разных недель.</string>
+			<key>one</key>
+			<string>Учись 3 дня или больше за %lld неделю.</string>
+			<key>other</key>
+			<string>Учись 3 дня или больше в %lld разные недели.</string>
+		</dict>
+	</dict>
+	<key>Study on %lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Учись %lld дня</string>
+			<key>many</key>
+			<string>Учись %lld дней</string>
+			<key>one</key>
+			<string>Учись %lld день</string>
+			<key>other</key>
+			<string>Учись %lld дня</string>
+		</dict>
+	</dict>
+	<key>Study on %lld different days.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Учись %lld разных дня.</string>
+			<key>many</key>
+			<string>Учись %lld разных дней.</string>
+			<key>one</key>
+			<string>Учись %lld день.</string>
+			<key>other</key>
+			<string>Учись %lld разных дня.</string>
+		</dict>
+	</dict>
+	<key>Try %lld different study methods.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Попробуй %lld разных метода учёбы.</string>
+			<key>many</key>
+			<string>Попробуй %lld разных методов учёбы.</string>
+			<key>one</key>
+			<string>Попробуй %lld метод учёбы.</string>
+			<key>other</key>
+			<string>Попробуй %lld разных метода учёбы.</string>
 		</dict>
 	</dict>
 	<key>Yes, from %lld accounts.</key>

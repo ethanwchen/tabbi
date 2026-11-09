@@ -69,6 +69,8 @@ Parse errors report the 1-based row and column of the problem.
 | `I` | leather | cowboy hat |
 | `X` | crimson | superhero cape folds, lining and hem (uppercase; lowercase `x` erases) |
 | `o` | pumpkin | Halloween pumpkin orange, with leather ribs (lowercase: no zone uses it) |
+| `v` | violet | the Starry Cloak's twilight violet (lowercase: no zone uses it) |
+| `k` | sky | the Cozy Pajamas and Nightcap's soft sky blue (lowercase: no zone uses it) |
 
 ### Special cells
 
@@ -152,6 +154,20 @@ The item clock counts from a fixed moment, not from the clip's start, so a loop 
 The Halo is the one hat meant to float: a thin gold arc two rows tall, because at the top of a hop a dog has only three rows of frame above its head.
 It bobs a pixel down for half its loop, and `PetItemLoopTests` checks that its gold never touches the fur on any body shape (the poodle's and the Shih Tzu's topknots reach into it, and it rests on the Scottish Fold's flat crown).
 
+### Mastery outfits
+
+Sixteen items are earned from badge tiers on the Closet's Goals shelf instead of bought (`PetLimitedEdition.mastery`, docs/design/progression.md): the Astronaut Suit, the Starry Cloak, three robes tiered by finished sessions (Apprentice, Scholar's and Sage's), the Cozy Pajamas and Nightcap, the Baker's Apron with its tiny cake, the Little and Blossom Sprouts, the Explorer's Hat, the Busy Bee Antennae, the Sporty Sweatband, the Owl Spectacles, the Friendship Bandana and the Tiny Lantern.
+They are drawn like every item, so each fits every body shape:
+
+- The robes, the Starry Cloak and the Astronaut Suit keep the exact silhouette of the Wizard Robe and the White Coat on every body family, and the Cozy Pajamas the Scrubs', so they need no new fit rules.
+  The Starry Cloak is closed at the chest and hangs on the body; it never streams behind like a cape.
+- Seen from the side the head hides the front of the body, so the Sage's Robe glints along a gold hem there instead of down its stole, the Starry Cloak only twinkles stars behind the head, and the Baker's Apron shows its bow tied at the back.
+- Thin lines are gold or sit on a light fill: the Owl Spectacles have gold brows over navy rims (gold alone melted into golden fur, navy alone into black fur), and the bee's antennae are gold.
+- The Tiny Lantern is an aura item, three by four pixels, hung in the free air that a probe over every breed and every frame found clear (left of the head below the celebration's sparkles; over the back from the side; right of the dachshund's head), so it never has to leave a frame.
+  Only its flame flickers.
+
+`swift run PetGallery <dir> mastery` writes `mastery-<item>.png` (the item on a breed for every body shape, sitting, mid-hop, walking, stretching and napping), `mastery-all-<breed>.png` at 4x and notch size, `mastery-loop-<item>.png` for the animated ones, and `mastery-sets-<breed>.png` (the outfits worn with the shop items they go with).
+
 ### Back items
 
 Wings and the King's Cape are worn in the `back` slot and drawn behind the whole pet.
@@ -193,7 +209,7 @@ The happier idle is in `PetAnimator`: a happy pet (`happy:`, from `PetBondLook.h
 
 ### Adding a costume item
 
-1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`), and give it a price in `PetItem.cost`, a Closet shelf in `PetItem.theme` (Study, Cozy, Fantasy, Seasonal or Silly) and the catalog `release` that adds it.
+1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`), and give it a price in `PetItem.cost`, a Closet shelf in `PetItem.theme` (Study, Cozy, Fantasy, Seasonal or Silly), the catalog `release` that adds it, and its Party id in `PartyPetAppearance` (added to `backend/shared/catalog.json` with a version bump).
    Items from `PetItem.latestRelease` wear a "New" badge in the Closet until the user owns them.
 2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family plus its two walking torsos, a `FaceItem` with its `eyeRow`, or a `HeadItem` with its `sitRow`.
    A body item that sticks up out of the silhouette (the dinosaur's back spikes, the cape streaming up behind a walking pet) sets `rise`, the rows every one of its grids starts above the body's top row.

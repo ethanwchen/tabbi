@@ -535,6 +535,146 @@
 			<string>最大%lld個まで重ねられます。先に1つ外してください</string>
 		</dict>
 	</dict>
+	<key>Check off %lld tasks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>タスクを%lld個完了する</string>
+		</dict>
+	</dict>
+	<key>Check off %lld tasks.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>タスクを%lld個完了しよう。</string>
+		</dict>
+	</dict>
+	<key>Do %lld break moves with your pet</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>ペットと休憩ムーブを%lld回</string>
+		</dict>
+	</dict>
+	<key>Do %lld break moves with your pet.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>ペットと休憩ムーブを%lld回しよう。</string>
+		</dict>
+	</dict>
+	<key>Finish %lld Party sessions with friends</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>友だちとパーティを%lld回</string>
+		</dict>
+	</dict>
+	<key>Finish %lld Party sessions with friends.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>友だちとパーティセッションを%lld回やりきろう。</string>
+		</dict>
+	</dict>
+	<key>Finish %lld focus sessions</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>集中セッションを%lld回</string>
+		</dict>
+	</dict>
+	<key>Finish %lld focus sessions.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>集中セッションを%lld回やりきろう。</string>
+		</dict>
+	</dict>
+	<key>Finish every monthly quest in %lld months.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lldか月、今月のクエストをすべてクリアしよう。</string>
+		</dict>
+	</dict>
+	<key>Focus for %lld hours</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld時間集中する</string>
+		</dict>
+	</dict>
 	<key>Focus for %lld hours during %@.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -547,6 +687,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>%2$@の期間中に%1$lld時間集中しよう。</string>
+		</dict>
+	</dict>
+	<key>Focus for %lld hours in total.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>合計%lld時間集中しよう。</string>
 		</dict>
 	</dict>
 	<key>Focus for %lld minutes during %@.</key>
@@ -577,6 +731,48 @@
 			<string>おみやげ: ボーナス%lldポイント</string>
 		</dict>
 	</dict>
+	<key>Keep a %lld-day streak. Freezes count.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld日の連続記録を続けよう。フリーズも数えます。</string>
+		</dict>
+	</dict>
+	<key>Log %lld glasses of water</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>水を%lld杯記録する</string>
+		</dict>
+	</dict>
+	<key>Log %lld glasses of water.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>水を%lld杯記録しよう。</string>
+		</dict>
+	</dict>
 	<key>Not every day is a checklist day. Tomorrow starts with %lld tasks ready to go.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -591,6 +787,34 @@
 			<string>チェックリストをこなさない日もあります。明日は%lld件のタスクから始められます。</string>
 		</dict>
 	</dict>
+	<key>Review %lld flashcards</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>カードを%lld枚復習する</string>
+		</dict>
+	</dict>
+	<key>Review %lld flashcards.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>フラッシュカードを%lld枚復習しよう。</string>
+		</dict>
+	</dict>
 	<key>Review today to keep your %lld-day streak</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -603,6 +827,62 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>今日復習して %lld 日連続を続けよう</string>
+		</dict>
+	</dict>
+	<key>Study 3 days or more in %lld different weeks.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld週、それぞれ3日以上勉強しよう。</string>
+		</dict>
+	</dict>
+	<key>Study on %lld days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld日勉強する</string>
+		</dict>
+	</dict>
+	<key>Study on %lld different days.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld日勉強しよう。</string>
+		</dict>
+	</dict>
+	<key>Try %lld different study methods.</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld種類の勉強法を試そう。</string>
 		</dict>
 	</dict>
 	<key>Yes, from %lld accounts.</key>

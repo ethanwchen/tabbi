@@ -155,6 +155,41 @@ Between events, that shelf shows when the next one starts.
 The first time Tabbi runs during an event, the pet beside the closed notch does one little dance (after the notch closes, if a panel is open), and never again for that run (`SeasonalEventGreeting`, saved as `Pet/events.json`).
 With `TABBI_DEMO=1`, the Closet reads events at a moment two days into the current or next event, with an hour of focus logged there (`SeasonalEventDemo`), so demos and snapshots always show an event in progress.
 
+## Goals: badges, monthly quests and mastery outfits
+
+Points stop being the only thing to aim for once the shop's cheaper shelves are done, so the Closet's Goals section adds long goals of its own.
+The design, and how fast the shop runs out at 1 to 6 hours a day, is in [design/progression.md](design/progression.md); the rules live in `Sources/TabbiKitCore/Progression/` and are tested by `ProgressTallyTests`, `PetProgressionTests` and `ProgressionGoldenTests`.
+
+- **Badges**: twelve, one per habit the app already logs (focus time, study days, the gentle streak, finished sessions, flashcards, tasks, break moves, Party sessions with friends, study methods, steady weeks, water and monthly quests), each with Bronze, Silver, Gold and Starlight tiers (`ProgressTrack.thresholds`).
+  Starlight takes months even at three hours a day.
+- **Monthly quests**: three small goals each calendar month, one always about focus, the other two from what the user already does (`MonthlyQuests`).
+  They are optional, a missed month costs nothing, and finishing all three counts the month toward the Monthly quests badge.
+- **Mastery outfits**: sixteen costume items that unlock on their own with a badge tier, from 30 study days (Little Sprout) to 500 hours focused (Starry Cloak).
+  They are limited edition items with the source `mastery`, so they cost 0, are never for sale, cannot be tapped into, and stay owned once earned.
+
+| Outfit | Unlocks with |
+| --- | --- |
+| Little Sprout | Study days Silver (30 days) |
+| Blossom Sprout | Study days Gold (100 days) |
+| Nightcap | Gentle streak Silver (30 days) |
+| Cozy Pajamas | Gentle streak Gold (90 days) |
+| Apprentice Robe | Sessions Silver (50) |
+| Scholar's Robe | Sessions Gold (200) |
+| Sage's Robe | Sessions Starlight (600) |
+| Astronaut Suit | Focus time Gold (200 h) |
+| Starry Cloak | Focus time Starlight (500 h) |
+| Explorer's Hat | Steady weeks Silver (4 weeks with 3 or more study days) |
+| Owl Spectacles | Flashcards Gold (10,000) |
+| Busy Bee Antennae | Tasks Gold (200) |
+| Sporty Sweatband | Break moves Silver (50) |
+| Friendship Bandana | Party Gold (20 sessions with friends) |
+| Baker's Apron | Study methods Gold (4 methods) |
+| Tiny Lantern | Monthly quests Gold (6 months) |
+
+Counts only grow: the gentle streak is the longest run ever, with the Streak section's freezes, and `Pet/progression.json` keeps each track's best count, so a broken streak or deleted day files never take a badge or an outfit back.
+On launch the Closet replays the whole activity log, so goals reached before this shipped unlock quietly (the Goals pill shows a dot); new tiers, outfits and finished months celebrate like a purchase.
+Mastery outfits sync with Sign in with Apple as granted unlocks, but the server never grants one: they are left out of `backend/shared/limited-items.json`.
+
 ## Streak freezes
 
 A study day is a local day with at least 5 focused minutes.

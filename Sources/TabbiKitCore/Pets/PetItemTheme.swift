@@ -41,18 +41,23 @@ extension PetItem {
             case .superheroCape, .wizardRobe: .fantasy
             case .dinosaurHoodie: .silly
             case .studyHoodie: .seasonal
+            case .apprenticeRobe, .scholarsRobe, .sagesRobe: .study
+            case .cozyPajamas, .bakersApron: .cozy
+            case .astronautSuit, .starryCloak: .fantasy
             }
         case .accessory(let accessory):
             switch accessory {
             case .stethoscope, .roundGlasses, .surgicalCap, .headMirror, .graduationCap, .chunkyHeadphones,
-                 .goldenLaurel, .foundersPin: .study
-            case .scarf, .beanie, .chefHat, .backwardsCap: .cozy
+                 .goldenLaurel, .foundersPin, .owlSpectacles: .study
+            case .scarf, .beanie, .chefHat, .backwardsCap, .nightcap, .friendshipBandana, .littleSprout,
+                 .blossomSprout, .tinyLantern: .cozy
             case .tinyCrown, .wizardHat, .pirateHat, .blindfoldedSorcerer, .astronautHelmet, .ninjaHeadband,
-                 .angelWings, .kingsCape, .halo, .sparkleTrail: .fantasy
+                 .angelWings, .kingsCape, .halo, .sparkleTrail, .explorersHat: .fantasy
             case .partyHat, .bunnyEars, .witchHat, .flowerCrown, .coolSunglasses, .cherryPetals, .moonlitWitchHat,
                  .pumpkinHat, .reindeerAntlers, .snowScarf, .heartGlasses, .summerShades, .lionDanceHat,
                  .sakuraSprig: .seasonal
-            case .frogHat, .cowboyHat, .bowTie, .flameHeadband, .teamMedal, .rainCloud: .silly
+            case .frogHat, .cowboyHat, .bowTie, .flameHeadband, .teamMedal, .rainCloud, .beeAntennae,
+                 .sportySweatband: .silly
             }
         }
     }
@@ -67,6 +72,8 @@ extension PetItem {
             case .none, .scrubs, .whiteCoat: 1
             case .cozyHoodie, .superheroCape, .dinosaurHoodie, .wizardRobe: 2
             case .studyHoodie: 4
+            case .astronautSuit, .starryCloak, .apprenticeRobe, .scholarsRobe, .sagesRobe, .cozyPajamas,
+                 .bakersApron: 6
             }
         case .accessory(let accessory):
             switch accessory {
@@ -79,6 +86,8 @@ extension PetItem {
             case .moonlitWitchHat, .pumpkinHat, .reindeerAntlers, .snowScarf, .heartGlasses, .summerShades, .lionDanceHat,
                  .sakuraSprig: 4
             case .foundersPin: 5
+            case .littleSprout, .blossomSprout, .nightcap, .explorersHat, .beeAntennae, .sportySweatband,
+                 .owlSpectacles, .friendshipBandana, .tinyLantern: 6
             }
         }
     }

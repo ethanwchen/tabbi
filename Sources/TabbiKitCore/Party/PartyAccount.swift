@@ -65,9 +65,10 @@ public actor PartyAccount {
     /// again, so a refused name never takes Party offline; `refusedNames`
     /// says which, so the app can ask for another.
     ///
-    /// A self-hosted server that still runs catalog version 1 refuses the
-    /// newer outfit and accessory ids as an invalid field; the profile is
-    /// then sent again as that catalog takes it
+    /// A server on an older catalog refuses the newer outfit and accessory
+    /// ids as an invalid field; the profile is then sent again without the
+    /// ids catalog version 4 added (`PartyProfileUpdate.forCatalogVersion3()`),
+    /// and if that is refused too, as catalog version 1 takes it
     /// (`PartyProfileUpdate.forCatalogVersion1()`), so Party stays online
     /// and friends see what that server can carry.
     @discardableResult
@@ -80,8 +81,8 @@ public actor PartyAccount {
                 refusedNames = refused
                 return profile
             } catch let error as PartyError {
-                if case .invalidRequest = error, update.forCatalogVersion1() != update {
-                    update = update.forCatalogVersion1()
+                if case .invalidRequest = error, let older = update.olderCatalogFallback {
+                    update = older
                     continue
                 }
                 guard let refusal = PartyNameRefusal(error), !refused.contains(refusal) else { throw error }

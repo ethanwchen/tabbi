@@ -5,8 +5,12 @@
 <dict>
 	<key>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</key>
 	<string>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</string>
+	<key>%@ %@</key>
+	<string>%@ %@</string>
 	<key>%@ %@ so far</key>
 	<string>%@ %@ so far</string>
+	<key>%@ %@ so far.</key>
+	<string>%@ %@ so far.</string>
 	<key>%@ (paused)</key>
 	<string>%@ (paused)</string>
 	<key>%@ Fix it in Settings &gt; Tabs &gt; Party &gt; Options, or clear it to use the Tabbi server.</key>
@@ -153,6 +157,8 @@
 	<string>%@ of focus.</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>%@ opens in Music; press play there.</string>
+	<key>%@ quests</key>
+	<string>%@ quests</string>
 	<key>%@ raced a snail and let it win</key>
 	<string>%@ raced a snail and let it win</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
@@ -181,6 +187,10 @@
 	<string>%@ suggests no changes</string>
 	<key>%@ suggests no changes.</key>
 	<string>%@ suggests no changes.</string>
+	<key>%@ this month.</key>
+	<string>%@ this month.</string>
+	<key>%@ to %@</key>
+	<string>%@ to %@</string>
 	<key>%@ today</key>
 	<string>%@ today</string>
 	<key>%@ tokens</key>
@@ -189,6 +199,8 @@
 	<string>%@ unlocks after %@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%@ unlocks at %lld</string>
+	<key>%@ unlocks with %@. %@</key>
+	<string>%@ unlocks with %@. %@</string>
 	<key>%@ uses it to greet you.</key>
 	<string>%@ uses it to greet you.</string>
 	<key>%@ visited the bakery</key>
@@ -207,10 +219,18 @@
 	<string>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · Paused</string>
+	<key>%@, %@</key>
+	<string>%@, %@</string>
 	<key>%@, %@ left</key>
 	<string>%@, %@ left</string>
+	<key>%@, %@ to %@</key>
+	<string>%@, %@ to %@</string>
 	<key>%@, %lld extra</key>
 	<string>%@, %lld extra</string>
+	<key>%@, earned: click to take off</key>
+	<string>%@, earned: click to take off</string>
+	<key>%@, earned: click to wear</key>
+	<string>%@, earned: click to wear</string>
 	<key>%@, limited edition: %@</key>
 	<string>%@, limited edition: %@</string>
 	<key>%@, limited edition: %@ Its event starts %@.</key>
@@ -231,8 +251,16 @@
 	<string>%@: %@ done today</string>
 	<key>%@: %@ left</key>
 	<string>%@: %@ left</string>
+	<key>%@: %@ this month</key>
+	<string>%@: %@ this month</string>
 	<key>%@: %@ tokens</key>
 	<string>%@: %@ tokens</string>
+	<key>%@: %@. Something new since you last looked.</key>
+	<string>%@: %@. Something new since you last looked.</string>
+	<key>%@: Starlight, every tier earned</key>
+	<string>%@: Starlight, every tier earned</string>
+	<key>%@: done this month</key>
+	<string>%@: done this month</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: you earned every item. They stay yours after the event.</string>
 	<key>%lld h</key>
@@ -255,12 +283,16 @@
 	<string>%lld new, %lld learning, %lld review</string>
 	<key>%lld of %lld</key>
 	<string>%lld of %lld</string>
+	<key>%lld of %lld badges</key>
+	<string>%lld of %lld badges</string>
 	<key>%lld of %lld cards reviewed today</key>
 	<string>%lld of %lld cards reviewed today</string>
 	<key>%lld of %lld done</key>
 	<string>%lld of %lld done</string>
 	<key>%lld of %lld earned</key>
 	<string>%lld of %lld earned</string>
+	<key>%lld of %lld outfits</key>
+	<string>%lld of %lld outfits</string>
 	<key>%lld pts to go</key>
 	<string>%lld pts to go</string>
 	<key>%lld pts, %@ to go</key>
@@ -281,6 +313,8 @@
 	<string>%lldh %lldm</string>
 	<key>%lldh ago</key>
 	<string>%lldh ago</string>
+	<key>%lldk</key>
+	<string>%lldk</string>
 	<key>%lldm</key>
 	<string>%lldm</string>
 	<key>%lldm ago</key>
@@ -491,6 +525,8 @@
 	<string>All decks with cards due</string>
 	<key>All done</key>
 	<string>All done</string>
+	<key>All done. New quests on %@.</key>
+	<string>All done. New quests on %@.</string>
 	<key>All earned</key>
 	<string>All earned</string>
 	<key>All optional. Nothing to do now.</key>
@@ -607,6 +643,8 @@
 	<string>App</string>
 	<key>Appears when the pointer reaches the top center.</key>
 	<string>Appears when the pointer reaches the top center.</string>
+	<key>Apprentice Robe</key>
+	<string>Apprentice Robe</string>
 	<key>Apps and permissions</key>
 	<string>Apps and permissions</string>
 	<key>Are you signed in to Claude?</key>
@@ -639,6 +677,8 @@
 	<string>Asking Anki to open the deck for review.</string>
 	<key>Astronaut Helmet</key>
 	<string>Astronaut Helmet</string>
+	<key>Astronaut Suit</key>
+	<string>Astronaut Suit</string>
 	<key>At least one tab must stay</key>
 	<string>At least one tab must stay</string>
 	<key>At the start of a break, %@ shows a short move you can copy</key>
@@ -675,6 +715,10 @@
 	<string>Back to today</string>
 	<key>Backwards Cap</key>
 	<string>Backwards Cap</string>
+	<key>Badges</key>
+	<string>Badges</string>
+	<key>Baker's Apron</key>
+	<string>Baker's Apron</string>
 	<key>Beanie</key>
 	<string>Beanie</string>
 	<key>Bell collar</key>
@@ -699,6 +743,8 @@
 	<string>Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>Blocks go to your calendar.</string>
+	<key>Blossom Sprout</key>
+	<string>Blossom Sprout</string>
 	<key>Bond %lld</key>
 	<string>Bond %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -717,6 +763,8 @@
 	<string>Break</string>
 	<key>Break buddy</key>
 	<string>Break buddy</string>
+	<key>Break moves</key>
+	<string>Break moves</string>
 	<key>Break's over</key>
 	<string>Break's over</string>
 	<key>Breathe in slowly, then let it all out.</key>
@@ -735,6 +783,8 @@
 	<string>Built-in display</string>
 	<key>Bunny Ears</key>
 	<string>Bunny Ears</string>
+	<key>Busy Bee Antennae</key>
+	<string>Busy Bee Antennae</string>
 	<key>Butter yellow sunshine, happy and bright.</key>
 	<string>Butter yellow sunshine, happy and bright.</string>
 	<key>Buy freeze</key>
@@ -1107,6 +1157,8 @@
 	<string>Cozy</string>
 	<key>Cozy Hoodie</key>
 	<string>Cozy Hoodie</string>
+	<key>Cozy Pajamas</key>
+	<string>Cozy Pajamas</string>
 	<key>Cozy Scarf</key>
 	<string>Cozy Scarf</string>
 	<key>Cozy days and quiet focus before the new year.</key>
@@ -1243,6 +1295,8 @@
 	<string>Don't ask again</string>
 	<key>Done</key>
 	<string>Done</string>
+	<key>Done this month.</key>
+	<string>Done this month.</string>
 	<key>Done! You stuck with it.</key>
 	<string>Done! You stuck with it.</string>
 	<key>Drag to reorder</key>
@@ -1319,6 +1373,8 @@
 	<string>Exam Season</string>
 	<key>Example</key>
 	<string>Example</string>
+	<key>Explorer's Hat</key>
+	<string>Explorer's Hat</string>
 	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
 	<string>Falling off isn't failing. Staying off is. And look, you're back.</string>
 	<key>Fantasy</key>
@@ -1335,6 +1391,8 @@
 	<string>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</string>
 	<key>Finish a Party session with friends.</key>
 	<string>Finish a Party session with friends.</string>
+	<key>Finish all three to count the month toward the Monthly quests badge.</key>
+	<string>Finish all three to count the month toward the Monthly quests badge.</string>
 	<key>Finish setup</key>
 	<string>Finish setup</string>
 	<key>Fireplace</key>
@@ -1359,6 +1417,8 @@
 	<string>Fixed something in another app? Come back here and the light updates by itself.</string>
 	<key>Flame Headband</key>
 	<string>Flame Headband</string>
+	<key>Flashcards</key>
+	<string>Flashcards</string>
 	<key>Flow</key>
 	<string>Flow</string>
 	<key>Flower Crown</key>
@@ -1471,6 +1531,8 @@
 	<string>Friends see your name, your pet and when you're studying. Nothing about your cards or decks leaves your Mac.</string>
 	<key>Friends server</key>
 	<string>Friends server</string>
+	<key>Friendship Bandana</key>
+	<string>Friendship Bandana</string>
 	<key>Frog Hat</key>
 	<string>Frog Hat</string>
 	<key>From your Claude Code logs</key>
@@ -1493,6 +1555,8 @@
 	<string>GPU utilization, last 60 seconds</string>
 	<key>General</key>
 	<string>General</string>
+	<key>Gentle streak</key>
+	<string>Gentle streak</string>
 	<key>Get %@</key>
 	<string>Get %@</string>
 	<key>Get %@ to control your music from the notch.</key>
@@ -1525,6 +1589,8 @@
 	<string>Go invisible. Your study minutes still count.</string>
 	<key>Go on without a name</key>
 	<string>Go on without a name</string>
+	<key>Goals</key>
+	<string>Goals</string>
 	<key>Goals left today</key>
 	<string>Goals left today</string>
 	<key>Gold tag</key>
@@ -1823,10 +1889,14 @@
 	<string>Limited</string>
 	<key>Limited edition</key>
 	<string>Limited edition</string>
+	<key>Limited edition items, earned by studying, never sold</key>
+	<string>Limited edition items, earned by studying, never sold</string>
 	<key>Lion Dance Hat</key>
 	<string>Lion Dance Hat</string>
 	<key>Listen to %@</key>
 	<string>Listen to %@</string>
+	<key>Little Sprout</key>
+	<string>Little Sprout</string>
 	<key>Live activity</key>
 	<string>Live activity</string>
 	<key>Loading</key>
@@ -1879,6 +1949,8 @@
 	<string>Mark as done</string>
 	<key>Mark as not done</key>
 	<string>Mark as not done</string>
+	<key>Mastery outfits: each unlocks with a badge tier, never with points</key>
+	<string>Mastery outfits: each unlocks with a badge tier, never with points</string>
 	<key>May Tabbi run your shortcuts?</key>
 	<string>May Tabbi run your shortcuts?</string>
 	<key>Measuring cores...</key>
@@ -1917,6 +1989,10 @@
 	<string>Model</string>
 	<key>Month</key>
 	<string>Month</string>
+	<key>Monthly quests</key>
+	<string>Monthly quests</string>
+	<key>Monthly quests, badges and outfits earned from long goals</key>
+	<string>Monthly quests, badges and outfits earned from long goals</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Moonlit Witch Hat</string>
 	<key>Moonstone</key>
@@ -1985,6 +2061,10 @@
 	<string>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</string>
+	<key>Next: %@, %@</key>
+	<string>Next: %@, %@</string>
+	<key>Nightcap</key>
+	<string>Nightcap</string>
 	<key>Ninja Headband</key>
 	<string>Ninja Headband</string>
 	<key>No answer</key>
@@ -2197,6 +2277,8 @@
 	<string>On today</string>
 	<key>One add-on to go</key>
 	<string>One add-on to go</string>
+	<key>One badge for each habit, from Bronze to Starlight</key>
+	<string>One badge for each habit, from Bronze to Starlight</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>One calm session at a time. You've got this.</string>
 	<key>One countdown, no breaks</key>
@@ -2345,6 +2427,12 @@
 	<string>Other</string>
 	<key>Out of sight. Press %@ to open it.</key>
 	<string>Out of sight. Press %@ to open it.</string>
+	<key>Outfits and accessories to unlock with study points</key>
+	<string>Outfits and accessories to unlock with study points</string>
+	<key>Outfits to earn</key>
+	<string>Outfits to earn</string>
+	<key>Owl Spectacles</key>
+	<string>Owl Spectacles</string>
 	<key>Owned</key>
 	<string>Owned</string>
 	<key>Pals</key>
@@ -2759,6 +2847,8 @@
 	<string>Running in %@</string>
 	<key>Runs on this Mac</key>
 	<string>Runs on this Mac</string>
+	<key>Sage's Robe</key>
+	<string>Sage's Robe</string>
 	<key>Sakura Sprig</key>
 	<string>Sakura Sprig</string>
 	<key>Save</key>
@@ -2779,6 +2869,8 @@
 	<string>Saved in your Keychain</string>
 	<key>Schedule</key>
 	<string>Schedule</string>
+	<key>Scholar's Robe</key>
+	<string>Scholar's Robe</string>
 	<key>Screenshot sent with this question</key>
 	<string>Screenshot sent with this question</string>
 	<key>Scrubs</key>
@@ -2823,6 +2915,8 @@
 	<string>Server</string>
 	<key>Session done. Nice work!</key>
 	<string>Session done. Nice work!</string>
+	<key>Sessions</key>
+	<string>Sessions</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>Set "apiKey" to null, then click OK</string>
 	<key>Set this up later from its tab</key>
@@ -3005,8 +3099,12 @@
 	<string>Sparkle</string>
 	<key>Sparkle Trail</key>
 	<string>Sparkle Trail</string>
+	<key>Species, breed and fur color</key>
+	<string>Species, breed and fur color</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>Spooky season is here. Focus to dress up your pet.</string>
+	<key>Sporty Sweatband</key>
+	<string>Sporty Sweatband</string>
 	<key>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</key>
 	<string>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</string>
 	<key>Spotify link or Music playlist name</key>
@@ -3025,6 +3123,10 @@
 	<string>Stand, shake out your legs, and sit back down when you like.</string>
 	<key>Star tag</key>
 	<string>Star tag</string>
+	<key>Starlight, every tier earned</key>
+	<string>Starlight, every tier earned</string>
+	<key>Starry Cloak</key>
+	<string>Starry Cloak</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>Stars don't rush. They just keep burning.</string>
 	<key>Start %@ automatically when you log in</key>
@@ -3081,6 +3183,8 @@
 	<string>Starts with focus unless music is already playing, and pauses at your break.</string>
 	<key>Stays on this Mac</key>
 	<string>Stays on this Mac</string>
+	<key>Steady weeks</key>
+	<string>Steady weeks</string>
 	<key>Step %lld of %lld</key>
 	<string>Step %lld of %lld</string>
 	<key>Step away for a bit</key>
@@ -3143,6 +3247,10 @@
 	<string>Study block</string>
 	<key>Study buddies</key>
 	<string>Study buddies</string>
+	<key>Study days</key>
+	<string>Study days</string>
+	<key>Study methods</key>
+	<string>Study methods</string>
 	<key>Study parties</key>
 	<string>Study parties</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3255,6 +3363,8 @@
 	<string>Talent is a head start. Showing up is the whole race.</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>Tap the trackpad when the pointer reaches the notch or a celebration plays</string>
+	<key>Tasks</key>
+	<string>Tasks</string>
 	<key>Tasks left today</key>
 	<string>Tasks left today</string>
 	<key>Team Medal</key>
@@ -3439,6 +3549,8 @@
 	<string>This task is on today's list</string>
 	<key>This works. Nothing to do.</key>
 	<string>This works. Nothing to do.</string>
+	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
+	<string>Three small goals each month. They are optional, and a month you miss costs nothing.</string>
 	<key>Time</key>
 	<string>Time</string>
 	<key>Time for a %lld-minute break.</key>
@@ -3455,6 +3567,8 @@
 	<string>Timer: %@</string>
 	<key>Tiny Crown</key>
 	<string>Tiny Crown</string>
+	<key>Tiny Lantern</key>
+	<string>Tiny Lantern</string>
 	<key>Tiny Rain Cloud</key>
 	<string>Tiny Rain Cloud</string>
 	<key>Tips to focus better</key>
@@ -3675,6 +3789,8 @@
 	<string>Wardrobe</string>
 	<key>Warm cream and peach, soft and gentle.</key>
 	<string>Warm cream and peach, soft and gentle.</string>
+	<key>Water</key>
+	<string>Water</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>Water carves canyons by never skipping a day.</string>
 	<key>Wearing</key>
@@ -3923,6 +4039,10 @@
 	<string>Your playlist</string>
 	<key>Your setup already matches %@</key>
 	<string>Your setup already matches %@</string>
+	<key>Your study day by day, with the time studied on each</key>
+	<string>Your study day by day, with the time studied on each</string>
+	<key>Your study streak and the freezes that protect it</key>
+	<string>Your study streak and the freezes that protect it</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>
 	<string>Your study streak: days in a row with at least %lld focused minutes</string>
 	<key>Your tabs</key>
@@ -3935,8 +4055,18 @@
 	<string>Your week</string>
 	<key>Your week with Tabbi is ready</key>
 	<string>Your week with Tabbi is ready</string>
+	<key>Your weekly recaps with your pet</key>
+	<string>Your weekly recaps with your pet</string>
 	<key>all day: %@</key>
 	<string>all day: %@</string>
+	<key>badge.tier.bronze</key>
+	<string>Bronze</string>
+	<key>badge.tier.gold</key>
+	<string>Gold</string>
+	<key>badge.tier.silver</key>
+	<string>Silver</string>
+	<key>badge.tier.starlight</key>
+	<string>Starlight</string>
 	<key>best day</key>
 	<string>best day</string>
 	<key>card</key>
