@@ -301,10 +301,11 @@ final class PetCamReadTests: XCTestCase {
         var game = PetCamGame(seed: 0xDA2E, at: monday)
         game.start(id: "n", pick: nil, dodge: nil, dare: false, plannedLength: 1500, pet: pet, at: monday)
         XCTAssertEqual(game.stop(at: monday.addingTimeInterval(400), worked: 400, calendar: calendar)?.outcome, .stopped)
-        // One floor: five minutes, first block or not.
-        XCTAssertEqual(PetCamRules.standard.minimumBlock, 300)
-        XCTAssertTrue(game.arms(plannedLength: 300))
-        XCTAssertFalse(game.arms(plannedLength: 240))
+        // Ten minutes for a block, five for the dare, first block or not.
+        XCTAssertEqual(PetCamRules.standard.minimumBlock, 600)
+        XCTAssertEqual(PetCamRules.standard.dareBlock, 300)
+        XCTAssertTrue(game.arms(plannedLength: 300, dare: true))
+        XCTAssertFalse(game.arms(plannedLength: 300))
     }
 
     func testTheDodgeLineIsChargedAsObstructionAndFiledAsOnePhrase() throws {

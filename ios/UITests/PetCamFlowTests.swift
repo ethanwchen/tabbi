@@ -1,12 +1,13 @@
 import XCTest
 
-/// Plays the Pet Cam like a person, in five-minute blocks so the points
-/// visibly move: three catches and three misses, which shows every tape
-/// shape once (a shape is never one of the last two of its outcome), an
-/// early stop, a dare stopped after its floor that still plays its tape
-/// (`-PetCamQuickBlocks` makes that floor a minute and the stop's commit
-/// point ten seconds, debug builds only), the case file, a replay, a video
-/// export, the Lock Screen, the Dynamic Island and the end notification.
+/// Plays the Pet Cam like a person: the dare that starts the sitting,
+/// stopped after its floor and still playing its tape (`-PetCamQuickBlocks`
+/// makes that floor a minute and the stop's commit point ten seconds, debug
+/// builds only), then ten-minute blocks so the points visibly move: three
+/// catches and three misses, which shows every tape shape (a shape is never
+/// one of the last two of its outcome), an early stop, the case file, a
+/// replay, a video export, the Lock Screen, the Dynamic Island and the end
+/// notification.
 /// Every tape must draw its picture at the same size.
 ///
 /// `-PetCamTestHooks` lets the test read where the pet will strike, so it
@@ -22,8 +23,8 @@ final class PetCamFlowTests: XCTestCase {
     private var captions: [String] = []
     /// Each tape's picture size: one frame for every tape.
     private var pictures: [String: CGSize] = [:]
-    /// The length of every filmed block.
-    private let block: TimeInterval = 300
+    /// The length of every filmed block: ten minutes, the floor.
+    private let block: TimeInterval = 600
 
     override func setUp() async throws {
         continueAfterFailure = false
@@ -43,18 +44,41 @@ final class PetCamFlowTests: XCTestCase {
             app.buttons["Done"].firstMatch.tap()
         }
 
-        // The Timer, at five minutes for every block.
+        // The Timer, at ten minutes for every block.
         app.buttons["Pomodoro"].tap()
         let timerRow = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Timer'")).firstMatch
         let list = app.collectionViews.firstMatch
         XCTAssertTrue(list.waitForExistence(timeout: 5))
         for _ in 0..<4 where !timerRow.isHittable { list.swipeUp() }
         timerRow.tap()
-        let shorter = app.buttons["A shorter timer"]
+        let shorter = app.buttons["A shorter timer"], longer = app.buttons["A longer timer"]
         XCTAssertTrue(shorter.waitForExistence(timeout: 5))
         for _ in 0..<6 where !shorter.isHittable { app.swipeUp() }
-        for _ in 0..<40 where !app.staticTexts["5 min"].exists && shorter.isEnabled { shorter.tap() }
-        XCTAssertTrue(app.staticTexts["5 min"].exists)
+        for _ in 0..<40 where !app.staticTexts["10 min"].exists && shorter.isEnabled {
+            let minutes = Int(app.staticTexts.matching(NSPredicate(format: "label ENDSWITH ' min'")).firstMatch.label
+                .split(separator: " ").first ?? "") ?? 0
+            (minutes > 10 ? shorter : longer).tap()
+        }
+        XCTAssertTrue(app.staticTexts["10 min"].exists)
+
+        // The dare starts the sitting: "Just 5 minutes", stopped once its
+        // floor is in, plays its whole tape. It shows only when no filmed
+        // block ended in the last hour, so only here.
+        hideCamera(catching: true)
+        app.buttons["Just 5 minutes"].tap()
+        let dareStart = Date()
+        XCTAssertTrue(app.buttons["Stop"].waitForExistence(timeout: 5))
+        checkpoint("32-dare-recording")
+        wait(untilSecondsSince: dareStart, 64)
+        app.buttons["Stop"].tap()
+        let dareTape = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH 'Still '")).firstMatch
+        XCTAssertTrue(dareTape.waitForExistence(timeout: 10), "a dare stopped after its floor still plays its tape")
+        XCTAssertGreaterThan(Int(dareTape.label.split(separator: " ").last ?? "1") ?? 1, 1)
+        sleep(2)
+        checkpoint("33-dare-tape")
+        app.buttons["Done"].firstMatch.tap()
+        sleep(2)
+        XCTAssertFalse(app.buttons["Just 5 minutes"].exists, "the dare stays away for the rest of the sitting")
 
         // Catch 1: hide the camera where the pet will strike and say what is
         // being avoided.
@@ -99,22 +123,6 @@ final class PetCamFlowTests: XCTestCase {
         XCTAssertTrue(still.waitForNonExistence(timeout: 10))
         sleep(1)
 
-        // The dare: "Just 5 minutes", stopped once its floor is in, plays
-        // its whole tape.
-        hideCamera(catching: true)
-        app.buttons["Just 5 minutes"].tap()
-        let dareStart = Date()
-        XCTAssertTrue(app.buttons["Stop"].waitForExistence(timeout: 5))
-        checkpoint("32-dare-recording")
-        wait(untilSecondsSince: dareStart, 64)
-        app.buttons["Stop"].tap()
-        let dareTape = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH 'Still '")).firstMatch
-        XCTAssertTrue(dareTape.waitForExistence(timeout: 10), "a dare stopped after its floor still plays its tape")
-        XCTAssertGreaterThan(Int(dareTape.label.split(separator: " ").last ?? "1") ?? 1, 1)
-        sleep(2)
-        checkpoint("33-dare-tape")
-        app.buttons["Done"].firstMatch.tap()
-        sleep(2)
 
         // Two more catches and two more misses: every shape of both.
         play(catching: true, name: "catch-2", first: 40)
@@ -161,7 +169,7 @@ final class PetCamFlowTests: XCTestCase {
         app.buttons["Done"].firstMatch.tap()
     }
 
-    /// One one-minute block, filmed where the pet strikes or elsewhere,
+    /// One ten-minute block, filmed where the pet strikes or elsewhere,
     /// recorded and watched to its end.
     private func play(catching: Bool, name: String, first: Int, share: Bool = false) {
         hideCamera(catching: catching)

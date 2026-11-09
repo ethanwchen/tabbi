@@ -110,7 +110,8 @@ final class PetCamStore: StudyObserver {
     /// session starts, which is how its end is recognized later.
     func start(study: StudyStore, dare: Bool = false, now: Date = Date()) {
         let session = study.session
-        if session.runState == .idle, session.phase == .focus, game.arms(plannedLength: session.phaseDuration) {
+        if session.runState == .idle, session.phase == .focus,
+           game.arms(plannedLength: session.phaseDuration, dare: dare) {
             game.start(id: UUID().uuidString, pick: pick, dodge: dodge, dare: dare,
                        plannedLength: session.phaseDuration, pet: study.pet, at: now)
             pick = nil

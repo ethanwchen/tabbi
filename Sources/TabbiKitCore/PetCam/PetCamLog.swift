@@ -3,34 +3,47 @@ import Foundation
 /// When the camera arms, and when an early stop still counts. Data, so the
 /// debug build can run whole loops in a minute.
 ///
-/// One floor: any block of `minimumBlock` (five minutes) or more is filmed.
-/// A normal block stopped early leaves the frozen still once it ran past
-/// `commitAfter`; a dare stopped after its floor plays its whole tape, as
-/// "Just 5 minutes" promises.
+/// A block of `minimumBlock` (ten minutes) or more is filmed. "Just 5
+/// minutes", the dare that starts a sitting, films from `dareBlock` (five)
+/// and keeps its promise: stopped after five minutes it plays its whole
+/// tape. Any other block stopped early leaves the frozen still once it ran
+/// past `commitAfter`.
 public struct PetCamRules: Codable, Hashable, Sendable {
     /// The shortest planned block that gets a camera and a tape.
     public var minimumBlock: TimeInterval
+    /// The shortest dare ("Just 5 minutes") that does.
+    public var dareBlock: TimeInterval
     /// A stop before this much focus is a cancel: no still, nothing kept.
     public var commitAfter: TimeInterval
 
-    public init(minimumBlock: TimeInterval = 5 * 60, commitAfter: TimeInterval = 5 * 60) {
+    public init(minimumBlock: TimeInterval = 10 * 60, dareBlock: TimeInterval = 5 * 60,
+                commitAfter: TimeInterval = 5 * 60) {
         self.minimumBlock = max(minimumBlock, 0)
+        self.dareBlock = max(min(dareBlock, minimumBlock), 0)
         self.commitAfter = max(commitAfter, 0)
     }
 
     public static let standard = PetCamRules()
 
-    /// Debug builds only: one-minute blocks arm the camera and a stop after
-    /// ten seconds still counts, so a full loop takes a minute in a test.
-    public static let quickTest = PetCamRules(minimumBlock: 60, commitAfter: 10)
+    /// Debug builds only: one-minute blocks (and dares) arm the camera and
+    /// a stop after ten seconds still counts, so a full loop takes a minute
+    /// in a test.
+    public static let quickTest = PetCamRules(minimumBlock: 60, dareBlock: 60, commitAfter: 10)
 
-    // Forgiving decoding: an older save's first-block rule is simply gone.
-    private enum CodingKeys: String, CodingKey { case minimumBlock, commitAfter }
+    private enum CodingKeys: String, CodingKey { case minimumBlock, dareBlock, commitAfter }
 
+    /// Forgiving decoding. A save from before the dare had its own floor
+    /// kept the five-minute floor every block had then; it takes today's
+    /// rules (or the quick test's, if it was on them).
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        let minimum = try? container.decode(TimeInterval.self, forKey: .minimumBlock)
+        guard let dare = try? container.decode(TimeInterval.self, forKey: .dareBlock) else {
+            self = minimum == Self.quickTest.minimumBlock ? .quickTest : .standard
+            return
+        }
         let standard = PetCamRules.standard
-        self.init(minimumBlock: (try? container.decode(TimeInterval.self, forKey: .minimumBlock)) ?? standard.minimumBlock,
+        self.init(minimumBlock: minimum ?? standard.minimumBlock, dareBlock: dare,
                   commitAfter: (try? container.decode(TimeInterval.self, forKey: .commitAfter)) ?? standard.commitAfter)
     }
 }

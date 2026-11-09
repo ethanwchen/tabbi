@@ -98,6 +98,7 @@ struct PetCamCaptionGrammar: Decodable, Sendable {
     let opener, openerDays, motion, quiet, act, eaten, offCamera, noticed, innocent, returns: [String]
     let aftermath, rewind, enhance, alibiOpen, windUp, meanwhile, walkBy, denial: [String]
     let caught, charge, obstruction, firstOffense, offense, repeatOffender, frozen, noTape, ownerAway, atLarge: String
+    let premeditated, premeditatedAct: String
     let stamps: [String]
     let wantedDays, wantedYesterday, wantedSince: String
     let tells: [String: String]
@@ -417,10 +418,25 @@ public enum PetCamCaptions {
         if record.outcome == .caught {
             return (includeDodge ? record.captions.charge : record.captions.publicCharge) ?? record.captions.charge
         }
-        let action = fill(grammar.words(kind).charge, ["spot": grammar.name(strike)])
-        let charge = (includeDodge ? cleanDodge(record.dodge) : nil).map { fill(grammar.obstruction, ["dodge": $0]) }
-            ?? action
-        return fill(grammar.atLarge, ["charge": charge])
+        let action = charges(kind, at: strike, dodge: includeDodge ? record.dodge : nil, worked: record.worked)
+        return fill(grammar.atLarge, ["charge": action.dodge ?? action.act])
+    }
+
+    /// A block of at least this much focus was planned: its charge is
+    /// premeditated. The Pomodoro's length, so the default block earns it.
+    public static let premeditatedAfter: TimeInterval = 25 * 60
+
+    /// What the pet did, and the player's own words as obstruction, with
+    /// the one word a long absence adds ("PREMEDITATED OBSTRUCTION OF MY TAX
+    /// RETURN"; "KNOCKING A MUG OFF THE COUNTER, WITH PREMEDITATION").
+    static func charges(_ kind: PetCamObjectKind, at strike: PetCamSpot, dodge: String?,
+                        worked: TimeInterval) -> (act: String, dodge: String?) {
+        let premeditated = worked + 0.5 >= premeditatedAfter
+        let act = fill(grammar.words(kind).charge, ["spot": grammar.name(strike)])
+        let obstruction = cleanDodge(dodge).map { fill(grammar.obstruction, ["dodge": $0]) }
+        guard premeditated else { return (act, obstruction) }
+        return (fill(grammar.premeditatedAct, ["charge": act]),
+                obstruction.map { fill(grammar.premeditated, ["charge": $0]) })
     }
 
     /// One line from `choices`, picked by the seed's `stream` roll, leaving
@@ -442,7 +458,7 @@ public enum PetCamCaptions {
     /// Every caption of a block that ran to its end.
     static func tape(outcome: PetCamBlockRecord.Outcome, setup: PetCamSetup, camera: PetCamSpot, strike: PetCamSpot,
                      struck: PetCamObject, room: PetCamRoom, dodge: String?, history: [PetCamBlockRecord],
-                     offense: Int, at date: Date, calendar: Calendar) -> PetCamCaptionSet {
+                     offense: Int, worked: TimeInterval = 0, at date: Date, calendar: Calendar) -> PetCamCaptionSet {
         let seed = setup.seed
         let words = grammar.words(struck.kind)
         // The last few tapes, newest first, for the age line's own rule.
@@ -488,7 +504,7 @@ public enum PetCamCaptions {
         let windUp = line(grammar.windUp, "windUp", \.windUp)
         let object = words.name
         if outcome == .caught {
-            let action = fill(words.charge, ["spot": grammar.name(strike)])
+            let action = charges(struck.kind, at: strike, dodge: dodge, worked: worked)
             let wanted = setup.wanted == strike
                 ? Self.wanted(since: PetCamSetup.wantedSince(struck.kind, history: history, before: date) ?? date,
                               at: date, calendar: calendar)
@@ -500,9 +516,8 @@ public enum PetCamCaptions {
                 age: age, callback: callback,
                 turn: line(grammar.noticed, "turn", \.turn),
                 closer: stamp(tier: PetCamBlockRecord.tier(offense)),
-                charge: fill(grammar.charge, ["charge": cleanDodge(dodge).map { fill(grammar.obstruction, ["dodge": $0]) }
-                    ?? action]),
-                publicCharge: fill(grammar.charge, ["charge": action]),
+                charge: fill(grammar.charge, ["charge": action.dodge ?? action.act]),
+                publicCharge: fill(grammar.charge, ["charge": action.act]),
                 priors: rapSheet(offense),
                 aftermath: shapeLines.aftermath, rewind: shapeLines.rewind, enhance: shapeLines.enhance,
                 tell: shapeLines.tell, windUp: windUp, wanted: wanted

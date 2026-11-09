@@ -13,7 +13,7 @@ final class PetCamLargeTextTests: XCTestCase {
     override func setUp() async throws {
         continueAfterFailure = false
         app.launchArguments = ["-TabbiResetState", "-TabbiDemoPet", "-PetCamQuickBlocks", "-PetCamTestHooks",
-                               "-PetCamSeed", "00000000000051d5", "-TabbiTimerMinutes", "5"]
+                               "-PetCamSeed", "00000000000051d5", "-TabbiTimerMinutes", "10"]
     }
 
     func testEveryScreenAtTheLargestTextSize() throws {
@@ -24,7 +24,7 @@ final class PetCamLargeTextTests: XCTestCase {
         checkpoint("ax-02-home-scrolled")
         app.swipeDown()
 
-        // The Timer is already at five minutes (`-TabbiTimerMinutes`).
+        // The Timer is already at ten minutes (`-TabbiTimerMinutes`).
         let page = app.scrollViews.firstMatch
         let hook = app.staticTexts["debug.strike"]
         XCTAssertTrue(hook.waitForExistence(timeout: 5))
@@ -39,7 +39,7 @@ final class PetCamLargeTextTests: XCTestCase {
         XCTAssertTrue(app.buttons["Stop"].waitForExistence(timeout: 5))
         checkpoint("ax-03-recording")
 
-        let left = 298 - Date().timeIntervalSince(began)
+        let left = 598 - Date().timeIntervalSince(began)
         if left > 0 { usleep(useconds_t(left * 1_000_000)) }
         let progress = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH 'Still '")).firstMatch
         XCTAssertTrue(progress.waitForExistence(timeout: 30))

@@ -55,11 +55,24 @@ public struct PetCamGame: Codable, Hashable, Sendable {
     /// The shortest focus block that arms the camera.
     public var minimumBlock: TimeInterval { rules.minimumBlock }
 
-    /// Whether a block of `plannedLength` arms the camera; open-ended
-    /// blocks (nil) arm it and are judged by the time worked at the end.
-    public func arms(plannedLength: TimeInterval?) -> Bool {
+    /// Whether a block of `plannedLength` arms the camera (a dare from its
+    /// own, shorter floor); open-ended blocks (nil) arm it and are judged by
+    /// the time worked at the end.
+    public func arms(plannedLength: TimeInterval?, dare: Bool = false) -> Bool {
         guard let plannedLength else { return true }
-        return plannedLength + 0.5 >= minimumBlock
+        return plannedLength + 0.5 >= (dare ? rules.dareBlock : minimumBlock)
+    }
+
+    /// How long after a filmed block the dare stays away: "Just 5 minutes"
+    /// starts a sitting, so it shows only when no filmed block ended in the
+    /// last hour.
+    public static let sittingGap: TimeInterval = 3600
+
+    /// Whether "Just 5 minutes" is offered at `date`.
+    public func offersDare(at date: Date) -> Bool {
+        guard active == nil else { return false }
+        guard let last = log.blocks.last(where: { $0.outcome.hasTape }) else { return true }
+        return date.timeIntervalSince(last.endedAt) >= Self.sittingGap
     }
 
     // MARK: Before a block
@@ -81,7 +94,7 @@ public struct PetCamGame: Codable, Hashable, Sendable {
     @discardableResult
     public mutating func start(id: String, pick: PetCamSpot?, dodge: String?, dare: Bool,
                                plannedLength: TimeInterval?, pet: PetProfile, at date: Date) -> PetCamActiveBlock? {
-        guard active == nil, arms(plannedLength: plannedLength), !log.contains(id) else { return nil }
+        guard active == nil, arms(plannedLength: plannedLength, dare: dare), !log.contains(id) else { return nil }
         if pet.species != species { reprepare(species: pet.species, at: date) }
         let block = PetCamActiveBlock(
             id: id, setup: setup, camera: pick ?? setup.stare, picked: pick != nil,
@@ -109,7 +122,7 @@ public struct PetCamGame: Codable, Hashable, Sendable {
     @discardableResult
     public mutating func finish(endedAt: Date, worked: TimeInterval, calendar: Calendar = .current) -> PetCamBlockRecord? {
         guard let block = active else { return nil }
-        if block.plannedLength == nil, worked + 0.5 < rules.minimumBlock {
+        if block.plannedLength == nil, worked + 0.5 < (block.dare ? rules.dareBlock : rules.minimumBlock) {
             return stop(at: endedAt, worked: worked, calendar: calendar)
         }
         let strike = block.setup.strike
@@ -121,7 +134,7 @@ public struct PetCamGame: Codable, Hashable, Sendable {
         let offense = log.offenses(with: struck.kind) + 1
         let captions = PetCamCaptions.tape(
             outcome: outcome, setup: block.setup, camera: block.camera, strike: strike, struck: struck,
-            room: block.room, dodge: block.dodge, history: log.blocks, offense: offense, at: endedAt,
+            room: block.room, dodge: block.dodge, history: log.blocks, offense: offense, worked: worked, at: endedAt,
             calendar: calendar
         )
         // Never one of the last two tape shapes of the same outcome.
@@ -153,7 +166,7 @@ public struct PetCamGame: Codable, Hashable, Sendable {
         guard let block = active else { return nil }
         // "Just 5 minutes": a dare stopped once its five minutes are in is a
         // finished block, with the same strike and the whole tape.
-        if block.dare, worked + 0.5 >= rules.minimumBlock {
+        if block.dare, worked + 0.5 >= rules.dareBlock {
             return finish(endedAt: date, worked: worked, calendar: calendar)
         }
         active = nil

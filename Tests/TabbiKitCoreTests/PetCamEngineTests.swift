@@ -235,22 +235,64 @@ final class PetCamEngineTests: XCTestCase {
     func testOnlyALongEnoughBlockArmsTheCamera() {
         var game = PetCamGame(seed: 1, at: Self.monday)
         XCTAssertTrue(game.isFirstBlock)
-        XCTAssertEqual(game.minimumBlock, 5 * 60, "one floor: five minutes")
-        XCTAssertFalse(game.arms(plannedLength: 4 * 60))
-        XCTAssertTrue(game.arms(plannedLength: 5 * 60))
+        XCTAssertEqual(game.minimumBlock, 10 * 60, "a block is filmed from ten minutes")
+        XCTAssertFalse(game.arms(plannedLength: 5 * 60), "a five-minute Timer block is not filmed")
+        XCTAssertTrue(game.arms(plannedLength: 10 * 60))
+        XCTAssertTrue(game.arms(plannedLength: 5 * 60, dare: true), "the dare films from five")
+        XCTAssertFalse(game.arms(plannedLength: 4 * 60, dare: true))
         XCTAssertTrue(game.arms(plannedLength: nil), "open-ended blocks arm and are judged at the end")
-        XCTAssertNil(game.start(id: "short", pick: nil, dodge: nil, dare: false, plannedLength: 60, pet: pet,
+        XCTAssertNil(game.start(id: "short", pick: nil, dodge: nil, dare: false, plannedLength: 300, pet: pet,
                                 at: Self.monday))
         XCTAssertNil(game.active)
-        game.start(id: "b1", pick: nil, dodge: nil, dare: false, plannedLength: 300, pet: pet, at: Self.monday)
+        game.start(id: "b1", pick: nil, dodge: nil, dare: true, plannedLength: 300, pet: pet, at: Self.monday)
+        XCTAssertNotNil(game.active, "a five-minute dare arms")
         game.finish(endedAt: Self.monday.addingTimeInterval(300), worked: 300, calendar: Self.calendar)
         XCTAssertFalse(game.isFirstBlock)
-        XCTAssertEqual(game.minimumBlock, 5 * 60, "the same floor after the first block")
-        XCTAssertTrue(game.arms(plannedLength: 5 * 60))
-        XCTAssertFalse(game.arms(plannedLength: 4 * 60))
-        // An older save's rules, with the retired first-block field, still load.
-        let old = Data(#"{"minimumBlock": 600, "firstBlockMinimum": 300, "commitAfter": 300}"#.utf8)
-        XCTAssertEqual(try? JSONDecoder().decode(PetCamRules.self, from: old).minimumBlock, 600)
+        XCTAssertEqual(game.minimumBlock, 10 * 60, "the same floor after the first block")
+        // An older save's rules still load: a pre-dare save takes today's.
+        let old = Data(#"{"minimumBlock": 300, "firstBlockMinimum": 300, "commitAfter": 300}"#.utf8)
+        XCTAssertEqual(try? JSONDecoder().decode(PetCamRules.self, from: old), .standard)
+        let quick = Data(#"{"minimumBlock": 60, "commitAfter": 10}"#.utf8)
+        XCTAssertEqual(try? JSONDecoder().decode(PetCamRules.self, from: quick), .quickTest)
+        let saved = try? JSONDecoder().decode(PetCamRules.self, from: JSONEncoder().encode(PetCamRules.quickTest))
+        XCTAssertEqual(saved, .quickTest)
+    }
+
+    func testTheDareStartsASittingOnly() throws {
+        var game = PetCamGame(seed: 7, at: Self.monday)
+        XCTAssertTrue(game.offersDare(at: Self.monday), "no filmed block yet")
+        game.start(id: "a", pick: nil, dodge: nil, dare: false, plannedLength: 1500, pet: pet, at: Self.monday)
+        XCTAssertFalse(game.offersDare(at: Self.monday), "never during a block")
+        let end = Self.monday.addingTimeInterval(1500)
+        XCTAssertNotNil(game.finish(endedAt: end, worked: 1500, calendar: Self.calendar))
+        XCTAssertFalse(game.offersDare(at: end.addingTimeInterval(59 * 60)), "a sitting is under way")
+        XCTAssertTrue(game.offersDare(at: end.addingTimeInterval(60 * 60)), "an hour on, a new sitting")
+        // A block stopped early was not filmed, so it starts no sitting.
+        var stopped = PetCamGame(seed: 7, at: Self.monday)
+        stopped.start(id: "s", pick: nil, dodge: nil, dare: false, plannedLength: 1500, pet: pet, at: Self.monday)
+        stopped.stop(at: Self.monday.addingTimeInterval(400), worked: 400, calendar: Self.calendar)
+        XCTAssertTrue(stopped.offersDare(at: Self.monday.addingTimeInterval(500)))
+    }
+
+    func testALongBlockIsPremeditated() throws {
+        func charges(worked: TimeInterval, dodge: String?, catching: Bool) throws -> (String?, String?) {
+            var game = PetCamGame(seed: 0x9E3, at: Self.monday)
+            let strike = game.setup.strike
+            game.start(id: "p", pick: catching ? strike : PetCamSpot.allCases.first { $0 != strike }, dodge: dodge,
+                       dare: false, plannedLength: worked, pet: pet, at: Self.monday)
+            let record = try XCTUnwrap(game.finish(endedAt: Self.monday.addingTimeInterval(worked), worked: worked,
+                                                   calendar: Self.calendar))
+            return (record.outcome == .caught ? record.captions.charge : nil,
+                    PetCamCaptions.caseLine(record, includeDodge: true))
+        }
+        let long = try charges(worked: 25 * 60, dodge: "my tax return", catching: true)
+        XCTAssertEqual(long.0, "CHARGE: PREMEDITATED OBSTRUCTION OF MY TAX RETURN")
+        let plain = try charges(worked: 25 * 60, dodge: nil, catching: true)
+        XCTAssertTrue(plain.0?.hasSuffix(", WITH PREMEDITATION") ?? false, "\(plain.0 ?? "")")
+        let short = try charges(worked: 10 * 60, dodge: "my tax return", catching: true)
+        XCTAssertEqual(short.0, "CHARGE: OBSTRUCTION OF MY TAX RETURN")
+        let cold = try charges(worked: 50 * 60, dodge: "my tax return", catching: false)
+        XCTAssertEqual(cold.1, "PREMEDITATED OBSTRUCTION OF MY TAX RETURN. SUSPECT AT LARGE.")
     }
 
     func testARefillFavorsTheKindsCaughtLeast() {
@@ -279,7 +321,7 @@ final class PetCamEngineTests: XCTestCase {
             XCTAssertEqual(record.outcome, .caught)
             XCTAssertEqual(record.strike, strike)
             XCTAssertEqual(game.log.mugshots.map(\.id), ["b"])
-            XCTAssertEqual(record.captions.charge, "CHARGE: OBSTRUCTION OF MY ESSAY")
+            XCTAssertEqual(record.captions.charge, "CHARGE: PREMEDITATED OBSTRUCTION OF MY ESSAY", "25 minutes away")
             XCTAssertFalse(record.captions.publicCharge?.contains("ESSAY") ?? true)
         }
     }
@@ -341,9 +383,12 @@ final class PetCamEngineTests: XCTestCase {
         game.finish(endedAt: Self.monday.addingTimeInterval(200), worked: 200, calendar: Self.calendar)
         XCTAssertEqual(game.log.block("flow")?.outcome, .cancelled)
         game.start(id: "flow2", pick: nil, dodge: nil, dare: false, plannedLength: nil, pet: pet, at: Self.monday)
-        let record = try XCTUnwrap(game.finish(endedAt: Self.monday.addingTimeInterval(400), worked: 400,
+        game.finish(endedAt: Self.monday.addingTimeInterval(400), worked: 400, calendar: Self.calendar)
+        XCTAssertEqual(game.log.block("flow2")?.outcome, .stopped, "under ten minutes: the still, no tape")
+        game.start(id: "flow3", pick: nil, dodge: nil, dare: false, plannedLength: nil, pet: pet, at: Self.monday)
+        let record = try XCTUnwrap(game.finish(endedAt: Self.monday.addingTimeInterval(600), worked: 600,
                                                calendar: Self.calendar))
-        XCTAssertTrue(record.outcome.hasTape, "the first block needs five minutes")
+        XCTAssertTrue(record.outcome.hasTape, "ten minutes is a filmed block")
     }
 
     func testEachBlockIsCreditedOncePerBlockID() throws {

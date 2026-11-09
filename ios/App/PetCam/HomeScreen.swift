@@ -313,16 +313,23 @@ struct HomeScreen: View {
         .animation(.spring(duration: 0.4), value: study.award)
     }
 
-    /// "What are you avoiding?" and the five-minute dare.
+    /// "What are you avoiding?", and the five-minute dare when it would
+    /// start a sitting (no filmed block ended in the last hour).
     private var dodgeRow: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 8) {
+        TimelineView(.everyMinute) { context in
+            if cam.game.offersDare(at: context.date) {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) {
+                        dodgeField
+                        dareButton
+                    }
+                    VStack(spacing: 8) {
+                        dodgeField
+                        dareButton
+                    }
+                }
+            } else {
                 dodgeField
-                dareButton
-            }
-            VStack(spacing: 8) {
-                dodgeField
-                dareButton
             }
         }
     }

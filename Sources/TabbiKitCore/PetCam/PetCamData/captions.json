@@ -123,6 +123,8 @@
   "caught": "CAUGHT",
   "charge": "CHARGE: {charge}",
   "obstruction": "OBSTRUCTION OF {dodge}",
+  "premeditated": "PREMEDITATED {charge}",
+  "premeditatedAct": "{charge}, WITH PREMEDITATION",
   "firstOffense": "FIRST OFFENSE",
   "innocent": [
     "NOTHING TO SEE HERE.",
