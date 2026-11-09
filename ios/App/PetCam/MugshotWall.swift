@@ -21,7 +21,7 @@ struct MugshotWall: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
-                    ObjectSlots(counts: cam.caughtCounts)
+                    ObjectSlots(counts: cam.caughtCounts, kinds: cam.game.arrived)
                     if cam.cases.isEmpty {
                         empty
                     } else {
@@ -83,8 +83,11 @@ struct MugshotWall: View {
 
 /// The six objects the pet can be caught with: each one drawn once it has
 /// been, a dark silhouette until then.
+/// One slot per object that has arrived in the room, so the file grows
+/// as the room does and never looks finished.
 private struct ObjectSlots: View {
     let counts: [PetCamObjectKind: Int]
+    let kinds: [PetCamObjectKind]
     @Environment(\.dynamicTypeSize) private var typeSize
 
     /// The rap-sheet marks: filled at the first, second and fourth catch.
@@ -93,13 +96,13 @@ private struct ObjectSlots: View {
     var body: some View {
         let caught = Set(counts.keys)
         VStack(alignment: .leading, spacing: 8) {
-            Text(verbatim: "CAUGHT WITH \(caught.count) OF \(PetCamObjectKind.allCases.count)")
+            Text(verbatim: "CAUGHT WITH \(caught.count) OF \(kinds.count)")
                 .font(CCTV.font(.caption, weight: .heavy))
                 .foregroundStyle(CCTV.burnIn.opacity(0.7))
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8, alignment: .top),
                                      count: typeSize.isAccessibilitySize ? 2 : 3),
                       spacing: 8) {
-                ForEach(PetCamObjectKind.allCases, id: \.self) { kind in
+                ForEach(kinds, id: \.self) { kind in
                     let known = caught.contains(kind)
                     VStack(spacing: 6) {
                         ObjectSprite(kind: kind, wrecked: false, silhouette: !known, points: 3)

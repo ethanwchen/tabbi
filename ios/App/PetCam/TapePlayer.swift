@@ -618,10 +618,16 @@ struct TapeStillView: View {
             case .tissues: "shreds the tissues"
             case .plant: "digs in the plant pot"
             case .vase: "head-shoves the vase off its spot"
+            case .sock: "makes off with a sock"
+            case .keys: "swats the keys off their spot"
+            case .yarn: "bats the ball of yarn"
+            case .egg: "swats the egg out of its cup"
+            case .banana: "head-shoves the banana off its spot"
+            case .pencils: "swats the pencil cup over"
             }
             return "\(name) \(verb)."
         case .caughtMidAct(let kind):
-            return kind.isEaten ? "\(name) stares into the camera, mouth full of donut."
+            return kind.isHeld ? "\(name) stares into the camera, holding the \(PetCamCaptions.name(of: kind).lowercased())."
                 : "\(name) is caught in mid-air, staring into the camera."
         case .guilty, .mugshot:
             return "\(name) stares into the camera, wearing the evidence."

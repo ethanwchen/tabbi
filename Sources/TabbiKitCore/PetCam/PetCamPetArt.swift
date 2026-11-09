@@ -26,6 +26,8 @@ public enum PetCamPetArt {
     static let heldDonut = art.grid("heldDonut")
     /// A tissue pulled between both paws, mid-shred.
     static let heldTissue = art.grid("heldTissue")
+    /// The stolen sock, up in both paws.
+    static let heldSock = art.grid("heldSock")
 
     /// What a repeat offender wears on top of its guilty look, one more
     /// prop per rap-sheet tier: a plaster on the cheek from the second
@@ -49,6 +51,12 @@ public enum PetCamPetArt {
         case .plant: [mark("markSoil", .nose)]
         case .mug: [mark("markCoffee", .mouth)]
         case .vase: [mark("markPetal", .crown)]
+        case .sock: [mark("markSock", .crown)]
+        case .keys: [mark("markKeys", .mouth)]
+        case .yarn: [mark("markYarn", .leftEar)]
+        case .egg: [mark("markYolk", .crown)]
+        case .banana: [mark("markPeel", .crown)]
+        case .pencils: [mark("markPencil", .leftEar)]
         }
     }
 
@@ -110,9 +118,15 @@ public enum PetCamPetArt {
         if let evidence {
             extras.marks = guiltyMarks(evidence) + tierMarks(tier)
             // A frosted or coffee-stained mouth stays shut so the mark reads.
-            if evidence == .donut || evidence == .mug { pose.mouth = .closed }
+            if closesMouth(evidence) { pose.mouth = .closed }
         }
         return (pose, .sitting, extras)
+    }
+
+    /// Whether the evidence sits on the mouth, which then stays shut so the
+    /// mark reads: frosting, a coffee drip, the keys held in the teeth.
+    static func closesMouth(_ kind: PetCamObjectKind) -> Bool {
+        kind == .donut || kind == .mug || kind == .keys
     }
 
     /// The side view for a mugshot: standing side-on, facing left.
@@ -142,6 +156,24 @@ public enum PetCamPetArt {
         case .vase:
             // A head-shove: head down and turned into it, eyes shut.
             (PetPose(eyes: .closed, headDrop: 1), .stretching(depth: 1, wag: 1), PetComposer.Extras(faceShift: -1))
+        case .banana:
+            // The same shove, slower, the tail held still.
+            (PetPose(eyes: .closed, headDrop: 1), .stretching(depth: 1, wag: 0), PetComposer.Extras(faceShift: -1))
+        case .keys:
+            // A swat with the mouth wide open, no hop: the jingle is the fun.
+            (PetPose(mouth: .wide, gesture: .wave(swing: 0)), .sitting, PetComposer.Extras(eyes: wild))
+        case .egg:
+            // Leaning in for one careful poke, head low, eyes on it.
+            (PetPose(gesture: .wave(swing: 0), headDrop: 1), .sitting, PetComposer.Extras(eyes: lookLeft, faceShift: -2))
+        case .pencils:
+            // A backhand: the paw brought back in, mouth open, tail flicked.
+            (PetPose(mouth: .open, gesture: .wave(swing: 1), tailSwing: 2), .sitting, PetComposer.Extras(eyes: wild))
+        case .yarn:
+            // Batting the ball, delighted.
+            (PetPose(eyes: .happy, mouth: .open, gesture: .wave(swing: 0)), .sitting, PetComposer.Extras())
+        case .sock:
+            // Off with the sock: up in both paws, eyes delighted.
+            (PetPose(eyes: .happy), .sitting, PetComposer.Extras(held: heldSock))
         }
     }
 
@@ -171,14 +203,14 @@ public enum PetCamPetArt {
             // Eye contact, wearing the evidence, eyes wide: caught. The
             // freeze that follows settles into the case file's expression.
             var pose = PetPose()
-            if kind == .donut || kind == .mug { pose.mouth = .closed }
+            if closesMouth(kind) { pose.mouth = .closed }
             return (pose, .sitting, PetComposer.Extras(eyes: wild, marks: guiltyMarks(kind)))
         case .mugshot(let kind, let look, let tier):
             return mugshotParts(look, evidence: kind, tier: tier)
         case .caughtMidAct(let kind):
-            if kind.isEaten {
-                // Mouth full, the donut up in both paws, eyes on the lens.
-                return (PetPose(), .sitting, PetComposer.Extras(eyes: lens, held: heldDonut))
+            if kind.isHeld {
+                // Caught holding it, up in both paws, eyes on the lens.
+                return (PetPose(), .sitting, PetComposer.Extras(eyes: lens, held: kind == .sock ? heldSock : heldDonut))
             }
             // Off the spot and in the air, paw flung out, eyes on the lens.
             return (PetPose(mouth: .open, gesture: .wave(swing: 0), lift: 4), .sitting, PetComposer.Extras(eyes: lens))
@@ -191,7 +223,7 @@ public enum PetCamPetArt {
         case .walkBy(let kind):
             // Mid-stride and unbothered, with the fish still on its head.
             var pose = PetPose()
-            if kind == .donut || kind == .mug { pose.mouth = .closed }
+            if closesMouth(kind) { pose.mouth = .closed }
             return (pose, .walking(step: 1), PetComposer.Extras(marks: guiltyMarks(kind)))
         }
     }

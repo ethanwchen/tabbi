@@ -86,6 +86,52 @@
       ".UVUU.",
       "..U.U."
     ],
+    "heldSock": [
+      ".HHH..",
+      ".UUU..",
+      ".HHHHH",
+      ".HHHHH",
+      "..UUUU"
+    ],
+    "markSock": [
+      ".OOOO...",
+      "OHUUHO..",
+      "OHHHHOOO",
+      "OHUUHHHO",
+      ".OOOOOO."
+    ],
+    "markKeys": [
+      "OOO.....",
+      "OMOOOOOO",
+      "OOOMMMMO",
+      "..OOMOMO",
+      "...O.O.O"
+    ],
+    "markYarn": [
+      ".OOO.",
+      "OPXPO",
+      ".OPO.",
+      "..O.."
+    ],
+    "markYolk": [
+      "..OOOO..",
+      ".OUUUUO.",
+      "OUUYYUUO",
+      "OUYYYYUO",
+      ".OOOOOO."
+    ],
+    "markPeel": [
+      ".O...O.",
+      "OYO.OYO",
+      "OYYOYYO",
+      ".OYYYO.",
+      "..OOO.."
+    ],
+    "markPencil": [
+      "OOOOOOOO",
+      "OXYYYYMO",
+      "OOOOOOOO"
+    ],
     "propBandage": [
       "OOOOO",
       "OUPUO",

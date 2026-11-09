@@ -39,7 +39,8 @@ final class PetCamCaptionsTests: XCTestCase {
     static var beats: [Beat] {
         let grammar = PetCamCaptions.grammar
         return [
-            Beat(name: "opener", line: \.opener, templates: grammar.opener + grammar.openerDays, outcome: nil),
+            Beat(name: "opener", line: \.opener, templates: grammar.opener + grammar.openerDays + grammar.newArrival,
+                 outcome: nil),
             Beat(name: "rewind", line: \.rewind, templates: grammar.rewind, outcome: nil),
             Beat(name: "motion", line: \.watch, templates: grammar.motion, outcome: .caught),
             Beat(name: "strike", line: \.strike, templates: grammar.act + grammar.eaten, outcome: .caught),

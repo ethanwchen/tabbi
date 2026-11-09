@@ -193,12 +193,18 @@ public struct PetCamLog: Codable, Hashable, Sendable {
     public private(set) var catchCounts: [PetCamObjectKind: Int]
     /// How many catches there are in all.
     public private(set) var catchTotal: Int
+    /// The focus of every block logged, in seconds: what the room grows by.
+    public private(set) var totalFocus: TimeInterval
+    /// Every kind that has stood in the room at the start of a logged block.
+    public private(set) var seenKinds: Set<PetCamObjectKind>
 
     public init(blocks: [PetCamBlockRecord] = []) {
         self.blocks = []
         ids = []
         catchCounts = [:]
         catchTotal = 0
+        totalFocus = 0
+        seenKinds = []
         for block in blocks { record(block) }
     }
 
@@ -216,6 +222,8 @@ public struct PetCamLog: Codable, Hashable, Sendable {
     @discardableResult
     public mutating func record(_ block: PetCamBlockRecord) -> Bool {
         guard ids.insert(block.id).inserted else { return false }
+        totalFocus += max(block.worked, 0)
+        seenKinds.formUnion(block.room.objects.values.map(\.kind))
         if block.outcome == .caught {
             catchTotal += 1
             if let kind = block.struck?.kind { catchCounts[kind, default: 0] += 1 }

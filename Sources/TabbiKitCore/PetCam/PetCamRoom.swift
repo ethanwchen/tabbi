@@ -34,9 +34,36 @@ public enum PetCamObjectKind: String, Codable, CaseIterable, Hashable, Sendable 
     case tissues
     /// The one the pet eats: it leaves crumbs, not a wreck to step around.
     case donut
+    // The arrivals: the room grows with focus hours, one every five
+    // (`arrivals`), so the tapes and the case file keep renewing.
+    case sock
+    case keys
+    case yarn
+    case egg
+    case banana
+    case pencils
 
     /// Whether the pet eats it rather than knocking it over.
     public var isEaten: Bool { self == .donut }
+
+    /// Whether the pet takes it in its mouth or paws rather than knocking
+    /// it over: the spot stands bare while it is held.
+    public var isHeld: Bool { self == .donut || self == .sock }
+
+    /// The six the room starts with.
+    public static let starters: [PetCamObjectKind] = [.mug, .plant, .fishbowl, .vase, .tissues, .donut]
+
+    /// The objects that arrive, in order, one after every `arrivalFocus` of
+    /// total focus.
+    public static let arrivals: [PetCamObjectKind] = [.sock, .keys, .yarn, .egg, .banana, .pencils]
+
+    /// The focus between one arrival and the next: five hours.
+    public static let arrivalFocus: TimeInterval = 5 * 3600
+
+    /// The kinds that have arrived after `focus` seconds of total focus.
+    public static func arrived(afterFocus focus: TimeInterval) -> [PetCamObjectKind] {
+        starters + arrivals.prefix(max(0, min(arrivals.count, Int((focus + 0.5) / arrivalFocus))))
+    }
 }
 
 /// An object on a spot. `placedAt` is when it was left out, which the
@@ -165,11 +192,13 @@ public struct PetCamRoom: Codable, Hashable, Sendable {
     /// nothing.
     @discardableResult
     public mutating func strike(_ spot: PetCamSpot, at date: Date, blockID: String, random: inout PetCamRandom,
-                                catches: [PetCamObjectKind: Int] = [:]) -> PetCamWreck? {
+                                catches: [PetCamObjectKind: Int] = [:],
+                                kinds: [PetCamObjectKind] = PetCamObjectKind.starters,
+                                fresh: [PetCamObjectKind] = []) -> PetCamWreck? {
         guard !hasWreck(from: blockID) else { return nil }
         let struck = objects[spot]?.kind
         let wreck = wreck(spot, at: date, blockID: blockID)
-        leaveOut(at: spot, replacing: struck, date: date, random: &random, catches: catches)
+        leaveOut(at: spot, replacing: struck, date: date, random: &random, catches: catches, kinds: kinds, fresh: fresh)
         return wreck
     }
 
@@ -196,10 +225,18 @@ public struct PetCamRoom: Codable, Hashable, Sendable {
     /// Among the clean kinds, those caught least come first, so the case
     /// file's six slots fill before its pips rise, and then rise evenly.
     private mutating func leaveOut(at spot: PetCamSpot, replacing: PetCamObjectKind?, date: Date,
-                                   random: inout PetCamRandom, catches: [PetCamObjectKind: Int] = [:]) {
+                                   random: inout PetCamRandom, catches: [PetCamObjectKind: Int] = [:],
+                                   kinds: [PetCamObjectKind] = PetCamObjectKind.starters,
+                                   fresh: [PetCamObjectKind] = []) {
         let inRoom = Set(objects.filter { $0.key != spot }.values.map(\.kind))
-        var choices = PetCamObjectKind.allCases.filter { !inRoom.contains($0) && $0 != replacing }
-        if choices.isEmpty { choices = PetCamObjectKind.allCases.filter { !inRoom.contains($0) } }
+        // A new arrival comes out first, the moment a spot is free.
+        if let arrival = fresh.first(where: { !inRoom.contains($0) && $0 != replacing }) {
+            objects[spot] = PetCamObject(kind: arrival, placedAt: date, serial: nextSerial)
+            nextSerial += 1
+            return
+        }
+        var choices = kinds.filter { !inRoom.contains($0) && $0 != replacing }
+        if choices.isEmpty { choices = kinds.filter { !inRoom.contains($0) } }
         let onFloor = Set(wrecks.map(\.object.kind))
         let clean = choices.filter { !onFloor.contains($0) }
         let kind: PetCamObjectKind

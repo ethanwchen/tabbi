@@ -295,6 +295,38 @@ final class PetCamEngineTests: XCTestCase {
         XCTAssertEqual(cold.1, "PREMEDITATED OBSTRUCTION OF MY TAX RETURN. SUSPECT AT LARGE.")
     }
 
+    func testTheRoomGrowsWithFocusHours() throws {
+        XCTAssertEqual(PetCamObjectKind.arrived(afterFocus: 0), PetCamObjectKind.starters)
+        XCTAssertEqual(PetCamObjectKind.arrived(afterFocus: 5 * 3600 - 60).count, 6)
+        XCTAssertEqual(PetCamObjectKind.arrived(afterFocus: 5 * 3600).last, .sock)
+        XCTAssertEqual(PetCamObjectKind.arrived(afterFocus: 100 * 3600).count, 12, "six more, then no more")
+        // Twelve 25-minute blocks make five hours: the sock arrives, comes out
+        // at the next refill, and opens its first tape.
+        var game = PetCamGame(seed: 0xA221, at: Self.monday)
+        var date = Self.monday
+        var opened: [String] = []
+        for index in 0..<16 {
+            game.start(id: "g\(index)", pick: nil, dodge: nil, dare: false, plannedLength: 1500, pet: pet, at: date)
+            date.addTimeInterval(1500)
+            let record = try XCTUnwrap(game.finish(endedAt: date, worked: 1500, calendar: Self.calendar))
+            opened.append(record.captions.opener)
+            date.addTimeInterval(1200)
+            if index == 10 { XCTAssertFalse(game.arrived.contains(.sock), "four hours and a half: not yet") }
+        }
+        XCTAssertTrue(game.arrived.contains(.sock))
+        XCTAssertFalse(game.arrived.contains(.keys))
+        let arrival = try XCTUnwrap(opened.firstIndex { $0.contains("THE SOCK") }, "\(opened)")
+        XCTAssertEqual(arrival, 12, "the block after the twelfth: the sock is out on its spot")
+        XCTAssertEqual(opened.filter { $0.contains("THE SOCK") }.count, 1, "only its first tape")
+        XCTAssertTrue(PetCamCaptions.grammar.newArrival.contains { PetCamCaptions.matches(opened[arrival], template: $0) })
+        // Every kind has its words, its art and a mark that leaves the eyes alone.
+        for kind in PetCamObjectKind.allCases {
+            XCTAssertFalse(PetCamCaptions.grammar.words(kind).charge.isEmpty)
+            XCTAssertLessThanOrEqual(PetCamScene.object(kind).width, 14)
+            XCTAssertFalse(PetCamPetArt.guiltyMarks(kind).isEmpty)
+        }
+    }
+
     func testARefillFavorsTheKindsCaughtLeast() {
         // The counter's mug is struck; the free kinds are the vase, the
         // tissues and the donut. The tissues and the donut were caught

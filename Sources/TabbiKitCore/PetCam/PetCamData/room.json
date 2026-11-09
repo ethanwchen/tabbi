@@ -343,6 +343,74 @@
    "UUUWWWWWWUUU",
    ".VVVVVVVVVV."
   ],
+  "object.sock": [
+   "..HHHH......",
+   ".HUUUUH.....",
+   ".HHHHHH.....",
+   ".HUUUUH.....",
+   ".HHHHHHHHH..",
+   ".HHHHHHHHHH.",
+   "..HUUUUUUH..",
+   "...HHHHHH..."
+  ],
+  "object.keys": [
+   "..MMM.......",
+   ".M...M......",
+   ".M...MMMMMMM",
+   ".M...M...M.M",
+   "..MMM.......",
+   "..YM........",
+   ".YYYMMMMMMMM",
+   ".YYY....M.MM",
+   "..Y........."
+  ],
+  "object.yarn": [
+   "...PPPPP....",
+   ".PPXPPPPPP..",
+   "PPPPXPPXPPP.",
+   "PXPPPXPPPPP.",
+   "PPXPPPXPPXP.",
+   "PPPXPPPXPPP.",
+   ".PPPXPPPPPP.",
+   "...PPPPPP.P.",
+   "..........P.",
+   ".........PP."
+  ],
+  "object.egg": [
+   "....AA....",
+   "...AAAA...",
+   "..ALAAAA..",
+   "..AAAAAA..",
+   "..AAAAAA..",
+   "...AAAA...",
+   "..EEEEEE..",
+   "...EEEE...",
+   "....EE....",
+   "..EEEEEE.."
+  ],
+  "object.banana": [
+   ".........N",
+   "........YN",
+   ".......YY.",
+   "......YYY.",
+   ".....YYYY.",
+   "...YYYYYN.",
+   ".YYYYYYY..",
+   "YYYYYYN...",
+   ".NYYN....."
+  ],
+  "object.pencils": [
+   "...Q..Q...Q.",
+   "...Y..H..E..",
+   "...Y..H..E..",
+   "...Y.HH.EE..",
+   "...YYHHEE...",
+   "..MMMMMMMM..",
+   "..MVVVVVVM..",
+   "..MVVVVVVM..",
+   "..MVVVVVVM..",
+   "..MMMMMMMM.."
+  ],
   "wreck.mug": [
    "..UUUU......UUU.",
    ".UUUUUV....VUUUU",
@@ -401,6 +469,57 @@
    "UUUWWWUUUUUU....",
    ".VVVVVVVVVVV.W.."
   ],
+  "wreck.sock": [
+   "................",
+   ".HHH............",
+   ".UUU............",
+   ".HHH............",
+   ".HHHHHHH.HHH....",
+   ".HHHHHH..HHHH...",
+   "..HUUUUUUUUH...."
+  ],
+  "wreck.keys": [
+   "..MMM...........",
+   ".M...MMMMMMM....",
+   ".M...M...M.M....",
+   "..MMM......YY...",
+   "...........YYY..",
+   ".MMMMMMMM..YY...",
+   ".....M.MM......."
+  ],
+  "wreck.yarn": [
+   "..PPP...........",
+   ".PPXPP...PP..PP.",
+   "PXPPXPP.P..PP..P",
+   ".PPXPP.P.......P",
+   "..PPP.P.....PP..",
+   "....PP.....P...."
+  ],
+  "wreck.egg": [
+   "......AA........",
+   "..UUUU.....A....",
+   ".UUUUUUU....EE..",
+   "UUUYYYUUU..E..E.",
+   "UUYYYYYUUU.E..E.",
+   ".UUYYYUUU...EE..",
+   "..UUUUU..A..A..."
+  ],
+  "wreck.banana": [
+   "..Y.......Y.....",
+   "...Y.....YY.....",
+   "....YYYYYN......",
+   "..YYAAAAAYY.....",
+   ".YN.AAAAA.NY....",
+   "Y...........Y..."
+  ],
+  "wreck.pencils": [
+   "QYYYYYY.........",
+   "........HHHHHHQ.",
+   "..MMMM..........",
+   ".MVVVVM...EEEEEQ",
+   ".MVVVVM.........",
+   "..MMMM...QYYYYY."
+  ],
   "act.mug": [
    ".....IN..",
    "..NI.....",
@@ -446,6 +565,42 @@
    ".....PW..",
    "WW.......",
    ".Y......."
+  ],
+  "act.sock": [
+   "....HH...",
+   "..U......",
+   ".....HU..",
+   "........."
+  ],
+  "act.keys": [
+   ".....Y...",
+   "..M......",
+   "...Z..Z..",
+   "M........"
+  ],
+  "act.yarn": [
+   "..PP..P..",
+   ".P..PP...",
+   "P.......P",
+   "........."
+  ],
+  "act.egg": [
+   "....A.Y..",
+   ".A.......",
+   "...Y..A..",
+   "........."
+  ],
+  "act.banana": [
+   "....Y....",
+   "..Y...N..",
+   ".....Y...",
+   "........."
+  ],
+  "act.pencils": [
+   "..Y...E..",
+   ".....H...",
+   "Y.....E..",
+   "..H......"
   ],
   "fall.fishbowl": [
    "..........Z.ZE",

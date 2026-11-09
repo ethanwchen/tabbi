@@ -134,8 +134,8 @@ public struct PetCamGame: Codable, Hashable, Sendable {
         let offense = log.offenses(with: struck.kind) + 1
         let captions = PetCamCaptions.tape(
             outcome: outcome, setup: block.setup, camera: block.camera, strike: strike, struck: struck,
-            room: block.room, dodge: block.dodge, history: log.blocks, offense: offense, worked: worked, at: endedAt,
-            calendar: calendar
+            room: block.room, dodge: block.dodge, history: log.blocks, offense: offense, worked: worked,
+            seenKinds: log.seenKinds, at: endedAt, calendar: calendar
         )
         // Never one of the last two tape shapes of the same outcome.
         var recent: [PetCamTape.Shape] = []
@@ -192,7 +192,12 @@ public struct PetCamGame: Codable, Hashable, Sendable {
         guard log.record(record) else { return false }
         guard record.outcome.hasTape, let strike = record.strike else { return true }
         var refill = PetCamRandom(seed: record.setup.seed, stream: "refill")
-        room.strike(strike, at: record.endedAt, blockID: record.id, random: &refill, catches: log.catchCounts)
+        // An object that has arrived but never stood in the room comes out
+        // at this refill.
+        let kinds = arrived
+        let present = log.seenKinds.union(room.objects.values.map(\.kind)).union(room.wrecks.map(\.object.kind))
+        room.strike(strike, at: record.endedAt, blockID: record.id, random: &refill, catches: log.catchCounts,
+                    kinds: kinds, fresh: kinds.filter { !present.contains($0) })
         room.sweep()
         if active == nil, record.setup.seed == setup.seed {
             setup = PetCamSetup.prepare(seed: record.setup.nextSeed, room: room, species: species, tuning: tuning,
@@ -201,6 +206,10 @@ public struct PetCamGame: Codable, Hashable, Sendable {
         unwatched.append(record.id)
         return true
     }
+
+    /// The kinds that have arrived so far, the six starters first: one more
+    /// after every five hours of focus. Nothing shows the way to the next.
+    public var arrived: [PetCamObjectKind] { PetCamObjectKind.arrived(afterFocus: log.totalFocus) }
 
     /// The oldest tape or still not watched yet.
     public var nextUnwatched: PetCamBlockRecord? {

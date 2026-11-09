@@ -43,6 +43,48 @@
       "sound": "[CHOMP]",
       "remains": "CRUMBS",
       "charge": "EATING SOMEONE ELSE'S DONUT"
+    },
+    "sock": {
+      "name": "SOCK",
+      "plural": "SOCKS",
+      "sound": "[RUSTLE]",
+      "remains": "ONE SOCK",
+      "charge": "SPLITTING UP A PAIR OF SOCKS"
+    },
+    "keys": {
+      "name": "KEYS",
+      "plural": "SETS OF KEYS",
+      "sound": "[JINGLE JANGLE]",
+      "remains": "KEYS",
+      "charge": "HIDING THE KEYS BEFORE A MEETING"
+    },
+    "yarn": {
+      "name": "YARN",
+      "plural": "BALLS OF YARN",
+      "sound": "[THWAP THWAP]",
+      "remains": "YARN",
+      "charge": "UNRAVELING A WEEK OF KNITTING"
+    },
+    "egg": {
+      "name": "EGG",
+      "plural": "EGGS",
+      "sound": "[SPLAT]",
+      "remains": "YOLK",
+      "charge": "SCRAMBLING AN EGG ON THE FLOOR"
+    },
+    "banana": {
+      "name": "BANANA",
+      "plural": "BANANAS",
+      "sound": "[SQUISH]",
+      "remains": "A BANANA PEEL",
+      "charge": "SETTING A BANANA PEEL TRAP"
+    },
+    "pencils": {
+      "name": "PENCIL CUP",
+      "plural": "PENCIL CUPS",
+      "sound": "[CLATTER]",
+      "remains": "PENCILS",
+      "charge": "SCATTERING EVERY PENCIL"
     }
   },
   "spots": {
@@ -50,6 +92,11 @@
     "shelf": "SHELF",
     "table": "SIDE TABLE"
   },
+  "newArrival": [
+    "NEW IN THE ROOM: THE {object}.",
+    "SOMETHING NEW: THE {object}.",
+    "JUST ARRIVED: THE {object}."
+  ],
   "opener": [
     "HOME ALONE.",
     "THE HUMAN HAS LEFT.",

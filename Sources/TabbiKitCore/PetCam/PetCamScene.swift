@@ -305,7 +305,7 @@ public enum PetCamScene {
             let at = PetCamLayout.Placement(x: placement.x + shot.petOffset.x, y: placement.y + shot.petOffset.y,
                                             facingRight: placement.facingRight)
             let feet = at.y + (canvas.opaqueBounds?.maxY ?? PetComposer.frameSize - 1)
-            let airborne = if case .caughtMidAct(let kind) = pose { !kind.isEaten } else { false }
+            let airborne = if case .caughtMidAct(let kind) = pose { !kind.isHeld } else { false }
             layers.append((airborne ? Int.max - 1 : feet, { picture in
                 // In mid-air its shadow stays on the ground below it.
                 if airborne { picture.shadow(x: at.x + 16, y: placement.y + PetComposer.frameSize - 1) }
@@ -329,14 +329,14 @@ public enum PetCamScene {
     /// Whether a strike sends the object flying off its spot (a swat or a
     /// shove) rather than leaving it standing as the pet works on it.
     static func flies(_ kind: PetCamObjectKind) -> Bool {
-        kind == .mug || kind == .vase
+        [.mug, .vase, .keys, .pencils].contains(kind)
     }
 
     /// Whether the object goes over and falls to the floor after the act
     /// (the fishbowl tips, the plant topples), as opposed to being eaten or
     /// shredded where it stands.
     public static func falls(_ kind: PetCamObjectKind) -> Bool {
-        kind != .donut && kind != .tissues
+        kind != .tissues && !kind.isHeld
     }
 
     /// Where the pet's frame goes for `place`, and which way it faces.
@@ -517,8 +517,8 @@ public enum PetCamScene {
                 let motion = PetCamScene.effect(fliesRight ? "motionLeft" : "motionRight")
                 let x = fliesRight ? base.x - (turned.width + 2) / 2 - motion.width - 1 : base.x + (turned.width + 2) / 2 + 1
                 effect(motion, x: x, y: base.y - (turned.height + 2) / 2 - motion.height / 2)
-            case .struck where kind.isEaten:
-                // In the pet's mouth: the plate is bare.
+            case .struck where kind.isHeld:
+                // In the pet's mouth or paws: the spot is bare.
                 return
             case .struck:
                 // Still standing while the pet works on it, rocked a pixel.
@@ -621,7 +621,10 @@ public enum PetCamScene {
             case .mug, .tissues: .coat
             case .plant: .leaf
             case .fishbowl, .vase: .eye
-            case .donut: .blush
+            case .donut, .yarn: .blush
+            case .sock: .heart
+            case .keys, .pencils: .metal
+            case .egg, .banana: .gold
             }
         }
 

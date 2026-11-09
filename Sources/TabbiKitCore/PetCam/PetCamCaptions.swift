@@ -95,7 +95,7 @@ struct PetCamCaptionGrammar: Decodable, Sendable {
     let language: String
     let objects: [String: ObjectWords]
     let spots: [String: String]
-    let opener, openerDays, motion, quiet, act, eaten, offCamera, noticed, innocent, returns: [String]
+    let opener, openerDays, newArrival, motion, quiet, act, eaten, offCamera, noticed, innocent, returns: [String]
     let aftermath, rewind, enhance, alibiOpen, windUp, meanwhile, walkBy, denial: [String]
     let caught, charge, obstruction, firstOffense, offense, repeatOffender, frozen, noTape, ownerAway, atLarge: String
     let premeditated, premeditatedAct: String
@@ -458,7 +458,8 @@ public enum PetCamCaptions {
     /// Every caption of a block that ran to its end.
     static func tape(outcome: PetCamBlockRecord.Outcome, setup: PetCamSetup, camera: PetCamSpot, strike: PetCamSpot,
                      struck: PetCamObject, room: PetCamRoom, dodge: String?, history: [PetCamBlockRecord],
-                     offense: Int, worked: TimeInterval = 0, at date: Date, calendar: Calendar) -> PetCamCaptionSet {
+                     offense: Int, worked: TimeInterval = 0, seenKinds: Set<PetCamObjectKind>? = nil, at date: Date,
+                     calendar: Calendar) -> PetCamCaptionSet {
         let seed = setup.seed
         let words = grammar.words(struck.kind)
         // The last few tapes, newest first, for the age line's own rule.
@@ -485,9 +486,17 @@ public enum PetCamCaptions {
         let days = (history.first(where: \.outcome.hasTape)).map {
             calendarDays(from: $0.endedAt, to: date, calendar: calendar) + 1
         } ?? 1
-        let opener = days >= 2
-            ? line(grammar.openerDays, "opener", \.opener, ["days": "\(days)"], everyTape: true)
-            : line(grammar.opener, "opener", \.opener, everyTape: true)
+        // An object that has just arrived opens its first tape.
+        let seen = seenKinds ?? Set(history.flatMap { $0.room.objects.values.map(\.kind) })
+        let arrival = PetCamSpot.allCases.compactMap { room.object(at: $0)?.kind }
+            .first { PetCamObjectKind.arrivals.contains($0) && !seen.contains($0) }
+        let opener = if let arrival {
+            line(grammar.newArrival, "opener", \.opener, ["object": grammar.words(arrival).name], everyTape: true)
+        } else if days >= 2 {
+            line(grammar.openerDays, "opener", \.opener, ["days": "\(days)"], everyTape: true)
+        } else {
+            line(grammar.opener, "opener", \.opener, everyTape: true)
+        }
         let cam = "\(camera.cameraNumber)"
         let lasted = age(of: struck, at: date, calendar: calendar)
         let age = isLastedForm(lasted) && recent.contains(where: { isLastedForm($0.age) }) ? nil : lasted

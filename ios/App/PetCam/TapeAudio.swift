@@ -138,6 +138,37 @@ enum TapeSound {
             var out = burst(seconds: 0.1, amplitude: 0.3, decay: 0.03, bright: 0.7, seed: 61)
             out = mix(out, burst(seconds: 0.1, amplitude: 0.3, decay: 0.03, bright: 0.7, seed: 62), at: 0.16)
             return mix(out, thud(amplitude: 0.55), at: 0.4)
+        case .sock:
+            // A soft rustle of cotton, then a muffled thump as it hits the floor.
+            let rustle = burst(seconds: 0.35, amplitude: 0.28, decay: 0.12, bright: 0.35, seed: 71, attack: 0.05)
+            return mix(rustle, thud(amplitude: 0.3), at: 0.3)
+        case .keys:
+            // Jingle jangle: bright metal ticks on a ring, then the drop.
+            var out: [Float] = []
+            for (step, frequency) in [(0.0, 4_200.0), (0.05, 5_100), (0.11, 3_700), (0.18, 4_800), (0.26, 4_400)] {
+                out = mix(out, tone(frequency, seconds: 0.18, amplitude: 0.13, decay: 0.05), at: step)
+            }
+            out = mix(out, burst(seconds: 0.06, amplitude: 0.22, decay: 0.02, bright: 1, seed: 72), at: 0.32)
+            return out
+        case .yarn:
+            // Thwap, thwap: two soft paw strikes on a ball.
+            let thwap = burst(seconds: 0.09, amplitude: 0.45, decay: 0.025, bright: 0.25, seed: 73)
+            return mix(thwap, thwap, at: 0.2)
+        case .egg:
+            // Splat: a wet low burst with the crack of the shell first.
+            let crack = burst(seconds: 0.03, amplitude: 0.35, decay: 0.008, bright: 1, seed: 74)
+            let splat = burst(seconds: 0.3, amplitude: 0.5, decay: 0.07, bright: 0.2, seed: 75, attack: 0.01)
+            return mix(crack, splat, at: 0.02)
+        case .banana:
+            // Squish: a slow, dull, wet burst.
+            return burst(seconds: 0.4, amplitude: 0.5, decay: 0.12, bright: 0.12, seed: 76, attack: 0.06)
+        case .pencils:
+            // Clatter: a run of wooden clicks across the floor.
+            var out = thud(amplitude: 0.3)
+            for (step, seed) in [(0.03, UInt64(81)), (0.09, 82), (0.13, 83), (0.2, 84), (0.24, 85), (0.33, 86)] {
+                out = mix(out, burst(seconds: 0.03, amplitude: 0.3, decay: 0.008, bright: 0.85, seed: seed), at: step)
+            }
+            return out
         }
     }
 
