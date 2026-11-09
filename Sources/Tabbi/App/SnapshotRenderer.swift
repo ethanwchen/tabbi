@@ -361,9 +361,11 @@ enum SnapshotRenderer {
         Theme.apply(kitTheme)
 
         // The pet coach's overlay: walking out, then each kind of bubble.
-        let coachShots = closet.map {
+        // Then every Closet badge at every tier, for reviewing the art.
+        var coachShots = closet.map {
             PetCoachSnapshots.shots(profile: $0.store.profile, lines: $0.coach.lines, transparent: notchStyle.transparent)
         } ?? []
+        if closet != nil { coachShots.append(("closet-badge-tiers", AnyView(ClosetBadgeTierSheet()))) }
         for (name, view) in coachShots {
             let renderer = ImageRenderer(content: view.environment(\.rendersToImage, true).tabbiLayoutDirection())
             renderer.scale = max(2, notchStyle.scale)

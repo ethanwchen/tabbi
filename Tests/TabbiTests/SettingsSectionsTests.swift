@@ -30,7 +30,7 @@ final class SettingsSectionsTests: XCTestCase {
         XCTAssertEqual(services.settingsPaneOnScreen, "look")
 
         services.closeSettings()
-        RunLoop.main.run(until: Date().addingTimeInterval(0.2))
+        runUntil { !services.hasSettingsWindow }
         XCTAssertFalse(services.hasSettingsWindow, "the closed window is still held")
 
         services.openSettings()
@@ -38,8 +38,18 @@ final class SettingsSectionsTests: XCTestCase {
         services.openSettings(pane: AppSettingsPane.about.rawValue)
         XCTAssertEqual(services.settingsPaneOnScreen, "about", "a pane asked for wins")
         services.closeSettings()
-        RunLoop.main.run(until: Date().addingTimeInterval(0.2))
+        runUntil { !services.hasSettingsWindow }
         XCTAssertFalse(services.hasSettingsWindow)
+    }
+
+    /// Spins the run loop until `done` holds or a few seconds pass: the
+    /// window lets go on a later turn of the loop, which takes longer while
+    /// a parallel test run keeps the Mac busy, so a fixed short wait flaked.
+    private func runUntil(timeout: TimeInterval = 5, _ done: () -> Bool) {
+        let deadline = Date().addingTimeInterval(timeout)
+        while !done(), Date() < deadline {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.05))
+        }
     }
 
     func testModulesWithSettingsOfferThemFromTheirTabRow() {

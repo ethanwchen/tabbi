@@ -487,22 +487,11 @@ private struct ClosetBadgeMedallion: View {
 
     var body: some View {
         VStack(spacing: Theme.Spacing.xs) {
-            ZStack {
-                Circle().fill(tier.map { $0.color.opacity(hovering ? 0.30 : 0.18) }
-                              ?? (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface))
-                if let next {
-                    let progress = progression.progress(of: ProgressBadge(track, next))
-                    ProgressRing(progress: progress.fraction, tint: next.color, track: Theme.Palette.stroke, lineWidth: 2)
-                } else {
-                    Circle().strokeBorder(ProgressTier.starlight.color, lineWidth: 2)
-                }
-                Image(systemName: track.symbol)
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(tier?.color ?? (hovering ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText))
-            }
-            .frame(width: 26, height: 26)
+            ClosetBadgeArt(track: track, tier: tier, next: next,
+                           progress: next.map { progression.progress(of: ProgressBadge(track, $0)).fraction },
+                           hovering: hovering)
             .overlay(alignment: .topTrailing) {
-                if isFresh { ClosetGoalsNewDot().offset(x: 2, y: -2) }
+                if isFresh { ClosetGoalsNewDot().offset(x: -2, y: 2) }
             }
             HStack(spacing: Theme.Spacing.xxs) {
                 ForEach(ProgressTier.allCases, id: \.self) { pip in
@@ -546,6 +535,189 @@ private struct ClosetBadgeMedallion: View {
             String(localized: "\(track.displayName): \(detail(track, progression))", bundle: .tabbi),
             track.howToReach(track.goal(for: next)),
         ])
+    }
+}
+
+/// A badge's medallion, richer with each tier: Bronze is a plain medal,
+/// Silver adds ribbon tails, Gold a laurel wreath, an inner ring and a
+/// shine, and Starlight a starburst, a gem and a sparkle that glints now
+/// and then (still under Reduce Motion and in snapshots). Before Bronze it
+/// is a quiet ring that fills toward the first tier.
+struct ClosetBadgeArt: View {
+    let track: ProgressTrack
+    let tier: ProgressTier?
+    let next: ProgressTier?
+    /// Progress toward `next`, 0 to 1.
+    let progress: Double?
+    var hovering = false
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.rendersToImage) private var rendersToImage
+
+    static let medal: CGFloat = 26
+    static let size: CGFloat = 36
+
+    var body: some View {
+        ZStack {
+            if tier == .starlight { rays }
+            if let tier, tier >= .silver { ribbon(tier) }
+            if let tier, tier >= .gold { laurel(tier) }
+            medal
+            if tier == .starlight {
+                gem.offset(y: Self.medal / 2 - 1)
+                sparkle.offset(x: 10, y: -10)
+            }
+        }
+        .frame(width: Self.size, height: Self.size)
+        .scaleEffect(hovering ? 1.06 : 1)
+        .animation(Theme.Motion.snappy, value: hovering)
+    }
+
+    private var medal: some View {
+        ZStack {
+            if let tier {
+                Circle().fill(LinearGradient(colors: [tier.color.opacity(0.55), tier.color.opacity(0.22)],
+                                             startPoint: .top, endPoint: .bottom))
+                Circle().fill(Theme.Palette.background.opacity(0.35)).padding(3)
+            } else {
+                Circle().fill(hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)
+            }
+            if let next, let progress {
+                ProgressRing(progress: progress, tint: next.color, track: tier?.color.opacity(0.5) ?? Theme.Palette.stroke,
+                             lineWidth: 2)
+            } else if let tier {
+                Circle().strokeBorder(tier.color, lineWidth: 2)
+            }
+            if let tier, tier >= .gold {
+                Circle().strokeBorder(Color.white.opacity(0.35), lineWidth: 0.75).padding(4)
+                Ellipse().fill(Color.white.opacity(0.45)).frame(width: 7, height: 3)
+                    .rotationEffect(.degrees(-35)).offset(x: -6, y: -7)
+            }
+            Image(systemName: track.symbol)
+                .font(.system(size: tier == nil ? 10 : 11, weight: .bold))
+                .foregroundStyle(tier.map { AnyShapeStyle(LinearGradient(colors: [Color.white, $0.color],
+                                                                         startPoint: .top, endPoint: .bottom)) }
+                                 ?? AnyShapeStyle(hovering ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText))
+                .shadow(color: .black.opacity(tier == nil ? 0 : 0.45), radius: 0, x: 0, y: 1)
+        }
+        .frame(width: Self.medal, height: Self.medal)
+    }
+
+    /// Two ribbon tails under the medal, in the tier color.
+    private func ribbon(_ tier: ProgressTier) -> some View {
+        HStack(spacing: 2) {
+            RibbonTail().fill(tier.color.opacity(0.85)).frame(width: 5, height: 8).rotationEffect(.degrees(18))
+            RibbonTail().fill(tier.color.opacity(0.65)).frame(width: 5, height: 8).rotationEffect(.degrees(-18))
+        }
+        .offset(y: Self.medal / 2 + 1)
+    }
+
+    /// A wreath of small leaves around the lower two thirds of the medal.
+    private func laurel(_ tier: ProgressTier) -> some View {
+        let leaf = tier == .starlight ? ProgressTier.gold.color : tier.color
+        return ZStack {
+            ForEach([-1.0, 1.0], id: \.self) { side in
+                ForEach(0..<4, id: \.self) { index in
+                    let angle = 110.0 + Double(index) * 22
+                    Ellipse().fill(leaf.opacity(0.9 - Double(index) * 0.1)).frame(width: 3, height: 6)
+                        .rotationEffect(.degrees(side * (angle - 90)))
+                        .offset(x: side * CGFloat(cos(angle * .pi / 180)) * -15,
+                                y: CGFloat(sin(angle * .pi / 180)) * -15 + 2)
+                }
+            }
+        }
+    }
+
+    /// Soft rays behind a Starlight medal.
+    private var rays: some View {
+        ZStack {
+            ForEach(0..<8, id: \.self) { index in
+                Capsule().fill(ProgressTier.starlight.color.opacity(index.isMultiple(of: 2) ? 0.55 : 0.3))
+                    .frame(width: 2, height: index.isMultiple(of: 2) ? 36 : 30)
+                    .rotationEffect(.degrees(Double(index) * 22.5))
+            }
+        }
+    }
+
+    private var gem: some View {
+        ZStack {
+            Rectangle().fill(ProgressTier.starlight.color).frame(width: 5, height: 5).rotationEffect(.degrees(45))
+            Rectangle().fill(Color.white.opacity(0.8)).frame(width: 2, height: 2).offset(x: -0.5, y: -0.5)
+                .rotationEffect(.degrees(45))
+        }
+    }
+
+    /// A four-point glint that brightens now and then; still under Reduce
+    /// Motion and in snapshots.
+    @ViewBuilder private var sparkle: some View {
+        if reduceMotion || rendersToImage {
+            Glint().fill(Color.white.opacity(0.9)).frame(width: 7, height: 7)
+        } else {
+            TimelineView(.periodic(from: .now, by: 0.15)) { context in
+                let phase = context.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 3) / 3
+                let glow = max(0, sin(phase * .pi * 2))
+                Glint().fill(Color.white.opacity(0.3 + 0.7 * glow)).frame(width: 7, height: 7)
+                    .scaleEffect(0.7 + 0.3 * glow)
+            }
+        }
+    }
+}
+
+private struct RibbonTail: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY - rect.height * 0.3))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+        path.closeSubpath()
+        return path
+    }
+}
+
+private struct Glint: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let c = CGPoint(x: rect.midX, y: rect.midY), r = rect.width / 2, w = r * 0.28
+        path.move(to: CGPoint(x: c.x, y: c.y - r))
+        path.addLine(to: CGPoint(x: c.x + w, y: c.y - w))
+        path.addLine(to: CGPoint(x: c.x + r, y: c.y))
+        path.addLine(to: CGPoint(x: c.x + w, y: c.y + w))
+        path.addLine(to: CGPoint(x: c.x, y: c.y + r))
+        path.addLine(to: CGPoint(x: c.x - w, y: c.y + w))
+        path.addLine(to: CGPoint(x: c.x - r, y: c.y))
+        path.addLine(to: CGPoint(x: c.x - w, y: c.y - w))
+        path.closeSubpath()
+        return path
+    }
+}
+
+/// Every badge at every tier side by side, for review sheets
+/// (`--snapshot` writes it as `closet-badge-tiers.png`).
+struct ClosetBadgeTierSheet: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 0) {
+                Text(verbatim: "").frame(width: 110)
+                ForEach([String(localized: "Not yet", bundle: .tabbi)] + ProgressTier.allCases.map(\.displayName), id: \.self) {
+                    Text($0).font(Theme.Typography.caption).foregroundStyle(Theme.Palette.secondaryText).frame(width: 56)
+                }
+            }
+            ForEach(ProgressTrack.allCases, id: \.self) { track in
+                HStack(spacing: 0) {
+                    Text(track.displayName).font(Theme.Typography.caption).foregroundStyle(Theme.Palette.secondaryText)
+                        .frame(width: 110, alignment: .leading)
+                    ClosetBadgeArt(track: track, tier: nil, next: .bronze, progress: 0.4).frame(width: 56)
+                    ForEach(ProgressTier.allCases, id: \.self) { tier in
+                        ClosetBadgeArt(track: track, tier: tier, next: tier.next, progress: tier.next == nil ? nil : 0.4)
+                            .frame(width: 56)
+                    }
+                }
+            }
+        }
+        .padding(16)
+        .background(Theme.Palette.background)
     }
 }
 

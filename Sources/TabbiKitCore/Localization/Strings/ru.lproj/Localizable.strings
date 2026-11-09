@@ -2213,6 +2213,8 @@
 	<string>Не настроено</string>
 	<key>Not synced yet</key>
 	<string>Еще не синхронизировано</string>
+	<key>Not yet</key>
+	<string>Пока нет</string>
 	<key>Not yet. Click the button so your Mac can ask.</key>
 	<string>Пока нет. Нажми кнопку, чтобы Mac мог спросить.</string>
 	<key>Not yet. Open the Party tab to answer.</key>

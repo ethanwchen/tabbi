@@ -55,7 +55,7 @@ They live in a new **Goals** section of the Closet, never in the shop, so the sh
 | Sporty Sweatband | head | 50 break moves with the pet | about a month |
 | Friendship Bandana | neck | 20 Party sessions with friends | 2 to 3 months |
 | Baker's Apron (with a tiny cake) | outfit | 4 different study methods tried | whenever you explore |
-| Tiny Lantern (its flame flickers) | aura | 6 months of monthly quests | 6 months or more |
+| Tiny Lantern (a framed lantern on a ribbon, its flame flickers) | neck | 6 months of monthly quests | 6 months or more |
 
 Rules for the art, all held by the existing fit tests:
 
@@ -63,9 +63,9 @@ Rules for the art, all held by the existing fit tests:
 - Readable on dark coats: thin lines are at least two pixels or sit on a light fill, and nothing green sits beside the black cat's green eyes.
 - No capes and no wings, anywhere (the owner's rule for marketing).
   The Starry Cloak is a cloak worn on the body, closed at the chest with a gold star clasp, and never streams behind.
-- Three items are animated on the shared item clock, still under Reduce Motion: the Starry Cloak's twinkle, the Sage's Robe's glint and the Tiny Lantern's flicker; the Blossom Sprout lets a petal go now and then.
+- Four items are animated on the shared item clock, still under Reduce Motion: the Starry Cloak's twinkle, the Sage's Robe's glint, the Tiny Lantern's flicker and the Blossom Sprout, which lets a petal go now and then.
 
-The robes are one family tiered by mastery, each with wide sleeves and its own color: the Apprentice Robe is brown with cream cuffs and a rope belt, the Scholar's Robe navy with a crimson stole and gold buttons, and the Sage's Robe white with a gold stole that catches the light and a pointed hood.
+The robes are one family tiered by mastery, each with wide sleeves and its own color: the Apprentice Robe is brown with an open cream-edged front, cream cuffs and a rope belt with a knot and tassels, the Scholar's Robe navy with a crimson stole and gold buttons, and the Sage's Robe white with a gold stole that catches the light, a violet hem and a deep violet wizard hood with a gold brim, a moon glint and stars.
 The Astronaut Suit comes with a glass bubble helmet, and the Baker's Apron goes with the shop's Chef Hat.
 
 ### 2. Badges: a collection with rare tiers
@@ -132,7 +132,8 @@ The Closet gets a seventh section, **Goals** (a rosette), between Limited and St
 - A banner at the top for this month's quests: the month, how many of the three are done, a ring for each quest (hover for its goal and progress), and the next unfinished quest on its second line.
 - **Outfits to earn**: the sixteen mastery outfits as tiles, greyed until earned, each with its progress ("142/200") and a thin bar.
   Hovering a tile tries the outfit on the big pet and says how to earn it; clicking an earned one wears it or takes it off.
-- **Badges**: twelve medallions in their tier's color, each ringed by its progress to the next tier, with four small pips for the tiers earned.
+- **Badges**: twelve medallions that grow richer with each tier: Bronze is a plain medal, Silver adds ribbon tails, Gold a laurel wreath, an inner ring and a shine, and Starlight a starburst, a gem and a glint that brightens now and then (still under Reduce Motion).
+  Each is ringed by its progress to the next tier, with four small pips for the tiers earned.
   Hovering one says its tier, its progress and what the next tier asks.
 - A footer that counts outfits and badges earned, or details the hovered tile.
 

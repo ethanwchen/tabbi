@@ -199,7 +199,7 @@ final class PartyAccountTests: XCTestCase {
         let store = InMemoryPartyCredentialStore([server: PartyCredentials(token: token, code: FakeFriendsServer.code(8))])
         let account = PartyAccount(server: server, transport: fake, credentials: store)
         let pet = PetProfile(name: "Nova", breed: .corgi, outfit: .astronautSuit,
-                             accessories: [.friendshipBandana, .nightcap, .roundGlasses, .tinyLantern])
+                             accessories: [.friendshipBandana, .nightcap, .roundGlasses])
 
         _ = try await account.connect(profile: PartyPetAppearance.update(for: pet))
 

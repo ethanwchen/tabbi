@@ -213,10 +213,10 @@ final class PartyPetAppearanceTests: XCTestCase {
     func testMasteryOutfitsReachFriendsAndOlderServersDropThem() throws {
         let catalog = try catalog()
         let pet = PetProfile(name: "Nova", breed: .corgi, outfit: .astronautSuit,
-                             accessories: [.friendshipBandana, .nightcap, .roundGlasses, .tinyLantern])
+                             accessories: [.friendshipBandana, .nightcap, .roundGlasses])
         let update = PartyPetAppearance.update(for: pet)
         XCTAssertEqual(update.costume, "astronaut-suit")
-        XCTAssertEqual(update.accessories, ["bandana", "glasses", "nightcap", "tiny-lantern"])
+        XCTAssertEqual(update.accessories, ["bandana", "glasses", "nightcap"])
         XCTAssertEqual(PartyPetAppearance.pet(for: profile(from: update)).outfit, .astronautSuit)
         XCTAssertEqual(Set(PartyPetAppearance.pet(for: profile(from: update)).accessories), Set(pet.accessories))
 

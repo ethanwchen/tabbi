@@ -2213,6 +2213,8 @@
 	<string>설정 안 됨</string>
 	<key>Not synced yet</key>
 	<string>아직 동기화 안 됨</string>
+	<key>Not yet</key>
+	<string>아직</string>
 	<key>Not yet. Click the button so your Mac can ask.</key>
 	<string>아직이요. 버튼을 클릭하면 Mac이 물어볼 수 있어요.</string>
 	<key>Not yet. Open the Party tab to answer.</key>

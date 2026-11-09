@@ -162,11 +162,11 @@ They are drawn like every item, so each fits every body shape:
 - The Starry Cloak and the Astronaut Suit keep the exact silhouette of the Wizard Robe and the White Coat on every body family, and the Cozy Pajamas the Scrubs'.
   The three robes flare out into wide sleeves with contrasting cuffs resting in the lap, so they read as robes rather than vests, and each tier has its own color and trim: brown with cream cuffs and a rope belt, navy with a crimson stole and cuffs and gold buttons, and white with a gold stole and cuffs.
   The Starry Cloak is closed at the chest and hangs on the body; it never streams behind like a cape.
-- Two outfits bring a head part, placed like the dinosaur hood (`PetComposer.outfitHood`): the Astronaut Suit's glass bubble helmet, a thin metal rim over the head with a glint and the face left clear, and the Sage's Robe's pointed white hood with a gold brim.
+- Two outfits bring a head part, placed like the dinosaur hood (`PetComposer.outfitHood`): the Astronaut Suit's glass bubble helmet, a thin metal rim over the head with a glint and the face left clear, and the Sage's Robe's deep violet wizard hood, its tip drooping to one side, with a gold brim, a moon glint and stars.
 - Seen from the side the head hides the front of the body, so the Sage's Robe glints along a gold hem there instead of down its stole, the Starry Cloak only twinkles stars behind the head, and the Baker's Apron shows its bow tied at the back.
 - Thin lines are gold or sit on a light fill: the Owl Spectacles have gold brows over navy rims (gold alone melted into golden fur, navy alone into black fur), and the bee's antennae are gold.
-- The Tiny Lantern is an aura item, three by four pixels, hung in the free air that a probe over every breed and every frame found clear (left of the head below the celebration's sparkles; over the back from the side; right of the dachshund's head), so it never has to leave a frame.
-  Only its flame flickers.
+- The Tiny Lantern is a neck item: a framed lantern (a navy roof with a gold finial, a brown frame and a warm glow whose flame flickers) hanging from a crimson ribbon at the chest; seen from the side the ribbon's knot shows behind the head.
+- The Cozy Pajamas are a sky blue top with white polka dots, a white collar and a white placket with navy buttons, over sky blue pajama legs.
 
 ![Every mastery outfit on the British Shorthair](images/mastery-outfits.png)
 

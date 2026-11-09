@@ -531,7 +531,7 @@ public enum PetComposer {
         case .sportySweatband: .head(CostumeArt.sportySweatband)
         case .owlSpectacles: .face(CostumeArt.owlSpectacles)
         case .friendshipBandana: .body(CostumeArt.friendshipBandana)
-        case .tinyLantern: .aura(CostumeArt.tinyLantern)
+        case .tinyLantern: .body(CostumeArt.tinyLantern)
         }
     }
 

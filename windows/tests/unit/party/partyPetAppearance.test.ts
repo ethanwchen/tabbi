@@ -172,10 +172,10 @@ describe("PartyPetAppearance", () => {
   it("carries the mastery outfits to friends, and leaves them out for a catalog version 3 server", () => {
     const catalog = loadRepoJson<{ version: number; costumes: string[]; accessories: string[] }>("backend/shared/catalog.json");
     expect(catalog.version).toBe(4);
-    const pet = new PetProfile("Nova", "corgi", { outfit: "astronautSuit", accessories: ["friendshipBandana", "nightcap", "roundGlasses", "tinyLantern"] });
+    const pet = new PetProfile("Nova", "corgi", { outfit: "astronautSuit", accessories: ["friendshipBandana", "nightcap", "roundGlasses"] });
     const update = partyPetUpdate(pet);
     expect(update.costume).toBe("astronaut-suit");
-    expect(update.accessories).toEqual(["bandana", "glasses", "nightcap", "tiny-lantern"]);
+    expect(update.accessories).toEqual(["bandana", "glasses", "nightcap"]);
     const back = partyPet(profileFrom(update));
     expect(back.outfit).toBe("astronautSuit");
     expect(new Set(back.accessories)).toEqual(new Set(pet.accessories));

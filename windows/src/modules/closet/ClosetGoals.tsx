@@ -178,6 +178,7 @@ export function ClosetGoals({ store }: { store: ClosetStore }) {
                   track={track}
                   progression={progression}
                   isFresh={[...fresh].some((id) => id.startsWith(`${track}.`))}
+                  still={store.isSnapshot}
                   onHover={(inside) => setHovered(inside ? { kind: "badge", track } : (current) => (current?.kind === "badge" && current.track === track ? undefined : current))}
                 />
               ))}
@@ -397,8 +398,96 @@ function ClosetGoalTile({ item, state, progress, badge, isFresh, model, onClick,
 
 /* Badges */
 
+/** The size of a badge's art box and of the medal inside it. */
+const BADGE_ART = 36;
+const BADGE_MEDAL = 26;
+
+/**
+ * A badge's medallion, richer with each tier, as the Mac draws it
+ * (ClosetBadgeArt): Bronze is a plain medal, Silver adds ribbon tails, Gold a
+ * laurel wreath, an inner ring and a shine, and Starlight a starburst, a gem
+ * and a glint that pulses slowly (still under Reduce Motion and in
+ * snapshots). Before Bronze it is a quiet ring that fills toward the first tier.
+ */
+export function ClosetBadgeArt({ track, tier, next, progress, still = false }: { track: ProgressTrack; tier: ProgressTier | undefined; next: ProgressTier | undefined; progress: number | undefined; still?: boolean }) {
+  const rank = tier === undefined ? 0 : PROGRESS_TIERS.indexOf(tier) + 1;
+  const color = tier === undefined ? undefined : tierColor(tier);
+  const c = BADGE_ART / 2;
+  const leaf = tier === "starlight" ? tierColor("gold") : color;
+  const leaves: { x: number; y: number; angle: number; opacity: number }[] = [];
+  if (rank >= 3) {
+    for (const side of [-1, 1]) {
+      for (let index = 0; index < 4; index++) {
+        const angle = 110 + index * 22;
+        const radians = (angle * Math.PI) / 180;
+        leaves.push({ x: c + side * Math.cos(radians) * -15, y: c + Math.sin(radians) * -15 + 2, angle: side * (angle - 90), opacity: 0.9 - index * 0.1 });
+      }
+    }
+  }
+  return (
+    <span className="closet-badge-art" data-rank={rank} style={{ ["--tier" as string]: color ?? "var(--tertiary-text)" }}>
+      <svg className="closet-badge-shapes" width={BADGE_ART} height={BADGE_ART} viewBox={`0 0 ${BADGE_ART} ${BADGE_ART}`} aria-hidden="true">
+        {rank === 4 &&
+          Array.from({ length: 8 }, (_, index) => {
+            const long = index % 2 === 0;
+            const half = long ? 18 : 15;
+            return <rect key={index} x={c - 1} y={c - half} width={2} height={half * 2} rx={1} fill={tierColor("starlight")} opacity={long ? 0.55 : 0.3} transform={`rotate(${index * 22.5} ${c} ${c})`} />;
+          })}
+        {rank >= 2 && color !== undefined && (
+          <g>
+            <path d="M0 0H5V8L2.5 5.6L0 8Z" fill={color} opacity={0.85} transform={`translate(${c - 6} ${c + BADGE_MEDAL / 2 - 3}) rotate(18 2.5 4)`} />
+            <path d="M0 0H5V8L2.5 5.6L0 8Z" fill={color} opacity={0.65} transform={`translate(${c + 1} ${c + BADGE_MEDAL / 2 - 3}) rotate(-18 2.5 4)`} />
+          </g>
+        )}
+        {leaves.map((l, index) => (
+          <ellipse key={index} cx={l.x} cy={l.y} rx={1.5} ry={3} fill={leaf} opacity={l.opacity} transform={`rotate(${l.angle} ${l.x} ${l.y})`} />
+        ))}
+        {color !== undefined && (
+          <>
+            <defs>
+              <linearGradient id={`closet-badge-fill-${track}-${rank}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor={color} stopOpacity={0.55} />
+                <stop offset="1" stopColor={color} stopOpacity={0.22} />
+              </linearGradient>
+            </defs>
+            <circle cx={c} cy={c} r={BADGE_MEDAL / 2} fill={`url(#closet-badge-fill-${track}-${rank})`} />
+            <circle cx={c} cy={c} r={BADGE_MEDAL / 2 - 3} fill="var(--background)" opacity={0.35} />
+          </>
+        )}
+        {color === undefined && <circle className="closet-badge-blank" cx={c} cy={c} r={BADGE_MEDAL / 2} />}
+        {next === undefined && color !== undefined && <circle cx={c} cy={c} r={BADGE_MEDAL / 2 - 1} fill="none" stroke={color} strokeWidth={2} />}
+        {rank >= 3 && (
+          <>
+            <circle cx={c} cy={c} r={BADGE_MEDAL / 2 - 4.4} fill="none" stroke="white" strokeOpacity={0.35} strokeWidth={0.75} />
+            <ellipse cx={c - 6} cy={c - 7} rx={3.5} ry={1.5} fill="white" opacity={0.45} transform={`rotate(-35 ${c - 6} ${c - 7})`} />
+          </>
+        )}
+        {rank === 4 && (
+          <g transform={`translate(${c} ${c + BADGE_MEDAL / 2 - 1}) rotate(45)`}>
+            <rect x={-2.5} y={-2.5} width={5} height={5} fill={tierColor("starlight")} />
+            <rect x={-1.5} y={-1.5} width={2} height={2} fill="white" opacity={0.8} />
+          </g>
+        )}
+      </svg>
+      {next !== undefined && progress !== undefined && (
+        <span className="closet-badge-ring">
+          <ProgressRing progress={progress} tint={tierColor(next)} track={color === undefined ? "var(--stroke)" : `color-mix(in srgb, ${color} 50%, transparent)`} lineWidth={2} size={BADGE_MEDAL} />
+        </span>
+      )}
+      <span className="closet-badge-icon">
+        <Icon id={trackSymbol(track)} size={tier === undefined ? 10 : 11} />
+      </span>
+      {rank === 4 && (
+        <svg className="closet-badge-glint" data-still={still || undefined} width={7} height={7} viewBox="-1 -1 2 2" aria-hidden="true">
+          <path d="M0 -1L0.28 -0.28L1 0L0.28 0.28L0 1L-0.28 0.28L-1 0L-0.28 -0.28Z" fill="white" />
+        </svg>
+      )}
+    </span>
+  );
+}
+
 /** A badge: the track's symbol in a medallion of its tier's color, ringed by the progress to the next tier, over four pips. */
-function ClosetBadgeMedallion({ track, progression, isFresh, onHover }: { track: ProgressTrack; progression: PetProgression; isFresh: boolean; onHover: (inside: boolean) => void }) {
+function ClosetBadgeMedallion({ track, progression, isFresh, still, onHover }: { track: ProgressTrack; progression: PetProgression; isFresh: boolean; still: boolean; onHover: (inside: boolean) => void }) {
   const tier = progression.tier(track);
   const next = progression.nextTier(track);
   const progress = next === undefined ? undefined : progression.progress({ track, tier: next });
@@ -414,15 +503,7 @@ function ClosetBadgeMedallion({ track, progression, isFresh, onHover }: { track:
         onPointerLeave={() => onHover(false)}
       >
         <span className="closet-badge-medal">
-          {next !== undefined && progress !== undefined ? (
-            <ProgressRing progress={limitedProgressFraction(progress)} tint={tierColor(next)} track="var(--stroke)" lineWidth={2} size={26}>
-              <Icon id={trackSymbol(track)} size={10} />
-            </ProgressRing>
-          ) : (
-            <span className="closet-badge-top">
-              <Icon id={trackSymbol(track)} size={10} />
-            </span>
-          )}
+          <ClosetBadgeArt track={track} tier={tier} next={next} progress={progress === undefined ? undefined : limitedProgressFraction(progress)} still={still} />
           {isFresh && <span className="closet-goals-new closet-badge-new" />}
         </span>
         <span className="closet-badge-pips">

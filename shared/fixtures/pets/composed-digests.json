@@ -119,7 +119,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "f2af09c5484fa4705760312359cfabcba14837097622254c179ea3096c72da15"
+      "sha256" : "418cfac6ed3762ba6f0d06ef61eb04335bc8704f68cb370b9524e09781a6c7a8"
     },
     {
       "dress" : {
@@ -141,7 +141,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "cc523530a0b76cf2e985dfdbdafda2f877bf228d290d58f815765793a3284870"
+      "sha256" : "43a4752be878d8bd8c676c1a6b325091d8fbc719f2ed1f4a6352d726a49634d2"
     },
     {
       "dress" : {
@@ -152,7 +152,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "1e0fd57ba9ca2324c4345893b5485d4cd48c59adffeb90bee00ae1ea490d2f87"
+      "sha256" : "69d9f9a322c124fa28ca001147da6fba36e7b63d16788cbc5921977db98c1d0f"
     },
     {
       "dress" : {
@@ -636,7 +636,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "7a24f5e5585cb8a1ab80767bb251ace2960c9f2325983ea983a7a326103e04c1"
+      "sha256" : "1487fa066b86891e5aaa8b00b69093d3073f9e3706c7db0212af46e5ac230f32"
     },
     {
       "dress" : {
@@ -691,7 +691,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "fe16c0cce35f9ac9b63d4b5fc2e58991ce90799fea51c10a8a090e7251408f08"
+      "sha256" : "470380cab4284409423c39808893b92263b9999c6f1905ae8e72a105e08f78bf"
     },
     {
       "dress" : {
@@ -724,7 +724,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "388e0f88a3a0ac6607c044ae09e529a60ca64ad2b446e15e33f335fa02a0cb8e"
+      "sha256" : "f016d5b912763d815d1204efd78390c46a9361a701508c00e643073cedec485f"
     },
     {
       "dress" : {
@@ -895,7 +895,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "f2af09c5484fa4705760312359cfabcba14837097622254c179ea3096c72da15"
+      "sha256" : "418cfac6ed3762ba6f0d06ef61eb04335bc8704f68cb370b9524e09781a6c7a8"
     },
     {
       "dress" : {
@@ -917,7 +917,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "cc523530a0b76cf2e985dfdbdafda2f877bf228d290d58f815765793a3284870"
+      "sha256" : "43a4752be878d8bd8c676c1a6b325091d8fbc719f2ed1f4a6352d726a49634d2"
     },
     {
       "dress" : {
@@ -928,7 +928,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "1e0fd57ba9ca2324c4345893b5485d4cd48c59adffeb90bee00ae1ea490d2f87"
+      "sha256" : "69d9f9a322c124fa28ca001147da6fba36e7b63d16788cbc5921977db98c1d0f"
     },
     {
       "dress" : {
@@ -1412,7 +1412,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "7a24f5e5585cb8a1ab80767bb251ace2960c9f2325983ea983a7a326103e04c1"
+      "sha256" : "1487fa066b86891e5aaa8b00b69093d3073f9e3706c7db0212af46e5ac230f32"
     },
     {
       "dress" : {
@@ -1467,7 +1467,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "fe16c0cce35f9ac9b63d4b5fc2e58991ce90799fea51c10a8a090e7251408f08"
+      "sha256" : "470380cab4284409423c39808893b92263b9999c6f1905ae8e72a105e08f78bf"
     },
     {
       "dress" : {
@@ -1500,7 +1500,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "388e0f88a3a0ac6607c044ae09e529a60ca64ad2b446e15e33f335fa02a0cb8e"
+      "sha256" : "f016d5b912763d815d1204efd78390c46a9361a701508c00e643073cedec485f"
     },
     {
       "dress" : {
@@ -1671,7 +1671,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "5821d492c4fcb59c3a348838ab2c88846d60848d5c5fde14cf731c2e79c97911"
+      "sha256" : "6bfbabcc4d1a7df9facd993429fe88c195e383638eaddff2706df3e005466f08"
     },
     {
       "dress" : {
@@ -1693,7 +1693,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "643c1b9b2517ed7853411f09c90d1ea439b0a6d66a54cb6ae4834ae62a4c028b"
+      "sha256" : "f5e9abfbff5ad9af4dc0e98dd4ece07a13becf46d33642599cedb70573d62330"
     },
     {
       "dress" : {
@@ -1704,7 +1704,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "dc0bb0c0991c3b2560d9acf627ea76ba10891771b46fa14002683bc98da29905"
+      "sha256" : "ddf2284f8188d3243a76f332971fdeeaa73dbe8d8c174fb6ce522665ddb58979"
     },
     {
       "dress" : {
@@ -2188,7 +2188,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "a53f79d534b31f027f4af98e0c1a6dfc9c3e1a8b4b9d3388d27f0c757326a8c4"
+      "sha256" : "a2b9f3d80693cf8d9faf86500ab620813ce15cc6be007315f1a6629a60b515ae"
     },
     {
       "dress" : {
@@ -2243,7 +2243,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "3f03840a0133be7aab60465f10f1672a6248321c5ea5555e32154bdbea23bfb0"
+      "sha256" : "e882a6b9c3c733035820984bdeae0d69de25df1ef8f5442015e4d6dcaf9be132"
     },
     {
       "dress" : {
@@ -2276,7 +2276,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "f14e98565b88b2a0873a9ac37a990822a92f0a42fd38f4cf4b496bf0aad8966a"
+      "sha256" : "b3abf98b69cc09d1053aa2da7f596fd408833d5eba566b761a50aefe35eca7fa"
     },
     {
       "dress" : {
@@ -2447,7 +2447,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "92f16c0ed453663c5d8d9fbb6bcdaeddd76ad7a578416a323fff9fd781258bc8"
+      "sha256" : "fb994feb8f75fab13e051f19e401332de04c7d0d7653d29e49bb01fd6d8465fe"
     },
     {
       "dress" : {
@@ -2469,7 +2469,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "654615bd1ee6db50dccab3e06ee5e5dbaa2e73123bbb2564f460abb83f17f350"
+      "sha256" : "623ab71fac15bc6ecea7ca85345e9f283f7deb824e289810c1386f8ca7dbe6ef"
     },
     {
       "dress" : {
@@ -2480,7 +2480,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "03757f97b9e9f282fc67afe02de6b64827f147b79e6f4b8885f63194dc468828"
+      "sha256" : "d9114ddaa04fe2da0237c0a423a681d29e7baf5b3604a99207ed0b2c590d4608"
     },
     {
       "dress" : {
@@ -2964,7 +2964,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "8a30d55832a97c0f5ba9c377d2dd6e48919de9fdc37b21b86487e0cc59b591fe"
+      "sha256" : "6ca283f352e5086e1f1bfd10a01309a25c67b17ebb1f5c290d737a454230781c"
     },
     {
       "dress" : {
@@ -3019,7 +3019,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "40cb1971970ee74289a2d2df09b458683064ddd8020aa2218be98c6d6eaf6ad9"
+      "sha256" : "c045ecfdf05390ffff4c388ed17b1d4d2b14d5e415bef7cecf9bb4f5fd88c6ed"
     },
     {
       "dress" : {
@@ -3052,7 +3052,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "91476da946fa3ce2eb6bc80b1bd9b43ffd34389d36adf2527481e879caf8a4c2"
+      "sha256" : "d9869e327c7526c2c72a4c271efe4f9de380d42720bc1ae07774ea66edca1318"
     },
     {
       "dress" : {
@@ -3223,7 +3223,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "24aa5c1dd64b1aadab08c111d14503bafda367015c786db18162dccfe4dd0f06"
+      "sha256" : "ad2902c1618069b1c23d9280b929bdb522114360838a69f711a8a8b9895f19f2"
     },
     {
       "dress" : {
@@ -3245,7 +3245,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "90b113c731969221cc69400727d22f9b83d97f1d589023380939eb44ecff27e0"
+      "sha256" : "badc87b5c24a584176fb2e88cf20ce6f0f60dcded7fe7d37e5163c03db5f3b19"
     },
     {
       "dress" : {
@@ -3256,7 +3256,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "84ac7e0a3febe9423667bd44d75a3c56b335addf88f9ab90102557424ffa5b8d"
+      "sha256" : "7bee53c31a83804eea10e720f5776f4cbed675842161b1a6b7878f8c0eb4f56c"
     },
     {
       "dress" : {
@@ -3740,7 +3740,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "c406d0b1221b0295586597c30d21d1a77fac4e20828395d6f3767a17655bc2f1"
+      "sha256" : "e4c43aa095f3a12661ca57210fbca73b3bbecbfb8c8e3fd97cc01c2059df2d37"
     },
     {
       "dress" : {
@@ -3795,7 +3795,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "a04369d75a44cf793b7c69a8d76218878722c515b60b8f2cdc090323fceb5601"
+      "sha256" : "cea273457b5b01096e84bf38ebdae8edce58bee6a22ef0bc509c5429fd3d2f01"
     },
     {
       "dress" : {
@@ -3828,7 +3828,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "c133a47c70878b807bf98e8d1735e251cf7363c2c198c97b55e668ff9ff18397"
+      "sha256" : "20ef1a35dd2af422425acc5358afe309b6da46e583adeb4516c7cbec18068511"
     },
     {
       "dress" : {
@@ -3999,7 +3999,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "c772390e60f99e35b669dc50e688f7728c846720dad1bd8b85250cde8c45e89c"
+      "sha256" : "135106efda3c2f2716c4c4df6f94ffddab9e362e2553b859ad2de700f5822482"
     },
     {
       "dress" : {
@@ -4021,7 +4021,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "e425c78899a8fe08391e6550f153d68826b4c3297642c38cc4eea96e4862f125"
+      "sha256" : "8d8b05cb3cf491a6901b1c0643e25d32e042207edfd7987f81d7785478222f47"
     },
     {
       "dress" : {
@@ -4032,7 +4032,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "36c7c47fd67adfb43a3f516c292891f05c686aceab096247bcd3d236bad39c8b"
+      "sha256" : "4479519726f3c292801449877e352d4d6c4eb3da1fd8ec0a074940b2cd4e6fd1"
     },
     {
       "dress" : {
@@ -4516,7 +4516,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "27ed39e4c58c29eac914944f4df01c460adb39197efefd50613a465cccd26207"
+      "sha256" : "c06ad80dd3032251f519c330b4c978a330bbc033400249f6e47fa7519ac6a952"
     },
     {
       "dress" : {
@@ -4571,7 +4571,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "70739c38fa3b3891db1d93dfe274605e82a2f97208c47dfdff1d61ae895a3c7c"
+      "sha256" : "8b4d556097f0979fdb6346a6a5b9ba79e96eefabf508c6422cf8fb1240ecc97a"
     },
     {
       "dress" : {
@@ -4604,7 +4604,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "74a3f1774099dd36a85c1c4f577f0243cd67a658efa32bdb2ae9370162fe2a91"
+      "sha256" : "1d58e114712b6c876673a81e159b8d38300b13e0dbd5a0067703a741b76e9794"
     },
     {
       "dress" : {
@@ -4775,7 +4775,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "c4300f38e4298c041550ffd40f56c2475d0bd5c5550e4afd7fb6eb1508a95861"
+      "sha256" : "6b75a20f38b7e287dd13f90821e3501fd8367efed40742f9ab033c6be9a06908"
     },
     {
       "dress" : {
@@ -4797,7 +4797,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "d0fd560cc82400254996f367a7069c4dbe1d643764bbfb7b8ceb3b9ef0fe0842"
+      "sha256" : "3191977e1c36d06b0806f3768ba2ae15981f02535179915612b66df5666019ac"
     },
     {
       "dress" : {
@@ -4808,7 +4808,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "a27c2f92d5247553fbcb70da26246ab3a70541b17fbe46ebc094fccb1abcab2f"
+      "sha256" : "412a7e3f2b3bf07e1014c6ddc5fb87bded5b4cc75dc23ac9ec5dff0db63304b7"
     },
     {
       "dress" : {
@@ -5292,7 +5292,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "b774a82d661aca56a026ba9cd319a656e8b0d4fce89261f1562aaf556025931b"
+      "sha256" : "bea1b665f056a2c9837f5c46d9db0ff67cff37f637a60d1c6d9a0958b9a34f2b"
     },
     {
       "dress" : {
@@ -5347,7 +5347,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "fe4924c4c0600dc49cd4688087fea218df20dfef698ca3cdbaa73d74c281d529"
+      "sha256" : "f4236f444b570406ee8c0a89cf6212e9f720b7dd14747cd664f474eab2ac891a"
     },
     {
       "dress" : {
@@ -5380,7 +5380,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "f566f0fb29d018422229ae4cc9bc21c51f3557e24320663cf80b7a742e5dd9ef"
+      "sha256" : "0d7b45704d03662f92c21be0e74dd44e08ae4797131597671f6b8925a788745b"
     },
     {
       "dress" : {
@@ -5551,7 +5551,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "4050087f8b154852edec429846402e0137dcbc85b066f34841a0dec3587f80a9"
+      "sha256" : "11717864d0199b74e75b24157ab27840f9e0dadb8efa26efdc708a02c511ab94"
     },
     {
       "dress" : {
@@ -5573,7 +5573,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "fc14cce97266f4d12200afc3077b9cbe7b7832a20db45f77b2ba2bf7cb584c5e"
+      "sha256" : "00db34d96462874a09763351c6aafb195572e8cec164d9e2477d69b80ae4cba0"
     },
     {
       "dress" : {
@@ -5584,7 +5584,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "5ad23cc76cdec14d363aaacaa2eb021f1894a7e073cdcf05410455c6033d547c"
+      "sha256" : "2c3f94b17774d5e1b2504b3d5298aed5a058735aca05cf318bae57c02750d629"
     },
     {
       "dress" : {
@@ -6068,7 +6068,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "c5a7d2335d9571c1b997a7634913e67ecff1cb9c09115a48cc8d826df806ab5e"
+      "sha256" : "e2860509d452b4684f8cd8537e766d040f92238373fee5f501cb7390cf013715"
     },
     {
       "dress" : {
@@ -6123,7 +6123,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "1ec407a434f575c997a974f4d1c7263d0bc12edd7ce82e2b604f9ca7fa2790bf"
+      "sha256" : "3637292dce00a2023f47a0fdc9dad2942be92bc444c8858a5c01b8ff11f5ae03"
     },
     {
       "dress" : {
@@ -6156,7 +6156,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "7bd9b75ce748293e6142e67e108a85eb538f73e8a6054fe85c437695fd21b9ea"
+      "sha256" : "4dc1d7811c1886ebdfea34dec975a3e24497e134c5661b74be0ccba2f787e812"
     },
     {
       "dress" : {
@@ -6327,7 +6327,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "ae1d8e9e9f5e5f625027a3428e38253ceeda5e93c2a66d869ac59acbd67651d6"
+      "sha256" : "f68e259ce8553e934e8014a5e16a78a47c34cf6017055462cd75d4d60dfc6a8d"
     },
     {
       "dress" : {
@@ -6349,7 +6349,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "7f53fc2904dfde41e148ca5568670354ecb084ec763a26bb08024bb5a6c38f0e"
+      "sha256" : "604e0a472eee47f05a4a062f59dda797ec4f5db679c1c3daf118fffd6a4bbc7f"
     },
     {
       "dress" : {
@@ -6360,7 +6360,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "8f818c262ecce0a904078d5036961562a23cecea39dffb652f9b17be2fb41515"
+      "sha256" : "088bdaf04e94247b71c30785357f63fd87ecc0780bb4f4f7f2b600701a893931"
     },
     {
       "dress" : {
@@ -6844,7 +6844,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "2b2331c65cf062ee4f960a5b54652722b45c3249d80f42bf731f0564a49cfc9c"
+      "sha256" : "001eadced7f00e7b8e8c5650be6d98c11dc8fdc7507f7a43b10f68b954b2c011"
     },
     {
       "dress" : {
@@ -6899,7 +6899,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "2bb975e4601686f59ffd21cb1bfe517f59ba8032ef239f95daa32664ce18544f"
+      "sha256" : "4197d70a1abd6f36878eb78b465f5957c0eaba8f79719d53871894ac53a90b29"
     },
     {
       "dress" : {
@@ -6932,7 +6932,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "ebaadd7b7f532b0f991ba21adc9536d604c26d9d814f34d9329d76efbb57a8bd"
+      "sha256" : "58c4b99872c38234e3b39588bba87920c69035004724b758a6faa7728790d448"
     },
     {
       "dress" : {
@@ -7103,7 +7103,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "faf4ef1ba52c22acc166fedd81c4348b6611a0b3086c651b845b0bf4b3115fe1"
+      "sha256" : "b8cc886d4334569b6b41c3e34b6768b847534004db6535629437e5be63dce648"
     },
     {
       "dress" : {
@@ -7125,7 +7125,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "a6457f2079e3988f995a19f8e9eafe09b7f9316e52c39ac824584a7a03d64209"
+      "sha256" : "2f0d9c9ac4360a93c6a969b5c736883092d5e83bd6bfb20d173a2d01a9c1ca30"
     },
     {
       "dress" : {
@@ -7136,7 +7136,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "29a06d39abee43f2a47d5bf402793c8388e5a583e6779e560dc42488bfe634b3"
+      "sha256" : "79c400fff8491317ae2ca423cd5ddd67d55a2f3317ae1000ba9717e012715316"
     },
     {
       "dress" : {
@@ -7620,7 +7620,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "8c6b93b253d83b9e9b0ad5af1c7b7b31ddde90aae2b5198d958df8d97ed253d3"
+      "sha256" : "c3bc60eb554ca326e3ebc1c0a11976b80fc2b9dbfb7f993213c7f53f4c380f26"
     },
     {
       "dress" : {
@@ -7675,7 +7675,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "ae89f41f4f2cc1c12fd59caf03e73221b86208ea0f60f7d3b2af58d7a2ac873e"
+      "sha256" : "d752a50a45db4ce2fda4a40b313d913e5271d45385acd054a2e17b58965463fa"
     },
     {
       "dress" : {
@@ -7708,7 +7708,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "7e56e8c6aa58cc4606d2e55a86580947159657ca2b24de95d689c6b26a9825d7"
+      "sha256" : "b592d0c6c983d6d31999a2a41db486840fbf7a1309665a4431a46a6d7869fc40"
     },
     {
       "dress" : {
@@ -7879,7 +7879,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "43668003b178a329912a08acbba90d023b74770a51f2e15fb2b03350b20f7510"
+      "sha256" : "0a1e45a6598f8141a40ec6ddbb0eda202e68717ec420b851df536bdc6e55ed90"
     },
     {
       "dress" : {
@@ -7901,7 +7901,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "ea4c7b1b8c184b6ebade15b13159834f049695a4e7f52c4ebf2e6e3d78e55400"
+      "sha256" : "f45f395d6dae1b7b8cd27198f32d6ca4e302853468560ad132e1f6d5e7ed140f"
     },
     {
       "dress" : {
@@ -7912,7 +7912,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "dfa8fb50c175a884a763c244335c6e4abcdc82444f77c8760624821b9a708e60"
+      "sha256" : "84e07ba0036f3bbb65fc044e09560fccdb29e19df37719c08bb1ca4812123c78"
     },
     {
       "dress" : {
@@ -8396,7 +8396,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "25949d0fc5e466f6f1ef2ebd2c63d267103ac304a93d7be152b665eacc2a2584"
+      "sha256" : "49a6584d471a265986354195121a19e819a762b60f9f8ec7c358384c2c0b57a6"
     },
     {
       "dress" : {
@@ -8451,7 +8451,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "0a835b8d15155b364a0c81067d6d630d82dfeecf8f1491b0524876cfe8a1bb93"
+      "sha256" : "7016137c4024ce8610c7df638eec6e071b325ea8dfc8d9496813d3791d90650b"
     },
     {
       "dress" : {
@@ -8484,7 +8484,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "4ed6c7a2af4fb4985a4e71a834d4dfef82f2bce114e73beecdbd238add9c6829"
+      "sha256" : "7cef8c719df65e7803f224ea281c9d6f793e36f0fef20e4dab6cf2fa0ddc5ce7"
     },
     {
       "dress" : {
@@ -8655,7 +8655,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "128e4289e9a1f48e38c0daf519b77eb9e7a1fcf3907b9efb2063ce6f0f77badf"
+      "sha256" : "a90684640f9172d77bb6eaa6a281404103de71c18f34afd0a01702f606f6ac43"
     },
     {
       "dress" : {
@@ -8677,7 +8677,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "20c06d126aab0f2ee343d0d3ae25b654c325647de4c5e3213864b541899aefab"
+      "sha256" : "ea9332fbe4654e6fe3a701ffe203006ef74d4d6dad1f509d0dce07453e9eab7a"
     },
     {
       "dress" : {
@@ -8688,7 +8688,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "7571382677feb90691592493a4fbf4c8fa8d7657286191504dff3a3f7d5516ff"
+      "sha256" : "5f92a6fce4d50059c1b24bfb228dcc278584398aaae2a8ecf6e7ee7f6ec179e0"
     },
     {
       "dress" : {
@@ -9172,7 +9172,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "67cfe1b30305f2ac8e48e763544c74607f79ae3c746ed74644d18a97054a22b8"
+      "sha256" : "c4d0d9999fd7e288d38b0fea395f7feb7824467e1458e4af30e847c77df5be88"
     },
     {
       "dress" : {
@@ -9227,7 +9227,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "f2e642ce4da550e8456ecf50aa26959aa23ada5f6a56f13d4f2d8b6f0142be0a"
+      "sha256" : "7c69d59bb124660965f13c65132daa4c49c1d968e0be422e14a982da9c2ace8c"
     },
     {
       "dress" : {
@@ -9260,7 +9260,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "7a5b7d217d9b4a8a153d723bf3cdd037865a228c112b0fb2c9a10f997ec81ae3"
+      "sha256" : "19b9b540f43b1bc2acab0eff0b29fecf0313ead30514b35f94a1a8f53ec66f9f"
     },
     {
       "dress" : {
@@ -9431,7 +9431,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "a692d07c24c5bc26d69f3bb11372c1f845112c1833fdf1daaee900ef0493c58c"
+      "sha256" : "c840e85b613bdc2da6dbf5ea65edc335612252c2980dc02b0ef185f5a2b041f4"
     },
     {
       "dress" : {
@@ -9453,7 +9453,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "704e01f8ea0ce78eb5e94e3e67208076bba88d88535c92d1844eac9560f93a43"
+      "sha256" : "a749cd25f0d409a2ec6e79dea7f96d4cef547af1f101b5e94ca17e84607cb624"
     },
     {
       "dress" : {
@@ -9464,7 +9464,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "367e16d0f7279a5c04d6b7119bd5cdd9505b5fbc129654ebc6c8681ddfd7c79e"
+      "sha256" : "1ee6c4e747d8a0015886a88ac85ce17b14333ec8d00d315bcad57706968bc73b"
     },
     {
       "dress" : {
@@ -9948,7 +9948,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "3039de06be45ccf04c0a58e32e2081a53d4d72a1e0388b0a6a11e81c1de618ae"
+      "sha256" : "f4dd7b4b633a54c5e9c924fa52bfd1972427a0cbcb98f2ed0111e2b839867aeb"
     },
     {
       "dress" : {
@@ -10003,7 +10003,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "77c48de21765ecef4225424005e04d9b937d9f812543bc6490125b5da378c8aa"
+      "sha256" : "5d5774d24076f56064fcd54f8aadabba0dbb44bbe9a45e1c8225ddb856fdb496"
     },
     {
       "dress" : {
@@ -10036,7 +10036,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "e1f56e1f601ef30aa6b96ddb3e448eba4cabb7aba7e26af5688d0ee83e22ac95"
+      "sha256" : "27fd2ece703103fb70649fc42a625c985abd58951a882aca4eee356a0764f24e"
     },
     {
       "dress" : {
@@ -10207,7 +10207,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "0511080e7e72dcc4575923c57f590b82fffb02824a53da0a5f7baecdab9ba12c"
+      "sha256" : "5eb6856b9440945626bb720f51e146429e066cdc243dff99c11bac644ccb02eb"
     },
     {
       "dress" : {
@@ -10229,7 +10229,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "e6d7f7afd98db7cad37a9677786b29f3becbfae83941d233fdd8955a9f2794f5"
+      "sha256" : "474105bab2f337462dd1ba5efb1f5ecdc3a0eb806705ea6598e3fc52c9b9b23b"
     },
     {
       "dress" : {
@@ -10240,7 +10240,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "8e54c750f6912df35a42476f70469e27cb3c64c5994b8e66bb264bb70aac7b6c"
+      "sha256" : "fe76afa0c33b2ac41b2134a27457bb5aa83d12a3052703f0b14b4f72459c2359"
     },
     {
       "dress" : {
@@ -10724,7 +10724,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "f07aa8e4c2fb6f2640f86572cfad082638e0c51379c41b3ac8c7d2cc5500f21f"
+      "sha256" : "735f4e3d94adb2a22319435e0d2db2ddc273a64895588a46f4cac2f48bfa8855"
     },
     {
       "dress" : {
@@ -10779,7 +10779,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "53a2b48f8671db21fcb5b443209cd0d05daaef0dd4db6c227ee29e7154f677ed"
+      "sha256" : "92c15aad5c4f46a7d9680009a6359db566a0edcaaab8978a96ebd3dec4ad32a4"
     },
     {
       "dress" : {
@@ -10812,7 +10812,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "f51b02f13cd355600cc79da556a2b5e3a429e43f7e8af090dcd4bc5792e9d946"
+      "sha256" : "d1db3c76fbed8b02d9b219035e9684453b81e28ceeb73ffef0609e07e5899287"
     },
     {
       "dress" : {
@@ -10983,7 +10983,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "888afe233b6b5e7c7b682dc6a2983fa9ef33c794e2076bf996bffa2982c26fc4"
+      "sha256" : "60355ab607b3fa0285aa54c1ae5ef4f1223c6c2c00686011d42ea7fb303ead7f"
     },
     {
       "dress" : {
@@ -11005,7 +11005,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "bcb17c8d021d4abde22dce42c2a8125ddac9a305c2a39a0b806e68986a02ea94"
+      "sha256" : "63300b556dc1ea7e422768ab06d270b4a718ab25a477b0bfef816bef056ad572"
     },
     {
       "dress" : {
@@ -11016,7 +11016,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "964aa9a18ad4ce1ee8c5b8699adef577713beba04d9b78beb52d61d64297f366"
+      "sha256" : "02a187b7e7fc4060da1248b5a60cca0bdfbec95920e66143d3acc080479f2996"
     },
     {
       "dress" : {
@@ -11500,7 +11500,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "c3cc5bdae45b97d3f4bf48186fc83ba9001a3c001a6887a80be1e615110a1801"
+      "sha256" : "a960539ea780331d4d7bc2ea913e3a99a85bdb83cf73ddf741df22187895af33"
     },
     {
       "dress" : {
@@ -11555,7 +11555,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "ca957cb424f818df02dd424ffad9cd1e8a26f912f684cb0ad1559b83805d4671"
+      "sha256" : "c5b85c9eb11c027f48aeea47e782b6b7f8b8b9beef9b4b4884f357736ad46873"
     },
     {
       "dress" : {
@@ -11588,7 +11588,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "02efa5ac90b324009c11102808c26adfe95c360c8660e10fafb241351e6d36c5"
+      "sha256" : "e061728aa47475e5d1b3d54c76b685ddc07911d10172274842f90e219ea6ab47"
     },
     {
       "dress" : {
@@ -11759,7 +11759,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "06edc7b9aeeb18011789cdba93a3fe64f0a496261e90afb4aa9a5623fef827d9"
+      "sha256" : "46d9820d5ba13cee38c8541ee644f50a9f86c4451435af40e7041de957f7af3f"
     },
     {
       "dress" : {
@@ -11781,7 +11781,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "d85eb9eafc997fa3424a2679a45a99b68352e7201c1d3ffd45e30859e23fad42"
+      "sha256" : "f831d249c9c525696dfa33eb762dbd7e2da0de80ce77e6695b91ccf9519a1e7c"
     },
     {
       "dress" : {
@@ -11792,7 +11792,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "eb6f351a34131050543ea75a1f4431a32bb1ada8ace852ce5390087e7baa8927"
+      "sha256" : "6ea76bf4f6c780d403e1fb96f86c0df4a7bfdc23888bbba68924d4aa4025e3c4"
     },
     {
       "dress" : {
@@ -12276,7 +12276,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "5dc5ea1f6a23d16e10f7316a4a9be64478531c16068d03a2302c841c96486c82"
+      "sha256" : "f2d5ed5d7c8b18cf6ae8e00f09ce0138bd79324a7de73a706ed3626c8b3d2e41"
     },
     {
       "dress" : {
@@ -12331,7 +12331,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "e9e2c368bf0292affc608bb6f73d08bb76e23621ac7f502fd77ed22351f97596"
+      "sha256" : "09a44064c1052aff045c3ea49e4a36e015e1c9994af6819570bb3fe5bb21dfbb"
     },
     {
       "dress" : {
@@ -12364,7 +12364,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "e5adae730625716da3cb4f516859d1738b8a7593f8ddc7e757750d7de5aa4e2c"
+      "sha256" : "6c3f462a58a9bea282ed1ba38885b2eca8a1316a07b2c54e9d0ad4170f14a7d3"
     },
     {
       "dress" : {
@@ -12535,7 +12535,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "1e5521c6b934b836386f4c202b795cabe7fc5b35fd14a55342dfdb79a6d3affa"
+      "sha256" : "179258d5c6b969039af621788b7151b5f8b511787821cbe03d2bf40f3b0a7468"
     },
     {
       "dress" : {
@@ -12557,7 +12557,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "5d8f89ddf06f5a3aa98f631b71ec377375c9853ea6dd22a65c31a5aecfb626c3"
+      "sha256" : "27a5cf71418fa417780fd8c1de954ac283f2285ba93532432d35a531f075bc58"
     },
     {
       "dress" : {
@@ -12568,7 +12568,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "63f0e511a800b7f267284bffd955fff9104b5fa0a5cf2a46156258bc62c5fdc4"
+      "sha256" : "08fa2279ea73d87f28fc7e81e51925b381830edace8d6b7e7b53236dc4bf8fef"
     },
     {
       "dress" : {
@@ -13052,7 +13052,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "1b97171bd30050f06a4990fe2ae078c8e4b3d508601dff50e757567cf91c403d"
+      "sha256" : "56062a507cd9fecd75e99a7fb1fc8d3cb663d3068ebdd608807845f6702e7ea5"
     },
     {
       "dress" : {
@@ -13107,7 +13107,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "9a94c629c1ba48711173160239a161e5867392285ec341f8624afce6c09d4824"
+      "sha256" : "513b2171a864dea5b6c5876fbf2d8a82e815576b918e40a8a73a08c44491275c"
     },
     {
       "dress" : {
@@ -13140,7 +13140,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "49260697ef37b970e26b558ccaec5428d75d8f0cb76c380b264a9f8924ad2791"
+      "sha256" : "24047955dbbd93fe8bce7b0e01f655d6dc314d020542b5edcf7623c6cd1ba2f7"
     },
     {
       "dress" : {
@@ -13311,7 +13311,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "f117393d584f23b36f63f0b0575671b755b03af444cf2e89a531772cd8a72b6c"
+      "sha256" : "9eb71dc61257b8496af869ba16c29aa91f4aaf31dc1688b7cf345fd4c306e4e6"
     },
     {
       "dress" : {
@@ -13333,7 +13333,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "b253f2ec76c7d1a215f9152427f2b1f0eb1b793e388873e0c2b7dbdb81d544d5"
+      "sha256" : "5e4b8f79c584b70038c1b9ec0e07b1479325bd439a406fae063ccc98973cbd6f"
     },
     {
       "dress" : {
@@ -13344,7 +13344,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "7963b1b7d5161e706ca2dfe15757d95b5413d557a96ea74b0e1d6d022b7c8121"
+      "sha256" : "10612b86497c2bfc0caad587c364ae4abad53af2a7359689f342805eaa3cfec7"
     },
     {
       "dress" : {
@@ -13828,7 +13828,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "a8e51e0f1783e53bb1f9425dc6545524fc923cdb843f75eef10aa6e5028b1f2f"
+      "sha256" : "a50491165d9f9d08fac8f77720873e1e41a5e4540cd0ec5d5067f5fac0b3633e"
     },
     {
       "dress" : {
@@ -13883,7 +13883,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "ef1db33d7751ef1b503ab7a3e747b1bcb43568653a6906e0f0496c3cec4b7a76"
+      "sha256" : "eb549251b1ce7df202e1eaeaedca060404deec4a453ddf2765ee2d9e34a585be"
     },
     {
       "dress" : {
@@ -13916,7 +13916,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "4018b0f679695758a1d4e37bd332907bd7617fb4143bc78b0f9206b5373246e4"
+      "sha256" : "33723aebbdca23e117ef02dd47834697131bd8e9c7a2d20094c8c443e663db3c"
     },
     {
       "dress" : {
@@ -14087,7 +14087,7 @@
         "outfit" : "apprenticeRobe"
       },
       "frameCount" : 133,
-      "sha256" : "54ccc1619ed2e0851204e6b37092979382e981374ba35f67a8b7cfb597fcff88"
+      "sha256" : "b6d7cbd2ee94d4a47d1fc90f9d9190180675bff888eb2c01e18b27fdbffc9c90"
     },
     {
       "dress" : {
@@ -14109,7 +14109,7 @@
         "outfit" : "sagesRobe"
       },
       "frameCount" : 133,
-      "sha256" : "902a3fb4f673ad65e092bd2ce549d41470ee317807c33f96c0f97ae6ec9481a7"
+      "sha256" : "a7a4dee1ce1a6a95e7ee532ccd3657e98bec17f137880501eac5b3ae9c53377d"
     },
     {
       "dress" : {
@@ -14120,7 +14120,7 @@
         "outfit" : "cozyPajamas"
       },
       "frameCount" : 133,
-      "sha256" : "2c2b9558107cb2df6ac95996ebdd8844b400657dd6b7eeb5ee97ef71094f69d4"
+      "sha256" : "fd84775ee5a3070f3ad369fdeec285dd980f0f8ae13c4f36115230fce76bda6f"
     },
     {
       "dress" : {
@@ -14604,7 +14604,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "d641c865cc03a88b478dbe90128113739524b354688d65054ba43405b2319c19"
+      "sha256" : "31ceaa5c674473d44226a41f9fc84b705dc476b00c9d64d10209ef84e455ff44"
     },
     {
       "dress" : {
@@ -14659,7 +14659,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "1fcb32e2b0994ec5c38e2bbac539498a9523c9b200b2f6bdb1c82b16176c26fc"
+      "sha256" : "4dd095b89f1e6218625e35194448819f13110d6c035683ea58e8bdafd7e5dc1e"
     },
     {
       "dress" : {
@@ -14692,7 +14692,7 @@
         "outfit" : "none"
       },
       "frameCount" : 133,
-      "sha256" : "fc94cd0748ecaec2dc31bbb1170c0f433539abdacfb232bfeb955c4d45121f4b"
+      "sha256" : "2b58602da4cf6c2172a94c5197cf02ebe73c449d92dcf11d6b0e45311bbbcec4"
     },
     {
       "dress" : {

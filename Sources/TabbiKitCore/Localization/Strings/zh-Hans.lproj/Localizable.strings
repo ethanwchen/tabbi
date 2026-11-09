@@ -2213,6 +2213,8 @@
 	<string>未设置</string>
 	<key>Not synced yet</key>
 	<string>尚未同步</string>
+	<key>Not yet</key>
+	<string>尚未</string>
 	<key>Not yet. Click the button so your Mac can ask.</key>
 	<string>还没有。点按按钮，Mac 就能询问。</string>
 	<key>Not yet. Open the Party tab to answer.</key>

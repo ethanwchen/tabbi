@@ -135,6 +135,7 @@ export function accessorySlot(accessory: PetAccessory): PetAccessorySlot {
     case "snowScarf":
     case "foundersPin":
     case "friendshipBandana":
+    case "tinyLantern":
       return "neck";
     case "roundGlasses":
     case "coolSunglasses":
@@ -148,7 +149,6 @@ export function accessorySlot(accessory: PetAccessory): PetAccessorySlot {
     case "cherryPetals":
     case "sparkleTrail":
     case "rainCloud":
-    case "tinyLantern":
       return "aura";
     default:
       return "head";

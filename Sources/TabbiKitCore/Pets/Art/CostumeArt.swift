@@ -413,7 +413,8 @@ extension CostumeArt {
     /// The third robe: white with a gold stole that a glint runs down.
     static let sagesRobe = PetArt.costume.bodyItem("sagesRobe")
 
-    /// The Sage's Robe's pointed white hood with a gold brim, worn like the
+    /// The Sage's Robe's deep violet wizard hood, its tip drooping to one
+    /// side, with a gold brim, a moon glint and stars, worn like the
     /// dinosaur hood, so the top robe reads apart from the other two.
     static let sageHood = PetArt.costume.headItem("sageHood")
 
@@ -453,7 +454,8 @@ extension CostumeArt {
     /// A crimson bandana with white dots, its knot at the side of the neck.
     static let friendshipBandana = PetArt.costume.bodyItem("friendshipBandana")
 
-    /// A tiny lantern on a navy frame hanging beside the head (over the
-    /// back on a walk), its flame flickering.
-    static let tinyLantern = PetArt.costume.auraItem("tinyLantern")
+    /// A tiny lantern in a brown frame hanging from a crimson ribbon at the
+    /// chest, its flame flickering; from the side the ribbon's knot shows
+    /// behind the head.
+    static let tinyLantern = PetArt.costume.bodyItem("tinyLantern")
 }

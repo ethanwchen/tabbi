@@ -2213,6 +2213,8 @@
 	<string>Non configuré</string>
 	<key>Not synced yet</key>
 	<string>Pas encore synchronisé</string>
+	<key>Not yet</key>
+	<string>Pas encore</string>
 	<key>Not yet. Click the button so your Mac can ask.</key>
 	<string>Pas encore. Clique sur le bouton pour que ton Mac puisse demander.</string>
 	<key>Not yet. Open the Party tab to answer.</key>

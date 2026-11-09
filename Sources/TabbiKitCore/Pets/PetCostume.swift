@@ -26,15 +26,17 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
     /// A violet cloak closed at the chest with a gold star clasp, its gold
     /// and white stars twinkling. Worn on the body, never streaming behind.
     case starryCloak
-    /// A plain brown robe with a white collar and a gold rope belt, the
-    /// first of the three robes tiered by finished sessions.
+    /// A brown robe with an open cream-edged front, cream cuffs and a gold
+    /// rope belt with a knot and tassels, the first of the three robes
+    /// tiered by finished sessions.
     case apprenticeRobe
     /// A navy robe with a crimson stole edged in gold.
     case scholarsRobe
     /// A white robe with a gold stole that a glint runs down now and then,
-    /// and a pointed white hood.
+    /// and a deep violet wizard hood with stars.
     case sagesRobe
-    /// Sky blue pajamas with white piping, buttons and little gold moons.
+    /// A sky blue pajama top with white polka dots, a white collar and a
+    /// white placket with navy buttons, over sky blue pajama legs.
     case cozyPajamas
     /// A white apron with a crimson trim, holding a tiny strawberry cake.
     case bakersApron
@@ -179,12 +181,13 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     case owlSpectacles
     /// A crimson bandana with white dots, knotted at the neck.
     case friendshipBandana
-    /// A tiny lantern floating beside the pet, its flame flickering.
+    /// A tiny lantern hanging from a crimson ribbon at the chest, its
+    /// flame flickering.
     case tinyLantern
 
     public var slot: PetAccessorySlot {
         switch self {
-        case .stethoscope, .scarf, .bowTie, .teamMedal, .snowScarf, .foundersPin, .friendshipBandana: .neck
+        case .stethoscope, .scarf, .bowTie, .teamMedal, .snowScarf, .foundersPin, .friendshipBandana, .tinyLantern: .neck
         case .roundGlasses, .coolSunglasses, .heartGlasses, .summerShades, .owlSpectacles: .face
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
@@ -193,7 +196,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
              .sakuraSprig, .littleSprout, .blossomSprout, .nightcap, .explorersHat, .beeAntennae,
              .sportySweatband: .head
         case .angelWings, .kingsCape: .back
-        case .cherryPetals, .sparkleTrail, .rainCloud, .tinyLantern: .aura
+        case .cherryPetals, .sparkleTrail, .rainCloud: .aura
         }
     }
 

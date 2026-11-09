@@ -2213,6 +2213,8 @@
 	<string>未設定</string>
 	<key>Not synced yet</key>
 	<string>まだ同期していません</string>
+	<key>Not yet</key>
+	<string>未達成</string>
 	<key>Not yet. Click the button so your Mac can ask.</key>
 	<string>まだです。ボタンをクリックすると、Macが確認できます。</string>
 	<key>Not yet. Open the Party tab to answer.</key>

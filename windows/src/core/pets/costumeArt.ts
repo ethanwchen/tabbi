@@ -66,6 +66,7 @@ function makeAccessoryArt(accessory: PetAccessory): AccessoryArt {
     case "foundersPin":
     case "snowScarf":
     case "friendshipBandana":
+    case "tinyLantern":
       return { kind: "body", item: file.bodyItem(accessory) };
     case "roundGlasses":
     case "coolSunglasses":
@@ -83,7 +84,6 @@ function makeAccessoryArt(accessory: PetAccessory): AccessoryArt {
     case "cherryPetals":
     case "sparkleTrail":
     case "rainCloud":
-    case "tinyLantern":
       return { kind: "aura", item: file.auraItem(accessory) };
     default:
       return { kind: "head", item: file.headItem(accessory) };

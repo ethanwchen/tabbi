@@ -106,7 +106,7 @@ final class PetItemLoopTests: XCTestCase {
     /// a particle shows on every tick and the particles move whenever the
     /// pet is in view, and a pet hanging from the notch shows none.
     func testAuraItemsFloatAroundThePetOnEveryBodyShape() {
-        let auraItems: [PetAccessory] = [.cherryPetals, .sparkleTrail, .rainCloud, .tinyLantern]
+        let auraItems: [PetAccessory] = [.cherryPetals, .sparkleTrail, .rainCloud]
         XCTAssertEqual(auraItems, PetAccessory.allCases.filter { $0.slot == .aura })
         for accessory in auraItems {
             let loop = PetItem.accessory(accessory).loopFrameCount

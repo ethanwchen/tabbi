@@ -196,7 +196,7 @@ describe("PartyAccount", () => {
     const fake = new FakeFriendsServer([token]);
     fake.catalogVersion3 = true;
     const store = new InMemoryPartyCredentialStore({ [server]: { token, code: FakeFriendsServer.code(8) } });
-    const pet = new PetProfile("Nova", "corgi", { outfit: "astronautSuit", accessories: ["friendshipBandana", "nightcap", "roundGlasses", "tinyLantern"] });
+    const pet = new PetProfile("Nova", "corgi", { outfit: "astronautSuit", accessories: ["friendshipBandana", "nightcap", "roundGlasses"] });
     await account(fake, store).connect(partyPetUpdate(pet));
     expect(fake.requests, "refused once, then sent without the new ids").toEqual(["PATCH /v1/me", "PATCH /v1/me"]);
     const taken = fake.takenBodies[fake.takenBodies.length - 1];
