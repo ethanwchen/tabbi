@@ -593,6 +593,8 @@
 	<string>AnkiConnect требует ключ API</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
 	<string>Настройки AnkiConnect не пускают Tabbi. Сброс к стандартным все исправит, а карточки не тронет.</string>
+	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
+	<string>Ещё одна копия находится в %@. Копии используют один виджет, и он может стать пустым, когда macOS переключается между ними. Оставьте копию, которой пользуетесь, а другую переместите в Корзину.</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>Еще одна ровная неделя. Так держать.</string>
 	<key>Answers</key>
@@ -2285,6 +2287,8 @@
 	<string>Открыть Системные настройки</string>
 	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
 	<string>Открой Tabbi из папки «Программы», чтобы подключить календарь.</string>
+	<key>Open Tabbi to start</key>
+	<string>Откройте Tabbi, чтобы начать</string>
 	<key>Open and close the notch</key>
 	<string>Открыть и закрыть вырез</string>
 	<key>Open answers in the large view</key>
@@ -2875,6 +2879,8 @@
 	<string>Доступ к Быстрым командам выключен. Включи Shortcuts Events для Tabbi в настройках «Автоматизация».</string>
 	<key>Show %@</key>
 	<string>Показать %@</string>
+	<key>Show Other Copy</key>
+	<string>Показать другую копию</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>Показывать SoundCloud из Safari или Chrome</string>
 	<key>Show a break move</key>
@@ -3559,6 +3565,8 @@
 	<string>Включить перемешивание</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>Включаем «Не беспокоить»…</string>
+	<key>Two copies of %@ are installed</key>
+	<string>Установлены две копии %@</string>
 	<key>Type a name first</key>
 	<string>Сначала введи имя</string>
 	<key>Type a shortcut name first</key>
@@ -3915,6 +3923,8 @@
 	<string>Питомец не будет предлагать это движение. Нажмите, чтобы включить</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>Имя питомца недопустимо. Переименуй питомца в Гардеробе.</string>
+	<key>Your pet, streak and timer show up here.</key>
+	<string>Здесь появятся питомец, серия и таймер.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>Твой питомец, серия и идущий таймер.</string>
 	<key>Your plan</key>

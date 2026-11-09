@@ -87,6 +87,12 @@ describe("opening", () => {
     expect(types(effects)).not.toContain("activate");
   });
 
+  it("tells the host it is open before it draws the open shape", () => {
+    const { effects } = play(initialState(), { type: "hotZone" });
+    const kinds = types(effects);
+    expect(kinds.indexOf("open")).toBeLessThan(kinds.indexOf("shape"));
+  });
+
   it("opens from the pill after a 250 ms rest, and not if the pointer moves on", () => {
     const pill = initialState("alwaysVisible");
     const resting = play(pill, { type: "pillEnter" });

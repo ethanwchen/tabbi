@@ -593,6 +593,8 @@
 	<string>AnkiConnect 需要 API 密钥</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
 	<string>AnkiConnect 的设置挡住了 Tabbi。恢复默认设置即可解决，你的卡片不受影响。</string>
+	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
+	<string>另一个副本位于 %@。两个副本共用一个小组件，macOS 在它们之间切换时小组件可能变成空白。保留你在用的副本，把另一个移到废纸篓。</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>又是稳稳的一周，继续保持惬意。</string>
 	<key>Answers</key>
@@ -2285,6 +2287,8 @@
 	<string>打开系统设置</string>
 	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
 	<string>从“应用程序”文件夹打开 Tabbi 来连接日历。</string>
+	<key>Open Tabbi to start</key>
+	<string>打开 Tabbi 开始</string>
 	<key>Open and close the notch</key>
 	<string>打开和关闭刘海</string>
 	<key>Open answers in the large view</key>
@@ -2875,6 +2879,8 @@
 	<string>快捷指令访问已关闭。请在“自动化”设置中为 Tabbi 打开 Shortcuts Events。</string>
 	<key>Show %@</key>
 	<string>显示 %@</string>
+	<key>Show Other Copy</key>
+	<string>显示另一个副本</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>显示 Safari 或 Chrome 中的 SoundCloud</string>
 	<key>Show a break move</key>
@@ -3559,6 +3565,8 @@
 	<string>开启随机播放</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>正在打开勿扰模式…</string>
+	<key>Two copies of %@ are installed</key>
+	<string>安装了两个 %@</string>
 	<key>Type a name first</key>
 	<string>请先输入名字</string>
 	<key>Type a shortcut name first</key>
@@ -3915,6 +3923,8 @@
 	<string>宠物不会建议这个动作。点按即可开启</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>你的宠物名字不可用，请在衣橱中重命名。</string>
+	<key>Your pet, streak and timer show up here.</key>
+	<string>你的宠物、连续天数和计时器会显示在这里。</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>你的宠物、连续记录和正在运行的计时器。</string>
 	<key>Your plan</key>

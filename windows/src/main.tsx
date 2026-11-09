@@ -30,6 +30,7 @@ import { installOnboarding } from "./ui/onboarding/installOnboarding";
 import { initialState, NOTCH_MODES, type NotchMode, type ShellState } from "./ui/shell/machine";
 import { clearTextWidths } from "./ui/shell/measure";
 import { SettingsWindow } from "./ui/shell/settings/SettingsWindow";
+import { afterFirstPaint } from "./ui/shell/firstPaint";
 import { prepareSnapshot, SnapshotView } from "./ui/shell/snapshot/SnapshotView";
 import { parseSnapshot } from "./ui/shell/snapshot/snapshotPlan";
 import { ThemedRoot } from "./ui/shell/ThemedRoot";
@@ -113,6 +114,8 @@ if (snapshot !== null && snapshot !== undefined) {
       <SettingsWindow app={app} host={host} initialSection={launch.section ?? query.get("section")} />
     </ThemedRoot>,
   );
+  /* Shown once its first frame is on screen, so the window never appears empty. */
+  afterFirstPaint(() => void host.showSettings());
 } else {
   /* Only the values: the island calls ready itself once it is listening, so no early host event is lost. */
   const startup = await host.startup();

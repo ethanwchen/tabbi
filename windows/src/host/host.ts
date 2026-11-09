@@ -101,8 +101,10 @@ export interface Host {
    * that section. The window exists only while it is open.
    */
   openSettings(section: string | null): Promise<void>;
-  /* The Settings window calls this once it has drawn its first frame; the host then shows it. */
+  /* The Settings window's startup values and first section, as its page starts; nothing is shown yet. */
   settingsReady(): Promise<SettingsLaunch>;
+  /* The Settings window calls this once it has drawn its first frame; the host then shows it. */
+  showSettings(): Promise<void>;
 
   /*
    * Posts `payload` on `topic` to every other Tabbi window (the island and

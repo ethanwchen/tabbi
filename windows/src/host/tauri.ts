@@ -78,6 +78,7 @@ export function tauriHost(): Host {
     setCanvas: (width, height) => invoke("island_set_canvas", { width, height }),
     openSettings: (section) => invoke("settings_open", { section }),
     settingsReady: () => invoke<SettingsLaunch>("settings_ready"),
+    showSettings: () => invoke("settings_show"),
     broadcast: (topic, payload) => emit(eventName(topic), { sender: WINDOW_ID, payload } satisfies Broadcast),
     onBroadcast: (topic, listener) =>
       on<Broadcast>(eventName(topic), (message) => {

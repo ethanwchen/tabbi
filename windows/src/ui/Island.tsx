@@ -26,6 +26,7 @@ import { Header, HEADER_HEIGHT } from "./Header";
 import { CelebrationStage, type Celebration } from "./kit/Celebration";
 import { useKit } from "./kit/context";
 import { ClosedPreview } from "./shell/ClosedPreview";
+import { afterFirstPaint } from "./shell/firstPaint";
 import { hitRect, notchPath, openSilhouette, pillSilhouette, type CanvasSize, type HitRect, type Silhouette } from "./shell/geometry";
 import {
   NOTCH_MODES,
@@ -325,7 +326,8 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
     };
     const unsubscribe = host.subscribe(onHost);
     runEffects(initialEffects(stateRef.current));
-    const frame = requestAnimationFrame(() => {
+    /* The host shows the window once its first frame is on screen, so it never appears empty. */
+    const cancelReady = afterFirstPaint(() => {
       void host.ready().then((startup) => {
         setHotkey(startup.hotkey);
         if (isNotchMode(startup.notchMode)) setDevMode(startup.notchMode);
@@ -334,7 +336,7 @@ export function Island({ app, host, initial, still = false, initialTab, locale =
     const pending = timers.current;
     return () => {
       unsubscribe();
-      cancelAnimationFrame(frame);
+      cancelReady();
       for (const id of pending.values()) window.clearTimeout(id);
     };
   }, [app.modules, dispatch, host, runEffects]);

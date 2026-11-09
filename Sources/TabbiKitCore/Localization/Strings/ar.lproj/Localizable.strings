@@ -583,6 +583,8 @@
 	<string>AnkiConnect يطلب مفتاح API</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
 	<string>إعدادات AnkiConnect تمنع Tabbi. إعادتها إلى الوضع الافتراضي تحل المشكلة ولا تمس بطاقاتك.</string>
+	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
+	<string>توجد نسخة أخرى في %@. تشترك النسختان في أداة واحدة قد تصبح فارغة عندما ينتقل macOS بينهما. احتفظ بالنسخة التي تستخدمها وانقل الأخرى إلى سلة المهملات.</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>أسبوع ثابت آخر. واصل بهدوء.</string>
 	<key>Answers</key>
@@ -2269,6 +2271,8 @@
 	<string>فتح إعدادات النظام</string>
 	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
 	<string>افتح Tabbi من مجلد التطبيقات لربط تقويمك.</string>
+	<key>Open Tabbi to start</key>
+	<string>افتح Tabbi للبدء</string>
 	<key>Open and close the notch</key>
 	<string>فتح النوتش وإغلاقه</string>
 	<key>Open answers in the large view</key>
@@ -2855,6 +2859,8 @@
 	<string>الوصول إلى الاختصارات متوقف. شغّل Shortcuts Events لـ Tabbi في إعدادات الأتمتة.</string>
 	<key>Show %@</key>
 	<string>إظهار %@</string>
+	<key>Show Other Copy</key>
+	<string>إظهار النسخة الأخرى</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>إظهار SoundCloud من Safari أو Chrome</string>
 	<key>Show a break move</key>
@@ -3527,6 +3533,8 @@
 	<string>تشغيل الترتيب العشوائي</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>جارٍ تشغيل عدم الإزعاج…</string>
+	<key>Two copies of %@ are installed</key>
+	<string>توجد نسختان من %@ مثبتتان</string>
 	<key>Type a name first</key>
 	<string>اكتب اسمًا أولًا</string>
 	<key>Type a shortcut name first</key>
@@ -3875,6 +3883,8 @@
 	<string>لن يقترح حيوانك هذه الحركة. انقر لتشغيلها</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>اسم رفيقك غير مسموح. غيّر اسمه في الخزانة.</string>
+	<key>Your pet, streak and timer show up here.</key>
+	<string>سيظهر هنا حيوانك الأليف وسلسلتك والمؤقت.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>رفيقك وسلسلة اليوم والمؤقت الجاري.</string>
 	<key>Your plan</key>

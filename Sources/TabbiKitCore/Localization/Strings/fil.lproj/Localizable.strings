@@ -593,6 +593,8 @@
 	<string>Humihingi ng API key ang AnkiConnect</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
 	<string>Hinaharangan ng settings ng AnkiConnect ang Tabbi. Maaayos ito kapag ibinalik sa default, at hindi gagalawin ang cards mo.</string>
+	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
+	<string>May isa pang kopya sa %@. Iisang widget ang gamit ng mga kopya, at puwede itong mablangko kapag nagpapalit ang macOS sa pagitan nila. Itago ang kopyang ginagamit mo at ilipat ang isa sa Trash.</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>Isa na namang steady na linggo. Panatilihing cozy.</string>
 	<key>Answers</key>
@@ -2285,6 +2287,8 @@
 	<string>Buksan ang System Settings</string>
 	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
 	<string>Buksan ang Tabbi mula sa Applications folder para ikonekta ang calendar mo.</string>
+	<key>Open Tabbi to start</key>
+	<string>Buksan ang Tabbi para magsimula</string>
 	<key>Open and close the notch</key>
 	<string>Buksan at isara ang notch</string>
 	<key>Open answers in the large view</key>
@@ -2875,6 +2879,8 @@
 	<string>Naka-off ang access sa Shortcuts. I-on ang Shortcuts Events para sa Tabbi sa Automation settings.</string>
 	<key>Show %@</key>
 	<string>Ipakita ang %@</string>
+	<key>Show Other Copy</key>
+	<string>Ipakita ang Isang Kopya</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>Ipakita ang SoundCloud mula sa Safari o Chrome</string>
 	<key>Show a break move</key>
@@ -3559,6 +3565,8 @@
 	<string>I-on ang shuffle</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>Ino-on ang Do Not Disturb…</string>
+	<key>Two copies of %@ are installed</key>
+	<string>May dalawang kopya ng %@ na naka-install</string>
 	<key>Type a name first</key>
 	<string>Mag-type muna ng pangalan</string>
 	<key>Type a shortcut name first</key>
@@ -3915,6 +3923,8 @@
 	<string>Hindi ito imumungkahi ng alaga mo. I-click para i-on</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>Hindi puwede ang pangalan ng pet mo. Palitan ito sa Closet.</string>
+	<key>Your pet, streak and timer show up here.</key>
+	<string>Dito lalabas ang alaga mo, ang streak at ang timer.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>Ang pet mo, ang streak mo, at ang tumatakbong timer.</string>
 	<key>Your plan</key>
