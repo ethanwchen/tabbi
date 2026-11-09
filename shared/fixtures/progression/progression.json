@@ -1,0 +1,6611 @@
+{
+  "constants" : {
+    "minutesForStudyDay" : 5,
+    "namedMethods" : [
+      "pomodoro",
+      "fiftyTwoSeventeen",
+      "ultradian",
+      "flowtime",
+      "ankiSprint",
+      "questionBlock"
+    ],
+    "questCore" : [
+      "focusHours",
+      "studyDays",
+      "sessions"
+    ],
+    "questCount" : 3,
+    "questExtras" : [
+      "cards",
+      "tasks",
+      "breakMoves",
+      "party",
+      "water"
+    ],
+    "questTargets" : {
+      "breakMoves" : 8,
+      "cards" : 600,
+      "focusHours" : 600,
+      "party" : 2,
+      "sessions" : 20,
+      "studyDays" : 10,
+      "tasks" : 20,
+      "water" : 30
+    },
+    "saveSchemaVersion" : 1,
+    "steadyWeekDays" : 3,
+    "tiers" : [
+      "bronze",
+      "silver",
+      "gold",
+      "starlight"
+    ]
+  },
+  "hashes" : [
+    {
+      "hash" : 2166136261,
+      "text" : ""
+    },
+    {
+      "hash" : 3826002220,
+      "text" : "a"
+    },
+    {
+      "hash" : 3214735720,
+      "text" : "foobar"
+    },
+    {
+      "hash" : 3685111795,
+      "text" : "2026-11|focusHours"
+    },
+    {
+      "hash" : 1654306843,
+      "text" : "2026-11|cards"
+    },
+    {
+      "hash" : 2442402938,
+      "text" : "2027-02|water"
+    },
+    {
+      "hash" : 3898684563,
+      "text" : "2026-12|studyDays"
+    }
+  ],
+  "labels" : [
+    {
+      "goal" : 600,
+      "label" : "0/10 h",
+      "track" : "focusHours",
+      "value" : 0
+    },
+    {
+      "goal" : 3000,
+      "label" : "10/50 h",
+      "track" : "focusHours",
+      "value" : 659
+    },
+    {
+      "goal" : 30000,
+      "label" : "500/500 h",
+      "track" : "focusHours",
+      "value" : 40000
+    },
+    {
+      "goal" : 10000,
+      "label" : "4210/10k",
+      "track" : "cards",
+      "value" : 4210
+    },
+    {
+      "goal" : 50000,
+      "label" : "12k/50k",
+      "track" : "cards",
+      "value" : 12999
+    },
+    {
+      "goal" : 30,
+      "label" : "0/30",
+      "track" : "studyDays",
+      "value" : -2
+    },
+    {
+      "goal" : 4,
+      "label" : "3/4",
+      "track" : "methods",
+      "value" : 3
+    },
+    {
+      "goal" : 1000,
+      "label" : "1000/1000",
+      "track" : "water",
+      "value" : 1000
+    }
+  ],
+  "mastery" : [
+    {
+      "badge" : "studyDays.2",
+      "edition" : "littleSprout",
+      "goal" : 30,
+      "item" : "accessory.littleSprout"
+    },
+    {
+      "badge" : "studyDays.3",
+      "edition" : "blossomSprout",
+      "goal" : 100,
+      "item" : "accessory.blossomSprout"
+    },
+    {
+      "badge" : "gentleStreak.2",
+      "edition" : "nightcap",
+      "goal" : 30,
+      "item" : "accessory.nightcap"
+    },
+    {
+      "badge" : "gentleStreak.3",
+      "edition" : "cozyPajamas",
+      "goal" : 90,
+      "item" : "outfit.cozyPajamas"
+    },
+    {
+      "badge" : "sessions.2",
+      "edition" : "apprenticeRobe",
+      "goal" : 50,
+      "item" : "outfit.apprenticeRobe"
+    },
+    {
+      "badge" : "sessions.3",
+      "edition" : "scholarsRobe",
+      "goal" : 200,
+      "item" : "outfit.scholarsRobe"
+    },
+    {
+      "badge" : "sessions.4",
+      "edition" : "sagesRobe",
+      "goal" : 600,
+      "item" : "outfit.sagesRobe"
+    },
+    {
+      "badge" : "focusHours.3",
+      "edition" : "astronautSuit",
+      "goal" : 12000,
+      "item" : "outfit.astronautSuit"
+    },
+    {
+      "badge" : "focusHours.4",
+      "edition" : "starryCloak",
+      "goal" : 30000,
+      "item" : "outfit.starryCloak"
+    },
+    {
+      "badge" : "steadyWeeks.2",
+      "edition" : "explorersHat",
+      "goal" : 4,
+      "item" : "accessory.explorersHat"
+    },
+    {
+      "badge" : "cards.3",
+      "edition" : "owlSpectacles",
+      "goal" : 10000,
+      "item" : "accessory.owlSpectacles"
+    },
+    {
+      "badge" : "tasks.3",
+      "edition" : "beeAntennae",
+      "goal" : 200,
+      "item" : "accessory.beeAntennae"
+    },
+    {
+      "badge" : "breakMoves.2",
+      "edition" : "sportySweatband",
+      "goal" : 50,
+      "item" : "accessory.sportySweatband"
+    },
+    {
+      "badge" : "party.3",
+      "edition" : "friendshipBandana",
+      "goal" : 20,
+      "item" : "accessory.friendshipBandana"
+    },
+    {
+      "badge" : "methods.3",
+      "edition" : "bakersApron",
+      "goal" : 4,
+      "item" : "outfit.bakersApron"
+    },
+    {
+      "badge" : "monthlyQuests.3",
+      "edition" : "tinyLantern",
+      "goal" : 6,
+      "item" : "accessory.tinyLantern"
+    }
+  ],
+  "saves" : [
+    {
+      "json" : "{\"best\":{\"focusHours\":3200},\"completedMonths\":[\"2026-10\"],\"reached\":{\"focusHours.1\":\"2026-10-03T09:30:00Z\",\"focusHours.2\":\"2026-10-28T20:00:00Z\"},\"schemaVersion\":1,\"seen\":[\"focusHours.1\"]}",
+      "name" : "current",
+      "output" : {
+        "best" : {
+          "focusHours" : 3200
+        },
+        "completedMonths" : [
+          "2026-10"
+        ],
+        "encoded" : "{\n  \"best\" : {\n    \"focusHours\" : 3200\n  },\n  \"completedMonths\" : [\n    \"2026-10\"\n  ],\n  \"reached\" : {\n    \"focusHours.1\" : \"2026-10-03T09:30:00Z\",\n    \"focusHours.2\" : \"2026-10-28T20:00:00Z\"\n  },\n  \"schemaVersion\" : 1,\n  \"seen\" : [\n    \"focusHours.1\"\n  ]\n}",
+        "reached" : {
+          "focusHours.1" : 1791019800,
+          "focusHours.2" : 1793217600
+        },
+        "seen" : [
+          "focusHours.1"
+        ]
+      }
+    },
+    {
+      "json" : "{\"best\":{\"water\":25},\"reached\":{\"water.1\":\"2026-10-03T09:30:00Z\"}}",
+      "name" : "no version",
+      "output" : {
+        "best" : {
+          "water" : 25
+        },
+        "completedMonths" : [
+
+        ],
+        "encoded" : "{\n  \"best\" : {\n    \"water\" : 25\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"reached\" : {\n    \"water.1\" : \"2026-10-03T09:30:00Z\"\n  },\n  \"schemaVersion\" : 1,\n  \"seen\" : [\n\n  ]\n}",
+        "reached" : {
+          "water.1" : 1791019800
+        },
+        "seen" : [
+
+        ]
+      }
+    },
+    {
+      "json" : "{\"best\":{\"focusHours\":90,\"naps\":4},\"completedMonths\":[\"2026-10\",\"2026-13\"],\"reached\":{\"focusHours.1\":\"2026-10-03T09:30:00Z\",\"naps.1\":\"2026-10-03T09:30:00Z\"},\"rooms\":{\"desk\":true},\"schemaVersion\":4,\"seen\":[\"naps.1\",\"focusHours.1\"]}",
+      "name" : "a newer build",
+      "output" : {
+        "best" : {
+          "focusHours" : 90
+        },
+        "completedMonths" : [
+          "2026-10"
+        ],
+        "encoded" : "{\n  \"best\" : {\n    \"focusHours\" : 90\n  },\n  \"completedMonths\" : [\n    \"2026-10\"\n  ],\n  \"reached\" : {\n    \"focusHours.1\" : \"2026-10-03T09:30:00Z\"\n  },\n  \"schemaVersion\" : 1,\n  \"seen\" : [\n    \"focusHours.1\"\n  ]\n}",
+        "reached" : {
+          "focusHours.1" : 1791019800
+        },
+        "seen" : [
+          "focusHours.1"
+        ]
+      }
+    },
+    {
+      "json" : "{\"best\":{},\"reached\":{},\"seen\":[\"cards.1\"]}",
+      "name" : "seen without reached",
+      "output" : {
+        "best" : {
+
+        },
+        "completedMonths" : [
+
+        ],
+        "encoded" : "{\n  \"best\" : {\n\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"reached\" : {\n\n  },\n  \"schemaVersion\" : 1,\n  \"seen\" : [\n\n  ]\n}",
+        "reached" : {
+
+        },
+        "seen" : [
+
+        ]
+      }
+    },
+    {
+      "json" : "{\"best\":\"lots\",\"reached\":[1],\"completedMonths\":{\"a\":1}}",
+      "name" : "broken fields",
+      "output" : {
+        "best" : {
+
+        },
+        "completedMonths" : [
+
+        ],
+        "encoded" : "{\n  \"best\" : {\n\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"reached\" : {\n\n  },\n  \"schemaVersion\" : 1,\n  \"seen\" : [\n\n  ]\n}",
+        "reached" : {
+
+        },
+        "seen" : [
+
+        ]
+      }
+    },
+    {
+      "json" : "[1,2,3]",
+      "name" : "not an object"
+    }
+  ],
+  "scenarios" : [
+    {
+      "input" : {
+        "firstWeekday" : 1,
+        "freezePurchases" : [
+
+        ],
+        "records" : [
+
+        ],
+        "timeZone" : "UTC",
+        "today" : 1794268800
+      },
+      "name" : "a new pet",
+      "output" : {
+        "completedMonths" : [
+
+        ],
+        "progress" : {
+          "breakMoves.1" : "0/10",
+          "breakMoves.2" : "0/50",
+          "breakMoves.3" : "0/150",
+          "breakMoves.4" : "0/400",
+          "cards.1" : "0/500",
+          "cards.2" : "0/2500",
+          "cards.3" : "0/10k",
+          "cards.4" : "0/50k",
+          "focusHours.1" : "0/10 h",
+          "focusHours.2" : "0/50 h",
+          "focusHours.3" : "0/200 h",
+          "focusHours.4" : "0/500 h",
+          "gentleStreak.1" : "0/7",
+          "gentleStreak.2" : "0/30",
+          "gentleStreak.3" : "0/90",
+          "gentleStreak.4" : "0/180",
+          "methods.1" : "0/2",
+          "methods.2" : "0/3",
+          "methods.3" : "0/4",
+          "methods.4" : "0/6",
+          "monthlyQuests.1" : "0/1",
+          "monthlyQuests.2" : "0/3",
+          "monthlyQuests.3" : "0/6",
+          "monthlyQuests.4" : "0/12",
+          "party.1" : "0/1",
+          "party.2" : "0/5",
+          "party.3" : "0/20",
+          "party.4" : "0/60",
+          "sessions.1" : "0/10",
+          "sessions.2" : "0/50",
+          "sessions.3" : "0/200",
+          "sessions.4" : "0/600",
+          "steadyWeeks.1" : "0/2",
+          "steadyWeeks.2" : "0/4",
+          "steadyWeeks.3" : "0/12",
+          "steadyWeeks.4" : "0/26",
+          "studyDays.1" : "0/7",
+          "studyDays.2" : "0/30",
+          "studyDays.3" : "0/100",
+          "studyDays.4" : "0/250",
+          "tasks.1" : "0/10",
+          "tasks.2" : "0/50",
+          "tasks.3" : "0/200",
+          "tasks.4" : "0/500",
+          "water.1" : "0/20",
+          "water.2" : "0/100",
+          "water.3" : "0/300",
+          "water.4" : "0/1000"
+        },
+        "quests" : [
+          {
+            "isDone" : false,
+            "label" : "0/10",
+            "target" : 10,
+            "track" : "studyDays",
+            "value" : 0
+          },
+          {
+            "isDone" : false,
+            "label" : "0/10 h",
+            "target" : 600,
+            "track" : "focusHours",
+            "value" : 0
+          },
+          {
+            "isDone" : false,
+            "label" : "0/20",
+            "target" : 20,
+            "track" : "sessions",
+            "value" : 0
+          }
+        ],
+        "reachedBadges" : [
+
+        ],
+        "tiers" : {
+
+        },
+        "unlocked" : [
+
+        ],
+        "values" : {
+          "breakMoves" : 0,
+          "cards" : 0,
+          "focusHours" : 0,
+          "gentleStreak" : 0,
+          "methods" : 0,
+          "monthlyQuests" : 0,
+          "party" : 0,
+          "sessions" : 0,
+          "steadyWeeks" : 0,
+          "studyDays" : 0,
+          "tasks" : 0,
+          "water" : 0
+        }
+      }
+    },
+    {
+      "input" : {
+        "firstWeekday" : 2,
+        "freezePurchases" : [
+
+        ],
+        "records" : [
+          {
+            "end" : 1790726400,
+            "id" : "00000000-0000-4000-8000-000000000001",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790724900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790728200,
+            "id" : "00000000-0000-4000-8000-000000000002",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790726700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790730000,
+            "id" : "00000000-0000-4000-8000-000000000003",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790728500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790731800,
+            "id" : "00000000-0000-4000-8000-000000000004",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790730300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790733600,
+            "id" : "00000000-0000-4000-8000-000000000005",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790732100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790735400,
+            "id" : "00000000-0000-4000-8000-000000000006",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790733900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790737200,
+            "id" : "00000000-0000-4000-8000-000000000007",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790735700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790740800,
+            "id" : "00000000-0000-4000-8000-000000000008",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1790740500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790744400,
+            "id" : "00000000-0000-4000-8000-000000000009",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1790744400,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1790748000,
+            "id" : "00000000-0000-4000-8000-000000000010",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1790748000,
+            "subject" : "task-0"
+          },
+          {
+            "end" : 1790748060,
+            "id" : "00000000-0000-4000-8000-000000000011",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1790748060,
+            "subject" : "task-0"
+          },
+          {
+            "end" : 1790751600,
+            "id" : "00000000-0000-4000-8000-000000000012",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1790751600,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1790751600,
+            "id" : "00000000-0000-4000-8000-000000000013",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1790751600,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1790812800,
+            "id" : "00000000-0000-4000-8000-000000000014",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790811300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790814600,
+            "id" : "00000000-0000-4000-8000-000000000015",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790813100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790816400,
+            "id" : "00000000-0000-4000-8000-000000000016",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790814900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790818200,
+            "id" : "00000000-0000-4000-8000-000000000017",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790816700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790820000,
+            "id" : "00000000-0000-4000-8000-000000000018",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790818500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790821800,
+            "id" : "00000000-0000-4000-8000-000000000019",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790820300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790823600,
+            "id" : "00000000-0000-4000-8000-000000000020",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790822100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790827200,
+            "id" : "00000000-0000-4000-8000-000000000021",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1790826900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790830800,
+            "id" : "00000000-0000-4000-8000-000000000022",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1790830800,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1790834400,
+            "id" : "00000000-0000-4000-8000-000000000023",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1790834400,
+            "subject" : "task-1"
+          },
+          {
+            "end" : 1790834460,
+            "id" : "00000000-0000-4000-8000-000000000024",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1790834460,
+            "subject" : "task-1"
+          },
+          {
+            "end" : 1790838000,
+            "id" : "00000000-0000-4000-8000-000000000025",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1790838000,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1790838000,
+            "id" : "00000000-0000-4000-8000-000000000026",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1790838000,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1790899200,
+            "id" : "00000000-0000-4000-8000-000000000027",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790897700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790901000,
+            "id" : "00000000-0000-4000-8000-000000000028",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790899500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790902800,
+            "id" : "00000000-0000-4000-8000-000000000029",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790901300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790904600,
+            "id" : "00000000-0000-4000-8000-000000000030",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790903100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790906400,
+            "id" : "00000000-0000-4000-8000-000000000031",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790904900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790908200,
+            "id" : "00000000-0000-4000-8000-000000000032",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790906700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790910000,
+            "id" : "00000000-0000-4000-8000-000000000033",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790908500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790913600,
+            "id" : "00000000-0000-4000-8000-000000000034",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1790913300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790917200,
+            "id" : "00000000-0000-4000-8000-000000000035",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1790917200,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1790920800,
+            "id" : "00000000-0000-4000-8000-000000000036",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1790920800,
+            "subject" : "task-2"
+          },
+          {
+            "end" : 1790920860,
+            "id" : "00000000-0000-4000-8000-000000000037",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1790920860,
+            "subject" : "task-2"
+          },
+          {
+            "end" : 1790924400,
+            "id" : "00000000-0000-4000-8000-000000000038",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1790924400,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1790924400,
+            "id" : "00000000-0000-4000-8000-000000000039",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1790924400,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1790985600,
+            "id" : "00000000-0000-4000-8000-000000000040",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790984100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790987400,
+            "id" : "00000000-0000-4000-8000-000000000041",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790985900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790989200,
+            "id" : "00000000-0000-4000-8000-000000000042",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790987700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790991000,
+            "id" : "00000000-0000-4000-8000-000000000043",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790989500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790992800,
+            "id" : "00000000-0000-4000-8000-000000000044",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790991300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790994600,
+            "id" : "00000000-0000-4000-8000-000000000045",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790993100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1790996400,
+            "id" : "00000000-0000-4000-8000-000000000046",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1790994900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791000000,
+            "id" : "00000000-0000-4000-8000-000000000047",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1790999700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791003600,
+            "id" : "00000000-0000-4000-8000-000000000048",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1791003600,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1791007200,
+            "id" : "00000000-0000-4000-8000-000000000049",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791007200,
+            "subject" : "task-3"
+          },
+          {
+            "end" : 1791007260,
+            "id" : "00000000-0000-4000-8000-000000000050",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791007260,
+            "subject" : "task-3"
+          },
+          {
+            "end" : 1791010800,
+            "id" : "00000000-0000-4000-8000-000000000051",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1791010800,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1791010800,
+            "id" : "00000000-0000-4000-8000-000000000052",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1791010800,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1791072000,
+            "id" : "00000000-0000-4000-8000-000000000053",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791070500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791073800,
+            "id" : "00000000-0000-4000-8000-000000000054",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791072300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791075600,
+            "id" : "00000000-0000-4000-8000-000000000055",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791074100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791077400,
+            "id" : "00000000-0000-4000-8000-000000000056",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791075900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791079200,
+            "id" : "00000000-0000-4000-8000-000000000057",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791077700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791081000,
+            "id" : "00000000-0000-4000-8000-000000000058",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791079500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791082800,
+            "id" : "00000000-0000-4000-8000-000000000059",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791081300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791086400,
+            "id" : "00000000-0000-4000-8000-000000000060",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1791086100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791090000,
+            "id" : "00000000-0000-4000-8000-000000000061",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1791090000,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1791093600,
+            "id" : "00000000-0000-4000-8000-000000000062",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791093600,
+            "subject" : "task-4"
+          },
+          {
+            "end" : 1791093660,
+            "id" : "00000000-0000-4000-8000-000000000063",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791093660,
+            "subject" : "task-4"
+          },
+          {
+            "end" : 1791097200,
+            "id" : "00000000-0000-4000-8000-000000000064",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1791097200,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1791097200,
+            "id" : "00000000-0000-4000-8000-000000000065",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1791097200,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1791158400,
+            "id" : "00000000-0000-4000-8000-000000000066",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791156900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791160200,
+            "id" : "00000000-0000-4000-8000-000000000067",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791158700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791162000,
+            "id" : "00000000-0000-4000-8000-000000000068",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791160500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791163800,
+            "id" : "00000000-0000-4000-8000-000000000069",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791162300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791165600,
+            "id" : "00000000-0000-4000-8000-000000000070",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791164100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791167400,
+            "id" : "00000000-0000-4000-8000-000000000071",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791165900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791169200,
+            "id" : "00000000-0000-4000-8000-000000000072",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791167700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791172800,
+            "id" : "00000000-0000-4000-8000-000000000073",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1791172500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791176400,
+            "id" : "00000000-0000-4000-8000-000000000074",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1791176400,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1791180000,
+            "id" : "00000000-0000-4000-8000-000000000075",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791180000,
+            "subject" : "task-5"
+          },
+          {
+            "end" : 1791180060,
+            "id" : "00000000-0000-4000-8000-000000000076",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791180060,
+            "subject" : "task-5"
+          },
+          {
+            "end" : 1791183600,
+            "id" : "00000000-0000-4000-8000-000000000077",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1791183600,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1791183600,
+            "id" : "00000000-0000-4000-8000-000000000078",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1791183600,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1791244800,
+            "id" : "00000000-0000-4000-8000-000000000079",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791243300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791246600,
+            "id" : "00000000-0000-4000-8000-000000000080",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791245100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791248400,
+            "id" : "00000000-0000-4000-8000-000000000081",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791246900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791250200,
+            "id" : "00000000-0000-4000-8000-000000000082",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791248700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791252000,
+            "id" : "00000000-0000-4000-8000-000000000083",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791250500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791253800,
+            "id" : "00000000-0000-4000-8000-000000000084",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791252300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791255600,
+            "id" : "00000000-0000-4000-8000-000000000085",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791254100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791259200,
+            "id" : "00000000-0000-4000-8000-000000000086",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1791258900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791262800,
+            "id" : "00000000-0000-4000-8000-000000000087",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1791262800,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1791266400,
+            "id" : "00000000-0000-4000-8000-000000000088",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791266400,
+            "subject" : "task-6"
+          },
+          {
+            "end" : 1791266460,
+            "id" : "00000000-0000-4000-8000-000000000089",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791266460,
+            "subject" : "task-6"
+          },
+          {
+            "end" : 1791270000,
+            "id" : "00000000-0000-4000-8000-000000000090",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1791270000,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1791270000,
+            "id" : "00000000-0000-4000-8000-000000000091",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1791270000,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1791331200,
+            "id" : "00000000-0000-4000-8000-000000000092",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791329700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791333000,
+            "id" : "00000000-0000-4000-8000-000000000093",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791331500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791334800,
+            "id" : "00000000-0000-4000-8000-000000000094",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791333300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791336600,
+            "id" : "00000000-0000-4000-8000-000000000095",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791335100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791338400,
+            "id" : "00000000-0000-4000-8000-000000000096",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791336900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791340200,
+            "id" : "00000000-0000-4000-8000-000000000097",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791338700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791342000,
+            "id" : "00000000-0000-4000-8000-000000000098",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791340500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791345600,
+            "id" : "00000000-0000-4000-8000-000000000099",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1791345300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791349200,
+            "id" : "00000000-0000-4000-8000-000000000100",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1791349200,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1791352800,
+            "id" : "00000000-0000-4000-8000-000000000101",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791352800,
+            "subject" : "task-7"
+          },
+          {
+            "end" : 1791352860,
+            "id" : "00000000-0000-4000-8000-000000000102",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791352860,
+            "subject" : "task-7"
+          },
+          {
+            "end" : 1791356400,
+            "id" : "00000000-0000-4000-8000-000000000103",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1791356400,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1791356400,
+            "id" : "00000000-0000-4000-8000-000000000104",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1791356400,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1791417600,
+            "id" : "00000000-0000-4000-8000-000000000105",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791416100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791419400,
+            "id" : "00000000-0000-4000-8000-000000000106",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791417900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791421200,
+            "id" : "00000000-0000-4000-8000-000000000107",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791419700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791423000,
+            "id" : "00000000-0000-4000-8000-000000000108",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791421500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791424800,
+            "id" : "00000000-0000-4000-8000-000000000109",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791423300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791426600,
+            "id" : "00000000-0000-4000-8000-000000000110",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791425100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791428400,
+            "id" : "00000000-0000-4000-8000-000000000111",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791426900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791432000,
+            "id" : "00000000-0000-4000-8000-000000000112",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1791431700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791435600,
+            "id" : "00000000-0000-4000-8000-000000000113",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1791435600,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1791439200,
+            "id" : "00000000-0000-4000-8000-000000000114",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791439200,
+            "subject" : "task-8"
+          },
+          {
+            "end" : 1791439260,
+            "id" : "00000000-0000-4000-8000-000000000115",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791439260,
+            "subject" : "task-8"
+          },
+          {
+            "end" : 1791442800,
+            "id" : "00000000-0000-4000-8000-000000000116",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1791442800,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1791442800,
+            "id" : "00000000-0000-4000-8000-000000000117",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1791442800,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1791504000,
+            "id" : "00000000-0000-4000-8000-000000000118",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791502500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791505800,
+            "id" : "00000000-0000-4000-8000-000000000119",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791504300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791507600,
+            "id" : "00000000-0000-4000-8000-000000000120",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791506100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791509400,
+            "id" : "00000000-0000-4000-8000-000000000121",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791507900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791511200,
+            "id" : "00000000-0000-4000-8000-000000000122",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791509700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791513000,
+            "id" : "00000000-0000-4000-8000-000000000123",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791511500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791514800,
+            "id" : "00000000-0000-4000-8000-000000000124",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791513300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791518400,
+            "id" : "00000000-0000-4000-8000-000000000125",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1791518100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791522000,
+            "id" : "00000000-0000-4000-8000-000000000126",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1791522000,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1791525600,
+            "id" : "00000000-0000-4000-8000-000000000127",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791525600,
+            "subject" : "task-9"
+          },
+          {
+            "end" : 1791525660,
+            "id" : "00000000-0000-4000-8000-000000000128",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791525660,
+            "subject" : "task-9"
+          },
+          {
+            "end" : 1791529200,
+            "id" : "00000000-0000-4000-8000-000000000129",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1791529200,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1791529200,
+            "id" : "00000000-0000-4000-8000-000000000130",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1791529200,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1791590400,
+            "id" : "00000000-0000-4000-8000-000000000131",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791588900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791592200,
+            "id" : "00000000-0000-4000-8000-000000000132",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791590700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791594000,
+            "id" : "00000000-0000-4000-8000-000000000133",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791592500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791595800,
+            "id" : "00000000-0000-4000-8000-000000000134",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791594300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791597600,
+            "id" : "00000000-0000-4000-8000-000000000135",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791596100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791599400,
+            "id" : "00000000-0000-4000-8000-000000000136",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791597900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791601200,
+            "id" : "00000000-0000-4000-8000-000000000137",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791599700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791604800,
+            "id" : "00000000-0000-4000-8000-000000000138",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1791604500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791608400,
+            "id" : "00000000-0000-4000-8000-000000000139",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1791608400,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1791612000,
+            "id" : "00000000-0000-4000-8000-000000000140",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791612000,
+            "subject" : "task-10"
+          },
+          {
+            "end" : 1791612060,
+            "id" : "00000000-0000-4000-8000-000000000141",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791612060,
+            "subject" : "task-10"
+          },
+          {
+            "end" : 1791615600,
+            "id" : "00000000-0000-4000-8000-000000000142",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1791615600,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1791615600,
+            "id" : "00000000-0000-4000-8000-000000000143",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1791615600,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1791676800,
+            "id" : "00000000-0000-4000-8000-000000000144",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791675300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791678600,
+            "id" : "00000000-0000-4000-8000-000000000145",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791677100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791680400,
+            "id" : "00000000-0000-4000-8000-000000000146",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791678900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791682200,
+            "id" : "00000000-0000-4000-8000-000000000147",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791680700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791684000,
+            "id" : "00000000-0000-4000-8000-000000000148",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791682500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791685800,
+            "id" : "00000000-0000-4000-8000-000000000149",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791684300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791687600,
+            "id" : "00000000-0000-4000-8000-000000000150",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791686100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791691200,
+            "id" : "00000000-0000-4000-8000-000000000151",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1791690900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791694800,
+            "id" : "00000000-0000-4000-8000-000000000152",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1791694800,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1791698400,
+            "id" : "00000000-0000-4000-8000-000000000153",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791698400,
+            "subject" : "task-11"
+          },
+          {
+            "end" : 1791698460,
+            "id" : "00000000-0000-4000-8000-000000000154",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791698460,
+            "subject" : "task-11"
+          },
+          {
+            "end" : 1791702000,
+            "id" : "00000000-0000-4000-8000-000000000155",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1791702000,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1791702000,
+            "id" : "00000000-0000-4000-8000-000000000156",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1791702000,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1791763200,
+            "id" : "00000000-0000-4000-8000-000000000157",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791761700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791765000,
+            "id" : "00000000-0000-4000-8000-000000000158",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791763500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791766800,
+            "id" : "00000000-0000-4000-8000-000000000159",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791765300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791768600,
+            "id" : "00000000-0000-4000-8000-000000000160",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791767100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791770400,
+            "id" : "00000000-0000-4000-8000-000000000161",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791768900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791772200,
+            "id" : "00000000-0000-4000-8000-000000000162",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791770700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791774000,
+            "id" : "00000000-0000-4000-8000-000000000163",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791772500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791777600,
+            "id" : "00000000-0000-4000-8000-000000000164",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1791777300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791781200,
+            "id" : "00000000-0000-4000-8000-000000000165",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1791781200,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1791784800,
+            "id" : "00000000-0000-4000-8000-000000000166",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791784800,
+            "subject" : "task-12"
+          },
+          {
+            "end" : 1791784860,
+            "id" : "00000000-0000-4000-8000-000000000167",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791784860,
+            "subject" : "task-12"
+          },
+          {
+            "end" : 1791788400,
+            "id" : "00000000-0000-4000-8000-000000000168",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1791788400,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1791788400,
+            "id" : "00000000-0000-4000-8000-000000000169",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1791788400,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1791849600,
+            "id" : "00000000-0000-4000-8000-000000000170",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791848100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791851400,
+            "id" : "00000000-0000-4000-8000-000000000171",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791849900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791853200,
+            "id" : "00000000-0000-4000-8000-000000000172",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791851700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791855000,
+            "id" : "00000000-0000-4000-8000-000000000173",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791853500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791856800,
+            "id" : "00000000-0000-4000-8000-000000000174",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791855300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791858600,
+            "id" : "00000000-0000-4000-8000-000000000175",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791857100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791860400,
+            "id" : "00000000-0000-4000-8000-000000000176",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791858900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791864000,
+            "id" : "00000000-0000-4000-8000-000000000177",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1791863700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791867600,
+            "id" : "00000000-0000-4000-8000-000000000178",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1791867600,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1791871200,
+            "id" : "00000000-0000-4000-8000-000000000179",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791871200,
+            "subject" : "task-13"
+          },
+          {
+            "end" : 1791871260,
+            "id" : "00000000-0000-4000-8000-000000000180",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791871260,
+            "subject" : "task-13"
+          },
+          {
+            "end" : 1791874800,
+            "id" : "00000000-0000-4000-8000-000000000181",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1791874800,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1791874800,
+            "id" : "00000000-0000-4000-8000-000000000182",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1791874800,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1791936000,
+            "id" : "00000000-0000-4000-8000-000000000183",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791934500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791937800,
+            "id" : "00000000-0000-4000-8000-000000000184",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791936300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791939600,
+            "id" : "00000000-0000-4000-8000-000000000185",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791938100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791941400,
+            "id" : "00000000-0000-4000-8000-000000000186",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791939900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791943200,
+            "id" : "00000000-0000-4000-8000-000000000187",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791941700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791945000,
+            "id" : "00000000-0000-4000-8000-000000000188",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791943500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791946800,
+            "id" : "00000000-0000-4000-8000-000000000189",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1791945300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791950400,
+            "id" : "00000000-0000-4000-8000-000000000190",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1791950100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1791954000,
+            "id" : "00000000-0000-4000-8000-000000000191",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1791954000,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1791957600,
+            "id" : "00000000-0000-4000-8000-000000000192",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791957600,
+            "subject" : "task-14"
+          },
+          {
+            "end" : 1791957660,
+            "id" : "00000000-0000-4000-8000-000000000193",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1791957660,
+            "subject" : "task-14"
+          },
+          {
+            "end" : 1791961200,
+            "id" : "00000000-0000-4000-8000-000000000194",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1791961200,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1791961200,
+            "id" : "00000000-0000-4000-8000-000000000195",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1791961200,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1792022400,
+            "id" : "00000000-0000-4000-8000-000000000196",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792020900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792024200,
+            "id" : "00000000-0000-4000-8000-000000000197",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792022700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792026000,
+            "id" : "00000000-0000-4000-8000-000000000198",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792024500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792027800,
+            "id" : "00000000-0000-4000-8000-000000000199",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792026300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792029600,
+            "id" : "00000000-0000-4000-8000-000000000200",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792028100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792031400,
+            "id" : "00000000-0000-4000-8000-000000000201",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792029900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792033200,
+            "id" : "00000000-0000-4000-8000-000000000202",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792031700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792036800,
+            "id" : "00000000-0000-4000-8000-000000000203",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1792036500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792040400,
+            "id" : "00000000-0000-4000-8000-000000000204",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1792040400,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1792044000,
+            "id" : "00000000-0000-4000-8000-000000000205",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792044000,
+            "subject" : "task-15"
+          },
+          {
+            "end" : 1792044060,
+            "id" : "00000000-0000-4000-8000-000000000206",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792044060,
+            "subject" : "task-15"
+          },
+          {
+            "end" : 1792047600,
+            "id" : "00000000-0000-4000-8000-000000000207",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1792047600,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1792047600,
+            "id" : "00000000-0000-4000-8000-000000000208",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1792047600,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1792108800,
+            "id" : "00000000-0000-4000-8000-000000000209",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792107300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792110600,
+            "id" : "00000000-0000-4000-8000-000000000210",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792109100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792112400,
+            "id" : "00000000-0000-4000-8000-000000000211",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792110900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792114200,
+            "id" : "00000000-0000-4000-8000-000000000212",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792112700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792116000,
+            "id" : "00000000-0000-4000-8000-000000000213",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792114500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792117800,
+            "id" : "00000000-0000-4000-8000-000000000214",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792116300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792119600,
+            "id" : "00000000-0000-4000-8000-000000000215",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792118100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792123200,
+            "id" : "00000000-0000-4000-8000-000000000216",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1792122900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792126800,
+            "id" : "00000000-0000-4000-8000-000000000217",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1792126800,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1792130400,
+            "id" : "00000000-0000-4000-8000-000000000218",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792130400,
+            "subject" : "task-16"
+          },
+          {
+            "end" : 1792130460,
+            "id" : "00000000-0000-4000-8000-000000000219",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792130460,
+            "subject" : "task-16"
+          },
+          {
+            "end" : 1792134000,
+            "id" : "00000000-0000-4000-8000-000000000220",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1792134000,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1792134000,
+            "id" : "00000000-0000-4000-8000-000000000221",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1792134000,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1792195200,
+            "id" : "00000000-0000-4000-8000-000000000222",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792193700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792197000,
+            "id" : "00000000-0000-4000-8000-000000000223",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792195500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792198800,
+            "id" : "00000000-0000-4000-8000-000000000224",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792197300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792200600,
+            "id" : "00000000-0000-4000-8000-000000000225",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792199100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792202400,
+            "id" : "00000000-0000-4000-8000-000000000226",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792200900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792204200,
+            "id" : "00000000-0000-4000-8000-000000000227",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792202700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792206000,
+            "id" : "00000000-0000-4000-8000-000000000228",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792204500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792209600,
+            "id" : "00000000-0000-4000-8000-000000000229",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1792209300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792213200,
+            "id" : "00000000-0000-4000-8000-000000000230",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1792213200,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1792216800,
+            "id" : "00000000-0000-4000-8000-000000000231",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792216800,
+            "subject" : "task-17"
+          },
+          {
+            "end" : 1792216860,
+            "id" : "00000000-0000-4000-8000-000000000232",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792216860,
+            "subject" : "task-17"
+          },
+          {
+            "end" : 1792220400,
+            "id" : "00000000-0000-4000-8000-000000000233",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1792220400,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1792220400,
+            "id" : "00000000-0000-4000-8000-000000000234",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1792220400,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1792281600,
+            "id" : "00000000-0000-4000-8000-000000000235",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792280100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792283400,
+            "id" : "00000000-0000-4000-8000-000000000236",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792281900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792285200,
+            "id" : "00000000-0000-4000-8000-000000000237",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792283700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792287000,
+            "id" : "00000000-0000-4000-8000-000000000238",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792285500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792288800,
+            "id" : "00000000-0000-4000-8000-000000000239",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792287300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792290600,
+            "id" : "00000000-0000-4000-8000-000000000240",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792289100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792292400,
+            "id" : "00000000-0000-4000-8000-000000000241",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792290900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792296000,
+            "id" : "00000000-0000-4000-8000-000000000242",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1792295700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792299600,
+            "id" : "00000000-0000-4000-8000-000000000243",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1792299600,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1792303200,
+            "id" : "00000000-0000-4000-8000-000000000244",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792303200,
+            "subject" : "task-18"
+          },
+          {
+            "end" : 1792303260,
+            "id" : "00000000-0000-4000-8000-000000000245",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792303260,
+            "subject" : "task-18"
+          },
+          {
+            "end" : 1792306800,
+            "id" : "00000000-0000-4000-8000-000000000246",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1792306800,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1792306800,
+            "id" : "00000000-0000-4000-8000-000000000247",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1792306800,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1792368000,
+            "id" : "00000000-0000-4000-8000-000000000248",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792366500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792369800,
+            "id" : "00000000-0000-4000-8000-000000000249",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792368300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792371600,
+            "id" : "00000000-0000-4000-8000-000000000250",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792370100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792373400,
+            "id" : "00000000-0000-4000-8000-000000000251",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792371900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792375200,
+            "id" : "00000000-0000-4000-8000-000000000252",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792373700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792377000,
+            "id" : "00000000-0000-4000-8000-000000000253",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792375500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792378800,
+            "id" : "00000000-0000-4000-8000-000000000254",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792377300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792382400,
+            "id" : "00000000-0000-4000-8000-000000000255",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1792382100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792386000,
+            "id" : "00000000-0000-4000-8000-000000000256",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1792386000,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1792389600,
+            "id" : "00000000-0000-4000-8000-000000000257",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792389600,
+            "subject" : "task-19"
+          },
+          {
+            "end" : 1792389660,
+            "id" : "00000000-0000-4000-8000-000000000258",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792389660,
+            "subject" : "task-19"
+          },
+          {
+            "end" : 1792393200,
+            "id" : "00000000-0000-4000-8000-000000000259",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1792393200,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1792393200,
+            "id" : "00000000-0000-4000-8000-000000000260",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1792393200,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1792454400,
+            "id" : "00000000-0000-4000-8000-000000000261",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792452900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792456200,
+            "id" : "00000000-0000-4000-8000-000000000262",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792454700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792458000,
+            "id" : "00000000-0000-4000-8000-000000000263",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792456500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792459800,
+            "id" : "00000000-0000-4000-8000-000000000264",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792458300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792461600,
+            "id" : "00000000-0000-4000-8000-000000000265",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792460100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792463400,
+            "id" : "00000000-0000-4000-8000-000000000266",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792461900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792465200,
+            "id" : "00000000-0000-4000-8000-000000000267",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792463700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792468800,
+            "id" : "00000000-0000-4000-8000-000000000268",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1792468500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792472400,
+            "id" : "00000000-0000-4000-8000-000000000269",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1792472400,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1792476000,
+            "id" : "00000000-0000-4000-8000-000000000270",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792476000,
+            "subject" : "task-20"
+          },
+          {
+            "end" : 1792476060,
+            "id" : "00000000-0000-4000-8000-000000000271",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792476060,
+            "subject" : "task-20"
+          },
+          {
+            "end" : 1792479600,
+            "id" : "00000000-0000-4000-8000-000000000272",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1792479600,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1792479600,
+            "id" : "00000000-0000-4000-8000-000000000273",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1792479600,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1792540800,
+            "id" : "00000000-0000-4000-8000-000000000274",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792539300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792542600,
+            "id" : "00000000-0000-4000-8000-000000000275",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792541100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792544400,
+            "id" : "00000000-0000-4000-8000-000000000276",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792542900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792546200,
+            "id" : "00000000-0000-4000-8000-000000000277",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792544700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792548000,
+            "id" : "00000000-0000-4000-8000-000000000278",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792546500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792549800,
+            "id" : "00000000-0000-4000-8000-000000000279",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792548300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792551600,
+            "id" : "00000000-0000-4000-8000-000000000280",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792550100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792555200,
+            "id" : "00000000-0000-4000-8000-000000000281",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1792554900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792558800,
+            "id" : "00000000-0000-4000-8000-000000000282",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1792558800,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1792562400,
+            "id" : "00000000-0000-4000-8000-000000000283",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792562400,
+            "subject" : "task-21"
+          },
+          {
+            "end" : 1792562460,
+            "id" : "00000000-0000-4000-8000-000000000284",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792562460,
+            "subject" : "task-21"
+          },
+          {
+            "end" : 1792566000,
+            "id" : "00000000-0000-4000-8000-000000000285",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1792566000,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1792566000,
+            "id" : "00000000-0000-4000-8000-000000000286",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1792566000,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1792627200,
+            "id" : "00000000-0000-4000-8000-000000000287",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792625700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792629000,
+            "id" : "00000000-0000-4000-8000-000000000288",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792627500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792630800,
+            "id" : "00000000-0000-4000-8000-000000000289",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792629300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792632600,
+            "id" : "00000000-0000-4000-8000-000000000290",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792631100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792634400,
+            "id" : "00000000-0000-4000-8000-000000000291",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792632900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792636200,
+            "id" : "00000000-0000-4000-8000-000000000292",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792634700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792638000,
+            "id" : "00000000-0000-4000-8000-000000000293",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792636500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792641600,
+            "id" : "00000000-0000-4000-8000-000000000294",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1792641300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792645200,
+            "id" : "00000000-0000-4000-8000-000000000295",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1792645200,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1792648800,
+            "id" : "00000000-0000-4000-8000-000000000296",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792648800,
+            "subject" : "task-22"
+          },
+          {
+            "end" : 1792648860,
+            "id" : "00000000-0000-4000-8000-000000000297",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792648860,
+            "subject" : "task-22"
+          },
+          {
+            "end" : 1792652400,
+            "id" : "00000000-0000-4000-8000-000000000298",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1792652400,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1792652400,
+            "id" : "00000000-0000-4000-8000-000000000299",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1792652400,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1792713600,
+            "id" : "00000000-0000-4000-8000-000000000300",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792712100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792715400,
+            "id" : "00000000-0000-4000-8000-000000000301",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792713900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792717200,
+            "id" : "00000000-0000-4000-8000-000000000302",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792715700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792719000,
+            "id" : "00000000-0000-4000-8000-000000000303",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792717500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792720800,
+            "id" : "00000000-0000-4000-8000-000000000304",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792719300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792722600,
+            "id" : "00000000-0000-4000-8000-000000000305",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792721100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792724400,
+            "id" : "00000000-0000-4000-8000-000000000306",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792722900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792728000,
+            "id" : "00000000-0000-4000-8000-000000000307",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1792727700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792731600,
+            "id" : "00000000-0000-4000-8000-000000000308",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1792731600,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1792735200,
+            "id" : "00000000-0000-4000-8000-000000000309",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792735200,
+            "subject" : "task-23"
+          },
+          {
+            "end" : 1792735260,
+            "id" : "00000000-0000-4000-8000-000000000310",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792735260,
+            "subject" : "task-23"
+          },
+          {
+            "end" : 1792738800,
+            "id" : "00000000-0000-4000-8000-000000000311",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1792738800,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1792738800,
+            "id" : "00000000-0000-4000-8000-000000000312",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1792738800,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1792800000,
+            "id" : "00000000-0000-4000-8000-000000000313",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792798500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792801800,
+            "id" : "00000000-0000-4000-8000-000000000314",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792800300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792803600,
+            "id" : "00000000-0000-4000-8000-000000000315",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792802100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792805400,
+            "id" : "00000000-0000-4000-8000-000000000316",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792803900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792807200,
+            "id" : "00000000-0000-4000-8000-000000000317",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792805700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792809000,
+            "id" : "00000000-0000-4000-8000-000000000318",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792807500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792810800,
+            "id" : "00000000-0000-4000-8000-000000000319",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792809300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792814400,
+            "id" : "00000000-0000-4000-8000-000000000320",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1792814100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792818000,
+            "id" : "00000000-0000-4000-8000-000000000321",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1792818000,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1792821600,
+            "id" : "00000000-0000-4000-8000-000000000322",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792821600,
+            "subject" : "task-24"
+          },
+          {
+            "end" : 1792821660,
+            "id" : "00000000-0000-4000-8000-000000000323",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792821660,
+            "subject" : "task-24"
+          },
+          {
+            "end" : 1792825200,
+            "id" : "00000000-0000-4000-8000-000000000324",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1792825200,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1792825200,
+            "id" : "00000000-0000-4000-8000-000000000325",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1792825200,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1792886400,
+            "id" : "00000000-0000-4000-8000-000000000326",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792884900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792888200,
+            "id" : "00000000-0000-4000-8000-000000000327",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792886700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792890000,
+            "id" : "00000000-0000-4000-8000-000000000328",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792888500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792891800,
+            "id" : "00000000-0000-4000-8000-000000000329",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792890300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792893600,
+            "id" : "00000000-0000-4000-8000-000000000330",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792892100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792895400,
+            "id" : "00000000-0000-4000-8000-000000000331",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792893900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792897200,
+            "id" : "00000000-0000-4000-8000-000000000332",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792895700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792900800,
+            "id" : "00000000-0000-4000-8000-000000000333",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1792900500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792904400,
+            "id" : "00000000-0000-4000-8000-000000000334",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1792904400,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1792908000,
+            "id" : "00000000-0000-4000-8000-000000000335",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792908000,
+            "subject" : "task-25"
+          },
+          {
+            "end" : 1792908060,
+            "id" : "00000000-0000-4000-8000-000000000336",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792908060,
+            "subject" : "task-25"
+          },
+          {
+            "end" : 1792911600,
+            "id" : "00000000-0000-4000-8000-000000000337",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1792911600,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1792911600,
+            "id" : "00000000-0000-4000-8000-000000000338",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1792911600,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1792972800,
+            "id" : "00000000-0000-4000-8000-000000000339",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792971300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792974600,
+            "id" : "00000000-0000-4000-8000-000000000340",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792973100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792976400,
+            "id" : "00000000-0000-4000-8000-000000000341",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792974900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792978200,
+            "id" : "00000000-0000-4000-8000-000000000342",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792976700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792980000,
+            "id" : "00000000-0000-4000-8000-000000000343",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792978500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792981800,
+            "id" : "00000000-0000-4000-8000-000000000344",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792980300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792983600,
+            "id" : "00000000-0000-4000-8000-000000000345",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1792982100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792987200,
+            "id" : "00000000-0000-4000-8000-000000000346",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1792986900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1792990800,
+            "id" : "00000000-0000-4000-8000-000000000347",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1792990800,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1792994400,
+            "id" : "00000000-0000-4000-8000-000000000348",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792994400,
+            "subject" : "task-26"
+          },
+          {
+            "end" : 1792994460,
+            "id" : "00000000-0000-4000-8000-000000000349",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1792994460,
+            "subject" : "task-26"
+          },
+          {
+            "end" : 1792998000,
+            "id" : "00000000-0000-4000-8000-000000000350",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1792998000,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1792998000,
+            "id" : "00000000-0000-4000-8000-000000000351",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1792998000,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1793059200,
+            "id" : "00000000-0000-4000-8000-000000000352",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793057700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793061000,
+            "id" : "00000000-0000-4000-8000-000000000353",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793059500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793062800,
+            "id" : "00000000-0000-4000-8000-000000000354",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793061300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793064600,
+            "id" : "00000000-0000-4000-8000-000000000355",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793063100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793066400,
+            "id" : "00000000-0000-4000-8000-000000000356",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793064900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793068200,
+            "id" : "00000000-0000-4000-8000-000000000357",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793066700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793070000,
+            "id" : "00000000-0000-4000-8000-000000000358",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793068500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793073600,
+            "id" : "00000000-0000-4000-8000-000000000359",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1793073300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793077200,
+            "id" : "00000000-0000-4000-8000-000000000360",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1793077200,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1793080800,
+            "id" : "00000000-0000-4000-8000-000000000361",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1793080800,
+            "subject" : "task-27"
+          },
+          {
+            "end" : 1793080860,
+            "id" : "00000000-0000-4000-8000-000000000362",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1793080860,
+            "subject" : "task-27"
+          },
+          {
+            "end" : 1793084400,
+            "id" : "00000000-0000-4000-8000-000000000363",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1793084400,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1793084400,
+            "id" : "00000000-0000-4000-8000-000000000364",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1793084400,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1793145600,
+            "id" : "00000000-0000-4000-8000-000000000365",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793144100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793147400,
+            "id" : "00000000-0000-4000-8000-000000000366",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793145900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793149200,
+            "id" : "00000000-0000-4000-8000-000000000367",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793147700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793151000,
+            "id" : "00000000-0000-4000-8000-000000000368",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793149500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793152800,
+            "id" : "00000000-0000-4000-8000-000000000369",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793151300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793154600,
+            "id" : "00000000-0000-4000-8000-000000000370",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793153100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793156400,
+            "id" : "00000000-0000-4000-8000-000000000371",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793154900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793160000,
+            "id" : "00000000-0000-4000-8000-000000000372",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1793159700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793163600,
+            "id" : "00000000-0000-4000-8000-000000000373",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1793163600,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1793167200,
+            "id" : "00000000-0000-4000-8000-000000000374",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1793167200,
+            "subject" : "task-28"
+          },
+          {
+            "end" : 1793167260,
+            "id" : "00000000-0000-4000-8000-000000000375",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1793167260,
+            "subject" : "task-28"
+          },
+          {
+            "end" : 1793170800,
+            "id" : "00000000-0000-4000-8000-000000000376",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1793170800,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1793170800,
+            "id" : "00000000-0000-4000-8000-000000000377",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1793170800,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1793232000,
+            "id" : "00000000-0000-4000-8000-000000000378",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793230500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793233800,
+            "id" : "00000000-0000-4000-8000-000000000379",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793232300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793235600,
+            "id" : "00000000-0000-4000-8000-000000000380",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793234100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793237400,
+            "id" : "00000000-0000-4000-8000-000000000381",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793235900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793239200,
+            "id" : "00000000-0000-4000-8000-000000000382",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793237700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793241000,
+            "id" : "00000000-0000-4000-8000-000000000383",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793239500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793242800,
+            "id" : "00000000-0000-4000-8000-000000000384",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793241300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793246400,
+            "id" : "00000000-0000-4000-8000-000000000385",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1793246100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793250000,
+            "id" : "00000000-0000-4000-8000-000000000386",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1793250000,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1793253600,
+            "id" : "00000000-0000-4000-8000-000000000387",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1793253600,
+            "subject" : "task-29"
+          },
+          {
+            "end" : 1793253660,
+            "id" : "00000000-0000-4000-8000-000000000388",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1793253660,
+            "subject" : "task-29"
+          },
+          {
+            "end" : 1793257200,
+            "id" : "00000000-0000-4000-8000-000000000389",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1793257200,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1793257200,
+            "id" : "00000000-0000-4000-8000-000000000390",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1793257200,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1793318400,
+            "id" : "00000000-0000-4000-8000-000000000391",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793316900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793320200,
+            "id" : "00000000-0000-4000-8000-000000000392",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793318700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793322000,
+            "id" : "00000000-0000-4000-8000-000000000393",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793320500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793323800,
+            "id" : "00000000-0000-4000-8000-000000000394",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793322300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793325600,
+            "id" : "00000000-0000-4000-8000-000000000395",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793324100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793327400,
+            "id" : "00000000-0000-4000-8000-000000000396",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793325900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793329200,
+            "id" : "00000000-0000-4000-8000-000000000397",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "fiftyTwoSeventeen",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1793327700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793332800,
+            "id" : "00000000-0000-4000-8000-000000000398",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 5,
+            "source" : "focus",
+            "start" : 1793332500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793336400,
+            "id" : "00000000-0000-4000-8000-000000000399",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 400,
+            "source" : "anki",
+            "start" : 1793336400,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1793340000,
+            "id" : "00000000-0000-4000-8000-000000000400",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1793340000,
+            "subject" : "task-30"
+          },
+          {
+            "end" : 1793340060,
+            "id" : "00000000-0000-4000-8000-000000000401",
+            "kind" : "task.completed",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "planner",
+            "start" : 1793340060,
+            "subject" : "task-30"
+          },
+          {
+            "end" : 1793343600,
+            "id" : "00000000-0000-4000-8000-000000000402",
+            "kind" : "break.move",
+            "metadata" : {
+
+            },
+            "source" : "closet",
+            "start" : 1793343600,
+            "subject" : "stretch"
+          },
+          {
+            "end" : 1793343600,
+            "id" : "00000000-0000-4000-8000-000000000403",
+            "kind" : "water.logged",
+            "metadata" : {
+
+            },
+            "quantity" : 1,
+            "source" : "closet",
+            "start" : 1793343600,
+            "unit" : "glass"
+          },
+          {
+            "end" : 1793408400,
+            "id" : "00000000-0000-4000-8000-000000000404",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "flowtime",
+              "outcome" : "completed"
+            },
+            "quantity" : 50,
+            "source" : "study",
+            "start" : 1793405400,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793408460,
+            "id" : "00000000-0000-4000-8000-000000000405",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 120,
+            "source" : "anki",
+            "start" : 1793408460,
+            "unit" : "cards"
+          },
+          {
+            "end" : 1793494800,
+            "id" : "00000000-0000-4000-8000-000000000406",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "flowtime",
+              "outcome" : "completed"
+            },
+            "quantity" : 50,
+            "source" : "study",
+            "start" : 1793491800,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793494860,
+            "id" : "00000000-0000-4000-8000-000000000407",
+            "kind" : "cards.reviewed",
+            "metadata" : {
+
+            },
+            "quantity" : 120,
+            "source" : "anki",
+            "start" : 1793494860,
+            "unit" : "cards"
+          }
+        ],
+        "timeZone" : "Asia/Tokyo",
+        "today" : 1793588400
+      },
+      "name" : "a heavy month in Tokyo",
+      "output" : {
+        "completedMonths" : [
+          "2026-10"
+        ],
+        "progress" : {
+          "breakMoves.1" : "10/10",
+          "breakMoves.2" : "31/50",
+          "breakMoves.3" : "31/150",
+          "breakMoves.4" : "31/400",
+          "cards.1" : "500/500",
+          "cards.2" : "2500/2500",
+          "cards.3" : "10k/10k",
+          "cards.4" : "12k/50k",
+          "focusHours.1" : "10/10 h",
+          "focusHours.2" : "50/50 h",
+          "focusHours.3" : "94/200 h",
+          "focusHours.4" : "94/500 h",
+          "gentleStreak.1" : "7/7",
+          "gentleStreak.2" : "30/30",
+          "gentleStreak.3" : "33/90",
+          "gentleStreak.4" : "33/180",
+          "methods.1" : "2/2",
+          "methods.2" : "3/3",
+          "methods.3" : "3/4",
+          "methods.4" : "3/6",
+          "monthlyQuests.1" : "1/1",
+          "monthlyQuests.2" : "1/3",
+          "monthlyQuests.3" : "1/6",
+          "monthlyQuests.4" : "1/12",
+          "party.1" : "0/1",
+          "party.2" : "0/5",
+          "party.3" : "0/20",
+          "party.4" : "0/60",
+          "sessions.1" : "10/10",
+          "sessions.2" : "50/50",
+          "sessions.3" : "200/200",
+          "sessions.4" : "219/600",
+          "steadyWeeks.1" : "2/2",
+          "steadyWeeks.2" : "4/4",
+          "steadyWeeks.3" : "5/12",
+          "steadyWeeks.4" : "5/26",
+          "studyDays.1" : "7/7",
+          "studyDays.2" : "30/30",
+          "studyDays.3" : "33/100",
+          "studyDays.4" : "33/250",
+          "tasks.1" : "10/10",
+          "tasks.2" : "31/50",
+          "tasks.3" : "31/200",
+          "tasks.4" : "31/500",
+          "water.1" : "20/20",
+          "water.2" : "31/100",
+          "water.3" : "31/300",
+          "water.4" : "31/1000"
+        },
+        "quests" : [
+          {
+            "isDone" : false,
+            "label" : "1/10",
+            "target" : 10,
+            "track" : "studyDays",
+            "value" : 1
+          },
+          {
+            "isDone" : false,
+            "label" : "0/8",
+            "target" : 8,
+            "track" : "breakMoves",
+            "value" : 0
+          },
+          {
+            "isDone" : false,
+            "label" : "0/30",
+            "target" : 30,
+            "track" : "water",
+            "value" : 0
+          }
+        ],
+        "reachedBadges" : [
+          "focusHours.1",
+          "focusHours.2",
+          "studyDays.1",
+          "studyDays.2",
+          "gentleStreak.1",
+          "gentleStreak.2",
+          "sessions.1",
+          "sessions.2",
+          "sessions.3",
+          "cards.1",
+          "cards.2",
+          "cards.3",
+          "tasks.1",
+          "breakMoves.1",
+          "methods.1",
+          "methods.2",
+          "steadyWeeks.1",
+          "steadyWeeks.2",
+          "water.1",
+          "monthlyQuests.1"
+        ],
+        "tiers" : {
+          "breakMoves" : "bronze",
+          "cards" : "gold",
+          "focusHours" : "silver",
+          "gentleStreak" : "silver",
+          "methods" : "silver",
+          "monthlyQuests" : "bronze",
+          "sessions" : "gold",
+          "steadyWeeks" : "silver",
+          "studyDays" : "silver",
+          "tasks" : "bronze",
+          "water" : "bronze"
+        },
+        "unlocked" : [
+          "accessory.littleSprout",
+          "accessory.nightcap",
+          "outfit.apprenticeRobe",
+          "outfit.scholarsRobe",
+          "accessory.explorersHat",
+          "accessory.owlSpectacles"
+        ],
+        "values" : {
+          "breakMoves" : 31,
+          "cards" : 12640,
+          "focusHours" : 5680,
+          "gentleStreak" : 33,
+          "methods" : 3,
+          "monthlyQuests" : 1,
+          "party" : 0,
+          "sessions" : 219,
+          "steadyWeeks" : 5,
+          "studyDays" : 33,
+          "tasks" : 31,
+          "water" : 31
+        }
+      }
+    },
+    {
+      "input" : {
+        "firstWeekday" : 1,
+        "freezePurchases" : [
+
+        ],
+        "records" : [
+          {
+            "end" : 1794268800,
+            "id" : "00000000-0000-4000-8000-000000000408",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "friends" : "2",
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "party",
+            "start" : 1794267300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1794272400,
+            "id" : "00000000-0000-4000-8000-000000000409",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "friends" : "0",
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "party",
+            "start" : 1794270900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1794276000,
+            "id" : "00000000-0000-4000-8000-000000000410",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "friends" : "3",
+              "method" : "pomodoro",
+              "outcome" : "skipped"
+            },
+            "quantity" : 25,
+            "source" : "party",
+            "start" : 1794274500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1794279600,
+            "id" : "00000000-0000-4000-8000-000000000411",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "ultradian",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1794278100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1794283200,
+            "id" : "00000000-0000-4000-8000-000000000412",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "flowtime",
+              "outcome" : "stopped"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1794281700,
+            "unit" : "min"
+          },
+          {
+            "end" : 1794286800,
+            "id" : "00000000-0000-4000-8000-000000000413",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "questionBlock",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1794285300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1794290400,
+            "id" : "00000000-0000-4000-8000-000000000414",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "custom",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1794288900,
+            "unit" : "min"
+          },
+          {
+            "end" : 1794294000,
+            "id" : "00000000-0000-4000-8000-000000000415",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "timer",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1794292500,
+            "unit" : "min"
+          },
+          {
+            "end" : 1794297600,
+            "id" : "00000000-0000-4000-8000-000000000416",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "method" : "ankiSprint",
+              "outcome" : "abandoned"
+            },
+            "quantity" : 25,
+            "source" : "study",
+            "start" : 1794296100,
+            "unit" : "min"
+          },
+          {
+            "end" : 1794268800,
+            "id" : "00000000-0000-4000-8000-000000000408",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "friends" : "2",
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "party",
+            "start" : 1794267300,
+            "unit" : "min"
+          }
+        ],
+        "timeZone" : "UTC",
+        "today" : 1794355200
+      },
+      "name" : "party and methods",
+      "output" : {
+        "completedMonths" : [
+
+        ],
+        "progress" : {
+          "breakMoves.1" : "0/10",
+          "breakMoves.2" : "0/50",
+          "breakMoves.3" : "0/150",
+          "breakMoves.4" : "0/400",
+          "cards.1" : "0/500",
+          "cards.2" : "0/2500",
+          "cards.3" : "0/10k",
+          "cards.4" : "0/50k",
+          "focusHours.1" : "3/10 h",
+          "focusHours.2" : "3/50 h",
+          "focusHours.3" : "3/200 h",
+          "focusHours.4" : "3/500 h",
+          "gentleStreak.1" : "1/7",
+          "gentleStreak.2" : "1/30",
+          "gentleStreak.3" : "1/90",
+          "gentleStreak.4" : "1/180",
+          "methods.1" : "2/2",
+          "methods.2" : "3/3",
+          "methods.3" : "4/4",
+          "methods.4" : "5/6",
+          "monthlyQuests.1" : "0/1",
+          "monthlyQuests.2" : "0/3",
+          "monthlyQuests.3" : "0/6",
+          "monthlyQuests.4" : "0/12",
+          "party.1" : "1/1",
+          "party.2" : "1/5",
+          "party.3" : "1/20",
+          "party.4" : "1/60",
+          "sessions.1" : "7/10",
+          "sessions.2" : "7/50",
+          "sessions.3" : "7/200",
+          "sessions.4" : "7/600",
+          "steadyWeeks.1" : "0/2",
+          "steadyWeeks.2" : "0/4",
+          "steadyWeeks.3" : "0/12",
+          "steadyWeeks.4" : "0/26",
+          "studyDays.1" : "1/7",
+          "studyDays.2" : "1/30",
+          "studyDays.3" : "1/100",
+          "studyDays.4" : "1/250",
+          "tasks.1" : "0/10",
+          "tasks.2" : "0/50",
+          "tasks.3" : "0/200",
+          "tasks.4" : "0/500",
+          "water.1" : "0/20",
+          "water.2" : "0/100",
+          "water.3" : "0/300",
+          "water.4" : "0/1000"
+        },
+        "quests" : [
+          {
+            "isDone" : false,
+            "label" : "1/10",
+            "target" : 10,
+            "track" : "studyDays",
+            "value" : 1
+          },
+          {
+            "isDone" : false,
+            "label" : "3/10 h",
+            "target" : 600,
+            "track" : "focusHours",
+            "value" : 225
+          },
+          {
+            "isDone" : false,
+            "label" : "7/20",
+            "target" : 20,
+            "track" : "sessions",
+            "value" : 7
+          }
+        ],
+        "reachedBadges" : [
+          "party.1",
+          "methods.1",
+          "methods.2",
+          "methods.3"
+        ],
+        "tiers" : {
+          "methods" : "gold",
+          "party" : "bronze"
+        },
+        "unlocked" : [
+          "outfit.bakersApron"
+        ],
+        "values" : {
+          "breakMoves" : 0,
+          "cards" : 0,
+          "focusHours" : 225,
+          "gentleStreak" : 1,
+          "methods" : 5,
+          "monthlyQuests" : 0,
+          "party" : 1,
+          "sessions" : 7,
+          "steadyWeeks" : 0,
+          "studyDays" : 1,
+          "tasks" : 0,
+          "water" : 0
+        }
+      }
+    },
+    {
+      "input" : {
+        "firstWeekday" : 1,
+        "freezePurchases" : [
+
+        ],
+        "records" : [
+          {
+            "end" : 1793489400,
+            "id" : "00000000-0000-4000-8000-000000000417",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "outcome" : "completed"
+            },
+            "quantity" : 20,
+            "source" : "focus",
+            "start" : 1793488200,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793493000,
+            "id" : "00000000-0000-4000-8000-000000000418",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "outcome" : "completed"
+            },
+            "quantity" : 20,
+            "source" : "focus",
+            "start" : 1793491800,
+            "unit" : "min"
+          }
+        ],
+        "timeZone" : "America/New_York",
+        "today" : 1793577600
+      },
+      "name" : "a month boundary in New York",
+      "output" : {
+        "completedMonths" : [
+
+        ],
+        "progress" : {
+          "breakMoves.1" : "0/10",
+          "breakMoves.2" : "0/50",
+          "breakMoves.3" : "0/150",
+          "breakMoves.4" : "0/400",
+          "cards.1" : "0/500",
+          "cards.2" : "0/2500",
+          "cards.3" : "0/10k",
+          "cards.4" : "0/50k",
+          "focusHours.1" : "0/10 h",
+          "focusHours.2" : "0/50 h",
+          "focusHours.3" : "0/200 h",
+          "focusHours.4" : "0/500 h",
+          "gentleStreak.1" : "1/7",
+          "gentleStreak.2" : "1/30",
+          "gentleStreak.3" : "1/90",
+          "gentleStreak.4" : "1/180",
+          "methods.1" : "0/2",
+          "methods.2" : "0/3",
+          "methods.3" : "0/4",
+          "methods.4" : "0/6",
+          "monthlyQuests.1" : "0/1",
+          "monthlyQuests.2" : "0/3",
+          "monthlyQuests.3" : "0/6",
+          "monthlyQuests.4" : "0/12",
+          "party.1" : "0/1",
+          "party.2" : "0/5",
+          "party.3" : "0/20",
+          "party.4" : "0/60",
+          "sessions.1" : "2/10",
+          "sessions.2" : "2/50",
+          "sessions.3" : "2/200",
+          "sessions.4" : "2/600",
+          "steadyWeeks.1" : "0/2",
+          "steadyWeeks.2" : "0/4",
+          "steadyWeeks.3" : "0/12",
+          "steadyWeeks.4" : "0/26",
+          "studyDays.1" : "1/7",
+          "studyDays.2" : "1/30",
+          "studyDays.3" : "1/100",
+          "studyDays.4" : "1/250",
+          "tasks.1" : "0/10",
+          "tasks.2" : "0/50",
+          "tasks.3" : "0/200",
+          "tasks.4" : "0/500",
+          "water.1" : "0/20",
+          "water.2" : "0/100",
+          "water.3" : "0/300",
+          "water.4" : "0/1000"
+        },
+        "quests" : [
+          {
+            "isDone" : false,
+            "label" : "0/10",
+            "target" : 10,
+            "track" : "studyDays",
+            "value" : 0
+          },
+          {
+            "isDone" : false,
+            "label" : "0/10 h",
+            "target" : 600,
+            "track" : "focusHours",
+            "value" : 0
+          },
+          {
+            "isDone" : false,
+            "label" : "0/20",
+            "target" : 20,
+            "track" : "sessions",
+            "value" : 0
+          }
+        ],
+        "reachedBadges" : [
+
+        ],
+        "tiers" : {
+
+        },
+        "unlocked" : [
+
+        ],
+        "values" : {
+          "breakMoves" : 0,
+          "cards" : 0,
+          "focusHours" : 40,
+          "gentleStreak" : 1,
+          "methods" : 0,
+          "monthlyQuests" : 0,
+          "party" : 0,
+          "sessions" : 2,
+          "steadyWeeks" : 0,
+          "studyDays" : 1,
+          "tasks" : 0,
+          "water" : 0
+        }
+      }
+    },
+    {
+      "input" : {
+        "firstWeekday" : 2,
+        "freezePurchases" : [
+
+        ],
+        "records" : [
+          {
+            "end" : 1793489400,
+            "id" : "00000000-0000-4000-8000-000000000417",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "outcome" : "completed"
+            },
+            "quantity" : 20,
+            "source" : "focus",
+            "start" : 1793488200,
+            "unit" : "min"
+          },
+          {
+            "end" : 1793493000,
+            "id" : "00000000-0000-4000-8000-000000000418",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "outcome" : "completed"
+            },
+            "quantity" : 20,
+            "source" : "focus",
+            "start" : 1793491800,
+            "unit" : "min"
+          }
+        ],
+        "timeZone" : "Europe/London",
+        "today" : 1793577600
+      },
+      "name" : "a month boundary in London",
+      "output" : {
+        "completedMonths" : [
+
+        ],
+        "progress" : {
+          "breakMoves.1" : "0/10",
+          "breakMoves.2" : "0/50",
+          "breakMoves.3" : "0/150",
+          "breakMoves.4" : "0/400",
+          "cards.1" : "0/500",
+          "cards.2" : "0/2500",
+          "cards.3" : "0/10k",
+          "cards.4" : "0/50k",
+          "focusHours.1" : "0/10 h",
+          "focusHours.2" : "0/50 h",
+          "focusHours.3" : "0/200 h",
+          "focusHours.4" : "0/500 h",
+          "gentleStreak.1" : "2/7",
+          "gentleStreak.2" : "2/30",
+          "gentleStreak.3" : "2/90",
+          "gentleStreak.4" : "2/180",
+          "methods.1" : "0/2",
+          "methods.2" : "0/3",
+          "methods.3" : "0/4",
+          "methods.4" : "0/6",
+          "monthlyQuests.1" : "0/1",
+          "monthlyQuests.2" : "0/3",
+          "monthlyQuests.3" : "0/6",
+          "monthlyQuests.4" : "0/12",
+          "party.1" : "0/1",
+          "party.2" : "0/5",
+          "party.3" : "0/20",
+          "party.4" : "0/60",
+          "sessions.1" : "2/10",
+          "sessions.2" : "2/50",
+          "sessions.3" : "2/200",
+          "sessions.4" : "2/600",
+          "steadyWeeks.1" : "0/2",
+          "steadyWeeks.2" : "0/4",
+          "steadyWeeks.3" : "0/12",
+          "steadyWeeks.4" : "0/26",
+          "studyDays.1" : "2/7",
+          "studyDays.2" : "2/30",
+          "studyDays.3" : "2/100",
+          "studyDays.4" : "2/250",
+          "tasks.1" : "0/10",
+          "tasks.2" : "0/50",
+          "tasks.3" : "0/200",
+          "tasks.4" : "0/500",
+          "water.1" : "0/20",
+          "water.2" : "0/100",
+          "water.3" : "0/300",
+          "water.4" : "0/1000"
+        },
+        "quests" : [
+          {
+            "isDone" : false,
+            "label" : "1/10",
+            "target" : 10,
+            "track" : "studyDays",
+            "value" : 1
+          },
+          {
+            "isDone" : false,
+            "label" : "0/10 h",
+            "target" : 600,
+            "track" : "focusHours",
+            "value" : 20
+          },
+          {
+            "isDone" : false,
+            "label" : "1/20",
+            "target" : 20,
+            "track" : "sessions",
+            "value" : 1
+          }
+        ],
+        "reachedBadges" : [
+
+        ],
+        "tiers" : {
+
+        },
+        "unlocked" : [
+
+        ],
+        "values" : {
+          "breakMoves" : 0,
+          "cards" : 0,
+          "focusHours" : 40,
+          "gentleStreak" : 2,
+          "methods" : 0,
+          "monthlyQuests" : 0,
+          "party" : 0,
+          "sessions" : 2,
+          "steadyWeeks" : 0,
+          "studyDays" : 2,
+          "tasks" : 0,
+          "water" : 0
+        }
+      }
+    },
+    {
+      "input" : {
+        "firstWeekday" : 1,
+        "freezePurchases" : [
+
+        ],
+        "records" : [
+          {
+            "end" : 1794268800,
+            "id" : "00000000-0000-4000-8000-000000000408",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "friends" : "2",
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "party",
+            "start" : 1794267300,
+            "unit" : "min"
+          },
+          {
+            "end" : 1794272400,
+            "id" : "00000000-0000-4000-8000-000000000409",
+            "kind" : "focus.completed",
+            "metadata" : {
+              "friends" : "0",
+              "method" : "pomodoro",
+              "outcome" : "completed"
+            },
+            "quantity" : 25,
+            "source" : "party",
+            "start" : 1794270900,
+            "unit" : "min"
+          }
+        ],
+        "save" : "{\"best\":{\"cards\":12000,\"sessions\":180},\"completedMonths\":[\"2026-08\",\"2026-09\"],\"reached\":{\"cards.3\":\"2026-09-30T12:00:00Z\",\"sessions.2\":\"2026-09-10T08:00:00Z\"},\"schemaVersion\":1,\"seen\":[\"sessions.2\"]}",
+        "timeZone" : "UTC",
+        "today" : 1794268800
+      },
+      "name" : "progress kept after the log was cleared",
+      "output" : {
+        "completedMonths" : [
+          "2026-08",
+          "2026-09"
+        ],
+        "progress" : {
+          "breakMoves.1" : "0/10",
+          "breakMoves.2" : "0/50",
+          "breakMoves.3" : "0/150",
+          "breakMoves.4" : "0/400",
+          "cards.1" : "500/500",
+          "cards.2" : "2500/2500",
+          "cards.3" : "10k/10k",
+          "cards.4" : "12k/50k",
+          "focusHours.1" : "0/10 h",
+          "focusHours.2" : "0/50 h",
+          "focusHours.3" : "0/200 h",
+          "focusHours.4" : "0/500 h",
+          "gentleStreak.1" : "1/7",
+          "gentleStreak.2" : "1/30",
+          "gentleStreak.3" : "1/90",
+          "gentleStreak.4" : "1/180",
+          "methods.1" : "1/2",
+          "methods.2" : "1/3",
+          "methods.3" : "1/4",
+          "methods.4" : "1/6",
+          "monthlyQuests.1" : "1/1",
+          "monthlyQuests.2" : "2/3",
+          "monthlyQuests.3" : "2/6",
+          "monthlyQuests.4" : "2/12",
+          "party.1" : "1/1",
+          "party.2" : "1/5",
+          "party.3" : "1/20",
+          "party.4" : "1/60",
+          "sessions.1" : "10/10",
+          "sessions.2" : "50/50",
+          "sessions.3" : "180/200",
+          "sessions.4" : "180/600",
+          "steadyWeeks.1" : "0/2",
+          "steadyWeeks.2" : "0/4",
+          "steadyWeeks.3" : "0/12",
+          "steadyWeeks.4" : "0/26",
+          "studyDays.1" : "1/7",
+          "studyDays.2" : "1/30",
+          "studyDays.3" : "1/100",
+          "studyDays.4" : "1/250",
+          "tasks.1" : "0/10",
+          "tasks.2" : "0/50",
+          "tasks.3" : "0/200",
+          "tasks.4" : "0/500",
+          "water.1" : "0/20",
+          "water.2" : "0/100",
+          "water.3" : "0/300",
+          "water.4" : "0/1000"
+        },
+        "quests" : [
+          {
+            "isDone" : false,
+            "label" : "1/10",
+            "target" : 10,
+            "track" : "studyDays",
+            "value" : 1
+          },
+          {
+            "isDone" : false,
+            "label" : "0/10 h",
+            "target" : 600,
+            "track" : "focusHours",
+            "value" : 50
+          },
+          {
+            "isDone" : false,
+            "label" : "2/20",
+            "target" : 20,
+            "track" : "sessions",
+            "value" : 2
+          }
+        ],
+        "reachedBadges" : [
+          "sessions.1",
+          "cards.1",
+          "cards.2",
+          "party.1",
+          "monthlyQuests.1"
+        ],
+        "tiers" : {
+          "cards" : "gold",
+          "monthlyQuests" : "bronze",
+          "party" : "bronze",
+          "sessions" : "silver"
+        },
+        "unlocked" : [
+          "outfit.apprenticeRobe",
+          "accessory.owlSpectacles"
+        ],
+        "values" : {
+          "breakMoves" : 0,
+          "cards" : 12000,
+          "focusHours" : 50,
+          "gentleStreak" : 1,
+          "methods" : 1,
+          "monthlyQuests" : 2,
+          "party" : 1,
+          "sessions" : 180,
+          "steadyWeeks" : 0,
+          "studyDays" : 1,
+          "tasks" : 0,
+          "water" : 0
+        }
+      }
+    }
+  ],
+  "schema" : "tabbi.progression.golden",
+  "streaks" : [
+    {
+      "input" : {
+        "firstWeekday" : 1,
+        "freezePurchases" : [
+
+        ],
+        "studyDays" : [
+          "2026-11-01",
+          "2026-11-02",
+          "2026-11-03",
+          "2026-11-05",
+          "2026-11-06",
+          "2026-11-07",
+          "2026-11-08",
+          "2026-11-09",
+          "2026-11-10",
+          "2026-11-12",
+          "2026-11-13",
+          "2026-11-14"
+        ],
+        "timeZone" : "UTC",
+        "today" : 1794744000
+      },
+      "longest" : 12,
+      "name" : "a free freeze a week"
+    },
+    {
+      "input" : {
+        "firstWeekday" : 1,
+        "freezePurchases" : [
+
+        ],
+        "studyDays" : [
+          "2026-11-01",
+          "2026-11-02",
+          "2026-11-03",
+          "2026-11-06",
+          "2026-11-07",
+          "2026-11-08",
+          "2026-11-09",
+          "2026-11-10"
+        ],
+        "timeZone" : "UTC",
+        "today" : 1794744000
+      },
+      "longest" : 5,
+      "name" : "two misses in a week end the run"
+    },
+    {
+      "input" : {
+        "firstWeekday" : 1,
+        "freezePurchases" : [
+          1793620800
+        ],
+        "studyDays" : [
+          "2026-11-01",
+          "2026-11-02",
+          "2026-11-03",
+          "2026-11-06",
+          "2026-11-07",
+          "2026-11-08",
+          "2026-11-09",
+          "2026-11-10"
+        ],
+        "timeZone" : "UTC",
+        "today" : 1794744000
+      },
+      "longest" : 8,
+      "name" : "a bought freeze covers the second miss"
+    },
+    {
+      "input" : {
+        "firstWeekday" : 2,
+        "freezePurchases" : [
+
+        ],
+        "studyDays" : [
+          "2026-11-01",
+          "2026-11-02",
+          "2026-11-03",
+          "2026-11-04",
+          "2026-11-06",
+          "2026-11-07",
+          "2026-11-09",
+          "2026-11-10",
+          "2026-11-11"
+        ],
+        "timeZone" : "UTC",
+        "today" : 1794744000
+      },
+      "longest" : 6,
+      "name" : "a Monday week moves the free freeze"
+    },
+    {
+      "input" : {
+        "firstWeekday" : 1,
+        "freezePurchases" : [
+
+        ],
+        "studyDays" : [
+          "2026-11-13",
+          "2026-11-14",
+          "2026-11-15"
+        ],
+        "timeZone" : "Asia/Tokyo",
+        "today" : 1794744000
+      },
+      "longest" : 3,
+      "name" : "today counts once studied"
+    },
+    {
+      "input" : {
+        "firstWeekday" : 1,
+        "freezePurchases" : [
+
+        ],
+        "studyDays" : [
+
+        ],
+        "timeZone" : "UTC",
+        "today" : 1794744000
+      },
+      "longest" : 0,
+      "name" : "no study"
+    }
+  ],
+  "tracks" : [
+    {
+      "id" : "focusHours",
+      "thresholds" : [
+        600,
+        3000,
+        12000,
+        30000
+      ]
+    },
+    {
+      "id" : "studyDays",
+      "thresholds" : [
+        7,
+        30,
+        100,
+        250
+      ]
+    },
+    {
+      "id" : "gentleStreak",
+      "thresholds" : [
+        7,
+        30,
+        90,
+        180
+      ]
+    },
+    {
+      "id" : "sessions",
+      "thresholds" : [
+        10,
+        50,
+        200,
+        600
+      ]
+    },
+    {
+      "id" : "cards",
+      "thresholds" : [
+        500,
+        2500,
+        10000,
+        50000
+      ]
+    },
+    {
+      "id" : "tasks",
+      "thresholds" : [
+        10,
+        50,
+        200,
+        500
+      ]
+    },
+    {
+      "id" : "breakMoves",
+      "thresholds" : [
+        10,
+        50,
+        150,
+        400
+      ]
+    },
+    {
+      "id" : "party",
+      "thresholds" : [
+        1,
+        5,
+        20,
+        60
+      ]
+    },
+    {
+      "id" : "methods",
+      "thresholds" : [
+        2,
+        3,
+        4,
+        6
+      ]
+    },
+    {
+      "id" : "steadyWeeks",
+      "thresholds" : [
+        2,
+        4,
+        12,
+        26
+      ]
+    },
+    {
+      "id" : "water",
+      "thresholds" : [
+        20,
+        100,
+        300,
+        1000
+      ]
+    },
+    {
+      "id" : "monthlyQuests",
+      "thresholds" : [
+        1,
+        3,
+        6,
+        12
+      ]
+    }
+  ],
+  "version" : 1
+}

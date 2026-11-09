@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { partyProfile, type PartyProfile, type PartyProfileUpdate } from "../../../src/core/party/partyModels";
-import { PARTY_COLOR_ROLES, forCatalogVersion1, localBreed, partyPet, partyPetUpdate, wireAccessory, wireOutfit } from "../../../src/core/party/partyPetAppearance";
+import { PARTY_COLOR_ROLES, forCatalogVersion1, forCatalogVersion3, olderCatalogFallback, localBreed, partyPet, partyPetUpdate, wireAccessory, wireOutfit } from "../../../src/core/party/partyPetAppearance";
 import { breedDisplayName } from "../../../src/core/pets/petBreed";
 import { PET_ACCESSORIES, PET_OUTFITS } from "../../../src/core/pets/petCostume";
 import { PET_BREEDS } from "../../../src/core/pets/petKinds";
@@ -167,6 +167,30 @@ describe("PartyPetAppearance", () => {
     const surgeon = partyPetUpdate(new PetProfile("Doc", "corgi", { accessories: ["surgicalCap"] }));
     expect(forCatalogVersion1(surgeon).costume).toBe("surgical-cap");
     expect(forCatalogVersion1(surgeon).accessories).toEqual([]);
+  });
+
+  it("carries the mastery outfits to friends, and leaves them out for a catalog version 3 server", () => {
+    const catalog = loadRepoJson<{ version: number; costumes: string[]; accessories: string[] }>("backend/shared/catalog.json");
+    expect(catalog.version).toBe(4);
+    const pet = new PetProfile("Nova", "corgi", { outfit: "astronautSuit", accessories: ["friendshipBandana", "nightcap", "roundGlasses", "tinyLantern"] });
+    const update = partyPetUpdate(pet);
+    expect(update.costume).toBe("astronaut-suit");
+    expect(update.accessories).toEqual(["bandana", "glasses", "nightcap", "tiny-lantern"]);
+    const back = partyPet(profileFrom(update));
+    expect(back.outfit).toBe("astronautSuit");
+    expect(new Set(back.accessories)).toEqual(new Set(pet.accessories));
+    const older = forCatalogVersion3(update);
+    expect(older.costume).toBe("none");
+    expect(older.accessories).toEqual(["bandana", "glasses"]);
+    expect(olderCatalogFallback(update)).toEqual(older);
+    expect(olderCatalogFallback(older)).toEqual(forCatalogVersion1(older));
+    expect(olderCatalogFallback(forCatalogVersion1(older))).toBeUndefined();
+    const pajamas = partyPetUpdate(new PetProfile("Bo", "corgi", { outfit: "cozyPajamas" }));
+    expect(pajamas.costume).toBe("pajamas");
+    expect(forCatalogVersion3(pajamas)).toEqual(pajamas);
+    for (const outfit of ["astronautSuit", "starryCloak", "apprenticeRobe", "scholarsRobe", "sagesRobe", "bakersApron"] as const) {
+      expect(catalog.costumes).toContain(wireOutfit(outfit));
+    }
   });
 
   it("sends the British Longhair to an older server as a longhair, and draws longhairs as one", () => {

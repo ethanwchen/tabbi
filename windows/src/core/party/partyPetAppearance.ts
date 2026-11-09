@@ -2,14 +2,14 @@ import { colorFromHex, colorHex, type PetColor, type PetPaletteRole } from "../p
 import { PET_ACCESSORIES, PET_OUTFITS, type PetAccessory, type PetOutfit } from "../pets/petCostume";
 import { PET_BREEDS, PET_SPECIES, isOneOf, type PetBreed } from "../pets/petKinds";
 import { PetProfile } from "../pets/petProfile";
-import type { PartyProfile, PartyProfileUpdate } from "./partyModels";
+import { sameProfileUpdate, type PartyProfile, type PartyProfileUpdate } from "./partyModels";
 
 /*
  * Port of PartyPetAppearance: translates between the local `PetProfile` and
  * the server's pet fields.
  *
  * Friends see a pet exactly as its owner dressed it in the Closet: the
- * server catalog (version 3) has an id for every outfit and accessory the
+ * server catalog (version 4) has an id for every outfit and accessory the
  * app draws, so the outfit rides in `costume`, every worn accessory in
  * `accessories`, and the effective colors of every recolorable role in
  * `colors`. Breeds are the one lossy part: a breed without art falls back to
@@ -131,6 +131,22 @@ export function wireOutfit(outfit: PetOutfit): string {
       return "wizard";
     case "studyHoodie":
       return "study-hoodie";
+    /* Catalog version 1 already had `pajamas`, which nothing drew until now. */
+    case "cozyPajamas":
+      return "pajamas";
+    /* Added in catalog version 4. */
+    case "astronautSuit":
+      return "astronaut-suit";
+    case "starryCloak":
+      return "starry-cloak";
+    case "apprenticeRobe":
+      return "apprentice-robe";
+    case "scholarsRobe":
+      return "scholars-robe";
+    case "sagesRobe":
+      return "sages-robe";
+    case "bakersApron":
+      return "bakers-apron";
   }
 }
 
@@ -227,6 +243,26 @@ export function wireAccessory(accessory: PetAccessory): string {
       return "sparkle-trail";
     case "rainCloud":
       return "rain-cloud";
+    /* Catalog version 1 already had `bandana`, which nothing drew until now. */
+    case "friendshipBandana":
+      return "bandana";
+    /* Added in catalog version 4. */
+    case "littleSprout":
+      return "little-sprout";
+    case "blossomSprout":
+      return "blossom-sprout";
+    case "nightcap":
+      return "nightcap";
+    case "explorersHat":
+      return "explorers-hat";
+    case "beeAntennae":
+      return "bee-antennae";
+    case "sportySweatband":
+      return "sporty-sweatband";
+    case "owlSpectacles":
+      return "owl-spectacles";
+    case "tinyLantern":
+      return "tiny-lantern";
   }
 }
 
@@ -329,6 +365,53 @@ export const VERSION1_MAX_ACCESSORIES = 4;
  * it has with the closest body (which older apps draw as a British Shorthair).
  */
 export const OLDER_CATALOG_BREEDS: Readonly<Record<string, string>> = { "british-longhair": "domestic-longhair" };
+
+/** The outfit and accessory ids catalog version 4 added (the mastery outfits), which a version 3 server refuses. */
+export const VERSION4_COSTUMES: ReadonlySet<string> = new Set([
+  "astronaut-suit",
+  "starry-cloak",
+  "apprentice-robe",
+  "scholars-robe",
+  "sages-robe",
+  "bakers-apron",
+]);
+export const VERSION4_ACCESSORIES: ReadonlySet<string> = new Set([
+  "little-sprout",
+  "blossom-sprout",
+  "nightcap",
+  "explorers-hat",
+  "bee-antennae",
+  "sporty-sweatband",
+  "owl-spectacles",
+  "tiny-lantern",
+]);
+
+/**
+ * This update as a server on catalog version 3 takes it: the ids version 4
+ * added left out, an outfit it has no id for sent as no outfit. Port of
+ * PartyProfileUpdate.forCatalogVersion3.
+ */
+export function forCatalogVersion3(update: PartyProfileUpdate): PartyProfileUpdate {
+  const { accessories, costume } = update;
+  return {
+    ...update,
+    ...(accessories === undefined ? {} : { accessories: accessories.filter((id) => !VERSION4_ACCESSORIES.has(id)) }),
+    ...(costume === undefined ? {} : { costume: VERSION4_COSTUMES.has(costume) ? "none" : costume }),
+  };
+}
+
+/**
+ * The next older catalog's version of this update after a server refused
+ * it, or undefined when no older catalog would take anything less: first
+ * without catalog version 4's ids, then as version 1 takes it. Port of
+ * PartyProfileUpdate.olderCatalogFallback.
+ */
+export function olderCatalogFallback(update: PartyProfileUpdate): PartyProfileUpdate | undefined {
+  const version3 = forCatalogVersion3(update);
+  if (!sameProfileUpdate(version3, update)) return version3;
+  const version1 = forCatalogVersion1(update);
+  return sameProfileUpdate(version1, update) ? undefined : version1;
+}
 
 /**
  * This update as a server on catalog version 1 or 2 takes it: accessories it

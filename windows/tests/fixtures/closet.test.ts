@@ -45,6 +45,7 @@ import {
 } from "../../src/core/pets/petUnlocks";
 import type { DayCalendar } from "../../src/core/streaks/dayCalendar";
 import { StreakFreezeRules, StudyStreak } from "../../src/core/streaks/studyStreak";
+import { badgeGoal, badgeID } from "../../src/core/progression/progressTrack";
 import { switchLanguage } from "../support/catalogs";
 import { loadFixture } from "../support/fixtures";
 import { goldenDiff } from "../support/goldenCompare";
@@ -246,9 +247,10 @@ function itemRow(each: PetItem): Record<string, unknown> {
     row.limited = {
       edition,
       source: source.kind,
-      sourceID: source.kind === "milestone" ? source.milestone : source.id,
+      sourceID: source.kind === "milestone" ? source.milestone : source.kind === "mastery" ? badgeID(source.badge) : source.id,
       milestoneGoal: milestone ? milestoneGoal(milestone) : undefined,
       seasonFocusMinutes: seasonalReward(edition)?.focusMinutes,
+      masteryGoal: source.kind === "mastery" ? badgeGoal(source.badge) : undefined,
       effect: editionEffect(edition),
     };
   }
@@ -410,12 +412,13 @@ describe("closet golden fixture", () => {
     }
   });
 
-  it("has the same shop order, wardrobe, limited shelf and themed shelves", () => {
+  it("has the same shop order, wardrobe, limited and mastery shelves and themed shelves", () => {
     expectGolden(
       {
         shopOrder: [...SHOP_ITEMS],
         wardrobe: [...PetCloset.wardrobe],
         limitedShelf: [...PetCloset.limitedShelf],
+        masteryShelf: [...PetCloset.masteryShelf],
         shelves: PetCloset.shelves.map((shelf) => ({ theme: shelf.theme, items: [...shelf.items] })),
       },
       fixture.catalog,

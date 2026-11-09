@@ -45,19 +45,26 @@ import type { StudyStreak } from "../../core/streaks/studyStreak";
 import { resolveTheme } from "../../core/themes/themeCatalog";
 import type { Instant } from "../../core/time";
 import { PetPlayer } from "../../ui/kit/petPlayer";
+import { PetProgression, changeIsEmpty } from "../../core/progression/petProgression";
+import { progressionDemo } from "../../core/progression/progressionDemo";
+import { ProgressTally } from "../../core/progression/progressTally";
+import { ProgressionSave } from "../../core/progression/progressionSave";
+import { badgeFromID, badgeID, compareBadges } from "../../core/progression/progressTrack";
 import { accentCss } from "../../ui/kit/tokens";
 import { closetCalendar } from "./closetCalendar";
 import { CLOSET_ACCENT } from "./closetDescriptor";
 
 /** The Closet's sections, in the order its header lists them. Port of ClosetSection. */
-export type ClosetSection = "activity" | "wardrobe" | "limited" | "streak" | "look" | "weeks";
+export type ClosetSection = "activity" | "wardrobe" | "limited" | "goals" | "streak" | "look" | "weeks";
 
-export const CLOSET_SECTIONS: readonly ClosetSection[] = ["activity", "wardrobe", "limited", "streak", "look", "weeks"];
+export const CLOSET_SECTIONS: readonly ClosetSection[] = ["activity", "wardrobe", "limited", "goals", "streak", "look", "weeks"];
 
 /** The pet's save in the edition's `Pet` folder. */
 export const PET_SAVE_DOCUMENT = "pet.json";
 /** The adventure journal, beside the save but its own file, so it never syncs. */
 export const PET_JOURNAL_DOCUMENT = "journal.json";
+/** The Goals section's own file, beside the save; it never syncs. */
+export const PET_PROGRESSION_DOCUMENT = "progression.json";
 
 export interface ClosetState {
   /** The closet with the save; the same object across edits, which `revision` counts. */
@@ -73,6 +80,8 @@ export interface ClosetState {
   readonly milestones: PetMilestoneProgress;
   /** Focus logged during each seasonal event run. */
   readonly seasons: SeasonalEventTally;
+  /** The Goals section: badge tiers, monthly quests and the mastery outfits they unlock. */
+  readonly progression: PetProgression;
   readonly journal: PetJournal;
   /** The saved pet plus when a study session last ran, which the closed island shows. */
   readonly presence: PetPresence;
@@ -114,6 +123,10 @@ export class ClosetStore extends Store<ClosetState> {
   /** Set when the save on disk could not be read: the closet then runs on a fresh pet but never overwrites the file. */
   private saveIsUnreadable = false;
   private journalIsUnreadable = false;
+  /** Set when `progression.json` could not be read, so it is never overwritten. */
+  private progressionIsUnreadable = false;
+  /** The Goals section a snapshot run started with, while `showForSnapshot` shows a tier as new. */
+  private snapshotProgression: PetProgression | undefined;
   /** Resolves once the saved pet (or none) has been read; writes wait for it. */
   private readonly loaded: Promise<void>;
   private readonly pinnedSeasonMoment: Instant | undefined;
@@ -136,6 +149,8 @@ export class ClosetStore extends Store<ClosetState> {
     const demoSeason = isDemo ? seasonalEventDemo(now, calendar.timeZone) : undefined;
     const seasons = demoSeason?.tally ?? new SeasonalEventTally(SeasonalEventCatalog.bundled, calendar.timeZone);
     const journal = isDemo ? PetJournal.demo(now) : new PetJournal(ClosetStore.randomSeed());
+    const progression = isDemo ? progressionDemo(now, calendar) : new PetProgression();
+    if (isDemo) closet.unlockMastery(progression);
     const bond = PetBond.fromProgress(milestones);
     const profile = ClosetStore.grown(closet.profile, bond);
     /* A snapshot renders the same pet whatever the hour, so only real and demo runs doze at night. */
@@ -143,7 +158,7 @@ export class ClosetStore extends Store<ClosetState> {
       ...(UnlockProgress.of(closet) === undefined ? {} : { nextUnlock: UnlockProgress.of(closet) }),
       ...(isSnapshot ? {} : { night: PetNightRhythm.standard }),
     });
-    super({ closet, revision: 0, profile, tryingOn: undefined, section: "activity", milestones, seasons, journal, presence, bond, hasSave: isDemo, snapshotScrolled: undefined });
+    super({ closet, revision: 0, profile, tryingOn: undefined, section: "activity", milestones, seasons, progression, journal, presence, bond, hasSave: isDemo, snapshotScrolled: undefined });
     this.isDemo = isDemo;
     this.isSnapshot = isSnapshot;
     this.pinnedSeasonMoment = demoSeason?.moment;
@@ -181,6 +196,16 @@ export class ClosetStore extends Store<ClosetState> {
     } catch (error) {
       this.journalIsUnreadable = true;
       this.context.logger.error("The pet's journal could not be read", error);
+    }
+    try {
+      const text = await store.read(PET_PROGRESSION_DOCUMENT);
+      if (text !== undefined) {
+        const saved = ProgressionSave.decode(text);
+        this.setState((state) => ({ progression: new PetProgression(saved, state.progression.tally) }));
+      }
+    } catch (error) {
+      this.progressionIsUnreadable = true;
+      this.context.logger.error("The Goals section's file could not be read", error);
     }
     if (save === undefined) return;
     /* A session that ran while the starter showed is already credited on the starter's save; the saved pet keeps its own baseline. */
@@ -264,6 +289,11 @@ export class ClosetStore extends Store<ClosetState> {
     this.setState({ milestones, seasons });
     this.bondMayHaveGrown();
     await this.loaded;
+    /* Goals the log had already reached count quietly: saved, with a dot on the Goals pill, and nothing celebrates. */
+    const progression = new PetProgression(this.state.progression.save, new ProgressTally(history, calendar));
+    const change = progression.refresh(this.context.now(), this.state.closet.save.ledger.streakFreezes, calendar);
+    this.setState({ progression });
+    if (!changeIsEmpty(change)) this.persistProgression();
     if (this.unlockLimited().length > 0) this.persist();
   }
 
@@ -303,20 +333,40 @@ export class ClosetStore extends Store<ClosetState> {
     const calendar = this.calendar;
     this.state.milestones.add(record, calendar);
     this.state.seasons.add(record);
+    const progression = this.state.progression;
+    progression.add(record, calendar);
+    const goals = progression.refresh(this.context.now(), this.state.closet.save.ledger.streakFreezes, calendar);
+    if (!changeIsEmpty(goals)) this.persistProgression();
     const award = creditRecord(this.state.closet, record);
     const unlocked = this.unlockLimited();
     this.bump();
     this.bondMayHaveGrown();
-    if (award === undefined && unlocked.length === 0) return;
-    this.persist();
+    if (award === undefined && unlocked.length === 0 && changeIsEmpty(goals)) return;
+    if (award !== undefined || unlocked.length > 0) this.persist();
     if (award !== undefined) this.celebrate(award);
-    if (unlocked.length > 0) this.celebrateLimited();
+    if (unlocked.length > 0 || !changeIsEmpty(goals)) this.celebrateLimited();
+  }
+
+  /** Badge tiers reached since the Goals section was last open, for the dot on its pill. */
+  get hasUnseenGoals(): boolean {
+    return this.state.progression.unseen.length > 0;
+  }
+
+  /** The Goals section is showing: every tier reached so far is seen. */
+  markGoalsSeen(): void {
+    if (!this.state.progression.markSeen()) return;
+    this.bump();
+    this.persistProgression();
   }
 
   /** Grants the limited items the milestones and seasonal events have earned and returns the new ones. */
   private unlockLimited(): PetItem[] {
     const closet = this.state.closet;
-    return [...closet.unlockMilestones(this.state.milestones), ...closet.unlockSeasonal(this.state.seasons)];
+    return [
+      ...closet.unlockMilestones(this.state.milestones),
+      ...closet.unlockSeasonal(this.state.seasons),
+      ...closet.unlockMastery(this.state.progression),
+    ];
   }
 
   /** A limited edition item just became the user's: the pet celebrates and the panel sparkles, like a purchase. */
@@ -501,9 +551,18 @@ export class ClosetStore extends Store<ClosetState> {
    * Pin, or under another name, so the Closet's longest lines can be
    * reviewed; the defaults put the starting closet back.
    */
-  showForSnapshot(options: { readonly foundingMember?: boolean; readonly name?: string; readonly scrolled?: number } = {}): void {
+  showForSnapshot(
+    options: {
+      readonly foundingMember?: boolean;
+      readonly name?: string;
+      readonly scrolled?: number;
+      /** Shows the newest badge tier as not seen yet (the Goals pill's dot). */
+      readonly newGoal?: boolean;
+    } = {},
+  ): void {
     if (!this.isSnapshot) return;
     this.setState({ snapshotScrolled: options.scrolled });
+    this.showGoalForSnapshot(options.newGoal ?? false);
     const base = this.snapshotBase ?? this.state.closet;
     this.snapshotBase = base;
     const save = base.save.copy();
@@ -520,6 +579,34 @@ export class ClosetStore extends Store<ClosetState> {
     }
     if (options.name !== undefined) save.profile.rename(options.name);
     this.replace(new PetCloset(save), {});
+  }
+
+  /** Snapshot runs only: shows the highest tier reached as new and unseen, so the Goals pill's dot can be reviewed. */
+  private showGoalForSnapshot(isNew: boolean): void {
+    const base = this.snapshotProgression ?? this.state.progression;
+    this.snapshotProgression = base;
+    const save = base.save.copy();
+    if (isNew) {
+      const latest = [...save.reached.keys()].flatMap((id) => badgeFromID(id) ?? []).sort(compareBadges).pop();
+      if (latest) save.seen.delete(badgeID(latest));
+    }
+    if (save.equals(this.state.progression.save)) return;
+    const shown = new PetProgression(save, base.tally);
+    shown.refresh(this.context.now(), this.state.closet.save.ledger.streakFreezes, this.calendar);
+    this.setState({ progression: shown });
+  }
+
+  private persistProgression(): void {
+    const store = this.store;
+    if (store === undefined) return;
+    void this.loaded.then(async () => {
+      if (this.progressionIsUnreadable) return;
+      try {
+        await store.write(PET_PROGRESSION_DOCUMENT, this.state.progression.save.encoded());
+      } catch (error) {
+        this.context.logger.error("The Goals section's file could not be written", error);
+      }
+    });
   }
 
   private edit<Result>(change: (closet: PetCloset) => Result): Result {

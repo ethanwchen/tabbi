@@ -10,7 +10,7 @@
 	<key>%@ %@ so far</key>
 	<string>%1$@ %2$@ 経過</string>
 	<key>%@ %@ so far.</key>
-	<string>%1$@ いまは%2$@。</string>
+	<string>%1$@いまは%2$@。</string>
 	<key>%@ (paused)</key>
 	<string>%@（一時停止中）</string>
 	<key>%@ Fix it in Settings &gt; Tabs &gt; Party &gt; Options, or clear it to use the Tabbi server.</key>

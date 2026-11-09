@@ -208,19 +208,17 @@ private struct ClosetQuestBanner: View {
             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                 // Each line shortens before it would scroll: the title drops
                 // "quests", the next quest its "Next:".
-                HStack(spacing: Theme.Spacing.xs) {
-                    ViewThatFits(in: .horizontal) {
-                        Text(String(localized: "\(monthName) quests", bundle: .tabbi)).fixedSize()
-                        Text(monthName).fixedSize()
-                        MarqueeText(monthName, help: help)
+                ViewThatFits(in: .horizontal) {
+                    titleLine(String(localized: "\(monthName) quests", bundle: .tabbi), count: countText)
+                    titleLine(monthName, count: countText)
+                    titleLine(monthName, count: "\(done)/\(quests.count)")
+                    HStack(spacing: Theme.Spacing.xs) {
+                        MarqueeText(monthName, help: help).font(.system(size: 10, weight: .semibold, design: .rounded))
+                        Text(verbatim: "\(done)/\(quests.count)").font(Theme.Typography.caption.monospacedDigit())
+                            .foregroundStyle(Theme.Palette.tertiaryText).fixedSize()
                     }
-                    .font(.system(size: 10, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Theme.Palette.primaryText)
-                    Text("\(done) of \(quests.count) done", bundle: .tabbi)
-                        .font(Theme.Typography.caption.monospacedDigit())
-                        .foregroundStyle(Theme.Palette.tertiaryText)
-                        .fixedSize()
                 }
+                .foregroundStyle(Theme.Palette.primaryText)
                 ViewThatFits(in: .horizontal) {
                     Text(nextLine(labeled: true)).fixedSize()
                     Text(nextLine(labeled: false)).fixedSize()
@@ -251,6 +249,19 @@ private struct ClosetQuestBanner: View {
                 .strokeBorder(accent.opacity(0.28), lineWidth: 0.5)
         )
         .help(help)
+    }
+
+    private var countText: String {
+        String(localized: "\(done) of \(quests.count) done", bundle: .tabbi)
+    }
+
+    /// The month (or its quests) and how many are done, at full width.
+    private func titleLine(_ title: String, count: String) -> some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            Text(title).font(.system(size: 10, weight: .semibold, design: .rounded))
+            Text(count).font(Theme.Typography.caption.monospacedDigit()).foregroundStyle(Theme.Palette.tertiaryText)
+        }
+        .fixedSize()
     }
 
     /// "November", in the user's language.

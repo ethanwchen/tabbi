@@ -18,6 +18,8 @@ class FakeFriendsServer {
   heldNames = new Set<string>();
   heldPetNames = new Set<string>();
   catalogVersion1 = false;
+  /** Answers like a server still on catalog version 3: the mastery outfits' ids are an `invalid_field`. */
+  catalogVersion3 = false;
   readonly takenBodies: Record<string, unknown>[] = [];
 
   constructor(validTokens: string[] = []) {
@@ -64,6 +66,15 @@ class FakeFriendsServer {
       if (!accessories.every((id) => known.has(id)) || colors.length > 6) {
         return reply('{"ok":false,"error":"invalid_field","message":"invalid accessories"}', 400);
       }
+    }
+    if (this.catalogVersion3 && fields !== undefined) {
+      const added = new Set([
+        "astronaut-suit", "starry-cloak", "apprentice-robe", "scholars-robe", "sages-robe", "bakers-apron",
+        "little-sprout", "blossom-sprout", "nightcap", "explorers-hat", "bee-antennae", "sporty-sweatband",
+        "owl-spectacles", "tiny-lantern",
+      ]);
+      const ids = [...(Array.isArray(fields.accessories) ? (fields.accessories as string[]) : []), ...(typeof fields.costume === "string" ? [fields.costume] : [])];
+      if (ids.some((id) => added.has(id))) return reply('{"ok":false,"error":"invalid_field","message":"invalid costume"}', 400);
     }
     if (fields !== undefined) this.takenBodies.push(fields);
     if (route === "POST /v1/register") {
@@ -178,6 +189,20 @@ describe("PartyAccount", () => {
     expect(taken?.accessories).toEqual(["glasses"]);
     expect(taken?.costume).toBe("hoodie");
     expect((taken?.colors as unknown[] | undefined)?.length).toBe(6);
+  });
+
+  it("sends a catalog version 3 server everything but the mastery outfits", async () => {
+    const token = FakeFriendsServer.token(8);
+    const fake = new FakeFriendsServer([token]);
+    fake.catalogVersion3 = true;
+    const store = new InMemoryPartyCredentialStore({ [server]: { token, code: FakeFriendsServer.code(8) } });
+    const pet = new PetProfile("Nova", "corgi", { outfit: "astronautSuit", accessories: ["friendshipBandana", "nightcap", "roundGlasses", "tinyLantern"] });
+    await account(fake, store).connect(partyPetUpdate(pet));
+    expect(fake.requests, "refused once, then sent without the new ids").toEqual(["PATCH /v1/me", "PATCH /v1/me"]);
+    const taken = fake.takenBodies[fake.takenBodies.length - 1];
+    expect(taken?.accessories).toEqual(["bandana", "glasses"]);
+    expect(taken?.costume).toBe("none");
+    expect((taken?.colors as unknown[] | undefined)?.length).toBe(10);
   });
 
   it("still registers when the name is refused on register", async () => {

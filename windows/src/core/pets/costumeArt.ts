@@ -62,11 +62,13 @@ function makeAccessoryArt(accessory: PetAccessory): AccessoryArt {
     case "teamMedal":
     case "foundersPin":
     case "snowScarf":
+    case "friendshipBandana":
       return { kind: "body", item: file.bodyItem(accessory) };
     case "roundGlasses":
     case "coolSunglasses":
     case "heartGlasses":
     case "summerShades":
+    case "owlSpectacles":
       return { kind: "face", item: file.faceItem(accessory) };
     case "pirateHat":
       return { kind: "mask", head: file.headItem("pirateHat"), face: file.faceItem("eyepatch") };
@@ -78,6 +80,7 @@ function makeAccessoryArt(accessory: PetAccessory): AccessoryArt {
     case "cherryPetals":
     case "sparkleTrail":
     case "rainCloud":
+    case "tinyLantern":
       return { kind: "aura", item: file.auraItem(accessory) };
     default:
       return { kind: "head", item: file.headItem(accessory) };

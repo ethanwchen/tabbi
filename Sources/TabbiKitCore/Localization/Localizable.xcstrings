@@ -256,7 +256,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ いまは%2$@。"
+            "value" : "%1$@いまは%2$@。"
           }
         },
         "ko" : {
@@ -280,13 +280,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ 目前 %2$@。"
+            "value" : "%1$@目前 %2$@。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ 目前 %2$@。"
+            "value" : "%1$@目前 %2$@。"
           }
         }
       }

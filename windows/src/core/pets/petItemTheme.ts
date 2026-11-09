@@ -43,6 +43,16 @@ export function itemTheme(item: PetItem): PetItemTheme {
         return "silly";
       case "studyHoodie":
         return "seasonal";
+      case "apprenticeRobe":
+      case "scholarsRobe":
+      case "sagesRobe":
+        return "study";
+      case "cozyPajamas":
+      case "bakersApron":
+        return "cozy";
+      case "astronautSuit":
+      case "starryCloak":
+        return "fantasy";
     }
   }
   switch (parts.accessory) {
@@ -54,11 +64,17 @@ export function itemTheme(item: PetItem): PetItemTheme {
     case "chunkyHeadphones":
     case "goldenLaurel":
     case "foundersPin":
+    case "owlSpectacles":
       return "study";
     case "scarf":
     case "beanie":
     case "chefHat":
     case "backwardsCap":
+    case "nightcap":
+    case "friendshipBandana":
+    case "littleSprout":
+    case "blossomSprout":
+    case "tinyLantern":
       return "cozy";
     case "tinyCrown":
     case "wizardHat":
@@ -70,6 +86,7 @@ export function itemTheme(item: PetItem): PetItemTheme {
     case "kingsCape":
     case "halo":
     case "sparkleTrail":
+    case "explorersHat":
       return "fantasy";
     case "frogHat":
     case "cowboyHat":
@@ -77,6 +94,8 @@ export function itemTheme(item: PetItem): PetItemTheme {
     case "flameHeadband":
     case "teamMedal":
     case "rainCloud":
+    case "beeAntennae":
+    case "sportySweatband":
       return "silly";
     default:
       return "seasonal";
@@ -99,6 +118,14 @@ export function itemRelease(item: PetItem): number {
         return 1;
       case "studyHoodie":
         return 4;
+      case "astronautSuit":
+      case "starryCloak":
+      case "apprenticeRobe":
+      case "scholarsRobe":
+      case "sagesRobe":
+      case "cozyPajamas":
+      case "bakersApron":
+        return 6;
       default:
         return 2;
     }
@@ -134,6 +161,16 @@ export function itemRelease(item: PetItem): number {
       return 4;
     case "foundersPin":
       return 5;
+    case "littleSprout":
+    case "blossomSprout":
+    case "nightcap":
+    case "explorersHat":
+    case "beeAntennae":
+    case "sportySweatband":
+    case "owlSpectacles":
+    case "friendshipBandana":
+    case "tinyLantern":
+      return 6;
     default:
       return 2;
   }

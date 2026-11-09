@@ -75,6 +75,38 @@ describe("ClosetModule on the runtime", () => {
     expect(closet.store.streak.length).toBe(1);
   });
 
+  it("counts goals from the log, unlocks a mastery outfit and keeps Pet/progression.json", async () => {
+    const { app, host } = await testApp({ moduleTypes: MODULE_LIST, settingsEntries: WITH_CLOSET }, NOW);
+    const closet = app.modules.instance(ClosetModule);
+    if (!closet) throw new Error("no closet");
+    await settle();
+    for (let index = 0; index < 50; index++) {
+      await app.activityLog.record(
+        makeActivityRecord({
+          source: MODULE_IDS.focus,
+          kind: ACTIVITY_KINDS.focusCompleted,
+          start: NOW - (index + 1) * 3600 - 25 * 60,
+          end: NOW - (index + 1) * 3600,
+          quantity: 25,
+          unit: ACTIVITY_UNITS.minutes,
+          metadata: { outcome: "completed" },
+        }),
+      );
+    }
+    await settle();
+    await settle();
+    expect(closet.store.state.progression.tier("sessions")).toBe("silver");
+    expect(closet.store.closet.save.ledger.owns("outfit.apprenticeRobe")).toBe(true);
+    expect(closet.store.hasUnseenGoals).toBe(true);
+    closet.store.markGoalsSeen();
+    expect(closet.store.hasUnseenGoals).toBe(false);
+    await settle();
+    await settle();
+    const saved = host.documents.get("durable:Pet/progression");
+    expect(saved).toContain('"sessions.2"');
+    expect(saved).toContain('"schemaVersion" : 1');
+  });
+
   it("shows the demo closet, writes nothing, and handles every snapshot state it lists", async () => {
     const { app, host } = await testApp({ moduleTypes: MODULE_LIST, settingsEntries: WITH_CLOSET, runMode: { isDemo: true, isSnapshot: true } }, NOW);
     const closet = app.modules.instance(ClosetModule);

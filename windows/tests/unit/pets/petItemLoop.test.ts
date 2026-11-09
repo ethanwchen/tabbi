@@ -114,7 +114,7 @@ describe("PetItemLoop", () => {
   }, 60_000);
 
   it("aura items float around the pet on every body shape", () => {
-    const auraItems: PetAccessory[] = ["cherryPetals", "sparkleTrail", "rainCloud"];
+    const auraItems: PetAccessory[] = ["cherryPetals", "sparkleTrail", "rainCloud", "tinyLantern"];
     expect(auraItems).toEqual(PET_ACCESSORIES.filter((a) => accessorySlot(a) === "aura"));
     for (const accessory of auraItems) {
       const loop = itemLoopFrameCount(accessoryItem(accessory));

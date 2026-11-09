@@ -10,7 +10,7 @@
 	<key>%@ %@ so far</key>
 	<string>%1$@ 已 %2$@</string>
 	<key>%@ %@ so far.</key>
-	<string>%1$@ 目前 %2$@。</string>
+	<string>%1$@目前 %2$@。</string>
 	<key>%@ (paused)</key>
 	<string>%@（已暂停）</string>
 	<key>%@ Fix it in Settings &gt; Tabs &gt; Party &gt; Options, or clear it to use the Tabbi server.</key>
