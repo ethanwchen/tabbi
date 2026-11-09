@@ -136,7 +136,8 @@ final class PetCamFlowTests: XCTestCase {
         let wall = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Mugshot wall'")).firstMatch
         XCTAssertTrue(wall.waitForExistence(timeout: 5))
         wall.tap()
-        let first = app.buttons.matching(NSPredicate(format: "label CONTAINS 'CASE 001'")).firstMatch
+        // The newest case sits at the top of the one-column timeline.
+        let first = app.buttons.matching(NSPredicate(format: "label CONTAINS 'CASE 0'")).firstMatch
         XCTAssertTrue(first.waitForExistence(timeout: 5))
         sleep(1)
         checkpoint("80-mugshot-wall")
