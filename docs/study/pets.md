@@ -159,12 +159,16 @@ It bobs a pixel down for half its loop, and `PetItemLoopTests` checks that its g
 Sixteen items are earned from badge tiers on the Closet's Goals shelf instead of bought (`PetLimitedEdition.mastery`, docs/design/progression.md): the Astronaut Suit, the Starry Cloak, three robes tiered by finished sessions (Apprentice, Scholar's and Sage's), the Cozy Pajamas and Nightcap, the Baker's Apron with its tiny cake, the Little and Blossom Sprouts, the Explorer's Hat, the Busy Bee Antennae, the Sporty Sweatband, the Owl Spectacles, the Friendship Bandana and the Tiny Lantern.
 They are drawn like every item, so each fits every body shape:
 
-- The robes, the Starry Cloak and the Astronaut Suit keep the exact silhouette of the Wizard Robe and the White Coat on every body family, and the Cozy Pajamas the Scrubs', so they need no new fit rules.
+- The Starry Cloak and the Astronaut Suit keep the exact silhouette of the Wizard Robe and the White Coat on every body family, and the Cozy Pajamas the Scrubs'.
+  The three robes flare out into wide sleeves with contrasting cuffs resting in the lap, so they read as robes rather than vests, and each tier has its own color and trim: brown with cream cuffs and a rope belt, navy with a crimson stole and cuffs and gold buttons, and white with a gold stole and cuffs.
   The Starry Cloak is closed at the chest and hangs on the body; it never streams behind like a cape.
+- Two outfits bring a head part, placed like the dinosaur hood (`PetComposer.outfitHood`): the Astronaut Suit's glass bubble helmet, a thin metal rim over the head with a glint and the face left clear, and the Sage's Robe's pointed white hood with a gold brim.
 - Seen from the side the head hides the front of the body, so the Sage's Robe glints along a gold hem there instead of down its stole, the Starry Cloak only twinkles stars behind the head, and the Baker's Apron shows its bow tied at the back.
 - Thin lines are gold or sit on a light fill: the Owl Spectacles have gold brows over navy rims (gold alone melted into golden fur, navy alone into black fur), and the bee's antennae are gold.
 - The Tiny Lantern is an aura item, three by four pixels, hung in the free air that a probe over every breed and every frame found clear (left of the head below the celebration's sparkles; over the back from the side; right of the dachshund's head), so it never has to leave a frame.
   Only its flame flickers.
+
+![Every mastery outfit on the British Shorthair](images/mastery-outfits.png)
 
 `swift run PetGallery <dir> mastery` writes `mastery-<item>.png` (the item on a breed for every body shape, sitting, mid-hop, walking, stretching and napping), `mastery-all-<breed>.png` at 4x and notch size, `mastery-loop-<item>.png` for the animated ones, and `mastery-sets-<breed>.png` (the outfits worn with the shop items they go with).
 

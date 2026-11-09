@@ -20,8 +20,8 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
     // Mastery outfits (`PetLimitedEdition`, source `mastery`): earned by
     // reaching a badge tier (`ProgressBadge`), never sold.
     /// A white space suit with a navy collar ring and belt, a chest panel
-    /// with two lights and a crimson mission patch, to wear with the shop's
-    /// Astronaut Helmet.
+    /// with two lights and a crimson mission patch, and a glass bubble
+    /// helmet over the head.
     case astronautSuit
     /// A violet cloak closed at the chest with a gold star clasp, its gold
     /// and white stars twinkling. Worn on the body, never streaming behind.
@@ -31,7 +31,8 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
     case apprenticeRobe
     /// A navy robe with a crimson stole edged in gold.
     case scholarsRobe
-    /// A white robe with a gold stole that a glint runs down now and then.
+    /// A white robe with a gold stole that a glint runs down now and then,
+    /// and a pointed white hood.
     case sagesRobe
     /// Sky blue pajamas with white piping, buttons and little gold moons.
     case cozyPajamas
@@ -167,7 +168,8 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     /// A floppy sky blue nightcap with a white band and a white pom at its
     /// drooping tip, to wear with the Cozy Pajamas.
     case nightcap
-    /// A white explorer's pith helmet with a brown band and a wide brim.
+    /// A green bush hat with a brown band, one side of the brim pinned up
+    /// with a gold badge.
     case explorersHat
     /// A gold and navy striped headband with two antennae tipped in gold.
     case beeAntennae

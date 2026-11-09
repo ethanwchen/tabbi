@@ -436,7 +436,8 @@ extension CostumeArt {
     /// white band and pom.
     static let nightcap = PetArt.costume.headItem("nightcap")
 
-    /// A white pith helmet with a brown band and a wide brim.
+    /// A green bush hat with a brown band, one side of the brim pinned up
+    /// with a gold badge.
     static let explorersHat = PetArt.costume.headItem("explorersHat")
 
     /// A gold and navy striped headband with two antennae tipped in gold.
