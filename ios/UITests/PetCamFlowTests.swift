@@ -207,6 +207,9 @@ final class PetCamFlowTests: XCTestCase {
             XCTAssertGreaterThanOrEqual(waitForStill(progress, index), index, "still \(index) of the \(name) tape")
             if stillShown(progress) > index { continue }
             usleep(600_000)
+            // A still too short to settle (the object on its way down) is
+            // skipped rather than filed under the next one's picture.
+            if stillShown(progress) > index { continue }
             captions.append(app.descendants(matching: .any)["tape.caption"].firstMatch.label)
             // The picture's size on the tape's first still captured (a
             // stamp's tilted corners would widen the element's frame).
