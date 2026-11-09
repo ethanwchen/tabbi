@@ -132,6 +132,16 @@ public enum PetCamScene {
         }
     }
 
+    /// Whether the whole of the pet's frame at `place` lies inside what
+    /// `shot` shows.
+    static func showsWholePet(at place: PetCamPlace, pose: PetCamPose, in shot: PetCamShot) -> Bool {
+        let rect = crop(of: shot.framing, wrecks: shot.wrecks)
+        let pet = placement(for: place, pose: pose)
+        let size = PetComposer.frameSize
+        return pet.x >= rect.x && pet.y >= rect.y && pet.x + size <= rect.x + rect.width
+            && pet.y + size <= rect.y + rect.height
+    }
+
     /// Where a wreck lies on the floor (its bottom center).
     static func wreckAnchor(_ wreck: PetCamWreck) -> PetCamLayout.Point {
         let anchors = layout.spot(wreck.spot).wrecks

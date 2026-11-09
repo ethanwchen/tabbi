@@ -172,17 +172,17 @@ struct TapePlayer: View {
         .accessibilityLabel(Text(verbatim: "Still \(index + 1) of \(tape.stills.count)"))
     }
 
-    /// Every still's captions laid on top of each other, only the current
-    /// one shown, so the area is always as tall as the longest and the feed
-    /// above it never jumps between cuts.
+    /// The current still's captions over every still's captions laid out
+    /// hidden (out of sight and out of the accessibility tree), so the area
+    /// is always as tall as the longest and the feed never jumps between cuts.
     private func captions(_ tape: PetCamTape, current: PetCamTape.Still) -> some View {
         ZStack(alignment: .top) {
-            ForEach(Array(tape.stills.enumerated()), id: \.offset) { position, still in
-                let shown = position == min(index, tape.stills.count - 1)
-                caption(still)
-                    .opacity(shown ? 1 : 0)
-                    .accessibilityHidden(!shown)
+            ForEach(Array(tape.stills.enumerated()), id: \.offset) { _, still in
+                caption(still).hidden()
             }
+            caption(current)
+                .id(index)
+                .transition(.opacity)
         }
         .frame(maxWidth: .infinity)
         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { captionHeight = $0 }

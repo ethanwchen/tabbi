@@ -365,8 +365,12 @@ public struct PetCamTape: Hashable, Sendable {
                            duration: 2.0, caption: captions.turn, detail: captions.callback)
         let alibi = Still(shot: Self.with(later, pet: .lieDown, at: .lounge(camera)), time: plan.alibi, duration: 3.0,
                           caption: captions.closer, detail: captions.age)
-        let reveal = Still(shot: Self.with(exhibit, pet: .lieDown, at: .lounge(camera)), time: plan.alibi,
-                           duration: 2.6, caption: captions.reveal ?? captions.closer, detail: captions.tell)
+        // The pet lying in front of the other camera is in this picture only
+        // when all of it is; never a cut-off cat at the edge.
+        let witness = PetCamScene.showsWholePet(at: .lounge(camera), pose: .lieDown, in: exhibit)
+        let reveal = Still(shot: witness ? Self.with(exhibit, pet: .lieDown, at: .lounge(camera)) : exhibit,
+                           time: plan.alibi, duration: 2.6, caption: captions.reveal ?? captions.closer,
+                           detail: captions.tell)
         var opening = opener
         opening.duration = 1.4
         switch shape {

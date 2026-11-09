@@ -384,6 +384,10 @@ final class PetCamReadTests: XCTestCase {
                 XCTAssertEqual(acts, [], "and never seen")
                 XCTAssertEqual(last.shot.framing, .wreck(try XCTUnwrap(record.strike), hidden: false),
                                "every miss ends on the wreck")
+                if let place = last.shot.place, let pose = last.shot.pet {
+                    XCTAssertTrue(PetCamScene.showsWholePet(at: place, pose: pose, in: last.shot),
+                                  "the witness is all in the picture or not in it")
+                }
                 // The pet is on camera by about second three.
                 var elapsed = 0.0
                 for still in tape.stills {
