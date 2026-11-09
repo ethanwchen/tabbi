@@ -608,7 +608,7 @@ struct RecordingScreen: View {
                             .fixedSize(horizontal: false, vertical: true)
                             .accessibilityIdentifier("recording.case")
                     }
-                    CameraTile(camera: filming.camera)
+                    CameraTile(block: filming)
                 } else {
                     RecLabel(text: "STANDBY", isRecording: false)
                     Text(verbatim: "The camera only films blocks of \(Int((cam.game.minimumBlock / 60).rounded())) minutes or more.")
@@ -643,40 +643,58 @@ struct RecordingScreen: View {
     }
 }
 
-/// The hidden camera as a still tile: lens-cap black, its name, and a REC
-/// dot that blinks (still under Reduce Motion).
+/// The hidden camera's last frame: its view of its spot as it stood when
+/// the block started, at night levels under frozen grain, with its name
+/// burned in. Only the REC dot moves (and not under Reduce Motion), so the
+/// block has nothing to check.
 private struct CameraTile: View {
-    let camera: PetCamSpot
+    let block: PetCamActiveBlock
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @ScaledMetric(relativeTo: .caption) private var dot: CGFloat = 9
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 34) {
+        let camera = block.camera
+        let picture = FeedView.pictureSize(.spot(camera), width: tileWidth, displayScale: displayScale)
+        FeedView(shot: PetCamShot(framing: .spot(camera), objects: block.room.objects, wrecks: block.room.wrecks),
+                 pet: block.pet, daylight: false, width: tileWidth)
+            // A landscape band around the object: from a sixth of the way
+            // down, half the picture's height.
+            .offset(y: -picture.height / 6)
+            .frame(width: picture.width, height: picture.height / 2, alignment: .top)
+            .clipped()
+            .overlay { StaticGrain(frame: 3, amount: 0.14) }
+            .overlay(alignment: .topLeading) { burnIn(camera).dynamicTypeSize(...DynamicTypeSize.large) }
+            .clipShape(.rect(cornerRadius: CCTV.feedRadius, style: .continuous))
+            .frame(maxWidth: .infinity)
+            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { tileWidth = $0 }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(verbatim: "Recording on camera \(camera.cameraNumber), the \(PetCamCaptions.name(of: camera).lowercased())"))
+            .accessibilityIdentifier("recording.camera")
+    }
+
+    @Environment(\.displayScale) private var displayScale
+    @State private var tileWidth: CGFloat = 320
+
+    private func burnIn(_ camera: PetCamSpot) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 6) {
                 TimelineView(.periodic(from: .now, by: 1)) { context in
                     let lit = reduceMotion || Int(context.date.timeIntervalSinceReferenceDate) % 2 == 0
                     Circle()
                         .fill(CCTV.rec)
-                        .frame(width: dot, height: dot)
+                        .frame(width: 9, height: 9)
                         .opacity(lit ? 1 : 0.2)
                 }
                 Text(verbatim: "REC")
                     .font(CCTV.font(.caption, weight: .bold))
-                    .foregroundStyle(CCTV.burnIn.opacity(0.8))
             }
             Text(verbatim: "CAM \(camera.cameraNumber), \(PetCamCaptions.name(of: camera))")
-                .font(CCTV.font(.footnote, weight: .semibold))
-                .foregroundStyle(CCTV.burnIn.opacity(0.45))
-                .fixedSize(horizontal: false, vertical: true)
+                .font(CCTV.font(.caption2, weight: .semibold))
+                .opacity(0.8)
         }
-        .padding(14)
-        .frame(maxWidth: 260, alignment: .topLeading)
-        .fixedSize(horizontal: false, vertical: true)
-        .background(Color.black, in: .rect(cornerRadius: CCTV.feedRadius, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: CCTV.feedRadius, style: .continuous)
-            .stroke(CCTV.burnIn.opacity(0.08)))
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: "Recording on camera \(camera.cameraNumber), the \(PetCamCaptions.name(of: camera).lowercased())"))
-        .accessibilityIdentifier("recording.camera")
+        .foregroundStyle(CCTV.burnIn)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 6)
+        .background(CCTV.plate, in: .rect(cornerRadius: 6))
+        .padding(10)
     }
 }
