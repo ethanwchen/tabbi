@@ -65,9 +65,10 @@ final class PetCamReadTests: XCTestCase {
         XCTAssertEqual(expert, 0.68, accuracy: 0.03)
         XCTAssertGreaterThan(expert - follow, 0.17)
         XCTAssertLessThan(expert, 0.72)
-        // Chasing WANTED whenever nothing wobbles costs something real:
-        // about 40%, against 68% for the safe play.
-        XCTAssertEqual(collector, 0.40, accuracy: 0.03)
+        // WANTED shows only as a real trade for the case file, so chasing
+        // it costs a little against the safe play, and only now and then.
+        XCTAssertLessThanOrEqual(collector, expert + 0.005)
+        XCTAssertGreaterThan(collector, follow)
     }
 
     func testTheExceptionChangesTheReadOnlyWhenItIsOn() {
@@ -219,36 +220,46 @@ final class PetCamReadTests: XCTestCase {
         }
     }
 
-    func testWantedMakesEveryBlockWithNothingWobblingOneChoice() throws {
+    func testWantedShowsOnlyWhenItIsARealTrade() throws {
         var game = PetCamGame(seed: 0x3A7, at: monday)
         XCTAssertNil(game.setup.wanted, "nothing is wanted before the first tape")
         var tagged: Set<PetCamSpot> = []
-        var wantedCatches = 0, wobbles = 0
+        var wantedCatches = 0, wobbles = 0, trades = 0, bare = 0
         for index in 0..<60 {
             let start = monday.addingTimeInterval(Double(index) * 2400)
             let setup = game.setup
+            // What a catch with each object would add to the case file.
+            let gain = { (spot: PetCamSpot) in
+                PetCamSetup.caseFileGain(game.log.offenses(with: game.room.object(at: spot)!.kind))
+            }
             if index > 0 {
                 if let tell = setup.tell {
                     // A wobble is the block's one other signal: no tag.
                     XCTAssertNil(setup.wanted, "block \(index + 1) wobbles at the \(tell.spot) and shows no tag")
                     wobbles += 1
-                } else {
-                    let wanted = try XCTUnwrap(setup.wanted, "block \(index + 1) has a WANTED object")
+                } else if let wanted = setup.wanted {
                     XCTAssertNotEqual(wanted, setup.stare, "never on the spot the pet is eyeing")
-                    // Of the two objects the pet is not eyeing, the one at
-                    // large longer (or never caught with at all).
+                    XCTAssertGreaterThan(gain(wanted), gain(setup.stare), "a new face or a pip against less")
+                    // Of the objects worth more, the one at large longer.
                     let history = game.log.blocks
                     let since = { (spot: PetCamSpot) in
                         PetCamSetup.wantedSince(game.room.object(at: spot)!.kind, history: history, before: start)!
                     }
-                    for spot in PetCamSpot.allCases where spot != setup.stare {
+                    for spot in PetCamSpot.allCases where spot != setup.stare && gain(spot) > gain(setup.stare) {
                         XCTAssertLessThanOrEqual(since(wanted), since(spot))
                     }
+                    trades += 1
                     // It never moves the pet.
                     var fresh = setup
                     fresh.wanted = nil
                     XCTAssertEqual(fresh.strike, setup.strike)
                     tagged.insert(wanted)
+                } else {
+                    // No tag: neither other object would add more to the file.
+                    for spot in PetCamSpot.allCases where spot != setup.stare {
+                        XCTAssertLessThanOrEqual(gain(spot), gain(setup.stare), "block \(index + 1) hides a real trade")
+                    }
+                    bare += 1
                 }
             }
             game.start(id: "b\(index)", pick: setup.tell?.spot ?? setup.wanted, dodge: nil, dare: false,
@@ -267,7 +278,10 @@ final class PetCamReadTests: XCTestCase {
         }
         XCTAssertGreaterThan(wantedCatches, 0)
         XCTAssertGreaterThan(wobbles, 0)
-        XCTAssertEqual(tagged.count, 3, "the tag moves around the room")
+        XCTAssertGreaterThan(trades, 0)
+        XCTAssertGreaterThan(bare, 0, "a frame with nothing to trade shows only the stare")
+        print("Pet Cam WANTED over 60 blocks: \(trades) real trades, \(bare) frames with only the stare, \(wobbles) wobbles")
+        XCTAssertGreaterThan(tagged.count, 1, "the tag moves around the room")
         // Days at large read as days.
         XCTAssertEqual(PetCamCaptions.wanted(since: monday, at: monday.addingTimeInterval(3 * 86400), calendar: calendar),
                        "WANTED FOR 3 DAYS.")

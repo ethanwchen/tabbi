@@ -180,17 +180,35 @@ public struct PetCamSetup: Codable, Hashable, Sendable {
                            tuning: tuning, preparedAt: date)
     }
 
-    /// The WANTED spot for `room` after `history` (see `wanted`).
+    /// The WANTED spot for `room` after `history` (see `wanted`): only an
+    /// object whose catch would add more to the case file than a catch with
+    /// the one the pet is eyeing (a new face against a repeat, a rap-sheet
+    /// pip against a full sheet), so the tag only ever offers a real trade;
+    /// of those, the one gone longest uncaught.
     static func wanted(seed: UInt64, room: PetCamRoom, stare: PetCamSpot, tell: PetCamTell?,
                        history: [PetCamBlockRecord], at date: Date) -> PetCamSpot? {
         guard tell == nil, history.contains(where: \.outcome.hasTape) else { return nil }
-        let waits = PetCamSpot.allCases.filter { $0 != stare }.compactMap { spot in
-            room.object(at: spot).map { (spot, wantedSince($0.kind, history: history, before: date) ?? .distantPast) }
+        var catches: [PetCamObjectKind: Int] = [:]
+        for record in history where record.outcome == .caught && record.endedAt < date {
+            if let kind = record.struck?.kind { catches[kind, default: 0] += 1 }
+        }
+        let eyed = room.object(at: stare).map { caseFileGain(catches[$0.kind] ?? 0) } ?? 0
+        let waits = PetCamSpot.allCases.filter { $0 != stare }.compactMap { spot -> (PetCamSpot, Date)? in
+            guard let object = room.object(at: spot), caseFileGain(catches[object.kind] ?? 0) > eyed else { return nil }
+            return (spot, wantedSince(object.kind, history: history, before: date) ?? .distantPast)
         }
         guard let longest = waits.map(\.1).min() else { return nil }
         let tied = waits.filter { $0.1 == longest }.map(\.0)
         var roll = PetCamRandom(seed: seed, stream: "wanted")
         return tied[Int(roll.next() % UInt64(tied.count))]
+    }
+
+    /// What one more catch with an object caught `count` times adds to the
+    /// case file: 2 for a new face, 1 for a rap-sheet pip (the second and
+    /// fourth catch fill one), 0 for nothing new.
+    public static func caseFileGain(_ count: Int) -> Int {
+        if count == 0 { return 2 }
+        return count + 1 == 2 || count + 1 == 4 ? 1 : 0
     }
 
     /// Since when the pet has gone without being caught with `kind` before
