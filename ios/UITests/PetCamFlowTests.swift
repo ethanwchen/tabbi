@@ -127,6 +127,8 @@ final class PetCamFlowTests: XCTestCase {
         // Two more catches and two more misses: every shape of both.
         play(catching: true, name: "catch-2", first: 40)
         play(catching: false, name: "miss-2", first: 50)
+        // Shared, with the player's words: Share asks whose charge goes on.
+        type(dodge: "the dishes")
         play(catching: true, name: "catch-3", first: 60, share: true)
         play(catching: false, name: "miss-3", first: 90)
         checkpoint("97-home-after-six-tapes")
@@ -234,6 +236,12 @@ final class PetCamFlowTests: XCTestCase {
         }
         if share {
             app.buttons["Share"].tap()
+            let words = app.buttons["share.charge.words"]
+            XCTAssertTrue(words.waitForExistence(timeout: 5), "both headlines, neither picked")
+            XCTAssertTrue(app.buttons["share.charge.act"].exists)
+            sleep(1)
+            checkpoint("69-share-choice")
+            words.tap()
             let sheet = app.descendants(matching: .any).matching(NSPredicate(
                 format: "identifier == 'ActivityListView' OR label == 'Save Video' OR label == 'Copy'")).firstMatch
             let tapped = Date()

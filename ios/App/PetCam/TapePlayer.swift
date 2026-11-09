@@ -28,7 +28,7 @@ struct TapePlayer: View {
     @State private var holding = false
     @State private var exporting = false
     @State private var shared: SharedTape?
-    @State private var includeDodge = false
+    @State private var choosingCharge = false
     @State private var exportFailed = false
     @State private var jolt: CGFloat = 0
     @State private var captionHeight: CGFloat = 80
@@ -99,6 +99,13 @@ struct TapePlayer: View {
         .task(id: record.id) { await play() }
         .onDisappear { TapeAudio.shared.stop() }
         .sheet(item: $shared) { file in ShareSheet(items: [file.url]) }
+        .sheet(isPresented: $choosingCharge) {
+            ChargeChooser(record: record) { include in
+                choosingCharge = false
+                share(includeDodge: include)
+            }
+            .presentationDetents([.medium, .large])
+        }
         .alert(Text(verbatim: "The video could not be made."), isPresented: $exportFailed) {
             Button(role: .cancel) {} label: { Text("Done", bundle: .tabbi) }
         }
@@ -295,16 +302,14 @@ struct TapePlayer: View {
 
     @ViewBuilder private func buttonRow(_ tape: PetCamTape) -> some View {
         if tape.outcome.hasTape {
-            Menu {
-                Button {
-                    includeDodge = false
-                    share()
-                } label: { Text(verbatim: "Share video") }
-                if record.dodge != nil {
-                    Button {
-                        includeDodge = true
-                        share()
-                    } label: { Text(verbatim: "Share with what I was avoiding") }
+            Button {
+                // With the player's own words, the player picks the headline
+                // (they may be private); without them it exports at once.
+                if PetCamCaptions.cleanDodge(record.dodge) != nil {
+                    holding = true
+                    choosingCharge = true
+                } else {
+                    share(includeDodge: false)
                 }
             } label: {
                 HStack(spacing: 8) {
@@ -319,9 +324,6 @@ struct TapePlayer: View {
                 }
                 .foregroundStyle(CCTV.burnIn)
                 .frame(maxWidth: .infinity, minHeight: 52)
-            } primaryAction: {
-                includeDodge = false
-                share()
             }
             .buttonStyle(.glass)
             .buttonBorderShape(.capsule)
@@ -342,13 +344,13 @@ struct TapePlayer: View {
         .tint(CCTV.burnIn)
     }
 
-    private func share() {
+    private func share(includeDodge: Bool) {
         holding = true
         exporting = true
-        let record = record, number = caseNumber, include = includeDodge
+        let record = record, number = caseNumber
         Task {
             do {
-                let url = try await TapeExporter.export(record, caseNumber: number, includeDodge: include)
+                let url = try await TapeExporter.export(record, caseNumber: number, includeDodge: includeDodge)
                 exporting = false
                 shared = SharedTape(url: url)
             } catch {
@@ -356,6 +358,49 @@ struct TapePlayer: View {
                 exportFailed = true
             }
         }
+    }
+}
+
+/// Which charge goes on the shared video: both headlines, in the clip's
+/// own type, neither picked for the player, so the funniest is one tap away
+/// and a private task is never posted by accident.
+struct ChargeChooser: View {
+    let record: PetCamBlockRecord
+    let choose: (_ includeDodge: Bool) -> Void
+
+    var body: some View {
+        VStack(spacing: 14) {
+            Text(verbatim: "Which charge goes on the video?")
+                .font(.headline)
+                .foregroundStyle(CCTV.burnIn.opacity(0.8))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            ForEach([true, false], id: \.self) { include in
+                if let line = PetCamCaptions.caseLine(record, includeDodge: include) {
+                    Button { choose(include) } label: {
+                        Text(verbatim: PetCamCaptions.keepingDodgeTogether(line))
+                            .font(CCTV.font(.title3, weight: .heavy))
+                            .foregroundStyle(CCTV.burnIn)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, minHeight: 64)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                    }
+                    .buttonStyle(.plain)
+                    .background(CCTV.plate, in: .rect(cornerRadius: 16, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .strokeBorder(CCTV.burnIn.opacity(0.25), lineWidth: 1))
+                    .accessibilityIdentifier(include ? "share.charge.words" : "share.charge.act")
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, CCTV.gutter)
+        .padding(.top, 24)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .background(CCTV.screen.ignoresSafeArea())
+        .preferredColorScheme(.dark)
     }
 }
 
