@@ -34,6 +34,12 @@ struct TapePlayer: View {
     @State private var captionHeight: CGFloat = 80
     @State private var finished = false
     @State private var screenSize: CGSize = .zero
+    /// When the current still cut in, what its clock reads then, and
+    /// whether the pet is mid-blink: a held still keeps the motion a real
+    /// camera has.
+    @State private var shownAt = Date()
+    @State private var clockBase: Date?
+    @State private var blinking = false
 
     private var tape: PetCamTape? { PetCamTape(record: record) }
 
@@ -48,8 +54,15 @@ struct TapePlayer: View {
                             .padding(.top, 8)
                         Spacer(minLength: 10)
                         let still = tape.stills[min(index, tape.stills.count - 1)]
-                        TapeStillView(record: record, still: still, caseNumber: caseNumber, width: width,
-                                      publicOnly: false, frozen: still.stamp == .caught)
+                        TimelineView(.periodic(from: shownAt, by: 0.5)) { context in
+                            // The burn-in clock ticks each second and the REC
+                            // dot blinks while a still holds.
+                            let elapsed = max(0, context.date.timeIntervalSince(shownAt))
+                            TapeStillView(record: record, still: Self.blinked(still, blinking), caseNumber: caseNumber, width: width,
+                                          publicOnly: false,
+                                          clock: (clockBase ?? still.time).addingTimeInterval(elapsed.rounded(.down)),
+                                          recLit: reduceMotion || Int(elapsed * 2).isMultiple(of: 2))
+                        }
                             .accessibilityIdentifier("tape.picture")
                             .overlay { if cut { Static() } }
                             .offset(x: jolt)
@@ -90,6 +103,19 @@ struct TapePlayer: View {
             Button(role: .cancel) {} label: { Text("Done", bundle: .tabbi) }
         }
         .sensoryFeedback(.impact(weight: .light), trigger: index)
+        #if DEBUG
+        .overlay(alignment: .bottomLeading) {
+            // UI tests read the tape's timing and captions once, rather than
+            // polling the screen while it plays (`-PetCamTestHooks`, debug
+            // builds only).
+            if DebugLaunch.arguments.contains("-PetCamTestHooks"), let tape {
+                Text(verbatim: Self.testHook(tape))
+                    .font(.system(size: 2))
+                    .opacity(0.02)
+                    .accessibilityIdentifier("debug.tape")
+            }
+        }
+        #endif
     }
 
     /// The widest picture that leaves room above for the progress bar and
@@ -101,6 +127,20 @@ struct TapePlayer: View {
         let height = size.height - captionHeight - 14 - 8 - 3 - 20
         let widest = size.width - 2 * CCTV.gutter
         return min(widest, max(height * 100 / 160, size.width * 0.5))
+    }
+
+    /// Each still's seconds, then each still's spoken caption, split by
+    /// bars: "1.8,1.6|HOME ALONE.|CAM 4 WAKES UP.".
+    static func testHook(_ tape: PetCamTape) -> String {
+        ([tape.stills.map { String(format: "%.2f", $0.duration) }.joined(separator: ",")]
+            + tape.stills.map { PetCamCaptions.spoken($0.caption, $0.detail) }).joined(separator: "|")
+    }
+
+    /// `still` with the pet's eyes shut, mid-blink.
+    private static func blinked(_ still: PetCamTape.Still, _ blinking: Bool) -> PetCamTape.Still {
+        var shown = still
+        shown.shot.blink = blinking
+        return shown
     }
 
     /// The wall's case number of a catch (1 for the first).
@@ -130,16 +170,33 @@ struct TapePlayer: View {
         }
         TapeAudio.shared.start()
         try? await Task.sleep(for: .milliseconds(reduceMotion ? 150 : 600))
+        var clockShown: Date?
         for (position, still) in tape.stills.enumerated() {
             if position > 0, !reduceMotion {
                 cut = true
                 try? await Task.sleep(for: .milliseconds(90))
             }
             cut = false
+            // A still of the same moment carries on the clock where the last
+            // one left it, so time never runs back except in a rewind.
+            let base = still.stamp == .rewind ? still.time : max(still.time, clockShown ?? still.time)
+            clockBase = base
+            shownAt = .now
             index = position
             if let cue = still.cue { TapeAudio.shared.play(cue) }
             if still.shake, !reduceMotion { await shake() }
-            try? await Task.sleep(for: .seconds(still.shake && !reduceMotion ? still.duration - 0.3 : still.duration))
+            let hold = still.shake && !reduceMotion ? still.duration - 0.3 : still.duration
+            if still.duration > 1.5, !reduceMotion, still.shot.pet != nil {
+                // One blink, a little past the middle of the hold.
+                try? await Task.sleep(for: .seconds(hold * 0.55))
+                blinking = true
+                try? await Task.sleep(for: .milliseconds(150))
+                blinking = false
+                try? await Task.sleep(for: .seconds(max(0, hold * 0.45 - 0.15)))
+            } else {
+                try? await Task.sleep(for: .seconds(hold))
+            }
+            clockShown = base.addingTimeInterval(still.duration.rounded(.down))
             if Task.isCancelled { return }
         }
         TapeAudio.shared.stop()
@@ -149,7 +206,7 @@ struct TapePlayer: View {
             try? await Task.sleep(for: .milliseconds(200))
             if Task.isCancelled { return }
         }
-        try? await Task.sleep(for: .milliseconds(500))
+        try? await Task.sleep(for: .milliseconds(300))
         if !Task.isCancelled { finish() }
     }
 
@@ -340,6 +397,10 @@ struct TapeStillView: View {
     /// Draws only the words and their plates, on nothing, so a test can
     /// find where every word of a frame lands.
     var textOnly = false
+    /// The time the burn-in shows, when it has ticked on from the still's.
+    var clock: Date?
+    /// The REC dot's blink: lit or dim.
+    var recLit = true
 
     @Environment(\.displayScale) private var displayScale
 
@@ -392,7 +453,7 @@ struct TapeStillView: View {
         let plate = unit * 0.33
         return HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: CCTV.timestamp(still.time))
+                Text(verbatim: CCTV.timestamp(clock ?? still.time))
                     .font(font(.caption, 1))
                     .monospacedDigit()
                 Text(verbatim: hud ?? still.cameraLabel)
@@ -414,7 +475,7 @@ struct TapeStillView: View {
                     .font(font(.caption, 1, weight: .bold))
                     .accessibilityHidden(true)
                 } else if still.stamp == nil || still.stamp == .caught {
-                    RecLabel(text: "REC", isRecording: true)
+                    RecLabel(text: "REC", isRecording: true, lit: recLit)
                         .fixedSize()
                         .scaleEffect(unit / 12, anchor: .topTrailing)
                         .frame(width: unit * 4.6, height: unit * 1.3, alignment: .topTrailing)
@@ -522,6 +583,7 @@ struct TapeStillView: View {
         case .lensStare: return "\(name) stares straight into the camera."
         case .lieDown: return "\(name) lies on the floor, staring into the camera."
         case .stroll: return "\(name) strolls into the picture."
+        case .walkBy: return "\(name) strolls past the camera, wearing the evidence."
         }
     }
 }

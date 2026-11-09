@@ -93,7 +93,25 @@
     "SO MUCH FOR THE {object}."
   ],
   "offCamera": [
-    "OFF CAMERA"
+    "OFF CAMERA",
+    "SOMEWHERE ELSE",
+    "NOT ON THIS CAMERA",
+    "WRONG CAMERA",
+    "ELSEWHERE IN THE ROOM"
+  ],
+  "walkBy": [
+    "JUST PASSING THROUGH.",
+    "A ROUTINE PATROL.",
+    "STROLLING. CASUALLY.",
+    "ON ITS WAY SOMEWHERE ELSE.",
+    "NOT A CARE IN THE WORLD."
+  ],
+  "denial": [
+    "CIRCUMSTANTIAL.",
+    "THAT PROVES NOTHING.",
+    "NO COMMENT.",
+    "IT'S NOT WHAT IT LOOKS LIKE.",
+    "YOU SAW NOTHING."
   ],
   "noticed": [
     "THEN IT SAW THE CAMERA.",
@@ -141,13 +159,6 @@
     "AGAIN, CLOSER.",
     "HOLD IT THERE."
   ],
-  "reaction": [
-    "IT SEES US.",
-    "DON'T MOVE.",
-    "IT'S LOOKING.",
-    "FROZEN.",
-    "A STARE DOWN."
-  ],
   "alibiOpen": [
     "CAM {cam}. ALL QUIET.",
     "CAM {cam}. NOTHING TO REPORT.",
@@ -169,7 +180,9 @@
   "meanwhile": [
     "MEANWHILE, BY THE {spot}: {remains}.",
     "ACROSS THE ROOM: {remains} BY THE {spot}.",
-    "THE {spot}, SAME MINUTE: {remains}."
+    "THE {spot}, SAME MINUTE: {remains}.",
+    "WHAT CAM 1 SAW: {remains} BY THE {spot}.",
+    "BY THE {spot}, AT THAT VERY MOMENT: {remains}."
   ],
   "tells": {
     "wobble": "IT WAS ALREADY WOBBLING.",

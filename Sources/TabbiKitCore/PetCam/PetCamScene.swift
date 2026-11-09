@@ -286,7 +286,7 @@ public enum PetCamScene {
         }
         if let pose = shot.pet, let place = shot.place {
             let placement = Self.placement(for: place, pose: pose)
-            let canvas = PetCamPetArt.canvas(pose, profile: pet, facingRight: placement.facingRight)
+            let canvas = PetCamPetArt.canvas(pose, profile: pet, facingRight: placement.facingRight, blinking: shot.blink)
             let at = PetCamLayout.Placement(x: placement.x + shot.petOffset.x, y: placement.y + shot.petOffset.y,
                                             facingRight: placement.facingRight)
             let feet = at.y + (canvas.opaqueBounds?.maxY ?? PetComposer.frameSize - 1)

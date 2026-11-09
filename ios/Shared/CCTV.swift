@@ -66,6 +66,8 @@ struct Scanlines: View {
 struct RecLabel: View {
     var text: String = "REC"
     var isRecording = true
+    /// The dot's blink: a held tape still dims it every other half second.
+    var lit = true
     /// The dot grows with the word at larger text sizes.
     @ScaledMetric(relativeTo: .caption) var dot: CGFloat = 9
 
@@ -73,6 +75,7 @@ struct RecLabel: View {
         HStack(spacing: 6) {
             Circle()
                 .fill(isRecording ? CCTV.rec : CCTV.standby)
+                .opacity(lit ? 1 : 0.2)
                 .frame(width: dot, height: dot)
                 .shadow(color: (isRecording ? CCTV.rec : .clear).opacity(0.7), radius: 3)
             Text(verbatim: text)

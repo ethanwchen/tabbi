@@ -445,6 +445,11 @@ final class PetCamReadTests: XCTestCase {
             shapes[tape.outcome, default: []].append(tape.shape)
             XCTAssertTrue((5...7).contains(tape.stills.count), "\(tape.shape) has \(tape.stills.count) stills")
             XCTAssertTrue(PetCamTape.durationRange.contains(tape.duration), "\(tape.shape) runs \(tape.duration) s")
+            // A tape ends on a beat: no still holds past 2.4 s, a catch runs
+            // 10 to 12 s and a miss about 10.
+            XCTAssertTrue(tape.stills.allSatisfy { $0.duration <= 2.4 }, "\(tape.shape): \(tape.stills.map(\.duration))")
+            XCTAssertTrue((record.outcome == .caught ? 10.0...12.0 : 9.6...10.4).contains(tape.duration),
+                          "\(record.outcome) \(tape.shape) runs \(tape.duration) s")
             // Timestamps run forward, except where the tape rewinds.
             for (a, b) in zip(tape.stills, tape.stills.dropFirst()) where b.stamp != .rewind {
                 XCTAssertLessThanOrEqual(a.time, b.time)
@@ -505,7 +510,13 @@ final class PetCamReadTests: XCTestCase {
                     XCTAssertEqual(last.shot.pet, .caughtMidAct(kind), "frozen mid-air or with its mouth full")
                 }
             } else {
-                XCTAssertTrue(tape.stills.contains { $0.shot.pet == .lieDown }, "the alibi: lying down, staring")
+                if tape.shape == .closer {
+                    // The walk-by: past the camera wearing the evidence, then the denial.
+                    XCTAssertTrue(tape.stills.contains { $0.shot.pet == .walkBy(kind) }, "strolls past wearing the \(kind)")
+                    XCTAssertTrue(tape.stills.contains { $0.shot.pet == .guilty(kind) && $0.punchIn }, "and denies it")
+                } else {
+                    XCTAssertTrue(tape.stills.contains { $0.shot.pet == .lieDown }, "the alibi: lying down, staring")
+                }
                 XCTAssertTrue(tape.stills.contains { $0.shot.debrisFrom == record.strike && $0.caption.hasPrefix("[") },
                               "the strike is only heard")
                 XCTAssertEqual(acts, [], "and never seen")

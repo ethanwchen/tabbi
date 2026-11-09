@@ -10,6 +10,7 @@ final class PetCamArtTests: XCTestCase {
         .sneak(step: 3), .swipe, .lensStare, .lieDown, .stroll(step: 0), .stroll(step: 1),
     ] + PetCamObjectKind.allCases.map(PetCamPose.act) + [.caughtMidAct(.mug), .caughtMidAct(.donut)]
         + PetCamObjectKind.allCases.map(PetCamPose.guilty) + [.mugshot(.fishbowl, look: 2, tier: 3)]
+        + PetCamObjectKind.allCases.map(PetCamPose.walkBy)
 
     /// Poses whose eyes are shut or squeezed against a splash, a chomp or
     /// soil: they show no eye pixels to count, so the outfit check reads the

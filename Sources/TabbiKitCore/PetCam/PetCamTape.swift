@@ -29,6 +29,9 @@ public enum PetCamPose: Hashable, Sendable {
     case lieDown
     /// An ordinary walk into frame.
     case stroll(step: Int)
+    /// Strolling past a camera, wearing the evidence of what it went for:
+    /// the walk-by miss.
+    case walkBy(PetCamObjectKind)
 }
 
 /// Where the pet is in a shot, as a place in the room rather than pixels;
@@ -119,6 +122,8 @@ public struct PetCamShot: Hashable, Sendable {
     /// into the frame.
     public var debrisStep: Int
     public var petOffset: Offset
+    /// The pet's eyes shut for a moment: the one blink a held still gets.
+    public var blink = false
 
     public init(framing: Framing, objects: [PetCamSpot: PetCamObject], states: [PetCamSpot: PetCamObjectState] = [:],
                 wrecks: [PetCamWreck] = [], pet: PetCamPose? = nil, place: PetCamPlace? = nil,
@@ -335,9 +340,10 @@ public struct PetCamTape: Hashable, Sendable {
             // Eye contact wearing the evidence, then the freeze on the face
             // the wall files, with its rap-sheet props.
             let lens = Still(shot: Self.with(after, pet: .guilty(kind), at: .strike(strike)), time: plan.turn,
-                             duration: 2.0, caption: captions.turn, detail: captions.callback, punchIn: true)
+                             duration: 1.4, caption: captions.turn, detail: captions.callback, punchIn: true)
             var freeze = Still(shot: Self.with(after, pet: Self.mugshotPose(record, kind), at: .strike(strike)),
-                               time: plan.turn, duration: 3.2, caption: captions.charge ?? captions.closer,
+                               time: min(plan.turn.addingTimeInterval(1), record.endedAt), duration: 2.2,
+                               caption: captions.charge ?? captions.closer,
                                detail: captions.wanted ?? captions.priors, stamp: .caught, cue: .stamp)
             switch shape {
             case .straight:
@@ -348,19 +354,27 @@ public struct PetCamTape: Hashable, Sendable {
                 // The wreck alone, as the hidden camera found it.
                 let scene = Still(shot: exhibit, time: plan.turn, duration: 2.2,
                                   caption: captions.aftermath ?? captions.turn, detail: captions.callback ?? captions.age)
-                freeze.duration = 3.4
                 freeze.punchIn = true
-                stills = [scene, rewind, sneak, act] + (falls ? [fall] : []) + [freeze]
+                // The wind-up, so the rewound part has its build before the act.
+                var cocked = windUp
+                cocked.caption = captions.windUp ?? captions.watch
+                stills = [scene, rewind, sneak, cocked, act] + (falls ? [fall] : []) + [freeze]
             case .closer:
                 // The freeze lands on the act itself.
                 var midAct = Self.with(close, pet: .caughtMidAct(kind), at: .strike(strike),
                                        states: [strike: .struck])
                 midAct.framing = .closeUp(.strike(strike))
                 freeze.shot = midAct
-                freeze.duration = 3.6
                 var quick = act
                 quick.duration = 2.0
-                stills = [opener, sneak, windUp, quick, freeze]
+                // No hold runs past 2.4 s, so the build-up carries the length.
+                var opening = opener
+                opening.duration = 2.0
+                var creep = sneak
+                creep.duration = 2.0
+                var cocked = windUp
+                cocked.duration = 1.8
+                stills = [opening, creep, cocked, quick, freeze]
             }
             return
         }
@@ -371,7 +385,7 @@ public struct PetCamTape: Hashable, Sendable {
         var heard = close
         heard.debrisFrom = strike
         let crash = Still(shot: heard, time: plan.strike, duration: 0.6, caption: captions.strike,
-                          detail: PetCamCaptions.offCamera, shake: true, cue: .offCamera(kind))
+                          detail: captions.offCamera ?? PetCamCaptions.offCamera, shake: true, cue: .offCamera(kind))
         var skid = crash
         skid.shot.debrisStep = 1
         skid.duration = 1.0
@@ -381,36 +395,40 @@ public struct PetCamTape: Hashable, Sendable {
         var later = close
         later.states = [strike: .gone]
         later.wrecks = wrecked.wrecks
+        // A callback that names a spot rides only on a still filmed there or
+        // on CAM 1, so THE COUNTER AGAIN never sits under the shelf camera.
+        let named = captions.callback.flatMap(PetCamCaptions.spotNamed(in:))
+        let callbackHere = named == nil || named == camera ? captions.callback : nil
+        let callbackOnCAM1 = named != nil && named != camera ? captions.callback : nil
         let walkIn = Still(shot: Self.with(later, pet: .stroll(step: 1), at: .enter(camera)), time: plan.turn,
-                           duration: 2.0, caption: captions.turn, detail: captions.callback)
-        let alibi = Still(shot: Self.with(later, pet: .lieDown, at: .lounge(camera)), time: plan.alibi, duration: 3.0,
+                           duration: 2.4, caption: captions.turn, detail: callbackHere)
+        let alibi = Still(shot: Self.with(later, pet: .lieDown, at: .lounge(camera)), time: plan.alibi, duration: 2.4,
                           caption: captions.closer, detail: captions.age)
         // The pet lying in front of the other camera is in this picture only
         // when all of it is; never a cut-off cat at the edge.
         let witness = PetCamScene.showsWholePet(at: .lounge(camera), pose: .lieDown, in: exhibit)
         let reveal = Still(shot: witness ? Self.with(exhibit, pet: .lieDown, at: .lounge(camera)) : exhibit,
-                           time: plan.alibi, duration: 2.6, caption: captions.reveal ?? captions.closer,
-                           detail: captions.tell)
+                           time: plan.alibi, duration: 2.2, caption: captions.reveal ?? captions.closer,
+                           detail: captions.tell ?? callbackOnCAM1)
         var opening = opener
         opening.duration = 1.4
         switch shape {
         case .straight:
             stills = [opening, crash, skid, walkIn, alibi, reveal]
         case .closer:
-            var quickWalk = walkIn
-            quickWalk.duration = 1.8
-            let look = Still(shot: Self.with(later, pet: .lensStare, at: .enter(camera)), time: plan.turn,
-                             duration: 1.4, caption: captions.reaction ?? captions.turn, punchIn: true)
-            var lieDown = alibi
-            lieDown.duration = 2.6
-            var ending = reveal
-            ending.duration = 2.4
-            stills = [opening, crash, skid, quickWalk, look, lieDown, ending]
+            // The walk-by: the suspect strolls right past the hidden camera
+            // wearing the evidence, stops, stares into it and denies it all;
+            // then CAM 1 shows where it struck.
+            let walkBy = Still(shot: Self.with(later, pet: .walkBy(kind), at: .enter(camera)), time: plan.turn,
+                               duration: 2.4, caption: captions.walkBy ?? captions.turn, detail: callbackHere)
+            let denial = Still(shot: Self.with(later, pet: .guilty(kind), at: .enter(camera)),
+                               time: min(plan.turn.addingTimeInterval(2), record.endedAt), duration: 2.4,
+                               caption: captions.denial ?? captions.closer, punchIn: true)
+            stills = [opening, crash, skid, walkBy, denial, reveal]
         case .coldOpen:
             let open = Still(shot: alibi.shot, time: plan.alibi, duration: 2.4,
                              caption: captions.alibi ?? captions.closer, detail: captions.closer)
             var ending = reveal
-            ending.duration = 3.0
             ending.detail = captions.tell ?? captions.age
             stills = [open, rewind, crash, skid, walkIn, ending]
         }
@@ -479,12 +497,14 @@ public struct PetCamTape: Hashable, Sendable {
         } else {
             guard var crash = first({ $0.shot.debrisFrom != nil && $0.shot.debrisStep == 0 }),
                   var skid = first({ $0.shot.debrisFrom != nil && $0.shot.debrisStep == 1 }),
-                  var alibi = first({ $0.shot.pet == .lieDown && $0.shot.framing == .spot(record.camera) }),
+                  var alibi = first({ ($0.shot.pet == .lieDown || $0.shot.pet == .guilty(kind))
+                      && $0.shot.framing == .spot(record.camera) }),
                   var evidence = tape.stills.last else { return nil }
             crash.duration = 0.6
             skid.duration = 0.8
             alibi.duration = 1.6
-            alibi.caption = captions.closer
+            // The lie-down says the alibi; the walk-by keeps its denial.
+            if alibi.shot.pet == .lieDown { alibi.caption = captions.closer }
             alibi.detail = nil
             evidence.duration = 1.6
             cut += [crash, skid, alibi, evidence]

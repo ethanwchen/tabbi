@@ -196,28 +196,33 @@ final class PetCamFlowTests: XCTestCase {
 
     /// Waits for the tape, takes a screenshot of each still and records the
     /// whole tape on video; optionally exports and shares it at the end.
+    /// It reads the tape's timing once and then only sleeps, because every
+    /// query of the app while it plays can stall it, and the recording must
+    /// run at the speed the code sets.
     private func watchTape(named name: String, first: Int, share: Bool = false) {
         let progress = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH 'Still '")).firstMatch
         XCTAssertTrue(progress.waitForExistence(timeout: 30), "the \(name) tape starts by itself")
-        let total = Int(progress.label.split(separator: " ").last ?? "5") ?? 5
-        for index in 1...total {
-            // A still that already went by (while the test looked away) is skipped.
-            let reached = stillShown(progress)
-            if reached > index { continue }
-            XCTAssertGreaterThanOrEqual(waitForStill(progress, index), index, "still \(index) of the \(name) tape")
-            // Past the cut's jolt, then the screenshot at once: every query
-            // of the app costs a fraction of a second, and a still can be
-            // on screen for under two. One too short to catch (the object
-            // on its way down) is skipped rather than filed under the next
-            // one's picture.
-            usleep(150_000)
-            if stillShown(progress) != index { continue }
-            checkpoint(String(format: "%02d-tape-\(name)-still-%d", first + index - 1, index))
-            captions.append(app.descendants(matching: .any)["tape.caption"].firstMatch.label)
-            // The picture's size on the tape's first still captured (a
-            // stamp's tilted corners would widen the element's frame).
-            let picture = app.descendants(matching: .any)["tape.picture"].firstMatch
-            if pictures[name] == nil, picture.exists { pictures[name] = picture.frame.size }
+        let began = Date()
+        let hook = app.staticTexts["debug.tape"].label.components(separatedBy: "|")
+        let durations = (hook.first ?? "").split(separator: ",").compactMap { Double($0) }
+        XCTAssertFalse(durations.isEmpty, "the tape's timing: \(hook)")
+        captions += hook.dropFirst()
+        // The picture's size, on the first still (a stamp's tilted corners
+        // would widen the element's frame).
+        let picture = app.descendants(matching: .any)["tape.picture"].firstMatch
+        if pictures[name] == nil, picture.exists { pictures[name] = picture.frame.size }
+        // The player waits 0.6 s, then shows each still for its time with
+        // 0.09 s of static at each cut. A screenshot lands about a quarter
+        // second after it is asked for, so a still under 1.2 s is skipped.
+        var start = 0.6
+        for (index, duration) in durations.enumerated() {
+            if index > 0 { start += 0.09 }
+            if duration >= 1.2 {
+                let wait = start + 0.15 - Date().timeIntervalSince(began)
+                if wait > 0 { usleep(useconds_t(wait * 1_000_000)) }
+                checkpoint(String(format: "%02d-tape-\(name)-still-%d", first + index, index + 1))
+            }
+            start += duration
         }
         if share {
             app.buttons["Share"].tap()
@@ -233,29 +238,15 @@ final class PetCamFlowTests: XCTestCase {
             sleep(1)
             app.buttons["Done"].firstMatch.tap()
         } else {
-            // It ends on its own and goes back to the room.
-            XCTAssertTrue(progress.waitForNonExistence(timeout: 25), "the \(name) tape ends by itself")
+            // It ends on its own, 0.3 s after its last still, and goes back
+            // to the room.
+            let left = start + 0.3 - Date().timeIntervalSince(began)
+            if left > 0 { usleep(useconds_t(left * 1_000_000)) }
+            XCTAssertTrue(progress.waitForNonExistence(timeout: 5), "the \(name) tape ends by itself")
             sleep(1)
             checkpoint("video-stop")
         }
         sleep(1)
-    }
-
-    /// Which still the tape's progress says it shows (1 for the first).
-    private func stillShown(_ progress: XCUIElement) -> Int {
-        guard progress.exists else { return 0 }
-        return Int(progress.label.split(separator: " ").dropFirst().first ?? "0") ?? 0
-    }
-
-    /// Polls the progress until it reaches still `index` (or one after it).
-    private func waitForStill(_ progress: XCUIElement, _ index: Int, timeout: TimeInterval = 10) -> Int {
-        let deadline = Date().addingTimeInterval(timeout)
-        var shown = stillShown(progress)
-        while shown < index, Date() < deadline {
-            usleep(100_000)
-            shown = stillShown(progress)
-        }
-        return shown
     }
 
     private func visitLockScreenAndIsland() {

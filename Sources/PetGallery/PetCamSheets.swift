@@ -30,6 +30,8 @@ enum PetCamSheets {
         ("lens stare", .lensStare, false),
         ("lie down", .lieDown, false),
         ("stroll", .stroll(step: 1), false),
+        ("walk-by fish", .walkBy(.fishbowl), false),
+        ("walk-by mug", .walkBy(.mug), false),
     ]
 
     static func write(to folder: URL) throws {

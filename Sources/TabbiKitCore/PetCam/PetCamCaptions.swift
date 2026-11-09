@@ -42,12 +42,18 @@ public struct PetCamCaptionSet: Codable, Hashable, Sendable {
     /// On a catch with the WANTED object, how long it was wanted
     /// ("WANTED FOR 3 DAYS.").
     public var wanted: String?
+    /// A miss's line under the off-camera sound ("SOMEWHERE ELSE").
+    public var offCamera: String?
+    /// The walk-by miss: the suspect strolls past the camera wearing the
+    /// evidence ("JUST PASSING THROUGH."), then stops and denies it
+    /// ("CIRCUMSTANTIAL.").
+    public var walkBy, denial: String?
 
     public init(opener: String, watch: String, strike: String, age: String? = nil, callback: String? = nil,
                 turn: String, closer: String, charge: String? = nil, publicCharge: String? = nil, priors: String? = nil,
                 aftermath: String? = nil, rewind: String? = nil, enhance: String? = nil, reaction: String? = nil,
                 alibi: String? = nil, reveal: String? = nil, tell: String? = nil, windUp: String? = nil,
-                wanted: String? = nil) {
+                wanted: String? = nil, offCamera: String? = nil, walkBy: String? = nil, denial: String? = nil) {
         self.opener = opener
         self.watch = watch
         self.strike = strike
@@ -67,6 +73,9 @@ public struct PetCamCaptionSet: Codable, Hashable, Sendable {
         self.tell = tell
         self.windUp = windUp
         self.wanted = wanted
+        self.offCamera = offCamera
+        self.walkBy = walkBy
+        self.denial = denial
     }
 }
 
@@ -87,7 +96,7 @@ struct PetCamCaptionGrammar: Decodable, Sendable {
     let objects: [String: ObjectWords]
     let spots: [String: String]
     let opener, openerDays, motion, quiet, act, eaten, offCamera, noticed, innocent, returns: [String]
-    let aftermath, rewind, enhance, reaction, alibiOpen, windUp, meanwhile: [String]
+    let aftermath, rewind, enhance, alibiOpen, windUp, meanwhile, walkBy, denial: [String]
     let caught, charge, obstruction, firstOffense, offense, repeatOffender, frozen, noTape, ownerAway, atLarge: String
     let stamps: [String]
     let wantedDays, wantedYesterday, wantedSince: String
@@ -156,6 +165,12 @@ public enum PetCamCaptions {
 
     /// "OFF CAMERA", under the sound.
     public static var offCamera: String { grammar.offCamera.first ?? "" }
+
+    /// The spot a line names ("THE COUNTER AGAIN"), if it names one, so a
+    /// callback rides only on a still filmed there or on CAM 1.
+    public static func spotNamed(in line: String) -> PetCamSpot? {
+        PetCamSpot.allCases.first { line.contains("THE " + grammar.name($0)) }
+    }
 
     /// The stamp over a catch's last still.
     public static var caughtStamp: String { grammar.caught }
@@ -410,7 +425,7 @@ public enum PetCamCaptions {
 
     /// One line from `choices`, picked by the seed's `stream` roll, leaving
     /// out any line already said in `recent` (the same beat of the last
-    /// three tapes) while another is left.
+    /// three tapes that used it) while another is left.
     static func one(_ choices: [String], seed: UInt64, stream: String, _ values: [String: String] = [:],
                     recent: [String?] = []) -> String {
         guard !choices.isEmpty else { return "" }
@@ -421,7 +436,7 @@ public enum PetCamCaptions {
         return fill(pool[Int(roll.next() % UInt64(pool.count))], values)
     }
 
-    /// How many earlier tapes a line stays out of its beat for.
+    /// How many earlier tapes that use a beat a line stays out of it for.
     static let freshness = 3
 
     /// Every caption of a block that ran to its end.
@@ -430,31 +445,40 @@ public enum PetCamCaptions {
                      offense: Int, at date: Date, calendar: Calendar) -> PetCamCaptionSet {
         let seed = setup.seed
         let words = grammar.words(struck.kind)
-        // The last few tapes, newest first: no line repeats in its beat.
+        // The last few tapes, newest first, for the age line's own rule.
         var recent: [PetCamCaptionSet] = []
         for record in history.reversed() where record.outcome.hasTape && record.endedAt <= date {
             recent.append(record.captions)
             if recent.count == freshness { break }
         }
+        // No line comes back to its beat until three more tapes that use the
+        // beat have played: every tape opens and rewinds, but only a miss
+        // has an alibi, so a miss's lines count misses only.
         func line(_ choices: [String], _ stream: String, _ beat: (PetCamCaptionSet) -> String?,
-                  _ values: [String: String] = [:]) -> String {
-            one(choices, seed: seed, stream: stream, values, recent: recent.map(beat))
+                  _ values: [String: String] = [:], everyTape: Bool = false) -> String {
+            var said: [String] = []
+            for record in history.reversed() where record.outcome.hasTape && record.endedAt <= date
+                && (everyTape || record.outcome == outcome) {
+                guard let text = beat(record.captions) else { continue }
+                said.append(text)
+                if said.count == freshness { break }
+            }
+            return one(choices, seed: seed, stream: stream, values, recent: said)
         }
         // Days since the first tape, counting today: day 1 is the first.
         let days = (history.first(where: \.outcome.hasTape)).map {
             calendarDays(from: $0.endedAt, to: date, calendar: calendar) + 1
         } ?? 1
         let opener = days >= 2
-            ? line(grammar.openerDays, "opener", \.opener, ["days": "\(days)"])
-            : line(grammar.opener, "opener", \.opener)
+            ? line(grammar.openerDays, "opener", \.opener, ["days": "\(days)"], everyTape: true)
+            : line(grammar.opener, "opener", \.opener, everyTape: true)
         let cam = "\(camera.cameraNumber)"
         let lasted = age(of: struck, at: date, calendar: calendar)
         let age = isLastedForm(lasted) && recent.contains(where: { isLastedForm($0.age) }) ? nil : lasted
         let shapeLines = (
             aftermath: line(grammar.aftermath, "aftermath", \.aftermath, ["cam": cam]),
-            rewind: line(grammar.rewind, "rewind", \.rewind),
+            rewind: line(grammar.rewind, "rewind", \.rewind, everyTape: true),
             enhance: line(grammar.enhance, "enhance", \.enhance),
-            reaction: line(grammar.reaction, "reaction", \.reaction),
             alibi: line(grammar.alibiOpen, "alibi", \.alibi, ["cam": cam]),
             reveal: line(grammar.meanwhile, "reveal", \.reveal, ["spot": grammar.name(strike), "remains": words.remains]),
             tell: setup.tell.flatMap { $0.spot == strike ? grammar.tells[$0.exception.rawValue] : nil }
@@ -491,8 +515,10 @@ public enum PetCamCaptions {
             age: age, callback: callback,
             turn: line(grammar.returns, "turn", \.turn),
             closer: line(grammar.innocent, "closer", \.closer),
-            rewind: shapeLines.rewind, enhance: shapeLines.enhance, reaction: shapeLines.reaction,
-            alibi: shapeLines.alibi, reveal: shapeLines.reveal, tell: shapeLines.tell
+            rewind: shapeLines.rewind, enhance: shapeLines.enhance,
+            alibi: shapeLines.alibi, reveal: shapeLines.reveal, tell: shapeLines.tell,
+            offCamera: line(grammar.offCamera, "offCamera", \.offCamera),
+            walkBy: line(grammar.walkBy, "walkBy", \.walkBy), denial: line(grammar.denial, "denial", \.denial)
         )
     }
 

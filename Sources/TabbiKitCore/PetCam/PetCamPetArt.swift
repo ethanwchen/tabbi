@@ -56,9 +56,15 @@ public enum PetCamPetArt {
         PetComposer.Extras.EyeOverlays(left: left, right: right)
     }
 
-    /// The pet in `pose`, facing left, or mirrored to face right.
-    public static func canvas(_ pose: PetCamPose, profile: PetProfile, facingRight: Bool = false) -> PetCanvas {
+    /// The pet in `pose`, facing left, or mirrored to face right; with
+    /// `blinking`, its eyes shut for the one blink a held still gets.
+    public static func canvas(_ pose: PetCamPose, profile: PetProfile, facingRight: Bool = false,
+                              blinking: Bool = false) -> PetCanvas {
         var (pet, stance, extras) = parts(pose)
+        if blinking {
+            pet.eyes = .closed
+            extras.eyes = nil
+        }
         func compose(_ pet: PetPose) -> PetCanvas {
             PetComposer.compose(profile.breed, pose: pet, outfit: profile.outfit, accessories: profile.accessories,
                                 bond: profile.bondLook, stance: stance, extras: extras).picture
@@ -182,6 +188,11 @@ public enum PetCamPetArt {
             return (PetPose(), .curled(breath: 0), PetComposer.Extras(eyes: lens))
         case .stroll(let step):
             return (PetPose(), .walking(step: step), PetComposer.Extras())
+        case .walkBy(let kind):
+            // Mid-stride and unbothered, with the fish still on its head.
+            var pose = PetPose()
+            if kind == .donut || kind == .mug { pose.mouth = .closed }
+            return (pose, .walking(step: 1), PetComposer.Extras(marks: guiltyMarks(kind)))
         }
     }
 }
