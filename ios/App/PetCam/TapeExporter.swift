@@ -187,10 +187,25 @@ enum TapeExporter {
         let samples = sound.map { Int16(($0 * Float(Int16.max)).rounded()) }
         var written = 0
         let chunk = 4096
+        /// Waits for `track` to take more, or throws the moment the writer
+        /// fails or stalls for ten seconds, so an export never waits forever
+        /// (the player then says the video could not be made).
+        func ready(_ track: AVAssetWriterInput) async throws {
+            let since = Date()
+            while !track.isReadyForMoreMediaData {
+                if writer.status == .failed || writer.status == .cancelled { throw writer.error ?? ExportError.writer }
+                if Date().timeIntervalSince(since) > 10 {
+                    writer.cancelWriting()
+                    throw ExportError.writer
+                }
+                try await Task.sleep(for: .milliseconds(5))
+            }
+        }
+
         func appendSound(through seconds: Double) async throws {
             let until = seconds.isFinite ? min(samples.count, Int(seconds * TapeSound.sampleRate)) : samples.count
             while written < until {
-                while !audio.isReadyForMoreMediaData { try await Task.sleep(for: .milliseconds(5)) }
+                try await ready(audio)
                 let count = min(chunk, samples.count - written)
                 let bytes = count * 2
                 var block: CMBlockBuffer?
@@ -216,7 +231,7 @@ enum TapeExporter {
         var frame: Int64 = 0
         func append(_ image: CGImage) async throws {
             try await appendSound(through: Double(frame) / Double(framesPerSecond) + 0.5)
-            while !input.isReadyForMoreMediaData { try await Task.sleep(for: .milliseconds(5)) }
+            try await ready(input)
             guard let pool = adaptor.pixelBufferPool else { throw ExportError.writer }
             var buffer: CVPixelBuffer?
             CVPixelBufferPoolCreatePixelBuffer(nil, pool, &buffer)
