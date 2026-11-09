@@ -116,10 +116,10 @@ struct HomeScreen: View {
                             VStack(spacing: 0) {
                                 LinearGradient(colors: [CCTV.screen.opacity(0), CCTV.screen], startPoint: .top,
                                                endPoint: .bottom)
-                                    .frame(height: 18)
+                                    .frame(height: 40)
                                 CCTV.screen
                             }
-                            .padding(.top, -18)
+                            .padding(.top, -40)
                             .ignoresSafeArea()
                         }
                 }
@@ -403,6 +403,9 @@ struct HomeScreen: View {
         }
         let control: String? = if let pick = cam.pick {
             "Camera hidden at the \(PetCamCaptions.name(of: pick).lowercased())."
+        } else if cam.game.log.blocks.isEmpty {
+            // The very first block states the premise, not the control.
+            "While you're out, your pet wrecks something. Hide the camera where it will strike."
         } else if cam.game.log.blocks.count < 2 {
             "Tap another spot to hide the camera there."
         } else {
@@ -453,16 +456,9 @@ private struct SpotTargets: View {
                 Button {
                     cam.pick = cam.pick == spot ? nil : spot
                 } label: {
-                    Viewfinder(label: "CAM \(spot.cameraNumber)", armed: isCamera, labelBelow: frame.minY < 64)
+                    Viewfinder(label: "CAM \(spot.cameraNumber)", armed: isCamera, labelBelow: frame.minY < 64,
+                               wanted: cam.shownSetup.wanted == spot)
                         .frame(width: frame.width, height: frame.height)
-                        .overlay(alignment: .top) {
-                            // The stake: the object the wall is missing longest.
-                            if cam.shownSetup.wanted == spot {
-                                WantedTag()
-                                    .padding(.top, unit * 2)
-                                    .accessibilityHidden(true)
-                            }
-                        }
                         .contentShape(.rect)
                 }
                 .buttonStyle(.plain)
@@ -504,10 +500,17 @@ private struct Viewfinder: View {
     /// Near the top of the picture the label goes under the brackets, clear
     /// of the burn-in.
     var labelBelow = false
+    /// The stake, tagged at the brackets' other corner, outside them, so it
+    /// never sits on the object.
+    var wanted = false
 
     var body: some View {
         Corners()
             .stroke(CCTV.burnIn, style: StrokeStyle(lineWidth: 2, lineCap: .square))
+            // Only the brackets dim on a spot that is not armed; every label
+            // keeps the same dark chip, so it reads on any wall.
+            .opacity(armed ? 1 : 0.35)
+            .shadow(color: .black.opacity(0.6), radius: 0, x: 1, y: 1)
             .overlay(alignment: labelBelow ? .bottomLeading : .topLeading) {
                 Text(verbatim: label)
                     .font(.system(size: 10, weight: .bold, design: .monospaced))
@@ -515,12 +518,18 @@ private struct Viewfinder: View {
                     .padding(.horizontal, 3)
                     .background(CCTV.screen.opacity(0.65))
                     .fixedSize()
+                    .opacity(armed ? 1 : 0.6)
                     // Fully outside the brackets (the label is about
                     // 13 points tall), with air between it and the stroke.
                     .offset(y: labelBelow ? 17 : -17)
             }
-            .opacity(armed ? 1 : 0.35)
-            .shadow(color: .black.opacity(0.6), radius: 0, x: 1, y: 1)
+            .overlay(alignment: labelBelow ? .bottomTrailing : .topTrailing) {
+                if wanted {
+                    WantedTag()
+                        .offset(y: labelBelow ? 17 : -17)
+                        .accessibilityHidden(true)
+                }
+            }
     }
 }
 

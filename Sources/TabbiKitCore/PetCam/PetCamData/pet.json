@@ -3,13 +3,13 @@
   "grids": {
     "eyesLookLeft": [
       ".OO.",
-      ".iE.",
-      ".EE."
+      ".iL.",
+      ".iL."
     ],
     "eyesLookRight": [
       ".OO.",
-      ".Ei.",
-      ".EE."
+      ".Li.",
+      ".Li."
     ],
     "eyesLookUp": [
       ".ii.",
