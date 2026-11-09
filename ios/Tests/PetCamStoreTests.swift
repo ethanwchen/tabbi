@@ -280,7 +280,7 @@ import TabbiKitCore
         }
         let mastered = Loudness.master(track)
         #expect(abs(Loudness.integrated(mastered) - -14) < 0.5, "\(Loudness.integrated(mastered)) LUFS")
-        #expect(mastered.map(abs).max() ?? 1 <= 0.8, "peaks stay under -1 dBFS with room for the encoder")
+        #expect(mastered.map(abs).max() ?? 1 <= 0.6, "samples stay under -4.4 dBFS, room for the encoder's overshoot")
         // The strike and the stamp stand at least 12 dB over the hiss bed.
         let hiss = Array(mastered[Int(1.5 * rate)..<Int(2.9 * rate)])
         #expect(Loudness.maximumMomentary(mastered) - Loudness.maximumMomentary(hiss) >= 12,

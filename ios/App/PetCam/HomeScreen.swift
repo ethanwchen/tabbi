@@ -631,7 +631,7 @@ private struct CameraTile: View {
     @ScaledMetric(relativeTo: .caption) private var dot: CGFloat = 9
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 34) {
             HStack(spacing: 6) {
                 TimelineView(.periodic(from: .now, by: 1)) { context in
                     let lit = reduceMotion || Int(context.date.timeIntervalSinceReferenceDate) % 2 == 0
@@ -644,14 +644,14 @@ private struct CameraTile: View {
                     .font(CCTV.font(.caption, weight: .bold))
                     .foregroundStyle(CCTV.burnIn.opacity(0.8))
             }
-            Spacer(minLength: 12)
             Text(verbatim: "CAM \(camera.cameraNumber), \(PetCamCaptions.name(of: camera))")
                 .font(CCTV.font(.footnote, weight: .semibold))
                 .foregroundStyle(CCTV.burnIn.opacity(0.45))
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(14)
-        .frame(maxWidth: 260, minHeight: 120, alignment: .topLeading)
+        .frame(maxWidth: 260, alignment: .topLeading)
+        .fixedSize(horizontal: false, vertical: true)
         .background(Color.black, in: .rect(cornerRadius: CCTV.feedRadius, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: CCTV.feedRadius, style: .continuous)
             .stroke(CCTV.burnIn.opacity(0.08)))

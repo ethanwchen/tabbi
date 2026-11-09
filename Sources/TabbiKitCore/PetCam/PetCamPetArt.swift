@@ -162,10 +162,11 @@ public enum PetCamPetArt {
         case .act(let kind):
             return act(kind)
         case .guilty(let kind):
-            // Eye contact, wearing the evidence: the face the wall files.
+            // Eye contact, wearing the evidence, eyes wide: caught. The
+            // freeze that follows settles into the case file's expression.
             var pose = PetPose()
             if kind == .donut || kind == .mug { pose.mouth = .closed }
-            return (pose, .sitting, PetComposer.Extras(eyes: lens, marks: guiltyMarks(kind)))
+            return (pose, .sitting, PetComposer.Extras(eyes: wild, marks: guiltyMarks(kind)))
         case .mugshot(let kind, let look, let tier):
             return mugshotParts(look, evidence: kind, tier: tier)
         case .caughtMidAct(let kind):

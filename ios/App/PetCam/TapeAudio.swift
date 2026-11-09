@@ -158,7 +158,8 @@ enum TapeSound {
 /// K-weighting (a high shelf and a high pass), 400 ms blocks every 100 ms,
 /// an absolute gate at -70 LUFS and a relative gate 10 LU under the mean.
 /// The share clip is mastered with it to -14 LUFS, the level the feeds play
-/// at, with its peaks kept under -1 dBFS.
+/// at, with its samples held under -4.4 dBFS so the AAC encoder's
+/// overshoot still leaves the true peak under -1 dBTP.
 enum Loudness {
     /// Integrated loudness of `samples` in LUFS (-70 for silence).
     static func integrated(_ samples: [Float], rate: Double = TapeSound.sampleRate) -> Double {
@@ -223,20 +224,23 @@ enum Loudness {
         return y
     }
 
-    /// `samples` brought to `target` LUFS with no sample over `ceiling`
-    /// (a look-ahead limiter catches the strikes), a few passes so the
-    /// limiting does not leave it short.
-    static func master(_ samples: [Float], target: Double = -14, ceiling: Float = 0.8,
+    /// `samples` brought to `target` LUFS with no sample over `ceiling`: a
+    /// gain, then a soft saturation that rounds the strikes' peaks into the
+    /// ceiling (the quiet hiss passes through untouched), repeated until the
+    /// loudness settles. Saturating rather than only limiting is what lets
+    /// short, spiky hits reach the level without lifting the hiss with them.
+    static func master(_ samples: [Float], target: Double = -14, ceiling: Float = 0.6,
                        rate: Double = TapeSound.sampleRate) -> [Float] {
+        var gain: Float = 1
         var out = samples
-        for _ in 0..<12 {
+        for _ in 0..<16 {
+            out = samples.map { ceiling * tanh($0 * gain / ceiling) }
             let measured = integrated(out, rate: rate)
             guard measured > -69 else { return out }
-            let gain = Float(pow(10, (target - measured) / 20))
-            out = limited(out.map { $0 * gain }, ceiling: ceiling, rate: rate)
-            if abs(integrated(out, rate: rate) - target) < 0.15 { break }
+            if abs(measured - target) < 0.1 { break }
+            gain *= Float(pow(10, (target - measured) / 20))
         }
-        return out
+        return limited(out, ceiling: ceiling, rate: rate)
     }
 
     private static func limited(_ samples: [Float], ceiling: Float, rate: Double) -> [Float] {

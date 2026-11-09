@@ -207,8 +207,10 @@ final class PetCamFlowTests: XCTestCase {
             if stillShown(progress) > index { continue }
             usleep(600_000)
             captions.append(app.descendants(matching: .any)["tape.caption"].firstMatch.label)
+            // The picture's size on the tape's first still captured (a
+            // stamp's tilted corners would widen the element's frame).
             let picture = app.descendants(matching: .any)["tape.picture"].firstMatch
-            if picture.exists { pictures[name] = picture.frame.size }
+            if pictures[name] == nil, picture.exists { pictures[name] = picture.frame.size }
             checkpoint(String(format: "%02d-tape-\(name)-still-%d", first + index - 1, index))
         }
         if share {

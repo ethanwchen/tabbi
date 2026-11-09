@@ -9,6 +9,7 @@ final class PetCamArtTests: XCTestCase {
         .stare(.counter), .stare(.shelf), .stare(.table), .sneak(step: 0), .sneak(step: 1), .sneak(step: 2),
         .sneak(step: 3), .swipe, .lensStare, .lieDown, .stroll(step: 0), .stroll(step: 1),
     ] + PetCamObjectKind.allCases.map(PetCamPose.act) + [.caughtMidAct(.mug), .caughtMidAct(.donut)]
+        + PetCamObjectKind.allCases.map(PetCamPose.guilty) + [.mugshot(.fishbowl, look: 2, tier: 3)]
 
     /// Poses whose eyes are shut or squeezed against a splash, a chomp or
     /// soil: they show no eye pixels to count, so the outfit check reads the
@@ -59,7 +60,9 @@ final class PetCamArtTests: XCTestCase {
             for look in 0..<PetCamPetArt.mugshotLooks {
                 let demo = PetProfile(name: "", breed: breed, outfit: .cozyHoodie, accessories: [.beanie])
                 let clean = PetCamPetArt.mugshot(look, profile: demo)
-                let guilty = PetCamObjectKind.allCases.map { PetCamPetArt.mugshot(look, profile: demo, evidence: $0) }
+                let guilty = PetCamObjectKind.allCases.map {
+                    PetCamPetArt.mugshot(look, profile: demo, evidence: $0, tier: look % 3 + 1)
+                }
                 XCTAssertEqual(Set(guilty).count, guilty.count, "\(breed) look \(look): one mark per object")
                 for (kind, picture) in zip(PetCamObjectKind.allCases, guilty) {
                     XCTAssertNotEqual(picture, clean, "\(breed) wears the \(kind)")
@@ -193,9 +196,10 @@ final class PetCamArtTests: XCTestCase {
     func testThePetStandsBehindWhatIsInFrontOfIt() {
         // On the counter the pet sits behind the object (its feet are
         // higher up the frame than the object's base), so wherever both
-        // draw, the object wins; on the shelf the pet is in front.
+        // draw, the object wins; at the side table the pet stands on the
+        // floor in front of it.
         let pet = PetProfile(name: "", breed: .britishShorthair, outfit: .cozyHoodie, accessories: [.beanie])
-        for (spot, objectInFront) in [(PetCamSpot.counter, true), (.shelf, false)] {
+        for (spot, objectInFront) in [(PetCamSpot.counter, true), (.table, false)] {
             let objects = [spot: PetCamObject(kind: .donut, placedAt: .distantPast, serial: 0)]
             let both = PetCamShot(framing: .wide, objects: objects, pet: .swipe, place: .strike(spot))
             var objectOnly = both

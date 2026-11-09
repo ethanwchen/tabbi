@@ -75,8 +75,17 @@ struct TapePlayer: View {
                     .padding(.top, 8)
                     .padding(.bottom, 8)
                     // A long caption scrolls under the pinned buttons, never
-                    // through them.
-                    .background(CCTV.screen.opacity(0.94).ignoresSafeArea())
+                    // through them, behind a short fade.
+                    .background {
+                        VStack(spacing: 0) {
+                            LinearGradient(colors: [CCTV.screen.opacity(0), CCTV.screen], startPoint: .top,
+                                           endPoint: .bottom)
+                                .frame(height: 18)
+                            CCTV.screen
+                        }
+                        .padding(.top, -18)
+                        .ignoresSafeArea()
+                    }
             }
         }
         .background(CCTV.screen.ignoresSafeArea())
@@ -401,7 +410,10 @@ struct TapeStillView: View {
             // shows suspect, evidence and verdict together.
             GeometryReader { geometry in
                 let center = PetCamScene.stampCenter(of: still.shot, pet: record.pet)
-                caughtStamp
+                // Never wider than the share of the picture the placement
+                // planned for, so CAUGHT AGAIN or HABITUAL never runs off the
+                // edge; longer words set smaller instead.
+                caughtStamp(maxWidth: geometry.size.width * PetCamScene.stampSize.width * 0.88)
                     .position(x: geometry.size.width * center.x, y: geometry.size.height * center.y)
             }
             .transition(.scale(scale: 1.6).combined(with: .opacity))
@@ -425,10 +437,13 @@ struct TapeStillView: View {
     /// The stamp escalates with the object's rap sheet: CAUGHT, CAUGHT
     /// AGAIN, HABITUAL. The case number sits on an opaque plate in heavy
     /// type, so the room never shows through it.
-    private var caughtStamp: some View {
+    private func caughtStamp(maxWidth: CGFloat) -> some View {
         VStack(spacing: 4) {
             Text(verbatim: record.outcome == .caught ? record.captions.closer : PetCamCaptions.caughtStamp)
                 .font(font(.largeTitle, 3.2, weight: .heavy))
+                .lineLimit(1)
+                .minimumScaleFactor(0.4)
+                .frame(maxWidth: maxWidth - unit * 2.7)
             if let caseNumber {
                 Text(verbatim: String(format: "CASE %03d", caseNumber))
                     .font(font(.headline, 1.3, weight: .black))
@@ -443,7 +458,6 @@ struct TapeStillView: View {
         .background(CCTV.screen.opacity(0.35), in: .rect(cornerRadius: unit / 2, style: .continuous))
         .rotationEffect(.degrees(-9))
         .shadow(color: .black.opacity(0.5), radius: 0, x: 2, y: 2)
-        .fixedSize()
     }
 
     /// What a still shows, in words, for VoiceOver.
