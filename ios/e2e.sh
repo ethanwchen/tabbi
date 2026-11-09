@@ -4,7 +4,9 @@
 # TABBI_E2E_TEST, such as PetCamFlowTests) and takes a screenshot with
 # `xcrun simctl io <device> screenshot --mask=black` at each of its
 # checkpoints (the black mask fills the Dynamic Island as a device shows it,
-# where the default leaves its inside transparent). A checkpoint named
+# where the default leaves its inside transparent), or files the picture a
+# test took itself and left beside the checkpoint (a tape still, which is
+# only up for a second or two). A checkpoint named
 # `video-start-<name>` starts `xcrun simctl io <device> recordVideo` into
 # <name>.mp4, and `video-stop` ends it.
 #

@@ -50,7 +50,7 @@ final class PetCamLargeTextTests: XCTestCase {
                   (Int(progress.label.split(separator: " ").dropFirst().first ?? "0") ?? 0) < index {
                 usleep(100_000)
             }
-            usleep(600_000)
+            usleep(150_000)
             // The caption sits whole above the pinned buttons while it plays.
             let caption = app.descendants(matching: .any)["tape.caption"]
             let done = app.buttons["Done"]
@@ -59,7 +59,7 @@ final class PetCamLargeTextTests: XCTestCase {
                 let top = share.exists ? min(share.frame.minY, done.frame.minY) : done.frame.minY
                 XCTAssertLessThanOrEqual(caption.frame.maxY, top, "still \(index)'s caption runs under the buttons")
             }
-            checkpoint("ax-04-tape-still-\(index)")
+            shoot("ax-04-tape-still-\(index)")
         }
         XCTAssertTrue(progress.waitForNonExistence(timeout: 25), "the tape ends by itself")
         sleep(1)
@@ -77,6 +77,15 @@ final class PetCamLargeTextTests: XCTestCase {
         sleep(1)
         checkpoint("ax-05-mugshot-wall")
         app.buttons["Done"].firstMatch.tap()
+    }
+
+    /// A screenshot taken here and now, for a tape still that is only up
+    /// for a second or two (see `PetCamFlowTests.shoot`).
+    private func shoot(_ step: String) {
+        guard let folder = ProcessInfo.processInfo.environment["TABBI_E2E_DIR"], !folder.isEmpty else { return }
+        let picture = XCUIScreen.main.screenshot().pngRepresentation
+        try? picture.write(to: URL(fileURLWithPath: folder).appendingPathComponent("\(step).png"))
+        checkpoint(step)
     }
 
     private func checkpoint(_ step: String) {
