@@ -248,7 +248,7 @@ final class PetCamFlowTests: XCTestCase {
             if duration >= 1.2 {
                 let wait = start + 0.15 - Date().timeIntervalSince(began)
                 if wait > 0 { usleep(useconds_t(wait * 1_000_000)) }
-                checkpoint(String(format: "%02d-tape-\(name)-still-%d", first + index, index + 1))
+                shoot(String(format: "%02d-tape-\(name)-still-%d", first + index, index + 1))
             }
             start += duration
         }
@@ -326,6 +326,16 @@ final class PetCamFlowTests: XCTestCase {
     private func allowNotificationsIfAsked() {
         let allow = springboard.alerts.buttons["Allow"]
         if allow.waitForExistence(timeout: 5) { allow.tap() }
+    }
+
+    /// A screenshot taken here and now, for a still that is up for a
+    /// second or two: the test captures the screen itself, which is quick
+    /// even while the simulator records, and ios/e2e.sh files it.
+    private func shoot(_ step: String) {
+        guard let folder = ProcessInfo.processInfo.environment["TABBI_E2E_DIR"], !folder.isEmpty else { return }
+        let picture = XCUIScreen.main.screenshot().pngRepresentation
+        try? picture.write(to: URL(fileURLWithPath: folder).appendingPathComponent("\(step).png"))
+        checkpoint(step)
     }
 
     private func checkpoint(_ step: String) {

@@ -67,7 +67,13 @@ while kill -0 "$test_pid" 2> /dev/null; do
             fi
             ;;
         *)
-            xcrun simctl io "$device" screenshot --mask=black "$out/$step.png" > /dev/null 2>&1
+            # A test that took the picture itself (a tape still, which is
+            # only up for a second or two) leaves it here; otherwise take it.
+            if [[ -f "$handshake/$step.png" ]]; then
+                mv "$handshake/$step.png" "$out/$step.png"
+            else
+                xcrun simctl io "$device" screenshot --mask=black "$out/$step.png" > /dev/null 2>&1
+            fi
             echo "shot $step"
             ;;
         esac
