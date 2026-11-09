@@ -323,7 +323,8 @@ public enum PetCamCaptions {
         }
         if outcome == .missed, let caught = finished.last(where: { $0.outcome == .caught }), let spot = caught.strike {
             strong.append(fill(lines.lastSeen, ["spot": grammar.name(spot),
-                                                "when": when(caught.endedAt, from: date, calendar: calendar)]))
+                                                "when": when(PetCamTape.strikeTime(of: caught), from: date,
+                                                             calendar: calendar)]))
         }
         if let old = room.visibleWrecks(at: strike).last, PetCamScene.shows(old, in: .spot(camera)) {
             weak.append(fill(lines.besideWreck, ["remains": grammar.words(old.object.kind).remains,

@@ -306,7 +306,7 @@ public struct PetCamTape: Hashable, Sendable {
         // The floor right after the strike: the new wreck down, nothing
         // tidied away or left out yet.
         var wrecked = room
-        wrecked.wreck(strike, at: record.endedAt, blockID: record.id)
+        wrecked.wreck(strike, at: plan.strike, blockID: record.id)
         let close = PetCamShot(framing: .spot(camera), objects: room.objects, wrecks: room.wrecks)
         var after = close
         after.states = [strike: .gone]
@@ -541,6 +541,12 @@ public struct PetCamTape: Hashable, Sendable {
 
     /// The burn-in times: the strike lands somewhere in the back half of
     /// the block (from the seed), the rest follows within seconds.
+    /// When the pet struck, by the tape's own burn-in clock: what the
+    /// callbacks and the case file say, so every clock in the game agrees.
+    public static func strikeTime(of record: PetCamBlockRecord) -> Date {
+        timeline(record).strike
+    }
+
     private static func timeline(_ record: PetCamBlockRecord) -> (watch: Date, strike: Date, turn: Date, alibi: Date) {
         var roll = PetCamRandom(seed: record.setup.seed, stream: "times")
         let span = max(record.endedAt.timeIntervalSince(record.startedAt), 1)

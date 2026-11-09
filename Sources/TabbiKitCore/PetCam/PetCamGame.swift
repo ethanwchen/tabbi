@@ -196,7 +196,8 @@ public struct PetCamGame: Codable, Hashable, Sendable {
         // at this refill.
         let kinds = arrived
         let present = log.seenKinds.union(room.objects.values.map(\.kind)).union(room.wrecks.map(\.object.kind))
-        room.strike(strike, at: record.endedAt, blockID: record.id, random: &refill, catches: log.catchCounts,
+        room.strike(strike, at: PetCamTape.strikeTime(of: record), blockID: record.id, random: &refill,
+                    catches: log.catchCounts,
                     kinds: kinds, fresh: kinds.filter { !present.contains($0) })
         room.sweep()
         if active == nil, record.setup.seed == setup.seed {

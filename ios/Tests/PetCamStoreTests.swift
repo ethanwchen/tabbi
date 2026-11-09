@@ -291,6 +291,24 @@ import TabbiKitCore
                 "\(Loudness.maximumMomentary(mastered)) over \(Loudness.maximumMomentary(hiss)); raw \(Loudness.integrated(track)) LUFS")
     }
 
+    @Test func theLastDodgeCarriesOverWithinTheHour() throws {
+        let rig = Rig()
+        defer { try? FileManager.default.removeItem(at: rig.folder) }
+        rig.timer(10)
+        rig.cam.dodge = "my tax return"
+        rig.cam.start(study: rig.study, now: Self.t0)
+        rig.study.catchUp(at: Self.t0.addingTimeInterval(601))
+        #expect(rig.cam.dodge.isEmpty)
+        rig.cam.carryOverDodge(now: Self.t0.addingTimeInterval(1200))
+        #expect(rig.cam.dodge == "my tax return", "the next block in the chain starts in one tap")
+        rig.cam.dodge = "the dishes"
+        rig.cam.carryOverDodge(now: Self.t0.addingTimeInterval(1300))
+        #expect(rig.cam.dodge == "the dishes", "never over what was typed")
+        rig.cam.dodge = ""
+        rig.cam.carryOverDodge(now: Self.t0.addingTimeInterval(601 + 3600))
+        #expect(rig.cam.dodge.isEmpty, "an hour on, a new sitting starts blank")
+    }
+
     @Test func aTapeExportsAsALoopingVerticalClipWithSound() async throws {
         let rig = Rig()
         defer { try? FileManager.default.removeItem(at: rig.folder) }

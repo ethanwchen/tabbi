@@ -133,6 +133,16 @@ final class PetCamStore: StudyObserver {
         game.markWatched(record.id)
         save()
         refreshReveal()
+        carryOverDodge()
+    }
+
+    /// The next block in a chain starts in one tap: within the hour after a
+    /// block, "What are you avoiding?" comes back filled with what was
+    /// typed for it (the field has a clear button).
+    func carryOverDodge(now: Date = Date()) {
+        guard dodge.isEmpty, game.active == nil, let last = game.log.blocks.last,
+              now.timeIntervalSince(last.endedAt) < 3600, let words = last.dodge, !words.isEmpty else { return }
+        dodge = words
     }
 
     /// The pet changed breed: the frozen frame is drawn again for it (the

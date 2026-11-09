@@ -126,6 +126,7 @@ struct HomeScreen: View {
             }
         }
         .background(CCTV.screen.ignoresSafeArea())
+        .onAppear { cam.carryOverDodge() }
         .sheet(isPresented: $showsMethods) {
             MethodSheet().presentationDetents([.medium, .large])
         }
@@ -336,19 +337,35 @@ struct HomeScreen: View {
 
     private var dodgeField: some View {
         @Bindable var cam = cam
-        return TextField(text: $cam.dodge, prompt: Text(verbatim: "What are you avoiding?")
-            .foregroundStyle(CCTV.burnIn.opacity(0.45))) {
-            Text(verbatim: "What are you avoiding?")
+        return HStack(spacing: 0) {
+            TextField(text: $cam.dodge, prompt: Text(verbatim: "What are you avoiding?")
+                .foregroundStyle(CCTV.burnIn.opacity(0.45))) {
+                Text(verbatim: "What are you avoiding?")
+            }
+            .font(.body)
+            .foregroundStyle(CCTV.burnIn)
+            .submitLabel(.done)
+            .focused($dodgeFocused)
+            .textInputAutocapitalization(.sentences)
+            .accessibilityHint(Text(verbatim: "Optional. Only the tape and the mugshot show it."))
+            // Carried over from the last block, or typed: one tap clears it.
+            if !cam.dodge.isEmpty {
+                Button {
+                    cam.dodge = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.body)
+                        .foregroundStyle(CCTV.burnIn.opacity(0.5))
+                        .frame(minWidth: 44, minHeight: 44)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text(verbatim: "Clear"))
+            }
         }
-        .font(.body)
-        .foregroundStyle(CCTV.burnIn)
-        .submitLabel(.done)
-        .focused($dodgeFocused)
-        .textInputAutocapitalization(.sentences)
-        .padding(.horizontal, 16)
+        .padding(.leading, 16)
+        .padding(.trailing, cam.dodge.isEmpty ? 16 : 2)
         .frame(minHeight: 48)
         .glassEffect(.regular, in: .capsule)
-        .accessibilityHint(Text(verbatim: "Optional. Only the tape and the mugshot show it."))
     }
 
     private var dareButton: some View {

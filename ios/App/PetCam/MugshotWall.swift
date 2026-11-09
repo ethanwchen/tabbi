@@ -168,7 +168,7 @@ struct MugshotCard: View {
                 Text(verbatim: String(format: "CASE %03d", caseNumber))
                     .font(CCTV.font(.headline, weight: .heavy))
                     .foregroundStyle(CCTV.rec)
-                Text(verbatim: CCTV.timestamp(record.endedAt))
+                Text(verbatim: CCTV.timestamp(PetCamTape.strikeTime(of: record)))
                     .font(CCTV.font(.caption2, weight: .medium))
                     .foregroundStyle(CCTV.burnIn.opacity(0.7))
                 if let charge = record.captions.charge {
@@ -239,7 +239,7 @@ struct ColdCaseCard: View {
             Text(verbatim: "COLD CASE")
                 .font(CCTV.font(.headline, weight: .heavy))
                 .foregroundStyle(CCTV.standby)
-            Text(verbatim: CCTV.timestamp(record.endedAt))
+            Text(verbatim: CCTV.timestamp(PetCamTape.strikeTime(of: record)))
                 .font(CCTV.font(.caption2, weight: .medium))
                 .foregroundStyle(CCTV.burnIn.opacity(0.7))
             if let line = PetCamCaptions.caseLine(record, includeDodge: true) {

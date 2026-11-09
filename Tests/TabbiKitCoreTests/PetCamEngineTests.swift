@@ -327,6 +327,33 @@ final class PetCamEngineTests: XCTestCase {
         }
     }
 
+    func testEveryClockReadsTheTapesOwnStrikeTime() throws {
+        var game = PetCamGame(seed: 0xC10C, at: Self.monday)
+        let strike = game.setup.strike
+        game.start(id: "c", pick: strike, dodge: nil, dare: false, plannedLength: 1500, pet: pet, at: Self.monday)
+        let caught = try XCTUnwrap(game.finish(endedAt: Self.monday.addingTimeInterval(1500), worked: 1500,
+                                               calendar: Self.calendar))
+        XCTAssertEqual(caught.outcome, .caught)
+        let struckAt = PetCamTape.strikeTime(of: caught)
+        XCTAssertLessThan(struckAt, caught.endedAt)
+        XCTAssertEqual(game.room.visibleWrecks(at: strike).last?.wreckedAt, struckAt, "the wreck is dated by the tape")
+        // A miss later says where and when the pet was last caught, by the
+        // tape's clock, not the block's end.
+        var date = Self.monday.addingTimeInterval(1800)
+        var said: String?
+        for index in 0..<12 where said == nil {
+            let next = game.setup.strike
+            game.start(id: "m\(index)", pick: PetCamSpot.allCases.first { $0 != next }, dodge: nil, dare: false,
+                       plannedLength: 1500, pet: pet, at: date)
+            date.addTimeInterval(1500)
+            let record = try XCTUnwrap(game.finish(endedAt: date, worked: 1500, calendar: Self.calendar))
+            if let line = record.captions.callback, line.hasPrefix("LAST CAUGHT") { said = line }
+            date.addTimeInterval(300)
+        }
+        let line = try XCTUnwrap(said)
+        XCTAssertTrue(line.hasSuffix(PetCamCaptions.clock(struckAt, calendar: Self.calendar)), line)
+    }
+
     func testARefillFavorsTheKindsCaughtLeast() {
         // The counter's mug is struck; the free kinds are the vase, the
         // tissues and the donut. The tissues and the donut were caught
