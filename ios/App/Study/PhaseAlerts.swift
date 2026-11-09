@@ -37,7 +37,9 @@ struct PhaseAlert: Equatable {
     /// The end of a filmed block: nothing about the room, just that it is
     /// done and there is something to watch. English only for now (see
     /// ios/README.md, Pet Cam strings).
-    static let tapeReady = (title: "Block done", body: "The tape is ready.")
+    /// Teases without spoiling: the pet always strikes, so this is always
+    /// true and never says catch or miss.
+    static let tapeReady = (title: "Tape ready", body: "Something happened while you were out.")
 
     /// The Mac's wording (`FocusTimerFormat.completionMessage`): "Focus
     /// session done" and the break ahead, "Break's over" and the next

@@ -78,6 +78,25 @@
       "OHHYHHO",
       ".OHHHO.",
       "..OOO.."
+    ],
+    "heldTissue": [
+      ".UVU..",
+      "UUUUVU",
+      "VUUUUU",
+      ".UVUU.",
+      "..U.U."
+    ],
+    "propBandage": [
+      "OOOOO",
+      "OUPUO",
+      "OOOOO"
+    ],
+    "propPlacard": [
+      "OOOOOOOOOO",
+      "OQQQQQQQQO",
+      "OQZQZZQZQO",
+      "OQQQQQQQQO",
+      "OOOOOOOOOO"
     ]
   }
 }

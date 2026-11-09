@@ -49,6 +49,7 @@ struct TapePlayer: View {
                         let still = tape.stills[min(index, tape.stills.count - 1)]
                         TapeStillView(record: record, still: still, caseNumber: caseNumber, width: width,
                                       publicOnly: false, frozen: still.stamp == .caught)
+                            .accessibilityIdentifier("tape.picture")
                             .overlay { if cut { Static() } }
                             .offset(x: jolt)
                             .frame(maxWidth: .infinity)
@@ -101,7 +102,7 @@ struct TapePlayer: View {
     }
 
     /// The wall's case number of a catch (1 for the first).
-    private var caseNumber: Int? { cam.caseNumber(of: record) }
+    private var caseNumber: Int? { record.caseNumber ?? cam.caseNumber(of: record) }
 
     /// Renders every still ahead, off the main actor, at the scale the
     /// player draws it.
@@ -179,20 +180,24 @@ struct TapePlayer: View {
         .accessibilityLabel(Text(verbatim: "Still \(index + 1) of \(tape.stills.count)"))
     }
 
-    /// The current still's captions over every still's captions laid out
-    /// hidden (out of sight and out of the accessibility tree), so the area
-    /// is always as tall as the longest and the feed never jumps between cuts.
+    /// The current still's captions in a fixed reserve of three caption
+    /// lines and one line under them at the current text size (laid out
+    /// hidden, out of the accessibility tree). The picture is sized from the
+    /// reserve alone, so every tape shares one frame on a given phone and
+    /// text size; a longer caption grows below it and the page scrolls.
     private func captions(_ tape: PetCamTape, current: PetCamTape.Still) -> some View {
         ZStack(alignment: .top) {
-            ForEach(Array(tape.stills.enumerated()), id: \.offset) { _, still in
-                caption(still).hidden()
+            VStack(spacing: 6) {
+                Text(verbatim: "X\nX\nX").font(CCTV.font(.title3, weight: .bold))
+                Text(verbatim: "X").font(CCTV.font(.subheadline, weight: .medium))
             }
+            .hidden()
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { captionHeight = $0 }
             // A hard cut with the picture, as a camera's burn-in changes;
             // a crossfade would overlay two captions for a moment.
             caption(current)
         }
         .frame(maxWidth: .infinity)
-        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { captionHeight = $0 }
     }
 
     private func caption(_ still: PetCamTape.Still) -> some View {
@@ -312,6 +317,9 @@ struct TapeStillView: View {
     var burnInSize: CGFloat?
     /// The exporter's push-in on the pet (1 is none); the burn-in stays put.
     var zoom: CGFloat = 1
+    /// The share clip's burn-in in place of the camera's label ("TABBI CAM
+    /// 4  OWNER AWAY 25:00").
+    var hud: String?
 
     @Environment(\.displayScale) private var displayScale
 
@@ -354,7 +362,7 @@ struct TapeStillView: View {
                 Text(verbatim: CCTV.timestamp(still.time))
                     .font(font(.caption, 1))
                     .monospacedDigit()
-                Text(verbatim: still.cameraLabel)
+                Text(verbatim: hud ?? still.cameraLabel)
                     .font(font(.caption2, 0.85))
                     .opacity(0.85)
             }
@@ -414,13 +422,18 @@ struct TapeStillView: View {
         }
     }
 
+    /// The stamp escalates with the object's rap sheet: CAUGHT, CAUGHT
+    /// AGAIN, HABITUAL. The case number sits on an opaque plate in heavy
+    /// type, so the room never shows through it.
     private var caughtStamp: some View {
         VStack(spacing: 4) {
-            Text(verbatim: PetCamCaptions.caughtStamp)
+            Text(verbatim: record.outcome == .caught ? record.captions.closer : PetCamCaptions.caughtStamp)
                 .font(font(.largeTitle, 3.2, weight: .heavy))
             if let caseNumber {
                 Text(verbatim: String(format: "CASE %03d", caseNumber))
-                    .font(font(.headline, 1.3, weight: .bold))
+                    .font(font(.headline, 1.3, weight: .black))
+                    .padding(.horizontal, unit * 0.5)
+                    .background(CCTV.screen, in: .rect(cornerRadius: unit / 4))
             }
         }
         .foregroundStyle(CCTV.rec)
@@ -460,6 +473,8 @@ struct TapeStillView: View {
         case .caughtMidAct(let kind):
             return kind.isEaten ? "\(name) stares into the camera, mouth full of donut."
                 : "\(name) is caught in mid-air, staring into the camera."
+        case .guilty, .mugshot:
+            return "\(name) stares into the camera, wearing the evidence."
         case .lensStare: return "\(name) stares straight into the camera."
         case .lieDown: return "\(name) lies on the floor, staring into the camera."
         case .stroll: return "\(name) strolls into the picture."

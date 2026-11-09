@@ -16,6 +16,13 @@ public enum PetCamPose: Hashable, Sendable {
     /// Frozen mid-act with its eyes on the lens: in mid-air off the spot,
     /// paw out, or (the donut) with its mouth full.
     case caughtMidAct(PetCamObjectKind)
+    /// Eye contact after a catch, wearing the evidence (a fish on its head,
+    /// frosting on its mouth): the guilty look the wall files.
+    case guilty(PetCamObjectKind)
+    /// The face that freezes under the stamp, exactly as the case file
+    /// shows it: the case's expression (`look`), the evidence, and the
+    /// rap-sheet `tier`'s props.
+    case mugshot(PetCamObjectKind, look: Int, tier: Int)
     /// Looking straight into the camera.
     case lensStare
     /// Curled up on the floor, wide awake, looking into the camera.
@@ -60,6 +67,8 @@ public enum PetCamObjectState: Hashable, Sendable {
     /// vase), splashing (the fishbowl), torn at (the tissues), spraying soil
     /// (the plant), or in the pet's mouth (the donut).
     case struck
+    /// On its way to the floor, between the act and the wreck.
+    case falling
     /// Gone from its spot (it is a wreck now, or eaten).
     case gone
 }
@@ -312,25 +321,36 @@ public struct PetCamTape: Hashable, Sendable {
                                time: plan.strike.addingTimeInterval(-2), duration: 1.6,
                                caption: captions.age ?? captions.windUp ?? captions.watch)
             let act = Still(shot: Self.with(close, pet: .act(kind), at: .strike(strike), states: [strike: .struck]),
-                            time: plan.strike, duration: 2.2, caption: captions.strike, detail: struckDetail,
+                            time: plan.strike, duration: 1.8, caption: captions.strike, detail: struckDetail,
                             shake: true, cue: .strike(kind))
-            let lens = Still(shot: Self.with(after, pet: .lensStare, at: .strike(strike)), time: plan.turn,
+            // Between the act and the landing, the object on its way down,
+            // so the strike moves instead of cutting.
+            var fall = act
+            fall.shot.states[strike] = .falling
+            fall.duration = 0.4
+            fall.shake = false
+            fall.cue = nil
+            fall.time = plan.strike.addingTimeInterval(1)
+            let falls = PetCamScene.falls(kind)
+            // Eye contact wearing the evidence, then the freeze on the face
+            // the wall files, with its rap-sheet props.
+            let lens = Still(shot: Self.with(after, pet: .guilty(kind), at: .strike(strike)), time: plan.turn,
                              duration: 2.0, caption: captions.turn, detail: captions.callback, punchIn: true)
-            var freeze = Still(shot: Self.with(after, pet: .lensStare, at: .strike(strike)), time: plan.turn,
-                               duration: 3.2, caption: captions.charge ?? captions.closer,
+            var freeze = Still(shot: Self.with(after, pet: Self.mugshotPose(record, kind), at: .strike(strike)),
+                               time: plan.turn, duration: 3.2, caption: captions.charge ?? captions.closer,
                                detail: captions.wanted ?? captions.priors, stamp: .caught, cue: .stamp)
             switch shape {
             case .straight:
                 var opening = opener
                 opening.duration = 2.0
-                stills = [opening, sneak, windUp, act, lens, freeze]
+                stills = [opening, sneak, windUp, act] + (falls ? [fall] : []) + [lens, freeze]
             case .coldOpen:
                 // The wreck alone, as the hidden camera found it.
                 let scene = Still(shot: exhibit, time: plan.turn, duration: 2.2,
                                   caption: captions.aftermath ?? captions.turn, detail: captions.callback ?? captions.age)
                 freeze.duration = 3.4
                 freeze.punchIn = true
-                stills = [scene, rewind, sneak, act, freeze]
+                stills = [scene, rewind, sneak, act] + (falls ? [fall] : []) + [freeze]
             case .closer:
                 // The freeze lands on the act itself.
                 var midAct = Self.with(close, pet: .caughtMidAct(kind), at: .strike(strike),
@@ -414,6 +434,71 @@ public struct PetCamTape: Hashable, Sendable {
             shot.petOffset = PetCamShot.Offset(x: Int((dx * left).rounded()), y: Int((dy * left - hop).rounded()))
             return shot
         }
+    }
+
+    /// The freeze's face: the case file's expression for this case number,
+    /// the evidence and the rap-sheet tier.
+    public static func mugshotPose(_ record: PetCamBlockRecord, _ kind: PetCamObjectKind) -> PetCamPose {
+        let look = (record.caseNumber ?? Int(record.setup.seed % 5) + 1) - 1
+        return .mugshot(kind, look: look, tier: record.tier)
+    }
+
+    /// The share clip of `record`: about five seconds that open on the
+    /// strike and loop. A catch plays the act (and the fall), the eye
+    /// contact with a push-in and the stamp by about 3.5 seconds, held a
+    /// moment; a miss plays the crash skidding in, the innocent lie-down and
+    /// the evidence. Both end on the tape winding back to the start, so the
+    /// loop reads as a rewind. Nil for a block without a tape.
+    public static func clip(_ record: PetCamBlockRecord) -> [Still]? {
+        guard let tape = PetCamTape(record: record), tape.outcome.hasTape, let strike = record.strike,
+              let kind = record.struck?.kind else { return nil }
+        let captions = record.captions
+        func first(_ match: (Still) -> Bool) -> Still? { tape.stills.first(where: match) }
+        var cut: [Still] = []
+        if tape.outcome == .caught {
+            let act = first { $0.cue == .strike(kind) }
+            let fall = first { $0.shot.states[strike] == .falling }
+            let after = tape.stills.last.map(\.shot) ?? PetCamShot(framing: .spot(strike), objects: [:])
+            var shot = after
+            shot.pet = .guilty(kind)
+            shot.framing = .spot(record.camera)
+            guard var opening = act else { return nil }
+            opening.duration = 1.4
+            cut.append(opening)
+            if var fall {
+                fall.duration = 0.4
+                cut.append(fall)
+            }
+            cut.append(Still(shot: shot, time: opening.time, duration: 1.5, caption: captions.turn, punchIn: true))
+            var freeze = tape.stills[tape.stills.count - 1]
+            freeze.shot.pet = Self.mugshotPose(record, kind)
+            freeze.shot.framing = .spot(record.camera)
+            freeze.duration = 1.4
+            freeze.detail = captions.wanted ?? captions.priors
+            cut.append(freeze)
+        } else {
+            guard var crash = first({ $0.shot.debrisFrom != nil && $0.shot.debrisStep == 0 }),
+                  var skid = first({ $0.shot.debrisFrom != nil && $0.shot.debrisStep == 1 }),
+                  var alibi = first({ $0.shot.pet == .lieDown && $0.shot.framing == .spot(record.camera) }),
+                  var evidence = tape.stills.last else { return nil }
+            crash.duration = 0.6
+            skid.duration = 0.8
+            alibi.duration = 1.6
+            alibi.caption = captions.closer
+            alibi.detail = nil
+            evidence.duration = 1.6
+            cut += [crash, skid, alibi, evidence]
+        }
+        // The loop: the tape winds back to its first frame.
+        var rewind = cut[0]
+        rewind.stamp = .rewind
+        rewind.shake = false
+        rewind.cue = nil
+        rewind.duration = 0.6
+        rewind.caption = captions.rewind ?? "REWIND."
+        rewind.detail = nil
+        cut.append(rewind)
+        return cut
     }
 
     private static func with(_ shot: PetCamShot, pet: PetCamPose, at place: PetCamPlace,

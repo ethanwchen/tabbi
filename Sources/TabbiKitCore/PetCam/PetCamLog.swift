@@ -2,19 +2,19 @@ import Foundation
 
 /// When the camera arms, and when an early stop still counts. Data, so the
 /// debug build can run whole loops in a minute.
+///
+/// One floor: any block of `minimumBlock` (five minutes) or more is filmed.
+/// A normal block stopped early leaves the frozen still once it ran past
+/// `commitAfter`; a dare stopped after its floor plays its whole tape, as
+/// "Just 5 minutes" promises.
 public struct PetCamRules: Codable, Hashable, Sendable {
     /// The shortest planned block that gets a camera and a tape.
     public var minimumBlock: TimeInterval
-    /// The very first block may be this short, so the first tape comes
-    /// within minutes of installing.
-    public var firstBlockMinimum: TimeInterval
     /// A stop before this much focus is a cancel: no still, nothing kept.
     public var commitAfter: TimeInterval
 
-    public init(minimumBlock: TimeInterval = 10 * 60, firstBlockMinimum: TimeInterval = 5 * 60,
-                commitAfter: TimeInterval = 5 * 60) {
+    public init(minimumBlock: TimeInterval = 5 * 60, commitAfter: TimeInterval = 5 * 60) {
         self.minimumBlock = max(minimumBlock, 0)
-        self.firstBlockMinimum = max(firstBlockMinimum, 0)
         self.commitAfter = max(commitAfter, 0)
     }
 
@@ -22,12 +22,16 @@ public struct PetCamRules: Codable, Hashable, Sendable {
 
     /// Debug builds only: one-minute blocks arm the camera and a stop after
     /// ten seconds still counts, so a full loop takes a minute in a test.
-    public static let quickTest = PetCamRules(minimumBlock: 60, firstBlockMinimum: 60, commitAfter: 10)
+    public static let quickTest = PetCamRules(minimumBlock: 60, commitAfter: 10)
 
-    /// The shortest block that arms the camera, given whether a tape was
-    /// ever made.
-    public func minimum(isFirstBlock: Bool) -> TimeInterval {
-        isFirstBlock ? min(firstBlockMinimum, minimumBlock) : minimumBlock
+    // Forgiving decoding: an older save's first-block rule is simply gone.
+    private enum CodingKeys: String, CodingKey { case minimumBlock, commitAfter }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let standard = PetCamRules.standard
+        self.init(minimumBlock: (try? container.decode(TimeInterval.self, forKey: .minimumBlock)) ?? standard.minimumBlock,
+                  commitAfter: (try? container.decode(TimeInterval.self, forKey: .commitAfter)) ?? standard.commitAfter)
     }
 }
 
@@ -116,14 +120,20 @@ public struct PetCamBlockRecord: Codable, Hashable, Sendable, Identifiable {
     /// replay reads the same however much history comes after it.
     public var captions: PetCamCaptionSet
     /// The tape's shape (`PetCamTape.Shape`), chosen when the block
-    /// resolved so it differs from the last tape of the same outcome; nil
+    /// resolved so it differs from the last tapes of the same outcome; nil
     /// for a block without a tape.
     public var shape: Int?
+    /// A catch's case number on the wall (1 for the first catch ever); nil
+    /// for anything else, or a record from before it was kept.
+    public var caseNumber: Int?
+    /// A catch's count on its object's rap sheet (1 the first time the pet
+    /// is caught with that kind); nil for anything else.
+    public var offense: Int?
 
     public init(id: String, setup: PetCamSetup, camera: PetCamSpot, picked: Bool, dodge: String?, dare: Bool,
                 plannedLength: TimeInterval?, startedAt: Date, endedAt: Date, worked: TimeInterval, outcome: Outcome,
                 strike: PetCamSpot?, struck: PetCamObject?, room: PetCamRoom, pet: PetProfile, captions: PetCamCaptionSet,
-                shape: Int? = nil) {
+                shape: Int? = nil, caseNumber: Int? = nil, offense: Int? = nil) {
         self.id = id
         version = Self.currentVersion
         self.setup = setup
@@ -142,7 +152,15 @@ public struct PetCamBlockRecord: Codable, Hashable, Sendable, Identifiable {
         self.pet = pet
         self.captions = captions
         self.shape = shape
+        self.caseNumber = caseNumber
+        self.offense = offense
     }
+
+    /// The rap-sheet tier of a catch: 1 the first time with its object,
+    /// 2 the second and third, 3 from the fourth on.
+    public var tier: Int { PetCamBlockRecord.tier(offense ?? 1) }
+
+    public static func tier(_ offense: Int) -> Int { offense >= 4 ? 3 : offense >= 2 ? 2 : 1 }
 }
 
 /// Every resolved block, one per block id, oldest first.
@@ -157,10 +175,17 @@ public struct PetCamLog: Codable, Hashable, Sendable {
     public private(set) var blocks: [PetCamBlockRecord]
     /// The ids in `blocks`, for the once-per-id check.
     private var ids: Set<String>
+    /// Every kind's catch count (kinds never caught are absent), kept as
+    /// blocks are recorded so a long history stays cheap to ask.
+    public private(set) var catchCounts: [PetCamObjectKind: Int]
+    /// How many catches there are in all.
+    public private(set) var catchTotal: Int
 
     public init(blocks: [PetCamBlockRecord] = []) {
         self.blocks = []
         ids = []
+        catchCounts = [:]
+        catchTotal = 0
         for block in blocks { record(block) }
     }
 
@@ -178,6 +203,10 @@ public struct PetCamLog: Codable, Hashable, Sendable {
     @discardableResult
     public mutating func record(_ block: PetCamBlockRecord) -> Bool {
         guard ids.insert(block.id).inserted else { return false }
+        if block.outcome == .caught {
+            catchTotal += 1
+            if let kind = block.struck?.kind { catchCounts[kind, default: 0] += 1 }
+        }
         // Blocks almost always resolve in order, so look from the end.
         var index = blocks.endIndex
         while index > blocks.startIndex, Self.precedes(block, blocks[index - 1]) { index -= 1 }
@@ -197,6 +226,9 @@ public struct PetCamLog: Codable, Hashable, Sendable {
 
     /// The catches, oldest first: the mugshot wall.
     public var mugshots: [PetCamBlockRecord] { blocks.filter { $0.outcome == .caught } }
+
+    /// How many times the pet has been caught with `kind`: its rap sheet.
+    public func offenses(with kind: PetCamObjectKind) -> Int { catchCounts[kind] ?? 0 }
 
     /// Blocks that played a tape.
     public var tapes: [PetCamBlockRecord] { blocks.filter { $0.outcome.hasTape } }

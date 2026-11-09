@@ -101,6 +101,10 @@ public enum PetComposer {
                 case mouth
                 /// Centered just under the eyes, on the nose.
                 case nose
+                /// On the left cheek, under the eye.
+                case cheek
+                /// Held at the chest, under the chin (a mugshot's placard).
+                case chest
             }
 
             var grid: SpriteGrid
@@ -317,6 +321,8 @@ public enum PetComposer {
                     (faceX + $0.origin.x + 2 - grid.width / 2, headY + layout.faceRow + $0.origin.y)
                 } ?? (faceX + layout.head.width / 2 - grid.width / 2, headY + layout.eyeRow + 4)
             case .nose: (faceX + layout.head.width / 2 - grid.width / 2, headY + layout.eyeRow + 2)
+            case .cheek: (faceX + 1, headY + layout.eyeRow + 3)
+            case .chest: (headX + layout.head.width / 2 - grid.width / 2, headY + layout.head.height)
             }
             canvas.stamp(grid, x: x, y: y)
         }

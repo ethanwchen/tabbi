@@ -49,11 +49,11 @@ public struct PetCamGame: Codable, Hashable, Sendable {
         self.species = species
     }
 
-    /// Whether the next block is the very first (it may be shorter).
+    /// Whether the next block is the very first.
     public var isFirstBlock: Bool { !log.hasTape }
 
-    /// The shortest focus block that arms the camera now.
-    public var minimumBlock: TimeInterval { rules.minimum(isFirstBlock: isFirstBlock) }
+    /// The shortest focus block that arms the camera.
+    public var minimumBlock: TimeInterval { rules.minimumBlock }
 
     /// Whether a block of `plannedLength` arms the camera; open-ended
     /// blocks (nil) arm it and are judged by the time worked at the end.
@@ -109,7 +109,7 @@ public struct PetCamGame: Codable, Hashable, Sendable {
     @discardableResult
     public mutating func finish(endedAt: Date, worked: TimeInterval, calendar: Calendar = .current) -> PetCamBlockRecord? {
         guard let block = active else { return nil }
-        if block.plannedLength == nil, worked + 0.5 < rules.minimum(isFirstBlock: block.isFirstBlock) {
+        if block.plannedLength == nil, worked + 0.5 < rules.minimumBlock {
             return stop(at: endedAt, worked: worked, calendar: calendar)
         }
         let strike = block.setup.strike
@@ -118,9 +118,11 @@ public struct PetCamGame: Codable, Hashable, Sendable {
             active = nil
             return nil
         }
+        let offense = log.offenses(with: struck.kind) + 1
         let captions = PetCamCaptions.tape(
             outcome: outcome, setup: block.setup, camera: block.camera, strike: strike, struck: struck,
-            room: block.room, dodge: block.dodge, history: log.blocks, at: endedAt, calendar: calendar
+            room: block.room, dodge: block.dodge, history: log.blocks, offense: offense, at: endedAt,
+            calendar: calendar
         )
         // Never one of the last two tape shapes of the same outcome.
         var recent: [PetCamTape.Shape] = []
@@ -128,11 +130,14 @@ public struct PetCamGame: Codable, Hashable, Sendable {
             if let shape = earlier.shape.flatMap(PetCamTape.Shape.init(rawValue:)) { recent.append(shape) }
             if recent.count == 2 { break }
         }
+        let caught = outcome == .caught
         let record = PetCamBlockRecord(
             id: block.id, setup: block.setup, camera: block.camera, picked: block.picked, dodge: block.dodge,
             dare: block.dare, plannedLength: block.plannedLength, startedAt: block.startedAt, endedAt: endedAt,
             worked: worked, outcome: outcome, strike: strike, struck: struck, room: block.room, pet: block.pet,
-            captions: captions, shape: PetCamTape.shape(seed: block.setup.seed, recent: recent).rawValue
+            captions: captions, shape: PetCamTape.shape(seed: block.setup.seed, recent: recent).rawValue,
+            caseNumber: caught ? log.catchTotal + 1 : nil,
+            offense: caught ? offense : nil
         )
         active = nil
         absorb(record)
@@ -146,6 +151,11 @@ public struct PetCamGame: Codable, Hashable, Sendable {
     @discardableResult
     public mutating func stop(at date: Date, worked: TimeInterval, calendar: Calendar = .current) -> PetCamBlockRecord? {
         guard let block = active else { return nil }
+        // "Just 5 minutes": a dare stopped once its five minutes are in is a
+        // finished block, with the same strike and the whole tape.
+        if block.dare, worked + 0.5 >= rules.minimumBlock {
+            return finish(endedAt: date, worked: worked, calendar: calendar)
+        }
         active = nil
         let outcome: PetCamBlockRecord.Outcome = worked + 0.5 >= rules.commitAfter ? .stopped : .cancelled
         let record = PetCamBlockRecord(
@@ -169,7 +179,7 @@ public struct PetCamGame: Codable, Hashable, Sendable {
         guard log.record(record) else { return false }
         guard record.outcome.hasTape, let strike = record.strike else { return true }
         var refill = PetCamRandom(seed: record.setup.seed, stream: "refill")
-        room.strike(strike, at: record.endedAt, blockID: record.id, random: &refill)
+        room.strike(strike, at: record.endedAt, blockID: record.id, random: &refill, catches: log.catchCounts)
         if active == nil, record.setup.seed == setup.seed {
             setup = PetCamSetup.prepare(seed: record.setup.nextSeed, room: room, species: species, tuning: tuning,
                                         history: log.blocks, at: record.endedAt)

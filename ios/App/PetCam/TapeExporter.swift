@@ -3,21 +3,20 @@ import CoreVideo
 import SwiftUI
 import TabbiKitCore
 
-/// Exports a tape as a vertical video (1080 by 1920, 30 frames a second,
-/// H.264 with an AAC sound track). It opens on OWNER AWAY with the block's
-/// real length, plays each still with its burned-in time, camera and
-/// captions (moving between two stills of one camera in a few in-between
-/// frames, cutting through static between cameras, jolting on a hit and
-/// pushing in on eye contact), and closes on a one-second TABBI CAM slate.
-/// The sound is the tape's own (`TapeSound`): hiss, the motion beep, the
-/// strike, the stamp's thud; no music. It never mentions studying, and the
-/// dodge line appears only when the player opts in.
+/// Exports a tape's share clip (`PetCamTape.clip`) as a vertical video
+/// (1080 by 1920, 30 frames a second, H.264 with an AAC sound track) of
+/// about five seconds that loops. It opens on the strike with its sound and
+/// the case as a headline above the picture, cuts to the eye contact with a
+/// push-in, slams the stamp in with a two-frame flash and a shake by about
+/// 3.5 seconds, holds a moment with the grain still moving, and ends on the
+/// tape rewinding, so the loop reads as a rewind. "TABBI CAM 4  OWNER AWAY
+/// 25:00" is burned into every frame. The sound is the tape's own
+/// (`TapeSound`), mastered to -14 LUFS with its peaks under -1 dBFS; no
+/// music. It never mentions studying, and the dodge line appears only when
+/// the player opts in.
 enum TapeExporter {
     static let size = CGSize(width: 1080, height: 1920)
     static let framesPerSecond: Int32 = 30
-    /// The OWNER AWAY card before the tape, and the slate after it.
-    static let openerFrames = 36
-    static let slateFrames = 30
     /// Static frames at a cut between cameras, and in-between frames (two
     /// video frames each) between two stills of one camera.
     static let cutFrames = 3
@@ -40,38 +39,47 @@ enum TapeExporter {
         var cue: PetCamTape.Cue?
     }
 
-    /// Renders and encodes `record`'s tape; returns the file's URL in the
-    /// temporary folder.
+    /// Renders and encodes `record`'s share clip; returns the file's URL in
+    /// the temporary folder.
     @MainActor
     static func export(_ record: PetCamBlockRecord, caseNumber: Int?, includeDodge: Bool) async throws -> URL {
-        guard let tape = PetCamTape(record: record), tape.outcome.hasTape else { throw ExportError.noTape }
-        func card(_ still: PetCamTape.Still, grain: Int, offset: CGFloat = 0, zoom: CGFloat = 1) throws -> CGImage {
-            try render(TapeCard(record: record, still: still, caseNumber: caseNumber, includeDodge: includeDodge,
-                                grainFrame: grain, offset: offset, zoom: zoom))
+        guard let clip = PetCamTape.clip(record) else { throw ExportError.noTape }
+        let headline = PetCamCaptions.caseLine(record, includeDodge: includeDodge) ?? ""
+        func card(_ still: PetCamTape.Still, grain: Int, offset: CGFloat = 0, zoom: CGFloat = 1,
+                  flash: Bool = false) throws -> CGImage {
+            try render(TapeCard(record: record, still: still, caseNumber: caseNumber, headline: headline,
+                                grainFrame: grain, offset: offset, zoom: zoom, flash: flash))
         }
-        var segments = [Segment(images: [try render(OwnerAwayCard(record: record))], framesEach: [openerFrames],
-                                frames: openerFrames)]
+        var segments: [Segment] = []
         let cut = try render(StaticCard())
-        for (index, still) in tape.stills.enumerated() {
+        for (index, still) in clip.enumerated() {
             if index > 0 {
-                let tweens = PetCamTape.tweens(from: tape.stills[index - 1], to: still, count: tweenCount)
-                if tweens.isEmpty {
-                    segments.append(Segment(images: [cut], framesEach: [cutFrames], frames: cutFrames))
-                } else {
+                let tweens = PetCamTape.tweens(from: clip[index - 1], to: still, count: tweenCount)
+                if !tweens.isEmpty {
                     var images: [CGImage] = []
                     for shot in tweens {
                         var between = still
                         between.shot = shot
-                        between.caption = tape.stills[index - 1].caption
-                        between.detail = tape.stills[index - 1].detail
+                        between.caption = clip[index - 1].caption
+                        between.detail = clip[index - 1].detail
                         images.append(try card(between, grain: index * 16 + 9))
                     }
                     segments.append(Segment(images: images, framesEach: images.map { _ in 2 }, frames: images.count * 2))
+                } else if still.shot.framing != clip[index - 1].shot.framing, still.stamp != .rewind {
+                    segments.append(Segment(images: [cut], framesEach: [cutFrames], frames: cutFrames))
                 }
             }
             let frames = Int((still.duration * Double(framesPerSecond)).rounded())
             var images: [CGImage] = [], each: [Int] = []
-            if still.shake {
+            if still.stamp == .caught {
+                // The stamp slams in: a two-frame flash, then a shake.
+                images.append(try card(still, grain: index * 16, flash: true))
+                each.append(2)
+                for offset: CGFloat in [24, -18, 10, -4] {
+                    images.append(try card(still, grain: index * 16 + 1, offset: offset))
+                    each.append(2)
+                }
+            } else if still.shake {
                 // A jolt as a hard hit cuts in: knocked aside and back.
                 for offset: CGFloat in [26, -20, 12, -6] {
                     images.append(try card(still, grain: index * 16, offset: offset))
@@ -87,24 +95,22 @@ enum TapeExporter {
                     each.append(2)
                 }
             }
-            // Grain changes every few frames; the catch's freeze stands still.
-            let variants = still.stamp == .caught ? 1 : 3
-            for grain in 0..<variants {
-                images.append(try card(still, grain: index * 16 + grain, zoom: zoom))
+            // The grain keeps moving on every still, the stamp's hold too.
+            for grain in 0..<3 {
+                images.append(try card(still, grain: index * 16 + 8 + grain, zoom: zoom))
                 each.append(4)
             }
-            segments.append(Segment(images: images, framesEach: each, frames: frames, cycle: variants, cue: still.cue))
+            segments.append(Segment(images: images, framesEach: each, frames: frames, cycle: 3, cue: still.cue))
         }
-        segments.append(Segment(images: [try render(SlateCard())], framesEach: [slateFrames], frames: slateFrames))
         let stamp = Self.fileStamp(record.endedAt)
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("tabbi-tape-\(stamp).mp4")
         try? FileManager.default.removeItem(at: url)
-        try await encode(segments, sound: Self.soundTrack(segments), to: url)
+        try await encode(segments, sound: Loudness.master(Self.soundTrack(segments)), to: url)
         return url
     }
 
-    /// The whole sound track: hiss under everything, each still's cue as it
-    /// cuts in, fading out over the slate.
+    /// The whole sound track, before mastering: hiss under everything and
+    /// each still's cue as it cuts in.
     nonisolated static func soundTrack(_ segments: [Segment]) -> [Float] {
         let total = segments.reduce(0) { $0 + $1.frames }
         let perFrame = TapeSound.sampleRate / Double(framesPerSecond)
@@ -119,11 +125,7 @@ enum TapeExporter {
             }
             frame += segment.frames
         }
-        let fade = Int(Double(slateFrames) * perFrame)
-        for index in 0..<min(fade, track.count) {
-            track[track.count - 1 - index] *= Float(index) / Float(fade)
-        }
-        return track.map { min(max($0, -1), 1) }
+        return track
     }
 
     @MainActor
@@ -261,39 +263,50 @@ enum TapeExporter {
     }
 }
 
-/// One frame of the shared video: the still, its captions and the mark.
+/// One frame of the shared video: the case as a headline, the still with
+/// the clip's burn-in, and the still's captions.
 private struct TapeCard: View {
     let record: PetCamBlockRecord
     let still: PetCamTape.Still
     let caseNumber: Int?
-    let includeDodge: Bool
+    let headline: String
     let grainFrame: Int
     /// Pixels the picture is knocked sideways (the jolt of a hard hit).
     var offset: CGFloat = 0
     /// The push-in on eye contact (1 is none).
     var zoom: CGFloat = 1
+    /// The white flash as the stamp lands.
+    var flash = false
 
-    /// The caption: the catch's charge carries the dodge line only on
-    /// opt-in.
-    private var caption: String {
-        guard still.stamp == .caught else { return still.caption }
-        return (includeDodge ? record.captions.charge : record.captions.publicCharge) ?? still.caption
-    }
+    /// The freeze's caption is the case's line under the stamp; the rest
+    /// say what each still says.
+    private var caption: String { still.stamp == .caught ? (still.detail ?? still.caption) : still.caption }
+    private var detail: String? { still.stamp == .caught ? nil : still.detail }
 
     var body: some View {
         VStack(spacing: 0) {
-            TapeStillView(record: record, still: still, caseNumber: caseNumber, width: 1000, publicOnly: !includeDodge,
-                          frozen: still.stamp == .caught, grainFrame: still.stamp == .caught ? 0 : grainFrame,
-                          burnInSize: 30, zoom: zoom)
+            Text(verbatim: PetCamCaptions.keepingDodgeTogether(headline))
+                .font(.system(size: 50, weight: .heavy, design: .monospaced))
+                .foregroundStyle(CCTV.burnIn)
+                .multilineTextAlignment(.center)
+                .lineLimit(3)
+                .minimumScaleFactor(0.6)
+                .frame(height: 190, alignment: .bottom)
+                .padding(.horizontal, 50)
+                .padding(.top, 60)
+                .padding(.bottom, 30)
+            TapeStillView(record: record, still: still, caseNumber: caseNumber, width: 1000, publicOnly: true,
+                          frozen: false, grainFrame: grainFrame, burnInSize: 30, zoom: zoom,
+                          hud: PetCamCaptions.clipHUD(camera: still.cameraLabel, worked: record.worked))
+                .overlay { if flash { Color.white.opacity(0.85) } }
                 .offset(x: offset)
-                .padding(.top, 70)
             VStack(spacing: 14) {
                 Text(verbatim: PetCamCaptions.keepingDodgeTogether(caption))
-                    .font(.system(size: 50, weight: .bold, design: .monospaced))
+                    .font(.system(size: 44, weight: .bold, design: .monospaced))
                     .foregroundStyle(CCTV.burnIn)
-                if let detail = still.detail {
+                if let detail {
                     Text(verbatim: detail)
-                        .font(.system(size: 34, weight: .medium, design: .monospaced))
+                        .font(.system(size: 32, weight: .medium, design: .monospaced))
                         .foregroundStyle(CCTV.burnIn.opacity(0.75))
                 }
             }
@@ -301,67 +314,11 @@ private struct TapeCard: View {
             .lineLimit(2)
             .minimumScaleFactor(0.6)
             .padding(.horizontal, 50)
-            .padding(.top, 34)
+            .padding(.top, 28)
             Spacer(minLength: 0)
         }
         .frame(width: TapeExporter.size.width, height: TapeExporter.size.height)
         .background(CCTV.screen)
-    }
-}
-
-/// The clip's opening card: the empty room's camera saying how long the
-/// owner was away, the block's real length, before anything happens.
-private struct OwnerAwayCard: View {
-    let record: PetCamBlockRecord
-
-    var body: some View {
-        VStack(spacing: 26) {
-            Spacer(minLength: 0)
-            Text(verbatim: PetCamCaptions.ownerAway(record.worked))
-                .font(.system(size: 76, weight: .heavy, design: .monospaced))
-                .foregroundStyle(CCTV.burnIn)
-                .multilineTextAlignment(.center)
-                .minimumScaleFactor(0.5)
-                .lineLimit(2)
-            Text(verbatim: CCTV.timestamp(record.startedAt) + "  CAM 1")
-                .font(.system(size: 30, weight: .semibold, design: .monospaced))
-                .foregroundStyle(CCTV.burnIn.opacity(0.6))
-            Spacer(minLength: 0)
-        }
-        .padding(.horizontal, 60)
-        .frame(width: TapeExporter.size.width, height: TapeExporter.size.height)
-        .background {
-            ZStack {
-                CCTV.screen
-                StaticGrain(frame: 3, amount: 0.06)
-                Scanlines(opacity: 0.25, spacing: 6)
-            }
-        }
-    }
-}
-
-/// The last second: the TABBI CAM wordmark, big enough to read in a feed.
-private struct SlateCard: View {
-    var body: some View {
-        VStack(spacing: 28) {
-            Image(systemName: "pawprint.fill")
-                .font(.system(size: 110, weight: .bold))
-                .foregroundStyle(CCTV.rec)
-            Text(verbatim: "TABBI CAM")
-                .font(.system(size: 118, weight: .heavy, design: .rounded))
-                .kerning(4)
-                .foregroundStyle(CCTV.burnIn)
-                .minimumScaleFactor(0.5)
-                .lineLimit(1)
-        }
-        .padding(.horizontal, 60)
-        .frame(width: TapeExporter.size.width, height: TapeExporter.size.height)
-        .background {
-            ZStack {
-                CCTV.screen
-                Scanlines(opacity: 0.25, spacing: 6)
-            }
-        }
     }
 }
 

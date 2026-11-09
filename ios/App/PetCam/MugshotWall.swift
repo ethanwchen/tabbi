@@ -2,13 +2,15 @@ import SwiftUI
 import TabbiKitCore
 
 /// The case file: six object slots across the top (a silhouette until the
-/// pet is first caught with that object), then every tape watched, newest
-/// first. A catch is a mugshot (the pet wearing the evidence, its case
-/// number, the charge, the wreck as Exhibit A), filed as a WANTED card when
-/// it was the object the wall lacked longest. A miss is a cold case: the
-/// wreck, SUSPECT: UNKNOWN and the pet's innocent lie-down as the only
-/// witness, with no count of unsolved cases anywhere. Tapping a card
-/// replays its tape exactly.
+/// pet is first caught with that object, then three pips for its rap
+/// sheet, filled at the first, second and fourth catch), then every tape
+/// watched as one timeline, newest first. A catch is a mugshot (the pet
+/// wearing the evidence and its rap-sheet props, its case number, the
+/// charge, the wreck as Exhibit A), filed as a WANTED card when it was the
+/// object the wall lacked longest. A miss is a cold case: the charge in the
+/// player's own words when there were some, SUSPECT AT LARGE, the wreck, and
+/// the pet as it ended the tape as the only witness, with no count of
+/// unsolved cases anywhere. Tapping a card replays its tape exactly.
 struct MugshotWall: View {
     @Environment(PetCamStore.self) private var cam
     @Environment(\.dismiss) private var dismiss
@@ -19,13 +21,13 @@ struct MugshotWall: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
-                    ObjectSlots(caught: cam.caughtKinds)
+                    ObjectSlots(counts: cam.caughtCounts)
                     if cam.cases.isEmpty {
                         empty
                     } else {
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: typeSize.isAccessibilitySize ? 280 : 160),
-                                                     spacing: 14, alignment: .top)],
-                                  alignment: .center, spacing: 14) {
+                        // One column in time order, so a story reads straight
+                        // down and no two cards share a row.
+                        LazyVStack(spacing: 14) {
                             ForEach(cam.cases) { record in
                                 Button { replaying = record } label: {
                                     if let number = cam.caseNumber(of: record) {
@@ -45,6 +47,9 @@ struct MugshotWall: View {
             .background(CCTV.screen.ignoresSafeArea())
             .navigationTitle(Text(verbatim: "Case file"))
             .navigationBarTitleDisplayMode(.inline)
+            // An opaque header, so cards never ghost behind the title.
+            .toolbarBackground(CCTV.panel, for: .navigationBar)
+            .toolbarBackgroundVisibility(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button { dismiss() } label: { Text("Done", bundle: .tabbi) }
@@ -79,10 +84,14 @@ struct MugshotWall: View {
 /// The six objects the pet can be caught with: each one drawn once it has
 /// been, a dark silhouette until then.
 private struct ObjectSlots: View {
-    let caught: Set<PetCamObjectKind>
+    let counts: [PetCamObjectKind: Int]
     @Environment(\.dynamicTypeSize) private var typeSize
 
+    /// The rap-sheet marks: filled at the first, second and fourth catch.
+    static let pips = [1, 2, 4]
+
     var body: some View {
+        let caught = Set(counts.keys)
         VStack(alignment: .leading, spacing: 8) {
             Text(verbatim: "CAUGHT WITH \(caught.count) OF \(PetCamObjectKind.allCases.count)")
                 .font(CCTV.font(.caption, weight: .heavy))
@@ -100,13 +109,20 @@ private struct ObjectSlots: View {
                             .foregroundStyle(CCTV.burnIn.opacity(known ? 0.85 : 0.4))
                             .multilineTextAlignment(.center)
                             .fixedSize(horizontal: false, vertical: true)
+                        HStack(spacing: 5) {
+                            ForEach(Self.pips, id: \.self) { mark in
+                                Circle()
+                                    .fill((counts[kind] ?? 0) >= mark ? CCTV.rec : CCTV.burnIn.opacity(0.15))
+                                    .frame(width: 7, height: 7)
+                            }
+                        }
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 8)
                     .background(CCTV.panel, in: .rect(cornerRadius: 10, style: .continuous))
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(Text(verbatim: known
-                        ? "\(PetCamCaptions.name(of: kind).lowercased()), caught"
+                        ? "\(PetCamCaptions.name(of: kind).lowercased()), caught \(counts[kind] ?? 0) times"
                         : "Not caught with this one yet"))
                 }
             }
@@ -162,6 +178,11 @@ struct MugshotCard: View {
                         .foregroundStyle(CCTV.burnIn)
                         .fixedSize(horizontal: false, vertical: true)
                 }
+                if let rap = record.captions.priors {
+                    Text(verbatim: rap)
+                        .font(CCTV.font(.caption2, weight: .bold))
+                        .foregroundStyle(record.tier >= 2 ? CCTV.rec : CCTV.burnIn.opacity(0.7))
+                }
                 if wanted, let line = record.captions.wanted {
                     Text(verbatim: line)
                         .font(CCTV.font(.caption2, weight: .bold))
@@ -183,9 +204,14 @@ struct MugshotCard: View {
         .accessibilityElement(children: .combine)
     }
 
+    /// The face that froze under the stamp: the same look, evidence and
+    /// rap-sheet props as the tape's last frame.
     private var front: some View {
-        PixelPet(canvas: PetCamPetArt.mugshot(caseNumber - 1, profile: record.pet, evidence: record.struck?.kind)
-            .trimmed(margin: 1), palette: record.pet.palette, pixelSize: 3)
+        let look: Int = if let kind = record.struck?.kind,
+                           case .mugshot(_, let look, _) = PetCamTape.mugshotPose(record, kind) { look } else { caseNumber - 1 }
+        return PixelPet(canvas: PetCamPetArt.mugshot(look, profile: record.pet, evidence: record.struck?.kind,
+                                                     tier: record.tier).trimmed(margin: 1),
+                        palette: record.pet.palette, pixelSize: 3)
     }
 
     private var side: some View {
@@ -194,10 +220,16 @@ struct MugshotCard: View {
     }
 }
 
-/// A miss, filed: the wreck nobody filmed, no suspect, and the pet lying
-/// on the floor as the only witness.
+/// A miss, filed: the charge in the player's own words when there were
+/// some, no suspect, the wreck nobody filmed, and the pet as it ended the
+/// tape, set beside the exhibit as the only witness.
 struct ColdCaseCard: View {
     let record: PetCamBlockRecord
+
+    /// The pet's last pose on the tape (lying down, or the double take).
+    private var witness: PetCamPose {
+        PetCamTape(record: record)?.stills.last(where: { $0.shot.pet != nil })?.shot.pet ?? .lieDown
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -207,25 +239,18 @@ struct ColdCaseCard: View {
             Text(verbatim: CCTV.timestamp(record.endedAt))
                 .font(CCTV.font(.caption2, weight: .medium))
                 .foregroundStyle(CCTV.burnIn.opacity(0.7))
-            Text(verbatim: "SUSPECT: UNKNOWN")
-                .font(CCTV.font(.footnote, weight: .semibold))
-                .foregroundStyle(CCTV.burnIn)
-                .padding(.top, 2)
-                .fixedSize(horizontal: false, vertical: true)
-            if let kind = record.struck?.kind {
-                Evidence(kind: kind)
-                    .padding(.top, 4)
+            if let line = PetCamCaptions.caseLine(record, includeDodge: true) {
+                Text(verbatim: PetCamCaptions.keepingDodgeTogether(line))
+                    .font(CCTV.font(.footnote, weight: .semibold))
+                    .foregroundStyle(CCTV.burnIn)
+                    .padding(.top, 2)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            HStack(alignment: .bottom, spacing: 10) {
-                PixelPet(canvas: PetCamPetArt.canvas(.lieDown, profile: record.pet).trimmed(margin: 1),
-                         palette: record.pet.palette, pixelSize: 2)
-                Text(verbatim: "WITNESS")
-                    .font(.system(.caption2, design: .monospaced).weight(.heavy))
-                    .foregroundStyle(CCTV.burnIn.opacity(0.6))
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .bottom, spacing: 16) { exhibit; witnessView }
+                VStack(alignment: .leading, spacing: 8) { exhibit; witnessView }
             }
             .padding(.top, 6)
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(Text(verbatim: "Witness: \(record.pet.name), lying on the floor"))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
@@ -233,6 +258,22 @@ struct ColdCaseCard: View {
         .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
             .stroke(CCTV.burnIn.opacity(0.08), style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
         .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder private var exhibit: some View {
+        if let kind = record.struck?.kind { Evidence(kind: kind) }
+    }
+
+    private var witnessView: some View {
+        HStack(alignment: .bottom, spacing: 8) {
+            PixelPet(canvas: PetCamPetArt.canvas(witness, profile: record.pet).trimmed(margin: 1),
+                     palette: record.pet.palette, pixelSize: 2)
+            Text(verbatim: "WITNESS")
+                .font(.system(.caption2, design: .monospaced).weight(.heavy))
+                .foregroundStyle(CCTV.burnIn.opacity(0.6))
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: "Witness: \(record.pet.name)"))
     }
 }
 
@@ -348,6 +389,8 @@ struct PetPicker: View {
             }
             .navigationTitle(Text(verbatim: "Your pet"))
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(CCTV.panel, for: .navigationBar)
+            .toolbarBackgroundVisibility(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button { dismiss() } label: { Text("Done", bundle: .tabbi) }

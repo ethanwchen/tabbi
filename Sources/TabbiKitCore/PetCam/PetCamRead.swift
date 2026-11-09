@@ -125,12 +125,14 @@ public struct PetCamSetup: Codable, Hashable, Sendable {
     public var seed: UInt64
     public var stare: PetCamSpot
     public var tell: PetCamTell?
-    /// The spot whose object wears the WANTED tag: from the second block
-    /// on, the object in the room the pet has gone longest without being
-    /// caught with (a kind never caught with counts as longest), ties broken
-    /// by the seed. It never changes where the pet strikes; it is the stake
-    /// that makes the blocks with nothing wobbling a choice between the
-    /// likely catch on the stare and a long shot at the one the wall lacks.
+    /// The spot whose object wears the WANTED tag. From the second block
+    /// on, when nothing wobbles, it is whichever of the two objects the pet
+    /// is not eyeing it has gone longer without being caught with (a kind
+    /// never caught with counts as longest; ties to the seed). A block with
+    /// a visible exception has no tag at all, so a frame never shows more
+    /// than two things to read. It never changes where the pet strikes: it
+    /// is the stake that turns every block with nothing wobbling into one
+    /// choice, the likely catch on the stare or the one the wall lacks.
     public var wanted: PetCamSpot?
     public var tuning: PetCamTuning
     public var preparedAt: Date
@@ -174,14 +176,15 @@ public struct PetCamSetup: Codable, Hashable, Sendable {
             }
         }
         return PetCamSetup(seed: seed, stare: stare, tell: tell,
-                           wanted: wanted(seed: seed, room: room, history: history, at: date), tuning: tuning,
-                           preparedAt: date)
+                           wanted: wanted(seed: seed, room: room, stare: stare, tell: tell, history: history, at: date),
+                           tuning: tuning, preparedAt: date)
     }
 
     /// The WANTED spot for `room` after `history` (see `wanted`).
-    static func wanted(seed: UInt64, room: PetCamRoom, history: [PetCamBlockRecord], at date: Date) -> PetCamSpot? {
-        guard history.contains(where: \.outcome.hasTape) else { return nil }
-        let waits = PetCamSpot.allCases.compactMap { spot in
+    static func wanted(seed: UInt64, room: PetCamRoom, stare: PetCamSpot, tell: PetCamTell?,
+                       history: [PetCamBlockRecord], at date: Date) -> PetCamSpot? {
+        guard tell == nil, history.contains(where: \.outcome.hasTape) else { return nil }
+        let waits = PetCamSpot.allCases.filter { $0 != stare }.compactMap { spot in
             room.object(at: spot).map { (spot, wantedSince($0.kind, history: history, before: date) ?? .distantPast) }
         }
         guard let longest = waits.map(\.1).min() else { return nil }

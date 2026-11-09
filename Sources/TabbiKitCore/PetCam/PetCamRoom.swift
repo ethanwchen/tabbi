@@ -147,15 +147,16 @@ public struct PetCamRoom: Codable, Hashable, Sendable {
 
     /// The pet strikes `spot` at `date` in block `blockID`: the object there
     /// becomes a wreck on the floor (`wreck`) and a new object is left out
-    /// in its place (`leaveOut`). Applying the same block twice changes
+    /// in its place (`leaveOut`), favoring the kinds the pet has been caught
+    /// with least (`catches`). Applying the same block twice changes
     /// nothing.
     @discardableResult
-    public mutating func strike(_ spot: PetCamSpot, at date: Date, blockID: String,
-                                random: inout PetCamRandom) -> PetCamWreck? {
+    public mutating func strike(_ spot: PetCamSpot, at date: Date, blockID: String, random: inout PetCamRandom,
+                                catches: [PetCamObjectKind: Int] = [:]) -> PetCamWreck? {
         guard !hasWreck(from: blockID) else { return nil }
         let struck = objects[spot]?.kind
         let wreck = wreck(spot, at: date, blockID: blockID)
-        leaveOut(at: spot, replacing: struck, date: date, random: &random)
+        leaveOut(at: spot, replacing: struck, date: date, random: &random, catches: catches)
         return wreck
     }
 
@@ -179,8 +180,10 @@ public struct PetCamRoom: Codable, Hashable, Sendable {
     /// a fresh fishbowl never stands next to the puddle of the last one.
     /// When every such kind still has a wreck in view, the one whose newest
     /// wreck is oldest comes back and its old mess is cleared away first.
+    /// Among the clean kinds, those caught least come first, so the case
+    /// file's six slots fill before its pips rise, and then rise evenly.
     private mutating func leaveOut(at spot: PetCamSpot, replacing: PetCamObjectKind?, date: Date,
-                                   random: inout PetCamRandom) {
+                                   random: inout PetCamRandom, catches: [PetCamObjectKind: Int] = [:]) {
         let inRoom = Set(objects.filter { $0.key != spot }.values.map(\.kind))
         var choices = PetCamObjectKind.allCases.filter { !inRoom.contains($0) && $0 != replacing }
         if choices.isEmpty { choices = PetCamObjectKind.allCases.filter { !inRoom.contains($0) } }
@@ -188,7 +191,9 @@ public struct PetCamRoom: Codable, Hashable, Sendable {
         let clean = choices.filter { !onFloor.contains($0) }
         let kind: PetCamObjectKind
         if !clean.isEmpty {
-            kind = clean[Int(random.next() % UInt64(clean.count))]
+            let fewest = clean.map { catches[$0] ?? 0 }.min() ?? 0
+            let least = clean.filter { (catches[$0] ?? 0) == fewest }
+            kind = least[Int(random.next() % UInt64(least.count))]
         } else {
             func newest(_ kind: PetCamObjectKind) -> Date {
                 wrecks.filter { $0.object.kind == kind }.map(\.wreckedAt).max() ?? .distantPast

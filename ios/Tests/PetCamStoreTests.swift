@@ -192,12 +192,12 @@ import TabbiKitCore
         var session = StudySession(method: .pomodoro)
         session.start(at: Self.t0)
         let filmed = PhaseAlert.upcoming(for: session, filming: true)
-        #expect(filmed.first?.title == "Block done")
-        #expect(filmed.first?.body == "The tape is ready.")
+        #expect(filmed.first?.title == "Tape ready")
+        #expect(filmed.first?.body == "Something happened while you were out.", "a tease that never says catch or miss")
         #expect(filmed.dropFirst().first?.title == PhaseAlert.upcoming(for: session).dropFirst().first?.title,
                 "the break's end is worded as before")
         let plain = PhaseAlert.upcoming(for: session)
-        #expect(plain.first?.title != "Block done")
+        #expect(plain.first?.title != "Tape ready")
         for alert in filmed + plain {
             for word in ["mug", "plant", "fishbowl", "counter", "shelf"] {
                 #expect(!alert.body.lowercased().contains(word), "the notification says nothing about the room")
@@ -264,7 +264,30 @@ import TabbiKitCore
         #expect(TapeSound.hiss(seconds: 1).map(abs).max() ?? 1 < 0.1, "the hiss sits under everything")
     }
 
-    @Test func aTapeExportsAsAVerticalVideoWithSoundUnderTwentySeconds() async throws {
+    @Test func theLoudnessMeterReadsLikeR128AndTheClipIsMasteredToMinus14() {
+        // A full-scale 997 Hz sine in one channel reads -3.01 LUFS.
+        let rate = TapeSound.sampleRate
+        let sine = (0..<Int(rate * 3)).map { Float(sin(2 * .pi * 997 * Double($0) / rate)) }
+        #expect(abs(Loudness.integrated(sine) - -3.01) < 0.15, "\(Loudness.integrated(sine))")
+        #expect(abs(Loudness.integrated(sine.map { $0 * 0.1 }) - -23.01) < 0.15)
+        // A clip's track: a strike, hiss, then the stamp, mastered.
+        var track = TapeSound.hiss(seconds: 5)
+        for (offset, cue) in [(0.0, PetCamTape.Cue.strike(.mug)), (3.3, .stamp)] {
+            let start = Int(offset * rate)
+            for (index, value) in TapeSound.samples(cue).enumerated() where start + index < track.count {
+                track[start + index] += value
+            }
+        }
+        let mastered = Loudness.master(track)
+        #expect(abs(Loudness.integrated(mastered) - -14) < 0.5, "\(Loudness.integrated(mastered)) LUFS")
+        #expect(mastered.map(abs).max() ?? 1 <= 0.8, "peaks stay under -1 dBFS with room for the encoder")
+        // The strike and the stamp stand at least 12 dB over the hiss bed.
+        let hiss = Array(mastered[Int(1.5 * rate)..<Int(2.9 * rate)])
+        #expect(Loudness.maximumMomentary(mastered) - Loudness.maximumMomentary(hiss) >= 12,
+                "\(Loudness.maximumMomentary(mastered)) over \(Loudness.maximumMomentary(hiss)); raw \(Loudness.integrated(track)) LUFS")
+    }
+
+    @Test func aTapeExportsAsALoopingVerticalClipWithSound() async throws {
         let rig = Rig()
         defer { try? FileManager.default.removeItem(at: rig.folder) }
         rig.timer(10)
@@ -277,12 +300,10 @@ import TabbiKitCore
         defer { try? FileManager.default.removeItem(at: url) }
         let asset = AVURLAsset(url: url)
         let duration = try await asset.load(.duration).seconds
-        let tape = try #require(PetCamTape(record: record))
-        // OWNER AWAY, the tape with its cuts, and the TABBI CAM slate.
-        let cards = Double(TapeExporter.openerFrames + TapeExporter.slateFrames) / Double(TapeExporter.framesPerSecond)
-        #expect(abs(duration - tape.duration - cards) < 1, "\(duration) s for a \(tape.duration) s tape")
-        #expect(duration < PetCamTape.maximumDuration)
-        #expect(PetCamTape.durationRange.contains(tape.duration))
+        let clip = try #require(PetCamTape.clip(record))
+        let length = clip.reduce(0) { $0 + $1.duration }
+        #expect(abs(duration - length) < 0.6, "\(duration) s for a \(length) s clip")
+        #expect(duration < 7, "a short clip that loops")
         let sound = try #require(try await asset.loadTracks(withMediaType: .audio).first, "the tape's own sound")
         #expect(abs(try await sound.load(.timeRange).duration.seconds - duration) < 0.5)
         let video = try #require(try await asset.loadTracks(withMediaType: .video).first)

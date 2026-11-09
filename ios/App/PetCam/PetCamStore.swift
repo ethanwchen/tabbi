@@ -88,11 +88,18 @@ final class PetCamStore: StudyObserver {
     /// The objects the pet has been caught with at least once.
     var caughtKinds: Set<PetCamObjectKind> { Set(mugshots.compactMap(\.struck?.kind)) }
 
+    /// How many times each object was caught, among the tapes watched.
+    var caughtCounts: [PetCamObjectKind: Int] {
+        var counts: [PetCamObjectKind: Int] = [:]
+        for record in mugshots { if let kind = record.struck?.kind { counts[kind, default: 0] += 1 } }
+        return counts
+    }
+
     /// A catch's case number on the wall (1 for the first), counting every
     /// catch however it was filed; nil for anything else.
     func caseNumber(of record: PetCamBlockRecord) -> Int? {
         guard record.outcome == .caught else { return nil }
-        return (game.log.mugshots.firstIndex { $0.id == record.id } ?? 0) + 1
+        return record.caseNumber ?? (game.log.mugshots.firstIndex { $0.id == record.id } ?? 0) + 1
     }
 
     // MARK: Actions

@@ -25,6 +25,8 @@ enum PetCamSheets {
         ("shove vase", .act(.vase), true),
         ("caught leap", .caughtMidAct(.mug), false),
         ("caught donut", .caughtMidAct(.donut), false),
+        ("guilty fish", .guilty(.fishbowl), false),
+        ("mugshot tier 3", .mugshot(.mug, look: 1, tier: 3), false),
         ("lens stare", .lensStare, false),
         ("lie down", .lieDown, false),
         ("stroll", .stroll(step: 1), false),
@@ -56,11 +58,11 @@ enum PetCamSheets {
                 rows.append((0..<PetCamPetArt.mugshotLooks).map { (PetCamPetArt.mugshot($0, profile: profile), profile.palette) }
                     + [(PetCamPetArt.mugshotProfile(profile), profile.palette)]
                     + PetCamObjectKind.allCases.enumerated().map { look, kind in
-                        (PetCamPetArt.mugshot(look, profile: profile, evidence: kind), profile.palette)
+                        (PetCamPetArt.mugshot(look, profile: profile, evidence: kind, tier: look % 3 + 1), profile.palette)
                     })
             }
             try sheet(rows, columns: ["deadpan", "smug", "side-eye", "unbothered", "yawn", "profile"]
-                        + PetCamObjectKind.allCases.map { "guilty \($0.rawValue)" },
+                        + PetCamObjectKind.allCases.enumerated().map { "\($1.rawValue) tier \($0 % 3 + 1)" },
                       rowLabels: PetBreed.allCases.map(\.displayName), scale: scale,
                       to: folder.appendingPathComponent("petcam-mugshots-\(scale)x.png"))
         }
@@ -120,6 +122,8 @@ enum PetCamSheets {
             let object = PetCamObject(kind: kind, placedAt: start, serial: 0)
             let act = PetCamShot(framing: .spot(spot), objects: [spot: object], states: [spot: .struck],
                                  pet: .act(kind), place: .strike(spot))
+            var fall = act
+            fall.states = [spot: .falling]
             var freeze = act
             freeze.framing = .closeUp(.strike(spot))
             freeze.pet = .caughtMidAct(kind)
@@ -127,8 +131,9 @@ enum PetCamSheets {
                 PetCamWreck(object: object, spot: spot, wreckedAt: start, blockID: "x", slot: 0),
             ])
             wreck.states = [spot: .gone]
-            shots += [("act \(kind.rawValue)", act, false), ("freeze \(kind.rawValue)", freeze, false),
-                      ("wreck \(kind.rawValue)", wreck, false)]
+            shots.append(("act \(kind.rawValue)", act, false))
+            if PetCamScene.falls(kind) { shots.append(("fall \(kind.rawValue)", fall, false)) }
+            shots += [("freeze \(kind.rawValue)", freeze, false), ("wreck \(kind.rawValue)", wreck, false)]
         }
         // Plays until it has one catch and one miss on every spot.
         var game = PetCamGame(seed: 0x9E7, at: start)

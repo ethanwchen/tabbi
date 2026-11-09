@@ -24,6 +24,18 @@ public enum PetCamPetArt {
     static let wild = eyes(art.grid("eyesWild"), art.grid("eyesWild").mirrored())
     /// A donut with a bite out of it, held up to the mouth.
     static let heldDonut = art.grid("heldDonut")
+    /// A tissue pulled between both paws, mid-shred.
+    static let heldTissue = art.grid("heldTissue")
+
+    /// What a repeat offender wears on top of its guilty look, one more
+    /// prop per rap-sheet tier: a plaster on the cheek from the second
+    /// catch, and the booking placard from the fourth.
+    static func tierMarks(_ tier: Int) -> [PetComposer.Extras.Mark] {
+        var marks: [PetComposer.Extras.Mark] = []
+        if tier >= 2 { marks.append(PetComposer.Extras.Mark(grid: art.grid("propBandage"), anchor: .cheek)) }
+        if tier >= 3 { marks.append(PetComposer.Extras.Mark(grid: art.grid("propPlacard"), anchor: .chest)) }
+        return marks
+    }
 
     /// The evidence a pet wears in its mugshot, by what it went for.
     static func guiltyMarks(_ kind: PetCamObjectKind) -> [PetComposer.Extras.Mark] {
@@ -73,7 +85,15 @@ public enum PetCamPetArt {
     /// the pet wears what it went for: a fish on its head and wet fur, frosting
     /// on its mouth, a tissue over one ear, soil on its nose, a coffee drip
     /// or a petal.
-    public static func mugshot(_ look: Int, profile: PetProfile, evidence: PetCamObjectKind? = nil) -> PetCanvas {
+    public static func mugshot(_ look: Int, profile: PetProfile, evidence: PetCamObjectKind? = nil,
+                               tier: Int = 1) -> PetCanvas {
+        let (pose, _, extras) = mugshotParts(look, evidence: evidence, tier: tier)
+        return PetComposer.compose(profile.breed, pose: pose, outfit: profile.outfit, accessories: profile.accessories,
+                                   bond: profile.bondLook, extras: extras).picture
+    }
+
+    static func mugshotParts(_ look: Int, evidence: PetCamObjectKind?, tier: Int)
+        -> (PetPose, PetComposer.Stance, PetComposer.Extras) {
         var (pose, extras): (PetPose, PetComposer.Extras) = switch ((look % mugshotLooks) + mugshotLooks) % mugshotLooks {
         case 0: (PetPose(headDrop: -1), PetComposer.Extras(eyes: lens))
         case 1: (PetPose(eyes: .happy), PetComposer.Extras())
@@ -82,12 +102,11 @@ public enum PetCamPetArt {
         default: (PetPose(eyes: .squeezed, mouth: .wide, headDrop: -1), PetComposer.Extras())
         }
         if let evidence {
-            extras.marks = guiltyMarks(evidence)
+            extras.marks = guiltyMarks(evidence) + tierMarks(tier)
             // A frosted or coffee-stained mouth stays shut so the mark reads.
             if evidence == .donut || evidence == .mug { pose.mouth = .closed }
         }
-        return PetComposer.compose(profile.breed, pose: pose, outfit: profile.outfit, accessories: profile.accessories,
-                                   bond: profile.bondLook, extras: extras).picture
+        return (pose, .sitting, extras)
     }
 
     /// The side view for a mugshot: standing side-on, facing left.
@@ -102,15 +121,15 @@ public enum PetCamPetArt {
             // The swat: paw flung out, a little hop, mouth open, wild eyes.
             (PetPose(mouth: .open, gesture: .wave(swing: 0), lift: 1), .sitting, PetComposer.Extras(eyes: wild))
         case .fishbowl:
-            // A paw in the water and a splash in the face: eyes squeezed shut,
-            // mouth open.
-            (PetPose(eyes: .squeezed, mouth: .open, gesture: .wave(swing: 0)), .sitting, PetComposer.Extras())
+            // Fishing: a paw reached out into the bowl, eyes on the water,
+            // no hop and mouth shut (the mug's swat has both).
+            (PetPose(gesture: .wave(swing: 0)), .sitting, PetComposer.Extras(eyes: lookLeft, faceShift: -1))
         case .donut:
             // Mouth full: the donut up in both paws, eyes squeezed in bliss.
             (PetPose(eyes: .squeezed), .sitting, PetComposer.Extras(held: heldDonut))
         case .tissues:
-            // Shredding: paw up and pulling, eyes delighted.
-            (PetPose(eyes: .happy, mouth: .open, gesture: .wave(swing: 1)), .sitting, PetComposer.Extras())
+            // Shredding: a tissue pulled between both paws, eyes delighted.
+            (PetPose(eyes: .happy), .sitting, PetComposer.Extras(held: heldTissue))
         case .plant:
             // Digging: down low at the pot, eyes squeezed against the soil.
             (PetPose(eyes: .squeezed), .sneaking(step: 2), PetComposer.Extras())
@@ -142,6 +161,13 @@ public enum PetCamPetArt {
             return (PetPose(gesture: .wave(swing: 1)), .sitting, PetComposer.Extras(eyes: lookLeft, faceShift: -1))
         case .act(let kind):
             return act(kind)
+        case .guilty(let kind):
+            // Eye contact, wearing the evidence: the face the wall files.
+            var pose = PetPose()
+            if kind == .donut || kind == .mug { pose.mouth = .closed }
+            return (pose, .sitting, PetComposer.Extras(eyes: lens, marks: guiltyMarks(kind)))
+        case .mugshot(let kind, let look, let tier):
+            return mugshotParts(look, evidence: kind, tier: tier)
         case .caughtMidAct(let kind):
             if kind.isEaten {
                 // Mouth full, the donut up in both paws, eyes on the lens.

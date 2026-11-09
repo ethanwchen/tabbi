@@ -109,7 +109,18 @@ struct HomeScreen: View {
                         .padding(.horizontal, CCTV.gutter)
                         .padding(.top, 10)
                         .padding(.bottom, 4)
-                        .background(CCTV.screen.opacity(0.94).ignoresSafeArea())
+                        .background {
+                            // Opaque under the button, with a short fade above
+                            // it, so nothing scrolls through half-sliced.
+                            VStack(spacing: 0) {
+                                LinearGradient(colors: [CCTV.screen.opacity(0), CCTV.screen], startPoint: .top,
+                                               endPoint: .bottom)
+                                    .frame(height: 18)
+                                CCTV.screen
+                            }
+                            .padding(.top, -18)
+                            .ignoresSafeArea()
+                        }
                 }
             }
         }
@@ -345,8 +356,9 @@ struct HomeScreen: View {
                 .frame(minHeight: 48)
         }
         .buttonStyle(.plain)
-        .glassEffect(.regular.tint(CCTV.rec.opacity(0.25)).interactive(), in: .capsule)
-        .accessibilityHint(Text(verbatim: "Starts now. You can stop after five minutes."))
+        .glassEffect(.regular.interactive(), in: .capsule)
+        .overlay(Capsule().strokeBorder(StudyTone.focus.hue(.dark).opacity(0.85), lineWidth: 1.5))
+        .accessibilityHint(Text(verbatim: "Starts now. Stop any time after five minutes and the tape still plays."))
     }
 
     private var startButton: some View {
@@ -360,27 +372,49 @@ struct HomeScreen: View {
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity, minHeight: 56)
         }
-        .buttonStyle(.glassProminent)
-        .buttonBorderShape(.capsule)
-        .tint(StudyTone.focus.hue(.dark))
+        .buttonStyle(SolidCapsuleStyle(fill: StudyTone.focus.hue(.dark)))
     }
 
-    /// Where the camera will hide, or why it will not film this block.
+    /// What is on the frame, in words ("Eyeing the plant. The mug is
+    /// WANTED."), then where the camera hides when the player moved it, and
+    /// on the first two blocks how to move it. It describes the frame and
+    /// never states the rule; the tapes do the teaching.
     private var cameraLine: some View {
         let armed = cam.game.arms(plannedLength: session.phaseDuration)
         let minutes = Int((cam.game.minimumBlock / 60).rounded())
-        let text = if !armed {
-            "Blocks under \(minutes) minutes are not filmed."
-        } else if let pick = cam.pick {
-            "Camera hidden at the \(PetCamCaptions.name(of: pick).lowercased()). Tap it again to follow the stare."
-        } else {
-            "Camera follows the stare. Tap a lit spot to hide it there."
+        let setup = cam.shownSetup, room = cam.shownRoom
+        func object(_ spot: PetCamSpot) -> String {
+            room.object(at: spot).map { PetCamCaptions.name(of: $0.kind).lowercased() } ?? "nothing"
         }
-        return Text(verbatim: text)
-            .font(.footnote)
-            .foregroundStyle(CCTV.burnIn.opacity(0.6))
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
+        var frame = "Eyeing the \(object(setup.stare))."
+        if let tell = setup.tell {
+            frame += tell.exception == .appetite ? " The \(object(tell.spot)) smells too good."
+                : " The \(object(tell.spot)) is wobbling."
+        } else if let wanted = setup.wanted {
+            frame += " The \(object(wanted)) is WANTED."
+        }
+        let control: String? = if let pick = cam.pick {
+            "Camera hidden at the \(PetCamCaptions.name(of: pick).lowercased())."
+        } else if cam.game.log.blocks.count < 2 {
+            "Tap another spot to hide the camera there."
+        } else {
+            nil
+        }
+        return VStack(spacing: 2) {
+            if armed {
+                Text(verbatim: frame)
+                    .foregroundStyle(CCTV.burnIn.opacity(0.85))
+                if let control { Text(verbatim: control).foregroundStyle(CCTV.burnIn.opacity(0.55)) }
+            } else {
+                Text(verbatim: "Blocks under \(minutes) minutes are not filmed.")
+                    .foregroundStyle(CCTV.burnIn.opacity(0.6))
+            }
+        }
+        .font(.footnote)
+        .multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("home.hint")
     }
 
     private var breakControls: some View {
@@ -411,8 +445,7 @@ private struct SpotTargets: View {
                 Button {
                     cam.pick = cam.pick == spot ? nil : spot
                 } label: {
-                    Viewfinder(label: "CAM \(spot.cameraNumber)", picked: cam.pick == spot, shown: isCamera,
-                               labelBelow: frame.minY < 64)
+                    Viewfinder(label: "CAM \(spot.cameraNumber)", armed: isCamera, labelBelow: frame.minY < 64)
                         .frame(width: frame.width, height: frame.height)
                         .overlay(alignment: .top) {
                             // The stake: the object the wall is missing longest.
@@ -453,35 +486,45 @@ private struct WantedTag: View {
     }
 }
 
-/// Four corner brackets and the camera's number: red when the player hid
-/// the camera here, pale when it is following the stare.
+/// Four corner brackets and the camera's number on every spot, marking the
+/// three places a camera can hide: bright on the armed one (the tapped spot,
+/// or the stare), faint on the other two. They replace the light halos,
+/// which turned the room to mush.
 private struct Viewfinder: View {
     let label: String
-    let picked: Bool
-    let shown: Bool
+    let armed: Bool
     /// Near the top of the picture the label goes under the brackets, clear
     /// of the burn-in.
     var labelBelow = false
 
     var body: some View {
-        let color = picked ? CCTV.rec : CCTV.burnIn
         Corners()
-            .stroke(color, style: StrokeStyle(lineWidth: 2, lineCap: .square))
-            .opacity(shown ? 1 : 0)
+            .stroke(CCTV.burnIn, style: StrokeStyle(lineWidth: 2, lineCap: .square))
             .overlay(alignment: labelBelow ? .bottomLeading : .topLeading) {
-                if shown {
-                    Text(verbatim: label)
-                        .font(.system(size: 10, weight: .bold, design: .monospaced))
-                        .foregroundStyle(color)
-                        .padding(.horizontal, 3)
-                        .background(CCTV.screen.opacity(0.65))
-                        .fixedSize()
-                        // Fully outside the brackets (the label is about
-                        // 13 points tall), with air between it and the stroke.
-                        .offset(y: labelBelow ? 17 : -17)
-                }
+                Text(verbatim: label)
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundStyle(CCTV.burnIn)
+                    .padding(.horizontal, 3)
+                    .background(CCTV.screen.opacity(0.65))
+                    .fixedSize()
+                    // Fully outside the brackets (the label is about
+                    // 13 points tall), with air between it and the stroke.
+                    .offset(y: labelBelow ? 17 : -17)
             }
+            .opacity(armed ? 1 : 0.35)
             .shadow(color: .black.opacity(0.6), radius: 0, x: 1, y: 1)
+    }
+}
+
+/// A plain filled capsule, without the glass rim: Start.
+struct SolidCapsuleStyle: ButtonStyle {
+    let fill: Color
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(fill.opacity(configuration.isPressed ? 0.8 : 1), in: .capsule)
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(.spring(duration: 0.2), value: configuration.isPressed)
     }
 }
 
@@ -522,8 +565,11 @@ private struct StaticScreen: View {
     }
 }
 
-/// A focus block under way: the monitor shows REC and the countdown and
-/// nothing of the room, so there is nothing to check until the tape.
+/// A focus block under way: the player's own words as the case title
+/// ("RE: MY TAX RETURN"), a still tile for the hidden camera on lens-cap
+/// black, and the countdown. Nothing of the room shows and nothing changes
+/// but the clock and the REC dot, so there is nothing to check until the
+/// tape. The Lock Screen never shows the words: other people see it.
 struct RecordingScreen: View {
     @Environment(StudyStore.self) private var study
     @Environment(PetCamStore.self) private var cam
@@ -531,27 +577,36 @@ struct RecordingScreen: View {
     var body: some View {
         let filming = cam.game.active
         VStack(spacing: 0) {
-            HStack(alignment: .top) {
-                RecLabel(text: filming == nil ? "STANDBY" : "REC", isRecording: filming != nil)
-                Spacer(minLength: 8)
+            Spacer(minLength: 24)
+            VStack(spacing: 18) {
                 if let filming {
-                    Text(verbatim: "CAM \(filming.camera.cameraNumber)")
-                        .font(CCTV.font(.caption, weight: .bold))
-                        .foregroundStyle(CCTV.burnIn)
+                    if let dodge = PetCamCaptions.cleanDodge(filming.dodge) {
+                        Text(verbatim: "RE: \(dodge)")
+                            .font(CCTV.font(.title3, weight: .heavy))
+                            .foregroundStyle(CCTV.burnIn)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityIdentifier("recording.case")
+                    }
+                    CameraTile(camera: filming.camera)
+                } else {
+                    RecLabel(text: "STANDBY", isRecording: false)
+                    Text(verbatim: "The camera only films blocks of \(Int((cam.game.minimumBlock / 60).rounded())) minutes or more.")
+                        .font(.subheadline)
+                        .foregroundStyle(CCTV.burnIn.opacity(0.6))
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                StudyClock(session: study.session)
+                if filming?.dare == true {
+                    Text(verbatim: "Just 5 minutes. Stop any time after that and the tape still plays.")
+                        .font(.subheadline)
+                        .foregroundStyle(CCTV.burnIn.opacity(0.6))
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 12)
-            Spacer(minLength: 24)
-            StudyClock(session: study.session)
-                .padding(.horizontal, 20)
-            Text(verbatim: line(filming))
-                .font(.subheadline)
-                .foregroundStyle(CCTV.burnIn.opacity(0.6))
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, 32)
-                .padding(.top, 16)
+            .padding(.horizontal, 28)
             Spacer(minLength: 24)
             SessionButtons(tint: StudyTone.focus.hue(.dark))
                 .padding(.horizontal, 20)
@@ -561,19 +616,47 @@ struct RecordingScreen: View {
         .background {
             ZStack {
                 CCTV.screen
-                Grain(amount: 0.06)
                 Scanlines(opacity: 0.22)
             }
             .ignoresSafeArea()
         }
     }
+}
 
-    private func line(_ block: PetCamActiveBlock?) -> String {
-        guard let block else {
-            let minutes = Int((cam.game.minimumBlock / 60).rounded())
-            return "The camera only films blocks of \(minutes) minutes or more."
+/// The hidden camera as a still tile: lens-cap black, its name, and a REC
+/// dot that blinks (still under Reduce Motion).
+private struct CameraTile: View {
+    let camera: PetCamSpot
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ScaledMetric(relativeTo: .caption) private var dot: CGFloat = 9
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 6) {
+                TimelineView(.periodic(from: .now, by: 1)) { context in
+                    let lit = reduceMotion || Int(context.date.timeIntervalSinceReferenceDate) % 2 == 0
+                    Circle()
+                        .fill(CCTV.rec)
+                        .frame(width: dot, height: dot)
+                        .opacity(lit ? 1 : 0.2)
+                }
+                Text(verbatim: "REC")
+                    .font(CCTV.font(.caption, weight: .bold))
+                    .foregroundStyle(CCTV.burnIn.opacity(0.8))
+            }
+            Spacer(minLength: 12)
+            Text(verbatim: "CAM \(camera.cameraNumber), \(PetCamCaptions.name(of: camera))")
+                .font(CCTV.font(.footnote, weight: .semibold))
+                .foregroundStyle(CCTV.burnIn.opacity(0.45))
+                .fixedSize(horizontal: false, vertical: true)
         }
-        if block.dare { return "Just 5 minutes. After that you can stop any time." }
-        return "Recording. The tape plays when the block is done."
+        .padding(14)
+        .frame(maxWidth: 260, minHeight: 120, alignment: .topLeading)
+        .background(Color.black, in: .rect(cornerRadius: CCTV.feedRadius, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: CCTV.feedRadius, style: .continuous)
+            .stroke(CCTV.burnIn.opacity(0.08)))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: "Recording on camera \(camera.cameraNumber), the \(PetCamCaptions.name(of: camera).lowercased())"))
+        .accessibilityIdentifier("recording.camera")
     }
 }

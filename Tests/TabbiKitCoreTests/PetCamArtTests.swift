@@ -308,7 +308,6 @@ final class PetCamArtTests: XCTestCase {
                 XCTAssertTrue(inside(pet.x + 16, pet.y + 24), "\(spot) keeps the pet in frame at \(pet)")
             }
         }
-        XCTAssertEqual(PetCamScene.layout.pools.count, 4, "three lit spots and the moonbeam")
     }
 
     func testScenesAreDeterministicAndShowWhatTheShotSays() throws {
@@ -339,21 +338,20 @@ final class PetCamArtTests: XCTestCase {
         XCTAssertEqual(image.width, 200)
     }
 
-    func testTheLitSpotsAreLitAndTheRestOfTheRoomIsDark() {
-        let layout = PetCamScene.layout
-        func lit(_ x: Double, _ y: Double) -> Bool { PetCamScene.light[Int(y) * layout.width + Int(x)].lit }
-        for pool in layout.pools {
-            XCTAssertTrue(lit(pool.x, pool.y), "pool at \(pool.x),\(pool.y)")
-            XCTAssertTrue(lit(pool.x + pool.rx * 0.9, pool.y))
-        }
-        XCTAssertFalse(lit(4, 150), "the near floor is dark")
-        XCTAssertFalse(lit(96, 4), "the top of the back wall is dark")
-        let share = Double(PetCamScene.light.filter(\.lit).count) / Double(PetCamScene.light.count)
-        XCTAssertLessThan(share, 0.4, "most of the room is in the dark")
-        // The same wall pixel is brighter in a pool than in the dark.
+    func testTheRoomHasNoHalosAndReadsEvenly() {
+        // The dithered pools turned close-ups to mush, so the room is lit
+        // evenly: nothing is in a pool, and at night the far wall and the
+        // near floor are both still readable, not black.
+        XCTAssertTrue(PetCamScene.layout.pools.isEmpty)
+        XCTAssertFalse(PetCamScene.light.contains { $0.lit })
         let night = PetCamScene.frame(PetCamShot(framing: .wide, objects: [:]), pet: PetProfile(name: "", breed: .calico),
                                       daylight: false)
-        XCTAssertGreaterThan(night[52, 18].luminance, night[96, 4].luminance * 1.5)
+        let day = PetCamScene.frame(PetCamShot(framing: .wide, objects: [:]), pet: PetProfile(name: "", breed: .calico),
+                                    daylight: true)
+        for (x, y) in [(52, 18), (96, 4), (4, 150), (60, 100)] {
+            XCTAssertGreaterThan(night[x, y].luminance, 0.05, "readable at night at \(x),\(y)")
+            XCTAssertGreaterThan(day[x, y].luminance, night[x, y].luminance, "brighter by day at \(x),\(y)")
+        }
     }
 
     func testQuarterTurnsRoundTrip() throws {

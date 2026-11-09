@@ -235,7 +235,7 @@ final class PetCamEngineTests: XCTestCase {
     func testOnlyALongEnoughBlockArmsTheCamera() {
         var game = PetCamGame(seed: 1, at: Self.monday)
         XCTAssertTrue(game.isFirstBlock)
-        XCTAssertEqual(game.minimumBlock, 5 * 60, "the very first block may be five minutes")
+        XCTAssertEqual(game.minimumBlock, 5 * 60, "one floor: five minutes")
         XCTAssertFalse(game.arms(plannedLength: 4 * 60))
         XCTAssertTrue(game.arms(plannedLength: 5 * 60))
         XCTAssertTrue(game.arms(plannedLength: nil), "open-ended blocks arm and are judged at the end")
@@ -245,9 +245,25 @@ final class PetCamEngineTests: XCTestCase {
         game.start(id: "b1", pick: nil, dodge: nil, dare: false, plannedLength: 300, pet: pet, at: Self.monday)
         game.finish(endedAt: Self.monday.addingTimeInterval(300), worked: 300, calendar: Self.calendar)
         XCTAssertFalse(game.isFirstBlock)
-        XCTAssertEqual(game.minimumBlock, 10 * 60)
-        XCTAssertFalse(game.arms(plannedLength: 5 * 60))
-        XCTAssertTrue(game.arms(plannedLength: 25 * 60))
+        XCTAssertEqual(game.minimumBlock, 5 * 60, "the same floor after the first block")
+        XCTAssertTrue(game.arms(plannedLength: 5 * 60))
+        XCTAssertFalse(game.arms(plannedLength: 4 * 60))
+        // An older save's rules, with the retired first-block field, still load.
+        let old = Data(#"{"minimumBlock": 600, "firstBlockMinimum": 300, "commitAfter": 300}"#.utf8)
+        XCTAssertEqual(try? JSONDecoder().decode(PetCamRules.self, from: old).minimumBlock, 600)
+    }
+
+    func testARefillFavorsTheKindsCaughtLeast() {
+        // The counter's mug is struck; the free kinds are the vase, the
+        // tissues and the donut. The tissues and the donut were caught
+        // already, so the vase comes out every time.
+        for seed: UInt64 in 0..<40 {
+            var room = PetCamRoom.starter(at: Self.monday)
+            var random = PetCamRandom(seed: seed)
+            room.strike(.counter, at: Self.monday.addingTimeInterval(60), blockID: "b", random: &random,
+                        catches: [.tissues: 2, .donut: 1, .mug: 3])
+            XCTAssertEqual(room.object(at: .counter)?.kind, .vase)
+        }
     }
 
     func testFinishingCatchesWhenTheCameraIsWhereThePetStrikes() throws {

@@ -262,6 +262,9 @@ public enum PetCamScene {
         }
         if let subject {
             picture.sprite(Self.wreck(subject.object.kind), base: wreckAnchor(subject), light: .exposed, outline: .ink)
+            // The yellow evidence tent marked A beside it, as on the case
+            // file, so a second pile of the same thing still reads as new.
+            picture.tent(beside: subject)
         }
         // The objects and the pet by where they stand, the nearest drawn
         // last, so the pet sits behind a plate at the front of its table.
@@ -270,7 +273,7 @@ public enum PetCamScene {
         for spot in PetCamSpot.allCases {
             guard let object = shot.objects[spot] else { continue }
             let state = shot.states[spot] ?? .still
-            let flying = state == .struck && Self.flies(object.kind)
+            let flying = (state == .struck && Self.flies(object.kind)) || state == .falling
             layers.append((flying ? Int.max : layout.spot(spot).object.y, { picture in
                 picture.object(object.kind, state: state, at: layout.spot(spot), tick: tick)
             }))
@@ -306,6 +309,13 @@ public enum PetCamScene {
     /// shove) rather than leaving it standing as the pet works on it.
     static func flies(_ kind: PetCamObjectKind) -> Bool {
         kind == .mug || kind == .vase
+    }
+
+    /// Whether the object goes over and falls to the floor after the act
+    /// (the fishbowl tips, the plant topples), as opposed to being eaten or
+    /// shredded where it stands.
+    public static func falls(_ kind: PetCamObjectKind) -> Bool {
+        kind != .donut && kind != .tissues
     }
 
     /// Where the pet's frame goes for `place`, and which way it faces.
@@ -492,7 +502,30 @@ public enum PetCamScene {
             case .struck:
                 // Still standing while the pet works on it, rocked a pixel.
                 sprite(grid, base: spot.object, light: .room, dx: spot.strike.facingRight ? 1 : -1)
+            case .falling:
+                // Halfway down, away from the pet: turned over (the mug, the
+                // vase) or tipped with what is in it spilling out.
+                let right = spot.strike.facingRight
+                let base = PetCamLayout.Point(x: spot.object.x + (right ? 10 : -10), y: spot.object.y + 12)
+                if PetCamScene.art.grids["fall.\(kind.rawValue)"] != nil {
+                    let tipped = PetCamScene.art.grid("fall.\(kind.rawValue)")
+                    sprite(right ? tipped : tipped.mirrored(), base: base, light: .room)
+                } else {
+                    sprite(right ? grid.rotatedClockwise().rotatedClockwise() : grid.rotatedCounterclockwise(),
+                           base: base, light: .room)
+                }
+                let motion = PetCamScene.effect(right ? "motionLeft" : "motionRight")
+                effect(motion, x: right ? base.x - 12 - motion.width : base.x + 12, y: base.y - 10)
             }
+        }
+
+        /// The evidence tent beside `wreck`, on whichever side has room.
+        mutating func tent(beside wreck: PetCamWreck) {
+            let tent = PetCamScene.effect("tent")
+            let grid = PetCamScene.wreck(wreck.object.kind), anchor = PetCamScene.wreckAnchor(wreck)
+            let right = anchor.x + grid.width / 2 + 2 + tent.width < PetCamScene.layout.width
+            let x = right ? anchor.x + grid.width / 2 + 2 : anchor.x - grid.width / 2 - 2 - tent.width
+            effect(tent, x: x, y: anchor.y - tent.height + 1, light: .exposed)
         }
 
         /// Where an object knocked off `spot` is in mid-air.
@@ -512,6 +545,11 @@ public enum PetCamScene {
             let flying = PetCamScene.flies(kind)
             let object = flying ? flyingBase(spot) : spot.object
             let top = object.y - (flying ? PetCamScene.object(kind).width : PetCamScene.object(kind).height)
+            if kind == .fishbowl {
+                // A splash ring on the water where the paw went in.
+                effect(grid, x: object.x - grid.width / 2, y: top - 1, light: .room)
+                return
+            }
             sprite(flecks, base: PetCamLayout.Point(x: object.x + (away ? 4 : -4), y: top + 3), light: .room)
         }
 
@@ -542,7 +580,28 @@ public enum PetCamScene {
             let inset = step <= 0 ? -grid.width / 3 : 4
             let x = fromRight ? crop.x + crop.width - grid.width - inset : crop.x + inset
             let y = crop.y + min(max(source.y - crop.y + 4, 6), crop.height - grid.height - 6)
+            // The fragments ringed in ink so they read on any floor; the dust
+            // behind them stays soft.
+            var fragments = grid
+            for row in 0..<grid.height {
+                for column in 0..<grid.width where grid[column, row] == .role(.effectFaint) {
+                    fragments[column, row] = .empty
+                }
+            }
             effect(grid, x: x, y: y, fragments: kind.map(Self.fragmentRole))
+            var canvas = PetCanvas(width: fragments.width + 2, height: fragments.height + 2)
+            canvas.stamp(fragments, x: 1, y: 1)
+            if let kind {
+                for cy in 0..<canvas.height {
+                    for cx in 0..<canvas.width where canvas[cx, cy] == .effect { canvas[cx, cy] = Self.fragmentRole(kind) }
+                }
+            }
+            let colors = canvas.outlined(with: .ink).colors(using: PetCamScene.palette)
+            for cy in 0..<canvas.height {
+                for cx in 0..<canvas.width {
+                    if let color = colors[cy * canvas.width + cx] { blend(color, x: x - 1 + cx, y: y - 1 + cy, light: nil) }
+                }
+            }
         }
 
         static func fragmentRole(_ kind: PetCamObjectKind) -> PetPaletteRole {
