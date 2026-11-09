@@ -127,8 +127,10 @@ public enum PetCamScene {
             let pet = placement(for: place, pose: .lensStare)
             return centered(x: pet.x + 16, y: pet.y + 16)
         case .wreck(let spot, _):
+            // Centered across on the newest wreck, which sits in the upper
+            // third over the empty floor in front of it.
             let anchor = wrecks.last { $0.spot == spot }.map(wreckAnchor) ?? layout.spot(spot).object
-            return centered(x: anchor.x, y: anchor.y - 4)
+            return centered(x: anchor.x, y: anchor.y + 12)
         }
     }
 
@@ -268,9 +270,6 @@ public enum PetCamScene {
         }
         if let subject {
             picture.sprite(Self.wreck(subject.object.kind), base: wreckAnchor(subject), light: .exposed, outline: .ink)
-            // The yellow evidence tent marked A beside it, as on the case
-            // file, so a second pile of the same thing still reads as new.
-            picture.tent(beside: subject)
         }
         // The objects and the pet by where they stand, the nearest drawn
         // last, so the pet sits behind a plate at the front of its table.
@@ -523,15 +522,6 @@ public enum PetCamScene {
                 let motion = PetCamScene.effect(right ? "motionLeft" : "motionRight")
                 effect(motion, x: right ? base.x - 12 - motion.width : base.x + 12, y: base.y - 10)
             }
-        }
-
-        /// The evidence tent beside `wreck`, on whichever side has room.
-        mutating func tent(beside wreck: PetCamWreck) {
-            let tent = PetCamScene.effect("tent")
-            let grid = PetCamScene.wreck(wreck.object.kind), anchor = PetCamScene.wreckAnchor(wreck)
-            let right = anchor.x + grid.width / 2 + 2 + tent.width < PetCamScene.layout.width
-            let x = right ? anchor.x + grid.width / 2 + 2 : anchor.x - grid.width / 2 - 2 - tent.width
-            effect(tent, x: x, y: anchor.y - tent.height + 1, light: .exposed)
         }
 
         /// Where an object knocked off `spot` is in mid-air.

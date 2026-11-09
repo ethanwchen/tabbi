@@ -180,6 +180,7 @@ public struct PetCamGame: Codable, Hashable, Sendable {
         guard record.outcome.hasTape, let strike = record.strike else { return true }
         var refill = PetCamRandom(seed: record.setup.seed, stream: "refill")
         room.strike(strike, at: record.endedAt, blockID: record.id, random: &refill, catches: log.catchCounts)
+        room.sweep()
         if active == nil, record.setup.seed == setup.seed {
             setup = PetCamSetup.prepare(seed: record.setup.nextSeed, room: room, species: species, tuning: tuning,
                                         history: log.blocks, at: record.endedAt)

@@ -101,8 +101,10 @@ public struct PetCamRoom: Codable, Hashable, Sendable {
     /// The next object's serial.
     public private(set) var nextSerial: Int
 
-    /// How many wrecks per spot stay on the floor; an older one is swept
-    /// away (the block log still remembers it).
+    /// How many wrecks a spot can have on the floor at once: the one left
+    /// from earlier and the one a tape just made. The older is swept away
+    /// between blocks (`sweep`), never inside a tape (the block log still
+    /// remembers it).
     public static let visibleWrecksPerSpot = 2
 
     public init(objects: [PetCamSpot: PetCamObject], wrecks: [PetCamWreck] = [], nextSerial: Int? = nil) {
@@ -138,6 +140,17 @@ public struct PetCamRoom: Codable, Hashable, Sendable {
             kept.append(wreck)
         }
         return kept.reversed()
+    }
+
+    /// Between blocks, as the next frozen frame is prepared: each spot keeps
+    /// only its newest wreck, so the next tape's strike always has a free
+    /// place on the floor and every wreck already there stays in its shots.
+    public mutating func sweep() {
+        var kept: [PetCamWreck] = []
+        for wreck in wrecks.reversed() where !kept.contains(where: { $0.spot == wreck.spot }) {
+            kept.append(wreck)
+        }
+        wrecks = kept.reversed()
     }
 
     /// Whether the block with `id` already wrecked something here.
