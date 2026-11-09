@@ -1,3 +1,4 @@
+import Accelerate
 import AVFoundation
 import Foundation
 import TabbiKitCore
@@ -158,8 +159,9 @@ enum TapeSound {
 /// K-weighting (a high shelf and a high pass), 400 ms blocks every 100 ms,
 /// an absolute gate at -70 LUFS and a relative gate 10 LU under the mean.
 /// The share clip is mastered with it to -14 LUFS, the level the feeds play
-/// at, with its samples held under -4.4 dBFS so the AAC encoder's
-/// overshoot still leaves the true peak under -1 dBTP.
+/// at, with its true peak (the peak between the samples, read four times
+/// oversampled as BS.1770 reads it) held at -3 dBTP, so the AAC encoder's
+/// own overshoot still leaves the clip under -1 dBTP.
 enum Loudness {
     /// Integrated loudness of `samples` in LUFS (-70 for silence).
     static func integrated(_ samples: [Float], rate: Double = TapeSound.sampleRate) -> Double {
@@ -182,15 +184,13 @@ enum Loudness {
     /// Mean square of the K-weighted signal in each `length` block, every
     /// 100 ms.
     private static func blockPowers(_ samples: [Float], rate: Double, length: Double) -> [Double] {
-        let weighted = kWeighted(samples, rate: rate)
+        let squares = vDSP.square(kWeighted(samples, rate: rate))
         let size = Int(length * rate), step = Int(0.1 * rate)
-        guard weighted.count >= size else {
-            return weighted.isEmpty ? [] : [weighted.reduce(0) { $0 + $1 * $1 } / Double(weighted.count)]
+        guard squares.count >= size else {
+            return squares.isEmpty ? [] : [vDSP.sum(squares) / Double(squares.count)]
         }
-        var squares = [Double](repeating: 0, count: weighted.count + 1)
-        for (index, value) in weighted.enumerated() { squares[index + 1] = squares[index] + value * value }
-        return stride(from: 0, through: weighted.count - size, by: step).map {
-            (squares[$0 + size] - squares[$0]) / Double(size)
+        return stride(from: 0, through: squares.count - size, by: step).map {
+            vDSP.sum(squares[$0..<($0 + size)]) / Double(size)
         }
     }
 
@@ -202,65 +202,121 @@ enum Loudness {
         var k = tan(Double.pi * f0 / rate)
         let vh = pow(10, 3.999843853973347 / 20), vb = pow(vh, 0.4996667741545416)
         let a0 = 1 + k / q + k * k
-        let shelf = (b: [(vh + vb * k / q + k * k) / a0, 2 * (k * k - vh) / a0, (vh - vb * k / q + k * k) / a0],
-                     a: [1, 2 * (k * k - 1) / a0, (1 - k / q + k * k) / a0])
+        let shelf = [(vh + vb * k / q + k * k) / a0, 2 * (k * k - vh) / a0, (vh - vb * k / q + k * k) / a0,
+                     2 * (k * k - 1) / a0, (1 - k / q + k * k) / a0]
         // Stage two, a high pass at about 38 Hz.
         f0 = 38.13547087602444
         q = 0.5003270373238773
         k = tan(Double.pi * f0 / rate)
         let p0 = 1 + k / q + k * k
-        let pass = (b: [1.0, -2.0, 1.0], a: [1, 2 * (k * k - 1) / p0, (1 - k / q + k * k) / p0])
-        return filter(filter(samples.map(Double.init), shelf), pass)
+        let pass = [1, -2, 1, 2 * (k * k - 1) / p0, (1 - k / q + k * k) / p0]
+        // Each section is b0, b1, b2, a1, a2 (a0 is 1).
+        guard var filters = vDSP.Biquad(coefficients: shelf + pass, channelCount: 1, sectionCount: 2,
+                                        ofType: Double.self) else { return samples.map(Double.init) }
+        return filters.apply(input: vDSP.floatToDouble(samples))
     }
 
-    private static func filter(_ x: [Double], _ c: (b: [Double], a: [Double])) -> [Double] {
-        var y = [Double](repeating: 0, count: x.count)
-        var x1 = 0.0, x2 = 0.0, y1 = 0.0, y2 = 0.0
-        for index in x.indices {
-            let out = c.b[0] * x[index] + c.b[1] * x1 + c.b[2] * x2 - c.a[1] * y1 - c.a[2] * y2
-            x2 = x1; x1 = x[index]; y2 = y1; y1 = out
-            y[index] = out
-        }
-        return y
-    }
-
-    /// `samples` brought to `target` LUFS with no sample over `ceiling`: a
-    /// gain, then a soft saturation that rounds the strikes' peaks into the
-    /// ceiling (the quiet hiss passes through untouched), repeated until the
-    /// loudness settles. Saturating rather than only limiting is what lets
-    /// short, spiky hits reach the level without lifting the hiss with them.
-    static func master(_ samples: [Float], target: Double = -14, ceiling: Float = 0.6,
+    /// `samples` brought to `target` LUFS with a true peak at or under
+    /// `ceiling`: a gain, a soft saturation that rounds the strikes' peaks
+    /// toward the ceiling (the quiet hiss passes through untouched), then a
+    /// look-ahead limiter on the true peak, repeated until the loudness
+    /// settles. Saturating rather than only limiting is what lets short,
+    /// spiky hits reach the level without lifting the hiss with them; the
+    /// limiter reads the peaks between the samples, which a crash's
+    /// saturated noise throws several dB over its samples.
+    static func master(_ samples: [Float], target: Double = -14, ceiling: Float = 0.708,
                        rate: Double = TapeSound.sampleRate) -> [Float] {
-        var gain: Float = 1
-        var out = samples
-        for _ in 0..<16 {
-            out = samples.map { ceiling * tanh($0 * gain / ceiling) }
-            let measured = integrated(out, rate: rate)
-            guard measured > -69 else { return out }
-            if abs(measured - target) < 0.1 { break }
-            gain *= Float(pow(10, (target - measured) / 20))
+        func rendered(_ decibels: Double) -> [Float] {
+            let drive = Float(pow(10, decibels / 20)) / ceiling
+            let saturated = vDSP.multiply(ceiling, vForce.tanh(vDSP.multiply(drive, samples)))
+            return limited(saturated, ceiling: ceiling, rate: rate)
         }
-        return limited(out, ceiling: ceiling, rate: rate)
+        // Loudness only rises with the gain, so a secant search on the gain
+        // in dB settles in a few rounds.
+        var gain = 0.0
+        var out = rendered(gain)
+        var error = integrated(out, rate: rate) - target
+        guard error + target > -69 else { return out }
+        var step = -error
+        for _ in 0..<12 where abs(error) >= 0.05 {
+            let before = (gain: gain, error: error)
+            gain += step
+            out = rendered(gain)
+            error = integrated(out, rate: rate) - target
+            let slope = (error - before.error) / (gain - before.gain)
+            step = max(-24, min(24, slope > 0.05 ? -error / slope : -error))
+        }
+        return out
+    }
+
+    /// The true peak of `samples` in dBTP.
+    static func truePeak(_ samples: [Float]) -> Double {
+        samples.isEmpty ? -.infinity : 20 * log10(Double(max(vDSP.maximum(peaks(samples)), 1e-9)))
+    }
+
+    /// Each sample's true peak: the larger of the sample and the three
+    /// points between it and the next, interpolated four times oversampled
+    /// with a 16 tap windowed sinc.
+    static func peaks(_ samples: [Float]) -> [Float] {
+        let reach = 8
+        var padded = [Float](repeating: 0, count: reach - 1)
+        padded += samples
+        padded += [Float](repeating: 0, count: reach)
+        var envelope = vDSP.absolute(samples)
+        var between = [Float](repeating: 0, count: samples.count)
+        for phase in 1..<4 {
+            let taps = interpolator(phase: phase, reach: reach)
+            padded.withUnsafeBufferPointer { signal in
+                taps.withUnsafeBufferPointer { filter in
+                    between.withUnsafeMutableBufferPointer { result in
+                        vDSP_conv(signal.baseAddress!, 1, filter.baseAddress!, 1, result.baseAddress!, 1,
+                                  vDSP_Length(samples.count), vDSP_Length(taps.count))
+                    }
+                }
+            }
+            envelope = vDSP.maximum(envelope, vDSP.absolute(between))
+        }
+        return envelope
+    }
+
+    /// The taps that read the point `phase` quarters of a sample after
+    /// each sample, from the `reach` samples on either side, normalized to
+    /// unit gain.
+    private static func interpolator(phase: Int, reach: Int) -> [Float] {
+        let offset = Double(phase) / 4
+        let taps = (0..<(2 * reach)).map { position -> Double in
+            let t = Double(position - reach + 1) - offset
+            let sinc = t == 0 ? 1 : sin(Double.pi * t) / (Double.pi * t)
+            let window = 0.5 + 0.5 * cos(Double.pi * t / Double(reach))
+            return sinc * window
+        }
+        let sum = taps.reduce(0, +)
+        return taps.map { Float($0 / sum) }
     }
 
     private static func limited(_ samples: [Float], ceiling: Float, rate: Double) -> [Float] {
         let look = Int(0.005 * rate), release = Float(1 - exp(-1 / (0.08 * rate)))
-        let needed = samples.map { min(1, ceiling / max(abs($0), 1e-9)) }
+        let floor = vDSP.clip(peaks(samples), to: 1e-9...Float.greatestFiniteMagnitude)
+        let needed = vDSP.clip(vDSP.divide(ceiling, floor), to: 0...1)
         // The lowest gain needed anywhere in the next few milliseconds, so
         // the gain is already down when a hit arrives, then a smooth release.
         var ahead = [Float](repeating: 1, count: samples.count)
+        // A queue of rising minima, its front at `head`.
         var window: [Int] = []
+        var head = 0
+        window.reserveCapacity(samples.count)
         for index in stride(from: samples.count - 1, through: 0, by: -1) {
-            while let last = window.last, needed[last] >= needed[index] { window.removeLast() }
+            while window.count > head, needed[window[window.count - 1]] >= needed[index] { window.removeLast() }
             window.append(index)
-            while let first = window.first, first > index + look { window.removeFirst() }
-            ahead[index] = needed[window[0]]
+            while window[head] > index + look { head += 1 }
+            ahead[index] = needed[window[head]]
         }
         var gain: Float = 1
-        return samples.indices.map { index in
-            gain = ahead[index] < gain ? ahead[index] : gain + (ahead[index] - gain) * release
-            return max(min(samples[index] * gain, ceiling), -ceiling)
+        let gains = ahead.map { needed in
+            gain = needed < gain ? needed : gain + (needed - gain) * release
+            return gain
         }
+        return vDSP.clip(vDSP.multiply(samples, gains), to: -ceiling...ceiling)
     }
 }
 

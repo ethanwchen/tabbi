@@ -51,6 +51,14 @@ final class PetCamLargeTextTests: XCTestCase {
                 usleep(100_000)
             }
             usleep(600_000)
+            // The caption sits whole above the pinned buttons while it plays.
+            let caption = app.descendants(matching: .any)["tape.caption"]
+            let done = app.buttons["Done"]
+            if caption.exists, done.exists {
+                let share = app.buttons["Share"]
+                let top = share.exists ? min(share.frame.minY, done.frame.minY) : done.frame.minY
+                XCTAssertLessThanOrEqual(caption.frame.maxY, top, "still \(index)'s caption runs under the buttons")
+            }
             checkpoint("ax-04-tape-still-\(index)")
         }
         XCTAssertTrue(progress.waitForNonExistence(timeout: 25), "the tape ends by itself")

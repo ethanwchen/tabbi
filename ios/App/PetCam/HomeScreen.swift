@@ -103,6 +103,7 @@ struct HomeScreen: View {
             }
             .scrollBounceBehavior(.basedOnSize)
             .scrollDismissesKeyboard(.interactively)
+            .safeAreaInset(edge: .top, spacing: 0) { StatusBarBackdrop() }
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 if typeSize.isAccessibilitySize, !onBreak {
                     startButton
@@ -513,6 +514,18 @@ private struct Viewfinder: View {
             }
             .opacity(armed ? 1 : 0.35)
             .shadow(color: .black.opacity(0.6), radius: 0, x: 1, y: 1)
+    }
+}
+
+/// The screen's black behind the status bar, so a page scrolled at the
+/// largest text sizes never runs under the clock. It takes no room: the
+/// fill reaches up into the safe area from a zero-height inset.
+struct StatusBarBackdrop: View {
+    var body: some View {
+        Color.clear
+            .frame(height: 0)
+            .background(CCTV.screen)
+            .accessibilityHidden(true)
     }
 }
 

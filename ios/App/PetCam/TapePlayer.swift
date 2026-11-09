@@ -22,6 +22,7 @@ struct TapePlayer: View {
     @Environment(PetCamStore.self) private var cam
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.displayScale) private var displayScale
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var index = 0
     @State private var cut = true
     @State private var holding = false
@@ -62,6 +63,7 @@ struct TapePlayer: View {
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height)
             }
             .scrollBounceBehavior(.basedOnSize)
+            .safeAreaInset(edge: .top, spacing: 0) { StatusBarBackdrop() }
             .onAppear {
                 screenSize = geometry.size
                 prefetch()
@@ -75,17 +77,8 @@ struct TapePlayer: View {
                     .padding(.top, 8)
                     .padding(.bottom, 8)
                     // A long caption scrolls under the pinned buttons, never
-                    // through them, behind a short fade.
-                    .background {
-                        VStack(spacing: 0) {
-                            LinearGradient(colors: [CCTV.screen.opacity(0), CCTV.screen], startPoint: .top,
-                                           endPoint: .bottom)
-                                .frame(height: 18)
-                            CCTV.screen
-                        }
-                        .padding(.top, -18)
-                        .ignoresSafeArea()
-                    }
+                    // through them.
+                    .background(CCTV.screen.ignoresSafeArea())
             }
         }
         .background(CCTV.screen.ignoresSafeArea())
@@ -194,18 +187,26 @@ struct TapePlayer: View {
     /// hidden, out of the accessibility tree). The picture is sized from the
     /// reserve alone, so every tape shares one frame on a given phone and
     /// text size; a longer caption grows below it and the page scrolls.
+    /// The burn-in stops growing at the second accessibility size, already
+    /// twice its default size, so at the largest sizes a playing tape's
+    /// caption still sits whole between the picture and the buttons.
     private func captions(_ tape: PetCamTape, current: PetCamTape.Still) -> some View {
         ZStack(alignment: .top) {
             VStack(spacing: 6) {
-                Text(verbatim: "X\nX\nX").font(CCTV.font(.title3, weight: .bold))
+                // Four lines at the accessibility sizes, where a charge
+                // wraps that far; three otherwise.
+                Text(verbatim: typeSize.isAccessibilitySize ? "X\nX\nX\nX" : "X\nX\nX")
+                    .font(CCTV.font(.title3, weight: .bold))
                 Text(verbatim: "X").font(CCTV.font(.subheadline, weight: .medium))
             }
+            .padding(.bottom, typeSize.isAccessibilitySize ? 8 : 0)
             .hidden()
             .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { captionHeight = $0 }
             // A hard cut with the picture, as a camera's burn-in changes;
             // a crossfade would overlay two captions for a moment.
             caption(current)
         }
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .frame(maxWidth: .infinity)
     }
 

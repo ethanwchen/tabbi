@@ -11,7 +11,7 @@ import TabbiKitCore
 /// 3.5 seconds, holds a moment with the grain still moving, and ends on the
 /// tape rewinding, so the loop reads as a rewind. "TABBI CAM 4  OWNER AWAY
 /// 25:00" is burned into every frame. The sound is the tape's own
-/// (`TapeSound`), mastered to -14 LUFS with its peaks under -1 dBFS; no
+/// (`TapeSound`), mastered to -14 LUFS with its true peak under -1 dBTP; no
 /// music. It never mentions studying, and the dodge line appears only when
 /// the player opts in.
 enum TapeExporter {

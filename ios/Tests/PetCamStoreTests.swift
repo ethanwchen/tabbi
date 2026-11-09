@@ -270,6 +270,10 @@ import TabbiKitCore
         let sine = (0..<Int(rate * 3)).map { Float(sin(2 * .pi * 997 * Double($0) / rate)) }
         #expect(abs(Loudness.integrated(sine) - -3.01) < 0.15, "\(Loudness.integrated(sine))")
         #expect(abs(Loudness.integrated(sine.map { $0 * 0.1 }) - -23.01) < 0.15)
+        // A quarter of the sample rate, sampled 45 degrees off its peaks:
+        // every sample is at -3 dBFS, but the wave between them reaches 0 dBTP.
+        let between = (0..<Int(rate)).map { Float(sin(Double.pi / 2 * Double($0) + Double.pi / 4)) }
+        #expect(abs(Loudness.truePeak(between)) < 0.3, "\(Loudness.truePeak(between)) dBTP")
         // A clip's track: a strike, hiss, then the stamp, mastered.
         var track = TapeSound.hiss(seconds: 5)
         for (offset, cue) in [(0.0, PetCamTape.Cue.strike(.mug)), (3.3, .stamp)] {
@@ -280,7 +284,7 @@ import TabbiKitCore
         }
         let mastered = Loudness.master(track)
         #expect(abs(Loudness.integrated(mastered) - -14) < 0.5, "\(Loudness.integrated(mastered)) LUFS")
-        #expect(mastered.map(abs).max() ?? 1 <= 0.6, "samples stay under -4.4 dBFS, room for the encoder's overshoot")
+        #expect(Loudness.truePeak(mastered) <= -2.9, "\(Loudness.truePeak(mastered)) dBTP, room for the encoder's overshoot")
         // The strike and the stamp stand at least 12 dB over the hiss bed.
         let hiss = Array(mastered[Int(1.5 * rate)..<Int(2.9 * rate)])
         #expect(Loudness.maximumMomentary(mastered) - Loudness.maximumMomentary(hiss) >= 12,
