@@ -30,16 +30,25 @@ final class SettingsSectionsTests: XCTestCase {
         XCTAssertEqual(services.settingsPaneOnScreen, "look")
 
         services.closeSettings()
-        RunLoop.main.run(until: Date().addingTimeInterval(0.2))
-        XCTAssertFalse(services.hasSettingsWindow, "the closed window is still held")
+        XCTAssertTrue(spinUntil { !services.hasSettingsWindow }, "the closed window is still held")
 
         services.openSettings()
         XCTAssertEqual(services.settingsPaneOnScreen, "look", "reopening shows the pane Settings closed on")
         services.openSettings(pane: AppSettingsPane.about.rawValue)
         XCTAssertEqual(services.settingsPaneOnScreen, "about", "a pane asked for wins")
         services.closeSettings()
-        RunLoop.main.run(until: Date().addingTimeInterval(0.2))
-        XCTAssertFalse(services.hasSettingsWindow)
+        XCTAssertTrue(spinUntil { !services.hasSettingsWindow }, "the closed window is still held")
+    }
+
+    /// Runs the main run loop until `condition` holds, for up to `seconds`:
+    /// the window goes once AppKit's close has run, which a busy Mac can
+    /// put off for longer than a fixed pause.
+    private func spinUntil(seconds: TimeInterval = 10, _ condition: () -> Bool) -> Bool {
+        let deadline = Date().addingTimeInterval(seconds)
+        while !condition(), Date() < deadline {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.02))
+        }
+        return condition()
     }
 
     func testModulesWithSettingsOfferThemFromTheirTabRow() {

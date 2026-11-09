@@ -17,7 +17,7 @@ final class FocusSoundEngineDecodeTests: XCTestCase {
         XCTAssertLessThan(Date().timeIntervalSince(started), 0.03, "play() waited for the decode")
         XCTAssertTrue(engine.isDecoding, "the cafe decodes in the background")
 
-        XCTAssertTrue(waitUntil(seconds: 10) { !engine.isDecoding }, "the decode never finished")
+        XCTAssertTrue(waitUntil(seconds: Self.decodeTimeout) { !engine.isDecoding }, "the decode never finished")
         XCTAssertTrue(engine.engine.isRunning, "playback starts once the cafe is decoded")
         // Past the 2 s fade in, the cafe is audible.
         for _ in 0..<3 { _ = try render(engine.engine, into: buffer) }
@@ -34,7 +34,7 @@ final class FocusSoundEngineDecodeTests: XCTestCase {
         // Picked rain and stopped before the cafe was ready: rain, stopped.
         engine.setMix(.single(.rain))
         engine.stop()
-        XCTAssertTrue(waitUntil(seconds: 10) { !engine.isDecoding })
+        XCTAssertTrue(waitUntil(seconds: Self.decodeTimeout) { !engine.isDecoding })
         XCTAssertEqual(engine.mix, .single(.rain))
         XCTAssertFalse(engine.isPlaying)
     }
@@ -50,6 +50,12 @@ final class FocusSoundEngineDecodeTests: XCTestCase {
     }
 
     // MARK: Helpers
+
+    /// How long a decode may take before it counts as never finishing. The
+    /// cafe takes about 45 ms in a release build, but a debug build decodes
+    /// it sample by sample in about a second, and a busy Mac (a parallel
+    /// test run beside a simulator build) has stretched that past 10 s.
+    private static let decodeTimeout: TimeInterval = 60
 
     /// One second per render, rendered offline with no audio device.
     private func offlineEngine() throws -> (FocusSoundEngine, AVAudioPCMBuffer) {
