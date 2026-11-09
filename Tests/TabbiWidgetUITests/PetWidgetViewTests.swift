@@ -5,8 +5,9 @@ import TabbiKitCore
 import XCTest
 
 /// Snapshot-style tests: each widget state renders at the real widget sizes
-/// in light and dark mode. Set TABBI_WIDGET_SNAPSHOTS to a folder to also
-/// write the PNGs there and look at them.
+/// in light and dark mode and in the tinted and vibrant rendering modes. Set
+/// TABBI_WIDGET_SNAPSHOTS to a folder to also write the PNGs there and look
+/// at them.
 @MainActor
 final class PetWidgetViewTests: XCTestCase {
     private let calendar = Calendar(identifier: .gregorian)
@@ -19,6 +20,8 @@ final class PetWidgetViewTests: XCTestCase {
     private var states: [(name: String, state: WidgetState)] {
         var dressed = PetProfile.starter(.cat)
         dressed.outfit = PetOutfit.allCases.last ?? .none
+        // The longest name the Closet keeps.
+        let longName = PetProfile(name: "Sir Biscuit Wellington", breed: .goldenRetriever)
         return [
             ("focus", .sample(at: now, calendar: calendar)),
             ("idle", WidgetState(pet: .starter(.cat), day: today, focusMinutes: 135, streakDays: 12,
@@ -29,18 +32,33 @@ final class PetWidgetViewTests: XCTestCase {
                                                clock: .countdown(endsAt: now.addingTimeInterval(9 * 60))))),
             ("paused", WidgetState(pet: dressed, day: today, focusMinutes: 20, streakDays: 3, lastFocusDay: today,
                                    timer: .init(phase: .focus, label: "Focus", clock: .paused(shown: 754)))),
+            ("countup", WidgetState(pet: longName, day: today, focusMinutes: 999, streakDays: 365, lastFocusDay: today,
+                                    timer: .init(phase: .focus, label: "Focus",
+                                                 clock: .countUp(since: now.addingTimeInterval(-3725))))),
+            ("long-name", WidgetState(pet: longName, day: today, focusMinutes: 1439, streakDays: 1000,
+                                      lastFocusDay: today)),
         ]
     }
 
-    func testEveryStateRendersAtWidgetSizeInBothAppearances() throws {
-        for (name, state) in states {
+    func testEveryStateRendersAtWidgetSizeInEveryAppearanceAndMode() throws {
+        let waiting = WidgetState.empty(at: now, calendar: calendar)
+        for (name, state, isWaiting) in states.map({ ($0.name, $0.state, false) }) + [("waiting", waiting, true)] {
             for size in [PetWidgetSize.small, .medium] {
                 for scheme in [ColorScheme.light, .dark] {
-                    let image = try render(state, size: size, scheme: scheme)
-                    let points = Self.points(for: size)
-                    XCTAssertEqual(image.width, Int(points.width) * 2, "\(name) \(size) \(scheme)")
-                    XCTAssertEqual(image.height, Int(points.height) * 2, "\(name) \(size) \(scheme)")
-                    try save(image, name: "\(name)-\(size)-\(scheme)")
+                    for rendering in PetWidgetRendering.allCases {
+                        let image = try render(state, size: size, scheme: scheme, rendering: rendering,
+                                               isWaitingForApp: isWaiting)
+                        let points = Self.points(for: size)
+                        let label = "\(name)-\(size)-\(scheme)-\(rendering)"
+                        XCTAssertEqual(image.width, Int(points.width) * 2, label)
+                        XCTAssertEqual(image.height, Int(points.height) * 2, label)
+                        try save(image, name: rendering == .fullColor ? "\(name)-\(size)-\(scheme)" : label)
+                        // Never blank: the content draws well beyond the
+                        // background in every state and mode.
+                        XCTAssertGreaterThan(try changedPixels(image, try backdrop(size: size, scheme: scheme,
+                                                                                    rendering: rendering)),
+                                             2000, label)
+                    }
                 }
             }
         }
@@ -54,6 +72,36 @@ final class PetWidgetViewTests: XCTestCase {
         // cocoa in dark mode.
         XCTAssertGreaterThan(luminance(light, x: 2, y: 2), 0.9)
         XCTAssertLessThan(luminance(dark, x: 2, y: 2), 0.2)
+    }
+
+    func testWaitingStateAsksToOpenTabbiInsteadOfShowingZeros() throws {
+        let empty = WidgetState.empty(at: now, calendar: calendar)
+        for size in [PetWidgetSize.small, .medium] {
+            let waiting = try render(empty, size: size, scheme: .light, isWaitingForApp: true)
+            let zeros = try render(empty, size: size, scheme: .light)
+            XCTAssertGreaterThan(try changedPixels(waiting, zeros), 500, "\(size)")
+        }
+    }
+
+    /// Outside full color WidgetKit draws everything that is not an image in
+    /// one color, by coverage, on the wallpaper. Drawn that way, the old
+    /// opaque cream tile became a solid block over the pet and its name
+    /// (the "blank white widget"); the tinted and vibrant styles keep the
+    /// tile a faint fill, so what sits on it still shows.
+    func testTintedAndVibrantModesNeverFlattenIntoSolidBlocks() throws {
+        let state = WidgetState(pet: .starter(.cat), day: today, focusMinutes: 135, streakDays: 12, lastFocusDay: today)
+        // The medium pet tile, in pixels at 2x: x 16...128, y 16...154 points.
+        let tile = CGRect(x: 40, y: 40, width: 180, height: 220)
+        for scheme in [ColorScheme.light, .dark] {
+            let fullColor = try flattened(state, size: .medium, scheme: scheme, rendering: .fullColor)
+            XCTAssertGreaterThan(try opaqueShare(fullColor, in: tile), 0.95, "the old look floods the tile \(scheme)")
+            for rendering in [PetWidgetRendering.accented, .vibrant] {
+                let image = try flattened(state, size: .medium, scheme: scheme, rendering: rendering)
+                try save(image, name: "flattened-medium-\(scheme)-\(rendering)")
+                XCTAssertLessThan(try opaqueShare(image, in: tile), 0.5, "\(scheme) \(rendering)")
+            }
+            try save(fullColor, name: "flattened-medium-\(scheme)-fullColor-before")
+        }
     }
 
     func testPetIsDrawnWithWholeDevicePixelsPerSpritePixel() throws {
@@ -119,19 +167,74 @@ final class PetWidgetViewTests: XCTestCase {
     }
 
     /// The view as WidgetKit lays it out: its family's size, the default
-    /// content margins and the container background, with rounded corners.
-    private func render(_ state: WidgetState, at date: Date? = nil, size: PetWidgetSize,
-                        scheme: ColorScheme) throws -> CGImage {
+    /// content margins and the container background. Outside full color the
+    /// system removes that background, so those modes draw on a stand-in
+    /// for the wallpaper instead.
+    private func render(_ state: WidgetState, at date: Date? = nil, size: PetWidgetSize, scheme: ColorScheme,
+                        rendering: PetWidgetRendering = .fullColor, isWaitingForApp: Bool = false,
+                        background: Color? = nil) throws -> CGImage {
         let points = Self.points(for: size)
-        let content = PetWidgetView(state: state, date: date ?? now, size: size)
+        let content = PetWidgetView(state: state, date: date ?? now, size: size, rendering: rendering,
+                                    isWaitingForApp: isWaitingForApp)
             .padding(16)
             .frame(width: points.width, height: points.height)
-            .background(WidgetPalette.background)
+            .background(background ?? Self.backdropColor(scheme: scheme, rendering: rendering))
             .environment(\.colorScheme, scheme)
             .environment(\.calendar, calendar)
         let renderer = ImageRenderer(content: content)
         renderer.scale = 2
         return try XCTUnwrap(renderer.cgImage)
+    }
+
+    private static func backdropColor(scheme: ColorScheme, rendering: PetWidgetRendering) -> Color {
+        rendering == .fullColor ? WidgetPalette(scheme: scheme, rendering: .fullColor).background
+            : WidgetPalette.color(scheme == .dark ? 0x1F2833 : 0xC9D3DE)
+    }
+
+    private func backdrop(size: PetWidgetSize, scheme: ColorScheme, rendering: PetWidgetRendering) throws -> CGImage {
+        let points = Self.points(for: size)
+        let renderer = ImageRenderer(content: Self.backdropColor(scheme: scheme, rendering: rendering)
+            .frame(width: points.width, height: points.height))
+        renderer.scale = 2
+        return try XCTUnwrap(renderer.cgImage)
+    }
+
+    /// The widget as one color by coverage on a dark wallpaper, the way the
+    /// tinted and vibrant modes draw non-image content: white where the
+    /// view draws anything opaque, the wallpaper where it draws nothing.
+    private func flattened(_ state: WidgetState, size: PetWidgetSize, scheme: ColorScheme,
+                           rendering: PetWidgetRendering) throws -> CGImage {
+        let image = try render(state, size: size, scheme: scheme, rendering: rendering, background: .clear)
+        let pixels = try XCTUnwrap(RGBA(image))
+        var bytes = [UInt8](repeating: 0, count: image.width * image.height * 4)
+        for y in 0..<image.height {
+            for x in 0..<image.width {
+                let alpha = Double(pixels[x, y].a) / 255
+                let i = (y * image.width + x) * 4
+                for (channel, wallpaper) in [0x1F, 0x28, 0x33].enumerated() {
+                    bytes[i + channel] = UInt8(Double(wallpaper) + (255 - Double(wallpaper)) * alpha)
+                }
+                bytes[i + 3] = 255
+            }
+        }
+        let context = try XCTUnwrap(CGContext(
+            data: &bytes, width: image.width, height: image.height, bitsPerComponent: 8,
+            bytesPerRow: image.width * 4, space: CGColorSpace(name: CGColorSpace.sRGB)!,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        return try XCTUnwrap(context.makeImage())
+    }
+
+    /// The share of pixels in `rect` that the flattening turned (nearly) white.
+    private func opaqueShare(_ image: CGImage, in rect: CGRect) throws -> Double {
+        let pixels = try XCTUnwrap(RGBA(image))
+        var opaque = 0, total = 0
+        for y in Int(rect.minY)..<Int(rect.maxY) {
+            for x in Int(rect.minX)..<Int(rect.maxX) {
+                total += 1
+                if pixels[x, y].r > 235 { opaque += 1 }
+            }
+        }
+        return Double(opaque) / Double(max(total, 1))
     }
 
     private func save(_ image: CGImage, name: String) throws {

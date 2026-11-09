@@ -11,12 +11,18 @@ enum KitResources {
     static let bundleName = "Tabbi_TabbiKitCore.bundle"
 
     static let bundle: Bundle? = {
-        // Tabbi.app/Contents/Resources, then beside the executable
-        // (`swift run`), then beside the test bundle (`swift test`).
+        // Tabbi.app/Contents/Resources (or the widget extension's own),
+        // then beside the executable (`swift run`), then beside the test
+        // bundle (`swift test`), and last, for the widget extension, the
+        // app it is in: Tabbi.app/Contents/PlugIns/TabbiWidget.appex sits
+        // two folders below Tabbi.app/Contents/Resources.
         let candidates = [
             Bundle.main.resourceURL,
             Bundle.main.bundleURL,
             Bundle(for: BundleToken.self).bundleURL.deletingLastPathComponent(),
+            Bundle.main.bundleURL.pathExtension == "appex"
+                ? Bundle.main.bundleURL.deletingLastPathComponent().deletingLastPathComponent()
+                    .appendingPathComponent("Resources") : nil,
         ]
         return candidates.lazy
             .compactMap { $0.flatMap { Bundle(url: $0.appendingPathComponent(bundleName)) } }

@@ -629,6 +629,8 @@
 	<string>AnkiConnect가 API 키를 요구해요</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
 	<string>AnkiConnect 설정 때문에 Tabbi가 접속하지 못하고 있어요. 설정을 기본값으로 되돌리면 해결되고, 카드는 그대로예요.</string>
+	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
+	<string>다른 사본이 %@에 있어요. 두 사본은 위젯 하나를 함께 쓰기 때문에 macOS가 둘 사이를 전환하면 위젯이 빈 화면이 될 수 있어요. 사용하는 사본만 남기고 다른 하나는 휴지통으로 옮기세요.</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>이번 주도 꾸준했어요. 포근하게 이어가요.</string>
 	<key>Answers</key>
@@ -2367,6 +2369,8 @@
 	<string>시스템 설정 열기</string>
 	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
 	<string>캘린더를 연결하려면 응용 프로그램 폴더에서 Tabbi를 여세요.</string>
+	<key>Open Tabbi to start</key>
+	<string>Tabbi를 열어 시작하세요</string>
 	<key>Open and close the notch</key>
 	<string>노치 열기 및 닫기</string>
 	<key>Open answers in the large view</key>
@@ -2969,6 +2973,8 @@
 	<string>단축어 접근이 꺼져 있어요. 자동화 설정에서 Tabbi의 Shortcuts Events를 켜세요.</string>
 	<key>Show %@</key>
 	<string>%@ 보기</string>
+	<key>Show Other Copy</key>
+	<string>다른 사본 보기</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>Safari나 Chrome의 SoundCloud 보기</string>
 	<key>Show a break move</key>
@@ -3673,6 +3679,8 @@
 	<string>셔플 켜기</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>방해금지 모드를 켜는 중…</string>
+	<key>Two copies of %@ are installed</key>
+	<string>%@이(가) 두 개 설치되어 있어요</string>
 	<key>Type a name first</key>
 	<string>먼저 이름을 입력하세요</string>
 	<key>Type a shortcut name first</key>
@@ -4031,6 +4039,8 @@
 	<string>펫이 이 동작을 제안하지 않아요. 클릭하면 켜져요</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>펫 이름을 사용할 수 없어요. 옷장에서 펫 이름을 바꿔 주세요.</string>
+	<key>Your pet, streak and timer show up here.</key>
+	<string>여기에 펫, 연속 기록, 타이머가 표시돼요.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>펫, 연속 기록, 진행 중인 타이머.</string>
 	<key>Your plan</key>

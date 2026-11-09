@@ -31390,6 +31390,78 @@
         }
       }
     },
+    "Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash." : {
+      "comment" : "Alert text under 'Two copies of Tabbi are installed' (%@ is the folder of the other copy, such as /Applications).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "توجد نسخة أخرى في %@. تشترك النسختان في أداة واحدة قد تصبح فارغة عندما ينتقل macOS بينهما. احتفظ بالنسخة التي تستخدمها وانقل الأخرى إلى سلة المهملات."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine weitere Kopie liegt in %@. Beide Kopien teilen sich ein Widget, das leer werden kann, wenn macOS zwischen ihnen wechselt. Behalte die Kopie, die du nutzt, und lege die andere in den Papierkorb."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hay otra copia en %@. Las copias comparten un widget, que puede quedarse en blanco cuando macOS cambia entre ellas. Quédate con la copia que usas y mueve la otra a la Papelera."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "May isa pang kopya sa %@. Iisang widget ang gamit ng mga kopya, at puwede itong mablangko kapag nagpapalit ang macOS sa pagitan nila. Itago ang kopyang ginagamit mo at ilipat ang isa sa Trash."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une autre copie se trouve dans %@. Les copies partagent un widget, qui peut devenir vide quand macOS passe de l'une à l'autre. Garde la copie que tu utilises et mets l'autre à la Corbeille."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もう1つのコピーが%@にあります。2つのコピーは1つのウィジェットを共有するため、macOSが切り替えるとウィジェットが空白になることがあります。使っている方を残し、もう一方をゴミ箱に入れてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 사본이 %@에 있어요. 두 사본은 위젯 하나를 함께 쓰기 때문에 macOS가 둘 사이를 전환하면 위젯이 빈 화면이 될 수 있어요. 사용하는 사본만 남기고 다른 하나는 휴지통으로 옮기세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Há outra cópia em %@. As cópias compartilham um widget, que pode ficar em branco quando o macOS alterna entre elas. Mantenha a cópia que você usa e mova a outra para o Lixo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ещё одна копия находится в %@. Копии используют один виджет, и он может стать пустым, когда macOS переключается между ними. Оставьте копию, которой пользуетесь, а другую переместите в Корзину."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "另一个副本位于 %@。两个副本共用一个小组件，macOS 在它们之间切换时小组件可能变成空白。保留你在用的副本，把另一个移到废纸篓。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "另一個副本位於 %@。兩個副本共用一個小工具，macOS 在它們之間切換時小工具可能變成空白。保留你在用的副本，把另一個移到垃圾桶。"
+          }
+        }
+      }
+    },
     "Another steady week. Keep it cozy." : {
       "comment" : "Weekly recap card: the one warm line about the week.",
       "extractionState" : "manual",
@@ -98528,6 +98600,78 @@
         }
       }
     },
+    "Open Tabbi to start" : {
+      "comment" : "Desktop widget headline before the app has shared any data (or when the widget cannot read it): asks the user to open the app. Short, at most two lines in a small widget.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح Tabbi للبدء"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne Tabbi, um loszulegen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre Tabbi para empezar"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buksan ang Tabbi para magsimula"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre Tabbi pour commencer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbiを開いて始めよう"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabbi를 열어 시작하세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra o Tabbi para começar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Откройте Tabbi, чтобы начать"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 Tabbi 开始"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打開 Tabbi 開始"
+          }
+        }
+      }
+    },
     "Open and close the notch" : {
       "comment" : "Settings > General shortcut row title.",
       "extractionState" : "manual",
@@ -120972,6 +121116,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示 %@"
+          }
+        }
+      }
+    },
+    "Show Other Copy" : {
+      "comment" : "Button in the 'Two copies of Tabbi are installed' alert: reveals the other copy in Finder.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار النسخة الأخرى"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Andere Kopie zeigen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar la otra copia"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ipakita ang Isang Kopya"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher l'autre copie"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もう一方を表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 사본 보기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar a outra cópia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать другую копию"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示另一个副本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示另一個副本"
           }
         }
       }
@@ -147475,6 +147691,78 @@
         }
       }
     },
+    "Two copies of %@ are installed" : {
+      "comment" : "Alert title when a second copy of the app (for example the App Store and the direct download versions) is installed in an Applications folder (%@ is the app name Tabbi).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "توجد نسختان من %@ مثبتتان"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es sind zwei Kopien von %@ installiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hay dos copias de %@ instaladas"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "May dalawang kopya ng %@ na naka-install"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deux copies de %@ sont installées"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@が2つインストールされています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@이(가) 두 개 설치되어 있어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Há duas cópias do %@ instaladas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установлены две копии %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装了两个 %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安裝了兩個 %@"
+          }
+        }
+      }
+    },
     "Type a name first" : {
       "comment" : "Party setup sheet in Settings > Connections.",
       "extractionState" : "manual",
@@ -161440,6 +161728,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "不能使用你寵物的名字。請在「衣櫥」中替寵物改名。"
+          }
+        }
+      }
+    },
+    "Your pet, streak and timer show up here." : {
+      "comment" : "Desktop widget line under 'Open Tabbi to start': what the widget will show once the app runs.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سيظهر هنا حيوانك الأليف وسلسلتك والمؤقت."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier erscheinen dein Haustier, deine Serie und der Timer."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aquí aparecerán tu mascota, tu racha y el temporizador."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dito lalabas ang alaga mo, ang streak at ang timer."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton animal, ta série et le minuteur s'afficheront ici."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここにペット、連続記録、タイマーが表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "여기에 펫, 연속 기록, 타이머가 표시돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu pet, sua sequência e o timer aparecem aqui."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Здесь появятся питомец, серия и таймер."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的宠物、连续天数和计时器会显示在这里。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的寵物、連續天數和計時器會顯示在這裡。"
           }
         }
       }

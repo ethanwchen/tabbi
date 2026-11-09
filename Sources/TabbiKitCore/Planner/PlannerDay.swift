@@ -20,9 +20,20 @@ public struct PlannerDayKey: Hashable, Comparable, Codable, Sendable, CustomStri
     }
 
     /// Midnight at the start of this day in `calendar`'s time zone.
+    ///
+    /// A key made by `init(date:calendar:)` holds the year, month and day in
+    /// that calendar, which need not be a Gregorian date: in the Hebrew,
+    /// Persian, Islamic or Buddhist calendars a day such as month 2, day 30
+    /// is real but would fail `parse`, so this reads the fields as they are
+    /// and lets `calendar` place them. It never traps, so a widget or app
+    /// running with such a calendar keeps working on those days.
     public func startDate(calendar: Calendar = .current) -> Date {
-        let parts = Self.parse(rawValue)!
-        return calendar.date(from: DateComponents(year: parts.year, month: parts.month, day: parts.day))!
+        let fields = rawValue.split(separator: "-", omittingEmptySubsequences: false).compactMap { Int($0) }
+        let parts = DateComponents(year: fields.first, month: fields.dropFirst().first, day: fields.dropFirst(2).first)
+        if let date = calendar.date(from: parts) { return date }
+        var gregorian = Calendar(identifier: .gregorian)
+        gregorian.timeZone = calendar.timeZone
+        return gregorian.date(from: parts) ?? Date(timeIntervalSinceReferenceDate: 0)
     }
 
     /// The day `days` calendar days after this one (before it when

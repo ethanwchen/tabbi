@@ -629,6 +629,8 @@
 	<string>AnkiConnect demande une clé API</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
 	<string>Les réglages d'AnkiConnect bloquent Tabbi. Les remettre par défaut règle le problème sans toucher à tes cartes.</string>
+	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
+	<string>Une autre copie se trouve dans %@. Les copies partagent un widget, qui peut devenir vide quand macOS passe de l'une à l'autre. Garde la copie que tu utilises et mets l'autre à la Corbeille.</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>Encore une semaine régulière. On garde le cap, tranquille.</string>
 	<key>Answers</key>
@@ -2367,6 +2369,8 @@
 	<string>Ouvrir Réglages Système</string>
 	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
 	<string>Ouvre Tabbi depuis ton dossier Applications pour connecter ton calendrier.</string>
+	<key>Open Tabbi to start</key>
+	<string>Ouvre Tabbi pour commencer</string>
 	<key>Open and close the notch</key>
 	<string>Ouvrir et fermer l'encoche</string>
 	<key>Open answers in the large view</key>
@@ -2969,6 +2973,8 @@
 	<string>L'accès aux Raccourcis est désactivé. Active Shortcuts Events pour Tabbi dans les réglages d'Automatisation.</string>
 	<key>Show %@</key>
 	<string>Afficher %@</string>
+	<key>Show Other Copy</key>
+	<string>Afficher l'autre copie</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>Afficher SoundCloud depuis Safari ou Chrome</string>
 	<key>Show a break move</key>
@@ -3673,6 +3679,8 @@
 	<string>Activer l'aléatoire</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>Activation de Ne pas déranger…</string>
+	<key>Two copies of %@ are installed</key>
+	<string>Deux copies de %@ sont installées</string>
 	<key>Type a name first</key>
 	<string>Saisis d'abord un nom</string>
 	<key>Type a shortcut name first</key>
@@ -4031,6 +4039,8 @@
 	<string>Ton compagnon ne proposera pas ce geste. Clique pour l'activer</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>Le nom de ton compagnon n'est pas autorisé. Renomme-le dans Garde-robe.</string>
+	<key>Your pet, streak and timer show up here.</key>
+	<string>Ton animal, ta série et le minuteur s'afficheront ici.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>Ton compagnon, ta série et le minuteur en cours.</string>
 	<key>Your plan</key>

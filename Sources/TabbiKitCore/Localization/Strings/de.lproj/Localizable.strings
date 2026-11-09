@@ -629,6 +629,8 @@
 	<string>AnkiConnect verlangt einen API-Schlüssel</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
 	<string>Die Einstellungen von AnkiConnect sperren Tabbi aus. Zurücksetzen behebt das, deine Karten bleiben unberührt.</string>
+	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
+	<string>Eine weitere Kopie liegt in %@. Beide Kopien teilen sich ein Widget, das leer werden kann, wenn macOS zwischen ihnen wechselt. Behalte die Kopie, die du nutzt, und lege die andere in den Papierkorb.</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>Wieder eine stetige Woche. Bleib gemütlich dran.</string>
 	<key>Answers</key>
@@ -2367,6 +2369,8 @@
 	<string>Systemeinstellungen öffnen</string>
 	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
 	<string>Öffne Tabbi aus dem Ordner Programme, um deinen Kalender zu verbinden.</string>
+	<key>Open Tabbi to start</key>
+	<string>Öffne Tabbi, um loszulegen</string>
 	<key>Open and close the notch</key>
 	<string>Notch öffnen und schließen</string>
 	<key>Open answers in the large view</key>
@@ -2969,6 +2973,8 @@
 	<string>Der Zugriff auf Kurzbefehle ist aus. Schalte Shortcuts Events für Tabbi in den Automation-Einstellungen ein.</string>
 	<key>Show %@</key>
 	<string>%@ zeigen</string>
+	<key>Show Other Copy</key>
+	<string>Andere Kopie zeigen</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>SoundCloud aus Safari oder Chrome zeigen</string>
 	<key>Show a break move</key>
@@ -3673,6 +3679,8 @@
 	<string>Zufallswiedergabe an</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>Nicht stören wird eingeschaltet…</string>
+	<key>Two copies of %@ are installed</key>
+	<string>Es sind zwei Kopien von %@ installiert</string>
 	<key>Type a name first</key>
 	<string>Gib zuerst einen Namen ein</string>
 	<key>Type a shortcut name first</key>
@@ -4031,6 +4039,8 @@
 	<string>Dein Haustier schlägt diese Übung nicht vor. Zum Einschalten klicken</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>Der Name deines Haustiers ist nicht erlaubt. Benenne es in der Garderobe um.</string>
+	<key>Your pet, streak and timer show up here.</key>
+	<string>Hier erscheinen dein Haustier, deine Serie und der Timer.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>Dein Haustier, deine Serie und der laufende Timer.</string>
 	<key>Your plan</key>

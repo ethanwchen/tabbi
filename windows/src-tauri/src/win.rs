@@ -254,3 +254,83 @@ pub fn set_memory_low(window: &tauri::WebviewWindow, low: bool) {
         eprintln!("tabbi: could not set the WebView2 memory level: {error}");
     }
 }
+
+/// The least time between two reloads of one webview, so a page that crashes
+/// its renderer as soon as it loads is not reloaded in a tight loop.
+const RELOAD_SPACING: std::time::Duration = std::time::Duration::from_secs(10);
+
+/// Keeps a failed WebView2 process from leaving `window` blank until the app
+/// restarts. Without a handler, a renderer that crashes (out of memory, a
+/// driver fault) or hangs leaves WebView2's error page (a white rectangle in
+/// the island's shape), and a GPU process that dies with a sleep, a display
+/// change or a driver reset can leave the transparent surface undrawn.
+///
+/// - A renderer that exited or stopped responding: the page reloads, and the
+///   window's startup runs again.
+/// - The GPU process exited: WebView2 starts a new one; hiding and showing
+///   the webview makes it compose its surface again.
+/// - The browser process exited: every webview of the app is gone and none
+///   can be revived in place, so `on_browser_exit` runs (the island restarts
+///   the app; other windows leave it to the island).
+pub fn watch_process_failures(
+    window: &tauri::WebviewWindow,
+    on_browser_exit: impl Fn() + Send + 'static,
+) {
+    use std::time::Instant;
+    use webview2_com::Microsoft::Web::WebView2::Win32::{
+        COREWEBVIEW2_PROCESS_FAILED_KIND, COREWEBVIEW2_PROCESS_FAILED_KIND_BROWSER_PROCESS_EXITED,
+        COREWEBVIEW2_PROCESS_FAILED_KIND_GPU_PROCESS_EXITED,
+        COREWEBVIEW2_PROCESS_FAILED_KIND_RENDER_PROCESS_EXITED,
+        COREWEBVIEW2_PROCESS_FAILED_KIND_RENDER_PROCESS_UNRESPONSIVE,
+    };
+    use webview2_com::ProcessFailedEventHandler;
+    let label = window.label().to_owned();
+    let result = window.with_webview(move |webview| {
+        let controller = webview.controller();
+        let redrawn = controller.clone();
+        let mut last_reload: Option<Instant> = None;
+        let handler = ProcessFailedEventHandler::create(Box::new(move |sender, args| {
+            let (Some(core), Some(args)) = (sender, args) else {
+                return Ok(());
+            };
+            let mut kind = COREWEBVIEW2_PROCESS_FAILED_KIND::default();
+            /* SAFETY: WebView2 raises this event on the webview's own thread. */
+            unsafe {
+                args.ProcessFailedKind(&mut kind)?;
+                if kind == COREWEBVIEW2_PROCESS_FAILED_KIND_RENDER_PROCESS_EXITED
+                    || kind == COREWEBVIEW2_PROCESS_FAILED_KIND_RENDER_PROCESS_UNRESPONSIVE
+                {
+                    if last_reload.is_some_and(|at| at.elapsed() < RELOAD_SPACING) {
+                        eprintln!("tabbi: the {label} renderer failed again right after a reload");
+                        return Ok(());
+                    }
+                    eprintln!("tabbi: the {label} renderer failed ({}), reloading", kind.0);
+                    last_reload = Some(Instant::now());
+                    core.Reload()?;
+                } else if kind == COREWEBVIEW2_PROCESS_FAILED_KIND_GPU_PROCESS_EXITED {
+                    eprintln!("tabbi: the WebView2 GPU process exited, redrawing {label}");
+                    let mut visible = BOOL::default();
+                    redrawn.IsVisible(&mut visible)?;
+                    if visible.as_bool() {
+                        redrawn.SetIsVisible(false)?;
+                        redrawn.SetIsVisible(true)?;
+                    }
+                } else if kind == COREWEBVIEW2_PROCESS_FAILED_KIND_BROWSER_PROCESS_EXITED {
+                    eprintln!("tabbi: the WebView2 browser process exited");
+                    on_browser_exit();
+                }
+            }
+            Ok(())
+        }));
+        let mut token = 0i64;
+        /* SAFETY: called on the webview's own thread, which with_webview guarantees. */
+        unsafe {
+            if let Ok(core) = controller.CoreWebView2() {
+                let _ = core.add_ProcessFailed(&handler, &mut token);
+            }
+        }
+    });
+    if let Err(error) = result {
+        eprintln!("tabbi: could not watch the WebView2 processes: {error}");
+    }
+}

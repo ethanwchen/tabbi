@@ -629,6 +629,8 @@
 	<string>AnkiConnect が API キーを求めています</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
 	<string>AnkiConnectの設定がTabbiの接続を妨げています。設定を元に戻せば解決し、カードには影響しません。</string>
+	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
+	<string>もう1つのコピーが%@にあります。2つのコピーは1つのウィジェットを共有するため、macOSが切り替えるとウィジェットが空白になることがあります。使っている方を残し、もう一方をゴミ箱に入れてください。</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>今週もコツコツ。この調子でのんびりね。</string>
 	<key>Answers</key>
@@ -2367,6 +2369,8 @@
 	<string>システム設定を開く</string>
 	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
 	<string>カレンダーに接続するには、「アプリケーション」フォルダからTabbiを開いてください。</string>
+	<key>Open Tabbi to start</key>
+	<string>Tabbiを開いて始めよう</string>
 	<key>Open and close the notch</key>
 	<string>ノッチを開閉</string>
 	<key>Open answers in the large view</key>
@@ -2969,6 +2973,8 @@
 	<string>ショートカットへのアクセスがオフです。オートメーションの設定でTabbiのShortcuts Eventsをオンにしてください。</string>
 	<key>Show %@</key>
 	<string>%@を表示</string>
+	<key>Show Other Copy</key>
+	<string>もう一方を表示</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>SafariやChromeのSoundCloudを表示</string>
 	<key>Show a break move</key>
@@ -3673,6 +3679,8 @@
 	<string>シャッフルをオン</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>おやすみモードをオンにしています…</string>
+	<key>Two copies of %@ are installed</key>
+	<string>%@が2つインストールされています</string>
 	<key>Type a name first</key>
 	<string>先に名前を入力してください</string>
 	<key>Type a shortcut name first</key>
@@ -4031,6 +4039,8 @@
 	<string>ペットはこの動きを提案しません。クリックでオン</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>ペットの名前が使えません。クローゼットで名前を変えてください。</string>
+	<key>Your pet, streak and timer show up here.</key>
+	<string>ここにペット、連続記録、タイマーが表示されます。</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>ペット、連続記録、動いているタイマー。</string>
 	<key>Your plan</key>
