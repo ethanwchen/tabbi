@@ -168,8 +168,11 @@ import TabbiKitCore
         rig.cam.setActive(false)
         rig.study.catchUp(at: Self.t0.addingTimeInterval(601))
         #expect(rig.cam.reveal == nil)
+        #expect(rig.cam.hasTapeWaiting, "the app comes back to static, not the home screen")
         rig.cam.setActive(true)
-        #expect(rig.cam.reveal != nil)
+        let record = try #require(rig.cam.reveal)
+        rig.cam.watched(record)
+        #expect(!rig.cam.hasTapeWaiting)
     }
 
     @Test func anUnreadableGameIsNeverOverwritten() throws {

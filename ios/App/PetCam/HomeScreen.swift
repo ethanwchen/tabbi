@@ -26,9 +26,10 @@ struct PetCamRoot: View {
     var body: some View {
         ZStack {
             Group {
-                if cam.reveal != nil {
-                    // Under the tape while it fades in and out: the
-                    // monitor between two feeds.
+                if cam.reveal != nil || cam.hasTapeWaiting {
+                    // Under the tape while it fades in, and in place of the
+                    // home screen while a tape waits for the app to come
+                    // back: the monitor between two feeds.
                     StaticScreen()
                         .transition(.opacity)
                 } else if study.session.phase == .focus, study.session.runState != .idle {

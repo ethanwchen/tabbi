@@ -48,6 +48,12 @@ final class PetCamStore: StudyObserver {
     /// nothing on it gives the tape away.
     private var unseen: PetCamBlockRecord? { game.nextUnwatched }
 
+    /// Whether a tape or still is waiting to be watched, even while the app
+    /// is away and the reveal itself waits: the root then shows static
+    /// rather than the home screen, so coming back to the app goes straight
+    /// to the tape, never past the home screen.
+    var hasTapeWaiting: Bool { unseen != nil }
+
     /// The room the home screen shows.
     var shownRoom: PetCamRoom { unseen?.room ?? game.room }
 
