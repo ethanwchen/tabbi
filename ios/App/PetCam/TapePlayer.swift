@@ -40,6 +40,8 @@ struct TapePlayer: View {
     @State private var shownAt = Date()
     @State private var clockBase: Date?
     @State private var blinking = false
+    /// When the tape began to play, for the UI test's timing hook.
+    @State private var playStart: Date?
 
     private var tape: PetCamTape? { PetCamTape(record: record) }
 
@@ -116,7 +118,7 @@ struct TapePlayer: View {
             // polling the screen while it plays (`-PetCamTestHooks`, debug
             // builds only).
             if DebugLaunch.arguments.contains("-PetCamTestHooks"), let tape {
-                Text(verbatim: Self.testHook(tape))
+                Text(verbatim: "\(playStart?.timeIntervalSince1970 ?? 0)|" + Self.testHook(tape))
                     .font(.system(size: 2))
                     .opacity(0.02)
                     .accessibilityIdentifier("debug.tape")
@@ -137,7 +139,8 @@ struct TapePlayer: View {
     }
 
     /// Each still's seconds, then each still's spoken caption, split by
-    /// bars: "1.8,1.6|HOME ALONE.|CAM 4 WAKES UP.".
+    /// bars: "1.8,1.6|HOME ALONE.|CAM 4 WAKES UP." (the hook puts the
+    /// moment the tape began to play in front).
     static func testHook(_ tape: PetCamTape) -> String {
         ([tape.stills.map { String(format: "%.2f", $0.duration) }.joined(separator: ",")]
             + tape.stills.map { PetCamCaptions.spoken($0.caption, $0.detail) }).joined(separator: "|")
@@ -161,8 +164,13 @@ struct TapePlayer: View {
         for framing in Set(tape.stills.map(\.shot.framing)) {
             let size = PetCamScene.size(of: framing)
             let scale = FeedView.devicePixels(spriteWidth: size.width, width: width, displayScale: displayScale)
+            // With each held still's blink, so it never draws mid-tape.
             let jobs = tape.stills.filter { $0.shot.framing == framing }
-                .map { (shot: $0.shot, daylight: PetCamScene.isDaylight($0.time)) }
+                .flatMap { still -> [(shot: PetCamShot, daylight: Bool)] in
+                    let daylight = PetCamScene.isDaylight(still.time)
+                    guard still.duration > 1.5, still.shot.pet != nil else { return [(still.shot, daylight)] }
+                    return [(still.shot, daylight), (Self.blinked(still, true).shot, daylight)]
+                }
             FeedCache.shared.prefetch(jobs, pet: record.pet, scale: scale)
         }
     }
@@ -176,12 +184,19 @@ struct TapePlayer: View {
             return
         }
         TapeAudio.shared.start()
-        try? await Task.sleep(for: .milliseconds(reduceMotion ? 150 : 600))
+        // Every cut is scheduled from the start on one clock, so a slow
+        // frame never pushes the rest of the tape later: it runs as long as
+        // the code says.
+        let clock = ContinuousClock()
+        var next = clock.now + .milliseconds(reduceMotion ? 150 : 600)
+        playStart = Date()
+        try? await Task.sleep(until: next, clock: clock)
         var clockShown: Date?
         for (position, still) in tape.stills.enumerated() {
             if position > 0, !reduceMotion {
                 cut = true
-                try? await Task.sleep(for: .milliseconds(90))
+                next += .milliseconds(90)
+                try? await Task.sleep(until: next, clock: clock)
             }
             cut = false
             // A still of the same moment carries on the clock where the last
@@ -192,17 +207,17 @@ struct TapePlayer: View {
             index = position
             if let cue = still.cue { TapeAudio.shared.play(cue) }
             if still.shake, !reduceMotion { await shake() }
-            let hold = still.shake && !reduceMotion ? still.duration - 0.3 : still.duration
+            let end = next + .milliseconds(Int((still.duration * 1000).rounded()))
             if still.duration > 1.5, !reduceMotion, still.shot.pet != nil {
                 // One blink, a little past the middle of the hold.
-                try? await Task.sleep(for: .seconds(hold * 0.55))
+                let blink = next + .milliseconds(Int((still.duration * 550).rounded()))
+                try? await Task.sleep(until: blink, clock: clock)
                 blinking = true
-                try? await Task.sleep(for: .milliseconds(150))
+                try? await Task.sleep(until: blink + .milliseconds(150), clock: clock)
                 blinking = false
-                try? await Task.sleep(for: .seconds(max(0, hold * 0.45 - 0.15)))
-            } else {
-                try? await Task.sleep(for: .seconds(hold))
             }
+            try? await Task.sleep(until: end, clock: clock)
+            next = end
             clockShown = base.addingTimeInterval(still.duration.rounded(.down))
             if Task.isCancelled { return }
         }

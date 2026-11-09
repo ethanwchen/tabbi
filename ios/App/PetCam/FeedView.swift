@@ -80,7 +80,8 @@ final class FeedCache {
 
     private var images: [Key: CGImage] = [:]
     private var order: [Key] = []
-    private let capacity = 8
+    /// A tape's stills and their blinks.
+    private let capacity = 16
 
     func image(shot: PetCamShot, pet: PetProfile, daylight: Bool, tick: Int, scale: Int) -> CGImage? {
         let key = Key(shot: shot, pet: pet, daylight: daylight, tick: tick, scale: scale)

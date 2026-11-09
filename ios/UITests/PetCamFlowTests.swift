@@ -219,11 +219,15 @@ final class PetCamFlowTests: XCTestCase {
     private func watchTape(named name: String, first: Int, share: Bool = false) {
         let progress = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH 'Still '")).firstMatch
         XCTAssertTrue(progress.waitForExistence(timeout: 30), "the \(name) tape starts by itself")
-        let began = Date()
+        let seen = Date()
         let hook = app.staticTexts["debug.tape"].label.components(separatedBy: "|")
-        let durations = (hook.first ?? "").split(separator: ",").compactMap { Double($0) }
+        // The moment the tape began to play, by the clock the test shares
+        // with the simulator, so the schedule below is the app's own.
+        let started = Double(hook.first ?? "") ?? 0
+        let began = started > 0 ? Date(timeIntervalSince1970: started) : seen
+        let durations = (hook.dropFirst().first ?? "").split(separator: ",").compactMap { Double($0) }
         XCTAssertFalse(durations.isEmpty, "the tape's timing: \(hook)")
-        captions += hook.dropFirst()
+        captions += hook.dropFirst(2)
         // The picture's size, on the first still (a stamp's tilted corners
         // would widen the element's frame).
         let picture = app.descendants(matching: .any)["tape.picture"].firstMatch
@@ -234,6 +238,13 @@ final class PetCamFlowTests: XCTestCase {
         var start = 0.6
         for (index, duration) in durations.enumerated() {
             if index > 0 { start += 0.09 }
+            if share, index == durations.count - 1 {
+                // Share as the last still lands, before the tape can close
+                // by itself; it holds on that still while the player picks.
+                let wait = start + 0.15 - Date().timeIntervalSince(began)
+                if wait > 0 { usleep(useconds_t(wait * 1_000_000)) }
+                break
+            }
             if duration >= 1.2 {
                 let wait = start + 0.15 - Date().timeIntervalSince(began)
                 if wait > 0 { usleep(useconds_t(wait * 1_000_000)) }
