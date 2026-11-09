@@ -56,8 +56,14 @@ final class PetCamLargeTextTests: XCTestCase {
         XCTAssertTrue(progress.waitForNonExistence(timeout: 25), "the tape ends by itself")
         sleep(1)
 
+        // The wall's chip scrolls; Start stays pinned over the bottom, so
+        // bring the chip clear above it before tapping.
         let wall = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Mugshot wall'")).firstMatch
-        for _ in 0..<10 where !wall.isHittable { page.swipeUp(velocity: .slow) }
+        XCTAssertTrue(wall.waitForExistence(timeout: 5))
+        for _ in 0..<10 where !wall.isHittable || wall.frame.maxY > start.frame.minY - 4 {
+            page.swipeUp(velocity: .slow)
+        }
+        for _ in 0..<10 where wall.frame.minY < 60 { page.swipeDown(velocity: .slow) }
         wall.tap()
         XCTAssertTrue(app.navigationBars["Case file"].waitForExistence(timeout: 5))
         sleep(1)

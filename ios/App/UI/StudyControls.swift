@@ -63,10 +63,12 @@ struct PointsButton: View {
 struct TimerLengthPicker: View {
     let length: StudyTimerLength
     let change: (StudyTimerLength) -> Void
-    /// The step buttons grow with the text, so the glyphs never crowd the
-    /// length at the largest sizes.
-    @ScaledMetric(relativeTo: .body) private var side: CGFloat = 44
+    /// The step buttons grow a little with the text (up to 60 points) and
+    /// keep a gap from the length, so the glyphs never crowd it and the
+    /// length never wraps at the largest sizes.
+    @ScaledMetric(relativeTo: .body) private var scaledSide: CGFloat = 44
     @ScaledMetric(relativeTo: .headline) private var gap: CGFloat = 8
+    private var side: CGFloat { min(scaledSide, 60) }
 
     var body: some View {
         HStack(spacing: gap) {
@@ -75,6 +77,8 @@ struct TimerLengthPicker: View {
                 .font(.headline)
                 .monospacedDigit()
                 .contentTransition(.numericText())
+                .lineLimit(1)
+                .fixedSize()
                 .frame(minWidth: 72)
                 .multilineTextAlignment(.center)
             step(up: true, symbol: "plus", label: Text("A longer timer", bundle: .tabbi))

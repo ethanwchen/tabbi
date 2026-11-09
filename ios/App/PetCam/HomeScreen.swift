@@ -500,17 +500,24 @@ private struct Corners: Shape {
     }
 }
 
-/// The monitor between feeds, under the tape as it fades in and out.
+/// The monitor between feeds, under the tape as it fades in. Once the tape
+/// covers it the static stops moving, so it costs nothing while the tape
+/// plays or a video is being made.
 private struct StaticScreen: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var covered = false
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 0.08)) { context in
-            StaticGrain(frame: reduceMotion ? 1 : Int(context.date.timeIntervalSinceReferenceDate / 0.08), amount: 0.4)
+        TimelineView(.animation(minimumInterval: 0.08, paused: covered || reduceMotion)) { context in
+            StaticGrain(frame: Int(context.date.timeIntervalSinceReferenceDate / 0.08), amount: 0.4)
         }
         .background(Color(white: 0.14))
         .ignoresSafeArea()
         .accessibilityHidden(true)
+        .task {
+            try? await Task.sleep(for: .seconds(1))
+            covered = true
+        }
     }
 }
 

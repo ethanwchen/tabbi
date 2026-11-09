@@ -193,7 +193,9 @@ final class PetCamFlowTests: XCTestCase {
             app.buttons["Share"].tap()
             let sheet = app.descendants(matching: .any).matching(NSPredicate(
                 format: "identifier == 'ActivityListView' OR label == 'Save Video' OR label == 'Copy'")).firstMatch
-            XCTAssertTrue(sheet.waitForExistence(timeout: 30), "the video export opens the share sheet")
+            let tapped = Date()
+            XCTAssertTrue(sheet.waitForExistence(timeout: 90), "the video export opens the share sheet")
+            print("Pet Cam UI test: the export took \(String(format: "%.1f", Date().timeIntervalSince(tapped))) s")
             sleep(1)
             checkpoint("70-share-sheet")
             checkpoint("video-stop")

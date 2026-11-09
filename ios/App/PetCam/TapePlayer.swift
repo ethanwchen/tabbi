@@ -31,7 +31,6 @@ struct TapePlayer: View {
     @State private var exportFailed = false
     @State private var jolt: CGFloat = 0
     @State private var captionHeight: CGFloat = 80
-    @State private var buttonsHeight: CGFloat = 60
     @State private var finished = false
     @State private var screenSize: CGSize = .zero
 
@@ -40,25 +39,28 @@ struct TapePlayer: View {
     var body: some View {
         GeometryReader { geometry in
             let width = pictureWidth(in: geometry.size)
-            VStack(spacing: 0) {
-                if let tape {
-                    progress(tape)
-                        .padding(.horizontal, CCTV.gutter)
-                        .padding(.top, 8)
-                    Spacer(minLength: 10)
-                    let still = tape.stills[min(index, tape.stills.count - 1)]
-                    TapeStillView(record: record, still: still, caseNumber: caseNumber, width: width, publicOnly: false,
-                                  frozen: still.stamp == .caught)
-                        .overlay { if cut { Static() } }
-                        .offset(x: jolt)
-                        .frame(maxWidth: .infinity)
-                    captions(tape, current: still)
-                        .padding(.horizontal, 20)
-                        .padding(.top, 14)
-                    Spacer(minLength: 10)
+            ScrollView {
+                VStack(spacing: 0) {
+                    if let tape {
+                        progress(tape)
+                            .padding(.horizontal, CCTV.gutter)
+                            .padding(.top, 8)
+                        Spacer(minLength: 10)
+                        let still = tape.stills[min(index, tape.stills.count - 1)]
+                        TapeStillView(record: record, still: still, caseNumber: caseNumber, width: width,
+                                      publicOnly: false, frozen: still.stamp == .caught)
+                            .overlay { if cut { Static() } }
+                            .offset(x: jolt)
+                            .frame(maxWidth: .infinity)
+                        captions(tape, current: still)
+                            .padding(.horizontal, 20)
+                            .padding(.top, 14)
+                        Spacer(minLength: 10)
+                    }
                 }
+                .frame(maxWidth: .infinity, minHeight: geometry.size.height)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .scrollBounceBehavior(.basedOnSize)
             .onAppear {
                 screenSize = geometry.size
                 prefetch()
@@ -71,7 +73,9 @@ struct TapePlayer: View {
                     .padding(.horizontal, CCTV.gutter)
                     .padding(.top, 8)
                     .padding(.bottom, 8)
-                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { buttonsHeight = $0 }
+                    // A long caption scrolls under the pinned buttons, never
+                    // through them.
+                    .background(CCTV.screen.opacity(0.94).ignoresSafeArea())
             }
         }
         .background(CCTV.screen.ignoresSafeArea())
@@ -87,10 +91,13 @@ struct TapePlayer: View {
 
     /// The widest picture that leaves room above for the progress bar and
     /// below for the tallest caption (the buttons are pinned outside this
-    /// space), inside the 16 point gutter.
+    /// space), inside the 16 point gutter; never under half the screen's
+    /// width, so at the largest text sizes the picture stays a picture and
+    /// the page scrolls the rest of a long caption into view instead.
     private func pictureWidth(in size: CGSize) -> CGFloat {
         let height = size.height - captionHeight - 14 - 8 - 3 - 20
-        return max(min(size.width - 2 * CCTV.gutter, height * 100 / 160), 120)
+        let widest = size.width - 2 * CCTV.gutter
+        return min(widest, max(height * 100 / 160, size.width * 0.5))
     }
 
     /// The wall's case number of a catch (1 for the first).
@@ -329,12 +336,18 @@ struct TapeStillView: View {
             .accessibilityLabel(Text(verbatim: "\(still.cameraLabel). " + Self.describe(still, pet: record.pet.name)))
     }
 
+    /// The burn-in's text size. A camera burns its text into the picture,
+    /// so it grows and shrinks with the picture rather than with Dynamic Type
+    /// (a small picture at the largest text sizes never wraps or cuts its
+    /// timestamp or stamp); VoiceOver reads it all from the label.
+    private var unit: CGFloat { burnInSize ?? min(12, width / 28) }
+
     private func font(_ style: Font.TextStyle, _ size: CGFloat, weight: Font.Weight = .semibold) -> Font {
-        burnInSize.map { .system(size: size * $0, weight: weight, design: .monospaced) } ?? CCTV.font(style, weight: weight)
+        .system(size: size * unit, weight: weight, design: .monospaced)
     }
 
     private var burnIn: some View {
-        let plate = burnInSize.map { $0 * 0.3 } ?? 4
+        let plate = unit * 0.33
         return HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: CCTV.timestamp(still.time))
@@ -358,9 +371,9 @@ struct TapeStillView: View {
                     .accessibilityHidden(true)
                 } else if still.stamp == nil || still.stamp == .caught {
                     RecLabel(text: "REC", isRecording: true)
-                        .scaleEffect(burnInSize.map { $0 / 12 } ?? 1, anchor: .topTrailing)
-                        .frame(width: burnInSize.map { $0 * 4.6 }, height: burnInSize.map { $0 * 1.3 },
-                               alignment: .topTrailing)
+                        .fixedSize()
+                        .scaleEffect(unit / 12, anchor: .topTrailing)
+                        .frame(width: unit * 4.6, height: unit * 1.3, alignment: .topTrailing)
                 }
             }
             .padding(.horizontal, plate * 1.3)
@@ -368,8 +381,8 @@ struct TapeStillView: View {
             .background(CCTV.plate, in: .rect(cornerRadius: plate * 0.8))
         }
         .foregroundStyle(CCTV.burnIn)
-        .padding(.horizontal, burnInSize.map { $0 * 0.8 } ?? 8)
-        .padding(.top, burnInSize.map { $0 * 0.8 } ?? 8)
+        .padding(.horizontal, unit * 0.67)
+        .padding(.top, unit * 0.67)
     }
 
     @ViewBuilder private var stamp: some View {
@@ -392,7 +405,7 @@ struct TapeStillView: View {
                 .overlay(RoundedRectangle(cornerRadius: 6, style: .continuous).stroke(CCTV.standby, lineWidth: 3))
                 .rotationEffect(.degrees(-7))
                 .frame(maxHeight: .infinity, alignment: .bottom)
-                .padding(.bottom, burnInSize.map { $0 * 3 } ?? 36)
+                .padding(.bottom, unit * 3)
         case .rewind:
             TrackingBands(seed: grainFrame ?? 3)
         case nil:
@@ -410,10 +423,10 @@ struct TapeStillView: View {
             }
         }
         .foregroundStyle(CCTV.rec)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .overlay(RoundedRectangle(cornerRadius: 6, style: .continuous).stroke(CCTV.rec, lineWidth: 4))
-        .background(CCTV.screen.opacity(0.35), in: .rect(cornerRadius: 6, style: .continuous))
+        .padding(.horizontal, unit * 1.33)
+        .padding(.vertical, unit * 0.67)
+        .overlay(RoundedRectangle(cornerRadius: unit / 2, style: .continuous).stroke(CCTV.rec, lineWidth: max(2, unit / 3)))
+        .background(CCTV.screen.opacity(0.35), in: .rect(cornerRadius: unit / 2, style: .continuous))
         .rotationEffect(.degrees(-9))
         .shadow(color: .black.opacity(0.5), radius: 0, x: 2, y: 2)
         .fixedSize()
