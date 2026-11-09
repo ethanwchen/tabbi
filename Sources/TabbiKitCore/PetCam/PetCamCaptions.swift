@@ -199,9 +199,24 @@ public enum PetCamCaptions {
             if let space = upper.lastIndex(of: " "), upper.distance(from: upper.startIndex, to: space) > 12 {
                 upper = String(upper[..<space])
             }
+            // A cut line never ends on a word that needs the next one
+            // ("PRACTICE PROBLEMS FOR"), nor on a comma.
+            var words = upper.split(separator: " ").map(String.init)
+            while words.count > 2, let last = words.last,
+                  danglingWords.contains(last.trimmingCharacters(in: .punctuationCharacters)) || last.hasSuffix(",") {
+                words.removeLast()
+            }
+            upper = words.joined(separator: " ")
         }
         return upper
     }
+
+    /// Words a shortened dodge never ends on.
+    static let danglingWords: Set<String> = [
+        "A", "AN", "THE", "MY", "OUR", "YOUR", "HIS", "HER", "THEIR", "ITS", "OF", "FOR", "TO", "AND", "OR",
+        "BUT", "BEFORE", "AFTER", "WITH", "IN", "ON", "AT", "BY", "FROM", "INTO", "ABOUT", "THAT", "THIS",
+        "SO", "IF", "UNTIL", "WHILE", "AS", "&",
+    ]
 
     /// 24-hour clock time, the way a camera burns it in ("14:02").
     static func clock(_ date: Date, calendar: Calendar) -> String {

@@ -5,12 +5,14 @@ import TabbiKitCore
 
 /// Exports a tape's share clip (`PetCamTape.clip`) as a vertical video
 /// (1080 by 1920, 30 frames a second, H.264 with an AAC sound track) of
-/// about five seconds that loops. It opens on the strike with its sound and
-/// the case as a headline above the picture, cuts to the eye contact with a
-/// push-in, slams the stamp in with a two-frame flash and a shake by about
-/// 3.5 seconds, holds a moment with the grain still moving, and ends on the
-/// tape rewinding, so the loop reads as a rewind. "TABBI CAM 4  OWNER AWAY
-/// 25:00" is burned into every frame. The sound is the tape's own
+/// about five seconds that loops. It opens on the strike with its sound,
+/// cuts to the eye contact with a push-in, slams the stamp in with a
+/// two-frame flash and a jolt by about 3.5 seconds, holds a moment with the
+/// grain still moving, and ends on the tape rewinding, so the loop reads as
+/// a rewind. Every word sits in one band at the top, the case as the
+/// headline and each beat's caption under it, clear of where the feeds
+/// draw (`TapeCard`), and "TABBI CAM 4  OWNER AWAY 25:00" is burned into
+/// every frame. The sound is the tape's own
 /// (`TapeSound`), mastered to -14 LUFS with its true peak under -1 dBTP; no
 /// music. It never mentions studying, and the dodge line appears only when
 /// the player opts in.
@@ -129,7 +131,7 @@ enum TapeExporter {
     }
 
     @MainActor
-    private static func render<Content: View>(_ view: Content) throws -> CGImage {
+    static func render<Content: View>(_ view: Content) throws -> CGImage {
         let renderer = ImageRenderer(content: view
             .environment(\.displayScale, 1)
             .environment(\.colorScheme, .dark)
@@ -263,62 +265,85 @@ enum TapeExporter {
     }
 }
 
-/// One frame of the shared video: the case as a headline, the still with
-/// the clip's burn-in, and the still's captions.
-private struct TapeCard: View {
+/// One frame of the shared video. Every word sits in the part of the frame
+/// the feeds leave alone: below the top 200 pixels (their tabs), above the
+/// bottom 280 (their caption and buttons) and left of the last 120 (their
+/// like and share column). The charge is the headline at the top, the
+/// beat's caption right under it, changing with each beat, and the picture
+/// below them runs off the bottom edge, so the band the feeds cover holds
+/// only floor. The picture is centered on the words, not on the frame.
+struct TapeCard: View {
     let record: PetCamBlockRecord
     let still: PetCamTape.Still
     let caseNumber: Int?
     let headline: String
     let grainFrame: Int
-    /// Pixels the picture is knocked sideways (the jolt of a hard hit).
+    /// Pixels the picture is knocked sideways inside its frame (the jolt of
+    /// a hard hit); the words never move.
     var offset: CGFloat = 0
     /// The push-in on eye contact (1 is none).
     var zoom: CGFloat = 1
     /// The white flash as the stamp lands.
     var flash = false
+    /// Only the words and their plates, on nothing (for the layout test).
+    var textOnly = false
 
-    /// The freeze's caption is the case's line under the stamp; the rest
-    /// say what each still says.
-    private var caption: String { still.stamp == .caught ? (still.detail ?? still.caption) : still.caption }
-    private var detail: String? { still.stamp == .caught ? nil : still.detail }
+    /// Where every word must land, in the 1080 by 1920 frame.
+    static let wordsArea = CGRect(x: 60, y: 200, width: 900, height: 1440)
+    /// Points across the picture is drawn in (it snaps to 900, ten times
+    /// the wide shot).
+    static let pictureWidth: CGFloat = 900
+    static let pictureTop: CGFloat = 500
+    static let headlineSize: CGFloat = 48
+    /// The beat's caption, at least 70% of the headline.
+    static let captionSize: CGFloat = 34
+    static let captionHeight: CGFloat = 84
+    /// How far the stamp's tilt carries its corner below the box it is
+    /// planned in.
+    static let stampTilt: CGFloat = 40
+    static let bandTop: CGFloat = 218
+    static let bandBottom: CGFloat = 484
+
+    /// The beat's words: the freeze's is the case's line under the stamp,
+    /// the rest what each still says, with its sound or callback after.
+    var caption: String {
+        let words = still.stamp == .caught ? [still.detail ?? still.caption] : [still.caption, still.detail]
+        return PetCamCaptions.keepingDodgeTogether(words.compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " "))
+    }
 
     var body: some View {
-        VStack(spacing: 0) {
-            Text(verbatim: PetCamCaptions.keepingDodgeTogether(headline))
-                .font(.system(size: 50, weight: .heavy, design: .monospaced))
-                .foregroundStyle(CCTV.burnIn)
-                .multilineTextAlignment(.center)
-                .lineLimit(3)
-                .minimumScaleFactor(0.6)
-                .frame(height: 190, alignment: .bottom)
-                .padding(.horizontal, 50)
-                .padding(.top, 60)
-                .padding(.bottom, 30)
-            TapeStillView(record: record, still: still, caseNumber: caseNumber, width: 1000, publicOnly: true,
-                          frozen: false, grainFrame: grainFrame, burnInSize: 30, zoom: zoom,
-                          hud: PetCamCaptions.clipHUD(camera: still.cameraLabel, worked: record.worked))
-                .overlay { if flash { Color.white.opacity(0.85) } }
-                .offset(x: offset)
-            VStack(spacing: 14) {
-                Text(verbatim: PetCamCaptions.keepingDodgeTogether(caption))
-                    .font(.system(size: 44, weight: .bold, design: .monospaced))
+        let picture = FeedView.pictureSize(still.shot.framing, width: Self.pictureWidth, displayScale: 1)
+        let words = Self.wordsArea
+        ZStack(alignment: .topLeading) {
+            textOnly ? Color.clear : CCTV.screen
+            TapeStillView(record: record, still: still, caseNumber: caseNumber, width: Self.pictureWidth,
+                          publicOnly: true, frozen: false, grainFrame: grainFrame, burnInSize: 38, zoom: zoom,
+                          jolt: offset, hud: PetCamCaptions.clipHUD(camera: still.cameraLabel, worked: record.worked),
+                          stampLimit: Double((words.maxY - Self.stampTilt - Self.pictureTop) / picture.height),
+                          textOnly: textOnly)
+                .overlay { if flash, !textOnly { Color.white.opacity(0.85) } }
+                .position(x: words.midX, y: Self.pictureTop + picture.height / 2)
+            VStack(spacing: 10) {
+                Text(verbatim: PetCamCaptions.keepingDodgeTogether(headline))
+                    .font(.system(size: Self.headlineSize, weight: .heavy, design: .monospaced))
                     .foregroundStyle(CCTV.burnIn)
-                if let detail {
-                    Text(verbatim: detail)
-                        .font(.system(size: 32, weight: .medium, design: .monospaced))
-                        .foregroundStyle(CCTV.burnIn.opacity(0.75))
-                }
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.6)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                Text(verbatim: caption)
+                    .font(.system(size: Self.captionSize, weight: .bold, design: .monospaced))
+                    .foregroundStyle(CCTV.burnIn.opacity(0.8))
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: Self.captionHeight, alignment: .top)
             }
             .multilineTextAlignment(.center)
-            .lineLimit(2)
-            .minimumScaleFactor(0.6)
-            .padding(.horizontal, 50)
-            .padding(.top, 28)
-            Spacer(minLength: 0)
+            .frame(width: words.width, height: Self.bandBottom - Self.bandTop)
+            .position(x: words.midX, y: (Self.bandTop + Self.bandBottom) / 2)
         }
         .frame(width: TapeExporter.size.width, height: TapeExporter.size.height)
-        .background(CCTV.screen)
+        .clipped()
     }
 }
 

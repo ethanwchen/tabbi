@@ -395,6 +395,11 @@ final class PetCamReadTests: XCTestCase {
         let long = PetCamCaptions.cleanDodge("replying to the group chat about the trip next month and the budget")
         XCTAssertLessThanOrEqual(long?.count ?? 99, PetCamCaptions.maximumDodgeLength)
         XCTAssertFalse(long?.hasSuffix(" ") ?? true)
+        // A cut line never ends on a word that needs the next one.
+        XCTAssertEqual(PetCamCaptions.cleanDodge("the chapter nine practice problems for organic chemistry"),
+                       "THE CHAPTER NINE PRACTICE PROBLEMS")
+        XCTAssertEqual(PetCamCaptions.cleanDodge("emails to the landlord, the bank and my sister about rent"),
+                       "EMAILS TO THE LANDLORD, THE BANK")
     }
 
     func testCaptionsNeverMentionStudyingOrUseForbiddenCharacters() throws {

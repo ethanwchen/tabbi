@@ -327,21 +327,40 @@ struct TapeStillView: View {
     var burnInSize: CGFloat?
     /// The exporter's push-in on the pet (1 is none); the burn-in stays put.
     var zoom: CGFloat = 1
+    /// The exporter's jolt: the picture knocked sideways inside its frame,
+    /// under a burn-in that stays put, as a recorder's text does.
+    var jolt: CGFloat = 0
     /// The share clip's burn-in in place of the camera's label ("TABBI CAM
     /// 4  OWNER AWAY 25:00").
     var hud: String?
+    /// How far up the picture the stamp's lower edge may sit, as a fraction
+    /// of its height: the share clip keeps it out of the band along the
+    /// bottom where the feeds draw their own caption and buttons.
+    var stampLimit: Double = 1
+    /// Draws only the words and their plates, on nothing, so a test can
+    /// find where every word of a frame lands.
+    var textOnly = false
 
     @Environment(\.displayScale) private var displayScale
 
     var body: some View {
         let picture = FeedView.pictureSize(still.shot.framing, width: width, displayScale: displayScale)
         let center = PetCamScene.petCenter(in: still.shot) ?? (0.5, 0.5)
-        FeedView(shot: still.shot, pet: record.pet, daylight: PetCamScene.isDaylight(still.time), width: width)
+        Group {
+            if textOnly {
+                Color.clear
+            } else {
+                FeedView(shot: still.shot, pet: record.pet, daylight: PetCamScene.isDaylight(still.time), width: width)
+            }
+        }
             .scaleEffect(zoom, anchor: UnitPoint(x: center.x, y: center.y))
+            .offset(x: jolt)
             .frame(width: picture.width, height: picture.height)
             .clipped()
             .overlay {
-                if let grainFrame {
+                if textOnly {
+                    EmptyView()
+                } else if let grainFrame {
                     StaticGrain(frame: grainFrame)
                 } else if !frozen {
                     Grain()
@@ -361,6 +380,10 @@ struct TapeStillView: View {
     /// timestamp or stamp); VoiceOver reads it all from the label.
     private var unit: CGFloat { burnInSize ?? min(12, width / 28) }
 
+    /// The stamp keeps to the picture's own scale, whatever size the
+    /// burn-in is set at.
+    private var stampUnit: CGFloat { min(unit, width / 28) }
+
     private func font(_ style: Font.TextStyle, _ size: CGFloat, weight: Font.Weight = .semibold) -> Font {
         .system(size: size * unit, weight: weight, design: .monospaced)
     }
@@ -374,6 +397,8 @@ struct TapeStillView: View {
                     .monospacedDigit()
                 Text(verbatim: hud ?? still.cameraLabel)
                     .font(font(.caption2, 0.85))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
                     .opacity(0.85)
             }
             .padding(.horizontal, plate * 1.3)
@@ -410,7 +435,7 @@ struct TapeStillView: View {
             // Where the pet and the evidence leave room, so the last frame
             // shows suspect, evidence and verdict together.
             GeometryReader { geometry in
-                let center = PetCamScene.stampCenter(of: still.shot, pet: record.pet)
+                let center = PetCamScene.stampCenter(of: still.shot, pet: record.pet, within: stampLimit)
                 // Never wider than the share of the picture the placement
                 // planned for, so CAUGHT AGAIN or HABITUAL never runs off the
                 // edge; longer words set smaller instead.
@@ -429,7 +454,7 @@ struct TapeStillView: View {
                 .frame(maxHeight: .infinity, alignment: .bottom)
                 .padding(.bottom, unit * 3)
         case .rewind:
-            TrackingBands(seed: grainFrame ?? 3)
+            if !textOnly { TrackingBands(seed: grainFrame ?? 3) }
         case nil:
             EmptyView()
         }
@@ -438,25 +463,29 @@ struct TapeStillView: View {
     /// The stamp escalates with the object's rap sheet: CAUGHT, CAUGHT
     /// AGAIN, HABITUAL. The case number sits on an opaque plate in heavy
     /// type, so the room never shows through it.
+    private func stampFont(_ size: CGFloat, weight: Font.Weight = .heavy) -> Font {
+        .system(size: size * stampUnit, weight: weight, design: .monospaced)
+    }
+
     private func caughtStamp(maxWidth: CGFloat) -> some View {
         VStack(spacing: 4) {
             Text(verbatim: record.outcome == .caught ? record.captions.closer : PetCamCaptions.caughtStamp)
-                .font(font(.largeTitle, 3.2, weight: .heavy))
+                .font(stampFont(3.2))
                 .lineLimit(1)
                 .minimumScaleFactor(0.4)
-                .frame(maxWidth: maxWidth - unit * 2.7)
+                .frame(maxWidth: maxWidth - stampUnit * 2.7)
             if let caseNumber {
                 Text(verbatim: String(format: "CASE %03d", caseNumber))
-                    .font(font(.headline, 1.3, weight: .black))
-                    .padding(.horizontal, unit * 0.5)
-                    .background(CCTV.screen, in: .rect(cornerRadius: unit / 4))
+                    .font(stampFont(1.3, weight: .black))
+                    .padding(.horizontal, stampUnit * 0.5)
+                    .background(CCTV.screen, in: .rect(cornerRadius: stampUnit / 4))
             }
         }
         .foregroundStyle(CCTV.rec)
-        .padding(.horizontal, unit * 1.33)
-        .padding(.vertical, unit * 0.67)
-        .overlay(RoundedRectangle(cornerRadius: unit / 2, style: .continuous).stroke(CCTV.rec, lineWidth: max(2, unit / 3)))
-        .background(CCTV.screen.opacity(0.35), in: .rect(cornerRadius: unit / 2, style: .continuous))
+        .padding(.horizontal, stampUnit * 1.33)
+        .padding(.vertical, stampUnit * 0.67)
+        .overlay(RoundedRectangle(cornerRadius: stampUnit / 2, style: .continuous).stroke(CCTV.rec, lineWidth: max(2, stampUnit / 3)))
+        .background(CCTV.screen.opacity(0.35), in: .rect(cornerRadius: stampUnit / 2, style: .continuous))
         .rotationEffect(.degrees(-9))
         .shadow(color: .black.opacity(0.5), radius: 0, x: 2, y: 2)
     }

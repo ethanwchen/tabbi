@@ -183,8 +183,10 @@ public enum PetCamScene {
     /// evidence (the object being struck and every wreck on the floor),
     /// counting the burn-in band along the top as taken, so the last frame
     /// shows suspect, evidence and verdict together. Ties go to the lowest
-    /// place, then the trailing side.
-    public static func stampCenter(of shot: PetCamShot, pet: PetProfile) -> (x: Double, y: Double) {
+    /// place, then the trailing side. With `within` under 1, the stamp's
+    /// lower edge stays above that fraction of the picture's height.
+    public static func stampCenter(of shot: PetCamShot, pet: PetProfile,
+                                   within limit: Double = 1) -> (x: Double, y: Double) {
         let crop = crop(of: shot.framing, wrecks: shot.wrecks)
         func unit(_ x: Int, _ y: Int, _ width: Int, _ height: Int) -> CGRect {
             CGRect(x: Double(x - crop.x) / Double(crop.width), y: Double(y - crop.y) / Double(crop.height),
@@ -213,7 +215,11 @@ public enum PetCamScene {
             taken.append((unit(base.x - side / 2, base.y - side, side, side), 2))
         }
         var best = (x: 0.5, y: 0.8), least = Double.infinity
-        for y in [0.84, 0.7, 0.56, 0.42, 0.26] {
+        // Held above a limit, the stamp also tries a row between the low ones.
+        let rows = ([0.84, 0.7] + (limit < 1 ? [0.63] : []) + [0.56, 0.42, 0.26])
+            .filter { $0 + stampSize.height / 2 <= limit }
+        if let lowest = rows.first { best.y = lowest }
+        for y in rows.isEmpty ? [0.26] : rows {
             for x in [0.68, 0.32, 0.5] {
                 let stamp = CGRect(x: x - stampSize.width / 2, y: y - stampSize.height / 2, width: stampSize.width,
                                    height: stampSize.height)
