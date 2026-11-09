@@ -282,6 +282,39 @@ final class PetCamReadTests: XCTestCase {
         XCTAssertEqual(PetCamTape.tweens(from: tape.stills[0], to: tape.stills[1], count: 3), [], "a cut between cameras")
     }
 
+    func testACallbackShowsWithinFiveTapesAndNoLineDoublesItsPunctuation() throws {
+        // Many fresh games, catches and misses mixed, blocks back to back:
+        // the history gives a callback by the fifth tape in every one, and
+        // no caption or line under it ever reads ".." or ".,".
+        var latest = 0
+        for seed: UInt64 in 0..<120 {
+            var game = PetCamGame(seed: seed &* 104_729 &+ 7, at: monday)
+            var roll = PetCamRandom(seed: seed, stream: "player")
+            var first: Int?
+            for index in 0..<6 {
+                let start = monday.addingTimeInterval(Double(index) * 720)
+                let strike = game.setup.strike
+                let pick = roll.unit() < 0.5 ? strike : PetCamSpot.allCases.first { $0 != strike }
+                game.start(id: "b\(index)", pick: pick, dodge: index == 2 ? "my essay." : nil, dare: false,
+                           plannedLength: 600, pet: pet, at: start)
+                let record = try XCTUnwrap(game.finish(endedAt: start.addingTimeInterval(600), worked: 600,
+                                                       calendar: calendar))
+                if record.captions.callback != nil, first == nil { first = index + 1 }
+                for still in try XCTUnwrap(PetCamTape(record: record)).stills {
+                    for line in [still.caption, still.detail, PetCamCaptions.spoken(still.caption, still.detail)]
+                        .compactMap({ $0 }) {
+                        XCTAssertFalse(line.contains("..") || line.contains(".,") || line.contains(",."), line)
+                    }
+                }
+            }
+            latest = max(latest, try XCTUnwrap(first, "seed \(seed) never called back"))
+        }
+        XCTAssertLessThanOrEqual(latest, 5)
+        XCTAssertEqual(PetCamCaptions.spoken("CAM 3. ALL QUIET.", "NO WITNESSES."), "CAM 3. ALL QUIET. NO WITNESSES.")
+        XCTAssertEqual(PetCamCaptions.spoken("SUSPECT RETURNS", "2ND MUG TODAY"), "SUSPECT RETURNS. 2ND MUG TODAY")
+        XCTAssertEqual(PetCamCaptions.spoken("[CRASH]", nil), "[CRASH]")
+    }
+
     func testDodgeLinesAreTrimmedUppercasedAndShortened() {
         XCTAssertNil(PetCamCaptions.cleanDodge("   \n "))
         XCTAssertEqual(PetCamCaptions.cleanDodge("  my essay\non WW2 "), "MY ESSAY ON WW2")

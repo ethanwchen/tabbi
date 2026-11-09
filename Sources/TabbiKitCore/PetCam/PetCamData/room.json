@@ -385,12 +385,12 @@
   ],
   "wreck.tissues": [
    "..........PPGPP.",
-   ".UU......PPGPPGV",
-   "UUUU.UU..PPGPPGV",
-   ".UUUUUUU.PPGPPGV",
-   "...UUZUUUUAAAAV.",
-   "..UUU..UUUUU....",
-   ".UU.......UU...."
+   ".UV......PPGPPGV",
+   "UUVU.UV..PPGPPGV",
+   ".VUUUVUU.PPGPPGV",
+   "...UVZUUUVAAAAV.",
+   "..UVU..UUVUU....",
+   ".UV.......VU...."
   ],
   "wreck.donut": [
    "..W....W........",

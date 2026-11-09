@@ -143,6 +143,38 @@ final class PetCamArtTests: XCTestCase {
         }
     }
 
+    func testAWreckCloseUpExposesTheWreckItNames() {
+        // The side table's tissues beside an older puddle, filmed from CAM 1:
+        // the tissues are drawn as if lit and on top, the puddle stays dim.
+        let pet = PetProfile(name: "", breed: .britishShorthair)
+        let day = PetCamEngineTests.monday
+        let puddle = PetCamWreck(object: PetCamObject(kind: .fishbowl, placedAt: day, serial: 1), spot: .table,
+                                 wreckedAt: day, blockID: "a", slot: 0)
+        let tissues = PetCamWreck(object: PetCamObject(kind: .tissues, placedAt: day, serial: 2), spot: .table,
+                                  wreckedAt: day.addingTimeInterval(60), blockID: "b", slot: 1)
+        let close = PetCamShot(framing: .wreck(.table, hidden: false), objects: [:], wrecks: [puddle, tissues])
+        var wide = close
+        wide.framing = .wide
+        let shown = PetCamScene.frame(close, pet: pet, daylight: false)
+        let room = PetCamScene.frame(wide, pet: pet, daylight: false)
+        let crop = PetCamScene.crop(of: close.framing, wrecks: close.wrecks)
+        let base = PetCamScene.wreckAnchor(tissues)
+        // A pixel inside the tissue trail is brighter in the close-up than in
+        // the wide shot, where the same wreck is just one in the dark.
+        let grid = PetCamScene.wreck(.tissues)
+        var brighter = 0, total = 0
+        for y in 0..<grid.height {
+            for x in 0..<grid.width where grid[x, y] != .empty {
+                let rx = base.x - (grid.width + 2) / 2 + 1 + x, ry = base.y - (grid.height + 2) + 2 + y
+                total += 1
+                let near = shown[rx - crop.x, ry - crop.y].luminance, far = room[rx, ry].luminance
+                XCTAssertGreaterThanOrEqual(near, far - 1e-9, "never darker in its own close-up")
+                if near > far { brighter += 1 }
+            }
+        }
+        XCTAssertGreaterThan(Double(brighter) / Double(total), 0.5, "the named wreck reads in its close-up")
+    }
+
     func testWrecksAreRingedInLightAndObjectsInInk() {
         let ink = PetCamScene.palette[.ink]
         let light = PetCamScene.palette[.coatShade]

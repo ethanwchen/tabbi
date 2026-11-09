@@ -323,6 +323,15 @@ public enum PetCamCaptions {
         return String(text[..<range.upperBound]) + dodge.replacingOccurrences(of: " ", with: "\u{00A0}")
     }
 
+    /// A still's caption and the smaller line under it as one sentence for
+    /// VoiceOver: joined with a space after closing punctuation, or with a
+    /// period, never ".," as a plain join would make.
+    public static func spoken(_ caption: String, _ detail: String?) -> String {
+        guard let detail, !detail.isEmpty else { return caption }
+        guard let last = caption.last else { return detail }
+        return caption + (".!?:".contains(last) ? " " : ". ") + detail
+    }
+
     /// The label the wall prints over a charge ("CHARGE").
     public static var chargeLabel: String {
         fill(grammar.charge, ["charge": ""]).trimmingCharacters(in: CharacterSet(charactersIn: ": "))

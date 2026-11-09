@@ -252,9 +252,16 @@ public enum PetCamScene {
     public static func frame(_ shot: PetCamShot, pet: PetProfile, daylight: Bool, tick: Int = 0) -> Frame {
         var picture = Picture(room: daylight ? Self.dayRoom : Self.nightRoom, daylight: daylight)
         // Wrecks lie flat on the floor, under everything, each ringed in a
-        // light line so it reads against the dark boards.
-        for wreck in shot.wrecks {
+        // light line so it reads against the dark boards. A close-up of a
+        // wreck exposes for it, so the wreck it names is drawn in full light
+        // and on top, whatever lies around it.
+        var subject: PetCamWreck?
+        if case .wreck(let spot, _) = shot.framing { subject = shot.wrecks.last { $0.spot == spot } }
+        for wreck in shot.wrecks where wreck != subject {
             picture.sprite(Self.wreck(wreck.object.kind), base: wreckAnchor(wreck), light: .wreck, outline: .coatShade)
+        }
+        if let subject {
+            picture.sprite(Self.wreck(subject.object.kind), base: wreckAnchor(subject), light: .exposed, outline: .ink)
         }
         // The objects and the pet by where they stand, the nearest drawn
         // last, so the pet sits behind a plate at the front of its table.
@@ -363,7 +370,10 @@ public enum PetCamScene {
 
     /// The picture being composed, in room coordinates.
     private struct Picture {
-        enum Light { case room, wreck }
+        /// How a pixel is lit: like the room (bright in a pool, dim
+        /// elsewhere), like a wreck (a little brighter in the dark), or
+        /// exposed for, as a close-up's subject (as if in a pool).
+        enum Light { case room, wreck, exposed }
 
         var pixels: [PetColor]
         let daylight: Bool
@@ -384,7 +394,9 @@ public enum PetCamScene {
                 let v = Double(value)
                 let lit = v * spot.tint[i]
                 let dim = v * ambient[i] + 4
-                let out: Double = if spot.lit {
+                let out: Double = if light == .exposed {
+                    max(v, lit)
+                } else if spot.lit {
                     lit
                 } else if light == .wreck {
                     dim + (lit - dim) * PetCamScene.layout.wreckLight

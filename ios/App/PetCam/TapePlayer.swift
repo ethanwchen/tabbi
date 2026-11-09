@@ -209,7 +209,8 @@ struct TapePlayer: View {
         .multilineTextAlignment(.center)
         .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: PetCamCaptions.spoken(still.caption, still.detail)))
         .accessibilityIdentifier("tape.caption")
     }
 
