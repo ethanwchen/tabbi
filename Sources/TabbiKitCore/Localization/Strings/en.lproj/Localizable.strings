@@ -593,6 +593,8 @@
 	<string>AnkiConnect wants an API key</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
 	<string>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</string>
+	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
+	<string>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>Another steady week. Keep it cozy.</string>
 	<key>Answers</key>
@@ -2285,6 +2287,8 @@
 	<string>Open System Settings</string>
 	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
 	<string>Open Tabbi from your Applications folder to connect your calendar.</string>
+	<key>Open Tabbi to start</key>
+	<string>Open Tabbi to start</string>
 	<key>Open and close the notch</key>
 	<string>Open and close the notch</string>
 	<key>Open answers in the large view</key>
@@ -2875,6 +2879,8 @@
 	<string>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</string>
 	<key>Show %@</key>
 	<string>Show %@</string>
+	<key>Show Other Copy</key>
+	<string>Show Other Copy</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>Show SoundCloud from Safari or Chrome</string>
 	<key>Show a break move</key>
@@ -3559,6 +3565,8 @@
 	<string>Turn shuffle on</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>Turning Do Not Disturb on…</string>
+	<key>Two copies of %@ are installed</key>
+	<string>Two copies of %@ are installed</string>
 	<key>Type a name first</key>
 	<string>Type a name first</string>
 	<key>Type a shortcut name first</key>
@@ -3915,6 +3923,8 @@
 	<string>Your pet won't suggest this move. Click to turn it on</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>Your pet's name isn't allowed. Rename your pet in the Closet.</string>
+	<key>Your pet, streak and timer show up here.</key>
+	<string>Your pet, streak and timer show up here.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>Your pet, today's streak and the running timer.</string>
 	<key>Your plan</key>

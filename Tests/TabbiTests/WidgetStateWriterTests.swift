@@ -39,6 +39,22 @@ final class WidgetStateWriterTests: XCTestCase {
         XCTAssertEqual(reloads, 1, "nothing changed")
     }
 
+    func testEveryLaunchReloadsTheWidgetEvenWhenTheStateIsUnchanged() async throws {
+        // The first launch writes the file; the next one (after an update,
+        // or a relaunch) finds the same state but still reloads once, so a
+        // widget WidgetKit left blank or stale is redrawn.
+        let first = makeWriter()
+        await first.settle()
+        XCTAssertEqual(reloads, 1)
+        let second = makeWriter()
+        await second.settle()
+        XCTAssertEqual(reloads, 2)
+        second.write()
+        await second.settle()
+        XCTAssertEqual(reloads, 2, "later unchanged writes stay quiet")
+        withExtendedLifetime(first) {}
+    }
+
     func testSessionStartAndEndReachTheWidgetAsOneWriteEach() async throws {
         let writer = makeWriter()
         await writer.settle()
@@ -65,5 +81,31 @@ final class WidgetStateWriterTests: XCTestCase {
         await writer.settle()
         XCTAssertEqual(reloads, 3)
         withExtendedLifetime(writer) {}
+    }
+}
+
+final class DuplicateCopyCheckTests: XCTestCase {
+    private let home = URL(fileURLWithPath: "/Users/friend")
+
+    private func others(of own: String, among paths: [String], missing: Set<String> = []) -> [String] {
+        DuplicateCopyCheck.otherCopies(of: URL(fileURLWithPath: own), among: paths.map { URL(fileURLWithPath: $0) },
+                                       home: home) { !missing.contains($0.path) }.map(\.path)
+    }
+
+    func testFindsTheOtherEditionInAnApplicationsFolder() {
+        // The App Store names its copy "Tabbi 2" beside the direct download.
+        XCTAssertEqual(others(of: "/Applications/Tabbi.app",
+                              among: ["/Applications/Tabbi.app", "/Applications/Tabbi 2.app"]),
+                       ["/Applications/Tabbi 2.app"])
+        XCTAssertEqual(others(of: "/Applications/Tabbi 2.app",
+                              among: ["/Applications/Tabbi 2.app", "/Users/friend/Applications/Tabbi.app"]),
+                       ["/Users/friend/Applications/Tabbi.app"])
+    }
+
+    func testIgnoresItselfBuildsDiskImagesTheTrashAndDeletedCopies() {
+        XCTAssertEqual(others(of: "/Applications/Tabbi.app", among: [
+            "/Applications/Tabbi.app", "/Applications/Tabbi.app/", "/Users/friend/Developer/Tabbi/build/Tabbi.app",
+            "/Volumes/Tabbi/Tabbi.app", "/Users/friend/.Trash/Tabbi.app", "/Applications/Old/Tabbi.app",
+        ], missing: ["/Applications/Old/Tabbi.app"]), [])
     }
 }

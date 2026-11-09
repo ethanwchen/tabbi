@@ -131,8 +131,9 @@ function open(state: ShellState, source: OpenSource): Step {
     { type: "cancelTimer", id: "hoverOpen" },
     { type: "cancelTimer", id: "leaveClose" },
     { type: "hotZone", armed: false },
-    { type: "shape", shape: "open" },
+    /* Open first: the host brings the webview back to its normal memory level before the panel draws. */
     { type: "open", open: true },
+    { type: "shape", shape: "open" },
   ];
   if (focused) effects.push({ type: "activate" });
   return {

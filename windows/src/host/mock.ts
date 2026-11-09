@@ -159,6 +159,7 @@ export function mockHost(startup: Startup = MOCK_STARTUP, options: MockHostOptio
     setCanvas: record("setCanvas"),
     openSettings: record("openSettings"),
     settingsReady: () => answer("settingsReady", [], { startup, section: options.settingsSection ?? null }),
+    showSettings: record("showSettings"),
     broadcast(topic, payload) {
       log("broadcast", [topic]);
       options.bus?.post(endpoint, topic, payload);

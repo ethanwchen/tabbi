@@ -120,4 +120,100 @@ final class WidgetStateTests: XCTestCase {
         try Data("not json".utf8).write(to: file.url)
         XCTAssertNil(file.read())
     }
+
+    // MARK: Reading leniently
+
+    private func folder() throws -> URL {
+        let folder = FileManager.default.temporaryDirectory
+            .appendingPathComponent("WidgetStateTests-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        addTeardownBlock { try? FileManager.default.removeItem(at: folder) }
+        return folder
+    }
+
+    /// The JSON the current build writes, as an object to edit.
+    private func object(_ state: WidgetState) throws -> [String: Any] {
+        try XCTUnwrap(JSONSerialization.jsonObject(with: state.encoded()) as? [String: Any])
+    }
+
+    private func decode(_ object: [String: Any]) throws -> WidgetState {
+        try WidgetState.decode(JSONSerialization.data(withJSONObject: object))
+    }
+
+    func testLoadSaysWhyThereIsNoState() throws {
+        let folder = try folder()
+        let file = WidgetStateFile(folder: folder)
+        guard case .missing = file.load() else { return XCTFail("no file is missing") }
+
+        for broken in ["", "not json", "{\"pet\":", "[1, 2]", "null"] {
+            try Data(broken.utf8).write(to: file.url)
+            guard case .unreadable = file.load() else { return XCTFail("\(broken) is unreadable") }
+            XCTAssertNil(file.read())
+        }
+
+        // A folder where the file should be reads as unreadable, not missing.
+        try FileManager.default.removeItem(at: file.url)
+        try FileManager.default.createDirectory(at: file.url, withIntermediateDirectories: true)
+        guard case .unreadable = file.load() else { return XCTFail("a folder is unreadable") }
+    }
+
+    func testANewerBuildsFileStillReads() throws {
+        // A newer schema with fields this build does not know (the other
+        // edition, updated first, shares the file).
+        var json = try object(try state(timer: .init(phase: .focus, label: "Focus", clock: .countUp(since: date(9)))))
+        json[VersionedJSON.versionKey] = 99
+        json["mood"] = "sleepy"
+        json["goals"] = [["minutes": 120]]
+        let read = try decode(json)
+        XCTAssertEqual(read.focusMinutes, 50)
+        XCTAssertEqual(read.streakDays, 3)
+        XCTAssertEqual(read.timer?.label, "Focus")
+    }
+
+    func testAFieldItCannotReadFallsBackOnItsOwn() throws {
+        var json = try object(try state(timer: .init(phase: .focus, label: "Focus", clock: .paused(shown: 60))))
+        // A breed and a timer phase from a newer build, and a garbled day.
+        var pet = try XCTUnwrap(json["pet"] as? [String: Any])
+        pet["breed"] = "axolotl"
+        json["pet"] = pet
+        var timer = try XCTUnwrap(json["timer"] as? [String: Any])
+        timer["phase"] = "siesta"
+        json["timer"] = timer
+        json["lastFocusDay"] = "yesterday"
+        let read = try decode(json)
+        XCTAssertEqual(read.pet, .starter(.cat), "an unknown pet is the starter cat")
+        XCTAssertNil(read.timer, "an unknown clock shows no timer")
+        XCTAssertNil(read.lastFocusDay)
+        XCTAssertEqual(read.focusMinutes, 50, "what it can read stays")
+
+        json["day"] = 20_261_009
+        json["focusMinutes"] = "lots"
+        let noDay = try decode(json)
+        XCTAssertEqual(noDay.minutes(at: date(12), calendar: calendar), 0, "an unreadable day shows no minutes")
+    }
+
+    func testAPartialObjectReadsAsTheEmptyState() throws {
+        let read = try decode([:])
+        XCTAssertEqual(read.pet, .starter(.cat))
+        XCTAssertEqual(read.focusMinutes, 0)
+        XCTAssertEqual(read.streakDays, 0)
+        XCTAssertNil(read.timer)
+    }
+
+    func testAnOldFileWithNoSchemaVersionReads() throws {
+        var json = try object(try state())
+        json[VersionedJSON.versionKey] = nil
+        XCTAssertEqual(try decode(json), try state())
+    }
+
+    func testEncodingIsUnchangedByTheLenientReader() throws {
+        // The app compares the file with what it would write, so a round
+        // trip must give back the same bytes.
+        let state = try state(timer: .init(phase: .rest, label: "Break", clock: .countdown(endsAt: date(10, 5))))
+        XCTAssertEqual(try WidgetState.decode(state.encoded()).encoded(), try state.encoded())
+    }
+
+    func testPetArtShipsWithTheResources() {
+        XCTAssertTrue(WidgetState.canDrawPet)
+    }
 }

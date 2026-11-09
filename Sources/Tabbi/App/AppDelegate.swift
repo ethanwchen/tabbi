@@ -51,6 +51,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // First run: the notch opens on setup and stays open until it ends.
         if !settings.settings.hasChosenKit {
             services.onboarding.start()
+        } else {
+            // A second installed copy can leave the widget blank; say so once.
+            DuplicateCopyCheck.scheduleIfNeeded()
         }
         services.accountSync.start()
         // scripts/measure-performance.sh --open <tab>: hold the notch open on

@@ -124,9 +124,15 @@ public struct WidgetState: Hashable, Codable, Sendable {
     public func changeDates(after now: Date, calendar: Calendar = .current) -> [Date] {
         var dates: [Date] = []
         if case .countdown(let end)? = timer?.clock, end > now { dates.append(end) }
-        let midnight = PlannerDayKey(date: now, calendar: calendar).adding(days: 1, calendar: calendar)
-            .startDate(calendar: calendar)
-        dates.append(midnight)
+        // From the date itself, not the day key: a key cannot name a leap
+        // month (Chinese calendar), and the next midnight must never land
+        // in the past, or WidgetKit would ask for a new timeline at once.
+        let today = calendar.startOfDay(for: now)
+        if let midnight = calendar.date(byAdding: .day, value: 1, to: today), midnight > now {
+            dates.append(midnight)
+        } else {
+            dates.append(now.addingTimeInterval(24 * 60 * 60))
+        }
         return Array(Set(dates)).sorted()
     }
 
@@ -148,6 +154,38 @@ public struct WidgetState: Hashable, Codable, Sendable {
     }
 
     // MARK: Encoding
+
+    private enum CodingKeys: String, CodingKey {
+        case pet, day, focusMinutes, streakDays, lastFocusDay, timer
+    }
+
+    /// Reads what it can. The widget must always draw something, so a field
+    /// it cannot read (a breed or timer phase from a newer build, a partial
+    /// write) falls back on its own instead of failing the whole state: an
+    /// unknown pet is the starter cat, an unreadable day shows no minutes,
+    /// and an unknown clock shows no timer.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let day = (try? container.decode(PlannerDayKey.self, forKey: .day)) ?? Self.unknownDay
+        self.init(pet: (try? container.decode(PetProfile.self, forKey: .pet)) ?? .starter(.cat),
+                  day: day,
+                  focusMinutes: (try? container.decode(Int.self, forKey: .focusMinutes)) ?? 0,
+                  streakDays: (try? container.decode(Int.self, forKey: .streakDays)) ?? 0,
+                  lastFocusDay: try? container.decodeIfPresent(PlannerDayKey.self, forKey: .lastFocusDay),
+                  timer: try? container.decodeIfPresent(Timer.self, forKey: .timer))
+    }
+
+    /// The day an unreadable `day` field stands for: long past, so its
+    /// minutes never show as today's.
+    static let unknownDay = PlannerDayKey(rawValue: "2000-01-01")!
+
+    /// Whether the pet art this process draws with shipped with it. The
+    /// widget checks before drawing the pet: the art is loaded on first use
+    /// and a missing file stops the process, which WidgetKit shows as a
+    /// blank widget.
+    public static var canDrawPet: Bool {
+        KitResources.bundle?.url(forResource: "breeds", withExtension: "json", subdirectory: PetArt.subdirectory) != nil
+    }
 
     public func encoded() throws -> Data {
         let encoder = JSONEncoder()
@@ -190,10 +228,41 @@ public struct WidgetStateFile: Sendable {
         url = folder.appendingPathComponent(WidgetState.fileName)
     }
 
+    /// What reading the file found, so the widget can say why it shows its
+    /// "Open Tabbi" state.
+    public enum Contents: Sendable {
+        case state(WidgetState)
+        /// No file yet: the app has not run, or not since the widget came.
+        case missing
+        /// A file that could not be opened (the sandbox denied it) or
+        /// decoded (corrupt or empty), with the reason for the log.
+        case unreadable(String)
+
+        public var state: WidgetState? {
+            if case .state(let state) = self { state } else { nil }
+        }
+    }
+
+    /// The saved state, or why there is none.
+    public func load() -> Contents {
+        let data: Data
+        do {
+            data = try Data(contentsOf: url)
+        } catch CocoaError.fileReadNoSuchFile, CocoaError.fileNoSuchFile {
+            return .missing
+        } catch {
+            return .unreadable("\(error)")
+        }
+        do {
+            return .state(try WidgetState.decode(data))
+        } catch {
+            return .unreadable("\(error)")
+        }
+    }
+
     /// The saved state, or nil when there is none or it can't be read.
     public func read() -> WidgetState? {
-        guard let data = try? Data(contentsOf: url) else { return nil }
-        return try? WidgetState.decode(data)
+        load().state
     }
 
     /// Saves `state` unless the file already holds it. Returns whether it

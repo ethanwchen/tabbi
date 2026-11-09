@@ -593,6 +593,8 @@
 	<string>AnkiConnect pide una clave de API</string>
 	<key>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</key>
 	<string>Los ajustes de AnkiConnect dejan fuera a Tabbi. Restablecerlos lo arregla y no toca tus tarjetas.</string>
+	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
+	<string>Hay otra copia en %@. Las copias comparten un widget, que puede quedarse en blanco cuando macOS cambia entre ellas. Quédate con la copia que usas y mueve la otra a la Papelera.</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>Otra semana constante. Sigue a tu ritmo.</string>
 	<key>Answers</key>
@@ -2285,6 +2287,8 @@
 	<string>Abrir Ajustes del Sistema</string>
 	<key>Open Tabbi from your Applications folder to connect your calendar.</key>
 	<string>Abre Tabbi desde tu carpeta Aplicaciones para conectar tu calendario.</string>
+	<key>Open Tabbi to start</key>
+	<string>Abre Tabbi para empezar</string>
 	<key>Open and close the notch</key>
 	<string>Abrir y cerrar el notch</string>
 	<key>Open answers in the large view</key>
@@ -2875,6 +2879,8 @@
 	<string>El acceso a Atajos está desactivado. Activa Shortcuts Events para Tabbi en los ajustes de Automatización.</string>
 	<key>Show %@</key>
 	<string>Mostrar %@</string>
+	<key>Show Other Copy</key>
+	<string>Mostrar la otra copia</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
 	<string>Mostrar SoundCloud de Safari o Chrome</string>
 	<key>Show a break move</key>
@@ -3559,6 +3565,8 @@
 	<string>Activar aleatorio</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>Activando No molestar…</string>
+	<key>Two copies of %@ are installed</key>
+	<string>Hay dos copias de %@ instaladas</string>
 	<key>Type a name first</key>
 	<string>Primero escribe un nombre</string>
 	<key>Type a shortcut name first</key>
@@ -3915,6 +3923,8 @@
 	<string>Tu mascota no sugerirá este movimiento. Haz clic para activarlo</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>El nombre de tu mascota no está permitido. Cámbialo en Armario.</string>
+	<key>Your pet, streak and timer show up here.</key>
+	<string>Aquí aparecerán tu mascota, tu racha y el temporizador.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>Tu mascota, tu racha y el temporizador en marcha.</string>
 	<key>Your plan</key>

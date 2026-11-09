@@ -25,6 +25,12 @@ final class WidgetStateWriter {
     private let reload: () -> Void
     private var focus: WidgetState.Timer?
     private var isScheduled = false
+    /// The first write of each launch reloads the widget even when the file
+    /// already holds the same state: after an update, a move or a second
+    /// copy of the app taking over the extension, WidgetKit may still show
+    /// a timeline (or a blank widget) from the extension it had before, and
+    /// opening Tabbi is what the widget asks the user to do.
+    private var reloadsOnNextWrite = true
     private let io = DispatchQueue(label: "dev.tabbi.widget-state", qos: .utility)
     private var cancellables: Set<AnyCancellable> = []
 
@@ -86,7 +92,7 @@ final class WidgetStateWriter {
     }
 
     /// Saves the current state off the main thread and reloads the widget
-    /// once the file changed.
+    /// once the file changed (and after the first write of the launch).
     func write(now: Date = Date()) {
         let today = PlannerDayKey(date: now, calendar: calendar)
         let focusDays = WidgetState.focusDays(endingOn: today, calendar: calendar) { [activityLog] day in
@@ -95,8 +101,10 @@ final class WidgetStateWriter {
         let state = WidgetState(pet: pet.profile, timer: focus, todayRecords: activityLog.records(on: today),
                                 focusDays: focusDays, now: now, calendar: calendar)
         let file = self.file
+        let force = reloadsOnNextWrite
+        reloadsOnNextWrite = false
         io.async { [weak self] in
-            guard (try? file.write(state)) == true else { return }
+            guard (try? file.write(state)) == true || force else { return }
             DispatchQueue.main.async { [weak self] in
                 MainActor.assumeIsolated { self?.reload() }
             }

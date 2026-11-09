@@ -39,6 +39,15 @@ const ISLAND: &str = "island";
 /// The Settings window's label; the window exists only while it is open.
 const SETTINGS: &str = "settings";
 
+/// How long a new Settings window waits for its page to report its first
+/// frame before it is shown anyway, so a page that fails to start still
+/// opens a (dark) window the user can close instead of nothing at all.
+const SETTINGS_SHOW_FALLBACK: std::time::Duration = std::time::Duration::from_secs(4);
+
+/// The least time the app runs before a lost WebView2 browser process
+/// restarts it, so a runtime that cannot start never restarts in a loop.
+const RESTART_AFTER: std::time::Duration = std::time::Duration::from_secs(30);
+
 /// The Settings window's size in logical pixels: room for the five sections'
 /// sidebar and a form, and no smaller than its narrowest layout.
 const SETTINGS_SIZE: (f64, f64) = (760.0, 540.0);
@@ -376,8 +385,12 @@ fn startup(app: &AppHandle) -> Startup {
 
 /// The startup values alone, for the page to build its services before the
 /// island draws; it shows nothing and lets no waiting event through.
+///
+/// A page that starts again (after WebView2 reloaded a crashed renderer)
+/// starts closed, so the host forgets a panel the old page left open.
 #[tauri::command]
 fn island_startup(app: AppHandle) -> Startup {
+    island_set_open(app.clone(), false);
     startup(&app)
 }
 
@@ -437,6 +450,8 @@ struct SettingsLaunch {
 /// so it costs no memory while nobody has it open.
 fn open_settings(app: &AppHandle, section: Option<String>) {
     if let Some(window) = app.get_webview_window(SETTINGS) {
+        /* Back at the normal memory level before it draws again, not after the focus event. */
+        win::set_memory_low(&window, false);
         let _ = window.unminimize();
         let _ = window.show();
         let _ = window.set_focus();
@@ -467,6 +482,14 @@ fn open_settings(app: &AppHandle, section: Option<String>) {
                     win::set_memory_low(&watched, !focused);
                 }
             });
+            /* A lost browser process takes the island too, which restarts the app. */
+            win::watch_process_failures(&window, || {});
+            let app = app.clone();
+            std::thread::spawn(move || {
+                std::thread::sleep(SETTINGS_SHOW_FALLBACK);
+                let shown = app.clone();
+                let _ = app.run_on_main_thread(move || show_settings(&shown));
+            });
         }
         Err(error) => eprintln!("tabbi: the Settings window did not open: {error}"),
     }
@@ -480,15 +503,32 @@ async fn settings_open(app: AppHandle, section: Option<String>) {
     open_settings(&app, section);
 }
 
-/// The Settings window calls this as its page starts, and it is shown then:
-/// its dark background color keeps it from flashing white before the first
-/// frame, and the page needs the startup values to build its stores.
+/// Shows the Settings window, once: a window already on screen keeps its
+/// place in the z-order and its focus.
+fn show_settings(app: &AppHandle) {
+    let Some(window) = app.get_webview_window(SETTINGS) else {
+        return;
+    };
+    if window.is_visible().unwrap_or(true) {
+        return;
+    }
+    win::set_memory_low(&window, false);
+    let _ = window.show();
+    let _ = window.set_focus();
+}
+
+/// The Settings window calls this once it has drawn its first frame, so it
+/// never appears empty; its dark background color covers the moment before.
+#[tauri::command]
+fn settings_show(app: AppHandle) {
+    show_settings(&app);
+}
+
+/// The Settings window calls this as its page starts, for the startup values
+/// it builds its stores from; it shows the window later, with
+/// `settings_show`.
 #[tauri::command]
 fn settings_ready(app: AppHandle) -> SettingsLaunch {
-    if let Some(window) = app.get_webview_window(SETTINGS) {
-        let _ = window.show();
-        let _ = window.set_focus();
-    }
     let section = app
         .state::<PendingSection>()
         .0
@@ -662,6 +702,19 @@ fn build_tray(app: &AppHandle) -> tauri::Result<()> {
 fn setup(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     let window = island_window(app);
     let raw = window.hwnd()?.0 as isize;
+    let launched = std::time::Instant::now();
+    let restart_app = app.clone();
+    win::watch_process_failures(&window, move || {
+        if launched.elapsed() < RESTART_AFTER {
+            eprintln!("tabbi: WebView2 failed right after launch, not restarting");
+            return;
+        }
+        /* Off the WebView2 callback, so the restart runs from the event loop. */
+        let app = restart_app.clone();
+        let _ = restart_app.run_on_main_thread(move || {
+            app.restart();
+        });
+    });
     win::make_tool_window(raw);
     win::set_activatable(raw, false);
     win::set_region(raw, None);
@@ -736,6 +789,7 @@ pub fn run() {
             island_set_canvas,
             settings_open,
             settings_ready,
+            settings_show,
             storage::storage_read,
             storage::storage_write,
             storage::storage_list,
