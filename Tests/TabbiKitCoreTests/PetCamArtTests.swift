@@ -130,14 +130,13 @@ final class PetCamArtTests: XCTestCase {
                                height: PetCamScene.stampSize.height * Double(crop.height))
             let strike = try XCTUnwrap(record.strike), kind = try XCTUnwrap(record.struck?.kind)
             let exhibit: CGRect
-            if case .closeUp = shot.framing {
+            if shot.pet == .caughtMidAct(kind) {
                 // The closer freezes on the act: the evidence is the object
-                // itself, mid-strike, where it stands or flies.
-                let grid = PetCamScene.object(kind), place = PetCamScene.layout.spot(strike)
-                let x = place.object.x + (PetCamScene.flies(kind) ? (place.strike.facingRight ? 7 : -7) : 0)
-                let y = place.object.y - (PetCamScene.flies(kind) ? 5 : 0)
+                // itself, mid-strike or on its way down.
+                let grid = PetCamScene.object(kind)
+                let base = PetCamScene.evidenceBase(kind, at: strike, state: shot.states[strike] ?? .struck)
                 let side = max(grid.width, grid.height)
-                exhibit = CGRect(x: x - side / 2, y: y - side, width: side, height: side)
+                exhibit = CGRect(x: base.x - side / 2, y: base.y - side, width: side, height: side)
             } else {
                 let newest = try XCTUnwrap(shot.wrecks.last { $0.spot == strike })
                 let grid = PetCamScene.wreck(newest.object.kind), base = PetCamScene.wreckAnchor(newest)

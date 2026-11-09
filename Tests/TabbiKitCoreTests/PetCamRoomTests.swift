@@ -44,6 +44,44 @@ final class PetCamRoomTests: XCTestCase {
         }
     }
 
+    func testEveryStillShowsThePetWholeOrNotAtAll() throws {
+        var failures: Set<String> = []
+        var checked = 0
+        for seed: UInt64 in [0x30, 0xBEA7, 0x5EED_0F, 0xCA11] {
+            for record in PetCamCaptionsTests.session(seed: seed) {
+                let tape = try XCTUnwrap(PetCamTape(record: record))
+                for still in tape.stills {
+                    guard let pose = still.shot.pet, let place = still.shot.place else { continue }
+                    checked += 1
+                    if !PetCamScene.showsWholePet(at: place, pose: pose, in: still.shot, pet: record.pet) {
+                        let rect = PetCamScene.crop(of: still.shot.framing, wrecks: still.shot.wrecks)
+                        let at = PetCamScene.placement(for: place, pose: pose)
+                        let box = PetCamPetArt.canvas(pose, profile: record.pet, facingRight: at.facingRight).opaqueBounds
+                        failures.insert("\(place) \(pose) in \(still.shot.framing): pet x \(at.x + (box?.minX ?? 0))..."
+                            + "\(at.x + (box?.maxX ?? 31)) y \(at.y + (box?.minY ?? 0))...\(at.y + (box?.maxY ?? 31)), "
+                            + "crop x \(rect.x)..<\(rect.x + rect.width) y \(rect.y)..<\(rect.y + rect.height)")
+                    }
+                }
+            }
+        }
+        XCTAssertGreaterThan(checked, 300)
+        XCTAssertEqual(failures.sorted(), [], "a pet cut by the frame")
+    }
+
+    func testACloserCatchFreezesAFallingObjectInMidAir() throws {
+        var frozen = 0
+        for seed: UInt64 in [0x30, 0xBEA7, 0x5EED_0F, 0xCA11] {
+            for record in PetCamCaptionsTests.session(seed: seed) where record.outcome == .caught {
+                let tape = try XCTUnwrap(PetCamTape(record: record))
+                guard tape.shape == .closer, let kind = record.struck?.kind, let strike = record.strike,
+                      PetCamScene.falls(kind) else { continue }
+                XCTAssertEqual(tape.stills.last?.shot.states[strike], .falling, "the \(kind) hangs in mid-air under CAUGHT")
+                frozen += 1
+            }
+        }
+        XCTAssertGreaterThan(frozen, 0)
+    }
+
     func testATapeKeepsEveryWreckAlreadyOnTheFloor() throws {
         var game = PetCamGame(seed: 0x5EE9, at: Date(timeIntervalSince1970: 1_790_000_000))
         let pet = PetProfile(name: "", breed: .britishShorthair)

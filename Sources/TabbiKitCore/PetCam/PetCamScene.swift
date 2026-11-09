@@ -134,14 +134,20 @@ public enum PetCamScene {
         }
     }
 
-    /// Whether the whole of the pet's frame at `place` lies inside what
-    /// `shot` shows.
-    static func showsWholePet(at place: PetCamPlace, pose: PetCamPose, in shot: PetCamShot) -> Bool {
+    /// Whether all of the pet at `place` lies inside what `shot` shows:
+    /// every pixel `pet` draws in `pose`, or with no pet given, its whole
+    /// frame.
+    static func showsWholePet(at place: PetCamPlace, pose: PetCamPose, in shot: PetCamShot,
+                              pet profile: PetProfile? = nil) -> Bool {
         let rect = crop(of: shot.framing, wrecks: shot.wrecks)
-        let pet = placement(for: place, pose: pose)
+        let at = placement(for: place, pose: pose)
         let size = PetComposer.frameSize
-        return pet.x >= rect.x && pet.y >= rect.y && pet.x + size <= rect.x + rect.width
-            && pet.y + size <= rect.y + rect.height
+        var box = (minX: 0, minY: 0, maxX: size - 1, maxY: size - 1)
+        if let profile, let bounds = PetCamPetArt.canvas(pose, profile: profile, facingRight: at.facingRight).opaqueBounds {
+            box = (bounds.minX, bounds.minY, bounds.maxX, bounds.maxY)
+        }
+        return at.x + box.minX >= rect.x && at.y + box.minY >= rect.y && at.x + box.maxX < rect.x + rect.width
+            && at.y + box.maxY < rect.y + rect.height
     }
 
     /// Where a wreck lies on the floor (its bottom center).
@@ -208,12 +214,10 @@ public enum PetCamScene {
             let grid = Self.wreck(wreck.object.kind), base = wreckAnchor(wreck)
             taken.append((unit(base.x - grid.width / 2 - 1, base.y - grid.height - 1, grid.width + 2, grid.height + 2), 2))
         }
-        for (spot, state) in shot.states where state == .struck {
+        for (spot, state) in shot.states where state == .struck || state == .falling {
             guard let kind = shot.objects[spot]?.kind else { continue }
-            let grid = object(kind), place = layout.spot(spot)
-            let base = flies(kind) ? PetCamLayout.Point(x: place.object.x + (place.strike.facingRight ? 7 : -7),
-                                                        y: place.object.y - 5) : place.object
-            let side = max(grid.width, grid.height) + 2
+            let side = max(object(kind).width, object(kind).height) + 2
+            let base = evidenceBase(kind, at: spot, state: state)
             taken.append((unit(base.x - side / 2, base.y - side, side, side), 2))
         }
         var best = (x: 0.5, y: 0.8), least = Double.infinity
@@ -236,6 +240,18 @@ public enum PetCamScene {
             }
         }
         return best
+    }
+
+    /// Where an object being struck stands or flies (its bottom center), or
+    /// where it hangs on its way down.
+    static func evidenceBase(_ kind: PetCamObjectKind, at spot: PetCamSpot, state: PetCamObjectState) -> PetCamLayout.Point {
+        let place = layout.spot(spot)
+        let right = place.strike.facingRight
+        switch state {
+        case .falling: return PetCamLayout.Point(x: place.object.x + (right ? 10 : -10), y: place.object.y + 12)
+        case .struck where flies(kind): return PetCamLayout.Point(x: place.object.x + (right ? 7 : -7), y: place.object.y - 5)
+        default: return place.object
+        }
     }
 
     /// The middle of the pet in `shot`'s picture, as fractions of its width

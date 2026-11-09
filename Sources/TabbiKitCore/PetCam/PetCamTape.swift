@@ -361,9 +361,13 @@ public struct PetCamTape: Hashable, Sendable {
                 stills = [scene, rewind, sneak, cocked, act] + (falls ? [fall] : []) + [freeze]
             case .closer:
                 // The freeze lands on the act itself.
+                // An object that falls hangs in mid-air past the edge under
+                // the stamp, so the picture matches the sound already heard.
                 var midAct = Self.with(close, pet: .caughtMidAct(kind), at: .strike(strike),
-                                       states: [strike: .struck])
-                midAct.framing = .closeUp(.strike(strike))
+                                       states: [strike: falls ? .falling : .struck])
+                // Pushed in on the pet, unless something is falling: then
+                // the camera's own view, which keeps the object in frame.
+                midAct.framing = falls ? .spot(strike) : .closeUp(.strike(strike))
                 freeze.shot = midAct
                 var quick = act
                 quick.duration = 2.0
@@ -406,7 +410,7 @@ public struct PetCamTape: Hashable, Sendable {
                           caption: captions.closer, detail: captions.age)
         // The pet lying in front of the other camera is in this picture only
         // when all of it is; never a cut-off cat at the edge.
-        let witness = PetCamScene.showsWholePet(at: .lounge(camera), pose: .lieDown, in: exhibit)
+        let witness = PetCamScene.showsWholePet(at: .lounge(camera), pose: .lieDown, in: exhibit, pet: record.pet)
         let reveal = Still(shot: witness ? Self.with(exhibit, pet: .lieDown, at: .lounge(camera)) : exhibit,
                            time: plan.alibi, duration: 2.2, caption: captions.reveal ?? captions.closer,
                            detail: captions.tell ?? callbackOnCAM1)

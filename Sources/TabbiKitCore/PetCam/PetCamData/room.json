@@ -569,17 +569,17 @@
     },
     "approach": {
      "x": 16,
-     "y": 50,
+     "y": 47,
      "facingRight": false
     },
     "enter": {
      "x": 18,
-     "y": 49,
+     "y": 47,
      "facingRight": false
     },
     "lounge": {
      "x": 8,
-     "y": 48,
+     "y": 47,
      "facingRight": false
     }
    },
@@ -599,7 +599,7 @@
      }
     ],
     "crop": {
-     "x": 26,
+     "x": 31,
      "y": 0,
      "width": 50,
      "height": 80
@@ -620,7 +620,7 @@
      "facingRight": false
     },
     "lounge": {
-     "x": 30,
+     "x": 32,
      "y": 46,
      "facingRight": false
     }
@@ -647,7 +647,7 @@
      "height": 80
     },
     "strike": {
-     "x": 48,
+     "x": 49,
      "y": 54,
      "facingRight": true
     },
