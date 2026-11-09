@@ -93,6 +93,16 @@ struct HomeScreen: View {
                 : Self.feedHeight(picture: picture.height, room: geometry.size.height - controlsHeight)
             ScrollView {
                 VStack(spacing: 0) {
+                    if typeSize.isAccessibilitySize {
+                        // At the largest sizes the chips lead the page, so the
+                        // fold under the pinned Start falls in the picture,
+                        // never across a chip.
+                        chips
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, CCTV.gutter)
+                            .padding(.top, 4)
+                            .padding(.bottom, 8)
+                    }
                     feed(width: width, height: shown)
                         .padding(.top, 4)
                         .frame(maxWidth: .infinity)
@@ -289,9 +299,6 @@ struct HomeScreen: View {
 
     private var controls: some View {
         VStack(spacing: 12) {
-            if typeSize.isAccessibilitySize {
-                chips.frame(maxWidth: .infinity, alignment: .leading)
-            }
             if onBreak {
                 breakControls
             } else {

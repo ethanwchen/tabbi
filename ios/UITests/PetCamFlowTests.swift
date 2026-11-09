@@ -67,6 +67,8 @@ final class PetCamFlowTests: XCTestCase {
         hideCamera(catching: true)
         app.buttons["Just 5 minutes"].tap()
         let dareStart = Date()
+        // The first block asks to send the end notification.
+        allowNotificationsIfAsked()
         XCTAssertTrue(app.buttons["Stop"].waitForExistence(timeout: 5))
         checkpoint("32-dare-recording")
         wait(untilSecondsSince: dareStart, 64)
@@ -76,7 +78,10 @@ final class PetCamFlowTests: XCTestCase {
         XCTAssertGreaterThan(Int(dareTape.label.split(separator: " ").last ?? "1") ?? 1, 1)
         sleep(2)
         checkpoint("33-dare-tape")
-        app.buttons["Done"].firstMatch.tap()
+        // Closed, or over by itself already.
+        let done = app.buttons["Done"].firstMatch
+        if done.waitForExistence(timeout: 3) { done.tap() }
+        XCTAssertTrue(dareTape.waitForNonExistence(timeout: 15), "the dare's tape closes")
         sleep(2)
         XCTAssertFalse(app.buttons["Just 5 minutes"].exists, "the dare stays away for the rest of the sitting")
 
