@@ -205,17 +205,19 @@ final class PetCamFlowTests: XCTestCase {
             let reached = stillShown(progress)
             if reached > index { continue }
             XCTAssertGreaterThanOrEqual(waitForStill(progress, index), index, "still \(index) of the \(name) tape")
-            if stillShown(progress) > index { continue }
-            usleep(600_000)
-            // A still too short to settle (the object on its way down) is
-            // skipped rather than filed under the next one's picture.
-            if stillShown(progress) > index { continue }
+            // Past the cut's jolt, then the screenshot at once: every query
+            // of the app costs a fraction of a second, and a still can be
+            // on screen for under two. One too short to catch (the object
+            // on its way down) is skipped rather than filed under the next
+            // one's picture.
+            usleep(150_000)
+            if stillShown(progress) != index { continue }
+            checkpoint(String(format: "%02d-tape-\(name)-still-%d", first + index - 1, index))
             captions.append(app.descendants(matching: .any)["tape.caption"].firstMatch.label)
             // The picture's size on the tape's first still captured (a
             // stamp's tilted corners would widen the element's frame).
             let picture = app.descendants(matching: .any)["tape.picture"].firstMatch
             if pictures[name] == nil, picture.exists { pictures[name] = picture.frame.size }
-            checkpoint(String(format: "%02d-tape-\(name)-still-%d", first + index - 1, index))
         }
         if share {
             app.buttons["Share"].tap()
@@ -308,7 +310,7 @@ final class PetCamFlowTests: XCTestCase {
         let done = base.appendingPathComponent("\(step).done").path
         let deadline = Date().addingTimeInterval(60)
         while !FileManager.default.fileExists(atPath: done), Date() < deadline {
-            usleep(200_000)
+            usleep(50_000)
         }
     }
 }

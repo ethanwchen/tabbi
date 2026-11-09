@@ -74,7 +74,8 @@ while kill -0 "$test_pid" 2> /dev/null; do
         mv "$ready" "$handshake/$step.taken"
         touch "$handshake/$step.done"
     done
-    sleep 0.3
+    # Often enough that a tape's still is shot while it is still up.
+    sleep 0.05
 done
 if [[ -n $recorder ]]; then kill -INT "$recorder" 2> /dev/null || true; fi
 wait "$test_pid" && status=0 || status=$?
