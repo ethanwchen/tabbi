@@ -200,6 +200,8 @@ final class PetCamFlowTests: XCTestCase {
     private func type(dodge: String) {
         let field = app.textFields["What are you avoiding?"]
         XCTAssertTrue(field.waitForExistence(timeout: 5))
+        // Within the hour the last block's words come back; clear them first.
+        if app.buttons["Clear"].exists { app.buttons["Clear"].tap() }
         field.tap()
         field.typeText(dodge + "\n")
     }
