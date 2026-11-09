@@ -394,6 +394,11 @@ extension CostumeArt {
     /// lines keep it apart from white fur.
     static let astronautSuit = PetArt.costume.bodyItem("astronautSuit")
 
+    /// The Astronaut Suit's glass bubble helmet: a thin metal rim arching
+    /// over the head and down past the ears, with a glint on the glass and
+    /// the face left clear. Worn like the dinosaur hood.
+    static let astronautBubble = PetArt.costume.headItem("astronautBubble")
+
     /// A violet cloak closed at the chest with a gold star clasp, stars
     /// scattered over it that twinkle one after another. It hangs on the
     /// body like a robe and never streams behind, so it is no cape.
@@ -407,6 +412,10 @@ extension CostumeArt {
 
     /// The third robe: white with a gold stole that a glint runs down.
     static let sagesRobe = PetArt.costume.bodyItem("sagesRobe")
+
+    /// The Sage's Robe's pointed white hood with a gold brim, worn like the
+    /// dinosaur hood, so the top robe reads apart from the other two.
+    static let sageHood = PetArt.costume.headItem("sageHood")
 
     /// Sky blue pajamas with a white collar, white buttons down the front
     /// and little gold moons.

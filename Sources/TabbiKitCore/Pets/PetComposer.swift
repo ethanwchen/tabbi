@@ -459,7 +459,12 @@ public enum PetComposer {
 
     /// The head part of an outfit, drawn like a hat that moves with the head.
     private static func outfitHood(_ outfit: PetOutfit) -> CostumeArt.HeadItem? {
-        outfit == .dinosaurHoodie ? CostumeArt.dinosaurHood : nil
+        switch outfit {
+        case .dinosaurHoodie: CostumeArt.dinosaurHood
+        case .astronautSuit: CostumeArt.astronautBubble
+        case .sagesRobe: CostumeArt.sageHood
+        default: nil
+        }
     }
 
     private enum AccessoryArt {

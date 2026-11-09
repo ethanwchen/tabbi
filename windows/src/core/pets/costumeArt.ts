@@ -39,7 +39,10 @@ export function outfitArt(outfit: PetOutfit): CostumeBodyItem | undefined {
 
 /** The head part of an outfit, drawn like a hat that moves with the head. */
 export function outfitHood(outfit: PetOutfit): CostumeHeadItem | undefined {
-  return outfit === "dinosaurHoodie" ? costume().headItem("dinosaurHood") : undefined;
+  if (outfit === "dinosaurHoodie") return costume().headItem("dinosaurHood");
+  if (outfit === "astronautSuit") return costume().headItem("astronautBubble");
+  if (outfit === "sagesRobe") return costume().headItem("sageHood");
+  return undefined;
 }
 
 const artCache = new Map<PetAccessory, AccessoryArt>();

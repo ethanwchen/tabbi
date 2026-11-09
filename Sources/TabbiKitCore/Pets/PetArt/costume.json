@@ -2776,9 +2776,9 @@
         "...IIIIIU..UIIIII...",
         "...IIIIIIUUIIIIII...",
         "...IIIIIIIIIIIIII...",
-        "...YYYYYYYYYYYYYY...",
-        "..IIIIIIIIYIIIIIII..",
-        "..IIIIIIIIYIIIIIII..",
+        "..IYYYYYYYYYYYYYYI..",
+        ".UUIIIIIIIYIIIIIIUU.",
+        ".UUIIIIIIIYIIIIIIUU.",
         "..IIIIIIIIIIIIIIII.."
       ],
       "dog": [
@@ -2786,10 +2786,10 @@
         "....IIIU....UIII....",
         "...IIIIIU..UIIIII...",
         "...IIIIIIUUIIIIII...",
-        "..YYYYYYYYYYYYYYYY..",
-        "..IIIIIIIIYIIIIIII..",
-        "..IIIIIIIIYIIIIIII..",
         "..IIIIIIIIIIIIIIII..",
+        "..YYYYYYYYYYYYYYYY..",
+        ".UUIIIIIIIYIIIIIIUU.",
+        ".UUIIIIIIIYIIIIIIUU.",
         "..IIIIIIIIIIIIIIIII."
       ],
       "longDog": [
@@ -2824,22 +2824,22 @@
         "....................",
         "....QQXX....XXQQ....",
         "...QQQXXQ..QXXQQQ...",
+        "...QQQXXQYYQXXQQQ...",
         "...QQQXXQQQQXXQQQ...",
-        "...QQQXXQQQQXXQQQ...",
-        "...QQQXXQQQQXXQQQ...",
-        "..QQQQYYQQQQYYQQQQ..",
-        "..QQQQQQQQQQQQQQQQ..",
+        "..QQQQXXQQYQXXQQQQ..",
+        ".XXQQQYYQQQQYYQQQXX.",
+        ".XXQQQQQQQYQQQQQQXX.",
         "..QQQQQQQQQQQQQQQQ.."
       ],
       "dog": [
         "....................",
         "....QQXX....XXQQ....",
         "...QQQXXQ..QXXQQQ...",
-        "...QQQXXQQQQXXQQQ...",
+        "...QQQXXQYYQXXQQQ...",
         "..QQQQXXQQQQXXQQQQ..",
-        "..QQQQXXQQQQXXQQQQ..",
-        "..QQQQYYQQQQYYQQQQ..",
-        "..QQQQQQQQQQQQQQQQ..",
+        "..QQQQXXQQYQXXQQQQ..",
+        ".XXQQQYYQQQQYYQQQXX.",
+        ".XXQQQQQQQYQQQQQQXX.",
         "..QQQQQQQQQQQQQQQQQ."
       ],
       "longDog": [
@@ -2876,9 +2876,9 @@
         "...VUUYYU..UYYUUV...",
         "...VUUYYUUUUYYUUV...",
         "...VUUYYUUUUYYUUV...",
-        "...VUUYYUUUUYYUUV...",
         "..VUUUYYUUUUYYUUUV..",
-        "..VUUUUUUUUUUUUUUV..",
+        ".YYVUUYYUUUUYYUUVYY.",
+        ".YYUUUUUUUUUUUUUUYY.",
         "..VVVVVVVVVVVVVVVV.."
       ],
       "dog": [
@@ -2888,8 +2888,8 @@
         "...VUUYYUUUUYYUUV...",
         "..VUUUYYUUUUYYUUUV..",
         "..VUUUYYUUUUYYUUUV..",
-        "..VUUUYYUUUUYYUUUV..",
-        "..VUUUUUUUUUUUUUUV..",
+        ".YYVUUYYUUUUYYUUVYY.",
+        ".YYUUUUUUUUUUUUUUYY.",
         "..VVVVVVVVVVVVVVVVV."
       ],
       "longDog": [
@@ -2926,9 +2926,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -2938,8 +2938,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -2976,9 +2976,9 @@
             "...VUUZYU..UYZUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -2988,8 +2988,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3026,9 +3026,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUZYUUUUYZUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3038,8 +3038,8 @@
             "...VUUZYUUUUYZUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3076,9 +3076,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUZYUUUUYZUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3088,8 +3088,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUZYUUUUYZUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3126,9 +3126,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUZYUUUUYZUUV...",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            "..VUUUZYUUUUYZUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3138,8 +3138,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUZYUUUUYZUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3176,9 +3176,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
-            "..VUUUZYUUUUYZUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            "..VUUUYYUUUUYYUUUV..",
+            ".ZYVUUYZUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3188,8 +3188,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUZYUUUUYZUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".ZYVUUYZUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3226,9 +3226,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3238,8 +3238,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3276,9 +3276,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3288,8 +3288,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3326,9 +3326,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3338,8 +3338,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3376,9 +3376,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3388,8 +3388,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3426,9 +3426,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3438,8 +3438,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3476,9 +3476,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3488,8 +3488,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3526,9 +3526,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3538,8 +3538,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3576,9 +3576,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3588,8 +3588,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3626,9 +3626,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3638,8 +3638,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -3676,9 +3676,9 @@
             "...VUUYYU..UYYUUV...",
             "...VUUYYUUUUYYUUV...",
             "...VUUYYUUUUYYUUV...",
-            "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVV.."
           ],
           "dog": [
@@ -3688,8 +3688,8 @@
             "...VUUYYUUUUYYUUV...",
             "..VUUUYYUUUUYYUUUV..",
             "..VUUUYYUUUUYYUUUV..",
-            "..VUUUYYUUUUYYUUUV..",
-            "..VUUUUUUUUUUUUUUV..",
+            ".YYVUUYYUUUUYYUUVYY.",
+            ".YYUUUUUUUUUUUUUUYY.",
             "..VVVVVVVVVVVVVVVVV."
           ],
           "longDog": [
@@ -4891,14 +4891,12 @@
     },
     "littleSprout": {
       "grid": [
-        "....FF........FF....",
-        "....FFFF....FFFF....",
-        ".....FFFF..FFFF.....",
+        ".......FF..FF.......",
         ".......FFFFFF.......",
         ".........FF.........",
         ".........FF........."
       ],
-      "sitRow": 5
+      "sitRow": 3
     },
     "blossomSprout": {
       "grid": [
@@ -5047,15 +5045,13 @@
     },
     "explorersHat": {
       "grid": [
-        "........UUUU........",
-        "......UUUUUUVV......",
-        ".....UUUUUUUUVV.....",
-        ".....UUUUUUUUUV.....",
-        "....IIIIIIIIIIII....",
-        "..UUUUUUUUUUUUUUUU..",
-        "...VVVVVVVVVVVVVV..."
+        ".......FFFFFF.......",
+        "......FFFFFFFF...FF.",
+        "......FFFFFFFF..FYF.",
+        ".....IIIIIIIIII.FF..",
+        "..FFFFFFFFFFFFFFFF.."
       ],
-      "sitRow": 5
+      "sitRow": 4
     },
     "beeAntennae": {
       "grid": [
@@ -5073,6 +5069,34 @@
         "....XXXXXXXXXXXX...."
       ],
       "sitRow": 0
+    },
+    "astronautBubble": {
+      "grid": [
+        "......MMMMMMMM......",
+        "....MM........ZM....",
+        "...M...........ZM...",
+        "..M..............M..",
+        "..M..............M..",
+        ".M................M.",
+        ".M................M.",
+        ".MM..............MM."
+      ],
+      "sitRow": 4
+    },
+    "sageHood": {
+      "grid": [
+        ".........UU.........",
+        "........UUUU........",
+        "......UUUUUUUU......",
+        "....UUUUUUUUUUUU....",
+        "...UUUUUUUUUUUUUU...",
+        "..UUUUUUUUUUUUUUUU..",
+        "..UYYYYYYYYYYYYYYU..",
+        "..UU............UU..",
+        "..U..............U..",
+        "..U..............U.."
+      ],
+      "sitRow": 5
     }
   },
   "backItems": {
