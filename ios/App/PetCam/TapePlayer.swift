@@ -180,13 +180,12 @@ struct TapePlayer: View {
             ForEach(Array(tape.stills.enumerated()), id: \.offset) { _, still in
                 caption(still).hidden()
             }
+            // A hard cut with the picture, as a camera's burn-in changes;
+            // a crossfade would overlay two captions for a moment.
             caption(current)
-                .id(index)
-                .transition(.opacity)
         }
         .frame(maxWidth: .infinity)
         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { captionHeight = $0 }
-        .animation(.easeOut(duration: 0.15), value: index)
     }
 
     private func caption(_ still: PetCamTape.Still) -> some View {
