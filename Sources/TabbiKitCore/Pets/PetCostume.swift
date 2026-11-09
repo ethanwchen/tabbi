@@ -33,7 +33,7 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
     /// A navy robe with a crimson stole edged in gold.
     case scholarsRobe
     /// A white robe with a gold stole that a glint runs down now and then,
-    /// and a deep violet wizard hood with stars.
+    /// and a violet wizard hat with a star at its drooping tip.
     case sagesRobe
     /// A sky blue pajama top with white polka dots, a white collar and a
     /// white placket with navy buttons, over sky blue pajama legs.

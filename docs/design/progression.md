@@ -65,7 +65,7 @@ Rules for the art, all held by the existing fit tests:
   The Starry Cloak is a cloak worn on the body, closed at the chest with a gold star clasp, and never streams behind.
 - Four items are animated on the shared item clock, still under Reduce Motion: the Starry Cloak's twinkle, the Sage's Robe's glint, the Tiny Lantern's flicker and the Blossom Sprout, which lets a petal go now and then.
 
-The robes are one family tiered by mastery, each with wide sleeves and its own color: the Apprentice Robe is brown with an open cream-edged front, cream cuffs and a rope belt with a knot and tassels, the Scholar's Robe navy with a crimson stole and gold buttons, and the Sage's Robe white with a gold stole that catches the light, a violet hem and a deep violet wizard hood with a gold brim, a moon glint and stars.
+The robes are one family tiered by mastery, each with wide sleeves and its own color: the Apprentice Robe is brown with an open cream-edged front, cream cuffs and a rope belt with a knot and tassels, the Scholar's Robe navy with a crimson stole and gold buttons, and the Sage's Robe white with a gold stole that catches the light, a violet hem and a violet wizard hat whose cone bends over with a gold star at the tip, a moon glint and a gold brim band resting on the head.
 The Astronaut Suit comes with a glass bubble helmet, and the Baker's Apron goes with the shop's Chef Hat.
 
 ### 2. Badges: a collection with rare tiers

@@ -5515,15 +5515,12 @@
     },
     "sageHood": {
       "grid": [
-        "............vvvvvY..",
-        "..........vvvvvv....",
-        ".......vvvvvZvvv....",
-        ".....vvvvYvvvvvvv...",
-        "...vvvvvvvvvvvZvvv..",
-        "..vvYYYYYYYYYYYYvvv.",
-        "..vv............vv..",
-        "..vv............vv..",
-        "...v............v..."
+        "..........vvvvvY....",
+        "........vvvvvv......",
+        ".......vvvZvvv......",
+        ".......vvvvvvvv.....",
+        "......vvvYvvvvv.....",
+        "....vYYYYYYYYYYYv..."
       ],
       "sitRow": 5
     }

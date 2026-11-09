@@ -413,9 +413,10 @@ extension CostumeArt {
     /// The third robe: white with a gold stole that a glint runs down.
     static let sagesRobe = PetArt.costume.bodyItem("sagesRobe")
 
-    /// The Sage's Robe's deep violet wizard hood, its tip drooping to one
-    /// side, with a gold brim, a moon glint and stars, worn like the
-    /// dinosaur hood, so the top robe reads apart from the other two.
+    /// The Sage's Robe's violet wizard hat: a cone that bends over and
+    /// droops to the right with a gold star at its tip, a moon glint, and a
+    /// narrow gold brim band on the skull line, worn like the dinosaur hood,
+    /// so the top robe reads apart from the other two.
     static let sageHood = PetArt.costume.headItem("sageHood")
 
     /// Sky blue pajamas with a white collar, white buttons down the front
