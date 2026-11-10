@@ -2,7 +2,7 @@ import { SELF } from "cloudflare:test";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import catalog from "../shared/catalog.json";
 import { REGISTER_PER_MIN, RATE_LIMIT_PER_MIN } from "../src/lib";
-import { BASE, call, expectError, freshIp, pinClockToMinuteStart, register } from "./helpers";
+import { BASE, call, expectError, freshIp, pinClockAtNoonUTC, register } from "./helpers";
 
 const FULL = {
   name: "Maya",
@@ -150,7 +150,7 @@ describe("DELETE /v1/me", () => {
 });
 
 describe("rate limits", () => {
-  beforeEach(pinClockToMinuteStart);
+  beforeEach(pinClockAtNoonUTC);
   afterEach(() => vi.useRealTimers());
 
   it(`allows ${REGISTER_PER_MIN} registrations per minute per IP, then 429 with Retry-After`, async () => {

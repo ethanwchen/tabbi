@@ -5,7 +5,7 @@ import {
   MAX_CRASH_THREADS, parseCrash,
 } from "../src/crashes";
 import { migrate } from "../src/hub";
-import { admin, call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
+import { admin, call, expectError, freshIp, hub, pinClockAtNoonUTC, register } from "./helpers";
 
 /** A report shaped like the one the app sends after a crash on the main thread. */
 const REPORT = {
@@ -39,7 +39,7 @@ const tagged = (tag: string): Report => ({
   threads: [{ ...REPORT.threads[0], frames: [`0   Tabbi   0x1 ${tag}`] }, REPORT.threads[1]],
 });
 
-beforeEach(pinClockToMinuteStart);
+beforeEach(pinClockAtNoonUTC);
 afterEach(() => vi.useRealTimers());
 
 describe("parseCrash", () => {

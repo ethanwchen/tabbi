@@ -5,7 +5,7 @@ import {
   SUGGESTION_RETENTION_DAYS, THANKS_URL, cleanAppFact, cleanEmail, cleanMessage, parseSuggestion,
 } from "../src/suggestions";
 import { migrate } from "../src/hub";
-import { BASE, admin, call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
+import { BASE, admin, call, expectError, freshIp, hub, pinClockAtNoonUTC, register } from "./helpers";
 
 const IDEA = "A tab for my plants, so I remember to water them.";
 /** What a suggestion without the app's facts stores for them. */
@@ -28,7 +28,7 @@ const stored = async (message: string) =>
 const sql = (query: string, ...params: unknown[]) =>
   runInDurableObject(hub(), (_, state) => state.storage.sql.exec(query, ...params).toArray());
 
-beforeEach(pinClockToMinuteStart);
+beforeEach(pinClockAtNoonUTC);
 afterEach(() => vi.useRealTimers());
 
 describe("parseSuggestion", () => {

@@ -5,7 +5,7 @@ import { APPLE_AUTH_PER_MIN, APPLE_CLIENT_ID, APPLE_ISSUER, APPLE_REVOKE_URL, AP
 import { migrate } from "../src/hub";
 import { APP_CALLBACK_URL, WEB_CALLBACK_PATH, WEB_CODE_TTL_S, WEB_TOKEN_PATH, servicesId, webNonce } from "../src/webauth";
 import { apple, claimsOf, identityToken, installFakeApple } from "./fake-apple";
-import { BASE, call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
+import { BASE, call, expectError, freshIp, hub, pinClockAtNoonUTC, register } from "./helpers";
 
 installFakeApple();
 
@@ -176,7 +176,7 @@ describe("POST /v1/auth/apple/web/callback", () => {
   });
 
   it("answers rate limited through the app link too", async () => {
-    pinClockToMinuteStart();
+    pinClockAtNoonUTC();
     const ip = freshIp();
     for (let i = 0; i < APPLE_AUTH_PER_MIN; i++) await callback({ state: newState(), code: "c", id_token: "x.y.z" }, ip);
     expect((await callback({ state: newState(), code: "c", id_token: "x.y.z" }, ip)).location.searchParams.get("error")).toBe("rate_limited");
@@ -234,14 +234,14 @@ describe("POST /v1/auth/apple/web/token", () => {
   });
 
   it("refuses an expired code", async () => {
-    const start = pinClockToMinuteStart();
+    const start = pinClockAtNoonUTC();
     const { state, code } = await signedInAtApple("sub.web.expired");
     vi.setSystemTime((start + WEB_CODE_TTL_S + 1) * 1000);
     expectError(await exchange({ code, state }), 401, "invalid_code");
   });
 
   it("accepts a code just inside its two minutes", async () => {
-    const start = pinClockToMinuteStart();
+    const start = pinClockAtNoonUTC();
     const { state, code } = await signedInAtApple("sub.web.intime");
     vi.setSystemTime((start + WEB_CODE_TTL_S) * 1000);
     expect((await exchange({ code, state })).status).toBe(200);

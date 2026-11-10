@@ -7,7 +7,7 @@ import {
 } from "../src/apple";
 import { MAX_DEVICE_TOKENS, sha256Hex } from "../src/lib";
 import { apple, claimsOf, identityToken, installFakeApple, now } from "./fake-apple";
-import { ADMIN_TOKEN, admin, call, expectError, freshIp, hub, pinClockToMinuteStart, register, befriend } from "./helpers";
+import { ADMIN_TOKEN, admin, call, expectError, freshIp, hub, pinClockAtNoonUTC, register, befriend } from "./helpers";
 
 // The fake Apple (keys, token and revoke endpoints) is installed for every test in this file.
 installFakeApple();
@@ -425,7 +425,7 @@ describe("POST /v1/auth/apple", () => {
   });
 
   it("is rate limited per IP", async () => {
-    pinClockToMinuteStart();
+    pinClockAtNoonUTC();
     const ip = freshIp();
     for (let i = 0; i < APPLE_AUTH_PER_MIN; i++) await signIn({ identityToken: "x.y.z" }, undefined, ip);
     const r = await signIn({ identityToken: "x.y.z" }, undefined, ip);

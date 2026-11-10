@@ -4,7 +4,7 @@ import catalog from "../shared/catalog.json";
 import { LIVE_IDLE_S, RETENTION_SWEEP_S, type Hub } from "../src/hub";
 import { STUDY_DAY_RETENTION_DAYS } from "../src/leaderboard";
 import { FRIEND_REQUEST_EXPIRY_DAYS, utcDay } from "../src/lib";
-import { call, hub, pinClockToMinuteStart, register, befriend } from "./helpers";
+import { call, hub, pinClockAtNoonUTC, register, befriend } from "./helpers";
 
 const EXPIRY = catalog.limits.partyIdleExpirySeconds;
 const nowS = () => Math.floor(Date.now() / 1000);
@@ -16,7 +16,7 @@ function advance(seconds: number) {
 const rows = (sql: string, ...params: unknown[]) =>
   runInDurableObject(hub(), (_hub: Hub, state) => state.storage.sql.exec(sql, ...params).toArray());
 
-beforeEach(pinClockToMinuteStart);
+beforeEach(pinClockAtNoonUTC);
 
 afterEach(() => {
   vi.useRealTimers();

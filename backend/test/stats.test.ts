@@ -4,7 +4,7 @@ import {
   signupsSince,
 } from "../src/stats";
 import { utcDay } from "../src/lib";
-import { admin, call, expectError, freshIp, linkAppleAccount, pinClockToMinuteStart, register } from "./helpers";
+import { admin, call, expectError, freshIp, linkAppleAccount, pinClockAtNoonUTC, register } from "./helpers";
 
 const DAY = 86_400;
 const nowS = () => Math.floor(Date.now() / 1000);
@@ -51,7 +51,7 @@ describe("signupsByDay", () => {
 });
 
 describe("GET /v1/admin/stats", () => {
-  beforeEach(pinClockToMinuteStart);
+  beforeEach(pinClockAtNoonUTC);
   afterEach(() => vi.useRealTimers());
 
   it("looks like an unknown path without the admin token", async () => {
@@ -169,7 +169,7 @@ describe("publicBadge", () => {
 });
 
 describe("GET /v1/public/stats", () => {
-  beforeEach(pinClockToMinuteStart);
+  beforeEach(pinClockAtNoonUTC);
   afterEach(() => vi.useRealTimers());
 
   const badge = async (query = "", ip = freshIp()) => {

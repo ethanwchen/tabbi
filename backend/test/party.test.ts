@@ -2,7 +2,7 @@ import { env, runInDurableObject } from "cloudflare:test";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import catalog from "../shared/catalog.json";
 import type { Hub } from "../src/hub";
-import { call, expectError, pinClockToMinuteStart, register, befriend } from "./helpers";
+import { call, expectError, pinClockAtNoonUTC, register, befriend } from "./helpers";
 
 const now = () => Math.floor(Date.now() / 1000);
 const EXPIRY = catalog.limits.partyIdleExpirySeconds;
@@ -28,7 +28,7 @@ async function create(user: { token: string }) {
 
 const memberCodes = (party: { members: { profile: { code: string } }[] }) => party.members.map((m) => m.profile.code);
 
-beforeEach(pinClockToMinuteStart);
+beforeEach(pinClockAtNoonUTC);
 
 afterEach(() => {
   vi.useRealTimers();

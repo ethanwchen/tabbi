@@ -3,7 +3,7 @@ import { env } from "cloudflare:workers";
 import { describe, expect, it, vi } from "vitest";
 import { migrate } from "../src/hub";
 import { MAX_SYNC_BYTES, SYNC_PUT_PER_MIN } from "../src/sync";
-import { BASE, Reply, call, expectError, hub, linkAppleAccount, pinClockToMinuteStart, register } from "./helpers";
+import { BASE, Reply, call, expectError, hub, linkAppleAccount, pinClockAtNoonUTC, register } from "./helpers";
 
 const DOC = {
   schemaVersion: 1,
@@ -106,7 +106,7 @@ describe("PUT /v1/sync", () => {
   });
 
   it("rate limits writes per user", async () => {
-    pinClockToMinuteStart();
+    pinClockAtNoonUTC();
     try {
       const a = await signedIn();
       for (let i = 0; i < SYNC_PUT_PER_MIN; i++) expect((await put(a.token, DOC, String(i))).status).toBe(200);

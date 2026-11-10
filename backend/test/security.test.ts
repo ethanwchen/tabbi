@@ -1,7 +1,7 @@
 import { SELF } from "cloudflare:test";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AUTH_FAILURES_PER_MIN, MAX_BODY_BYTES, REGISTER_PER_MIN, clientKey } from "../src/lib";
-import { BASE, call, expectError, freshIp, pinClockToMinuteStart, register } from "./helpers";
+import { BASE, call, expectError, freshIp, pinClockAtNoonUTC, register } from "./helpers";
 
 const randomToken = () => Array.from(crypto.getRandomValues(new Uint8Array(32)), (b) => b.toString(16).padStart(2, "0")).join("");
 const withIp = (ip: string) => new Request(BASE, { headers: { "CF-Connecting-IP": ip } });
@@ -30,7 +30,7 @@ describe("clientKey", () => {
 });
 
 describe("authentication limits", () => {
-  beforeEach(pinClockToMinuteStart);
+  beforeEach(pinClockAtNoonUTC);
   afterEach(() => vi.useRealTimers());
 
   it("limits guessing well-formed tokens per IP, not per token", async () => {
