@@ -15,7 +15,7 @@ import sys
 import zipfile
 from html.parser import HTMLParser
 
-from _partials import page, download_button, other_platform_link, app_store_badge, PAW, APP_STORE, APP_STORE_BADGE_ALT, APP_STORE_PAGE, EDITIONS_LINE, DOWNLOAD, DOWNLOAD_PAGE, DOWNLOAD_WINDOWS, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, RELEASES_URL, SUGGESTIONS, SUPPORT_EMAIL, SUPPORT_TABBI
+from _partials import page, download_button, other_platform_link, app_store_badge, app_store_button, PAW, APP_STORE, APP_STORE_BADGE_ALT, APP_STORE_PAGE, EDITIONS_LINE, DOWNLOAD, DOWNLOAD_PAGE, DOWNLOAD_WINDOWS, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, RELEASES_URL, SUGGESTIONS, SUPPORT_EMAIL, SUPPORT_TABBI
 from _downloads import current_milestone, downloads_note
 from _releases import RELEASES, VERSION
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
@@ -75,7 +75,7 @@ FEATURES = [
 HOME_HERO = {
     'title': '<span class="ln">Focus with a cat</span> <span class="ln">in your <span class="hl">notch</span>.</span>',
     'subtitle': 'A cozy study timer with a pixel pet, <span data-windows-text="for your PC.">for your Mac.</span>',
-    'cta': f'''<div class="cta get">{app_store_badge(' data-windows-hidden')}{download_button()}</div>
+    'cta': f'''<div class="cta get">{app_store_button(' data-windows-hidden')}{download_button()}</div>
         <p class="editions" data-windows-hidden>{EDITIONS_LINE}</p>
         <p class="cta-note"><span data-windows-text="Free, Windows 10 and 11">Free, macOS 14+</span>{downloads_note(current_milestone())} <span class="sep" aria-hidden="true">&middot;</span> {other_platform_link()}</p>''',
     'icon': '<img class="hero-icon" src="/img/icon-256.webp" width="256" height="256" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',

@@ -48,6 +48,8 @@ The badge is Apple's "Download on the Mac App Store" artwork (black, US English)
 The only change is that its `style="fill: ..."` attributes became `fill` attributes, which draw the same pixels, because the site's CSP (`style-src 'self'`) also reaches the SVG file.
 Apple's App Store Marketing Guidelines ask for the artwork unmodified, at least 40 px tall on screen, with a quarter of its height kept clear around it and, when other options sit beside it, placed first; `styles.css` (`.store-badge`) sets 62 px on wide screens, 64 px on phones and 44 px in a Support answer, with gaps at least that quarter.
 `app_store_badge()` in `_partials.py` writes it with the alt text "Download on the Mac App Store", and the build checks every badge links to the App Store page with that alt text.
+The home page's hero does not use the badge: `app_store_button()` draws a Mac App Store button in the site's own pill style next to Direct download, so the two editions sit as an equal pair (the black rectangle next to the yellow pill looked out of place).
+The badge stays in the Support answer about installing.
 
 ## Build and preview
 

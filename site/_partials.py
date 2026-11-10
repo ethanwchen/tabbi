@@ -76,6 +76,25 @@ def download_button():
             '<span data-windows-text="Download for Windows">Direct download</span></a>')
 
 
+# A small shop-bag glyph for the Mac App Store button, drawn like the
+# download arrow so the two hero buttons read as a pair.
+STORE_ICON = (
+    '<svg class="ico" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">'
+    '<path d="M4.5 7h11l-.8 9.2a1.5 1.5 0 0 1-1.5 1.3H6.8a1.5 1.5 0 0 1-1.5-1.3L4.5 7Zm2.7 0V5.8a2.8 2.8 0 0 1 5.6 0V7" fill="none" '
+    'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+)
+
+
+def app_store_button(extra=''):
+    """The hero's Mac App Store button, drawn like the direct download button
+    next to it so the two editions sit as a pair. Apple's official badge
+    stays on the Support page (app_store_badge). `extra` adds attributes,
+    such as the home page's `data-windows-hidden`, which hides it on
+    Windows."""
+    return (f'<a class="btn store" href="{APP_STORE}"{extra}>{STORE_ICON}'
+            '<span>Mac App Store</span></a>')
+
+
 # Apple's "Download on the Mac App Store" badge, black, as the App Store
 # Marketing Guidelines ask: Apple's own artwork, unmodified (the Images
 # section of site/README.md says where it came from), at least 40 px tall on screen,

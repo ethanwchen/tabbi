@@ -60,14 +60,14 @@ test('/appstore redirects everyone to the App Store page', () => {
   assert.equal(appStoreResponse().headers.get('Location'), APP_STORE);
 });
 
-test('the home page offers both Mac editions, the badge first, and hides the badge on Windows', async () => {
+test('the home page offers both Mac editions, the App Store first, and hides it on Windows', async () => {
   const { readFile } = await import('node:fs/promises');
   const html = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
   const get = html.match(/<div class="cta get">(.*?)<\/div>/s)?.[1] ?? '';
-  const badge = get.indexOf(`<a class="store-badge" href="${APP_STORE}" data-windows-hidden>`);
+  const store = get.indexOf(`<a class="btn store" href="${APP_STORE}" data-windows-hidden>`);
   const button = get.indexOf(`<a class="btn" href="${DOWNLOADS.mac}" data-windows-href="${DOWNLOADS.windows}">`);
-  assert.ok(badge >= 0, 'the App Store badge links to the App Store page');
-  assert.ok(button > badge, 'the direct download button follows the badge');
-  assert.match(get, /alt="Download on the Mac App Store"/);
+  assert.ok(store >= 0, 'the Mac App Store button links to the App Store page');
+  assert.ok(button > store, 'the direct download button follows the App Store button');
+  assert.match(get, /<span>Mac App Store<\/span>/);
   assert.match(html, /<p class="editions" data-windows-hidden>/);
 });
