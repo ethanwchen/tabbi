@@ -39,7 +39,10 @@ export function outfitArt(outfit: PetOutfit): CostumeBodyItem | undefined {
 
 /** The head part of an outfit, drawn like a hat that moves with the head. */
 export function outfitHood(outfit: PetOutfit): CostumeHeadItem | undefined {
-  return outfit === "dinosaurHoodie" ? costume().headItem("dinosaurHood") : undefined;
+  if (outfit === "dinosaurHoodie") return costume().headItem("dinosaurHood");
+  if (outfit === "astronautSuit") return costume().headItem("astronautBubble");
+  if (outfit === "sagesRobe") return costume().headItem("sageHood");
+  return undefined;
 }
 
 const artCache = new Map<PetAccessory, AccessoryArt>();
@@ -62,11 +65,14 @@ function makeAccessoryArt(accessory: PetAccessory): AccessoryArt {
     case "teamMedal":
     case "foundersPin":
     case "snowScarf":
+    case "friendshipBandana":
+    case "tinyLantern":
       return { kind: "body", item: file.bodyItem(accessory) };
     case "roundGlasses":
     case "coolSunglasses":
     case "heartGlasses":
     case "summerShades":
+    case "owlSpectacles":
       return { kind: "face", item: file.faceItem(accessory) };
     case "pirateHat":
       return { kind: "mask", head: file.headItem("pirateHat"), face: file.faceItem("eyepatch") };

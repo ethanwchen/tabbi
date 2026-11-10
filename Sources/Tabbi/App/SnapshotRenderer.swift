@@ -243,6 +243,11 @@ enum SnapshotRenderer {
                 addClosetShot("founding-unearned", ClosetShot(section: .limited, tryingOn: pin, foundingMember: false))
                 addClosetShot("founding-unearned-scrolling",
                               ClosetShot(section: .limited, tryingOn: pin, foundingMember: false, scrolled: 0.6))
+                // The Goals section's badges, below the outfits, and a mastery
+                // outfit tried on, whose footer says how to earn it.
+                addClosetShot("goals-badges", ClosetShot(section: .goals, showsEnd: true))
+                addClosetShot("goals-trying", ClosetShot(section: .goals, tryingOn: .outfit(.astronautSuit)))
+                addClosetShot("goals-new", ClosetShot(section: .wardrobe, newGoal: true))
                 let headphones = PetItem.accessory(.chunkyHeadphones)
                 addClosetShot("long-name", ClosetShot(section: .wardrobe, tryingOn: headphones, name: "Wolfgang Wombats"))
                 addClosetShot("long-name-scrolling", ClosetShot(section: .wardrobe, tryingOn: headphones,
@@ -352,6 +357,11 @@ enum SnapshotRenderer {
             Theme.apply(theme)
             try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
             renderNotchShots(shots, services: services, closet: closet, style: notchStyle, to: folder)
+            // Every Closet badge at every tier on this theme's card, for
+            // reviewing the art (the quiet coin on the Sweet cards most of all).
+            if closet != nil {
+                renderStill(ClosetBadgeTierSheet(), as: "closet-badge-tiers", scale: max(2, notchStyle.scale), to: folder)
+            }
         }
         Theme.apply(kitTheme)
 
@@ -360,15 +370,7 @@ enum SnapshotRenderer {
             PetCoachSnapshots.shots(profile: $0.store.profile, lines: $0.coach.lines, transparent: notchStyle.transparent)
         } ?? []
         for (name, view) in coachShots {
-            let renderer = ImageRenderer(content: view.environment(\.rendersToImage, true).tabbiLayoutDirection())
-            renderer.scale = max(2, notchStyle.scale)
-            guard let image = renderer.nsImage,
-                  let tiff = image.tiffRepresentation,
-                  let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
-            else { continue }
-            let url = outputDirectory.appendingPathComponent("\(name).png")
-            try? png.write(to: url)
-            print(url.path)
+            renderStill(view, as: name, scale: max(2, notchStyle.scale), to: outputDirectory)
         }
 
         // The weekly recap's exported images, each shape in a heavy and a light week.
@@ -560,6 +562,19 @@ enum SnapshotRenderer {
         }
     }
 
+    /// Writes one SwiftUI view as a PNG, as the coach shots are written.
+    private static func renderStill(_ view: some View, as name: String, scale: CGFloat, to folder: URL) {
+        let renderer = ImageRenderer(content: view.environment(\.rendersToImage, true).tabbiLayoutDirection())
+        renderer.scale = scale
+        guard let image = renderer.nsImage,
+              let tiff = image.tiffRepresentation,
+              let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
+        else { return }
+        let url = folder.appendingPathComponent("\(name).png")
+        try? png.write(to: url)
+        print(url.path)
+    }
+
     /// What a Closet shot shows: the open section, the item tried on, and
     /// the pet as someone without the Founder's Pin or under a long name.
     /// `scrolled` stills any line too long for its room part of the way
@@ -570,6 +585,11 @@ enum SnapshotRenderer {
         var foundingMember = true
         var name: String?
         var scrolled: Double?
+        /// Draws a scrolling section from its end instead of its top, so
+        /// the rows a still image would clip can be reviewed.
+        var showsEnd = false
+        /// Shows the newest badge tier as not seen yet (the Goals pill's dot).
+        var newGoal = false
     }
 
     /// The weekly recap card in a heavy week (the demo's best yet) and a
@@ -700,7 +720,8 @@ enum SnapshotRenderer {
             nowPlaying?.showForSnapshot(name == "open-spotify-soundcloud" ? .soundCloud
                 : name == "open-spotify-soundcloud-javascript-off" ? .soundCloudJavaScriptOff : .players)
             if let firstSection { closet?.store.section = shot.closet?.section ?? firstSection }
-            closet?.store.showForSnapshot(foundingMember: shot.closet?.foundingMember ?? true, name: shot.closet?.name)
+            closet?.store.showForSnapshot(foundingMember: shot.closet?.foundingMember ?? true, name: shot.closet?.name,
+                                          newGoal: shot.closet?.newGoal ?? false)
             closet?.store.tryOn(shot.closet?.tryingOn)
             model.themeID = Theme.current.id
             if name == "closed-pet-cheer", case .pet(var pet) = model.preview {
@@ -744,6 +765,7 @@ enum SnapshotRenderer {
                 .environment(\.drawsLiquidGlass, false)
                 .environment(\.loaderRevealDelay, 0) // rendered the moment it appears
                 .environment(\.marqueeScrolled, shot.closet?.scrolled)
+                .environment(\.closetSnapshotShowsEnd, shot.closet?.showsEnd ?? false)
                 .frame(width: model.openSize.width + 40,
                        height: model.openSize.height + 24, alignment: .top)
                 .background(style.transparent ? Color.clear : Color(white: 0.16)) // stand-in for a desktop

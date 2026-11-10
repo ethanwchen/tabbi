@@ -149,14 +149,17 @@ struct ClosetGoldenFixture: Codable, Equatable {
 
     /// How a limited edition item is earned: `source` is `milestone` (with
     /// the milestone as `sourceID`), `event` (granted by the server for the
-    /// event `sourceID`) or `season` (focus during the seasonal event
-    /// `sourceID` for `seasonFocusMinutes`).
+    /// event `sourceID`), `season` (focus during the seasonal event
+    /// `sourceID` for `seasonFocusMinutes`) or `mastery` (the badge tier
+    /// `sourceID`, such as `focusHours.3`, whose goal is `masteryGoal`).
     struct Limited: Codable, Equatable {
         var edition: String
         var source: String
         var sourceID: String
         var milestoneGoal: Int?
         var seasonFocusMinutes: Int?
+        /// A mastery outfit's badge goal, in its track's unit.
+        var masteryGoal: Int?
         var effect: String?
     }
 
@@ -188,6 +191,8 @@ struct ClosetGoldenFixture: Codable, Equatable {
         /// The wardrobe grid: the shop without "no outfit".
         var wardrobe: [String]
         var limitedShelf: [String]
+        /// The mastery outfits on the Goals shelf, in shelf order.
+        var masteryShelf: [String]
         var shelves: [Shelf]
     }
 
@@ -542,6 +547,7 @@ struct ClosetGoldenFixture: Codable, Equatable {
                 shopOrder: PetItem.shopItems.map(\.id),
                 wardrobe: PetCloset.wardrobe.map(\.id),
                 limitedShelf: PetCloset.limitedShelf.map(\.id),
+                masteryShelf: PetCloset.masteryShelf.map(\.id),
                 shelves: PetCloset.shelves.map { Shelf(theme: $0.theme.rawValue, items: $0.items.map(\.id)) }
             ),
             points: [0, 1, 4, 5, 6, 24, 25, 26, 50, 90, 180].flatMap { minutes in
@@ -840,10 +846,12 @@ struct ClosetGoldenFixture: Codable, Equatable {
             case .milestone(let milestone): ("milestone", milestone.rawValue)
             case .event(let id): ("event", id)
             case .season(let id): ("season", id)
+            case .mastery(let badge): ("mastery", badge.id)
             }
             row.limited = Limited(edition: edition.rawValue, source: source.0, sourceID: source.1,
                                   milestoneGoal: edition.milestone?.goal,
                                   seasonFocusMinutes: edition.seasonalReward?.focusMinutes,
+                                  masteryGoal: edition.masteryBadge?.goal,
                                   effect: edition.effect?.rawValue)
         }
         return row

@@ -69,6 +69,8 @@ Parse errors report the 1-based row and column of the problem.
 | `I` | leather | cowboy hat |
 | `X` | crimson | superhero cape folds, lining and hem (uppercase; lowercase `x` erases) |
 | `o` | pumpkin | Halloween pumpkin orange, with leather ribs (lowercase: no zone uses it) |
+| `v` | violet | the Starry Cloak's twilight violet (lowercase: no zone uses it) |
+| `k` | sky | the Cozy Pajamas and Nightcap's soft sky blue (lowercase: no zone uses it) |
 
 ### Special cells
 
@@ -152,6 +154,34 @@ The item clock counts from a fixed moment, not from the clip's start, so a loop 
 The Halo is the one hat meant to float: a thin gold arc two rows tall, because at the top of a hop a dog has only three rows of frame above its head.
 It bobs a pixel down for half its loop, and `PetItemLoopTests` checks that its gold never touches the fur on any body shape (the poodle's and the Shih Tzu's topknots reach into it, and it rests on the Scottish Fold's flat crown).
 
+### Mastery outfits
+
+Sixteen items are earned from badge tiers on the Closet's Goals shelf instead of bought (`PetLimitedEdition.mastery`, docs/design/progression.md): the Astronaut Suit, the Starry Cloak, three robes tiered by finished sessions (Apprentice, Scholar's and Sage's), the Cozy Pajamas and Nightcap, the Baker's Apron with its tiny cake, the Little and Blossom Sprouts, the Explorer's Hat, the Busy Bee Antennae, the Sporty Sweatband, the Owl Spectacles, the Friendship Bandana and the Tiny Lantern.
+They are drawn like every item, so each fits every body shape:
+
+- The Starry Cloak and the Astronaut Suit keep the exact silhouette of the Wizard Robe and the White Coat on every body family, and the Cozy Pajamas the Scrubs'.
+  The three robes flare out into wide sleeves with contrasting cuffs resting in the lap, so they read as robes rather than vests, and each tier has its own color and trim: brown with cream cuffs and a rope belt, navy with a crimson stole and cuffs and gold buttons, and white with a gold stole and cuffs.
+  The Starry Cloak is closed at the chest and hangs on the body; it never streams behind like a cape.
+- Two outfits bring a head part, placed like the dinosaur hood (`PetComposer.outfitHood`): the Astronaut Suit's glass bubble helmet, a thin metal rim over the head with a glint and the face left clear, and the Sage's Robe's violet wizard hat: a cone that bends over and droops to one side with a gold star at its tip, a moon glint, and a narrow gold brim band that rests on the skull line like the Nightcap's band, so the ears and the whole face stay clear.
+- Seen from the side the head hides the front of the body, so the Sage's Robe glints along a gold hem there instead of down its stole, the Starry Cloak only twinkles stars behind the head, and the Baker's Apron shows its bow tied at the back.
+- Thin lines are gold or sit on a light fill: the Owl Spectacles have gold brows over navy rims (gold alone melted into golden fur, navy alone into black fur), and the bee's antennae are gold.
+- The Tiny Lantern is a neck item: a framed lantern (a navy roof with a gold finial, a brown frame and a warm glow whose flame flickers) hanging from a crimson ribbon at the chest; seen from the side the ribbon's knot shows behind the head.
+- The Cozy Pajamas are a sky blue top with white polka dots, a white collar and a white placket with navy buttons, over sky blue pajama legs.
+
+![Every mastery outfit on the British Shorthair](images/mastery-outfits.png)
+
+`swift run PetGallery <dir> mastery` writes `mastery-<item>.png` (the item on a breed for every body shape, sitting, mid-hop, walking, stretching and napping), `mastery-all-<breed>.png` at 4x and notch size, `mastery-loop-<item>.png` for the animated ones, and `mastery-sets-<breed>.png` (the outfits worn with the shop items they go with).
+
+### Badges
+
+The Closet's Goals badges are sprites too (`Pets/PetArt/badge.json`, `BadgeArt` in `TabbiKitCore/Progression`): a 28 by 28 frame per state (not yet, Bronze, Silver, Gold, Starlight, plus a second Starlight frame for the sparkle's blink) and a 9 by 9 glyph per track, stamped on the frame's inner disc.
+The grids use the costume roles as slots (`C` rim, `D` shade, `U` inner disc, `W` glyph, `L` highlight, `O` outline, `F` and `S` laurel leaves, `Z` sparkles) and `BadgePalette` fills them per state, so one glyph serves every tier the way one costume serves every breed.
+The frames carry their outline as drawn and approved (`runs/progression/badges-v4/spec.md`, direction A), and the colors are a plain role lookup without the dark coat rim, so the quiet "not yet" coin keeps its dim outline.
+The badge is drawn at a whole number of device pixels per sprite pixel: 1.5 pt per pixel (42 pt) on the compact and regular panels and 2 pt (56 pt) on the large one, 1 pt on a 1x display.
+`BadgeArtTests` pins every badge to `shared/fixtures/pets/badges.json`, and `swift run PetGallery <dir> badges` writes `badges-1x.png`, `badges-4x.png` and `badges-sweet-1x.png`, every badge at every state on the black card and on a Strawberry Milk card.
+
+![Every badge at every state](images/badges.png)
+
 ### Back items
 
 Wings and the King's Cape are worn in the `back` slot and drawn behind the whole pet.
@@ -193,7 +223,7 @@ The happier idle is in `PetAnimator`: a happy pet (`happy:`, from `PetBondLook.h
 
 ### Adding a costume item
 
-1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`), and give it a price in `PetItem.cost`, a Closet shelf in `PetItem.theme` (Study, Cozy, Fantasy, Seasonal or Silly) and the catalog `release` that adds it.
+1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`), and give it a price in `PetItem.cost`, a Closet shelf in `PetItem.theme` (Study, Cozy, Fantasy, Seasonal or Silly), the catalog `release` that adds it, and its Party id in `PartyPetAppearance` (added to `backend/shared/catalog.json` with a version bump).
    Items from `PetItem.latestRelease` wear a "New" badge in the Closet until the user owns them.
 2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family plus its two walking torsos, a `FaceItem` with its `eyeRow`, or a `HeadItem` with its `sitRow`.
    A body item that sticks up out of the silhouette (the dinosaur's back spikes, the cape streaming up behind a walking pet) sets `rise`, the rows every one of its grids starts above the body's top row.

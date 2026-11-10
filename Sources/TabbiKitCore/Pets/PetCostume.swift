@@ -17,6 +17,29 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
     /// earned during exam season (`PetLimitedEdition.examHoodie`). The
     /// shop's cozy hoodie is plain knit.
     case studyHoodie
+    // Mastery outfits (`PetLimitedEdition`, source `mastery`): earned by
+    // reaching a badge tier (`ProgressBadge`), never sold.
+    /// A white space suit with a navy collar ring and belt, a chest panel
+    /// with two lights and a crimson mission patch, and a glass bubble
+    /// helmet over the head.
+    case astronautSuit
+    /// A violet cloak closed at the chest with a gold star clasp, its gold
+    /// and white stars twinkling. Worn on the body, never streaming behind.
+    case starryCloak
+    /// A brown robe with an open cream-edged front, cream cuffs and a gold
+    /// rope belt with a knot and tassels, the first of the three robes
+    /// tiered by finished sessions.
+    case apprenticeRobe
+    /// A navy robe with a crimson stole edged in gold.
+    case scholarsRobe
+    /// A white robe with a gold stole that a glint runs down now and then,
+    /// and a violet wizard hat with a star at its drooping tip.
+    case sagesRobe
+    /// A sky blue pajama top with white polka dots, a white collar and a
+    /// white placket with navy buttons, over sky blue pajama legs.
+    case cozyPajamas
+    /// A white apron with a crimson trim, holding a tiny strawberry cake.
+    case bakersApron
 
     public var displayName: String {
         switch self {
@@ -28,6 +51,13 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
         case .dinosaurHoodie: String(localized: "Dinosaur Hoodie", bundle: .tabbi)
         case .wizardRobe: String(localized: "Wizard Robe", bundle: .tabbi)
         case .studyHoodie: String(localized: "Study Hoodie", bundle: .tabbi)
+        case .astronautSuit: String(localized: "Astronaut Suit", bundle: .tabbi)
+        case .starryCloak: String(localized: "Starry Cloak", bundle: .tabbi)
+        case .apprenticeRobe: String(localized: "Apprentice Robe", bundle: .tabbi)
+        case .scholarsRobe: String(localized: "Scholar's Robe", bundle: .tabbi)
+        case .sagesRobe: String(localized: "Sage's Robe", bundle: .tabbi)
+        case .cozyPajamas: String(localized: "Cozy Pajamas", bundle: .tabbi)
+        case .bakersApron: String(localized: "Baker's Apron", bundle: .tabbi)
         }
     }
 }
@@ -130,16 +160,41 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     case sparkleTrail
     /// A tiny grey rain cloud that drizzles beside the pet.
     case rainCloud
+    // Mastery items (`PetLimitedEdition`, source `mastery`): earned by
+    // reaching a badge tier (`ProgressBadge`), never sold.
+    /// A green seedling with two round leaves growing from the crown.
+    case littleSprout
+    /// The seedling grown taller, with a pink blossom that lets a petal go
+    /// now and then.
+    case blossomSprout
+    /// A floppy sky blue nightcap with a white band and a white pom at its
+    /// drooping tip, to wear with the Cozy Pajamas.
+    case nightcap
+    /// A green bush hat with a brown band, one side of the brim pinned up
+    /// with a gold badge.
+    case explorersHat
+    /// A gold and navy striped headband with two antennae tipped in gold.
+    case beeAntennae
+    /// A crimson terry sweatband with a white stripe across the brow.
+    case sportySweatband
+    /// Big round owlish spectacles in a brown frame with a gold bridge.
+    case owlSpectacles
+    /// A crimson bandana with white dots, knotted at the neck.
+    case friendshipBandana
+    /// A tiny lantern hanging from a crimson ribbon at the chest, its
+    /// flame flickering.
+    case tinyLantern
 
     public var slot: PetAccessorySlot {
         switch self {
-        case .stethoscope, .scarf, .bowTie, .teamMedal, .snowScarf, .foundersPin: .neck
-        case .roundGlasses, .coolSunglasses, .heartGlasses, .summerShades: .face
+        case .stethoscope, .scarf, .bowTie, .teamMedal, .snowScarf, .foundersPin, .friendshipBandana, .tinyLantern: .neck
+        case .roundGlasses, .coolSunglasses, .heartGlasses, .summerShades, .owlSpectacles: .face
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
              .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones, .backwardsCap, .flameHeadband,
              .goldenLaurel, .halo, .moonlitWitchHat, .pumpkinHat, .reindeerAntlers, .lionDanceHat,
-             .sakuraSprig: .head
+             .sakuraSprig, .littleSprout, .blossomSprout, .nightcap, .explorersHat, .beeAntennae,
+             .sportySweatband: .head
         case .angelWings, .kingsCape: .back
         case .cherryPetals, .sparkleTrail, .rainCloud: .aura
         }
@@ -195,6 +250,15 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .cherryPetals: String(localized: "Cherry Petals", bundle: .tabbi)
         case .sparkleTrail: String(localized: "Sparkle Trail", bundle: .tabbi)
         case .rainCloud: String(localized: "Tiny Rain Cloud", bundle: .tabbi)
+        case .littleSprout: String(localized: "Little Sprout", bundle: .tabbi)
+        case .blossomSprout: String(localized: "Blossom Sprout", bundle: .tabbi)
+        case .nightcap: String(localized: "Nightcap", bundle: .tabbi)
+        case .explorersHat: String(localized: "Explorer's Hat", bundle: .tabbi)
+        case .beeAntennae: String(localized: "Busy Bee Antennae", bundle: .tabbi)
+        case .sportySweatband: String(localized: "Sporty Sweatband", bundle: .tabbi)
+        case .owlSpectacles: String(localized: "Owl Spectacles", bundle: .tabbi)
+        case .friendshipBandana: String(localized: "Friendship Bandana", bundle: .tabbi)
+        case .tinyLantern: String(localized: "Tiny Lantern", bundle: .tabbi)
         }
     }
 

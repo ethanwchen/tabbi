@@ -447,12 +447,24 @@ public enum PetComposer {
         case .dinosaurHoodie: CostumeArt.dinosaurHoodie
         case .wizardRobe: CostumeArt.wizardRobe
         case .studyHoodie: CostumeArt.studyHoodie
+        case .astronautSuit: CostumeArt.astronautSuit
+        case .starryCloak: CostumeArt.starryCloak
+        case .apprenticeRobe: CostumeArt.apprenticeRobe
+        case .scholarsRobe: CostumeArt.scholarsRobe
+        case .sagesRobe: CostumeArt.sagesRobe
+        case .cozyPajamas: CostumeArt.cozyPajamas
+        case .bakersApron: CostumeArt.bakersApron
         }
     }
 
     /// The head part of an outfit, drawn like a hat that moves with the head.
     private static func outfitHood(_ outfit: PetOutfit) -> CostumeArt.HeadItem? {
-        outfit == .dinosaurHoodie ? CostumeArt.dinosaurHood : nil
+        switch outfit {
+        case .dinosaurHoodie: CostumeArt.dinosaurHood
+        case .astronautSuit: CostumeArt.astronautBubble
+        case .sagesRobe: CostumeArt.sageHood
+        default: nil
+        }
     }
 
     private enum AccessoryArt {
@@ -511,6 +523,15 @@ public enum PetComposer {
         case .cherryPetals: .aura(CostumeArt.cherryPetals)
         case .sparkleTrail: .aura(CostumeArt.sparkleTrail)
         case .rainCloud: .aura(CostumeArt.rainCloud)
+        case .littleSprout: .head(CostumeArt.littleSprout)
+        case .blossomSprout: .head(CostumeArt.blossomSprout)
+        case .nightcap: .head(CostumeArt.nightcap)
+        case .explorersHat: .head(CostumeArt.explorersHat)
+        case .beeAntennae: .head(CostumeArt.beeAntennae)
+        case .sportySweatband: .head(CostumeArt.sportySweatband)
+        case .owlSpectacles: .face(CostumeArt.owlSpectacles)
+        case .friendshipBandana: .body(CostumeArt.friendshipBandana)
+        case .tinyLantern: .body(CostumeArt.tinyLantern)
         }
     }
 

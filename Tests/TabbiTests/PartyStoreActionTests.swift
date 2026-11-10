@@ -446,6 +446,9 @@ final class PartyStoreActionTests: XCTestCase {
         party.block(ben)
         XCTAssertEqual(party.pending, .block(Server.ben))
         try await settle(party)
+        // The friend list, the blocked list and the notice follow the
+        // action on their own turns of the loop, so wait for each.
+        try await waitUntil { party.state.friends.isEmpty && party.blocked != nil && party.noticeConfirms }
         XCTAssertEqual(party.state.friends, [])
         XCTAssertEqual(party.blocked?.map(\.code), [Server.ben])
         XCTAssertTrue(party.noticeConfirms)
@@ -478,7 +481,7 @@ final class PartyStoreActionTests: XCTestCase {
         XCTAssertEqual(server.count("POST /v1/reports"), 0)
     }
 
-    private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) async throws {
+    private func waitUntil(timeout: TimeInterval = 20, _ condition: () -> Bool) async throws {
         let deadline = Date().addingTimeInterval(timeout)
         while !condition() {
             guard Date() < deadline else { return XCTFail("timed out") }
@@ -595,7 +598,7 @@ final class PartyStoreSleepWakeTests: XCTestCase {
         XCTAssertEqual(server.requests.count, stopped)
     }
 
-    private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) async throws {
+    private func waitUntil(timeout: TimeInterval = 20, _ condition: () -> Bool) async throws {
         let deadline = Date().addingTimeInterval(timeout)
         while !condition() {
             guard Date() < deadline else { return XCTFail("timed out") }

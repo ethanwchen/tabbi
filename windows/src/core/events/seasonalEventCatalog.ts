@@ -1,7 +1,7 @@
 import eventsFile from "@mac/Events/events.json";
 import type { ActivityRecord } from "../activity/activityRecord";
 import { ACTIVITY_KINDS } from "../activity/activityRecord";
-import { PET_LIMITED_EDITIONS, editionItem, type PetLimitedProgress } from "../closet/petLimited";
+import { PET_LIMITED_EDITIONS, editionItem, isMasteryEdition, type PetLimitedProgress } from "../closet/petLimited";
 import { itemFromID, type PetItem } from "../pets/petItem";
 import type { Instant } from "../time";
 import {
@@ -194,7 +194,8 @@ export class SeasonalEventCatalog {
       .sort((a, b) => a.start - b.start || compareText(a.event.id, b.event.id))
       .flatMap(({ event }) => event.rewards.map((reward) => reward.item));
     const seasonal = new Set(this.events.flatMap((event) => event.rewards.map((reward) => reward.item)));
-    const milestones = PET_LIMITED_EDITIONS.map(editionItem).filter((item) => !seasonal.has(item));
+    /* Mastery outfits are on the Goals shelf, not here. */
+    const milestones = PET_LIMITED_EDITIONS.filter((edition) => !isMasteryEdition(edition)).map(editionItem).filter((item) => !seasonal.has(item));
     const shelves: PetLimitedShelf[] = [];
     if (featured) {
       shelves.push({ kind: { kind: "event", occurrence: featured.occurrence, isActive: featured.isActive }, items: featuredItems });

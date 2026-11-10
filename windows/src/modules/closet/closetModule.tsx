@@ -16,7 +16,7 @@ import { defineModule, type SetupStepProps } from "../../app/module";
 import { mapped } from "../../app/store";
 import { currentLanguage } from "../../core/localization/tr";
 import { ONBOARDING_SETUP_STEPS } from "../../core/onboarding/onboardingSetupStep";
-import { accessoryItem } from "../../core/pets/petItem";
+import { accessoryItem, outfitItem, type PetItem } from "../../core/pets/petItem";
 import { PET_ACCESSORIES, type PetAccessory } from "../../core/pets/petCostume";
 import { moduleProvision } from "../../core/providers/moduleProvision";
 import { resolveTheme } from "../../core/themes/themeCatalog";
@@ -43,6 +43,10 @@ export { CLOSET_DESCRIPTOR, CLOSET_KIT_SCHEMA } from "./closetDescriptor";
 const SNAPSHOT_STATES = [
   "wardrobe",
   "limited",
+  "goals",
+  "goals-badges",
+  "goals-trying",
+  "goals-new",
   "streak",
   "look",
   "weeks",
@@ -61,6 +65,10 @@ interface SnapshotShot {
   readonly foundingMember?: boolean;
   readonly name?: string;
   readonly scrolled?: number;
+  /** An outfit to try on, for the Goals section's mastery outfits. */
+  readonly tryingOnItem?: PetItem;
+  /** Shows the newest badge tier as not seen yet (the Goals pill's dot). */
+  readonly newGoal?: boolean;
 }
 
 export const ClosetModule = defineModule(
@@ -137,8 +145,9 @@ export const ClosetModule = defineModule(
         ...(shot.foundingMember === undefined ? {} : { foundingMember: shot.foundingMember }),
         ...(shot.name === undefined ? {} : { name: shot.name }),
         ...(shot.scrolled === undefined ? {} : { scrolled: shot.scrolled }),
+        ...(shot.newGoal === undefined ? {} : { newGoal: shot.newGoal }),
       });
-      store.tryOn(shot.tryingOn === undefined || !PET_ACCESSORIES.includes(shot.tryingOn) ? undefined : accessoryItem(shot.tryingOn));
+      store.tryOn(shot.tryingOnItem ?? (shot.tryingOn === undefined || !PET_ACCESSORIES.includes(shot.tryingOn) ? undefined : accessoryItem(shot.tryingOn)));
     };
 
     const showRecap = (pick: "heavy" | "light") => {
@@ -173,10 +182,17 @@ export const ClosetModule = defineModule(
         switch (state) {
           case "wardrobe":
           case "limited":
+          case "goals":
           case "streak":
           case "look":
           case "weeks":
             return show(state);
+          case "goals-badges":
+            return show("goals", { scrolled: 1 });
+          case "goals-trying":
+            return show("goals", { tryingOnItem: outfitItem("astronautSuit") });
+          case "goals-new":
+            return show("wardrobe", { newGoal: true });
           case "founding":
             return show("limited", { tryingOn: "foundersPin" });
           case "founding-unearned":

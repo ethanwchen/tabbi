@@ -10,7 +10,17 @@ import { PetPointsLedger, PetPurchaseError, SHOP_ITEMS, itemCost } from "../pets
 import { StudyStreak } from "../streaks/studyStreak";
 import type { DayCalendar } from "../streaks/dayCalendar";
 import type { Instant } from "../time";
-import { PET_LIMITED_EDITIONS, editionItem, editionMilestone, isLimited, type PetMilestoneProgress } from "./petLimited";
+import {
+  PET_LIMITED_EDITIONS,
+  editionItem,
+  editionMasteryBadge,
+  editionMilestone,
+  isLimited,
+  isMasteryEdition,
+  masteryEditions,
+  type PetMilestoneProgress,
+} from "./petLimited";
+import type { PetProgression } from "../progression/petProgression";
 
 /*
  * Port of PetCloset.swift: the Closet tab's editing rules over one PetSave.
@@ -80,7 +90,10 @@ export class PetCloset {
   static readonly wardrobe: readonly PetItem[] = SHOP_ITEMS.filter((item) => item !== outfitItem("none"));
 
   /** The limited edition items, in shelf order. */
-  static readonly limitedShelf: readonly PetItem[] = PET_LIMITED_EDITIONS.map(editionItem);
+  static readonly limitedShelf: readonly PetItem[] = PET_LIMITED_EDITIONS.filter((edition) => !isMasteryEdition(edition)).map(editionItem);
+
+  /** The mastery outfits, in Goals shelf order: earned from badge tiers, never sold. */
+  static readonly masteryShelf: readonly PetItem[] = masteryEditions().map(editionItem);
 
   /** The wardrobe grouped by theme in shelf order, each shelf cheapest first. */
   static readonly shelves: readonly { readonly theme: PetItemTheme; readonly items: readonly PetItem[] }[] =
@@ -244,6 +257,16 @@ export class PetCloset {
   }
 
   /** Grants the seasonal items some event run in `tally` has earned, returning the new ones. */
+  /** Grants the mastery outfits whose badge tiers `progression` has reached and returns the new ones. */
+  unlockMastery(progression: PetProgression): PetItem[] {
+    const granted: PetItem[] = [];
+    for (const edition of masteryEditions()) {
+      const badge = editionMasteryBadge(edition);
+      if (badge && progression.isReached(badge) && this.save.ledger.grant(editionItem(edition))) granted.push(editionItem(edition));
+    }
+    return granted;
+  }
+
   unlockSeasonal(tally: SeasonalTally): PetItem[] {
     return tally.earned.filter((item) => this.save.ledger.grant(item));
   }

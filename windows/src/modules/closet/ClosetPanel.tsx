@@ -1,7 +1,8 @@
 /*
  * Port of ClosetPanel: the study pet large and animated on the left, and on
  * the right a chart of the days studied, its wardrobe (wear, take off, or
- * unlock items with study points), its limited edition items, the study
+ * unlock items with study points), its limited edition items, its goals
+ * (monthly quests, mastery outfits and badges), the study
  * streak with its freezes, its look (species, breed, fur color), or its past
  * weekly recaps. Every string is a catalog key the Mac has.
  */
@@ -20,6 +21,7 @@ import { PetView } from "../../ui/kit/PetView";
 import { Tooltip } from "../../ui/kit/Tooltip";
 import { textWidth } from "../../ui/shell/measure";
 import { ClosetHeatmapSection } from "./ClosetHeatmap";
+import { ClosetGoals } from "./ClosetGoals";
 import { ClosetLimited } from "./ClosetLimited";
 import { ClosetLook } from "./ClosetLook";
 import { ClosetStreak } from "./ClosetStreak";
@@ -47,6 +49,8 @@ export function sectionSymbol(section: ClosetSection): string {
       return "tshirt.fill";
     case "limited":
       return "sparkles";
+    case "goals":
+      return "rosette";
     case "streak":
       return "flame.fill";
     case "look":
@@ -64,6 +68,8 @@ export function sectionTitle(section: ClosetSection): string {
       return tr("Wardrobe");
     case "limited":
       return tr("Limited");
+    case "goals":
+      return tr("Goals");
     case "streak":
       return tr("Streak");
     case "look":
@@ -81,6 +87,8 @@ function sectionHelp(section: ClosetSection): string {
       return tr("Outfits and accessories to unlock with study points");
     case "limited":
       return tr("Limited edition items, earned by studying, never sold");
+    case "goals":
+      return tr("Monthly quests, badges and outfits earned from long goals");
     case "streak":
       return tr("Your study streak and the freezes that protect it");
     case "look":
@@ -99,10 +107,17 @@ export function ClosetPanel({ store, recaps, gifts }: ClosetPanelProps) {
     <div className="closet-panel">
       <ClosetPetCard store={store} />
       <Card className="closet-card">
-        <ClosetHeader sections={sections} shown={shown} balance={state.closet.balance} onSelect={(section) => store.setSection(section)} />
+        <ClosetHeader
+          sections={sections}
+          shown={shown}
+          balance={state.closet.balance}
+          marked={store.hasUnseenGoals ? ["goals"] : []}
+          onSelect={(section) => store.setSection(section)}
+        />
         {shown === "activity" && <ClosetHeatmapSection store={store} />}
         {shown === "wardrobe" && <ClosetWardrobe store={store} />}
         {shown === "limited" && <ClosetLimited store={store} />}
+        {shown === "goals" && <ClosetGoals store={store} />}
         {shown === "streak" && <ClosetStreak store={store} />}
         {shown === "look" && <ClosetLook store={store} gifts={gifts} />}
         {shown === "weeks" && <RecapHistoryList store={recaps} />}
@@ -149,7 +164,20 @@ export function headerVariantWidth(variant: HeaderVariant, sections: readonly Cl
   return pills + 2 * (sections.length - 1) + (variant.isTight ? 4 : 8) + chip;
 }
 
-function ClosetHeader({ sections, shown, balance, onSelect }: { sections: readonly ClosetSection[]; shown: ClosetSection; balance: number; onSelect: (section: ClosetSection) => void }) {
+function ClosetHeader({
+  sections,
+  shown,
+  balance,
+  marked,
+  onSelect,
+}: {
+  sections: readonly ClosetSection[];
+  shown: ClosetSection;
+  balance: number;
+  /** Sections with something new to see, which wear a small dot. */
+  marked: readonly ClosetSection[];
+  onSelect: (section: ClosetSection) => void;
+}) {
   const row = useRef<HTMLDivElement>(null);
   const { width } = useElementSize(row);
   const variant = useMemo(() => {
@@ -167,6 +195,7 @@ function ClosetHeader({ sections, shown, balance, onSelect }: { sections: readon
             showsTitle={variant.titlesAll || (variant.titlesOpen && section === shown)}
             isSelected={section === shown}
             isTight={variant.isTight}
+            isMarked={marked.includes(section) && section !== shown}
             help={sectionHelp(section)}
             onClick={() => onSelect(section)}
           />
@@ -183,14 +212,17 @@ export interface ClosetPillProps {
   readonly showsTitle?: boolean;
   readonly isSelected: boolean;
   readonly isTight?: boolean;
+  /** Shows a small accent dot: something new waits in this section. */
+  readonly isMarked?: boolean;
   readonly help: string;
   readonly onClick: () => void;
 }
 
 /** A capsule toggle: accent-tinted when selected, with a hover state. Port of ClosetPill. */
-export function ClosetPill({ title, symbol, showsTitle = true, isSelected, isTight = false, help, onClick }: ClosetPillProps) {
+export function ClosetPill({ title, symbol, showsTitle = true, isSelected, isTight = false, isMarked = false, help, onClick }: ClosetPillProps) {
+  const tooltip = isMarked ? tr("%@: %@. Something new since you last looked.", title, help) : showsTitle ? help : `${title}: ${help}`;
   return (
-    <Tooltip text={showsTitle ? help : `${title}: ${help}`}>
+    <Tooltip text={tooltip}>
       <button
         type="button"
         role="tab"
@@ -198,11 +230,13 @@ export function ClosetPill({ title, symbol, showsTitle = true, isSelected, isTig
         aria-label={title}
         className="closet-pill"
         data-selected={isSelected}
+        data-marked={isMarked || undefined}
         style={{ paddingInline: pillPadding(showsTitle, isTight) }}
         onClick={onClick}
       >
         <Icon id={symbol} size={PILL_ICON} />
         {showsTitle && <span>{title}</span>}
+        {isMarked && <span className="closet-pill-dot" />}
       </button>
     </Tooltip>
   );

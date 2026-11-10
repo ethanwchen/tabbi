@@ -1,4 +1,5 @@
 import animationsFile from "@mac/Pets/PetArt/animations.json";
+import badgeFile from "@mac/Pets/PetArt/badge.json";
 import breedsFile from "@mac/Pets/PetArt/breeds.json";
 import catFile from "@mac/Pets/PetArt/cat.json";
 import costumeFile from "@mac/Pets/PetArt/costume.json";
@@ -418,6 +419,7 @@ export const PET_ART_SOURCES = {
   prop: propFile,
   tail: tailFile,
   walk: walkFile,
+  badge: badgeFile,
   breeds: breedsFile,
   animations: animationsFile,
 } as const;

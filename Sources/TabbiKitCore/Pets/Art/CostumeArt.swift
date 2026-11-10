@@ -385,3 +385,78 @@ extension CostumeArt {
     /// sparkle trail, two at a time.
     static let bondSparkle = PetArt.costume.auraItem("bondSparkle")
 }
+
+// MARK: - Mastery items
+
+extension CostumeArt {
+    /// A white space suit with a navy collar ring and belt, a chest panel
+    /// with a gold and a crimson light, and a crimson mission patch. Navy
+    /// lines keep it apart from white fur.
+    static let astronautSuit = PetArt.costume.bodyItem("astronautSuit")
+
+    /// The Astronaut Suit's glass bubble helmet: a thin metal rim arching
+    /// over the head and down past the ears, with a glint on the glass and
+    /// the face left clear. Worn like the dinosaur hood.
+    static let astronautBubble = PetArt.costume.headItem("astronautBubble")
+
+    /// A violet cloak closed at the chest with a gold star clasp, stars
+    /// scattered over it that twinkle one after another. It hangs on the
+    /// body like a robe and never streams behind, so it is no cape.
+    static let starryCloak = PetArt.costume.bodyItem("starryCloak")
+
+    /// The first robe: plain brown with a white collar and a gold rope belt.
+    static let apprenticeRobe = PetArt.costume.bodyItem("apprenticeRobe")
+
+    /// The second robe: navy with a crimson stole edged in gold.
+    static let scholarsRobe = PetArt.costume.bodyItem("scholarsRobe")
+
+    /// The third robe: white with a gold stole that a glint runs down.
+    static let sagesRobe = PetArt.costume.bodyItem("sagesRobe")
+
+    /// The Sage's Robe's violet wizard hat: a cone that bends over and
+    /// droops to the right with a gold star at its tip, a moon glint, and a
+    /// narrow gold brim band on the skull line, worn like the dinosaur hood,
+    /// so the top robe reads apart from the other two.
+    static let sageHood = PetArt.costume.headItem("sageHood")
+
+    /// Sky blue pajamas with a white collar, white buttons down the front
+    /// and little gold moons.
+    static let cozyPajamas = PetArt.costume.bodyItem("cozyPajamas")
+
+    /// A white apron with a crimson trim, holding a tiny strawberry cake
+    /// low in front.
+    static let bakersApron = PetArt.costume.bodyItem("bakersApron")
+
+    /// A green seedling with two round leaves on a short stem.
+    static let littleSprout = PetArt.costume.headItem("littleSprout")
+
+    /// The seedling grown taller with a pink blossom, which lets a petal go
+    /// now and then.
+    static let blossomSprout = PetArt.costume.headItem("blossomSprout")
+
+    /// A floppy sky blue nightcap whose tip droops to the side, with a
+    /// white band and pom.
+    static let nightcap = PetArt.costume.headItem("nightcap")
+
+    /// A green bush hat with a brown band, one side of the brim pinned up
+    /// with a gold badge.
+    static let explorersHat = PetArt.costume.headItem("explorersHat")
+
+    /// A gold and navy striped headband with two antennae tipped in gold.
+    static let beeAntennae = PetArt.costume.headItem("beeAntennae")
+
+    /// A crimson terry sweatband with a white stripe.
+    static let sportySweatband = PetArt.costume.headItem("sportySweatband")
+
+    /// Big round spectacles in a brown frame with a gold bridge, ringing the
+    /// eyes like an owl's.
+    static let owlSpectacles = PetArt.costume.faceItem("owlSpectacles")
+
+    /// A crimson bandana with white dots, its knot at the side of the neck.
+    static let friendshipBandana = PetArt.costume.bodyItem("friendshipBandana")
+
+    /// A tiny lantern in a brown frame hanging from a crimson ribbon at the
+    /// chest, its flame flickering; from the side the ribbon's knot shows
+    /// behind the head.
+    static let tinyLantern = PetArt.costume.bodyItem("tinyLantern")
+}

@@ -28,6 +28,9 @@ final class ClosetStore: ObservableObject {
     /// The closet a snapshot run started with, while `showForSnapshot`
     /// shows another.
     private var snapshotBase: PetCloset?
+    /// The Goals section a snapshot run started with, while
+    /// `showForSnapshot` shows a tier as new.
+    private var snapshotProgression: PetProgression?
     /// The Closet tab's open section, kept while the notch closes.
     @Published var section: ClosetSection = .activity
     /// The large preview in the Closet tab.
@@ -53,6 +56,11 @@ final class ClosetStore: ObservableObject {
     /// Focus logged during each seasonal event run, which earns that
     /// event's limited items (`follow(activity:history:)`).
     @Published private(set) var seasons = SeasonalEventTally()
+
+    /// The Goals section: badge tiers, monthly quests and the mastery
+    /// outfits they unlock, from the whole activity log
+    /// (`follow(activity:history:)`) and `Pet/progression.json`.
+    @Published private(set) var progression: PetProgression
 
     /// The moment the Closet reads seasonal events at: now, or in a demo a
     /// pinned moment inside the featured event (`SeasonalEventDemo`), so a
@@ -86,6 +94,10 @@ final class ClosetStore: ObservableObject {
     private var lastFocus: ProvidedFocus?
     private let saveURL: URL?
     private let journalURL: URL?
+    private let progressionURL: URL?
+    /// Set when `progression.json` could not be read, so it is never
+    /// overwritten.
+    private let progressionIsUnreadable: Bool
     /// Set when the journal on disk could not be read, so it is never
     /// overwritten.
     private let journalIsUnreadable: Bool
@@ -126,8 +138,22 @@ final class ClosetStore: ObservableObject {
                 closet = PetCloset(save: PetSave(profile: starter))
             }
         }
+        let progressionURL = url.map { _ in ClosetStore.progressionURL(in: storage) }
+        var progressionUnreadable = false
+        var progression = isDemo ? PetProgression.demo(today: .now) : PetProgression()
+        if let progressionURL {
+            do {
+                if let saved = try ProgressionSave.load(from: progressionURL) { progression = PetProgression(save: saved) }
+            } catch {
+                progressionUnreadable = true
+            }
+        }
+        if isDemo { closet.unlockMastery(progression) }
         self.closet = closet
         saveURL = url
+        self.progression = progression
+        self.progressionURL = progressionURL
+        progressionIsUnreadable = progressionUnreadable
         let journalURL = url.map { _ in ClosetStore.journalURL(in: storage) }
         var journalUnreadable = false
         var journal = isDemo ? PetJournal.demo(now: .now) : PetJournal(seed: .random(in: .min ... .max))
@@ -187,10 +213,17 @@ final class ClosetStore: ObservableObject {
     /// `history` is the log so far, which counts toward both without paying
     /// points again; a goal it already reached unlocks quietly.
     func follow(activity: AnyPublisher<ActivityRecord, Never>, history: [ActivityRecord] = []) {
+        var progression = progression
         for record in history {
             milestones.add(record)
             seasons.add(record)
+            progression.add(record)
         }
+        // Goals the log had already reached count quietly: they are saved,
+        // the Goals pill shows its dot, and nothing celebrates.
+        let change = progression.refresh(at: .now, freezePurchases: closet.save.ledger.streakFreezes)
+        self.progression = progression
+        if !change.isEmpty { persistProgression() }
         if !unlockLimited().isEmpty { persist() }
         activitySubscription = activity
             .sink { [weak self] record in
@@ -201,18 +234,38 @@ final class ClosetStore: ObservableObject {
     private func recorded(_ record: ActivityRecord) {
         milestones.add(record)
         seasons.add(record)
+        var progression = progression
+        progression.add(record)
+        let goals = progression.refresh(at: .now, freezePurchases: closet.save.ledger.streakFreezes)
+        self.progression = progression
+        if !goals.isEmpty { persistProgression() }
         let award = closet.credit(record)
         let unlocked = unlockLimited()
-        guard award != nil || !unlocked.isEmpty else { return }
-        persist()
+        guard award != nil || !unlocked.isEmpty || !goals.isEmpty else { return }
+        if award != nil || !unlocked.isEmpty { persist() }
         if let award { celebrate(award) }
-        if !unlocked.isEmpty { celebrateLimited() }
+        if !unlocked.isEmpty || !goals.isEmpty { celebrateLimited() }
     }
 
-    /// Grants the limited items the milestones and seasonal events have
-    /// earned and returns the new ones.
+    /// Grants the limited items the milestones, seasonal events and badge
+    /// tiers have earned and returns the new ones.
     private func unlockLimited() -> [PetItem] {
-        closet.unlockMilestones(milestones) + closet.unlockSeasonal(seasons)
+        closet.unlockMilestones(milestones) + closet.unlockSeasonal(seasons) + closet.unlockMastery(progression)
+    }
+
+    /// Badge tiers reached since the Goals section was last open, for the
+    /// dot on its pill.
+    var hasUnseenGoals: Bool { !progression.unseen.isEmpty }
+
+    /// The Goals section is showing: every tier reached so far is seen.
+    func markGoalsSeen() {
+        guard progression.markSeen() else { return }
+        persistProgression()
+    }
+
+    private func persistProgression() {
+        guard let progressionURL, !progressionIsUnreadable else { return }
+        try? progression.save.write(to: progressionURL)
     }
 
     /// A limited edition item just became the user's: the pet celebrates
@@ -319,6 +372,12 @@ final class ClosetStore: ObservableObject {
         storage.file("journal.json", in: "Pet")
     }
 
+    /// `~/Library/Application Support/<edition>/Pet/progression.json`, the
+    /// Goals section's own file, which never syncs.
+    static func progressionURL(in storage: EditionStorage) -> URL {
+        storage.file("progression.json", in: "Pet")
+    }
+
     /// The pet as shown everywhere: the saved look plus what it has grown
     /// into with the bond (`PetBondLook`), which is never saved.
     var profile: PetProfile { grown(closet.profile) }
@@ -409,8 +468,9 @@ final class ClosetStore: ObservableObject {
     /// Snapshot runs only: shows the pet as someone who never got the
     /// Founder's Pin, or under another name, so the Closet's longest lines
     /// can be reviewed; the defaults put the starting closet back.
-    func showForSnapshot(foundingMember: Bool = true, name: String? = nil) {
+    func showForSnapshot(foundingMember: Bool = true, name: String? = nil, newGoal: Bool = false) {
         guard isSnapshot else { return }
+        showGoalForSnapshot(new: newGoal)
         let base = snapshotBase ?? closet
         snapshotBase = base
         var save = base.save
@@ -424,6 +484,20 @@ final class ClosetStore: ObservableObject {
         guard save != closet.save else { return }
         closet = PetCloset(save: save)
         refreshPreview()
+    }
+
+    /// Snapshot runs only: shows the highest tier reached as just earned
+    /// and not seen yet, so the Goals pill's dot and the medallion's mark
+    /// can be reviewed; `new: false` puts everything back as seen.
+    private func showGoalForSnapshot(new: Bool) {
+        let base = snapshotProgression ?? progression
+        snapshotProgression = base
+        var save = base.save
+        if new, let latest = save.reached.keys.max() { save.seen.remove(latest) }
+        guard save != progression.save else { return }
+        var shown = PetProgression(save: save, tally: base.tally)
+        shown.refresh(at: .now, freezePurchases: closet.save.ledger.streakFreezes)
+        progression = shown
     }
 
     private func edit<Result>(_ change: (inout PetCloset) -> Result) -> Result {

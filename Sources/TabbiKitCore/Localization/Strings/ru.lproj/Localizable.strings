@@ -5,8 +5,12 @@
 <dict>
 	<key>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</key>
 	<string>«%@ скучает. 10 минут?» Не чаще раза в день и только если учебы не было или цель не выполнена. Режимы фокусирования его глушат.</string>
+	<key>%@ %@</key>
+	<string>%1$@ %2$@</string>
 	<key>%@ %@ so far</key>
 	<string>%1$@: уже %2$@</string>
+	<key>%@ %@ so far.</key>
+	<string>%1$@ Пока %2$@.</string>
 	<key>%@ (paused)</key>
 	<string>%@ (пауза)</string>
 	<key>%@ Fix it in Settings &gt; Tabs &gt; Party &gt; Options, or clear it to use the Tabbi server.</key>
@@ -153,6 +157,8 @@
 	<string>%@ фокуса.</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>%@ откроется в Музыке, включи его там.</string>
+	<key>%@ quests</key>
+	<string>Задания: %@</string>
 	<key>%@ raced a snail and let it win</key>
 	<string>%@ соревнуется с улиткой и поддается ей</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
@@ -181,6 +187,10 @@
 	<string>%@ не предлагает изменений</string>
 	<key>%@ suggests no changes.</key>
 	<string>%@ не предлагает изменений.</string>
+	<key>%@ this month.</key>
+	<string>%@ в этом месяце.</string>
+	<key>%@ to %@</key>
+	<string>%1$@ до уровня «%2$@»</string>
 	<key>%@ today</key>
 	<string>Сегодня %@</string>
 	<key>%@ tokens</key>
@@ -189,6 +199,8 @@
 	<string>%1$@: еще %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%1$@ с %2$lld</string>
+	<key>%@ unlocks with %@. %@</key>
+	<string>%1$@ открывается с «%2$@». %3$@</string>
 	<key>%@ uses it to greet you.</key>
 	<string>%@ будет так к тебе обращаться.</string>
 	<key>%@ visited the bakery</key>
@@ -207,10 +219,18 @@
 	<string>%@ лучше всего работает из папки «Программы»: оттуда приложение открывается при входе в систему и само обновляется. Оно скопирует себя туда и откроется снова.</string>
 	<key>%@ · Paused</key>
 	<string>%@ · Пауза</string>
+	<key>%@, %@</key>
+	<string>%1$@, %2$@</string>
 	<key>%@, %@ left</key>
 	<string>%1$@, осталось %2$@</string>
+	<key>%@, %@ to %@</key>
+	<string>%1$@, %2$@ до уровня «%3$@»</string>
 	<key>%@, %lld extra</key>
 	<string>%@, еще %lld</string>
+	<key>%@, earned: click to take off</key>
+	<string>%@, получено: нажми, чтобы снять</string>
+	<key>%@, earned: click to wear</key>
+	<string>%@, получено: нажми, чтобы надеть</string>
 	<key>%@, limited edition: %@</key>
 	<string>%1$@, лимитированная серия: %2$@</string>
 	<key>%@, limited edition: %@ Its event starts %@.</key>
@@ -231,8 +251,16 @@
 	<string>%1$@: сегодня сделано %2$@</string>
 	<key>%@: %@ left</key>
 	<string>%@: осталось %@</string>
+	<key>%@: %@ this month</key>
+	<string>%1$@: %2$@ в этом месяце</string>
 	<key>%@: %@ tokens</key>
 	<string>%1$@: токенов %2$@</string>
+	<key>%@: %@. Something new since you last looked.</key>
+	<string>%1$@: %2$@. С прошлого раза есть новое.</string>
+	<key>%@: Starlight, every tier earned</key>
+	<string>%@: звёздный свет, все уровни получены</string>
+	<key>%@: done this month</key>
+	<string>%@: готово в этом месяце</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: все предметы получены. Они останутся у тебя и после события.</string>
 	<key>%lld h</key>
@@ -255,12 +283,16 @@
 	<string>Новых: %1$lld, изучаемых: %2$lld, на повторение: %3$lld</string>
 	<key>%lld of %lld</key>
 	<string>%1$lld из %2$lld</string>
+	<key>%lld of %lld badges</key>
+	<string>%1$lld из %2$lld значков</string>
 	<key>%lld of %lld cards reviewed today</key>
 	<string>Сегодня повторено: %lld из %lld</string>
 	<key>%lld of %lld done</key>
 	<string>Готово: %lld/%lld</string>
 	<key>%lld of %lld earned</key>
 	<string>Получено %1$lld из %2$lld</string>
+	<key>%lld of %lld outfits</key>
+	<string>%1$lld из %2$lld нарядов</string>
 	<key>%lld pts to go</key>
 	<string>Еще %lld очк.</string>
 	<key>%lld pts, %@ to go</key>
@@ -281,6 +313,8 @@
 	<string>%lld ч %lld мин</string>
 	<key>%lldh ago</key>
 	<string>%lld ч назад</string>
+	<key>%lldk</key>
+	<string>%lldk</string>
 	<key>%lldm</key>
 	<string>%lldм</string>
 	<key>%lldm ago</key>
@@ -491,6 +525,8 @@
 	<string>Все колоды с картами к повтору</string>
 	<key>All done</key>
 	<string>Все готово</string>
+	<key>All done. New quests on %@.</key>
+	<string>Всё готово. Новые задания %@.</string>
 	<key>All earned</key>
 	<string>Все получено</string>
 	<key>All optional. Nothing to do now.</key>
@@ -609,6 +645,8 @@
 	<string>Приложение</string>
 	<key>Appears when the pointer reaches the top center.</key>
 	<string>Появляется, когда указатель доходит до верха по центру.</string>
+	<key>Apprentice Robe</key>
+	<string>Мантия ученика</string>
 	<key>Apps and permissions</key>
 	<string>Приложения и разрешения</string>
 	<key>Are you signed in to Claude?</key>
@@ -641,6 +679,8 @@
 	<string>Просим Anki открыть колоду для повтора.</string>
 	<key>Astronaut Helmet</key>
 	<string>Шлем астронавта</string>
+	<key>Astronaut Suit</key>
+	<string>Скафандр</string>
 	<key>At least one tab must stay</key>
 	<string>Должна остаться хотя бы одна вкладка</string>
 	<key>At the start of a break, %@ shows a short move you can copy</key>
@@ -677,6 +717,10 @@
 	<string>Назад к сегодня</string>
 	<key>Backwards Cap</key>
 	<string>Кепка козырьком назад</string>
+	<key>Badges</key>
+	<string>Значки</string>
+	<key>Baker's Apron</key>
+	<string>Фартук пекаря</string>
 	<key>Beanie</key>
 	<string>Шапка</string>
 	<key>Bell collar</key>
@@ -701,6 +745,8 @@
 	<string>Заблокированные не видят тебя и не могут добавить или войти в пати. Заблокировать или пожаловаться: правый клик в Party.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>Добавятся в календарь.</string>
+	<key>Blossom Sprout</key>
+	<string>Цветущий росток</string>
 	<key>Bond %lld</key>
 	<string>Связь %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -719,6 +765,8 @@
 	<string>Перерыв</string>
 	<key>Break buddy</key>
 	<string>Друг на перерыве</string>
+	<key>Break moves</key>
+	<string>Разминки</string>
 	<key>Break's over</key>
 	<string>Перерыв окончен</string>
 	<key>Breathe in slowly, then let it all out.</key>
@@ -737,6 +785,8 @@
 	<string>Встроенный дисплей</string>
 	<key>Bunny Ears</key>
 	<string>Заячьи ушки</string>
+	<key>Busy Bee Antennae</key>
+	<string>Пчелиные усики</string>
 	<key>Butter yellow sunshine, happy and bright.</key>
 	<string>Солнечный сливочно-жёлтый, радостный и яркий.</string>
 	<key>Buy freeze</key>
@@ -1109,6 +1159,8 @@
 	<string>Уютные</string>
 	<key>Cozy Hoodie</key>
 	<string>Уютное худи</string>
+	<key>Cozy Pajamas</key>
+	<string>Уютная пижама</string>
 	<key>Cozy Scarf</key>
 	<string>Уютный шарф</string>
 	<key>Cozy days and quiet focus before the new year.</key>
@@ -1245,6 +1297,8 @@
 	<string>Больше не спрашивать</string>
 	<key>Done</key>
 	<string>Готово</string>
+	<key>Done this month.</key>
+	<string>Готово в этом месяце.</string>
 	<key>Done! You stuck with it.</key>
 	<string>Готово! До самого конца.</string>
 	<key>Drag to reorder</key>
@@ -1321,6 +1375,8 @@
 	<string>Сессия экзаменов</string>
 	<key>Example</key>
 	<string>Пример</string>
+	<key>Explorer's Hat</key>
+	<string>Шляпа исследователя</string>
 	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
 	<string>Сорваться не значит проиграть. Проиграть значит не вернуться. А ты снова здесь.</string>
 	<key>Fantasy</key>
@@ -1337,6 +1393,8 @@
 	<string>Заполнить свободное время завтра открытыми задачами и повторами. План строится на этом Mac, ничего не добавится без тебя</string>
 	<key>Finish a Party session with friends.</key>
 	<string>Заверши сессию в Party с друзьями.</string>
+	<key>Finish all three to count the month toward the Monthly quests badge.</key>
+	<string>Выполни все три, и месяц засчитается для значка «Задания месяца».</string>
 	<key>Finish setup</key>
 	<string>Завершить настройку</string>
 	<key>Fireplace</key>
@@ -1361,6 +1419,8 @@
 	<string>Исправил(а) что-то в другом приложении? Вернись сюда, и индикатор обновится сам.</string>
 	<key>Flame Headband</key>
 	<string>Огненная повязка</string>
+	<key>Flashcards</key>
+	<string>Карточки</string>
 	<key>Flow</key>
 	<string>Поток</string>
 	<key>Flower Crown</key>
@@ -1473,6 +1533,8 @@
 	<string>Друзья видят твое имя, питомца и когда ты учишься. Ничего о твоих карточках и колодах не покидает Mac.</string>
 	<key>Friends server</key>
 	<string>Сервер друзей</string>
+	<key>Friendship Bandana</key>
+	<string>Бандана дружбы</string>
 	<key>Frog Hat</key>
 	<string>Шапка-лягушка</string>
 	<key>From your Claude Code logs</key>
@@ -1495,6 +1557,8 @@
 	<string>Загрузка GPU за последние 60 секунд</string>
 	<key>General</key>
 	<string>Основные</string>
+	<key>Gentle streak</key>
+	<string>Мягкая серия</string>
 	<key>Get %@</key>
 	<string>Загрузить %@</string>
 	<key>Get %@ to control your music from the notch.</key>
@@ -1527,6 +1591,8 @@
 	<string>Стань невидимкой. Минуты учебы все равно считаются.</string>
 	<key>Go on without a name</key>
 	<string>Продолжить без имени</string>
+	<key>Goals</key>
+	<string>Цели</string>
 	<key>Goals left today</key>
 	<string>Цели на сегодня</string>
 	<key>Gold tag</key>
@@ -1825,10 +1891,14 @@
 	<string>Лимитированные</string>
 	<key>Limited edition</key>
 	<string>Лимитированная серия</string>
+	<key>Limited edition items, earned by studying, never sold</key>
+	<string>Лимитированные вещи: за учёбу, никогда не продаются</string>
 	<key>Lion Dance Hat</key>
 	<string>Шапка льва</string>
 	<key>Listen to %@</key>
 	<string>Прослушать: %@</string>
+	<key>Little Sprout</key>
+	<string>Росточек</string>
 	<key>Live activity</key>
 	<string>Активность</string>
 	<key>Loading</key>
@@ -1881,6 +1951,8 @@
 	<string>Отметить как выполненное</string>
 	<key>Mark as not done</key>
 	<string>Отметить как невыполненное</string>
+	<key>Mastery outfits: each unlocks with a badge tier, never with points</key>
+	<string>Наряды мастерства: каждый открывается уровнем значка, а не очками</string>
 	<key>May Tabbi run your shortcuts?</key>
 	<string>Может ли Tabbi запускать твои быстрые команды?</string>
 	<key>Measuring cores...</key>
@@ -1919,6 +1991,10 @@
 	<string>Модель</string>
 	<key>Month</key>
 	<string>Месяц</string>
+	<key>Monthly quests</key>
+	<string>Задания месяца</string>
+	<key>Monthly quests, badges and outfits earned from long goals</key>
+	<string>Задания месяца, значки и наряды за долгие цели</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Лунная шляпа ведьмы</string>
 	<key>Moonstone</key>
@@ -1987,6 +2063,10 @@
 	<string>Сейчас Mac спросит, можно ли Tabbi присылать уведомления. Ответ можно изменить в любой момент в Системных настройках.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>Сейчас Mac спросит, можно ли Tabbi пользоваться календарем. Ответ можно изменить в любой момент в Системных настройках.</string>
+	<key>Next: %@, %@</key>
+	<string>Дальше: %1$@, %2$@</string>
+	<key>Nightcap</key>
+	<string>Ночной колпак</string>
 	<key>Ninja Headband</key>
 	<string>Повязка ниндзя</string>
 	<key>No answer</key>
@@ -2133,6 +2213,8 @@
 	<string>Не настроено</string>
 	<key>Not synced yet</key>
 	<string>Еще не синхронизировано</string>
+	<key>Not yet</key>
+	<string>Пока нет</string>
 	<key>Not yet. Click the button so your Mac can ask.</key>
 	<string>Пока нет. Нажми кнопку, чтобы Mac мог спросить.</string>
 	<key>Not yet. Open the Party tab to answer.</key>
@@ -2199,6 +2281,8 @@
 	<string>На сегодня</string>
 	<key>One add-on to go</key>
 	<string>Остался один аддон</string>
+	<key>One badge for each habit, from Bronze to Starlight</key>
+	<string>Один значок на каждую привычку, от бронзы до звёздного света</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>Спокойно, сессия за сессией. У тебя все получится.</string>
 	<key>One countdown, no breaks</key>
@@ -2349,6 +2433,12 @@
 	<string>Другое</string>
 	<key>Out of sight. Press %@ to open it.</key>
 	<string>Скрыт. Нажми %@, чтобы открыть.</string>
+	<key>Outfits and accessories to unlock with study points</key>
+	<string>Наряды и аксессуары за очки учёбы</string>
+	<key>Outfits to earn</key>
+	<string>Наряды за цели</string>
+	<key>Owl Spectacles</key>
+	<string>Совиные очки</string>
 	<key>Owned</key>
 	<string>Есть</string>
 	<key>Pals</key>
@@ -2763,6 +2853,8 @@
 	<string>Идет во вкладке %@</string>
 	<key>Runs on this Mac</key>
 	<string>Работает на этом Mac</string>
+	<key>Sage's Robe</key>
+	<string>Мантия мудреца</string>
 	<key>Sakura Sprig</key>
 	<string>Веточка сакуры</string>
 	<key>Save</key>
@@ -2783,6 +2875,8 @@
 	<string>Сохранено в Связке ключей</string>
 	<key>Schedule</key>
 	<string>Расписание</string>
+	<key>Scholar's Robe</key>
+	<string>Мантия учёного</string>
 	<key>Screenshot sent with this question</key>
 	<string>Снимок экрана, отправленный с этим вопросом</string>
 	<key>Scrubs</key>
@@ -2827,6 +2921,8 @@
 	<string>Сервер</string>
 	<key>Session done. Nice work!</key>
 	<string>Есть! Отличная работа!</string>
+	<key>Sessions</key>
+	<string>Сессии</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>Задай "apiKey" значение null и нажми OK</string>
 	<key>Set this up later from its tab</key>
@@ -3011,8 +3107,12 @@
 	<string>Искорки</string>
 	<key>Sparkle Trail</key>
 	<string>Блестящий шлейф</string>
+	<key>Species, breed and fur color</key>
+	<string>Вид, порода и цвет шерсти</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>Время страшилок! Фокусируйся и наряжай питомца.</string>
+	<key>Sporty Sweatband</key>
+	<string>Спортивная повязка</string>
 	<key>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</key>
 	<string>Spotify и Apple Music показываются всегда. Для SoundCloud macOS попросит разрешить %@ управлять браузером, а в браузере нужно включить «Разрешить JavaScript из Apple Events».</string>
 	<key>Spotify link or Music playlist name</key>
@@ -3031,6 +3131,10 @@
 	<string>Встань, разомни ноги и садись обратно, когда захочешь.</string>
 	<key>Star tag</key>
 	<string>Звездный жетон</string>
+	<key>Starlight, every tier earned</key>
+	<string>Звёздный свет, все уровни получены</string>
+	<key>Starry Cloak</key>
+	<string>Звёздный плащ</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>Звезды не спешат. Они просто продолжают гореть.</string>
 	<key>Start %@ automatically when you log in</key>
@@ -3087,6 +3191,8 @@
 	<string>Звучит с фокусом, если ничего не играет, и стихает в перерыв.</string>
 	<key>Stays on this Mac</key>
 	<string>Только на этом Mac</string>
+	<key>Steady weeks</key>
+	<string>Ровные недели</string>
 	<key>Step %lld of %lld</key>
 	<string>Шаг %1$lld из %2$lld</string>
 	<key>Step away for a bit</key>
@@ -3149,6 +3255,10 @@
 	<string>Учебный блок</string>
 	<key>Study buddies</key>
 	<string>Напарники</string>
+	<key>Study days</key>
+	<string>Дни учёбы</string>
+	<key>Study methods</key>
+	<string>Методы учёбы</string>
 	<key>Study parties</key>
 	<string>Учеба с друзьями</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3261,6 +3371,8 @@
 	<string>Талант дает фору. А вся гонка в том, чтобы приходить.</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>Отклик трекпада, когда указатель достигает выреза или идет празднование</string>
+	<key>Tasks</key>
+	<string>Задачи</string>
 	<key>Tasks left today</key>
 	<string>Задачи на сегодня</string>
 	<key>Team Medal</key>
@@ -3445,6 +3557,8 @@
 	<string>Эта задача есть в списке на сегодня</string>
 	<key>This works. Nothing to do.</key>
 	<string>Все работает. Делать ничего не нужно.</string>
+	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
+	<string>Три маленькие цели каждый месяц. Они необязательны, и пропущенный месяц ничего не стоит.</string>
 	<key>Time</key>
 	<string>Время</string>
 	<key>Time for a %lld-minute break.</key>
@@ -3461,6 +3575,8 @@
 	<string>Таймер: %@</string>
 	<key>Tiny Crown</key>
 	<string>Мини-корона</string>
+	<key>Tiny Lantern</key>
+	<string>Фонарик</string>
 	<key>Tiny Rain Cloud</key>
 	<string>Мини-тучка</string>
 	<key>Tips to focus better</key>
@@ -3683,6 +3799,8 @@
 	<string>Одежда</string>
 	<key>Warm cream and peach, soft and gentle.</key>
 	<string>Тёплый кремовый и персиковый, мягко и нежно.</string>
+	<key>Water</key>
+	<string>Вода</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>Вода прорезает каньоны, потому что не пропускает ни дня.</string>
 	<key>Wearing</key>
@@ -3933,6 +4051,10 @@
 	<string>Твой плейлист</string>
 	<key>Your setup already matches %@</key>
 	<string>Настройки уже совпадают с %@</string>
+	<key>Your study day by day, with the time studied on each</key>
+	<string>Твоя учёба день за днём и время каждого дня</string>
+	<key>Your study streak and the freezes that protect it</key>
+	<string>Твоя серия учёбы и заморозки, которые её берегут</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>
 	<string>Твоя серия: дни подряд, когда было не менее %lld мин фокуса</string>
 	<key>Your tabs</key>
@@ -3945,8 +4067,18 @@
 	<string>Твоя неделя</string>
 	<key>Your week with Tabbi is ready</key>
 	<string>Твоя неделя с Tabbi: итоги готовы</string>
+	<key>Your weekly recaps with your pet</key>
+	<string>Твои недельные итоги с питомцем</string>
 	<key>all day: %@</key>
 	<string>весь день: %@</string>
+	<key>badge.tier.bronze</key>
+	<string>Бронза</string>
+	<key>badge.tier.gold</key>
+	<string>Золото</string>
+	<key>badge.tier.silver</key>
+	<string>Серебро</string>
+	<key>badge.tier.starlight</key>
+	<string>Звёздный свет</string>
 	<key>best day</key>
 	<string>лучший день</string>
 	<key>card</key>

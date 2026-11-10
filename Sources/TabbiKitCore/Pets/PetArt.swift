@@ -2,7 +2,7 @@ import Foundation
 
 /// The hand-drawn pet art, loaded from the `pets.v1` JSON files in
 /// `Pets/PetArt` (one per art family: cat, dog, costume, effect, paw, prop,
-/// tail, walk), the breeds that color it (`breeds.json`) and the animation
+/// tail, walk, and badge for the Goals badges), the breeds that color it (`breeds.json`) and the animation
 /// timelines that pose it (`animations.json`).
 ///
 /// The art is data so the Mac app and the Windows port draw the very same
@@ -20,6 +20,8 @@ enum PetArt {
     static let prop = load("prop")
     static let tail = load("tail")
     static let walk = load("walk")
+    /// The Goals badges: a frame per tier and a glyph per track (`BadgeArt`).
+    static let badge = load("badge")
     /// The base palette, the body shapes and every breed's palette, pattern,
     /// name and tail.
     static let breeds = load("breeds")

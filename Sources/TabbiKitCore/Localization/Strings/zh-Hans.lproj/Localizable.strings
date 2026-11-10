@@ -5,8 +5,12 @@
 <dict>
 	<key>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</key>
 	<string>“%@ 想你了。学 10 分钟？”每天最多一次，仅在你还没学习或未达成目标时。专注模式下不会提醒。</string>
+	<key>%@ %@</key>
+	<string>%1$@%2$@</string>
 	<key>%@ %@ so far</key>
 	<string>%1$@ 已 %2$@</string>
+	<key>%@ %@ so far.</key>
+	<string>%1$@目前 %2$@。</string>
 	<key>%@ (paused)</key>
 	<string>%@（已暂停）</string>
 	<key>%@ Fix it in Settings &gt; Tabs &gt; Party &gt; Options, or clear it to use the Tabbi server.</key>
@@ -153,6 +157,8 @@
 	<string>专注了 %@。</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>%@会在音乐中打开，请在那里播放。</string>
+	<key>%@ quests</key>
+	<string>%@任务</string>
 	<key>%@ raced a snail and let it win</key>
 	<string>%@ 和蜗牛赛跑，让它赢了</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
@@ -181,6 +187,10 @@
 	<string>%@ 建议无需更改</string>
 	<key>%@ suggests no changes.</key>
 	<string>%@ 建议无需更改。</string>
+	<key>%@ this month.</key>
+	<string>本月 %@。</string>
+	<key>%@ to %@</key>
+	<string>距%2$@ %1$@</string>
 	<key>%@ today</key>
 	<string>今天 %@</string>
 	<key>%@ tokens</key>
@@ -189,6 +199,8 @@
 	<string>%2$@后解锁%1$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%2$lld 分解锁%1$@</string>
+	<key>%@ unlocks with %@. %@</key>
+	<string>%1$@在达到%2$@时解锁。%3$@</string>
 	<key>%@ uses it to greet you.</key>
 	<string>%@ 会用它跟你打招呼。</string>
 	<key>%@ visited the bakery</key>
@@ -207,10 +219,18 @@
 	<string>%@ 放在“应用程序”中效果最好，这样它能在登录时打开并自动保持更新。它会把自己拷贝过去，然后重新打开。</string>
 	<key>%@ · Paused</key>
 	<string>%@ · 已暂停</string>
+	<key>%@, %@</key>
+	<string>%1$@，%2$@</string>
 	<key>%@, %@ left</key>
 	<string>%1$@，还剩 %2$@</string>
+	<key>%@, %@ to %@</key>
+	<string>%1$@，距%3$@ %2$@</string>
 	<key>%@, %lld extra</key>
 	<string>%@，额外 %lld 次</string>
+	<key>%@, earned: click to take off</key>
+	<string>%@（已获得）：点按脱下</string>
+	<key>%@, earned: click to wear</key>
+	<string>%@（已获得）：点按穿上</string>
 	<key>%@, limited edition: %@</key>
 	<string>%1$@,限定款:%2$@</string>
 	<key>%@, limited edition: %@ Its event starts %@.</key>
@@ -231,8 +251,16 @@
 	<string>%1$@：今天完成 %2$@</string>
 	<key>%@: %@ left</key>
 	<string>%@：剩余 %@</string>
+	<key>%@: %@ this month</key>
+	<string>%1$@：本月 %2$@</string>
 	<key>%@: %@ tokens</key>
 	<string>%1$@：%2$@ Token</string>
+	<key>%@: %@. Something new since you last looked.</key>
+	<string>%1$@：%2$@。上次查看后有新内容。</string>
+	<key>%@: Starlight, every tier earned</key>
+	<string>%@：星光，所有等级都已获得</string>
+	<key>%@: done this month</key>
+	<string>%@：本月已完成</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@:你已获得所有物品。活动结束后它们依然属于你。</string>
 	<key>%lld h</key>
@@ -255,12 +283,16 @@
 	<string>新卡片 %1$lld，学习中 %2$lld，待复习 %3$lld</string>
 	<key>%lld of %lld</key>
 	<string>%1$lld/%2$lld 人</string>
+	<key>%lld of %lld badges</key>
+	<string>徽章 %1$lld/%2$lld</string>
 	<key>%lld of %lld cards reviewed today</key>
 	<string>今天已复习 %lld/%lld 张卡片</string>
 	<key>%lld of %lld done</key>
 	<string>完成 %lld/%lld</string>
 	<key>%lld of %lld earned</key>
 	<string>已获得 %1$lld/%2$lld</string>
+	<key>%lld of %lld outfits</key>
+	<string>服装 %1$lld/%2$lld</string>
 	<key>%lld pts to go</key>
 	<string>还差 %lld 分</string>
 	<key>%lld pts, %@ to go</key>
@@ -281,6 +313,8 @@
 	<string>%lld 小时 %lld 分</string>
 	<key>%lldh ago</key>
 	<string>%lld 小时前</string>
+	<key>%lldk</key>
+	<string>%lldk</string>
 	<key>%lldm</key>
 	<string>%lld分</string>
 	<key>%lldm ago</key>
@@ -491,6 +525,8 @@
 	<string>所有待复习的牌组</string>
 	<key>All done</key>
 	<string>全部完成</string>
+	<key>All done. New quests on %@.</key>
+	<string>全部完成。新任务 %@ 开始。</string>
 	<key>All earned</key>
 	<string>已全部获得</string>
 	<key>All optional. Nothing to do now.</key>
@@ -609,6 +645,8 @@
 	<string>应用</string>
 	<key>Appears when the pointer reaches the top center.</key>
 	<string>指针移到屏幕顶部中央时出现。</string>
+	<key>Apprentice Robe</key>
+	<string>学徒长袍</string>
 	<key>Apps and permissions</key>
 	<string>应用与权限</string>
 	<key>Are you signed in to Claude?</key>
@@ -641,6 +679,8 @@
 	<string>正在让 Anki 打开牌组。</string>
 	<key>Astronaut Helmet</key>
 	<string>宇航员头盔</string>
+	<key>Astronaut Suit</key>
+	<string>宇航服</string>
 	<key>At least one tab must stay</key>
 	<string>至少要保留一个标签页</string>
 	<key>At the start of a break, %@ shows a short move you can copy</key>
@@ -677,6 +717,10 @@
 	<string>回到今天</string>
 	<key>Backwards Cap</key>
 	<string>反戴棒球帽</string>
+	<key>Badges</key>
+	<string>徽章</string>
+	<key>Baker's Apron</key>
+	<string>烘焙围裙</string>
 	<key>Beanie</key>
 	<string>毛线帽</string>
 	<key>Bell collar</key>
@@ -701,6 +745,8 @@
 	<string>被屏蔽的人无法看到你、添加你或加入你的派对。要屏蔽或举报某人，请在派对中右键点按对方。</string>
 	<key>Blocks go to your calendar.</key>
 	<string>时段会添加到你的日历。</string>
+	<key>Blossom Sprout</key>
+	<string>开花嫩芽</string>
 	<key>Bond %lld</key>
 	<string>羁绊 %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -719,6 +765,8 @@
 	<string>休息</string>
 	<key>Break buddy</key>
 	<string>休息伙伴</string>
+	<key>Break moves</key>
+	<string>休息动作</string>
 	<key>Break's over</key>
 	<string>休息结束</string>
 	<key>Breathe in slowly, then let it all out.</key>
@@ -737,6 +785,8 @@
 	<string>内建显示器</string>
 	<key>Bunny Ears</key>
 	<string>兔耳朵</string>
+	<key>Busy Bee Antennae</key>
+	<string>小蜜蜂触角</string>
 	<key>Butter yellow sunshine, happy and bright.</key>
 	<string>奶油黄的阳光，快乐又明亮。</string>
 	<key>Buy freeze</key>
@@ -1109,6 +1159,8 @@
 	<string>温馨</string>
 	<key>Cozy Hoodie</key>
 	<string>舒适卫衣</string>
+	<key>Cozy Pajamas</key>
+	<string>舒适睡衣</string>
 	<key>Cozy Scarf</key>
 	<string>暖暖围巾</string>
 	<key>Cozy days and quiet focus before the new year.</key>
@@ -1245,6 +1297,8 @@
 	<string>不再询问</string>
 	<key>Done</key>
 	<string>完成</string>
+	<key>Done this month.</key>
+	<string>本月已完成。</string>
 	<key>Done! You stuck with it.</key>
 	<string>完成！你坚持下来了。</string>
 	<key>Drag to reorder</key>
@@ -1321,6 +1375,8 @@
 	<string>考试季</string>
 	<key>Example</key>
 	<string>示例</string>
+	<key>Explorer's Hat</key>
+	<string>探险家帽</string>
 	<key>Falling off isn't failing. Staying off is. And look, you're back.</key>
 	<string>中断不是失败，一直不回来才是。你看，你回来了。</string>
 	<key>Fantasy</key>
@@ -1337,6 +1393,8 @@
 	<string>用未完成的任务和复习填满明天的空闲时间。在这台 Mac 上规划，未经你确认不会添加任何内容</string>
 	<key>Finish a Party session with friends.</key>
 	<string>和朋友完成一次派对专注。</string>
+	<key>Finish all three to count the month toward the Monthly quests badge.</key>
+	<string>三个都完成，这个月就会计入「每月任务」徽章。</string>
 	<key>Finish setup</key>
 	<string>完成设置</string>
 	<key>Fireplace</key>
@@ -1361,6 +1419,8 @@
 	<string>在其他应用里修好了？回到这里，指示灯会自动更新。</string>
 	<key>Flame Headband</key>
 	<string>火焰头带</string>
+	<key>Flashcards</key>
+	<string>闪卡</string>
 	<key>Flow</key>
 	<string>心流</string>
 	<key>Flower Crown</key>
@@ -1473,6 +1533,8 @@
 	<string>好友能看到你的名字、宠物和你何时在学习。关于卡片和牌组的任何信息都不会离开你的 Mac。</string>
 	<key>Friends server</key>
 	<string>好友服务器</string>
+	<key>Friendship Bandana</key>
+	<string>友谊方巾</string>
 	<key>Frog Hat</key>
 	<string>青蛙帽</string>
 	<key>From your Claude Code logs</key>
@@ -1495,6 +1557,8 @@
 	<string>GPU 使用率，最近 60 秒</string>
 	<key>General</key>
 	<string>通用</string>
+	<key>Gentle streak</key>
+	<string>温和连续</string>
 	<key>Get %@</key>
 	<string>获取 %@</string>
 	<key>Get %@ to control your music from the notch.</key>
@@ -1527,6 +1591,8 @@
 	<string>隐身。你的学习时间仍会计入。</string>
 	<key>Go on without a name</key>
 	<string>不填名字继续</string>
+	<key>Goals</key>
+	<string>目标</string>
 	<key>Goals left today</key>
 	<string>今天剩余目标</string>
 	<key>Gold tag</key>
@@ -1825,10 +1891,14 @@
 	<string>限定</string>
 	<key>Limited edition</key>
 	<string>限定款</string>
+	<key>Limited edition items, earned by studying, never sold</key>
+	<string>限定物品，靠学习获得，从不出售</string>
 	<key>Lion Dance Hat</key>
 	<string>舞狮帽</string>
 	<key>Listen to %@</key>
 	<string>试听%@</string>
+	<key>Little Sprout</key>
+	<string>小嫩芽</string>
 	<key>Live activity</key>
 	<string>实时活动</string>
 	<key>Loading</key>
@@ -1881,6 +1951,8 @@
 	<string>标记为已完成</string>
 	<key>Mark as not done</key>
 	<string>标记为未完成</string>
+	<key>Mastery outfits: each unlocks with a badge tier, never with points</key>
+	<string>精通服装：每件都靠徽章等级解锁，从不用积分</string>
 	<key>May Tabbi run your shortcuts?</key>
 	<string>Tabbi 可以运行你的快捷指令吗？</string>
 	<key>Measuring cores...</key>
@@ -1919,6 +1991,10 @@
 	<string>模型</string>
 	<key>Month</key>
 	<string>月份</string>
+	<key>Monthly quests</key>
+	<string>每月任务</string>
+	<key>Monthly quests, badges and outfits earned from long goals</key>
+	<string>每月任务、徽章和长期目标赢得的服装</string>
 	<key>Moonlit Witch Hat</key>
 	<string>月光女巫帽</string>
 	<key>Moonstone</key>
@@ -1987,6 +2063,10 @@
 	<string>接下来，Mac 会询问是否允许 Tabbi 发送提醒。你可以随时在系统设置中更改。</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>接下来，Mac 会询问是否允许 Tabbi 使用你的日历。你可以随时在系统设置中更改。</string>
+	<key>Next: %@, %@</key>
+	<string>下一个：%1$@，%2$@</string>
+	<key>Nightcap</key>
+	<string>睡帽</string>
 	<key>Ninja Headband</key>
 	<string>忍者头带</string>
 	<key>No answer</key>
@@ -2133,6 +2213,8 @@
 	<string>未设置</string>
 	<key>Not synced yet</key>
 	<string>尚未同步</string>
+	<key>Not yet</key>
+	<string>尚未</string>
 	<key>Not yet. Click the button so your Mac can ask.</key>
 	<string>还没有。点按按钮，Mac 就能询问。</string>
 	<key>Not yet. Open the Party tab to answer.</key>
@@ -2199,6 +2281,8 @@
 	<string>已在今天</string>
 	<key>One add-on to go</key>
 	<string>还差一个插件</string>
+	<key>One badge for each habit, from Bronze to Starlight</key>
+	<string>每个习惯一枚徽章，从铜到星光</string>
 	<key>One calm session at a time. You've got this.</key>
 	<string>一次一段,稳稳来。你可以的。</string>
 	<key>One countdown, no breaks</key>
@@ -2349,6 +2433,12 @@
 	<string>其他</string>
 	<key>Out of sight. Press %@ to open it.</key>
 	<string>不显示。按 %@ 打开。</string>
+	<key>Outfits and accessories to unlock with study points</key>
+	<string>用学习积分解锁的服装和配饰</string>
+	<key>Outfits to earn</key>
+	<string>可赢得的服装</string>
+	<key>Owl Spectacles</key>
+	<string>猫头鹰眼镜</string>
 	<key>Owned</key>
 	<string>已拥有</string>
 	<key>Pals</key>
@@ -2763,6 +2853,8 @@
 	<string>正在 %@ 中运行</string>
 	<key>Runs on this Mac</key>
 	<string>在这台 Mac 上运行</string>
+	<key>Sage's Robe</key>
+	<string>贤者长袍</string>
 	<key>Sakura Sprig</key>
 	<string>樱花枝</string>
 	<key>Save</key>
@@ -2783,6 +2875,8 @@
 	<string>已存入钥匙串</string>
 	<key>Schedule</key>
 	<string>日程</string>
+	<key>Scholar's Robe</key>
+	<string>学者长袍</string>
 	<key>Screenshot sent with this question</key>
 	<string>随此问题发送的截图</string>
 	<key>Scrubs</key>
@@ -2827,6 +2921,8 @@
 	<string>服务器</string>
 	<key>Session done. Nice work!</key>
 	<string>专注完成，做得好！</string>
+	<key>Sessions</key>
+	<string>专注时段</string>
 	<key>Set "apiKey" to null, then click OK</key>
 	<string>将 "apiKey" 设为 null，然后点按 OK</string>
 	<key>Set this up later from its tab</key>
@@ -3011,8 +3107,12 @@
 	<string>闪闪发光</string>
 	<key>Sparkle Trail</key>
 	<string>闪光拖尾</string>
+	<key>Species, breed and fur color</key>
+	<string>物种、品种和毛色</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>万圣节来啦。专注一下,给宠物换装吧。</string>
+	<key>Sporty Sweatband</key>
+	<string>运动发带</string>
 	<key>Spotify and Apple Music always show. For SoundCloud, macOS asks to let %@ control your browser, and the browser needs Allow JavaScript from Apple Events turned on.</key>
 	<string>Spotify 和 Apple Music 始终显示。使用 SoundCloud 时，macOS 会询问是否允许 %@ 控制你的浏览器，且浏览器需打开“允许来自 Apple 事件的 JavaScript”。</string>
 	<key>Spotify link or Music playlist name</key>
@@ -3031,6 +3131,10 @@
 	<string>站起来抖抖腿，想坐时再坐下。</string>
 	<key>Star tag</key>
 	<string>星星吊牌</string>
+	<key>Starlight, every tier earned</key>
+	<string>星光，所有等级都已获得</string>
+	<key>Starry Cloak</key>
+	<string>星空斗篷</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>星星从不着急。它们只是持续燃烧。</string>
 	<key>Start %@ automatically when you log in</key>
@@ -3087,6 +3191,8 @@
 	<string>专注开始时播放（除非已在播放音乐），休息时暂停。</string>
 	<key>Stays on this Mac</key>
 	<string>仅存于本机</string>
+	<key>Steady weeks</key>
+	<string>稳定周</string>
 	<key>Step %lld of %lld</key>
 	<string>第 %1$lld 步，共 %2$lld 步</string>
 	<key>Step away for a bit</key>
@@ -3149,6 +3255,10 @@
 	<string>学习时段</string>
 	<key>Study buddies</key>
 	<string>学习搭子</string>
+	<key>Study days</key>
+	<string>学习天数</string>
+	<key>Study methods</key>
+	<string>学习方法</string>
 	<key>Study parties</key>
 	<string>学习派对</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3261,6 +3371,8 @@
 	<string>天赋只是起跑时的领先。坚持出现，才是整场比赛。</string>
 	<key>Tap the trackpad when the pointer reaches the notch or a celebration plays</key>
 	<string>指针到达刘海或播放庆祝时，触控板轻震一下</string>
+	<key>Tasks</key>
+	<string>任务</string>
 	<key>Tasks left today</key>
 	<string>今天剩余任务</string>
 	<key>Team Medal</key>
@@ -3445,6 +3557,8 @@
 	<string>此任务已在今天的清单中</string>
 	<key>This works. Nothing to do.</key>
 	<string>一切正常，无需操作。</string>
+	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
+	<string>每月三个小目标。都是自愿的，错过一个月也不会失去什么。</string>
 	<key>Time</key>
 	<string>时间</string>
 	<key>Time for a %lld-minute break.</key>
@@ -3461,6 +3575,8 @@
 	<string>计时器：%@</string>
 	<key>Tiny Crown</key>
 	<string>小皇冠</string>
+	<key>Tiny Lantern</key>
+	<string>小灯笼</string>
 	<key>Tiny Rain Cloud</key>
 	<string>小雨云</string>
 	<key>Tips to focus better</key>
@@ -3683,6 +3799,8 @@
 	<string>衣橱</string>
 	<key>Warm cream and peach, soft and gentle.</key>
 	<string>暖奶油色与蜜桃色，柔和温柔。</string>
+	<key>Water</key>
+	<string>喝水</string>
 	<key>Water carves canyons by never skipping a day.</key>
 	<string>水能冲刷出峡谷，是因为它一天也不停歇。</string>
 	<key>Wearing</key>
@@ -3933,6 +4051,10 @@
 	<string>你的播放列表</string>
 	<key>Your setup already matches %@</key>
 	<string>你的设置已与 %@ 一致</string>
+	<key>Your study day by day, with the time studied on each</key>
+	<string>每天的学习和当天的学习时长</string>
+	<key>Your study streak and the freezes that protect it</key>
+	<string>你的连续学习和保护它的冻结</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>
 	<string>连续学习：每天至少专注 %lld 分钟的连续天数</string>
 	<key>Your tabs</key>
@@ -3945,8 +4067,18 @@
 	<string>你的一周</string>
 	<key>Your week with Tabbi is ready</key>
 	<string>你和 Tabbi 的一周回顾已就绪</string>
+	<key>Your weekly recaps with your pet</key>
+	<string>和宠物一起的每周回顾</string>
 	<key>all day: %@</key>
 	<string>全天：%@</string>
+	<key>badge.tier.bronze</key>
+	<string>铜</string>
+	<key>badge.tier.gold</key>
+	<string>金</string>
+	<key>badge.tier.silver</key>
+	<string>银</string>
+	<key>badge.tier.starlight</key>
+	<string>星光</string>
 	<key>best day</key>
 	<string>最佳一天</string>
 	<key>card</key>

@@ -12,6 +12,7 @@ import { HOUR_LABEL_MINUTES, eventDisplayName, type SeasonalEventReward } from "
 import { tr } from "../localization/tr";
 import { accessoryItem, outfitItem, type PetItem } from "../pets/petItem";
 import { PetPointsRules } from "../pets/petPointsRules";
+import { badgeHowToEarn, type ProgressBadge } from "../progression/progressTrack";
 import type { Instant } from "../time";
 import {
   addDays,
@@ -51,7 +52,9 @@ export function milestoneGoal(milestone: PetMilestone): number {
 export type PetLimitedSource =
   | { readonly kind: "milestone"; readonly milestone: PetMilestone }
   | { readonly kind: "event"; readonly id: string }
-  | { readonly kind: "season"; readonly id: string };
+  | { readonly kind: "season"; readonly id: string }
+  /** Unlocks on its own once a badge tier is reached on the Goals shelf: a mastery outfit. */
+  | { readonly kind: "mastery"; readonly badge: ProgressBadge };
 
 /** The limited edition items, in shelf order. Port of PetLimitedEdition. */
 export const PET_LIMITED_EDITIONS = [
@@ -69,6 +72,23 @@ export const PET_LIMITED_EDITIONS = [
   "springSakura",
   "examHoodie",
   "foundingMember",
+  /* Mastery outfits: each unlocks with a badge tier, in Goals shelf order. */
+  "littleSprout",
+  "blossomSprout",
+  "nightcap",
+  "cozyPajamas",
+  "apprenticeRobe",
+  "scholarsRobe",
+  "sagesRobe",
+  "astronautSuit",
+  "starryCloak",
+  "explorersHat",
+  "owlSpectacles",
+  "beeAntennae",
+  "sportySweatband",
+  "friendshipBandana",
+  "bakersApron",
+  "tinyLantern",
 ] as const;
 export type PetLimitedEdition = (typeof PET_LIMITED_EDITIONS)[number];
 
@@ -87,7 +107,43 @@ const EDITIONS: Record<PetLimitedEdition, { item: PetItem; source: PetLimitedSou
   springSakura: { item: accessoryItem("sakuraSprig"), source: { kind: "season", id: "spring" }, effect: "drift" },
   examHoodie: { item: outfitItem("studyHoodie"), source: { kind: "season", id: "exam-season" }, effect: "shimmer" },
   foundingMember: { item: accessoryItem("foundersPin"), source: { kind: "event", id: "founding" }, effect: "sparkle" },
+  littleSprout: { item: accessoryItem("littleSprout"), source: mastery("studyDays", "silver") },
+  blossomSprout: { item: accessoryItem("blossomSprout"), source: mastery("studyDays", "gold"), effect: "drift" },
+  nightcap: { item: accessoryItem("nightcap"), source: mastery("gentleStreak", "silver") },
+  cozyPajamas: { item: outfitItem("cozyPajamas"), source: mastery("gentleStreak", "gold") },
+  apprenticeRobe: { item: outfitItem("apprenticeRobe"), source: mastery("sessions", "silver") },
+  scholarsRobe: { item: outfitItem("scholarsRobe"), source: mastery("sessions", "gold") },
+  sagesRobe: { item: outfitItem("sagesRobe"), source: mastery("sessions", "starlight"), effect: "shimmer" },
+  astronautSuit: { item: outfitItem("astronautSuit"), source: mastery("focusHours", "gold") },
+  starryCloak: { item: outfitItem("starryCloak"), source: mastery("focusHours", "starlight"), effect: "sparkle" },
+  explorersHat: { item: accessoryItem("explorersHat"), source: mastery("steadyWeeks", "silver") },
+  owlSpectacles: { item: accessoryItem("owlSpectacles"), source: mastery("cards", "gold") },
+  beeAntennae: { item: accessoryItem("beeAntennae"), source: mastery("tasks", "gold") },
+  sportySweatband: { item: accessoryItem("sportySweatband"), source: mastery("breakMoves", "silver") },
+  friendshipBandana: { item: accessoryItem("friendshipBandana"), source: mastery("party", "gold") },
+  bakersApron: { item: outfitItem("bakersApron"), source: mastery("methods", "gold") },
+  tinyLantern: { item: accessoryItem("tinyLantern"), source: mastery("monthlyQuests", "gold"), effect: "flicker" },
 };
+
+function mastery(track: ProgressBadge["track"], tier: ProgressBadge["tier"]): PetLimitedSource {
+  return { kind: "mastery", badge: { track, tier } };
+}
+
+/** The badge tier a mastery outfit unlocks with, or undefined for any other limited item. */
+export function editionMasteryBadge(edition: PetLimitedEdition): ProgressBadge | undefined {
+  const source = editionSource(edition);
+  return source.kind === "mastery" ? source.badge : undefined;
+}
+
+/** Whether this is a mastery outfit, shown on the Goals shelf instead of the Limited section. */
+export function isMasteryEdition(edition: PetLimitedEdition): boolean {
+  return editionMasteryBadge(edition) !== undefined;
+}
+
+/** The mastery outfits in Goals shelf order. */
+export function masteryEditions(): PetLimitedEdition[] {
+  return PET_LIMITED_EDITIONS.filter(isMasteryEdition);
+}
 
 export function editionItem(edition: PetLimitedEdition): PetItem {
   return EDITIONS[edition].item;
@@ -142,8 +198,10 @@ export function howToEarn(edition: PetLimitedEdition): string {
       return tr("Finish a Party session with friends.");
     case "foundingMember":
       return tr("For signing in during Tabbi's first 100 days.");
-    default:
-      return seasonalHowToEarn(edition);
+    default: {
+      const badge = editionMasteryBadge(edition);
+      return badge ? badgeHowToEarn(badge) : seasonalHowToEarn(edition);
+    }
   }
 }
 
@@ -294,6 +352,11 @@ export class PetMilestoneProgress {
    * that grows denser toward today.
    */
   static demo(today: Instant, calendar: DayCalendar): PetMilestoneProgress {
+    return new PetMilestoneProgress(PetMilestoneProgress.demoRecords(today, calendar), calendar);
+  }
+
+  /** The focus records behind `demo`, oldest first, which the Goals section's demo reads too. */
+  static demoRecords(today: Instant, calendar: DayCalendar): ActivityRecord[] {
     const start = dayKey(today, calendar);
     let next = 0;
     const record = (daysAgo: number, minutes: number): ActivityRecord | undefined => {
@@ -327,7 +390,7 @@ export class PetMilestoneProgress {
       const made = record(daysAgo, minutes);
       if (made) records.push(made);
     });
-    return new PetMilestoneProgress(records, calendar);
+    return records.sort((a, b) => a.end - b.end);
   }
 }
 

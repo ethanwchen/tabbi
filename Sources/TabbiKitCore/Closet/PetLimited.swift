@@ -45,6 +45,9 @@ public enum PetLimitedSource: Hashable, Sendable {
     /// Earned by focusing while a seasonal event runs (`SeasonalEvent`),
     /// such as Halloween. `id` is the event's id in the events catalog.
     case season(id: String)
+    /// Unlocks on its own once a badge tier is reached on the Goals shelf
+    /// (`PetProgression`): a mastery outfit, weeks or months of study away.
+    case mastery(ProgressBadge)
 }
 
 /// The limited edition items: never sold for points and never tied to
@@ -68,6 +71,24 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
     /// Apple account made in the first 100 days after launch (and to the
     /// beta testers before it), through `GET /v1/grants`.
     case foundingMember
+    // Mastery outfits: each unlocks with a badge tier (`ProgressBadge`),
+    // in Goals shelf order.
+    case littleSprout
+    case blossomSprout
+    case nightcap
+    case cozyPajamas
+    case apprenticeRobe
+    case scholarsRobe
+    case sagesRobe
+    case astronautSuit
+    case starryCloak
+    case explorersHat
+    case owlSpectacles
+    case beeAntennae
+    case sportySweatband
+    case friendshipBandana
+    case bakersApron
+    case tinyLantern
 
     public var item: PetItem {
         switch self {
@@ -85,6 +106,22 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .springSakura: .accessory(.sakuraSprig)
         case .examHoodie: .outfit(.studyHoodie)
         case .foundingMember: .accessory(.foundersPin)
+        case .littleSprout: .accessory(.littleSprout)
+        case .blossomSprout: .accessory(.blossomSprout)
+        case .nightcap: .accessory(.nightcap)
+        case .cozyPajamas: .outfit(.cozyPajamas)
+        case .apprenticeRobe: .outfit(.apprenticeRobe)
+        case .scholarsRobe: .outfit(.scholarsRobe)
+        case .sagesRobe: .outfit(.sagesRobe)
+        case .astronautSuit: .outfit(.astronautSuit)
+        case .starryCloak: .outfit(.starryCloak)
+        case .explorersHat: .accessory(.explorersHat)
+        case .owlSpectacles: .accessory(.owlSpectacles)
+        case .beeAntennae: .accessory(.beeAntennae)
+        case .sportySweatband: .accessory(.sportySweatband)
+        case .friendshipBandana: .accessory(.friendshipBandana)
+        case .bakersApron: .outfit(.bakersApron)
+        case .tinyLantern: .accessory(.tinyLantern)
         }
     }
 
@@ -107,8 +144,38 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .springSakura: .season(id: "spring")
         case .examHoodie: .season(id: "exam-season")
         case .foundingMember: .event(id: "founding")
+        case .littleSprout: .mastery(ProgressBadge(.studyDays, .silver))
+        case .blossomSprout: .mastery(ProgressBadge(.studyDays, .gold))
+        case .nightcap: .mastery(ProgressBadge(.gentleStreak, .silver))
+        case .cozyPajamas: .mastery(ProgressBadge(.gentleStreak, .gold))
+        case .apprenticeRobe: .mastery(ProgressBadge(.sessions, .silver))
+        case .scholarsRobe: .mastery(ProgressBadge(.sessions, .gold))
+        case .sagesRobe: .mastery(ProgressBadge(.sessions, .starlight))
+        case .astronautSuit: .mastery(ProgressBadge(.focusHours, .gold))
+        case .starryCloak: .mastery(ProgressBadge(.focusHours, .starlight))
+        case .explorersHat: .mastery(ProgressBadge(.steadyWeeks, .silver))
+        case .owlSpectacles: .mastery(ProgressBadge(.cards, .gold))
+        case .beeAntennae: .mastery(ProgressBadge(.tasks, .gold))
+        case .sportySweatband: .mastery(ProgressBadge(.breakMoves, .silver))
+        case .friendshipBandana: .mastery(ProgressBadge(.party, .gold))
+        case .bakersApron: .mastery(ProgressBadge(.methods, .gold))
+        case .tinyLantern: .mastery(ProgressBadge(.monthlyQuests, .gold))
         }
     }
+
+    /// The badge tier a mastery outfit unlocks with, or nil for any other
+    /// limited item.
+    public var masteryBadge: ProgressBadge? {
+        if case .mastery(let badge) = source { return badge }
+        return nil
+    }
+
+    /// Whether this is a mastery outfit, shown on the Goals shelf instead
+    /// of the Limited section.
+    public var isMastery: Bool { masteryBadge != nil }
+
+    /// The mastery outfits in Goals shelf order.
+    public static var mastery: [PetLimitedEdition] { allCases.filter(\.isMastery) }
 
     public var milestone: PetMilestone? {
         if case .milestone(let milestone) = source { return milestone }
@@ -125,7 +192,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .focusLaurel: String(localized: "Focus for 50 hours in total.", bundle: .tabbi)
         case .partyMedal: String(localized: "Finish a Party session with friends.", bundle: .tabbi)
         case .foundingMember: String(localized: "For signing in during Tabbi's first 100 days.", bundle: .tabbi)
-        default: seasonalHowToEarn
+        default: masteryBadge?.howToEarn ?? seasonalHowToEarn
         }
     }
 
@@ -165,6 +232,12 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .springSakura: .drift
         case .examHoodie: .shimmer
         case .foundingMember: .sparkle
+        case .blossomSprout: .drift
+        case .sagesRobe: .shimmer
+        case .starryCloak: .sparkle
+        case .tinyLantern: .flicker
+        case .littleSprout, .nightcap, .cozyPajamas, .apprenticeRobe, .scholarsRobe, .astronautSuit, .explorersHat,
+             .owlSpectacles, .beeAntennae, .sportySweatband, .friendshipBandana, .bakersApron: nil
         }
     }
 }
@@ -285,6 +358,13 @@ extension PetMilestoneProgress {
     /// days and no run long enough to reach the week streak, give the
     /// Closet's study chart (`StudyHeatmap`) a believable history.
     public static func demo(today: Date, calendar: Calendar = .current) -> PetMilestoneProgress {
+        PetMilestoneProgress(records: demoRecords(today: today, calendar: calendar), calendar: calendar)
+    }
+
+    /// The focus records behind `demo`, oldest first, which the Goals
+    /// section's demo (`PetProgression.demo`) reads too, so both tell the
+    /// same story.
+    public static func demoRecords(today: Date, calendar: Calendar = .current) -> [ActivityRecord] {
         let start = calendar.startOfDay(for: today)
         func record(daysAgo: Int, minutes: Double) -> ActivityRecord? {
             guard minutes > 0, let day = calendar.date(byAdding: .day, value: -daysAgo, to: start),
@@ -311,7 +391,7 @@ extension PetMilestoneProgress {
         let history = earlier.enumerated().compactMap { record(daysAgo: 14 + $0.offset, minutes: $0.element) }
         let beforeFreeze = [(5, 50.0), (6, 80.0)].compactMap { record(daysAgo: $0.0, minutes: $0.1) }
         let streak = [35.0, 95, 60, 120].enumerated().compactMap { record(daysAgo: $0.offset, minutes: $0.element) }
-        return PetMilestoneProgress(records: history + beforeFreeze + streak, calendar: calendar)
+        return history.reversed() + beforeFreeze.reversed() + streak.reversed()
     }
 }
 

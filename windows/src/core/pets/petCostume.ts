@@ -12,6 +12,14 @@ export const PET_OUTFITS = [
   "dinosaurHoodie",
   "wizardRobe",
   "studyHoodie",
+  /* Mastery outfits: earned from a badge tier (ProgressBadge), never sold. */
+  "astronautSuit",
+  "starryCloak",
+  "apprenticeRobe",
+  "scholarsRobe",
+  "sagesRobe",
+  "cozyPajamas",
+  "bakersApron",
 ] as const;
 export type PetOutfit = (typeof PET_OUTFITS)[number];
 
@@ -33,6 +41,20 @@ export function outfitDisplayName(outfit: PetOutfit): string {
       return tr("Wizard Robe");
     case "studyHoodie":
       return tr("Study Hoodie");
+    case "astronautSuit":
+      return tr("Astronaut Suit");
+    case "starryCloak":
+      return tr("Starry Cloak");
+    case "apprenticeRobe":
+      return tr("Apprentice Robe");
+    case "scholarsRobe":
+      return tr("Scholar's Robe");
+    case "sagesRobe":
+      return tr("Sage's Robe");
+    case "cozyPajamas":
+      return tr("Cozy Pajamas");
+    case "bakersApron":
+      return tr("Baker's Apron");
   }
 }
 
@@ -91,6 +113,16 @@ export const PET_ACCESSORIES = [
   "cherryPetals",
   "sparkleTrail",
   "rainCloud",
+  /* Mastery items: earned from a badge tier (ProgressBadge), never sold. */
+  "littleSprout",
+  "blossomSprout",
+  "nightcap",
+  "explorersHat",
+  "beeAntennae",
+  "sportySweatband",
+  "owlSpectacles",
+  "friendshipBandana",
+  "tinyLantern",
 ] as const;
 export type PetAccessory = (typeof PET_ACCESSORIES)[number];
 
@@ -102,11 +134,14 @@ export function accessorySlot(accessory: PetAccessory): PetAccessorySlot {
     case "teamMedal":
     case "snowScarf":
     case "foundersPin":
+    case "friendshipBandana":
+    case "tinyLantern":
       return "neck";
     case "roundGlasses":
     case "coolSunglasses":
     case "heartGlasses":
     case "summerShades":
+    case "owlSpectacles":
       return "face";
     case "angelWings":
     case "kingsCape":
@@ -173,6 +208,15 @@ const ACCESSORY_NAMES: Record<PetAccessory, string> = {
   cherryPetals: "Cherry Petals",
   sparkleTrail: "Sparkle Trail",
   rainCloud: "Tiny Rain Cloud",
+  littleSprout: "Little Sprout",
+  blossomSprout: "Blossom Sprout",
+  nightcap: "Nightcap",
+  explorersHat: "Explorer's Hat",
+  beeAntennae: "Busy Bee Antennae",
+  sportySweatband: "Sporty Sweatband",
+  owlSpectacles: "Owl Spectacles",
+  friendshipBandana: "Friendship Bandana",
+  tinyLantern: "Tiny Lantern",
 };
 
 function clashes(a: PetAccessory, b: PetAccessory): boolean {

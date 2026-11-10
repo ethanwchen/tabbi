@@ -3,7 +3,7 @@ import Foundation
 /// Translates between the local `PetProfile` and the server's pet fields.
 ///
 /// Friends see a pet exactly as its owner dressed it in the Closet: the
-/// server catalog (`backend/shared/catalog.json`, version 3) has an id for
+/// server catalog (`backend/shared/catalog.json`, version 4) has an id for
 /// every outfit and every accessory the app draws, so the outfit rides in
 /// `costume`, every worn accessory (hats, wings, auras and all) in
 /// `accessories`, and the effective colors of every recolorable role in
@@ -133,6 +133,15 @@ public enum PartyPetAppearance {
         case .dinosaurHoodie: "dinosaur-hoodie"
         case .wizardRobe: "wizard"
         case .studyHoodie: "study-hoodie"
+        // Catalog version 1 already had `pajamas`, which nothing drew until now.
+        case .cozyPajamas: "pajamas"
+        // Added in catalog version 4.
+        case .astronautSuit: "astronaut-suit"
+        case .starryCloak: "starry-cloak"
+        case .apprenticeRobe: "apprentice-robe"
+        case .scholarsRobe: "scholars-robe"
+        case .sagesRobe: "sages-robe"
+        case .bakersApron: "bakers-apron"
         }
     }
 
@@ -189,6 +198,17 @@ public enum PartyPetAppearance {
         case .cherryPetals: "cherry-petals"
         case .sparkleTrail: "sparkle-trail"
         case .rainCloud: "rain-cloud"
+        // Catalog version 1 already had `bandana`, which nothing drew until now.
+        case .friendshipBandana: "bandana"
+        // Added in catalog version 4.
+        case .littleSprout: "little-sprout"
+        case .blossomSprout: "blossom-sprout"
+        case .nightcap: "nightcap"
+        case .explorersHat: "explorers-hat"
+        case .beeAntennae: "bee-antennae"
+        case .sportySweatband: "sporty-sweatband"
+        case .owlSpectacles: "owl-spectacles"
+        case .tinyLantern: "tiny-lantern"
         }
     }
 
@@ -229,6 +249,17 @@ public enum PartyPetAppearance {
     static let olderCatalogBreeds: [String: String] = ["british-longhair": "domestic-longhair"]
     static let version1MaxAccessories = 4
 
+    /// The outfit and accessory ids catalog version 4 added (the mastery
+    /// outfits). A server still on version 3 refuses them, so
+    /// `PartyProfileUpdate.forCatalogVersion3()` leaves them out first.
+    static let version4Costumes: Set<String> = [
+        "astronaut-suit", "starry-cloak", "apprentice-robe", "scholars-robe", "sages-robe", "bakers-apron",
+    ]
+    static let version4Accessories: Set<String> = [
+        "little-sprout", "blossom-sprout", "nightcap", "explorers-hat", "bee-antennae", "sporty-sweatband",
+        "owl-spectacles", "tiny-lantern",
+    ]
+
     /// The server takes `#RRGGBB` only.
     private static func opaqueHex(_ color: PetColor) -> String {
         String(color.hex.prefix(7))
@@ -236,6 +267,26 @@ public enum PartyPetAppearance {
 }
 
 extension PartyProfileUpdate {
+    /// This update as a server on catalog version 3 takes it: the ids
+    /// version 4 added left out, and an outfit it has no id for sent as no
+    /// outfit, so friends there still see the rest of the pet.
+    public func forCatalogVersion3() -> PartyProfileUpdate {
+        var update = self
+        update.accessories = accessories.map { $0.filter { !PartyPetAppearance.version4Accessories.contains($0) } }
+        update.costume = costume.map { PartyPetAppearance.version4Costumes.contains($0) ? "none" : $0 }
+        return update
+    }
+
+    /// The next older catalog's version of this update after a server
+    /// refused it, or nil when no older catalog would take anything less:
+    /// first without catalog version 4's ids, then as version 1 takes it.
+    public var olderCatalogFallback: PartyProfileUpdate? {
+        let version3 = forCatalogVersion3()
+        if version3 != self { return version3 }
+        let version1 = forCatalogVersion1()
+        return version1 != self ? version1 : nil
+    }
+
     /// This update as a server on catalog version 1 or 2 takes it:
     /// accessories it has no id for left out, the newer hoodies sent as the
     /// plain hoodie, newer breeds as their closest older one, and only the

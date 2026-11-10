@@ -20,6 +20,9 @@ private final class FakeFriendsServer: PartyTransport, @unchecked Sendable {
     /// Answers like a self-hosted server still on catalog version 1: newer
     /// accessory ids and more than six colors are an `invalid_field`.
     var catalogVersion1 = false
+    /// Answers like a server still on catalog version 3: the mastery
+    /// outfits' ids are an `invalid_field`.
+    var catalogVersion3 = false
     /// The pet fields of every profile body it took.
     private(set) var takenBodies: [[String: Any]] = []
 
@@ -51,6 +54,17 @@ private final class FakeFriendsServer: PartyTransport, @unchecked Sendable {
             let accessories = fields["accessories"] as? [String] ?? []
             if !accessories.allSatisfy(known.contains) || (fields["colors"] as? [String] ?? []).count > 6 {
                 return reply(#"{"ok":false,"error":"invalid_field","message":"invalid accessories"}"#, 400)
+            }
+        }
+        if catalogVersion3, let fields {
+            let added: Set<String> = [
+                "astronaut-suit", "starry-cloak", "apprentice-robe", "scholars-robe", "sages-robe", "bakers-apron",
+                "little-sprout", "blossom-sprout", "nightcap", "explorers-hat", "bee-antennae", "sporty-sweatband",
+                "owl-spectacles", "tiny-lantern",
+            ]
+            let ids = (fields["accessories"] as? [String] ?? []) + [fields["costume"] as? String].compactMap { $0 }
+            if ids.contains(where: added.contains) {
+                return reply(#"{"ok":false,"error":"invalid_field","message":"invalid costume"}"#, 400)
             }
         }
         if let fields { lock.withLock { takenBodies.append(fields) } }
@@ -173,6 +187,27 @@ final class PartyAccountTests: XCTestCase {
         XCTAssertEqual(taken["accessories"] as? [String], ["glasses"])
         XCTAssertEqual(taken["costume"] as? String, "hoodie")
         XCTAssertEqual((taken["colors"] as? [String])?.count, 6)
+    }
+
+    /// A server not yet on catalog version 4 refuses the mastery outfits;
+    /// the profile goes again without just those, so friends there still
+    /// see the rest of the pet, before anything falls back to version 1.
+    func testAServerOnCatalogVersion3GetsEverythingButTheMasteryOutfits() async throws {
+        let token = FakeFriendsServer.token(8)
+        let fake = FakeFriendsServer(validTokens: [token])
+        fake.catalogVersion3 = true
+        let store = InMemoryPartyCredentialStore([server: PartyCredentials(token: token, code: FakeFriendsServer.code(8))])
+        let account = PartyAccount(server: server, transport: fake, credentials: store)
+        let pet = PetProfile(name: "Nova", breed: .corgi, outfit: .astronautSuit,
+                             accessories: [.friendshipBandana, .nightcap, .roundGlasses])
+
+        _ = try await account.connect(profile: PartyPetAppearance.update(for: pet))
+
+        XCTAssertEqual(fake.requests, ["PATCH /v1/me", "PATCH /v1/me"], "refused once, then sent without the new ids")
+        let taken = try XCTUnwrap(fake.takenBodies.last)
+        XCTAssertEqual(taken["accessories"] as? [String], ["bandana", "glasses"])
+        XCTAssertEqual(taken["costume"] as? String, "none")
+        XCTAssertEqual((taken["colors"] as? [String])?.count, PartyPetAppearance.colorRoles.count)
     }
 
     func testARefusedNameOnRegisterStillRegisters() async throws {

@@ -5,8 +5,9 @@ import TabbiKit
 
 /// The Closet tab: the study pet large and animated on the left, and on the
 /// right a chart of the days studied, its wardrobe (wear, take off, or unlock items with study points),
-/// its limited edition items, the study streak with its freezes, its look
-/// (species, breed, fur color), or its past weekly recaps.
+/// its limited edition items, its goals (monthly quests, mastery outfits
+/// and badges), the study streak with its freezes, its look (species,
+/// breed, fur color), or its past weekly recaps.
 struct ClosetPanel: View {
     @ObservedObject var store: ClosetStore
     /// The weekly recaps; their section hides while recaps are off.
@@ -33,6 +34,7 @@ struct ClosetPanel: View {
                     case .activity: ClosetHeatmapSection(store: store)
                     case .wardrobe: ClosetWardrobe(store: store)
                     case .limited: ClosetLimited(store: store)
+                    case .goals: ClosetGoals(store: store)
                     case .streak: ClosetStreak(store: store)
                     case .look: ClosetLook(store: store)
                     case .weeks: RecapHistoryList(store: recaps)
@@ -55,7 +57,8 @@ struct ClosetPanel: View {
                         titlesOpen: Bool = true) -> some View {
         HStack(spacing: isTight ? Theme.Spacing.xs : Theme.Spacing.s) {
             ClosetSectionPicker(sections: sections, selection: shownSection, titlesAll: titlesAll,
-                                titlesOpen: titlesOpen, isTight: isTight) {
+                                titlesOpen: titlesOpen, isTight: isTight,
+                                marked: store.hasUnseenGoals ? [.goals] : []) {
                 store.section = $0
             }
             Spacer(minLength: 0)
@@ -68,6 +71,7 @@ enum ClosetSection: String, CaseIterable {
     case activity = "Activity"
     case wardrobe = "Wardrobe"
     case limited = "Limited"
+    case goals = "Goals"
     case streak = "Streak"
     case look = "Look"
     case weeks = "Weeks"
@@ -77,6 +81,7 @@ enum ClosetSection: String, CaseIterable {
         case .activity: "square.grid.3x3.fill"
         case .wardrobe: "tshirt.fill"
         case .limited: "sparkles"
+        case .goals: "rosette"
         case .streak: "flame.fill"
         case .look: "paintpalette.fill"
         case .weeks: "calendar"
@@ -88,6 +93,7 @@ enum ClosetSection: String, CaseIterable {
         case .activity: String(localized: "Activity", bundle: .tabbi)
         case .wardrobe: String(localized: "Wardrobe", bundle: .tabbi)
         case .limited: String(localized: "Limited", bundle: .tabbi)
+        case .goals: String(localized: "Goals", bundle: .tabbi)
         case .streak: String(localized: "Streak", bundle: .tabbi)
         case .look: String(localized: "Look", bundle: .tabbi)
         case .weeks: String(localized: "Weeks", bundle: .tabbi)
@@ -96,12 +102,13 @@ enum ClosetSection: String, CaseIterable {
 
     var help: String {
         switch self {
-        case .activity: "Your study day by day, with the time studied on each"
-        case .wardrobe: "Outfits and accessories to unlock with study points"
-        case .limited: "Limited edition items, earned by studying, never sold"
-        case .streak: "Your study streak and the freezes that protect it"
-        case .look: "Species, breed and fur color"
-        case .weeks: "Your weekly recaps with your pet"
+        case .activity: String(localized: "Your study day by day, with the time studied on each", bundle: .tabbi)
+        case .wardrobe: String(localized: "Outfits and accessories to unlock with study points", bundle: .tabbi)
+        case .limited: String(localized: "Limited edition items, earned by studying, never sold", bundle: .tabbi)
+        case .goals: String(localized: "Monthly quests, badges and outfits earned from long goals", bundle: .tabbi)
+        case .streak: String(localized: "Your study streak and the freezes that protect it", bundle: .tabbi)
+        case .look: String(localized: "Species, breed and fur color", bundle: .tabbi)
+        case .weeks: String(localized: "Your weekly recaps with your pet", bundle: .tabbi)
         }
     }
 }
@@ -314,6 +321,8 @@ private struct ClosetSectionPicker: View {
     var titlesOpen = true
     /// Narrower pills, for the Compact panel with every section on.
     var isTight = false
+    /// Sections with something new to see, which wear a small dot.
+    var marked: Set<ClosetSection> = []
     let select: (ClosetSection) -> Void
 
     var body: some View {
@@ -323,6 +332,7 @@ private struct ClosetSectionPicker: View {
                            showsTitle: titlesAll || (titlesOpen && selection == section),
                            isSelected: selection == section,
                            isTight: isTight,
+                           isMarked: marked.contains(section) && selection != section,
                            help: section.help) {
                     withMotion(Theme.Motion.content) { select(section) }
                 }
@@ -338,6 +348,8 @@ private struct ClosetPill: View {
     var showsTitle = true
     let isSelected: Bool
     var isTight = false
+    /// Shows a small accent dot: something new waits in this section.
+    var isMarked = false
     let help: String
     let action: () -> Void
     @State private var hovering = false
@@ -346,6 +358,12 @@ private struct ClosetPill: View {
         Button(action: action) {
             HStack(spacing: Theme.Spacing.xs) {
                 Image(systemName: symbol).font(.system(size: 9.5, weight: .bold))
+                    .overlay(alignment: .topTrailing) {
+                        if isMarked {
+                            Circle().fill(accent).frame(width: 5, height: 5).offset(x: 3, y: -2)
+                                .allowsHitTesting(false)
+                        }
+                    }
                 if showsTitle { Text(title).lineLimit(1).fixedSize() }
             }
             .font(Theme.Typography.caption)
@@ -359,7 +377,8 @@ private struct ClosetPill: View {
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
-        .help(showsTitle ? help : "\(title): \(help)")
+        .help(isMarked ? String(localized: "\(title): \(help). Something new since you last looked.", bundle: .tabbi)
+              : showsTitle ? help : "\(title): \(help)")
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -572,7 +591,7 @@ private struct ClosetWardrobe: View {
 /// The footer line for the item on the pet: its name, then what clicking
 /// does or how to earn it. Both can run long, the sentence of how to earn a
 /// limited item most of all, so the line scrolls to show the rest.
-private struct ClosetFooterDetail: View {
+struct ClosetFooterDetail: View {
     let name: String
     let detail: String
 
@@ -727,7 +746,7 @@ private struct ClosetNewBadge: View {
 }
 
 /// Icon and title close together, for tiny tile labels.
-private struct ClosetTightLabelStyle: LabelStyle {
+struct ClosetTightLabelStyle: LabelStyle {
     func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: Theme.Spacing.xxs) {
             configuration.icon.font(.system(size: 8, weight: .bold))

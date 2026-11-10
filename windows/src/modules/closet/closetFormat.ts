@@ -65,3 +65,13 @@ export function weekdayShortNames(locale: string = currentLanguage()): string[] 
 export function weekdayOf(day: DayKey): number {
   return civil(day).getUTCDay() + 1;
 }
+
+/** "November", the month over the Goals section's quests. */
+export function monthLong(day: DayKey): string {
+  return format({ month: "long" }).format(civil(day));
+}
+
+/** "Dec 1", the day next month's quests come. */
+export function monthDayShort(day: DayKey): string {
+  return format({ month: "short", day: "numeric" }).format(civil(day));
+}

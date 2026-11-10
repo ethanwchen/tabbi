@@ -1037,3 +1037,148 @@
   width: 28px;
   flex: none;
 }
+
+/* Goals: this month's quests, the mastery outfits and the badges. */
+.closet-quest-banner {
+  flex: none;
+}
+
+.closet-quest-title-row {
+  gap: 4px;
+}
+
+.closet-fitting-line {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.closet-quest-title-row .closet-fitting-line {
+  flex: 0 1 auto;
+}
+
+.closet-quest-rings {
+  display: flex;
+  flex: none;
+  gap: 4px;
+}
+
+.closet-quest-ring {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: var(--secondary-text);
+  transition:
+    background-color var(--spring-snappy),
+    color var(--spring-snappy);
+}
+
+.closet-quest-ring:hover {
+  background: var(--surface-hover);
+  color: var(--primary-text);
+}
+
+.closet-quest-ring[data-done] {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.closet-badges {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px 4px;
+}
+
+.closet-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--tier);
+}
+
+.closet-badge-medal {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.closet-badge-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  transition: transform var(--spring-snappy);
+}
+
+.closet-badge:hover .closet-badge-art {
+  transform: scale(1.06);
+}
+
+/* The badge is pixel art at a whole number of device pixels per sprite pixel; never smooth it. */
+.closet-badge-canvas {
+  display: block;
+  image-rendering: pixelated;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .closet-badge-art {
+    transition: none;
+  }
+}
+
+.closet-badge-pips {
+  display: flex;
+  gap: 2px;
+}
+
+.closet-badge-pips > span {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+}
+
+.closet-goals-new {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  pointer-events: none;
+}
+
+.closet-tile .closet-goals-new {
+  inset-inline-start: 4px;
+  inset-inline-end: auto;
+}
+
+.closet-badge-new {
+  position: absolute;
+  top: 2px;
+  inset-inline-end: 2px;
+}
+
+.closet-goals-counts {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.closet-pill[data-marked] {
+  position: relative;
+}
+
+.closet-pill-dot {
+  position: absolute;
+  top: 3px;
+  inset-inline-end: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  pointer-events: none;
+}

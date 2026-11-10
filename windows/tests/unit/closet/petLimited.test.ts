@@ -9,9 +9,11 @@ import {
   editionSource,
   howToEarn,
   isLimited,
+  isMasteryEdition,
   itemEffect,
   limitedEditionOf,
   limitedProgressFraction,
+  masteryEditions,
   milestoneProgress,
 } from "../../../src/core/closet/petLimited";
 import { ACTIVITY_KINDS, ACTIVITY_METADATA, ACTIVITY_UNITS, type ActivityRecord } from "../../../src/core/activity/activityRecord";
@@ -70,13 +72,15 @@ function purchaseError(run: () => void): PetPurchaseError {
 
 describe("limited editions: catalog", () => {
   // The server grants exactly the limited items the app can show, with the same source.
+  /* Mastery outfits are earned on the Goals shelf only, so the server can never grant one. */
   it("the server grant list matches the limited editions", () => {
     const server = loadRepoJson<{
       items: { id: string; source: string; event?: string; milestone?: string; season?: string }[];
     }>("backend/shared/limited-items.json").items;
-    expect(server.map((entry) => entry.id)).toEqual(PET_LIMITED_EDITIONS.map(editionItem));
+    const grantable = PET_LIMITED_EDITIONS.filter((edition) => !isMasteryEdition(edition));
+    expect(server.map((entry) => entry.id)).toEqual(grantable.map(editionItem));
     server.forEach((entry, index) => {
-      const edition = PET_LIMITED_EDITIONS[index];
+      const edition = grantable[index];
       if (!edition) throw new Error(`no edition for ${entry.id}`);
       const source = editionSource(edition);
       switch (source.kind) {
@@ -92,6 +96,8 @@ describe("limited editions: catalog", () => {
           expect(entry.source, entry.id).toBe("season");
           expect(entry.season, entry.id).toBe(source.id);
           break;
+        case "mastery":
+          expect.fail(`${entry.id} is a mastery outfit, which the server never grants`);
       }
     });
   });
@@ -107,9 +113,10 @@ describe("limited editions: catalog", () => {
       expect(itemFromID(item)).toBe(item);
       expect(howToEarn(edition)).not.toBe("");
     }
-    expect(PetCloset.limitedShelf).toEqual(PET_LIMITED_EDITIONS.map(editionItem));
-    expect(ALL_ITEMS.slice(-PET_LIMITED_EDITIONS.length)).toEqual(PetCloset.limitedShelf);
-    expect([...SHOP_ITEMS, ...PetCloset.limitedShelf]).toEqual(ALL_ITEMS);
+    expect(PetCloset.limitedShelf).toEqual(PET_LIMITED_EDITIONS.filter((edition) => !isMasteryEdition(edition)).map(editionItem));
+    expect(PetCloset.masteryShelf).toEqual(masteryEditions().map(editionItem));
+    expect(ALL_ITEMS.slice(-PET_LIMITED_EDITIONS.length)).toEqual([...PetCloset.limitedShelf, ...PetCloset.masteryShelf]);
+    expect([...SHOP_ITEMS, ...PetCloset.limitedShelf, ...PetCloset.masteryShelf]).toEqual(ALL_ITEMS);
   });
 
   it("every milestone has one item and the cap is the launch week event", () => {

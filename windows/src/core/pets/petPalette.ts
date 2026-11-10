@@ -206,12 +206,16 @@ export const PET_PALETTE_ROLES = [
   "leather",
   "crimson",
   "pumpkin",
+  /* Twilight violet: the Starry Cloak. */
+  "violet",
+  /* Soft sky blue: the Cozy Pajamas and the Nightcap. */
+  "sky",
 ] as const;
 
 export type PetPaletteRole = (typeof PET_PALETTE_ROLES)[number];
 
 /** The grid character of each role, in `PET_PALETTE_ROLES` order. */
-const ROLE_SYMBOLS = "OBSAKWEiLNRPCDTUVGJQYMZzHFIXo";
+const ROLE_SYMBOLS = "OBSAKWEiLNRPCDTUVGJQYMZzHFIXovk";
 
 export function roleSymbol(role: PetPaletteRole): string {
   return ROLE_SYMBOLS.charAt(roleIndex(role));

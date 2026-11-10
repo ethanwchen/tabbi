@@ -2,7 +2,7 @@ import type { Seconds } from "../time";
 import { PartyClient } from "./partyClient";
 import { credentialsOf, sameCredentials, type PartyCredentials, type PartyCredentialStore } from "./partyCredentialStore";
 import { PartyError } from "./partyError";
-import { sameProfileUpdate, type PartyProfile, type PartyProfileUpdate, type PartyRegistration } from "./partyModels";
+import { type PartyProfile, type PartyProfileUpdate, type PartyRegistration } from "./partyModels";
 import {
   NO_REFUSAL,
   refusalContains,
@@ -11,7 +11,7 @@ import {
   updateRemovingRefused,
   type PartyNameRefusal,
 } from "./partyModeration";
-import { forCatalogVersion1 } from "./partyPetAppearance";
+import { olderCatalogFallback } from "./partyPetAppearance";
 import type { PartyTransport } from "./partyTransport";
 
 /*
@@ -79,8 +79,9 @@ export class PartyAccount {
    *
    * A refused name (`name_not_allowed`, `pet_name_not_allowed`) is left out
    * and the rest sent again, so a refused name never takes Party offline.
-   * A self-hosted server still on catalog version 1 refuses newer ids as an
-   * invalid field; the profile is then sent as that catalog takes it.
+   * A server on an older catalog refuses newer ids as an invalid field; the
+   * profile is then sent again without catalog version 4's ids, and if that
+   * is refused too, as catalog version 1 takes it.
    */
   async connect(profile: PartyProfileUpdate): Promise<PartyProfile> {
     let update = profile;
@@ -92,8 +93,9 @@ export class PartyAccount {
         return synced;
       } catch (error) {
         if (!(error instanceof PartyError)) throw error;
-        if (error.kind === "invalidRequest" && !sameProfileUpdate(forCatalogVersion1(update), update)) {
-          update = forCatalogVersion1(update);
+        const older = error.kind === "invalidRequest" ? olderCatalogFallback(update) : undefined;
+        if (older !== undefined) {
+          update = older;
           continue;
         }
         const refusal = refusalOf(error);
