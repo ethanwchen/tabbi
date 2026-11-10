@@ -173,9 +173,9 @@ The design, and how fast the shop runs out at 1 to 6 hours a day, is in [design/
 | Blossom Sprout | Study days Gold (100 days) |
 | Nightcap | Gentle streak Silver (30 days) |
 | Cozy Pajamas | Gentle streak Gold (90 days) |
-| Apprentice Robe | Sessions Silver (50) |
-| Scholar's Robe | Sessions Gold (200) |
-| Sage's Robe | Sessions Starlight (600) |
+| Apprentice Robe | Sessions Silver (75) |
+| Scholar's Robe | Sessions Gold (300) |
+| Sage's Robe | Sessions Starlight (800) |
 | Astronaut Suit | Focus time Gold (200 h) |
 | Starry Cloak | Focus time Starlight (500 h) |
 | Explorer's Hat | Steady weeks Silver (4 weeks with 3 or more study days) |

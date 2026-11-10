@@ -54,9 +54,9 @@ export function trackThresholds(track: ProgressTrack): readonly number[] {
     case "gentleStreak":
       return [7, 30, 90, 180];
     case "sessions":
-      return [10, 50, 200, 600];
+      return [15, 75, 300, 800];
     case "cards":
-      return [500, 2500, 10000, 50000];
+      return [500, 2500, 10000, 30000];
     case "tasks":
       return [10, 50, 200, 500];
     case "breakMoves":

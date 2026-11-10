@@ -224,7 +224,7 @@ describe("PetProgression", () => {
     expect(progressLabel("focusHours", 119, 600)).toBe("1/10 h");
     expect(progressLabel("focusHours", 900, 600)).toBe("10/10 h");
     expect(progressLabel("cards", 4210, 10_000)).toBe("4210/10k");
-    expect(progressLabel("cards", 12_900, 50_000)).toBe("12k/50k");
+    expect(progressLabel("cards", 12_900, 30_000)).toBe("12k/30k");
     expect(progressLabel("studyDays", -3, 30)).toBe("0/30");
   });
 
@@ -331,7 +331,7 @@ describe("PetProgression", () => {
     expect(closet.state(robe).kind).toBe("unearned");
     expect(closet.tap(robe).kind).toBe("notEarnedYet");
     const progression = new PetProgression();
-    for (let index = 0; index < 50; index++) progression.add(focus(25, on(11, 1) + index * 3600), tokyo);
+    for (let index = 0; index < 75; index++) progression.add(focus(25, on(11, 1) + index * 3600), tokyo);
     progression.refresh(on(11, 4), [], tokyo);
     expect(closet.unlockMastery(progression)).toEqual([robe]);
     expect(closet.unlockMastery(progression)).toEqual([]);

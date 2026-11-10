@@ -279,7 +279,7 @@ final class PetProgressionTests: XCTestCase {
         XCTAssertFalse(closet.save.ledger.canBuy(robe))
 
         var progression = PetProgression()
-        for index in 0..<50 { progression.add(focus(25, on: date(2026, 11, 1).addingTimeInterval(Double(index) * 3600)),
+        for index in 0..<75 { progression.add(focus(25, on: date(2026, 11, 1).addingTimeInterval(Double(index) * 3600)),
                                               calendar: calendar) }
         progression.refresh(at: date(2026, 11, 4), calendar: calendar)
         XCTAssertEqual(closet.unlockMastery(progression), [robe])

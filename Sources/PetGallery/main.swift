@@ -120,6 +120,12 @@ if arguments.dropFirst().first == "accents" {
     exit(0)
 }
 
+// Goals badges: `swift run PetGallery out/ badges` (BadgeSheets.swift).
+if arguments.dropFirst().first == "badges" {
+    try BadgeSheets.write(to: outputDirectory)
+    exit(0)
+}
+
 // Mastery outfits: `swift run PetGallery out/ mastery` (MasterySheets.swift).
 if arguments.dropFirst().first == "mastery" {
     try MasterySheets.write(to: outputDirectory)

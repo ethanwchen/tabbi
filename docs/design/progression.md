@@ -44,9 +44,9 @@ They live in a new **Goals** section of the Closet, never in the shop, so the sh
 | Blossom Sprout (a petal drifts off) | head | 100 study days | about 3 months |
 | Nightcap | head | a 30-day gentle streak | a month |
 | Cozy Pajamas | outfit | a 90-day gentle streak | 3 months |
-| Apprentice Robe | outfit | 50 finished focus sessions | 2 to 3 weeks |
-| Scholar's Robe | outfit | 200 finished focus sessions | 2 to 3 months |
-| Sage's Robe (its gold stole glints) | outfit | 600 finished focus sessions | 6 to 7 months |
+| Apprentice Robe | outfit | 75 finished focus sessions | 3 to 5 weeks |
+| Scholar's Robe | outfit | 300 finished focus sessions | 2 to 5 months |
+| Sage's Robe (its gold stole glints) | outfit | 800 finished focus sessions | 5 months to a year |
 | Astronaut Suit | outfit | 200 hours focused | about 3 months |
 | Starry Cloak (its stars twinkle) | outfit | 500 hours focused | about 8 months |
 | Explorer's Hat | head | 4 steady weeks (3 or more study days each) | a month |
@@ -78,8 +78,8 @@ The early tiers come within days, so a new user sees the collection light up; St
 | Focus time | 10 h | 50 h | 200 h | 500 h |
 | Study days | 7 | 30 | 100 | 250 |
 | Gentle streak | 7 days | 30 days | 90 days | 180 days |
-| Sessions | 10 | 50 | 200 | 600 |
-| Flashcards | 500 | 2,500 | 10,000 | 50,000 |
+| Sessions | 15 | 75 | 300 | 800 |
+| Flashcards | 500 | 2,500 | 10,000 | 30,000 |
 | Tasks | 10 | 50 | 200 | 500 |
 | Break moves | 10 | 50 | 150 | 400 |
 | Party | 1 | 5 | 20 | 60 |
@@ -89,6 +89,7 @@ The early tiers come within days, so a new user sees the collection light up; St
 | Monthly quests | 1 month | 3 | 6 | 12 |
 
 That is 48 tiers, and each mastery outfit hangs off one of them, so the Goals section reads as one ladder per habit.
+The ladders scale alike: each tier asks about 5x, 4x and 2.5x to 3x the one before, and Starlight lands near a year of two hours a day (500 h of focus is 800 finished 25-minute blocks, so Sessions and Focus time pay out together; 30,000 cards is 80 a day for a year).
 
 - **Gentle streak** is the longest run of study days the Streak section has ever counted, with its freezes: one free day off a week and any extra freezes bought.
   It is the longest run ever, never the current one, so a broken streak never takes a badge or an outfit away.
@@ -132,8 +133,8 @@ The Closet gets a seventh section, **Goals** (a rosette), between Limited and St
 - A banner at the top for this month's quests: the month, how many of the three are done, a ring for each quest (hover for its goal and progress), and the next unfinished quest on its second line.
 - **Outfits to earn**: the sixteen mastery outfits as tiles, greyed until earned, each with its progress ("142/200") and a thin bar.
   Hovering a tile tries the outfit on the big pet and says how to earn it; clicking an earned one wears it or takes it off.
-- **Badges**: twelve medallions that grow richer with each tier: Bronze is a plain medal, Silver adds ribbon tails, Gold a laurel wreath, an inner ring and a shine, and Starlight a starburst, a gem and a glint that brightens now and then (still under Reduce Motion).
-  Each is ringed by its progress to the next tier, with four small pips for the tiers earned.
+- **Badges**: twelve pixel badges in the pet's own sprite language (`badge.json`, 28 by 28, drawn at 1.5 pt per pixel, 2 pt on the large panel): a quiet gray coin before Bronze, a bronze medal, a silver medal on a rosette with ribbon tails, a gold medal with a laurel vine, and a violet star with a sparkle that blinks slowly (still under Reduce Motion and in snapshots).
+  The badge itself never shows a meter: the progress to the next tier is in the tooltip, the footer and the four small pips for the tiers earned.
   Hovering one says its tier, its progress and what the next tier asks.
 - A footer that counts outfits and badges earned, or details the hovered tile.
 

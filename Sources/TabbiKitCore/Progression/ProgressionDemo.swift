@@ -26,6 +26,13 @@ extension PetProgression {
                                           end: record.end, quantity: record.quantity, unit: record.unit,
                                           metadata: metadata))
             let end = record.end
+            // A second finished block on two days in three, so the demo's
+            // session count passes the Apprentice Robe's 75.
+            if index % 3 != 0 {
+                records.append(ActivityRecord(source: record.source, kind: .focusCompleted,
+                                              start: end.addingTimeInterval(1800), end: end.addingTimeInterval(3300),
+                                              quantity: 25, unit: .minutes, metadata: metadata))
+            }
             records.append(ActivityRecord(source: .anki, kind: .cardsReviewed, start: end, quantity: 45, unit: .cards))
             if index % 3 == 0 {
                 records.append(ActivityRecord(source: .planner, kind: .taskCompleted, start: end, quantity: 1,

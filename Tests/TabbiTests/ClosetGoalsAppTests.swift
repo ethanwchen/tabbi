@@ -29,8 +29,8 @@ final class ClosetGoalsAppTests: XCTestCase {
 
     func testHistoryCountsQuietlyAndUnlocksTheOutfitItEarned() throws {
         let store = ClosetStore(storage: storage, runMode: .live)
-        // 50 finished sessions over the last few days: Sessions Silver.
-        let history = (0..<50).map { focus(minutes: 25, hoursAgo: Double($0)) }
+        // 75 finished sessions over the last few days: Sessions Silver.
+        let history = (0..<75).map { focus(minutes: 25, hoursAgo: Double($0)) }
         store.follow(activity: ActivityLog(repository: nil).recorded, history: history)
 
         XCTAssertTrue(store.progression.isReached(ProgressBadge(.sessions, .silver)))
@@ -48,23 +48,23 @@ final class ClosetGoalsAppTests: XCTestCase {
     func testANewRecordReachesATierAndSavesIt() throws {
         let store = ClosetStore(storage: storage, runMode: .live)
         let log = ActivityLog(repository: nil)
-        store.follow(activity: log.recorded, history: (0..<9).map { focus(minutes: 25, hoursAgo: Double($0 + 1)) })
+        store.follow(activity: log.recorded, history: (0..<14).map { focus(minutes: 25, hoursAgo: Double($0 + 1)) })
         XCTAssertNil(store.progression.tier(of: .sessions))
 
         log.record(focus(minutes: 25, hoursAgo: 0))
         XCTAssertEqual(store.progression.tier(of: .sessions), .bronze)
-        XCTAssertEqual(try savedProgression()?.best[.sessions], 10)
+        XCTAssertEqual(try savedProgression()?.best[.sessions], 15)
     }
 
     func testProgressSurvivesALostLog() throws {
         let first = ClosetStore(storage: storage, runMode: .live)
         first.follow(activity: ActivityLog(repository: nil).recorded,
-                     history: (0..<12).map { focus(minutes: 30, hoursAgo: Double($0)) })
-        XCTAssertEqual(first.progression.value(of: .sessions), 12)
+                     history: (0..<15).map { focus(minutes: 30, hoursAgo: Double($0)) })
+        XCTAssertEqual(first.progression.value(of: .sessions), 15)
 
         let relaunched = ClosetStore(storage: storage, runMode: .live)
         relaunched.follow(activity: ActivityLog(repository: nil).recorded, history: [])
-        XCTAssertEqual(relaunched.progression.value(of: .sessions), 12)
+        XCTAssertEqual(relaunched.progression.value(of: .sessions), 15)
         XCTAssertEqual(relaunched.progression.tier(of: .sessions), .bronze)
     }
 
@@ -74,7 +74,7 @@ final class ClosetGoalsAppTests: XCTestCase {
         try Data("{ broken".utf8).write(to: url)
         let store = ClosetStore(storage: storage, runMode: .live)
         store.follow(activity: ActivityLog(repository: nil).recorded,
-                     history: (0..<12).map { focus(minutes: 30, hoursAgo: Double($0)) })
+                     history: (0..<15).map { focus(minutes: 30, hoursAgo: Double($0)) })
         XCTAssertEqual(store.progression.tier(of: .sessions), .bronze, "it still counts in memory")
         XCTAssertEqual(try String(contentsOf: url, encoding: .utf8), "{ broken")
     }
@@ -86,7 +86,7 @@ final class ClosetGoalsAppTests: XCTestCase {
         XCTAssertGreaterThan(demo.progression.reachedCount, 0)
         let snapshot = ClosetStore(storage: storage, runMode: RunMode(isSnapshot: true))
         snapshot.follow(activity: ActivityLog(repository: nil).recorded,
-                        history: (0..<12).map { focus(minutes: 30, hoursAgo: Double($0)) })
+                        history: (0..<15).map { focus(minutes: 30, hoursAgo: Double($0)) })
         XCTAssertFalse(FileManager.default.fileExists(atPath: ClosetStore.progressionURL(in: storage).path))
     }
 }

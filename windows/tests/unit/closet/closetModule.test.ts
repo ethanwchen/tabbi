@@ -80,7 +80,7 @@ describe("ClosetModule on the runtime", () => {
     const closet = app.modules.instance(ClosetModule);
     if (!closet) throw new Error("no closet");
     await settle();
-    for (let index = 0; index < 50; index++) {
+    for (let index = 0; index < 75; index++) {
       await app.activityLog.record(
         makeActivityRecord({
           source: MODULE_IDS.focus,

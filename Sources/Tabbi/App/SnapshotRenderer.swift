@@ -357,25 +357,20 @@ enum SnapshotRenderer {
             Theme.apply(theme)
             try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
             renderNotchShots(shots, services: services, closet: closet, style: notchStyle, to: folder)
+            // Every Closet badge at every tier on this theme's card, for
+            // reviewing the art (the quiet coin on the Sweet cards most of all).
+            if closet != nil {
+                renderStill(ClosetBadgeTierSheet(), as: "closet-badge-tiers", scale: max(2, notchStyle.scale), to: folder)
+            }
         }
         Theme.apply(kitTheme)
 
         // The pet coach's overlay: walking out, then each kind of bubble.
-        // Then every Closet badge at every tier, for reviewing the art.
-        var coachShots = closet.map {
+        let coachShots = closet.map {
             PetCoachSnapshots.shots(profile: $0.store.profile, lines: $0.coach.lines, transparent: notchStyle.transparent)
         } ?? []
-        if closet != nil { coachShots.append(("closet-badge-tiers", AnyView(ClosetBadgeTierSheet()))) }
         for (name, view) in coachShots {
-            let renderer = ImageRenderer(content: view.environment(\.rendersToImage, true).tabbiLayoutDirection())
-            renderer.scale = max(2, notchStyle.scale)
-            guard let image = renderer.nsImage,
-                  let tiff = image.tiffRepresentation,
-                  let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
-            else { continue }
-            let url = outputDirectory.appendingPathComponent("\(name).png")
-            try? png.write(to: url)
-            print(url.path)
+            renderStill(view, as: name, scale: max(2, notchStyle.scale), to: outputDirectory)
         }
 
         // The weekly recap's exported images, each shape in a heavy and a light week.
@@ -565,6 +560,19 @@ enum SnapshotRenderer {
             self.invite = invite
             self.closet = closet
         }
+    }
+
+    /// Writes one SwiftUI view as a PNG, as the coach shots are written.
+    private static func renderStill(_ view: some View, as name: String, scale: CGFloat, to folder: URL) {
+        let renderer = ImageRenderer(content: view.environment(\.rendersToImage, true).tabbiLayoutDirection())
+        renderer.scale = scale
+        guard let image = renderer.nsImage,
+              let tiff = image.tiffRepresentation,
+              let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
+        else { return }
+        let url = folder.appendingPathComponent("\(name).png")
+        try? png.write(to: url)
+        print(url.path)
     }
 
     /// What a Closet shot shows: the open section, the item tried on, and

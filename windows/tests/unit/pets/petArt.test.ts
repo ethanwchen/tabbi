@@ -26,7 +26,7 @@ import { loadRepoJson } from "../../support/fixtures";
 // are checked on the way in, and agree with the JSON Schema. Every file is
 // also validated against shared/schemas/pets.v1.schema.json with Ajv.
 
-const FAMILIES = ["animations", "breeds", "cat", "costume", "dog", "effect", "paw", "prop", "tail", "walk"];
+const FAMILIES = ["animations", "badge", "breeds", "cat", "costume", "dog", "effect", "paw", "prop", "tail", "walk"];
 const ART_FOLDER = "Sources/TabbiKitCore/Pets/PetArt";
 
 type Json = Record<string, unknown>;

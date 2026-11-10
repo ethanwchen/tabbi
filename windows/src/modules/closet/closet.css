@@ -1104,16 +1104,12 @@
   position: relative;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
 }
 
 .closet-badge-art {
   position: relative;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
   transition: transform var(--spring-snappy);
 }
 
@@ -1121,67 +1117,13 @@
   transform: scale(1.06);
 }
 
-.closet-badge-shapes,
-.closet-badge-ring,
-.closet-badge-icon {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-}
-
-.closet-badge-blank {
-  fill: var(--surface);
-  transition: fill var(--spring-snappy);
-}
-
-.closet-badge:hover .closet-badge-blank {
-  fill: var(--surface-hover);
-}
-
-.closet-badge-icon {
-  color: var(--tertiary-text);
-}
-
-.closet-badge:hover .closet-badge-art[data-rank="0"] .closet-badge-icon {
-  color: var(--secondary-text);
-}
-
-.closet-badge-art:not([data-rank="0"]) .closet-badge-icon {
-  color: color-mix(in srgb, var(--tier) 70%, white);
-  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 45%));
-}
-
-.closet-badge-glint {
-  position: absolute;
-  top: 4px;
-  inset-inline-end: 4px;
-  animation: closet-badge-glint 3s ease-in-out infinite;
-}
-
-.closet-badge-glint[data-still] {
-  animation: none;
-  opacity: 0.9;
-}
-
-@keyframes closet-badge-glint {
-  0%,
-  100% {
-    opacity: 0.3;
-    transform: scale(0.7);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1);
-  }
+/* The badge is pixel art at a whole number of device pixels per sprite pixel; never smooth it. */
+.closet-badge-canvas {
+  display: block;
+  image-rendering: pixelated;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .closet-badge-glint {
-    animation: none;
-    opacity: 0.9;
-  }
-
   .closet-badge-art {
     transition: none;
   }

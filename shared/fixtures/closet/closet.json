@@ -6557,7 +6557,7 @@
       "kind" : "outfit",
       "limited" : {
         "edition" : "apprenticeRobe",
-        "masteryGoal" : 50,
+        "masteryGoal" : 75,
         "source" : "mastery",
         "sourceID" : "sessions.2"
       },
@@ -6574,7 +6574,7 @@
       "kind" : "outfit",
       "limited" : {
         "edition" : "scholarsRobe",
-        "masteryGoal" : 200,
+        "masteryGoal" : 300,
         "source" : "mastery",
         "sourceID" : "sessions.3"
       },
@@ -6592,7 +6592,7 @@
       "limited" : {
         "edition" : "sagesRobe",
         "effect" : "shimmer",
-        "masteryGoal" : 600,
+        "masteryGoal" : 800,
         "source" : "mastery",
         "sourceID" : "sessions.4"
       },

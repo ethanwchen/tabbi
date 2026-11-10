@@ -29,6 +29,10 @@ export function progressionDemo(today: Instant, calendar: DayCalendar): PetProgr
     }
     records.push({ ...record, source, metadata });
     const end = record.end;
+    /* A second finished block on two days in three, so the demo's session count passes the Apprentice Robe's 75. */
+    if (index % 3 !== 0) {
+      records.push(makeActivityRecord({ id: id(), source, kind: ACTIVITY_KINDS.focusCompleted, start: end + 1800, end: end + 3300, quantity: 25, unit: ACTIVITY_UNITS.minutes, metadata }));
+    }
     records.push(makeActivityRecord({ id: id(), source: MODULE_IDS.anki, kind: ACTIVITY_KINDS.cardsReviewed, start: end, quantity: 45, unit: ACTIVITY_UNITS.cards }));
     if (index % 3 === 0) {
       records.push(makeActivityRecord({ id: id(), source: MODULE_IDS.planner, kind: ACTIVITY_KINDS.taskCompleted, start: end, quantity: 1, subject: `demo-task-${index}` }));

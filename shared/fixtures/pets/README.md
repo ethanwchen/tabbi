@@ -20,6 +20,7 @@ Run-length rows (`rle`): rows joined by `/`, each row a list of runs written as 
 - `palettes.json`: every breed's palette, role name to `#RRGGBB`, plus its `rim` (the light edge the renderer puts on dark fur) and `sheen` (the light inner line and mouth color for near-black fur).
 - `rendered.json`: sitting frames resolved to colors by `PetCanvas.colors(using:)`, which pins where the rim, the sheen and dark lines go: every breed in its own colors (`furTint` absent) and in each Closet swatch, and the orange tabby and golden retriever in every outfit and accessory.
   `colors` lists the frame's distinct colors in order of first appearance; `rle` is run-length rows (as below) whose symbols are each pixel's index in `colors` as a letter (`A`-`Z`, then `a`-`z`), `.` for transparent.
+- `badges.json`: the Closet's Goals badges (`BadgeArt`, 28 by 28), every track at every state (`notYet`, `bronze`, `silver`, `gold`, `starlight`, and Starlight again with `twinkle` for the sparkle's second frame), resolved to colors by a plain role lookup through `BadgePalette` (no dark coat rim), in the `rendered.json` encoding: `colors` in order of first appearance and `rle` rows of their indices.
 - `frames.json`: readable frames for a compact subset.
   `clips` has every animation of an orange tabby and a golden retriever, with each frame's duration in seconds and optional speech-bubble anchor `[x, y]`.
   `sitting` has the sitting frame of every breed, and of both pets in each outfit and each accessory.

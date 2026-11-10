@@ -172,6 +172,16 @@ They are drawn like every item, so each fits every body shape:
 
 `swift run PetGallery <dir> mastery` writes `mastery-<item>.png` (the item on a breed for every body shape, sitting, mid-hop, walking, stretching and napping), `mastery-all-<breed>.png` at 4x and notch size, `mastery-loop-<item>.png` for the animated ones, and `mastery-sets-<breed>.png` (the outfits worn with the shop items they go with).
 
+### Badges
+
+The Closet's Goals badges are sprites too (`Pets/PetArt/badge.json`, `BadgeArt` in `TabbiKitCore/Progression`): a 28 by 28 frame per state (not yet, Bronze, Silver, Gold, Starlight, plus a second Starlight frame for the sparkle's blink) and a 9 by 9 glyph per track, stamped on the frame's inner disc.
+The grids use the costume roles as slots (`C` rim, `D` shade, `U` inner disc, `W` glyph, `L` highlight, `O` outline, `F` and `S` laurel leaves, `Z` sparkles) and `BadgePalette` fills them per state, so one glyph serves every tier the way one costume serves every breed.
+The frames carry their outline as drawn and approved (`runs/progression/badges-v4/spec.md`, direction A), and the colors are a plain role lookup without the dark coat rim, so the quiet "not yet" coin keeps its dim outline.
+The badge is drawn at a whole number of device pixels per sprite pixel: 1.5 pt per pixel (42 pt) on the compact and regular panels and 2 pt (56 pt) on the large one, 1 pt on a 1x display.
+`BadgeArtTests` pins every badge to `shared/fixtures/pets/badges.json`, and `swift run PetGallery <dir> badges` writes `badges-1x.png`, `badges-4x.png` and `badges-sweet-1x.png`, every badge at every state on the black card and on a Strawberry Milk card.
+
+![Every badge at every state](images/badges.png)
+
 ### Back items
 
 Wings and the King's Cape are worn in the `back` slot and drawn behind the whole pet.
