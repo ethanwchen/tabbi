@@ -58,8 +58,8 @@ final class StudyLiveActivity {
     /// idle because its phase ran out while the app was not on screen: the
     /// activity then ends on its done line and stays a while, so someone who
     /// glances at the Lock Screen still learns the block is done.
-    func sync(_ session: StudySession, pet: PetProfile, at now: Date, finishedAway: Bool = false) {
-        guard let state = StudyActivityAttributes.ContentState(session, at: now) else {
+    func sync(_ session: StudySession, pet: PetProfile, at now: Date, finishedAway: Bool = false, camera: Int? = nil) {
+        guard let state = StudyActivityAttributes.ContentState(session, at: now, camera: camera) else {
             if finishedAway, let activityID, var last = shown {
                 last.isDone = true
                 self.activityID = nil

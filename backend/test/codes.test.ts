@@ -1,7 +1,7 @@
 import { runInDurableObject } from "cloudflare:test";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Hub } from "../src/hub";
-import { call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
+import { call, expectError, freshIp, hub, pinClockAtNoonUTC, register } from "./helpers";
 
 /**
  * Friend codes (8 characters) and party codes (6) are drawn at random, and a draw that is already taken
@@ -31,7 +31,7 @@ const userCount = () => runInDurableObject(hub(), (_hub: Hub, state) =>
 const partyCount = () => runInDurableObject(hub(), (_hub: Hub, state) =>
   state.storage.sql.exec("SELECT COUNT(*) AS n FROM parties").one().n as number);
 
-beforeEach(pinClockToMinuteStart);
+beforeEach(pinClockAtNoonUTC);
 
 afterEach(() => {
   vi.restoreAllMocks();

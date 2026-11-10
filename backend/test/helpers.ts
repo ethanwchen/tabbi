@@ -10,17 +10,22 @@ let ipCounter = 0;
 export const freshIp = () => `10.0.${Math.floor(++ipCounter / 250)}.${ipCounter % 250}`;
 
 /**
- * Freezes the clock at the start of a minute until `vi.useRealTimers()`. Rate limits count in fixed
- * one-minute windows, so a test that fills a window on the real clock fails whenever it runs across a
- * minute boundary (which a slow, loaded machine makes likely). Pinned, the whole test is one window.
- * Tests that move the clock forward pin it first too, so real time passing between a request and the
- * jump (a second ticking over under load) cannot add to the interval they test.
+ * Freezes the clock at the next noon UTC until `vi.useRealTimers()`. Rate limits count in fixed one-minute
+ * windows, so a test that fills a window on the real clock fails whenever it runs across a minute boundary
+ * (which a slow, loaded machine makes likely); pinned, the whole test is one window. Daily caps, today's
+ * study minutes and the stats' days turn over at midnight UTC, so a test that moves the clock forward by
+ * minutes failed whenever it ran just before then; from noon it has twelve hours either way. Tests that move
+ * the clock forward pin it first too, so real time passing between a request and the jump (a second ticking
+ * over under load) cannot add to the interval they test. The clock only ever moves forward.
  */
-export function pinClockToMinuteStart(): number {
+export function pinClockAtNoonUTC(): number {
   vi.useFakeTimers({ toFake: ["Date"] });
-  const minuteStart = (Math.floor(Date.now() / 60_000) + 1) * 60_000;
-  vi.setSystemTime(minuteStart);
-  return minuteStart / 1000;
+  const day = 86_400_000;
+  const now = Date.now();
+  let noon = Math.floor(now / day) * day + day / 2;
+  if (noon <= now) noon += day;
+  vi.setSystemTime(noon);
+  return noon / 1000;
 }
 
 export interface Reply {

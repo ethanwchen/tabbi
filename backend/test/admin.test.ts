@@ -2,7 +2,7 @@ import { env } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MIN_ADMIN_TOKEN_LENGTH, RESTORE_WINDOW_S, isAdminToken } from "../src/admin";
 import { AUTH_FAILURES_PER_MIN } from "../src/lib";
-import { call, expectError, freshIp, pinClockToMinuteStart, register, befriend } from "./helpers";
+import { call, expectError, freshIp, pinClockAtNoonUTC, register, befriend } from "./helpers";
 
 const admin = () => env.ADMIN_TOKEN as string;
 
@@ -26,7 +26,7 @@ describe("isAdminToken", () => {
 });
 
 describe("admin endpoints", () => {
-  beforeEach(pinClockToMinuteStart);
+  beforeEach(pinClockAtNoonUTC);
   afterEach(() => vi.useRealTimers());
 
   it("look like unknown paths to anyone without the admin token", async () => {

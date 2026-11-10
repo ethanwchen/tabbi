@@ -1,0 +1,148 @@
+{
+  "schema": "pets.v1",
+  "grids": {
+    "eyesLookLeft": [
+      ".OO.",
+      ".iL.",
+      ".iL."
+    ],
+    "eyesLookRight": [
+      ".OO.",
+      ".Li.",
+      ".Li."
+    ],
+    "eyesLookUp": [
+      ".ii.",
+      ".iL.",
+      ".EE."
+    ],
+    "eyesLensLeft": [
+      ".Li.",
+      ".ii.",
+      ".ii."
+    ],
+    "eyesLensRight": [
+      ".Li.",
+      ".ii.",
+      ".ii."
+    ],
+    "eyesWild": [
+      ".EE.",
+      ".iE.",
+      ".EE."
+    ],
+    "heldDonut": [
+      ".IIII.",
+      "IPPPPI",
+      "IP..PI",
+      "IPPYP.",
+      ".III.."
+    ],
+    "markFish": [
+      "..OOOO.OO.",
+      ".OooooOooO",
+      "OoioooooO.",
+      ".OooooOooO",
+      "..OOOO.OO."
+    ],
+    "markFrosting": [
+      "OOOOOOO",
+      "OPYPFPO",
+      ".OPPPO.",
+      "..OOO.."
+    ],
+    "markTissue": [
+      ".OOOO.",
+      "OUUUVO",
+      "OUVUUO",
+      "OUUUUO",
+      ".OUVO.",
+      "..OO.."
+    ],
+    "markSoil": [
+      ".OOO.",
+      "OINIO",
+      "OIIIO",
+      ".OOO."
+    ],
+    "markCoffee": [
+      ".OO.OO.",
+      "OIIOIIO",
+      ".OO.OIO",
+      "....OIO",
+      ".....O."
+    ],
+    "markPetal": [
+      ".OO.OO.",
+      "OHHOHHO",
+      "OHHYHHO",
+      ".OHHHO.",
+      "..OOO.."
+    ],
+    "heldTissue": [
+      ".UVU..",
+      "UUUUVU",
+      "VUUUUU",
+      ".UVUU.",
+      "..U.U."
+    ],
+    "heldSock": [
+      ".HHH..",
+      ".UUU..",
+      ".HHHHH",
+      ".HHHHH",
+      "..UUUU"
+    ],
+    "markSock": [
+      ".OOOO...",
+      "OHUUHO..",
+      "OHHHHOOO",
+      "OHUUHHHO",
+      ".OOOOOO."
+    ],
+    "markKeys": [
+      "OOO.....",
+      "OMOOOOOO",
+      "OOOMMMMO",
+      "..OOMOMO",
+      "...O.O.O"
+    ],
+    "markYarn": [
+      ".OOO.",
+      "OPXPO",
+      ".OPO.",
+      "..O.."
+    ],
+    "markYolk": [
+      "..OOOO..",
+      ".OUUUUO.",
+      "OUUYYUUO",
+      "OUYYYYUO",
+      ".OOOOOO."
+    ],
+    "markPeel": [
+      ".O...O.",
+      "OYO.OYO",
+      "OYYOYYO",
+      ".OYYYO.",
+      "..OOO.."
+    ],
+    "markPencil": [
+      "OOOOOOOO",
+      "OXYYYYMO",
+      "OOOOOOOO"
+    ],
+    "propBandage": [
+      "OOOOO",
+      "OUPUO",
+      "OOOOO"
+    ],
+    "propPlacard": [
+      "OOOOOOOOOO",
+      "OQQQQQQQQO",
+      "OQZQZZQZQO",
+      "OQQQQQQQQO",
+      "OOOOOOOOOO"
+    ]
+  }
+}

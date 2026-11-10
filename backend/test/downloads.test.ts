@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   DOWNLOADS_PER_MIN, DOWNLOADS_REPO, DOWNLOADS_RETRY_S, DOWNLOADS_TTL_S, type Release, countDownloads, downloadMilestone, downloadsBadge,
 } from "../src/downloads";
-import { ADMIN_TOKEN, call, expectError, freshIp, pinClockToMinuteStart } from "./helpers";
+import { ADMIN_TOKEN, call, expectError, freshIp, pinClockAtNoonUTC } from "./helpers";
 
 const release = (tag: string, assets: [string, number][], draft = false): Release =>
   ({ tag_name: tag, draft, assets: assets.map(([name, download_count]) => ({ name, download_count })) });
@@ -54,7 +54,7 @@ describe("downloadsBadge", () => {
 describe("GET /v1/public/downloads", () => {
   let elapsed = 0;
   beforeEach(() => {
-    pinClockToMinuteStart();
+    pinClockAtNoonUTC();
     // Each test starts far past the count the one before cached in the Hub's memory.
     elapsed += 10 * DOWNLOADS_TTL_S;
     advance(elapsed);

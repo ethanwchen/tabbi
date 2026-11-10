@@ -119,6 +119,16 @@ enum EffectArt {
                 for x in 0..<face.width where face[x, y] == .role(.blush) { result[x, y] = .empty }
             }
         }
+        // The right eye's overlay is the left's mirror image.
+        return Self.face(result, eyeRow: eyeRow, left: overlay, right: overlay.mirrored())
+    }
+
+    /// `face` with its open eyes replaced by `left` and `right`, each a
+    /// 4x3 overlay stamped as drawn over one eye (found as above), so an
+    /// expression can look one way with both eyes (a glance to the side)
+    /// instead of mirroring.
+    static func face(_ face: SpriteGrid, eyeRow: Int, left leftOverlay: SpriteGrid, right: SpriteGrid) -> SpriteGrid {
+        var result = face
         // A pupil drawn in the outline color is part of the eye it sits in.
         let isEye: (SpriteCell) -> Bool = {
             $0 == .role(.eye) || $0 == .role(.pupil) || $0 == .role(.eyeLight) || $0 == .role(.outline)
@@ -136,9 +146,10 @@ enum EffectArt {
             // eye, right of a right eye.
             let isRightEye = left * 2 + width > face.width
             let start = isRightEye && width > 2 ? left : left - 1
+            let overlay = isRightEye ? right : leftOverlay
             for y in 0..<overlay.height {
                 for x in 0..<overlay.width where overlay[x, y] != .empty {
-                    let fx = start + (isRightEye ? overlay.width - 1 - x : x), fy = eyeRow + y
+                    let fx = start + x, fy = eyeRow + y
                     if fx >= 0, fx < face.width, fy < face.height { result[fx, fy] = overlay[x, y] }
                 }
             }

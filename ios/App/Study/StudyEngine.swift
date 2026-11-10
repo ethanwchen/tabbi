@@ -118,6 +118,20 @@ struct StudyEngine: Equatable {
         return settle(at: now) { $0.retune(to: length.method, at: now) }
     }
 
+    /// Another breed; the name follows if it was the breed's own.
+    @discardableResult
+    mutating func setBreed(_ breed: PetBreed) -> Update {
+        closet.setBreed(breed)
+        return Update()
+    }
+
+    /// Swaps in a whole closet (the debug demo pet).
+    @discardableResult
+    mutating func useCloset(_ closet: PetCloset) -> Update {
+        self.closet = closet
+        return Update()
+    }
+
     /// The pet as it should be drawn now.
     var pet: PetProfile { closet.profile }
 

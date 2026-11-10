@@ -1,0 +1,275 @@
+{
+  "schema": "petcam.captions.v1",
+  "language": "en",
+  "objects": {
+    "mug": {
+      "name": "MUG",
+      "plural": "MUGS",
+      "sound": "[CRASH]",
+      "remains": "MUG SHARDS",
+      "charge": "KNOCKING A MUG OFF THE {spot}"
+    },
+    "plant": {
+      "name": "PLANT",
+      "plural": "PLANTS",
+      "sound": "[DIG DIG THUD]",
+      "remains": "POTTING SOIL",
+      "charge": "UNLICENSED GARDENING"
+    },
+    "fishbowl": {
+      "name": "FISHBOWL",
+      "plural": "FISHBOWLS",
+      "sound": "[SPLASH]",
+      "remains": "PUDDLE",
+      "charge": "FISHING WITHOUT A LICENSE"
+    },
+    "vase": {
+      "name": "VASE",
+      "plural": "VASES",
+      "sound": "[SMASH]",
+      "remains": "PETALS",
+      "charge": "SMASHING A PERFECTLY GOOD VASE"
+    },
+    "tissues": {
+      "name": "TISSUE BOX",
+      "plural": "TISSUE BOXES",
+      "sound": "[FWIP FWIP FWIP]",
+      "remains": "TISSUES",
+      "charge": "SHREDDING EVERY TISSUE"
+    },
+    "donut": {
+      "name": "DONUT",
+      "plural": "DONUTS",
+      "sound": "[CHOMP]",
+      "remains": "CRUMBS",
+      "charge": "EATING SOMEONE ELSE'S DONUT"
+    },
+    "sock": {
+      "name": "SOCK",
+      "plural": "SOCKS",
+      "sound": "[RUSTLE]",
+      "remains": "ONE SOCK",
+      "charge": "SPLITTING UP A PAIR OF SOCKS"
+    },
+    "keys": {
+      "name": "KEYS",
+      "plural": "SETS OF KEYS",
+      "sound": "[JINGLE JANGLE]",
+      "remains": "KEYS",
+      "charge": "HIDING THE KEYS BEFORE A MEETING"
+    },
+    "yarn": {
+      "name": "YARN",
+      "plural": "BALLS OF YARN",
+      "sound": "[THWAP THWAP]",
+      "remains": "YARN",
+      "charge": "UNRAVELING A WEEK OF KNITTING"
+    },
+    "egg": {
+      "name": "EGG",
+      "plural": "EGGS",
+      "sound": "[SPLAT]",
+      "remains": "YOLK",
+      "charge": "SCRAMBLING AN EGG ON THE FLOOR"
+    },
+    "banana": {
+      "name": "BANANA",
+      "plural": "BANANAS",
+      "sound": "[SQUISH]",
+      "remains": "A BANANA PEEL",
+      "charge": "SETTING A BANANA PEEL TRAP"
+    },
+    "pencils": {
+      "name": "PENCIL CUP",
+      "plural": "PENCIL CUPS",
+      "sound": "[CLATTER]",
+      "remains": "PENCILS",
+      "charge": "SCATTERING EVERY PENCIL"
+    }
+  },
+  "spots": {
+    "counter": "COUNTER",
+    "shelf": "SHELF",
+    "table": "SIDE TABLE"
+  },
+  "newArrival": [
+    "NEW IN THE ROOM: THE {object}.",
+    "SOMETHING NEW: THE {object}.",
+    "JUST ARRIVED: THE {object}."
+  ],
+  "opener": [
+    "HOME ALONE.",
+    "THE HUMAN HAS LEFT.",
+    "ALL QUIET. FOR NOW.",
+    "THE DOOR CLOSES.",
+    "NOBODY HOME."
+  ],
+  "openerDays": [
+    "DAY {days} OF SURVEILLANCE.",
+    "DAY {days}. THE HUMAN LEFT AGAIN.",
+    "DAY {days}. IT KNOWS THE ROUTINE.",
+    "DAY {days}. THE HOUSE TO ITSELF.",
+    "DAY {days}. SAME ROOM, NEW TAPE."
+  ],
+  "motion": [
+    "MOTION ON CAM {cam}.",
+    "SOMETHING MOVED.",
+    "CAM {cam}: MOVEMENT.",
+    "THERE. ON CAM {cam}.",
+    "CAM {cam} WAKES UP."
+  ],
+  "quiet": [
+    "CAM {cam}. ALL QUIET.",
+    "CAM {cam}. NOTHING YET.",
+    "CAM {cam}. STILL NOTHING.",
+    "CAM {cam}. A QUIET SHIFT.",
+    "CAM {cam}. NO MOVEMENT."
+  ],
+  "act": [
+    "THE {object} NEVER SAW IT COMING.",
+    "GOODBYE, {object}.",
+    "AND THERE GOES THE {object}.",
+    "THE {object}? GONE.",
+    "SO LONG, {object}."
+  ],
+  "eaten": [
+    "THE {object} NEVER STOOD A CHANCE.",
+    "GOODBYE, {object}.",
+    "THE {object} IS NO MORE.",
+    "ONE BITE. THEN ANOTHER.",
+    "SO MUCH FOR THE {object}."
+  ],
+  "offCamera": [
+    "OFF CAMERA",
+    "SOMEWHERE ELSE",
+    "NOT ON THIS CAMERA",
+    "WRONG CAMERA",
+    "ELSEWHERE IN THE ROOM"
+  ],
+  "walkBy": [
+    "JUST PASSING THROUGH.",
+    "A ROUTINE PATROL.",
+    "STROLLING. CASUALLY.",
+    "ON ITS WAY SOMEWHERE ELSE.",
+    "NOT A CARE IN THE WORLD."
+  ],
+  "denial": [
+    "CIRCUMSTANTIAL.",
+    "THAT PROVES NOTHING.",
+    "NO COMMENT.",
+    "IT'S NOT WHAT IT LOOKS LIKE.",
+    "YOU SAW NOTHING."
+  ],
+  "noticed": [
+    "THEN IT SAW THE CAMERA.",
+    "EYE CONTACT.",
+    "IT KNOWS.",
+    "IT LOOKS UP.",
+    "OH. A CAMERA."
+  ],
+  "caught": "CAUGHT",
+  "charge": "CHARGE: {charge}",
+  "obstruction": "OBSTRUCTION OF {dodge}",
+  "premeditated": "PREMEDITATED {charge}",
+  "premeditatedAct": "{charge}, WITH PREMEDITATION",
+  "firstOffense": "FIRST OFFENSE",
+  "innocent": [
+    "NOTHING TO SEE HERE.",
+    "INNOCENT. ALLEGEDLY.",
+    "WHO, ME?",
+    "NO WITNESSES.",
+    "BEEN HERE ALL ALONG."
+  ],
+  "returns": [
+    "SUSPECT RETURNS.",
+    "OH. HELLO.",
+    "SUSPECT ENTERS. CASUALLY.",
+    "LOOK WHO IT IS.",
+    "BACK ALREADY."
+  ],
+  "aftermath": [
+    "THE SCENE, CAM {cam}.",
+    "EXHIBIT A, CAM {cam}.",
+    "CAM {cam}, AFTER.",
+    "WHAT CAM {cam} FOUND.",
+    "CAM {cam}. TOO LATE."
+  ],
+  "rewind": [
+    "REWIND.",
+    "EARLIER.",
+    "BACK UP.",
+    "LET'S SEE THAT AGAIN.",
+    "WIND IT BACK."
+  ],
+  "enhance": [
+    "ENHANCE.",
+    "ZOOM IN.",
+    "CLOSER.",
+    "AGAIN, CLOSER.",
+    "HOLD IT THERE."
+  ],
+  "alibiOpen": [
+    "CAM {cam}. ALL QUIET.",
+    "CAM {cam}. NOTHING TO REPORT.",
+    "CAM {cam}. A CALM SHIFT.",
+    "CAM {cam}. JUST A NAP.",
+    "CAM {cam}. PEACEFUL."
+  ],
+  "windUp": [
+    "WAIT FOR IT.",
+    "IT'S PLANNING SOMETHING.",
+    "DON'T DO IT.",
+    "IT'S THINKING ABOUT IT.",
+    "ONE PAW UP."
+  ],
+  "wantedDays": "WANTED FOR {days} DAYS.",
+  "wantedYesterday": "WANTED SINCE YESTERDAY.",
+  "wantedSince": "WANTED SINCE {time}.",
+  "ownerAway": "OWNER AWAY {length}",
+  "meanwhile": [
+    "MEANWHILE, BY THE {spot}: {remains}.",
+    "ACROSS THE ROOM: {remains} BY THE {spot}.",
+    "THE {spot}, SAME MINUTE: {remains}.",
+    "WHAT CAM 1 SAW: {remains} BY THE {spot}.",
+    "BY THE {spot}, AT THAT VERY MOMENT: {remains}."
+  ],
+  "tells": {
+    "wobble": "IT WAS ALREADY WOBBLING.",
+    "appetite": "IT SMELLED TOO GOOD."
+  },
+  "frozen": "STOPPED AT {time}. SUSPECT FROZE MID-SNEAK.",
+  "noTape": "NO TAPE THIS TIME.",
+  "callbacks": {
+    "leftOutDays": "{object}, LEFT OUT {days} DAYS AGO",
+    "leftOutYesterday": "{object}, LEFT OUT YESTERDAY",
+    "repeatToday": "{ordinal} {object} TODAY",
+    "repeatWeek": "{ordinal} {object} THIS WEEK",
+    "sameSpot": "THE {spot} AGAIN",
+    "besideWreck": "RIGHT NEXT TO THE {remains} FROM {when}",
+    "lastSeen": "LAST CAUGHT AT THE {spot}, {when}",
+    "lastedMinutes": "THE {object} LASTED {minutes} MINUTES.",
+    "lastedMinute": "THE {object} LASTED A MINUTE.",
+    "lastedHours": "THE {object} LASTED {hours} HOURS.",
+    "lastedHour": "THE {object} LASTED AN HOUR."
+  },
+  "ordinals": [
+    "1ST",
+    "2ND",
+    "3RD",
+    "4TH",
+    "5TH",
+    "6TH",
+    "7TH",
+    "8TH",
+    "9TH"
+  ],
+  "ordinalMore": "{count}TH",
+  "offense": "{ordinal} OFFENSE",
+  "repeatOffender": "REPEAT OFFENDER",
+  "stamps": [
+    "CAUGHT",
+    "CAUGHT AGAIN",
+    "HABITUAL"
+  ],
+  "atLarge": "{charge}. SUSPECT AT LARGE."
+}

@@ -57,7 +57,8 @@ let package = Package(
             // Kit manifests, edition files, pet art, themes and seasonal
             // events ship as human-editable JSON (see docs/kits.md,
             // Edition.swift, PetArt.swift, ThemeCatalog.swift and
-            // SeasonalEventCatalog.swift). FocusRecordings holds the
+            // SeasonalEventCatalog.swift), and so do the Pet Cam's room
+            // art and caption grammar (PetCam/PetCamData, ios/README.md). FocusRecordings holds the
             // recorded focus sounds (FocusRecording.swift, credits in
             // docs/sounds.md). The String Catalog holds every
             // user-facing string and its translations (L10n.swift), and
@@ -69,6 +70,7 @@ let package = Package(
             exclude: ["Localization/Localizable.xcstrings"],
             resources: [
                 .copy("Kits/Bundled"), .copy("Editions/BundledEditions"), .copy("Pets/PetArt"),
+                .copy("PetCam/PetCamData"),
                 .copy("Themes/themes.json"), .copy("StudyMethods/study-methods.json"),
                 .copy("Events/events.json"), .copy("Focus/FocusRecordings"),
                 .copy("Localization/Strings"),

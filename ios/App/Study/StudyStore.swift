@@ -2,10 +2,22 @@ import Foundation
 import Observation
 import TabbiKitCore
 
+/// Something that follows the study session, such as the Pet Cam. It is
+/// told about every change before the notifications and the Live Activity
+/// are updated, so both can say what it made of it.
+@MainActor
+protocol StudyObserver: AnyObject {
+    func studyDidChange(_ update: StudyEngine.Update, engine: StudyEngine, at now: Date)
+    /// The camera filming the focus phase under way, by its number (nil
+    /// when it is not filmed): its end notification then says the tape is
+    /// ready, and the Live Activity shows that camera recording.
+    var filmingCamera: Int? { get }
+}
+
 /// The app's one store: runs the `StudyEngine` and carries out what each
-/// change means outside it, in order: save, schedule the phase-end
-/// notifications, sync the Live Activity, and wake up at the next phase end
-/// while the app is open.
+/// change means outside it, in order: save, tell the observer, schedule
+/// the phase-end notifications, sync the Live Activity, and wake up at the
+/// next phase end while the app is open.
 @MainActor
 @Observable
 final class StudyStore {
@@ -26,10 +38,16 @@ final class StudyStore {
     /// leaves its done line on the Lock Screen.
     @ObservationIgnored private var isActive = true
 
+    @ObservationIgnored private weak var observer: StudyObserver?
+
     /// - Parameter live: false in unit tests, which neither notify nor
     ///   start Live Activities.
-    init(persistence: StudyPersistence = .standard, live: Bool = true, now: Date = Date()) {
+    /// - Parameter observer: told about every change, starting with the
+    ///   phase ends applied at launch.
+    init(persistence: StudyPersistence = .standard, live: Bool = true, now: Date = Date(),
+         observer: StudyObserver? = nil) {
         self.persistence = persistence
+        self.observer = observer
         let loaded = persistence.load()
         engine = loaded.engine
         unreadable = loaded.unreadable
@@ -77,6 +95,19 @@ final class StudyStore {
         apply(at: now) { $0.setTimer(length, at: now) }
     }
 
+    /// Another breed for the pet, from the breed picker.
+    func setBreed(_ breed: PetBreed, at now: Date = Date()) {
+        apply(at: now) { $0.setBreed(breed) }
+    }
+
+    #if DEBUG
+    /// Debug builds only: the demo pet (Mochi in the Cozy Hoodie and
+    /// Beanie, with the demo Closet's points), for screenshots.
+    func useDemoPet(at now: Date = Date()) {
+        apply(at: now) { $0.useCloset(.demo) }
+    }
+    #endif
+
     // MARK: Side effects
 
     /// Runs `change` on the engine and carries out the rest. `writeAll`
@@ -94,8 +125,11 @@ final class StudyStore {
             completions += 1
         }
         if let last = update.awards.last { celebrate(last) }
-        alerts?.schedule(PhaseAlert.upcoming(for: after.session), now: now)
-        liveActivity?.sync(after.session, pet: after.pet, at: now, finishedAway: !isActive && update.phaseCompleted)
+        observer?.studyDidChange(update, engine: after, at: now)
+        let camera = observer?.filmingCamera
+        alerts?.schedule(PhaseAlert.upcoming(for: after.session, filming: camera != nil), now: now)
+        liveActivity?.sync(after.session, pet: after.pet, at: now, finishedAway: !isActive && update.phaseCompleted,
+                           camera: camera)
         armPhaseEnd()
     }
 

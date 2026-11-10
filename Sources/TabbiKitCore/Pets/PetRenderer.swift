@@ -67,14 +67,23 @@ public final class PetRenderer: @unchecked Sendable {
 
     /// Uncached rendering into premultiplied RGBA.
     public static func render(_ canvas: PetCanvas, palette: PetPalette, scale: Int = 1) -> CGImage? {
+        render(colors: canvas.colors(using: palette), width: canvas.width, height: canvas.height, scale: scale)
+    }
+
+    /// Pixels already resolved to colors (row-major, nil for transparent),
+    /// each written as an exact `scale`x`scale` block. Scenes that put a
+    /// pet in a room (the Pet Cam) resolve the pet through
+    /// `PetCanvas.colors(using:)` and scale the whole picture here, so
+    /// everything is drawn with the same whole-pixel rule.
+    public static func render(colors: [PetColor?], width spriteWidth: Int, height spriteHeight: Int,
+                              scale: Int = 1) -> CGImage? {
         let scale = max(1, scale)
-        let width = canvas.width * scale, height = canvas.height * scale
-        guard width > 0, height > 0 else { return nil }
+        let width = spriteWidth * scale, height = spriteHeight * scale
+        guard width > 0, height > 0, colors.count == spriteWidth * spriteHeight else { return nil }
         var bytes = [UInt8](repeating: 0, count: width * height * 4)
-        let colors = canvas.colors(using: palette)
-        for sy in 0..<canvas.height {
-            for sx in 0..<canvas.width {
-                guard let color = colors[sy * canvas.width + sx] else { continue }
+        for sy in 0..<spriteHeight {
+            for sx in 0..<spriteWidth {
+                guard let color = colors[sy * spriteWidth + sx] else { continue }
                 let a = UInt16(color.alpha)
                 let premultiplied = [color.red, color.green, color.blue].map { UInt8(UInt16($0) * a / 255) }
                 for dy in 0..<scale {

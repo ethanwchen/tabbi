@@ -14,6 +14,9 @@ final class NotchMenuHoldTests: XCTestCase {
     private func makeController() -> NotchController {
         let types: [any NotchModule.Type] = [ClosetModule.self]
         let settings = SettingsStore.ephemeral(catalog: ModuleList.catalog(of: types))
+        // A fullscreen app on the Mac running the tests would hide the notch
+        // and make it ignore the pointer, so the test never depends on it.
+        settings.settings.hideInFullscreen = false
         let services = AppServices(settings: settings, moduleTypes: types, environment: ["TABBI_DEMO": "1"], arguments: [])
         // The demo's weekly recap would take the notch over (and pin it) on open.
         if let recap = services.recaps.store.unseen { services.recaps.store.markSeen(recap.week) }

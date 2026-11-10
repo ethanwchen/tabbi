@@ -1,7 +1,7 @@
 import { runInDurableObject } from "cloudflare:test";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GRANTABLE_ITEMS } from "../src/grants";
-import { ADMIN_TOKEN, call, expectError, freshIp, hub, linkAppleAccount, pinClockToMinuteStart, register } from "./helpers";
+import { ADMIN_TOKEN, call, expectError, freshIp, hub, linkAppleAccount, pinClockAtNoonUTC, register } from "./helpers";
 
 const CAP = "accessory.backwardsCap";
 const MEDAL = "accessory.teamMedal";
@@ -18,7 +18,7 @@ async function registeredAt(code: string, at: number): Promise<void> {
 }
 
 describe("limited edition grants", () => {
-  beforeEach(pinClockToMinuteStart);
+  beforeEach(pinClockAtNoonUTC);
   afterEach(() => vi.useRealTimers());
 
   it("lists only the limited edition items the app knows", () => {

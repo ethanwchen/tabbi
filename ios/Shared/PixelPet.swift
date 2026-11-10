@@ -43,7 +43,7 @@ struct PixelPet: View {
 
     /// Whole device pixels per sprite pixel: `pixelSize` points rounded down
     /// on this screen, and never less than one.
-    static func devicePixels(per pixelSize: CGFloat, displayScale: CGFloat) -> Int {
+    nonisolated static func devicePixels(per pixelSize: CGFloat, displayScale: CGFloat) -> Int {
         max(1, Int((pixelSize * max(displayScale, 1)).rounded(.down)))
     }
 }
