@@ -39,10 +39,13 @@ final class NotchPointerTrackingCostTests: XCTestCase {
         let previewed = makeModel()
         previewed.preview = .meeting(TickerMeeting(title: "Quarterly planning", timing: .startsIn(minutes: 4), canJoin: true))
         // Measuring the preview's text made each read several times slower
-        // than a read with no preview. Comparing the two, at their best of
-        // several interleaved rounds of 50,000 reads (tens of milliseconds,
-        // so one scheduling hiccup on a shared CI runner cannot swing it),
-        // keeps the check steady on a busy machine.
+        // than a read with no preview (tens of microseconds a read, seconds
+        // per 50,000). The check compares the two at their best of several
+        // interleaved rounds, and also accepts any read under an absolute
+        // budget of 5 microseconds (0.25 s per round), ten times below that
+        // regression: on a loaded machine one side's best round can still
+        // land a hiccup the other side's does not, and a cheap read must
+        // not fail for it.
         func fastest(_ model: NotchViewModel) -> TimeInterval {
             let start = Date()
             var total: CGFloat = 0
@@ -56,6 +59,8 @@ final class NotchPointerTrackingCostTests: XCTestCase {
             plainBest = min(plainBest, fastest(plain))
             previewedBest = min(previewedBest, fastest(previewed))
         }
-        XCTAssertLessThan(previewedBest, plainBest * 2)
+        let budget: TimeInterval = 0.25
+        XCTAssertLessThanOrEqual(previewedBest, max(plainBest * 2, budget),
+                                 "a read with a preview took \(previewedBest) s per 50,000 against \(plainBest) s without")
     }
 }
