@@ -258,6 +258,23 @@ Hello from Tabbi! Your laptop notch is now a cozy home for focus, planning and a
 
 For later versions, one warm line naming the headline change, then short New, Better and Fixed lists in plain words, ending with "Thanks for focusing with Tabbi. Your pet says hi."
 
+For 1.0.5:
+
+```
+Earn it! Goals come to the Closet: 48 badges from Bronze to Starlight and 16 mastery outfits you can only earn, never buy.
+
+New
+- Goals: badges for focus time, study days, streaks, sessions, flashcards, tasks, break moves, Party, study methods, steady weeks, water and monthly quests
+- 16 mastery outfits unlocked by badges, from a wizard's robe to a spacesuit
+- Monthly quests: three gentle goals each month, nothing lost if you miss one
+- Your whole history counts, so badges you already earned unlock right away
+
+Fixed
+- The widget never goes blank or white
+
+Thanks for focusing with Tabbi. Your pet says hi.
+```
+
 For 1.0.4:
 
 ```
@@ -413,7 +430,7 @@ App Store Connect's App Privacy and Age Rating answers cannot be set through the
 4. On the TestFlight build, check what an ad-hoc build cannot: Apple's native Sign in with Apple sheet; Do Not Disturb (turn it on, Continue, allow Shortcuts Events when macOS asks, and press Test with two real shortcuts); and Party against the production server with the demo friend (add, report, block).
 5. App Privacy > Edit: select the eight data types in the answer sheet above, answer each one as written, and Publish (the label applies to every version once published, so do it just before submitting).
 6. App Information > Age Ratings > Edit: the answers under App information above; confirm the result (13+ expected).
-7. Version 1.0.4: What's New, Promotional text, Description and Keywords from this page.
+7. Version 1.0.5 (the 1.0.4 version in App Store Connect was renamed to 1.0.5 and never submitted): What's New from this page; Promotional text, Description and Keywords are already set.
 8. App Review Information > Notes: the reviewer notes above, with `DEMO_CODE` replaced; Sign-in required stays off.
 9. Keep an eye on the moderation queue (`GET /v1/admin/reports`) while the build is in review, and resolve the reviewer's test report as "no action".
 10. Optional, while in review: run the demo friend's `study --party` for 48 hours so the reviewer sees it online in a party.
