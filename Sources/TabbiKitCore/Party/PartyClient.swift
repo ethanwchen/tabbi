@@ -53,9 +53,10 @@ public struct PartyClient: Sendable {
 
     /// The Party protocol this app speaks, sent as `protocolHeader` on
     /// every request. Protocol 2 added friend requests and catalog version
-    /// 2's item ids; a server answers an app that sends no header as
-    /// protocol 1. See `docs/party-compatibility.md`.
-    public static let protocolVersion = 2
+    /// 2's item ids, protocol 3 the Study Level and nameplate color in the
+    /// profile; a server answers an app that sends no header as protocol 1.
+    /// See `docs/party-compatibility.md`.
+    public static let protocolVersion = 3
     public static let protocolHeader = "Tabbi-Protocol"
 
     // MARK: Health

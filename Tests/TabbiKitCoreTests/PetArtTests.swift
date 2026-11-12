@@ -7,7 +7,7 @@ import XCTest
 /// with the Swift legend, roles, zones and poses. That every pixel, palette
 /// and frame timing matches the old Swift definitions is `PetGoldenFrameTests`.
 final class PetArtTests: XCTestCase {
-    private static let families = ["animations", "badge", "breeds", "cat", "costume", "dog", "effect", "paw", "prop", "tail", "walk"]
+    private static let families = ["animations", "badge", "breeds", "cat", "costume", "dog", "effect", "paw", "prop", "rank", "tail", "walk"]
 
     private var repoRoot: URL {
         URL(fileURLWithPath: #filePath)

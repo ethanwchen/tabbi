@@ -79,13 +79,15 @@ final class PartyProtocolGoldenTests: XCTestCase {
             Set(try XCTUnwrap(JSONSerialization.jsonObject(with: PartyClient.makeEncoder().encode(value)) as? [String: Any]).keys)
         }
         let body = PartyProfileUpdate(name: "A", petName: "B", species: "cat", breed: "tabby", colors: [], costume: "none",
-                                      accessories: [], points: 1, level: 1)
+                                      accessories: [], points: 1, level: 1, studyLevel: 12, nameplate: "honey")
         XCTAssertEqual(properties("profileBody"), try keys(body))
         let beat = PartyHeartbeat(status: .studying, method: "pomodoro", phaseEndsAt: Date(), sessionMinutes: 1,
                                   todayMinutes: 1, streakDays: 1, day: "2026-10-15")
         XCTAssertEqual(properties("heartbeatBody"), try keys(beat))
         let required = Set(defs["profile"]?["required"] as? [String] ?? [])
-        XCTAssertEqual(required.union(["badges"]), properties("profile"))
+        // Optional in a profile: badges (lists only), and the Study Level
+        // fields, which apps before protocol 3 never send.
+        XCTAssertEqual(required.union(["badges", "studyLevel", "nameplate"]), properties("profile"))
     }
 
     /// Every request carries the protocol, so the server knows this app
@@ -184,8 +186,21 @@ struct PartyProtocolFixture: Codable, Equatable {
     struct Update: Codable, Equatable {
         var name: String
         var pet: Pet
+        /// The Study Level shared beside the pet, protocol 3; absent for
+        /// the pet alone.
+        var standing: Standing?
         /// The pet fields of `POST /v1/register` and `PATCH /v1/me`.
         var body: PartyJSON
+    }
+
+    /// A Study Level and nameplate color, as `StudyStanding` holds them.
+    struct Standing: Codable, Equatable {
+        var level: Int
+        var nameplate: String
+
+        var studyStanding: StudyStanding {
+            StudyStanding(level: StudyLevel(level), nameplate: Nameplate(rawValue: nameplate) ?? .plain)
+        }
     }
 
     struct Reply: Codable, Equatable {
@@ -228,6 +243,10 @@ struct PartyProtocolFixture: Codable, Equatable {
             updates: samplePets.map { name, pet in
                 let body = try PartyClient.makeEncoder().encode(PartyPetAppearance.update(for: pet))
                 return Update(name: name, pet: Pet(pet), body: try PartyJSON.parse(body))
+            } + sampleStandings.map { name, pet, standing in
+                let update = PartyPetAppearance.update(for: pet).sharing(standing.studyStanding)
+                return Update(name: name, pet: Pet(pet), standing: standing,
+                              body: try PartyJSON.parse(PartyClient.makeEncoder().encode(update)))
             },
             replies: recorded
         )
@@ -239,6 +258,15 @@ struct PartyProtocolFixture: Codable, Equatable {
         func pets(_ profiles: [PartyProfile]) -> [String: Pet] {
             Dictionary(profiles.map { ($0.code, Pet(PartyPetAppearance.pet(for: $0))) }, uniquingKeysWith: { first, _ in first })
         }
+        /// The Study Level drawn for each profile: "level rank nameplate",
+        /// or null for none (an older app or server).
+        func standings(_ profiles: [PartyProfile]) -> PartyJSON {
+            .object(Dictionary(profiles.map { profile in
+                (profile.code, profile.standing.map {
+                    PartyJSON.string("\($0.level.value) \($0.rank.id) \($0.nameplate.rawValue)")
+                } ?? .null)
+            }, uniquingKeysWith: { first, _ in first }))
+        }
         switch schema {
         case "friendList":
             let list = try await client.friendList()
@@ -249,6 +277,8 @@ struct PartyProtocolFixture: Codable, Equatable {
                 "badges": .object(Dictionary(uniqueKeysWithValues: list.friends.map {
                     ($0.profile.code, .array($0.profile.badges.map(PartyJSON.string)))
                 })),
+                "standings": standings(list.friends.map(\.profile) + list.incoming.map(\.profile)
+                    + list.outgoing.map(\.profile)),
             ], pets(list.friends.map(\.profile) + list.incoming.map(\.profile) + list.outgoing.map(\.profile)))
         case "addFriendReply":
             let addition = try await client.addFriend(code: "B3NX9QRT")
@@ -271,6 +301,7 @@ struct PartyProtocolFixture: Codable, Equatable {
                 "members": .array(party.members.map { .string($0.profile.code) }),
                 "host": .string(party.host),
                 "session": party.session.map { .string($0.method) } ?? .null,
+                "standings": standings(party.members.map(\.profile)),
             ], pets(party.members.map(\.profile)))
         default:
             throw PartyError.invalidResponse("no reader for \(schema)")
@@ -302,6 +333,18 @@ struct PartyProtocolFixture: Codable, Equatable {
         ] + PetOutfit.allCases.map { ("outfit \($0.rawValue)", PetProfile(name: "Luna", breed: .siamese, outfit: $0)) }
     }
 
+    /// Profile bodies with the Study Level an app from 1.0.7 on shares.
+    static var sampleStandings: [(String, PetProfile, Standing)] {
+        [
+            ("starter cat at level 0", PetProfile.starter(.cat), Standing(level: 0, nameplate: "plain")),
+            ("level 37 with lilac", PetProfile(name: "Mochi", breed: .orangeTabby, accessories: [.scarf]),
+             Standing(level: 37, nameplate: "lilac")),
+            ("past the level friends are told", PetProfile.starter(.dog), Standing(level: 1400, nameplate: "starlight")),
+        ]
+    }
+
+    private static let leveledApp = ##"{"code":"H8LV2QPA","name":"Lea","petName":"Bao","species":"cat","breed":"tabby","colors":["#D98C4A","#B06A33","#F2C38B","#5A3A22","#FFF1DE","#3E7CB1"],"costume":"none","accessories":["scarf"],"points":900,"level":1,"badges":[],"studyLevel":64,"nameplate":"aurora"}"##
+    private static let garbledLevel = ##"{"code":"J9GX3RWB","name":"Gus","petName":"Tofu","species":"dog","breed":"corgi","colors":[],"costume":"none","accessories":[],"points":0,"level":1,"studyLevel":"lots","nameplate":42}"##
     private static let currentApp = ##"{"code":"N4ZR7HVB","name":"Noor","petName":"Pip","species":"dog","breed":"corgi","colors":["#D98C4A","#B06A33","#F2C38B","#5A3A22","#FFF1DE","#3E7CB1","#2E5E88","#FFFFFF","#E2557A","#B83D5E"],"costume":"dinosaur-hoodie","accessories":["snow-scarf","heart-glasses","wizard-hat","angel-wings","sparkle-trail"],"points":120,"level":3,"badges":["founding"]}"##
     private static let olderApp = ##"{"code":"K7QW2MZD","name":"Olive","petName":"Mochi","species":"cat","breed":"tabby","colors":["#D98C4A","#B06A33","#F2C38B","#5A3A22","#FFF1DE","#3E7CB1"],"costume":"graduation","accessories":["glasses","scarf"],"points":80,"level":2}"##
     private static let newerApp = ##"{"code":"F7TRE9XQ","name":"Fay","petName":"Zip","species":"cat","breed":"maine-coon","colors":["#334455","#AABBCC"],"costume":"space-suit","accessories":["jetpack","party-hat","wings-of-tomorrow"],"points":5,"level":1,"badges":["founding","fromTheFuture"],"aura":"glow","pronouns":"they"}"##
@@ -314,6 +357,8 @@ struct PartyProtocolFixture: Codable, Equatable {
          #"{"ok":true,"friends":[{"profile":\#(olderApp),"since":1789000000,"presence":\#(studying),"online":true,"party":{"code":"Q4RT8M","size":2}}],"incoming":[{"profile":\#(currentApp),"since":1789990000}],"outgoing":[{"profile":\#(newerApp),"since":1789980000}]}"#),
         ("friend list from a protocol 1 server", "friendList",
          #"{"ok":true,"friends":[{"profile":\#(olderApp),"since":1789000000,"presence":null,"online":false,"party":null}]}"#),
+        ("friend list with levels, from a protocol 3 server", "friendList",
+         #"{"ok":true,"friends":[{"profile":\#(leveledApp),"since":1789000000,"presence":null,"online":false,"party":null},{"profile":\#(olderApp),"since":1789000000,"presence":null,"online":false,"party":null},{"profile":\#(garbledLevel),"since":1789000000,"presence":null,"online":false,"party":null}],"incoming":[],"outgoing":[]}"#),
         ("friend list from a newer server", "friendList",
          #"{"ok":true,"friends":[{"profile":\#(newerApp),"since":1789000000,"presence":null,"online":false,"party":null,"streak":{"best":9}}],"incoming":[],"outgoing":[],"suggested":[{"code":"ZZZZZZZZ"}],"cursor":"abc"}"#),
         ("request sent", "addFriendReply", #"{"ok":true,"added":false,"status":"requested","friend":\#(currentApp)}"#),
@@ -323,6 +368,8 @@ struct PartyProtocolFixture: Codable, Equatable {
         ("heartbeat with requests waiting", "heartbeatReply",
          #"{"ok":true,"presence":\#(studying),"heartbeatSeconds":120,"incomingRequests":2}"#),
         ("heartbeat from a protocol 1 server", "heartbeatReply", #"{"ok":true,"presence":\#(studying),"heartbeatSeconds":120}"#),
+        ("party of an app with a level and an older app", "partyReply",
+         #"{"ok":true,"party":{"code":"Q4RT8M","host":"H8LV2QPA","createdAt":1789990000,"lastActive":1789999000,"expiresAt":1790042200,"maxMembers":8,"session":null,"members":[{"profile":\#(leveledApp),"joinedAt":1789990000,"host":true,"presence":\#(studying),"online":true},{"profile":\#(olderApp),"joinedAt":1789991000,"host":false,"presence":null,"online":false}]}}"#),
         ("party of an older and a current app, and a newer one", "partyReply",
          #"{"ok":true,"party":{"code":"Q4RT8M","host":"N4ZR7HVB","createdAt":1789990000,"lastActive":1789999000,"expiresAt":1790042200,"maxMembers":8,"session":{"method":"pomodoro","phaseEndsAt":1790000000,"startedAt":1789998500},"members":[{"profile":\#(currentApp),"joinedAt":1789990000,"host":true,"presence":\#(studying),"online":true},{"profile":\#(olderApp),"joinedAt":1789991000,"host":false,"presence":null,"online":false},{"profile":\#(newerApp),"joinedAt":1789992000,"host":false,"presence":null,"online":false,"seat":3}],"theme":"night"}}"#),
     ]

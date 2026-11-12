@@ -65,6 +65,11 @@ public actor PartyAccount {
     /// again, so a refused name never takes Party offline; `refusedNames`
     /// says which, so the app can ask for another.
     ///
+    /// A server from before protocol 3 refuses the Study Level fields as
+    /// unknown; the profile is then sent again without them
+    /// (`PartyProfileUpdate.withoutStudyLevel()`), and friends there see the
+    /// pet without a level.
+    ///
     /// A server on an older catalog refuses the newer outfit and accessory
     /// ids as an invalid field; the profile is then sent again without the
     /// ids catalog version 4 added (`PartyProfileUpdate.forCatalogVersion3()`),
@@ -81,6 +86,12 @@ public actor PartyAccount {
                 refusedNames = refused
                 return profile
             } catch let error as PartyError {
+                // A server from before protocol 3 refuses the Study Level
+                // fields first; without them it takes the rest as before.
+                if case .invalidRequest = error, update.studyLevel != nil || update.nameplate != nil {
+                    update = update.withoutStudyLevel()
+                    continue
+                }
                 if case .invalidRequest = error, let older = update.olderCatalogFallback {
                     update = older
                     continue

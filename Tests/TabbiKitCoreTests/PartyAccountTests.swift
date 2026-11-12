@@ -23,6 +23,9 @@ private final class FakeFriendsServer: PartyTransport, @unchecked Sendable {
     /// Answers like a server still on catalog version 3: the mastery
     /// outfits' ids are an `invalid_field`.
     var catalogVersion3 = false
+    /// Answers like a server from before protocol 3: the Study Level
+    /// fields are an `unknown_field`, as for any body field it does not know.
+    var protocol2 = false
     /// The pet fields of every profile body it took.
     private(set) var takenBodies: [[String: Any]] = []
 
@@ -48,6 +51,9 @@ private final class FakeFriendsServer: PartyTransport, @unchecked Sendable {
         }
         if let petName = fields?["petName"] as? String, heldPetNames.contains(petName) {
             return reply(#"{"ok":false,"error":"pet_name_not_allowed","message":"no"}"#, 400)
+        }
+        if protocol2, let fields, fields["studyLevel"] != nil || fields["nameplate"] != nil {
+            return reply(#"{"ok":false,"error":"unknown_field","message":"unknown field: studyLevel"}"#, 400)
         }
         if catalogVersion1, let fields {
             let known: Set<String> = ["glasses", "sunglasses", "headphones", "bow", "scarf", "crown", "flower", "party-hat", "beanie", "halo"]
@@ -208,6 +214,67 @@ final class PartyAccountTests: XCTestCase {
         XCTAssertEqual(taken["accessories"] as? [String], ["bandana", "glasses"])
         XCTAssertEqual(taken["costume"] as? String, "none")
         XCTAssertEqual((taken["colors"] as? [String])?.count, PartyPetAppearance.colorRoles.count)
+    }
+
+    /// A current app talking to a server from before protocol 3: the
+    /// Study Level is refused, the profile goes again without it, and
+    /// Party stays online with the pet as before.
+    func testAnOlderServerGetsTheProfileWithoutTheStudyLevel() async throws {
+        let token = FakeFriendsServer.token(9)
+        let fake = FakeFriendsServer(validTokens: [token])
+        fake.protocol2 = true
+        let store = InMemoryPartyCredentialStore([server: PartyCredentials(token: token, code: FakeFriendsServer.code(9))])
+        let account = PartyAccount(server: server, transport: fake, credentials: store)
+        let pet = PetProfile(name: "Nova", breed: .corgi, accessories: [.roundGlasses])
+        let update = PartyPetAppearance.update(for: pet)
+            .sharing(StudyStanding(level: StudyLevel(12), nameplate: .ember))
+
+        let profile = try await account.connect(profile: update)
+
+        XCTAssertEqual(profile.code, FakeFriendsServer.code(9))
+        XCTAssertNil(profile.standing, "that server shows no level")
+        XCTAssertEqual(fake.requests, ["PATCH /v1/me", "PATCH /v1/me"], "refused once, then sent without the level")
+        let taken = try XCTUnwrap(fake.takenBodies.last)
+        XCTAssertNil(taken["studyLevel"])
+        XCTAssertNil(taken["nameplate"])
+        XCTAssertEqual(taken["accessories"] as? [String], ["glasses"], "the pet goes through whole")
+    }
+
+    /// A server older still, before protocol 3 and catalog version 4:
+    /// the level goes first, then the mastery outfit's id.
+    func testAnOlderServerOnCatalogVersion3DropsTheLevelThenTheNewIds() async throws {
+        let token = FakeFriendsServer.token(10)
+        let fake = FakeFriendsServer(validTokens: [token])
+        fake.protocol2 = true
+        fake.catalogVersion3 = true
+        let store = InMemoryPartyCredentialStore([server: PartyCredentials(token: token, code: FakeFriendsServer.code(10))])
+        let account = PartyAccount(server: server, transport: fake, credentials: store)
+        let pet = PetProfile(name: "Nova", breed: .corgi, outfit: .astronautSuit, accessories: [.roundGlasses])
+
+        _ = try await account.connect(profile: PartyPetAppearance.update(for: pet)
+            .sharing(StudyStanding(level: StudyLevel(40), nameplate: .nebula)))
+
+        XCTAssertEqual(fake.requests, ["PATCH /v1/me", "PATCH /v1/me", "PATCH /v1/me"])
+        let taken = try XCTUnwrap(fake.takenBodies.last)
+        XCTAssertNil(taken["studyLevel"])
+        XCTAssertEqual(taken["costume"] as? String, "none")
+        XCTAssertEqual(taken["accessories"] as? [String], ["glasses"])
+    }
+
+    /// A current server keeps the level, and the first try goes through.
+    func testACurrentServerTakesTheStudyLevelAtOnce() async throws {
+        let token = FakeFriendsServer.token(11)
+        let fake = FakeFriendsServer(validTokens: [token])
+        let store = InMemoryPartyCredentialStore([server: PartyCredentials(token: token, code: FakeFriendsServer.code(11))])
+        let account = PartyAccount(server: server, transport: fake, credentials: store)
+
+        _ = try await account.connect(profile: PartyProfileUpdate(petName: "Nova")
+            .sharing(StudyStanding(level: StudyLevel(7), nameplate: .peach)))
+
+        XCTAssertEqual(fake.requests, ["PATCH /v1/me"])
+        let taken = try XCTUnwrap(fake.takenBodies.last)
+        XCTAssertEqual(taken["studyLevel"] as? Int, 7)
+        XCTAssertEqual(taken["nameplate"] as? String, "peach")
     }
 
     func testARefusedNameOnRegisterStillRegisters() async throws {

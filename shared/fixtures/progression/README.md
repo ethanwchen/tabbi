@@ -30,3 +30,25 @@ Rules the fixture pins that are easy to miss:
 - A save drops ids it does not know, keeps only positive best counts, only seen tiers that were reached, and only valid months; a file that is not an object does not read.
 
 A port replays only the inputs and compares every recorded output.
+
+## Study Level (`levels.json`)
+
+Written by `Tests/TabbiKitCoreTests/StudyLevelGoldenTests.swift` from `StudyLevel`, `StudyRank`, `Nameplate`, `RankArt`, `ProgressionSave` and `PetProgression`.
+It pins the Study Level (docs/design/progression.md, "Study Level"), so the Windows port levels, ranks and draws exactly like the Mac.
+The file has `schema` (`tabbi.levels.golden`) and `version` (1).
+
+- `constants`: the curve's `curveScale` and `curveExponent`, `levelsPerNameplate`, `levelsPerRank`, the highest level shared with friends (`maxShared`), the named `rankTiers` in order, the emblem and canvas sizes, `maxPips` and the save's `saveSchemaVersion`.
+- `curve`: the `hours` and `minutes` of focus in total each `level` needs: `round(4 * level^1.6)` hours, rounding half away from zero (JavaScript's `Math.round` for these positive values), 0 for level 0.
+- `levels`: for a total of `focusMinutes`, the `level` (the highest whose minutes are covered), its `rank` id (`spark` ... `galaxy`, then `galaxy-2`, `galaxy-3` ...), `numeral`, `pips`, `rankFirstLevel`, the `fraction` of the way to the next level, the `nameplates` unlocked and the `nextNameplate`.
+- `roman`: Roman numerals for rank names; 4,000 and up fall back to digits.
+- `nameplates`: each color's `id`, `unlockLevel`, `color` and whether it `glows`.
+- `emblems`: every named rank and Galaxy II to VI rendered to colors, in the pets fixture's encoding (distinct colors in order of first appearance and run-length rows of their letters).
+- `saves`: a progression save `json` and, when it reads, its Study Level fields and `encoded`, the save written back.
+- `scenarios`: a progression started from an optional `save`, given one focus record of `focusMinutes` (UTC, refreshed at 1,800,000,000), then `picks` of nameplate ids in order and optionally marked seen.
+  The `output` has the level and rank, the levels the refresh gained (count, first, last) and whether one unlocked a color or a rank, whether each pick took, the nameplate shown, whether a level is unseen, the saved `level` and `levelSeen`, and the level and nameplate a profile update shares (capped at `maxShared`).
+
+Rules the fixture pins that are easy to miss:
+
+- The level shown is the larger of the curve at the focus total and the save's `level`, so a save keeps its level even with no minutes left.
+- A picked nameplate the level has not reached draws plain, and plain is stored as no `nameplate` at all.
+- `levelSeen` is never above `level`; a level, a seen level or a nameplate of the wrong type reads as 0 or none.

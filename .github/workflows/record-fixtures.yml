@@ -18,7 +18,7 @@ permissions:
   contents: read
 
 env:
-  FIXTURE_TESTS: SyncDocumentGoldenTests|ClosetGoldenTests|ActivityLogGoldenTests|StreaksRecapGoldenTests|AnkiGoldenTests|KitGoldenTests|OnboardingGoldenTests|FormattingGoldenTests|BreakBuddyGoldenTests|ProgressionGoldenTests
+  FIXTURE_TESTS: SyncDocumentGoldenTests|ClosetGoldenTests|ActivityLogGoldenTests|StreaksRecapGoldenTests|AnkiGoldenTests|KitGoldenTests|OnboardingGoldenTests|FormattingGoldenTests|BreakBuddyGoldenTests|ProgressionGoldenTests|StudyLevelGoldenTests
 
 jobs:
   record:

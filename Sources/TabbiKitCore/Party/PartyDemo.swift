@@ -7,8 +7,9 @@ extension PartyState {
     /// be friends. Maya and I are Founding Members, so the badge shows.
     /// Everyone wears a hat the server could not carry before catalog
     /// version 2, so a snapshot shows at once if one goes missing again
-    /// (and nobody wears a cape). Built relative to `now` so countdowns
-    /// always read sensibly.
+    /// (and nobody wears a cape). Most share a Study Level and a nameplate
+    /// color; Jonah's app is older and shares none. Built relative to `now`
+    /// so countdowns always read sensibly.
     public static func demo(now: Date, calendar: Calendar = .current) -> PartyState {
         let day = PartyPresenceTracker.dayString(now, calendar: calendar)
         func presence(_ status: PartyStatus, minutesLeft: Double? = nil, today: Int = 0, streak: Int = 0) -> PartyPresence {
@@ -27,18 +28,21 @@ extension PartyState {
 
         let me = profile(code: "K7QW2MZD", name: "Sam",
                          pet: PetProfile(name: "Mochi", breed: .orangeTabby, accessories: [.scarf, .graduationCap]),
-                         badges: [PartyBadge.founding])
+                         badges: [PartyBadge.founding], standing: StudyStanding(level: StudyLevel(12), nameplate: .ember))
         let maya = profile(code: "M4YA8QRT", name: "Maya",
                            pet: PetProfile(name: "Biscuit", breed: .goldenRetriever, accessories: [.roundGlasses, .cowboyHat]),
-                           badges: [PartyBadge.founding])
+                           badges: [PartyBadge.founding], standing: StudyStanding(level: StudyLevel(37), nameplate: .lilac))
         let priya = profile(code: "PR1YA6KD", name: "Priya",
-                            pet: PetProfile(name: "Luna", breed: .siamese, outfit: .scrubs, accessories: [.surgicalCap]))
+                            pet: PetProfile(name: "Luna", breed: .siamese, outfit: .scrubs, accessories: [.surgicalCap]),
+                            standing: StudyStanding(level: StudyLevel(64), nameplate: .aurora))
         let leo = profile(code: "LE0J9WXC", name: "Leo",
-                          pet: PetProfile(name: "Waffles", breed: .corgi, outfit: .cozyHoodie, accessories: [.frogHat]))
+                          pet: PetProfile(name: "Waffles", breed: .corgi, outfit: .cozyHoodie, accessories: [.frogHat]),
+                          standing: StudyStanding(level: StudyLevel(3)))
         let jonah = profile(code: "J0NAH2PF", name: "Jonah",
                             pet: PetProfile(name: "Pepper", breed: .blackCat, accessories: [.wizardHat]))
         let noor = profile(code: "N4ZR7HVB", name: "Noor",
-                           pet: PetProfile(name: "Pip", breed: .scottishFold, accessories: [.chunkyHeadphones]))
+                           pet: PetProfile(name: "Pip", breed: .scottishFold, accessories: [.chunkyHeadphones]),
+                           standing: StudyStanding(level: StudyLevel(22), nameplate: .honey))
 
         let session = PartySession(method: "pomodoro", phaseEndsAt: now.addingTimeInterval(18 * 60 + 20), startedAt: now.addingTimeInterval(-6 * 60 - 40))
         let party = Party(
@@ -78,7 +82,8 @@ extension PartyState {
     }
 
     /// A profile as the server would return it for `pet`.
-    private static func profile(code: String, name: String, pet: PetProfile, badges: [String] = []) -> PartyProfile {
+    private static func profile(code: String, name: String, pet: PetProfile, badges: [String] = [],
+                                standing: StudyStanding? = nil) -> PartyProfile {
         let update = PartyPetAppearance.update(for: pet)
         return PartyProfile(
             code: code,
@@ -91,7 +96,9 @@ extension PartyState {
             accessories: update.accessories ?? [],
             points: 0,
             level: 1,
-            badges: badges
+            badges: badges,
+            studyLevel: standing?.level.value,
+            nameplate: standing?.nameplate.rawValue
         )
     }
 }

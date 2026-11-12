@@ -18,6 +18,14 @@ public struct PartyProfile: Codable, Hashable, Sendable {
     /// (`PartyBadge.founding`). Friends lists and party rosters carry them;
     /// other replies, and older servers, leave them out, which reads as none.
     public var badges: [String]
+    /// The Study Level (`StudyLevel`, from 0), sent by apps from 1.0.7 on
+    /// through servers that keep it (protocol 3). Nil from an older app or
+    /// server, which shows no level rather than a wrong one. Only ever drawn;
+    /// nothing counts on it.
+    public var studyLevel: Int?
+    /// The nameplate color id (`Nameplate`) beside `studyLevel`; nil, or an
+    /// id this app does not know, draws plain.
+    public var nameplate: String?
 
     public init(
         code: String,
@@ -30,7 +38,9 @@ public struct PartyProfile: Codable, Hashable, Sendable {
         accessories: [String] = [],
         points: Int = 0,
         level: Int = 1,
-        badges: [String] = []
+        badges: [String] = [],
+        studyLevel: Int? = nil,
+        nameplate: String? = nil
     ) {
         self.code = code
         self.name = name
@@ -43,10 +53,13 @@ public struct PartyProfile: Codable, Hashable, Sendable {
         self.points = points
         self.level = level
         self.badges = badges
+        self.studyLevel = studyLevel
+        self.nameplate = nameplate
     }
 
     private enum CodingKeys: String, CodingKey {
-        case code, name, petName, species, breed, colors, costume, accessories, points, level, badges
+        case code, name, petName, species, breed, colors, costume, accessories, points, level, badges, studyLevel,
+             nameplate
     }
 
     public init(from decoder: any Decoder) throws {
@@ -62,6 +75,19 @@ public struct PartyProfile: Codable, Hashable, Sendable {
         points = try container.decode(Int.self, forKey: .points)
         level = try container.decode(Int.self, forKey: .level)
         badges = try container.decodeIfPresent([String].self, forKey: .badges) ?? []
+        // Read leniently: a value of the wrong type or out of range from a
+        // newer or broken server is left out instead of failing the reply.
+        studyLevel = (try? container.decodeIfPresent(Int.self, forKey: .studyLevel)).flatMap { $0 }
+            .flatMap { (0...StudyLevel.maxShared).contains($0) ? $0 : nil }
+        nameplate = (try? container.decodeIfPresent(String.self, forKey: .nameplate)).flatMap { $0 }
+    }
+
+    /// The Study Level and nameplate to draw for this person, or nil when
+    /// their app or the server does not share one (show no level at all).
+    public var standing: StudyStanding? {
+        guard let studyLevel else { return nil }
+        return StudyStanding(level: StudyLevel(studyLevel),
+                             nameplate: nameplate.flatMap(Nameplate.init(rawValue:)) ?? .plain)
     }
 
     /// Whether the user is a Founding Member: signed in during Tabbi's
@@ -91,6 +117,11 @@ public struct PartyProfileUpdate: Encodable, Hashable, Sendable {
     public var accessories: [String]?
     public var points: Int?
     public var level: Int?
+    /// The Study Level and nameplate color id, protocol 3 (`StudyStanding`).
+    /// A server from before refuses them, so `PartyAccount` sends the
+    /// profile again without them (`withoutStudyLevel()`).
+    public var studyLevel: Int?
+    public var nameplate: String?
 
     public init(
         name: String? = nil,
@@ -101,7 +132,9 @@ public struct PartyProfileUpdate: Encodable, Hashable, Sendable {
         costume: String? = nil,
         accessories: [String]? = nil,
         points: Int? = nil,
-        level: Int? = nil
+        level: Int? = nil,
+        studyLevel: Int? = nil,
+        nameplate: String? = nil
     ) {
         self.name = name
         self.petName = petName
@@ -112,6 +145,26 @@ public struct PartyProfileUpdate: Encodable, Hashable, Sendable {
         self.accessories = accessories
         self.points = points
         self.level = level
+        self.studyLevel = studyLevel
+        self.nameplate = nameplate
+    }
+
+    /// The update with `standing` to share: the level, capped at what the
+    /// server keeps, and the nameplate's id.
+    public func sharing(_ standing: StudyStanding) -> PartyProfileUpdate {
+        var update = self
+        update.studyLevel = min(standing.level.value, StudyLevel.maxShared)
+        update.nameplate = standing.nameplate.rawValue
+        return update
+    }
+
+    /// This update as a server from before protocol 3 takes it: without the
+    /// Study Level fields, which it refuses as unknown.
+    public func withoutStudyLevel() -> PartyProfileUpdate {
+        var update = self
+        update.studyLevel = nil
+        update.nameplate = nil
+        return update
     }
 }
 

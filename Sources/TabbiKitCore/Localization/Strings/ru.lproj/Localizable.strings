@@ -143,6 +143,10 @@
 	<string>%@ скучает по тебе</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@ теперь на позиции %2$lld из %3$lld</string>
+	<key>%@ name color</key>
+	<string>Цвет имени: %@</string>
+	<key>%@ name color, unlocks at Level %lld</key>
+	<string>Цвет имени: %1$@, откроется на уровне %2$lld</string>
 	<key>%@ napped on a sunny windowsill</key>
 	<string>%@ дремлет на солнечном подоконнике</string>
 	<key>%@ naps until the timer runs</key>
@@ -291,6 +295,8 @@
 	<string>Готово: %lld/%lld</string>
 	<key>%lld of %lld earned</key>
 	<string>Получено %1$lld из %2$lld</string>
+	<key>%lld of %lld h to Level %lld</key>
+	<string>%1$lld из %2$lld ч до уровня %3$lld</string>
 	<key>%lld of %lld outfits</key>
 	<string>%1$lld из %2$lld нарядов</string>
 	<key>%lld pts to go</key>
@@ -1349,6 +1355,8 @@
 	<string>Введи ключ из настроек AnkiConnect в настройках.</string>
 	<key>Event</key>
 	<string>Событие</string>
+	<key>Every 5 levels bring a name color and every 10 a new rank. Levels never give points.</key>
+	<string>Каждые 5 уровней открывают цвет имени, каждые 10 новый ранг. Уровни никогда не дают очков.</string>
 	<key>Every deck is caught up</key>
 	<string>Все колоды повторены</string>
 	<key>Every focused minute fills in today's square</key>
@@ -1879,6 +1887,8 @@
 	<string>Питомец иногда скажет ободряющую фразу сразу после фокус-сессии, не чаще раза в день</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>Питомец выйдет из выреза, если ты отвлекаешься во время фокус-фазы</string>
+	<key>Level %lld</key>
+	<string>Уровень %lld</string>
 	<key>Like</key>
 	<string>Нравится</string>
 	<key>Like Sam or Dr. Sam</key>
@@ -1933,6 +1943,10 @@
 	<string>Ищем твои команды</string>
 	<key>Lunar New Year</key>
 	<string>Лунный Новый год</string>
+	<key>Lv %lld</key>
+	<string>Ур. %lld</string>
+	<key>Lv %lld: %@</key>
+	<string>Ур. %1$lld: %2$@</string>
 	<key>Main display</key>
 	<string>Основной дисплей</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
@@ -2063,6 +2077,8 @@
 	<string>Сейчас Mac спросит, можно ли Tabbi присылать уведомления. Ответ можно изменить в любой момент в Системных настройках.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>Сейчас Mac спросит, можно ли Tabbi пользоваться календарем. Ответ можно изменить в любой момент в Системных настройках.</string>
+	<key>Next: %@ at Lv %lld</key>
+	<string>Дальше: %1$@ на ур. %2$lld</string>
 	<key>Next: %@, %@</key>
 	<string>Дальше: %1$@, %2$@</string>
 	<key>Nightcap</key>
@@ -3979,6 +3995,8 @@
 	<string>Твои данные Party</string>
 	<key>Your Party data was deleted.</key>
 	<string>Данные Party удалены.</string>
+	<key>Your Study Level grows with every hour you focus and never goes down.</key>
+	<string>Твой учебный уровень растёт с каждым часом фокуса и никогда не падает.</string>
 	<key>Your best week</key>
 	<string>Твоя лучшая неделя</string>
 	<key>Your best week yet!</key>
@@ -4115,6 +4133,32 @@
 	<string>встречи и звонки</string>
 	<key>min</key>
 	<string>мин</string>
+	<key>nameplate.aurora</key>
+	<string>Сияние</string>
+	<key>nameplate.coral</key>
+	<string>Коралл</string>
+	<key>nameplate.ember</key>
+	<string>Уголёк</string>
+	<key>nameplate.gold</key>
+	<string>Золото</string>
+	<key>nameplate.honey</key>
+	<string>Мёд</string>
+	<key>nameplate.lilac</key>
+	<string>Сирень</string>
+	<key>nameplate.mint</key>
+	<string>Мята</string>
+	<key>nameplate.nebula</key>
+	<string>Туманность</string>
+	<key>nameplate.peach</key>
+	<string>Персик</string>
+	<key>nameplate.plain</key>
+	<string>Обычный</string>
+	<key>nameplate.rose</key>
+	<string>Роза</string>
+	<key>nameplate.sky</key>
+	<string>Небо</string>
+	<key>nameplate.starlight</key>
+	<string>Звёздный</string>
 	<key>no free time</key>
 	<string>нет свободного времени</string>
 	<key>nothing yet; pick a sound</key>
@@ -4131,6 +4175,20 @@
 	<string>баллы</string>
 	<key>pts</key>
 	<string>оч.</string>
+	<key>rank.comet</key>
+	<string>Комета</string>
+	<key>rank.ember</key>
+	<string>Уголёк</string>
+	<key>rank.galaxy</key>
+	<string>Галактика</string>
+	<key>rank.nebula</key>
+	<string>Туманность</string>
+	<key>rank.nova</key>
+	<string>Новая</string>
+	<key>rank.numbered %@ %@</key>
+	<string>%1$@ %2$@</string>
+	<key>rank.spark</key>
+	<string>Искра</string>
 	<key>ready to unlock</key>
 	<string>можно открыть</string>
 	<key>resets %@</key>

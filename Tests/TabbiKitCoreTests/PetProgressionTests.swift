@@ -206,7 +206,7 @@ final class PetProgressionTests: XCTestCase {
         XCTAssertEqual(save.best, [.focusHours: 1234], "zero counts are not kept")
         XCTAssertEqual(save.seen, [ProgressBadge(.focusHours, .silver)], "only reached tiers can be seen")
         let data = try save.encoded()
-        XCTAssertEqual(VersionedJSON.version(of: data), 1)
+        XCTAssertEqual(VersionedJSON.version(of: data), 2)
         XCTAssertEqual(try ProgressionSave.schema.decode(ProgressionSave.self, from: data, using: Self.decoder), save)
     }
 

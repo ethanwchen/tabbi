@@ -25,17 +25,24 @@ public struct PetProgression: Hashable, Sendable {
     }
 
     /// What one `refresh` added: badge tiers reached and months of quests
-    /// finished for the first time.
+    /// finished for the first time, and the Study Levels gained.
     public struct Change: Hashable, Sendable {
         public var badges: [ProgressBadge] = []
         public var months: [MonthKey] = []
+        /// Every Study Level reached for the first time, lowest first.
+        public var levels: [StudyLevel] = []
 
-        public init(badges: [ProgressBadge] = [], months: [MonthKey] = []) {
+        public init(badges: [ProgressBadge] = [], months: [MonthKey] = [], levels: [StudyLevel] = []) {
             self.badges = badges
             self.months = months
+            self.levels = levels
         }
 
-        public var isEmpty: Bool { badges.isEmpty && months.isEmpty }
+        public var isEmpty: Bool { badges.isEmpty && months.isEmpty && levels.isEmpty }
+
+        /// Whether a level gained unlocked a nameplate color or a rank,
+        /// the moments worth a sparkle over the panel.
+        public var unlocksSomething: Bool { levels.contains { $0.unlocksNameplate || $0.startsRank } }
     }
 
     /// Recounts every track at `now` and records new bests, tiers and
@@ -69,8 +76,45 @@ public struct PetProgression: Hashable, Sendable {
                 }
             }
         }
+        let level = StudyLevel(focusMinutes: value(of: .focusHours))
+        if level.value > save.level {
+            change.levels = ((save.level + 1)...level.value).map { StudyLevel($0) }
+            save.level = level.value
+        }
         return change
     }
+
+    // MARK: Study Level
+
+    /// The Study Level: from every focused minute so far, and never below
+    /// the highest the save remembers.
+    public var studyLevel: StudyLevel {
+        max(StudyLevel(focusMinutes: value(of: .focusHours)), StudyLevel(save.level))
+    }
+
+    /// Total focused minutes, the Study Level's measure.
+    public var focusMinutes: Int { value(of: .focusHours) }
+
+    /// The nameplate color shown: the one picked, if the level has it.
+    public var nameplate: Nameplate {
+        guard let picked = save.nameplate, picked.unlockLevel <= studyLevel.value else { return .plain }
+        return picked
+    }
+
+    /// The level and nameplate friends see in Party.
+    public var standing: StudyStanding { StudyStanding(level: studyLevel, nameplate: nameplate) }
+
+    /// Picks a nameplate color; returns false (and changes nothing) when
+    /// it is still locked or already picked.
+    @discardableResult
+    public mutating func pick(_ nameplate: Nameplate) -> Bool {
+        guard nameplate.unlockLevel <= studyLevel.value, nameplate != self.nameplate else { return false }
+        save.nameplate = nameplate == .plain ? nil : nameplate
+        return true
+    }
+
+    /// Whether a level was reached that the Goals shelf has not shown yet.
+    public var hasUnseenLevel: Bool { studyLevel.value > save.levelSeen }
 
     /// The track's count, in its unit.
     public func value(of track: ProgressTrack) -> Int { values[track] ?? 0 }
@@ -101,12 +145,16 @@ public struct PetProgression: Hashable, Sendable {
         Set(save.reached.keys).subtracting(save.seen)
     }
 
-    /// Marks every tier reached so far as seen; returns whether anything changed.
+    /// Marks every tier and the level reached so far as seen; returns
+    /// whether anything changed.
     @discardableResult
     public mutating func markSeen() -> Bool {
         let unseen = unseen
-        guard !unseen.isEmpty else { return false }
+        let level = studyLevel.value
+        guard !unseen.isEmpty || level > save.levelSeen else { return false }
         save.seen.formUnion(unseen)
+        save.level = max(save.level, level)
+        save.levelSeen = max(save.levelSeen, level)
         return true
     }
 
