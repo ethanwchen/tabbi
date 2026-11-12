@@ -156,7 +156,7 @@ describe("PetCostumeFit", () => {
   });
 
   /* Every breed, animation and outfit: several seconds of composing on a busy machine, so it gets more than the 5 second default. */
-  it("outfits never cover an eye", { timeout: 60_000 }, () => {
+  it("outfits never cover an eye", () => {
     for (const breed of PET_BREEDS) {
       for (const animation of PET_ANIMATIONS) {
         const plain = clip(animation, breed).frames;
@@ -173,7 +173,8 @@ describe("PetCostumeFit", () => {
         }
       }
     }
-  });
+    /* Every outfit on every breed through every animation: as heavy as the sweeps above, so the same budget. */
+  }, 60_000);
 
   it("face items sit on the eyes of every breed", () => {
     for (const breed of PET_BREEDS) {

@@ -58,7 +58,7 @@ export const PetEconomy = {
 } as const;
 
 /** How long an item takes to earn at the typical pace, cheapest first. */
-export const PET_PRICE_TIERS = ["free", "starter", "midTier", "showpiece"] as const;
+export const PET_PRICE_TIERS = ["free", "starter", "midTier", "showpiece", "heirloom"] as const;
 export type PetPriceTier = (typeof PET_PRICE_TIERS)[number];
 
 /** The prices the tier allows, in points (both ends included). */
@@ -74,6 +74,9 @@ export function tierPriceRange(tier: PetPriceTier): { lower: number; upper: numb
       return { lower: 2 * day, upper: week };
     case "showpiece":
       return { lower: 2 * week, upper: 4 * week };
+    /* Six to twelve typical weeks: the rarest outfits, for students who own the rest of the shop. */
+    case "heirloom":
+      return { lower: 6 * week, upper: 12 * week };
   }
 }
 

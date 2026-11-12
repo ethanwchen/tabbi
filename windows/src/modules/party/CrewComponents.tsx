@@ -594,6 +594,41 @@ export function CrewRowName({ name, caption, captionAccent = false }: { name: st
   );
 }
 
+/**
+ * How many of a column's fallbacks it needs so nothing spills out of it:
+ * 0 while everything fits, then one more step for each layout pass in which
+ * the element's content is taller than its box, up to `steps`. A resize, or
+ * a change in `key`, starts over from 0. The passes run before paint.
+ */
+export function useFitStep<T extends HTMLElement>(steps: number, key: string): [React.RefObject<T | null>, number] {
+  const element = useRef<T>(null);
+  const [fit, setFit] = useState({ key, step: 0 });
+  const [epoch, setEpoch] = useState(0);
+  const [measured, setMeasured] = useState({ key, epoch });
+  if (measured.key !== key || measured.epoch !== epoch) {
+    setMeasured({ key, epoch });
+    setFit({ key, step: 0 });
+  }
+  useLayoutEffect(() => {
+    const target = element.current;
+    if (!target || target.clientHeight === 0) return;
+    if (target.scrollHeight > target.clientHeight + 0.5 && fit.step < steps) setFit({ key, step: fit.step + 1 });
+  });
+  useLayoutEffect(() => {
+    const target = element.current;
+    if (!target || typeof ResizeObserver === "undefined") return;
+    let last = target.clientHeight;
+    const observer = new ResizeObserver(() => {
+      if (Math.abs(target.clientHeight - last) < 0.5) return;
+      last = target.clientHeight;
+      setEpoch((value) => value + 1);
+    });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+  return [element, fit.step];
+}
+
 /* MARK: States */
 
 /** A friendly whole-screen state: a pet (or a glyph in an accent badge), a title, one line and up to two actions. */

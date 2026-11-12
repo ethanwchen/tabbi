@@ -255,12 +255,14 @@ describe("PetCloset", () => {
     expect(itemIsNew(accessoryItem("scarf")), "the med set shipped first").toBe(false);
     expect(itemIsNew(outfitItem("scrubs"))).toBe(false);
     expect(itemIsNew(accessoryItem("wizardHat")), "the second batch is no longer the latest").toBe(false);
-    expect(itemIsNew(accessoryItem("angelWings"))).toBe(true);
+    expect(itemIsNew(accessoryItem("angelWings")), "the animated batch is no longer the latest").toBe(false);
+    expect(itemIsNew(accessoryItem("mushroomCap"))).toBe(true);
     expect(itemIsNew(accessoryItem("goldenLaurel")), "limited items have their own badge").toBe(false);
+    expect(itemIsNew(accessoryItem("tinyLantern")), "mastery items have their own badge").toBe(false);
 
     const c = closet({ earned: 2000 });
-    expect(c.isNew(accessoryItem("angelWings"))).toBe(true);
-    expect(c.tap(accessoryItem("angelWings"))).toEqual({ kind: "boughtAndWore" });
-    expect(c.isNew(accessoryItem("angelWings")), "the badge goes once the item is unlocked").toBe(false);
+    expect(c.isNew(accessoryItem("mushroomCap"))).toBe(true);
+    expect(c.tap(accessoryItem("mushroomCap"))).toEqual({ kind: "boughtAndWore" });
+    expect(c.isNew(accessoryItem("mushroomCap")), "the badge goes once the item is unlocked").toBe(false);
   });
 });

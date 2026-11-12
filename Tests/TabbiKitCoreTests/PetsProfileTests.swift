@@ -267,7 +267,9 @@ final class PetUnlockTests: XCTestCase {
                        "no outfit plus one free starter per playful theme")
         let prices = items.filter { !$0.isFree }.map(\.cost)
         XCTAssertEqual(Set(prices).count, prices.count, "every paid item has its own price")
-        XCTAssertEqual(items.last, .accessory(.graduationCap), "graduation is the long-term goal")
+        XCTAssertEqual(items.last, .accessory(.fireflies), "the priciest heirloom is the longest goal")
+        XCTAssertEqual(items.filter { $0.tier == .showpiece }.last, .accessory(.graduationCap),
+                       "graduation tops the showpieces")
     }
 
     func testItemIdsAreStableAndRoundTrip() {

@@ -80,8 +80,9 @@ export class PartyAccount {
    * A refused name (`name_not_allowed`, `pet_name_not_allowed`) is left out
    * and the rest sent again, so a refused name never takes Party offline.
    * A server on an older catalog refuses newer ids as an invalid field; the
-   * profile is then sent again without catalog version 4's ids, and if that
-   * is refused too, as catalog version 1 takes it.
+   * profile is then sent again without catalog version 5's ids, then
+   * without version 4's, and if that is refused too, as catalog version 1
+   * takes it.
    */
   async connect(profile: PartyProfileUpdate): Promise<PartyProfile> {
     let update = profile;

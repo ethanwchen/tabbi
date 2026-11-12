@@ -33,6 +33,7 @@ import {
   CrewTextField,
   FirstThatFits,
   useCrewIsCompact,
+  useFitStep,
 } from "./CrewComponents";
 import { CrewBackPill } from "./CrewsPanel";
 import { PartyPillButton, PartyTextButton } from "./PartyComponents";
@@ -47,7 +48,10 @@ export function CrewEditorScreen({ crews, editing, from }: { crews: CrewsStore; 
   const problem = draftProblem(draft);
   const name = cleanCrewText(draft.name);
   const isPublic = draft.visibility === "public";
-  const note = problem !== undefined && problem !== "nameEmpty" ? crewDraftProblemMessage(problem) : tr("Every crew can appear on the weekly top 3 with its members' pets.");
+  const warning = problem !== undefined && problem !== "nameEmpty";
+  const note = warning ? crewDraftProblemMessage(problem) : tr("Every crew can appear on the weekly top 3 with its members' pets.");
+  /* Nothing in the side column is cut: when it runs out of room the note goes first (a problem stays in the Create button's tooltip), then the name under the preview. */
+  const [side, step] = useFitStep<HTMLDivElement>(2, `${compact}|${name}|${note}`);
   return (
     <>
       <div className="crews-head">
@@ -65,11 +69,11 @@ export function CrewEditorScreen({ crews, editing, from }: { crews: CrewsStore; 
         </span>
       </div>
       <div className="crews-body crew-editor">
-        <div className="crew-editor-side">
+        <div ref={side} className="crew-editor-side">
           <div className="crew-editor-preview">
             <div className="crew-editor-crest">
               <CrewCrestView crest={draft.crest} pixelSize={CREW_CREST_REGULAR_PIXEL_SIZE} />
-              {!compact && (
+              {!compact && step < 2 && (
                 <span className="crew-tile-name kit-caption kit-user-text" data-empty={name === "" || undefined}>
                   {name === "" ? tr("Crew name") : name}
                 </span>
@@ -107,9 +111,11 @@ export function CrewEditorScreen({ crews, editing, from }: { crews: CrewsStore; 
             onChange={(value) => crews.updateDraft({ description: value })}
             onSubmit={() => crews.saveDraft()}
           />
-          <div className="kit-caption crew-editor-note" data-warning={(problem !== undefined && problem !== "nameEmpty") || undefined}>
-            {note}
-          </div>
+          {step < 1 && (
+            <div className="kit-caption crew-editor-note" data-warning={warning || undefined}>
+              {note}
+            </div>
+          )}
         </div>
         <div className="crew-editor-pickers">
           <CrewPicker title={tr("Frame")}>

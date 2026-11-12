@@ -729,6 +729,8 @@
 	<string>الأتمتة</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>متاح عند تشغيل %@ كحزمة تطبيق.</string>
+	<key>Aviator Cap</key>
+	<string>قبعة الطيار</string>
 	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
 	<string>أزرق فاتح وأبيض كالغيم، مثل علبة حليب بالتوت الأزرق.</string>
 	<key>Back</key>
@@ -1249,6 +1251,8 @@
 	<string>تحقّق هدف التركيز اليومي</string>
 	<key>Daily reminder</key>
 	<string>تذكير يومي</string>
+	<key>Daisy Chain</key>
+	<string>سلسلة أقحوان</string>
 	<key>Darker squares mean more time studied</key>
 	<string>المربعات الأغمق تعني وقت دراسة أطول</string>
 	<key>Day</key>
@@ -1487,6 +1491,8 @@
 	<string>أنهِ الثلاثة ليُحتسب الشهر لشارة المهام الشهرية.</string>
 	<key>Finish setup</key>
 	<string>إنهاء الإعداد</string>
+	<key>Fireflies</key>
+	<string>يراعات</string>
 	<key>Fireplace</key>
 	<string>مدفأة</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
@@ -1729,6 +1735,8 @@
 	<string>نظارة القلوب</string>
 	<key>Heater shield</key>
 	<string>درع مقوّس</string>
+	<key>Heirloom</key>
+	<string>إرث</string>
 	<key>Hexagon</key>
 	<string>سداسي</string>
 	<key>Hi! I'm %@.</key>
@@ -1945,12 +1953,16 @@
 	<string>الإبقاء على هذا الاسم</string>
 	<key>Keep your current kit and tabs</key>
 	<string>الإبقاء على حزمتك وعلامات تبويبك الحالية</string>
+	<key>Keeper's Peacoat</key>
+	<string>معطف حارس المنارة</string>
 	<key>Kindred spirits</key>
 	<string>روحان متشابهتان</string>
 	<key>King's Cape</key>
 	<string>عباءة الملك</string>
 	<key>Kit</key>
 	<string>الحزمة</string>
+	<key>Koi Yukata</key>
+	<string>يوكاتا الكوي</string>
 	<key>Large</key>
 	<string>كبير</string>
 	<key>Last 7 days</key>
@@ -2009,6 +2021,8 @@
 	<string>دع رفيقك يقول عبارة تشجيع نادرة فور انتهاء جلسة تركيز، مرة في اليوم على الأكثر</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>دع رفيقك يخرج من النوتش حين يتشتت انتباهك أثناء التركيز</string>
+	<key>Librarian Cardigan</key>
+	<string>سترة أمين المكتبة</string>
 	<key>Like</key>
 	<string>إعجاب</string>
 	<key>Like Sam or Dr. Sam</key>
@@ -2171,6 +2185,8 @@
 	<string>نقل إلى اليوم</string>
 	<key>Move up</key>
 	<string>نقل لأعلى</string>
+	<key>Mushroom Cap</key>
+	<string>قبعة الفطر</string>
 	<key>Music</key>
 	<string>الموسيقى</string>
 	<key>Mute</key>
@@ -2805,6 +2821,8 @@
 	<string>النقاط: نقطة لكل دقيقة تركيز، ومكافأة عند إنهاء الجلسة</string>
 	<key>Pomodoro</key>
 	<string>بومودورو</string>
+	<key>Potted Cactus</key>
+	<string>صبّار في أصيص</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>يشغّل استخدام Claude والإجابات.</string>
 	<key>Preset %@</key>
@@ -2865,6 +2883,8 @@
 	<string>أغلق Anki وافتحه مجددًا. سيلاحظ Tabbi ذلك تلقائيًا.</string>
 	<key>Rain</key>
 	<string>مطر</string>
+	<key>Rain Slicker</key>
+	<string>معطف المطر</string>
 	<key>Rain cloud</key>
 	<string>غيمة ماطرة</string>
 	<key>Rank %lld, %@, %@</key>
@@ -3045,6 +3065,8 @@
 	<string>يعمل على هذا الـMac</string>
 	<key>Sage's Robe</key>
 	<string>رداء الحكيم</string>
+	<key>Sailor Collar</key>
+	<string>ياقة بحّار</string>
 	<key>Sakura Sprig</key>
 	<string>غصن ساكورا</string>
 	<key>Save</key>
@@ -3297,6 +3319,8 @@
 	<string>نفس بطيء</string>
 	<key>Smooth</key>
 	<string>سلس</string>
+	<key>Snow Day Puffer</key>
+	<string>سترة منفوخة ليوم الثلج</string>
 	<key>Snowy Scarf</key>
 	<string>وشاح الثلج</string>
 	<key>Some evidence</key>
@@ -3443,6 +3467,8 @@
 	<string>توقّف</string>
 	<key>Stopwatch</key>
 	<string>ساعة إيقاف</string>
+	<key>Strawberry Cap</key>
+	<string>قبعة الفراولة</string>
 	<key>Streak</key>
 	<string>السلسلة</string>
 	<key>Streak unavailable</key>
@@ -3499,12 +3525,16 @@
 	<string>اقترح ميزة أو أبلغ عن خطأ</string>
 	<key>Summer</key>
 	<string>الصيف</string>
+	<key>Sunflower Sun Hat</key>
+	<string>قبعة شمس بزهرة عبّاد</string>
 	<key>Sunset Shades</key>
 	<string>نظارة الغروب</string>
 	<key>Superhero Cape</key>
 	<string>عباءة البطل الخارق</string>
 	<key>Surgical Cap</key>
 	<string>قبعة جراحية</string>
+	<key>Sushi Chef</key>
+	<string>طاهي السوشي</string>
 	<key>Sweet</key>
 	<string>حلو</string>
 	<key>Switch Kit</key>
@@ -4005,6 +4035,8 @@
 	<string>أسبوع عيد الحب</string>
 	<key>Validate</key>
 	<string>تحقّق</string>
+	<key>Varsity Jacket</key>
+	<string>سترة الفريق الجامعي</string>
 	<key>Version %@</key>
 	<string>الإصدار %@</string>
 	<key>Version %@ (%@)</key>

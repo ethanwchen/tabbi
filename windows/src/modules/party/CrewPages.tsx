@@ -31,6 +31,7 @@ import {
   CrewTag,
   CrewTally,
   useCrewIsCompact,
+  useFitStep,
 } from "./CrewComponents";
 import { CrewBackPill } from "./CrewsPanel";
 import type { CrewsStore } from "./crewsStore";
@@ -152,14 +153,23 @@ function CrewHeroLayout({ crews, crew, mine }: { crews: CrewsStore; crew: CrewDe
   const summary = crew.summary;
   const minutes = summary.weekMinutes;
   const hours = crewHours(minutes);
-  const sentence = minutes <= 0 ? tr("No hours yet this week") : mine ? tr("Your crew studied %@ this week", hours) : tr("%@ this week", hours);
   const privacy = summary.visibility === "public" ? tr("Public") : tr("Private, invite only");
   const place = minutes > 0 && crew.rank !== undefined && crew.crewCount > 0 ? tr("%@ of %lld crews · %@", crewOrdinal(crew.rank), crew.crewCount, privacy) : privacy;
   const noMedals = crew.medals.gold === 0 && crew.medals.silver === 0 && crew.medals.bronze === 0;
   const pets = crew.members.flatMap((member) => (member.pet === undefined ? [] : [member.pet])).slice(0, 4);
+  const historyRows = onMyCrew ? 0 : Math.min(crew.history.length, compact ? 2 : 3);
+  /*
+   * Nothing in the column is cut: when it runs out of room, "No medals yet"
+   * goes first, then my crew's sentence takes its short form, then the
+   * history shows one week fewer at a time.
+   */
+  const [side, step] = useFitStep<HTMLDivElement>(2 + historyRows, `${summary.id}|${compact}|${onMyCrew}|${minutes}`);
+  const showsNoMedals = noMedals && !compact && step < 1;
+  const sentence = minutes <= 0 ? tr("No hours yet this week") : mine && step < 2 ? tr("Your crew studied %@ this week", hours) : tr("%@ this week", hours);
+  const shownHistory = Math.max(0, historyRows - Math.max(0, step - 2));
   return (
     <div className="crew-hero-layout">
-      <div className="crew-hero">
+      <div ref={side} className="crew-hero">
         <div className="crew-hero-top">
           <CrewSummaryCrest crew={summary} hero />
           <span className="crew-hero-pets">
@@ -172,8 +182,8 @@ function CrewHeroLayout({ crews, crew, mine }: { crews: CrewsStore; crew: CrewDe
           <div className="kit-caption kit-tertiary">{place}</div>
         </div>
         <CrewTally medals={crew.medals} />
-        {noMedals && !compact && <div className="kit-caption kit-tertiary">{tr("No medals yet")}</div>}
-        {!onMyCrew && crew.history.length > 0 && <CrewHistory crew={crew} rows={compact ? 2 : 3} />}
+        {showsNoMedals && <div className="kit-caption kit-tertiary">{tr("No medals yet")}</div>}
+        {shownHistory > 0 && <CrewHistory crew={crew} rows={shownHistory} />}
       </div>
       <CrewMembersColumn crews={crews} crew={crew} />
     </div>

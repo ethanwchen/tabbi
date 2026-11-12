@@ -561,6 +561,11 @@
   min-width: 16px;
   flex: none;
 }
+/* A Compact board's rank column fits the widest place chip, so the crests line up. */
+.crews-card[data-compact] .crew-rank,
+.crews-card[data-compact] .crew-rank-column {
+  min-width: 28px;
+}
 .crew-row-pets {
   display: inline-flex;
   align-items: flex-end;
@@ -682,6 +687,7 @@
   min-height: 0;
 }
 .crew-hero {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -824,6 +830,8 @@
   gap: 12px;
 }
 .crew-editor-side {
+  overflow: hidden;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;

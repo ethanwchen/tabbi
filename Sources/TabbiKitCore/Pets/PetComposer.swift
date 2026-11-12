@@ -454,6 +454,13 @@ public enum PetComposer {
         case .sagesRobe: CostumeArt.sagesRobe
         case .cozyPajamas: CostumeArt.cozyPajamas
         case .bakersApron: CostumeArt.bakersApron
+        case .librarianCardigan: CostumeArt.librarianCardigan
+        case .varsityJacket: CostumeArt.varsityJacket
+        case .keepersPeacoat: CostumeArt.keepersPeacoat
+        case .rainSlicker: CostumeArt.rainSlicker
+        case .koiYukata: CostumeArt.koiYukata
+        case .sushiChef: CostumeArt.sushiChef
+        case .snowDayPuffer: CostumeArt.snowDayPuffer
         }
     }
 
@@ -463,6 +470,9 @@ public enum PetComposer {
         case .dinosaurHoodie: CostumeArt.dinosaurHood
         case .astronautSuit: CostumeArt.astronautBubble
         case .sagesRobe: CostumeArt.sageHood
+        case .rainSlicker: CostumeArt.souwester
+        case .sushiChef: CostumeArt.hachimaki
+        case .snowDayPuffer: CostumeArt.earflapHat
         default: nil
         }
     }
@@ -532,6 +542,14 @@ public enum PetComposer {
         case .owlSpectacles: .face(CostumeArt.owlSpectacles)
         case .friendshipBandana: .body(CostumeArt.friendshipBandana)
         case .tinyLantern: .body(CostumeArt.tinyLantern)
+        case .daisyChain: .body(CostumeArt.daisyChain)
+        case .sailorCollar: .body(CostumeArt.sailorCollar)
+        case .strawberryCap: .head(CostumeArt.strawberryCap)
+        case .mushroomCap: .head(CostumeArt.mushroomCap)
+        case .cactusPot: .head(CostumeArt.cactusPot)
+        case .sunHat: .head(CostumeArt.sunHat)
+        case .aviatorCap: .head(CostumeArt.aviatorCap)
+        case .fireflies: .aura(CostumeArt.fireflies)
         }
     }
 

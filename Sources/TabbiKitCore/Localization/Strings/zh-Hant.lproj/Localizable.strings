@@ -739,6 +739,8 @@
 	<string>自動化</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>%@ 以 App 套件執行時才能使用。</string>
+	<key>Aviator Cap</key>
+	<string>飛行員帽</string>
 	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
 	<string>嬰兒藍配雲朵白，像一盒藍莓牛奶。</string>
 	<key>Back</key>
@@ -1261,6 +1263,8 @@
 	<string>已達成每日專注目標</string>
 	<key>Daily reminder</key>
 	<string>每日提醒</string>
+	<key>Daisy Chain</key>
+	<string>雛菊花環</string>
 	<key>Darker squares mean more time studied</key>
 	<string>顏色越深，代表學習時間越長</string>
 	<key>Day</key>
@@ -1499,6 +1503,8 @@
 	<string>三個都完成，這個月就會計入「每月任務」徽章。</string>
 	<key>Finish setup</key>
 	<string>完成設定</string>
+	<key>Fireflies</key>
+	<string>螢火蟲</string>
 	<key>Fireplace</key>
 	<string>壁爐</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
@@ -1743,6 +1749,8 @@
 	<string>愛心眼鏡</string>
 	<key>Heater shield</key>
 	<string>盾徽</string>
+	<key>Heirloom</key>
+	<string>傳家寶</string>
 	<key>Hexagon</key>
 	<string>六邊形</string>
 	<key>Hi! I'm %@.</key>
@@ -1961,12 +1969,16 @@
 	<string>就用這個名字</string>
 	<key>Keep your current kit and tabs</key>
 	<string>保留目前的套件和標籤頁</string>
+	<key>Keeper's Peacoat</key>
+	<string>守燈人呢大衣</string>
 	<key>Kindred spirits</key>
 	<string>心有靈犀</string>
 	<key>King's Cape</key>
 	<string>國王披風</string>
 	<key>Kit</key>
 	<string>套件</string>
+	<key>Koi Yukata</key>
+	<string>錦鯉浴衣</string>
 	<key>Large</key>
 	<string>大</string>
 	<key>Last 7 days</key>
@@ -2025,6 +2037,8 @@
 	<string>專注時段一結束，寵物偶爾會說一句鼓勵的話，每天最多一次</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>專注階段分心時，讓寵物從瀏海走出來</string>
+	<key>Librarian Cardigan</key>
+	<string>圖書館員開襟衫</string>
 	<key>Like</key>
 	<string>喜歡</string>
 	<key>Like Sam or Dr. Sam</key>
@@ -2187,6 +2201,8 @@
 	<string>移到今天</string>
 	<key>Move up</key>
 	<string>上移</string>
+	<key>Mushroom Cap</key>
+	<string>蘑菇帽</string>
 	<key>Music</key>
 	<string>音樂</string>
 	<key>Mute</key>
@@ -2821,6 +2837,8 @@
 	<string>點數：每專注 1 分鐘得 1 點，完成一段專注再加碼</string>
 	<key>Pomodoro</key>
 	<string>番茄鐘</string>
+	<key>Potted Cactus</key>
+	<string>盆栽仙人掌</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>用於 Claude 用量和回答。</string>
 	<key>Preset %@</key>
@@ -2881,6 +2899,8 @@
 	<string>結束 Anki 再重新打開。Tabbi 會自動偵測到。</string>
 	<key>Rain</key>
 	<string>雨聲</string>
+	<key>Rain Slicker</key>
+	<string>雨衣</string>
 	<key>Rain cloud</key>
 	<string>雨雲</string>
 	<key>Rank %lld, %@, %@</key>
@@ -3065,6 +3085,8 @@
 	<string>在這台 Mac 上執行</string>
 	<key>Sage's Robe</key>
 	<string>賢者長袍</string>
+	<key>Sailor Collar</key>
+	<string>水手領</string>
 	<key>Sakura Sprig</key>
 	<string>櫻花枝</string>
 	<key>Save</key>
@@ -3317,6 +3339,8 @@
 	<string>慢慢呼吸</string>
 	<key>Smooth</key>
 	<string>流暢</string>
+	<key>Snow Day Puffer</key>
+	<string>雪天羽絨外套</string>
 	<key>Snowy Scarf</key>
 	<string>雪花圍巾</string>
 	<key>Some evidence</key>
@@ -3467,6 +3491,8 @@
 	<string>已停止</string>
 	<key>Stopwatch</key>
 	<string>碼錶</string>
+	<key>Strawberry Cap</key>
+	<string>草莓帽</string>
 	<key>Streak</key>
 	<string>連續</string>
 	<key>Streak unavailable</key>
@@ -3523,12 +3549,16 @@
 	<string>建議功能或回報問題</string>
 	<key>Summer</key>
 	<string>夏日</string>
+	<key>Sunflower Sun Hat</key>
+	<string>向日葵遮陽帽</string>
 	<key>Sunset Shades</key>
 	<string>夕陽墨鏡</string>
 	<key>Superhero Cape</key>
 	<string>超級英雄披風</string>
 	<key>Surgical Cap</key>
 	<string>手術帽</string>
+	<key>Sushi Chef</key>
+	<string>壽司師傅</string>
 	<key>Sweet</key>
 	<string>甜美</string>
 	<key>Switch Kit</key>
@@ -4041,6 +4071,8 @@
 	<string>情人節週</string>
 	<key>Validate</key>
 	<string>驗證</string>
+	<key>Varsity Jacket</key>
+	<string>棒球外套</string>
 	<key>Version %@</key>
 	<string>版本 %@</string>
 	<key>Version %@ (%@)</key>

@@ -18,8 +18,10 @@ class FakeFriendsServer {
   heldNames = new Set<string>();
   heldPetNames = new Set<string>();
   catalogVersion1 = false;
-  /** Answers like a server still on catalog version 3: the mastery outfits' ids are an `invalid_field`. */
+  /** Answers like a server still on catalog version 3: the mastery outfits' ids (and release 7's) are an `invalid_field`. */
   catalogVersion3 = false;
+  /** Answers like a server still on catalog version 4: release 7's ids are an `invalid_field`. */
+  catalogVersion4 = false;
   readonly takenBodies: Record<string, unknown>[] = [];
 
   constructor(validTokens: string[] = []) {
@@ -66,6 +68,15 @@ class FakeFriendsServer {
       if (!accessories.every((id) => known.has(id)) || colors.length > 6) {
         return reply('{"ok":false,"error":"invalid_field","message":"invalid accessories"}', 400);
       }
+    }
+    if ((this.catalogVersion3 || this.catalogVersion4) && fields !== undefined) {
+      const release7 = new Set([
+        "librarian-cardigan", "varsity-jacket", "keepers-peacoat", "rain-slicker", "koi-yukata", "sushi-chef",
+        "snow-day-puffer", "daisy-chain", "sailor-collar", "strawberry-cap", "mushroom-cap", "cactus-pot",
+        "sun-hat", "aviator-cap", "fireflies",
+      ]);
+      const ids = [...(Array.isArray(fields.accessories) ? (fields.accessories as string[]) : []), ...(typeof fields.costume === "string" ? [fields.costume] : [])];
+      if (ids.some((id) => release7.has(id))) return reply('{"ok":false,"error":"invalid_field","message":"invalid costume"}', 400);
     }
     if (this.catalogVersion3 && fields !== undefined) {
       const added = new Set([
@@ -203,6 +214,32 @@ describe("PartyAccount", () => {
     expect(taken?.accessories).toEqual(["bandana", "glasses"]);
     expect(taken?.costume).toBe("none");
     expect((taken?.colors as unknown[] | undefined)?.length).toBe(10);
+  });
+
+  it("sends a catalog version 4 server everything but release 7's items", async () => {
+    const token = FakeFriendsServer.token(9);
+    const fake = new FakeFriendsServer([token]);
+    fake.catalogVersion4 = true;
+    const store = new InMemoryPartyCredentialStore({ [server]: { token, code: FakeFriendsServer.code(9) } });
+    const pet = new PetProfile("Juno", "corgi", { outfit: "rainSlicker", accessories: ["daisyChain", "nightcap", "roundGlasses"] });
+    await account(fake, store).connect(partyPetUpdate(pet));
+    expect(fake.requests, "refused once, then sent without release 7's ids").toEqual(["PATCH /v1/me", "PATCH /v1/me"]);
+    const taken = fake.takenBodies[fake.takenBodies.length - 1];
+    expect(taken?.accessories).toEqual(["glasses", "nightcap"]);
+    expect(taken?.costume).toBe("none");
+  });
+
+  it("steps a catalog version 3 server down through version 4", async () => {
+    const token = FakeFriendsServer.token(10);
+    const fake = new FakeFriendsServer([token]);
+    fake.catalogVersion3 = true;
+    const store = new InMemoryPartyCredentialStore({ [server]: { token, code: FakeFriendsServer.code(10) } });
+    const pet = new PetProfile("Juno", "corgi", { outfit: "sushiChef", accessories: ["daisyChain", "nightcap", "roundGlasses"] });
+    await account(fake, store).connect(partyPetUpdate(pet));
+    expect(fake.requests).toEqual(["PATCH /v1/me", "PATCH /v1/me", "PATCH /v1/me"]);
+    const taken = fake.takenBodies[fake.takenBodies.length - 1];
+    expect(taken?.accessories).toEqual(["glasses"]);
+    expect(taken?.costume).toBe("none");
   });
 
   it("still registers when the name is refused on register", async () => {

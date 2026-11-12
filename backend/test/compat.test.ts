@@ -135,7 +135,7 @@ describe("a party across app versions", () => {
       accessories: ["bandana", "owl-spectacles", "nightcap", "tiny-lantern"],
       colors: NEW_LOOK.colors,
     };
-    expect(catalog.version).toBe(4);
+    expect(catalog.version).toBeGreaterThanOrEqual(4);
     const current = await register({ name: "Mia", ...MASTERY_LOOK });
     const old = await register({ name: "Olive", ...OLD_LOOK }, true);
     expect((await call("POST", "/v1/friends", { code: old.code }, current.token)).body).toMatchObject({ added: true });
@@ -154,6 +154,36 @@ describe("a party across app versions", () => {
     // The pajamas and the bandana reuse ids every catalog had, so an older server takes them too.
     const patched = await oldCall("PATCH", "/v1/me", { costume: "pajamas", accessories: ["bandana"] }, old.token);
     expect(patched.body.profile).toMatchObject({ costume: "pajamas", accessories: ["bandana"] });
+  });
+
+  it("carries release 7's items of catalog version 5 to friends and party members on older apps", async () => {
+    const RELEASE7_LOOK = {
+      petName: "Juno", species: "dog", breed: "corgi", costume: "rain-slicker",
+      accessories: ["daisy-chain", "mushroom-cap", "fireflies", "glasses"],
+      colors: NEW_LOOK.colors,
+    };
+    expect(catalog.version).toBe(5);
+    for (const id of ["librarian-cardigan", "varsity-jacket", "keepers-peacoat", "rain-slicker", "koi-yukata", "sushi-chef", "snow-day-puffer"]) {
+      expect(catalog.costumes).toContain(id);
+    }
+    for (const id of ["daisy-chain", "sailor-collar", "strawberry-cap", "mushroom-cap", "cactus-pot", "sun-hat", "aviator-cap", "fireflies"]) {
+      expect(catalog.accessories).toContain(id);
+    }
+    const current = await register({ name: "June", ...RELEASE7_LOOK });
+    const old = await register({ name: "Otto", ...OLD_LOOK }, true);
+    expect((await call("POST", "/v1/friends", { code: old.code }, current.token)).body).toMatchObject({ added: true });
+    const friends = (await oldCall("GET", "/v1/friends", undefined, old.token)).body.friends;
+    expect(friends[0].profile).toMatchObject(RELEASE7_LOOK);
+    expectOldProfile(friends[0].profile);
+
+    const party = (await call("POST", "/v1/party", undefined, current.token)).body.party;
+    expect((await oldCall("POST", "/v1/party/join", { code: party.code }, old.token)).status).toBe(200);
+    for (const [viewer, fetch] of [[old, oldCall], [current, call]] as const) {
+      const seen = (await fetch("GET", "/v1/party", undefined, viewer.token)).body.party;
+      expect(check("party", seen)).toEqual([]);
+      const june = seen.members.find((m: { profile: { code: string } }) => m.profile.code === current.code);
+      expect(june.profile).toMatchObject(RELEASE7_LOOK);
+    }
   });
 
   it("keeps taking what an older app sends: catalog version 1 ids and six colors", async () => {

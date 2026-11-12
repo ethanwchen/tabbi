@@ -261,6 +261,22 @@ Hello from Tabbi! Your laptop notch is now a cozy home for focus, planning and a
 
 For later versions, one warm line naming the headline change, then short New, Better and Fixed lists in plain words, ending with "Thanks for focusing with Tabbi. Your pet says hi."
 
+For 1.0.6:
+
+```
+New things to earn! Fifteen new outfits and the Heirloom shelf, six long-term treasures for steady studiers.
+
+New
+- 15 outfits, from a Strawberry Cap and Mushroom Cap to a Varsity Jacket and Sailor Collar
+- The Heirloom shelf: the Keeper's Peacoat, Rain Slicker, Koi Yukata, Sushi Chef, Snow Day Puffer and Fireflies
+
+Fixed
+- Goals outfits now show up for friends in Party
+- The last row of the shop is never cut off
+
+Thanks for focusing with Tabbi. Your pet says hi.
+```
+
 For 1.0.5:
 
 ```

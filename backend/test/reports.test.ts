@@ -1,8 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { env, runInDurableObject } from "cloudflare:test";
 import { migrate } from "../src/hub";
 import { MAX_REPORTS_PER_DAY, REPORTS_PER_MIN } from "../src/moderation";
-import { admin, call, expectError, freshIp, hub, register, befriend, dropCrewsTables } from "./helpers";
+import { admin, call, dropCrewsTables, expectError, freshIp, hub, pinClockToMinuteStart, register, befriend } from "./helpers";
 
 const report = (by: { token: string }, who: { code: string }, reason = "inappropriate_name", note?: string) =>
   call("POST", "/v1/reports", note === undefined ? { code: who.code, reason } : { code: who.code, reason, note }, by.token);
@@ -24,6 +24,8 @@ async function ageReports(reporter: string, seconds: number) {
 }
 
 describe("POST /v1/reports", () => {
+  afterEach(() => vi.useRealTimers());
+
   it("stores the reason, note, reporter and the reported user's name and pet at that moment", async () => {
     const a = await register({ name: "Ana" });
     const b = await register({ name: "Rude Name", petName: "Worse" });
@@ -73,6 +75,9 @@ describe("POST /v1/reports", () => {
   });
 
   it("limits how fast and how much one user reports", async () => {
+    // The per-minute limit counts in fixed one-minute windows: on the real clock, a minute boundary
+    // between the first and the last report started a fresh window, and the last one went through.
+    pinClockToMinuteStart();
     const a = await register();
     const targets = await Promise.all(Array.from({ length: REPORTS_PER_MIN + 1 }, () => register()));
     for (const t of targets.slice(0, REPORTS_PER_MIN)) expect((await report(a, t)).status).toBe(201);

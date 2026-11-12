@@ -54,6 +54,10 @@ Catalog version 4 adds the mastery outfits from the Closet's Goals section (`doc
 Older apps drop the new ids and draw the rest of the pet.
 A server still on catalog version 3 refuses them, so the app first sends the profile again without just those ids (`PartyProfileUpdate.forCatalogVersion3()`) and only falls back to what catalog version 1 takes if that is refused too.
 
+Catalog version 5 adds release 7's shop items (`docs/economy.md`): seven outfits and eight accessories with new ids, appended after version 4's.
+Older apps drop the new ids and draw the rest of the pet.
+A server still on catalog version 4 refuses them, so the app first sends the profile again without just those ids (`PartyProfileUpdate.forCatalogVersion4()`), then without version 4's ids as well, and only then as catalog version 1 takes it, one catalog at a time.
+
 ## Crews across versions
 
 Study Crews are protocol 3 and only add: new routes under `/v1/crews`, new tables, and one new field in the `GET /v1/catalog` reply (`crews`, beside the unchanged `catalog`).
