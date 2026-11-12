@@ -125,7 +125,7 @@ Every candidate was judged against the notch canvas (about 500 by 150 pt per pan
 - **Monthly quests** give someone who has everything a fresh, small reason to come back each month.
   A month that started late or went badly costs nothing, which keeps them free of FOMO and of streak pressure.
 - **Titles shown in Party** were left out of 1.0.5: showing them to friends needs a new profile field and a Party protocol bump (`docs/party-compatibility.md`, rule 5).
-  The Study Level (below) made that change in 1.0.7: protocol 3 shares the level, whose rank is the title, and the nameplate color.
+  The Study Level (below) made that change in 1.0.6: protocol 3 shares the level, whose rank is the title, and the nameplate color.
 - **A room or desk for the pet** was left out: the notch has no room for a scene beside the panel, and it would need a new art pipeline.
 - **Collectible stickers** were folded into the badges: the same collection, without a second set of art to keep readable at notch size.
 - **Seasonal quests** already exist as seasonal events; monthly quests are the year-round, item-free version.
@@ -159,7 +159,7 @@ Progress the app already had when this shipped unlocks quietly at launch (with t
   Progress shown is the larger of the log and the best value saved, so deleting old day files never takes progress back.
   It is never synced, like the pet's journal; a file that cannot be read is left alone and never overwritten.
 
-## Study Level (1.0.7)
+## Study Level (1.0.6)
 
 The badges and outfits reward many habits, each with an end.
 The Study Level is the one ladder with no end: a level earned only from total focus hours, shown on the pet and to friends in Party.

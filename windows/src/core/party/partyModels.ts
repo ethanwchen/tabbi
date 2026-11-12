@@ -27,7 +27,7 @@ export interface PartyProfile {
   /** Badge ids shown next to the name (`PARTY_BADGE_FOUNDING`); absent reads as none. */
   readonly badges: readonly string[];
   /**
-   * The Study Level, sent by apps from 1.0.7 on through servers that keep it
+   * The Study Level, sent by apps from 1.0.6 on through servers that keep it
    * (protocol 3); undefined from an older app or server, which shows no
    * level. Only ever drawn.
    */

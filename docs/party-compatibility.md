@@ -21,7 +21,7 @@ The catalog (`backend/shared/catalog.json`) has its own `version`, which counts 
 | --- | --- | --- |
 | 1 | up to 1.0.0 | Instant friendships, catalog version 1 |
 | 2 | from this release | Friend requests, every Closet item has a server id (catalog version 2), ten profile colors, the tab badge count in heartbeat replies |
-| 3 | from 1.0.7 | The Study Level and nameplate color in the profile (`studyLevel`, `nameplate`), the catalog's `nameplates` list and `limits.maxStudyLevel` |
+| 3 | from 1.0.6 | The Study Level and nameplate color in the profile (`studyLevel`, `nameplate`), the catalog's `nameplates` list and `limits.maxStudyLevel` |
 
 ## Rules for every change
 

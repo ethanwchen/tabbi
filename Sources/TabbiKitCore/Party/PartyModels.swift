@@ -18,7 +18,7 @@ public struct PartyProfile: Codable, Hashable, Sendable {
     /// (`PartyBadge.founding`). Friends lists and party rosters carry them;
     /// other replies, and older servers, leave them out, which reads as none.
     public var badges: [String]
-    /// The Study Level (`StudyLevel`, from 0), sent by apps from 1.0.7 on
+    /// The Study Level (`StudyLevel`, from 0), sent by apps from 1.0.6 on
     /// through servers that keep it (protocol 3). Nil from an older app or
     /// server, which shows no level rather than a wrong one. Only ever drawn;
     /// nothing counts on it.

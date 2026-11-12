@@ -333,7 +333,7 @@ struct PartyProtocolFixture: Codable, Equatable {
         ] + PetOutfit.allCases.map { ("outfit \($0.rawValue)", PetProfile(name: "Luna", breed: .siamese, outfit: $0)) }
     }
 
-    /// Profile bodies with the Study Level an app from 1.0.7 on shares.
+    /// Profile bodies with the Study Level an app from 1.0.6 on shares.
     static var sampleStandings: [(String, PetProfile, Standing)] {
         [
             ("starter cat at level 0", PetProfile.starter(.cat), Standing(level: 0, nameplate: "plain")),
