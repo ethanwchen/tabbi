@@ -156,6 +156,12 @@
     background-color var(--spring-snappy),
     color var(--spring-snappy);
 }
+.party-paste[data-icon-only] {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  padding: 0;
+}
 .party-paste:hover {
   background: var(--accent-soft);
   color: var(--accent);
@@ -182,6 +188,16 @@
   align-items: center;
   gap: 8px;
   min-width: 0;
+}
+.party-room-labels {
+  flex: 1;
+  gap: 8px;
+}
+.party-room-header > .party-text-button {
+  flex: none;
+}
+.party-room-title {
+  white-space: nowrap;
 }
 .party-room-count {
   white-space: nowrap;
@@ -224,6 +240,7 @@
 }
 .party-member-status {
   display: flex;
+  max-width: 100%;
   align-items: center;
   gap: 4px;
   height: 13px;
@@ -286,6 +303,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  overflow: hidden;
 }
 .party-lobby-actions .party-code-field {
   flex: 1;
@@ -321,10 +340,14 @@
   flex-direction: column;
 }
 .party-friends-scroll {
-  flex: 1;
+  flex: none;
   overflow-y: auto;
   scrollbar-width: none;
-  padding-bottom: 12px;
+  /* Scrolling comes to rest on a row's edge, never mid-row. */
+  scroll-snap-type: y mandatory;
+}
+.party-friends-rows > * {
+  scroll-snap-align: start;
 }
 .party-friends-rows {
   display: flex;

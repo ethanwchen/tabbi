@@ -15,6 +15,8 @@ import { Icon } from "../../ui/kit/Icon";
 import { MarqueeText } from "../../ui/kit/MarqueeText";
 import { Tooltip } from "../../ui/kit/Tooltip";
 import { useElementWidth } from "../../ui/kit/useElementWidth";
+import { textWidth } from "../../ui/shell/measure";
+import { ViewsThatFit } from "../../ui/kit/ViewsThatFit";
 import { PartyCodeField, PartyCopyCode, PartyPet, PartyPillButton, PartyShareInvite, PartyTextButton, statusColor } from "./PartyComponents";
 import { useModerationMenu } from "./PartyModeration";
 import type { PartyStore } from "./partyStore";
@@ -28,6 +30,21 @@ export function PartyStage({ store, onFieldFocus }: { store: PartyStore; onField
 
 const ROOMY_WIDTH = 72;
 
+/** The member status row's caption type, dot and gap (party.css), for measuring what fits. */
+const CAPTION_SIZE = 10.5;
+const CAPTION_WEIGHT = 500;
+const STATUS_DOT = 5;
+const STATUS_GAP = 4;
+
+/** The room header's layouts, roomiest first (the Mac's PartyRoom.header). */
+const HEADER_VARIANTS: readonly { title: boolean; count: "long" | "short" | "none" }[] = [
+  { title: true, count: "long" },
+  { title: false, count: "long" },
+  { title: false, count: "short" },
+  { title: false, count: "none" },
+];
+const LAST_HEADER_VARIANT = { title: false, count: "none" } as const;
+
 /** The party I'm in: its code, everyone's pets, and the shared session. */
 function PartyRoom({ party, store }: { party: Party; store: PartyStore }) {
   const state = useStore(store);
@@ -38,13 +55,37 @@ function PartyRoom({ party, store }: { party: Party; store: PartyStore }) {
   return (
     <div className="party-room">
       <div className="party-room-header">
-        <span className="kit-title party-room-title">{tr("Party")}</span>
-        <PartyCopyCode code={party.code} help={tr("The party code. Click to copy it, then send it to friends.")} />
-        <PartyShareInvite invite={{ kind: "joinParty", code: party.code }} help={tr("Share an invite link. Friends who open it can join this party in one click.")} />
-        <Tooltip text={tr("Members in this party")}>
-          <span className="kit-caption kit-tertiary party-room-count">{tr("%lld of %lld", party.members.length, party.maxMembers)}</span>
-        </Tooltip>
-        <span className="party-spacer" />
+        {/*
+         * As on the Mac: on a narrow panel the title goes first (the code
+         * says it's a party), then the count shortens, then goes, so no word
+         * is squeezed, wrapped or covered by Leave in any language.
+         */}
+        <ViewsThatFit
+          count={HEADER_VARIANTS.length}
+          fitKey={`${party.code}|${party.members.length}|${party.maxMembers}`}
+          className="party-room-labels"
+          render={(index) => {
+            const variant = HEADER_VARIANTS[index] ?? LAST_HEADER_VARIANT;
+            const count =
+              variant.count === "long"
+                ? tr("%lld of %lld", party.members.length, party.maxMembers)
+                : variant.count === "short"
+                  ? `${party.members.length}/${party.maxMembers}`
+                  : undefined;
+            return (
+              <>
+                {variant.title && <span className="kit-title party-room-title">{tr("Party")}</span>}
+                <PartyCopyCode code={party.code} help={tr("The party code. Click to copy it, then send it to friends.")} />
+                <PartyShareInvite invite={{ kind: "joinParty", code: party.code }} help={tr("Share an invite link. Friends who open it can join this party in one click.")} />
+                {count !== undefined && (
+                  <Tooltip text={tr("Members in this party")}>
+                    <span className="kit-caption kit-tertiary party-room-count">{count}</span>
+                  </Tooltip>
+                )}
+              </>
+            );
+          }}
+        />
         <PartyTextButton
           title={tr("Leave")}
           busy={store.isPending({ kind: "leaveParty" })}
@@ -77,6 +118,19 @@ function PartyMemberView({ member, isMe, width, store, now }: { member: PartyMem
         : status === "idle"
           ? tr("Online")
           : tr("Offline");
+  // A status too long for the column in the user's language ("noch 19 Min.")
+  // falls back to the short countdown ("19m"), as the Mac's ViewThatFits does.
+  // In the narrowest columns of a full party, where even "19m" does not
+  // fit, the colored dot alone says what they're doing.
+  // The row draws tabular digits, each as wide as a zero, so they are measured as zeros.
+  const fits = (text: string, dot: boolean) =>
+    (dot ? STATUS_DOT + STATUS_GAP : 0) + textWidth(text.replace(/\d/g, "0"), CAPTION_SIZE, CAPTION_WEIGHT) <= width;
+  const shownStatus =
+    shortStatus === undefined || fits(shortStatus, roomy)
+      ? shortStatus
+      : countdown !== undefined && countdown !== shortStatus && fits(countdown, roomy)
+        ? countdown
+        : undefined;
   const name = isMe ? tr("You") : member.profile.name;
   const parts = [tr("%@ with %@", name, member.profile.petName)];
   if (isFoundingMember(member.profile)) parts.push(tr("Founding Member"));
@@ -98,8 +152,8 @@ function PartyMemberView({ member, isMe, width, store, now }: { member: PartyMem
           {isFoundingMember(member.profile) && roomy && <FoundingBadge isMe={isMe} />}
         </div>
         <div className="party-member-status kit-caption" style={{ color: roomy ? "var(--tertiary-text)" : statusColor(status) }}>
-          {(roomy || shortStatus === undefined) && <span className="party-dot" style={{ background: statusColor(status) }} />}
-          {shortStatus !== undefined && <span className="party-nowrap">{shortStatus}</span>}
+          {(roomy || shownStatus === undefined) && <span className="party-dot" style={{ background: statusColor(status) }} />}
+          {shownStatus !== undefined && <span className="party-nowrap">{shownStatus}</span>}
         </div>
         {menu.element}
       </div>
@@ -191,8 +245,7 @@ function RunningSession({ session, store, labeled }: { session: PartySession; st
 /** Outside a party: my pet with an invitation to start one or join by code. */
 function PartyLobby({ store, onFieldFocus }: { store: PartyStore; onFieldFocus: (focused: boolean) => void }) {
   const state = useStore(store);
-  const [row, width] = useElementWidth<HTMLDivElement>();
-  const shortStart = width > 0 && width < 236;
+
   return (
     <div className="party-lobby">
       <div className="party-lobby-intro">
@@ -202,24 +255,39 @@ function PartyLobby({ store, onFieldFocus }: { store: PartyStore; onFieldFocus: 
           <span className="kit-body kit-secondary party-lobby-line">{tr("Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.")}</span>
         </div>
       </div>
-      <div ref={row} className="party-lobby-actions">
-        <PartyPillButton
-          title={shortStart ? "" : tr("Start a party")}
-          symbol="plus"
-          prominent
-          busy={store.isPending({ kind: "createParty" })}
-          help={tr("Create a party and get a code to share")}
-          onClick={() => store.createParty()}
-        />
-        <PartyCodeField
-          placeholder={tr("Party code")}
-          symbol="number"
-          length={PartyCode.partyCodeLength}
-          help={tr("Have a code? Type the %lld-character party code and press Return to join", PartyCode.partyCodeLength)}
-          onSubmit={(text) => store.joinParty(text)}
-          onFocusChange={onFieldFocus}
-        />
-      </div>
+      {/*
+       * Start keeps its words while the row also holds the code field whole
+       * (the field never gets narrower than its placeholder needs);
+       * otherwise it shrinks to its plus, as on the Mac.
+       */}
+      <ViewsThatFit
+        count={2}
+        fitKey={tr("Start a party")}
+        className="party-lobby-actions"
+        render={(index) => {
+          const shortStart = index > 0;
+          return (
+            <>
+              <PartyPillButton
+                title={shortStart ? "" : tr("Start a party")}
+                symbol="plus"
+                prominent
+                busy={store.isPending({ kind: "createParty" })}
+                help={tr("Create a party and get a code to share")}
+                onClick={() => store.createParty()}
+              />
+              <PartyCodeField
+                placeholder={tr("Party code")}
+                symbol="number"
+                length={PartyCode.partyCodeLength}
+                help={tr("Have a code? Type the %lld-character party code and press Return to join", PartyCode.partyCodeLength)}
+                onSubmit={(text) => store.joinParty(text)}
+                onFocusChange={onFieldFocus}
+              />
+            </>
+          );
+        }}
+      />
     </div>
   );
 }

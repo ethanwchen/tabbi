@@ -5,14 +5,14 @@
  * someone by code.
  */
 
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
+import { useElementSize } from "../closet/useElementSize";
 import { useStore } from "../../app/useStore";
 import { tr } from "../../core/localization/tr";
 import { partyErrorMessage } from "../../core/party/partyError";
 import { canJoin, isFoundingMember, PartyCode, type PartyFriend, type PartyFriendRequest } from "../../core/party/partyModels";
 import { compactStatusLine, rosterDuration, rosterStatus } from "../../core/party/partyRoster";
 import { Card } from "../../ui/kit/Card";
-import { EdgeFade } from "../../ui/kit/EdgeFade";
 import { FoundingBadge } from "../../ui/kit/FoundingBadge";
 import { Icon } from "../../ui/kit/Icon";
 import { IconButton } from "../../ui/kit/IconButton";
@@ -21,6 +21,9 @@ import { Tooltip } from "../../ui/kit/Tooltip";
 import { PartyCodeField, PartyCopyCode, PartyPet, PartyPillButton, PartyShareInvite, statusColor } from "./PartyComponents";
 import { useModerationMenu } from "./PartyModeration";
 import type { PartyStore } from "./partyStore";
+
+/** Every friend and request row is this tall (the Mac's PartyFriendsCard.rowHeight). */
+export const FRIEND_ROW_HEIGHT = 34;
 
 /** Width of the friends column in the Party tab; the stage keeps the rest. */
 export const FRIENDS_WIDTH = 212;
@@ -37,6 +40,12 @@ export function PartyFriendsCard({ store, onFieldFocus, width = FRIENDS_WIDTH }:
   const inner = width - 16;
   const showsLabel = inner >= 200;
   const roomyRows = inner >= 236;
+  // The list shows only whole rows (the Mac's PartyFriendsCard.rowHeight):
+  // its height rounds down to a multiple of the row height and scrolling
+  // snaps to a row, so no row is ever cut in half at the bottom.
+  const listRef = useRef<HTMLDivElement>(null);
+  const listHeight = useElementSize(listRef).height;
+  const rowsShown = Math.max(1, Math.floor((listHeight + 0.5) / FRIEND_ROW_HEIGHT));
   return (
     <Card padding={8} className="party-friends">
       <div className="party-friends-header">
@@ -59,7 +68,7 @@ export function PartyFriendsCard({ store, onFieldFocus, width = FRIENDS_WIDTH }:
           </div>
         )}
       </div>
-      <div className="party-friends-list">
+      <div className="party-friends-list" ref={listRef}>
         {!party.friendsLoaded ? null : !party.hasPeople ? (
           <div className="party-friends-empty">
             <Icon id="person.2" size={16} style={{ color: "var(--accent)" }} />
@@ -67,7 +76,7 @@ export function PartyFriendsCard({ store, onFieldFocus, width = FRIENDS_WIDTH }:
             <span className="kit-caption kit-secondary">{tr("Share your code above, or add theirs below.")}</span>
           </div>
         ) : (
-          <EdgeFade edge="bottom" length={12} className="party-friends-scroll">
+          <div className="party-friends-scroll" style={{ height: rowsShown * FRIEND_ROW_HEIGHT }}>
             <div className="party-friends-rows">
               {party.incomingRequests.map((request) => (
                 <PartyRequestRow key={request.profile.code} request={request} isIncoming store={store} roomy={roomyRows} />
@@ -79,7 +88,7 @@ export function PartyFriendsCard({ store, onFieldFocus, width = FRIENDS_WIDTH }:
                 <PartyRequestRow key={request.profile.code} request={request} isIncoming={false} store={store} roomy={roomyRows} />
               ))}
             </div>
-          </EdgeFade>
+          </div>
         )}
       </div>
       <PartyCodeField

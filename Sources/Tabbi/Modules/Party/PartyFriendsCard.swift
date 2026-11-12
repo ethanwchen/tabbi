@@ -70,13 +70,19 @@ struct PartyFriendsCard: View {
         } else if !state.hasPeople {
             emptyFriends
         } else {
-            scrollingRows
-                // Rows fade out at the bottom edge instead of being cut off.
-                .edgeFade(.bottom, length: Self.fadeHeight)
+            // The list shows only whole rows: its height rounds down to a
+            // multiple of the row height, and scrolling stops on a row, so
+            // no row is ever cut in half at the bottom, in any panel size.
+            GeometryReader { proxy in
+                let shown = max(1, Int((proxy.size.height + 0.5) / Self.rowHeight))
+                scrollingRows
+                    .frame(height: CGFloat(shown) * Self.rowHeight, alignment: .top)
+            }
         }
     }
 
-    private static let fadeHeight = Theme.Spacing.m
+    /// Every friend and request row is this tall.
+    static let rowHeight: CGFloat = 34
 
     @ViewBuilder
     private var scrollingRows: some View {
@@ -86,11 +92,11 @@ struct PartyFriendsCard: View {
                 .overlay(alignment: .top) { rows }
                 .clipped()
         } else {
-            ScrollView(.vertical) { rows }
+            ScrollView(.vertical) { rows.scrollTargetLayout() }
                 .scrollIndicators(.automatic)
                 .scrollBounceBehavior(.basedOnSize)
-                // A margin as tall as the fade, so the last row can scroll clear of it.
-                .contentMargins(.bottom, Self.fadeHeight, for: .scrollContent)
+                // Scrolling comes to rest on a row's edge, never mid-row.
+                .scrollTargetBehavior(.viewAligned)
         }
     }
 
@@ -166,7 +172,7 @@ private struct PartyFriendRow: View {
             trailing
         }
         .padding(.trailing, Theme.Spacing.xxs)
-        .frame(height: 34)
+        .frame(height: PartyFriendsCard.rowHeight)
         .background(
             RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
                 .fill(hovering ? Theme.Palette.surface : .clear)
@@ -240,7 +246,7 @@ private struct PartyRequestRow: View {
             row(longStatus: false, acceptTitle: false)
         }
         .padding(.trailing, Theme.Spacing.xxs)
-        .frame(height: 34)
+        .frame(height: PartyFriendsCard.rowHeight)
         .background(
             RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
                 .fill(hovering ? Theme.Palette.surface : (isIncoming ? PartyStyle.accent.opacity(0.08) : .clear))
