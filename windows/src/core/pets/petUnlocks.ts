@@ -4,6 +4,7 @@ import { StreakFreezeRules, type StudyStreak } from "../streaks/studyStreak";
 import type { Instant } from "../time";
 import { ALL_ITEMS_IN_DECLARATION_ORDER, accessoryItem, itemFromID, type PetItem } from "./petItem";
 import { PetPointsRules } from "./petPointsRules";
+import { isRadiantEligible, radiantPrice } from "./radiant/radiantResolver";
 
 /*
  * Port of PetUnlocks.swift: item prices, the points ledger and the rules
@@ -107,6 +108,17 @@ export class StreakFreezePurchaseError extends Error {
   }
 }
 
+/** Why a Radiant upgrade was refused. Port of PetRadiantPurchaseError. */
+export class PetRadiantPurchaseError extends Error {
+  constructor(
+    /** `notOwned`: the item has to be owned first; `notEligible`: it has no Radiant effect. */
+    readonly reason: "notOwned" | "notEligible" | "alreadyRadiant" | "notEnoughPoints",
+    readonly missing = 0,
+  ) {
+    super(reason === "notEnoughPoints" ? `${missing} more points needed` : reason);
+  }
+}
+
 /** What older builds charged for items that are free now; a save that still lists one gets its points back once. */
 const REFUNDED_PRICES: Partial<Record<PetItem, number>> = { [accessoryItem("scarf")]: 30 };
 
@@ -124,6 +136,8 @@ export class PetPointsLedger {
   private readonly grantedItems: Set<PetItem>;
   /** When each extra streak freeze was bought, oldest first. */
   private freezes: Instant[];
+  /** Items upgraded to Radiant, bought once each for 5x the item's price and kept for good, like purchases. */
+  private readonly radiantItems: Set<PetItem>;
 
   constructor(
     options: {
@@ -132,6 +146,7 @@ export class PetPointsLedger {
       purchased?: Iterable<PetItem>;
       granted?: Iterable<PetItem>;
       streakFreezes?: Iterable<Instant>;
+      radiant?: Iterable<PetItem>;
     } = {},
   ) {
     this.earnedPoints = Math.max(0, options.earned ?? 0);
@@ -139,6 +154,12 @@ export class PetPointsLedger {
     this.grantedItems = new Set([...(options.granted ?? [])].filter(isLimited));
     this.spentPoints = Math.min(Math.max(0, options.spent ?? 0), this.earnedPoints);
     this.freezes = [...(options.streakFreezes ?? [])].sort((a, b) => a - b);
+    /* Only items owned here can be Radiant, so a hand-edited save cannot claim one. */
+    this.radiantItems = new Set(
+      [...(options.radiant ?? [])].filter(
+        (item) => isRadiantEligible(item) && (isFree(item) || this.purchasedItems.has(item) || this.grantedItems.has(item)),
+      ),
+    );
   }
 
   get earned(): number {
@@ -161,6 +182,11 @@ export class PetPointsLedger {
     return this.freezes;
   }
 
+  /** Items upgraded to Radiant. */
+  get radiant(): ReadonlySet<PetItem> {
+    return this.radiantItems;
+  }
+
   get balance(): number {
     return this.earnedPoints - this.spentPoints;
   }
@@ -172,6 +198,7 @@ export class PetPointsLedger {
       purchased: this.purchasedItems,
       granted: this.grantedItems,
       streakFreezes: this.freezes,
+      radiant: this.radiantItems,
     });
   }
 
@@ -219,6 +246,31 @@ export class PetPointsLedger {
     this.purchasedItems.add(item);
   }
 
+  isRadiant(item: PetItem): boolean {
+    return this.radiantItems.has(item);
+  }
+
+  /** Whether `item` can be upgraded to Radiant now: owned, eligible, not upgraded yet, and affordable. */
+  canUpgrade(item: PetItem): boolean {
+    return this.owns(item) && isRadiantEligible(item) && !this.isRadiant(item) && this.balance >= radiantPrice(item);
+  }
+
+  /** Upgrades an owned item to Radiant for `radiantPrice(item)` points; throws a PetRadiantPurchaseError when it cannot. */
+  upgradeToRadiant(item: PetItem): void {
+    if (!isRadiantEligible(item)) throw new PetRadiantPurchaseError("notEligible");
+    if (!this.owns(item)) throw new PetRadiantPurchaseError("notOwned");
+    if (this.isRadiant(item)) throw new PetRadiantPurchaseError("alreadyRadiant");
+    const price = radiantPrice(item);
+    if (this.balance < price) throw new PetRadiantPurchaseError("notEnoughPoints", price - this.balance);
+    this.spentPoints += price;
+    this.radiantItems.add(item);
+  }
+
+  /** Keeps Radiant upgrades made on another copy of this ledger (owned here), whose points are already spent there. */
+  keepRadiant(other: PetPointsLedger): void {
+    for (const item of other.radiant) if (isRadiantEligible(item) && this.owns(item)) this.radiantItems.add(item);
+  }
+
   /** Buys an extra streak freeze; `streak` is the streak as it stands at `date`. */
   buyStreakFreeze(streak: StudyStreak, date: Instant): void {
     if (!streak.canBuyFreeze) throw new StreakFreezePurchaseError("holdingLimit");
@@ -245,6 +297,7 @@ export class PetPointsLedger {
       this.spent === other.spent &&
       sameSet(this.purchased, other.purchased) &&
       sameSet(this.granted, other.granted) &&
+      sameSet(this.radiant, other.radiant) &&
       this.freezes.length === other.streakFreezes.length &&
       this.freezes.every((value, index) => value === other.streakFreezes[index])
     );
@@ -258,6 +311,8 @@ export class PetPointsLedger {
       purchased: [...this.purchasedItems].sort(),
       ...(this.grantedItems.size > 0 ? { granted: [...this.grantedItems].sort() } : {}),
       ...(this.freezes.length > 0 ? { streakFreezes: this.freezes.map((instant) => instant - REFERENCE_DATE_OFFSET) } : {}),
+      /* Left out when empty, so saves without upgrades read as before. */
+      ...(this.radiantItems.size > 0 ? { radiant: [...this.radiantItems].sort() } : {}),
     };
   }
 
@@ -292,6 +347,11 @@ export class PetPointsLedger {
       purchased: items,
       granted: ids(object.granted, "granted").flatMap((id) => itemFromID(id) ?? []),
       streakFreezes: freezes,
+      /* Lenient like the Mac's `try?`: a radiant list that is not all strings reads as none. */
+      radiant:
+        Array.isArray(object.radiant) && object.radiant.every((id) => typeof id === "string")
+          ? (object.radiant as string[]).flatMap((id) => itemFromID(id) ?? [])
+          : [],
     });
   }
 }

@@ -47,7 +47,12 @@ final class PetCeilingTests: XCTestCase {
     func testTheRainCloudShowsUnderTheCeiling() {
         for breed in PetGallery.bodyShapeBreeds {
             for animation in [PetAnimation.idle, .walk, .sleep] {
-                let tallEars = [PetBodyShape.sphynxCat, .batEaredDog].contains(breed.bodyShape) && animation != .walk
+                // Where tall ears (the Sphynx, French Bulldog and Corgi
+                // sitting) or the dachshund's raised head lying down reach
+                // the spot, the lowered cloud would touch the pet, so it is
+                // left out there like any particle.
+                let blocked = ([PetBodyShape.sphynxCat, .batEaredDog, .pointyEaredDog].contains(breed.bodyShape)
+                               && animation == .idle) || (breed.bodyShape == .longDog && animation == .sleep)
                 let full = PetComposer.clip(animation, for: breed, accessories: [.rainCloud])
                 let fitted = PetComposer.clip(animation, for: breed, accessories: [.rainCloud], ceiling: 2)
                 XCTAssertGreaterThanOrEqual(top(fitted), 2, "\(breed) \(animation)")
@@ -57,7 +62,7 @@ final class PetCeilingTests: XCTestCase {
                     for (shown, art) in zip(ticks, wholeTicks) {
                         XCTAssertGreaterThanOrEqual(art.pixels.filter { $0 == .coat }.count, 10,
                                                     "the Closet shows the cloud: \(breed) \(animation)")
-                        guard !tallEars else { continue }
+                        guard !blocked else { continue }
                         XCTAssertGreaterThanOrEqual(shown.pixels.filter { $0 == .coat }.count, 10,
                                                     "the notch shows the cloud: \(breed) \(animation)")
                     }

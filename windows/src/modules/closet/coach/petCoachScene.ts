@@ -77,12 +77,12 @@ export class PetCoachScene {
     readonly line: PetCoachLine,
     clips?: PetClipSet,
   ) {
-    this.clips = clips ?? new PetClipSet({ breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories, bond: profile.bondLook });
+    this.clips = clips ?? new PetClipSet({ breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories, bond: profile.bondLook, radiant: profile.radiantLook });
   }
 
   /** A silent glance timed by the pet's own peek clips. */
   static glance(profile: PetProfile, startedAt: Instant): PetCoachScene {
-    const clips = new PetClipSet({ breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories, bond: profile.bondLook });
+    const clips = new PetClipSet({ breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories, bond: profile.bondLook, radiant: profile.radiantLook });
     const glance = PetCoachGlance.timedBy(startedAt, clips);
     return new PetCoachScene(profile, glance.stroll, { kind: "glance", glance }, clips);
   }

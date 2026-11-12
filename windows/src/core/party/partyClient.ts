@@ -87,7 +87,7 @@ export function profileBody(update: PartyProfileUpdate): ProfileBody {
   for (const field of PROFILE_BODY_FIELDS) {
     const value = update[field];
     if (value === undefined) continue;
-    if (field === "colors" || field === "accessories") body[field] = [...(value as readonly string[])];
+    if (field === "colors" || field === "accessories" || field === "radiant") body[field] = [...(value as readonly string[])];
     else (body as Record<string, unknown>)[field] = value;
   }
   return body;

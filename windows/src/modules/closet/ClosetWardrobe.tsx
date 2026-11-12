@@ -9,7 +9,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useStore } from "../../app/useStore";
-import { PetCloset, type PetClosetItemState, stateIsOwned } from "../../core/closet/petCloset";
+import { PetCloset, type PetClosetItemState, type PetRadiantState, stateIsOwned } from "../../core/closet/petCloset";
 import { PetEconomy } from "../../core/closet/petEconomy";
 import { howToEarn, limitedEditionOf } from "../../core/closet/petLimited";
 import { tr } from "../../core/localization/tr";
@@ -26,10 +26,18 @@ import { textWidth } from "../../ui/shell/measure";
 import { ClosetFooterDetail, ClosetFooterLink } from "./ClosetPanel";
 import type { ClosetStore } from "./closetStore";
 import { useElementSize } from "./useElementSize";
+import { ClosetRadiantGoalLine, ClosetRadiantSheet, ClosetRadiantTileButton } from "./ClosetRadiant";
+import { useContextMenu } from "../../ui/kit/ContextMenu";
 
 /** Thumbnails show each item alone on the pet, so the item reads clearly. */
 export function thumbnailModel(profile: PetProfile): PetProfile {
   return new PetProfile(profile.name, profile.breed, { paletteOverrides: profile.paletteOverrides, ...(profile.furTint ? { furTint: profile.furTint } : {}) });
+}
+
+/** A tile's picture: the item alone on the pet, a Radiant one with the still of its effect, as set. */
+function tileProfile(item: PetItem, model: PetProfile, radiant: PetRadiantState | undefined): PetProfile {
+  if (radiant?.kind === "radiant" && radiant.intensity !== "off") return PetCloset.radiantPreview(item, radiant.intensity, model);
+  return PetCloset.wearing(item, model);
 }
 
 export interface ScrollingGridProps {
@@ -80,8 +88,12 @@ export interface ClosetItemTileProps {
   /** Fresh in the catalog and not unlocked yet. */
   readonly isNew: boolean;
   readonly model: PetProfile;
+  /** Where the item stands for a Radiant upgrade: the tile's pip. The limited shelves leave it out. */
+  readonly radiant?: PetRadiantState;
   readonly onClick: () => void;
   readonly onHover: (inside: boolean) => void;
+  /** Opens the item's Radiant sheet. */
+  readonly onRadiant?: () => void;
 }
 
 /** Icon and title close together, for tiny tile labels. Port of ClosetTightLabelStyle. */
@@ -125,9 +137,26 @@ function tileLabel(item: PetItem, state: PetClosetItemState): ReactNode {
   }
 }
 
-function tileHelp(item: PetItem, state: PetClosetItemState, isNew: boolean): string {
+/** What a click does on an owned tile that has a Radiant upgrade, or undefined for the plain wording. */
+function radiantDetail(state: PetClosetItemState, radiant: PetRadiantState | undefined): string | undefined {
+  if (radiant === undefined || (state.kind !== "wearing" && state.kind !== "owned")) return undefined;
+  const wearing = state.kind === "wearing";
+  switch (radiant.kind) {
+    case "radiant":
+      return wearing ? tr("Radiant. Click to take off, or the star to set its effect") : tr("Radiant. Click to wear, or the star to set its effect");
+    case "affordable":
+    case "locked":
+      return wearing ? tr("Click to take off, or the star to make it Radiant") : tr("Click to wear, or the star to make it Radiant");
+    default:
+      return undefined;
+  }
+}
+
+function tileHelp(item: PetItem, state: PetClosetItemState, isNew: boolean, radiant?: PetRadiantState): string {
   const name = itemDisplayName(item);
   const fresh = isNew ? `${tr("New")}: ` : "";
+  const upgrade = radiantDetail(state, radiant);
+  if (upgrade !== undefined) return `${name}: ${upgrade}`;
   switch (state.kind) {
     case "wearing":
       return `${name}: ${tr("Click to take off")}`;
@@ -144,11 +173,28 @@ function tileHelp(item: PetItem, state: PetClosetItemState, isNew: boolean): str
   }
 }
 
-export function ClosetItemTile({ item, state, isNew, model, onClick, onHover }: ClosetItemTileProps) {
+export function ClosetItemTile({ item, state, isNew, model, radiant, onClick, onHover, onRadiant }: ClosetItemTileProps) {
   const isLocked = state.kind === "locked";
   const owned = stateIsOwned(state);
-  return (
-    <Tooltip text={tileHelp(item, state, isNew)}>
+  const [hovering, setHovering] = useState(false);
+  const menu = useContextMenu(() => {
+    if (radiant === undefined || onRadiant === undefined) return [];
+    switch (radiant.kind) {
+      case "radiant":
+        return [{ title: tr("Radiant Effect"), symbol: "sparkles", onSelect: onRadiant }];
+      case "affordable":
+      case "locked":
+        return [{ title: tr("Make Radiant"), symbol: "sparkles", onSelect: onRadiant }];
+      default:
+        return [];
+    }
+  });
+  const hover = (inside: boolean) => {
+    setHovering(inside);
+    onHover(inside);
+  };
+  const tile = (
+    <Tooltip text={tileHelp(item, state, isNew, radiant)}>
       <button
         type="button"
         className="closet-tile"
@@ -156,16 +202,26 @@ export function ClosetItemTile({ item, state, isNew, model, onClick, onHover }: 
         data-wearing={state.kind === "wearing" || undefined}
         aria-label={itemDisplayName(item)}
         onClick={onClick}
-        onPointerEnter={() => onHover(true)}
-        onPointerLeave={() => onHover(false)}
+        onContextMenu={menu.open}
+        onPointerEnter={() => hover(true)}
+        onPointerLeave={() => hover(false)}
       >
         <span className="closet-tile-sprite" style={{ opacity: owned ? 1 : isLocked ? 0.35 : 0.6, filter: isLocked ? "saturate(0.2)" : undefined }}>
-          <PetSprite profile={PetCloset.wearing(item, model)} pixelSize={1} />
+          <PetSprite profile={tileProfile(item, model, radiant)} pixelSize={1} />
         </span>
         <span className="closet-tile-label">{tileLabel(item, state)}</span>
         {isNew && <span className="closet-tile-new" aria-hidden="true" />}
       </button>
     </Tooltip>
+  );
+  if (radiant === undefined || onRadiant === undefined) return tile;
+  /* The pip sits over the tile's button, so it takes its own clicks. */
+  return (
+    <div className="closet-tile-holder" onPointerEnter={() => setHovering(true)} onPointerLeave={() => setHovering(false)}>
+      {tile}
+      <ClosetRadiantTileButton item={item} state={radiant} tileHovered={hovering} onClick={onRadiant} />
+      {menu.element}
+    </div>
   );
 }
 
@@ -194,6 +250,20 @@ export function ClosetWardrobe({ store }: { store: ClosetStore }) {
     setShown(item);
   };
 
+  const openRadiant = (item: PetItem) => {
+    setHovered(undefined);
+    store.tryOn(undefined);
+    store.showRadiant(item);
+  };
+
+  if (state.radiantSheet !== undefined) {
+    return (
+      <div className="closet-section closet-wardrobe">
+        <ClosetRadiantSheet store={store} item={state.radiantSheet} />
+      </div>
+    );
+  }
+
   return (
     <div className="closet-section closet-wardrobe" onPointerLeave={leave}>
       <ScrollingGrid store={store} scrollTo={shown} onScrolled={() => setShown(undefined)}>
@@ -209,8 +279,10 @@ export function ClosetWardrobe({ store }: { store: ClosetStore }) {
                     state={closet.state(item)}
                     isNew={closet.isNew(item)}
                     model={model}
+                    radiant={closet.radiantState(item)}
                     onClick={() => store.tap(item)}
                     onHover={(inside) => hover(item, inside)}
+                    onRadiant={() => openRadiant(item)}
                   />
                 ))}
               </div>
@@ -225,6 +297,8 @@ export function ClosetWardrobe({ store }: { store: ClosetStore }) {
 
 function detail(store: ClosetStore, item: PetItem): string {
   const state = store.closet.state(item);
+  const upgrade = radiantDetail(state, store.closet.radiantState(item));
+  if (upgrade !== undefined) return upgrade;
   switch (state.kind) {
     case "wearing":
       return tr("Click to take off");
@@ -248,8 +322,12 @@ function WardrobeFooter({ store, tryingOn, onShow }: { store: ClosetStore; tryin
   const closet = store.closet;
   const next = closet.nextUnlock;
   let content: ReactNode;
+  const goal = closet.radiantGoalProgress;
   if (tryingOn !== undefined) {
     content = <ClosetFooterDetail name={itemDisplayName(tryingOn)} detail={detail(store, tryingOn)} />;
+  } else if (goal !== undefined) {
+    /* A pinned Radiant goal takes the next unlock's place. */
+    content = <ClosetRadiantGoalLine goal={goal} onClick={() => store.showRadiant(goal.item)} />;
   } else if (next !== undefined && closet.save.ledger.earned === 0) {
     /* A brand-new pet: explain where points come from. */
     const name = itemDisplayName(next.item);

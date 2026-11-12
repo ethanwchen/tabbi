@@ -2,6 +2,7 @@ import { NO_BOND_LOOK, type PetBondLook } from "./petBond";
 import { PetClip, PetFrame, animationLoops, composeClip } from "./petClip";
 import type { PetAccessory, PetOutfit } from "./petCostume";
 import { PET_ANIMATIONS, type PetAnimation, type PetBreed } from "./petKinds";
+import { PetRadiantLook } from "./radiant/radiantResolver";
 
 /*
  * Port of PetAnimator.swift: every clip for one dressed pet (PetClipSet), and
@@ -14,6 +15,8 @@ export interface PetLook {
   readonly outfit?: PetOutfit;
   readonly accessories?: readonly PetAccessory[];
   readonly bond?: PetBondLook;
+  /** The Radiant effects to draw (`PetProfile.radiantLook`). */
+  readonly radiant?: PetRadiantLook;
 }
 
 /** What the closed notch's pet does. Port of PetMood. */
@@ -69,6 +72,7 @@ export class PetClipSet {
           outfit: look.outfit ?? "none",
           accessories: look.accessories ?? [],
           bond: look.bond ?? NO_BOND_LOOK,
+          radiant: look.radiant ?? PetRadiantLook.none,
           ...(ceiling === undefined ? {} : { ceiling }),
         }),
       );
@@ -426,7 +430,7 @@ const clipCache: { key: string; clips: PetClipSet }[] = [];
  */
 export function cachedClipSet(look: PetLook, ceiling?: number): PetClipSet {
   const bond = look.bond ?? NO_BOND_LOOK;
-  const key = JSON.stringify([look.breed, look.outfit ?? "none", look.accessories ?? [], bond.collar, bond.happyIdle, bond.sparkle, ceiling ?? null]);
+  const key = JSON.stringify([look.breed, look.outfit ?? "none", look.accessories ?? [], bond.collar, bond.happyIdle, bond.sparkle, look.radiant?.key ?? "", ceiling ?? null]);
   const hit = clipCache.find((entry) => entry.key === key);
   if (hit) return hit.clips;
   const clips = new PetClipSet(look, ceiling);

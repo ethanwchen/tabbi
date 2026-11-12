@@ -7,6 +7,10 @@ import type { PetAccessory, PetOutfit } from "./petCostume";
 import type { PetAnimation, PetBreed } from "./petKinds";
 import { poseKey, type PetPoint } from "./petPose";
 import { stillIndex, type PetTimeline, type TimelineCoordinate, type TimelineFrame } from "./petTimeline";
+import type { PetItem } from "./petItem";
+import { radiantFrames } from "./radiant/radiantComposer";
+import { newRadiantReport, type RadiantRenderReport } from "./radiant/radiantRenderer";
+import { PetRadiantLook, RadiantLayout } from "./radiant/radiantResolver";
 
 /*
  * Port of PetFrame, PetClip and PetComposer.clip: an animation built for a
@@ -157,7 +161,9 @@ function place(coordinate: TimelineCoordinate, origin: number): number {
 /**
  * Builds `animation` for a dressed breed. `ceiling` is for a view that cuts
  * off the frame's top rows (the closed notch): nothing is drawn above that
- * row and nothing is ever drawn cut in half.
+ * row and nothing is ever drawn cut in half. `radiant` adds the Radiant
+ * effects of the upgraded items worn (`RadiantLayout`): every frame then
+ * loops over the Radiant loop too.
  */
 export function composeClip(
   animation: PetAnimation,
@@ -166,13 +172,38 @@ export function composeClip(
     outfit?: PetOutfit;
     accessories?: readonly PetAccessory[];
     bond?: PetBondLook;
+    radiant?: PetRadiantLook;
     ceiling?: number;
   } = {},
 ): PetClip {
   const outfit = options.outfit ?? "none";
   const accessories = options.accessories ?? [];
+  const look = options.radiant ?? PetRadiantLook.none;
+  const layout = look.isEmpty ? undefined : RadiantLayout.resolve(look, outfit, accessories);
+  return composeClipWithLayout(animation, breed, { ...options, layout, report: newRadiantReport() });
+}
+
+/**
+ * `composeClip` with the Radiant layout given (the tests force placements),
+ * adding what the effects drew to `report`.
+ */
+export function composeClipWithLayout(
+  animation: PetAnimation,
+  breed: PetBreed,
+  options: {
+    outfit?: PetOutfit;
+    accessories?: readonly PetAccessory[];
+    bond?: PetBondLook;
+    layout: RadiantLayout | undefined;
+    ceiling?: number;
+    report: RadiantRenderReport;
+  },
+): PetClip {
+  const outfit = options.outfit ?? "none";
+  const accessories = options.accessories ?? [];
   const bond = options.bond ?? NO_BOND_LOOK;
   const ceiling = options.ceiling;
+  const layout = options.layout;
   const timeline = animationTimeline(animation);
   const loop = itemLoopLength(outfit, accessories, bond);
   /* One composed frame per tick of the item loop, so animated items stay anchored to every pose. Frames that repeat a pose share it. */
@@ -229,6 +260,12 @@ export function composeClip(
     if (composed.aura) {
       canvas = canvas.scattering(ceiling === undefined ? composed.aura : composed.aura.keepingParticles(ceiling));
     }
+    if (composed.loweringAura) {
+      /* Moved down as a whole, so the rain cloud and its drops stay together. */
+      const lowering = composed.loweringAura;
+      const top = lowering.opaqueBounds?.minY ?? 0;
+      canvas = canvas.scattering(ceiling === undefined ? lowering : lowering.shifted(0, Math.max(0, ceiling - top)));
+    }
     /* Wings go behind the pet and its effects. */
     if (composed.back) canvas = canvas.overRinging(composed.back.shifted(0, step.shiftY + drop), effects);
     return canvas;
@@ -256,7 +293,21 @@ export function composeClip(
   const frames = timeline.frames.map((step, index) => {
     const composed = phases[index] ?? [];
     const drop = fittingDrop(step, composed);
-    const canvases = composed.map((item) => finish(step, item, drop));
+    let canvases = composed.map((item) => finish(step, item, drop));
+    if (layout) {
+      canvases = radiantFrames(layout, canvases, animation, ceiling, options.report, (item: PetItem | undefined, phase) => {
+        /* The same frame without one item (or without any), finished alike. */
+        let withoutOutfit: PetOutfit = "none";
+        let withoutAccessories: readonly PetAccessory[] = [];
+        if (item?.startsWith("outfit.")) {
+          withoutAccessories = accessories;
+        } else if (item !== undefined) {
+          withoutOutfit = outfit;
+          withoutAccessories = accessories.filter((accessory) => `accessory.${accessory}` !== item);
+        }
+        return finish(step, compose(breed, step.pose, withoutOutfit, withoutAccessories, bond, step.stance, phase), drop);
+      });
+    }
     const first = canvases[0];
     if (!first) throw new Error(`No frame composed for ${animation}`);
     /* A frame where the moving item is out of sight (a hanging pet shows no body) holds still. */

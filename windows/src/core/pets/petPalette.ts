@@ -210,12 +210,14 @@ export const PET_PALETTE_ROLES = [
   "violet",
   /* Soft sky blue: the Cozy Pajamas and the Nightcap. */
   "sky",
+  /* The Radiant highlight: a glint brighter than `effect`, so it reads on gold and on light fur (`radiantArt`). */
+  "radiant",
 ] as const;
 
 export type PetPaletteRole = (typeof PET_PALETTE_ROLES)[number];
 
 /** The grid character of each role, in `PET_PALETTE_ROLES` order. */
-const ROLE_SYMBOLS = "OBSAKWEiLNRPCDTUVGJQYMZzHFIXovk";
+const ROLE_SYMBOLS = "OBSAKWEiLNRPCDTUVGJQYMZzHFIXovkr";
 
 export function roleSymbol(role: PetPaletteRole): string {
   return ROLE_SYMBOLS.charAt(roleIndex(role));

@@ -77,6 +77,12 @@ export interface CostumeAuraItem {
   readonly front: CostumePlacement;
   readonly side: CostumePlacement;
   readonly longDog: CostumePlacement;
+  /**
+   * Under a ceiling (the closed notch), the item moves down as a whole until
+   * its top row is at the ceiling, instead of leaving out what reaches above
+   * it: the rain cloud hangs at the frame's top.
+   */
+  readonly lowersUnderCeiling: boolean;
 }
 
 /** Frames in an item's loop; 1 for an item that stays still. */
@@ -345,7 +351,11 @@ export class PetArtFile {
         front,
         side: placement(item.side, `${name}.side`),
         longDog: item.longDog === undefined ? front : placement(item.longDog, `${name}.longDog`),
+        lowersUnderCeiling: item.lowersUnderCeiling === undefined ? false : item.lowersUnderCeiling === true,
       };
+      if (item.lowersUnderCeiling !== undefined && typeof item.lowersUnderCeiling !== "boolean") {
+        throw invalidValue(`${name}.lowersUnderCeiling`, String(item.lowersUnderCeiling));
+      }
       for (const view of ["side", "longDog"] as const) {
         if (aura[view].frames.length !== auraFrameCount(aura)) {
           throw new PetArtLoadError(

@@ -56,7 +56,8 @@ describe("PetArt", () => {
   it("every bundled art file loads", () => {
     const folder = fileURLToPath(new URL(`../../../../${ART_FOLDER}`, import.meta.url));
     const names = readdirSync(folder)
-      .filter((name) => name.endsWith(".json"))
+      /* The Radiant effects live beside the art in their own formats (`radiantArt`). */
+      .filter((name) => name.endsWith(".json") && !name.startsWith("radiant"))
       .map((name) => name.slice(0, -".json".length))
       .sort();
     expect(names).toEqual(FAMILIES);

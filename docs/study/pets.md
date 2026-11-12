@@ -208,7 +208,7 @@ From the front they fall in the free columns on both sides of the pet; from the 
 The Sparkle Trail loops over 12 ticks: each sparkle glints for four (a gold dot, a gold star with a white heart for two ticks, then a white dot) and a new one starts every tick, so four show at a time.
 From the front they twinkle in place beside and above the pet; from the side each is born at the pet's back and drifts a pixel back per tick, so they trail behind it.
 The Tiny Rain Cloud is one particle, a white cloud with two puffs and a grey underside, that hangs beside the head from the front and over the back on a walk.
-It hangs at the frame's top, so under the closed notch's ceiling it moves down as a whole (`lowersUnderCeiling` in `costume.json`) rather than leave only its drops in view; the Sphynx's and French Bulldog's tall ears reach that spot, so there the sitting pet's notch shows the drops alone.
+It hangs at the frame's top, so under the closed notch's ceiling it moves down as a whole (`lowersUnderCeiling` in `costume.json`) rather than leave only its drops in view; where tall ears (the Sphynx, French Bulldog and Corgi sitting) or the dachshund's head lying down reach that spot, the notch shows the drops alone.
 Its drops fall a row a tick over an 8-tick loop, and each drop goes away as it reaches the pet, so the rain seems to land on it.
 The dachshund sits side-on with its head where other pets leave air, so an aura item may give it a loop of its own (`longDog`); the cloud uses one to hang over its back.
 

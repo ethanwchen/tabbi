@@ -115,7 +115,7 @@ With Sign in with Apple it travels in the account's `unlocks` as `radiant.<item 
 The Closet can pin one upgrade as a goal; the Wardrobe footer then shows "Radiant Blindfolded Sorcerer 4,210 of 9,750" with a thin bar in place of the next unlock, and "ready to upgrade" once the balance covers it.
 The pin stays on the Mac it was set on.
 
-`PetEconomyTests` checks the 5x rule for every Radiant item, that every upgrade costs more than any showpiece, and that an upgrade needs the item, happens once, and spends exactly its price.
+`RadiantEconomyTests` checks the 5x rule for every Radiant item, that every upgrade costs more than any Showpiece, and that an upgrade needs the item, happens once, and spends exactly its price.
 
 ## Limited edition items
 

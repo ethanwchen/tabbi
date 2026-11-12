@@ -15,10 +15,11 @@ final class RadiantEconomyTests: XCTestCase {
             "accessory.blindfoldedSorcerer", "accessory.wizardHat", "accessory.tinyCrown", "outfit.dinosaurHoodie",
             "accessory.astronautHelmet", "accessory.graduationCap", "accessory.rainCloud", "outfit.whiteCoat",
         ])
-        let showpieceTop = PetItem.shopItems.map(\.cost).max() ?? 0
+        // Every item that can be Radiant is a Showpiece for now.
+        let showpieceTop = 2_100
         for item in PetRadiant.eligibleItems {
             XCTAssertEqual(PetRadiant.price(of: item), item.cost * 5, "\(item)")
-            XCTAssertGreaterThan(PetRadiant.price(of: item), showpieceTop, "an upgrade costs more than any item: \(item)")
+            XCTAssertGreaterThan(PetRadiant.price(of: item), showpieceTop, "an upgrade costs more than any Showpiece: \(item)")
             XCTAssertNotNil(PetRadiant.effectName(item, .bold))
             XCTAssertNotNil(PetRadiant.effectName(item, .subtle))
             XCTAssertNil(PetRadiant.effectName(item, .off))

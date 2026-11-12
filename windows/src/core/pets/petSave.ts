@@ -1,6 +1,8 @@
 import { editionItem } from "../closet/petLimited";
 import { PetProfile } from "./petProfile";
+import { itemFromID, type PetItem } from "./petItem";
 import { PetPointsLedger } from "./petUnlocks";
+import { isRadiantEligible } from "./radiant/radiantResolver";
 
 /*
  * Port of PetSave: the pet's whole persisted state in one versioned JSON
@@ -19,6 +21,12 @@ export class PetSave {
   creditedFocusCount: number | undefined;
   /** The module whose clock `creditedFocusCount` counts. */
   creditedFocusSource: string | undefined;
+  /**
+   * The Radiant upgrade pinned as a goal in the Closet, as its id, so a save
+   * naming an item from a newer build still loads. Kept on this computer
+   * only; cleared once the item is upgraded.
+   */
+  private radiantGoalID: string | undefined;
 
   constructor(profile: PetProfile, ledger: PetPointsLedger = new PetPointsLedger()) {
     this.version = PetSave.currentVersion;
@@ -35,6 +43,20 @@ export class PetSave {
     this.profileValue = profile;
   }
 
+  /** The pinned Radiant goal, or undefined. */
+  get radiantGoal(): PetItem | undefined {
+    return this.radiantGoalID === undefined ? undefined : itemFromID(this.radiantGoalID);
+  }
+
+  set radiantGoal(item: PetItem | undefined) {
+    this.radiantGoalID = item;
+  }
+
+  /** Whether `item` can be pinned as a Radiant goal: owned, eligible and not upgraded yet. */
+  canPinRadiantGoal(item: PetItem): boolean {
+    return this.ledger.owns(item) && isRadiantEligible(item) && !this.ledger.isRadiant(item);
+  }
+
   /** Whether this pet holds the Founder's Pin, which only the Founding Member entitlement grants. */
   get isFoundingMember(): boolean {
     return this.ledger.owns(editionItem("foundingMember"));
@@ -46,6 +68,7 @@ export class PetSave {
     copy.version = this.version;
     copy.creditedFocusCount = this.creditedFocusCount;
     copy.creditedFocusSource = this.creditedFocusSource;
+    copy.radiantGoalID = this.radiantGoalID;
     return copy;
   }
 
@@ -57,6 +80,7 @@ export class PetSave {
       ledger: this.ledger.toJSON(),
       ...(this.creditedFocusCount === undefined ? {} : { creditedFocusCount: this.creditedFocusCount }),
       ...(this.creditedFocusSource === undefined ? {} : { creditedFocusSource: this.creditedFocusSource }),
+      ...(this.radiantGoalID === undefined ? {} : { radiantGoalID: this.radiantGoalID }),
     };
   }
 
@@ -81,6 +105,8 @@ export class PetSave {
       save.creditedFocusCount = object.creditedFocusCount;
     }
     if (typeof object.creditedFocusSource === "string") save.creditedFocusSource = object.creditedFocusSource;
+    const goal = typeof object.radiantGoalID === "string" ? itemFromID(object.radiantGoalID) : undefined;
+    if (goal !== undefined && save.canPinRadiantGoal(goal)) save.radiantGoal = goal;
     return save;
   }
 }
