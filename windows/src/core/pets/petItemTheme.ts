@@ -5,10 +5,11 @@ import { SHOP_ITEMS } from "./petUnlocks";
 
 /*
  * Port of PetItemTheme: the shelves of the Closet wardrobe, and each item's
- * catalog release for the "New" badge.
+ * catalog release for the "New" badge. The Heirloom shelf comes last and
+ * holds every Heirloom tier item, so the wardrobe lists cheaper tiers first.
  */
 
-export const PET_ITEM_THEMES = ["study", "cozy", "fantasy", "seasonal", "silly"] as const;
+export const PET_ITEM_THEMES = ["study", "cozy", "fantasy", "seasonal", "silly", "heirloom"] as const;
 export type PetItemTheme = (typeof PET_ITEM_THEMES)[number];
 
 export function themeDisplayName(theme: PetItemTheme): string {
@@ -23,6 +24,8 @@ export function themeDisplayName(theme: PetItemTheme): string {
       return tr("Seasonal");
     case "silly":
       return tr("Silly");
+    case "heirloom":
+      return tr("Heirloom");
   }
 }
 
@@ -53,6 +56,15 @@ export function itemTheme(item: PetItem): PetItemTheme {
       case "astronautSuit":
       case "starryCloak":
         return "fantasy";
+      case "librarianCardigan":
+      case "varsityJacket":
+        return "study";
+      case "keepersPeacoat":
+      case "rainSlicker":
+      case "koiYukata":
+      case "sushiChef":
+      case "snowDayPuffer":
+        return "heirloom";
     }
   }
   switch (parts.accessory) {
@@ -75,6 +87,7 @@ export function itemTheme(item: PetItem): PetItemTheme {
     case "littleSprout":
     case "blossomSprout":
     case "tinyLantern":
+    case "strawberryCap":
       return "cozy";
     case "tinyCrown":
     case "wizardHat":
@@ -87,6 +100,7 @@ export function itemTheme(item: PetItem): PetItemTheme {
     case "halo":
     case "sparkleTrail":
     case "explorersHat":
+    case "aviatorCap":
       return "fantasy";
     case "frogHat":
     case "cowboyHat":
@@ -96,7 +110,10 @@ export function itemTheme(item: PetItem): PetItemTheme {
     case "rainCloud":
     case "beeAntennae":
     case "sportySweatband":
+    case "cactusPot":
       return "silly";
+    case "fireflies":
+      return "heirloom";
     default:
       return "seasonal";
   }
@@ -126,6 +143,14 @@ export function itemRelease(item: PetItem): number {
       case "cozyPajamas":
       case "bakersApron":
         return 6;
+      case "librarianCardigan":
+      case "varsityJacket":
+      case "keepersPeacoat":
+      case "rainSlicker":
+      case "koiYukata":
+      case "sushiChef":
+      case "snowDayPuffer":
+        return 7;
       default:
         return 2;
     }
@@ -171,13 +196,22 @@ export function itemRelease(item: PetItem): number {
     case "friendshipBandana":
     case "tinyLantern":
       return 6;
+    case "daisyChain":
+    case "sailorCollar":
+    case "strawberryCap":
+    case "mushroomCap":
+    case "cactusPot":
+    case "sunHat":
+    case "aviatorCap":
+    case "fireflies":
+      return 7;
     default:
       return 2;
   }
 }
 
 /** Items from this release wear a "New" badge until owned. */
-export const LATEST_RELEASE = 3;
+export const LATEST_RELEASE = 7;
 
 /** Limited edition items never wear it: their shelf has its own badge. */
 export function itemIsNew(item: PetItem): boolean {

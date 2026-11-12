@@ -51,14 +51,20 @@ Every paid price sits inside one tier, and there are gaps between tiers, so the 
 | --- | --- | --- | --- |
 | Free | 0 | owned from the start | Cozy Scarf, Party Hat, Bow Tie (one per playful theme) |
 | Starter | 35 to 105 | one day or less | Beanie 35, Round Glasses 50, Ninja Headband 65, Bunny Ears 75, Cool Sunglasses 90, Flower Crown 105 |
-| Mid-tier | 210 to 525 | 2 to 5 study days | Frog Hat 210, Scrubs 240, Stethoscope 270, Cowboy Hat 300, Surgical Cap 330, Chef Hat 360, Cozy Hoodie 390, Chunky Headphones 420, Head Mirror 450, Witch Hat 480, Pirate Hat 520 |
-| Showpiece | 1050 to 2100 | 2 to 4 study weeks | Tiny Crown 1050, Wizard Hat 1150, White Coat 1250, Superhero Cape 1400, Dinosaur Hoodie 1500, Tiny Rain Cloud 1600, Wizard Robe 1650, Cherry Petals 1700, Sparkle Trail 1750, Astronaut Helmet 1800, Halo 1900, Blindfolded Sorcerer 1950, Angel Wings 2000, King's Cape 2050, Graduation Cap 2100 |
+| Mid-tier | 210 to 525 | 2 to 5 study days | Frog Hat 210, Scrubs 240, Stethoscope 270, Cowboy Hat 300, Surgical Cap 330, Chef Hat 360, Cozy Hoodie 390, Chunky Headphones 420, Head Mirror 450, Witch Hat 480, Daisy Chain 490, Sailor Collar 500, Strawberry Cap 510, Pirate Hat 520 |
+| Showpiece | 1050 to 2100 | 2 to 4 study weeks | Tiny Crown 1050, Mushroom Cap 1100, Wizard Hat 1150, Potted Cactus 1200, White Coat 1250, Sunflower Sun Hat 1300, Aviator Cap 1350, Superhero Cape 1400, Librarian Cardigan 1450, Dinosaur Hoodie 1500, Varsity Jacket 1550, Tiny Rain Cloud 1600, Wizard Robe 1650, Cherry Petals 1700, Sparkle Trail 1750, Astronaut Helmet 1800, Halo 1900, Blindfolded Sorcerer 1950, Angel Wings 2000, King's Cape 2050, Graduation Cap 2100 |
+| Heirloom | 3150 to 6300 | 6 to 12 study weeks | Keeper's Peacoat 3200, Rain Slicker 3600, Koi Yukata 4200, Sushi Chef 4800, Snow Day Puffer 5400, Fireflies 6300 |
 
 The ranges come straight from the typical pace:
 
 - Starter: 1 to 105 points, at most one typical day.
 - Mid-tier: 2 x 105 = 210 to 525 points, two days to one week.
 - Showpiece: 2 x 525 = 1050 to 4 x 525 = 2100 points, two to four weeks.
+- Heirloom: 6 x 525 = 3150 to 12 x 525 = 6300 points, six to twelve weeks.
+
+The Heirloom tier is for students who already own the rest of the shop, so there is always something left to aim for.
+Its items sit on a shelf of their own at the end of the wardrobe (`PetItemTheme.heirloom`), after every theme shelf, so the shop still lists cheaper tiers first.
+At 2 hours a day the whole shop (66,190 points) takes about 394 days, and the Heirloom shelf alone (27,500 points) about 5 months.
 
 The cheapest paid item (the Beanie, 35) costs exactly one finished focus block, so the first session already buys something.
 Every price is distinct, so the shop's cheapest-first order never depends on ids.
@@ -70,7 +76,8 @@ Every price is distinct, so the shop's cheapest-first order never depends on ids
 - Every catalog price falls inside a tier.
 - The cheapest paid item costs one typical block.
 - Each tier has at least three items, and the shop lists cheaper tiers first.
-- Starters take one typical day, mid-tier items 2 to 5 days, showpieces 10 to 20 study days.
+- Starters take one typical day, mid-tier items 2 to 5 days, showpieces 10 to 20 study days, heirlooms 30 to 60 study days.
+- Heirloom items, and only they, are on the Heirloom shelf, which comes last.
 
 ## What the shop shows
 

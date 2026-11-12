@@ -703,6 +703,8 @@
 	<string>Автоматизация</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>Доступно, когда %@ запущен как пакет приложения.</string>
+	<key>Aviator Cap</key>
+	<string>Шлем пилота</string>
 	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
 	<string>Нежно-голубой и облачно-белый, как пакет черничного молока.</string>
 	<key>Back</key>
@@ -1197,6 +1199,8 @@
 	<string>Дневная цель достигнута</string>
 	<key>Daily reminder</key>
 	<string>Ежедневное напоминание</string>
+	<key>Daisy Chain</key>
+	<string>Ромашковое ожерелье</string>
 	<key>Darker squares mean more time studied</key>
 	<string>Чем темнее клетка, тем больше учебы</string>
 	<key>Day</key>
@@ -1415,6 +1419,8 @@
 	<string>Выполни все три, и месяц засчитается для значка «Задания месяца».</string>
 	<key>Finish setup</key>
 	<string>Завершить настройку</string>
+	<key>Fireflies</key>
+	<string>Светлячки</string>
 	<key>Fireplace</key>
 	<string>Камин</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
@@ -1653,6 +1659,8 @@
 	<string>Очки-сердечки</string>
 	<key>Heartbeat</key>
 	<string>Пульс</string>
+	<key>Heirloom</key>
+	<string>Реликвии</string>
 	<key>Hi! I'm %@.</key>
 	<string>Привет! Я %@.</string>
 	<key>Hidden</key>
@@ -1849,12 +1857,16 @@
 	<string>Оставить это имя</string>
 	<key>Keep your current kit and tabs</key>
 	<string>Оставить текущий набор и вкладки</string>
+	<key>Keeper's Peacoat</key>
+	<string>Бушлат смотрителя маяка</string>
 	<key>Kindred spirits</key>
 	<string>Родные души</string>
 	<key>King's Cape</key>
 	<string>Королевская мантия</string>
 	<key>Kit</key>
 	<string>Набор</string>
+	<key>Koi Yukata</key>
+	<string>Юката с карпами кои</string>
 	<key>Lapel Glint</key>
 	<string>Блик лацкана</string>
 	<key>Large</key>
@@ -1905,6 +1917,8 @@
 	<string>Питомец иногда скажет ободряющую фразу сразу после фокус-сессии, не чаще раза в день</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>Питомец выйдет из выреза, если ты отвлекаешься во время фокус-фазы</string>
+	<key>Librarian Cardigan</key>
+	<string>Кардиган библиотекаря</string>
 	<key>Like</key>
 	<string>Нравится</string>
 	<key>Like Sam or Dr. Sam</key>
@@ -2059,6 +2073,8 @@
 	<string>Перенести на сегодня</string>
 	<key>Move up</key>
 	<string>Переместить вверх</string>
+	<key>Mushroom Cap</key>
+	<string>Шляпка-гриб</string>
 	<key>Music</key>
 	<string>Музыка</string>
 	<key>Mute</key>
@@ -2673,6 +2689,8 @@
 	<string>Очки: 1 за каждую минуту фокуса и бонус за завершенную сессию</string>
 	<key>Pomodoro</key>
 	<string>Помодоро</string>
+	<key>Potted Cactus</key>
+	<string>Кактус в горшке</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Для статистики Claude и ответов.</string>
 	<key>Preset %@</key>
@@ -2741,6 +2759,8 @@
 	<string>Сияние. Нажми, чтобы надеть, или на звезду для эффекта</string>
 	<key>Rain</key>
 	<string>Дождь</string>
+	<key>Rain Slicker</key>
+	<string>Дождевик</string>
 	<key>Rainbow After Rain</key>
 	<string>Радуга после дождя</string>
 	<key>Rare</key>
@@ -2909,6 +2929,8 @@
 	<string>Работает на этом Mac</string>
 	<key>Sage's Robe</key>
 	<string>Мантия мудреца</string>
+	<key>Sailor Collar</key>
+	<string>Матросский воротник</string>
 	<key>Sakura Sprig</key>
 	<string>Веточка сакуры</string>
 	<key>Save</key>
@@ -3151,6 +3173,8 @@
 	<string>Медленный вдох</string>
 	<key>Smooth</key>
 	<string>Плавно</string>
+	<key>Snow Day Puffer</key>
+	<string>Пуховик для снежного дня</string>
 	<key>Snowy Scarf</key>
 	<string>Снежный шарф</string>
 	<key>Some evidence</key>
@@ -3303,6 +3327,8 @@
 	<string>Остановить прослушивание</string>
 	<key>Stopped</key>
 	<string>Остановлено</string>
+	<key>Strawberry Cap</key>
+	<string>Клубничная шапочка</string>
 	<key>Streak</key>
 	<string>Серия</string>
 	<key>Streak unavailable</key>
@@ -3355,12 +3381,16 @@
 	<string>Предложить идею или сообщить об ошибке</string>
 	<key>Summer</key>
 	<string>Лето</string>
+	<key>Sunflower Sun Hat</key>
+	<string>Шляпа с подсолнухом</string>
 	<key>Sunset Shades</key>
 	<string>Закатные очки</string>
 	<key>Superhero Cape</key>
 	<string>Плащ супергероя</string>
 	<key>Surgical Cap</key>
 	<string>Хирургическая шапочка</string>
+	<key>Sushi Chef</key>
+	<string>Сушимастер</string>
 	<key>Sweet</key>
 	<string>Сладкие</string>
 	<key>Switch Kit</key>
@@ -3851,6 +3881,8 @@
 	<string>Неделя Валентина</string>
 	<key>Validate</key>
 	<string>Проверить</string>
+	<key>Varsity Jacket</key>
+	<string>Студенческая куртка</string>
 	<key>Version %@</key>
 	<string>Версия %@</string>
 	<key>Version %@ (%@)</key>

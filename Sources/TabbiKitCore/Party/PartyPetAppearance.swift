@@ -188,6 +188,14 @@ public enum PartyPetAppearance {
         case .scholarsRobe: "scholars-robe"
         case .sagesRobe: "sages-robe"
         case .bakersApron: "bakers-apron"
+        // Added in catalog version 5.
+        case .librarianCardigan: "librarian-cardigan"
+        case .varsityJacket: "varsity-jacket"
+        case .keepersPeacoat: "keepers-peacoat"
+        case .rainSlicker: "rain-slicker"
+        case .koiYukata: "koi-yukata"
+        case .sushiChef: "sushi-chef"
+        case .snowDayPuffer: "snow-day-puffer"
         }
     }
 
@@ -255,6 +263,15 @@ public enum PartyPetAppearance {
         case .sportySweatband: "sporty-sweatband"
         case .owlSpectacles: "owl-spectacles"
         case .tinyLantern: "tiny-lantern"
+        // Added in catalog version 5.
+        case .daisyChain: "daisy-chain"
+        case .sailorCollar: "sailor-collar"
+        case .strawberryCap: "strawberry-cap"
+        case .mushroomCap: "mushroom-cap"
+        case .cactusPot: "cactus-pot"
+        case .sunHat: "sun-hat"
+        case .aviatorCap: "aviator-cap"
+        case .fireflies: "fireflies"
         }
     }
 
@@ -306,6 +323,18 @@ public enum PartyPetAppearance {
         "owl-spectacles", "tiny-lantern",
     ]
 
+    /// The outfit and accessory ids catalog version 5 added (release 7's
+    /// shop items). A server still on version 4 refuses them, so
+    /// `PartyProfileUpdate.forCatalogVersion4()` leaves them out first.
+    static let version5Costumes: Set<String> = [
+        "librarian-cardigan", "varsity-jacket", "keepers-peacoat", "rain-slicker", "koi-yukata", "sushi-chef",
+        "snow-day-puffer",
+    ]
+    static let version5Accessories: Set<String> = [
+        "daisy-chain", "sailor-collar", "strawberry-cap", "mushroom-cap", "cactus-pot", "sun-hat", "aviator-cap",
+        "fireflies",
+    ]
+
     /// The server takes `#RRGGBB` only.
     private static func opaqueHex(_ color: PetColor) -> String {
         String(color.hex.prefix(7))
@@ -313,22 +342,32 @@ public enum PartyPetAppearance {
 }
 
 extension PartyProfileUpdate {
+    /// This update as a server on catalog version 4 takes it: the ids
+    /// version 5 added left out, and an outfit it has no id for sent as no
+    /// outfit, so friends there still see the rest of the pet.
+    public func forCatalogVersion4() -> PartyProfileUpdate {
+        var update = self
+        // A server that refused the update may not know `radiant` either.
+        update.radiant = nil
+        update.accessories = accessories.map { $0.filter { !PartyPetAppearance.version5Accessories.contains($0) } }
+        update.costume = costume.map { PartyPetAppearance.version5Costumes.contains($0) ? "none" : $0 }
+        return update
+    }
+
     /// This update as a server on catalog version 3 takes it: the ids
     /// version 4 added left out, and an outfit it has no id for sent as no
     /// outfit, so friends there still see the rest of the pet.
     public func forCatalogVersion3() -> PartyProfileUpdate {
-        var update = self
-        // A server that refused the update may not know `radiant` either.
-        update.radiant = nil
-        update.accessories = accessories.map { $0.filter { !PartyPetAppearance.version4Accessories.contains($0) } }
-        update.costume = costume.map { PartyPetAppearance.version4Costumes.contains($0) ? "none" : $0 }
+        var update = forCatalogVersion4()
+        update.accessories = update.accessories.map { $0.filter { !PartyPetAppearance.version4Accessories.contains($0) } }
+        update.costume = update.costume.map { PartyPetAppearance.version4Costumes.contains($0) ? "none" : $0 }
         return update
     }
 
     /// The next older catalog's version of this update after a server
     /// refused it, or nil when no older catalog would take anything less:
-    /// first without `radiant`, then without catalog version 4's ids, then
-    /// as version 1 takes it.
+    /// first without `radiant`, then without catalog version 5's ids, then
+    /// without version 4's, then as version 1 takes it.
     public var olderCatalogFallback: PartyProfileUpdate? {
         // A server from before Radiant refuses `radiant` as an unknown field:
         // first try without it, so friends there still see the rest.
@@ -337,6 +376,8 @@ extension PartyProfileUpdate {
             withoutRadiant.radiant = nil
             return withoutRadiant
         }
+        let version4 = forCatalogVersion4()
+        if version4 != self { return version4 }
         let version3 = forCatalogVersion3()
         if version3 != self { return version3 }
         let version1 = forCatalogVersion1()

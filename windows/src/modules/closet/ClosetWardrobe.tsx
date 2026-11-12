@@ -119,13 +119,13 @@ function tileLabel(item: PetItem, state: PetClosetItemState): ReactNode {
     case "affordable":
       return (
         <TightLabel symbol="star.fill" className="closet-tile-affordable">
-          {itemCost(item)}
+          {tr("%lld", itemCost(item))}
         </TightLabel>
       );
     case "locked":
       return (
         <TightLabel symbol="lock.fill" className="kit-tertiary">
-          {itemCost(item)}
+          {tr("%lld", itemCost(item))}
         </TightLabel>
       );
     case "unearned":

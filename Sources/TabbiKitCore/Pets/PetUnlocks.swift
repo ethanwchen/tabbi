@@ -56,8 +56,11 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
     /// a day, five days a week (`PetEconomy`, docs/economy.md). One starter
     /// per playful theme is free, so a new pet can dress up right away.
     /// Starters take one typical day or less (the first block buys the
-    /// beanie), mid-tier items two to five days, and the showpieces (the
-    /// sorcerer, the graduation cap) two to four weeks. Every price is
+    /// beanie), mid-tier items two to five days, the showpieces (the
+    /// sorcerer, the graduation cap) two to four weeks, and the heirlooms
+    /// (the Keeper's Peacoat, the Fireflies) six to twelve weeks, so a
+    /// student who owns everything else still has something to aim for.
+    /// Every price is
     /// distinct, so the shop order never depends on ids.
     /// Limited edition items have no price (0) and are not for sale.
     public var cost: Int {
@@ -92,6 +95,9 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
         case .accessory(.chunkyHeadphones): 420
         case .accessory(.headMirror): 450
         case .accessory(.witchHat): 480
+        case .accessory(.daisyChain): 490
+        case .accessory(.sailorCollar): 500
+        case .accessory(.strawberryCap): 510
         case .accessory(.pirateHat): 520
         // Showpieces: two to four typical weeks (1050 to 2100).
         case .accessory(.tinyCrown): 1050
@@ -110,6 +116,20 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
         case .accessory(.halo): 1900
         case .accessory(.angelWings): 2000
         case .accessory(.kingsCape): 2050
+        case .accessory(.mushroomCap): 1100
+        case .accessory(.cactusPot): 1200
+        case .accessory(.sunHat): 1300
+        case .accessory(.aviatorCap): 1350
+        case .outfit(.librarianCardigan): 1450
+        case .outfit(.varsityJacket): 1550
+        // Heirlooms: six to twelve typical weeks (3150 to 6300), for a
+        // student who already owns the rest of the shop.
+        case .outfit(.keepersPeacoat): 3200
+        case .outfit(.rainSlicker): 3600
+        case .outfit(.koiYukata): 4200
+        case .outfit(.sushiChef): 4800
+        case .outfit(.snowDayPuffer): 5400
+        case .accessory(.fireflies): 6300
         }
     }
 

@@ -465,3 +465,72 @@ extension CostumeArt {
     /// behind the head.
     static let tinyLantern = PetArt.costume.bodyItem("tinyLantern")
 }
+
+// MARK: - Release 7
+
+extension CostumeArt {
+    /// A violet knit cardigan with navy ribbing, sleeves, gold buttons and
+    /// reading glasses hanging from a gold chain at the chest.
+    static let librarianCardigan = PetArt.costume.bodyItem("librarianCardigan")
+
+    /// A crimson varsity jacket with white sleeves, gold-striped ribbing
+    /// and a gold letter on the chest.
+    static let varsityJacket = PetArt.costume.bodyItem("varsityJacket")
+
+    /// A navy peacoat with wide lapels over a white knit collar and two
+    /// rows of gold buttons.
+    static let keepersPeacoat = PetArt.costume.bodyItem("keepersPeacoat")
+
+    /// A yellow rain slicker with navy toggles and a high collar.
+    static let rainSlicker = PetArt.costume.bodyItem("rainSlicker")
+
+    /// The Rain Slicker's sou'wester: a yellow rain hat whose crown rests on
+    /// the skull and whose brim slopes down over the ears, a navy shadow
+    /// under it.
+    static let souwester = PetArt.costume.headItem("souwester")
+
+    /// An indigo yukata with its collar crossed left over right (a "y"
+    /// seen from the front), flowing sleeves, a pumpkin obi with a crimson
+    /// cord and white and orange koi.
+    static let koiYukata = PetArt.costume.bodyItem("koiYukata")
+
+    /// A white chef's jacket with a navy apron and a white wave pattern.
+    static let sushiChef = PetArt.costume.bodyItem("sushiChef")
+
+    /// The Sushi Chef's twisted navy and white headband, knotted at the side.
+    static let hachimaki = PetArt.costume.headItem("hachimaki")
+
+    /// A quilted puffer jacket in pumpkin orange with a zip and a high collar.
+    static let snowDayPuffer = PetArt.costume.bodyItem("snowDayPuffer")
+
+    /// The Snow Day Puffer's knit hat: a striped crown, a pom, and ear flaps
+    /// with braided ties hanging beside the face, clear of the eyes.
+    static let earflapHat = PetArt.costume.headItem("earflapHat")
+
+    /// A necklace of white daisies with gold centers on a green stem.
+    static let daisyChain = PetArt.costume.bodyItem("daisyChain")
+
+    /// A navy sailor collar with two white stripes, its square flap on the
+    /// back when walking, and a crimson neckerchief knotted under the chin.
+    static let sailorCollar = PetArt.costume.bodyItem("sailorCollar")
+
+    /// A red knit cap with gold seeds, a leafy crown, a stem and a ribbed band.
+    static let strawberryCap = PetArt.costume.headItem("strawberryCap")
+
+    /// A red toadstool cap with white spots and a cream underside with gills.
+    static let mushroomCap = PetArt.costume.headItem("mushroomCap")
+
+    /// A terracotta pot with a three-armed cactus and a pink bloom.
+    static let cactusPot = PetArt.costume.headItem("cactusPot")
+
+    /// A wide straw sun hat with a woven brim, a crimson band and a sunflower.
+    static let sunHat = PetArt.costume.headItem("sunHat")
+
+    /// A leather flying cap with flight goggles pushed up on the crown, a
+    /// fleece trim and ear flaps down past the ears.
+    static let aviatorCap = PetArt.costume.headItem("aviatorCap")
+
+    /// Fireflies that glow up green and gold and drift up as they glow, two
+    /// or three at a time, around the pet and above its back on a walk.
+    static let fireflies = PetArt.costume.auraItem("fireflies")
+}

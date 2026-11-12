@@ -47,6 +47,7 @@ const SNAPSHOT_STATES = [
   "goals-badges",
   "goals-trying",
   "goals-new",
+  "wardrobe-heirloom",
   "streak",
   "look",
   "weeks",
@@ -199,6 +200,8 @@ export const ClosetModule = defineModule(
             return show("goals", { tryingOnItem: outfitItem("astronautSuit") });
           case "goals-new":
             return show("wardrobe", { newGoal: true });
+          case "wardrobe-heirloom":
+            return show("wardrobe", { tryingOnItem: outfitItem("koiYukata"), scrolled: 1 });
           case "founding":
             return show("limited", { tryingOn: "foundersPin" });
           case "founding-unearned":

@@ -138,6 +138,21 @@ if arguments.dropFirst().first == "mastery" {
     exit(0)
 }
 
+// Release 7 items: `swift run PetGallery out/ release7` (Release7Sheets.swift),
+// `... release7 <item id>...` for some items' sheets only, `... release7 dump <item id>`
+// to print composed frames as symbols, or `... release7 check` for the eye and
+// pixel budget rules.
+if arguments.dropFirst().first == "release7" {
+    switch arguments.dropFirst(2).first {
+    case "dump": Release7Sheets.dump(arguments.dropFirst(3).first)
+    case "check":
+        let problems = Release7Sheets.check()
+        print(problems.isEmpty ? "all release 7 items pass" : problems.joined(separator: "\n"))
+    default: try Release7Sheets.write(to: outputDirectory, only: Array(arguments.dropFirst(2)))
+    }
+    exit(0)
+}
+
 // Store lineup: `swift run PetGallery out/ store` writes the pets the second
 // App Store set shows (docs/appstore/screenshots-v2), each a breed in a look,
 // as single transparent 32x32 frames, `store-<pet>-<animation>-<frame>.png`,

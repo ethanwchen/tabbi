@@ -282,7 +282,7 @@ describe("pet unlocks", () => {
     );
     const prices = SHOP_ITEMS.filter((item) => !isFree(item)).map(itemCost);
     expect(new Set(prices).size).toBe(prices.length);
-    expect(SHOP_ITEMS[SHOP_ITEMS.length - 1]).toBe(accessoryItem("graduationCap"));
+    expect(SHOP_ITEMS[SHOP_ITEMS.length - 1]).toBe(accessoryItem("fireflies"));
   });
 
   it("has stable ids that round-trip", () => {

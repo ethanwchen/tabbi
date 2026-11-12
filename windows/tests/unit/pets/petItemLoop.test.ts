@@ -31,7 +31,7 @@ function changedPixels(a: PetCanvas, b: PetCanvas): number {
 describe("PetItemLoop", () => {
   it("items with an effect and animated showpieces are the ones that animate", () => {
     const animatedShopItems = new Set<PetItem>(
-      (["angelWings", "kingsCape", "halo", "cherryPetals", "sparkleTrail", "rainCloud"] as const).map(accessoryItem),
+      (["angelWings", "kingsCape", "halo", "cherryPetals", "sparkleTrail", "rainCloud", "fireflies"] as const).map(accessoryItem),
     );
     for (const item of ALL_ITEMS) {
       expect(itemLoopFrameCount(item) > 1, item).toBe(itemEffect(item) !== undefined || animatedShopItems.has(item));
@@ -43,6 +43,7 @@ describe("PetItemLoop", () => {
       [accessoryItem("cherryPetals"), 24],
       [accessoryItem("sparkleTrail"), 12],
       [accessoryItem("rainCloud"), 8],
+      [accessoryItem("fireflies"), 12],
       [accessoryItem("flameHeadband"), 4],
       [accessoryItem("goldenLaurel"), 12],
       [accessoryItem("teamMedal"), 8],
@@ -114,7 +115,7 @@ describe("PetItemLoop", () => {
   }, 60_000);
 
   it("aura items float around the pet on every body shape", () => {
-    const auraItems: PetAccessory[] = ["cherryPetals", "sparkleTrail", "rainCloud"];
+    const auraItems: PetAccessory[] = ["cherryPetals", "sparkleTrail", "rainCloud", "fireflies"];
     expect(auraItems).toEqual(PET_ACCESSORIES.filter((a) => accessorySlot(a) === "aura"));
     for (const accessory of auraItems) {
       const loop = itemLoopFrameCount(accessoryItem(accessory));
