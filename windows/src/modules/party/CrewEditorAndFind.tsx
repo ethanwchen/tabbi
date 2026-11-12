@@ -35,6 +35,7 @@ import {
   FirstThatFits,
   useCrewIsCompact,
   useFitStep,
+  CrewName,
 } from "./CrewComponents";
 import { CrewBackPill } from "./CrewsPanel";
 import { PartyPillButton, PartyTextButton } from "./PartyComponents";
@@ -55,7 +56,7 @@ export function CrewEditorScreen({ crews, editing, from }: { crews: CrewsStore; 
   const [side, step] = useFitStep<HTMLDivElement>(1, `${compact}|${name}`);
   const actions = (titled: boolean) => (
     <div className="crew-editor-actions">
-      <CrewButton title={tr("Shuffle")} symbol="shuffle" titled={titled} help={tr("A random frame, emblem and color")} onClick={() => crews.shuffleCrest()} />
+      <CrewButton title={tr("crew.shuffle")} symbol="shuffle" titled={titled} help={tr("A random frame, emblem and color")} onClick={() => crews.shuffleCrest()} />
       <CrewButton
         title={isPublic ? tr("Public") : tr("Private")}
         symbol={isPublic ? "globe" : "lock.fill"}
@@ -89,9 +90,7 @@ export function CrewEditorScreen({ crews, editing, from }: { crews: CrewsStore; 
             <div className="crew-editor-crest" data-named={(!compact && step < 1) || undefined}>
               <CrewCrestView crest={draft.crest} pixelSize={CREW_CREST_REGULAR_PIXEL_SIZE} />
               {!compact && step < 1 && (
-                <span className="crew-tile-name kit-caption kit-user-text" data-empty={name === "" || undefined}>
-                  {name === "" ? tr("Crew name") : name}
-                </span>
+                <CrewName text={name === "" ? tr("Crew name") : name} className="crew-tile-name kit-caption kit-user-text" data-empty={name === "" || undefined} />
               )}
             </div>
             {/* A long word for Shuffle or Public gives way to the glyphs alone, with the words in their tooltips. */}

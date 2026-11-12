@@ -41,54 +41,17 @@ export function crewColors(): CrewColor[] {
 
 /** A frame's name, for the builder's tooltips. */
 export function crewFrameTitle(id: string): string {
-  switch (id) {
-    case "shield":
-      return tr("Shield");
-    case "seal":
-      return tr("Seal");
-    case "pennant":
-      return tr("Pennant");
-    case "hexagon":
-      return tr("Hexagon");
-    case "star":
-      return tr("Star");
-    case "heater":
-      return tr("Heater shield");
-    default:
-      return crestFrame(id).name;
-  }
+  return tr(crestFrame(id).name);
 }
 
-/** An emblem's name, for the builder's tooltips. */
+/**
+ * An emblem's name, for the builder's tooltips. Like a frame's, it is the
+ * English name in crew.json translated through the string catalog, where
+ * every name is a key, so a new emblem set is a data change; a name with no
+ * entry reads in English.
+ */
 export function crewEmblemTitle(id: string): string {
-  switch (id) {
-    case "owl":
-      return tr("Owl");
-    case "bird":
-      return tr("Early bird");
-    case "mug":
-      return tr("Coffee mug");
-    case "books":
-      return tr("Books");
-    case "headphones":
-      return tr("Headphones");
-    case "stopwatch":
-      return tr("Stopwatch");
-    case "moon":
-      return tr("Moon");
-    case "cloud":
-      return tr("Rain cloud");
-    case "cat":
-      return tr("Cat");
-    case "pup":
-      return tr("Pup");
-    case "turtle":
-      return tr("Turtle");
-    case "lamp":
-      return tr("Desk lamp");
-    default:
-      return crestEmblem(id).name;
-  }
+  return tr(crestEmblem(id).name);
 }
 
 export const CREW_LIMITS = {

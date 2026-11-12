@@ -84,6 +84,7 @@ export function PartyFriendsCard({ store, onFieldFocus, width = FRIENDS_WIDTH }:
       </div>
       <PartyCodeField
         placeholder={tr("Friend's code")}
+        shortPlaceholder={tr("Code")}
         symbol="person.badge.plus"
         length={PartyCode.friendCodeLength}
         help={tr("Type or paste a friend's %lld-character code and press Return", PartyCode.friendCodeLength)}

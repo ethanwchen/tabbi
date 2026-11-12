@@ -13,6 +13,7 @@ import { Card } from "../../ui/kit/Card";
 import { FoundingBadge } from "../../ui/kit/FoundingBadge";
 import { Icon } from "../../ui/kit/Icon";
 import { MarqueeText } from "../../ui/kit/MarqueeText";
+import { TextThatFits } from "../../ui/kit/TextThatFits";
 import { Tooltip } from "../../ui/kit/Tooltip";
 import { useElementWidth } from "../../ui/kit/useElementWidth";
 import { PartyCodeField, PartyCopyCode, PartyPet, PartyPillButton, PartyShareInvite, PartyTextButton, statusColor } from "./PartyComponents";
@@ -120,7 +121,8 @@ function PartyMemberView({ member, isMe, width, store, now }: { member: PartyMem
         </div>
         <div className="party-member-status kit-caption" style={{ color: roomy ? "var(--tertiary-text)" : statusColor(status) }}>
           {(roomy || shortStatus === undefined) && <span className="party-dot" style={{ background: statusColor(status) }} />}
-          {shortStatus !== undefined && <span className="party-nowrap">{shortStatus}</span>}
+          {/* The status shortens to the countdown when its words don't fit the column (German "noch 19 Min." in a crowded Compact party). */}
+          {shortStatus !== undefined && <TextThatFits className="party-member-status-text" candidates={countdown !== undefined && countdown !== shortStatus ? [shortStatus, countdown] : [shortStatus]} />}
         </div>
         {menu.element}
       </div>

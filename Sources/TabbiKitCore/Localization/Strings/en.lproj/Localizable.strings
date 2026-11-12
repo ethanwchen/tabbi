@@ -4435,6 +4435,8 @@
 	<string>card</string>
 	<key>cards</key>
 	<string>cards</string>
+	<key>crew.shuffle</key>
+	<string>Shuffle</string>
 	<key>day</key>
 	<string>day</string>
 	<key>day streak</key>

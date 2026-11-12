@@ -39,36 +39,54 @@ struct CrewEditorScreen: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
-    private var side: some View {
+    /// Shuffle and the Public or Private toggle; glyphs only when a
+    /// language's words do not fit beside the preview.
+    private func crestButtons(iconOnly: Bool) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .top, spacing: 8) {
+            CrewButton(title: String(localized: "crew.shuffle", defaultValue: "Shuffle", bundle: .tabbi), symbol: "shuffle",
+                       iconOnly: iconOnly, help: String(localized: "A random frame, emblem and color", bundle: .tabbi)) {
+                withMotion(Theme.Motion.snappy) { crews.shuffleCrest() }
+            }
+            CrewButton(title: draft.visibility == .public ? String(localized: "Public", bundle: .tabbi)
+                       : String(localized: "Private", bundle: .tabbi),
+                       symbol: draft.visibility == .public ? "globe" : "lock.fill", iconOnly: iconOnly,
+                       help: draft.visibility == .public
+                           ? String(localized: "Anyone can find it and ask to join. Click to make it private.", bundle: .tabbi)
+                           : String(localized: "Only people with the invite link can join. Click to make it public.", bundle: .tabbi)) {
+                crews.draft.visibility = draft.visibility == .public ? .private : .public
+            }
+            .accessibilityAddTraits(.isToggle)
+        }
+    }
+
+    /// The preview tile, Shuffle, Public and the fields; the name under the
+    /// crest goes when a two-line name would push the fields out of the panel.
+    private var side: some View {
+        ViewThatFits(in: .vertical) {
+            side(showsName: !isCompact)
+            side(showsName: false)
+        }
+    }
+
+    private func side(showsName: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .top, spacing: 6) {
                 VStack(spacing: 2) {
                     CrewCrestView(crest: draft.crest, pixelSize: CrewCrestArt.regularPixelSize)
-                    if !isCompact {
+                    if showsName {
                         Text(draft.cleanName.isEmpty ? String(localized: "Crew name", bundle: .tabbi) : CrewHyphenation.hyphenated(draft.cleanName))
                             .font(Theme.Typography.caption)
                             .foregroundStyle(draft.cleanName.isEmpty ? Theme.Palette.tertiaryText : Theme.Palette.primaryText)
                             .multilineTextAlignment(.center)
                             .lineLimit(2)
                             .fixedSize(horizontal: false, vertical: true)
-                            .frame(width: 68)
+                            .frame(width: 64)
                     }
                 }
-                .frame(width: 68)
-                VStack(alignment: .leading, spacing: 4) {
-                    CrewButton(title: String(localized: "Shuffle", bundle: .tabbi), symbol: "shuffle",
-                               help: String(localized: "A random frame, emblem and color", bundle: .tabbi)) {
-                        withMotion(Theme.Motion.snappy) { crews.shuffleCrest() }
-                    }
-                    CrewButton(title: draft.visibility == .public ? String(localized: "Public", bundle: .tabbi)
-                               : String(localized: "Private", bundle: .tabbi),
-                               symbol: draft.visibility == .public ? "globe" : "lock.fill",
-                               help: draft.visibility == .public
-                                   ? String(localized: "Anyone can find it and ask to join. Click to make it private.", bundle: .tabbi)
-                                   : String(localized: "Only people with the invite link can join. Click to make it public.", bundle: .tabbi)) {
-                        crews.draft.visibility = draft.visibility == .public ? .private : .public
-                    }
-                    .accessibilityAddTraits(.isToggle)
+                .frame(width: 64)
+                ViewThatFits(in: .horizontal) {
+                    crestButtons(iconOnly: false)
+                    crestButtons(iconOnly: true)
                 }
             }
             .padding(6)

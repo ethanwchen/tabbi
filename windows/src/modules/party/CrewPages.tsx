@@ -33,6 +33,7 @@ import {
   FirstThatFits,
   useCrewIsCompact,
   useFitStep,
+  CrewName,
 } from "./CrewComponents";
 import { CrewBackPill } from "./CrewsPanel";
 import type { CrewsStore } from "./crewsStore";
@@ -162,12 +163,13 @@ function CrewHeroLayout({ crews, crew, mine }: { crews: CrewsStore; crew: CrewDe
   /*
    * Nothing in the column is cut: when it runs out of room, "No medals yet"
    * goes first, then my crew's sentence takes its short form, then the
-   * history shows one week fewer at a time.
+   * history shows one week fewer at a time, and last the place caption.
    */
-  const [side, step] = useFitStep<HTMLDivElement>(2 + historyRows, `${summary.id}|${compact}|${onMyCrew}|${minutes}`);
+  const [side, step] = useFitStep<HTMLDivElement>(3 + historyRows, `${summary.id}|${compact}|${onMyCrew}|${minutes}`);
   const showsNoMedals = noMedals && !compact && step < 1;
   const sentence = minutes <= 0 ? tr("No hours yet this week") : mine && step < 2 ? tr("Your crew studied %@ this week", hours) : tr("%@ this week", hours);
   const shownHistory = Math.max(0, historyRows - Math.max(0, step - 2));
+  const showsPlace = step < 3 + historyRows;
   return (
     <div className="crew-hero-layout">
       <div ref={side} className="crew-hero">
@@ -177,10 +179,10 @@ function CrewHeroLayout({ crews, crew, mine }: { crews: CrewsStore; crew: CrewDe
             <CrewPetGroup pets={pets} overlap={9} />
           </span>
         </div>
-        {onMyCrew && <div className="crew-hero-name kit-title kit-user-text">{summary.name}</div>}
+        {onMyCrew && <CrewName text={summary.name} className="crew-hero-name kit-title kit-user-text" />}
         <div className="crew-hero-words">
           <div className="kit-body-emphasis crew-hero-sentence">{sentence}</div>
-          <div className="kit-caption kit-tertiary">{place}</div>
+          {showsPlace && <div className="kit-caption kit-tertiary">{place}</div>}
         </div>
         <CrewTally medals={crew.medals} />
         {showsNoMedals && <div className="kit-caption kit-tertiary">{tr("No medals yet")}</div>}

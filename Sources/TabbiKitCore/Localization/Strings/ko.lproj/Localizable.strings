@@ -4435,6 +4435,8 @@
 	<string>카드</string>
 	<key>cards</key>
 	<string>카드</string>
+	<key>crew.shuffle</key>
+	<string>섞기</string>
 	<key>day</key>
 	<string>일</string>
 	<key>day streak</key>

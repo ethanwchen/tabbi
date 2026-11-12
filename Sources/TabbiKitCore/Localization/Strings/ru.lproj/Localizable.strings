@@ -4435,6 +4435,8 @@
 	<string>карточка</string>
 	<key>cards</key>
 	<string>карточки</string>
+	<key>crew.shuffle</key>
+	<string>Случайно</string>
 	<key>day</key>
 	<string>день</string>
 	<key>day streak</key>

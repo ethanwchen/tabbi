@@ -226,6 +226,17 @@ final class CrewsTests: XCTestCase {
         XCTAssertEqual(CrewFormat.remainingValue(until: end, now: end.addingTimeInterval(10)), .lessThanAMinute)
     }
 
+    /// Long names get soft hyphens so a tile wraps them at a syllable, even
+    /// when the app's language has no hyphenation (a German name in Arabic).
+    func testLongNamesBreakAtSyllables() {
+        for language in ["en", "de", "ar", "ja"] {
+            let name = CrewHyphenation.hyphenated("Bibliotheksratten", locale: Locale(identifier: language))
+            XCTAssertTrue(name.contains("\u{AD}"), language)
+            XCTAssertEqual(name.replacingOccurrences(of: "\u{AD}", with: ""), "Bibliotheksratten")
+        }
+        XCTAssertEqual(CrewHyphenation.hyphenated("Night Owls"), "Night Owls", "short words stay whole")
+    }
+
     func testCountdownTicksWhenItsTextChanges() {
         let week = CrewWeek(id: "w", startsAt: Date(timeIntervalSince1970: 0), endsAt: Date(timeIntervalSince1970: 1_000_000))
         let now = Date(timeIntervalSince1970: 1_000_000 - 3 * 86_400 - 1_800)

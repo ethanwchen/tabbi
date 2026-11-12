@@ -4,7 +4,9 @@ import {
   CREW_LIMITS,
   crewColors,
   crewEmblems,
+  crewEmblemTitle,
   crewFrames,
+  crewFrameTitle,
   crewInviteAppURL,
   crewInviteWebURL,
   parseCrewInvite,
@@ -12,7 +14,7 @@ import {
   resolvedCrewEmblem,
   resolvedCrewFrame,
 } from "../../../src/core/crews/crewCatalog";
-import { crewsDemo, CREW_DEMO_SCENARIOS } from "../../../src/core/crews/crewDemo";
+import { crewsDemo, CREW_DEMO_SCENARIOS, demoEmblem } from "../../../src/core/crews/crewDemo";
 import { crewHours, crewNextChange, crewOrdinal, crewTenths, crewWeekLabel } from "../../../src/core/crews/crewFormat";
 import { composeCrest, crewCrestArt, decodeCrewCrestSet, randomCrest } from "../../../src/core/crews/crewCrestArt";
 import { CREW_LAURELS, CREW_VISIBILITIES, readCrewMember, readCrewSummary, type CrewBoardEntry } from "../../../src/core/crews/crewModels";
@@ -282,5 +284,20 @@ describe("crews pulse and formats", () => {
 
   it("labels a week of the history by its ISO number", () => {
     expect(crewWeekLabel({ id: "2026-W45", startsAt: 0, endsAt: 1 })).toBe("Wk 45");
+  });
+});
+
+describe("crest names and demo emblems", () => {
+  it("names frames and emblems from the art file", () => {
+    for (const id of crewFrames()) expect(crewFrameTitle(id)).not.toBe("");
+    for (const id of crewEmblems()) expect(crewEmblemTitle(id)).not.toBe("");
+  });
+
+  it("keeps a demo crew's emblem while the set has it, else picks one from its id", () => {
+    const known = crewEmblems()[0] as string;
+    expect(demoEmblem(known, "NGHTQWLS2K")).toBe(known);
+    const picked = demoEmblem("no-such-emblem", "NGHTQWLS2K");
+    expect(crewEmblems()).toContain(picked);
+    expect(demoEmblem("no-such-emblem", "NGHTQWLS2K")).toBe(picked);
   });
 });

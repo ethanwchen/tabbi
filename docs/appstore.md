@@ -402,7 +402,7 @@ Paste these lines into App Store Connect > the version > App Review Information 
 > 3. In Friends, type our demo friend's code DEMO_CODE and press Return. It accepts at once and shows in the list.
 > 4. Right-click Demo Friend > Report: pick a reason, Send Report (Also block is on by default). The report reaches our moderation queue. Or right-click > Block.
 > 5. Start a party for a party code and invite link (tabbi:// links open the app).
-> STUDY CREWS (same tab): click Crew at the top left of the Party tab, then the magnifier (Find crews), open Tabbi Review Crew to see its members' pets, and Join. Focus minutes from then on count toward the weekly top 3 on the right (it freezes Sunday 23:59 UTC). Report a crew with the flag on its page; right-click a member to report or block; owners can remove members. New crew makes one (name, icon, color, public or private). Top 3 crews win only a laurel on their icon and a trophy count, never points or purchases.
+> STUDY CREWS (same tab): click Crews at the top left of the Party tab, then Find, open Tabbi Review Crew to see its members' pets, and Ask to join; the demo account owns it and approves within a minute (an invite link joins at once). Focus minutes from then on count toward This week's top 3 (it freezes Sunday 23:59 UTC); Hall of Fame keeps the medals. Report a crew with the flag on its page; right-click a member to report or block; owners approve or decline requests and can remove members. Create a crew makes one (name, crest, public or private). Top 3 crews win only a laurel and a medal on their crest, never points or purchases.
 > Names pass a filter on the Mac and the server; the maintainer reviews every report and can rename or ban an identity. Contact: support@tabbinotch.com.
 > Signing in with Apple (Settings > General > Account) is optional, only syncs the pet, streaks and Party identity between the user's Macs, and asks for no personal information or birthday. Delete Account there deletes everything the server holds and revokes the grant (5.1.1(v)).
 > After a crash, an alert asks before sending a crash report (Send or Don't Send), and shows exactly what is sent.
@@ -419,7 +419,7 @@ npm run demo-friend -- create --url https://tabbi-friends.drosophil-anki-friends
 npm run demo-friend -- study --url https://tabbi-friends.drosophil-anki-friends-backend.workers.dev --token-file ~/.tabbi-demo-friend.json --hours 48 --party
 # optional, while the build is in review: shows it studying in a party the reviewer can join from the friend list
 npm run demo-friend -- study --url https://tabbi-friends.drosophil-anki-friends-backend.workers.dev --token-file ~/.tabbi-demo-friend.json --hours 48 --crew
-# for a build with Study Crews: keeps the public crew Tabbi Review Crew the notes point to, with the demo friend's minutes on the board
+# for a build with Study Crews: keeps the public crew Tabbi Review Crew the notes point to, with the demo friend's minutes on the board, and approves the reviewer's request to join it
 ```
 
 Reports the reviewer files about the demo friend land in the moderation queue like any other; resolve them as "no action" and never ban it.
@@ -449,7 +449,7 @@ Plan for the Study Crews release, so it does not repeat those rejections:
 - Guideline 5.1.1 (data and age): Crews ask for no new data and follow Party's age check, so they stay off under 13 and the server never receives an age; the App Privacy selections and age rating answers stay as they are (answer sheet above), with the descriptions updated.
 - Guideline 2.1 (completeness): the reviewer can test every step alone, since the demo friend keeps a public crew (`study --crew`), and a new crew can be made and left at once.
 - Guideline 3.1.1 and 5.3 (no purchases, no contests): the weekly top 3 win only a laurel on their icon, a trophy count and a featured spot; no points, prizes, payments or chance are involved.
-- Before submitting: deploy the Worker with protocol 3 and the crews migration, deploy the site with its `/crew/<code>` page, run `demo-friend study --crew`, and check Find crews, joining, the board and reporting on the TestFlight build against production.
+- Before submitting: deploy the Worker with protocol 3 and the crews migration, deploy the site with its `/crew/<code>` page, run `demo-friend study --crew`, and check Find, asking to join and the approval, the board, the Hall of Fame and reporting on the TestFlight build against production.
 
 ### Checklist for 1.0.4 (what the maintainer sets by hand)
 

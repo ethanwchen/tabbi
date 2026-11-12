@@ -164,26 +164,37 @@ Reference points for the level of expression (looked at, not copied; nothing sav
 
 ## App
 
-Crews are a section of the Party tab, identical on Mac and Windows.
-This section describes the first build; a full HIG-based layout and spacing spec for every Crews screen, the Hall of Fame included, is being drawn in `runs/crews/ui-design` and replaces it when it lands.
-A two-way switch, Party and Crew, sits where the Party stage's title was (and on top of the party lobby), so the friends column and the party keep their room; it shortens to two icons on a narrow panel.
-The Crew section keeps the Party tab's shape: a main card on the left and, where the friends column is, the weekly top 3.
+Crews are a mode of the Party tab, identical on Mac and Windows, built to the approved UI spec in `runs/crews/ui-design` (spec.md and prototype.html).
+A Party | Crews switch sits at the left of the Party header and of the lobby, so the live party stays the tab's hero and crews are one click away; on a narrow panel the header drops its labels in a fixed order (titles, then the share button) before anything is cut.
+Crews mode is one card with a pill row of four sections, My crew, This week, Hall of Fame and Find, and at most one pushed screen (a crew's page or the crest editor) with a back pill to the section that opened it.
+The pill row shows every title when they fit, then only the open section's title, then icons only; the trailing slot holds the section's own control (the countdown "New week in 3d 4h", the Hall of Fame caption, Create a crew, or Invite link and a More button).
 
-- The top 3 card shows this week's live race (rank, crest wearing its current laurel, name, hours, and "Your crew" on mine) with the countdown ("Ends in 2d 5h") in its header, and a This week or Last week switch at the bottom for last week's frozen winners with the laurels they won.
-  Clicking a crew opens its page in the main card.
-- My crew: the crest with its laurel, the name (up to two lines), this week's hours and rank, a meta line (Public or Private, members of 20, trophies) that falls back to icons, and the members' pets side by side with name and hours, owner first; the row scrolls sideways past what fits.
-  The header has Invite (copies the link), Find and a menu with Edit Crew (owner), Hide or Show My Pet on Crew Pages, and Leave Crew.
-  Right-click a member: Report and Block, and for the owner Remove from Crew; right-click my own pet: Hide or Show My Pet.
-- No crew yet: "Join a study crew" and "Study with a crew and climb the weekly top 3.", then New crew, Find crews and an invite code field; on a short panel the crest and then the second line give way so the ways in always show whole.
-- New crew and Edit crew: name, description and the crest builder (frames with Shuffle, emblems, colors) on the left; the right column turns into a live preview with Public or Private, what that means, the line "Every crew can appear on the weekly top 3 with its members' pets.", Cancel and Create (Save when editing).
-  The name filter answers as you type, in place of that line.
-- Find: Back, a search field on its own row, and up to 20 public crews (crest, name, members of 20, hours this week, Join or Full); a row opens the crew's page.
-- Another crew's page: Back, the same identity and pets, Join for a public crew with room, and the flag to report the crew.
-- A crew invite link opens the Party tab's Crew section with "Join this crew?" and Join Crew or Not Now.
+- This week: the top 3 as tiles (place chip, crest wearing last week's laurel, the three most active members' pets, a name that wraps to two lines, hours) beside a list of the other crews, and my crew pinned under a hairline when it is not in view.
+  At Compact the tiles become featured rows.
+  Ties share a place, shown as "5=" in the list; a quiet week shows the sleeping pet and "A quiet start to the week"; loading shows skeleton rows.
+- Hall of Fame: the same layout ranked by medals in Olympic order, each crew's gold, silver and bronze tally, and my crew pinned with "-" and 0 0 0 before its first medal.
+- My crew: a 168 pt side column (the 48 pt crest with up to three gold pips and up to four members' pets, the name, the week as a sentence, the place with Public or Private, the medal tally, and "No medals yet" when it is empty) beside the members, most hours first, each with pet, name, Study Level and hours.
+  The owner sees join requests on top with approve and decline, and "· 2 want to join" in the caption; the tab and the pill show a badge while requests wait.
+  The More button opens an in-panel menu with Edit crew (owner), Hide or Show My Pet on Crew Pages, and Leave crew.
+  Right-click a member to report or block, and for the owner to remove.
+- Without a crew: a waving pet with Create a crew and Find crews; while my request waits, "Waiting to join %@" with Cancel request.
+- Find: a search field and whole rows of public crews (crest, name, members of 20, hours this week, Full); a row opens the crew's page, where a public crew offers Ask to join (Requested once sent) and the flag reports it.
+- A crew's page: the hero column with the last three weeks (week, medal, place, hours) and the members.
+- New crew and Edit crew: a preview tile with the crest, the name as a tile wraps it, Shuffle and the Public or Private toggle, the name and description fields, and the frame, emblem (one scrolling row) and color pickers with "Every crew can appear on the weekly top 3 with its members' pets." under them.
+- A crew invite link opens My crew with "Join this crew?" and Join Crew or Not Now; an invite joins at once, while a public crew found in Find asks its owner.
+
+Lists show whole rows only: what does not fit scrolls, with "+N more" or a hairline at the cut, and rows snap as they scroll.
+Long crew names get soft hyphens from the name's own language (then English) so a tile breaks "Bibliotheks-ratten" at a syllable, even in a language with no hyphenation of its own.
+Numbers and ordinals follow the app's locale formatting, as every other number in Tabbi does.
+Medals are a 9 x 10 pixel sprite (`CrewMedalArt`) in gold, silver and bronze.
 
 Session reporting runs in the background while Party is connected and I am in a crew: finished `focus.completed` records are merged, queued in a small versioned file in the edition's Party storage, sent in batches of up to 20, and dropped once the server answered for them (any status but a transient error).
 
-Text never truncates in any of the 12 languages at any panel size: long labels move to a shorter form through `ViewThatFits` (Windows: the same fallbacks), names wrap to two lines where they would otherwise cut, user-written names that still do not fit end in an ellipsis with a tooltip, and Arabic mirrors the layout while the pixel art stays unmirrored.
+Text never truncates in any of the 12 languages at any panel size: each screen steps down through shorter forms with `ViewThatFits` (Windows: the same order).
+The hero drops "No medals yet", then takes the short "%@ this week", then drops history weeks one at a time, then the place caption; the members caption drops "this week", then the waiting count; the editor's Shuffle and Public buttons fall back to their glyphs, and the name under the preview goes when a two-line name would push the fields out.
+Names wrap to two lines where they would otherwise cut, and Arabic mirrors the layout while the pixel art stays unmirrored.
+
+New emblem sets are data: `scripts/crews-import-art.py emblems.json [frames-patch.json]` writes crew.json and the server's crews.json, the builder's tooltips read frame and emblem names from the data through the string catalog (the script lists names still missing a translation, and a test checks them), and the crest fixture is re-recorded with `TABBI_RECORD_FIXTURES=1`.
 
 ## App Store
 

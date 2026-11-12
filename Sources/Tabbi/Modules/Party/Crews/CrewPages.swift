@@ -115,7 +115,26 @@ struct CrewHeroLayout: View {
         }
     }
 
+    /// The side column at the most detail that fits the panel's height:
+    /// history weeks go first, then "No medals yet", then the
+    /// place caption at the tightest size; the crest, the sentence and the
+    /// tally always stay.
     private var side: some View {
+        let weeks = showsHistory ? min(crew.history.count, isCompact ? 2 : 3) : 0
+        let caption = crew.medals == CrewMedals() && !isCompact
+        return ViewThatFits(in: .vertical) {
+            ForEach(Array(stride(from: weeks, through: 0, by: -1)), id: \.self) { count in
+                side(weeks: count, noMedalsCaption: caption)
+            }
+            side(weeks: 0, noMedalsCaption: false)
+            side(weeks: 0, noMedalsCaption: false, shortSentence: true)
+            side(weeks: 0, noMedalsCaption: false, shortSentence: true, placeCaption: false)
+        }
+    }
+
+    private var showsHistory: Bool { !(isMine && crews.state.pushed == nil) && !crew.history.isEmpty }
+
+    private func side(weeks: Int, noMedalsCaption: Bool, shortSentence: Bool = false, placeCaption: Bool = true) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .bottom, spacing: 8) {
                 CrewCrestView(crew: crew.summary, hero: true)
@@ -132,33 +151,38 @@ struct CrewHeroLayout: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             VStack(alignment: .leading, spacing: 2) {
-                Text(sentence)
+                Text(sentence(short: shortSentence))
                     .font(Theme.Typography.bodyEmphasis)
                     .foregroundStyle(Theme.Palette.primaryText)
                     .fixedSize(horizontal: false, vertical: true)
-                Text(placeLine)
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.tertiaryText)
-                    .fixedSize(horizontal: false, vertical: true)
+                if placeCaption {
+                    Text(placeLine)
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             CrewTally(medals: crew.medals)
-            if crew.medals == CrewMedals() && !isCompact {
+            if noMedalsCaption {
                 Text("No medals yet", bundle: .tabbi)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
             }
-            if !(isMine && crews.state.pushed == nil) && !crew.history.isEmpty {
-                Spacer(minLength: 0)
-                history
+            if weeks > 0 {
+                history(weeks: weeks)
+                    .padding(.top, 2)
             }
         }
+        .frame(width: CrewLayout.sideWidth, alignment: .topLeading)
     }
 
-    private var sentence: String {
+    /// The week in a sentence; `short` drops "Your crew studied" when the
+    /// column is tight.
+    private func sentence(short: Bool) -> String {
         let minutes = crew.summary.weekMinutes
         guard minutes > 0 else { return String(localized: "No hours yet this week", bundle: .tabbi) }
         let hours = CrewFormat.hours(minutes: minutes)
-        return isMine ? String(localized: "Your crew studied \(hours) this week", bundle: .tabbi)
+        return isMine && !short ? String(localized: "Your crew studied \(hours) this week", bundle: .tabbi)
             : String(localized: "\(hours) this week", bundle: .tabbi)
     }
 
@@ -170,9 +194,9 @@ struct CrewHeroLayout: View {
     }
 
     /// The last finished weeks: week, medal if any, place, hours.
-    private var history: some View {
+    private func history(weeks: Int) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            ForEach(crew.history.prefix(isCompact ? 2 : 3)) { week in
+            ForEach(crew.history.prefix(weeks)) { week in
                 HStack(spacing: 6) {
                     Text(CrewFormat.weekLabel(week.week))
                         .foregroundStyle(Theme.Palette.tertiaryText)
@@ -221,13 +245,11 @@ struct CrewMembersColumn: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 6) {
-                Text(CrewFormat.members(crew.summary.memberCount, of: crew.summary.maxMembers))
-                if crew.owner && !crew.requests.isEmpty {
-                    Text(String(localized: "· \(crew.requests.count) want to join", bundle: .tabbi)).foregroundStyle(PartyStyle.accent)
-                }
-                Spacer(minLength: 4)
-                Text("this week", bundle: .tabbi)
+            // "this week" goes first, then the waiting count, before anything is cut.
+            ViewThatFits(in: .horizontal) {
+                caption(requests: true, thisWeek: true)
+                caption(requests: true, thisWeek: false)
+                caption(requests: false, thisWeek: false)
             }
             .font(Theme.Typography.caption)
             .foregroundStyle(Theme.Palette.tertiaryText)
@@ -243,6 +265,18 @@ struct CrewMembersColumn: View {
             })
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+
+    private func caption(requests: Bool, thisWeek: Bool) -> some View {
+        HStack(spacing: 6) {
+            Text(CrewFormat.members(crew.summary.memberCount, of: crew.summary.maxMembers)).fixedSize()
+            if requests && crew.owner && !crew.requests.isEmpty {
+                Text(String(localized: "· \(crew.requests.count) want to join", bundle: .tabbi)).foregroundStyle(PartyStyle.accent)
+                    .fixedSize()
+            }
+            Spacer(minLength: 4)
+            if thisWeek { Text("this week", bundle: .tabbi).fixedSize() }
+        }
     }
 }
 

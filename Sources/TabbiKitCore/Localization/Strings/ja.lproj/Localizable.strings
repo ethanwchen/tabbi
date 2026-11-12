@@ -4435,6 +4435,8 @@
 	<string>カード</string>
 	<key>cards</key>
 	<string>カード</string>
+	<key>crew.shuffle</key>
+	<string>シャッフル</string>
 	<key>day</key>
 	<string>日</string>
 	<key>day streak</key>

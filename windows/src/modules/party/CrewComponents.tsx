@@ -447,6 +447,63 @@ export function CrewTextField({
   );
 }
 
+/* MARK: Names */
+
+/** Words this long or longer get break points, as on the Mac. */
+export const CREW_HYPHENATE_MINIMUM_WORD = 9;
+/** The Latin-script languages tried after the app's own when a long word finds no break in it (the Mac asks the word's detected language, then English). */
+const HYPHENATION_FALLBACKS = ["de", "en", "fr", "es", "pt"];
+
+/**
+ * Hyphenates a crew name the way the Mac does: in the app's language first;
+ * when that leaves a long word with no break (an Arabic or Japanese panel, or
+ * a German name in an English one), in the first language that breaks it;
+ * and only when none does, anywhere in the word. Each try is measured in the
+ * layout pass, before paint: a word with no break overflows the box.
+ */
+export function useCrewNameHyphenation<T extends HTMLElement>(text: string): React.RefObject<T | null> {
+  const element = useRef<T>(null);
+  useLayoutEffect(() => {
+    const target = element.current;
+    if (!target) return;
+    const fit = () => {
+      target.style.overflowWrap = "normal";
+      target.removeAttribute("lang");
+      const longWord = text.split(/\s+/).some((word) => [...word].length >= CREW_HYPHENATE_MINIMUM_WORD);
+      const overflows = () => target.scrollWidth > target.clientWidth + 0.5;
+      if (!longWord || !overflows()) return;
+      const app = document.documentElement.lang || "en";
+      for (const language of HYPHENATION_FALLBACKS.filter((candidate) => candidate !== app.split("-")[0])) {
+        target.lang = language;
+        if (!overflows()) return;
+      }
+      target.removeAttribute("lang");
+      target.style.overflowWrap = "anywhere";
+    };
+    fit();
+    if (typeof ResizeObserver === "undefined") return;
+    let width = target.clientWidth;
+    const observer = new ResizeObserver(() => {
+      if (Math.abs(target.clientWidth - width) < 0.5) return;
+      width = target.clientWidth;
+      fit();
+    });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [text]);
+  return element;
+}
+
+/** A crew name on up to two lines, hyphenated as `useCrewNameHyphenation` says. */
+export function CrewName({ text, className, ...rest }: { text: string; className: string } & Omit<React.HTMLAttributes<HTMLSpanElement>, "children">) {
+  const element = useCrewNameHyphenation<HTMLSpanElement>(text);
+  return (
+    <span ref={element} className={`crew-name ${className}`} {...rest}>
+      {text}
+    </span>
+  );
+}
+
 /* MARK: Lists */
 
 /** The height of an element, kept current through a ResizeObserver; 0 until measured. */
@@ -568,7 +625,8 @@ export function CrewRow({
 
 /** A name in a row: one line with its caption under it while it fits, else two lines (hyphenated) and no caption, so the name always wins. */
 export function CrewRowName({ name, caption, captionAccent = false }: { name: string; caption?: string | undefined; captionAccent?: boolean }) {
-  const element = useRef<HTMLSpanElement>(null);
+  /* Hyphenation runs first (its layout effect is declared first), so the line count is measured on the final breaks. */
+  const element = useCrewNameHyphenation<HTMLSpanElement>(name);
   const [twoLines, setTwoLines] = useState(false);
   useLayoutEffect(() => {
     const target = element.current;
@@ -582,10 +640,10 @@ export function CrewRowName({ name, caption, captionAccent = false }: { name: st
     const observer = new ResizeObserver(measure);
     observer.observe(target);
     return () => observer.disconnect();
-  }, [name]);
+  }, [element, name]);
   return (
     <span className="crew-row-name">
-      <span ref={element} className="crew-row-title kit-body-emphasis kit-user-text">
+      <span ref={element} className="crew-name crew-row-title kit-body-emphasis kit-user-text">
         {name}
       </span>
       {caption !== undefined && !twoLines && (

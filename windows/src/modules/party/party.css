@@ -226,8 +226,13 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  max-width: 100%;
+  min-width: 0;
   height: 13px;
   font-variant-numeric: tabular-nums;
+}
+.party-member-status-text {
+  flex: 0 1 auto;
 }
 .party-session-bar {
   display: flex;

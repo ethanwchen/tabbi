@@ -12,7 +12,7 @@ import { isQuietWeek, myHallEntry, weekEntries } from "../../core/crews/crewsSta
 import { tr } from "../../core/localization/tr";
 import { Shimmer, SkeletonLine } from "../../ui/kit/Loading";
 import { Tooltip } from "../../ui/kit/Tooltip";
-import { CrewLayout, CrewPetGroup, CrewPlaceChip, CrewRow, CrewRowList, CrewRowName, CrewStatus, CrewSummaryCrest, CrewTally, crewTallyLabel, useCrewIsCompact } from "./CrewComponents";
+import { CrewLayout, CrewPetGroup, CrewPlaceChip, CrewRow, CrewRowList, CrewRowName, CrewStatus, CrewSummaryCrest, CrewTally, crewTallyLabel, useCrewIsCompact, CrewName } from "./CrewComponents";
 import type { CrewsStore } from "./crewsStore";
 import { useMyCrewPet } from "./CrewPages";
 
@@ -203,7 +203,7 @@ function CrewFeaturedTile({ crews, item, mine }: { crews: CrewsStore; item: Crew
         <span className="crew-tile-pets">
           <CrewPetGroup pets={item.pets.slice(0, 3)} overlap={13} />
         </span>
-        <span className="crew-tile-name kit-caption kit-user-text">{item.crew.name}</span>
+        <CrewName text={item.crew.name} className="crew-tile-name kit-caption kit-user-text" />
         <CrewBoardValue value={item.value} />
       </div>
     </Tooltip>

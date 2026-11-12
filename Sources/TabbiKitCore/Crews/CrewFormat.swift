@@ -1,4 +1,5 @@
 import Foundation
+import NaturalLanguage
 
 /// How Crews write hours, places and the week's countdown, the same on the
 /// Mac and Windows (`shared/fixtures/crews/crews.json` pins the parts).
@@ -113,8 +114,24 @@ public enum CrewHyphenation {
 
     public static func hyphenated(_ text: String, locale: Locale = .current) -> String {
         text.split(separator: " ", omittingEmptySubsequences: false)
-            .map { word in word.count >= minimumWord ? hyphenatedWord(String(word), locale: locale) : String(word) }
+            .map { word in word.count >= minimumWord ? hyphenatedWord(String(word), preferring: locale) : String(word) }
             .joined(separator: " ")
+    }
+
+    /// Crew names are often in another language than the app (a German
+    /// crew seen in Arabic), so the word's own language is tried when the
+    /// app's has no hyphenation for it, then English.
+    static func hyphenatedWord(_ word: String, preferring locale: Locale) -> String {
+        var candidates = [locale]
+        let recognizer = NLLanguageRecognizer()
+        recognizer.processString(word)
+        if let language = recognizer.dominantLanguage { candidates.append(Locale(identifier: language.rawValue)) }
+        candidates.append(Locale(identifier: "en"))
+        for candidate in candidates {
+            let result = hyphenatedWord(word, locale: candidate)
+            if result != word { return result }
+        }
+        return word
     }
 
     static func hyphenatedWord(_ word: String, locale: Locale) -> String {

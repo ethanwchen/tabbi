@@ -4435,6 +4435,8 @@
 	<string>張卡片</string>
 	<key>cards</key>
 	<string>張卡片</string>
+	<key>crew.shuffle</key>
+	<string>隨機</string>
 	<key>day</key>
 	<string>天</string>
 	<key>day streak</key>

@@ -5,7 +5,7 @@
  * field with its Paste, the quiet text button, and the status colors.
  */
 
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { currentLanguage, tr } from "../../core/localization/tr";
 import { inviteWebURL, type PartyInvite } from "../../core/party/partyInvite";
 import { PartyCode, type PartyProfile, type PartyStatus } from "../../core/party/partyModels";
@@ -152,6 +152,7 @@ export function PartyPillButton({
  */
 export function PartyCodeField({
   placeholder,
+  shortPlaceholder,
   symbol,
   length,
   help,
@@ -159,6 +160,8 @@ export function PartyCodeField({
   onFocusChange,
 }: {
   placeholder: string;
+  /** A shorter placeholder for a field too narrow for `placeholder` ("Code" for "Code von Freund"), so the hint is never cut. */
+  shortPlaceholder?: string;
   symbol: string;
   length: number;
   help: string;
@@ -168,6 +171,24 @@ export function PartyCodeField({
   const [text, setText] = useState("");
   const [focused, setFocused] = useState(false);
   const input = useRef<HTMLInputElement>(null);
+  const [fits, setFits] = useState(true);
+  useLayoutEffect(() => {
+    const element = input.current;
+    if (!element || shortPlaceholder === undefined) return;
+    const measure = () => {
+      const context = document.createElement("canvas").getContext("2d");
+      if (!context) return;
+      const style = getComputedStyle(element);
+      context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+      setFits(context.measureText(placeholder).width <= element.clientWidth + 0.5);
+    };
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [placeholder, shortPlaceholder]);
+  const hint = fits || shortPlaceholder === undefined ? placeholder : shortPlaceholder;
   const send = () => {
     const draft = text;
     if (draft.trim() === "") return;
@@ -205,7 +226,7 @@ export function PartyCodeField({
           ref={input}
           className="party-code-field-input"
           aria-label={placeholder}
-          placeholder={placeholder}
+          placeholder={hint}
           value={text}
           spellCheck={false}
           autoComplete="off"

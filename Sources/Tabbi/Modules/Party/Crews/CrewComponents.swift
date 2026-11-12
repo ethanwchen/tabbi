@@ -276,6 +276,9 @@ struct CrewButton: View {
     var height: CGFloat = 20
     var isEnabled = true
     var isBusy = false
+    /// Only the symbol, for a column too narrow for the title; the title
+    /// stays the accessibility label and the tooltip keeps the help.
+    var iconOnly = false
     let help: String
     let action: () -> Void
     @State private var hovering = false
@@ -284,7 +287,7 @@ struct CrewButton: View {
         Button(action: action) {
             HStack(spacing: Theme.Spacing.xs) {
                 if let symbol { Image(systemName: symbol).font(.system(size: 9.5, weight: .bold)) }
-                Text(title).lineLimit(1).fixedSize()
+                if !(iconOnly && symbol != nil) { Text(title).lineLimit(1).fixedSize() }
             }
             .font(Theme.Typography.caption)
             .foregroundStyle(foreground)
@@ -295,6 +298,7 @@ struct CrewButton: View {
             .opacity(isEnabled && !isBusy ? 1 : 0.5)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(title)
         .disabled(!isEnabled || isBusy)
         .help(help)
         .onHover { hovering = $0 }

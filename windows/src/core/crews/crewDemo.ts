@@ -4,7 +4,7 @@ import type { PetAccessory, PetOutfit } from "../pets/petCostume";
 import type { PetBreed } from "../pets/petKinds";
 import { PetProfile } from "../pets/petProfile";
 import type { Instant } from "../time";
-import { resolvedCrewColor, resolvedCrewEmblem, resolvedCrewFrame } from "./crewCatalog";
+import { crewEmblems, resolvedCrewColor, resolvedCrewFrame } from "./crewCatalog";
 import {
   crewPetOf,
   crewWeekContaining,
@@ -171,6 +171,20 @@ function scalarSum(text: string): number {
   return sum;
 }
 
+/**
+ * The emblem a demo crew wears: the named one while the set has it, else one
+ * picked from the crew's id (Swift's wrapping `seed &* 31 &+ scalar`), so a
+ * new emblem set still shows varied crests with no code change.
+ */
+export function demoEmblem(preferred: string, id: string): string {
+  const emblems = crewEmblems();
+  if (emblems.includes(preferred)) return preferred;
+  let seed = 0n;
+  for (const scalar of id) seed = BigInt.asIntN(64, seed * 31n + BigInt(scalar.codePointAt(0) ?? 0));
+  const index = Number((seed < 0n ? -seed : seed) % BigInt(emblems.length));
+  return emblems[index] as string;
+}
+
 /** The demo crews and people. */
 export class CrewDemoData {
   /** How many crews have minutes this week in the demo. */
@@ -226,7 +240,7 @@ export class CrewDemoData {
       name,
       description: fields.description ?? "",
       frame: resolvedCrewFrame(frame),
-      emblem: resolvedCrewEmblem(emblem),
+      emblem: demoEmblem(emblem, id),
       color: resolvedCrewColor(color).id,
       visibility,
       laurel: fields.laurel,
