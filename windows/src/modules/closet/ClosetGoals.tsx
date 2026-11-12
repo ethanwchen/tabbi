@@ -1,5 +1,6 @@
 /*
- * Port of ClosetGoals: the Closet's Goals section, with this month's quests,
+ * Port of ClosetGoals: the Closet's Goals section, with the Study Level
+ * (ClosetLevelCard), this month's quests,
  * the mastery outfits (earned from badge tiers, never sold) and the badge
  * collection. Like the Wardrobe and Limited sections it scrolls and fades
  * out at the bottom, and the footer details what the pointer rests on.
@@ -46,6 +47,7 @@ import { MarqueeText } from "../../ui/kit/MarqueeText";
 import { PetSprite } from "../../ui/kit/PetView";
 import { Tooltip } from "../../ui/kit/Tooltip";
 import { monthDayShort, monthLong } from "./closetFormat";
+import { ClosetLevelCard } from "./ClosetLevelCard";
 import { ClosetFooterDetail } from "./ClosetPanel";
 import { ScrollingGrid, TightLabel, thumbnailModel } from "./ClosetWardrobe";
 import type { ClosetStore } from "./closetStore";
@@ -144,6 +146,7 @@ export function ClosetGoals({ store }: { store: ClosetStore }) {
     <div className="closet-section closet-goals" onPointerLeave={() => setHovered(undefined)}>
       <ScrollingGrid store={store}>
         <div className="closet-shelves">
+          <ClosetLevelCard store={store} />
           <ClosetQuestBanner month={monthFirstDay(month)} next={monthFirstDay(nextMonth(month))} quests={quests} onHover={(quest) => setHovered(quest ? { kind: "quest", quest } : undefined)} />
           <div className="closet-shelf">
             <Tooltip text={tr("Mastery outfits: each unlocks with a badge tier, never with points")}>

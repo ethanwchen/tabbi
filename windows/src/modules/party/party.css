@@ -857,3 +857,19 @@
   gap: 8px;
   padding-top: 4px;
 }
+
+/* A name in its nameplate color (Study Level): the wrapper takes the color, the marquee inside shrinks. */
+.party-member-name-text,
+.party-row-name-text {
+  display: flex;
+  min-width: 0;
+}
+
+.party-row-name-fit {
+  flex: 1;
+  gap: 4px;
+}
+
+.party-row-name-text[data-whole] {
+  flex: none;
+}

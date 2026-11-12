@@ -8,7 +8,9 @@ import { useStore } from "../../app/useStore";
 import { tr } from "../../core/localization/tr";
 import { PartyCode, type Party, type PartyMember, type PartySession } from "../../core/party/partyModels";
 import { minutesLeft, rosterDuration, rosterStatus, rosterTimeLeft, statusLine } from "../../core/party/partyRoster";
-import { isFoundingMember } from "../../core/party/partyModels";
+import { isFoundingMember, profileStanding } from "../../core/party/partyModels";
+import { rankForLevel, standingHelp } from "../../core/progression/studyLevel";
+import { StudyRankEmblem, nameplateStyle } from "../../ui/kit/StudyLevel";
 import { Card } from "../../ui/kit/Card";
 import { FoundingBadge } from "../../ui/kit/FoundingBadge";
 import { Icon } from "../../ui/kit/Icon";
@@ -79,6 +81,8 @@ function PartyMemberView({ member, isMe, width, store, now }: { member: PartyMem
           : tr("Offline");
   const name = isMe ? tr("You") : member.profile.name;
   const parts = [tr("%@ with %@", name, member.profile.petName)];
+  const standing = profileStanding(member.profile);
+  if (standing !== undefined) parts.push(standingHelp(standing));
   if (isFoundingMember(member.profile)) parts.push(tr("Founding Member"));
   parts.push(statusLine(member.presence, member.online, now));
   if (member.presence !== undefined && member.presence.todayMinutes > 0) parts.push(tr("%@ today", rosterDuration(member.presence.todayMinutes)));
@@ -94,7 +98,11 @@ function PartyMemberView({ member, isMe, width, store, now }: { member: PartyMem
         </div>
         <div className="party-member-name kit-caption">
           {member.host && roomy && crown}
-          <MarqueeText text={name} userText={!isMe} />
+          {/* The rank's emblem before the name, in its nameplate color; someone on an older app shows neither. */}
+          {standing !== undefined && roomy && <StudyRankEmblem rank={rankForLevel(standing.level)} pixelSize={0.5} />}
+          <span className="party-member-name-text" style={nameplateStyle(standing?.nameplate ?? "plain")}>
+            <MarqueeText text={name} userText={!isMe} />
+          </span>
           {isFoundingMember(member.profile) && roomy && <FoundingBadge isMe={isMe} />}
         </div>
         <div className="party-member-status kit-caption" style={{ color: roomy ? "var(--tertiary-text)" : statusColor(status) }}>

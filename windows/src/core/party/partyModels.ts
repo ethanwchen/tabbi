@@ -1,5 +1,6 @@
 import type { Instant, Seconds } from "../time";
 import { PartyError } from "./partyError";
+import { MAX_SHARED_LEVEL, isNameplate, type StudyStanding } from "../progression/studyLevel";
 
 /*
  * Port of PartyModels: what the friends API carries, as the app reads it.
@@ -25,6 +26,20 @@ export interface PartyProfile {
   readonly level: number;
   /** Badge ids shown next to the name (`PARTY_BADGE_FOUNDING`); absent reads as none. */
   readonly badges: readonly string[];
+  /**
+   * The Study Level, sent by apps from 1.0.7 on through servers that keep it
+   * (protocol 3); undefined from an older app or server, which shows no
+   * level. Only ever drawn.
+   */
+  readonly studyLevel?: number | undefined;
+  /** The nameplate color id beside it; unknown or absent draws plain. */
+  readonly nameplate?: string | undefined;
+}
+
+/** The Study Level and nameplate to draw for `profile`, or undefined to show none. Port of PartyProfile.standing. */
+export function profileStanding(profile: PartyProfile): StudyStanding | undefined {
+  if (profile.studyLevel === undefined) return undefined;
+  return { level: Math.max(0, profile.studyLevel), nameplate: isNameplate(profile.nameplate) ? profile.nameplate : "plain" };
 }
 
 /** Port of PartyBadge: the badge ids the server can send. An id the app does not know is ignored. */
@@ -65,11 +80,27 @@ export interface PartyProfileUpdate {
   readonly accessories?: readonly string[];
   readonly points?: number;
   readonly level?: number;
+  /** The Study Level and nameplate color id (protocol 3). */
+  readonly studyLevel?: number;
+  readonly nameplate?: string;
+}
+
+/** The update with `standing` to share: the level capped at what the server keeps. Port of `sharing(_:)`. */
+export function sharingStanding(update: PartyProfileUpdate, standing: StudyStanding): PartyProfileUpdate {
+  return { ...update, studyLevel: Math.min(standing.level, MAX_SHARED_LEVEL), nameplate: standing.nameplate };
+}
+
+/** The update as a server from before protocol 3 takes it: without the Study Level fields. Port of `withoutStudyLevel()`. */
+export function withoutStudyLevel(update: PartyProfileUpdate): PartyProfileUpdate {
+  const rest: { -readonly [Key in keyof PartyProfileUpdate]: PartyProfileUpdate[Key] } = { ...update };
+  delete rest.studyLevel;
+  delete rest.nameplate;
+  return rest;
 }
 
 /** Whether two updates send the same body. */
 export function sameProfileUpdate(a: PartyProfileUpdate, b: PartyProfileUpdate): boolean {
-  const keys = ["name", "petName", "species", "breed", "costume", "points", "level"] as const;
+  const keys = ["name", "petName", "species", "breed", "costume", "points", "level", "studyLevel", "nameplate"] as const;
   if (keys.some((key) => a[key] !== b[key])) return false;
   const sameList = (x: readonly string[] | undefined, y: readonly string[] | undefined) =>
     x === undefined || y === undefined ? x === y : x.length === y.length && x.every((value, index) => value === y[index]);
@@ -361,7 +392,15 @@ export function readProfile(value: unknown): PartyProfile {
     points: integer(object, "points"),
     level: integer(object, "level"),
     badges: optional(object, "badges", strings) ?? [],
+    // Read leniently, like the Mac's `try?`: a wrong type or a level out of
+    // range is left out instead of failing the reply.
+    studyLevel: lenientStudyLevel(object.studyLevel),
+    nameplate: typeof object.nameplate === "string" ? object.nameplate : undefined,
   };
+}
+
+function lenientStudyLevel(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isInteger(value) && value >= 0 && value <= MAX_SHARED_LEVEL ? value : undefined;
 }
 
 export function readPresence(value: unknown): PartyPresence {

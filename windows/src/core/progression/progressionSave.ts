@@ -4,12 +4,15 @@ import { VersionedJSON } from "../persistence/versionedJson";
 import type { Instant } from "../time";
 import { monthKeyFromRaw, type MonthKey } from "./monthlyQuests";
 import { PROGRESS_TRACKS, badgeFromID, badgeID, type ProgressTrack } from "./progressTrack";
+import { isNameplate, type Nameplate } from "./studyLevel";
 
 /*
  * Port of ProgressionSave.swift: what the Goals section keeps beside the
  * pet's save as `Pet/progression.json`: each track's best count so far, the
  * badge tiers reached and when, the months whose quests were all done, and
- * which tiers were already seen. Never synced; reading is forgiving.
+ * which tiers were already seen, and the Study Level: the highest reached,
+ * the highest seen on the Goals shelf and the nameplate color picked.
+ * Never synced; reading is forgiving.
  */
 
 export interface ProgressionSaveFields {
@@ -19,26 +22,51 @@ export interface ProgressionSaveFields {
   readonly completedMonths?: Iterable<MonthKey>;
   /** Badge ids. */
   readonly seen?: Iterable<string>;
+  readonly level?: number;
+  readonly levelSeen?: number;
+  readonly nameplate?: Nameplate | undefined;
 }
 
 export class ProgressionSave {
-  /** Version 1 is the first; a file without a version reads as the same fields. */
-  static readonly schema = new VersionedJSON(1);
+  /**
+   * Version 1 is the first; a file without a version reads as the same
+   * fields. Version 2 adds the Study Level (`level`, `levelSeen`,
+   * `nameplate`), which a version 1 file reads as level 0 never seen.
+   */
+  static readonly schema = new VersionedJSON(2);
 
   readonly best: Map<ProgressTrack, number>;
   readonly reached: Map<string, Instant>;
   readonly completedMonths: Set<MonthKey>;
   readonly seen: Set<string>;
+  /** The highest Study Level ever reached. */
+  level: number;
+  /** The highest Study Level seen on the Goals shelf. */
+  levelSeen: number;
+  /** The nameplate picked, undefined for plain. */
+  nameplate: Nameplate | undefined;
 
   constructor(fields: ProgressionSaveFields = {}) {
     this.best = new Map([...(fields.best ?? new Map<ProgressTrack, number>())].filter(([, value]) => value > 0));
     this.reached = new Map(fields.reached ?? []);
     this.completedMonths = new Set(fields.completedMonths ?? []);
     this.seen = new Set([...(fields.seen ?? [])].filter((id) => this.reached.has(id)));
+    const level = Math.max(0, fields.level ?? 0);
+    this.level = level;
+    this.levelSeen = Math.min(Math.max(0, fields.levelSeen ?? 0), level);
+    this.nameplate = fields.nameplate === "plain" ? undefined : fields.nameplate;
   }
 
   copy(): ProgressionSave {
-    return new ProgressionSave({ best: this.best, reached: this.reached, completedMonths: this.completedMonths, seen: this.seen });
+    return new ProgressionSave({
+      best: this.best,
+      reached: this.reached,
+      completedMonths: this.completedMonths,
+      seen: this.seen,
+      level: this.level,
+      levelSeen: this.levelSeen,
+      nameplate: this.nameplate,
+    });
   }
 
   equals(other: ProgressionSave): boolean {
@@ -62,6 +90,9 @@ export class ProgressionSave {
         reached,
         completedMonths: [...this.completedMonths].sort(),
         seen: [...this.seen].sort(),
+        level: this.level,
+        levelSeen: this.levelSeen,
+        nameplate: this.nameplate,
         [VersionedJSON.versionKey]: ProgressionSave.schema.current,
       },
       { pretty: true, sortedKeys: true },
@@ -97,9 +128,23 @@ function readSave(document: JSONObject): ProgressionSave {
     const badge = badgeFromID(raw);
     return badge ? [badgeID(badge)] : [];
   });
-  return new ProgressionSave({ best, reached, completedMonths: months, seen });
+  const nameplate = typeof document.nameplate === "string" && isNameplate(document.nameplate) ? document.nameplate : undefined;
+  return new ProgressionSave({
+    best,
+    reached,
+    completedMonths: months,
+    seen,
+    level: integer(document.level),
+    levelSeen: integer(document.levelSeen),
+    nameplate,
+  });
 }
 
 function stringArray(value: unknown): string[] {
   return Array.isArray(value) && value.every((item) => typeof item === "string") ? (value as string[]) : [];
+}
+
+/* An integer field, or 0 like the Mac's `try? decode(Int.self)`. */
+function integer(value: unknown): number {
+  return typeof value === "number" && Number.isSafeInteger(value) ? value : 0;
 }

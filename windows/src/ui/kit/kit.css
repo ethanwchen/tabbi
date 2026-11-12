@@ -1349,6 +1349,7 @@
 }
 .kit-primary-pill:disabled {
   opacity: 0.6;
+}
 /* NotchPetWing: the closed island's pet in its fixed box, lifted off the bar's bottom edge. */
 .kit-pet-wing {
   position: relative;
@@ -1371,6 +1372,7 @@
   display: grid;
   place-items: center;
   color: var(--tertiary-text);
+}
 
 /*
  * Text the user typed or a service sent: each paragraph takes the direction
@@ -1380,4 +1382,31 @@
  */
 .kit-user-text {
   unicode-bidi: plaintext;
+}
+
+/* Study Level (StudyLevel.tsx): the rank emblem, the label beside a name, and rows that pick the variant that fits. */
+.kit-rank-emblem {
+  flex: none;
+  image-rendering: pixelated;
+}
+
+.kit-study-level {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.kit-study-level-rank {
+  white-space: pre;
+}
+
+.kit-variants-fit {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }

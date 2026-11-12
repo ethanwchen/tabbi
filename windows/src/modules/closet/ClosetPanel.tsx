@@ -12,12 +12,14 @@ import { useStore } from "../../app/useStore";
 import { tr } from "../../core/localization/tr";
 import { PetBond, bondUnlock } from "../../core/pets/petBond";
 import { breedDisplayName } from "../../core/pets/petBreed";
+import type { Nameplate } from "../../core/progression/studyLevel";
 import { itemDisplayName } from "../../core/pets/petItem";
 import { Card } from "../../ui/kit/Card";
 import { Icon } from "../../ui/kit/Icon";
 import { ProgressRing } from "../../ui/kit/Loading";
 import { Marquee, MarqueeText } from "../../ui/kit/MarqueeText";
 import { PetView } from "../../ui/kit/PetView";
+import { STUDY_LEVEL_LENGTHS, StudyLevelLabel, VariantsThatFit, nameplateStyle } from "../../ui/kit/StudyLevel";
 import { Tooltip } from "../../ui/kit/Tooltip";
 import { textWidth } from "../../ui/shell/measure";
 import { ClosetHeatmapSection } from "./ClosetHeatmap";
@@ -321,11 +323,32 @@ function ClosetPetCard({ store }: { store: ClosetStore }) {
             onBlur={commit}
           />
         ) : (
-          <ClosetNameButton
-            name={profile.name}
-            onClick={() => {
-              setDraft(profile.name);
-              setRenaming(true);
+          /*
+           * The Study Level sits beside the name ("Mochi  Lv 12 Ember"): the
+           * rank's name goes first, then "Lv", and only a name too long for
+           * the card scrolls, so nothing is ever cut off.
+           */
+          <VariantsThatFit
+            count={STUDY_LEVEL_LENGTHS.length + 1}
+            fitKey={`${profile.name}|${state.progression.studyLevel}|${state.progression.nameplate}`}
+            className="closet-name-line"
+            render={(index) => {
+              const scrolls = index >= STUDY_LEVEL_LENGTHS.length;
+              const length = STUDY_LEVEL_LENGTHS[Math.min(index, STUDY_LEVEL_LENGTHS.length - 1)] ?? "number";
+              return (
+                <>
+                  <ClosetNameButton
+                    name={profile.name}
+                    nameplate={state.progression.nameplate}
+                    scrolls={scrolls}
+                    onClick={() => {
+                      setDraft(profile.name);
+                      setRenaming(true);
+                    }}
+                  />
+                  <StudyLevelLabel standing={state.progression.standing} length={length} />
+                </>
+              );
             }}
           />
         )}
@@ -364,12 +387,24 @@ function ClosetAdventureLine({ text, help }: { text: string; help: string }) {
   );
 }
 
-/** The pet's name with a pencil that appears on hover; click to rename. Port of ClosetNameButton. */
-function ClosetNameButton({ name, onClick }: { name: string; onClick: () => void }) {
+/**
+ * The pet's name in its nameplate color, with a pencil that appears on
+ * hover; click to rename. `scrolls` lets a name too long for the card
+ * scroll instead of pushing the level out. Port of ClosetNameButton.
+ */
+function ClosetNameButton({ name, nameplate, scrolls, onClick }: { name: string; nameplate: Nameplate; scrolls: boolean; onClick: () => void }) {
   return (
     <Tooltip text={tr("Rename your pet")}>
-      <button type="button" className="closet-name" onClick={onClick}>
-        <MarqueeText text={name} help={tr("Rename your pet")} className="closet-name-text kit-title" userText />
+      <button type="button" className="closet-name" data-scrolls={scrolls || undefined} onClick={onClick}>
+        {scrolls ? (
+          <span className="closet-name-text" style={nameplateStyle(nameplate)}>
+            <MarqueeText text={name} help={tr("Rename your pet")} className="kit-title" userText />
+          </span>
+        ) : (
+          <span className="closet-name-text closet-name-whole kit-title kit-user-text" style={nameplateStyle(nameplate)}>
+            {name}
+          </span>
+        )}
         <Icon id="pencil" size={9.5} className="closet-name-pencil" />
       </button>
     </Tooltip>
