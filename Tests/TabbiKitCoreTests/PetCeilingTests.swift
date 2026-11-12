@@ -48,11 +48,13 @@ final class PetCeilingTests: XCTestCase {
         for breed in PetGallery.bodyShapeBreeds {
             for animation in [PetAnimation.idle, .walk, .sleep] {
                 // Where tall ears (the Sphynx, French Bulldog and Corgi
-                // sitting) or the dachshund's raised head lying down reach
+                // sitting, the French Bulldog's breaths lying down) or the
+                // dachshund's raised head lying down reach
                 // the spot, the lowered cloud would touch the pet, so it is
                 // left out there like any particle.
                 let blocked = ([PetBodyShape.sphynxCat, .batEaredDog, .pointyEaredDog].contains(breed.bodyShape)
-                               && animation == .idle) || (breed.bodyShape == .longDog && animation == .sleep)
+                               && animation == .idle)
+                    || ([PetBodyShape.longDog, .batEaredDog].contains(breed.bodyShape) && animation == .sleep)
                 let full = PetComposer.clip(animation, for: breed, accessories: [.rainCloud])
                 let fitted = PetComposer.clip(animation, for: breed, accessories: [.rainCloud], ceiling: 2)
                 XCTAssertGreaterThanOrEqual(top(fitted), 2, "\(breed) \(animation)")

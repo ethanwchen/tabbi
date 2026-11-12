@@ -56,10 +56,10 @@ const SNAPSHOT_STATES = [
   "founding-unearned-scrolling",
   "long-name",
   "long-name-scrolling",
-  "animated",
   "radiant-upgrade",
   "radiant-goal",
   "radiant-setting",
+  "animated",
   "recap-heavy",
   "recap-light",
 ] as const;

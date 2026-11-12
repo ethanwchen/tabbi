@@ -74,8 +74,16 @@ describe("PetCeiling", () => {
     const cloud = (canvas: { pixels: Uint8Array }) => canvas.pixels.filter((pixel) => pixel === coat).length;
     for (const breed of BODY_SHAPE_BREEDS) {
       for (const animation of ["idle", "walk", "sleep"] as const) {
-        /* Tall ears (the Sphynx, the bat-eared French Bulldog and the pointy-eared Corgi) still keep the cloud out while sitting. */
-        const tallEars = ["sphynxCat", "batEaredDog", "pointyEaredDog"].includes(breedBodyShape(breed)) && animation !== "walk";
+        /*
+         * Where tall ears (the Sphynx, French Bulldog and Corgi sitting, the
+         * French Bulldog's breaths asleep) or the dachshund's raised head lying
+         * down reach the spot, the lowered cloud would touch the pet, so it is
+         * left out there like any particle.
+         */
+        const shape = breedBodyShape(breed);
+        const tallEars =
+          (["sphynxCat", "batEaredDog", "pointyEaredDog"].includes(shape) && animation === "idle") ||
+          (["longDog", "batEaredDog"].includes(shape) && animation === "sleep");
         const full = composeClip(animation, breed, { accessories: ["rainCloud"] });
         const fitted = composeClip(animation, breed, { accessories: ["rainCloud"], ceiling: 2 });
         expect(top(fitted), `${breed} ${animation}`).toBeGreaterThanOrEqual(2);
