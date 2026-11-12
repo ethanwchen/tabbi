@@ -42,6 +42,9 @@ export function outfitHood(outfit: PetOutfit): CostumeHeadItem | undefined {
   if (outfit === "dinosaurHoodie") return costume().headItem("dinosaurHood");
   if (outfit === "astronautSuit") return costume().headItem("astronautBubble");
   if (outfit === "sagesRobe") return costume().headItem("sageHood");
+  if (outfit === "rainSlicker") return costume().headItem("souwester");
+  if (outfit === "sushiChef") return costume().headItem("hachimaki");
+  if (outfit === "snowDayPuffer") return costume().headItem("earflapHat");
   return undefined;
 }
 
@@ -67,6 +70,8 @@ function makeAccessoryArt(accessory: PetAccessory): AccessoryArt {
     case "snowScarf":
     case "friendshipBandana":
     case "tinyLantern":
+    case "daisyChain":
+    case "sailorCollar":
       return { kind: "body", item: file.bodyItem(accessory) };
     case "roundGlasses":
     case "coolSunglasses":
@@ -84,6 +89,7 @@ function makeAccessoryArt(accessory: PetAccessory): AccessoryArt {
     case "cherryPetals":
     case "sparkleTrail":
     case "rainCloud":
+    case "fireflies":
       return { kind: "aura", item: file.auraItem(accessory) };
     default:
       return { kind: "head", item: file.headItem(accessory) };

@@ -237,13 +237,44 @@ final class PartyPetAppearanceTests: XCTestCase {
         }
     }
 
-    func testTheCatalogIsVersion4AndOnlyEverAdds() throws {
+    /// Release 7's items ride in catalog version 5: friends on this version
+    /// see them, and a version 4 server gets the pet without just them.
+    func testRelease7ItemsReachFriendsAndOlderServersDropThem() throws {
+        let catalog = try catalog()
+        let pet = PetProfile(name: "Juno", breed: .corgi, outfit: .rainSlicker,
+                             accessories: [.daisyChain, .mushroomCap, .roundGlasses])
+        let update = PartyPetAppearance.update(for: pet)
+        XCTAssertEqual(update.costume, "rain-slicker")
+        XCTAssertEqual(update.accessories, ["daisy-chain", "glasses", "mushroom-cap"])
+        XCTAssertEqual(PartyPetAppearance.pet(for: profile(from: update)).outfit, .rainSlicker)
+        XCTAssertEqual(Set(PartyPetAppearance.pet(for: profile(from: update)).accessories), Set(pet.accessories))
+
+        let older = update.forCatalogVersion4()
+        XCTAssertEqual(older.costume, "none")
+        XCTAssertEqual(older.accessories, ["glasses"])
+        XCTAssertEqual(update.olderCatalogFallback, older)
+
+        let lantern = PartyPetAppearance.update(for: PetProfile(name: "Bo", breed: .corgi, outfit: .sushiChef,
+                                                                accessories: [.tinyLantern, .fireflies]))
+        XCTAssertEqual(lantern.forCatalogVersion4().accessories, ["tiny-lantern"], "a version 4 server takes the lantern")
+        XCTAssertEqual(lantern.forCatalogVersion4().olderCatalogFallback, lantern.forCatalogVersion3())
+
+        for item in PetItem.allCases where item.release == 7 {
+            let profile = PetCloset.wearing(item, on: PetProfile(name: "Bo", breed: .corgi))
+            let update = PartyPetAppearance.update(for: profile)
+            let ids = (update.accessories ?? []) + [update.costume].compactMap { $0 }.filter { $0 != "none" }
+            XCTAssertFalse(ids.isEmpty, item.id)
+            for id in ids { XCTAssertTrue(catalog.costumes.contains(id) || catalog.accessories.contains(id), id) }
+        }
+    }
+
+    func testTheCatalogIsVersion5AndOnlyEverAdds() throws {
         struct Versioned: Decodable { var version: Int; var costumes: [String]; var accessories: [String] }
         let url = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
             .appendingPathComponent("backend/shared/catalog.json")
         let catalog = try JSONDecoder().decode(Versioned.self, from: Data(contentsOf: url))
-        XCTAssertEqual(catalog.version, 4)
+        XCTAssertEqual(catalog.version, 5)
         for id in ["astronaut-suit", "starry-cloak", "apprentice-robe", "scholars-robe", "sages-robe", "bakers-apron"] {
             XCTAssertTrue(catalog.costumes.contains(id), id)
         }
@@ -254,6 +285,8 @@ final class PartyPetAppearanceTests: XCTestCase {
         // What came before stays, in the same order, at the front.
         XCTAssertEqual(Array(catalog.costumes.prefix(22)).last, "study-hoodie")
         XCTAssertEqual(Array(catalog.accessories.prefix(50)).last, "rain-cloud")
+        XCTAssertEqual(Array(catalog.costumes.prefix(28)).last, "bakers-apron", "version 4's ids stay where they were")
+        XCTAssertEqual(Array(catalog.accessories.prefix(58)).last, "tiny-lantern")
     }
 
     func testUnknownServerValuesFallBackInsteadOfFailing() {

@@ -695,6 +695,8 @@
 	<string>Automação</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>Disponível quando o %@ roda como pacote de app.</string>
+	<key>Aviator Cap</key>
+	<string>Touca de aviador</string>
 	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
 	<string>Azul-bebê e branco-nuvem, como uma caixinha de leite de mirtilo.</string>
 	<key>Back</key>
@@ -1179,6 +1181,8 @@
 	<string>Meta diária cumprida</string>
 	<key>Daily reminder</key>
 	<string>Lembrete diário</string>
+	<key>Daisy Chain</key>
+	<string>Colar de margaridas</string>
 	<key>Darker squares mean more time studied</key>
 	<string>Quadrados mais escuros indicam mais estudo</string>
 	<key>Day</key>
@@ -1397,6 +1401,8 @@
 	<string>Conclua as três para o mês contar para o emblema Missões do mês.</string>
 	<key>Finish setup</key>
 	<string>Concluir a configuração</string>
+	<key>Fireflies</key>
+	<string>Vaga-lumes</string>
 	<key>Fireplace</key>
 	<string>Lareira</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
@@ -1631,6 +1637,8 @@
 	<string>Mãos à obra</string>
 	<key>Heart Glasses</key>
 	<string>Óculos de coração</string>
+	<key>Heirloom</key>
+	<string>Relíquias</string>
 	<key>Hi! I'm %@.</key>
 	<string>Oi! Eu sou %@.</string>
 	<key>Hidden</key>
@@ -1825,12 +1833,16 @@
 	<string>Usar este nome</string>
 	<key>Keep your current kit and tabs</key>
 	<string>Manter seu kit e abas atuais</string>
+	<key>Keeper's Peacoat</key>
+	<string>Casaco do faroleiro</string>
 	<key>Kindred spirits</key>
 	<string>Almas gêmeas</string>
 	<key>King's Cape</key>
 	<string>Capa de rei</string>
 	<key>Kit</key>
 	<string>Kit</string>
+	<key>Koi Yukata</key>
+	<string>Yukata de carpas</string>
 	<key>Large</key>
 	<string>Grande</string>
 	<key>Last 7 days</key>
@@ -1879,6 +1891,8 @@
 	<string>Deixe seu pet dizer de vez em quando uma frase de incentivo logo após uma sessão de foco, no máximo uma vez por dia</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>Seu pet sai do notch quando você se distrai durante uma fase de foco</string>
+	<key>Librarian Cardigan</key>
+	<string>Cardigã de bibliotecária</string>
 	<key>Like</key>
 	<string>Curtir</string>
 	<key>Like Sam or Dr. Sam</key>
@@ -2027,6 +2041,8 @@
 	<string>Mover para hoje</string>
 	<key>Move up</key>
 	<string>Mover para cima</string>
+	<key>Mushroom Cap</key>
+	<string>Chapéu de cogumelo</string>
 	<key>Music</key>
 	<string>Música</string>
 	<key>Mute</key>
@@ -2637,6 +2653,8 @@
 	<string>Pontos: 1 por minuto de foco, mais um bônus ao terminar uma sessão</string>
 	<key>Pomodoro</key>
 	<string>Pomodoro</string>
+	<key>Potted Cactus</key>
+	<string>Cacto no vaso</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Alimenta o uso do Claude e as respostas.</string>
 	<key>Preset %@</key>
@@ -2689,6 +2707,8 @@
 	<string>Feche o Anki e abra de novo. O Tabbi percebe sozinho.</string>
 	<key>Rain</key>
 	<string>Chuva</string>
+	<key>Rain Slicker</key>
+	<string>Capa de chuva</string>
 	<key>Rare</key>
 	<string>Raros</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2855,6 +2875,8 @@
 	<string>Roda neste Mac</string>
 	<key>Sage's Robe</key>
 	<string>Túnica de sábio</string>
+	<key>Sailor Collar</key>
+	<string>Gola de marinheiro</string>
 	<key>Sakura Sprig</key>
 	<string>Raminho de sakura</string>
 	<key>Save</key>
@@ -3089,6 +3111,8 @@
 	<string>Respirar devagar</string>
 	<key>Smooth</key>
 	<string>Suave</string>
+	<key>Snow Day Puffer</key>
+	<string>Jaqueta puffer de neve</string>
 	<key>Snowy Scarf</key>
 	<string>Cachecol nevado</string>
 	<key>Some evidence</key>
@@ -3233,6 +3257,8 @@
 	<string>Parar de ouvir</string>
 	<key>Stopped</key>
 	<string>Interrompido</string>
+	<key>Strawberry Cap</key>
+	<string>Gorro de morango</string>
 	<key>Streak</key>
 	<string>Sequência</string>
 	<key>Streak unavailable</key>
@@ -3283,12 +3309,16 @@
 	<string>Sugerir um recurso ou relatar um erro</string>
 	<key>Summer</key>
 	<string>Verão</string>
+	<key>Sunflower Sun Hat</key>
+	<string>Chapéu com girassol</string>
 	<key>Sunset Shades</key>
 	<string>Óculos pôr do sol</string>
 	<key>Superhero Cape</key>
 	<string>Capa de super-herói</string>
 	<key>Surgical Cap</key>
 	<string>Touca cirúrgica</string>
+	<key>Sushi Chef</key>
+	<string>Sushiman</string>
 	<key>Sweet</key>
 	<string>Doce</string>
 	<key>Switch Kit</key>
@@ -3763,6 +3793,8 @@
 	<string>Semana de São Valentim</string>
 	<key>Validate</key>
 	<string>Verificar</string>
+	<key>Varsity Jacket</key>
+	<string>Jaqueta college</string>
 	<key>Version %@</key>
 	<string>Versão %@</string>
 	<key>Version %@ (%@)</key>

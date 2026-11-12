@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "species": ["cat", "dog"],
   "breeds": {
     "cat": [
@@ -18,7 +18,9 @@
     "none", "scrubs", "white-coat", "surgical-cap", "stethoscope", "lab-goggles", "graduation",
     "hoodie", "sweater", "pajamas", "raincoat", "wizard", "chef", "pirate", "astronaut",
     "superhero", "witch", "santa", "pumpkin", "bunny", "dinosaur-hoodie", "study-hoodie",
-    "astronaut-suit", "starry-cloak", "apprentice-robe", "scholars-robe", "sages-robe", "bakers-apron"
+    "astronaut-suit", "starry-cloak", "apprentice-robe", "scholars-robe", "sages-robe", "bakers-apron",
+    "librarian-cardigan", "varsity-jacket", "keepers-peacoat", "rain-slicker", "koi-yukata", "sushi-chef",
+    "snow-day-puffer"
   ],
   "accessories": [
     "glasses", "sunglasses", "headphones", "bow", "bandana", "scarf", "collar-bell", "crown",
@@ -29,7 +31,9 @@
     "team-medal", "moonlit-witch-hat", "pumpkin-hat", "reindeer-antlers", "snow-scarf", "heart-glasses",
     "summer-shades", "lion-dance-hat", "sakura-sprig", "founders-pin", "angel-wings", "kings-cape",
     "cherry-petals", "sparkle-trail", "rain-cloud", "little-sprout", "blossom-sprout", "nightcap",
-    "explorers-hat", "bee-antennae", "sporty-sweatband", "owl-spectacles", "tiny-lantern"
+    "explorers-hat", "bee-antennae", "sporty-sweatband", "owl-spectacles", "tiny-lantern",
+    "daisy-chain", "sailor-collar", "strawberry-cap", "mushroom-cap", "cactus-pot", "sun-hat", "aviator-cap",
+    "fireflies"
   ],
   "statuses": ["studying", "break", "idle", "offline"],
   "studyMethods": ["pomodoro", "52-17", "flowtime", "timeblock", "anki", "qbank", "lecture", "free"],

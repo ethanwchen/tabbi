@@ -248,6 +248,10 @@ enum SnapshotRenderer {
                 addClosetShot("goals-badges", ClosetShot(section: .goals, showsEnd: true))
                 addClosetShot("goals-trying", ClosetShot(section: .goals, tryingOn: .outfit(.astronautSuit)))
                 addClosetShot("goals-new", ClosetShot(section: .wardrobe, newGoal: true))
+                // The Wardrobe from its end: the Heirloom shelf, with an
+                // heirloom tried on.
+                addClosetShot("wardrobe-heirloom",
+                              ClosetShot(section: .wardrobe, tryingOn: .outfit(.koiYukata), showsEnd: true))
                 let headphones = PetItem.accessory(.chunkyHeadphones)
                 addClosetShot("long-name", ClosetShot(section: .wardrobe, tryingOn: headphones, name: "Wolfgang Wombats"))
                 addClosetShot("long-name-scrolling", ClosetShot(section: .wardrobe, tryingOn: headphones,

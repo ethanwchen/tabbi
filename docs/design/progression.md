@@ -20,6 +20,10 @@ With Pomodoro blocks that is about 84 points per hour of focus.
 
 Days assume study every day; at the shop's typical pace (75 minutes on 5 days a week) the whole shop takes about 56 weeks.
 
+Release 7 (1.0.6) adds 15 shop items, six of them on a new Heirloom tier of 6 to 12 typical weeks each (docs/economy.md), because students were still unlocking everything and running out of things to aim for.
+The whole shop is now 47 paid items and 66,190 points: about 788 days at 1 hour a day, 394 at 2 hours, 263 at 3 hours and 131 at 6 hours.
+The Heirloom shelf alone (27,500 points) is about five months at 2 hours a day.
+
 So the shop itself is not short, but the variety runs out fast:
 
 - Within two to four weeks of steady study, every cheap and mid-tier item, all three milestone items and most of the bond are done.
