@@ -120,6 +120,12 @@ if arguments.dropFirst().first == "accents" {
     exit(0)
 }
 
+// Radiant upgrades design round: `swift run PetGallery out/ radiant` (RadiantSheets.swift).
+if arguments.dropFirst().first == "radiant" {
+    try RadiantSheets.write(to: outputDirectory)
+    exit(0)
+}
+
 // Goals badges: `swift run PetGallery out/ badges` (BadgeSheets.swift).
 if arguments.dropFirst().first == "badges" {
     try BadgeSheets.write(to: outputDirectory)
