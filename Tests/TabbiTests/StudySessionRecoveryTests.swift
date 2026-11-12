@@ -77,6 +77,7 @@ final class StudySessionRecoveryTests: XCTestCase {
     }
 
     func testSleepingMidBlockCreditsItAndTheNextLaunchStartsFresh() throws {
+        let savedAt = Date()
         try saveSession(minutesAgo: 10)
         let (store, log, closet) = launch()
         let balance = closet.closet.balance
@@ -85,7 +86,11 @@ final class StudySessionRecoveryTests: XCTestCase {
         workspace.post(name: NSWorkspace.willSleepNotification, object: nil)
 
         XCTAssertEqual(store.session.runState, .idle)
-        XCTAssertEqual(try XCTUnwrap(log.records(on: today).first?.quantity), 10, accuracy: 0.1)
+        // Ten minutes plus however long the test itself took to get here,
+        // which a busy machine stretches past a few seconds.
+        let credited = try XCTUnwrap(log.records(on: today).first?.quantity)
+        XCTAssertGreaterThanOrEqual(credited, 10 - 0.01)
+        XCTAssertLessThanOrEqual(credited, 10 + Date().timeIntervalSince(savedAt) / 60 + 0.01)
         XCTAssertEqual(closet.closet.balance, balance + 10)
         let (relaunched, relaunchedLog, _) = launch()
         drainMainQueue()
