@@ -321,10 +321,14 @@
   flex-direction: column;
 }
 .party-friends-scroll {
-  flex: 1;
+  flex: none;
   overflow-y: auto;
   scrollbar-width: none;
-  padding-bottom: 12px;
+  /* Scrolling comes to rest on a row's edge, never mid-row. */
+  scroll-snap-type: y mandatory;
+}
+.party-friends-rows > * {
+  scroll-snap-align: start;
 }
 .party-friends-rows {
   display: flex;
