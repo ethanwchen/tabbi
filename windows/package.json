@@ -1,7 +1,7 @@
 {
   "name": "tabbi-windows",
   "private": true,
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Tabbi for Windows: the island, tray and panels (Tauri 2 host, React UI)",
   "type": "module",
   "scripts": {
