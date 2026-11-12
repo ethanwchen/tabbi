@@ -807,8 +807,6 @@
 	<string>이번 이벤트 한정 아이템을 위한 보너스 시간</string>
 	<key>Bonus points from your pet, added to your balance</key>
 	<string>펫이 준 보너스 포인트, 잔액에 더해졌어요</string>
-	<key>Books</key>
-	<string>책</string>
 	<key>Bow Tie</key>
 	<string>나비넥타이</string>
 	<key>Break</key>
@@ -1103,7 +1101,7 @@
 	<string>코드</string>
 	<key>Codex usage</key>
 	<string>Codex 사용량</string>
-	<key>Coffee mug</key>
+	<key>Coffee Mug</key>
 	<string>커피 머그</string>
 	<key>Color</key>
 	<string>색상</string>
@@ -1331,7 +1329,7 @@
 	<string>삭제 중…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>설명은 %lld자까지예요.</string>
-	<key>Desk lamp</key>
+	<key>Desk Lamp</key>
 	<string>책상 스탠드</string>
 	<key>Desktop widget</key>
 	<string>데스크톱 위젯</string>
@@ -1403,8 +1401,8 @@
 	<string>하루의 목록은 다음 날 여기에 표시돼요.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>집중한 주가 여기에 모여요.</string>
-	<key>Early bird</key>
-	<string>아침 새</string>
+	<key>Early Bird</key>
+	<string>아침형 새</string>
 	<key>Earned by reaching study milestones</key>
 	<string>공부 마일스톤을 달성하면 획득해요</string>
 	<key>Earned by studying, never sold</key>
@@ -1711,6 +1709,8 @@
 	<string>금빛 태그</string>
 	<key>Golden Laurel</key>
 	<string>황금 월계관</string>
+	<key>Golden Pup</key>
+	<string>골든 강아지</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>컵을 들고 몇 모금 마셔요.</string>
 	<key>Graduation Cap</key>
@@ -1747,12 +1747,12 @@
 	<string>집중하는 중</string>
 	<key>Heart Glasses</key>
 	<string>하트 안경</string>
-	<key>Heater shield</key>
-	<string>둥근 방패</string>
+	<key>Heater</key>
+	<string>히터 방패</string>
 	<key>Heirloom</key>
 	<string>가보</string>
-	<key>Hexagon</key>
-	<string>육각형</string>
+	<key>Hex Guard</key>
+	<string>육각 방패</string>
 	<key>Hi! I'm %@.</key>
 	<string>안녕! 나는 %@야.</string>
 	<key>Hidden</key>
@@ -2537,6 +2537,8 @@
 	<string>Anki를 열면 이 탭이 알아서 연결돼요</string>
 	<key>Open Automation settings</key>
 	<string>자동화 설정 열기</string>
+	<key>Open Book</key>
+	<string>펼친 책</string>
 	<key>Open Calendars privacy settings</key>
 	<string>캘린더 개인정보 설정 열기</string>
 	<key>Open Calendars privacy settings to turn access on</key>
@@ -2869,8 +2871,6 @@
 	<string>공개</string>
 	<key>Pumpkin Hat</key>
 	<string>호박 모자</string>
-	<key>Pup</key>
-	<string>강아지</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
 	<string>일반을 새로 설치했을 때처럼 되돌려요. 로그인 시 실행은 그대로예요.</string>
 	<key>Put the recap away</key>
@@ -2901,8 +2901,6 @@
 	<string>빗소리</string>
 	<key>Rain Slicker</key>
 	<string>레인코트</string>
-	<key>Rain cloud</key>
-	<string>비구름</string>
 	<key>Rank %lld, %@, %@</key>
 	<string>%lld위, %@, %@</string>
 	<key>Rank %lld, %@, %@ this week, %@</key>
@@ -3219,6 +3217,8 @@
 	<string>단축어 접근이 꺼져 있음</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>단축어 접근이 꺼져 있어요. 자동화 설정에서 Tabbi의 Shortcuts Events를 켜세요.</string>
+	<key>Shorthair</key>
+	<string>단모종 고양이</string>
 	<key>Show %@</key>
 	<string>%@ 보기</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3385,6 +3385,8 @@
 	<string>일어나서 다리를 털고, 원할 때 다시 앉아요.</string>
 	<key>Star</key>
 	<string>별</string>
+	<key>Star Crest</key>
+	<string>별 문장</string>
 	<key>Star tag</key>
 	<string>별 태그</string>
 	<key>Starlight, every tier earned</key>
@@ -3491,6 +3493,8 @@
 	<string>중지됨</string>
 	<key>Stopwatch</key>
 	<string>스톱워치</string>
+	<key>Storm Cloud</key>
+	<string>먹구름</string>
 	<key>Strawberry Cap</key>
 	<string>딸기 비니</string>
 	<key>Streak</key>

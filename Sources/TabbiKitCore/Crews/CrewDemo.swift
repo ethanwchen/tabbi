@@ -141,7 +141,7 @@ public struct CrewDemoData: Sendable {
         func crew(_ id: String, _ name: String, _ frame: String, _ emblem: String, _ color: String, _ visibility: CrewVisibility,
                   members: Int, minutes: Int, golds: Int, trophies: Int, laurel: CrewLaurel? = nil, description: String = "") -> CrewSummary {
             CrewSummary(id: id, name: name, description: description, frame: CrewCatalog.frame(frame),
-                        emblem: CrewCatalog.emblem(emblem), color: CrewCatalog.color(color).id, visibility: visibility,
+                        emblem: Self.demoEmblem(emblem, crew: id), color: CrewCatalog.color(color).id, visibility: visibility,
                         laurel: laurel, trophies: trophies, memberCount: members, weekMinutes: minutes, golds: golds)
         }
         crews = [
@@ -161,6 +161,16 @@ public struct CrewDemoData: Sendable {
             crew("LQFJBEATSX", "Lofi and Chill", "pennant", "headphones", "rose", .public, members: 14, minutes: 1_110, golds: 0,
                  trophies: 0),
         ]
+    }
+
+    /// The emblem a demo crew wears: the named one while the set has it,
+    /// else one picked from the crew's id, so a new emblem set still shows
+    /// varied crests with no code change.
+    static func demoEmblem(_ preferred: String, crew id: String) -> String {
+        let emblems = CrewCatalog.emblems
+        if emblems.contains(preferred) { return preferred }
+        let seed = id.unicodeScalars.reduce(0) { $0 &* 31 &+ Int($1.value) }
+        return emblems[abs(seed) % emblems.count]
     }
 
     /// Members for a crew: `count` from the pool, most minutes first.

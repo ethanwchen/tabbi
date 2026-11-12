@@ -807,8 +807,6 @@
 	<string>Des minutes bonus pour les objets limités de cet événement</string>
 	<key>Bonus points from your pet, added to your balance</key>
 	<string>Des points bonus de ton compagnon, ajoutés à ton solde</string>
-	<key>Books</key>
-	<string>Livres</string>
 	<key>Bow Tie</key>
 	<string>Nœud papillon</string>
 	<key>Break</key>
@@ -1103,7 +1101,7 @@
 	<string>Code</string>
 	<key>Codex usage</key>
 	<string>Utilisation de Codex</string>
-	<key>Coffee mug</key>
+	<key>Coffee Mug</key>
 	<string>Tasse de café</string>
 	<key>Color</key>
 	<string>Couleur</string>
@@ -1331,7 +1329,7 @@
 	<string>Suppression…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>La description peut contenir jusqu'à %lld caractères.</string>
-	<key>Desk lamp</key>
+	<key>Desk Lamp</key>
 	<string>Lampe de bureau</string>
 	<key>Desktop widget</key>
 	<string>Widget de bureau</string>
@@ -1403,7 +1401,7 @@
 	<string>La liste de chaque jour apparaît ici le lendemain.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>Chaque semaine de focus s'affiche ici.</string>
-	<key>Early bird</key>
+	<key>Early Bird</key>
 	<string>Lève-tôt</string>
 	<key>Earned by reaching study milestones</key>
 	<string>Gagnés en atteignant des étapes d'étude</string>
@@ -1711,6 +1709,8 @@
 	<string>Médaille dorée</string>
 	<key>Golden Laurel</key>
 	<string>Laurier doré</string>
+	<key>Golden Pup</key>
+	<string>Chiot doré</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>Prends ton verre et bois quelques gorgées.</string>
 	<key>Graduation Cap</key>
@@ -1747,12 +1747,12 @@
 	<string>En pleine concentration</string>
 	<key>Heart Glasses</key>
 	<string>Lunettes cœur</string>
-	<key>Heater shield</key>
+	<key>Heater</key>
 	<string>Écu</string>
 	<key>Heirloom</key>
 	<string>Héritage</string>
-	<key>Hexagon</key>
-	<string>Hexagone</string>
+	<key>Hex Guard</key>
+	<string>Bouclier hexagonal</string>
 	<key>Hi! I'm %@.</key>
 	<string>Coucou ! Moi, c'est %@.</string>
 	<key>Hidden</key>
@@ -2537,6 +2537,8 @@
 	<string>Ouvre Anki, l'onglet se connecte tout seul</string>
 	<key>Open Automation settings</key>
 	<string>Ouvrir les réglages Automatisation</string>
+	<key>Open Book</key>
+	<string>Livre ouvert</string>
 	<key>Open Calendars privacy settings</key>
 	<string>Ouvrir les réglages de confidentialité des calendriers</string>
 	<key>Open Calendars privacy settings to turn access on</key>
@@ -2869,8 +2871,6 @@
 	<string>Publique</string>
 	<key>Pumpkin Hat</key>
 	<string>Chapeau citrouille</string>
-	<key>Pup</key>
-	<string>Chiot</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
 	<string>Remet Général comme après une nouvelle installation. « Ouvrir à la connexion » ne change pas.</string>
 	<key>Put the recap away</key>
@@ -2901,8 +2901,6 @@
 	<string>Pluie</string>
 	<key>Rain Slicker</key>
 	<string>Ciré</string>
-	<key>Rain cloud</key>
-	<string>Nuage de pluie</string>
 	<key>Rank %lld, %@, %@</key>
 	<string>Rang %lld, %@, %@</string>
 	<key>Rank %lld, %@, %@ this week, %@</key>
@@ -3219,6 +3217,8 @@
 	<string>L'accès aux Raccourcis est désactivé</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>L'accès aux Raccourcis est désactivé. Active Shortcuts Events pour Tabbi dans les réglages d'Automatisation.</string>
+	<key>Shorthair</key>
+	<string>Chat à poil court</string>
 	<key>Show %@</key>
 	<string>Afficher %@</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3385,6 +3385,8 @@
 	<string>Lève-toi, secoue tes jambes et rassieds-toi quand tu veux.</string>
 	<key>Star</key>
 	<string>Étoile</string>
+	<key>Star Crest</key>
+	<string>Blason étoile</string>
 	<key>Star tag</key>
 	<string>Médaille étoile</string>
 	<key>Starlight, every tier earned</key>
@@ -3491,6 +3493,8 @@
 	<string>Arrêté</string>
 	<key>Stopwatch</key>
 	<string>Chronomètre</string>
+	<key>Storm Cloud</key>
+	<string>Nuage d'orage</string>
 	<key>Strawberry Cap</key>
 	<string>Bonnet fraise</string>
 	<key>Streak</key>

@@ -302,6 +302,7 @@ export function PartyModeSwitch({
 export function CrewButton({
   title,
   symbol,
+  titled = true,
   style = "tint",
   height = 20,
   enabled = true,
@@ -313,6 +314,8 @@ export function CrewButton({
 }: {
   title: string;
   symbol?: string;
+  /** False shows the glyph alone, with the title in the tooltip and the accessible name. */
+  titled?: boolean;
   style?: "tint" | "prominent" | "quiet";
   height?: 20 | 24;
   enabled?: boolean;
@@ -323,10 +326,10 @@ export function CrewButton({
   onClick: () => void;
 }) {
   return (
-    <Tooltip text={help}>
-      <button type="button" className="crew-button kit-caption" data-style={style} data-height={height} role={role} aria-checked={checked} disabled={!enabled || busy} onClick={onClick}>
+    <Tooltip text={titled ? help : `${title}: ${help}`}>
+      <button type="button" className="crew-button kit-caption" data-style={style} data-height={height} data-glyph={!titled || undefined} role={role} aria-checked={checked} aria-label={titled ? undefined : title} disabled={!enabled || busy} onClick={onClick}>
         {symbol !== undefined && <Icon id={symbol} size={10} />}
-        <span>{title}</span>
+        {titled && <span>{title}</span>}
       </button>
     </Tooltip>
   );
@@ -613,7 +616,7 @@ export function useFitStep<T extends HTMLElement>(steps: number, key: string): [
     const target = element.current;
     if (!target || target.clientHeight === 0) return;
     if (target.scrollHeight > target.clientHeight + 0.5 && fit.step < steps) setFit({ key, step: fit.step + 1 });
-  });
+  }, [fit, steps, key, epoch]);
   useLayoutEffect(() => {
     const target = element.current;
     if (!target || typeof ResizeObserver === "undefined") return;

@@ -807,8 +807,6 @@
 	<string>Бонусные минуты для лимитированных предметов этого события</string>
 	<key>Bonus points from your pet, added to your balance</key>
 	<string>Бонусные очки от питомца, уже на твоем счету</string>
-	<key>Books</key>
-	<string>Книги</string>
 	<key>Bow Tie</key>
 	<string>Бабочка</string>
 	<key>Break</key>
@@ -1103,7 +1101,7 @@
 	<string>Код</string>
 	<key>Codex usage</key>
 	<string>Использование Codex</string>
-	<key>Coffee mug</key>
+	<key>Coffee Mug</key>
 	<string>Кружка кофе</string>
 	<key>Color</key>
 	<string>Цвет</string>
@@ -1331,7 +1329,7 @@
 	<string>Удаление…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>Описание не длиннее %lld символов.</string>
-	<key>Desk lamp</key>
+	<key>Desk Lamp</key>
 	<string>Настольная лампа</string>
 	<key>Desktop widget</key>
 	<string>Виджет на рабочем столе</string>
@@ -1403,7 +1401,7 @@
 	<string>Список каждого дня появится здесь на следующий день.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>Здесь появится каждая неделя с фокусом.</string>
-	<key>Early bird</key>
+	<key>Early Bird</key>
 	<string>Ранняя пташка</string>
 	<key>Earned by reaching study milestones</key>
 	<string>Даются за учебные рубежи</string>
@@ -1711,6 +1709,8 @@
 	<string>Золотой жетон</string>
 	<key>Golden Laurel</key>
 	<string>Золотой лавр</string>
+	<key>Golden Pup</key>
+	<string>Золотистый щенок</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>Возьми стакан и сделай пару глотков.</string>
 	<key>Graduation Cap</key>
@@ -1747,12 +1747,12 @@
 	<string>В работе</string>
 	<key>Heart Glasses</key>
 	<string>Очки-сердечки</string>
-	<key>Heater shield</key>
-	<string>Геральдический щит</string>
+	<key>Heater</key>
+	<string>Треугольный щит</string>
 	<key>Heirloom</key>
 	<string>Реликвии</string>
-	<key>Hexagon</key>
-	<string>Шестиугольник</string>
+	<key>Hex Guard</key>
+	<string>Шестигранный щит</string>
 	<key>Hi! I'm %@.</key>
 	<string>Привет! Я %@.</string>
 	<key>Hidden</key>
@@ -2537,6 +2537,8 @@
 	<string>Открыть Anki, вкладка подключится сама</string>
 	<key>Open Automation settings</key>
 	<string>Открыть настройки автоматизации</string>
+	<key>Open Book</key>
+	<string>Открытая книга</string>
 	<key>Open Calendars privacy settings</key>
 	<string>Открыть настройки доступа к календарям</string>
 	<key>Open Calendars privacy settings to turn access on</key>
@@ -2869,8 +2871,6 @@
 	<string>Открытая</string>
 	<key>Pumpkin Hat</key>
 	<string>Шапка-тыква</string>
-	<key>Pup</key>
-	<string>Щенок</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
 	<string>Вернуть «Основные» к исходному виду. «Открывать при входе» не меняется.</string>
 	<key>Put the recap away</key>
@@ -2901,8 +2901,6 @@
 	<string>Дождь</string>
 	<key>Rain Slicker</key>
 	<string>Дождевик</string>
-	<key>Rain cloud</key>
-	<string>Дождевая туча</string>
 	<key>Rank %lld, %@, %@</key>
 	<string>Место %lld, %@, %@</string>
 	<key>Rank %lld, %@, %@ this week, %@</key>
@@ -3219,6 +3217,8 @@
 	<string>Доступ к Быстрым командам выключен</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>Доступ к Быстрым командам выключен. Включи Shortcuts Events для Tabbi в настройках «Автоматизация».</string>
+	<key>Shorthair</key>
+	<string>Короткошёрстная кошка</string>
 	<key>Show %@</key>
 	<string>Показать %@</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3385,6 +3385,8 @@
 	<string>Встань, разомни ноги и садись обратно, когда захочешь.</string>
 	<key>Star</key>
 	<string>Звезда</string>
+	<key>Star Crest</key>
+	<string>Звёздный герб</string>
 	<key>Star tag</key>
 	<string>Звездный жетон</string>
 	<key>Starlight, every tier earned</key>
@@ -3491,6 +3493,8 @@
 	<string>Остановлено</string>
 	<key>Stopwatch</key>
 	<string>Секундомер</string>
+	<key>Storm Cloud</key>
+	<string>Грозовая туча</string>
 	<key>Strawberry Cap</key>
 	<string>Клубничная шапочка</string>
 	<key>Streak</key>

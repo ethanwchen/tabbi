@@ -55,9 +55,9 @@
   min-height: 0;
   min-width: 0;
 }
+/* Numbers keep their digits in order (each is its own isolated run) while a unit or word around them reads in the panel's direction. */
 .crew-number {
   font-variant-numeric: tabular-nums;
-  direction: ltr;
   unicode-bidi: isolate;
 }
 .crew-nowrap {
@@ -789,6 +789,9 @@
   overflow: hidden;
   flex: none;
 }
+.crew-members-head-fits {
+  flex: none;
+}
 .crew-members-waiting {
   color: var(--accent);
 }
@@ -856,8 +859,12 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  width: 68px;
+  width: 48px;
   flex: none;
+}
+/* With the name under it the crest stands in a tile's width, so the name wraps as it will on a featured tile. */
+.crew-editor-crest[data-named] {
+  width: 68px;
 }
 .crew-editor-actions {
   display: flex;
@@ -874,26 +881,26 @@
   color: var(--warning);
 }
 .crew-editor-pickers {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: minmax(46px, max-content) minmax(0, 1fr);
+  align-items: center;
+  align-content: start;
+  gap: 6px 4px;
   flex: 1;
   min-width: 0;
 }
+.crews-card[data-compact] .crew-editor-pickers {
+  grid-template-columns: minmax(40px, max-content) minmax(0, 1fr);
+}
 .crew-picker {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  min-width: 0;
+  display: contents;
+}
+.crew-editor-pickers .crew-editor-note {
+  grid-column: 1 / -1;
+  padding-top: 2px;
 }
 .crew-picker-label {
-  width: 46px;
-  flex: none;
   white-space: nowrap;
-  overflow: hidden;
-}
-.crews-card[data-compact] .crew-picker-label {
-  width: 40px;
 }
 .crew-options {
   display: flex;
@@ -901,9 +908,33 @@
   gap: 4px;
   min-width: 0;
 }
-.crew-options-emblems {
-  display: grid;
-  grid-template-columns: repeat(6, 24px);
+.crew-choice-row {
+  flex: 1;
+  min-width: 0;
+}
+.crew-options-row {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+.crew-options-row[data-scrolls] {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.crew-options-row[data-scrolls]::-webkit-scrollbar {
+  display: none;
+}
+.crew-options-row > * {
+  scroll-snap-align: start;
+}
+.crew-button[data-glyph] {
+  width: 20px;
+  padding: 0;
+  justify-content: center;
+}
+.crew-editor-actions-fits {
+  flex: 1;
+  min-width: 0;
 }
 .crew-options-colors {
   flex-wrap: nowrap;
@@ -1025,4 +1056,16 @@
 .crew-fits-shown {
   width: 100%;
   min-width: 0;
+}
+
+/* Skeleton shapes keep the nested corners of what they stand in for. */
+.crew-skeleton .kit-skeleton-line {
+  border-radius: 4px;
+}
+.crew-skeleton .crew-row > .kit-skeleton-line:nth-child(2),
+.crew-skeleton .crew-tile-top > .kit-skeleton-line:last-child {
+  border-radius: 6px;
+}
+.crew-skeleton .crew-tile-top > .kit-skeleton-line:first-child {
+  border-radius: 7px;
 }

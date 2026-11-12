@@ -44,35 +44,17 @@ public enum CrewCatalog {
     }
 
     /// A frame's name, for the builder's tooltips.
-    public static func frameTitle(_ id: String) -> String {
-        switch id {
-        case "shield": String(localized: "Shield", bundle: .tabbi, comment: "A crew crest frame shape.")
-        case "seal": String(localized: "Seal", bundle: .tabbi, comment: "A crew crest frame shape: a round wax seal.")
-        case "pennant": String(localized: "Pennant", bundle: .tabbi, comment: "A crew crest frame shape: a hanging banner.")
-        case "hexagon": String(localized: "Hexagon", bundle: .tabbi, comment: "A crew crest frame shape.")
-        case "star": String(localized: "Star", bundle: .tabbi, comment: "A crew crest frame shape.")
-        case "heater": String(localized: "Heater shield", bundle: .tabbi, comment: "A crew crest frame shape: a rounded heater shield.")
-        default: CrewCrestArt.art.frame(id).name
-        }
-    }
+    public static func frameTitle(_ id: String) -> String { localizedName(CrewCrestArt.art.frame(id).name) }
 
     /// An emblem's name, for the builder's tooltips.
-    public static func emblemTitle(_ id: String) -> String {
-        switch id {
-        case "owl": String(localized: "Owl", bundle: .tabbi, comment: "A crew crest emblem.")
-        case "bird": String(localized: "Early bird", bundle: .tabbi, comment: "A crew crest emblem: a bluebird with a rising sun.")
-        case "mug": String(localized: "Coffee mug", bundle: .tabbi, comment: "A crew crest emblem.")
-        case "books": String(localized: "Books", bundle: .tabbi, comment: "A crew crest emblem.")
-        case "headphones": String(localized: "Headphones", bundle: .tabbi, comment: "A crew crest emblem.")
-        case "stopwatch": String(localized: "Stopwatch", bundle: .tabbi, comment: "A crew crest emblem.")
-        case "moon": String(localized: "Moon", bundle: .tabbi, comment: "A crew crest emblem.")
-        case "cloud": String(localized: "Rain cloud", bundle: .tabbi, comment: "A crew crest emblem.")
-        case "cat": String(localized: "Cat", bundle: .tabbi, comment: "A crew crest emblem.")
-        case "pup": String(localized: "Pup", bundle: .tabbi, comment: "A crew crest emblem: a golden puppy.")
-        case "turtle": String(localized: "Turtle", bundle: .tabbi, comment: "A crew crest emblem.")
-        case "lamp": String(localized: "Desk lamp", bundle: .tabbi, comment: "A crew crest emblem.")
-        default: CrewCrestArt.art.emblem(id).name
-        }
+    public static func emblemTitle(_ id: String) -> String { localizedName(CrewCrestArt.art.emblem(id).name) }
+
+    /// A frame's or emblem's English name from crew.json, translated through
+    /// the string catalog, where every name is a key
+    /// (`scripts/crews-import-art.py` lists the ones still missing), so a new
+    /// emblem set is a data change. A name with no entry reads in English.
+    static func localizedName(_ name: String) -> String {
+        String(localized: String.LocalizationValue(name), bundle: .tabbi)
     }
 
     public static let nameMaxLength = 20

@@ -807,8 +807,6 @@
 	<string>Minutos bônus para os itens limitados deste evento</string>
 	<key>Bonus points from your pet, added to your balance</key>
 	<string>Pontos bônus do seu pet, somados ao seu saldo</string>
-	<key>Books</key>
-	<string>Livros</string>
 	<key>Bow Tie</key>
 	<string>Gravata-borboleta</string>
 	<key>Break</key>
@@ -1103,7 +1101,7 @@
 	<string>Código</string>
 	<key>Codex usage</key>
 	<string>Uso do Codex</string>
-	<key>Coffee mug</key>
+	<key>Coffee Mug</key>
 	<string>Caneca de café</string>
 	<key>Color</key>
 	<string>Cor</string>
@@ -1331,8 +1329,8 @@
 	<string>Apagando…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>A descrição pode ter até %lld caracteres.</string>
-	<key>Desk lamp</key>
-	<string>Luminária</string>
+	<key>Desk Lamp</key>
+	<string>Luminária de mesa</string>
 	<key>Desktop widget</key>
 	<string>Widget de mesa</string>
 	<key>Details: %@</key>
@@ -1403,7 +1401,7 @@
 	<string>A lista de cada dia aparece aqui no dia seguinte.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>Cada semana de foco aparece aqui.</string>
-	<key>Early bird</key>
+	<key>Early Bird</key>
 	<string>Madrugador</string>
 	<key>Earned by reaching study milestones</key>
 	<string>Conquistados ao atingir marcos de estudo</string>
@@ -1711,6 +1709,8 @@
 	<string>Plaquinha dourada</string>
 	<key>Golden Laurel</key>
 	<string>Louro dourado</string>
+	<key>Golden Pup</key>
+	<string>Filhote dourado</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>Pegue seu copo e tome alguns goles.</string>
 	<key>Graduation Cap</key>
@@ -1747,12 +1747,12 @@
 	<string>Mãos à obra</string>
 	<key>Heart Glasses</key>
 	<string>Óculos de coração</string>
-	<key>Heater shield</key>
-	<string>Escudo arredondado</string>
+	<key>Heater</key>
+	<string>Escudo heater</string>
 	<key>Heirloom</key>
 	<string>Relíquias</string>
-	<key>Hexagon</key>
-	<string>Hexágono</string>
+	<key>Hex Guard</key>
+	<string>Escudo hexagonal</string>
 	<key>Hi! I'm %@.</key>
 	<string>Oi! Eu sou %@.</string>
 	<key>Hidden</key>
@@ -2537,6 +2537,8 @@
 	<string>Abra o Anki, esta aba se conecta sozinha</string>
 	<key>Open Automation settings</key>
 	<string>Abrir ajustes de Automação</string>
+	<key>Open Book</key>
+	<string>Livro aberto</string>
 	<key>Open Calendars privacy settings</key>
 	<string>Abrir a privacidade de Calendários</string>
 	<key>Open Calendars privacy settings to turn access on</key>
@@ -2869,8 +2871,6 @@
 	<string>Pública</string>
 	<key>Pumpkin Hat</key>
 	<string>Chapéu de abóbora</string>
-	<key>Pup</key>
-	<string>Filhote</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
 	<string>Deixa Geral como numa instalação nova. "Abrir ao iniciar sessão" continua igual.</string>
 	<key>Put the recap away</key>
@@ -2901,8 +2901,6 @@
 	<string>Chuva</string>
 	<key>Rain Slicker</key>
 	<string>Capa de chuva</string>
-	<key>Rain cloud</key>
-	<string>Nuvem de chuva</string>
 	<key>Rank %lld, %@, %@</key>
 	<string>Posição %lld, %@, %@</string>
 	<key>Rank %lld, %@, %@ this week, %@</key>
@@ -3219,6 +3217,8 @@
 	<string>O acesso aos Atalhos está desativado</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>O acesso aos Atalhos está desativado. Ative Shortcuts Events para o Tabbi nos ajustes de Automação.</string>
+	<key>Shorthair</key>
+	<string>Gato de pelo curto</string>
 	<key>Show %@</key>
 	<string>Mostrar %@</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3385,6 +3385,8 @@
 	<string>Fique de pé, sacuda as pernas e sente de novo quando quiser.</string>
 	<key>Star</key>
 	<string>Estrela</string>
+	<key>Star Crest</key>
+	<string>Brasão estrela</string>
 	<key>Star tag</key>
 	<string>Plaquinha de estrela</string>
 	<key>Starlight, every tier earned</key>
@@ -3491,6 +3493,8 @@
 	<string>Interrompido</string>
 	<key>Stopwatch</key>
 	<string>Cronômetro</string>
+	<key>Storm Cloud</key>
+	<string>Nuvem de tempestade</string>
 	<key>Strawberry Cap</key>
 	<string>Gorro de morango</string>
 	<key>Streak</key>

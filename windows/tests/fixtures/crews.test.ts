@@ -32,10 +32,12 @@ import {
   readCrewBoard,
   readCrewDetail,
   readCrewHallPage,
+  readCrewMyRequest,
   readCrewSessionsReply,
   readCrewSummary,
   readCrewWeek,
   type CrewBoardEntry,
+  type CrewMyRequest,
   type CrewDetail,
   type CrewSummary,
   type CrewWeek,
@@ -65,7 +67,7 @@ interface CrewsFixture {
   protocol: number;
   requests: { name: string; method: string; path: string; schema?: string; body?: JSONValue }[];
   replies: { name: string; schema: string; json: JSONValue; summary: string[] }[];
-  hours: { minutes: number; tenths?: number; form?: string; value?: number }[];
+  hours: { minutes: number; tenths: number }[];
   remaining: { seconds: number; form: string; values: number[] }[];
   weeks: { at: number; week: CrewWeek }[];
   queue: { name: string; records: number[][]; pending: number[][] }[];
@@ -99,11 +101,11 @@ const CALLS: Record<string, (client: PartyClient) => Promise<unknown>> = {
   "update the crest": (c) => updateCrew(c, { frame: crewFrames().at(-1) ?? "", emblem: crewEmblems().at(-1) ?? "", color: "teal" }),
   "hide my pet": (c) => setShowsPet(c, false),
   "join by invite": (c) => joinCrewByInvite(c, "w4ln-ut7"),
-  "join a public crew": (c) => requestToJoin(c, "MEDSQUAD2K"),
+  "ask to join a public crew": (c) => requestToJoin(c, "MEDSQUAD2K"),
   "cancel my request": (c) => cancelJoinRequest(c),
-  "approve a request": (c) => approveJoinRequest(c, "AVAREQ7K3R"),
-  "decline a request": (c) => declineJoinRequest(c, "AVAREQ7K3R"),
-  "board, next page": (c) => crewBoard(c, "eyJyIjo0fQ+/="),
+  "approve a request": (c) => approveJoinRequest(c, "LENAREF3QW"),
+  "decline a request": (c) => declineJoinRequest(c, "LENAREF3QW"),
+  "board, next page": (c) => crewBoard(c, "eyJyIjo1fQ"),
   leave: (c) => leaveCrew(c),
   "remove a member": (c) => removeCrewMember(c, "MAYAREF4QR"),
   search: (c) => searchCrews(c, "night owls+"),
@@ -130,13 +132,15 @@ const crew = (c: CrewSummary) => {
   const crest = resolvedCrest(crewCrest(c));
   return (
   `crew ${c.id} "${c.name}" crest=${crest.frame}/${crest.emblem}/${crest.color} pips=${crewPips(c)} ` +
-  `${c.visibility} laurel=${c.laurel ?? "none"} trophies=${c.trophies} ` +
+  `${c.visibility} laurel=${c.laurel ?? "none"} trophies=${c.trophies} golds=${c.golds} ` +
   `members=${c.memberCount}/${c.maxMembers} minutes=${c.weekMinutes} full=${bool(crewIsFull(c))}`
   );
 };
 function detail(d: CrewDetail): string[] {
   return [
-    `${crew(d.summary)} rank=${d.rank ?? "none"} mine=${bool(d.mine)} owner=${bool(d.owner)} invite=${d.inviteCode ?? "none"} hidden=${bool(d.hidden)} medals=${d.medals.gold}/${d.medals.silver}/${d.medals.bronze}`,
+    `${crew(d.summary)} rank=${d.rank ?? "none"} mine=${bool(d.mine)} owner=${bool(d.owner)} invite=${d.inviteCode ?? "none"} hidden=${bool(d.hidden)} medals=${d.medals.gold}/${d.medals.silver}/${d.medals.bronze} crews=${d.crewCount}`,
+    ...d.history.map((h) => `week ${h.week.id} place=${h.place ?? "none"} minutes=${h.minutes} medal=${h.medal ?? "none"}`),
+    ...d.requests.map((r) => `request ${r.ref} "${r.name}" pet=${r.pet?.petName ?? "hidden"} at=${Math.trunc(r.requestedAt)}-${Math.trunc(r.expiresAt)}`),
     ...d.members.map((m) => {
       const profile = memberPartyProfile(m);
       let pet = "pet=hidden";
@@ -148,26 +152,30 @@ function detail(d: CrewDetail): string[] {
     }),
   ];
 }
-const entry = (e: CrewBoardEntry) => `#${e.rank} ${e.minutes} ${crew(e.crew)}`;
+const entry = (e: CrewBoardEntry) => `#${e.rank} ${e.minutes} pets=${e.pets.map((p) => p.petName).join(",")} tied=${e.tiedWith.join(",")} ${crew(e.crew)}`;
+const waiting = (r: CrewMyRequest | undefined) => (r === undefined ? [] : [`waiting ${r.crew.id} at=${Math.trunc(r.requestedAt)}-${Math.trunc(r.expiresAt)}`]);
 
 function summary(json: JSONValue, schema: string): string[] {
   const reply = read.record(json, "reply");
   switch (schema) {
     case "mineReply": {
       const mine = read.optionalObject(reply, "crew", readCrewDetail);
-      return [week(readCrewWeek(reply.week)), ...(mine === undefined ? ["no crew"] : detail(mine))];
+      return [week(readCrewWeek(reply.week)), ...(mine === undefined ? ["no crew"] : detail(mine)), ...waiting(read.optionalObject(reply, "request", readCrewMyRequest))];
     }
     case "crewReply":
     case "joinReply":
     case "removeReply": {
       const joined = read.optional(reply, "joined", read.boolean);
-      return [...(joined === undefined ? [] : [`joined=${bool(joined)}`]), ...detail(readCrewDetail(reply.crew))];
+      return [...(joined === undefined ? [] : [`joined=${bool(joined)}`]), ...waiting(read.optionalObject(reply, "request", readCrewMyRequest)), ...detail(readCrewDetail(reply.crew))];
     }
     case "boardReply": {
       const board = readCrewBoard(reply);
       return [
         week(board.week),
+        `crews=${board.crewCount} next=${board.next ?? "none"}`,
+        `mine=${board.mine === undefined ? "none" : `${board.mine.rank ?? "none"}/${board.mine.minutes}`}`,
         ...board.top.map(entry),
+        ...board.rows.map((row) => `row ${entry(row)}`),
         ...(board.featured === undefined ? ["no featured"] : [`featured ${week(board.featured.week)}`, ...board.featured.entries.map(entry)]),
       ];
     }
@@ -182,8 +190,13 @@ function summary(json: JSONValue, schema: string): string[] {
       return [
         ...page.entries.map((e) => `#${e.rank} ${e.medals.gold}/${e.medals.silver}/${e.medals.bronze} at=${Math.trunc(e.reachedAt)} ${crew(e.crew)}`),
         `next=${page.next ?? "none"}`,
+        `mine=${page.mine === undefined ? "none" : `${page.mine.rank ?? "none"} ${page.mine.medals.gold}/${page.mine.medals.silver}/${page.mine.medals.bronze}`}`,
       ];
     }
+    case "cancelReply":
+      return [`cancelled=${bool(read.boolean(reply, "cancelled"))}`];
+    case "declineReply":
+      return [`declined=${bool(read.boolean(reply, "declined"))}`];
     case "leaveReply":
       return [`left=${bool(read.boolean(reply, "left"))}`];
     case "reportReply":
@@ -223,11 +236,7 @@ describe("crews fixture", () => {
   });
 
   it("writes hours in the recorded forms", () => {
-    /* Hours are tenths at every size now; a fixture from before that pins tenths below 10 hours only. */
-    for (const recorded of fixture.hours) {
-      const tenths = recorded.tenths ?? (recorded.form === "tenths" ? recorded.value : undefined);
-      if (tenths !== undefined) expect(crewTenths(recorded.minutes), String(recorded.minutes)).toBe(tenths);
-    }
+    for (const recorded of fixture.hours) expect(crewTenths(recorded.minutes), String(recorded.minutes)).toBe(recorded.tenths);
   });
 
   it("counts the week down in the recorded forms", () => {

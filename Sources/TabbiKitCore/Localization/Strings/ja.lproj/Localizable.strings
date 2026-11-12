@@ -807,8 +807,6 @@
 	<string>このイベントの限定アイテムに向けたボーナス時間</string>
 	<key>Bonus points from your pet, added to your balance</key>
 	<string>ペットからのボーナスポイント。残高に追加されました</string>
-	<key>Books</key>
-	<string>本</string>
 	<key>Bow Tie</key>
 	<string>蝶ネクタイ</string>
 	<key>Break</key>
@@ -1103,8 +1101,8 @@
 	<string>コード</string>
 	<key>Codex usage</key>
 	<string>Codexの使用量</string>
-	<key>Coffee mug</key>
-	<string>マグカップ</string>
+	<key>Coffee Mug</key>
+	<string>コーヒーマグ</string>
 	<key>Color</key>
 	<string>色</string>
 	<key>Command</key>
@@ -1331,8 +1329,8 @@
 	<string>削除中…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>説明は%lld文字までです。</string>
-	<key>Desk lamp</key>
-	<string>デスクランプ</string>
+	<key>Desk Lamp</key>
+	<string>デスクライト</string>
 	<key>Desktop widget</key>
 	<string>デスクトップウィジェット</string>
 	<key>Details: %@</key>
@@ -1403,7 +1401,7 @@
 	<string>各日のリストは翌日ここに表示されます。</string>
 	<key>Each week you focus shows up here.</key>
 	<string>集中した週がここに表示されます。</string>
-	<key>Early bird</key>
+	<key>Early Bird</key>
 	<string>早起き鳥</string>
 	<key>Earned by reaching study milestones</key>
 	<string>学習のマイルストーン達成で獲得</string>
@@ -1711,6 +1709,8 @@
 	<string>金のチャーム</string>
 	<key>Golden Laurel</key>
 	<string>金の月桂冠</string>
+	<key>Golden Pup</key>
+	<string>ゴールデンの子犬</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>コップを手に、何口か飲もう。</string>
 	<key>Graduation Cap</key>
@@ -1747,12 +1747,12 @@
 	<string>集中中</string>
 	<key>Heart Glasses</key>
 	<string>ハートのメガネ</string>
-	<key>Heater shield</key>
+	<key>Heater</key>
 	<string>ヒーターシールド</string>
 	<key>Heirloom</key>
 	<string>家宝</string>
-	<key>Hexagon</key>
-	<string>六角形</string>
+	<key>Hex Guard</key>
+	<string>六角の盾</string>
 	<key>Hi! I'm %@.</key>
 	<string>こんにちは！%@だよ。</string>
 	<key>Hidden</key>
@@ -2537,6 +2537,8 @@
 	<string>Anki を開くと、このタブが自動で接続します</string>
 	<key>Open Automation settings</key>
 	<string>オートメーション設定を開く</string>
+	<key>Open Book</key>
+	<string>開いた本</string>
 	<key>Open Calendars privacy settings</key>
 	<string>カレンダーのプライバシー設定を開く</string>
 	<key>Open Calendars privacy settings to turn access on</key>
@@ -2869,8 +2871,6 @@
 	<string>公開</string>
 	<key>Pumpkin Hat</key>
 	<string>かぼちゃの帽子</string>
-	<key>Pup</key>
-	<string>子犬</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
 	<string>「一般」を新規インストール時の状態に戻します。「ログイン時に起動」はそのままです。</string>
 	<key>Put the recap away</key>
@@ -2901,8 +2901,6 @@
 	<string>雨</string>
 	<key>Rain Slicker</key>
 	<string>レインコート</string>
-	<key>Rain cloud</key>
-	<string>雨雲</string>
 	<key>Rank %lld, %@, %@</key>
 	<string>%lld位、%@、%@</string>
 	<key>Rank %lld, %@, %@ this week, %@</key>
@@ -3219,6 +3217,8 @@
 	<string>ショートカットへのアクセスがオフ</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>ショートカットへのアクセスがオフです。オートメーションの設定でTabbiのShortcuts Eventsをオンにしてください。</string>
+	<key>Shorthair</key>
+	<string>短毛猫</string>
 	<key>Show %@</key>
 	<string>%@を表示</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3385,6 +3385,8 @@
 	<string>立って脚を軽くほぐしたら、好きなときに座ろう。</string>
 	<key>Star</key>
 	<string>スター</string>
+	<key>Star Crest</key>
+	<string>星の紋章</string>
 	<key>Star tag</key>
 	<string>星のチャーム</string>
 	<key>Starlight, every tier earned</key>
@@ -3491,6 +3493,8 @@
 	<string>停止しました</string>
 	<key>Stopwatch</key>
 	<string>ストップウォッチ</string>
+	<key>Storm Cloud</key>
+	<string>雷雲</string>
 	<key>Strawberry Cap</key>
 	<string>いちごニット帽</string>
 	<key>Streak</key>

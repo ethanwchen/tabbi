@@ -807,8 +807,6 @@
 	<string>Bonus minutes para sa mga limitadong item ng event na ito</string>
 	<key>Bonus points from your pet, added to your balance</key>
 	<string>Bonus points mula sa pet mo, idinagdag sa balance mo</string>
-	<key>Books</key>
-	<string>Mga libro</string>
 	<key>Bow Tie</key>
 	<string>Bow Tie</string>
 	<key>Break</key>
@@ -1103,8 +1101,8 @@
 	<string>Code</string>
 	<key>Codex usage</key>
 	<string>Usage ng Codex</string>
-	<key>Coffee mug</key>
-	<string>Tasa ng kape</string>
+	<key>Coffee Mug</key>
+	<string>Tasa ng Kape</string>
 	<key>Color</key>
 	<string>Kulay</string>
 	<key>Command</key>
@@ -1331,8 +1329,8 @@
 	<string>Binubura…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>Hanggang %lld character ang paglalarawan.</string>
-	<key>Desk lamp</key>
-	<string>Desk lamp</string>
+	<key>Desk Lamp</key>
+	<string>Lampara sa Mesa</string>
 	<key>Desktop widget</key>
 	<string>Desktop widget</string>
 	<key>Details: %@</key>
@@ -1403,8 +1401,8 @@
 	<string>Lalabas dito ang listahan ng bawat araw sa susunod na araw.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>Lalabas dito ang bawat linggong nag-focus ka.</string>
-	<key>Early bird</key>
-	<string>Maagang ibon</string>
+	<key>Early Bird</key>
+	<string>Maagang Ibon</string>
 	<key>Earned by reaching study milestones</key>
 	<string>Nakukuha sa pag-abot ng mga study milestone</string>
 	<key>Earned by studying, never sold</key>
@@ -1711,6 +1709,8 @@
 	<string>Gintong tag</string>
 	<key>Golden Laurel</key>
 	<string>Gintong Laurel</string>
+	<key>Golden Pup</key>
+	<string>Gintong Tuta</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>Kunin ang baso at uminom nang kaunti.</string>
 	<key>Graduation Cap</key>
@@ -1747,12 +1747,12 @@
 	<string>Todo-focus</string>
 	<key>Heart Glasses</key>
 	<string>Salaming Puso</string>
-	<key>Heater shield</key>
-	<string>Bilugang kalasag</string>
+	<key>Heater</key>
+	<string>Heater na Kalasag</string>
 	<key>Heirloom</key>
 	<string>Pamana</string>
-	<key>Hexagon</key>
-	<string>Hexagon</string>
+	<key>Hex Guard</key>
+	<string>Heksagonong Kalasag</string>
 	<key>Hi! I'm %@.</key>
 	<string>Hi! Ako si %@.</string>
 	<key>Hidden</key>
@@ -2537,6 +2537,8 @@
 	<string>Buksan ang Anki; kusang kokonekta ang tab na ito</string>
 	<key>Open Automation settings</key>
 	<string>Buksan ang Automation settings</string>
+	<key>Open Book</key>
+	<string>Bukas na Aklat</string>
 	<key>Open Calendars privacy settings</key>
 	<string>Buksan ang privacy settings ng Calendars</string>
 	<key>Open Calendars privacy settings to turn access on</key>
@@ -2869,8 +2871,6 @@
 	<string>Public</string>
 	<key>Pumpkin Hat</key>
 	<string>Sombrerong Kalabasa</string>
-	<key>Pup</key>
-	<string>Tuta</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
 	<string>Ibalik ang General sa ayos ng bagong install. Hindi babaguhin ang Launch at login.</string>
 	<key>Put the recap away</key>
@@ -2901,8 +2901,6 @@
 	<string>Ulan</string>
 	<key>Rain Slicker</key>
 	<string>Kapote</string>
-	<key>Rain cloud</key>
-	<string>Ulap-ulan</string>
 	<key>Rank %lld, %@, %@</key>
 	<string>Rank %lld, %@, %@</string>
 	<key>Rank %lld, %@, %@ this week, %@</key>
@@ -3219,6 +3217,8 @@
 	<string>Naka-off ang access sa Shortcuts</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>Naka-off ang access sa Shortcuts. I-on ang Shortcuts Events para sa Tabbi sa Automation settings.</string>
+	<key>Shorthair</key>
+	<string>Shorthair</string>
 	<key>Show %@</key>
 	<string>Ipakita ang %@</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3385,6 +3385,8 @@
 	<string>Tumayo, igalaw-galaw ang mga binti, at umupo ulit kapag gusto mo na.</string>
 	<key>Star</key>
 	<string>Bituin</string>
+	<key>Star Crest</key>
+	<string>Bituing Sagisag</string>
 	<key>Star tag</key>
 	<string>Tag na bituin</string>
 	<key>Starlight, every tier earned</key>
@@ -3491,6 +3493,8 @@
 	<string>Itinigil</string>
 	<key>Stopwatch</key>
 	<string>Stopwatch</string>
+	<key>Storm Cloud</key>
+	<string>Ulap ng Bagyo</string>
 	<key>Strawberry Cap</key>
 	<string>Bonetang Strawberry</string>
 	<key>Streak</key>

@@ -807,8 +807,6 @@
 	<string>Bonus minutes toward this event's limited items</string>
 	<key>Bonus points from your pet, added to your balance</key>
 	<string>Bonus points from your pet, added to your balance</string>
-	<key>Books</key>
-	<string>Books</string>
 	<key>Bow Tie</key>
 	<string>Bow Tie</string>
 	<key>Break</key>
@@ -1103,8 +1101,8 @@
 	<string>Code</string>
 	<key>Codex usage</key>
 	<string>Codex usage</string>
-	<key>Coffee mug</key>
-	<string>Coffee mug</string>
+	<key>Coffee Mug</key>
+	<string>Coffee Mug</string>
 	<key>Color</key>
 	<string>Color</string>
 	<key>Command</key>
@@ -1331,8 +1329,8 @@
 	<string>Deleting…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>Descriptions can be up to %lld characters.</string>
-	<key>Desk lamp</key>
-	<string>Desk lamp</string>
+	<key>Desk Lamp</key>
+	<string>Desk Lamp</string>
 	<key>Desktop widget</key>
 	<string>Desktop widget</string>
 	<key>Details: %@</key>
@@ -1403,8 +1401,8 @@
 	<string>Each day's list shows up here the day after.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>Each week you focus shows up here.</string>
-	<key>Early bird</key>
-	<string>Early bird</string>
+	<key>Early Bird</key>
+	<string>Early Bird</string>
 	<key>Earned by reaching study milestones</key>
 	<string>Earned by reaching study milestones</string>
 	<key>Earned by studying, never sold</key>
@@ -1711,6 +1709,8 @@
 	<string>Gold tag</string>
 	<key>Golden Laurel</key>
 	<string>Golden Laurel</string>
+	<key>Golden Pup</key>
+	<string>Golden Pup</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>Grab your glass and take a few sips.</string>
 	<key>Graduation Cap</key>
@@ -1747,12 +1747,12 @@
 	<string>Heads down</string>
 	<key>Heart Glasses</key>
 	<string>Heart Glasses</string>
-	<key>Heater shield</key>
-	<string>Heater shield</string>
+	<key>Heater</key>
+	<string>Heater</string>
 	<key>Heirloom</key>
 	<string>Heirloom</string>
-	<key>Hexagon</key>
-	<string>Hexagon</string>
+	<key>Hex Guard</key>
+	<string>Hex Guard</string>
 	<key>Hi! I'm %@.</key>
 	<string>Hi! I'm %@.</string>
 	<key>Hidden</key>
@@ -2537,6 +2537,8 @@
 	<string>Open Anki; this tab connects on its own</string>
 	<key>Open Automation settings</key>
 	<string>Open Automation settings</string>
+	<key>Open Book</key>
+	<string>Open Book</string>
 	<key>Open Calendars privacy settings</key>
 	<string>Open Calendars privacy settings</string>
 	<key>Open Calendars privacy settings to turn access on</key>
@@ -2869,8 +2871,6 @@
 	<string>Public</string>
 	<key>Pumpkin Hat</key>
 	<string>Pumpkin Hat</string>
-	<key>Pup</key>
-	<string>Pup</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
 	<string>Put General back the way a new install has it. Launch at login stays as it is.</string>
 	<key>Put the recap away</key>
@@ -2901,8 +2901,6 @@
 	<string>Rain</string>
 	<key>Rain Slicker</key>
 	<string>Rain Slicker</string>
-	<key>Rain cloud</key>
-	<string>Rain cloud</string>
 	<key>Rank %lld, %@, %@</key>
 	<string>Rank %lld, %@, %@</string>
 	<key>Rank %lld, %@, %@ this week, %@</key>
@@ -3219,6 +3217,8 @@
 	<string>Shortcuts access is off</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</string>
+	<key>Shorthair</key>
+	<string>Shorthair</string>
 	<key>Show %@</key>
 	<string>Show %@</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3385,6 +3385,8 @@
 	<string>Stand, shake out your legs, and sit back down when you like.</string>
 	<key>Star</key>
 	<string>Star</string>
+	<key>Star Crest</key>
+	<string>Star Crest</string>
 	<key>Star tag</key>
 	<string>Star tag</string>
 	<key>Starlight, every tier earned</key>
@@ -3491,6 +3493,8 @@
 	<string>Stopped</string>
 	<key>Stopwatch</key>
 	<string>Stopwatch</string>
+	<key>Storm Cloud</key>
+	<string>Storm Cloud</string>
 	<key>Strawberry Cap</key>
 	<string>Strawberry Cap</string>
 	<key>Streak</key>

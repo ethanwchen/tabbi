@@ -8,6 +8,21 @@ final class CrewsTests: XCTestCase {
 
     // MARK: Catalog
 
+    /// Every frame and emblem name in crew.json is a translated catalog key,
+    /// so the builder's tooltips read in every language; a new emblem set
+    /// gets its names through `scripts/crews-import-art.py`.
+    func testEveryCrestNameIsTranslated() throws {
+        let catalog = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: root.appendingPathComponent(
+            "Sources/TabbiKitCore/Localization/Localizable.xcstrings"))) as? [String: Any])
+        let strings = try XCTUnwrap(catalog["strings"] as? [String: [String: Any]])
+        let names = CrewCatalog.frames.map { CrewCrestArt.art.frame($0).name } + CrewCatalog.emblems.map { CrewCrestArt.art.emblem($0).name }
+        for name in names {
+            let localized = strings[name]?["localizations"] as? [String: Any] ?? [:]
+            XCTAssertEqual(Set(localized.keys).count, 11, "\(name) needs a translation in every language (scripts/crews-import-art.py)")
+        }
+        XCTAssertNotEqual(CrewCatalog.emblemTitle("bird"), "", "titles read from the data")
+    }
+
     /// The app's frames, emblems, colors and limits are the server's
     /// (`backend/shared/crews.json`), in the same order.
     func testCatalogMatchesServer() throws {

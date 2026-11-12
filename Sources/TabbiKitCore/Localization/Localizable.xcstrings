@@ -38737,78 +38737,6 @@
         }
       }
     },
-    "Books" : {
-      "comment" : "A crew crest emblem.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "كتب"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bücher"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Libros"
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mga libro"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Livres"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "本"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "책"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Livros"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Книги"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "书本"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "書本"
-          }
-        }
-      }
-    },
     "Bow Tie" : {
       "comment" : "Closet: name of a pet accessory.",
       "extractionState" : "manual",
@@ -49903,8 +49831,8 @@
         }
       }
     },
-    "Coffee mug" : {
-      "comment" : "A crew crest emblem.",
+    "Coffee Mug" : {
+      "comment" : "A crew crest emblem, named in the crest builder's tooltip.",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -49916,7 +49844,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kaffeetasse"
+            "value" : "Kaffeebecher"
           }
         },
         "es" : {
@@ -49928,7 +49856,7 @@
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tasa ng kape"
+            "value" : "Tasa ng Kape"
           }
         },
         "fr" : {
@@ -49940,7 +49868,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "マグカップ"
+            "value" : "コーヒーマグ"
           }
         },
         "ko" : {
@@ -58114,8 +58042,8 @@
         }
       }
     },
-    "Desk lamp" : {
-      "comment" : "A crew crest emblem.",
+    "Desk Lamp" : {
+      "comment" : "A crew crest emblem, named in the crest builder's tooltip.",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
@@ -58139,7 +58067,7 @@
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Desk lamp"
+            "value" : "Lampara sa Mesa"
           }
         },
         "fr" : {
@@ -58151,7 +58079,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "デスクランプ"
+            "value" : "デスクライト"
           }
         },
         "ko" : {
@@ -58163,7 +58091,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Luminária"
+            "value" : "Luminária de mesa"
           }
         },
         "ru" : {
@@ -61174,14 +61102,14 @@
         }
       }
     },
-    "Early bird" : {
-      "comment" : "A crew crest emblem: a bluebird with a rising sun.",
+    "Early Bird" : {
+      "comment" : "A crew crest emblem, named in the crest builder's tooltip.",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الطائر المبكر"
+            "value" : "طائر الصباح"
           }
         },
         "de" : {
@@ -61199,7 +61127,7 @@
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Maagang ibon"
+            "value" : "Maagang Ibon"
           }
         },
         "fr" : {
@@ -61217,7 +61145,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아침 새"
+            "value" : "아침형 새"
           }
         },
         "pt-BR" : {
@@ -74604,6 +74532,78 @@
         }
       }
     },
+    "Golden Pup" : {
+      "comment" : "A crew crest emblem, named in the crest builder's tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جرو ذهبي"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goldener Welpe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cachorro dorado"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gintong Tuta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiot doré"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ゴールデンの子犬"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "골든 강아지"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filhote dourado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Золотистый щенок"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "金毛小狗"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "金毛小狗"
+          }
+        }
+      }
+    },
     "Grab your glass and take a few sips." : {
       "comment" : "Break card line under the sip title.",
       "extractionState" : "manual",
@@ -75936,32 +75936,32 @@
         }
       }
     },
-    "Heater shield" : {
-      "comment" : "A crew crest frame shape: a rounded heater shield.",
+    "Heater" : {
+      "comment" : "A crew crest frame, named in the crest builder's tooltip.",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "درع مقوّس"
+            "value" : "درع مثلثي"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wappenschild"
+            "value" : "Dreiecksschild"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escudo redondeado"
+            "value" : "Escudo heater"
           }
         },
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bilugang kalasag"
+            "value" : "Heater na Kalasag"
           }
         },
         "fr" : {
@@ -75979,31 +75979,31 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "둥근 방패"
+            "value" : "히터 방패"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escudo arredondado"
+            "value" : "Escudo heater"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Геральдический щит"
+            "value" : "Треугольный щит"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "盾徽"
+            "value" : "三角盾"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "盾徽"
+            "value" : "三角盾"
           }
         }
       }
@@ -76080,74 +76080,74 @@
         }
       }
     },
-    "Hexagon" : {
-      "comment" : "A crew crest frame shape.",
+    "Hex Guard" : {
+      "comment" : "A crew crest frame, named in the crest builder's tooltip.",
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "سداسي"
+            "value" : "درع سداسي"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sechseck"
+            "value" : "Sechseckschild"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hexágono"
+            "value" : "Escudo hexagonal"
           }
         },
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hexagon"
+            "value" : "Heksagonong Kalasag"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hexagone"
+            "value" : "Bouclier hexagonal"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "六角形"
+            "value" : "六角の盾"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "육각형"
+            "value" : "육각 방패"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hexágono"
+            "value" : "Escudo hexagonal"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Шестиугольник"
+            "value" : "Шестигранный щит"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "六边形"
+            "value" : "六角盾"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "六邊形"
+            "value" : "六角盾"
           }
         }
       }
@@ -105352,6 +105352,78 @@
         }
       }
     },
+    "Open Book" : {
+      "comment" : "A crew crest emblem, named in the crest builder's tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كتاب مفتوح"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offenes Buch"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libro abierto"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bukas na Aklat"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livre ouvert"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開いた本"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "펼친 책"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livro aberto"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открытая книга"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开的书"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打開的書"
+          }
+        }
+      }
+    },
     "Open Calendars privacy settings" : {
       "comment" : "Today panel, Up next card empty state (calendar). Tooltip.",
       "extractionState" : "manual",
@@ -117304,78 +117376,6 @@
         }
       }
     },
-    "Pup" : {
-      "comment" : "A crew crest emblem: a golden puppy.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جرو"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Welpe"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cachorro"
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tuta"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chiot"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "子犬"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "강아지"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filhote"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Щенок"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "小狗"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "小狗"
-          }
-        }
-      }
-    },
     "Put General back the way a new install has it. Launch at login stays as it is." : {
       "comment" : "Tooltip on Reset to Defaults in Settings > General.",
       "extractionState" : "manual",
@@ -118452,78 +118452,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "雨衣"
-          }
-        }
-      }
-    },
-    "Rain cloud" : {
-      "comment" : "A crew crest emblem.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "غيمة ماطرة"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Regenwolke"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nube de lluvia"
-          }
-        },
-        "fil" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ulap-ulan"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nuage de pluie"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "雨雲"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "비구름"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nuvem de chuva"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дождевая туча"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "雨云"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "雨雲"
           }
         }
       }
@@ -130680,6 +130608,78 @@
         }
       }
     },
+    "Shorthair" : {
+      "comment" : "A crew crest emblem, named in the crest builder's tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قط قصير الشعر"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurzhaarkatze"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gato de pelo corto"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shorthair"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat à poil court"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短毛猫"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단모종 고양이"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gato de pelo curto"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Короткошёрстная кошка"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短毛猫"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短毛貓"
+          }
+        }
+      }
+    },
     "Show %@" : {
       "comment" : "Button and tooltip that brings an app to the front. %@ is the app name (Spotify, Music, Safari).",
       "extractionState" : "manual",
@@ -136656,6 +136656,78 @@
         }
       }
     },
+    "Star Crest" : {
+      "comment" : "A crew crest frame, named in the crest builder's tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شعار النجمة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sternwappen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escudo estrella"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bituing Sagisag"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blason étoile"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星の紋章"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "별 문장"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brasão estrela"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Звёздный герб"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星形徽章"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星形徽章"
+          }
+        }
+      }
+    },
     "Star tag" : {
       "comment" : "Name of the collar with a star-shaped tag the pet gets at bond level 6.",
       "extractionState" : "manual",
@@ -140540,6 +140612,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "碼錶"
+          }
+        }
+      }
+    },
+    "Storm Cloud" : {
+      "comment" : "A crew crest emblem, named in the crest builder's tooltip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سحابة عاصفة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gewitterwolke"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nube de tormenta"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ulap ng Bagyo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuage d'orage"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "雷雲"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "먹구름"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuvem de tempestade"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Грозовая туча"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "雷雨云"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "雷雨雲"
           }
         }
       }

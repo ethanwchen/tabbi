@@ -807,8 +807,6 @@
 	<string>Bonusminuten für die limitierten Items dieses Events</string>
 	<key>Bonus points from your pet, added to your balance</key>
 	<string>Bonuspunkte von deinem Haustier, deinem Guthaben gutgeschrieben</string>
-	<key>Books</key>
-	<string>Bücher</string>
 	<key>Bow Tie</key>
 	<string>Fliege</string>
 	<key>Break</key>
@@ -1103,8 +1101,8 @@
 	<string>Code</string>
 	<key>Codex usage</key>
 	<string>Codex-Nutzung</string>
-	<key>Coffee mug</key>
-	<string>Kaffeetasse</string>
+	<key>Coffee Mug</key>
+	<string>Kaffeebecher</string>
 	<key>Color</key>
 	<string>Farbe</string>
 	<key>Command</key>
@@ -1331,7 +1329,7 @@
 	<string>Wird gelöscht…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>Beschreibungen dürfen bis zu %lld Zeichen haben.</string>
-	<key>Desk lamp</key>
+	<key>Desk Lamp</key>
 	<string>Schreibtischlampe</string>
 	<key>Desktop widget</key>
 	<string>Desktop-Widget</string>
@@ -1403,7 +1401,7 @@
 	<string>Jede Tagesliste erscheint hier am Tag danach.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>Jede Woche mit Fokus erscheint hier.</string>
-	<key>Early bird</key>
+	<key>Early Bird</key>
 	<string>Frühaufsteher</string>
 	<key>Earned by reaching study milestones</key>
 	<string>Verdient durch Lern-Meilensteine</string>
@@ -1711,6 +1709,8 @@
 	<string>Goldanhänger</string>
 	<key>Golden Laurel</key>
 	<string>Goldener Lorbeer</string>
+	<key>Golden Pup</key>
+	<string>Goldener Welpe</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>Nimm dein Glas und trink ein paar Schlucke.</string>
 	<key>Graduation Cap</key>
@@ -1747,12 +1747,12 @@
 	<string>Voll konzentriert</string>
 	<key>Heart Glasses</key>
 	<string>Herzbrille</string>
-	<key>Heater shield</key>
-	<string>Wappenschild</string>
+	<key>Heater</key>
+	<string>Dreiecksschild</string>
 	<key>Heirloom</key>
 	<string>Erbstücke</string>
-	<key>Hexagon</key>
-	<string>Sechseck</string>
+	<key>Hex Guard</key>
+	<string>Sechseckschild</string>
 	<key>Hi! I'm %@.</key>
 	<string>Hallo! Ich bin %@.</string>
 	<key>Hidden</key>
@@ -2537,6 +2537,8 @@
 	<string>Anki öffnen, der Tab verbindet sich selbst</string>
 	<key>Open Automation settings</key>
 	<string>Automation-Einstellungen öffnen</string>
+	<key>Open Book</key>
+	<string>Offenes Buch</string>
 	<key>Open Calendars privacy settings</key>
 	<string>Datenschutzeinstellungen für Kalender öffnen</string>
 	<key>Open Calendars privacy settings to turn access on</key>
@@ -2869,8 +2871,6 @@
 	<string>Öffentlich</string>
 	<key>Pumpkin Hat</key>
 	<string>Kürbishut</string>
-	<key>Pup</key>
-	<string>Welpe</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
 	<string>Setzt Allgemein auf den Stand einer Neuinstallation zurück. „Bei Anmeldung öffnen“ bleibt, wie es ist.</string>
 	<key>Put the recap away</key>
@@ -2901,8 +2901,6 @@
 	<string>Regen</string>
 	<key>Rain Slicker</key>
 	<string>Regenmantel</string>
-	<key>Rain cloud</key>
-	<string>Regenwolke</string>
 	<key>Rank %lld, %@, %@</key>
 	<string>Platz %lld, %@, %@</string>
 	<key>Rank %lld, %@, %@ this week, %@</key>
@@ -3219,6 +3217,8 @@
 	<string>Zugriff auf Kurzbefehle ist aus</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>Der Zugriff auf Kurzbefehle ist aus. Schalte Shortcuts Events für Tabbi in den Automation-Einstellungen ein.</string>
+	<key>Shorthair</key>
+	<string>Kurzhaarkatze</string>
 	<key>Show %@</key>
 	<string>%@ zeigen</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3385,6 +3385,8 @@
 	<string>Steh auf, schüttel die Beine aus und setz dich wieder, wann du magst.</string>
 	<key>Star</key>
 	<string>Stern</string>
+	<key>Star Crest</key>
+	<string>Sternwappen</string>
 	<key>Star tag</key>
 	<string>Sternanhänger</string>
 	<key>Starlight, every tier earned</key>
@@ -3491,6 +3493,8 @@
 	<string>Gestoppt</string>
 	<key>Stopwatch</key>
 	<string>Stoppuhr</string>
+	<key>Storm Cloud</key>
+	<string>Gewitterwolke</string>
 	<key>Strawberry Cap</key>
 	<string>Erdbeermütze</string>
 	<key>Streak</key>

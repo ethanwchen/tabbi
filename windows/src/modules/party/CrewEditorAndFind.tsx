@@ -18,6 +18,7 @@ import { Card } from "../../ui/kit/Card";
 import { Icon } from "../../ui/kit/Icon";
 import { MarqueeText } from "../../ui/kit/MarqueeText";
 import { Tooltip } from "../../ui/kit/Tooltip";
+import { useElementWidth } from "../../ui/kit/useElementWidth";
 import { CrewBoardSkeleton } from "./CrewBoards";
 import {
   CrewButton,
@@ -50,8 +51,22 @@ export function CrewEditorScreen({ crews, editing, from }: { crews: CrewsStore; 
   const isPublic = draft.visibility === "public";
   const warning = problem !== undefined && problem !== "nameEmpty";
   const note = warning ? crewDraftProblemMessage(problem) : tr("Every crew can appear on the weekly top 3 with its members' pets.");
-  /* Nothing in the side column is cut: when it runs out of room the note goes first (a problem stays in the Create button's tooltip), then the name under the preview. */
-  const [side, step] = useFitStep<HTMLDivElement>(2, `${compact}|${name}|${note}`);
+  /* Nothing in the side column is cut: a name that wraps to two lines where the column has no room for it gives up its preview under the crest. */
+  const [side, step] = useFitStep<HTMLDivElement>(1, `${compact}|${name}`);
+  const actions = (titled: boolean) => (
+    <div className="crew-editor-actions">
+      <CrewButton title={tr("Shuffle")} symbol="shuffle" titled={titled} help={tr("A random frame, emblem and color")} onClick={() => crews.shuffleCrest()} />
+      <CrewButton
+        title={isPublic ? tr("Public") : tr("Private")}
+        symbol={isPublic ? "globe" : "lock.fill"}
+        titled={titled}
+        role="switch"
+        checked={isPublic}
+        help={isPublic ? tr("Anyone can find it and ask to join. Click to make it private.") : tr("Only people with the invite link can join. Click to make it public.")}
+        onClick={() => crews.updateDraft({ visibility: isPublic ? "private" : "public" })}
+      />
+    </div>
+  );
   return (
     <>
       <div className="crews-head">
@@ -71,29 +86,16 @@ export function CrewEditorScreen({ crews, editing, from }: { crews: CrewsStore; 
       <div className="crews-body crew-editor">
         <div ref={side} className="crew-editor-side">
           <div className="crew-editor-preview">
-            <div className="crew-editor-crest">
+            <div className="crew-editor-crest" data-named={(!compact && step < 1) || undefined}>
               <CrewCrestView crest={draft.crest} pixelSize={CREW_CREST_REGULAR_PIXEL_SIZE} />
-              {!compact && step < 2 && (
+              {!compact && step < 1 && (
                 <span className="crew-tile-name kit-caption kit-user-text" data-empty={name === "" || undefined}>
                   {name === "" ? tr("Crew name") : name}
                 </span>
               )}
             </div>
-            <div className="crew-editor-actions">
-              <CrewButton title={tr("Shuffle")} symbol="shuffle" help={tr("A random frame, emblem and color")} onClick={() => crews.shuffleCrest()} />
-              <CrewButton
-                title={isPublic ? tr("Public") : tr("Private")}
-                symbol={isPublic ? "globe" : "lock.fill"}
-                role="switch"
-                checked={isPublic}
-                help={isPublic ? tr("Anyone can find it and ask to join. Click to make it private.") : tr("Only people with the invite link can join. Click to make it public.")}
-                onClick={() =>
-                  crews.updateDraft({
-                    visibility: isPublic ? "private" : "public",
-                  })
-                }
-              />
-            </div>
+            {/* A long word for Shuffle or Public gives way to the glyphs alone, with the words in their tooltips. */}
+            <FirstThatFits className="crew-editor-actions-fits" candidates={[actions(true), actions(false)]} />
           </div>
           <CrewTextField
             placeholder={tr("Crew name")}
@@ -111,11 +113,6 @@ export function CrewEditorScreen({ crews, editing, from }: { crews: CrewsStore; 
             onChange={(value) => crews.updateDraft({ description: value })}
             onSubmit={() => crews.saveDraft()}
           />
-          {step < 1 && (
-            <div className="kit-caption crew-editor-note" data-warning={warning || undefined}>
-              {note}
-            </div>
-          )}
         </div>
         <div className="crew-editor-pickers">
           <CrewPicker title={tr("Frame")}>
@@ -134,13 +131,14 @@ export function CrewEditorScreen({ crews, editing, from }: { crews: CrewsStore; 
             </div>
           </CrewPicker>
           <CrewPicker title={tr("Emblem")}>
-            <div className="crew-options crew-options-emblems" role="radiogroup" aria-label={tr("Emblem")}>
+            {/* One row that scrolls by whole tiles, so the line under the pickers always has room. */}
+            <CrewChoiceRow label={tr("Emblem")} side={24} spacing={4}>
               {crewEmblems().map((emblem) => (
                 <CrewOption key={emblem} selected={draft.crest.emblem === emblem} help={crewEmblemTitle(emblem)} kind="emblem" onClick={() => crews.updateCrest({ emblem })}>
                   <CrewEmblemView emblem={emblem} color={draft.crest.color} />
                 </CrewOption>
               ))}
-            </div>
+            </CrewChoiceRow>
           </CrewPicker>
           <CrewPicker title={tr("Color")}>
             <div className="crew-options crew-options-colors" role="radiogroup" aria-label={tr("Color")}>
@@ -151,9 +149,33 @@ export function CrewEditorScreen({ crews, editing, from }: { crews: CrewsStore; 
               ))}
             </div>
           </CrewPicker>
+          {/* The owner's promise in the create flow: any crew can be featured. */}
+          <div className="kit-caption crew-editor-note" data-warning={warning || undefined}>
+            {note}
+          </div>
         </div>
       </div>
     </>
+  );
+}
+
+/** A row of picker options that scrolls sideways by whole options and shows only whole options, with the rest a scroll away. */
+function CrewChoiceRow({ label, side, spacing, children }: { label: string; side: number; spacing: number; children: ReactNode[] }) {
+  const [row, width] = useElementWidth<HTMLDivElement>();
+  const visible = Math.max(1, Math.floor((width + spacing) / (side + spacing)));
+  const shown = Math.min(visible, children.length);
+  return (
+    <div ref={row} className="crew-choice-row">
+      <div
+        className="crew-options crew-options-row"
+        role="radiogroup"
+        aria-label={label}
+        data-scrolls={(width > 0 && children.length > visible) || undefined}
+        style={{ gap: spacing, width: width > 0 ? shown * (side + spacing) - spacing : undefined }}
+      >
+        {children}
+      </div>
+    </div>
   );
 }
 

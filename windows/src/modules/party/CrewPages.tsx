@@ -30,6 +30,7 @@ import {
   CrewSummaryCrest,
   CrewTag,
   CrewTally,
+  FirstThatFits,
   useCrewIsCompact,
   useFitStep,
 } from "./CrewComponents";
@@ -79,7 +80,7 @@ export function CrewMineScreen({ crews }: { crews: CrewsStore }) {
     return (
       <CrewStatus
         pet={{ pet: myPet, asleep: false }}
-        title={tr("Waiting for %@", request.crew.name)}
+        title={tr("Waiting to join %@", request.crew.name)}
         detail={tr("Its owner lets you in. A request goes away after 7 days.")}
         actions={
           <>
@@ -225,14 +226,19 @@ function CrewMembersColumn({ crews, crew }: { crews: CrewsStore; crew: CrewDetai
       : []),
     ...[...crew.members].sort((a, b) => b.weekMinutes - a.weekMinutes).map((member): MemberItem => ({ kind: "member", member })),
   ];
+  const waiting = crew.owner ? crew.requests.length : 0;
+  const head = (showsWaiting: boolean, showsWeek: boolean) => (
+    <div className="crew-members-head kit-caption kit-tertiary">
+      <span>{crewMembersOf(crew.summary.memberCount, crew.summary.maxMembers)}</span>
+      {showsWaiting && waiting > 0 && <span className="crew-members-waiting">{tr("· %lld want to join", waiting)}</span>}
+      <span className="crews-head-spacer" />
+      {showsWeek && <span>{tr("this week")}</span>}
+    </div>
+  );
   return (
     <div className="crew-members">
-      <div className="crew-members-head kit-caption kit-tertiary">
-        <span>{crewMembersOf(crew.summary.memberCount, crew.summary.maxMembers)}</span>
-        {crew.owner && crew.requests.length > 0 && <span className="crew-members-waiting">{tr("· %lld want to join", crew.requests.length)}</span>}
-        <span className="crews-head-spacer" />
-        <span>{tr("this week")}</span>
-      </div>
+      {/* One caption line: when it runs out of room "this week" goes first, then the waiting count (the tab's dot and the rows still show it). */}
+      <FirstThatFits className="crew-members-head-fits" candidates={[head(true, true), head(true, false), head(false, false)]} />
       <CrewRowList
         count={items.length}
         row={(index) => {

@@ -387,7 +387,10 @@ export class CrewsStore extends Store<CrewsStoreState> {
   saveDraft(): void {
     const draft = this.state.draft;
     if (draftProblem(draft) !== undefined) return;
-    if (this.isDemo || this.isSnapshot) return this.demoOnly();
+    if (this.isDemo || this.isSnapshot) {
+      this.party.showNotice(tr("This is a demo. Run without TABBI_DEMO to make a crew."), false);
+      return;
+    }
     const mine = this.state.crews.mine;
     const pushed = this.state.crews.pushed;
     if (pushed?.kind === "editor" && pushed.editing && mine !== undefined) {

@@ -807,8 +807,6 @@
 	<string>計入這次活動限定物品的額外分鐘數</string>
 	<key>Bonus points from your pet, added to your balance</key>
 	<string>寵物送來的額外點數，已加進你的餘額</string>
-	<key>Books</key>
-	<string>書本</string>
 	<key>Bow Tie</key>
 	<string>領結</string>
 	<key>Break</key>
@@ -1103,7 +1101,7 @@
 	<string>程式碼</string>
 	<key>Codex usage</key>
 	<string>Codex 用量</string>
-	<key>Coffee mug</key>
+	<key>Coffee Mug</key>
 	<string>咖啡杯</string>
 	<key>Color</key>
 	<string>顏色</string>
@@ -1331,7 +1329,7 @@
 	<string>刪除中…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>簡介最多 %lld 個字元。</string>
-	<key>Desk lamp</key>
+	<key>Desk Lamp</key>
 	<string>檯燈</string>
 	<key>Desktop widget</key>
 	<string>桌面小工具</string>
@@ -1403,7 +1401,7 @@
 	<string>每天的清單會在隔天顯示在這裡。</string>
 	<key>Each week you focus shows up here.</key>
 	<string>你專注過的每一週都會顯示在這裡。</string>
-	<key>Early bird</key>
+	<key>Early Bird</key>
 	<string>早起鳥</string>
 	<key>Earned by reaching study milestones</key>
 	<string>達成學習里程碑即可獲得</string>
@@ -1711,6 +1709,8 @@
 	<string>金色吊牌</string>
 	<key>Golden Laurel</key>
 	<string>金色桂冠</string>
+	<key>Golden Pup</key>
+	<string>金毛小狗</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>拿起杯子，喝幾口。</string>
 	<key>Graduation Cap</key>
@@ -1747,12 +1747,12 @@
 	<string>專心中</string>
 	<key>Heart Glasses</key>
 	<string>愛心眼鏡</string>
-	<key>Heater shield</key>
-	<string>盾徽</string>
+	<key>Heater</key>
+	<string>三角盾</string>
 	<key>Heirloom</key>
 	<string>傳家寶</string>
-	<key>Hexagon</key>
-	<string>六邊形</string>
+	<key>Hex Guard</key>
+	<string>六角盾</string>
 	<key>Hi! I'm %@.</key>
 	<string>嗨！我是%@。</string>
 	<key>Hidden</key>
@@ -2537,6 +2537,8 @@
 	<string>打開 Anki，此標籤頁會自動連線</string>
 	<key>Open Automation settings</key>
 	<string>打開「自動化」設定</string>
+	<key>Open Book</key>
+	<string>打開的書</string>
 	<key>Open Calendars privacy settings</key>
 	<string>打開行事曆隱私權設定</string>
 	<key>Open Calendars privacy settings to turn access on</key>
@@ -2869,8 +2871,6 @@
 	<string>公開</string>
 	<key>Pumpkin Hat</key>
 	<string>南瓜帽</string>
-	<key>Pup</key>
-	<string>小狗</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
 	<string>將「一般」恢復成全新安裝時的樣子，「登入時啟動」維持不變。</string>
 	<key>Put the recap away</key>
@@ -2901,8 +2901,6 @@
 	<string>雨聲</string>
 	<key>Rain Slicker</key>
 	<string>雨衣</string>
-	<key>Rain cloud</key>
-	<string>雨雲</string>
 	<key>Rank %lld, %@, %@</key>
 	<string>第%lld名,%@,%@</string>
 	<key>Rank %lld, %@, %@ this week, %@</key>
@@ -3219,6 +3217,8 @@
 	<string>捷徑取用權限已關閉</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>捷徑取用權限已關閉。請在「自動化」設定中為 Tabbi 開啟 Shortcuts Events。</string>
+	<key>Shorthair</key>
+	<string>短毛貓</string>
 	<key>Show %@</key>
 	<string>顯示 %@</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3385,6 +3385,8 @@
 	<string>站起來抖抖腿，想坐時再坐下。</string>
 	<key>Star</key>
 	<string>星形</string>
+	<key>Star Crest</key>
+	<string>星形徽章</string>
 	<key>Star tag</key>
 	<string>星星吊牌</string>
 	<key>Starlight, every tier earned</key>
@@ -3491,6 +3493,8 @@
 	<string>已停止</string>
 	<key>Stopwatch</key>
 	<string>碼錶</string>
+	<key>Storm Cloud</key>
+	<string>雷雨雲</string>
 	<key>Strawberry Cap</key>
 	<string>草莓帽</string>
 	<key>Streak</key>
