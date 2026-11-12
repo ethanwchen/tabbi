@@ -21,6 +21,7 @@ The catalog (`backend/shared/catalog.json`) has its own `version`, which counts 
 | --- | --- | --- |
 | 1 | up to 1.0.0 | Instant friendships, catalog version 1 |
 | 2 | from this release | Friend requests, every Closet item has a server id (catalog version 2), ten profile colors, the tab badge count in heartbeat replies |
+| 3 | from 1.0.7 | The Study Level and nameplate color in the profile (`studyLevel`, `nameplate`), the catalog's `nameplates` list and `limits.maxStudyLevel` |
 
 ## Rules for every change
 
@@ -52,3 +53,18 @@ A self-hosted server still on catalog version 1 refuses the newer ids, and the a
 Catalog version 4 adds the mastery outfits from the Closet's Goals section (`docs/design/progression.md`): six outfits and eight accessories with new ids, while the Cozy Pajamas and the Friendship Bandana reuse `pajamas` and `bandana`, which catalog version 1 already listed and nothing drew.
 Older apps drop the new ids and draw the rest of the pet.
 A server still on catalog version 3 refuses them, so the app first sends the profile again without just those ids (`PartyProfileUpdate.forCatalogVersion3()`) and only falls back to what catalog version 1 takes if that is refused too.
+
+## Study Level across versions
+
+Protocol 3 adds two optional profile fields: `studyLevel`, the Study Level from 0 (`docs/design/progression.md`), and `nameplate`, the id of the name color picked, from the catalog's `nameplates`.
+The rank is never sent: it follows from the level, so every app names it in its own language.
+
+- They are display only.
+  The server clamps `studyLevel` to 0 through `limits.maxStudyLevel` (999), refuses anything that is not a whole number and any nameplate id the catalog does not list, and never derives anything from them: not points, not the older `level` field, not the leaderboard.
+- Replies carry them only for users whose app sent them, so a reply about someone on an older app looks exactly as before, and apps show no level for that person rather than a wrong one.
+- Older apps (protocol 1 and 2) never send them and ignore them in replies, so an older and a current app share a party and a friends list as before.
+- A current app talking to a server from before protocol 3 has the two fields refused as unknown; it sends the profile again without them (`PartyProfileUpdate.withoutStudyLevel()`), before any of the older catalog fallbacks, so Party stays online and friends there see the pet without a level.
+- A value an app cannot read (a string, a level out of range, an unknown nameplate) reads as no level, or as plain, never as an error.
+- The catalog's `version` stays as it was: the nameplate ids are their own list, added with the protocol, and like every id they are only ever added.
+
+`backend/test/compat.test.ts` runs a protocol 2 app and a current app as friends in one party, an app with no protocol header beside them, and the server's validation; `PartyAccountTests` runs a current app against a server that refuses the fields; `shared/fixtures/party/party.json` pins the bodies and how replies with and without a level read on the Mac and on Windows.
