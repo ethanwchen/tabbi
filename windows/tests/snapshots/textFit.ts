@@ -56,3 +56,26 @@ export async function textFitProblems(page: Page, rowSelectors: readonly string[
     return problems;
   }, rowSelectors);
 }
+
+/*
+ * Rows in a scrolling list are shown whole or not at all: none is cut in
+ * half by the list's bottom edge at rest.
+ */
+export async function cutRowProblems(page: Page, listSelector: string): Promise<string[]> {
+  return page.evaluate((selector) => {
+    const problems: string[] = [];
+    for (const list of document.querySelectorAll<HTMLElement>(selector)) {
+      const box = list.getBoundingClientRect();
+      if (box.height === 0) continue;
+      const rows = list.firstElementChild ? [...list.firstElementChild.children] : [];
+      for (const row of rows) {
+        const rect = row.getBoundingClientRect();
+        const shown = Math.min(rect.bottom, box.bottom) - Math.max(rect.top, box.top);
+        if (shown > 0.5 && shown < rect.height - 0.5) {
+          problems.push(`row cut to ${Math.round(shown)} of ${Math.round(rect.height)}px: "${(row.textContent ?? "").trim().slice(0, 30)}"`);
+        }
+      }
+    }
+    return problems;
+  }, listSelector);
+}

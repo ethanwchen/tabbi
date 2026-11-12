@@ -1,14 +1,16 @@
 import { expect, test } from "@playwright/test";
 import { LANGUAGES, snapshotStates } from "./snapshot";
-import { textFitProblems } from "./textFit";
+import { cutRowProblems, textFitProblems } from "./textFit";
 
 /*
  * Every Party state in every shipped snapshot language and panel size,
  * checked for text that does not fit: the room header (title, code, count
  * and Leave), each member's status under its pet, and the friend
- * code field's placeholder beside Paste. These caught "Leave" over the
+ * code field's placeholder beside Paste, and the friends list showing
+ * only whole rows. These caught "Leave" over the
  * Friends header, a title wrapping one character per line in Japanese,
- * German countdowns running into each other and a cut placeholder.
+ * German countdowns running into each other, a cut placeholder and a
+ * friend row cut in half.
  */
 
 test.use({ viewport: { width: 800, height: 600 } });
@@ -26,6 +28,7 @@ for (const lang of LANGUAGES) {
         await page.evaluate(() => document.fonts.ready);
         await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
         for (const problem of await textFitProblems(page, ROWS)) problems.push(`${size} ${state}: ${problem}`);
+        for (const problem of await cutRowProblems(page, ".party-friends-scroll")) problems.push(`${size} ${state}: ${problem}`);
       }
     }
     expect(problems).toEqual([]);
