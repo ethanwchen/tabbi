@@ -484,10 +484,11 @@ private struct ClosetWardrobe: View {
         Group {
             if RunMode.current.isSnapshot {
                 Color.clear
-                    // From the end, the last row sits just clear of the
-                    // edge fade.
+                    // From the end, the last row keeps the scroll view's
+                    // bottom margin, the edge fade's length, so it shows
+                    // whole and unfaded, as it does scrolled to the end.
                     .overlay(alignment: showsEndForSnapshot ? .bottom : .top) {
-                        grid.padding(.bottom, showsEndForSnapshot ? Theme.Spacing.xs : 0)
+                        grid.padding(.bottom, showsEndForSnapshot ? Theme.Spacing.m : 0)
                     }
                     .clipped()
             } else {

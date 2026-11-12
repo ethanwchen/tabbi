@@ -77,8 +77,12 @@ struct ClosetGoals: View {
     @ViewBuilder private var scrollingContent: some View {
         Group {
             if RunMode.current.isSnapshot {
+                // From the end, the last row keeps the scroll view's bottom
+                // margin, the edge fade's length, so it shows whole and unfaded.
                 Color.clear
-                    .overlay(alignment: showsEndForSnapshot ? .bottom : .top) { content }
+                    .overlay(alignment: showsEndForSnapshot ? .bottom : .top) {
+                        content.padding(.bottom, showsEndForSnapshot ? Theme.Spacing.m : 0)
+                    }
                     .clipped()
             } else {
                 ScrollView(.vertical) { content }
