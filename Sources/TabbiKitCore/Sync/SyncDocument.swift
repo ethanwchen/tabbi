@@ -197,6 +197,8 @@ public struct SyncDocument: Codable, Hashable, Sendable {
         updated.version = save.version
         updated.creditedFocusCount = save.creditedFocusCount
         updated.creditedFocusSource = save.creditedFocusSource
+        // The pinned Radiant goal is this Mac's own; it stays while it can.
+        if let goal = save.radiantGoal, updated.canPinRadiantGoal(goal) { updated.radiantGoal = goal }
         return updated
     }
 

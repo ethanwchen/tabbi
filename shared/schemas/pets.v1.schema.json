@@ -131,7 +131,8 @@
         "properties": {
           "front": { "$ref": "#/$defs/backPlacement" },
           "side": { "$ref": "#/$defs/backPlacement" },
-          "longDog": { "description": "Around the dachshund, which sits side-on; the front loop when left out.", "$ref": "#/$defs/backPlacement" }
+          "longDog": { "description": "Around the dachshund, which sits side-on; the front loop when left out.", "$ref": "#/$defs/backPlacement" },
+          "lowersUnderCeiling": { "description": "Under a ceiling (the closed notch), the item moves down as a whole until its top row is at the ceiling instead of losing what reaches above it (the rain cloud). False when left out.", "type": "boolean" }
         }
       }
     },

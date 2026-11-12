@@ -104,6 +104,12 @@ final class RadiantEconomyTests: XCTestCase {
         let fresh = document.applied(to: PetSave(profile: PetProfile(name: "Mochi", breed: .britishShorthair)))
         XCTAssertTrue(fresh.ledger.isRadiant(coat))
         XCTAssertEqual(fresh.profile.radiance(of: coat), .bold)
+        // A goal pinned on this Mac survives a sync round while it can.
+        var pinned = PetSave(profile: PetProfile(name: "Mochi", breed: .britishShorthair),
+                             ledger: PetPointsLedger(earned: 3_000, purchased: [.accessory(.wizardHat)]))
+        pinned.radiantGoal = .accessory(.wizardHat)
+        let synced = SyncDocument.empty.recording(pinned, changedAt: nil, device: "mac-a").applied(to: pinned)
+        XCTAssertEqual(synced.radiantGoal, .accessory(.wizardHat))
     }
 
     func testPartyCarriesTheWornEffectsAndOlderAppsSkipThem() {

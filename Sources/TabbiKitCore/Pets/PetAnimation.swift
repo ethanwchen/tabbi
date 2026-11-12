@@ -377,6 +377,11 @@ extension PetComposer {
             if let aura = composed.aura {
                 canvas = canvas.scattering(ceiling.map { aura.keepingParticles(below: $0) } ?? aura)
             }
+            if let lowering = composed.loweringAura {
+                // Moved down as a whole, so the rain cloud and its drops stay together.
+                let top = lowering.opaqueBounds?.minY ?? 0
+                canvas = canvas.scattering(ceiling.map { lowering.shifted(x: 0, y: max(0, $0 - top)) } ?? lowering)
+            }
             // Wings go behind the pet and its effects: a "z" or a heart
             // floats in front of them.
             if let back = composed.back {

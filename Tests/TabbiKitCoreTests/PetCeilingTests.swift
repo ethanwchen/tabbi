@@ -27,6 +27,7 @@ final class PetCeilingTests: XCTestCase {
 
     func testPetalsAndSparklesDriftInFromAboveTheCeiling() {
         for accessory in [PetAccessory.cherryPetals, .sparkleTrail] {
+            // The rain cloud moves down instead (`testTheRainCloudShowsUnderTheCeiling`).
             let full = PetComposer.clip(.idle, for: .orangeTabby, accessories: [accessory])
             let fitted = PetComposer.clip(.idle, for: .orangeTabby, accessories: [accessory], ceiling: 2)
             XCTAssertLessThan(top(full), 2, "\(accessory) starts at the frame's top")
@@ -37,18 +38,28 @@ final class PetCeilingTests: XCTestCase {
         }
     }
 
-    /// The Tiny Rain Cloud hangs two rows down, so the closed notch shows
-    /// the cloud itself and not just its drops (it once sat on the frame's
-    /// top rows, above the ceiling), on every body shape, sitting, walking
-    /// and through the whole drizzle.
+    /// The Tiny Rain Cloud hangs at the frame's top. Under the ceiling it
+    /// moves down as a whole (`lowersUnderCeiling`), so the closed notch
+    /// shows the cloud itself and not just its drops, sitting, walking and
+    /// through the whole drizzle. The Sphynx's and the French Bulldog's tall
+    /// ears reach where it would hang, so there it is left out sitting, as
+    /// any particle that would touch the pet.
     func testTheRainCloudShowsUnderTheCeiling() {
         for breed in PetGallery.bodyShapeBreeds {
             for animation in [PetAnimation.idle, .walk, .sleep] {
+                let tallEars = [PetBodyShape.sphynxCat, .batEaredDog].contains(breed.bodyShape) && animation != .walk
+                let full = PetComposer.clip(animation, for: breed, accessories: [.rainCloud])
                 let fitted = PetComposer.clip(animation, for: breed, accessories: [.rainCloud], ceiling: 2)
-                for frame in fitted.frames {
-                    for canvas in frame.itemFrames.isEmpty ? [frame.canvas] : frame.itemFrames {
-                        XCTAssertGreaterThanOrEqual(canvas.pixels.filter { $0 == .coat }.count, 10,
-                                                    "the cloud shows: \(breed) \(animation)")
+                XCTAssertGreaterThanOrEqual(top(fitted), 2, "\(breed) \(animation)")
+                for (whole, frame) in zip(full.frames, fitted.frames) {
+                    let ticks = frame.itemFrames.isEmpty ? [frame.canvas] : frame.itemFrames
+                    let wholeTicks = whole.itemFrames.isEmpty ? [whole.canvas] : whole.itemFrames
+                    for (shown, art) in zip(ticks, wholeTicks) {
+                        XCTAssertGreaterThanOrEqual(art.pixels.filter { $0 == .coat }.count, 10,
+                                                    "the Closet shows the cloud: \(breed) \(animation)")
+                        guard !tallEars else { continue }
+                        XCTAssertGreaterThanOrEqual(shown.pixels.filter { $0 == .coat }.count, 10,
+                                                    "the notch shows the cloud: \(breed) \(animation)")
                     }
                 }
             }
