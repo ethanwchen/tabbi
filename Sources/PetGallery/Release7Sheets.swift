@@ -4,33 +4,31 @@ import Foundation
 import TabbiKitCore
 import UniformTypeIdentifiers
 
-/// Review sheets for the 25 candidate outfits of the closet round after the
-/// mastery outfits: `swift run PetGallery out/ outfits25`.
+/// Review sheets for the 15 shop items of release 7 (six of them on the
+/// Heirloom shelf): `swift run PetGallery out/ release7`.
 ///
 /// - `outfit-<slug>.png`: the item on a spread of breeds that covers every
 ///   body shape and the dark coats, sitting, in a celebration hop, walking,
 ///   stretching and napping, at 4x.
-/// - `all-<breed>.png` and `all-<breed>-2x.png`: every candidate on one
-///   breed, at 4x and at the closed notch's 2x.
+/// - `all-<breed>.png` and `all-<breed>-2x.png`: every item on one breed,
+///   at 4x and at the closed notch's 2x.
 /// - `loop-<slug>.png`: each tick of an animated item's loop, sitting and
 ///   walking, on every body shape.
-/// - `cards/<nn>-<slug>-<bsh|black>[-2x].png`: one candidate alone on the
-///   British Shorthair or the black cat, idle, at 4x and 2x, for the
-///   review page.
+/// - `cards/<nn>-<slug>-<bsh|black>[-2x].png`: one item alone on the
+///   British Shorthair or the black cat, idle, at 4x and 2x.
+/// - `final.png`: all of them in shop order on the British Shorthair and
+///   the black cat, each with its price.
 ///
-/// `swift run PetGallery out/ outfits25 dump <item id>` prints the
-/// composed frames as palette symbols instead, for drawing new grids.
-enum Outfits25Sheets {
-    /// The candidates in review order, each one item (a set is an outfit
-    /// with a head part).
-    static let candidates: [PetItem] = [
-        .accessory(.mushroomCap), .accessory(.deerstalker), .accessory(.cactusPot), .accessory(.bookStack),
-        .accessory(.strawberryCap), .accessory(.sunHat), .accessory(.aviatorCap), .accessory(.retroHeadset),
-        .accessory(.tinyBackpack), .outfit(.librarianCardigan), .outfit(.blanketBurrito), .outfit(.keepersPeacoat),
-        .outfit(.koiYukata), .outfit(.gardenOveralls), .outfit(.varsityJacket), .outfit(.paintersSmock),
-        .accessory(.monocle), .accessory(.instantCamera), .accessory(.sailorCollar), .accessory(.daisyChain),
-        .outfit(.rainSlicker), .outfit(.sushiChef), .outfit(.snowDayPuffer), .accessory(.onsenTowel),
-        .accessory(.fireflies),
+/// `swift run PetGallery out/ release7 dump <item id>` prints the composed
+/// frames as palette symbols instead, for drawing new grids, and
+/// `... release7 check` checks the eye and pixel budget rules.
+enum Release7Sheets {
+    /// The items in shop order, cheapest first.
+    static let items: [PetItem] = [
+        .accessory(.daisyChain), .accessory(.sailorCollar), .accessory(.strawberryCap), .accessory(.mushroomCap),
+        .accessory(.cactusPot), .accessory(.sunHat), .accessory(.aviatorCap), .outfit(.librarianCardigan),
+        .outfit(.varsityJacket), .outfit(.keepersPeacoat), .outfit(.rainSlicker), .outfit(.koiYukata),
+        .outfit(.sushiChef), .outfit(.snowDayPuffer), .accessory(.fireflies),
     ]
 
     static let breeds: [PetBreed] = [
@@ -53,7 +51,7 @@ enum Outfits25Sheets {
     static func write(to directory: URL, only: [String] = []) throws {
         let cards = directory.appendingPathComponent("cards", isDirectory: true)
         try FileManager.default.createDirectory(at: cards, withIntermediateDirectories: true)
-        for (index, item) in candidates.enumerated() where only.isEmpty || only.contains(item.id) {
+        for (index, item) in items.enumerated() where only.isEmpty || only.contains(item.id) {
             let (outfit, accessories) = look(item)
             var cells: [Cell] = []
             for breed in breeds {
@@ -97,27 +95,28 @@ enum Outfits25Sheets {
             }
         }
         guard only.isEmpty else { return }
+        try writePriced(to: directory.appendingPathComponent("final.png"))
         for breed in [PetBreed.britishShorthair, .blackCat] {
-            let cells = candidates.enumerated().map { index, item in
+            let cells = items.enumerated().map { index, item in
                 let (outfit, accessories) = look(item)
                 return Cell(label: "\(index + 1) \(item.displayName)",
                             canvas: PetComposer.sitting(breed, outfit: outfit, accessories: accessories),
                             palette: breed.palette)
             }
-            try writeSheet(cells, columns: 9, title: "Candidate outfits on \(breed.displayName)",
+            try writeSheet(cells, columns: 8, title: "Release 7 items on \(breed.displayName)",
                            to: directory.appendingPathComponent("all-\(breed.rawValue).png"))
-            try writeSheet(cells.map { Cell(label: "", canvas: $0.canvas, palette: $0.palette) }, columns: 9, title: "",
+            try writeSheet(cells.map { Cell(label: "", canvas: $0.canvas, palette: $0.palette) }, columns: 8, title: "",
                            scale: 2, to: directory.appendingPathComponent("all-\(breed.rawValue)-2x.png"))
         }
     }
 
-    /// Checks the rules the owner set for every candidate, beyond the unit
+    /// Checks the rules the owner set for every item, beyond the unit
     /// tests: no eye covered in any frame or tick of any animation on any
     /// breed (hats and face items included), and an animated item changes
     /// at most 6 pixels on any tick against its still, sitting and walking.
     static func check() -> [String] {
         var problems: [String] = []
-        for item in candidates {
+        for item in items {
             let (outfit, accessories) = look(item)
             for breed in PetBreed.allCases {
                 for animation in PetAnimation.allCases {
@@ -167,6 +166,22 @@ enum Outfits25Sheets {
 
     private static func eyePoints(_ canvas: PetCanvas) -> [Int] {
         canvas.pixels.indices.filter { canvas.pixels[$0] == .eye || canvas.pixels[$0] == .eyeLight }
+    }
+
+    /// Every item in shop order on the British Shorthair, then on the black
+    /// cat, each labeled with its price.
+    static func writePriced(to url: URL) throws {
+        var cells: [Cell] = []
+        for breed in [PetBreed.britishShorthair, .blackCat] {
+            for item in items {
+                let (outfit, accessories) = look(item)
+                cells.append(Cell(label: "\(item.displayName) \(item.cost.formatted())",
+                                  canvas: PetComposer.sitting(breed, outfit: outfit, accessories: accessories),
+                                  palette: breed.palette))
+            }
+        }
+        try writeSheet(cells, columns: items.count,
+                       title: "Release 7: 15 shop items, cheapest first (Heirloom from Keeper's Peacoat on)", to: url)
     }
 
     /// One sprite on a transparent square, `scale` device pixels per sprite

@@ -1,7 +1,9 @@
 import Foundation
 
 /// The shelves of the Closet wardrobe. Every costume item sits on exactly
-/// one, so the grid can group a growing catalog into a few clear rows.
+/// one, so the grid can group a growing catalog into a few clear rows. The
+/// Heirloom shelf comes last and holds every Heirloom tier item
+/// (`PetPriceTier.heirloom`), so the wardrobe still lists cheaper tiers first.
 public enum PetItemTheme: String, CaseIterable, Codable, Sendable {
     /// Med school and desk gear.
     case study
@@ -13,6 +15,8 @@ public enum PetItemTheme: String, CaseIterable, Codable, Sendable {
     case seasonal
     /// Dress-up for laughs.
     case silly
+    /// The priciest outfits, months of study each.
+    case heirloom
 
     public var displayName: String {
         switch self {
@@ -21,6 +25,7 @@ public enum PetItemTheme: String, CaseIterable, Codable, Sendable {
         case .fantasy: String(localized: "Fantasy", bundle: .tabbi)
         case .seasonal: String(localized: "Seasonal", bundle: .tabbi)
         case .silly: String(localized: "Silly", bundle: .tabbi)
+        case .heirloom: String(localized: "Heirloom", bundle: .tabbi)
         }
     }
 
@@ -45,9 +50,7 @@ extension PetItem {
             case .cozyPajamas, .bakersApron: .cozy
             case .astronautSuit, .starryCloak: .fantasy
             case .librarianCardigan, .varsityJacket: .study
-            case .blanketBurrito, .keepersPeacoat, .gardenOveralls, .paintersSmock: .cozy
-            case .koiYukata, .rainSlicker, .snowDayPuffer: .seasonal
-            case .sushiChef: .silly
+            case .keepersPeacoat, .rainSlicker, .koiYukata, .sushiChef, .snowDayPuffer: .heirloom
             }
         case .accessory(let accessory):
             switch accessory {
@@ -62,11 +65,11 @@ extension PetItem {
                  .sakuraSprig: .seasonal
             case .frogHat, .cowboyHat, .bowTie, .flameHeadband, .teamMedal, .rainCloud, .beeAntennae,
                  .sportySweatband: .silly
-            case .monocle, .bookStack, .deerstalker, .retroHeadset: .study
-            case .strawberryCap, .tinyBackpack, .onsenTowel: .cozy
+            case .strawberryCap: .cozy
             case .aviatorCap: .fantasy
-            case .daisyChain, .sailorCollar, .mushroomCap, .sunHat, .fireflies: .seasonal
-            case .cactusPot, .instantCamera: .silly
+            case .daisyChain, .sailorCollar, .mushroomCap, .sunHat: .seasonal
+            case .cactusPot: .silly
+            case .fireflies: .heirloom
             }
         }
     }
@@ -83,8 +86,8 @@ extension PetItem {
             case .studyHoodie: 4
             case .astronautSuit, .starryCloak, .apprenticeRobe, .scholarsRobe, .sagesRobe, .cozyPajamas,
                  .bakersApron: 6
-            case .librarianCardigan, .blanketBurrito, .keepersPeacoat, .koiYukata, .gardenOveralls, .varsityJacket,
-                 .paintersSmock, .rainSlicker, .sushiChef, .snowDayPuffer: 7
+            case .librarianCardigan, .varsityJacket, .keepersPeacoat, .rainSlicker, .koiYukata, .sushiChef,
+                 .snowDayPuffer: 7
             }
         case .accessory(let accessory):
             switch accessory {
@@ -99,14 +102,13 @@ extension PetItem {
             case .foundersPin: 5
             case .littleSprout, .blossomSprout, .nightcap, .explorersHat, .beeAntennae, .sportySweatband,
                  .owlSpectacles, .friendshipBandana, .tinyLantern: 6
-            case .mushroomCap, .deerstalker, .cactusPot, .bookStack, .strawberryCap, .sunHat, .aviatorCap,
-                 .retroHeadset, .onsenTowel, .monocle, .tinyBackpack, .instantCamera, .sailorCollar, .daisyChain,
+            case .daisyChain, .sailorCollar, .strawberryCap, .mushroomCap, .cactusPot, .sunHat, .aviatorCap,
                  .fireflies: 7
             }
         }
     }
 
-    public static let latestRelease = 3
+    public static let latestRelease = 7
 
     /// Limited edition items never wear it: their shelf has its own badge.
     public var isNew: Bool { release == PetItem.latestRelease && !isLimited }

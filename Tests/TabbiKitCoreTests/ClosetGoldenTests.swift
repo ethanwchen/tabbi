@@ -820,6 +820,7 @@ struct ClosetGoldenFixture: Codable, Equatable {
         case .starter: "starter"
         case .midTier: "midTier"
         case .showpiece: "showpiece"
+        case .heirloom: "heirloom"
         }
     }
 

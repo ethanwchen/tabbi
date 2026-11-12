@@ -67,7 +67,8 @@ public actor PartyAccount {
     ///
     /// A server on an older catalog refuses the newer outfit and accessory
     /// ids as an invalid field; the profile is then sent again without the
-    /// ids catalog version 4 added (`PartyProfileUpdate.forCatalogVersion3()`),
+    /// ids catalog version 5 added (`PartyProfileUpdate.forCatalogVersion4()`),
+    /// then without version 4's (`PartyProfileUpdate.forCatalogVersion3()`),
     /// and if that is refused too, as catalog version 1 takes it
     /// (`PartyProfileUpdate.forCatalogVersion1()`), so Party stays online
     /// and friends see what that server can carry.

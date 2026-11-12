@@ -695,6 +695,8 @@
 	<string>Automation</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>Available kapag tumatakbo ang %@ bilang app bundle.</string>
+	<key>Aviator Cap</key>
+	<string>Sombrerong Piloto</string>
 	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
 	<string>Baby blue at puting ulap, parang isang karton ng blueberry milk.</string>
 	<key>Back</key>
@@ -1179,6 +1181,8 @@
 	<string>Naabot ang daily focus goal</string>
 	<key>Daily reminder</key>
 	<string>Araw-araw na paalala</string>
+	<key>Daisy Chain</key>
+	<string>Kuwintas na Daisy</string>
 	<key>Darker squares mean more time studied</key>
 	<string>Mas madilim na kahon, mas mahabang pag-aaral</string>
 	<key>Day</key>
@@ -1397,6 +1401,8 @@
 	<string>Tapusin ang tatlo para mabilang ang buwan sa badge na Buwanang quest.</string>
 	<key>Finish setup</key>
 	<string>Tapusin ang setup</string>
+	<key>Fireflies</key>
+	<string>Mga Alitaptap</string>
 	<key>Fireplace</key>
 	<string>Fireplace</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
@@ -1631,6 +1637,8 @@
 	<string>Todo-focus</string>
 	<key>Heart Glasses</key>
 	<string>Salaming Puso</string>
+	<key>Heirloom</key>
+	<string>Pamana</string>
 	<key>Hi! I'm %@.</key>
 	<string>Hi! Ako si %@.</string>
 	<key>Hidden</key>
@@ -1825,12 +1833,16 @@
 	<string>Panatilihin ang pangalang ito</string>
 	<key>Keep your current kit and tabs</key>
 	<string>Panatilihin ang kasalukuyang kit at mga tab</string>
+	<key>Keeper's Peacoat</key>
+	<string>Peacoat ng Bantay-Parola</string>
 	<key>Kindred spirits</key>
 	<string>Magkaluluwa</string>
 	<key>King's Cape</key>
 	<string>Kapa ng Hari</string>
 	<key>Kit</key>
 	<string>Kit</string>
+	<key>Koi Yukata</key>
+	<string>Yukata na may Koi</string>
 	<key>Large</key>
 	<string>Malaki</string>
 	<key>Last 7 days</key>
@@ -1879,6 +1891,8 @@
 	<string>Hayaang magsabi ang pet mo ng pampalakas-loob paminsan-minsan pagkatapos ng focus session, hanggang isang beses kada araw</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>Hayaang lumabas ang pet sa notch kapag nalilihis ka sa focus</string>
+	<key>Librarian Cardigan</key>
+	<string>Cardigan ng Librarian</string>
 	<key>Like</key>
 	<string>Like</string>
 	<key>Like Sam or Dr. Sam</key>
@@ -2027,6 +2041,8 @@
 	<string>Ilipat sa ngayon</string>
 	<key>Move up</key>
 	<string>Itaas</string>
+	<key>Mushroom Cap</key>
+	<string>Sombrerong Kabute</string>
 	<key>Music</key>
 	<string>Music</string>
 	<key>Mute</key>
@@ -2637,6 +2653,8 @@
 	<string>Points: 1 sa bawat minutong naka-focus, plus bonus kapag natapos mo ang session</string>
 	<key>Pomodoro</key>
 	<string>Pomodoro</string>
+	<key>Potted Cactus</key>
+	<string>Cactus sa Paso</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Para sa Claude usage at mga sagot.</string>
 	<key>Preset %@</key>
@@ -2689,6 +2707,8 @@
 	<string>I-quit ang Anki at buksan ulit. Kusang mapapansin ito ng Tabbi.</string>
 	<key>Rain</key>
 	<string>Ulan</string>
+	<key>Rain Slicker</key>
+	<string>Kapote</string>
 	<key>Rare</key>
 	<string>Rare</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2855,6 +2875,8 @@
 	<string>Tumatakbo sa Mac na ito</string>
 	<key>Sage's Robe</key>
 	<string>Robe ng Pantas</string>
+	<key>Sailor Collar</key>
+	<string>Kuwelyo ng Marino</string>
 	<key>Sakura Sprig</key>
 	<string>Sanga ng Sakura</string>
 	<key>Save</key>
@@ -3089,6 +3111,8 @@
 	<string>Mabagal na hinga</string>
 	<key>Smooth</key>
 	<string>Smooth</string>
+	<key>Snow Day Puffer</key>
+	<string>Puffer sa Araw ng Niyebe</string>
 	<key>Snowy Scarf</key>
 	<string>Maniyebeng Scarf</string>
 	<key>Some evidence</key>
@@ -3233,6 +3257,8 @@
 	<string>Itigil ang preview</string>
 	<key>Stopped</key>
 	<string>Itinigil</string>
+	<key>Strawberry Cap</key>
+	<string>Bonetang Strawberry</string>
 	<key>Streak</key>
 	<string>Streak</string>
 	<key>Streak unavailable</key>
@@ -3283,12 +3309,16 @@
 	<string>Magmungkahi ng Feature o Mag-report ng Bug</string>
 	<key>Summer</key>
 	<string>Tag-init</string>
+	<key>Sunflower Sun Hat</key>
+	<string>Sombrerong may Mirasol</string>
 	<key>Sunset Shades</key>
 	<string>Sunset na Shades</string>
 	<key>Superhero Cape</key>
 	<string>Kapa ng Superhero</string>
 	<key>Surgical Cap</key>
 	<string>Surgical Cap</string>
+	<key>Sushi Chef</key>
+	<string>Kusinero ng Sushi</string>
 	<key>Sweet</key>
 	<string>Matamis</string>
 	<key>Switch Kit</key>
@@ -3763,6 +3793,8 @@
 	<string>Linggo ng mga Puso</string>
 	<key>Validate</key>
 	<string>I-validate</string>
+	<key>Varsity Jacket</key>
+	<string>Dyaket ng Varsity</string>
 	<key>Version %@</key>
 	<string>Version %@</string>
 	<key>Version %@ (%@)</key>

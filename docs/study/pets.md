@@ -172,12 +172,17 @@ They are drawn like every item, so each fits every body shape:
 
 `swift run PetGallery <dir> mastery` writes `mastery-<item>.png` (the item on a breed for every body shape, sitting, mid-hop, walking, stretching and napping), `mastery-all-<breed>.png` at 4x and notch size, `mastery-loop-<item>.png` for the animated ones, and `mastery-sets-<breed>.png` (the outfits worn with the shop items they go with).
 
-### Closet candidates
+### Release 7 shop items
 
-Round 7 adds 25 candidate items for the owner to pick from (`Outfits25Sheets.candidates`): eight hats, seven outfits, a backpack and three more neck items, a monocle, three sets that are outfits with a head part (the Rain Slicker's sou'wester, the Sushi Chef's hachimaki, the Snow Day Puffer's ear flap hat), the Onsen Towel and the Fireflies aura.
-Across the face, hats among them reach at most one row below the skull line, because the Shih Tzu's eyes start two rows under it; only parts at the sides (ear flaps, a headset cup and its mic) reach lower, clear of the eyes.
-`swift run PetGallery <dir> outfits25` writes `outfit-<slug>.png`, `loop-<slug>.png`, `all-<breed>.png` with `-2x` versions, and the review cards in `cards/`.
-`swift run PetGallery <dir> outfits25 check` checks that no candidate covers an eye in any frame or tick on any breed (closed, happy and squeezed eyes included) and that each animated one changes at most 6 pixels on a tick.
+Release 7 adds 15 shop items (`Release7Sheets.items`): the Daisy Chain and the Sailor Collar (neck items), five hats (Strawberry Cap, Mushroom Cap, Potted Cactus, Sunflower Sun Hat, Aviator Cap), the Librarian Cardigan and the Varsity Jacket, and on the Heirloom shelf the Keeper's Peacoat, the Koi Yukata, three sets that are outfits with a head part (the Rain Slicker with its sou'wester, the Sushi Chef with its hachimaki, the Snow Day Puffer with its ear flap hat) and the Fireflies aura.
+They are drawn like every item:
+
+- Across the face, these hats reach at most one row below the skull line, because the Shih Tzu's eyes start two rows under it; only parts at the sides (the aviator's and the puffer hat's ear flaps, the sou'wester's brim) reach lower, clear of the eyes.
+- The cardigan, the varsity jacket and the yukata have sleeves that hang past the body, so they read as garments rather than vests; the yukata crosses left over right, a "y" seen from the front.
+- The Fireflies are an aura item over a 12-tick loop: eight fireflies, out of step, each glow up (a green dot, a gold dot, a gold star for one tick, and back) and drift up a pixel as they glow, so three or more glow on every tick and a tick never shows more pixels than the Sparkle Trail.
+
+`swift run PetGallery <dir> release7` writes `outfit-<slug>.png`, `loop-fireflies.png`, `all-<breed>.png` with `-2x` versions, review cards in `cards/` and `final.png`, every item with its price.
+`swift run PetGallery <dir> release7 check` checks that none of them covers an eye in any frame or tick on any breed (closed, happy and squeezed eyes included) and that the Fireflies stay within the Sparkle Trail's pixel count.
 
 ### Badges
 
@@ -230,7 +235,7 @@ The happier idle is in `PetAnimator`: a happy pet (`happy:`, from `PetBondLook.h
 
 ### Adding a costume item
 
-1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`), and give it a price in `PetItem.cost`, a Closet shelf in `PetItem.theme` (Study, Cozy, Fantasy, Seasonal or Silly), the catalog `release` that adds it, and its Party id in `PartyPetAppearance` (added to `backend/shared/catalog.json` with a version bump).
+1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`), and give it a price in `PetItem.cost`, a Closet shelf in `PetItem.theme` (Study, Cozy, Fantasy, Seasonal or Silly, or Heirloom for an Heirloom tier price), the catalog `release` that adds it, and its Party id in `PartyPetAppearance` (added to `backend/shared/catalog.json` with a version bump).
    Items from `PetItem.latestRelease` wear a "New" badge in the Closet until the user owns them.
 2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family plus its two walking torsos, a `FaceItem` with its `eyeRow`, or a `HeadItem` with its `sitRow`.
    A body item that sticks up out of the silhouette (the dinosaur's back spikes, the cape streaming up behind a walking pet) sets `rise`, the rows every one of its grids starts above the body's top row.

@@ -132,17 +132,17 @@ if arguments.dropFirst().first == "mastery" {
     exit(0)
 }
 
-// Candidate outfits: `swift run PetGallery out/ outfits25` (Outfits25Sheets.swift),
-// `... outfits25 <item id>...` for some items' sheets only, `... outfits25 dump <item id>`
-// to print composed frames as symbols, or `... outfits25 check` for the eye and
+// Release 7 items: `swift run PetGallery out/ release7` (Release7Sheets.swift),
+// `... release7 <item id>...` for some items' sheets only, `... release7 dump <item id>`
+// to print composed frames as symbols, or `... release7 check` for the eye and
 // pixel budget rules.
-if arguments.dropFirst().first == "outfits25" {
+if arguments.dropFirst().first == "release7" {
     switch arguments.dropFirst(2).first {
-    case "dump": Outfits25Sheets.dump(arguments.dropFirst(3).first)
+    case "dump": Release7Sheets.dump(arguments.dropFirst(3).first)
     case "check":
-        let problems = Outfits25Sheets.check()
-        print(problems.isEmpty ? "all candidates pass" : problems.joined(separator: "\n"))
-    default: try Outfits25Sheets.write(to: outputDirectory, only: Array(arguments.dropFirst(2)))
+        let problems = Release7Sheets.check()
+        print(problems.isEmpty ? "all release 7 items pass" : problems.joined(separator: "\n"))
+    default: try Release7Sheets.write(to: outputDirectory, only: Array(arguments.dropFirst(2)))
     }
     exit(0)
 }

@@ -429,6 +429,7 @@ private struct ClosetWardrobe: View {
     @State private var hovered: PetItem?
     /// The tile the grid scrolls to when the footer's next unlock is clicked.
     @State private var shown: PetItem?
+    @Environment(\.closetSnapshotShowsEnd) private var showsEndForSnapshot
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: Theme.Spacing.s - Theme.Spacing.xxs),
                                 count: 5)
@@ -483,7 +484,11 @@ private struct ClosetWardrobe: View {
         Group {
             if RunMode.current.isSnapshot {
                 Color.clear
-                    .overlay(alignment: .top) { grid }
+                    // From the end, the last row sits just clear of the
+                    // edge fade.
+                    .overlay(alignment: showsEndForSnapshot ? .bottom : .top) {
+                        grid.padding(.bottom, showsEndForSnapshot ? Theme.Spacing.xs : 0)
+                    }
                     .clipped()
             } else {
                 ScrollViewReader { proxy in

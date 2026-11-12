@@ -4341,6 +4341,187 @@
         "#FFE9CF",
         "#E77A8C",
         "#D9823E",
+        "#A99C8E",
+        "#7C63C8",
+        "#F2C14E",
+        "#3F4A78",
+        "#C9D3DD"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "librarianCardigan"
+      },
+      "rle" : "32./32./32./32./32./32./7.2A14.2A7./6.A2BA12.A2BA6./6.A3BA10.A3BA6./6.ABC2B10A2BCBA6./6.AB2C12B2CBA6./6.A7BD2BD7BA6./5.A8BD2BD8BA5./5.A20BA5./5.A4BEF8BEF4BA5./5.A4B2F8B2F4BA5./5.AD3B2FB6GB2F3BDA5./5.A2B2C2BGAG2HGAG2B2C2BA5./6.A6BGA2GAG6BA6./6.A7B4G7BA6./7.AI14BIA7./8.2A2I8B2I2A8./9.J3KL4GL3KJ9./8.J4KL4GL4KJ8./7.J4KM2N2M2NM4KJA6./6.J6K2M2G2M6KBA5./6.J2KM4KL2BL4KM2KBA5./6.J2KM4KM2BM4KM2KJ6./6.J3M4KL2BL4K3MJ6./7.J7M2B7MJ7./8.2J4B4A4B2J8./10.4A4.4A10."
+    },
+    {
+      "colors" : [
+        "#2A1A14",
+        "#F2A65A",
+        "#FF9AAE",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#E77A8C",
+        "#D9823E",
+        "#F2C14E",
+        "#3F4A78",
+        "#F6F8FB",
+        "#B8304C",
+        "#A99C8E"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "varsityJacket"
+      },
+      "rle" : "32./32./32./32./32./32./7.2A14.2A7./6.A2BA12.A2BA6./6.A3BA10.A3BA6./6.ABC2B10A2BCBA6./6.AB2C12B2CBA6./6.A7BD2BD7BA6./5.A8BD2BD8BA5./5.A20BA5./5.A4BEF8BEF4BA5./5.A4B2F8B2F4BA5./5.AD3B2FB6GB2F3BDA5./5.A2B2C2BGAG2HGAG2B2C2BA5./6.A6BGA2GAG6BA6./6.A7B4G7BA6./7.AI14BIA7./8.2A2I8B2I2A8./8.2AJKJK4GKJKJ2A8./7.A2L5M2L5M2LA7./7.A2L5M2LM3JM2L2A6./7.A2L5M2L2MJ2M2L2BA5./7.A2L5M2L2MJ2M2L2BA5./7.A2L5M2L5M2LBA6./7.AJKJKJKJKJKJKJKJKBA6./8.NI3BI4BI3B2IN7./9.A4B4A4BAN8./10.4A4.4A10."
+    },
+    {
+      "colors" : [
+        "#2A1A14",
+        "#F2A65A",
+        "#FF9AAE",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#E77A8C",
+        "#D9823E",
+        "#A99C8E",
+        "#3F4A78",
+        "#F6F8FB",
+        "#C3CCD9",
+        "#91806E",
+        "#F2C14E"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "keepersPeacoat"
+      },
+      "rle" : "32./32./32./32./32./32./7.2A14.2A7./6.A2BA12.A2BA6./6.A3BA10.A3BA6./6.ABC2B10A2BCBA6./6.AB2C12B2CBA6./6.A7BD2BD7BA6./5.A8BD2BD8BA5./5.A20BA5./5.A4BEF8BEF4BA5./5.A4B2F8B2F4BA5./5.AD3B2FB6GB2F3BDA5./5.A2B2C2BGAG2HGAG2B2C2BA5./6.A6BGA2GAG6BA6./6.A7B4G7BA6./7.AI14BIA7./8.2A2I8B2I2A8./9.J3K6L3KJ9./8.JK2M3K2L3K2MKJ8./8.J2K2M6K2M2KN2A6./8.J4KO4KO4KA2BA5./8.J14KA2BA5./8.J4KO4KO4K2BA6./7.J2K3M6K3M2KBA6./7.J16KJ7./8.2J4B4J4B2J8./10.4A4.4A10."
+    },
+    {
+      "colors" : [
+        "#2A1A14",
+        "#F2C14E",
+        "#F2A65A",
+        "#FF9AAE",
+        "#F08A24",
+        "#3F4A78",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#E77A8C",
+        "#D9823E"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "rainSlicker"
+      },
+      "rle" : "32./32./32./32./32./12.8A12./7.2A2.A8BA2.2A7./6.A2C2A10B2A2CA6./6.A3C12B3CA6./6.ACDC12BCDCA6./6.ACE14BECA6./6.A2B14F2BA6./5.AC2B5CG2CG5C2BCA5./5.AC2B14C2BCA5./5.A4CHI8CHI4CA5./5.A4C2I8C2I4CA5./5.AG3C2IC6JC2I3CGA5./5.A2C2D2CJAJ2KJAJ2C2D2CA5./6.A6CJA2JAJ6CA6./6.A7C4J7CA6./7.AL14CLA7./8.2A2L8C2L2A8./8.A4BE4JE4BA8./8.A5BE2JE5BA8./8.A6B2E6B3A6./8.A5B3F6BA2CA5./8.A6BE7BA2CA5./8.AB3EB3F2B3EB2CA6./7.A7BE8BCA6./7.A16EA7./8.2A4C4A4C2A8./10.4A4.4A10."
+    },
+    {
+      "colors" : [
+        "#2A1A14",
+        "#F2A65A",
+        "#FF9AAE",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#E77A8C",
+        "#D9823E",
+        "#A99C8E",
+        "#3F4A78",
+        "#F6F8FB",
+        "#F08A24",
+        "#B8304C"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "koiYukata"
+      },
+      "rle" : "32./32./32./32./32./32./7.2A14.2A7./6.A2BA12.A2BA6./6.A3BA10.A3BA6./6.ABC2B10A2BCBA6./6.AB2C12B2CBA6./6.A7BD2BD7BA6./5.A8BD2BD8BA5./5.A20BA5./5.A4BEF8BEF4BA5./5.A4B2F8B2F4BA5./5.AD3B2FB6GB2F3BDA5./5.A2B2C2BGAG2HGAG2B2C2BA5./6.A6BGA2GAG6BA6./6.A7B4G7BA6./7.AI14BIA7./8.2A2I8B2I2A8./9.J3KL4GL3KJ9./8.J5KL2GL5KJ8./7.J3KM3K2L7KJA6./6.J4KML2KL6KL2KBA5./6.J2K13MKLKBA5./6.JKL5M2N6M3KJ6./6.J18KJ6./7.J3KLM7KML2KJ7./8.2J4B4J4BAJ8./10.4A4.4A10."
+    },
+    {
+      "colors" : [
+        "#2A1A14",
+        "#F2A65A",
+        "#A99C8E",
+        "#FF9AAE",
+        "#3F4A78",
+        "#F6F8FB",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#E77A8C",
+        "#D9823E",
+        "#C3CCD9"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "sushiChef"
+      },
+      "rle" : "32./32./32./32./32./32./7.2A14.2A7./6.A2BA12.A2BA6./6.A3B3A2C2A2C3A3BA6./6.ABD2E2F2E2F2E2F2EDBA6./6.ABDF2E2F2E2F2E2F3EC6./6.A7BG2BG6B2EA5./5.A8BG2BG6BEBA5./5.A20BA5./5.A4BHI8BHI4BA5./5.A4B2I8B2I4BA5./5.AG3B2IB6JB2I3BGA5./5.A2B2D2BJAJ2KJAJ2B2D2BA5./6.A6BJA2JAJ6BA6./6.A7B4J7BA6./7.AL14BLA7./8.2A2L8B2L2A8./9.A3FM4JM3FA9./8.A5FM2JM5FA8./7.A7F2M7F2A6./7.A7FM8F2BA5./7.A2F12E2F2BA5./8.A14E2BA6./8.C2EF8EF2E2BA6./8.CEFEF6EFEFELA7./9.A4B4C4BAC8./10.4A4.4A10."
+    },
+    {
+      "colors" : [
+        "#2A1A14",
+        "#F6F8FB",
+        "#F2A65A",
+        "#F08A24",
+        "#B8304C",
+        "#FF9AAE",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#E77A8C",
+        "#D9823E",
+        "#A8683A",
+        "#C9D3DD",
+        "#A99C8E"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "snowDayPuffer"
+      },
+      "rle" : "32./32./32./32./15.2A15./14.A2BA14./7.2A3.2A4BA4.2A7./6.A2CA.A7D2A.A2CA6./6.A3CAD8EDA3CA6./6.ACFC12DCFCA6./6.AC2FEDEDEDEDEDED2FCA6./6.A2C14D2CA6./5.AC3D4CG2CG4C3DCA5./5.AC2D14C2DCA5./5.AC2DCHI8CHIC2DCA5./5.A2CBC2I8C2ICB2CA5./5.AG3C2IC6JC2I3CGA5./5.A2C2F2CJAJ2KJAJ2C2F2CA5./6.A6CJA2JAJ6CA6./6.A7C4J7CA6./7.AL14CLA7./8.2A2L8C2L2A8./9.A4DM2JM4DA9./8.A5DM2NM5DA8./7.A7D2N7D2A6./8.A6M2N6MA2CA5./7.A7D2N7D2CA5./8.A6M2N6M2CA6./7.A7D2N7DCA6./8.A14MLA7./9.O4C4O4C2O8./10.4A4.4A10."
+    },
+    {
+      "colors" : [
+        "#2A1A14",
+        "#F2A65A",
+        "#FF9AAE",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#E77A8C",
+        "#D9823E",
         "#E0607A",
         "#A99C8E",
         "#C9D3DD",
@@ -5583,6 +5764,216 @@
     },
     {
       "colors" : [
+        "#2A1A14",
+        "#F2A65A",
+        "#FF9AAE",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#E77A8C",
+        "#D9823E",
+        "#F6F8FB",
+        "#F2C14E",
+        "#6CC46A",
+        "#A99C8E"
+      ],
+      "dress" : {
+        "accessories" : [
+          "daisyChain"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./32./32./32./7.2A14.2A7./6.A2BA12.A2BA6./6.A3BA10.A3BA6./6.ABC2B10A2BCBA6./6.AB2C12B2CBA6./6.A7BD2BD7BA6./5.A8BD2BD8BA5./5.A20BA5./5.A4BEF8BEF4BA5./5.A4B2F8B2F4BA5./5.AD3B2FB6GB2F3BDA5./5.A2B2C2BGAG2HGAG2B2C2BA5./6.A6BGA2GAG6BA6./6.A7B4G7BA6./7.AI14BIA7./8.2AJI8BIJ2A8./8.AJKJ8GJKJA8./8.ABJ2LJ4GJ2LJDM8./8.MD2BJKJ2GJKJ2BD3A6./8.MDBIBJG2LGJBI2BA2BA5./8.A2BI8BI2BA2BA5./8.A2BI8BI4BA6./8.A2BI8BI4BA6./8.AI3BI4BI3B2IA7./9.A4B4A4BAM8./10.4A4.4A10."
+    },
+    {
+      "colors" : [
+        "#2A1A14",
+        "#F2A65A",
+        "#FF9AAE",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#E77A8C",
+        "#D9823E",
+        "#A99C8E",
+        "#3F4A78",
+        "#F6F8FB",
+        "#B8304C"
+      ],
+      "dress" : {
+        "accessories" : [
+          "sailorCollar"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./32./32./32./7.2A14.2A7./6.A2BA12.A2BA6./6.A3BA10.A3BA6./6.ABC2B10A2BCBA6./6.AB2C12B2CBA6./6.A7BD2BD7BA6./5.A8BD2BD8BA5./5.A20BA5./5.A4BEF8BEF4BA5./5.A4B2F8B2F4BA5./5.AD3B2FB6GB2F3BDA5./5.A2B2C2BGAG2HGAG2B2C2BA5./6.A6BGA2GAG6BA6./6.A7B4G7BA6./7.AI14BIA7./8.JA2I8B2IAJ8./8.J6K2G6KJ8./8.JK4LK2GK4LKJ8./8.JD5K2M5KD3A6./8.JDB2LK4MK2L2BA2BA5./8.A2BI2K4M2KI2BA2BA5./8.A2BI2BM2BM2BI4BA6./8.A2BI8BI4BA6./8.AI3BI4BI3B2IA7./9.A4B4A4BAJ8./10.4A4.4A10."
+    },
+    {
+      "colors" : [
+        "#2A1A14",
+        "#6CC46A",
+        "#F2A65A",
+        "#B8304C",
+        "#F2C14E",
+        "#FF9AAE",
+        "#FF5C7A",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#E77A8C",
+        "#D9823E",
+        "#A99C8E"
+      ],
+      "dress" : {
+        "accessories" : [
+          "strawberryCap"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./32./15.2A15./12.3A2B3A12./7.2A2.A8BA2.2A7./6.A2C2ABD6BDB2A2CA6./6.A3C3DE2DB3DED3CA6./6.ACFCDE6DE4DFCA6./6.ACF5DE6DE2DCA6./6.A2CDGDGDGDGDGDGDGDCA6./5.A8CH2CH8CA5./5.A20CA5./5.A4CIJ8CIJ4CA5./5.A4C2J8C2J4CA5./5.AH3C2JC6KC2J3CHA5./5.A2C2F2CKAK2LKAK2C2F2CA5./6.A6CKA2KAK6CA6./6.A7C4K7CA6./7.AM14CMA7./8.2A2M8C2M2A8./9.A2C8K2CA9./8.A3C8K2CHN8./8.NH3C6K3CH3A6./8.NHCM2C4K2CM2CA2CA5./8.A2CM8CM2CA2CA5./8.A2CM8CM4CA6./8.A2CM8CM4CA6./8.AM3CM4CM3C2MA7./9.A4C4A4CAN8./10.4A4.4A10."
+    },
+    {
+      "colors" : [
+        "#A99C8E",
+        "#B8304C",
+        "#2A1A14",
+        "#FF5C7A",
+        "#F2A65A",
+        "#F6F8FB",
+        "#C3CCD9",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#FF9AAE",
+        "#E77A8C",
+        "#D9823E"
+      ],
+      "dress" : {
+        "accessories" : [
+          "mushroomCap"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./32./13.6A13./11.2A6B2A11./7.2C.A2B2D6BA.2C7./6.C2EAB2D2F4B2FBC2EC6./6.C2E2BD4F3B3FB2EC6./6.CE5B2F5BF3BEC6./6.CB2F7B2F4BFBC6./6.CEFGFGFGFGFGFGFGFGEC6./5.C8EH2EH8EC5./5.C20EC5./5.C4EIJ8EIJ4EC5./5.C4E2J8E2J4EC5./5.CH3E2JE6KE2J3EHC5./5.C2E2L2EKCK2MKCK2E2L2EC5./6.C6EKC2KCK6EC6./6.C7E4K7EC6./7.CN14ENC7./8.2C2N8E2N2C8./9.C2E8K2EC9./8.C3E8K2EHA8./8.AH3E6K3EH3C6./8.AHEN2E4K2EN2EC2EC5./8.C2EN8EN2EC2EC5./8.C2EN8EN4EC6./8.C2EN8EN4EC6./8.CN3EN4EN3E2NC7./9.C4E4C4ECA8./10.4C4.4C10."
+    },
+    {
+      "colors" : [
+        "#A99C8E",
+        "#2A1A14",
+        "#FF5C7A",
+        "#6CC46A",
+        "#F2A65A",
+        "#F6F8FB",
+        "#FF9AAE",
+        "#A8683A",
+        "#F08A24",
+        "#F2C14E",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#E77A8C",
+        "#D9823E"
+      ],
+      "dress" : {
+        "accessories" : [
+          "cactusPot"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./32./15.2A15./12.B.A2CA.B12./7.2B2.BDBD2CDBDB2.2B7./6.B2EB.B3DF4DB.B2EB6./6.B3E3B4DFD3B3EB6./6.BEG2EH8IH2EGEB6./6.BE2G2E2IJ2IJ2I2E2GEB6./6.B5E8H5EB6./5.B8EK2EK8EB5./5.B20EB5./5.B4ELM8ELM4EB5./5.B4E2M8E2M4EB5./5.BK3E2ME6NE2M3EKB5./5.B2E2G2ENBN2ONBN2E2G2EB5./6.B6ENB2NBN6EB6./6.B7E4N7EB6./7.BP14EPB7./8.2B2P8E2P2B8./9.B2E8N2EB9./8.B3E8N2EKA8./8.AK3E6N3EK3B6./8.AKEP2E4N2EP2EB2EB5./8.B2EP8EP2EB2EB5./8.B2EP8EP4EB6./8.B2EP8EP4EB6./8.BP3EP4EP3E2PB7./9.B4E4B4EBA8./10.4B4.4B10."
+    },
+    {
+      "colors" : [
+        "#2A1A14",
+        "#F2C14E",
+        "#A8683A",
+        "#F2A65A",
+        "#F08A24",
+        "#B8304C",
+        "#6CC46A",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#FF9AAE",
+        "#E77A8C",
+        "#D9823E",
+        "#A99C8E"
+      ],
+      "dress" : {
+        "accessories" : [
+          "sunHat"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./32./12.8A12./11.A8BA11./7.2A.A2BC4BC2B4A7./6.A2D2A9BEBE2DA6./6.A3DA9FECE2DA6./6.AD11BGEBEBDA6./6.A2BC3BC3BC3BC3BA6./6.AD16BDA6./5.A8DH2DH8DA5./5.A20DA5./5.A4DIJ8DIJ4DA5./5.A4D2J8D2J4DA5./5.AH3D2JD6KD2J3DHA5./5.A2D2L2DKAK2MKAK2D2L2DA5./6.A6DKA2KAK6DA6./6.A7D4K7DA6./7.AN14DNA7./8.2A2N8D2N2A8./9.A2D8K2DA9./8.A3D8K2DHO8./8.OH3D6K3DH3A6./8.OHDN2D4K2DN2DA2DA5./8.A2DN8DN2DA2DA5./8.A2DN8DN4DA6./8.A2DN8DN4DA6./8.AN3DN4DN3D2NA7./9.A4D4A4DAO8./10.4A4.4A10."
+    },
+    {
+      "colors" : [
+        "#A99C8E",
+        "#A8683A",
+        "#2A1A14",
+        "#F2A65A",
+        "#C9D3DD",
+        "#86C7EE",
+        "#F4F1FF",
+        "#3F4A78",
+        "#FF9AAE",
+        "#F6F8FB",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#E77A8C",
+        "#D9823E"
+      ],
+      "dress" : {
+        "accessories" : [
+          "aviatorCap"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./32./13.6A13./11.2A6B2A11./7.2C.A10BA.2C7./6.C2DCB4E2B4EBC2DC6./6.C2DBEFGFE2HEFGFEB2DC6./6.CDIBE3FE2BE3FEBIDC6./6.CDJ2B3E4B3E2BJDC6./6.CD16JDC6./5.C2D2B4DK2DK4D2B2DC5./5.C2D2B12D2B2DC5./5.C2DBDLM8DLMDB2DC5./5.C4D2M8D2M4DC5./5.CK3D2MD6ND2M3DKC5./5.C2D2I2DNCN2ONCN2D2I2DC5./6.C6DNC2NCN6DC6./6.C7D4N7DC6./7.CP14DPC7./8.2C2P8D2P2C8./9.C2D8N2DC9./8.C3D8N2DKA8./8.AK3D6N3DK3C6./8.AKDP2D4N2DP2DC2DC5./8.C2DP8DP2DC2DC5./8.C2DP8DP4DC6./8.C2DP8DP4DC6./8.CP3DP4DP3D2PC7./9.C4D4C4DCA8./10.4C4.4C10."
+    },
+    {
+      "colors" : [
+        "#F2C14E",
+        "#F4F1FF",
+        "#2A1A14",
+        "#F2A65A",
+        "#FF9AAE",
+        "#C0652B",
+        "#FFFFFF",
+        "#1E1420",
+        "#FFE9CF",
+        "#E77A8C",
+        "#D9823E",
+        "#A99C8E",
+        "#6CC46A"
+      ],
+      "dress" : {
+        "accessories" : [
+          "fireflies"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "rle" : "32./14.A10.A6./13.ABA16./14.A17./32./32./7.2C14.2C7./6.C2DC12.C2DC6./6.C3DC10.C3DC6./6.CDE2D10C2DEDC6./6.CD2E12D2EDC6./6.C7DF2DF7DC6./5.C8DF2DF8DC5./5.C20DC5./5.C4DGH8DGH4DC5./5.C4D2H8D2H4DC5./5.CF3D2HD6ID2H3DFC5./5.C2D2E2DICI2JICI2D2E2DC5./6.C6DIC2ICI6DC6./6.C7D4I7DC6./7.CK14DKC7./8.2C2K8D2K2C8./9.C2D8I2DC9./8.C3D8I2DFL8./8.LF3D6I3DF3C6./8.LFDK2D4I2DK2DC2DC5./8.C2DK8DK2DC2DC2.M2./8.C2DK8DK4DC6./8.C2DK8DK4DC6./8.CK3DK4DK3D2KC7./9.C4D4C4DCL8./10.4C4.4C10."
+    },
+    {
+      "colors" : [
         "#3A2214",
         "#E6AE52",
         "#C98C36",
@@ -5924,6 +6315,180 @@
         "outfit" : "bakersApron"
       },
       "rle" : "32./32./32./32./32./32./32./12.8A12./10.2A8B2A10./8.2A12B2A8./7.A16BA7./6.A4BC8BC4BA6./5.A5BCDE4BDEC5BA5./5.A5BC2E4B2EC5BA5./5.A5BC2E4B2EC5BA5./5.A5B2FG4HG2F5BA5./5.A5BC3G2H3GC5BA5./5.A5BA2GH2FH2GA5BA5./6.A4BAB2G2F2GBA4BA6./6.ABC2BAC6BCA2BCBA6./7.ABA3B6C3BABA7./8.2ABIB6GBIB2A8./8.A3BI6JI3BA8./8.A3B4JK3J3BA.A6./8.A3B2J4L2J3B2ABA5./7.AC2BC2J4M2JC2BC2BA5./7.A3BC2J4L2JC4BA6./7.A3BC2J4M2JC4BA6./7.A3BC8NC3BA7./7.AC3BC6BC3BCA7./8.A4B6A4BA8./9.4A6.4A9."
+    },
+    {
+      "colors" : [
+        "#3A2214",
+        "#E6AE52",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622",
+        "#7C63C8",
+        "#F2C14E",
+        "#A79D8B",
+        "#3F4A78",
+        "#C9D3DD"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "librarianCardigan"
+      },
+      "rle" : "32./32./32./32./32./32./32./12.8A12./10.2A8B2A10./8.2A12B2A8./7.A16BA7./6.A4BC8BC4BA6./5.A5BCDE4BDEC5BA5./5.A5BC2E4B2EC5BA5./5.A5BC2E4B2EC5BA5./5.A5B2FG4HG2F5BA5./5.A5BC3G2H3GC5BA5./5.A5BA2GH2FH2GA5BA5./6.A4BAB2G2F2GBA4BA6./6.ABC2BAC6BCA2BCBA6./7.ABA3B6C3BABA7./8.2A3IJ4GJ3I2A8./8.K4IJ4GJ4IK8./7.K4IL2M2L2ML4IKA6./6.K6I2L2G2L6IBA5./6.K2IL4IJ2GJ4IL2IBA5./6.K2IL4IL2BL4IL2IK6./6.K3L4IJ2BJ4I3LK6./7.K7L2B7LK7./7.KC3BC6BC3BCK7./8.A4B6A4BA8./9.4A6.4A9."
+    },
+    {
+      "colors" : [
+        "#3A2214",
+        "#E6AE52",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622",
+        "#F2C14E",
+        "#3F4A78",
+        "#F6F8FB",
+        "#B8304C"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "varsityJacket"
+      },
+      "rle" : "32./32./32./32./32./32./32./12.8A12./10.2A8B2A10./8.2A12B2A8./7.A16BA7./6.A4BC8BC4BA6./5.A5BCDE4BDEC5BA5./5.A5BC2E4B2EC5BA5./5.A5BC2E4B2EC5BA5./5.A5B2FG4HG2F5BA5./5.A5BC3G2H3GC5BA5./5.A5BA2GH2FH2GA5BA5./6.A4BAB2G2F2GBA4BA6./6.ABC2BAC6BCA2BCBA6./7.ABA3B6C3BABA7./8.2AIJIJ4GJIJI2A8./7.A2K5L2K5L2KA7./7.A2K5L2KL3IL2K2A6./7.A2K5L2K2LI2L2KABA5./7.A2K5L2K2LI2L2K2BA5./7.A2K5L2K5L2KBA6./7.AIJIJIJIJIJIJIJIJBA6./7.A3BC8BC3BA7./7.AC3BC6BC3BCA7./8.A4B6A4BA8./9.4A6.4A9."
+    },
+    {
+      "colors" : [
+        "#3A2214",
+        "#E6AE52",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622",
+        "#91846E",
+        "#3F4A78",
+        "#F6F8FB",
+        "#A79D8B",
+        "#C3CCD9",
+        "#F2C14E"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "keepersPeacoat"
+      },
+      "rle" : "32./32./32./32./32./32./32./12.8A12./10.2A8B2A10./8.2A12B2A8./7.A16BA7./6.A4BC8BC4BA6./5.A5BCDE4BDEC5BA5./5.A5BC2E4B2EC5BA5./5.A5BC2E4B2EC5BA5./5.A5B2FG4HG2F5BA5./5.A5BC3G2H3GC5BA5./5.A5BA2GH2FH2GA5BA5./6.A4BAB2G2F2GBA4BA6./6.ABC2BAC6BCA2BCBA6./7.ABA3B6C3BABA7./8.AI3J6K3JIA8./8.LJ2M3J2K3J2MJL8./8.L2J2M6J2M2JL.A6./7.L5JN4JN5JABA5./7.L16J2BA5./7.L5JN4JN5JBA6./7.L2J3M6J3M2JBA6./7.L16JL7./7.LC3BC6BC3BCL7./8.A4B6A4BA8./9.4A6.4A9."
+    },
+    {
+      "colors" : [
+        "#3A2214",
+        "#F2C14E",
+        "#F08A24",
+        "#3F4A78",
+        "#E6AE52",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "rainSlicker"
+      },
+      "rle" : "32./32./32./32./12.8A12./11.A8BA11./10.A10BA10./9.A12BA9./8.2A12B2A8./7.AC14BCA7./6.A2B14D2BA6./6.A2B2EF8EF2E2BA6./5.AE2B2EFGH4EGHF2E2BEA5./5.A5EF2H4E2HF5EA5./5.A5EF2H4E2HF5EA5./5.A5E2IJ4KJ2I5EA5./5.A5EF3J2K3JF5EA5./5.A5EA2JK2IK2JA5EA5./6.A4EAE2J2I2JEA4EA6./6.AEF2EAF6EFA2EFEA6./7.AEA3E6F3EAEA7./8.A4BC4JC4BA8./8.A5BC2JC5BA8./8.A6B2C6BA.A6./7.A6B3D7BAEA5./7.A7BC8B2EA5./7.A2B3CB3D2B3C2BEA6./7.A7BC8BEA6./7.A16CA7./7.AF3EF6EF3EFA7./8.A4E6A4EA8./9.4A6.4A9."
+    },
+    {
+      "colors" : [
+        "#3A2214",
+        "#E6AE52",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622",
+        "#91846E",
+        "#3F4A78",
+        "#F6F8FB",
+        "#A79D8B",
+        "#F08A24",
+        "#B8304C"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "koiYukata"
+      },
+      "rle" : "32./32./32./32./32./32./32./12.8A12./10.2A8B2A10./8.2A12B2A8./7.A16BA7./6.A4BC8BC4BA6./5.A5BCDE4BDEC5BA5./5.A5BC2E4B2EC5BA5./5.A5BC2E4B2EC5BA5./5.A5B2FG4HG2F5BA5./5.A5BC3G2H3GC5BA5./5.A5BA2GH2FH2GA5BA5./6.A4BAB2G2F2GBA4BA6./6.ABC2BAC6BCA2BCBA6./7.ABA3B6C3BABA7./8.AI3JK4GK3JIA8./8.L5JK2GK5JL8./7.L3JM3J2K7JLA6./6.L4JMK2JK6JK2JBA5./6.L2J13MJKJBA5./6.LJK5M2N6M3JL6./6.L18JL6./7.L3JKM7JMK2JL7./7.LC3BC6BC3BCL7./8.A4B6A4BA8./9.4A6.4A9."
+    },
+    {
+      "colors" : [
+        "#A79D8B",
+        "#3A2214",
+        "#3F4A78",
+        "#F6F8FB",
+        "#E6AE52",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622",
+        "#C3CCD9"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "sushiChef"
+      },
+      "rle" : "32./32./32./32./32./32./32./9.2A2B2A2B2A2B2A9./8.B2C2D2C2D2C2D2C2A7./8.BD2C2D2C2D2C2D3CA6./7.B16E2CA5./6.B4EF8EF3ECA6./5.B5EFGH4EGHF5EB5./5.B5EF2H4E2HF5EB5./5.B5EF2H4E2HF5EB5./5.B5E2IJ4KJ2I5EB5./5.B5EF3J2K3JF5EB5./5.B5EB2JK2IK2JB5EB5./6.B4EBE2J2I2JEB4EB6./6.BEF2EBF6EFB2EFEB6./7.BEB3E6F3EBEB7./8.2B3DL4JL3D2B8./8.B5DL2JL5DB8./7.B7D2L7D2B6./7.B7DL8DBEB5./7.B2D12C2D2EB5./7.A16CEB6./7.A3CD8CD3CEB6./7.A2CDCD6CDCD2CA7./7.AF3EF6EF3EFA7./8.B4E6B4EB8./9.4B6.4B9."
+    },
+    {
+      "colors" : [
+        "#3A2214",
+        "#F6F8FB",
+        "#F08A24",
+        "#B8304C",
+        "#E6AE52",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622",
+        "#A8683A",
+        "#C9D3DD",
+        "#A79D8B"
+      ],
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "snowDayPuffer"
+      },
+      "rle" : "32./32./32./15.2A15./14.A2BA14./12.2A4BA13./11.A7C2A11./10.AC8DCA10./9.A12CA9./8.2ADCDCDCDCDCDC2A8./7.AE14CEA7./6.A3CEF8EFE3CA6./5.AE2C2EFGH4EGHF2E2CEA5./5.AE2C2EF2H4E2HF2E2CEA5./5.A2EB2EF2H4E2HF2EB2EA5./5.A5E2IJ4KJ2I5EA5./5.A5EF3J2K3JF5EA5./5.A5EA2JK2IK2JA5EA5./6.A4EAE2J2I2JEA4EA6./6.AEF2EAF6EFA2EFEA6./7.AEA3E6F3EAEA7./8.2A4CL2JL4C2A8./8.A5CL2ML5CA8./7.A7C2M7C2A6./7.A7L2M7LAEA5./7.N7C2M7C2EA5./7.A7L2M7LEA6./7.N7C2M7CEA6./7.N16LA7./7.NF3EF6EF3EFN7./8.A4E6A4EA8./9.4A6.4A9."
     },
     {
       "colors" : [
@@ -7091,6 +7656,205 @@
         "outfit" : "none"
       },
       "rle" : "32./32./32./32./32./32./32./12.8A12./10.2A8B2A10./8.2A12B2A8./7.A16BA7./6.A4BC8BC4BA6./5.A5BCDE4BDEC5BA5./5.A5BC2E4B2EC5BA5./5.A5BC2E4B2EC5BA5./5.A5B2FG4HG2F5BA5./5.A5BC3G2H3GC5BA5./5.A5BA2GH2FH2GA5BA5./6.A4BAB2G2F2GBA4BA6./6.ABC2BAC6BCA2BCBA6./7.ABA3B6C3BABA7./8.2AB10IB2A8./8.A3B2GIGI3G3BA8./8.A3B3GJ4G3BA.A6./8.A4BG3K2G4B2ABA5./7.AC2BCBLJMJL2BC2BC2BA5./7.A3BCBLMNML2BC4BA6./7.A3BCBLJMJL2BC4BA6./7.A3BC2B3L3BC3BA7./7.AC3BC6BC3BCA7./8.A4B6A4BA8./9.4A6.4A9."
+    },
+    {
+      "colors" : [
+        "#3A2214",
+        "#E6AE52",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622",
+        "#F6F8FB",
+        "#F2C14E",
+        "#6CC46A"
+      ],
+      "dress" : {
+        "accessories" : [
+          "daisyChain"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./32./32./32./32./12.8A12./10.2A8B2A10./8.2A12B2A8./7.A16BA7./6.A4BC8BC4BA6./5.A5BCDE4BDEC5BA5./5.A5BC2E4B2EC5BA5./5.A5BC2E4B2EC5BA5./5.A5B2FG4HG2F5BA5./5.A5BC3G2H3GC5BA5./5.A5BA2GH2FH2GA5BA5./6.A4BAB2G2F2GBA4BA6./6.ABC2BAC6BCA2BCBA6./7.ABAI2B6C2BIABA7./8.AIJIB6GBIJIA8./8.ABI2KI4GI2KIBA8./8.A3BIJI2GIJI3BA.A6./8.A4BIG2KGI4B2ABA5./7.AC2BC2B4G2BC2BC2BA5./7.A3BC8BC4BA6./7.A3BC8BC4BA6./7.A3BC8BC3BA7./7.AC3BC6BC3BCA7./8.A4B6A4BA8./9.4A6.4A9."
+    },
+    {
+      "colors" : [
+        "#3A2214",
+        "#E6AE52",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622",
+        "#A79D8B",
+        "#3F4A78",
+        "#F6F8FB",
+        "#B8304C"
+      ],
+      "dress" : {
+        "accessories" : [
+          "sailorCollar"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./32./32./32./32./12.8A12./10.2A8B2A10./8.2A12B2A8./7.A16BA7./6.A4BC8BC4BA6./5.A5BCDE4BDEC5BA5./5.A5BC2E4B2EC5BA5./5.A5BC2E4B2EC5BA5./5.A5B2FG4HG2F5BA5./5.A5BC3G2H3GC5BA5./5.A5BA2GH2FH2GA5BA5./6.A4BAB2G2F2GBA4BA6./6.ABC2BAC6BCA2BCBA6./7.ABA3B6C3BABA7./8.I6J2G6JI8./8.IJ4KJ2GJ4KJI8./8.AB5J2L5JBA.A6./8.A2B2KJ4LJ2K2B2ABA5./7.AC2BC2J4L2JC2BC2BA5./7.A3BC2BL2BL2BC4BA6./7.A3BC8BC4BA6./7.A3BC8BC3BA7./7.AC3BC6BC3BCA7./8.A4B6A4BA8./9.4A6.4A9."
+    },
+    {
+      "colors" : [
+        "#3A2214",
+        "#6CC46A",
+        "#A79D8B",
+        "#B8304C",
+        "#F2C14E",
+        "#E6AE52",
+        "#FF5C7A",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622"
+      ],
+      "dress" : {
+        "accessories" : [
+          "strawberryCap"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./15.2A15./12.3A2B3A12./11.A8BA11./10.CBD6BDBA10./9.C3DE2DB3DEDC9./9.CDE6DE4DC8./8.C5DE6DE2DC7./7.AFDGDGDGDGDGDGDGDA7./6.A4FH8FH4FA6./5.A5FHIJ4FIJH5FA5./5.A5FH2J4F2JH5FA5./5.A5FH2J4F2JH5FA5./5.A5F2KL4ML2K5FA5./5.A5FH3L2M3LH5FA5./5.A5FA2LM2KM2LA5FA5./6.A4FAF2L2K2LFA4FA6./6.AFH2FAH6FHA2FHFA6./7.AFA3F6H3FAFA7./8.2A3F6L3F2A8./8.A3F8L3FA8./8.A3F8L3FA.A6./8.A4F6L4F2AFA5./7.AH2FH2F4L2FH2FH2FA5./7.A3FH8FH4FA6./7.A3FH8FH4FA6./7.A3FH8FH3FA7./7.AH3FH6FH3FHA7./8.A4F6A4FA8./9.4A6.4A9."
+    },
+    {
+      "colors" : [
+        "#A79D8B",
+        "#B8304C",
+        "#FF5C7A",
+        "#F6F8FB",
+        "#3A2214",
+        "#C3CCD9",
+        "#E6AE52",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622"
+      ],
+      "dress" : {
+        "accessories" : [
+          "mushroomCap"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./13.6A13./11.2A6B2A11./10.A2B2C6BA10./9.AB2C2D4B2DBA9./8.A2BC4D3B3DBA8./7.A5B2D5BD3BA7./6.AB2D7B2D4BDBA6./7.EDFDFDFDFDFDFDFDFE7./6.E4GH8GH4GE6./5.E5GHIJ4GIJH5GE5./5.E5GH2J4G2JH5GE5./5.E5GH2J4G2JH5GE5./5.E5G2KL4ML2K5GE5./5.E5GH3L2M3LH5GE5./5.E5GE2LM2KM2LE5GE5./6.E4GEG2L2K2LGE4GE6./6.EGH2GEH6GHE2GHGE6./7.EGE3G6H3GEGE7./8.2E3G6L3G2E8./8.E3G8L3GE8./8.E3G8L3GE.E6./8.E4G6L4G2EGE5./7.EH2GH2G4L2GH2GH2GE5./7.E3GH8GH4GE6./7.E3GH8GH4GE6./7.E3GH8GH3GE7./7.EH3GH6GH3GHE7./8.E4G6E4GE8./9.4E6.4E9."
+    },
+    {
+      "colors" : [
+        "#A79D8B",
+        "#3A2214",
+        "#FF5C7A",
+        "#6CC46A",
+        "#F6F8FB",
+        "#A8683A",
+        "#F08A24",
+        "#E6AE52",
+        "#F2C14E",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622"
+      ],
+      "dress" : {
+        "accessories" : [
+          "cactusPot"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./15.2A15./12.B.A2CA.B12./11.BDBD2CDBDB11./11.B3DE4DB11./11.2B4DED2B11./10.BF8GFB10./8.2B2H2GI2GI2G2H2B8./7.B4H8F4HB7./6.B4HJ8HJ4HB6./5.B5HJKL4HKLJ5HB5./5.B5HJ2L4H2LJ5HB5./5.B5HJ2L4H2LJ5HB5./5.B5H2MN4ON2M5HB5./5.B5HJ3N2O3NJ5HB5./5.B5HB2NO2MO2NB5HB5./6.B4HBH2N2M2NHB4HB6./6.BHJ2HBJ6HJB2HJHB6./7.BHB3H6J3HBHB7./8.2B3H6N3H2B8./8.B3H8N3HB8./8.B3H8N3HB.B6./8.B4H6N4H2BHB5./7.BJ2HJ2H4N2HJ2HJ2HB5./7.B3HJ8HJ4HB6./7.B3HJ8HJ4HB6./7.B3HJ8HJ3HB7./7.BJ3HJ6HJ3HJB7./8.B4H6B4HB8./9.4B6.4B9."
+    },
+    {
+      "colors" : [
+        "#3A2214",
+        "#F2C14E",
+        "#A8683A",
+        "#F08A24",
+        "#B8304C",
+        "#6CC46A",
+        "#E6AE52",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622"
+      ],
+      "dress" : {
+        "accessories" : [
+          "sunHat"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./12.8A12./11.A8BA11./10.A2BC4BC2B2A9./10.A9BDBDA8./8.3A9EDCDA8./7.A11BFDBDBA7./6.A2BC3BC3BC3BC3BA6./7.A16BA7./6.A4GH8GH4GA6./5.A5GHIJ4GIJH5GA5./5.A5GH2J4G2JH5GA5./5.A5GH2J4G2JH5GA5./5.A5G2KL4ML2K5GA5./5.A5GH3L2M3LH5GA5./5.A5GA2LM2KM2LA5GA5./6.A4GAG2L2K2LGA4GA6./6.AGH2GAH6GHA2GHGA6./7.AGA3G6H3GAGA7./8.2A3G6L3G2A8./8.A3G8L3GA8./8.A3G8L3GA.A6./8.A4G6L4G2AGA5./7.AH2GH2G4L2GH2GH2GA5./7.A3GH8GH4GA6./7.A3GH8GH4GA6./7.A3GH8GH3GA7./7.AH3GH6GH3GHA7./8.A4G6A4GA8./9.4A6.4A9."
+    },
+    {
+      "colors" : [
+        "#A79D8B",
+        "#A8683A",
+        "#C9D3DD",
+        "#86C7EE",
+        "#F4F1FF",
+        "#3F4A78",
+        "#3A2214",
+        "#F6F8FB",
+        "#E6AE52",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622"
+      ],
+      "dress" : {
+        "accessories" : [
+          "aviatorCap"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "rle" : "32./32./32./13.6A13./11.2A6B2A11./10.A10BA10./9.AB4C2B4CBA9./8.ABCDEDC2FCDEDCBA8./8.ABC3DC2BC3DCBA8./7.GH2B3C4B3C2BHG7./7.G16HG7./6.GI2BIJ8IJI2BIG6./5.G2I2BIJKL4IKLJI2B2IG5./5.G2IB2IJ2L4I2LJ2IB2IG5./5.G5IJ2L4I2LJ5IG5./5.G5I2MN4ON2M5IG5./5.G5IJ3N2O3NJ5IG5./5.G5IG2NO2MO2NG5IG5./6.G4IGI2N2M2NIG4IG6./6.GIJ2IGJ6IJG2IJIG6./7.GIG3I6J3IGIG7./8.2G3I6N3I2G8./8.G3I8N3IG8./8.G3I8N3IG.G6./8.G4I6N4I2GIG5./7.GJ2IJ2I4N2IJ2IJ2IG5./7.G3IJ8IJ4IG6./7.G3IJ8IJ4IG6./7.G3IJ8IJ3IG7./7.GJ3IJ6IJ3IJG7./8.G4I6G4IG8./9.4G6.4G9."
+    },
+    {
+      "colors" : [
+        "#F2C14E",
+        "#F4F1FF",
+        "#3A2214",
+        "#E6AE52",
+        "#C98C36",
+        "#FFFFFF",
+        "#1E1420",
+        "#FF9AAE",
+        "#F3CB82",
+        "#3A2622",
+        "#6CC46A"
+      ],
+      "dress" : {
+        "accessories" : [
+          "fireflies"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "rle" : "32./14.A10.A6./13.ABA16./14.A17./32./32./32./12.8C12./10.2C8D2C10./8.2C12D2C8./7.C16DC7./6.C4DE8DE4DC6./5.C5DEFG4DFGE5DC5./5.C5DE2G4D2GE5DC5./5.C5DE2G4D2GE5DC5./5.C5D2HI4JI2H5DC5./5.C5DE3I2J3IE5DC5./5.C5DC2IJ2HJ2IC5DC5./6.C4DCD2I2H2IDC4DC6./6.CDE2DCE6DEC2DEDC6./7.CDC3D6E3DCDC7./8.2C3D6I3D2C8./8.C3D8I3DC8./8.C3D8I3DC.C6./8.C4D6I4D2CDC5./7.CE2DE2D4I2DE2DE2DC5./7.C3DE8DE4DC3.K2./7.C3DE8DE4DC6./7.C3DE8DE3DC7./7.CE3DE6DE3DEC7./8.C4D6C4DC8./9.4C6.4C9."
     }
   ],
   "schema" : "tabbi.pets.golden",

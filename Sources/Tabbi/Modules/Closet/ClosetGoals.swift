@@ -677,8 +677,9 @@ private struct ClosetSnapshotShowsEndKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    /// Snapshot runs only: the Goals section draws its shelves from the
-    /// end, so the badges below the fold can be reviewed in a still image.
+    /// Snapshot runs only: the Goals section and the Wardrobe draw their
+    /// shelves from the end, so the badges and the Heirloom shelf below the
+    /// fold can be reviewed in a still image.
     var closetSnapshotShowsEnd: Bool {
         get { self[ClosetSnapshotShowsEndKey.self] }
         set { self[ClosetSnapshotShowsEndKey.self] = newValue }

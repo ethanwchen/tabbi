@@ -455,13 +455,10 @@ public enum PetComposer {
         case .cozyPajamas: CostumeArt.cozyPajamas
         case .bakersApron: CostumeArt.bakersApron
         case .librarianCardigan: CostumeArt.librarianCardigan
-        case .blanketBurrito: CostumeArt.blanketBurrito
-        case .keepersPeacoat: CostumeArt.keepersPeacoat
-        case .koiYukata: CostumeArt.koiYukata
-        case .gardenOveralls: CostumeArt.gardenOveralls
         case .varsityJacket: CostumeArt.varsityJacket
-        case .paintersSmock: CostumeArt.paintersSmock
+        case .keepersPeacoat: CostumeArt.keepersPeacoat
         case .rainSlicker: CostumeArt.rainSlicker
+        case .koiYukata: CostumeArt.koiYukata
         case .sushiChef: CostumeArt.sushiChef
         case .snowDayPuffer: CostumeArt.snowDayPuffer
         }
@@ -545,20 +542,13 @@ public enum PetComposer {
         case .owlSpectacles: .face(CostumeArt.owlSpectacles)
         case .friendshipBandana: .body(CostumeArt.friendshipBandana)
         case .tinyLantern: .body(CostumeArt.tinyLantern)
-        case .mushroomCap: .head(CostumeArt.mushroomCap)
-        case .deerstalker: .head(CostumeArt.deerstalker)
-        case .cactusPot: .head(CostumeArt.cactusPot)
-        case .bookStack: .head(CostumeArt.bookStack)
+        case .daisyChain: .body(CostumeArt.daisyChain)
+        case .sailorCollar: .body(CostumeArt.sailorCollar)
         case .strawberryCap: .head(CostumeArt.strawberryCap)
+        case .mushroomCap: .head(CostumeArt.mushroomCap)
+        case .cactusPot: .head(CostumeArt.cactusPot)
         case .sunHat: .head(CostumeArt.sunHat)
         case .aviatorCap: .head(CostumeArt.aviatorCap)
-        case .retroHeadset: .head(CostumeArt.retroHeadset)
-        case .onsenTowel: .head(CostumeArt.onsenTowel)
-        case .monocle: .face(CostumeArt.monocle)
-        case .tinyBackpack: .body(CostumeArt.tinyBackpack)
-        case .instantCamera: .body(CostumeArt.instantCamera)
-        case .sailorCollar: .body(CostumeArt.sailorCollar)
-        case .daisyChain: .body(CostumeArt.daisyChain)
         case .fireflies: .aura(CostumeArt.fireflies)
         }
     }

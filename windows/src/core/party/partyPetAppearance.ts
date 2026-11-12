@@ -147,6 +147,21 @@ export function wireOutfit(outfit: PetOutfit): string {
       return "sages-robe";
     case "bakersApron":
       return "bakers-apron";
+    /* Added in catalog version 5. */
+    case "librarianCardigan":
+      return "librarian-cardigan";
+    case "varsityJacket":
+      return "varsity-jacket";
+    case "keepersPeacoat":
+      return "keepers-peacoat";
+    case "rainSlicker":
+      return "rain-slicker";
+    case "koiYukata":
+      return "koi-yukata";
+    case "sushiChef":
+      return "sushi-chef";
+    case "snowDayPuffer":
+      return "snow-day-puffer";
   }
 }
 
@@ -263,6 +278,23 @@ export function wireAccessory(accessory: PetAccessory): string {
       return "owl-spectacles";
     case "tinyLantern":
       return "tiny-lantern";
+    /* Added in catalog version 5. */
+    case "daisyChain":
+      return "daisy-chain";
+    case "sailorCollar":
+      return "sailor-collar";
+    case "strawberryCap":
+      return "strawberry-cap";
+    case "mushroomCap":
+      return "mushroom-cap";
+    case "cactusPot":
+      return "cactus-pot";
+    case "sunHat":
+      return "sun-hat";
+    case "aviatorCap":
+      return "aviator-cap";
+    case "fireflies":
+      return "fireflies";
   }
 }
 
@@ -386,15 +418,51 @@ export const VERSION4_ACCESSORIES: ReadonlySet<string> = new Set([
   "tiny-lantern",
 ]);
 
+/** The outfit and accessory ids catalog version 5 added (release 7's shop items), which a version 4 server refuses. */
+export const VERSION5_COSTUMES: ReadonlySet<string> = new Set([
+  "librarian-cardigan",
+  "varsity-jacket",
+  "keepers-peacoat",
+  "rain-slicker",
+  "koi-yukata",
+  "sushi-chef",
+  "snow-day-puffer",
+]);
+export const VERSION5_ACCESSORIES: ReadonlySet<string> = new Set([
+  "daisy-chain",
+  "sailor-collar",
+  "strawberry-cap",
+  "mushroom-cap",
+  "cactus-pot",
+  "sun-hat",
+  "aviator-cap",
+  "fireflies",
+]);
+
+/**
+ * This update as a server on catalog version 4 takes it: the ids version 5
+ * added left out, an outfit it has no id for sent as no outfit. Port of
+ * PartyProfileUpdate.forCatalogVersion4.
+ */
+export function forCatalogVersion4(update: PartyProfileUpdate): PartyProfileUpdate {
+  const { accessories, costume } = update;
+  return {
+    ...update,
+    ...(accessories === undefined ? {} : { accessories: accessories.filter((id) => !VERSION5_ACCESSORIES.has(id)) }),
+    ...(costume === undefined ? {} : { costume: VERSION5_COSTUMES.has(costume) ? "none" : costume }),
+  };
+}
+
 /**
  * This update as a server on catalog version 3 takes it: the ids version 4
  * added left out, an outfit it has no id for sent as no outfit. Port of
  * PartyProfileUpdate.forCatalogVersion3.
  */
 export function forCatalogVersion3(update: PartyProfileUpdate): PartyProfileUpdate {
-  const { accessories, costume } = update;
+  const version4 = forCatalogVersion4(update);
+  const { accessories, costume } = version4;
   return {
-    ...update,
+    ...version4,
     ...(accessories === undefined ? {} : { accessories: accessories.filter((id) => !VERSION4_ACCESSORIES.has(id)) }),
     ...(costume === undefined ? {} : { costume: VERSION4_COSTUMES.has(costume) ? "none" : costume }),
   };
@@ -403,10 +471,12 @@ export function forCatalogVersion3(update: PartyProfileUpdate): PartyProfileUpda
 /**
  * The next older catalog's version of this update after a server refused
  * it, or undefined when no older catalog would take anything less: first
- * without catalog version 4's ids, then as version 1 takes it. Port of
- * PartyProfileUpdate.olderCatalogFallback.
+ * without catalog version 5's ids, then without version 4's, then as
+ * version 1 takes it. Port of PartyProfileUpdate.olderCatalogFallback.
  */
 export function olderCatalogFallback(update: PartyProfileUpdate): PartyProfileUpdate | undefined {
+  const version4 = forCatalogVersion4(update);
+  if (!sameProfileUpdate(version4, update)) return version4;
   const version3 = forCatalogVersion3(update);
   if (!sameProfileUpdate(version3, update)) return version3;
   const version1 = forCatalogVersion1(update);

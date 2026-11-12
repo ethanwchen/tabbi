@@ -40,7 +40,8 @@ describe("PetEconomy", () => {
     expect(PetEconomy.studyToEarn(525)).toBe("about 5 study days");
     expect(PetEconomy.studyToEarn(526)).toBe("about 2 weeks");
     expect(PetEconomy.typicalWeeks(1050)).toBe(2);
-    expect(PetEconomy.studyToEarn(2100), "the priciest item takes about a month").toBe("about 4 weeks");
+    expect(PetEconomy.studyToEarn(2100), "the priciest showpiece takes about a month").toBe("about 4 weeks");
+    expect(PetEconomy.studyToEarn(6300), "the priciest heirloom takes about three months").toBe("about 12 weeks");
   });
 
   it("tiers do not overlap and leave gaps", () => {
@@ -50,7 +51,9 @@ describe("PetEconomy", () => {
     }
     expect(tierForCost(150), "between a day and two days is no tier").toBeUndefined();
     expect(tierForCost(800), "between a week and two weeks is no tier").toBeUndefined();
-    expect(tierForCost(5000), "beyond four weeks is no tier").toBeUndefined();
+    expect(tierForCost(2500), "between four and six weeks is no tier").toBeUndefined();
+    expect(tierForCost(6301), "beyond twelve weeks is no tier").toBeUndefined();
+    expect(tierPriceRange("heirloom"), "6 to 12 typical weeks").toEqual({ lower: 3150, upper: 6300 });
   });
 
   it("every price sits inside a tier", () => {
