@@ -22,6 +22,7 @@ public enum StreamingProcess {
         environment: [String: String]? = nil,
         input: Data? = nil
     ) -> AsyncThrowingStream<String, Error> {
+        #if os(macOS)
         AsyncThrowingStream { continuation in
             let process = Process()
             process.executableURL = executable
@@ -91,6 +92,10 @@ public enum StreamingProcess {
                 }
             }
         }
+        #else
+        // iOS has no subprocesses, so a command line tool can never run there.
+        AsyncThrowingStream { $0.finish(throwing: ProcessFailure(status: -1, stderr: "")) }
+        #endif
     }
 }
 

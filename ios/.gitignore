@@ -1,0 +1,4 @@
+# Written by `xcodegen generate` from project.yml.
+TabbiPhone.xcodeproj/
+App/Resources/Info.plist
+LiveActivityExtension/Info.plist

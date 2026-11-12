@@ -64,6 +64,7 @@ public enum ClaudePathCheck: Equatable, Sendable {
     /// Runs `<executable> --version` with a short timeout and parses it.
     /// Blocking; call off the main thread.
     public static func version(of executable: URL) -> String? {
+        #if os(macOS)
         let process = Process()
         process.executableURL = executable
         process.arguments = ["--version"]
@@ -79,5 +80,9 @@ public enum ClaudePathCheck: Equatable, Sendable {
         guard process.terminationStatus == 0 else { return nil }
         let output = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
         return parseVersion(output)
+        #else
+        // iOS cannot run a binary to ask it.
+        return nil
+        #endif
     }
 }

@@ -41,7 +41,7 @@ public enum AIExecutableLocator {
         where fileManager.isExecutableFile(atPath: override) {
             return URL(fileURLWithPath: override)
         }
-        let home = fileManager.homeDirectoryForCurrentUser.path
+        let home = fileManager.userHome.path
         if let hit = candidatePaths(for: executable, home: home).first(where: { fileManager.isExecutableFile(atPath: $0) }) {
             return URL(fileURLWithPath: hit)
         }
@@ -55,6 +55,7 @@ public enum AIExecutableLocator {
     /// off the main thread.
     public static func lookupInLoginShell(_ executable: String) -> String? {
         guard executable.allSatisfy({ $0.isLetter || $0.isNumber || $0 == "-" || $0 == "_" }) else { return nil }
+        #if os(macOS)
         let shell = ProcessInfo.processInfo.environment["SHELL"] ?? "/bin/zsh"
         let process = Process()
         process.executableURL = URL(fileURLWithPath: shell)
@@ -69,6 +70,10 @@ public enum AIExecutableLocator {
         let output = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)?
             .trimmingCharacters(in: .whitespacesAndNewlines)
         return (output?.hasPrefix("/") == true) ? output : nil
+        #else
+        // iOS has no login shell to ask.
+        return nil
+        #endif
     }
 
     /// The environment to run a tool found at `executable` with. Codex and

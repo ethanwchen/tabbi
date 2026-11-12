@@ -35,9 +35,13 @@ let package = Package(
     // Strings are written in English; translations live in TabbiKitCore's
     // String Catalog (docs/localization.md).
     defaultLocalization: "en",
-    platforms: [.macOS(.v14)],
+    // iOS is for TabbiKitCore alone: the iPhone app in ios/ (ios/README.md)
+    // links it as a library product. Every other target is Mac only and is
+    // never built for iOS.
+    platforms: [.macOS(.v14), .iOS("26.0")],
     products: [
         .executable(name: "Tabbi", targets: ["Tabbi"]),
+        .library(name: "TabbiKitCore", targets: ["TabbiKitCore"]),
     ],
     // The one third-party dependency: secure in-place app updates (EdDSA
     // signed archives, an installer that swaps the bundle and relaunches).
