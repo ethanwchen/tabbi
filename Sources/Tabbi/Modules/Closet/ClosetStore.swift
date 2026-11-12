@@ -219,11 +219,13 @@ final class ClosetStore: ObservableObject {
             seasons.add(record)
             progression.add(record)
         }
-        // Goals the log had already reached count quietly: they are saved,
-        // the Goals pill shows its dot, and nothing celebrates.
-        let change = progression.refresh(at: .now, freezePurchases: closet.save.ledger.streakFreezes)
+        // Goals and Study Levels the log had already reached count quietly:
+        // they are saved, the Goals pill shows its dot, and nothing
+        // celebrates, so a long-time user lands at their real level calmly.
+        let saved = self.progression.save
+        progression.refresh(at: .now, freezePurchases: closet.save.ledger.streakFreezes)
         self.progression = progression
-        if !change.isEmpty { persistProgression() }
+        if progression.save != saved { persistProgression() }
         if !unlockLimited().isEmpty { persist() }
         activitySubscription = activity
             .sink { [weak self] record in
@@ -236,15 +238,25 @@ final class ClosetStore: ObservableObject {
         seasons.add(record)
         var progression = progression
         progression.add(record)
+        let saved = self.progression.save
         let goals = progression.refresh(at: .now, freezePurchases: closet.save.ledger.streakFreezes)
         self.progression = progression
-        if !goals.isEmpty { persistProgression() }
+        // Every new best is kept, not only new tiers, so deleting day files
+        // never takes back focus minutes or the Study Level they reached.
+        if progression.save != saved { persistProgression() }
+        // Study points come from the study alone (`PetPointsRules`); a
+        // level gained adds nothing to the ledger.
         let award = closet.credit(record)
         let unlocked = unlockLimited()
         guard award != nil || !unlocked.isEmpty || !goals.isEmpty else { return }
         if award != nil || !unlocked.isEmpty { persist() }
         if let award { celebrate(award) }
-        if !unlocked.isEmpty || !goals.isEmpty { celebrateLimited() }
+        if !unlocked.isEmpty || !goals.badges.isEmpty || !goals.months.isEmpty || goals.unlocksSomething {
+            celebrateLimited()
+        } else if !goals.levels.isEmpty {
+            // A plain level up: the pet celebrates, the panel stays calm.
+            preview.send(.celebrate)
+        }
     }
 
     /// Grants the limited items the milestones, seasonal events and badge
@@ -255,7 +267,20 @@ final class ClosetStore: ObservableObject {
 
     /// Badge tiers reached since the Goals section was last open, for the
     /// dot on its pill.
-    var hasUnseenGoals: Bool { !progression.unseen.isEmpty }
+    var hasUnseenGoals: Bool { !progression.unseen.isEmpty || progression.hasUnseenLevel }
+
+    /// The Study Level and nameplate color, for Party to share with friends.
+    var standings: AnyPublisher<StudyStanding, Never> {
+        $progression.map(\.standing).removeDuplicates().eraseToAnyPublisher()
+    }
+
+    /// Picks the nameplate color the pet's name wears here and in Party.
+    func pick(_ nameplate: Nameplate) {
+        var progression = progression
+        guard progression.pick(nameplate) else { return }
+        withMotion(Theme.Motion.snappy) { self.progression = progression }
+        persistProgression()
+    }
 
     /// The Goals section is showing: every tier reached so far is seen.
     func markGoalsSeen() {
@@ -468,9 +493,10 @@ final class ClosetStore: ObservableObject {
     /// Snapshot runs only: shows the pet as someone who never got the
     /// Founder's Pin, or under another name, so the Closet's longest lines
     /// can be reviewed; the defaults put the starting closet back.
-    func showForSnapshot(foundingMember: Bool = true, name: String? = nil, newGoal: Bool = false) {
+    func showForSnapshot(foundingMember: Bool = true, name: String? = nil, newGoal: Bool = false,
+                         studyLevel: Int? = nil) {
         guard isSnapshot else { return }
-        showGoalForSnapshot(new: newGoal)
+        showGoalForSnapshot(new: newGoal, studyLevel: studyLevel)
         let base = snapshotBase ?? closet
         snapshotBase = base
         var save = base.save
@@ -489,13 +515,23 @@ final class ClosetStore: ObservableObject {
     /// Snapshot runs only: shows the highest tier reached as just earned
     /// and not seen yet, so the Goals pill's dot and the medallion's mark
     /// can be reviewed; `new: false` puts everything back as seen.
-    private func showGoalForSnapshot(new: Bool) {
+    private func showGoalForSnapshot(new: Bool, studyLevel: Int?) {
         let base = snapshotProgression ?? progression
         snapshotProgression = base
         var save = base.save
         if new, let latest = save.reached.keys.max() { save.seen.remove(latest) }
+        if let studyLevel {
+            // Part of the way to the next level, wearing the newest color.
+            let start = StudyLevel.minutesToReach(studyLevel), end = StudyLevel.minutesToReach(studyLevel + 1)
+            save.best[.focusHours] = start + (end - start) * 45 / 100
+            save.level = studyLevel
+            save.levelSeen = studyLevel
+            save.nameplate = Nameplate.unlocked(at: StudyLevel(studyLevel)).last
+        }
         guard save != progression.save else { return }
-        var shown = PetProgression(save: save, tally: base.tally)
+        // A level shot counts its focus from the save alone; the demo log
+        // would otherwise lift every shot to the demo's own level.
+        var shown = PetProgression(save: save, tally: studyLevel == nil ? base.tally : ProgressTally())
         shown.refresh(at: .now, freezePurchases: closet.save.ledger.streakFreezes)
         progression = shown
     }
