@@ -4,7 +4,7 @@
   "title": "Tabbi Party catalog (catalog.v1)",
   "description": "backend/shared/catalog.json: the values the Party server accepts in profiles and presence, and its limits. The Worker imports it, GET /v1/catalog serves it, and clients bundle it so pickers offer only valid values (docs/study/backend-api.md). A newer catalog may add fields; clients ignore the ones they don't read.",
   "type": "object",
-  "required": ["version", "species", "breeds", "costumes", "accessories", "statuses", "studyMethods", "heartbeatSeconds", "limits"],
+  "required": ["version", "species", "breeds", "costumes", "accessories", "statuses", "studyMethods", "heartbeatSeconds", "nameplates", "limits"],
   "properties": {
     "version": { "description": "The catalog's revision. A client whose copy is older can fetch GET /v1/catalog.", "type": "integer", "minimum": 1 },
     "species": { "$ref": "#/$defs/ids" },
@@ -22,9 +22,10 @@
       "type": "object",
       "additionalProperties": { "type": "integer", "minimum": 1 }
     },
+    "nameplates": { "description": "Nameplate color ids a profile's nameplate may name (Party protocol 3, the Study Level), plain first. Only ever added.", "$ref": "#/$defs/ids" },
     "limits": {
       "type": "object",
-      "required": ["nameMaxLength", "petNameMaxLength", "maxColors", "maxAccessories", "maxFriends", "maxPartyMembers", "partyIdleExpirySeconds"],
+      "required": ["nameMaxLength", "petNameMaxLength", "maxColors", "maxAccessories", "maxFriends", "maxPartyMembers", "partyIdleExpirySeconds", "maxStudyLevel"],
       "properties": {
         "nameMaxLength": { "$ref": "#/$defs/count" },
         "petNameMaxLength": { "$ref": "#/$defs/count" },
@@ -32,7 +33,8 @@
         "maxAccessories": { "description": "Distinct accessories in a profile.", "$ref": "#/$defs/count" },
         "maxFriends": { "$ref": "#/$defs/count" },
         "maxPartyMembers": { "$ref": "#/$defs/count" },
-        "partyIdleExpirySeconds": { "description": "A party with no activity for this long ends.", "$ref": "#/$defs/count" }
+        "partyIdleExpirySeconds": { "description": "A party with no activity for this long ends.", "$ref": "#/$defs/count" },
+        "maxStudyLevel": { "description": "The highest Study Level a profile keeps; a higher one is clamped to it.", "$ref": "#/$defs/count" }
       },
       "additionalProperties": { "type": "integer" }
     }

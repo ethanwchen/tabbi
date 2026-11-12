@@ -50,7 +50,9 @@
         "accessories": { "description": "Every worn accessory, at most one per slot.", "type": "array", "items": { "$ref": "#/$defs/itemId" } },
         "points": { "type": "integer", "minimum": 0 },
         "level": { "type": "integer", "minimum": 1 },
-        "badges": { "description": "Entitlement ids that show a badge (founding). Friends lists and party rosters only; missing reads as none.", "type": "array", "items": { "type": "string" } }
+        "badges": { "description": "Entitlement ids that show a badge (founding). Friends lists and party rosters only; missing reads as none.", "type": "array", "items": { "type": "string" } },
+        "studyLevel": { "description": "Protocol 3: the Study Level (from 0) the user's app shares, display only. Missing for users whose apps never sent one, which shows no level.", "type": "integer", "minimum": 0, "maximum": 999 },
+        "nameplate": { "description": "Protocol 3: the nameplate color id (catalog nameplates) beside the Study Level. An id an app does not know draws plain.", "$ref": "#/$defs/itemId" }
       }
     },
     "profileBody": {
@@ -66,7 +68,9 @@
         "costume": { "$ref": "#/$defs/itemId" },
         "accessories": { "type": "array", "maxItems": 8, "uniqueItems": true, "items": { "$ref": "#/$defs/itemId" } },
         "points": { "type": "integer", "minimum": 0 },
-        "level": { "type": "integer", "minimum": 1 }
+        "level": { "type": "integer", "minimum": 1 },
+        "studyLevel": { "description": "Protocol 3, optional: the Study Level. The server clamps it to 0...catalog limits.maxStudyLevel and only ever shows it; a server from before refuses it as an unknown field.", "type": "integer", "minimum": 0, "maximum": 999 },
+        "nameplate": { "description": "Protocol 3, optional: a catalog nameplates id.", "$ref": "#/$defs/itemId" }
       }
     },
     "registerReply": {

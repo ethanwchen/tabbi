@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import catalog from "../shared/catalog.json";
 import fixture from "../../shared/fixtures/party/party.json";
 import { PROTOCOL_HEADER } from "../src/lib";
-import { BASE, call, oldCall, register } from "./helpers";
+import { BASE, call, callWithProtocol, freshIp, oldCall, register } from "./helpers";
 import { check } from "./schema";
 
 /**
@@ -178,6 +178,81 @@ describe("a party across app versions", () => {
   });
 });
 
+describe("the Study Level across app versions (protocol 3)", () => {
+  /** An app from before the Study Level: protocol 2 (friend requests, catalog version 4), no level fields. */
+  const v2Call = (method: string, path: string, body?: unknown, token?: string) =>
+    callWithProtocol(2, method, path, body, token, "10.255.0.3");
+  const LEVEL = { studyLevel: 12, nameplate: "honey" };
+  const noLevel = (profile: Record<string, unknown>) => {
+    expect(profile).not.toHaveProperty("studyLevel");
+    expect(profile).not.toHaveProperty("nameplate");
+  };
+
+  it("an app before protocol 3 and a current app are friends and Party together; only the current one shares a level", async () => {
+    const r = await callWithProtocol(2, "POST", "/v1/register", { name: "Olive", ...OLD_LOOK }, undefined, freshIp());
+    expect(r.status).toBe(201);
+    const old = r.body as User;
+    noLevel(r.body.profile);
+    const current = await register({ name: "Cleo", ...NEW_LOOK, ...LEVEL });
+    expect(current.profile).toMatchObject(LEVEL);
+
+    // The current app asks; the protocol 2 app shows requests, so it accepts.
+    expect((await call("POST", "/v1/friends", { code: old.code }, current.token)).body.status).toBe("requested");
+    expect((await v2Call("POST", `/v1/friends/${current.code}/accept`, undefined, old.token)).status).toBe(200);
+
+    const oldFriends = (await v2Call("GET", "/v1/friends", undefined, old.token)).body;
+    expect(check("friendList", oldFriends)).toEqual([]);
+    expect(oldFriends.friends[0].profile).toMatchObject({ code: current.code, ...LEVEL });
+    expectOldProfile(oldFriends.friends[0].profile);
+    const currentFriends = (await call("GET", "/v1/friends", undefined, current.token)).body;
+    expect(check("friendList", currentFriends)).toEqual([]);
+    noLevel(currentFriends.friends[0].profile);
+
+    // The older app's own replies never carry the fields, before and after a patch and heartbeat.
+    noLevel((await v2Call("GET", "/v1/me", undefined, old.token)).body.profile);
+    const patched = await v2Call("PATCH", "/v1/me", { petName: "Mochi" }, old.token);
+    expect(patched.status).toBe(200);
+    noLevel(patched.body.profile);
+    expect(check("heartbeatReply", (await v2Call("POST", "/v1/presence", { status: "studying", todayMinutes: 4 }, old.token)).body)).toEqual([]);
+    expect(check("heartbeatReply", (await call("POST", "/v1/presence", { status: "studying", todayMinutes: 9 }, current.token)).body)).toEqual([]);
+
+    const party = (await v2Call("POST", "/v1/party", undefined, old.token)).body.party;
+    expect((await call("POST", "/v1/party/join", { code: party.code }, current.token)).status).toBe(200);
+    for (const [viewer, fetch] of [[old, v2Call], [current, call]] as const) {
+      const seen = (await fetch("GET", "/v1/party", undefined, viewer.token)).body.party;
+      expect(check("party", seen)).toEqual([]);
+      const byCode = Object.fromEntries(seen.members.map((m: { profile: { code: string } }) => [m.profile.code, m.profile]));
+      expect(byCode[current.code]).toMatchObject({ ...NEW_LOOK, ...LEVEL });
+      noLevel(byCode[old.code]);
+      for (const member of seen.members) expectOldProfile(member.profile);
+    }
+  });
+
+  it("an app up to 1.0.0, with no protocol header, still registers, patches and sees a current friend's level as extra fields", async () => {
+    const old = await register({ name: "Olive", ...OLD_LOOK }, true);
+    noLevel(old.profile);
+    const current = await register({ name: "Cleo", ...LEVEL });
+    expect((await call("POST", "/v1/friends", { code: old.code }, current.token)).body).toMatchObject({ added: true });
+    const friends = (await oldCall("GET", "/v1/friends", undefined, old.token)).body.friends;
+    expect(friends[0].profile).toMatchObject(LEVEL);
+    expectOldProfile(friends[0].profile);
+    const patched = await oldCall("PATCH", "/v1/me", { costume: "pirate" }, old.token);
+    expect(patched.status).toBe(200);
+    noLevel(patched.body.profile);
+  });
+
+  it("a current app's level change reaches friends, and an update without the fields keeps them", async () => {
+    const current = await register({ ...LEVEL });
+    const friend = await register();
+    await call("POST", "/v1/friends", { code: friend.code }, current.token);
+    await call("POST", `/v1/friends/${current.code}/accept`, undefined, friend.token);
+    await call("PATCH", "/v1/me", { studyLevel: 13 }, current.token);
+    await call("PATCH", "/v1/me", { petName: "Kiwi" }, current.token);
+    const seen = (await call("GET", "/v1/friends", undefined, friend.token)).body.friends[0].profile;
+    expect(seen).toMatchObject({ studyLevel: 13, nameplate: "honey", petName: "Kiwi" });
+  });
+});
+
 describe("the shared wire contract (shared/schemas/party.v1.schema.json)", () => {
   it("describes every reply the server sends to the current and to an older app", async () => {
     const health = await call("GET", "/");
@@ -207,11 +282,34 @@ describe("the shared wire contract (shared/schemas/party.v1.schema.json)", () =>
   it("describes the request bodies the apps send, and the shared fixtures the apps decode", () => {
     expect(check("profileBody", NEW_LOOK)).toEqual([]);
     expect(check("profileBody", { ...NEW_LOOK, cardDeck: "x" })).not.toEqual([]);
+    expect(check("profileBody", { ...NEW_LOOK, studyLevel: 12, nameplate: "honey" })).toEqual([]);
+    expect(check("profileBody", { studyLevel: 1000 })).not.toEqual([]);
     for (const update of fixture.updates) expect(check("profileBody", update.body), update.name).toEqual([]);
     for (const reply of fixture.replies) expect(check(reply.schema, reply.json), reply.name).toEqual([]);
     for (const update of fixture.updates) {
       for (const id of update.body.accessories ?? []) expect(catalog.accessories, `${update.name}: ${id}`).toContain(id);
       if (update.body.costume) expect(catalog.costumes, update.name).toContain(update.body.costume);
     }
+  });
+});
+
+describe("schema step 15", () => {
+  it("adds the Study Level columns to a database at version 14, keeps every user, and leaves their replies as before", async () => {
+    const { runInDurableObject } = await import("cloudflare:test");
+    const { migrate } = await import("../src/hub");
+    const { hub } = await import("./helpers");
+    const before = await register({ name: "Olive", ...OLD_LOOK }, true);
+    await runInDurableObject(hub(), (_, state) => {
+      const sql = state.storage.sql;
+      sql.exec("ALTER TABLE users DROP COLUMN study_level");
+      sql.exec("ALTER TABLE users DROP COLUMN nameplate");
+      sql.exec("UPDATE schema_version SET version = 14");
+      migrate(state.storage);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
+      expect(sql.exec("SELECT study_level, nameplate FROM users WHERE code = ?", before.code).toArray())
+        .toEqual([{ study_level: null, nameplate: null }]);
+    });
+    const me = (await oldCall("GET", "/v1/me", undefined, before.token)).body.profile;
+    expect(me).toEqual(before.profile);
   });
 });

@@ -42,7 +42,8 @@ export async function oldCall(method: string, path: string, body?: unknown, toke
   return callWithProtocol(null, method, path, body, token, ip);
 }
 
-async function callWithProtocol(
+/** A request from an app that sends `protocol` (null: no header, an app up to 1.0.0). */
+export async function callWithProtocol(
   protocol: number | null, method: string, path: string, body?: unknown, token?: string, ip = "10.255.0.1",
 ): Promise<Reply> {
   const headers: Record<string, string> = { "Content-Type": "application/json", "CF-Connecting-IP": ip };

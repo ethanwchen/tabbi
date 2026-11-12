@@ -24,7 +24,7 @@ Deployment, architecture and the free-tier math are in [`backend/README.md`](../
 - Every reply is JSON with `ok: true` on success, or `ok: false` with `error` (a stable code) and `message` (English, for logs only) on failure.
   Branch on `error`, never on `message`.
 - Replies are `Cache-Control: no-store`; CORS is open (`*`), so a web client works too.
-- Every app request sends `Tabbi-Protocol: 2`, the Party protocol it speaks; a request without the header is protocol 1 (apps up to 1.0.0).
+- Every app request sends `Tabbi-Protocol: 3`, the Party protocol it speaks; a request without the header is protocol 1 (apps up to 1.0.0).
   The server keeps the highest protocol each user's apps sent and serves every protocol from `minProtocol` up (see [compatibility](../party-compatibility.md)).
 - Replies may gain fields at any time: ignore what you do not know, and draw a pet without any id you do not know.
 
@@ -63,7 +63,9 @@ What friends and party members see of a user.
   "costume": "scrubs",
   "accessories": ["glasses", "coffee-mug"],
   "points": 1240,
-  "level": 7
+  "level": 7,
+  "studyLevel": 12,
+  "nameplate": "honey"
 }
 ```
 
@@ -78,6 +80,13 @@ What friends and party members see of a user.
 | `accessories` | at most 8 distinct ids from `catalog.accessories` | `[]` |
 | `points` | integer 0 to 100,000,000 | `0` |
 | `level` | integer 1 to 999 | `1` |
+| `studyLevel` | protocol 3, optional: a whole number, clamped to 0 to `catalog.limits.maxStudyLevel` (999); anything else is refused | absent |
+| `nameplate` | protocol 3, optional: `catalog.nameplates` | absent |
+
+`studyLevel` and `nameplate` are the Study Level the app earns from total focus hours and the nameplate color picked in the Closet.
+They are display only: the server stores and shows them to friends and party members, and derives nothing from them (not points, `level` or the leaderboard).
+A profile whose apps never sent them has neither key, so replies about users of older apps look exactly as before; older apps ignore the keys on others.
+A server from before protocol 3 refuses them as unknown fields, and the app then sends the profile again without them.
 
 The Tabbi app sends the pet as its owner sees it in the Closet: the outfit in `costume`, every worn item (hats, glasses, neck, back and aura items) in `accessories`, and `colors` in the order furBase, furShade, furAccent, furSpot, belly, costumeBase, costumeShade, costumeTrim, accessoryBase, accessoryShade.
 Catalog version 1 apps sent six colors, and a medical or costume hat in `costume` when no outfit was worn; the app still does that for them, and reads it (see [compatibility](../party-compatibility.md#pets-across-versions)).
@@ -193,7 +202,7 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 
 ### `GET /`
 
-`200 {"ok": true, "service": "tabbi-friends", "version": 1, "protocol": 2, "minProtocol": 1}`
+`200 {"ok": true, "service": "tabbi-friends", "version": 1, "protocol": 3, "minProtocol": 1}`
 
 `protocol` is the newest Party protocol the server speaks and `minProtocol` the oldest it still serves; a server without them speaks protocol 1.
 
