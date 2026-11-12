@@ -44,6 +44,10 @@ extension PetItem {
             case .apprenticeRobe, .scholarsRobe, .sagesRobe: .study
             case .cozyPajamas, .bakersApron: .cozy
             case .astronautSuit, .starryCloak: .fantasy
+            case .librarianCardigan, .varsityJacket: .study
+            case .blanketBurrito, .keepersPeacoat, .gardenOveralls, .paintersSmock: .cozy
+            case .koiYukata, .rainSlicker, .snowDayPuffer: .seasonal
+            case .sushiChef: .silly
             }
         case .accessory(let accessory):
             switch accessory {
@@ -58,6 +62,11 @@ extension PetItem {
                  .sakuraSprig: .seasonal
             case .frogHat, .cowboyHat, .bowTie, .flameHeadband, .teamMedal, .rainCloud, .beeAntennae,
                  .sportySweatband: .silly
+            case .monocle, .bookStack, .deerstalker, .retroHeadset: .study
+            case .strawberryCap, .tinyBackpack, .onsenTowel: .cozy
+            case .aviatorCap: .fantasy
+            case .daisyChain, .sailorCollar, .mushroomCap, .sunHat, .fireflies: .seasonal
+            case .cactusPot, .instantCamera: .silly
             }
         }
     }
@@ -74,6 +83,8 @@ extension PetItem {
             case .studyHoodie: 4
             case .astronautSuit, .starryCloak, .apprenticeRobe, .scholarsRobe, .sagesRobe, .cozyPajamas,
                  .bakersApron: 6
+            case .librarianCardigan, .blanketBurrito, .keepersPeacoat, .koiYukata, .gardenOveralls, .varsityJacket,
+                 .paintersSmock, .rainSlicker, .sushiChef, .snowDayPuffer: 7
             }
         case .accessory(let accessory):
             switch accessory {
@@ -88,6 +99,9 @@ extension PetItem {
             case .foundersPin: 5
             case .littleSprout, .blossomSprout, .nightcap, .explorersHat, .beeAntennae, .sportySweatband,
                  .owlSpectacles, .friendshipBandana, .tinyLantern: 6
+            case .mushroomCap, .deerstalker, .cactusPot, .bookStack, .strawberryCap, .sunHat, .aviatorCap,
+                 .retroHeadset, .onsenTowel, .monocle, .tinyBackpack, .instantCamera, .sailorCollar, .daisyChain,
+                 .fireflies: 7
             }
         }
     }

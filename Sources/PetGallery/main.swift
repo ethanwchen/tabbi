@@ -132,6 +132,21 @@ if arguments.dropFirst().first == "mastery" {
     exit(0)
 }
 
+// Candidate outfits: `swift run PetGallery out/ outfits25` (Outfits25Sheets.swift),
+// `... outfits25 <item id>...` for some items' sheets only, `... outfits25 dump <item id>`
+// to print composed frames as symbols, or `... outfits25 check` for the eye and
+// pixel budget rules.
+if arguments.dropFirst().first == "outfits25" {
+    switch arguments.dropFirst(2).first {
+    case "dump": Outfits25Sheets.dump(arguments.dropFirst(3).first)
+    case "check":
+        let problems = Outfits25Sheets.check()
+        print(problems.isEmpty ? "all candidates pass" : problems.joined(separator: "\n"))
+    default: try Outfits25Sheets.write(to: outputDirectory, only: Array(arguments.dropFirst(2)))
+    }
+    exit(0)
+}
+
 // Store lineup: `swift run PetGallery out/ store` writes the pets the second
 // App Store set shows (docs/appstore/screenshots-v2), each a breed in a look,
 // as single transparent 32x32 frames, `store-<pet>-<animation>-<frame>.png`,

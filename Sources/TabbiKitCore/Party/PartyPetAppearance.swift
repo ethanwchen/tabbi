@@ -142,6 +142,17 @@ public enum PartyPetAppearance {
         case .scholarsRobe: "scholars-robe"
         case .sagesRobe: "sages-robe"
         case .bakersApron: "bakers-apron"
+        // Closet candidates, round 7: proposed ids, not in the catalog yet.
+        case .librarianCardigan: "librarian-cardigan"
+        case .blanketBurrito: "blanket-burrito"
+        case .keepersPeacoat: "keepers-peacoat"
+        case .koiYukata: "koi-yukata"
+        case .gardenOveralls: "garden-overalls"
+        case .varsityJacket: "varsity-jacket"
+        case .paintersSmock: "painters-smock"
+        case .rainSlicker: "rain-slicker"
+        case .sushiChef: "sushi-chef"
+        case .snowDayPuffer: "snow-day-puffer"
         }
     }
 
@@ -209,6 +220,22 @@ public enum PartyPetAppearance {
         case .sportySweatband: "sporty-sweatband"
         case .owlSpectacles: "owl-spectacles"
         case .tinyLantern: "tiny-lantern"
+        // Closet candidates, round 7: proposed ids, not in the catalog yet.
+        case .mushroomCap: "mushroom-cap"
+        case .deerstalker: "deerstalker"
+        case .cactusPot: "cactus-pot"
+        case .bookStack: "book-stack"
+        case .strawberryCap: "strawberry-cap"
+        case .sunHat: "sun-hat"
+        case .aviatorCap: "aviator-cap"
+        case .retroHeadset: "retro-headset"
+        case .onsenTowel: "onsen-towel"
+        case .monocle: "monocle"
+        case .tinyBackpack: "tiny-backpack"
+        case .instantCamera: "instant-camera"
+        case .sailorCollar: "sailor-collar"
+        case .daisyChain: "daisy-chain"
+        case .fireflies: "fireflies"
         }
     }
 

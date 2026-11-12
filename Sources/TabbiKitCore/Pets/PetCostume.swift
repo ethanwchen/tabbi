@@ -40,6 +40,33 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
     case cozyPajamas
     /// A white apron with a crimson trim, holding a tiny strawberry cake.
     case bakersApron
+    // Closet candidates, round 7: drawn for review, not yet on sale.
+    /// A violet knit cardigan with gold buttons and reading glasses
+    /// hanging on a gold chain at the chest.
+    case librarianCardigan
+    /// A striped quilt wrapped round the body up to the chin, its rolled
+    /// end showing at the side.
+    case blanketBurrito
+    /// A lighthouse keeper's navy peacoat: double-breasted with two rows
+    /// of gold buttons, a wide collar and a white knit collar under it.
+    case keepersPeacoat
+    /// An indigo summer yukata, wrapped left over right, with white and
+    /// orange koi and a pumpkin obi.
+    case koiYukata
+    /// Sky blue denim overalls with gold buckles, a front pocket and a
+    /// carrot peeking out of it.
+    case gardenOveralls
+    /// A crimson varsity jacket with white sleeves, gold-striped cuffs
+    /// and a gold letter on the chest.
+    case varsityJacket
+    /// A white painter's smock splashed with paint, a brush in its pocket.
+    case paintersSmock
+    /// A yellow rain slicker with toggles and a matching sou'wester hat.
+    case rainSlicker
+    /// A white chef's jacket with a navy apron and a twisted headband.
+    case sushiChef
+    /// A quilted puffer jacket and a knit hat with ear flaps and a pom.
+    case snowDayPuffer
 
     public var displayName: String {
         switch self {
@@ -58,6 +85,16 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
         case .sagesRobe: String(localized: "Sage's Robe", bundle: .tabbi)
         case .cozyPajamas: String(localized: "Cozy Pajamas", bundle: .tabbi)
         case .bakersApron: String(localized: "Baker's Apron", bundle: .tabbi)
+        case .librarianCardigan: String(localized: "Librarian Cardigan", bundle: .tabbi)
+        case .blanketBurrito: String(localized: "Blanket Burrito", bundle: .tabbi)
+        case .keepersPeacoat: String(localized: "Keeper's Peacoat", bundle: .tabbi)
+        case .koiYukata: String(localized: "Koi Yukata", bundle: .tabbi)
+        case .gardenOveralls: String(localized: "Garden Overalls", bundle: .tabbi)
+        case .varsityJacket: String(localized: "Varsity Jacket", bundle: .tabbi)
+        case .paintersSmock: String(localized: "Painter's Smock", bundle: .tabbi)
+        case .rainSlicker: String(localized: "Rain Slicker", bundle: .tabbi)
+        case .sushiChef: String(localized: "Sushi Chef", bundle: .tabbi)
+        case .snowDayPuffer: String(localized: "Snow Day Puffer", bundle: .tabbi)
         }
     }
 }
@@ -184,19 +221,55 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     /// A tiny lantern hanging from a crimson ribbon at the chest, its
     /// flame flickering.
     case tinyLantern
+    // Closet candidates, round 7: drawn for review, not yet on sale.
+    /// A red toadstool cap with white spots over cream gills.
+    case mushroomCap
+    /// A detective's tweed deerstalker with a peak front and back and its
+    /// ear flaps tied up on top.
+    case deerstalker
+    /// A terracotta pot with a little cactus in bloom, worn as a hat.
+    case cactusPot
+    /// Three books stacked on the head, a ribbon bookmark hanging out.
+    case bookStack
+    /// A red knit cap dotted with seeds, leaves and a stem on top.
+    case strawberryCap
+    /// A wide straw sun hat with a leather band and a sunflower.
+    case sunHat
+    /// A leather flying cap with a fleece trim and goggles pushed up.
+    case aviatorCap
+    /// A radio headset with a boom mic, its red on-air light blinking.
+    case retroHeadset
+    /// A folded white towel with a blue stripe, warm steam curling off it.
+    case onsenTowel
+    /// A gold monocle on a thin chain, ringing one eye.
+    case monocle
+    /// A little backpack on two straps, a star keychain swinging from it.
+    case tinyBackpack
+    /// A chunky instant camera on a strap at the chest, its flash
+    /// blinking now and then.
+    case instantCamera
+    /// A navy sailor collar with white stripes over the shoulders and a
+    /// crimson neckerchief knotted at the front.
+    case sailorCollar
+    /// A necklace of little white daisies with gold centers.
+    case daisyChain
+    /// Fireflies that blink on and off as they drift around the pet.
+    case fireflies
 
     public var slot: PetAccessorySlot {
         switch self {
-        case .stethoscope, .scarf, .bowTie, .teamMedal, .snowScarf, .foundersPin, .friendshipBandana, .tinyLantern: .neck
-        case .roundGlasses, .coolSunglasses, .heartGlasses, .summerShades, .owlSpectacles: .face
+        case .stethoscope, .scarf, .bowTie, .teamMedal, .snowScarf, .foundersPin, .friendshipBandana, .tinyLantern,
+             .tinyBackpack, .instantCamera, .sailorCollar, .daisyChain: .neck
+        case .roundGlasses, .coolSunglasses, .heartGlasses, .summerShades, .owlSpectacles, .monocle: .face
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
              .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones, .backwardsCap, .flameHeadband,
              .goldenLaurel, .halo, .moonlitWitchHat, .pumpkinHat, .reindeerAntlers, .lionDanceHat,
              .sakuraSprig, .littleSprout, .blossomSprout, .nightcap, .explorersHat, .beeAntennae,
-             .sportySweatband: .head
+             .sportySweatband, .mushroomCap, .deerstalker, .cactusPot, .bookStack, .strawberryCap, .sunHat,
+             .aviatorCap, .retroHeadset, .onsenTowel: .head
         case .angelWings, .kingsCape: .back
-        case .cherryPetals, .sparkleTrail, .rainCloud: .aura
+        case .cherryPetals, .sparkleTrail, .rainCloud, .fireflies: .aura
         }
     }
 
@@ -259,6 +332,21 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .owlSpectacles: String(localized: "Owl Spectacles", bundle: .tabbi)
         case .friendshipBandana: String(localized: "Friendship Bandana", bundle: .tabbi)
         case .tinyLantern: String(localized: "Tiny Lantern", bundle: .tabbi)
+        case .mushroomCap: String(localized: "Mushroom Cap", bundle: .tabbi)
+        case .deerstalker: String(localized: "Deerstalker", bundle: .tabbi)
+        case .cactusPot: String(localized: "Potted Cactus", bundle: .tabbi)
+        case .bookStack: String(localized: "Book Stack", bundle: .tabbi)
+        case .strawberryCap: String(localized: "Strawberry Cap", bundle: .tabbi)
+        case .sunHat: String(localized: "Sunflower Sun Hat", bundle: .tabbi)
+        case .aviatorCap: String(localized: "Aviator Cap", bundle: .tabbi)
+        case .retroHeadset: String(localized: "Retro Headset", bundle: .tabbi)
+        case .onsenTowel: String(localized: "Onsen Towel", bundle: .tabbi)
+        case .monocle: String(localized: "Monocle", bundle: .tabbi)
+        case .tinyBackpack: String(localized: "Tiny Backpack", bundle: .tabbi)
+        case .instantCamera: String(localized: "Instant Camera", bundle: .tabbi)
+        case .sailorCollar: String(localized: "Sailor Collar", bundle: .tabbi)
+        case .daisyChain: String(localized: "Daisy Chain", bundle: .tabbi)
+        case .fireflies: String(localized: "Fireflies", bundle: .tabbi)
         }
     }
 

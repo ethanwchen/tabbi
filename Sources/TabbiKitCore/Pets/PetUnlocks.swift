@@ -110,6 +110,32 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
         case .accessory(.halo): 1900
         case .accessory(.angelWings): 2000
         case .accessory(.kingsCape): 2050
+        // Closet candidates, round 7: proposed prices for review.
+        case .accessory(.daisyChain): 215
+        case .accessory(.monocle): 235
+        case .accessory(.strawberryCap): 225
+        case .accessory(.mushroomCap): 255
+        case .accessory(.sailorCollar): 285
+        case .accessory(.cactusPot): 315
+        case .accessory(.bookStack): 345
+        case .accessory(.deerstalker): 375
+        case .accessory(.sunHat): 405
+        case .accessory(.aviatorCap): 435
+        case .outfit(.librarianCardigan): 465
+        case .outfit(.gardenOveralls): 495
+        case .outfit(.paintersSmock): 510
+        case .outfit(.varsityJacket): 1100
+        case .outfit(.keepersPeacoat): 1200
+        case .outfit(.blanketBurrito): 1300
+        case .outfit(.koiYukata): 1350
+        case .outfit(.rainSlicker): 1450
+        case .outfit(.sushiChef): 1550
+        case .outfit(.snowDayPuffer): 1850
+        case .accessory(.retroHeadset): 1625
+        case .accessory(.tinyBackpack): 1675
+        case .accessory(.instantCamera): 1725
+        case .accessory(.onsenTowel): 1775
+        case .accessory(.fireflies): 1825
         }
     }
 

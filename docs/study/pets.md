@@ -172,6 +172,13 @@ They are drawn like every item, so each fits every body shape:
 
 `swift run PetGallery <dir> mastery` writes `mastery-<item>.png` (the item on a breed for every body shape, sitting, mid-hop, walking, stretching and napping), `mastery-all-<breed>.png` at 4x and notch size, `mastery-loop-<item>.png` for the animated ones, and `mastery-sets-<breed>.png` (the outfits worn with the shop items they go with).
 
+### Closet candidates
+
+Round 7 adds 25 candidate items for the owner to pick from (`Outfits25Sheets.candidates`): eight hats, seven outfits, a backpack and three more neck items, a monocle, three sets that are outfits with a head part (the Rain Slicker's sou'wester, the Sushi Chef's hachimaki, the Snow Day Puffer's ear flap hat), the Onsen Towel and the Fireflies aura.
+Across the face, hats among them reach at most one row below the skull line, because the Shih Tzu's eyes start two rows under it; only parts at the sides (ear flaps, a headset cup and its mic) reach lower, clear of the eyes.
+`swift run PetGallery <dir> outfits25` writes `outfit-<slug>.png`, `loop-<slug>.png`, `all-<breed>.png` with `-2x` versions, and the review cards in `cards/`.
+`swift run PetGallery <dir> outfits25 check` checks that no candidate covers an eye in any frame or tick on any breed (closed, happy and squeezed eyes included) and that each animated one changes at most 6 pixels on a tick.
+
 ### Badges
 
 The Closet's Goals badges are sprites too (`Pets/PetArt/badge.json`, `BadgeArt` in `TabbiKitCore/Progression`): a 28 by 28 frame per state (not yet, Bronze, Silver, Gold, Starlight, plus a second Starlight frame for the sparkle's blink) and a 9 by 9 glyph per track, stamped on the frame's inner disc.
