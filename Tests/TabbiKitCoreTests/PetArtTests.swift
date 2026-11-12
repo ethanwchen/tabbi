@@ -15,7 +15,9 @@ final class PetArtTests: XCTestCase {
     }
 
     func testEveryBundledArtFileLoads() throws {
+        // The Radiant effects live beside the art in their own formats (`RadiantArt`).
         let urls = try XCTUnwrap(KitResources.bundle?.urls(forResourcesWithExtension: "json", subdirectory: PetArt.subdirectory))
+            .filter { !$0.lastPathComponent.hasPrefix("radiant") }
         XCTAssertEqual(urls.map { $0.deletingPathExtension().lastPathComponent }.sorted(), Self.families)
         for url in urls {
             XCTAssertNoThrow(try PetArtFile.decode(Data(contentsOf: url)), url.lastPathComponent)

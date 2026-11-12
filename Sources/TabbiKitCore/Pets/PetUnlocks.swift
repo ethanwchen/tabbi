@@ -181,6 +181,17 @@ public enum PetPurchaseError: Error, Equatable, Sendable {
     case notEnoughPoints(missing: Int)
 }
 
+/// Why a Radiant upgrade was refused.
+public enum PetRadiantPurchaseError: Error, Equatable, Sendable {
+    /// The item has to be owned before it can be upgraded.
+    case notOwned
+    /// The item has no Radiant effect.
+    case notEligible
+    case alreadyRadiant
+    /// `missing` more points are needed.
+    case notEnoughPoints(missing: Int)
+}
+
 /// Why an extra streak freeze could not be bought.
 public enum StreakFreezePurchaseError: Error, Equatable, Sendable {
     /// `StreakFreezeRules.maxHeld` extras are already held.
@@ -206,14 +217,21 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
     /// When each extra streak freeze was bought, oldest first. `StudyStreak`
     /// replays them against the study days to know which are still held.
     public private(set) var streakFreezes: [Date]
+    /// Items upgraded to Radiant (`PetRadiant`), bought once each for 5x the
+    /// item's price. Kept for good, like purchases: deleting logs never
+    /// takes one away.
+    public private(set) var radiant: Set<PetItem>
 
     public init(earned: Int = 0, spent: Int = 0, purchased: Set<PetItem> = [], granted: Set<PetItem> = [],
-                streakFreezes: [Date] = []) {
+                streakFreezes: [Date] = [], radiant: Set<PetItem> = []) {
         self.earned = max(0, earned)
         self.purchased = purchased.filter { !$0.isFree && !$0.isLimited }
         self.granted = granted.filter(\.isLimited)
         self.spent = min(max(0, spent), self.earned)
         self.streakFreezes = streakFreezes.sorted()
+        // Only items owned here can be Radiant, so a hand-edited save cannot claim one.
+        let owned = self.purchased.union(self.granted)
+        self.radiant = radiant.filter { PetRadiant.isEligible($0) && ($0.isFree || owned.contains($0)) }
     }
 
     public var balance: Int { earned - spent }
@@ -266,6 +284,32 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
         purchased.insert(item)
     }
 
+    public func isRadiant(_ item: PetItem) -> Bool { radiant.contains(item) }
+
+    /// Whether `item` can be upgraded to Radiant now: owned, eligible, not
+    /// upgraded yet, and affordable.
+    public func canUpgrade(_ item: PetItem) -> Bool {
+        owns(item) && PetRadiant.isEligible(item) && !isRadiant(item) && balance >= PetRadiant.price(of: item)
+    }
+
+    /// Upgrades an owned item to Radiant for `PetRadiant.price(of:)` points.
+    public mutating func upgradeToRadiant(_ item: PetItem) throws(PetRadiantPurchaseError) {
+        guard PetRadiant.isEligible(item) else { throw .notEligible }
+        guard owns(item) else { throw .notOwned }
+        guard !isRadiant(item) else { throw .alreadyRadiant }
+        let price = PetRadiant.price(of: item)
+        guard balance >= price else { throw .notEnoughPoints(missing: price - balance) }
+        spent += price
+        radiant.insert(item)
+    }
+
+    /// Keeps Radiant upgrades made on another copy of this ledger (the local
+    /// save before a synced ledger replaced it), whose points are already
+    /// spent there.
+    public mutating func keepRadiant(of other: PetPointsLedger) {
+        radiant.formUnion(other.radiant.filter { PetRadiant.isEligible($0) && owns($0) })
+    }
+
     /// Buys an extra streak freeze for `StreakFreezeRules.price` points.
     /// `streak` is the streak as it stands at `date` (computed with this
     /// ledger's `streakFreezes`), which says how many extras are held.
@@ -295,7 +339,7 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
     static let refundedPrices: [PetItem: Int] = [.accessory(.scarf): 30]
 
     // Unknown item ids (from a newer build) are skipped instead of failing.
-    private enum CodingKeys: String, CodingKey { case earned, spent, purchased, granted, streakFreezes }
+    private enum CodingKeys: String, CodingKey { case earned, spent, purchased, granted, streakFreezes, radiant }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -308,7 +352,9 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
             spent: (try container.decodeIfPresent(Int.self, forKey: .spent) ?? 0) - refund,
             purchased: items,
             granted: Set(grantedIDs.compactMap(PetItem.init(id:))),
-            streakFreezes: (try? container.decodeIfPresent([Date].self, forKey: .streakFreezes)) ?? []
+            streakFreezes: (try? container.decodeIfPresent([Date].self, forKey: .streakFreezes)) ?? [],
+            radiant: Set(((try? container.decodeIfPresent([String].self, forKey: .radiant)) ?? nil ?? [])
+                .compactMap(PetItem.init(id:)))
         )
     }
 
@@ -322,6 +368,10 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
         }
         if !streakFreezes.isEmpty {
             try container.encode(streakFreezes, forKey: .streakFreezes)
+        }
+        // Left out when empty, so saves without upgrades read as before.
+        if !radiant.isEmpty {
+            try container.encode(radiant.map(\.id).sorted(), forKey: .radiant)
         }
     }
 }

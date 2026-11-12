@@ -4,7 +4,7 @@
   "title": "Tabbi Party catalog (catalog.v1)",
   "description": "backend/shared/catalog.json: the values the Party server accepts in profiles and presence, and its limits. The Worker imports it, GET /v1/catalog serves it, and clients bundle it so pickers offer only valid values (docs/study/backend-api.md). A newer catalog may add fields; clients ignore the ones they don't read.",
   "type": "object",
-  "required": ["version", "species", "breeds", "costumes", "accessories", "statuses", "studyMethods", "heartbeatSeconds", "limits"],
+  "required": ["version", "species", "breeds", "costumes", "accessories", "radiantItems", "radiantIntensities", "statuses", "studyMethods", "heartbeatSeconds", "limits"],
   "properties": {
     "version": { "description": "The catalog's revision. A client whose copy is older can fetch GET /v1/catalog.", "type": "integer", "minimum": 1 },
     "species": { "$ref": "#/$defs/ids" },
@@ -15,6 +15,8 @@
     },
     "costumes": { "description": "Includes none, the default.", "$ref": "#/$defs/ids" },
     "accessories": { "$ref": "#/$defs/ids" },
+    "radiantItems": { "description": "Costume and accessory ids that can be upgraded to Radiant, an animated effect friends see. A profile's radiant entries name one of these.", "$ref": "#/$defs/ids" },
+    "radiantIntensities": { "description": "The intensities a Radiant effect plays at, the part after the colon in a radiant entry.", "$ref": "#/$defs/ids" },
     "statuses": { "description": "Presence statuses.", "$ref": "#/$defs/ids" },
     "studyMethods": { "description": "Values of a presence's method.", "$ref": "#/$defs/ids" },
     "heartbeatSeconds": {
@@ -24,12 +26,13 @@
     },
     "limits": {
       "type": "object",
-      "required": ["nameMaxLength", "petNameMaxLength", "maxColors", "maxAccessories", "maxFriends", "maxPartyMembers", "partyIdleExpirySeconds"],
+      "required": ["nameMaxLength", "petNameMaxLength", "maxColors", "maxAccessories", "maxRadiant", "maxFriends", "maxPartyMembers", "partyIdleExpirySeconds"],
       "properties": {
         "nameMaxLength": { "$ref": "#/$defs/count" },
         "petNameMaxLength": { "$ref": "#/$defs/count" },
         "maxColors": { "description": "Colors in a profile, each #RRGGBB.", "$ref": "#/$defs/count" },
         "maxAccessories": { "description": "Distinct accessories in a profile.", "$ref": "#/$defs/count" },
+        "maxRadiant": { "description": "Radiant entries in a profile; the server keeps the first this many it can read.", "$ref": "#/$defs/count" },
         "maxFriends": { "$ref": "#/$defs/count" },
         "maxPartyMembers": { "$ref": "#/$defs/count" },
         "partyIdleExpirySeconds": { "description": "A party with no activity for this long ends.", "$ref": "#/$defs/count" }

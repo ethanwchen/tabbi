@@ -52,3 +52,9 @@ A self-hosted server still on catalog version 1 refuses the newer ids, and the a
 Catalog version 4 adds the mastery outfits from the Closet's Goals section (`docs/design/progression.md`): six outfits and eight accessories with new ids, while the Cozy Pajamas and the Friendship Bandana reuse `pajamas` and `bandana`, which catalog version 1 already listed and nothing drew.
 Older apps drop the new ids and draw the rest of the pet.
 A server still on catalog version 3 refuses them, so the app first sends the profile again without just those ids (`PartyProfileUpdate.forCatalogVersion3()`) and only falls back to what catalog version 1 takes if that is refused too.
+
+Radiant item upgrades add one profile field, `radiant`, a sorted list of worn `<item id>:<intensity>` entries (`crown:bold`), and the catalog keys `radiantItems`, `radiantIntensities` and `limits.maxRadiant`; the catalog `version` stays the same, since no item id changed.
+Every reply that carries a profile includes `radiant` (`[]` for none), and older apps ignore the key as they ignore every reply field they do not know, so they draw the pet without the effect.
+An older app never sends `radiant`, and a body without it keeps the stored list, so a user's older Mac does not clear the Radiant items their newer Mac set.
+The server drops the entries it does not know instead of refusing the body, so an app that knows more Radiant items than the server still saves its profile, with the items the server knows.
+A server from before Radiant refuses the field itself with `unknown_field` (400), so the app sends the profile again without `radiant` when that happens.

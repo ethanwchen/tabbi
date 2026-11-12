@@ -285,10 +285,11 @@ describe("schema step 14", () => {
       const sql = state.storage.sql;
       sql.exec("DROP TABLE friend_requests");
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
+      sql.exec("ALTER TABLE users DROP COLUMN radiant");
       sql.exec("UPDATE schema_version SET version = 13");
       sql.exec("INSERT OR IGNORE INTO friends (a, b, created_at) VALUES ('MIGR8AAA', 'MIGR8BBB', 5), ('MIGR8BBB', 'MIGR8AAA', 5)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 14 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
       expect(sql.exec("SELECT * FROM friend_requests").toArray()).toEqual([]);
       expect(sql.exec("SELECT a, b, created_at FROM friends WHERE a IN ('MIGR8AAA', 'MIGR8BBB') ORDER BY a").toArray()).toEqual([
         { a: "MIGR8AAA", b: "MIGR8BBB", created_at: 5 },

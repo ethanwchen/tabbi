@@ -23,11 +23,15 @@ export const STUDY_METHODS = catalog.studyMethods as readonly string[];
 export const COSTUMES = catalog.costumes as readonly string[];
 export const ACCESSORIES = catalog.accessories as readonly string[];
 export const BREEDS = catalog.breeds as Record<string, readonly string[]>;
+/** Costume and accessory ids that can be upgraded to Radiant, and the intensities their effect can play at. */
+export const RADIANT_ITEMS = catalog.radiantItems as readonly string[];
+export const RADIANT_INTENSITIES = catalog.radiantIntensities as readonly string[];
 
 export const MAX_NAME = catalog.limits.nameMaxLength;
 export const MAX_PET_NAME = catalog.limits.petNameMaxLength;
 export const MAX_COLORS = catalog.limits.maxColors;
 export const MAX_ACCESSORIES = catalog.limits.maxAccessories;
+export const MAX_RADIANT = catalog.limits.maxRadiant;
 export const MAX_FRIENDS = catalog.limits.maxFriends;
 export const MAX_PARTY_MEMBERS = catalog.limits.maxPartyMembers;
 export const PARTY_IDLE_EXPIRY_S = catalog.limits.partyIdleExpirySeconds;
@@ -268,6 +272,27 @@ export function parseAccessories(v: unknown): string[] {
     out.push(id);
   }
   return out;
+}
+
+/**
+ * The Radiant items a pet wears, each `<item id>:<intensity>`. Only a non-array is refused: a newer app
+ * may know Radiant items or intensities this server does not, so an entry that is not a string, not of
+ * that form, or names an item or intensity outside the catalog is dropped instead. The first entry per
+ * item wins, at most `MAX_RADIANT` are kept (in the order sent), and the result is sorted.
+ */
+export function parseRadiant(v: unknown): string[] {
+  if (!Array.isArray(v)) throw invalid("radiant");
+  const byItem = new Map<string, string>();
+  for (const entry of v) {
+    if (byItem.size >= MAX_RADIANT) break;
+    if (typeof entry !== "string") continue;
+    const parts = entry.split(":");
+    if (parts.length !== 2) continue;
+    const [item, intensity] = parts;
+    if (!RADIANT_ITEMS.includes(item) || !RADIANT_INTENSITIES.includes(intensity) || byItem.has(item)) continue;
+    byItem.set(item, entry);
+  }
+  return [...byItem.values()].sort();
 }
 
 export function parseFriendCode(v: unknown): string {

@@ -36,8 +36,52 @@ public enum PartyPetAppearance {
             breed: wireBreed(pet.breed),
             colors: colorRoles.map { opaqueHex(palette[$0]) },
             costume: pet.outfit == .none ? legacyCostume(for: pet.accessories) : wireOutfit(pet.outfit),
-            accessories: pet.accessories.map(wireAccessory)
+            accessories: pet.accessories.map(wireAccessory),
+            // Sent only by someone with a Radiant upgrade (an empty list then
+            // clears what the server shows), so everyone else's update reads
+            // exactly as before on any server.
+            radiant: pet.radiance.isEmpty ? nil : radiant(for: pet)
         )
+    }
+
+    /// The Radiant effects a pet shows, as `<item id>:<intensity>` with the
+    /// item's wire id: only upgraded items it wears with the effect on, in
+    /// a fixed order. Sent as `radiant`; an older app or server ignores it
+    /// and draws the normal item.
+    public static func radiant(for pet: PetProfile) -> [String] {
+        pet.radiantLook.intensities.map { item, intensity in "\(wireItem(item)):\(intensity.rawValue)" }.sorted()
+    }
+
+    /// The most `radiant` entries a profile carries: one per slot that has
+    /// Radiant items (head, outfit, aura).
+    public static let maxRadiant = 3
+
+    static func wireItem(_ item: PetItem) -> String {
+        switch item {
+        case .outfit(let outfit): wireOutfit(outfit)
+        case .accessory(let accessory): wireAccessory(accessory)
+        }
+    }
+
+    /// The Radiant look in a profile's `radiant` entries, for the items it
+    /// wears. Unknown ids, intensities and items without an effect are
+    /// dropped, never an error.
+    static func localRadiance(_ entries: [String], outfit: PetOutfit, accessories: [PetAccessory])
+        -> [PetItem: PetRadiantIntensity] {
+        var radiance: [PetItem: PetRadiantIntensity] = [:]
+        for entry in entries.prefix(maxRadiant) {
+            let parts = entry.split(separator: ":", maxSplits: 1).map(String.init)
+            guard parts.count == 2, let intensity = PetRadiantIntensity(rawValue: parts[1]), intensity != .off else { continue }
+            let item: PetItem? = if let outfit = localOutfit(parts[0]) { .outfit(outfit) }
+                else { localAccessories[parts[0]].map(PetItem.accessory) }
+            guard let item, PetRadiant.isEligible(item) else { continue }
+            let worn = switch item {
+            case .outfit(let o): o == outfit
+            case .accessory(let a): accessories.contains(a)
+            }
+            if worn { radiance[item] = intensity }
+        }
+        return radiance
     }
 
     /// The pet to draw for someone's server profile. Never fails: unknown
@@ -53,7 +97,9 @@ public enum PartyPetAppearance {
             // item the accessories name for the same slot wins.
             accessories.insert(hat, at: 0)
         }
-        var pet = PetProfile(name: profile.petName, breed: breed, outfit: outfit, accessories: accessories)
+        let wearable = PetAccessory.wearable(accessories)
+        var pet = PetProfile(name: profile.petName, breed: breed, outfit: outfit, accessories: accessories,
+                             radiance: localRadiance(profile.radiant, outfit: outfit, accessories: wearable))
         for (role, hex) in zip(colorRoles, profile.colors) {
             if let color = PetColor(hex: hex) { pet.setColor(color, for: role) }
         }
@@ -272,6 +318,8 @@ extension PartyProfileUpdate {
     /// outfit, so friends there still see the rest of the pet.
     public func forCatalogVersion3() -> PartyProfileUpdate {
         var update = self
+        // A server that refused the update may not know `radiant` either.
+        update.radiant = nil
         update.accessories = accessories.map { $0.filter { !PartyPetAppearance.version4Accessories.contains($0) } }
         update.costume = costume.map { PartyPetAppearance.version4Costumes.contains($0) ? "none" : $0 }
         return update
@@ -279,8 +327,16 @@ extension PartyProfileUpdate {
 
     /// The next older catalog's version of this update after a server
     /// refused it, or nil when no older catalog would take anything less:
-    /// first without catalog version 4's ids, then as version 1 takes it.
+    /// first without `radiant`, then without catalog version 4's ids, then
+    /// as version 1 takes it.
     public var olderCatalogFallback: PartyProfileUpdate? {
+        // A server from before Radiant refuses `radiant` as an unknown field:
+        // first try without it, so friends there still see the rest.
+        if radiant != nil {
+            var withoutRadiant = self
+            withoutRadiant.radiant = nil
+            return withoutRadiant
+        }
         let version3 = forCatalogVersion3()
         if version3 != self { return version3 }
         let version1 = forCatalogVersion1()

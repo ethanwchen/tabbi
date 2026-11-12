@@ -33,6 +33,11 @@ final class ClosetStore: ObservableObject {
     private var snapshotProgression: PetProgression?
     /// The Closet tab's open section, kept while the notch closes.
     @Published var section: ClosetSection = .activity
+    /// The item whose Radiant sheet is open in the wardrobe (to upgrade it,
+    /// or to set its effect), or nil.
+    @Published private(set) var radiantSheet: PetItem?
+    /// The intensity the Radiant sheet previews on the big pet.
+    @Published private(set) var radiantPreview: PetRadiantIntensity = .bold
     /// The large preview in the Closet tab.
     let preview: PetPlayer
     /// A snapshot run draws the study chart already filled in, since a
@@ -447,6 +452,57 @@ final class ClosetStore: ObservableObject {
         return result
     }
 
+    // MARK: Radiant
+
+    /// Opens the Radiant sheet for `item` (previewing its Bold effect, or
+    /// the effect as set when it is upgraded), or closes it with nil.
+    func showRadiant(_ item: PetItem?) {
+        radiantSheet = item.flatMap { PetRadiant.isEligible($0) ? $0 : nil }
+        if let item = radiantSheet {
+            radiantPreview = profile.radiance(of: item).map { $0 == .off ? .bold : $0 } ?? .bold
+        }
+        refreshPreview()
+    }
+
+    /// Previews the other intensity on the big pet while the sheet is open.
+    func previewRadiance(_ intensity: PetRadiantIntensity) {
+        guard radiantSheet != nil, intensity != .off else { return }
+        radiantPreview = intensity
+        refreshPreview()
+    }
+
+    /// Upgrades `item` to Radiant. The pet celebrates and the panel
+    /// sparkles; the item is put on so the effect shows right away.
+    @discardableResult
+    func upgradeToRadiant(_ item: PetItem) -> Bool {
+        let done: Bool = edit { closet in
+            do {
+                try closet.upgradeToRadiant(item)
+            } catch {
+                return false
+            }
+            return true
+        }
+        guard done else { return false }
+        radiantPreview = .bold
+        refreshPreview()
+        preview.send(.celebrate)
+        celebrateUnlock(hasOwnSound: false)
+        return true
+    }
+
+    /// Sets how strongly an upgraded item shows its effect.
+    func setRadiance(_ intensity: PetRadiantIntensity, for item: PetItem) {
+        edit { $0.setRadiance(intensity, for: item) }
+        if intensity != .off { radiantPreview = intensity }
+        refreshPreview()
+    }
+
+    /// Pins (or with nil, unpins) a Radiant upgrade as the wardrobe's goal.
+    func pinRadiantGoal(_ item: PetItem?) {
+        edit { $0.pinRadiantGoal(item) }
+    }
+
     private func celebrateUnlock(hasOwnSound: Bool) {
         celebrations?.celebrate(.milestone, style: .sparkles, accent: ClosetModule.descriptor.accentColor,
                                 from: ClosetModule.descriptor.id, hasOwnSound: hasOwnSound)
@@ -468,12 +524,14 @@ final class ClosetStore: ObservableObject {
     /// Snapshot runs only: shows the pet as someone who never got the
     /// Founder's Pin, or under another name, so the Closet's longest lines
     /// can be reviewed; the defaults put the starting closet back.
-    func showForSnapshot(foundingMember: Bool = true, name: String? = nil, newGoal: Bool = false) {
+    func showForSnapshot(foundingMember: Bool = true, name: String? = nil, newGoal: Bool = false,
+                         radiant: RadiantSnapshot? = nil) {
         guard isSnapshot else { return }
         showGoalForSnapshot(new: newGoal)
         let base = snapshotBase ?? closet
         snapshotBase = base
         var save = base.save
+        if let radiant { save = radiant.save(from: save) }
         if !foundingMember {
             let ledger = save.ledger
             save.ledger = PetPointsLedger(earned: ledger.earned, spent: ledger.spent, purchased: ledger.purchased,
@@ -481,9 +539,60 @@ final class ClosetStore: ObservableObject {
                                           streakFreezes: ledger.streakFreezes)
         }
         if let name { save.profile.rename(name) }
-        guard save != closet.save else { return }
+        let sheet = radiant?.sheet
+        guard save != closet.save || sheet != radiantSheet else { return }
         closet = PetCloset(save: save)
-        refreshPreview()
+        if sheet != radiantSheet { showRadiant(sheet) } else { refreshPreview() }
+    }
+
+    /// The Radiant states the snapshot run shows: an upgrade about to be
+    /// bought, a pinned goal part of the way, and an upgraded item's setting.
+    enum RadiantSnapshot {
+        case upgrade
+        case goal
+        case setting
+
+        /// The item each shot is about.
+        static let upgradeItem = PetItem.accessory(.wizardHat)
+        static let goalItem = PetItem.accessory(.blindfoldedSorcerer)
+
+        var sheet: PetItem? {
+            switch self {
+            case .upgrade: Self.upgradeItem
+            case .goal: nil
+            case .setting: Self.goalItem
+            }
+        }
+
+        /// A wardrobe weeks in: the showpieces these shots use owned, and
+        /// a balance that covers the Wizard Hat's upgrade (5,750) but is
+        /// part of the way to the sorcerer's (9,750).
+        func save(from base: PetSave) -> PetSave {
+            let owned: [PetItem] = [Self.upgradeItem, Self.goalItem, .outfit(.whiteCoat), .accessory(.tinyCrown)]
+            let spent = base.ledger.spent + owned.reduce(0) { $0 + $1.cost }
+            var ledger = PetPointsLedger(earned: spent + 6_120, spent: spent, purchased: base.ledger.purchased.union(owned),
+                                         granted: base.ledger.granted, streakFreezes: base.ledger.streakFreezes)
+            var profile = base.profile
+            switch self {
+            case .upgrade:
+                profile = PetCloset.wearing(Self.upgradeItem, on: profile)
+            case .goal:
+                ledger = PetPointsLedger(earned: spent + 4_210, spent: spent, purchased: ledger.purchased,
+                                         granted: ledger.granted, streakFreezes: ledger.streakFreezes)
+                profile = PetCloset.wearing(Self.goalItem, on: profile)
+            case .setting:
+                // Upgraded weeks ago: its price is spent, the rest is left.
+                ledger = PetPointsLedger(earned: spent + 6_120 + PetRadiant.price(of: Self.goalItem), spent: spent,
+                                         purchased: ledger.purchased, granted: ledger.granted,
+                                         streakFreezes: ledger.streakFreezes)
+                try? ledger.upgradeToRadiant(Self.goalItem)
+                profile = PetCloset.wearing(.outfit(.whiteCoat), on: PetCloset.wearing(Self.goalItem, on: profile))
+            }
+            var save = PetSave(profile: profile, ledger: ledger)
+            if self == .goal { save.radiantGoal = Self.goalItem }
+            save.creditedFocusCount = base.creditedFocusCount
+            return save
+        }
     }
 
     /// Snapshot runs only: shows the highest tier reached as just earned
@@ -511,7 +620,12 @@ final class ClosetStore: ObservableObject {
     }
 
     private func refreshPreview() {
-        let shown = tryingOn.map { PetCloset.wearing($0, on: profile) } ?? profile
+        var shown = tryingOn.map { PetCloset.wearing($0, on: profile) } ?? profile
+        // The Radiant sheet shows the effect it is about, worn, at the
+        // intensity picked (an item not upgraded yet shows what it would get).
+        if let item = radiantSheet {
+            shown = PetCloset.radiantPreview(item, intensity: radiantPreview, on: shown)
+        }
         preview.update(profile: shown)
     }
 

@@ -18,6 +18,10 @@ public struct PartyProfile: Codable, Hashable, Sendable {
     /// (`PartyBadge.founding`). Friends lists and party rosters carry them;
     /// other replies, and older servers, leave them out, which reads as none.
     public var badges: [String]
+    /// The Radiant effects the pet shows, `<item id>:<bold|subtle>` for each
+    /// upgraded item it wears (`PartyPetAppearance.radiant`). Older servers
+    /// and apps leave it out, which reads as none: the normal item.
+    public var radiant: [String]
 
     public init(
         code: String,
@@ -30,7 +34,8 @@ public struct PartyProfile: Codable, Hashable, Sendable {
         accessories: [String] = [],
         points: Int = 0,
         level: Int = 1,
-        badges: [String] = []
+        badges: [String] = [],
+        radiant: [String] = []
     ) {
         self.code = code
         self.name = name
@@ -43,10 +48,11 @@ public struct PartyProfile: Codable, Hashable, Sendable {
         self.points = points
         self.level = level
         self.badges = badges
+        self.radiant = radiant
     }
 
     private enum CodingKeys: String, CodingKey {
-        case code, name, petName, species, breed, colors, costume, accessories, points, level, badges
+        case code, name, petName, species, breed, colors, costume, accessories, points, level, badges, radiant
     }
 
     public init(from decoder: any Decoder) throws {
@@ -62,6 +68,24 @@ public struct PartyProfile: Codable, Hashable, Sendable {
         points = try container.decode(Int.self, forKey: .points)
         level = try container.decode(Int.self, forKey: .level)
         badges = try container.decodeIfPresent([String].self, forKey: .badges) ?? []
+        radiant = (try? container.decodeIfPresent([String].self, forKey: .radiant)) ?? nil ?? []
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(code, forKey: .code)
+        try container.encode(name, forKey: .name)
+        try container.encode(petName, forKey: .petName)
+        try container.encode(species, forKey: .species)
+        try container.encode(breed, forKey: .breed)
+        try container.encode(colors, forKey: .colors)
+        try container.encode(costume, forKey: .costume)
+        try container.encode(accessories, forKey: .accessories)
+        try container.encode(points, forKey: .points)
+        try container.encode(level, forKey: .level)
+        try container.encode(badges, forKey: .badges)
+        // Left out when empty, so profiles without Radiant items encode as before.
+        if !radiant.isEmpty { try container.encode(radiant, forKey: .radiant) }
     }
 
     /// Whether the user is a Founding Member: signed in during Tabbi's
@@ -91,6 +115,9 @@ public struct PartyProfileUpdate: Encodable, Hashable, Sendable {
     public var accessories: [String]?
     public var points: Int?
     public var level: Int?
+    /// The Radiant effects the pet shows (`PartyProfile.radiant`); nil keeps
+    /// the server's value. Older servers ignore it.
+    public var radiant: [String]?
 
     public init(
         name: String? = nil,
@@ -101,8 +128,10 @@ public struct PartyProfileUpdate: Encodable, Hashable, Sendable {
         costume: String? = nil,
         accessories: [String]? = nil,
         points: Int? = nil,
-        level: Int? = nil
+        level: Int? = nil,
+        radiant: [String]? = nil
     ) {
+        self.radiant = radiant
         self.name = name
         self.petName = petName
         self.species = species

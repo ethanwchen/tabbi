@@ -141,6 +141,8 @@
 	<string>%@ 和一只鸽子交了朋友</string>
 	<key>%@ misses you</key>
 	<string>%@ 想你了</string>
+	<key>%@ more points: %@ at a typical study pace</key>
+	<string>还差 %@ 积分：按平常学习节奏约需 %@</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@ 已移到第 %2$lld 位，共 %3$lld 个</string>
 	<key>%@ napped on a sunny windowsill</key>
@@ -191,6 +193,8 @@
 	<string>本月 %@。</string>
 	<key>%@ to %@</key>
 	<string>距%2$@ %1$@</string>
+	<key>%@ to go</key>
+	<string>还差 %@</string>
 	<key>%@ today</key>
 	<string>今天 %@</string>
 	<key>%@ tokens</key>
@@ -243,6 +247,10 @@
 	<string>%@。</string>
 	<key>%@. %@</key>
 	<string>%@。%@</string>
+	<key>%@. Keeps its look and adds a loop of light.</key>
+	<string>%@。外观不变，增加循环光效。</string>
+	<key>%@. Pick how strongly it shows; Reduce Motion keeps it still.</key>
+	<string>%@。选择显示强度；开启“减弱动态效果”时保持静止。</string>
 	<key>%@.fontWeight(.medium)). %@</key>
 	<string>%@.fontWeight(.medium))。%@</string>
 	<key>%@: %@</key>
@@ -713,6 +721,8 @@
 	<string>返回刘海(Esc)</string>
 	<key>Back to the timer</key>
 	<string>返回计时器</string>
+	<key>Back to the wardrobe</key>
+	<string>返回衣橱</string>
 	<key>Back to today</key>
 	<string>回到今天</string>
 	<key>Backwards Cap</key>
@@ -747,6 +757,8 @@
 	<string>时段会添加到你的日历。</string>
 	<key>Blossom Sprout</key>
 	<string>开花嫩芽</string>
+	<key>Bold</key>
+	<string>醒目</string>
 	<key>Bond %lld</key>
 	<string>羁绊 %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -1001,8 +1013,12 @@
 	<string>点按让宠物回家</string>
 	<key>Click to take off</key>
 	<string>点按即可取下</string>
+	<key>Click to take off, or the star to make it Radiant</key>
+	<string>点按取下，点星星让它闪耀</string>
 	<key>Click to wear</key>
 	<string>点按即可穿戴</string>
+	<key>Click to wear, or the star to make it Radiant</key>
+	<string>点按穿上，点星星让它闪耀</string>
 	<key>Close</key>
 	<string>关闭</string>
 	<key>Close %@ settings</key>
@@ -1047,6 +1063,8 @@
 	<string>命令</string>
 	<key>Compact</key>
 	<string>紧凑</string>
+	<key>Confetti Toss</key>
+	<string>抛撒彩纸</string>
 	<key>Connect</key>
 	<string>连接</string>
 	<key>Connect Anki</key>
@@ -1555,6 +1573,8 @@
 	<string>GB</string>
 	<key>GPU utilization, last 60 seconds</key>
 	<string>GPU 使用率，最近 60 秒</string>
+	<key>Gem Glints</key>
+	<string>宝石闪光</string>
 	<key>General</key>
 	<string>通用</string>
 	<key>Gentle streak</key>
@@ -1631,6 +1651,8 @@
 	<string>专注中</string>
 	<key>Heart Glasses</key>
 	<string>爱心眼镜</string>
+	<key>Heartbeat</key>
+	<string>心跳</string>
 	<key>Hi! I'm %@.</key>
 	<string>嗨！我是%@。</string>
 	<key>Hidden</key>
@@ -1817,6 +1839,8 @@
 	<string>让刘海不出现在屏幕共享、录屏和截图中，比如在课堂上演示时</string>
 	<key>Keep the suggested kit</key>
 	<string>使用推荐的套件</string>
+	<key>Keep the upgrade but show the item as before</key>
+	<string>保留升级，但按原样显示物品</string>
 	<key>Keep these tabs and set up what they need</key>
 	<string>保留这些标签页并完成所需设置</string>
 	<key>Keep this and go on</key>
@@ -1831,6 +1855,8 @@
 	<string>国王披风</string>
 	<key>Kit</key>
 	<string>套件</string>
+	<key>Lapel Glint</key>
+	<string>翻领闪光</string>
 	<key>Large</key>
 	<string>大</string>
 	<key>Last 7 days</key>
@@ -1935,6 +1961,10 @@
 	<string>春节</string>
 	<key>Main display</key>
 	<string>主显示器</string>
+	<key>Make %@ Radiant</key>
+	<string>让%@闪耀</string>
+	<key>Make Radiant</key>
+	<string>让它闪耀</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
 	<string>用同样的方法再创建一个，设为“关闭”，并命名为：</string>
 	<key>Make sure Calendars is turned on for that account.</key>
@@ -1995,6 +2025,8 @@
 	<string>每月任务</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>每月任务、徽章和长期目标赢得的服装</string>
+	<key>Moonlit Blindfold</key>
+	<string>月光眼罩</string>
 	<key>Moonlit Witch Hat</key>
 	<string>月光女巫帽</string>
 	<key>Moonstone</key>
@@ -2429,6 +2461,8 @@
 	<string>选项…</string>
 	<key>Orange</key>
 	<string>橘色</string>
+	<key>Orbiting Orb</key>
+	<string>环绕光球</string>
 	<key>Other</key>
 	<string>其他</string>
 	<key>Out of sight. Press %@ to open it.</key>
@@ -2569,6 +2603,8 @@
 	<string>设为收藏牌组</string>
 	<key>Pin as favorite</key>
 	<string>设为收藏</string>
+	<key>Pin as goal</key>
+	<string>设为目标</string>
 	<key>Pink noise</key>
 	<string>粉红噪音</string>
 	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
@@ -2645,6 +2681,10 @@
 	<string>推荐</string>
 	<key>Preview</key>
 	<string>试听</string>
+	<key>Preview the Bold effect</key>
+	<string>预览醒目特效</string>
+	<key>Preview the Subtle effect</key>
+	<string>预览低调特效</string>
 	<key>Previous track</key>
 	<string>上一首</string>
 	<key>Privacy</key>
@@ -2687,8 +2727,22 @@
 	<string>退出 Anki 再重新打开。如果它询问 Tabbi 的事，请点按“是”。</string>
 	<key>Quit Anki and open it again. Tabbi notices by itself.</key>
 	<string>退出 Anki 再重新打开。Tabbi 会自动发现。</string>
+	<key>Radiant %@</key>
+	<string>闪耀%@</string>
+	<key>Radiant %@: set its effect</key>
+	<string>闪耀%@：设置特效</string>
+	<key>Radiant Effect</key>
+	<string>闪耀特效</string>
+	<key>Radiant, %@</key>
+	<string>闪耀，%@</string>
+	<key>Radiant. Click to take off, or the star to set its effect</key>
+	<string>闪耀。点按取下，点星星设置特效</string>
+	<key>Radiant. Click to wear, or the star to set its effect</key>
+	<string>闪耀。点按穿上，点星星设置特效</string>
 	<key>Rain</key>
 	<string>雨声</string>
+	<key>Rainbow After Rain</key>
+	<string>雨后彩虹</string>
 	<key>Rare</key>
 	<string>稀有</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2981,6 +3035,8 @@
 	<string>显示 Safari 或 Chrome 中的 SoundCloud</string>
 	<key>Show a break move</key>
 	<string>休息时示范一个动作</string>
+	<key>Show a quieter effect</key>
+	<string>显示更低调的特效</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>周日 18:00 后首次打开刘海时，显示本周回顾</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -3005,6 +3061,8 @@
 	<string>悬停时显示</string>
 	<key>Show on external displays</key>
 	<string>在外接显示器上显示</string>
+	<key>Show the full effect</key>
+	<string>显示完整特效</string>
 	<key>Show the less common settings</key>
 	<string>显示不常用的设置</string>
 	<key>Show the top decks beside today's total</key>
@@ -3023,6 +3081,8 @@
 	<string>查看昨天的清单</string>
 	<key>Show your calendar in Tabbi</key>
 	<string>在 Tabbi 中显示日历</string>
+	<key>Show your progress toward this upgrade in the wardrobe</key>
+	<string>在衣橱中显示此升级的进度</string>
 	<key>Show your studies some love this week.</key>
 	<string>这周给学习一点爱吧。</string>
 	<key>Showing local stats only</key>
@@ -3063,6 +3123,8 @@
 	<string>搞怪</string>
 	<key>Silver</key>
 	<string>银色</string>
+	<key>Silver Lining</key>
+	<string>银边</string>
 	<key>Sip some water</key>
 	<string>喝点水吧</string>
 	<key>Sip water</key>
@@ -3105,10 +3167,14 @@
 	<string>垃圾信息</string>
 	<key>Sparkle</key>
 	<string>闪闪发光</string>
+	<key>Sparkle Halo</key>
+	<string>闪光光环</string>
 	<key>Sparkle Trail</key>
 	<string>闪光拖尾</string>
 	<key>Species, breed and fur color</key>
 	<string>物种、品种和毛色</string>
+	<key>Spike Ripple</key>
+	<string>背刺波光</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>万圣节来啦。专注一下,给宠物换装吧。</string>
 	<key>Sporty Sweatband</key>
@@ -3131,6 +3197,8 @@
 	<string>站起来抖抖腿，想坐时再坐下。</string>
 	<key>Star tag</key>
 	<string>星星吊牌</string>
+	<key>Stardust Stream</key>
+	<string>星尘流</string>
 	<key>Starlight, every tier earned</key>
 	<string>星光，所有等级都已获得</string>
 	<key>Starry Cloak</key>
@@ -3227,6 +3295,8 @@
 	<string>停止专注此任务</string>
 	<key>Stop reading this folder</key>
 	<string>停止读取此文件夹</string>
+	<key>Stop showing this goal in the wardrobe</key>
+	<string>不再在衣橱中显示此目标</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>在这台 Mac 上停止同步。你的宠物和进度会保留在这里。</string>
 	<key>Stop the preview</key>
@@ -3279,6 +3349,8 @@
 	<string>学习中</string>
 	<key>Submit</key>
 	<string>提交</string>
+	<key>Subtle</key>
+	<string>低调</string>
 	<key>Suggest a Feature or Report a Bug</key>
 	<string>建议功能或报告问题</string>
 	<key>Summer</key>
@@ -3375,6 +3447,8 @@
 	<string>任务</string>
 	<key>Tasks left today</key>
 	<string>今天剩余任务</string>
+	<key>Tassel Swing</key>
+	<string>流苏摇摆</string>
 	<key>Team Medal</key>
 	<string>团队奖牌</string>
 	<key>Ten hours of betting on yourself. Keep betting.</key>
@@ -3577,8 +3651,12 @@
 	<string>小皇冠</string>
 	<key>Tiny Lantern</key>
 	<string>小灯笼</string>
+	<key>Tiny Planet</key>
+	<string>小小行星</string>
 	<key>Tiny Rain Cloud</key>
 	<string>小雨云</string>
+	<key>Tiny Roar</key>
+	<string>小小咆哮</string>
 	<key>Tips to focus better</key>
 	<string>提高专注力的小技巧</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
@@ -3713,6 +3791,8 @@
 	<string>用 %lld 分解锁</string>
 	<key>Unmute</key>
 	<string>取消静音</string>
+	<key>Unpin</key>
+	<string>取消固定</string>
 	<key>Unpin %@ from the Study button</key>
 	<string>从学习按钮取消 %@</string>
 	<key>Unpin Favorite Deck</key>
@@ -3741,6 +3821,14 @@
 	<string>%lld 分钟前更新</string>
 	<key>Updated just now</key>
 	<string>刚刚更新</string>
+	<key>Upgrade</key>
+	<string>升级</string>
+	<key>Upgrade for %@ points</key>
+	<string>用 %@ 积分升级</string>
+	<key>Upgraded</key>
+	<string>已升级</string>
+	<key>Upgraded. Friends on Party see it too.</key>
+	<string>已升级。Party 里的朋友也能看到。</string>
 	<key>Usage logs</key>
 	<string>用量日志</string>
 	<key>Usage of your rolling 5-hour limit</key>
@@ -3771,6 +3859,8 @@
 	<string>在 GitHub 上查看</string>
 	<key>Visible: friends see when you study</key>
 	<string>好友可见</string>
+	<key>Visor Glint</key>
+	<string>面罩闪光</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>鲜艳的强调色，配上紫色光晕。</string>
 	<key>Volume</key>
@@ -3849,6 +3939,8 @@
 	<string>白噪音</string>
 	<key>Winter Holidays</key>
 	<string>冬日假期</string>
+	<key>Wishing Star</key>
+	<string>许愿星</string>
 	<key>Witch Hat</key>
 	<string>女巫帽</string>
 	<key>With %@</key>
@@ -4045,6 +4137,8 @@
 	<string>你的宠物、连续天数和计时器会显示在这里。</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>你的宠物、连续记录和正在运行的计时器。</string>
+	<key>Your pinned goal: Radiant %@ for %@ points</key>
+	<string>已设目标：闪耀%@，%@ 积分</string>
 	<key>Your plan</key>
 	<string>你的计划</string>
 	<key>Your playlist</key>
@@ -4131,8 +4225,12 @@
 	<string>积分</string>
 	<key>pts</key>
 	<string>分</string>
+	<key>pts, 5x its price</key>
+	<string>积分，原价的 5 倍</string>
 	<key>ready to unlock</key>
 	<string>可以解锁</string>
+	<key>ready to upgrade</key>
+	<string>可以升级了</string>
 	<key>resets %@</key>
 	<string>%@重置</string>
 	<key>resets in %@</key>

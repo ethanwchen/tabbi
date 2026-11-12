@@ -230,6 +230,9 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
     case violet
     /// Soft sky blue: the Cozy Pajamas and the Nightcap.
     case sky
+    /// The Radiant highlight: a glint brighter than `effect`, so it reads on
+    /// gold and on light fur (`RadiantArt`).
+    case radiant
 
     /// The grid character for this role.
     public var symbol: Character {
@@ -269,6 +272,8 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
         // Lowercase like `pupil`; `v` and `k` are not zones.
         case .violet: "v"
         case .sky: "k"
+        // Lowercase like `pupil`; `r` is not a zone.
+        case .radiant: "r"
         }
     }
 

@@ -141,6 +141,8 @@
 	<string>%@ 和一隻鴿子交了朋友</string>
 	<key>%@ misses you</key>
 	<string>%@ 想你了</string>
+	<key>%@ more points: %@ at a typical study pace</key>
+	<string>還差 %@ 點：照平常學習步調約需 %@</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@ 已移到第 %2$lld 個位置，共 %3$lld 個</string>
 	<key>%@ napped on a sunny windowsill</key>
@@ -191,6 +193,8 @@
 	<string>本月 %@。</string>
 	<key>%@ to %@</key>
 	<string>距%2$@ %1$@</string>
+	<key>%@ to go</key>
+	<string>還差 %@</string>
 	<key>%@ today</key>
 	<string>今天 %@</string>
 	<key>%@ tokens</key>
@@ -243,6 +247,10 @@
 	<string>%@。</string>
 	<key>%@. %@</key>
 	<string>%@。%@</string>
+	<key>%@. Keeps its look and adds a loop of light.</key>
+	<string>%@。外觀不變，增加循環光效。</string>
+	<key>%@. Pick how strongly it shows; Reduce Motion keeps it still.</key>
+	<string>%@。選擇顯示強度；開啟「減少動態效果」時保持靜止。</string>
 	<key>%@.fontWeight(.medium)). %@</key>
 	<string>%@.fontWeight(.medium))。%@</string>
 	<key>%@: %@</key>
@@ -713,6 +721,8 @@
 	<string>回到瀏海（Esc）</string>
 	<key>Back to the timer</key>
 	<string>返回計時器</string>
+	<key>Back to the wardrobe</key>
+	<string>返回衣櫥</string>
 	<key>Back to today</key>
 	<string>回到今天</string>
 	<key>Backwards Cap</key>
@@ -747,6 +757,8 @@
 	<string>時段會加入你的行事曆。</string>
 	<key>Blossom Sprout</key>
 	<string>開花嫩芽</string>
+	<key>Bold</key>
+	<string>醒目</string>
 	<key>Bond %lld</key>
 	<string>羈絆 %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -1001,8 +1013,12 @@
 	<string>按一下讓寵物回家</string>
 	<key>Click to take off</key>
 	<string>點一下即可取下</string>
+	<key>Click to take off, or the star to make it Radiant</key>
+	<string>按一下取下，按星星讓它閃耀</string>
 	<key>Click to wear</key>
 	<string>點一下即可穿上</string>
+	<key>Click to wear, or the star to make it Radiant</key>
+	<string>按一下穿上，按星星讓它閃耀</string>
 	<key>Close</key>
 	<string>關閉</string>
 	<key>Close %@ settings</key>
@@ -1047,6 +1063,8 @@
 	<string>指令</string>
 	<key>Compact</key>
 	<string>緊湊</string>
+	<key>Confetti Toss</key>
+	<string>拋撒彩紙</string>
 	<key>Connect</key>
 	<string>連接</string>
 	<key>Connect Anki</key>
@@ -1555,6 +1573,8 @@
 	<string>GB</string>
 	<key>GPU utilization, last 60 seconds</key>
 	<string>GPU 使用率，最近 60 秒</string>
+	<key>Gem Glints</key>
+	<string>寶石閃光</string>
 	<key>General</key>
 	<string>一般</string>
 	<key>Gentle streak</key>
@@ -1631,6 +1651,8 @@
 	<string>專心中</string>
 	<key>Heart Glasses</key>
 	<string>愛心眼鏡</string>
+	<key>Heartbeat</key>
+	<string>心跳</string>
 	<key>Hi! I'm %@.</key>
 	<string>嗨！我是%@。</string>
 	<key>Hidden</key>
@@ -1817,6 +1839,8 @@
 	<string>讓瀏海不出現在螢幕共享、錄影和截圖中，例如在課堂上簡報時</string>
 	<key>Keep the suggested kit</key>
 	<string>保留建議的套件</string>
+	<key>Keep the upgrade but show the item as before</key>
+	<string>保留升級，但照原樣顯示物品</string>
 	<key>Keep these tabs and set up what they need</key>
 	<string>保留這些標籤頁，並完成它們所需的設定</string>
 	<key>Keep this and go on</key>
@@ -1831,6 +1855,8 @@
 	<string>國王披風</string>
 	<key>Kit</key>
 	<string>套件</string>
+	<key>Lapel Glint</key>
+	<string>翻領閃光</string>
 	<key>Large</key>
 	<string>大</string>
 	<key>Last 7 days</key>
@@ -1935,6 +1961,10 @@
 	<string>農曆新年</string>
 	<key>Main display</key>
 	<string>主顯示器</string>
+	<key>Make %@ Radiant</key>
+	<string>讓%@閃耀</string>
+	<key>Make Radiant</key>
+	<string>讓它閃耀</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
 	<string>用同樣的方法再建立一個，設為「關閉」，並命名為：</string>
 	<key>Make sure Calendars is turned on for that account.</key>
@@ -1995,6 +2025,8 @@
 	<string>每月任務</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>每月任務、徽章和長期目標贏得的服裝</string>
+	<key>Moonlit Blindfold</key>
+	<string>月光眼罩</string>
 	<key>Moonlit Witch Hat</key>
 	<string>月光女巫帽</string>
 	<key>Moonstone</key>
@@ -2429,6 +2461,8 @@
 	<string>選項…</string>
 	<key>Orange</key>
 	<string>橘色</string>
+	<key>Orbiting Orb</key>
+	<string>環繞光球</string>
 	<key>Other</key>
 	<string>其他</string>
 	<key>Out of sight. Press %@ to open it.</key>
@@ -2569,6 +2603,8 @@
 	<string>設為最愛牌組</string>
 	<key>Pin as favorite</key>
 	<string>設為最愛</string>
+	<key>Pin as goal</key>
+	<string>釘選為目標</string>
 	<key>Pink noise</key>
 	<string>粉紅噪音</string>
 	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
@@ -2645,6 +2681,10 @@
 	<string>推薦</string>
 	<key>Preview</key>
 	<string>試聽</string>
+	<key>Preview the Bold effect</key>
+	<string>預覽醒目特效</string>
+	<key>Preview the Subtle effect</key>
+	<string>預覽低調特效</string>
 	<key>Previous track</key>
 	<string>上一首</string>
 	<key>Privacy</key>
@@ -2687,8 +2727,22 @@
 	<string>結束 Anki 再重新打開。如果它詢問 Tabbi 的事，請按一下「是」。</string>
 	<key>Quit Anki and open it again. Tabbi notices by itself.</key>
 	<string>結束 Anki 再重新打開。Tabbi 會自動偵測到。</string>
+	<key>Radiant %@</key>
+	<string>閃耀%@</string>
+	<key>Radiant %@: set its effect</key>
+	<string>閃耀%@：設定特效</string>
+	<key>Radiant Effect</key>
+	<string>閃耀特效</string>
+	<key>Radiant, %@</key>
+	<string>閃耀，%@</string>
+	<key>Radiant. Click to take off, or the star to set its effect</key>
+	<string>閃耀。按一下取下，按星星設定特效</string>
+	<key>Radiant. Click to wear, or the star to set its effect</key>
+	<string>閃耀。按一下穿上，按星星設定特效</string>
 	<key>Rain</key>
 	<string>雨聲</string>
+	<key>Rainbow After Rain</key>
+	<string>雨後彩虹</string>
 	<key>Rare</key>
 	<string>稀有</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2981,6 +3035,8 @@
 	<string>顯示 Safari 或 Chrome 中的 SoundCloud</string>
 	<key>Show a break move</key>
 	<string>休息時示範一個動作</string>
+	<key>Show a quieter effect</key>
+	<string>顯示更低調的特效</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>週日下午 6 點後第一次打開瀏海時，顯示本週回顧</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -3005,6 +3061,8 @@
 	<string>滑過時顯示</string>
 	<key>Show on external displays</key>
 	<string>在外接顯示器上顯示</string>
+	<key>Show the full effect</key>
+	<string>顯示完整特效</string>
 	<key>Show the less common settings</key>
 	<string>顯示不常用的設定</string>
 	<key>Show the top decks beside today's total</key>
@@ -3023,6 +3081,8 @@
 	<string>查看昨天的清單</string>
 	<key>Show your calendar in Tabbi</key>
 	<string>在 Tabbi 中顯示行事曆</string>
+	<key>Show your progress toward this upgrade in the wardrobe</key>
+	<string>在衣櫥中顯示此升級的進度</string>
 	<key>Show your studies some love this week.</key>
 	<string>這週給學習一點愛吧。</string>
 	<key>Showing local stats only</key>
@@ -3063,6 +3123,8 @@
 	<string>搞怪</string>
 	<key>Silver</key>
 	<string>銀色</string>
+	<key>Silver Lining</key>
+	<string>銀邊</string>
 	<key>Sip some water</key>
 	<string>喝點水吧</string>
 	<key>Sip water</key>
@@ -3105,10 +3167,14 @@
 	<string>垃圾訊息</string>
 	<key>Sparkle</key>
 	<string>閃閃發光</string>
+	<key>Sparkle Halo</key>
+	<string>閃光光環</string>
 	<key>Sparkle Trail</key>
 	<string>閃光拖尾</string>
 	<key>Species, breed and fur color</key>
 	<string>物種、品種和毛色</string>
+	<key>Spike Ripple</key>
+	<string>背刺波光</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>萬聖節到了。專注一下，幫寵物換裝吧。</string>
 	<key>Sporty Sweatband</key>
@@ -3131,6 +3197,8 @@
 	<string>站起來抖抖腿，想坐時再坐下。</string>
 	<key>Star tag</key>
 	<string>星星吊牌</string>
+	<key>Stardust Stream</key>
+	<string>星塵流</string>
 	<key>Starlight, every tier earned</key>
 	<string>星光，所有等級都已獲得</string>
 	<key>Starry Cloak</key>
@@ -3227,6 +3295,8 @@
 	<string>停止專注這項任務</string>
 	<key>Stop reading this folder</key>
 	<string>停止讀取此資料夾</string>
+	<key>Stop showing this goal in the wardrobe</key>
+	<string>不再在衣櫥中顯示此目標</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>在這台 Mac 上停止同步。你的寵物和進度會留在這裡。</string>
 	<key>Stop the preview</key>
@@ -3279,6 +3349,8 @@
 	<string>學習中</string>
 	<key>Submit</key>
 	<string>送出</string>
+	<key>Subtle</key>
+	<string>低調</string>
 	<key>Suggest a Feature or Report a Bug</key>
 	<string>建議功能或回報問題</string>
 	<key>Summer</key>
@@ -3375,6 +3447,8 @@
 	<string>任務</string>
 	<key>Tasks left today</key>
 	<string>今天剩下的任務</string>
+	<key>Tassel Swing</key>
+	<string>流蘇搖擺</string>
 	<key>Team Medal</key>
 	<string>團隊獎牌</string>
 	<key>Ten hours of betting on yourself. Keep betting.</key>
@@ -3577,8 +3651,12 @@
 	<string>小皇冠</string>
 	<key>Tiny Lantern</key>
 	<string>小燈籠</string>
+	<key>Tiny Planet</key>
+	<string>小小行星</string>
 	<key>Tiny Rain Cloud</key>
 	<string>小雨雲</string>
+	<key>Tiny Roar</key>
+	<string>小小咆哮</string>
 	<key>Tips to focus better</key>
 	<string>提升專注力的小技巧</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
@@ -3713,6 +3791,8 @@
 	<string>用 %lld 點解鎖</string>
 	<key>Unmute</key>
 	<string>取消靜音</string>
+	<key>Unpin</key>
+	<string>取消釘選</string>
 	<key>Unpin %@ from the Study button</key>
 	<string>從「學習」按鈕取消釘選 %@</string>
 	<key>Unpin Favorite Deck</key>
@@ -3741,6 +3821,14 @@
 	<string>%lld 分鐘前更新</string>
 	<key>Updated just now</key>
 	<string>剛剛更新</string>
+	<key>Upgrade</key>
+	<string>升級</string>
+	<key>Upgrade for %@ points</key>
+	<string>用 %@ 點升級</string>
+	<key>Upgraded</key>
+	<string>已升級</string>
+	<key>Upgraded. Friends on Party see it too.</key>
+	<string>已升級。Party 裡的朋友也看得到。</string>
 	<key>Usage logs</key>
 	<string>用量記錄</string>
 	<key>Usage of your rolling 5-hour limit</key>
@@ -3771,6 +3859,8 @@
 	<string>在 GitHub 上查看</string>
 	<key>Visible: friends see when you study</key>
 	<string>好友可見</string>
+	<key>Visor Glint</key>
+	<string>面罩閃光</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>鮮豔的強調色，配上紫色光暈。</string>
 	<key>Volume</key>
@@ -3849,6 +3939,8 @@
 	<string>白噪音</string>
 	<key>Winter Holidays</key>
 	<string>冬日假期</string>
+	<key>Wishing Star</key>
+	<string>許願星</string>
 	<key>Witch Hat</key>
 	<string>女巫帽</string>
 	<key>With %@</key>
@@ -4045,6 +4137,8 @@
 	<string>你的寵物、連續天數和計時器會顯示在這裡。</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>你的寵物、連續紀錄和正在跑的計時器。</string>
+	<key>Your pinned goal: Radiant %@ for %@ points</key>
+	<string>已釘選目標：閃耀%@，%@ 點</string>
 	<key>Your plan</key>
 	<string>你的計畫</string>
 	<key>Your playlist</key>
@@ -4131,8 +4225,12 @@
 	<string>點數</string>
 	<key>pts</key>
 	<string>點</string>
+	<key>pts, 5x its price</key>
+	<string>點，原價的 5 倍</string>
 	<key>ready to unlock</key>
 	<string>可以解鎖</string>
+	<key>ready to upgrade</key>
+	<string>可以升級了</string>
 	<key>resets %@</key>
 	<string>%@重置</string>
 	<key>resets in %@</key>

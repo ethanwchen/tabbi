@@ -71,6 +71,7 @@ Parse errors report the 1-based row and column of the problem.
 | `o` | pumpkin | Halloween pumpkin orange, with leather ribs (lowercase: no zone uses it) |
 | `v` | violet | the Starry Cloak's twilight violet (lowercase: no zone uses it) |
 | `k` | sky | the Cozy Pajamas and Nightcap's soft sky blue (lowercase: no zone uses it) |
+| `r` | radiant | the Radiant highlight, a glint brighter than `effect` that reads on gold (lowercase: no zone uses it) |
 
 ### Special cells
 
@@ -207,8 +208,52 @@ From the front they fall in the free columns on both sides of the pet; from the 
 The Sparkle Trail loops over 12 ticks: each sparkle glints for four (a gold dot, a gold star with a white heart for two ticks, then a white dot) and a new one starts every tick, so four show at a time.
 From the front they twinkle in place beside and above the pet; from the side each is born at the pet's back and drifts a pixel back per tick, so they trail behind it.
 The Tiny Rain Cloud is one particle, a white cloud with two puffs and a grey underside, that hangs beside the head from the front and over the back on a walk.
+It sits two rows down from the frame's top, below the closed notch's ceiling, so the cloud shows in the notch as well as its drops.
 Its drops fall a row a tick over an 8-tick loop, and each drop goes away as it reaches the pet, so the rain seems to land on it.
 The dachshund sits side-on with its head where other pets leave air, so an aura item may give it a loop of its own (`longDog`); the cloud uses one to hang over its back.
+
+### Radiant items
+
+An owned item from `Pets/PetArt/radiant.json` (`radiant.v1`) can be upgraded once to Radiant for 5x its price (docs/economy.md).
+It keeps its look and plays an animated effect, Bold or Subtle as set per item in the Closet, or none when set to Off.
+The effects are data both apps read: per item a Subtle and a Bold effect, each a list of placements, and each placement the zones its particles may use and its pieces.
+A piece is a glint over the item's own pixels of some roles, a blink, a glint hopping across groups of columns (a crown's points), particles following a path from an anchor (the item's bounds, its tip, the pet's bounds, or one role's bounds), a fixed particle, a swinging part (the tassel), a drawing whose columns grow and shrink (the rainbow), a heartbeat trace in the air or on the item, or a planet with a moon.
+Every per-tick table is spelled out in the file over the Radiant loop of 24 ticks of the item clock (3.6 s), so the Mac and Windows replay it with integer math only.
+The composer draws effects after the frame is finished (`PetComposer.radiantFrames`): each item's pixels are the frame with it minus the frame without it, so one effect fits every breed, pose and animation, and the notch's ceiling and the hop's drop apply as they do to the pet.
+Tick 0 of every loop is the still Reduce Motion shows, and it always carries the shimmer.
+The new `radiant` palette role (`r`, white) is the highlight that reads on gold and light fur.
+
+What an effect may draw (`RadiantRenderer`):
+
+- A recolor lands only on the item's own pixels, and a moved pixel only on fur or the item itself, never on the silhouette's edge or the face.
+- Particles float in the free air, never touching the pet (one that would is left out whole, so it seems to pass behind), inside a one-pixel margin and below the ceiling.
+- The one exception is an orbit's near side (the sorcerer's orb), drawn over fur with an outline ring cut into it, and never within three pixels of the eyes, nose or mouth.
+- Nothing floats while the pet hangs from the notch.
+
+### Radiant zones
+
+When two or three Radiant items are worn (a hat, an outfit, the rain cloud), their effects must never meet.
+`RadiantGeometry` splits every frame into zones measured from the bare pet in that frame: the head runs from the pet's top row to the chin (two rows under the lowest eye, nose or mouth pixel); above it are `topLeft`, `aboveHead` and `topRight`, beside it `leftOfHead` and `rightOfHead`, and below the chin `leftOfBody`, `chest` and `rightOfBody`.
+Every pixel falls in exactly one zone or on the head itself, so effects in different zones cannot draw on the same pixel.
+A particle may only use its placement's zones.
+
+`RadiantLayout.resolve` gives each worn effect one placement by slot priority (`slotPriority`: head, then outfit, then aura): each takes its first placement whose zones no earlier effect uses and that does not cross a chest another worn outfit or neck item covers.
+Every effect ends on a placement with no zones, drawn on its item alone, so a layout always exists.
+For example the White Coat holds the chest, so the Blindfolded Sorcerer's orb circles at head height on the left instead of crossing the chest, while the coat's heartbeat runs above the head.
+The renderer also keeps every particle off pixels another effect drew and off the space beside them, which the tests prove never has to happen.
+The layout depends only on the items and intensities, never on the breed or frame.
+
+### Radiant budget
+
+Normal items keep their budget: an item with an effect changes at most 6 pixels from its still (`PetItemLoopTests`).
+Radiant effects have their own, counted as the effect's pixels that change from one tick to the next (`radiant-costs.json`, recorded by `RadiantBudgetTests` over every breed, animation, frame and tick):
+
+- One Radiant effect changes at most 30 pixels per tick, the smallest budget the Bold set fits (the Dinosaur Hoodie's Tiny Roar needs all 30; the Subtle set needs at most 12).
+- All Radiant effects worn together change at most 42 pixels per tick: one Bold effect beside the busiest Subtle one.
+
+`radiant-costs.json` lists each placement's cost on every tick; when the worn effects' costs together would pass 42 on any tick, the resolver has them take turns, each playing its loop in its own cycle while the others hold their still.
+`RadiantCombinationTests` renders every pair and triple that can be worn together, with every mix of Bold and Subtle, on all 19 breeds, in every animation, frame and tick, at full size and under the ceiling, and checks no collisions, no eye or face pixel touched, the margin, the ceiling and the combined budget.
+`swift run PetGallery <dir> radiant` writes each effect's strips and GIFs, a sheet per effect on every body shape, and `combos.png` with every pair and triple.
 
 ### Bond growth
 

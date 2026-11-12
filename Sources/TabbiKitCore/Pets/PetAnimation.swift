@@ -307,10 +307,25 @@ extension PetComposer {
     /// (a petal, a sparkle, the rain cloud) shows once it is wholly below
     /// it, so petals and rain drift in from above the bar. Without a
     /// ceiling the frames are the full art the Closet shows.
+    ///
+    /// `radiant` adds the Radiant effects of the upgraded items worn
+    /// (`RadiantLayout`): every frame then loops over the Radiant loop too.
     public static func clip(
         _ animation: PetAnimation, for breed: PetBreed,
         outfit: PetOutfit = .none, accessories: [PetAccessory] = [], bond: PetBondLook = .none,
-        ceiling: Int? = nil
+        radiant: PetRadiantLook = .none, ceiling: Int? = nil
+    ) -> PetClip {
+        var report = RadiantRenderReport()
+        return clip(animation, for: breed, outfit: outfit, accessories: accessories, bond: bond,
+                    layout: RadiantLayout.resolve(radiant, outfit: outfit, accessories: accessories), ceiling: ceiling,
+                    report: &report)
+    }
+
+    /// `clip` with the Radiant layout given (the tests force placements),
+    /// adding what the effects drew to `report`.
+    static func clip(
+        _ animation: PetAnimation, for breed: PetBreed, outfit: PetOutfit, accessories: [PetAccessory],
+        bond: PetBondLook, layout: RadiantLayout?, ceiling: Int?, report: inout RadiantRenderReport
     ) -> PetClip {
         let timeline = animation.timeline
         let loop = itemLoopLength(outfit: outfit, accessories: accessories, bond: bond)
@@ -380,17 +395,32 @@ extension PetComposer {
             let top = max(0, minY + step.shiftY), bottom = min(frameSize - 1, maxY + step.shiftY)
             return max(0, min(ceiling - top, frameSize - 1 - bottom))
         }
-        let frames = zip(timeline.frames, phases).map { step, phases in
+        var frames: [PetFrame] = []
+        for (step, phases) in zip(timeline.frames, phases) {
             let drop = fittingDrop(step, phases)
-            let canvases = phases.map { finish(step, $0, drop: drop) }
+            var canvases = phases.map { finish(step, $0, drop: drop) }
+            if let layout {
+                canvases = radiantFrames(layout, normal: canvases, animation: animation, ceiling: ceiling,
+                                         report: &report) { item, phase in
+                    // The same frame without one item (or without any), finished alike.
+                    let without: (PetOutfit, [PetAccessory]) = switch item {
+                    case .outfit?: (.none, accessories)
+                    case .accessory(let accessory)?: (outfit, accessories.filter { $0 != accessory })
+                    case nil: (.none, [])
+                    }
+                    let composed = compose(breed, pose: step.pose, outfit: without.0, accessories: without.1, bond: bond,
+                                           stance: step.stance, phase: phase)
+                    return finish(step, composed, drop: drop)
+                }
+            }
             // A frame where the moving item is out of sight (a hanging pet
             // shows no body) holds still.
             let moves = canvases.contains { $0 != canvases[0] }
-            return PetFrame(
+            frames.append(PetFrame(
                 canvas: canvases[0], duration: step.duration,
                 bubbleAnchor: step.bubble ? PetPoint(x: phases[0].headTopRight.x, y: phases[0].headTopRight.y + drop) : nil,
                 itemFrames: moves ? canvases : []
-            )
+            ))
         }
         return PetClip(animation: animation, frames: frames)
     }

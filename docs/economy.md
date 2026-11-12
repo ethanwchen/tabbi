@@ -86,6 +86,37 @@ Older saves store points earned and spent, not prices, so changing a price never
 When an item becomes free, add its old price to `PetPointsLedger.refundedPrices` so saves that bought it get the points back once.
 Pick a new price inside the tier you want the item in, keep it distinct from every other price, and run `swift test`.
 
+## Radiant upgrades
+
+An owned item from the list of Radiant items can be upgraded once to Radiant for 5x its price (`PetRadiant.price`, `upgradeMultiplier` in `Pets/PetArt/radiant.json`).
+The item keeps its look and gains an animated effect, with a per-item setting in the Closet: Bold (the default), Subtle, or Off, which keeps the upgrade and draws the item as before.
+Reduce Motion shows the effect's still frame, which always carries its shimmer.
+
+| Item | Price | Radiant upgrade | Time at the typical pace |
+| --- | --- | --- | --- |
+| Tiny Crown | 1050 | 5250 | about 10 weeks |
+| Wizard Hat | 1150 | 5750 | about 11 weeks |
+| White Coat | 1250 | 6250 | about 12 weeks |
+| Dinosaur Hoodie | 1500 | 7500 | about 15 weeks |
+| Tiny Rain Cloud | 1600 | 8000 | about 16 weeks |
+| Astronaut Helmet | 1800 | 9000 | about 18 weeks |
+| Blindfolded Sorcerer | 1950 | 9750 | about 19 weeks |
+| Graduation Cap | 2100 | 10500 | about 20 weeks |
+
+The upgrade sits outside the price tiers on purpose.
+The tiers price new items, so a tier says how long it takes to get something new; an upgrade is a long goal for an item already owned, and its price follows the item's own tier instead of claiming a place among new items.
+At 5x, even the cheapest upgrade takes longer than the Golden Laurel (8 weeks), so a Radiant item reads as a long-term achievement, and every upgrade still costs more than the item it upgrades.
+Which items can be Radiant is data: each has an entry in `radiant.json`, so adding one (a future Heirloom outfit, say) is one entry and its art, with no code.
+Only items in that file can be upgraded, the item must be owned first, and each can be upgraded once.
+
+Points only come from studying, as everywhere else in the Closet; an upgrade only spends them.
+A Radiant upgrade is kept for good like a purchase (`PetPointsLedger.radiant`): deleting logs never takes it away.
+With Sign in with Apple it travels in the account's `unlocks` as `radiant.<item id>`, which older builds skip, and its points in the Mac's spent tally.
+The Closet can pin one upgrade as a goal; the Wardrobe footer then shows "Radiant Blindfolded Sorcerer 4,210 of 9,750" with a thin bar in place of the next unlock, and "ready to upgrade" once the balance covers it.
+The pin stays on the Mac it was set on.
+
+`PetEconomyTests` checks the 5x rule for every Radiant item, that every upgrade costs more than any showpiece, and that an upgrade needs the item, happens once, and spends exactly its price.
+
 ## Limited edition items
 
 Some items are not in the shop at all.

@@ -1,7 +1,7 @@
 // Profile model: the pet and the few public numbers a user shares with friends.
 import {
   BREEDS, COSTUMES, DEFAULT_NAME, DEFAULT_PET_NAME, HttpError, MAX_NAME, MAX_PET_NAME, Obj, SPECIES,
-  cleanText, int, oneOf, parseAccessories, parseColors,
+  cleanText, int, oneOf, parseAccessories, parseColors, parseRadiant,
 } from "./lib";
 import { isNameAllowed } from "./names";
 
@@ -17,11 +17,13 @@ export interface Profile {
   accessories: string[];
   points: number;
   level: number;
+  /** Radiant items the pet wears, sorted `<item id>:<intensity>` entries (see `parseRadiant`); [] for none. */
+  radiant: string[];
 }
 
 /** Body fields accepted by `POST /v1/register` and `PATCH /v1/me`. */
 export const PROFILE_FIELDS = [
-  "name", "petName", "species", "breed", "colors", "costume", "accessories", "points", "level",
+  "name", "petName", "species", "breed", "colors", "costume", "accessories", "points", "level", "radiant",
 ] as const;
 
 export type ProfilePatch = Partial<Omit<Profile, "code">>;
@@ -38,6 +40,7 @@ export function defaultProfile(code: string): Profile {
     accessories: [],
     points: 0,
     level: 1,
+    radiant: [],
   };
 }
 
@@ -65,6 +68,7 @@ export function parseProfilePatch(body: Obj): ProfilePatch {
   if (body.accessories !== undefined) p.accessories = parseAccessories(body.accessories);
   if (body.points !== undefined) p.points = int(body.points, "points", 0, 100_000_000);
   if (body.level !== undefined) p.level = int(body.level, "level", 1, 999);
+  if (body.radiant !== undefined) p.radiant = parseRadiant(body.radiant);
   return p;
 }
 

@@ -27,6 +27,10 @@ public struct PetProfile: Hashable, Codable, Sendable {
     public var outfit: PetOutfit
     /// Always wearable: at most one per slot, in drawing order.
     public private(set) var accessories: [PetAccessory]
+    /// The items upgraded to Radiant and how strongly each shows its
+    /// effect, set per item in the Closet. Kept in step with the ledger by
+    /// `restricted(to:)`: an upgrade starts on `bold`.
+    public private(set) var radiance: [PetItem: PetRadiantIntensity] = [:]
 
     /// What the pet has grown into with its bond (a collar, a sparkle).
     /// Derived from the activity log by whoever shows the pet, so it is
@@ -41,7 +45,8 @@ public struct PetProfile: Hashable, Codable, Sendable {
         paletteOverrides: [PetPaletteRole: PetColor] = [:],
         furTint: PetColor? = nil,
         outfit: PetOutfit = .none,
-        accessories: [PetAccessory] = []
+        accessories: [PetAccessory] = [],
+        radiance: [PetItem: PetRadiantIntensity] = [:]
     ) {
         self.name = PetProfile.cleanName(name, breed: breed)
         self.breed = breed
@@ -49,6 +54,7 @@ public struct PetProfile: Hashable, Codable, Sendable {
         self.furTint = furTint
         self.outfit = outfit
         self.accessories = PetAccessory.wearable(accessories)
+        self.radiance = radiance.filter { PetRadiant.isEligible($0.key) }
     }
 
     /// A fresh, undressed pet for someone who just picked a species. The
@@ -114,6 +120,22 @@ public struct PetProfile: Hashable, Codable, Sendable {
         accessories.removeAll { $0 == accessory }
     }
 
+    /// How strongly `item` shows its Radiant effect, or nil when it is not
+    /// upgraded.
+    public func radiance(of item: PetItem) -> PetRadiantIntensity? { radiance[item] }
+
+    /// Sets an upgraded item's intensity; items not upgraded are ignored.
+    public mutating func setRadiance(_ intensity: PetRadiantIntensity, for item: PetItem) {
+        guard radiance[item] != nil else { return }
+        radiance[item] = intensity
+    }
+
+    /// The Radiant effects to draw: the upgraded items worn, with their
+    /// effects on.
+    public var radiantLook: PetRadiantLook {
+        PetRadiantLook(radiance).worn(outfit: outfit, accessories: accessories)
+    }
+
     public func isWearing(_ item: PetItem) -> Bool {
         switch item {
         case .outfit(let outfit): self.outfit == outfit
@@ -131,8 +153,14 @@ public struct PetProfile: Hashable, Codable, Sendable {
     }
 
     /// The pet sitting in its current outfit and accessories.
+    /// Radiant items show the still of their effect (the shimmer baked in).
     public func sittingCanvas() -> PetCanvas {
-        PetComposer.sitting(breed, outfit: outfit, accessories: accessories, bond: bondLook)
+        let look = radiantLook
+        guard !look.isEmpty else {
+            return PetComposer.sitting(breed, outfit: outfit, accessories: accessories, bond: bondLook)
+        }
+        return PetComposer.clip(.sit, for: breed, outfit: outfit, accessories: accessories, bond: bondLook,
+                                radiant: look).stillFrame.canvas
     }
 
     /// A copy with anything the ledger does not own taken off, so a profile
@@ -141,13 +169,14 @@ public struct PetProfile: Hashable, Codable, Sendable {
         var copy = self
         if !ledger.owns(.outfit(outfit)) { copy.outfit = .none }
         copy.accessories = accessories.filter { ledger.owns(.accessory($0)) }
+        copy.radiance = Dictionary(uniqueKeysWithValues: ledger.radiant.map { ($0, radiance[$0] ?? .bold) })
         return copy
     }
 
     // MARK: Codable
 
     private enum CodingKeys: String, CodingKey {
-        case name, breed, paletteOverrides, furTint, outfit, accessories
+        case name, breed, paletteOverrides, furTint, outfit, accessories, radiance
     }
 
     public init(from decoder: Decoder) throws {
@@ -170,13 +199,19 @@ public struct PetProfile: Hashable, Codable, Sendable {
         }
         let rawOutfit = try container.decodeIfPresent(String.self, forKey: .outfit) ?? ""
         let rawAccessories = try container.decodeIfPresent([String].self, forKey: .accessories) ?? []
+        let rawRadiance = (try? container.decodeIfPresent([String: String].self, forKey: .radiance)) ?? nil ?? [:]
+        var radiance: [PetItem: PetRadiantIntensity] = [:]
+        for (id, raw) in rawRadiance {
+            if let item = PetItem(id: id), let intensity = PetRadiantIntensity(rawValue: raw) { radiance[item] = intensity }
+        }
         self.init(
             name: name,
             breed: breed,
             paletteOverrides: overrides,
             furTint: furTint,
             outfit: PetOutfit(rawValue: rawOutfit) ?? .none,
-            accessories: rawAccessories.compactMap(PetAccessory.init(rawValue:))
+            accessories: rawAccessories.compactMap(PetAccessory.init(rawValue:)),
+            radiance: radiance
         )
     }
 
@@ -192,6 +227,11 @@ public struct PetProfile: Hashable, Codable, Sendable {
         try container.encode(furTint, forKey: .furTint)
         try container.encode(outfit, forKey: .outfit)
         try container.encode(accessories, forKey: .accessories)
+        // Left out when empty, so profiles without upgrades read as before.
+        if !radiance.isEmpty {
+            try container.encode(Dictionary(uniqueKeysWithValues: radiance.map { ($0.key.id, $0.value.rawValue) }),
+                                 forKey: .radiance)
+        }
     }
 
     /// Trims whitespace, collapses inner runs, and caps the length. An empty

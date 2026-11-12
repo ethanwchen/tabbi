@@ -141,6 +141,8 @@
 	<string>Nakipagkaibigan si %@ sa isang kalapati</string>
 	<key>%@ misses you</key>
 	<string>Nami-miss ka ni %@</string>
+	<key>%@ more points: %@ at a typical study pace</key>
+	<string>%@ pang points: %@ sa karaniwang bilis ng pag-aaral</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>Nasa posisyon %2$lld ng %3$lld na ang %1$@</string>
 	<key>%@ napped on a sunny windowsill</key>
@@ -191,6 +193,8 @@
 	<string>%@ ngayong buwan.</string>
 	<key>%@ to %@</key>
 	<string>%1$@ papuntang %2$@</string>
+	<key>%@ to go</key>
+	<string>%@ pa</string>
 	<key>%@ today</key>
 	<string>%@ ngayon</string>
 	<key>%@ tokens</key>
@@ -243,6 +247,10 @@
 	<string>%@.</string>
 	<key>%@. %@</key>
 	<string>%@. %@</string>
+	<key>%@. Keeps its look and adds a loop of light.</key>
+	<string>%@. Pareho ang itsura, may dagdag na ilaw na umiikot.</string>
+	<key>%@. Pick how strongly it shows; Reduce Motion keeps it still.</key>
+	<string>%@. Piliin kung gaano kalakas; pinapanatili itong tahimik ng Reduce Motion.</string>
 	<key>%@.fontWeight(.medium)). %@</key>
 	<string>%@.fontWeight(.medium)). %@</string>
 	<key>%@: %@</key>
@@ -713,6 +721,8 @@
 	<string>Balik sa notch (Esc)</string>
 	<key>Back to the timer</key>
 	<string>Bumalik sa timer</string>
+	<key>Back to the wardrobe</key>
+	<string>Bumalik sa wardrobe</string>
 	<key>Back to today</key>
 	<string>Balik sa ngayon</string>
 	<key>Backwards Cap</key>
@@ -747,6 +757,8 @@
 	<string>Mapupunta sa calendar mo.</string>
 	<key>Blossom Sprout</key>
 	<string>Namumulaklak na Usbong</string>
+	<key>Bold</key>
+	<string>Matapang</string>
 	<key>Bond %lld</key>
 	<string>Bond %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -1001,8 +1013,12 @@
 	<string>I-click para pauwiin ang pet</string>
 	<key>Click to take off</key>
 	<string>I-click para hubarin</string>
+	<key>Click to take off, or the star to make it Radiant</key>
+	<string>I-click para tanggalin, o ang bituin para gawing makinang</string>
 	<key>Click to wear</key>
 	<string>I-click para isuot</string>
+	<key>Click to wear, or the star to make it Radiant</key>
+	<string>I-click para isuot, o ang bituin para gawing makinang</string>
 	<key>Close</key>
 	<string>Isara</string>
 	<key>Close %@ settings</key>
@@ -1047,6 +1063,8 @@
 	<string>Command</string>
 	<key>Compact</key>
 	<string>Compact</string>
+	<key>Confetti Toss</key>
+	<string>Hagis ng Confetti</string>
 	<key>Connect</key>
 	<string>Ikonekta</string>
 	<key>Connect Anki</key>
@@ -1555,6 +1573,8 @@
 	<string>GB</string>
 	<key>GPU utilization, last 60 seconds</key>
 	<string>Paggamit ng GPU, huling 60 segundo</string>
+	<key>Gem Glints</key>
+	<string>Kislap ng Hiyas</string>
 	<key>General</key>
 	<string>General</string>
 	<key>Gentle streak</key>
@@ -1631,6 +1651,8 @@
 	<string>Todo-focus</string>
 	<key>Heart Glasses</key>
 	<string>Salaming Puso</string>
+	<key>Heartbeat</key>
+	<string>Tibok ng Puso</string>
 	<key>Hi! I'm %@.</key>
 	<string>Hi! Ako si %@.</string>
 	<key>Hidden</key>
@@ -1817,6 +1839,8 @@
 	<string>Huwag isama ang notch sa screen sharing, recording at screenshot, halimbawa habang nagpe-present sa klase</string>
 	<key>Keep the suggested kit</key>
 	<string>Panatilihin ang iminungkahing kit</string>
+	<key>Keep the upgrade but show the item as before</key>
+	<string>Panatilihin ang upgrade pero ipakita ang item gaya ng dati</string>
 	<key>Keep these tabs and set up what they need</key>
 	<string>Panatilihin ang mga tab na ito at i-set up ang kailangan nila</string>
 	<key>Keep this and go on</key>
@@ -1831,6 +1855,8 @@
 	<string>Kapa ng Hari</string>
 	<key>Kit</key>
 	<string>Kit</string>
+	<key>Lapel Glint</key>
+	<string>Kislap ng Lapel</string>
 	<key>Large</key>
 	<string>Malaki</string>
 	<key>Last 7 days</key>
@@ -1935,6 +1961,10 @@
 	<string>Lunar New Year</string>
 	<key>Main display</key>
 	<string>Pangunahing display</string>
+	<key>Make %@ Radiant</key>
+	<string>Gawing makinang ang %@</string>
+	<key>Make Radiant</key>
+	<string>Gawing makinang</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
 	<string>Gumawa pa ng isa sa parehong paraan, naka-Off, at pangalanan ito:</string>
 	<key>Make sure Calendars is turned on for that account.</key>
@@ -1995,6 +2025,8 @@
 	<string>Buwanang quest</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>Buwanang quest, mga badge at outfit mula sa mahahabang layunin</string>
+	<key>Moonlit Blindfold</key>
+	<string>Piring na Naliliwanagan ng Buwan</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Sombrero ng Bruha sa Buwan</string>
 	<key>Moonstone</key>
@@ -2429,6 +2461,8 @@
 	<string>Mga Opsyon…</string>
 	<key>Orange</key>
 	<string>Orange</string>
+	<key>Orbiting Orb</key>
+	<string>Umiikot na Orb</string>
 	<key>Other</key>
 	<string>Iba pa</string>
 	<key>Out of sight. Press %@ to open it.</key>
@@ -2569,6 +2603,8 @@
 	<string>I-pin bilang Paboritong Deck</string>
 	<key>Pin as favorite</key>
 	<string>I-pin bilang paborito</string>
+	<key>Pin as goal</key>
+	<string>I-pin bilang goal</string>
 	<key>Pink noise</key>
 	<string>Pink noise</string>
 	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
@@ -2645,6 +2681,10 @@
 	<string>Mga preset</string>
 	<key>Preview</key>
 	<string>I-preview</string>
+	<key>Preview the Bold effect</key>
+	<string>Silipin ang matapang na effect</string>
+	<key>Preview the Subtle effect</key>
+	<string>Silipin ang banayad na effect</string>
 	<key>Previous track</key>
 	<string>Nakaraang track</string>
 	<key>Privacy</key>
@@ -2687,8 +2727,22 @@
 	<string>I-quit ang Anki at buksan ulit. Kung magtanong ito tungkol sa Tabbi, i-click ang Yes.</string>
 	<key>Quit Anki and open it again. Tabbi notices by itself.</key>
 	<string>I-quit ang Anki at buksan ulit. Kusang mapapansin ito ng Tabbi.</string>
+	<key>Radiant %@</key>
+	<string>Makinang na %@</string>
+	<key>Radiant %@: set its effect</key>
+	<string>Makinang na %@: itakda ang effect</string>
+	<key>Radiant Effect</key>
+	<string>Makinang na effect</string>
+	<key>Radiant, %@</key>
+	<string>Makinang, %@</string>
+	<key>Radiant. Click to take off, or the star to set its effect</key>
+	<string>Makinang. I-click para tanggalin, o ang bituin para sa effect</string>
+	<key>Radiant. Click to wear, or the star to set its effect</key>
+	<string>Makinang. I-click para isuot, o ang bituin para sa effect</string>
 	<key>Rain</key>
 	<string>Ulan</string>
+	<key>Rainbow After Rain</key>
+	<string>Bahaghari Pagkatapos ng Ulan</string>
 	<key>Rare</key>
 	<string>Rare</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2981,6 +3035,8 @@
 	<string>Ipakita ang SoundCloud mula sa Safari o Chrome</string>
 	<key>Show a break move</key>
 	<string>Magpakita ng galaw sa break</string>
+	<key>Show a quieter effect</key>
+	<string>Ipakita ang mas tahimik na effect</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>Magpakita ng recap ng linggo mo sa unang bukas mo ng notch pagkalipas ng Linggo 6 pm</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -3005,6 +3061,8 @@
 	<string>Ipakita pag Tinapatan</string>
 	<key>Show on external displays</key>
 	<string>Ipakita sa external display</string>
+	<key>Show the full effect</key>
+	<string>Ipakita ang buong effect</string>
 	<key>Show the less common settings</key>
 	<string>Ipakita ang mga bihirang setting</string>
 	<key>Show the top decks beside today's total</key>
@@ -3023,6 +3081,8 @@
 	<string>Ipakita ang listahan kahapon</string>
 	<key>Show your calendar in Tabbi</key>
 	<string>Ipakita ang calendar mo sa Tabbi</string>
+	<key>Show your progress toward this upgrade in the wardrobe</key>
+	<string>Ipakita ang progress mo papunta sa upgrade na ito sa wardrobe</string>
 	<key>Show your studies some love this week.</key>
 	<string>Mahalin ang pag-aaral mo ngayong linggo.</string>
 	<key>Showing local stats only</key>
@@ -3063,6 +3123,8 @@
 	<string>Kalokohan</string>
 	<key>Silver</key>
 	<string>Pilak</string>
+	<key>Silver Lining</key>
+	<string>Pilak na Gilid</string>
 	<key>Sip some water</key>
 	<string>Uminom ng kaunting tubig</string>
 	<key>Sip water</key>
@@ -3105,10 +3167,14 @@
 	<string>Spam</string>
 	<key>Sparkle</key>
 	<string>Kislap</string>
+	<key>Sparkle Halo</key>
+	<string>Kumikinang na Halo</string>
 	<key>Sparkle Trail</key>
 	<string>Bakas ng Kislap</string>
 	<key>Species, breed and fur color</key>
 	<string>Uri, lahi at kulay ng balahibo</string>
+	<key>Spike Ripple</key>
+	<string>Alon sa mga Tinik</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>Spooky season na. Mag-focus para bihisan ang pet mo.</string>
 	<key>Sporty Sweatband</key>
@@ -3131,6 +3197,8 @@
 	<string>Tumayo, igalaw-galaw ang mga binti, at umupo ulit kapag gusto mo na.</string>
 	<key>Star tag</key>
 	<string>Tag na bituin</string>
+	<key>Stardust Stream</key>
+	<string>Agos ng Stardust</string>
 	<key>Starlight, every tier earned</key>
 	<string>Starlight, nakuha lahat ng tier</string>
 	<key>Starry Cloak</key>
@@ -3227,6 +3295,8 @@
 	<string>Itigil ang focus sa task na ito</string>
 	<key>Stop reading this folder</key>
 	<string>Huwag nang basahin ang folder na ito</string>
+	<key>Stop showing this goal in the wardrobe</key>
+	<string>Huwag nang ipakita ang goal na ito sa wardrobe</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>Itigil ang pag-sync sa Mac na ito. Mananatili rito ang pet at progress mo.</string>
 	<key>Stop the preview</key>
@@ -3279,6 +3349,8 @@
 	<string>Nag-aaral</string>
 	<key>Submit</key>
 	<string>I-submit</string>
+	<key>Subtle</key>
+	<string>Banayad</string>
 	<key>Suggest a Feature or Report a Bug</key>
 	<string>Magmungkahi ng Feature o Mag-report ng Bug</string>
 	<key>Summer</key>
@@ -3375,6 +3447,8 @@
 	<string>Mga task</string>
 	<key>Tasks left today</key>
 	<string>Natitirang task ngayon</string>
+	<key>Tassel Swing</key>
+	<string>Indayog ng Tassel</string>
 	<key>Team Medal</key>
 	<string>Medalya ng Team</string>
 	<key>Ten hours of betting on yourself. Keep betting.</key>
@@ -3577,8 +3651,12 @@
 	<string>Maliit na Korona</string>
 	<key>Tiny Lantern</key>
 	<string>Munting Parol</string>
+	<key>Tiny Planet</key>
+	<string>Munting Planeta</string>
 	<key>Tiny Rain Cloud</key>
 	<string>Maliit na Ulap-ulan</string>
+	<key>Tiny Roar</key>
+	<string>Munting Ungol</string>
 	<key>Tips to focus better</key>
 	<string>Mga tip para mas makapag-focus</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
@@ -3713,6 +3791,8 @@
 	<string>I-unlock sa %lld pts</string>
 	<key>Unmute</key>
 	<string>I-unmute</string>
+	<key>Unpin</key>
+	<string>I-unpin</string>
 	<key>Unpin %@ from the Study button</key>
 	<string>Tanggalin ang pin ng %@ sa Study button</string>
 	<key>Unpin Favorite Deck</key>
@@ -3741,6 +3821,14 @@
 	<string>Na-update %lld min ang nakalipas</string>
 	<key>Updated just now</key>
 	<string>Na-update ngayon lang</string>
+	<key>Upgrade</key>
+	<string>I-upgrade</string>
+	<key>Upgrade for %@ points</key>
+	<string>I-upgrade sa halagang %@ points</string>
+	<key>Upgraded</key>
+	<string>Na-upgrade</string>
+	<key>Upgraded. Friends on Party see it too.</key>
+	<string>Na-upgrade na. Nakikita rin ito ng mga kaibigan sa Party.</string>
 	<key>Usage logs</key>
 	<string>Mga usage log</string>
 	<key>Usage of your rolling 5-hour limit</key>
@@ -3771,6 +3859,8 @@
 	<string>Tingnan sa GitHub</string>
 	<key>Visible: friends see when you study</key>
 	<string>Kita ng mga kaibigan</string>
+	<key>Visor Glint</key>
+	<string>Kislap ng Visor</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>Matitingkad na accent na may violet na liwanag.</string>
 	<key>Volume</key>
@@ -3849,6 +3939,8 @@
 	<string>White noise</string>
 	<key>Winter Holidays</key>
 	<string>Kapaskuhan</string>
+	<key>Wishing Star</key>
+	<string>Bituing Hiling</string>
 	<key>Witch Hat</key>
 	<string>Sombrero ng Bruha</string>
 	<key>With %@</key>
@@ -4045,6 +4137,8 @@
 	<string>Dito lalabas ang alaga mo, ang streak at ang timer.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>Ang pet mo, ang streak mo, at ang tumatakbong timer.</string>
+	<key>Your pinned goal: Radiant %@ for %@ points</key>
+	<string>Ang naka-pin mong goal: Makinang na %@ sa halagang %@ points</string>
 	<key>Your plan</key>
 	<string>Plano mo</string>
 	<key>Your playlist</key>
@@ -4131,8 +4225,12 @@
 	<string>puntos</string>
 	<key>pts</key>
 	<string>pts</string>
+	<key>pts, 5x its price</key>
+	<string>pts, 5x ng presyo</string>
 	<key>ready to unlock</key>
 	<string>puwede nang i-unlock</string>
+	<key>ready to upgrade</key>
+	<string>handa nang i-upgrade</string>
 	<key>resets %@</key>
 	<string>reset sa %@</string>
 	<key>resets in %@</key>

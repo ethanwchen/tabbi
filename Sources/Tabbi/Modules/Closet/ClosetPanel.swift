@@ -435,8 +435,13 @@ private struct ClosetWardrobe: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
-            scrollingGrid
-            footer
+            if let item = store.radiantSheet {
+                ClosetRadiantSheet(store: store, item: item)
+                    .transition(.opacity)
+            } else {
+                scrollingGrid
+                footer
+            }
         }
         // A try-on started from the footer ends when the pointer leaves.
         .onHover { inside in
@@ -449,6 +454,7 @@ private struct ClosetWardrobe: View {
         .onDisappear {
             hovered = nil
             store.tryOn(nil)
+            store.showRadiant(nil)
         }
     }
 
@@ -468,11 +474,15 @@ private struct ClosetWardrobe: View {
 
     private func tile(_ item: PetItem) -> some View {
         ClosetItemTile(item: item, state: store.closet.state(of: item), isNew: store.closet.isNew(item),
-                       model: thumbnailModel) {
+                       radiant: store.closet.radiantState(of: item), model: thumbnailModel(for: item)) {
             withMotion(Theme.Motion.snappy) { _ = store.tap(item) }
         } onHover: { inside in
             if inside { hovered = item } else if hovered == item { hovered = nil }
             store.tryOn(hovered)
+        } onRadiant: {
+            hovered = nil
+            store.tryOn(nil)
+            withMotion(Theme.Motion.content) { store.showRadiant(item) }
         }
     }
 
@@ -502,10 +512,13 @@ private struct ClosetWardrobe: View {
         .edgeFade(.bottom)
     }
 
-    /// Thumbnails show each item alone on the pet, so the item reads clearly.
-    private var thumbnailModel: PetProfile {
-        PetProfile(name: store.profile.name, breed: store.profile.breed,
-                   paletteOverrides: store.profile.paletteOverrides, furTint: store.profile.furTint)
+    /// Thumbnails show each item alone on the pet, so the item reads
+    /// clearly: a Radiant one with the still of its effect, as set.
+    private func thumbnailModel(for item: PetItem) -> PetProfile {
+        let model = PetProfile(name: store.profile.name, breed: store.profile.breed,
+                               paletteOverrides: store.profile.paletteOverrides, furTint: store.profile.furTint)
+        guard case .radiant(let intensity) = store.closet.radiantState(of: item), intensity != .off else { return model }
+        return PetCloset.radiantPreview(item, intensity: intensity, on: model)
     }
 
     /// Names the hovered item, or points to the next unlock.
@@ -513,6 +526,11 @@ private struct ClosetWardrobe: View {
         HStack(spacing: Theme.Spacing.xs) {
             if let hovered = store.tryingOn {
                 ClosetFooterDetail(name: hovered.displayName, detail: detail(for: hovered))
+            } else if let goal = store.closet.radiantGoalProgress {
+                // A pinned Radiant goal takes the next unlock's place.
+                ClosetRadiantGoalLine(goal: goal) {
+                    withMotion(Theme.Motion.content) { store.showRadiant(goal.item) }
+                }
             } else if let next = store.closet.nextUnlock, store.closet.save.ledger.earned == 0 {
                 // A brand-new pet: explain where points come from.
                 Text("Focus to earn points", bundle: .tabbi).foregroundStyle(Theme.Palette.secondaryText)
@@ -577,6 +595,19 @@ private struct ClosetWardrobe: View {
     }
 
     private func detail(for item: PetItem) -> String {
+        switch (store.closet.state(of: item), store.closet.radiantState(of: item)) {
+        case (.wearing, .radiant):
+            String(localized: "Radiant. Click to take off, or the star to set its effect", bundle: .tabbi)
+        case (.owned, .radiant): String(localized: "Radiant. Click to wear, or the star to set its effect", bundle: .tabbi)
+        case (.wearing, .affordable), (.wearing, .locked):
+            String(localized: "Click to take off, or the star to make it Radiant", bundle: .tabbi)
+        case (.owned, .affordable), (.owned, .locked):
+            String(localized: "Click to wear, or the star to make it Radiant", bundle: .tabbi)
+        default: plainDetail(for: item)
+        }
+    }
+
+    private func plainDetail(for item: PetItem) -> String {
         switch store.closet.state(of: item) {
         case .wearing: String(localized: "Click to take off", bundle: .tabbi)
         case .owned: String(localized: "Click to wear", bundle: .tabbi)
@@ -641,9 +672,12 @@ private struct ClosetItemTile: View {
     let state: PetClosetItemState
     /// Fresh in the catalog and not unlocked yet.
     let isNew: Bool
+    /// Where the item stands for a Radiant upgrade: the tile's pip.
+    let radiant: PetRadiantState
     let model: PetProfile
     let action: () -> Void
     let onHover: (Bool) -> Void
+    let onRadiant: () -> Void
     @State private var hovering = false
 
     private var isLocked: Bool {
@@ -676,6 +710,17 @@ private struct ClosetItemTile: View {
             .contentShape(RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous))
         }
         .buttonStyle(.plain)
+        // The pip sits over the tile's button, so it takes its own clicks.
+        .overlay(alignment: .topTrailing) {
+            ClosetRadiantTileButton(item: item, state: radiant, isTileHovered: hovering, action: onRadiant)
+        }
+        .contextMenu {
+            switch radiant {
+            case .radiant: Button(String(localized: "Radiant Effect", bundle: .tabbi), action: onRadiant)
+            case .affordable, .locked: Button(String(localized: "Make Radiant", bundle: .tabbi), action: onRadiant)
+            case .notEligible, .needsItem: EmptyView()
+            }
+        }
         .help(help)
         // The tile shows only a sprite and a price, so name the item for VoiceOver.
         .accessibilityLabel(item.displayName)
@@ -713,6 +758,11 @@ private struct ClosetItemTile: View {
     }
 
     private var accessibilityState: String {
+        if radiant.isRadiant { return String(localized: "Radiant, \(plainAccessibilityState)", bundle: .tabbi) }
+        return plainAccessibilityState
+    }
+
+    private var plainAccessibilityState: String {
         switch state {
         case .wearing: String(localized: "Wearing", bundle: .tabbi)
         case .owned: String(localized: "Owned", bundle: .tabbi)

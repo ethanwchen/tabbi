@@ -14,6 +14,7 @@ const FULL = {
   accessories: ["glasses", "book"],
   points: 1200,
   level: 7,
+  radiant: ["crown:bold", "white-coat:subtle"],
 };
 
 describe("worker basics", () => {
@@ -42,7 +43,7 @@ describe("register", () => {
     const a = await register();
     expect(a.profile).toEqual({
       code: a.code, name: "student", petName: "buddy", species: "cat", breed: catalog.breeds.cat[0],
-      colors: [], costume: "none", accessories: [], points: 0, level: 1,
+      colors: [], costume: "none", accessories: [], points: 0, level: 1, radiant: [],
     });
   });
 

@@ -16,6 +16,35 @@ public enum PetClosetItemState: Hashable, Sendable {
     public var isOwned: Bool { self == .wearing || self == .owned }
 }
 
+/// Where a wardrobe item stands for a Radiant upgrade.
+public enum PetRadiantState: Hashable, Sendable {
+    /// The item has no Radiant effect.
+    case notEligible
+    /// Eligible, but the item itself is not owned yet.
+    case needsItem
+    /// Owned, and the balance covers the upgrade.
+    case affordable
+    /// Owned; `missing` more points are needed for the upgrade.
+    case locked(missing: Int)
+    /// Upgraded, showing its effect at this intensity.
+    case radiant(PetRadiantIntensity)
+
+    public var isRadiant: Bool {
+        if case .radiant = self { true } else { false }
+    }
+}
+
+/// A pinned Radiant goal: the balance toward the upgrade's price.
+public struct PetRadiantGoal: Hashable, Sendable {
+    public let item: PetItem
+    /// Points toward the price so far, at most the price.
+    public let have: Int
+    public let price: Int
+
+    public var fraction: Double { price > 0 ? Double(have) / Double(price) : 1 }
+    public var isReady: Bool { have >= price }
+}
+
 /// What a tap on a wardrobe tile did.
 public enum PetClosetTapResult: Hashable, Sendable {
     case wore
@@ -126,6 +155,64 @@ public struct PetCloset: Hashable, Sendable {
         case .accessory(let accessory): profile.wear(accessory)
         }
         return profile
+    }
+
+    // MARK: Radiant
+
+    /// Where an item stands for a Radiant upgrade.
+    public func radiantState(of item: PetItem) -> PetRadiantState {
+        guard PetRadiant.isEligible(item) else { return .notEligible }
+        if save.ledger.isRadiant(item) { return .radiant(profile.radiance(of: item) ?? .bold) }
+        guard save.ledger.owns(item) else { return .needsItem }
+        let missing = PetRadiant.price(of: item) - balance
+        return missing <= 0 ? .affordable : .locked(missing: missing)
+    }
+
+    /// Upgrades an owned item to Radiant: the points are spent, the item is
+    /// put on with its effect on Bold, and a goal pinned for it is done.
+    public mutating func upgradeToRadiant(_ item: PetItem) throws(PetRadiantPurchaseError) {
+        try save.ledger.upgradeToRadiant(item)
+        save.profile = PetCloset.wearing(item, on: save.profile).restricted(to: save.ledger)
+        if save.radiantGoal == item { save.radiantGoal = nil }
+    }
+
+    /// Sets how strongly an upgraded item shows its effect.
+    public mutating func setRadiance(_ intensity: PetRadiantIntensity, for item: PetItem) {
+        save.profile.setRadiance(intensity, for: item)
+    }
+
+    /// `profile` wearing `item` with its Radiant effect at `intensity`, for
+    /// previews: the sheet shows an upgrade before it is bought. Ownership
+    /// is not checked here.
+    public static func radiantPreview(_ item: PetItem, intensity: PetRadiantIntensity, on profile: PetProfile) -> PetProfile {
+        let worn = wearing(item, on: profile)
+        var radiance: [PetItem: PetRadiantIntensity] = [:]
+        for other in PetRadiant.eligibleItems { radiance[other] = worn.radiance(of: other) }
+        radiance[item] = intensity
+        var preview = PetProfile(name: worn.name, breed: worn.breed, paletteOverrides: worn.paletteOverrides,
+                                 furTint: worn.furTint, outfit: worn.outfit, accessories: worn.accessories,
+                                 radiance: radiance)
+        preview.bondLook = worn.bondLook
+        return preview
+    }
+
+    /// Pins `item`'s Radiant upgrade as the Closet's goal, or unpins with nil.
+    /// Only an owned, eligible item not upgraded yet can be pinned.
+    public mutating func pinRadiantGoal(_ item: PetItem?) {
+        guard let item else {
+            save.radiantGoal = nil
+            return
+        }
+        guard save.canPinRadiantGoal(item) else { return }
+        save.radiantGoal = item
+    }
+
+    /// The pinned Radiant goal and the balance toward its price (capped at
+    /// the price), for "Radiant Sorcerer: 4,210 of 9,750".
+    public var radiantGoalProgress: PetRadiantGoal? {
+        guard let item = save.radiantGoal, save.canPinRadiantGoal(item) else { return nil }
+        let price = PetRadiant.price(of: item)
+        return PetRadiantGoal(item: item, have: min(max(0, balance), price), price: price)
     }
 
     // MARK: Identity

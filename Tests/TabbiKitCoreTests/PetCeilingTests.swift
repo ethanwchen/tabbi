@@ -26,7 +26,7 @@ final class PetCeilingTests: XCTestCase {
     }
 
     func testPetalsAndSparklesDriftInFromAboveTheCeiling() {
-        for accessory in [PetAccessory.cherryPetals, .sparkleTrail, .rainCloud] {
+        for accessory in [PetAccessory.cherryPetals, .sparkleTrail] {
             let full = PetComposer.clip(.idle, for: .orangeTabby, accessories: [accessory])
             let fitted = PetComposer.clip(.idle, for: .orangeTabby, accessories: [accessory], ceiling: 2)
             XCTAssertLessThan(top(full), 2, "\(accessory) starts at the frame's top")
@@ -34,6 +34,24 @@ final class PetCeilingTests: XCTestCase {
             let shown = fitted.frames.flatMap { [$0.canvas] + $0.itemFrames }.map { $0.pixels.compactMap { $0 }.count }
             let bare = PetComposer.clip(.idle, for: .orangeTabby).frames[0].canvas.pixels.compactMap { $0 }.count
             XCTAssertTrue(shown.contains { $0 > bare }, "\(accessory) still shows lower down")
+        }
+    }
+
+    /// The Tiny Rain Cloud hangs two rows down, so the closed notch shows
+    /// the cloud itself and not just its drops (it once sat on the frame's
+    /// top rows, above the ceiling), on every body shape, sitting, walking
+    /// and through the whole drizzle.
+    func testTheRainCloudShowsUnderTheCeiling() {
+        for breed in PetGallery.bodyShapeBreeds {
+            for animation in [PetAnimation.idle, .walk, .sleep] {
+                let fitted = PetComposer.clip(animation, for: breed, accessories: [.rainCloud], ceiling: 2)
+                for frame in fitted.frames {
+                    for canvas in frame.itemFrames.isEmpty ? [frame.canvas] : frame.itemFrames {
+                        XCTAssertGreaterThanOrEqual(canvas.pixels.filter { $0 == .coat }.count, 10,
+                                                    "the cloud shows: \(breed) \(animation)")
+                    }
+                }
+            }
         }
     }
 

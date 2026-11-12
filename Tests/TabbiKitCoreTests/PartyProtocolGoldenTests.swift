@@ -79,13 +79,14 @@ final class PartyProtocolGoldenTests: XCTestCase {
             Set(try XCTUnwrap(JSONSerialization.jsonObject(with: PartyClient.makeEncoder().encode(value)) as? [String: Any]).keys)
         }
         let body = PartyProfileUpdate(name: "A", petName: "B", species: "cat", breed: "tabby", colors: [], costume: "none",
-                                      accessories: [], points: 1, level: 1)
+                                      accessories: [], points: 1, level: 1, radiant: [])
         XCTAssertEqual(properties("profileBody"), try keys(body))
         let beat = PartyHeartbeat(status: .studying, method: "pomodoro", phaseEndsAt: Date(), sessionMinutes: 1,
                                   todayMinutes: 1, streakDays: 1, day: "2026-10-15")
         XCTAssertEqual(properties("heartbeatBody"), try keys(beat))
         let required = Set(defs["profile"]?["required"] as? [String] ?? [])
-        XCTAssertEqual(required.union(["badges"]), properties("profile"))
+        // `badges` and `radiant` are optional: older servers leave them out.
+        XCTAssertEqual(required.union(["badges", "radiant"]), properties("profile"))
     }
 
     /// Every request carries the protocol, so the server knows this app

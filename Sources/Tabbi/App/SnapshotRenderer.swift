@@ -252,6 +252,12 @@ enum SnapshotRenderer {
                 addClosetShot("long-name", ClosetShot(section: .wardrobe, tryingOn: headphones, name: "Wolfgang Wombats"))
                 addClosetShot("long-name-scrolling", ClosetShot(section: .wardrobe, tryingOn: headphones,
                                                                 name: "Wolfgang Wombats", scrolled: 0.6))
+                // Radiant upgrades: the sheet for an upgrade that can be
+                // bought, a pinned goal in the footer, and an upgraded item's
+                // Bold, Subtle or Off setting.
+                addClosetShot("radiant-upgrade", ClosetShot(section: .wardrobe, radiant: .upgrade))
+                addClosetShot("radiant-goal", ClosetShot(section: .wardrobe, radiant: .goal))
+                addClosetShot("radiant-setting", ClosetShot(section: .wardrobe, radiant: .setting))
             }
             // An animated item (the flapping angel wings) on the big pet.
             let animated = NotchViewModel(geometry: geometry, layout: withCloset)
@@ -590,6 +596,8 @@ enum SnapshotRenderer {
         var showsEnd = false
         /// Shows the newest badge tier as not seen yet (the Goals pill's dot).
         var newGoal = false
+        /// A Radiant upgrade state in the wardrobe.
+        var radiant: ClosetStore.RadiantSnapshot?
     }
 
     /// The weekly recap card in a heavy week (the demo's best yet) and a
@@ -721,7 +729,7 @@ enum SnapshotRenderer {
                 : name == "open-spotify-soundcloud-javascript-off" ? .soundCloudJavaScriptOff : .players)
             if let firstSection { closet?.store.section = shot.closet?.section ?? firstSection }
             closet?.store.showForSnapshot(foundingMember: shot.closet?.foundingMember ?? true, name: shot.closet?.name,
-                                          newGoal: shot.closet?.newGoal ?? false)
+                                          newGoal: shot.closet?.newGoal ?? false, radiant: shot.closet?.radiant)
             closet?.store.tryOn(shot.closet?.tryingOn)
             model.themeID = Theme.current.id
             if name == "closed-pet-cheer", case .pet(var pet) = model.preview {
