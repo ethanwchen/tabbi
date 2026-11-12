@@ -35,6 +35,11 @@
     "daisy-chain", "sailor-collar", "strawberry-cap", "mushroom-cap", "cactus-pot", "sun-hat", "aviator-cap",
     "fireflies"
   ],
+  "radiantItems": [
+    "blindfolded-sorcerer", "wizard-hat", "crown", "dinosaur-hoodie", "astronaut-helmet", "graduation-cap",
+    "rain-cloud", "white-coat"
+  ],
+  "radiantIntensities": ["bold", "subtle"],
   "statuses": ["studying", "break", "idle", "offline"],
   "studyMethods": ["pomodoro", "52-17", "flowtime", "timeblock", "anki", "qbank", "lecture", "free"],
   "heartbeatSeconds": { "studying": 120, "break": 120, "idle": 300 },
@@ -43,6 +48,7 @@
     "petNameMaxLength": 24,
     "maxColors": 10,
     "maxAccessories": 8,
+    "maxRadiant": 3,
     "maxFriends": 50,
     "maxPartyMembers": 8,
     "partyIdleExpirySeconds": 43200

@@ -141,6 +141,8 @@
 	<string>%@がハトと友だちに</string>
 	<key>%@ misses you</key>
 	<string>%@がさみしがってるよ</string>
+	<key>%@ more points: %@ at a typical study pace</key>
+	<string>あと%@ポイント：ふだんのペースで%@</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@を%3$lld個中%2$lld番目に移動しました</string>
 	<key>%@ napped on a sunny windowsill</key>
@@ -191,6 +193,8 @@
 	<string>今月は%@。</string>
 	<key>%@ to %@</key>
 	<string>%2$@まで %1$@</string>
+	<key>%@ to go</key>
+	<string>あと%@</string>
 	<key>%@ today</key>
 	<string>今日%@</string>
 	<key>%@ tokens</key>
@@ -243,6 +247,10 @@
 	<string>%@。</string>
 	<key>%@. %@</key>
 	<string>%@。%@</string>
+	<key>%@. Keeps its look and adds a loop of light.</key>
+	<string>%@。見た目はそのままに、光のループが加わります。</string>
+	<key>%@. Pick how strongly it shows; Reduce Motion keeps it still.</key>
+	<string>%@。強さを選べます。「視差効果を減らす」がオンなら静止します。</string>
 	<key>%@.fontWeight(.medium)). %@</key>
 	<string>%@.fontWeight(.medium))。%@</string>
 	<key>%@: %@</key>
@@ -715,6 +723,8 @@
 	<string>ノッチに戻る(Esc)</string>
 	<key>Back to the timer</key>
 	<string>タイマーに戻る</string>
+	<key>Back to the wardrobe</key>
+	<string>ワードローブに戻る</string>
 	<key>Back to today</key>
 	<string>今日に戻る</string>
 	<key>Backwards Cap</key>
@@ -749,6 +759,8 @@
 	<string>ブロックはカレンダーに追加されます。</string>
 	<key>Blossom Sprout</key>
 	<string>花咲く芽</string>
+	<key>Bold</key>
+	<string>大胆</string>
 	<key>Bond %lld</key>
 	<string>絆 %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -1003,8 +1015,12 @@
 	<string>クリックでペットがおうちに帰ります</string>
 	<key>Click to take off</key>
 	<string>クリックで外す</string>
+	<key>Click to take off, or the star to make it Radiant</key>
+	<string>クリックで外す、星で輝かせる</string>
 	<key>Click to wear</key>
 	<string>クリックで着る</string>
+	<key>Click to wear, or the star to make it Radiant</key>
+	<string>クリックで着る、星で輝かせる</string>
 	<key>Close</key>
 	<string>閉じる</string>
 	<key>Close %@ settings</key>
@@ -1049,6 +1065,8 @@
 	<string>コマンド</string>
 	<key>Compact</key>
 	<string>コンパクト</string>
+	<key>Confetti Toss</key>
+	<string>紙ふぶき</string>
 	<key>Connect</key>
 	<string>接続</string>
 	<key>Connect Anki</key>
@@ -1561,6 +1579,8 @@
 	<string>GB</string>
 	<key>GPU utilization, last 60 seconds</key>
 	<string>GPU使用率（直近60秒）</string>
+	<key>Gem Glints</key>
+	<string>宝石のきらめき</string>
 	<key>General</key>
 	<string>一般</string>
 	<key>Gentle streak</key>
@@ -1637,6 +1657,8 @@
 	<string>集中中</string>
 	<key>Heart Glasses</key>
 	<string>ハートのメガネ</string>
+	<key>Heartbeat</key>
+	<string>ハートビート</string>
 	<key>Heirloom</key>
 	<string>家宝</string>
 	<key>Hi! I'm %@.</key>
@@ -1825,6 +1847,8 @@
 	<string>画面共有、録画、スクリーンショットにノッチを映さない（授業での発表中など）</string>
 	<key>Keep the suggested kit</key>
 	<string>おすすめのキットにする</string>
+	<key>Keep the upgrade but show the item as before</key>
+	<string>アップグレードはそのままで、見た目を元に戻す</string>
 	<key>Keep these tabs and set up what they need</key>
 	<string>このタブで決めて、必要な設定に進む</string>
 	<key>Keep this and go on</key>
@@ -1843,6 +1867,8 @@
 	<string>キット</string>
 	<key>Koi Yukata</key>
 	<string>鯉の浴衣</string>
+	<key>Lapel Glint</key>
+	<string>えりのきらめき</string>
 	<key>Large</key>
 	<string>大</string>
 	<key>Last 7 days</key>
@@ -1949,6 +1975,10 @@
 	<string>旧正月</string>
 	<key>Main display</key>
 	<string>メインディスプレイ</string>
+	<key>Make %@ Radiant</key>
+	<string>%@を輝かせる</string>
+	<key>Make Radiant</key>
+	<string>輝かせる</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
 	<string>同じ手順で「オフ」にしたものをもう1つ作り、次の名前を付けます：</string>
 	<key>Make sure Calendars is turned on for that account.</key>
@@ -2009,6 +2039,8 @@
 	<string>今月のクエスト</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>今月のクエスト、バッジ、長い目標で手に入る衣装</string>
+	<key>Moonlit Blindfold</key>
+	<string>月明かりの目隠し</string>
 	<key>Moonlit Witch Hat</key>
 	<string>月夜の魔女の帽子</string>
 	<key>Moonstone</key>
@@ -2445,6 +2477,8 @@
 	<string>オプション…</string>
 	<key>Orange</key>
 	<string>オレンジ</string>
+	<key>Orbiting Orb</key>
+	<string>周回するオーブ</string>
 	<key>Other</key>
 	<string>その他</string>
 	<key>Out of sight. Press %@ to open it.</key>
@@ -2585,6 +2619,8 @@
 	<string>お気に入りデッキにする</string>
 	<key>Pin as favorite</key>
 	<string>お気に入りにする</string>
+	<key>Pin as goal</key>
+	<string>目標に固定</string>
 	<key>Pink noise</key>
 	<string>ピンクノイズ</string>
 	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
@@ -2663,6 +2699,10 @@
 	<string>おすすめ</string>
 	<key>Preview</key>
 	<string>試聴</string>
+	<key>Preview the Bold effect</key>
+	<string>大胆なエフェクトをプレビュー</string>
+	<key>Preview the Subtle effect</key>
+	<string>控えめなエフェクトをプレビュー</string>
 	<key>Previous track</key>
 	<string>前の曲</string>
 	<key>Privacy</key>
@@ -2705,10 +2745,24 @@
 	<string>Ankiを終了して、もう一度開いてください。Tabbiについて確認されたら「はい」をクリックします。</string>
 	<key>Quit Anki and open it again. Tabbi notices by itself.</key>
 	<string>Ankiを終了して、もう一度開いてください。Tabbiが自動で気づきます。</string>
+	<key>Radiant %@</key>
+	<string>輝く%@</string>
+	<key>Radiant %@: set its effect</key>
+	<string>輝く%@：エフェクトを設定</string>
+	<key>Radiant Effect</key>
+	<string>輝きエフェクト</string>
+	<key>Radiant, %@</key>
+	<string>輝き、%@</string>
+	<key>Radiant. Click to take off, or the star to set its effect</key>
+	<string>輝き付き。クリックで外す、星でエフェクト設定</string>
+	<key>Radiant. Click to wear, or the star to set its effect</key>
+	<string>輝き付き。クリックで着る、星でエフェクト設定</string>
 	<key>Rain</key>
 	<string>雨</string>
 	<key>Rain Slicker</key>
 	<string>レインコート</string>
+	<key>Rainbow After Rain</key>
+	<string>雨上がりの虹</string>
 	<key>Rare</key>
 	<string>レア</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -3003,6 +3057,8 @@
 	<string>SafariやChromeのSoundCloudを表示</string>
 	<key>Show a break move</key>
 	<string>休憩の動きを見せる</string>
+	<key>Show a quieter effect</key>
+	<string>控えめなエフェクトを表示</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>日曜18時以降に初めてノッチを開いたとき、1週間のふりかえりを表示する</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -3027,6 +3083,8 @@
 	<string>ポインタを重ねて表示</string>
 	<key>Show on external displays</key>
 	<string>外部ディスプレイに表示</string>
+	<key>Show the full effect</key>
+	<string>エフェクトをすべて表示</string>
 	<key>Show the less common settings</key>
 	<string>あまり使わない設定を表示</string>
 	<key>Show the top decks beside today's total</key>
@@ -3045,6 +3103,8 @@
 	<string>昨日のリストを表示</string>
 	<key>Show your calendar in Tabbi</key>
 	<string>Tabbiにカレンダーを表示</string>
+	<key>Show your progress toward this upgrade in the wardrobe</key>
+	<string>このアップグレードまでの進み具合をワードローブに表示</string>
 	<key>Show your studies some love this week.</key>
 	<string>今週は勉強にちょっぴり愛を。</string>
 	<key>Showing local stats only</key>
@@ -3085,6 +3145,8 @@
 	<string>おもしろ</string>
 	<key>Silver</key>
 	<string>シルバー</string>
+	<key>Silver Lining</key>
+	<string>銀の縁取り</string>
 	<key>Sip some water</key>
 	<string>お水をひと口</string>
 	<key>Sip water</key>
@@ -3129,10 +3191,14 @@
 	<string>スパム</string>
 	<key>Sparkle</key>
 	<string>キラキラ</string>
+	<key>Sparkle Halo</key>
+	<string>きらめく光輪</string>
 	<key>Sparkle Trail</key>
 	<string>キラキラの軌跡</string>
 	<key>Species, breed and fur color</key>
 	<string>種類、品種、毛の色</string>
+	<key>Spike Ripple</key>
+	<string>トゲのさざなみ</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>ハロウィンの季節。集中してペットを仮装させよう。</string>
 	<key>Sporty Sweatband</key>
@@ -3155,6 +3221,8 @@
 	<string>立って脚を軽くほぐしたら、好きなときに座ろう。</string>
 	<key>Star tag</key>
 	<string>星のチャーム</string>
+	<key>Stardust Stream</key>
+	<string>星くずの流れ</string>
 	<key>Starlight, every tier earned</key>
 	<string>スターライト、すべての段階を達成</string>
 	<key>Starry Cloak</key>
@@ -3251,6 +3319,8 @@
 	<string>このタスクへの集中をやめる</string>
 	<key>Stop reading this folder</key>
 	<string>このフォルダの読み取りをやめる</string>
+	<key>Stop showing this goal in the wardrobe</key>
+	<string>この目標をワードローブに表示しない</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>このMacでの同期を停止します。ペットと進捗はこのMacに残ります。</string>
 	<key>Stop the preview</key>
@@ -3305,6 +3375,8 @@
 	<string>勉強中</string>
 	<key>Submit</key>
 	<string>送信</string>
+	<key>Subtle</key>
+	<string>控えめ</string>
 	<key>Suggest a Feature or Report a Bug</key>
 	<string>機能の提案・不具合の報告</string>
 	<key>Summer</key>
@@ -3405,6 +3477,8 @@
 	<string>タスク</string>
 	<key>Tasks left today</key>
 	<string>今日の残りタスク</string>
+	<key>Tassel Swing</key>
+	<string>揺れるタッセル</string>
 	<key>Team Medal</key>
 	<string>チームメダル</string>
 	<key>Ten hours of betting on yourself. Keep betting.</key>
@@ -3607,8 +3681,12 @@
 	<string>ちびクラウン</string>
 	<key>Tiny Lantern</key>
 	<string>ちいさなランタン</string>
+	<key>Tiny Planet</key>
+	<string>ちいさな惑星</string>
 	<key>Tiny Rain Cloud</key>
 	<string>ちびあめ雲</string>
+	<key>Tiny Roar</key>
+	<string>ちいさな咆哮</string>
 	<key>Tips to focus better</key>
 	<string>集中力を上げるコツ</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
@@ -3743,6 +3821,8 @@
 	<string>%lldptで解放</string>
 	<key>Unmute</key>
 	<string>ミュート解除</string>
+	<key>Unpin</key>
+	<string>固定を解除</string>
 	<key>Unpin %@ from the Study button</key>
 	<string>%@ を学習ボタンから外す</string>
 	<key>Unpin Favorite Deck</key>
@@ -3771,6 +3851,14 @@
 	<string>%lld分前に更新</string>
 	<key>Updated just now</key>
 	<string>たった今更新</string>
+	<key>Upgrade</key>
+	<string>アップグレード</string>
+	<key>Upgrade for %@ points</key>
+	<string>%@ポイントでアップグレード</string>
+	<key>Upgraded</key>
+	<string>アップグレード済み</string>
+	<key>Upgraded. Friends on Party see it too.</key>
+	<string>アップグレード済み。Partyの友だちにも見えます。</string>
 	<key>Usage logs</key>
 	<string>使用状況のログ</string>
 	<key>Usage of your rolling 5-hour limit</key>
@@ -3803,6 +3891,8 @@
 	<string>GitHubで見る</string>
 	<key>Visible: friends see when you study</key>
 	<string>フレンドに表示中</string>
+	<key>Visor Glint</key>
+	<string>バイザーのきらめき</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>鮮やかなアクセントと紫の光。</string>
 	<key>Volume</key>
@@ -3881,6 +3971,8 @@
 	<string>ホワイトノイズ</string>
 	<key>Winter Holidays</key>
 	<string>ウィンターホリデー</string>
+	<key>Wishing Star</key>
+	<string>願い星</string>
 	<key>Witch Hat</key>
 	<string>魔女の帽子</string>
 	<key>With %@</key>
@@ -4077,6 +4169,8 @@
 	<string>ここにペット、連続記録、タイマーが表示されます。</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>ペット、連続記録、動いているタイマー。</string>
+	<key>Your pinned goal: Radiant %@ for %@ points</key>
+	<string>固定した目標：輝く%@（%@ポイント）</string>
 	<key>Your plan</key>
 	<string>あなたの計画</string>
 	<key>Your playlist</key>
@@ -4163,8 +4257,12 @@
 	<string>ポイント</string>
 	<key>pts</key>
 	<string>pt</string>
+	<key>pts, 5x its price</key>
+	<string>pt、価格の5倍</string>
 	<key>ready to unlock</key>
 	<string>解放できます</string>
+	<key>ready to upgrade</key>
+	<string>アップグレードできます</string>
 	<key>resets %@</key>
 	<string>%@にリセット</string>
 	<key>resets in %@</key>

@@ -69,6 +69,8 @@ export interface Composed {
   readonly back?: PetCanvas;
   /** The particles of aura items in the air, not outlined and not moved by a hop. */
   readonly aura?: PetCanvas;
+  /** The aura items that move down under a ceiling instead of losing what reaches above it (`lowersUnderCeiling`), kept apart. */
+  readonly loweringAura?: PetCanvas;
   /** Top-right corner of the head's skull, in frame pixels. */
   readonly headTopRight: PetPoint;
   /** Top-left corner of a held mug, where its steam rises from. */
@@ -77,7 +79,8 @@ export interface Composed {
 
 /** The pet with its aura, over its back layer. */
 export function composedPicture(composed: Composed): PetCanvas {
-  const pet = composed.aura ? composed.canvas.scattering(composed.aura) : composed.canvas;
+  let pet = composed.aura ? composed.canvas.scattering(composed.aura) : composed.canvas;
+  if (composed.loweringAura) pet = pet.scattering(composed.loweringAura);
   return composed.back ? pet.over(composed.back) : pet;
 }
 
@@ -691,15 +694,18 @@ export function compose(
   if (stance.kind === "sitting" && pose.gesture) stampGesture(pose.gesture, canvas, layout, headX, headY, pattern);
   /* Aura items float in the air, placed in the frame by the view, not the body. */
   let aura: PetCanvas | undefined;
+  let loweringAura: PetCanvas | undefined;
   const floating = auraItems(worn, bond);
   if (floating.length > 0 && stance.kind !== "hanging") {
     const layer = new PetCanvas(FRAME_SIZE, FRAME_SIZE);
+    const lowering = new PetCanvas(FRAME_SIZE, FRAME_SIZE);
     for (const item of floating) {
       const placement = stance.kind === "sitting" ? sitPickAura(layout, item) : item.side;
       const frame = placement.frames[phase % auraFrameCount(item)];
-      if (frame) layer.stamp(frame, placement.x, placement.y);
+      if (frame) (item.lowersUnderCeiling ? lowering : layer).stamp(frame, placement.x, placement.y);
     }
-    aura = layer;
+    if (floating.some((item) => !item.lowersUnderCeiling)) aura = layer;
+    if (floating.some((item) => item.lowersUnderCeiling)) loweringAura = lowering;
   }
   const headTopRight = { x: headX + layout.head.width - 1, y: headY + layout.skullTop - pose.lift };
   /* The back layer is outlined on its own and goes under the outlined pet. */
@@ -707,6 +713,7 @@ export function compose(
     canvas: canvas.outlined().shifted(0, -pose.lift),
     ...(behind.length === 0 ? {} : { back: back.outlined().shifted(0, -pose.lift) }),
     ...(aura ? { aura } : {}),
+    ...(loweringAura ? { loweringAura } : {}),
     headTopRight,
     ...(mugTop ? { mugTop } : {}),
   };

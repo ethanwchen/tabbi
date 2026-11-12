@@ -141,6 +141,8 @@
 	<string>%@ fez amizade com um pombo</string>
 	<key>%@ misses you</key>
 	<string>%@ está com saudade</string>
+	<key>%@ more points: %@ at a typical study pace</key>
+	<string>Mais %@ pontos: %@ num ritmo de estudo comum</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@ foi para a posição %2$lld de %3$lld</string>
 	<key>%@ napped on a sunny windowsill</key>
@@ -191,6 +193,8 @@
 	<string>%@ este mês.</string>
 	<key>%@ to %@</key>
 	<string>%1$@ para %2$@</string>
+	<key>%@ to go</key>
+	<string>faltam %@</string>
 	<key>%@ today</key>
 	<string>%@ hoje</string>
 	<key>%@ tokens</key>
@@ -243,6 +247,10 @@
 	<string>%@.</string>
 	<key>%@. %@</key>
 	<string>%@. %@</string>
+	<key>%@. Keeps its look and adds a loop of light.</key>
+	<string>%@. Mantém o visual e ganha um brilho em loop.</string>
+	<key>%@. Pick how strongly it shows; Reduce Motion keeps it still.</key>
+	<string>%@. Escolha a intensidade; Reduzir Movimento o deixa parado.</string>
 	<key>%@.fontWeight(.medium)). %@</key>
 	<string>%@.fontWeight(.medium)). %@</string>
 	<key>%@: %@</key>
@@ -715,6 +723,8 @@
 	<string>Voltar ao notch (Esc)</string>
 	<key>Back to the timer</key>
 	<string>Voltar ao timer</string>
+	<key>Back to the wardrobe</key>
+	<string>Voltar ao guarda-roupa</string>
 	<key>Back to today</key>
 	<string>Voltar para hoje</string>
 	<key>Backwards Cap</key>
@@ -749,6 +759,8 @@
 	<string>Vão para sua agenda.</string>
 	<key>Blossom Sprout</key>
 	<string>Broto florido</string>
+	<key>Bold</key>
+	<string>Intenso</string>
 	<key>Bond %lld</key>
 	<string>Laço %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -1003,8 +1015,12 @@
 	<string>Clique para mandar seu pet para casa</string>
 	<key>Click to take off</key>
 	<string>Clique para tirar</string>
+	<key>Click to take off, or the star to make it Radiant</key>
+	<string>Clique para tirar, ou na estrela para torná-lo Radiante</string>
 	<key>Click to wear</key>
 	<string>Clique para usar</string>
+	<key>Click to wear, or the star to make it Radiant</key>
+	<string>Clique para vestir, ou na estrela para torná-lo Radiante</string>
 	<key>Close</key>
 	<string>Fechar</string>
 	<key>Close %@ settings</key>
@@ -1049,6 +1065,8 @@
 	<string>Comando</string>
 	<key>Compact</key>
 	<string>Compacto</string>
+	<key>Confetti Toss</key>
+	<string>Chuva de confete</string>
 	<key>Connect</key>
 	<string>Conectar</string>
 	<key>Connect Anki</key>
@@ -1561,6 +1579,8 @@
 	<string>GB</string>
 	<key>GPU utilization, last 60 seconds</key>
 	<string>Uso de GPU, últimos 60 segundos</string>
+	<key>Gem Glints</key>
+	<string>Brilho das gemas</string>
 	<key>General</key>
 	<string>Geral</string>
 	<key>Gentle streak</key>
@@ -1637,6 +1657,8 @@
 	<string>Mãos à obra</string>
 	<key>Heart Glasses</key>
 	<string>Óculos de coração</string>
+	<key>Heartbeat</key>
+	<string>Batimento</string>
 	<key>Heirloom</key>
 	<string>Relíquias</string>
 	<key>Hi! I'm %@.</key>
@@ -1825,6 +1847,8 @@
 	<string>Deixar o notch fora de compartilhamentos de tela, gravações e capturas, por exemplo ao apresentar na aula</string>
 	<key>Keep the suggested kit</key>
 	<string>Ficar com o kit sugerido</string>
+	<key>Keep the upgrade but show the item as before</key>
+	<string>Manter a melhoria, mas mostrar o item como antes</string>
 	<key>Keep these tabs and set up what they need</key>
 	<string>Ficar com estas abas e configurar o que precisam</string>
 	<key>Keep this and go on</key>
@@ -1843,6 +1867,8 @@
 	<string>Kit</string>
 	<key>Koi Yukata</key>
 	<string>Yukata de carpas</string>
+	<key>Lapel Glint</key>
+	<string>Brilho da lapela</string>
 	<key>Large</key>
 	<string>Grande</string>
 	<key>Last 7 days</key>
@@ -1949,6 +1975,10 @@
 	<string>Ano-Novo Lunar</string>
 	<key>Main display</key>
 	<string>Tela principal</string>
+	<key>Make %@ Radiant</key>
+	<string>Tornar %@ Radiante</string>
+	<key>Make Radiant</key>
+	<string>Tornar Radiante</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
 	<string>Crie mais um do mesmo jeito, desativado, e dê o nome:</string>
 	<key>Make sure Calendars is turned on for that account.</key>
@@ -2009,6 +2039,8 @@
 	<string>Missões do mês</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>Missões do mês, emblemas e roupas de metas longas</string>
+	<key>Moonlit Blindfold</key>
+	<string>Venda ao luar</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Chapéu de bruxa enluarado</string>
 	<key>Moonstone</key>
@@ -2445,6 +2477,8 @@
 	<string>Opções…</string>
 	<key>Orange</key>
 	<string>Laranja</string>
+	<key>Orbiting Orb</key>
+	<string>Orbe em órbita</string>
 	<key>Other</key>
 	<string>Outro</string>
 	<key>Out of sight. Press %@ to open it.</key>
@@ -2585,6 +2619,8 @@
 	<string>Fixar como baralho favorito</string>
 	<key>Pin as favorite</key>
 	<string>Fixar como favorito</string>
+	<key>Pin as goal</key>
+	<string>Fixar como meta</string>
 	<key>Pink noise</key>
 	<string>Ruído rosa</string>
 	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
@@ -2663,6 +2699,10 @@
 	<string>Sugestões</string>
 	<key>Preview</key>
 	<string>Ouvir</string>
+	<key>Preview the Bold effect</key>
+	<string>Ver o efeito intenso</string>
+	<key>Preview the Subtle effect</key>
+	<string>Ver o efeito sutil</string>
 	<key>Previous track</key>
 	<string>Faixa anterior</string>
 	<key>Privacy</key>
@@ -2705,10 +2745,24 @@
 	<string>Feche o Anki e abra de novo. Se ele perguntar sobre o Tabbi, clique em Sim.</string>
 	<key>Quit Anki and open it again. Tabbi notices by itself.</key>
 	<string>Feche o Anki e abra de novo. O Tabbi percebe sozinho.</string>
+	<key>Radiant %@</key>
+	<string>%@ Radiante</string>
+	<key>Radiant %@: set its effect</key>
+	<string>%@ Radiante: ajuste o efeito</string>
+	<key>Radiant Effect</key>
+	<string>Efeito Radiante</string>
+	<key>Radiant, %@</key>
+	<string>Radiante, %@</string>
+	<key>Radiant. Click to take off, or the star to set its effect</key>
+	<string>Radiante. Clique para tirar, ou na estrela para o efeito</string>
+	<key>Radiant. Click to wear, or the star to set its effect</key>
+	<string>Radiante. Clique para vestir, ou na estrela para o efeito</string>
 	<key>Rain</key>
 	<string>Chuva</string>
 	<key>Rain Slicker</key>
 	<string>Capa de chuva</string>
+	<key>Rainbow After Rain</key>
+	<string>Arco-íris depois da chuva</string>
 	<key>Rare</key>
 	<string>Raros</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -3003,6 +3057,8 @@
 	<string>Mostrar o SoundCloud do Safari ou Chrome</string>
 	<key>Show a break move</key>
 	<string>Mostrar um movimento na pausa</string>
+	<key>Show a quieter effect</key>
+	<string>Mostrar um efeito mais calmo</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>Mostrar um resumo da sua semana na primeira vez que você abrir o notch depois das 18h de domingo</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -3027,6 +3083,8 @@
 	<string>Mostrar ao passar</string>
 	<key>Show on external displays</key>
 	<string>Mostrar em telas externas</string>
+	<key>Show the full effect</key>
+	<string>Mostrar o efeito completo</string>
 	<key>Show the less common settings</key>
 	<string>Mostrar os ajustes menos usados</string>
 	<key>Show the top decks beside today's total</key>
@@ -3045,6 +3103,8 @@
 	<string>Ver a lista de ontem</string>
 	<key>Show your calendar in Tabbi</key>
 	<string>Mostre sua agenda no Tabbi</string>
+	<key>Show your progress toward this upgrade in the wardrobe</key>
+	<string>Mostrar seu progresso até esta melhoria no guarda-roupa</string>
 	<key>Show your studies some love this week.</key>
 	<string>Dê um pouco de amor aos seus estudos esta semana.</string>
 	<key>Showing local stats only</key>
@@ -3085,6 +3145,8 @@
 	<string>Divertido</string>
 	<key>Silver</key>
 	<string>Prata</string>
+	<key>Silver Lining</key>
+	<string>Borda prateada</string>
 	<key>Sip some water</key>
 	<string>Beba um pouco de água</string>
 	<key>Sip water</key>
@@ -3129,10 +3191,14 @@
 	<string>Spam</string>
 	<key>Sparkle</key>
 	<string>Brilho</string>
+	<key>Sparkle Halo</key>
+	<string>Halo cintilante</string>
 	<key>Sparkle Trail</key>
 	<string>Rastro brilhante</string>
 	<key>Species, breed and fur color</key>
 	<string>Espécie, raça e cor do pelo</string>
+	<key>Spike Ripple</key>
+	<string>Onda nos espinhos</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>Chegou a temporada de sustos. Fantasie seu pet.</string>
 	<key>Sporty Sweatband</key>
@@ -3155,6 +3221,8 @@
 	<string>Fique de pé, sacuda as pernas e sente de novo quando quiser.</string>
 	<key>Star tag</key>
 	<string>Plaquinha de estrela</string>
+	<key>Stardust Stream</key>
+	<string>Rastro de poeira estelar</string>
 	<key>Starlight, every tier earned</key>
 	<string>Luz estelar, todos os níveis conquistados</string>
 	<key>Starry Cloak</key>
@@ -3251,6 +3319,8 @@
 	<string>Parar de focar nesta tarefa</string>
 	<key>Stop reading this folder</key>
 	<string>Parar de ler esta pasta</string>
+	<key>Stop showing this goal in the wardrobe</key>
+	<string>Parar de mostrar esta meta no guarda-roupa</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>Para de sincronizar neste Mac. Seu pet e seu progresso ficam aqui.</string>
 	<key>Stop the preview</key>
@@ -3305,6 +3375,8 @@
 	<string>Estudando</string>
 	<key>Submit</key>
 	<string>Enviar</string>
+	<key>Subtle</key>
+	<string>Sutil</string>
 	<key>Suggest a Feature or Report a Bug</key>
 	<string>Sugerir um recurso ou relatar um erro</string>
 	<key>Summer</key>
@@ -3405,6 +3477,8 @@
 	<string>Tarefas</string>
 	<key>Tasks left today</key>
 	<string>Tarefas restantes hoje</string>
+	<key>Tassel Swing</key>
+	<string>Borla balançando</string>
 	<key>Team Medal</key>
 	<string>Medalha da equipe</string>
 	<key>Ten hours of betting on yourself. Keep betting.</key>
@@ -3607,8 +3681,12 @@
 	<string>Coroinha</string>
 	<key>Tiny Lantern</key>
 	<string>Lanterninha</string>
+	<key>Tiny Planet</key>
+	<string>Planetinha</string>
 	<key>Tiny Rain Cloud</key>
 	<string>Nuvenzinha de chuva</string>
+	<key>Tiny Roar</key>
+	<string>Rugidinho</string>
 	<key>Tips to focus better</key>
 	<string>Dicas para focar melhor</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
@@ -3743,6 +3821,8 @@
 	<string>Desbloquear por %lld pts</string>
 	<key>Unmute</key>
 	<string>Ativar som</string>
+	<key>Unpin</key>
+	<string>Desafixar</string>
 	<key>Unpin %@ from the Study button</key>
 	<string>Remover %@ do botão Estudar</string>
 	<key>Unpin Favorite Deck</key>
@@ -3771,6 +3851,14 @@
 	<string>Atualizado há %lld min</string>
 	<key>Updated just now</key>
 	<string>Atualizado agora mesmo</string>
+	<key>Upgrade</key>
+	<string>Melhorar</string>
+	<key>Upgrade for %@ points</key>
+	<string>Melhorar por %@ pontos</string>
+	<key>Upgraded</key>
+	<string>Melhorado</string>
+	<key>Upgraded. Friends on Party see it too.</key>
+	<string>Melhorado. Seus amigos no Party também veem.</string>
 	<key>Usage logs</key>
 	<string>Logs de uso</string>
 	<key>Usage of your rolling 5-hour limit</key>
@@ -3803,6 +3891,8 @@
 	<string>Ver no GitHub</string>
 	<key>Visible: friends see when you study</key>
 	<string>Visível para os amigos</string>
+	<key>Visor Glint</key>
+	<string>Brilho do visor</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>Destaques vivos com um brilho violeta.</string>
 	<key>Volume</key>
@@ -3881,6 +3971,8 @@
 	<string>Ruído branco</string>
 	<key>Winter Holidays</key>
 	<string>Festas de fim de ano</string>
+	<key>Wishing Star</key>
+	<string>Estrela dos desejos</string>
 	<key>Witch Hat</key>
 	<string>Chapéu de bruxa</string>
 	<key>With %@</key>
@@ -4077,6 +4169,8 @@
 	<string>Seu pet, sua sequência e o timer aparecem aqui.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>Seu pet, sua sequência e o timer em andamento.</string>
+	<key>Your pinned goal: Radiant %@ for %@ points</key>
+	<string>Sua meta fixada: %@ Radiante por %@ pontos</string>
 	<key>Your plan</key>
 	<string>Seu plano</string>
 	<key>Your playlist</key>
@@ -4163,8 +4257,12 @@
 	<string>pontos</string>
 	<key>pts</key>
 	<string>pts</string>
+	<key>pts, 5x its price</key>
+	<string>pts, 5x o preço</string>
 	<key>ready to unlock</key>
 	<string>pronto para liberar</string>
+	<key>ready to upgrade</key>
+	<string>pronto para melhorar</string>
 	<key>resets %@</key>
 	<string>renova %@</string>
 	<key>resets in %@</key>

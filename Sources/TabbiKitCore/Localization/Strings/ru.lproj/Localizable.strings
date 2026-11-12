@@ -141,6 +141,8 @@
 	<string>%@ дружит с голубем</string>
 	<key>%@ misses you</key>
 	<string>%@ скучает по тебе</string>
+	<key>%@ more points: %@ at a typical study pace</key>
+	<string>Ещё %@ очков: %@ в обычном темпе учёбы</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@ теперь на позиции %2$lld из %3$lld</string>
 	<key>%@ napped on a sunny windowsill</key>
@@ -191,6 +193,8 @@
 	<string>%@ в этом месяце.</string>
 	<key>%@ to %@</key>
 	<string>%1$@ до уровня «%2$@»</string>
+	<key>%@ to go</key>
+	<string>ещё %@</string>
 	<key>%@ today</key>
 	<string>Сегодня %@</string>
 	<key>%@ tokens</key>
@@ -243,6 +247,10 @@
 	<string>%@.</string>
 	<key>%@. %@</key>
 	<string>%@. %@</string>
+	<key>%@. Keeps its look and adds a loop of light.</key>
+	<string>%@. Вид тот же, плюс зацикленный световой эффект.</string>
+	<key>%@. Pick how strongly it shows; Reduce Motion keeps it still.</key>
+	<string>%@. Выбери, насколько он заметен; «Уменьшение движения» оставит его неподвижным.</string>
 	<key>%@.fontWeight(.medium)). %@</key>
 	<string>%@.fontWeight(.medium)). %@</string>
 	<key>%@: %@</key>
@@ -715,6 +723,8 @@
 	<string>Назад в вырез (Esc)</string>
 	<key>Back to the timer</key>
 	<string>Назад к таймеру</string>
+	<key>Back to the wardrobe</key>
+	<string>Назад к гардеробу</string>
 	<key>Back to today</key>
 	<string>Назад к сегодня</string>
 	<key>Backwards Cap</key>
@@ -749,6 +759,8 @@
 	<string>Добавятся в календарь.</string>
 	<key>Blossom Sprout</key>
 	<string>Цветущий росток</string>
+	<key>Bold</key>
+	<string>Ярко</string>
 	<key>Bond %lld</key>
 	<string>Связь %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -1003,8 +1015,12 @@
 	<string>Нажми, чтобы отправить питомца домой</string>
 	<key>Click to take off</key>
 	<string>Нажми, чтобы снять</string>
+	<key>Click to take off, or the star to make it Radiant</key>
+	<string>Нажми, чтобы снять, или на звезду для сияния</string>
 	<key>Click to wear</key>
 	<string>Нажми, чтобы надеть</string>
+	<key>Click to wear, or the star to make it Radiant</key>
+	<string>Нажми, чтобы надеть, или на звезду для сияния</string>
 	<key>Close</key>
 	<string>Закрыть</string>
 	<key>Close %@ settings</key>
@@ -1049,6 +1065,8 @@
 	<string>Команда</string>
 	<key>Compact</key>
 	<string>Компактный</string>
+	<key>Confetti Toss</key>
+	<string>Конфетти</string>
 	<key>Connect</key>
 	<string>Подключить</string>
 	<key>Connect Anki</key>
@@ -1561,6 +1579,8 @@
 	<string>ГБ</string>
 	<key>GPU utilization, last 60 seconds</key>
 	<string>Загрузка GPU за последние 60 секунд</string>
+	<key>Gem Glints</key>
+	<string>Блеск самоцветов</string>
 	<key>General</key>
 	<string>Основные</string>
 	<key>Gentle streak</key>
@@ -1637,6 +1657,8 @@
 	<string>В работе</string>
 	<key>Heart Glasses</key>
 	<string>Очки-сердечки</string>
+	<key>Heartbeat</key>
+	<string>Пульс</string>
 	<key>Heirloom</key>
 	<string>Реликвии</string>
 	<key>Hi! I'm %@.</key>
@@ -1825,6 +1847,8 @@
 	<string>Скрывать вырез при демонстрации экрана, записи и снимках, например во время презентации на занятии</string>
 	<key>Keep the suggested kit</key>
 	<string>Оставить предложенный набор</string>
+	<key>Keep the upgrade but show the item as before</key>
+	<string>Оставить улучшение, но показывать вещь как раньше</string>
 	<key>Keep these tabs and set up what they need</key>
 	<string>Оставить эти вкладки и настроить, что им нужно</string>
 	<key>Keep this and go on</key>
@@ -1843,6 +1867,8 @@
 	<string>Набор</string>
 	<key>Koi Yukata</key>
 	<string>Юката с карпами кои</string>
+	<key>Lapel Glint</key>
+	<string>Блик лацкана</string>
 	<key>Large</key>
 	<string>Большой</string>
 	<key>Last 7 days</key>
@@ -1949,6 +1975,10 @@
 	<string>Лунный Новый год</string>
 	<key>Main display</key>
 	<string>Основной дисплей</string>
+	<key>Make %@ Radiant</key>
+	<string>Добавить сияние: %@</string>
+	<key>Make Radiant</key>
+	<string>Добавить сияние</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
 	<string>Таким же образом создай еще одну, с «Выключить», и назови ее так:</string>
 	<key>Make sure Calendars is turned on for that account.</key>
@@ -2009,6 +2039,8 @@
 	<string>Задания месяца</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>Задания месяца, значки и наряды за долгие цели</string>
+	<key>Moonlit Blindfold</key>
+	<string>Лунная повязка</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Лунная шляпа ведьмы</string>
 	<key>Moonstone</key>
@@ -2445,6 +2477,8 @@
 	<string>Параметры…</string>
 	<key>Orange</key>
 	<string>Рыжий</string>
+	<key>Orbiting Orb</key>
+	<string>Кружащая сфера</string>
 	<key>Other</key>
 	<string>Другое</string>
 	<key>Out of sight. Press %@ to open it.</key>
@@ -2585,6 +2619,8 @@
 	<string>Сделать избранной колодой</string>
 	<key>Pin as favorite</key>
 	<string>Сделать избранной</string>
+	<key>Pin as goal</key>
+	<string>Закрепить как цель</string>
 	<key>Pink noise</key>
 	<string>Розовый шум</string>
 	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
@@ -2663,6 +2699,10 @@
 	<string>Подборки</string>
 	<key>Preview</key>
 	<string>Прослушать</string>
+	<key>Preview the Bold effect</key>
+	<string>Посмотреть яркий эффект</string>
+	<key>Preview the Subtle effect</key>
+	<string>Посмотреть мягкий эффект</string>
 	<key>Previous track</key>
 	<string>Предыдущий трек</string>
 	<key>Privacy</key>
@@ -2705,10 +2745,24 @@
 	<string>Закрой Anki и открой снова. Если он спросит про Tabbi, нажми «Да».</string>
 	<key>Quit Anki and open it again. Tabbi notices by itself.</key>
 	<string>Закрой Anki и открой снова. Tabbi заметит это автоматически.</string>
+	<key>Radiant %@</key>
+	<string>%@: сияние</string>
+	<key>Radiant %@: set its effect</key>
+	<string>%@: сияние, настроить эффект</string>
+	<key>Radiant Effect</key>
+	<string>Эффект сияния</string>
+	<key>Radiant, %@</key>
+	<string>Сияние, %@</string>
+	<key>Radiant. Click to take off, or the star to set its effect</key>
+	<string>Сияние. Нажми, чтобы снять, или на звезду для эффекта</string>
+	<key>Radiant. Click to wear, or the star to set its effect</key>
+	<string>Сияние. Нажми, чтобы надеть, или на звезду для эффекта</string>
 	<key>Rain</key>
 	<string>Дождь</string>
 	<key>Rain Slicker</key>
 	<string>Дождевик</string>
+	<key>Rainbow After Rain</key>
+	<string>Радуга после дождя</string>
 	<key>Rare</key>
 	<string>Редкие</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -3003,6 +3057,8 @@
 	<string>Показывать SoundCloud из Safari или Chrome</string>
 	<key>Show a break move</key>
 	<string>Показывать движение на перерыве</string>
+	<key>Show a quieter effect</key>
+	<string>Показывать спокойный эффект</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>Показывать итоги недели при первом открытии выреза после 18:00 в воскресенье</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -3027,6 +3083,8 @@
 	<string>При наведении</string>
 	<key>Show on external displays</key>
 	<string>Показывать на внешних дисплеях</string>
+	<key>Show the full effect</key>
+	<string>Показывать весь эффект</string>
 	<key>Show the less common settings</key>
 	<string>Показать редкие настройки</string>
 	<key>Show the top decks beside today's total</key>
@@ -3045,6 +3103,8 @@
 	<string>Показать вчерашний список</string>
 	<key>Show your calendar in Tabbi</key>
 	<string>Календарь в Tabbi</string>
+	<key>Show your progress toward this upgrade in the wardrobe</key>
+	<string>Показывать прогресс к этому улучшению в гардеробе</string>
 	<key>Show your studies some love this week.</key>
 	<string>Удели учебе немного любви на этой неделе.</string>
 	<key>Showing local stats only</key>
@@ -3085,6 +3145,8 @@
 	<string>Забавное</string>
 	<key>Silver</key>
 	<string>Серебристый</string>
+	<key>Silver Lining</key>
+	<string>Серебряная кайма</string>
 	<key>Sip some water</key>
 	<string>Выпей немного воды</string>
 	<key>Sip water</key>
@@ -3129,10 +3191,14 @@
 	<string>Спам</string>
 	<key>Sparkle</key>
 	<string>Искорки</string>
+	<key>Sparkle Halo</key>
+	<string>Сверкающий ореол</string>
 	<key>Sparkle Trail</key>
 	<string>Блестящий шлейф</string>
 	<key>Species, breed and fur color</key>
 	<string>Вид, порода и цвет шерсти</string>
+	<key>Spike Ripple</key>
+	<string>Волна шипов</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>Время страшилок! Фокусируйся и наряжай питомца.</string>
 	<key>Sporty Sweatband</key>
@@ -3155,6 +3221,8 @@
 	<string>Встань, разомни ноги и садись обратно, когда захочешь.</string>
 	<key>Star tag</key>
 	<string>Звездный жетон</string>
+	<key>Stardust Stream</key>
+	<string>Поток звёздной пыли</string>
 	<key>Starlight, every tier earned</key>
 	<string>Звёздный свет, все уровни получены</string>
 	<key>Starry Cloak</key>
@@ -3251,6 +3319,8 @@
 	<string>Перестать фокусироваться на задаче</string>
 	<key>Stop reading this folder</key>
 	<string>Больше не читать эту папку</string>
+	<key>Stop showing this goal in the wardrobe</key>
+	<string>Больше не показывать эту цель в гардеробе</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>Остановить синхронизацию на этом Mac. Питомец и прогресс останутся здесь.</string>
 	<key>Stop the preview</key>
@@ -3305,6 +3375,8 @@
 	<string>Учится</string>
 	<key>Submit</key>
 	<string>Отправить</string>
+	<key>Subtle</key>
+	<string>Мягко</string>
 	<key>Suggest a Feature or Report a Bug</key>
 	<string>Предложить идею или сообщить об ошибке</string>
 	<key>Summer</key>
@@ -3405,6 +3477,8 @@
 	<string>Задачи</string>
 	<key>Tasks left today</key>
 	<string>Задачи на сегодня</string>
+	<key>Tassel Swing</key>
+	<string>Качание кисточки</string>
 	<key>Team Medal</key>
 	<string>Командная медаль</string>
 	<key>Ten hours of betting on yourself. Keep betting.</key>
@@ -3607,8 +3681,12 @@
 	<string>Мини-корона</string>
 	<key>Tiny Lantern</key>
 	<string>Фонарик</string>
+	<key>Tiny Planet</key>
+	<string>Маленькая планета</string>
 	<key>Tiny Rain Cloud</key>
 	<string>Мини-тучка</string>
+	<key>Tiny Roar</key>
+	<string>Маленький рык</string>
 	<key>Tips to focus better</key>
 	<string>Как лучше сосредоточиться</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
@@ -3743,6 +3821,8 @@
 	<string>Открыть за %lld очк.</string>
 	<key>Unmute</key>
 	<string>Включить звук</string>
+	<key>Unpin</key>
+	<string>Открепить</string>
 	<key>Unpin %@ from the Study button</key>
 	<string>Открепить %@ от кнопки «Учить»</string>
 	<key>Unpin Favorite Deck</key>
@@ -3771,6 +3851,14 @@
 	<string>Обновлено %lld мин назад</string>
 	<key>Updated just now</key>
 	<string>Обновлено только что</string>
+	<key>Upgrade</key>
+	<string>Улучшить</string>
+	<key>Upgrade for %@ points</key>
+	<string>Улучшить за %@ очков</string>
+	<key>Upgraded</key>
+	<string>Улучшено</string>
+	<key>Upgraded. Friends on Party see it too.</key>
+	<string>Улучшено. Друзья в Party тоже это видят.</string>
 	<key>Usage logs</key>
 	<string>Журналы использования</string>
 	<key>Usage of your rolling 5-hour limit</key>
@@ -3803,6 +3891,8 @@
 	<string>Открыть на GitHub</string>
 	<key>Visible: friends see when you study</key>
 	<string>Видно друзьям</string>
+	<key>Visor Glint</key>
+	<string>Блик визора</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>Яркие акценты и фиолетовое свечение.</string>
 	<key>Volume</key>
@@ -3881,6 +3971,8 @@
 	<string>Белый шум</string>
 	<key>Winter Holidays</key>
 	<string>Зимние праздники</string>
+	<key>Wishing Star</key>
+	<string>Звезда желаний</string>
 	<key>Witch Hat</key>
 	<string>Шляпа ведьмы</string>
 	<key>With %@</key>
@@ -4077,6 +4169,8 @@
 	<string>Здесь появятся питомец, серия и таймер.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>Твой питомец, серия и идущий таймер.</string>
+	<key>Your pinned goal: Radiant %@ for %@ points</key>
+	<string>Закреплённая цель: %@ (сияние) за %@ очков</string>
 	<key>Your plan</key>
 	<string>Твой план</string>
 	<key>Your playlist</key>
@@ -4163,8 +4257,12 @@
 	<string>баллы</string>
 	<key>pts</key>
 	<string>оч.</string>
+	<key>pts, 5x its price</key>
+	<string>оч., 5x цены</string>
 	<key>ready to unlock</key>
 	<string>можно открыть</string>
+	<key>ready to upgrade</key>
+	<string>можно улучшить</string>
 	<key>resets %@</key>
 	<string>сброс %@</string>
 	<key>resets in %@</key>

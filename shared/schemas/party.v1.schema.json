@@ -9,6 +9,11 @@
     "unixSeconds": { "description": "Whole seconds since 1970-01-01 UTC.", "type": "integer" },
     "itemId": { "description": "A catalog id; unknown ones are drawn without the item.", "type": "string" },
     "hexColor": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+    "radiantEntry": {
+      "description": "A Radiant item upgrade: a worn costume or accessory id from the catalog's radiantItems, a colon, and an intensity from its radiantIntensities (crown:bold). A client draws the entries it knows and ignores the rest.",
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*:[a-z0-9]+(-[a-z0-9]+)*$"
+    },
     "error": {
       "description": "Every failure: an HTTP status of 400 or more and a stable error code. Clients branch on error, never on message.",
       "type": "object",
@@ -50,6 +55,7 @@
         "accessories": { "description": "Every worn accessory, at most one per slot.", "type": "array", "items": { "$ref": "#/$defs/itemId" } },
         "points": { "type": "integer", "minimum": 0 },
         "level": { "type": "integer", "minimum": 1 },
+        "radiant": { "description": "The worn Radiant items, at most one entry per item, sorted. The server always sends it ([] for none); a server from before Radiant leaves it out, which reads as none.", "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/radiantEntry" } },
         "badges": { "description": "Entitlement ids that show a badge (founding). Friends lists and party rosters only; missing reads as none.", "type": "array", "items": { "type": "string" } }
       }
     },
@@ -66,7 +72,8 @@
         "costume": { "$ref": "#/$defs/itemId" },
         "accessories": { "type": "array", "maxItems": 8, "uniqueItems": true, "items": { "$ref": "#/$defs/itemId" } },
         "points": { "type": "integer", "minimum": 0 },
-        "level": { "type": "integer", "minimum": 1 }
+        "level": { "type": "integer", "minimum": 1 },
+        "radiant": { "description": "The worn Radiant items (limits.maxRadiant). A non-array is refused; entries the server cannot read or does not know are dropped, the first per item is kept, then at most limits.maxRadiant, sorted. [] clears them.", "type": "array", "maxItems": 3, "uniqueItems": true, "items": { "$ref": "#/$defs/radiantEntry" } }
       }
     },
     "registerReply": {

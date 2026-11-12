@@ -141,6 +141,8 @@
 	<string>%@ made friends with a pigeon</string>
 	<key>%@ misses you</key>
 	<string>%@ misses you</string>
+	<key>%@ more points: %@ at a typical study pace</key>
+	<string>%@ more points: %@ at a typical study pace</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%@ moved to position %lld of %lld</string>
 	<key>%@ napped on a sunny windowsill</key>
@@ -191,6 +193,8 @@
 	<string>%@ this month.</string>
 	<key>%@ to %@</key>
 	<string>%@ to %@</string>
+	<key>%@ to go</key>
+	<string>%@ to go</string>
 	<key>%@ today</key>
 	<string>%@ today</string>
 	<key>%@ tokens</key>
@@ -243,6 +247,10 @@
 	<string>%@.</string>
 	<key>%@. %@</key>
 	<string>%@. %@</string>
+	<key>%@. Keeps its look and adds a loop of light.</key>
+	<string>%@. Keeps its look and adds a loop of light.</string>
+	<key>%@. Pick how strongly it shows; Reduce Motion keeps it still.</key>
+	<string>%@. Pick how strongly it shows; Reduce Motion keeps it still.</string>
 	<key>%@.fontWeight(.medium)). %@</key>
 	<string>%@.fontWeight(.medium)). %@</string>
 	<key>%@: %@</key>
@@ -715,6 +723,8 @@
 	<string>Back to the notch (Esc)</string>
 	<key>Back to the timer</key>
 	<string>Back to the timer</string>
+	<key>Back to the wardrobe</key>
+	<string>Back to the wardrobe</string>
 	<key>Back to today</key>
 	<string>Back to today</string>
 	<key>Backwards Cap</key>
@@ -749,6 +759,8 @@
 	<string>Blocks go to your calendar.</string>
 	<key>Blossom Sprout</key>
 	<string>Blossom Sprout</string>
+	<key>Bold</key>
+	<string>Bold</string>
 	<key>Bond %lld</key>
 	<string>Bond %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -1003,8 +1015,12 @@
 	<string>Click to send the pet home</string>
 	<key>Click to take off</key>
 	<string>Click to take off</string>
+	<key>Click to take off, or the star to make it Radiant</key>
+	<string>Click to take off, or the star to make it Radiant</string>
 	<key>Click to wear</key>
 	<string>Click to wear</string>
+	<key>Click to wear, or the star to make it Radiant</key>
+	<string>Click to wear, or the star to make it Radiant</string>
 	<key>Close</key>
 	<string>Close</string>
 	<key>Close %@ settings</key>
@@ -1049,6 +1065,8 @@
 	<string>Command</string>
 	<key>Compact</key>
 	<string>Compact</string>
+	<key>Confetti Toss</key>
+	<string>Confetti Toss</string>
 	<key>Connect</key>
 	<string>Connect</string>
 	<key>Connect Anki</key>
@@ -1561,6 +1579,8 @@
 	<string>GB</string>
 	<key>GPU utilization, last 60 seconds</key>
 	<string>GPU utilization, last 60 seconds</string>
+	<key>Gem Glints</key>
+	<string>Gem Glints</string>
 	<key>General</key>
 	<string>General</string>
 	<key>Gentle streak</key>
@@ -1637,6 +1657,8 @@
 	<string>Heads down</string>
 	<key>Heart Glasses</key>
 	<string>Heart Glasses</string>
+	<key>Heartbeat</key>
+	<string>Heartbeat</string>
 	<key>Heirloom</key>
 	<string>Heirloom</string>
 	<key>Hi! I'm %@.</key>
@@ -1825,6 +1847,8 @@
 	<string>Keep the notch out of screen sharing, recordings and screenshots, for example while presenting in class</string>
 	<key>Keep the suggested kit</key>
 	<string>Keep the suggested kit</string>
+	<key>Keep the upgrade but show the item as before</key>
+	<string>Keep the upgrade but show the item as before</string>
 	<key>Keep these tabs and set up what they need</key>
 	<string>Keep these tabs and set up what they need</string>
 	<key>Keep this and go on</key>
@@ -1843,6 +1867,8 @@
 	<string>Kit</string>
 	<key>Koi Yukata</key>
 	<string>Koi Yukata</string>
+	<key>Lapel Glint</key>
+	<string>Lapel Glint</string>
 	<key>Large</key>
 	<string>Large</string>
 	<key>Last 7 days</key>
@@ -1949,6 +1975,10 @@
 	<string>Lunar New Year</string>
 	<key>Main display</key>
 	<string>Main display</string>
+	<key>Make %@ Radiant</key>
+	<string>Make %@ Radiant</string>
+	<key>Make Radiant</key>
+	<string>Make Radiant</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
 	<string>Make one more the same way, turned Off, and name it:</string>
 	<key>Make sure Calendars is turned on for that account.</key>
@@ -2009,6 +2039,8 @@
 	<string>Monthly quests</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>Monthly quests, badges and outfits earned from long goals</string>
+	<key>Moonlit Blindfold</key>
+	<string>Moonlit Blindfold</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Moonlit Witch Hat</string>
 	<key>Moonstone</key>
@@ -2445,6 +2477,8 @@
 	<string>Options…</string>
 	<key>Orange</key>
 	<string>Orange</string>
+	<key>Orbiting Orb</key>
+	<string>Orbiting Orb</string>
 	<key>Other</key>
 	<string>Other</string>
 	<key>Out of sight. Press %@ to open it.</key>
@@ -2585,6 +2619,8 @@
 	<string>Pin as Favorite Deck</string>
 	<key>Pin as favorite</key>
 	<string>Pin as favorite</string>
+	<key>Pin as goal</key>
+	<string>Pin as goal</string>
 	<key>Pink noise</key>
 	<string>Pink noise</string>
 	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
@@ -2663,6 +2699,10 @@
 	<string>Presets</string>
 	<key>Preview</key>
 	<string>Preview</string>
+	<key>Preview the Bold effect</key>
+	<string>Preview the Bold effect</string>
+	<key>Preview the Subtle effect</key>
+	<string>Preview the Subtle effect</string>
 	<key>Previous track</key>
 	<string>Previous track</string>
 	<key>Privacy</key>
@@ -2705,10 +2745,24 @@
 	<string>Quit Anki and open it again. If it asks about Tabbi, click Yes.</string>
 	<key>Quit Anki and open it again. Tabbi notices by itself.</key>
 	<string>Quit Anki and open it again. Tabbi notices by itself.</string>
+	<key>Radiant %@</key>
+	<string>Radiant %@</string>
+	<key>Radiant %@: set its effect</key>
+	<string>Radiant %@: set its effect</string>
+	<key>Radiant Effect</key>
+	<string>Radiant Effect</string>
+	<key>Radiant, %@</key>
+	<string>Radiant, %@</string>
+	<key>Radiant. Click to take off, or the star to set its effect</key>
+	<string>Radiant. Click to take off, or the star to set its effect</string>
+	<key>Radiant. Click to wear, or the star to set its effect</key>
+	<string>Radiant. Click to wear, or the star to set its effect</string>
 	<key>Rain</key>
 	<string>Rain</string>
 	<key>Rain Slicker</key>
 	<string>Rain Slicker</string>
+	<key>Rainbow After Rain</key>
+	<string>Rainbow After Rain</string>
 	<key>Rare</key>
 	<string>Rare</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -3003,6 +3057,8 @@
 	<string>Show SoundCloud from Safari or Chrome</string>
 	<key>Show a break move</key>
 	<string>Show a break move</string>
+	<key>Show a quieter effect</key>
+	<string>Show a quieter effect</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>Show a recap of your week the first time you open the notch after Sunday 6 pm</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -3027,6 +3083,8 @@
 	<string>Show on Hover</string>
 	<key>Show on external displays</key>
 	<string>Show on external displays</string>
+	<key>Show the full effect</key>
+	<string>Show the full effect</string>
 	<key>Show the less common settings</key>
 	<string>Show the less common settings</string>
 	<key>Show the top decks beside today's total</key>
@@ -3045,6 +3103,8 @@
 	<string>Show yesterday's list</string>
 	<key>Show your calendar in Tabbi</key>
 	<string>Show your calendar in Tabbi</string>
+	<key>Show your progress toward this upgrade in the wardrobe</key>
+	<string>Show your progress toward this upgrade in the wardrobe</string>
 	<key>Show your studies some love this week.</key>
 	<string>Show your studies some love this week.</string>
 	<key>Showing local stats only</key>
@@ -3085,6 +3145,8 @@
 	<string>Silly</string>
 	<key>Silver</key>
 	<string>Silver</string>
+	<key>Silver Lining</key>
+	<string>Silver Lining</string>
 	<key>Sip some water</key>
 	<string>Sip some water</string>
 	<key>Sip water</key>
@@ -3129,10 +3191,14 @@
 	<string>Spam</string>
 	<key>Sparkle</key>
 	<string>Sparkle</string>
+	<key>Sparkle Halo</key>
+	<string>Sparkle Halo</string>
 	<key>Sparkle Trail</key>
 	<string>Sparkle Trail</string>
 	<key>Species, breed and fur color</key>
 	<string>Species, breed and fur color</string>
+	<key>Spike Ripple</key>
+	<string>Spike Ripple</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>Spooky season is here. Focus to dress up your pet.</string>
 	<key>Sporty Sweatband</key>
@@ -3155,6 +3221,8 @@
 	<string>Stand, shake out your legs, and sit back down when you like.</string>
 	<key>Star tag</key>
 	<string>Star tag</string>
+	<key>Stardust Stream</key>
+	<string>Stardust Stream</string>
 	<key>Starlight, every tier earned</key>
 	<string>Starlight, every tier earned</string>
 	<key>Starry Cloak</key>
@@ -3251,6 +3319,8 @@
 	<string>Stop focusing on this task</string>
 	<key>Stop reading this folder</key>
 	<string>Stop reading this folder</string>
+	<key>Stop showing this goal in the wardrobe</key>
+	<string>Stop showing this goal in the wardrobe</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>Stop syncing on this Mac. Your pet and progress stay here.</string>
 	<key>Stop the preview</key>
@@ -3305,6 +3375,8 @@
 	<string>Studying</string>
 	<key>Submit</key>
 	<string>Submit</string>
+	<key>Subtle</key>
+	<string>Subtle</string>
 	<key>Suggest a Feature or Report a Bug</key>
 	<string>Suggest a Feature or Report a Bug</string>
 	<key>Summer</key>
@@ -3405,6 +3477,8 @@
 	<string>Tasks</string>
 	<key>Tasks left today</key>
 	<string>Tasks left today</string>
+	<key>Tassel Swing</key>
+	<string>Tassel Swing</string>
 	<key>Team Medal</key>
 	<string>Team Medal</string>
 	<key>Ten hours of betting on yourself. Keep betting.</key>
@@ -3607,8 +3681,12 @@
 	<string>Tiny Crown</string>
 	<key>Tiny Lantern</key>
 	<string>Tiny Lantern</string>
+	<key>Tiny Planet</key>
+	<string>Tiny Planet</string>
 	<key>Tiny Rain Cloud</key>
 	<string>Tiny Rain Cloud</string>
+	<key>Tiny Roar</key>
+	<string>Tiny Roar</string>
 	<key>Tips to focus better</key>
 	<string>Tips to focus better</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
@@ -3743,6 +3821,8 @@
 	<string>Unlock for %lld pts</string>
 	<key>Unmute</key>
 	<string>Unmute</string>
+	<key>Unpin</key>
+	<string>Unpin</string>
 	<key>Unpin %@ from the Study button</key>
 	<string>Unpin %@ from the Study button</string>
 	<key>Unpin Favorite Deck</key>
@@ -3771,6 +3851,14 @@
 	<string>Updated %lldm ago</string>
 	<key>Updated just now</key>
 	<string>Updated just now</string>
+	<key>Upgrade</key>
+	<string>Upgrade</string>
+	<key>Upgrade for %@ points</key>
+	<string>Upgrade for %@ points</string>
+	<key>Upgraded</key>
+	<string>Upgraded</string>
+	<key>Upgraded. Friends on Party see it too.</key>
+	<string>Upgraded. Friends on Party see it too.</string>
 	<key>Usage logs</key>
 	<string>Usage logs</string>
 	<key>Usage of your rolling 5-hour limit</key>
@@ -3803,6 +3891,8 @@
 	<string>View on GitHub</string>
 	<key>Visible: friends see when you study</key>
 	<string>Visible: friends see when you study</string>
+	<key>Visor Glint</key>
+	<string>Visor Glint</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>Vivid accents with a violet glow.</string>
 	<key>Volume</key>
@@ -3881,6 +3971,8 @@
 	<string>White noise</string>
 	<key>Winter Holidays</key>
 	<string>Winter Holidays</string>
+	<key>Wishing Star</key>
+	<string>Wishing Star</string>
 	<key>Witch Hat</key>
 	<string>Witch Hat</string>
 	<key>With %@</key>
@@ -4077,6 +4169,8 @@
 	<string>Your pet, streak and timer show up here.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>Your pet, today's streak and the running timer.</string>
+	<key>Your pinned goal: Radiant %@ for %@ points</key>
+	<string>Your pinned goal: Radiant %@ for %@ points</string>
 	<key>Your plan</key>
 	<string>Your plan</string>
 	<key>Your playlist</key>
@@ -4163,8 +4257,12 @@
 	<string>points</string>
 	<key>pts</key>
 	<string>pts</string>
+	<key>pts, 5x its price</key>
+	<string>pts, 5x its price</string>
 	<key>ready to unlock</key>
 	<string>ready to unlock</string>
+	<key>ready to upgrade</key>
+	<string>ready to upgrade</string>
 	<key>resets %@</key>
 	<string>resets %@</string>
 	<key>resets in %@</key>

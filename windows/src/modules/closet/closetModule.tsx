@@ -24,7 +24,7 @@ import { focusTimer } from "../focus/focusServices";
 import { PetCoachController } from "./coach/petCoachController";
 import { CLOSET_DESCRIPTOR } from "./closetDescriptor";
 import { studyPet, surpriseGifts } from "./closetServices";
-import type { ClosetSection } from "./closetStore";
+import type { ClosetSection, RadiantSnapshot } from "./closetStore";
 import { recapTakeover } from "./recap/RecapCard";
 import { RecapMoment } from "./recap/recapMoment";
 import { copyRecapImage, saveRecapImage } from "./recap/recapSharing";
@@ -56,6 +56,9 @@ const SNAPSHOT_STATES = [
   "founding-unearned-scrolling",
   "long-name",
   "long-name-scrolling",
+  "radiant-upgrade",
+  "radiant-goal",
+  "radiant-setting",
   "animated",
   "recap-heavy",
   "recap-light",
@@ -70,6 +73,8 @@ interface SnapshotShot {
   readonly tryingOnItem?: PetItem;
   /** Shows the newest badge tier as not seen yet (the Goals pill's dot). */
   readonly newGoal?: boolean;
+  /** One of the Radiant shots: an upgrade about to be bought, a pinned goal, an upgraded item's setting. */
+  readonly radiant?: RadiantSnapshot;
 }
 
 export const ClosetModule = defineModule(
@@ -147,6 +152,7 @@ export const ClosetModule = defineModule(
         ...(shot.name === undefined ? {} : { name: shot.name }),
         ...(shot.scrolled === undefined ? {} : { scrolled: shot.scrolled }),
         ...(shot.newGoal === undefined ? {} : { newGoal: shot.newGoal }),
+        ...(shot.radiant === undefined ? {} : { radiant: shot.radiant }),
       });
       store.tryOn(shot.tryingOnItem ?? (shot.tryingOn === undefined || !PET_ACCESSORIES.includes(shot.tryingOn) ? undefined : accessoryItem(shot.tryingOn)));
     };
@@ -208,6 +214,12 @@ export const ClosetModule = defineModule(
             return show("wardrobe", { tryingOn: "chunkyHeadphones", name: "Wolfgang Wombats", scrolled: 0.6 });
           case "animated":
             return show("activity", { tryingOn: "angelWings" });
+          case "radiant-upgrade":
+            return show("wardrobe", { radiant: "upgrade" });
+          case "radiant-goal":
+            return show("wardrobe", { radiant: "goal" });
+          case "radiant-setting":
+            return show("wardrobe", { radiant: "setting" });
           case "recap-heavy":
             return showRecap("heavy");
           case "recap-light":

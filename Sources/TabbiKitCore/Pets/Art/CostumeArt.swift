@@ -107,6 +107,11 @@ enum CostumeArt {
         /// Around the dachshund sitting side-on, its head where other pets
         /// leave air; the front loop unless the item needs its own.
         let longDog: BackItem.Placement
+        /// Under a ceiling (the closed notch), the item moves down as a
+        /// whole until its top row is at the ceiling, instead of leaving out
+        /// what reaches above it: the rain cloud hangs at the frame's top,
+        /// and the notch would otherwise show only its drops.
+        var lowersUnderCeiling = false
 
         /// Frames in the item's loop, the same for both views.
         var frameCount: Int { front.frames.count }

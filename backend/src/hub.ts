@@ -346,6 +346,15 @@ CREATE INDEX friend_requests_by_recipient ON friend_requests (recipient, created
 `;
 
 /**
+ * Radiant item upgrades the pet wears (see parseRadiant in lib.ts). Rows from before this step read as
+ * none, which is also what an app that does not know Radiant gets to keep.
+ */
+const RADIANT_SCHEMA = `
+-- The pet's worn Radiant items as a JSON array of sorted "<item id>:<intensity>" strings.
+ALTER TABLE users ADD COLUMN radiant TEXT NOT NULL DEFAULT '[]';
+`;
+
+/**
  * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
  * created before versioning (which have its tables but no recorded version) pass through it unchanged.
@@ -353,7 +362,7 @@ CREATE INDEX friend_requests_by_recipient ON friend_requests (recipient, created
 const MIGRATIONS = [
   SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA, GRANTS_SCHEMA,
   SUGGESTIONS_SCHEMA, SUGGESTION_APP_SCHEMA, CRASHES_SCHEMA, WEB_SIGN_IN_SCHEMA, DOWNLOAD_COUNTS_SCHEMA,
-  ENTITLEMENTS_SCHEMA, FRIEND_REQUESTS_SCHEMA,
+  ENTITLEMENTS_SCHEMA, FRIEND_REQUESTS_SCHEMA, RADIANT_SCHEMA,
 ];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
@@ -392,6 +401,7 @@ interface UserRow extends Record<string, SqlStorageValue> {
   level: number;
   created_at: number;
   protocol: number;
+  radiant: string;
 }
 
 function rowToProfile(r: UserRow): Profile {
@@ -406,6 +416,7 @@ function rowToProfile(r: UserRow): Profile {
     accessories: JSON.parse(r.accessories) as string[],
     points: r.points,
     level: r.level,
+    radiant: JSON.parse(r.radiant ?? "[]") as string[],
   };
 }
 
@@ -1051,11 +1062,11 @@ export class Hub extends DurableObject<Env> {
     if (this.userExists(code)) throw new HttpError(503, "unavailable", "could not allocate a code, retry");
     const profile = applyProfilePatch(defaultProfile(code), patch);
     this.sql.exec(
-      `INSERT INTO users (code, token_hash, name, pet_name, species, breed, colors, costume, accessories, points, level, created_at, protocol)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO users (code, token_hash, name, pet_name, species, breed, colors, costume, accessories, points, level, created_at, protocol, radiant)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       code, tokenHash, profile.name, profile.petName, profile.species, profile.breed,
       JSON.stringify(profile.colors), profile.costume, JSON.stringify(profile.accessories),
-      profile.points, profile.level, now, protocol,
+      profile.points, profile.level, now, protocol, JSON.stringify(profile.radiant),
     );
     return profile;
   }
@@ -1069,9 +1080,9 @@ export class Hub extends DurableObject<Env> {
     if (!sameProfile(next, caller.profile)) {
       this.sql.exec(
         `UPDATE users SET name = ?, pet_name = ?, species = ?, breed = ?, colors = ?, costume = ?,
-           accessories = ?, points = ?, level = ? WHERE code = ?`,
+           accessories = ?, points = ?, level = ?, radiant = ? WHERE code = ?`,
         next.name, next.petName, next.species, next.breed, JSON.stringify(next.colors), next.costume,
-        JSON.stringify(next.accessories), next.points, next.level, caller.code,
+        JSON.stringify(next.accessories), next.points, next.level, JSON.stringify(next.radiant), caller.code,
       );
     }
     if (isRegister) return json({ ok: true, code: caller.code, profile: next });

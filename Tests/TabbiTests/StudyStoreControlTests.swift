@@ -62,6 +62,7 @@ final class StudyStoreControlTests: XCTestCase {
     // MARK: Skip
 
     func testSkippingARunningBlockLogsItAsSkippedAndRunsTheBreak() throws {
+        let savedAt = Date()
         try saveRunning(.pomodoro, minutesAgo: 10)
         let log = ActivityLog(repository: nil)
         let store = launch(activity: log)
@@ -76,7 +77,11 @@ final class StudyStoreControlTests: XCTestCase {
         let records = logged(log)
         XCTAssertEqual(records.map(\.kind), [.focusCompleted])
         XCTAssertEqual(records.first?.metadata[ActivityMetadata.outcome], StudyPhaseOutcome.skipped.rawValue)
-        XCTAssertEqual(try XCTUnwrap(records.first?.quantity), 10, accuracy: 0.1)
+        // Ten minutes plus however long the test took to get here, which a
+        // busy machine stretches past a few seconds.
+        let credited = try XCTUnwrap(records.first?.quantity)
+        XCTAssertGreaterThanOrEqual(credited, 10 - 0.01)
+        XCTAssertLessThanOrEqual(credited, 10 + Date().timeIntervalSince(savedAt) / 60 + 0.01)
         XCTAssertEqual(store.today.minutes, 10, "the minutes still count as study time")
         let saved = try savedSession()
         XCTAssertEqual(saved.phase, .shortBreak, "the skip is saved for the next launch")

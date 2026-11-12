@@ -44,6 +44,7 @@ function demoProfile(code: string, name: string, pet: PetProfile, badges: readon
     costume: update.costume ?? "none",
     accessories: update.accessories ?? [],
     badges,
+    radiant: update.radiant ?? [],
   });
 }
 
@@ -91,7 +92,12 @@ export function partyDemoState(now: Instant, timeZone: string): PartyState {
   const maya = demoProfile("M4YA8QRT", "Maya", pet("Biscuit", "goldenRetriever", ["roundGlasses", "cowboyHat"]), [PARTY_BADGE_FOUNDING]);
   const priya = demoProfile("PR1YA6KD", "Priya", pet("Luna", "siamese", ["surgicalCap"], "scrubs"));
   const leo = demoProfile("LE0J9WXC", "Leo", pet("Waffles", "corgi", ["frogHat"], "cozyHoodie"));
-  const jonah = demoProfile("J0NAH2PF", "Jonah", pet("Pepper", "blackCat", ["wizardHat"]));
+  /* Jonah's hat is Radiant, so the cards show a friend's effect. */
+  const jonah = demoProfile(
+    "J0NAH2PF",
+    "Jonah",
+    new PetProfile("Pepper", "blackCat", { accessories: ["wizardHat"], radiance: new Map([["accessory.wizardHat", "bold"]]) }),
+  );
   const noor = demoProfile("N4ZR7HVB", "Noor", pet("Pip", "scottishFold", ["chunkyHeadphones"]));
 
   const party: Party = {

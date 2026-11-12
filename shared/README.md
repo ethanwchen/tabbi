@@ -5,6 +5,7 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
 
 - `schemas/` holds JSON Schema files for the data formats both apps read.
   `pets.v1.schema.json` describes the pet art, breeds and animation timelines in `Sources/TabbiKitCore/Pets/PetArt/`.
+  `radiant.v1.schema.json` describes the Radiant upgrade effects in `Sources/TabbiKitCore/Pets/PetArt/radiant.json` (`radiant-costs.json` beside it holds their measured per-tick costs).
   `themes.v1.schema.json` describes the themes in `Sources/TabbiKitCore/Themes/themes.json`.
   `study-methods.v1.schema.json` describes the study methods in `Sources/TabbiKitCore/StudyMethods/study-methods.json`.
   `events.v1.schema.json` describes the year of seasonal events in `Sources/TabbiKitCore/Events/events.json`.
@@ -17,7 +18,8 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
   `SharedSchemaTests` keeps the kit and edition schemas' fields, limits and patterns equal to the Swift decoders, and the catalog schema equal to the catalog's fields.
 - `fixtures/` holds golden fixtures written by the Swift tests.
   Each port checks its own output against them, so drift between the apps fails a test.
-  `pets/`, `themes/` and `study-methods/` pin the data files above (`pets/rendered.json` also pins the rendered colors, dark-coat rim included); `claude-stream/` pins how the `claude` CLI's stream-json lines are parsed and folded into an Ask Claude chat;
+  `pets/`, `themes/` and `study-methods/` pin the data files above (`pets/rendered.json` also pins the rendered colors, dark-coat rim included, and `pets/radiant.json` the Radiant effects: how every set of Radiant items worn together is laid out, and digests of every frame and tick);
+  `closet/radiant.json` pins Radiant upgrades in the economy: prices, an upgrade scenario's saves, sync unlocks and the Party wire field; `claude-stream/` pins how the `claude` CLI's stream-json lines are parsed and folded into an Ask Claude chat;
   `focus-timer/` pins the shared Pomodoro: its steps, readouts, shared focus clock and logged activity;
   `study-session/` pins the Study tab's timer for every method: its steps, the dial, buttons and pet, the shared focus clock and the logged phases;
   `ticker/` pins which items the closed notch can show, when it next has to look again, and which one the rotation picks;
@@ -37,7 +39,7 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
 Fixtures are regenerated only on purpose, after an intended change:
 
 ```sh
-TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|ThemeGoldenTests|StudyMethodGoldenTests|ClaudeStreamGoldenTests|FocusTimerGoldenTests|StudySessionGoldenTests|TickerGoldenTests|PlanMyDayGoldenTests|PartyProtocolGoldenTests|SyncDocumentGoldenTests|ClosetGoldenTests|ActivityLogGoldenTests|StreaksRecapGoldenTests|AnkiGoldenTests|KitGoldenTests|OnboardingGoldenTests|FormattingGoldenTests|BreakBuddyGoldenTests|ProgressionGoldenTests'
+TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|RadiantGoldenTests|RadiantEconomyTests|ThemeGoldenTests|StudyMethodGoldenTests|ClaudeStreamGoldenTests|FocusTimerGoldenTests|StudySessionGoldenTests|TickerGoldenTests|PlanMyDayGoldenTests|PartyProtocolGoldenTests|SyncDocumentGoldenTests|ClosetGoldenTests|ActivityLogGoldenTests|StreaksRecapGoldenTests|AnkiGoldenTests|KitGoldenTests|OnboardingGoldenTests|FormattingGoldenTests|BreakBuddyGoldenTests|ProgressionGoldenTests'
 ```
 
 A push to a branch named `shared/...` runs `.github/workflows/record-fixtures.yml`, which records the newer fixtures on a Mac runner, uploads `shared/fixtures/` as the `fixtures` artifact and then checks the tests against that recording.

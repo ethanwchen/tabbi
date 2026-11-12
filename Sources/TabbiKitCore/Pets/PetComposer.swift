@@ -37,6 +37,9 @@ public enum PetComposer {
         /// and not moved by a hop, or nil when none is worn or the pet is
         /// out of view. Added in front of the pet after its effects.
         var aura: PetCanvas?
+        /// The aura items that move down under a ceiling instead of losing
+        /// what reaches above it (`AuraItem.lowersUnderCeiling`), kept apart.
+        var loweringAura: PetCanvas?
         /// Top-right corner of the head's skull, in frame pixels.
         var headTopRight: PetPoint
         /// Top-left corner of a held mug, where its steam rises from.
@@ -44,7 +47,8 @@ public enum PetComposer {
 
         /// The pet with its aura, over its back layer.
         var picture: PetCanvas {
-            let pet = aura.map { canvas.scattering($0) } ?? canvas
+            var pet = aura.map { canvas.scattering($0) } ?? canvas
+            if let loweringAura { pet = pet.scattering(loweringAura) }
             return back.map { pet.over($0) } ?? pet
         }
     }
@@ -249,21 +253,28 @@ public enum PetComposer {
         // Aura items float in the air, so they are placed in the frame and
         // follow the view (front, the side-on dachshund, or side), not the body.
         var aura: PetCanvas?
+        var loweringAura: PetCanvas?
         let floating = auraItems(accessories, bond: bond)
         if !floating.isEmpty, stance != .hanging {
             var layer = PetCanvas(width: frameSize, height: frameSize)
+            var lowering = PetCanvas(width: frameSize, height: frameSize)
             for item in floating {
                 let placement = stance == .sitting ? layout.pick(item) : item.side
-                layer.stamp(placement.frames[phase % item.frameCount], x: placement.x, y: placement.y)
+                if item.lowersUnderCeiling {
+                    lowering.stamp(placement.frames[phase % item.frameCount], x: placement.x, y: placement.y)
+                } else {
+                    layer.stamp(placement.frames[phase % item.frameCount], x: placement.x, y: placement.y)
+                }
             }
-            aura = layer
+            if floating.contains(where: { !$0.lowersUnderCeiling }) { aura = layer }
+            if floating.contains(where: \.lowersUnderCeiling) { loweringAura = lowering }
         }
         let anchor = PetPoint(x: headX + layout.head.width - 1, y: headY + layout.skullTop - pose.lift)
         // The back layer is outlined on its own and goes under the outlined
         // pet, whose outline keeps wings apart from fur of any color.
         return Composed(canvas: canvas.outlined().shifted(x: 0, y: -pose.lift),
                         back: behind.isEmpty ? nil : back.outlined().shifted(x: 0, y: -pose.lift),
-                        aura: aura, headTopRight: anchor, mugTop: mugTop)
+                        aura: aura, loweringAura: loweringAura, headTopRight: anchor, mugTop: mugTop)
     }
 
     /// Draws a held prop in front of the sitting pet, centered under the

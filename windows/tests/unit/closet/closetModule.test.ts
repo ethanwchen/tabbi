@@ -119,6 +119,17 @@ describe("ClosetModule on the runtime", () => {
     }
     expect(closet.store.state.section).toBe("activity");
     expect(closet.store.state.tryingOn).toBe("accessory.angelWings");
+    /* The Radiant shots: an upgraded item's sheet, a pinned goal with the grid, and the sheet closing on another section. */
+    await closet.showSnapshotState("radiant-setting");
+    expect(closet.store.state.radiantSheet).toBe("accessory.blindfoldedSorcerer");
+    expect(closet.store.closet.radiantState("accessory.blindfoldedSorcerer")).toEqual({ kind: "radiant", intensity: "bold" });
+    await closet.showSnapshotState("radiant-goal");
+    expect(closet.store.state.radiantSheet).toBeUndefined();
+    expect(closet.store.closet.radiantGoalProgress).toEqual({ item: "accessory.blindfoldedSorcerer", have: 4210, price: 9750 });
+    await closet.showSnapshotState("radiant-upgrade");
+    expect(closet.store.closet.radiantState("accessory.wizardHat")).toEqual({ kind: "affordable" });
+    await closet.showSnapshotState("animated");
+    expect(closet.store.state.radiantSheet).toBeUndefined();
     expect(takeoverSlot(app.shared).get()).toBeDefined();
     closet.moment.dismiss();
     expect(takeoverSlot(app.shared).get()).toBeUndefined();

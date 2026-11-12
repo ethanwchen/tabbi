@@ -205,7 +205,8 @@ struct PetArtFile: Sendable {
         for (name, item) in raw.auraItems ?? [:] {
             let front = try placement(item.front, "\(name).front")
             let aura = try CostumeArt.AuraItem(front: front, side: placement(item.side, "\(name).side"),
-                                               longDog: item.longDog.map { try placement($0, "\(name).longDog") } ?? front)
+                                               longDog: item.longDog.map { try placement($0, "\(name).longDog") } ?? front,
+                                               lowersUnderCeiling: item.lowersUnderCeiling ?? false)
             for (view, placement) in [("side", aura.side), ("longDog", aura.longDog)]
             where placement.frames.count != aura.frameCount {
                 throw LoadError.invalidGrid(name: "\(name).\(view)", reason: "\(placement.frames.count) frames "
@@ -332,6 +333,7 @@ struct PetArtFile: Sendable {
         struct AuraItem: Decodable {
             let front, side: BackPlacement
             let longDog: BackPlacement?
+            let lowersUnderCeiling: Bool?
         }
 
         let schema: String

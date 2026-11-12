@@ -57,7 +57,7 @@ export class PetPlayer {
 
   private static clips(profile: PetProfile, ceiling: number | undefined): PetClipSet {
     return cachedClipSet(
-      { breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories, bond: profile.bondLook },
+      { breed: profile.breed, outfit: profile.outfit, accessories: profile.accessories, bond: profile.bondLook, radiant: profile.radiantLook },
       ceiling,
     );
   }

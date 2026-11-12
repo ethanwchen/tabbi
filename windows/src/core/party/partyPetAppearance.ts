@@ -2,6 +2,10 @@ import { colorFromHex, colorHex, type PetColor, type PetPaletteRole } from "../p
 import { PET_ACCESSORIES, PET_OUTFITS, type PetAccessory, type PetOutfit } from "../pets/petCostume";
 import { PET_BREEDS, PET_SPECIES, isOneOf, type PetBreed } from "../pets/petKinds";
 import { PetProfile } from "../pets/petProfile";
+import { accessoryItem, itemParts, outfitItem, type PetItem } from "../pets/petItem";
+import { wearable } from "../pets/petCostume";
+import { isPetRadiantIntensity, type PetRadiantIntensity } from "../pets/radiant/radiantArt";
+import { isRadiantEligible } from "../pets/radiant/radiantResolver";
 import { sameProfileUpdate, type PartyProfile, type PartyProfileUpdate } from "./partyModels";
 
 /*
@@ -334,7 +338,59 @@ export function partyPetUpdate(pet: PetProfile): PartyProfileUpdate {
     colors: PARTY_COLOR_ROLES.map((role) => opaqueHex(palette.color(role))),
     costume: pet.outfit === "none" ? legacyCostume(pet.accessories) : wireOutfit(pet.outfit),
     accessories: pet.accessories.map(wireAccessory),
+    /*
+     * Sent only by someone with a Radiant upgrade (an empty list then clears
+     * what the server shows), so everyone else's update reads exactly as
+     * before on any server.
+     */
+    ...(pet.radiance.size === 0 ? {} : { radiant: partyRadiant(pet) }),
   };
+}
+
+/** The most `radiant` entries a profile carries: one per slot that has Radiant items (head, outfit, aura). */
+export const PARTY_MAX_RADIANT = 3;
+
+/** An item's server id: its outfit's or its accessory's. */
+export function wireItem(item: PetItem): string {
+  const parts = itemParts(item);
+  return parts.kind === "outfit" ? wireOutfit(parts.outfit) : wireAccessory(parts.accessory);
+}
+
+/**
+ * The Radiant effects a pet shows, as `<item id>:<intensity>` with the
+ * item's wire id: only upgraded items it wears with the effect on, in a
+ * fixed order. Sent as `radiant`; an older app or server ignores it and
+ * draws the normal item. Port of PartyPetAppearance.radiant(for:).
+ */
+export function partyRadiant(pet: PetProfile): string[] {
+  return [...pet.radiantLook.intensities].map(([item, intensity]) => `${wireItem(item)}:${intensity}`).sort();
+}
+
+/**
+ * The Radiant look in a profile's `radiant` entries, for the items it
+ * wears. Unknown ids, intensities and items without an effect are dropped,
+ * never an error. Port of PartyPetAppearance.localRadiance.
+ */
+export function localRadiance(
+  entries: readonly string[],
+  outfit: PetOutfit,
+  accessories: readonly PetAccessory[],
+): Map<PetItem, PetRadiantIntensity> {
+  const radiance = new Map<PetItem, PetRadiantIntensity>();
+  for (const entry of entries.slice(0, PARTY_MAX_RADIANT)) {
+    const colon = entry.indexOf(":");
+    if (colon < 0) continue;
+    const id = entry.slice(0, colon);
+    const intensity = entry.slice(colon + 1);
+    if (!isPetRadiantIntensity(intensity) || intensity === "off") continue;
+    const local = localOutfit(id);
+    const accessory = local === undefined ? LOCAL_ACCESSORIES.get(id) : undefined;
+    const item = local !== undefined ? outfitItem(local) : accessory !== undefined ? accessoryItem(accessory) : undefined;
+    if (item === undefined || !isRadiantEligible(item)) continue;
+    const worn = local !== undefined ? local === outfit : accessory !== undefined && accessories.includes(accessory);
+    if (worn) radiance.set(item, intensity);
+  }
+  return radiance;
 }
 
 /** The pet to draw for someone's server profile. Never fails: unknown ids fall back or are dropped. */
@@ -350,7 +406,8 @@ export function partyPet(profile: PartyProfile): PetProfile {
     const hat = LEGACY_COSTUME_ACCESSORIES.find((entry) => entry.wire === profile.costume)?.accessory;
     if (hat !== undefined) accessories.unshift(hat);
   }
-  const pet = new PetProfile(profile.petName, breed, { outfit, accessories });
+  const radiance = localRadiance(profile.radiant, outfit, wearable(accessories));
+  const pet = new PetProfile(profile.petName, breed, { outfit, accessories, radiance });
   PARTY_COLOR_ROLES.forEach((role, index) => {
     const hex = profile.colors[index];
     const color = hex === undefined ? undefined : colorFromHex(hex);
@@ -418,6 +475,13 @@ export const VERSION4_ACCESSORIES: ReadonlySet<string> = new Set([
   "tiny-lantern",
 ]);
 
+/** The update with no `radiant` field, so the server keeps its value. */
+function withoutRadiant(update: PartyProfileUpdate): PartyProfileUpdate {
+  const copy: { -readonly [K in keyof PartyProfileUpdate]: PartyProfileUpdate[K] } = { ...update };
+  delete copy.radiant;
+  return copy;
+}
+
 /** The outfit and accessory ids catalog version 5 added (release 7's shop items), which a version 4 server refuses. */
 export const VERSION5_COSTUMES: ReadonlySet<string> = new Set([
   "librarian-cardigan",
@@ -446,8 +510,9 @@ export const VERSION5_ACCESSORIES: ReadonlySet<string> = new Set([
  */
 export function forCatalogVersion4(update: PartyProfileUpdate): PartyProfileUpdate {
   const { accessories, costume } = update;
+  /* A server that refused the update may not know `radiant` either. */
   return {
-    ...update,
+    ...withoutRadiant(update),
     ...(accessories === undefined ? {} : { accessories: accessories.filter((id) => !VERSION5_ACCESSORIES.has(id)) }),
     ...(costume === undefined ? {} : { costume: VERSION5_COSTUMES.has(costume) ? "none" : costume }),
   };
@@ -471,10 +536,13 @@ export function forCatalogVersion3(update: PartyProfileUpdate): PartyProfileUpda
 /**
  * The next older catalog's version of this update after a server refused
  * it, or undefined when no older catalog would take anything less: first
- * without catalog version 5's ids, then without version 4's, then as
- * version 1 takes it. Port of PartyProfileUpdate.olderCatalogFallback.
+ * without `radiant`, then without catalog version 5's ids, then without
+ * version 4's, then as version 1 takes it. Port of
+ * PartyProfileUpdate.olderCatalogFallback.
  */
 export function olderCatalogFallback(update: PartyProfileUpdate): PartyProfileUpdate | undefined {
+  /* A server from before Radiant refuses `radiant` as an unknown field: first try without it, so friends there still see the rest. */
+  if (update.radiant !== undefined) return withoutRadiant(update);
   const version4 = forCatalogVersion4(update);
   if (!sameProfileUpdate(version4, update)) return version4;
   const version3 = forCatalogVersion3(update);

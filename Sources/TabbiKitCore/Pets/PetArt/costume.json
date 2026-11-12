@@ -9449,6 +9449,7 @@
       }
     },
     "rainCloud": {
+      "lowersUnderCeiling": true,
       "front": {
         "x": 0,
         "y": 0,

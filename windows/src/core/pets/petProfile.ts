@@ -3,7 +3,7 @@ import { NO_BOND_LOOK, type PetBondLook } from "./petBond";
 import type { PetCanvas } from "./petCanvas";
 import { sitting } from "./petComposer";
 import { PET_ACCESSORIES, PET_OUTFITS, wearable, type PetAccessory, type PetOutfit } from "./petCostume";
-import { itemParts, accessoryItem, outfitItem, type PetItem } from "./petItem";
+import { itemFromID, itemParts, accessoryItem, outfitItem, type PetItem } from "./petItem";
 import { PET_BREEDS, isOneOf, type PetBreed, type PetSpecies } from "./petKinds";
 import {
   TINTABLE_FUR_ROLES,
@@ -18,6 +18,9 @@ import {
   type PetPaletteRole,
 } from "./petPalette";
 import type { PetPointsLedger } from "./petUnlocks";
+import { composeClip } from "./petClip";
+import { isPetRadiantIntensity, type PetRadiantIntensity } from "./radiant/radiantArt";
+import { PetRadiantLook, isRadiantEligible } from "./radiant/radiantResolver";
 
 /*
  * Port of PetProfile: who the study buddy is (name, breed), how it is
@@ -67,6 +70,9 @@ function editableOnly(overrides: PaletteOverrides): PaletteOverrides {
   return kept;
 }
 
+/** Radiant sitting stills by look, oldest first (`sittingCanvas`). */
+const RADIANT_STILLS = new Map<string, PetCanvas>();
+
 export class PetProfile {
   private nameValue: string;
   private breedValue: PetBreed;
@@ -77,6 +83,12 @@ export class PetProfile {
   outfit: PetOutfit;
   /** Always wearable: at most one per slot, in drawing order. */
   private worn: PetAccessory[];
+  /**
+   * The items upgraded to Radiant and how strongly each shows its effect,
+   * set per item in the Closet. Kept in step with the ledger by
+   * `restricted`: an upgrade starts on `bold`.
+   */
+  private radianceMap: Map<PetItem, PetRadiantIntensity>;
   /** What the pet has grown into with its bond; derived from the activity log, never saved. */
   bondLook: PetBondLook = NO_BOND_LOOK;
 
@@ -88,6 +100,7 @@ export class PetProfile {
       furTint?: PetColor;
       outfit?: PetOutfit;
       accessories?: readonly PetAccessory[];
+      radiance?: ReadonlyMap<PetItem, PetRadiantIntensity>;
     } = {},
   ) {
     this.nameValue = cleanPetName(name, breed);
@@ -96,6 +109,7 @@ export class PetProfile {
     this.tint = options.furTint;
     this.outfit = options.outfit ?? "none";
     this.worn = wearable(options.accessories ?? []);
+    this.radianceMap = new Map([...(options.radiance ?? [])].filter(([item]) => isRadiantEligible(item)));
   }
 
   /** A fresh, undressed pet: the British Shorthair starter cat or the Golden Retriever. */
@@ -111,6 +125,7 @@ export class PetProfile {
       ...(this.tint ? { furTint: this.tint } : {}),
       outfit: this.outfit,
       accessories: this.worn,
+      radiance: this.radianceMap,
     });
     copy.nameValue = this.nameValue;
     copy.bondLook = this.bondLook;
@@ -187,6 +202,27 @@ export class PetProfile {
     this.worn = this.worn.filter((worn) => worn !== accessory);
   }
 
+  /** Every upgraded item and its intensity. */
+  get radiance(): ReadonlyMap<PetItem, PetRadiantIntensity> {
+    return this.radianceMap;
+  }
+
+  /** How strongly `item` shows its Radiant effect, or undefined when it is not upgraded. */
+  radianceOf(item: PetItem): PetRadiantIntensity | undefined {
+    return this.radianceMap.get(item);
+  }
+
+  /** Sets an upgraded item's intensity; items not upgraded are ignored. */
+  setRadiance(intensity: PetRadiantIntensity, item: PetItem): void {
+    if (!this.radianceMap.has(item)) return;
+    this.radianceMap.set(item, intensity);
+  }
+
+  /** The Radiant effects to draw: the upgraded items worn, with their effects on. */
+  get radiantLook(): PetRadiantLook {
+    return new PetRadiantLook(this.radianceMap).worn(this.outfit, this.worn);
+  }
+
   isWearing(item: PetItem): boolean {
     const parts = itemParts(item);
     return parts.kind === "outfit" ? this.outfit === parts.outfit : this.worn.includes(parts.accessory);
@@ -198,9 +234,20 @@ export class PetProfile {
     return breedPalette(this.breedValue).applying(tint).applying(this.overrides);
   }
 
-  /** The pet sitting in its current outfit and accessories. */
+  /** The pet sitting in its current outfit and accessories. Radiant items show the still of their effect (the shimmer baked in). */
   sittingCanvas(): PetCanvas {
-    return sitting(this.breedValue, { outfit: this.outfit, accessories: this.worn, bond: this.bondLook });
+    const look = this.radiantLook;
+    if (look.isEmpty) return sitting(this.breedValue, { outfit: this.outfit, accessories: this.worn, bond: this.bondLook });
+    /* Composing a Radiant clip takes a moment, and tiles redraw often, so the still is kept per look. */
+    const bond = this.bondLook;
+    const key = JSON.stringify([this.breedValue, this.outfit, this.worn, bond.collar, bond.happyIdle, bond.sparkle, look.key]);
+    let canvas = RADIANT_STILLS.get(key);
+    if (!canvas) {
+      canvas = composeClip("sit", this.breedValue, { outfit: this.outfit, accessories: this.worn, bond, radiant: look }).stillFrame.canvas;
+      RADIANT_STILLS.set(key, canvas);
+      if (RADIANT_STILLS.size > 64) RADIANT_STILLS.delete(RADIANT_STILLS.keys().next().value as string);
+    }
+    return canvas;
   }
 
   /** A copy with anything the ledger does not own taken off. */
@@ -208,6 +255,7 @@ export class PetProfile {
     const copy = this.copy();
     if (!ledger.owns(outfitItem(this.outfit))) copy.outfit = "none";
     copy.worn = this.worn.filter((accessory) => ledger.owns(accessoryItem(accessory)));
+    copy.radianceMap = new Map([...ledger.radiant].map((item) => [item, this.radianceMap.get(item) ?? "bold"]));
     return copy;
   }
 
@@ -227,7 +275,9 @@ export class PetProfile {
       (this.tint && other.tint ? colorsEqual(this.tint, other.tint) : this.tint === other.tint) &&
       this.outfit === other.outfit &&
       this.worn.length === other.worn.length &&
-      this.worn.every((accessory, index) => other.worn[index] === accessory)
+      this.worn.every((accessory, index) => other.worn[index] === accessory) &&
+      this.radianceMap.size === other.radianceMap.size &&
+      [...this.radianceMap].every(([item, intensity]) => other.radianceMap.get(item) === intensity)
     );
   }
 
@@ -242,6 +292,8 @@ export class PetProfile {
       furTint: this.tint ? colorHex(this.tint) : null,
       outfit: this.outfit,
       accessories: [...this.worn],
+      /* Left out when empty, so profiles without upgrades read as before. */
+      ...(this.radianceMap.size > 0 ? { radiance: Object.fromEntries([...this.radianceMap].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))) } : {}),
     };
   }
 
@@ -275,11 +327,24 @@ export class PetProfile {
     const accessories = Array.isArray(object.accessories)
       ? object.accessories.filter((value): value is PetAccessory => typeof value === "string" && isOneOf(PET_ACCESSORIES, value))
       : [];
+    /* Lenient like the Mac: unknown ids and intensities are skipped, a value that is not a map reads as none. */
+    const radiance = new Map<PetItem, PetRadiantIntensity>();
+    const rawRadiance = object.radiance;
+    if (typeof rawRadiance === "object" && rawRadiance !== null && !Array.isArray(rawRadiance)) {
+      const entries = Object.entries(rawRadiance);
+      if (entries.every(([, value]) => typeof value === "string")) {
+        for (const [id, value] of entries) {
+          const item = itemFromID(id);
+          if (item && isPetRadiantIntensity(value)) radiance.set(item, value);
+        }
+      }
+    }
     return new PetProfile(name, breed, {
       paletteOverrides: kept,
       ...(furTint ? { furTint } : {}),
       outfit,
       accessories,
+      radiance,
     });
   }
 }

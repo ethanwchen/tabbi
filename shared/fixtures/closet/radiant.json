@@ -1,0 +1,270 @@
+{
+  "items" : [
+    {
+      "bold" : "Orbiting Orb",
+      "item" : "accessory.blindfoldedSorcerer",
+      "price" : 1950,
+      "radiantPrice" : 9750,
+      "subtle" : "Moonlit Blindfold",
+      "wire" : "blindfolded-sorcerer"
+    },
+    {
+      "bold" : "Stardust Stream",
+      "item" : "accessory.wizardHat",
+      "price" : 1150,
+      "radiantPrice" : 5750,
+      "subtle" : "Wishing Star",
+      "wire" : "wizard-hat"
+    },
+    {
+      "bold" : "Sparkle Halo",
+      "item" : "accessory.tinyCrown",
+      "price" : 1050,
+      "radiantPrice" : 5250,
+      "subtle" : "Gem Glints",
+      "wire" : "crown"
+    },
+    {
+      "bold" : "Tiny Roar",
+      "item" : "outfit.dinosaurHoodie",
+      "price" : 1500,
+      "radiantPrice" : 7500,
+      "subtle" : "Spike Ripple",
+      "wire" : "dinosaur-hoodie"
+    },
+    {
+      "bold" : "Tiny Planet",
+      "item" : "accessory.astronautHelmet",
+      "price" : 1800,
+      "radiantPrice" : 9000,
+      "subtle" : "Visor Glint",
+      "wire" : "astronaut-helmet"
+    },
+    {
+      "bold" : "Confetti Toss",
+      "item" : "accessory.graduationCap",
+      "price" : 2100,
+      "radiantPrice" : 10500,
+      "subtle" : "Tassel Swing",
+      "wire" : "graduation-cap"
+    },
+    {
+      "bold" : "Rainbow After Rain",
+      "item" : "accessory.rainCloud",
+      "price" : 1600,
+      "radiantPrice" : 8000,
+      "subtle" : "Silver Lining",
+      "wire" : "rain-cloud"
+    },
+    {
+      "bold" : "Heartbeat",
+      "item" : "outfit.whiteCoat",
+      "price" : 1250,
+      "radiantPrice" : 6250,
+      "subtle" : "Lapel Glint",
+      "wire" : "white-coat"
+    }
+  ],
+  "multiplier" : 5,
+  "reads" : [
+    {
+      "accessories" : [
+        "blindfolded-sorcerer"
+      ],
+      "costume" : "white-coat",
+      "look" : {
+        "accessory.blindfoldedSorcerer" : "bold",
+        "outfit.whiteCoat" : "subtle"
+      },
+      "radiant" : [
+        "blindfolded-sorcerer:bold",
+        "white-coat:subtle"
+      ]
+    },
+    {
+      "accessories" : [
+        "crown"
+      ],
+      "costume" : "none",
+      "look" : {
+        "accessory.tinyCrown" : "bold"
+      },
+      "radiant" : [
+        "crown:subtle",
+        "wizard-hat:bold",
+        "crown:bold"
+      ]
+    },
+    {
+      "accessories" : [
+        "rain-cloud"
+      ],
+      "costume" : "dinosaur-hoodie",
+      "look" : {
+
+      },
+      "radiant" : [
+        "rain-cloud:glowing",
+        "dinosaur-hoodie:off",
+        "x",
+        "halo:bold"
+      ]
+    },
+    {
+      "accessories" : [
+        "graduation-cap"
+      ],
+      "costume" : "none",
+      "look" : {
+        "accessory.graduationCap" : "bold"
+      },
+      "radiant" : [
+        "graduation-cap:bold",
+        "a:bold",
+        "b:bold",
+        "graduation-cap:subtle"
+      ]
+    }
+  ],
+  "schema" : "tabbi.closet.radiant",
+  "steps" : [
+    {
+      "balance" : 3000,
+      "item" : "accessory.wizardHat",
+      "op" : "upgrade",
+      "result" : "notOwned",
+      "save" : "{\n  \"ledger\" : {\n    \"earned\" : 3000,\n    \"purchased\" : [\n\n    ],\n    \"spent\" : 0\n  },\n  \"profile\" : {\n    \"accessories\" : [\n\n    ],\n    \"breed\" : \"britishShorthair\",\n    \"furTint\" : null,\n    \"name\" : \"Mochi\",\n    \"outfit\" : \"none\",\n    \"paletteOverrides\" : {\n\n    }\n  },\n  \"version\" : 1\n}",
+      "state" : "needsItem"
+    },
+    {
+      "balance" : 1850,
+      "item" : "accessory.wizardHat",
+      "op" : "tap",
+      "result" : "bought",
+      "save" : "{\n  \"ledger\" : {\n    \"earned\" : 3000,\n    \"purchased\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"spent\" : 1150\n  },\n  \"profile\" : {\n    \"accessories\" : [\n      \"wizardHat\"\n    ],\n    \"breed\" : \"britishShorthair\",\n    \"furTint\" : null,\n    \"name\" : \"Mochi\",\n    \"outfit\" : \"none\",\n    \"paletteOverrides\" : {\n\n    }\n  },\n  \"version\" : 1\n}",
+      "state" : "locked:3900"
+    },
+    {
+      "balance" : 1850,
+      "item" : "accessory.wizardHat",
+      "op" : "upgrade",
+      "result" : "notEnoughPoints(missing: 3900)",
+      "save" : "{\n  \"ledger\" : {\n    \"earned\" : 3000,\n    \"purchased\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"spent\" : 1150\n  },\n  \"profile\" : {\n    \"accessories\" : [\n      \"wizardHat\"\n    ],\n    \"breed\" : \"britishShorthair\",\n    \"furTint\" : null,\n    \"name\" : \"Mochi\",\n    \"outfit\" : \"none\",\n    \"paletteOverrides\" : {\n\n    }\n  },\n  \"version\" : 1\n}",
+      "state" : "locked:3900"
+    },
+    {
+      "balance" : 1850,
+      "item" : "accessory.wizardHat",
+      "op" : "pin",
+      "result" : "pinned",
+      "save" : "{\n  \"ledger\" : {\n    \"earned\" : 3000,\n    \"purchased\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"spent\" : 1150\n  },\n  \"profile\" : {\n    \"accessories\" : [\n      \"wizardHat\"\n    ],\n    \"breed\" : \"britishShorthair\",\n    \"furTint\" : null,\n    \"name\" : \"Mochi\",\n    \"outfit\" : \"none\",\n    \"paletteOverrides\" : {\n\n    }\n  },\n  \"radiantGoalID\" : \"accessory.wizardHat\",\n  \"version\" : 1\n}",
+      "state" : "locked:3900"
+    },
+    {
+      "balance" : 6750,
+      "op" : "gift",
+      "points" : 4900,
+      "result" : "credited",
+      "save" : "{\n  \"ledger\" : {\n    \"earned\" : 7900,\n    \"purchased\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"spent\" : 1150\n  },\n  \"profile\" : {\n    \"accessories\" : [\n      \"wizardHat\"\n    ],\n    \"breed\" : \"britishShorthair\",\n    \"furTint\" : null,\n    \"name\" : \"Mochi\",\n    \"outfit\" : \"none\",\n    \"paletteOverrides\" : {\n\n    }\n  },\n  \"radiantGoalID\" : \"accessory.wizardHat\",\n  \"version\" : 1\n}"
+    },
+    {
+      "balance" : 1000,
+      "item" : "accessory.wizardHat",
+      "op" : "upgrade",
+      "result" : "upgraded",
+      "save" : "{\n  \"ledger\" : {\n    \"earned\" : 7900,\n    \"purchased\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"radiant\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"spent\" : 6900\n  },\n  \"profile\" : {\n    \"accessories\" : [\n      \"wizardHat\"\n    ],\n    \"breed\" : \"britishShorthair\",\n    \"furTint\" : null,\n    \"name\" : \"Mochi\",\n    \"outfit\" : \"none\",\n    \"paletteOverrides\" : {\n\n    },\n    \"radiance\" : {\n      \"accessory.wizardHat\" : \"bold\"\n    }\n  },\n  \"version\" : 1\n}",
+      "state" : "radiant:bold"
+    },
+    {
+      "balance" : 1000,
+      "item" : "accessory.wizardHat",
+      "op" : "upgrade",
+      "result" : "alreadyRadiant",
+      "save" : "{\n  \"ledger\" : {\n    \"earned\" : 7900,\n    \"purchased\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"radiant\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"spent\" : 6900\n  },\n  \"profile\" : {\n    \"accessories\" : [\n      \"wizardHat\"\n    ],\n    \"breed\" : \"britishShorthair\",\n    \"furTint\" : null,\n    \"name\" : \"Mochi\",\n    \"outfit\" : \"none\",\n    \"paletteOverrides\" : {\n\n    },\n    \"radiance\" : {\n      \"accessory.wizardHat\" : \"bold\"\n    }\n  },\n  \"version\" : 1\n}",
+      "state" : "radiant:bold"
+    },
+    {
+      "balance" : 1000,
+      "intensity" : "subtle",
+      "item" : "accessory.wizardHat",
+      "op" : "set",
+      "result" : "set",
+      "save" : "{\n  \"ledger\" : {\n    \"earned\" : 7900,\n    \"purchased\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"radiant\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"spent\" : 6900\n  },\n  \"profile\" : {\n    \"accessories\" : [\n      \"wizardHat\"\n    ],\n    \"breed\" : \"britishShorthair\",\n    \"furTint\" : null,\n    \"name\" : \"Mochi\",\n    \"outfit\" : \"none\",\n    \"paletteOverrides\" : {\n\n    },\n    \"radiance\" : {\n      \"accessory.wizardHat\" : \"subtle\"\n    }\n  },\n  \"version\" : 1\n}",
+      "state" : "radiant:subtle"
+    },
+    {
+      "balance" : 1000,
+      "intensity" : "off",
+      "item" : "accessory.wizardHat",
+      "op" : "set",
+      "result" : "set",
+      "save" : "{\n  \"ledger\" : {\n    \"earned\" : 7900,\n    \"purchased\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"radiant\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"spent\" : 6900\n  },\n  \"profile\" : {\n    \"accessories\" : [\n      \"wizardHat\"\n    ],\n    \"breed\" : \"britishShorthair\",\n    \"furTint\" : null,\n    \"name\" : \"Mochi\",\n    \"outfit\" : \"none\",\n    \"paletteOverrides\" : {\n\n    },\n    \"radiance\" : {\n      \"accessory.wizardHat\" : \"off\"\n    }\n  },\n  \"version\" : 1\n}",
+      "state" : "radiant:off"
+    },
+    {
+      "balance" : 1000,
+      "item" : "accessory.beanie",
+      "op" : "upgrade",
+      "result" : "notEligible",
+      "save" : "{\n  \"ledger\" : {\n    \"earned\" : 7900,\n    \"purchased\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"radiant\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"spent\" : 6900\n  },\n  \"profile\" : {\n    \"accessories\" : [\n      \"wizardHat\"\n    ],\n    \"breed\" : \"britishShorthair\",\n    \"furTint\" : null,\n    \"name\" : \"Mochi\",\n    \"outfit\" : \"none\",\n    \"paletteOverrides\" : {\n\n    },\n    \"radiance\" : {\n      \"accessory.wizardHat\" : \"off\"\n    }\n  },\n  \"version\" : 1\n}",
+      "state" : "notEligible"
+    },
+    {
+      "balance" : 1000,
+      "item" : "accessory.blindfoldedSorcerer",
+      "op" : "upgrade",
+      "result" : "notOwned",
+      "save" : "{\n  \"ledger\" : {\n    \"earned\" : 7900,\n    \"purchased\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"radiant\" : [\n      \"accessory.wizardHat\"\n    ],\n    \"spent\" : 6900\n  },\n  \"profile\" : {\n    \"accessories\" : [\n      \"wizardHat\"\n    ],\n    \"breed\" : \"britishShorthair\",\n    \"furTint\" : null,\n    \"name\" : \"Mochi\",\n    \"outfit\" : \"none\",\n    \"paletteOverrides\" : {\n\n    },\n    \"radiance\" : {\n      \"accessory.wizardHat\" : \"off\"\n    }\n  },\n  \"version\" : 1\n}",
+      "state" : "needsItem"
+    }
+  ],
+  "unlocks" : [
+    "accessory.wizardHat",
+    "radiant.accessory.wizardHat"
+  ],
+  "version" : 1,
+  "wire" : [
+    {
+      "accessories" : [
+        "blindfoldedSorcerer"
+      ],
+      "outfit" : "whiteCoat",
+      "radiance" : {
+        "accessory.blindfoldedSorcerer" : "bold",
+        "outfit.whiteCoat" : "subtle"
+      },
+      "sent" : [
+        "blindfolded-sorcerer:bold",
+        "white-coat:subtle"
+      ]
+    },
+    {
+      "accessories" : [
+        "graduationCap",
+        "rainCloud"
+      ],
+      "outfit" : "dinosaurHoodie",
+      "radiance" : {
+        "accessory.graduationCap" : "off",
+        "accessory.rainCloud" : "bold",
+        "outfit.dinosaurHoodie" : "bold"
+      },
+      "sent" : [
+        "dinosaur-hoodie:bold",
+        "rain-cloud:bold"
+      ]
+    },
+    {
+      "accessories" : [
+        "tinyCrown"
+      ],
+      "outfit" : "none",
+      "radiance" : {
+        "accessory.wizardHat" : "bold"
+      },
+      "sent" : [
+
+      ]
+    }
+  ]
+}

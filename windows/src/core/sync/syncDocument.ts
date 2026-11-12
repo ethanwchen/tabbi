@@ -1,6 +1,6 @@
 import { isLimited } from "../closet/petLimited";
 import { VersionedJSON } from "../persistence/versionedJson";
-import { itemFromID, type PetItem } from "../pets/petItem";
+import { itemFromID } from "../pets/petItem";
 import { PetProfile } from "../pets/petProfile";
 import { PetSave } from "../pets/petSave";
 import { PetPointsLedger } from "../pets/petUnlocks";
@@ -273,13 +273,24 @@ export class SyncDocument {
    */
   get ledger(): PetPointsLedger {
     const items = new Set([...this.unlocks].flatMap((id) => itemFromID(id) ?? []));
+    const radiant = [...this.unlocks].flatMap((id) =>
+      id.startsWith(SyncDocument.radiantPrefix) ? (itemFromID(id.slice(SyncDocument.radiantPrefix.length)) ?? []) : [],
+    );
     return new PetPointsLedger({
       earned: this.earned,
       spent: this.spent,
       purchased: [...items].filter((item) => !isLimited(item)),
       granted: [...items].filter(isLimited),
+      radiant,
     });
   }
+
+  /**
+   * Radiant upgrades ride in `unlocks` as `radiant.<item id>`
+   * (`radiant.accessory.wizardHat`). Older builds read no item from such an
+   * id and skip it, and the union merge keeps it for newer ones.
+   */
+  static readonly radiantPrefix = "radiant.";
 
   /* MARK: Streak */
 
@@ -315,7 +326,11 @@ export class SyncDocument {
       othersSpent += tally.spent;
     }
     const mine = syncTally(save.ledger.earned - othersEarned, save.ledger.spent - othersSpent);
-    const unlocks: PetItem[] = [...save.ledger.purchased, ...save.ledger.granted];
+    const unlocks: string[] = [
+      ...save.ledger.purchased,
+      ...save.ledger.granted,
+      ...[...save.ledger.radiant].map((item) => SyncDocument.radiantPrefix + item),
+    ];
     const local = new SyncDocument({
       ...(changedAt === undefined ? {} : { pet: new SyncedPet(save.profile, changedAt) }),
       tallies: { [device]: mine },
@@ -334,10 +349,14 @@ export class SyncDocument {
     const ledger = this.ledger;
     for (const item of save.ledger.granted) ledger.grant(item);
     ledger.keepStreakFreezes(save.ledger);
+    ledger.keepRadiant(save.ledger);
     const updated = new PetSave((this.pet?.profile ?? save.profile).copy(), ledger);
     updated.version = save.version;
     updated.creditedFocusCount = save.creditedFocusCount;
     updated.creditedFocusSource = save.creditedFocusSource;
+    /* The pinned Radiant goal is local; it stays while it can still be pinned. */
+    const goal = save.radiantGoal;
+    if (goal !== undefined && updated.canPinRadiantGoal(goal)) updated.radiantGoal = goal;
     return updated;
   }
 

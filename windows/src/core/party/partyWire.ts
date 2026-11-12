@@ -30,7 +30,7 @@ export const MAX_SYNC_BYTES = 64 * 1024;
 /* MARK: Request bodies */
 
 /** Body fields of `POST /v1/register` and `PATCH /v1/me` (backend `PROFILE_FIELDS`). */
-export const PROFILE_BODY_FIELDS = ["name", "petName", "species", "breed", "colors", "costume", "accessories", "points", "level"] as const;
+export const PROFILE_BODY_FIELDS = ["name", "petName", "species", "breed", "colors", "costume", "accessories", "points", "level", "radiant"] as const;
 
 /** A profile write: every field optional; an absent one keeps the server's value (backend `ProfilePatch`). */
 export interface ProfileBody {
@@ -43,6 +43,8 @@ export interface ProfileBody {
   accessories?: string[];
   points?: number;
   level?: number;
+  /** Radiant effects, `<item id>:<bold|subtle>` (backend `parseRadiant`). */
+  radiant?: string[];
 }
 
 /** Body fields of `POST /v1/presence` (backend `PRESENCE_FIELDS`). */
@@ -122,6 +124,8 @@ export interface WireProfile {
   points: number;
   level: number;
   badges?: string[];
+  /** Radiant effects (backend `parseRadiant`); servers from before Radiant leave it out, which `readProfile` reads as none. */
+  radiant: string[];
 }
 
 /** Backend `Presence`. */

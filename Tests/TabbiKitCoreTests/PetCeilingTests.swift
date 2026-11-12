@@ -26,7 +26,8 @@ final class PetCeilingTests: XCTestCase {
     }
 
     func testPetalsAndSparklesDriftInFromAboveTheCeiling() {
-        for accessory in [PetAccessory.cherryPetals, .sparkleTrail, .rainCloud] {
+        for accessory in [PetAccessory.cherryPetals, .sparkleTrail] {
+            // The rain cloud moves down instead (`testTheRainCloudShowsUnderTheCeiling`).
             let full = PetComposer.clip(.idle, for: .orangeTabby, accessories: [accessory])
             let fitted = PetComposer.clip(.idle, for: .orangeTabby, accessories: [accessory], ceiling: 2)
             XCTAssertLessThan(top(full), 2, "\(accessory) starts at the frame's top")
@@ -34,6 +35,41 @@ final class PetCeilingTests: XCTestCase {
             let shown = fitted.frames.flatMap { [$0.canvas] + $0.itemFrames }.map { $0.pixels.compactMap { $0 }.count }
             let bare = PetComposer.clip(.idle, for: .orangeTabby).frames[0].canvas.pixels.compactMap { $0 }.count
             XCTAssertTrue(shown.contains { $0 > bare }, "\(accessory) still shows lower down")
+        }
+    }
+
+    /// The Tiny Rain Cloud hangs at the frame's top. Under the ceiling it
+    /// moves down as a whole (`lowersUnderCeiling`), so the closed notch
+    /// shows the cloud itself and not just its drops, sitting, walking and
+    /// through the whole drizzle. The Sphynx's and the French Bulldog's tall
+    /// ears reach where it would hang, so there it is left out sitting, as
+    /// any particle that would touch the pet.
+    func testTheRainCloudShowsUnderTheCeiling() {
+        for breed in PetGallery.bodyShapeBreeds {
+            for animation in [PetAnimation.idle, .walk, .sleep] {
+                // Where tall ears (the Sphynx, French Bulldog and Corgi
+                // sitting, the French Bulldog's breaths lying down) or the
+                // dachshund's raised head lying down reach
+                // the spot, the lowered cloud would touch the pet, so it is
+                // left out there like any particle.
+                let blocked = ([PetBodyShape.sphynxCat, .batEaredDog, .pointyEaredDog].contains(breed.bodyShape)
+                               && animation == .idle)
+                    || ([PetBodyShape.longDog, .batEaredDog].contains(breed.bodyShape) && animation == .sleep)
+                let full = PetComposer.clip(animation, for: breed, accessories: [.rainCloud])
+                let fitted = PetComposer.clip(animation, for: breed, accessories: [.rainCloud], ceiling: 2)
+                XCTAssertGreaterThanOrEqual(top(fitted), 2, "\(breed) \(animation)")
+                for (whole, frame) in zip(full.frames, fitted.frames) {
+                    let ticks = frame.itemFrames.isEmpty ? [frame.canvas] : frame.itemFrames
+                    let wholeTicks = whole.itemFrames.isEmpty ? [whole.canvas] : whole.itemFrames
+                    for (shown, art) in zip(ticks, wholeTicks) {
+                        XCTAssertGreaterThanOrEqual(art.pixels.filter { $0 == .coat }.count, 10,
+                                                    "the Closet shows the cloud: \(breed) \(animation)")
+                        guard !blocked else { continue }
+                        XCTAssertGreaterThanOrEqual(shown.pixels.filter { $0 == .coat }.count, 10,
+                                                    "the notch shows the cloud: \(breed) \(animation)")
+                    }
+                }
+            }
         }
     }
 

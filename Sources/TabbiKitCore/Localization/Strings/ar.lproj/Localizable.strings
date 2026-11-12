@@ -141,6 +141,8 @@
 	<string>%@ صادق حمامة</string>
 	<key>%@ misses you</key>
 	<string>%@ يشتاق إليك</string>
+	<key>%@ more points: %@ at a typical study pace</key>
+	<string>%@ نقطة أخرى: %@ بوتيرة دراسة معتادة</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>نُقل %1$@ إلى الموضع %2$lld من %3$lld</string>
 	<key>%@ napped on a sunny windowsill</key>
@@ -191,6 +193,8 @@
 	<string>%@ هذا الشهر.</string>
 	<key>%@ to %@</key>
 	<string>%1$@ نحو %2$@</string>
+	<key>%@ to go</key>
+	<string>تبقّى %@</string>
 	<key>%@ today</key>
 	<string>%@ اليوم</string>
 	<key>%@ tokens</key>
@@ -243,6 +247,10 @@
 	<string>%@.</string>
 	<key>%@. %@</key>
 	<string>%@. %@</string>
+	<key>%@. Keeps its look and adds a loop of light.</key>
+	<string>%@. يحتفظ بمظهره ويضيف حلقة من الضوء.</string>
+	<key>%@. Pick how strongly it shows; Reduce Motion keeps it still.</key>
+	<string>%@. اختر قوة ظهوره، وميزة تقليل الحركة تبقيه ثابتًا.</string>
 	<key>%@.fontWeight(.medium)). %@</key>
 	<string>%@.fontWeight(.medium)). %@</string>
 	<key>%@: %@</key>
@@ -705,6 +713,8 @@
 	<string>العودة إلى النوتش (Esc)</string>
 	<key>Back to the timer</key>
 	<string>العودة إلى المؤقت</string>
+	<key>Back to the wardrobe</key>
+	<string>العودة إلى الخزانة</string>
 	<key>Back to today</key>
 	<string>العودة إلى اليوم</string>
 	<key>Backwards Cap</key>
@@ -739,6 +749,8 @@
 	<string>تُضاف الكتل إلى تقويمك.</string>
 	<key>Blossom Sprout</key>
 	<string>برعم مزهر</string>
+	<key>Bold</key>
+	<string>قوي</string>
 	<key>Bond %lld</key>
 	<string>الرابطة %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -991,8 +1003,12 @@
 	<string>انقر لإعادة رفيقك إلى البيت</string>
 	<key>Click to take off</key>
 	<string>انقر لنزعه</string>
+	<key>Click to take off, or the star to make it Radiant</key>
+	<string>انقر للخلع، أو على النجمة لإضافة إشراقة</string>
 	<key>Click to wear</key>
 	<string>انقر لارتدائه</string>
+	<key>Click to wear, or the star to make it Radiant</key>
+	<string>انقر للارتداء، أو على النجمة لإضافة إشراقة</string>
 	<key>Close</key>
 	<string>إغلاق</string>
 	<key>Close %@ settings</key>
@@ -1037,6 +1053,8 @@
 	<string>الأمر</string>
 	<key>Compact</key>
 	<string>مضغوط</string>
+	<key>Confetti Toss</key>
+	<string>نثر القصاصات</string>
 	<key>Connect</key>
 	<string>اتصال</string>
 	<key>Connect Anki</key>
@@ -1549,6 +1567,8 @@
 	<string>GB</string>
 	<key>GPU utilization, last 60 seconds</key>
 	<string>استخدام GPU، آخر 60 ثانية</string>
+	<key>Gem Glints</key>
+	<string>بريق الجواهر</string>
 	<key>General</key>
 	<string>عام</string>
 	<key>Gentle streak</key>
@@ -1623,6 +1643,8 @@
 	<string>منغمس في العمل</string>
 	<key>Heart Glasses</key>
 	<string>نظارة القلوب</string>
+	<key>Heartbeat</key>
+	<string>نبض القلب</string>
 	<key>Heirloom</key>
 	<string>إرث</string>
 	<key>Hi! I'm %@.</key>
@@ -1809,6 +1831,8 @@
 	<string>إبعاد النوتش عن مشاركة الشاشة والتسجيلات ولقطات الشاشة، مثلًا أثناء العرض في الصف</string>
 	<key>Keep the suggested kit</key>
 	<string>الإبقاء على الحزمة المقترحة</string>
+	<key>Keep the upgrade but show the item as before</key>
+	<string>احتفظ بالترقية واعرض القطعة كما كانت</string>
 	<key>Keep these tabs and set up what they need</key>
 	<string>الإبقاء على علامات التبويب هذه وإعداد ما تحتاجه</string>
 	<key>Keep this and go on</key>
@@ -1827,6 +1851,8 @@
 	<string>الحزمة</string>
 	<key>Koi Yukata</key>
 	<string>يوكاتا الكوي</string>
+	<key>Lapel Glint</key>
+	<string>بريق الياقة</string>
 	<key>Large</key>
 	<string>كبير</string>
 	<key>Last 7 days</key>
@@ -1933,6 +1959,10 @@
 	<string>رأس السنة القمرية</string>
 	<key>Main display</key>
 	<string>الشاشة الرئيسية</string>
+	<key>Make %@ Radiant</key>
+	<string>أضف إشراقة إلى %@</string>
+	<key>Make Radiant</key>
+	<string>أضف إشراقة</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
 	<string>أنشئ اختصارًا آخر بالطريقة نفسها، مع الإيقاف، وسمِّه:</string>
 	<key>Make sure Calendars is turned on for that account.</key>
@@ -1993,6 +2023,8 @@
 	<string>مهام شهرية</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>مهام شهرية وشارات وأزياء تُكتسب من أهداف طويلة</string>
+	<key>Moonlit Blindfold</key>
+	<string>عصابة مقمرة</string>
 	<key>Moonlit Witch Hat</key>
 	<string>قبعة ساحرة القمر</string>
 	<key>Moonstone</key>
@@ -2429,6 +2461,8 @@
 	<string>خيارات…</string>
 	<key>Orange</key>
 	<string>برتقالي</string>
+	<key>Orbiting Orb</key>
+	<string>كرة مدارية</string>
 	<key>Other</key>
 	<string>أخرى</string>
 	<key>Out of sight. Press %@ to open it.</key>
@@ -2569,6 +2603,8 @@
 	<string>تثبيت كرزمة مفضلة</string>
 	<key>Pin as favorite</key>
 	<string>تثبيت كمفضلة</string>
+	<key>Pin as goal</key>
+	<string>ثبّت كهدف</string>
 	<key>Pink noise</key>
 	<string>ضوضاء وردية</string>
 	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
@@ -2647,6 +2683,10 @@
 	<string>اقتراحات</string>
 	<key>Preview</key>
 	<string>معاينة</string>
+	<key>Preview the Bold effect</key>
+	<string>عاين التأثير القوي</string>
+	<key>Preview the Subtle effect</key>
+	<string>عاين التأثير الخفيف</string>
 	<key>Previous track</key>
 	<string>المقطع السابق</string>
 	<key>Privacy</key>
@@ -2689,10 +2729,24 @@
 	<string>أغلق Anki وافتحه مجددًا. إذا سأل عن Tabbi، فانقر نعم.</string>
 	<key>Quit Anki and open it again. Tabbi notices by itself.</key>
 	<string>أغلق Anki وافتحه مجددًا. سيلاحظ Tabbi ذلك تلقائيًا.</string>
+	<key>Radiant %@</key>
+	<string>إشراقة %@</string>
+	<key>Radiant %@: set its effect</key>
+	<string>إشراقة %@: اضبط التأثير</string>
+	<key>Radiant Effect</key>
+	<string>تأثير الإشراقة</string>
+	<key>Radiant, %@</key>
+	<string>إشراقة، %@</string>
+	<key>Radiant. Click to take off, or the star to set its effect</key>
+	<string>مُشرق. انقر للخلع، أو على النجمة لضبط التأثير</string>
+	<key>Radiant. Click to wear, or the star to set its effect</key>
+	<string>مُشرق. انقر للارتداء، أو على النجمة لضبط التأثير</string>
 	<key>Rain</key>
 	<string>مطر</string>
 	<key>Rain Slicker</key>
 	<string>معطف المطر</string>
+	<key>Rainbow After Rain</key>
+	<string>قوس قزح بعد المطر</string>
 	<key>Rare</key>
 	<string>نادر</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2983,6 +3037,8 @@
 	<string>إظهار SoundCloud من Safari أو Chrome</string>
 	<key>Show a break move</key>
 	<string>اعرض حركة للاستراحة</string>
+	<key>Show a quieter effect</key>
+	<string>اعرض تأثيرًا أهدأ</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>عرض ملخص أسبوعك في أول مرة تفتح فيها النوتش بعد الأحد 6 مساءً</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -3007,6 +3063,8 @@
 	<string>الإظهار عند التمرير</string>
 	<key>Show on external displays</key>
 	<string>الإظهار على الشاشات الخارجية</string>
+	<key>Show the full effect</key>
+	<string>اعرض التأثير كاملًا</string>
 	<key>Show the less common settings</key>
 	<string>عرض الإعدادات الأقل استخدامًا</string>
 	<key>Show the top decks beside today's total</key>
@@ -3025,6 +3083,8 @@
 	<string>عرض قائمة الأمس</string>
 	<key>Show your calendar in Tabbi</key>
 	<string>اعرض تقويمك في Tabbi</string>
+	<key>Show your progress toward this upgrade in the wardrobe</key>
+	<string>اعرض تقدّمك نحو هذه الترقية في الخزانة</string>
 	<key>Show your studies some love this week.</key>
 	<string>امنح دراستك بعض الحب هذا الأسبوع.</string>
 	<key>Showing local stats only</key>
@@ -3065,6 +3125,8 @@
 	<string>مرِح</string>
 	<key>Silver</key>
 	<string>فضي</string>
+	<key>Silver Lining</key>
+	<string>حافة فضية</string>
 	<key>Sip some water</key>
 	<string>اشرب بعض الماء</string>
 	<key>Sip water</key>
@@ -3109,10 +3171,14 @@
 	<string>رسائل مزعجة</string>
 	<key>Sparkle</key>
 	<string>لمعان</string>
+	<key>Sparkle Halo</key>
+	<string>هالة متلألئة</string>
 	<key>Sparkle Trail</key>
 	<string>أثر لامع</string>
 	<key>Species, breed and fur color</key>
 	<string>النوع والسلالة ولون الفرو</string>
+	<key>Spike Ripple</key>
+	<string>تموّج الأشواك</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>موسم الرعب هنا. ركّز لتُلبس رفيقك زيًا.</string>
 	<key>Sporty Sweatband</key>
@@ -3135,6 +3201,8 @@
 	<string>قف، وحرّك ساقيك، واجلس متى شئت.</string>
 	<key>Star tag</key>
 	<string>قلادة نجمة</string>
+	<key>Stardust Stream</key>
+	<string>سيل غبار النجوم</string>
 	<key>Starlight, every tier earned</key>
 	<string>ضوء النجوم، كل المستويات مكتسبة</string>
 	<key>Starry Cloak</key>
@@ -3227,6 +3295,8 @@
 	<string>أوقف التركيز على هذه المهمة</string>
 	<key>Stop reading this folder</key>
 	<string>التوقف عن قراءة هذا المجلد</string>
+	<key>Stop showing this goal in the wardrobe</key>
+	<string>أوقف عرض هذا الهدف في الخزانة</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>أوقف المزامنة على هذا الـMac. يبقى رفيقك وتقدّمك هنا.</string>
 	<key>Stop the preview</key>
@@ -3281,6 +3351,8 @@
 	<string>يدرس</string>
 	<key>Submit</key>
 	<string>إرسال</string>
+	<key>Subtle</key>
+	<string>خفيف</string>
 	<key>Suggest a Feature or Report a Bug</key>
 	<string>اقترح ميزة أو أبلغ عن خطأ</string>
 	<key>Summer</key>
@@ -3381,6 +3453,8 @@
 	<string>المهام</string>
 	<key>Tasks left today</key>
 	<string>المهام المتبقية اليوم</string>
+	<key>Tassel Swing</key>
+	<string>تأرجح الشرّابة</string>
 	<key>Team Medal</key>
 	<string>ميدالية الفريق</string>
 	<key>Ten hours of betting on yourself. Keep betting.</key>
@@ -3575,8 +3649,12 @@
 	<string>تاج صغير</string>
 	<key>Tiny Lantern</key>
 	<string>فانوس صغير</string>
+	<key>Tiny Planet</key>
+	<string>كوكب صغير</string>
 	<key>Tiny Rain Cloud</key>
 	<string>غيمة مطر صغيرة</string>
+	<key>Tiny Roar</key>
+	<string>زئير صغير</string>
 	<key>Tips to focus better</key>
 	<string>نصائح لتركيز أفضل</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
@@ -3707,6 +3785,8 @@
 	<string>إلغاء الإعجاب</string>
 	<key>Unmute</key>
 	<string>إلغاء الكتم</string>
+	<key>Unpin</key>
+	<string>إلغاء التثبيت</string>
 	<key>Unpin %@ from the Study button</key>
 	<string>إزالة تثبيت %@ من زر الدراسة</string>
 	<key>Unpin Favorite Deck</key>
@@ -3735,6 +3815,14 @@
 	<string>حُدّث منذ %lld د</string>
 	<key>Updated just now</key>
 	<string>حُدّث الآن</string>
+	<key>Upgrade</key>
+	<string>ترقية</string>
+	<key>Upgrade for %@ points</key>
+	<string>ترقية مقابل %@ نقطة</string>
+	<key>Upgraded</key>
+	<string>تمت الترقية</string>
+	<key>Upgraded. Friends on Party see it too.</key>
+	<string>تمت الترقية. يراها أصدقاؤك في Party أيضًا.</string>
 	<key>Usage logs</key>
 	<string>سجلات الاستخدام</string>
 	<key>Usage of your rolling 5-hour limit</key>
@@ -3767,6 +3855,8 @@
 	<string>عرض على GitHub</string>
 	<key>Visible: friends see when you study</key>
 	<string>ظاهر للأصدقاء</string>
+	<key>Visor Glint</key>
+	<string>بريق الخوذة</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>ألوان مميزة زاهية مع توهج بنفسجي.</string>
 	<key>Volume</key>
@@ -3845,6 +3935,8 @@
 	<string>ضجيج أبيض</string>
 	<key>Winter Holidays</key>
 	<string>العطلة الشتوية</string>
+	<key>Wishing Star</key>
+	<string>نجمة الأمنيات</string>
 	<key>Witch Hat</key>
 	<string>قبعة الساحرة</string>
 	<key>With %@</key>
@@ -4037,6 +4129,8 @@
 	<string>سيظهر هنا حيوانك الأليف وسلسلتك والمؤقت.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>رفيقك وسلسلة اليوم والمؤقت الجاري.</string>
+	<key>Your pinned goal: Radiant %@ for %@ points</key>
+	<string>هدفك المثبّت: إشراقة %@ مقابل %@ نقطة</string>
 	<key>Your plan</key>
 	<string>خطتك</string>
 	<key>Your playlist</key>
@@ -4121,8 +4215,12 @@
 	<string>نقاط</string>
 	<key>pts</key>
 	<string>نقطة</string>
+	<key>pts, 5x its price</key>
+	<string>نقطة، 5 أضعاف سعرها</string>
 	<key>ready to unlock</key>
 	<string>جاهز للفتح</string>
+	<key>ready to upgrade</key>
+	<string>جاهز للترقية</string>
 	<key>resets %@</key>
 	<string>يتجدد %@</string>
 	<key>resets in %@</key>

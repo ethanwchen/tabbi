@@ -227,11 +227,12 @@ describe("schema step 3", () => {
       sql.exec("DROP TABLE entitlements");
       sql.exec("DROP TABLE friend_requests");
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
+      sql.exec("ALTER TABLE users DROP COLUMN radiant");
       sql.exec("ALTER TABLE apple_accounts DROP COLUMN client_id");
       sql.exec("UPDATE schema_version SET version = 2");
       sql.exec("INSERT INTO friends (a, b, created_at) VALUES ('AAAAAAAA', 'BBBBBBBB', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 14 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
       expect(sql.exec("SELECT * FROM blocks").toArray()).toEqual([]);
       expect(sql.exec("SELECT a FROM friends").toArray()).toEqual([{ a: "AAAAAAAA" }]);
     });

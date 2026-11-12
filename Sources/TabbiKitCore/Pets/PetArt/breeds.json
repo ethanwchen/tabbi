@@ -31,7 +31,8 @@
     "crimson": "#B8304C",
     "pumpkin": "#F08A24",
     "violet": "#7C63C8",
-    "sky": "#86C7EE"
+    "sky": "#86C7EE",
+    "radiant": "#FFFFFF"
   },
   "bodyShapes": {
     "cat": { "species": "cat" },

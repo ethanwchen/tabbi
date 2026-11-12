@@ -141,6 +141,8 @@
 	<string>%@가 비둘기와 친구가 됐어요</string>
 	<key>%@ misses you</key>
 	<string>%@이(가) 보고 싶어 해요</string>
+	<key>%@ more points: %@ at a typical study pace</key>
+	<string>%@포인트 더: 평소 공부 속도로 %@</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@ 탭을 %3$lld개 중 %2$lld번째로 옮겼어요</string>
 	<key>%@ napped on a sunny windowsill</key>
@@ -191,6 +193,8 @@
 	<string>이번 달 %@.</string>
 	<key>%@ to %@</key>
 	<string>%2$@까지 %1$@</string>
+	<key>%@ to go</key>
+	<string>%@ 남음</string>
 	<key>%@ today</key>
 	<string>오늘 %@</string>
 	<key>%@ tokens</key>
@@ -243,6 +247,10 @@
 	<string>%@.</string>
 	<key>%@. %@</key>
 	<string>%@. %@</string>
+	<key>%@. Keeps its look and adds a loop of light.</key>
+	<string>%@. 모습은 그대로, 반짝이는 빛이 더해져요.</string>
+	<key>%@. Pick how strongly it shows; Reduce Motion keeps it still.</key>
+	<string>%@. 얼마나 강하게 보일지 골라요. 동작 줄이기를 켜면 멈춰 있어요.</string>
 	<key>%@.fontWeight(.medium)). %@</key>
 	<string>%@.fontWeight(.medium)). %@</string>
 	<key>%@: %@</key>
@@ -715,6 +723,8 @@
 	<string>노치로 돌아가기 (Esc)</string>
 	<key>Back to the timer</key>
 	<string>타이머로 돌아가기</string>
+	<key>Back to the wardrobe</key>
+	<string>옷장으로 돌아가기</string>
 	<key>Back to today</key>
 	<string>오늘로 돌아가기</string>
 	<key>Backwards Cap</key>
@@ -749,6 +759,8 @@
 	<string>블록은 캘린더에 추가돼요.</string>
 	<key>Blossom Sprout</key>
 	<string>꽃 핀 새싹</string>
+	<key>Bold</key>
+	<string>강하게</string>
 	<key>Bond %lld</key>
 	<string>유대 %lld</string>
 	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
@@ -1003,8 +1015,12 @@
 	<string>클릭하면 펫이 집으로 돌아가요</string>
 	<key>Click to take off</key>
 	<string>클릭해서 벗기</string>
+	<key>Click to take off, or the star to make it Radiant</key>
+	<string>클릭하면 벗고, 별을 누르면 빛나게 하기</string>
 	<key>Click to wear</key>
 	<string>클릭해서 입기</string>
+	<key>Click to wear, or the star to make it Radiant</key>
+	<string>클릭하면 입고, 별을 누르면 빛나게 하기</string>
 	<key>Close</key>
 	<string>닫기</string>
 	<key>Close %@ settings</key>
@@ -1049,6 +1065,8 @@
 	<string>명령</string>
 	<key>Compact</key>
 	<string>작게</string>
+	<key>Confetti Toss</key>
+	<string>색종이 뿌리기</string>
 	<key>Connect</key>
 	<string>연결</string>
 	<key>Connect Anki</key>
@@ -1561,6 +1579,8 @@
 	<string>GB</string>
 	<key>GPU utilization, last 60 seconds</key>
 	<string>GPU 사용률, 최근 60초</string>
+	<key>Gem Glints</key>
+	<string>보석 반짝임</string>
 	<key>General</key>
 	<string>일반</string>
 	<key>Gentle streak</key>
@@ -1637,6 +1657,8 @@
 	<string>집중하는 중</string>
 	<key>Heart Glasses</key>
 	<string>하트 안경</string>
+	<key>Heartbeat</key>
+	<string>심장 박동</string>
 	<key>Heirloom</key>
 	<string>가보</string>
 	<key>Hi! I'm %@.</key>
@@ -1825,6 +1847,8 @@
 	<string>화면 공유, 녹화, 스크린샷에 노치가 나오지 않게 해요(수업 발표 중 등)</string>
 	<key>Keep the suggested kit</key>
 	<string>추천 키트로 할게요</string>
+	<key>Keep the upgrade but show the item as before</key>
+	<string>업그레이드는 그대로, 아이템은 원래대로 보여 주기</string>
 	<key>Keep these tabs and set up what they need</key>
 	<string>이 탭으로 정하고 필요한 설정하기</string>
 	<key>Keep this and go on</key>
@@ -1843,6 +1867,8 @@
 	<string>키트</string>
 	<key>Koi Yukata</key>
 	<string>잉어 유카타</string>
+	<key>Lapel Glint</key>
+	<string>옷깃 반짝임</string>
 	<key>Large</key>
 	<string>크게</string>
 	<key>Last 7 days</key>
@@ -1949,6 +1975,10 @@
 	<string>설날</string>
 	<key>Main display</key>
 	<string>주 디스플레이</string>
+	<key>Make %@ Radiant</key>
+	<string>%@ 빛나게 하기</string>
+	<key>Make Radiant</key>
+	<string>빛나게 하기</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
 	<string>같은 방법으로 '끔'으로 설정한 단축어를 하나 더 만들고 이름을 이렇게 지정하세요:</string>
 	<key>Make sure Calendars is turned on for that account.</key>
@@ -2009,6 +2039,8 @@
 	<string>월간 퀘스트</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>월간 퀘스트, 배지, 긴 목표로 얻는 의상</string>
+	<key>Moonlit Blindfold</key>
+	<string>달빛 안대</string>
 	<key>Moonlit Witch Hat</key>
 	<string>달빛 마녀 모자</string>
 	<key>Moonstone</key>
@@ -2445,6 +2477,8 @@
 	<string>옵션…</string>
 	<key>Orange</key>
 	<string>주황</string>
+	<key>Orbiting Orb</key>
+	<string>궤도를 도는 구슬</string>
 	<key>Other</key>
 	<string>기타</string>
 	<key>Out of sight. Press %@ to open it.</key>
@@ -2585,6 +2619,8 @@
 	<string>즐겨찾기 덱으로 고정</string>
 	<key>Pin as favorite</key>
 	<string>즐겨찾기로 고정</string>
+	<key>Pin as goal</key>
+	<string>목표로 고정</string>
 	<key>Pink noise</key>
 	<string>핑크 노이즈</string>
 	<key>Pink sky, baby blue sugar: the fair at dusk.</key>
@@ -2663,6 +2699,10 @@
 	<string>추천</string>
 	<key>Preview</key>
 	<string>미리 듣기</string>
+	<key>Preview the Bold effect</key>
+	<string>강한 효과 미리 보기</string>
+	<key>Preview the Subtle effect</key>
+	<string>은은한 효과 미리 보기</string>
 	<key>Previous track</key>
 	<string>이전 곡</string>
 	<key>Privacy</key>
@@ -2705,10 +2745,24 @@
 	<string>Anki를 종료한 뒤 다시 열어 주세요. Tabbi에 대해 물어보면 '예'를 클릭하세요.</string>
 	<key>Quit Anki and open it again. Tabbi notices by itself.</key>
 	<string>Anki를 종료한 뒤 다시 열어 주세요. Tabbi가 알아서 알아차려요.</string>
+	<key>Radiant %@</key>
+	<string>빛나는 %@</string>
+	<key>Radiant %@: set its effect</key>
+	<string>빛나는 %@: 효과 설정</string>
+	<key>Radiant Effect</key>
+	<string>빛 효과</string>
+	<key>Radiant, %@</key>
+	<string>빛나는 아이템, %@</string>
+	<key>Radiant. Click to take off, or the star to set its effect</key>
+	<string>빛나는 아이템. 클릭하면 벗고, 별을 누르면 효과 설정</string>
+	<key>Radiant. Click to wear, or the star to set its effect</key>
+	<string>빛나는 아이템. 클릭하면 입고, 별을 누르면 효과 설정</string>
 	<key>Rain</key>
 	<string>빗소리</string>
 	<key>Rain Slicker</key>
 	<string>레인코트</string>
+	<key>Rainbow After Rain</key>
+	<string>비 갠 뒤 무지개</string>
 	<key>Rare</key>
 	<string>희귀</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -3003,6 +3057,8 @@
 	<string>Safari나 Chrome의 SoundCloud 보기</string>
 	<key>Show a break move</key>
 	<string>휴식 동작 보여 주기</string>
+	<key>Show a quieter effect</key>
+	<string>더 은은한 효과 보여 주기</string>
 	<key>Show a recap of your week the first time you open the notch after Sunday 6 pm</key>
 	<string>일요일 오후 6시 이후 처음 노치를 열 때 한 주 돌아보기를 보여 줘요</string>
 	<key>Show a small live preview beside the closed notch</key>
@@ -3027,6 +3083,8 @@
 	<string>마우스를 올리면 표시</string>
 	<key>Show on external displays</key>
 	<string>외장 디스플레이에 표시</string>
+	<key>Show the full effect</key>
+	<string>효과를 모두 보여 주기</string>
 	<key>Show the less common settings</key>
 	<string>자주 쓰지 않는 설정 보기</string>
 	<key>Show the top decks beside today's total</key>
@@ -3045,6 +3103,8 @@
 	<string>어제 목록 보기</string>
 	<key>Show your calendar in Tabbi</key>
 	<string>Tabbi에 캘린더 표시</string>
+	<key>Show your progress toward this upgrade in the wardrobe</key>
+	<string>이 업그레이드까지의 진행 상황을 옷장에 보여 주기</string>
 	<key>Show your studies some love this week.</key>
 	<string>이번 주엔 공부에 사랑을 조금 나눠 줘요.</string>
 	<key>Showing local stats only</key>
@@ -3085,6 +3145,8 @@
 	<string>엉뚱</string>
 	<key>Silver</key>
 	<string>은색</string>
+	<key>Silver Lining</key>
+	<string>은빛 가장자리</string>
 	<key>Sip some water</key>
 	<string>물 한 모금 마셔요</string>
 	<key>Sip water</key>
@@ -3129,10 +3191,14 @@
 	<string>스팸</string>
 	<key>Sparkle</key>
 	<string>반짝임</string>
+	<key>Sparkle Halo</key>
+	<string>반짝이 후광</string>
 	<key>Sparkle Trail</key>
 	<string>반짝이 꼬리</string>
 	<key>Species, breed and fur color</key>
 	<string>종, 품종, 털 색</string>
+	<key>Spike Ripple</key>
+	<string>뿔 물결</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
 	<string>으스스한 시즌이 왔어요. 집중해서 펫을 꾸며 봐요.</string>
 	<key>Sporty Sweatband</key>
@@ -3155,6 +3221,8 @@
 	<string>일어나서 다리를 털고, 원할 때 다시 앉아요.</string>
 	<key>Star tag</key>
 	<string>별 태그</string>
+	<key>Stardust Stream</key>
+	<string>별가루 물결</string>
 	<key>Starlight, every tier earned</key>
 	<string>별빛, 모든 단계 달성</string>
 	<key>Starry Cloak</key>
@@ -3251,6 +3319,8 @@
 	<string>이 할 일 집중 해제</string>
 	<key>Stop reading this folder</key>
 	<string>이 폴더 읽기 중단</string>
+	<key>Stop showing this goal in the wardrobe</key>
+	<string>옷장에 이 목표 그만 보여 주기</string>
 	<key>Stop syncing on this Mac. Your pet and progress stay here.</key>
 	<string>이 Mac에서 동기화를 멈춰요. 펫과 진행 상황은 그대로 남아요.</string>
 	<key>Stop the preview</key>
@@ -3305,6 +3375,8 @@
 	<string>공부 중</string>
 	<key>Submit</key>
 	<string>제출</string>
+	<key>Subtle</key>
+	<string>은은하게</string>
 	<key>Suggest a Feature or Report a Bug</key>
 	<string>기능 제안 또는 버그 신고</string>
 	<key>Summer</key>
@@ -3405,6 +3477,8 @@
 	<string>할 일</string>
 	<key>Tasks left today</key>
 	<string>오늘 남은 할 일</string>
+	<key>Tassel Swing</key>
+	<string>흔들리는 술</string>
 	<key>Team Medal</key>
 	<string>팀 메달</string>
 	<key>Ten hours of betting on yourself. Keep betting.</key>
@@ -3607,8 +3681,12 @@
 	<string>꼬마 왕관</string>
 	<key>Tiny Lantern</key>
 	<string>작은 랜턴</string>
+	<key>Tiny Planet</key>
+	<string>작은 행성</string>
 	<key>Tiny Rain Cloud</key>
 	<string>꼬마 비구름</string>
+	<key>Tiny Roar</key>
+	<string>작은 포효</string>
 	<key>Tips to focus better</key>
 	<string>집중력을 높이는 팁</string>
 	<key>To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to %@ with your question.</key>
@@ -3743,6 +3821,8 @@
 	<string>%lld점으로 잠금 해제</string>
 	<key>Unmute</key>
 	<string>음소거 해제</string>
+	<key>Unpin</key>
+	<string>고정 해제</string>
 	<key>Unpin %@ from the Study button</key>
 	<string>학습 버튼에서 %@ 해제</string>
 	<key>Unpin Favorite Deck</key>
@@ -3771,6 +3851,14 @@
 	<string>%lld분 전 업데이트됨</string>
 	<key>Updated just now</key>
 	<string>방금 업데이트됨</string>
+	<key>Upgrade</key>
+	<string>업그레이드</string>
+	<key>Upgrade for %@ points</key>
+	<string>%@포인트로 업그레이드</string>
+	<key>Upgraded</key>
+	<string>업그레이드 완료</string>
+	<key>Upgraded. Friends on Party see it too.</key>
+	<string>업그레이드 완료. Party 친구들도 볼 수 있어요.</string>
 	<key>Usage logs</key>
 	<string>사용량 로그</string>
 	<key>Usage of your rolling 5-hour limit</key>
@@ -3803,6 +3891,8 @@
 	<string>GitHub에서 보기</string>
 	<key>Visible: friends see when you study</key>
 	<string>친구에게 공개</string>
+	<key>Visor Glint</key>
+	<string>바이저 반짝임</string>
 	<key>Vivid accents with a violet glow.</key>
 	<string>선명한 강조색과 보랏빛 광채.</string>
 	<key>Volume</key>
@@ -3881,6 +3971,8 @@
 	<string>백색 소음</string>
 	<key>Winter Holidays</key>
 	<string>겨울 연휴</string>
+	<key>Wishing Star</key>
+	<string>소원별</string>
 	<key>Witch Hat</key>
 	<string>마녀 모자</string>
 	<key>With %@</key>
@@ -4077,6 +4169,8 @@
 	<string>여기에 펫, 연속 기록, 타이머가 표시돼요.</string>
 	<key>Your pet, today's streak and the running timer.</key>
 	<string>펫, 연속 기록, 진행 중인 타이머.</string>
+	<key>Your pinned goal: Radiant %@ for %@ points</key>
+	<string>고정한 목표: 빛나는 %@, %@포인트</string>
 	<key>Your plan</key>
 	<string>내 계획</string>
 	<key>Your playlist</key>
@@ -4163,8 +4257,12 @@
 	<string>포인트</string>
 	<key>pts</key>
 	<string>점</string>
+	<key>pts, 5x its price</key>
+	<string>pt, 가격의 5배</string>
 	<key>ready to unlock</key>
 	<string>해제 가능</string>
+	<key>ready to upgrade</key>
+	<string>업그레이드 가능</string>
 	<key>resets %@</key>
 	<string>%@ 초기화</string>
 	<key>resets in %@</key>

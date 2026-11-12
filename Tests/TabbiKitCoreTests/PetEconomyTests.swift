@@ -92,4 +92,15 @@ final class PetEconomyTests: XCTestCase {
         XCTAssertEqual(Array(order.suffix(PetItemTheme.heirloom.items.count)), Array(repeating: .heirloom,
                                                                                     count: PetItemTheme.heirloom.items.count))
     }
+
+    /// A Radiant upgrade is 5x its item's price and sits outside the tiers:
+    /// it is no catalog price, so the tier rules above never count it, and
+    /// even the cheapest takes longer than the Golden Laurel's 8 weeks.
+    func testRadiantUpgradesCostFiveTimesTheirItemOutsideTheTiers() {
+        for item in PetRadiant.eligibleItems {
+            XCTAssertEqual(PetRadiant.price(of: item), 5 * item.cost, "\(item)")
+            XCTAssertGreaterThan(PetRadiant.price(of: item), 8 * PetEconomy.pointsPerTypicalWeek, "\(item)")
+        }
+        XCTAssertEqual(PetRadiant.eligibleItems.map { PetRadiant.price(of: $0) }.min(), 5_250)
+    }
 }

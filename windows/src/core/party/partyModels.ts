@@ -25,6 +25,12 @@ export interface PartyProfile {
   readonly level: number;
   /** Badge ids shown next to the name (`PARTY_BADGE_FOUNDING`); absent reads as none. */
   readonly badges: readonly string[];
+  /**
+   * The Radiant effects the pet shows, `<item id>:<bold|subtle>` for each
+   * upgraded item it wears (`partyRadiant`). Older servers and apps leave it
+   * out, which reads as none: the normal item.
+   */
+  readonly radiant: readonly string[];
 }
 
 /** Port of PartyBadge: the badge ids the server can send. An id the app does not know is ignored. */
@@ -46,6 +52,7 @@ export function partyProfile(
     points: 0,
     level: 1,
     badges: [],
+    radiant: [],
     ...fields,
   };
 }
@@ -65,6 +72,8 @@ export interface PartyProfileUpdate {
   readonly accessories?: readonly string[];
   readonly points?: number;
   readonly level?: number;
+  /** The Radiant effects the pet shows (`PartyProfile.radiant`); absent keeps the server's value. */
+  readonly radiant?: readonly string[];
 }
 
 /** Whether two updates send the same body. */
@@ -73,7 +82,7 @@ export function sameProfileUpdate(a: PartyProfileUpdate, b: PartyProfileUpdate):
   if (keys.some((key) => a[key] !== b[key])) return false;
   const sameList = (x: readonly string[] | undefined, y: readonly string[] | undefined) =>
     x === undefined || y === undefined ? x === y : x.length === y.length && x.every((value, index) => value === y[index]);
-  return sameList(a.colors, b.colors) && sameList(a.accessories, b.accessories);
+  return sameList(a.colors, b.colors) && sameList(a.accessories, b.accessories) && sameList(a.radiant, b.radiant);
 }
 
 /** Port of PartyStatus: what a user is doing, as heartbeats report it. `onBreak` is `break` on the wire. */
@@ -361,6 +370,8 @@ export function readProfile(value: unknown): PartyProfile {
     points: integer(object, "points"),
     level: integer(object, "level"),
     badges: optional(object, "badges", strings) ?? [],
+    /* Lenient like the Mac's `try?`: a value that is not a list of strings reads as none. */
+    radiant: Array.isArray(object.radiant) && object.radiant.every((entry) => typeof entry === "string") ? (object.radiant as string[]) : [],
   };
 }
 

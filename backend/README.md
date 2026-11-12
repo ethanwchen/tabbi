@@ -5,7 +5,7 @@ No emails, no passwords: a user is a random secret token the app receives on reg
 Signing in with Apple is optional and only adds sync of the pet and progress across a user's Macs.
 See [`PRIVACY.md`](PRIVACY.md) for what is stored and [`../docs/study/backend-api.md`](../docs/study/backend-api.md) for the client contract.
 
-The pet catalog (species, breeds, costumes, accessories, study methods, limits) lives in [`shared/catalog.json`](shared/catalog.json).
+The pet catalog (species, breeds, costumes, accessories, the items that can be Radiant, study methods, limits) lives in [`shared/catalog.json`](shared/catalog.json).
 The server validates against it, the app can bundle the same file, and `GET /v1/catalog` serves it.
 
 ## Develop / test

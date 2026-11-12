@@ -36,7 +36,9 @@ import type { PetColor } from "../../core/pets/petPalette";
 import { PetPresence } from "../../core/pets/petPresence";
 import { PetProfile } from "../../core/pets/petProfile";
 import { PetSave } from "../../core/pets/petSave";
-import { PetPointsLedger } from "../../core/pets/petUnlocks";
+import { PetPointsLedger, itemCost } from "../../core/pets/petUnlocks";
+import type { PetRadiantIntensity } from "../../core/pets/radiant/radiantArt";
+import { isRadiantEligible, radiantPrice } from "../../core/pets/radiant/radiantResolver";
 import { editionItem } from "../../core/closet/petLimited";
 import type { DocumentStore } from "../../core/persistence/documentStore";
 import type { ProvidedFocus } from "../../core/providers/providedFocus";
@@ -91,6 +93,59 @@ export interface ClosetState {
   readonly hasSave: boolean;
   /** Snapshot runs only: how far (0 to 1) a scrolling grid is scrolled, since a still image cannot scroll. */
   readonly snapshotScrolled: number | undefined;
+  /** The item whose Radiant sheet is open in the wardrobe (to upgrade it, or set its effect), or undefined. */
+  readonly radiantSheet: PetItem | undefined;
+  /** The intensity the Radiant sheet previews on the big pet. */
+  readonly radiantPreview: PetRadiantIntensity;
+}
+
+/**
+ * The Radiant states the snapshot run shows: an upgrade about to be bought,
+ * a pinned goal part of the way, and an upgraded item's setting. Port of
+ * ClosetStore.RadiantSnapshot.
+ */
+export type RadiantSnapshot = "upgrade" | "goal" | "setting";
+
+export const RADIANT_SNAPSHOT_UPGRADE_ITEM: PetItem = "accessory.wizardHat";
+export const RADIANT_SNAPSHOT_GOAL_ITEM: PetItem = "accessory.blindfoldedSorcerer";
+
+/** The item a Radiant shot's sheet is open on, if any. */
+export function radiantSnapshotSheet(shot: RadiantSnapshot): PetItem | undefined {
+  return shot === "upgrade" ? RADIANT_SNAPSHOT_UPGRADE_ITEM : shot === "setting" ? RADIANT_SNAPSHOT_GOAL_ITEM : undefined;
+}
+
+/**
+ * A wardrobe weeks in: the showpieces these shots use owned, and a balance
+ * that covers the Wizard Hat's upgrade (5,750) but is part of the way to the
+ * sorcerer's (9,750).
+ */
+export function radiantSnapshotSave(shot: RadiantSnapshot, base: PetSave): PetSave {
+  const owned: PetItem[] = [RADIANT_SNAPSHOT_UPGRADE_ITEM, RADIANT_SNAPSHOT_GOAL_ITEM, "outfit.whiteCoat", "accessory.tinyCrown"];
+  const spent = base.ledger.spent + owned.reduce((sum, item) => sum + itemCost(item), 0);
+  const purchased = [...base.ledger.purchased, ...owned];
+  const ledgerWith = (earned: number) =>
+    new PetPointsLedger({ earned, spent, purchased, granted: base.ledger.granted, streakFreezes: base.ledger.streakFreezes });
+  let ledger = ledgerWith(spent + 6120);
+  let profile = base.profile;
+  switch (shot) {
+    case "upgrade":
+      profile = PetCloset.wearing(RADIANT_SNAPSHOT_UPGRADE_ITEM, profile);
+      break;
+    case "goal":
+      ledger = ledgerWith(spent + 4210);
+      profile = PetCloset.wearing(RADIANT_SNAPSHOT_GOAL_ITEM, profile);
+      break;
+    case "setting":
+      /* Upgraded weeks ago: its price is spent, the rest is left. */
+      ledger = ledgerWith(spent + 6120 + radiantPrice(RADIANT_SNAPSHOT_GOAL_ITEM));
+      ledger.upgradeToRadiant(RADIANT_SNAPSHOT_GOAL_ITEM);
+      profile = PetCloset.wearing("outfit.whiteCoat", PetCloset.wearing(RADIANT_SNAPSHOT_GOAL_ITEM, profile));
+      break;
+  }
+  const save = new PetSave(profile, ledger);
+  if (shot === "goal") save.radiantGoal = RADIANT_SNAPSHOT_GOAL_ITEM;
+  save.creditedFocusCount = base.creditedFocusCount;
+  return save;
 }
 
 export interface ClosetStoreOptions {
@@ -158,7 +213,7 @@ export class ClosetStore extends Store<ClosetState> {
       ...(UnlockProgress.of(closet) === undefined ? {} : { nextUnlock: UnlockProgress.of(closet) }),
       ...(isSnapshot ? {} : { night: PetNightRhythm.standard }),
     });
-    super({ closet, revision: 0, profile, tryingOn: undefined, section: "activity", milestones, seasons, progression, journal, presence, bond, hasSave: isDemo, snapshotScrolled: undefined });
+    super({ closet, revision: 0, profile, tryingOn: undefined, section: "activity", milestones, seasons, progression, journal, presence, bond, hasSave: isDemo, snapshotScrolled: undefined, radiantSheet: undefined, radiantPreview: "bold" });
     this.isDemo = isDemo;
     this.isSnapshot = isSnapshot;
     this.pinnedSeasonMoment = demoSeason?.moment;
@@ -413,7 +468,8 @@ export class ClosetStore extends Store<ClosetState> {
       a.profile.equals(b.profile) &&
       a.ledger.equals(b.ledger) &&
       a.creditedFocusCount === b.creditedFocusCount &&
-      a.creditedFocusSource === b.creditedFocusSource
+      a.creditedFocusSource === b.creditedFocusSource &&
+      a.radiantGoal === b.radiantGoal
     );
   }
 
@@ -500,6 +556,56 @@ export class ClosetStore extends Store<ClosetState> {
     return result;
   }
 
+  /* Radiant */
+
+  /** Opens the Radiant sheet for `item` (previewing its Bold effect, or the effect as set when it is upgraded), or closes it with undefined. */
+  showRadiant(item: PetItem | undefined): void {
+    const sheet = item !== undefined && isRadiantEligible(item) ? item : undefined;
+    const set = sheet === undefined ? undefined : this.state.closet.profile.radianceOf(sheet);
+    this.setState({
+      radiantSheet: sheet,
+      ...(sheet === undefined ? {} : { radiantPreview: set === undefined || set === "off" ? "bold" : set }),
+    });
+    this.refreshPreview();
+  }
+
+  /** Previews the other intensity on the big pet while the sheet is open. */
+  previewRadiance(intensity: PetRadiantIntensity): void {
+    if (this.state.radiantSheet === undefined || intensity === "off") return;
+    this.setState({ radiantPreview: intensity });
+    this.refreshPreview();
+  }
+
+  /** Upgrades `item` to Radiant. The pet celebrates and the panel sparkles; the item is put on so the effect shows right away. */
+  upgradeToRadiant(item: PetItem): boolean {
+    const done = this.edit((closet) => {
+      try {
+        closet.upgradeToRadiant(item);
+        return true;
+      } catch {
+        return false;
+      }
+    });
+    if (!done) return false;
+    this.setState({ radiantPreview: "bold" });
+    this.refreshPreview();
+    this.preview.send({ kind: "celebrate" });
+    this.celebrateUnlock(false);
+    return true;
+  }
+
+  /** Sets how strongly an upgraded item shows its effect. */
+  setRadiance(intensity: PetRadiantIntensity, item: PetItem): void {
+    this.edit((closet) => closet.setRadiance(intensity, item));
+    if (intensity !== "off") this.setState({ radiantPreview: intensity });
+    this.refreshPreview();
+  }
+
+  /** Pins (or with undefined, unpins) a Radiant upgrade as the wardrobe's goal. */
+  pinRadiantGoal(item: PetItem | undefined): void {
+    this.edit((closet) => closet.pinRadiantGoal(item));
+  }
+
   private celebrateUnlock(hasOwnSound: boolean): void {
     const theme = resolveTheme(this.context.settings.current.themeID);
     celebrations(this.context).celebrate("milestone", "sparkles", accentCss(theme, CLOSET_ACCENT), theme, MODULE_IDS.closet, hasOwnSound);
@@ -544,6 +650,7 @@ export class ClosetStore extends Store<ClosetState> {
     if (section === this.state.section) return;
     this.setState({ section });
     this.tryOn(undefined);
+    if (this.state.radiantSheet !== undefined) this.showRadiant(undefined);
   }
 
   /**
@@ -558,6 +665,8 @@ export class ClosetStore extends Store<ClosetState> {
       readonly scrolled?: number;
       /** Shows the newest badge tier as not seen yet (the Goals pill's dot). */
       readonly newGoal?: boolean;
+      /** One of the Radiant shots. */
+      readonly radiant?: RadiantSnapshot;
     } = {},
   ): void {
     if (!this.isSnapshot) return;
@@ -565,7 +674,7 @@ export class ClosetStore extends Store<ClosetState> {
     this.showGoalForSnapshot(options.newGoal ?? false);
     const base = this.snapshotBase ?? this.state.closet;
     this.snapshotBase = base;
-    const save = base.save.copy();
+    const save = options.radiant === undefined ? base.save.copy() : radiantSnapshotSave(options.radiant, base.save);
     if (options.foundingMember === false) {
       const ledger = save.ledger;
       save.ledger = new PetPointsLedger({
@@ -574,11 +683,14 @@ export class ClosetStore extends Store<ClosetState> {
         purchased: ledger.purchased,
         granted: [...ledger.granted].filter((item) => item !== editionItem("foundingMember")),
         streakFreezes: ledger.streakFreezes,
+        radiant: ledger.radiant,
       });
       save.profile = save.profile.restricted(save.ledger);
     }
     if (options.name !== undefined) save.profile.rename(options.name);
     this.replace(new PetCloset(save), {});
+    const sheet = options.radiant === undefined ? undefined : radiantSnapshotSheet(options.radiant);
+    if (sheet !== this.state.radiantSheet) this.showRadiant(sheet);
   }
 
   /** Snapshot runs only: shows the highest tier reached as new and unseen, so the Goals pill's dot can be reviewed. */
@@ -633,7 +745,12 @@ export class ClosetStore extends Store<ClosetState> {
 
   private refreshPreview(): void {
     const tryingOn = this.state.tryingOn;
-    const shown = tryingOn === undefined ? this.profile : PetCloset.wearing(tryingOn, this.profile);
+    let shown = tryingOn === undefined ? this.profile : PetCloset.wearing(tryingOn, this.profile);
+    /* The Radiant sheet shows the effect it is about, worn, at the intensity picked (an item not upgraded yet shows what it would get). */
+    const sheet = this.state.radiantSheet;
+    if (sheet !== undefined) {
+      shown = PetCloset.radiantPreview(sheet, this.state.radiantPreview, shown);
+    }
     this.preview.update(shown);
   }
 

@@ -3,7 +3,9 @@ import { PetClipSet, cachedClipSet, type PetLook } from "../../../src/core/pets/
 import { composeClip, type PetClip } from "../../../src/core/pets/petClip";
 import { PetProfile } from "../../../src/core/pets/petProfile";
 import { PET_ANIMATIONS } from "../../../src/core/pets/petKinds";
-import { opaqueCount } from "./support";
+import { pixelFor } from "../../../src/core/pets/petCanvas";
+import { breedBodyShape } from "../../../src/core/pets/petBreed";
+import { BODY_SHAPE_BREEDS, opaqueCount } from "./support";
 
 // Port of PetCeilingTests.swift: a clip built with a ceiling (the closed
 // island) draws nothing above it and changes nothing that already fits.
@@ -54,7 +56,7 @@ describe("PetCeiling", () => {
   });
 
   it("petals and sparkles drift in from above the ceiling", () => {
-    for (const accessory of ["cherryPetals", "sparkleTrail", "rainCloud"] as const) {
+    for (const accessory of ["cherryPetals", "sparkleTrail"] as const) {
       const full = composeClip("idle", "orangeTabby", { accessories: [accessory] });
       const fitted = composeClip("idle", "orangeTabby", { accessories: [accessory], ceiling: 2 });
       expect(top(full), `${accessory} starts at the frame's top`).toBeLessThan(2);
@@ -64,6 +66,40 @@ describe("PetCeiling", () => {
       if (!bareFrame) expect.fail("a frame");
       const bare = opaqueCount(bareFrame.canvas);
       expect(shown.some((n) => n > bare), `${accessory} still shows lower down`).toBe(true);
+    }
+  });
+
+  it("the rain cloud moves down under the ceiling, so the notch shows the cloud itself", () => {
+    const coat = pixelFor("coat");
+    const cloud = (canvas: { pixels: Uint8Array }) => canvas.pixels.filter((pixel) => pixel === coat).length;
+    for (const breed of BODY_SHAPE_BREEDS) {
+      for (const animation of ["idle", "walk", "sleep"] as const) {
+        /*
+         * Where tall ears (the Sphynx, French Bulldog and Corgi sitting, the
+         * French Bulldog's breaths asleep) or the dachshund's raised head lying
+         * down reach the spot, the lowered cloud would touch the pet, so it is
+         * left out there like any particle.
+         */
+        const shape = breedBodyShape(breed);
+        const tallEars =
+          (["sphynxCat", "batEaredDog", "pointyEaredDog"].includes(shape) && animation === "idle") ||
+          (["longDog", "batEaredDog"].includes(shape) && animation === "sleep");
+        const full = composeClip(animation, breed, { accessories: ["rainCloud"] });
+        const fitted = composeClip(animation, breed, { accessories: ["rainCloud"], ceiling: 2 });
+        expect(top(fitted), `${breed} ${animation}`).toBeGreaterThanOrEqual(2);
+        fitted.frames.forEach((frame, index) => {
+          const whole = full.frames[index];
+          if (!whole) expect.fail("same frame count");
+          const ticks = frame.itemFrames.length === 0 ? [frame.canvas] : frame.itemFrames;
+          const wholeTicks = whole.itemFrames.length === 0 ? [whole.canvas] : whole.itemFrames;
+          ticks.forEach((shown, tick) => {
+            const art = wholeTicks[tick];
+            if (!art) return;
+            expect(cloud(art), `the Closet shows the cloud: ${breed} ${animation}`).toBeGreaterThanOrEqual(10);
+            if (!tallEars) expect(cloud(shown), `the notch shows the cloud: ${breed} ${animation}`).toBeGreaterThanOrEqual(10);
+          });
+        });
+      }
     }
   });
 

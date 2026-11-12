@@ -26,7 +26,8 @@ extension PartyState {
         let since = now.addingTimeInterval(-14 * 86_400)
 
         let me = profile(code: "K7QW2MZD", name: "Sam",
-                         pet: PetProfile(name: "Mochi", breed: .orangeTabby, accessories: [.scarf, .graduationCap]),
+                         pet: PetProfile(name: "Mochi", breed: .orangeTabby, accessories: [.scarf, .graduationCap],
+                                         radiance: [.accessory(.graduationCap): .bold]),
                          badges: [PartyBadge.founding])
         let maya = profile(code: "M4YA8QRT", name: "Maya",
                            pet: PetProfile(name: "Biscuit", breed: .goldenRetriever, accessories: [.roundGlasses, .cowboyHat]),
@@ -36,7 +37,8 @@ extension PartyState {
         let leo = profile(code: "LE0J9WXC", name: "Leo",
                           pet: PetProfile(name: "Waffles", breed: .corgi, outfit: .cozyHoodie, accessories: [.frogHat]))
         let jonah = profile(code: "J0NAH2PF", name: "Jonah",
-                            pet: PetProfile(name: "Pepper", breed: .blackCat, accessories: [.wizardHat]))
+                            pet: PetProfile(name: "Pepper", breed: .blackCat, accessories: [.wizardHat],
+                                            radiance: [.accessory(.wizardHat): .bold]))
         let noor = profile(code: "N4ZR7HVB", name: "Noor",
                            pet: PetProfile(name: "Pip", breed: .scottishFold, accessories: [.chunkyHeadphones]))
 
@@ -91,7 +93,8 @@ extension PartyState {
             accessories: update.accessories ?? [],
             points: 0,
             level: 1,
-            badges: badges
+            badges: badges,
+            radiant: update.radiant ?? []
         )
     }
 }

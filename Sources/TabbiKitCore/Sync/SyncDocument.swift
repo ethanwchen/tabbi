@@ -124,9 +124,17 @@ public struct SyncDocument: Codable, Hashable, Sendable {
     /// granted for an event by the server) come back as granted, not bought.
     public var ledger: PetPointsLedger {
         let items = Set(unlocks.compactMap(PetItem.init(id:)))
+        let radiant = Set(unlocks.compactMap { id in
+            id.hasPrefix(Self.radiantPrefix) ? PetItem(id: String(id.dropFirst(Self.radiantPrefix.count))) : nil
+        })
         return PetPointsLedger(earned: earned, spent: spent, purchased: items.filter { !$0.isLimited },
-                               granted: items.filter(\.isLimited))
+                               granted: items.filter(\.isLimited), radiant: radiant)
     }
+
+    /// Radiant upgrades ride in `unlocks` as `radiant.<item id>`
+    /// (`radiant.accessory.wizardHat`). Older builds read no item from such
+    /// an id and skip it, and the union merge keeps it for newer ones.
+    static let radiantPrefix = "radiant."
 
     // MARK: Streak
 
@@ -169,6 +177,7 @@ public struct SyncDocument: Codable, Hashable, Sendable {
         var local = SyncDocument(
             tallies: [device: mine],
             unlocks: Set(save.ledger.purchased.union(save.ledger.granted).map(\.id))
+                .union(save.ledger.radiant.map { Self.radiantPrefix + $0.id })
         )
         if let changedAt { local.pet = SyncedPet(profile: save.profile, updatedAt: changedAt) }
         return merged(with: local)
@@ -183,10 +192,13 @@ public struct SyncDocument: Codable, Hashable, Sendable {
         var ledger = ledger
         for item in save.ledger.granted { ledger.grant(item) }
         ledger.keepStreakFreezes(of: save.ledger)
+        ledger.keepRadiant(of: save.ledger)
         var updated = PetSave(profile: pet?.profile ?? save.profile, ledger: ledger)
         updated.version = save.version
         updated.creditedFocusCount = save.creditedFocusCount
         updated.creditedFocusSource = save.creditedFocusSource
+        // The pinned Radiant goal is this Mac's own; it stays while it can.
+        if let goal = save.radiantGoal, updated.canPinRadiantGoal(goal) { updated.radiantGoal = goal }
         return updated
     }
 

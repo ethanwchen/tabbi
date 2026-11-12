@@ -8,6 +8,8 @@ import { PetProfile, defaultPetName } from "../pets/petProfile";
 import { PetSave } from "../pets/petSave";
 import { PetPointsLedger, PetPurchaseError, SHOP_ITEMS, itemCost } from "../pets/petUnlocks";
 import { StudyStreak } from "../streaks/studyStreak";
+import type { PetRadiantIntensity } from "../pets/radiant/radiantArt";
+import { isRadiantEligible, radiantEligibleItems, radiantPrice } from "../pets/radiant/radiantResolver";
 import type { DayCalendar } from "../streaks/dayCalendar";
 import type { Instant } from "../time";
 import {
@@ -38,6 +40,35 @@ export type PetClosetItemState =
 
 export function stateIsOwned(state: PetClosetItemState): boolean {
   return state.kind === "wearing" || state.kind === "owned";
+}
+
+/** Where a wardrobe item stands for a Radiant upgrade. Port of PetRadiantState. */
+export type PetRadiantState =
+  /** The item has no Radiant effect. */
+  | { readonly kind: "notEligible" }
+  /** Eligible, but the item itself is not owned yet. */
+  | { readonly kind: "needsItem" }
+  /** Owned, and the balance covers the upgrade. */
+  | { readonly kind: "affordable" }
+  /** Owned; `missing` more points are needed for the upgrade. */
+  | { readonly kind: "locked"; readonly missing: number }
+  /** Upgraded, showing its effect at this intensity. */
+  | { readonly kind: "radiant"; readonly intensity: PetRadiantIntensity };
+
+/** A pinned Radiant goal: the balance toward the upgrade's price. Port of PetRadiantGoal. */
+export interface PetRadiantGoal {
+  readonly item: PetItem;
+  /** Points toward the price so far, at most the price. */
+  readonly have: number;
+  readonly price: number;
+}
+
+export function radiantGoalFraction(goal: PetRadiantGoal): number {
+  return goal.price > 0 ? goal.have / goal.price : 1;
+}
+
+export function radiantGoalIsReady(goal: PetRadiantGoal): boolean {
+  return goal.have >= goal.price;
 }
 
 /** What a tap on a wardrobe tile did. Port of PetClosetTapResult. */
@@ -150,6 +181,77 @@ export class PetCloset {
     if (parts.kind === "outfit") copy.outfit = parts.outfit;
     else copy.wear(parts.accessory);
     return copy;
+  }
+
+  /* MARK: Radiant */
+
+  /** Where an item stands for a Radiant upgrade. */
+  radiantState(item: PetItem): PetRadiantState {
+    if (!isRadiantEligible(item)) return { kind: "notEligible" };
+    if (this.save.ledger.isRadiant(item)) return { kind: "radiant", intensity: this.profile.radianceOf(item) ?? "bold" };
+    if (!this.save.ledger.owns(item)) return { kind: "needsItem" };
+    const missing = radiantPrice(item) - this.balance;
+    return missing <= 0 ? { kind: "affordable" } : { kind: "locked", missing };
+  }
+
+  /**
+   * Upgrades an owned item to Radiant: the points are spent, the item is put
+   * on with its effect on Bold, and a goal pinned for it is done. Throws a
+   * PetRadiantPurchaseError when it cannot.
+   */
+  upgradeToRadiant(item: PetItem): void {
+    this.save.ledger.upgradeToRadiant(item);
+    this.save.profile = PetCloset.wearing(item, this.save.profile).restricted(this.save.ledger);
+    if (this.save.radiantGoal === item) this.save.radiantGoal = undefined;
+  }
+
+  /** Sets how strongly an upgraded item shows its effect. */
+  setRadiance(intensity: PetRadiantIntensity, item: PetItem): void {
+    const profile = this.save.profile.copy();
+    profile.setRadiance(intensity, item);
+    this.save.profile = profile;
+  }
+
+  /**
+   * `profile` wearing `item` with its Radiant effect at `intensity`, for
+   * previews: the sheet shows an upgrade before it is bought. Ownership is
+   * not checked here.
+   */
+  static radiantPreview(item: PetItem, intensity: PetRadiantIntensity, profile: PetProfile): PetProfile {
+    const worn = PetCloset.wearing(item, profile);
+    const radiance = new Map<PetItem, PetRadiantIntensity>();
+    for (const other of radiantEligibleItems()) {
+      const value = worn.radianceOf(other);
+      if (value !== undefined) radiance.set(other, value);
+    }
+    radiance.set(item, intensity);
+    const preview = new PetProfile(worn.name, worn.breed, {
+      paletteOverrides: worn.paletteOverrides,
+      ...(worn.furTint ? { furTint: worn.furTint } : {}),
+      outfit: worn.outfit,
+      accessories: worn.accessories,
+      radiance,
+    });
+    preview.bondLook = worn.bondLook;
+    return preview;
+  }
+
+  /** Pins `item`'s Radiant upgrade as the Closet's goal, or unpins with undefined. Only an owned, eligible item not upgraded yet can be pinned. */
+  pinRadiantGoal(item: PetItem | undefined): void {
+    if (item === undefined) {
+      this.save.radiantGoal = undefined;
+      return;
+    }
+    if (!this.save.canPinRadiantGoal(item)) return;
+    this.save.radiantGoal = item;
+  }
+
+  /** The pinned Radiant goal and the balance toward its price (capped at the price), for "Radiant Sorcerer: 4,210 of 9,750". */
+  get radiantGoalProgress(): PetRadiantGoal | undefined {
+    const item = this.save.radiantGoal;
+    if (item === undefined || !this.save.canPinRadiantGoal(item)) return undefined;
+    const price = radiantPrice(item);
+    return { item, have: Math.min(Math.max(0, this.balance), price), price };
   }
 
   rename(name: string): void {

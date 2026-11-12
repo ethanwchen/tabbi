@@ -42,7 +42,7 @@ Each Mac then has its own token for the same friend code.
 
 ### Shared catalog
 
-[`backend/shared/catalog.json`](../../backend/shared/catalog.json) lists the valid species, breeds per species, costumes, accessories, statuses, study methods, recommended heartbeat intervals and limits.
+[`backend/shared/catalog.json`](../../backend/shared/catalog.json) lists the valid species, breeds per species, costumes, accessories, the items that can be Radiant and their intensities, statuses, study methods, recommended heartbeat intervals and limits.
 The app should bundle the same file so pickers only offer valid values.
 `GET /v1/catalog` serves it too (no auth) if the app wants to check for a newer `version`.
 
@@ -61,9 +61,10 @@ What friends and party members see of a user.
   "breed": "tabby",
   "colors": ["#F2A65A", "#FFFFFF"],
   "costume": "scrubs",
-  "accessories": ["glasses", "coffee-mug"],
+  "accessories": ["glasses", "crown"],
   "points": 1240,
-  "level": 7
+  "level": 7,
+  "radiant": ["crown:bold"]
 }
 ```
 
@@ -78,10 +79,17 @@ What friends and party members see of a user.
 | `accessories` | at most 8 distinct ids from `catalog.accessories` | `[]` |
 | `points` | integer 0 to 100,000,000 | `0` |
 | `level` | integer 1 to 999 | `1` |
+| `radiant` | array of `<item id>:<intensity>` strings naming `catalog.radiantItems` and `catalog.radiantIntensities`, at most `limits.maxRadiant` (3), returned sorted | `[]` |
 
 The Tabbi app sends the pet as its owner sees it in the Closet: the outfit in `costume`, every worn item (hats, glasses, neck, back and aura items) in `accessories`, and `colors` in the order furBase, furShade, furAccent, furSpot, belly, costumeBase, costumeShade, costumeTrim, accessoryBase, accessoryShade.
 Catalog version 1 apps sent six colors, and a medical or costume hat in `costume` when no outfit was worn; the app still does that for them, and reads it (see [compatibility](../party-compatibility.md#pets-across-versions)).
 `shared/fixtures/party/party.json` lists the server id of every outfit and accessory the app draws.
+
+`radiant` lists the worn items the owner upgraded to Radiant, which friends and party members draw with an animated effect: `["blindfolded-sorcerer:bold", "white-coat:subtle"]`.
+Each entry names a costume or accessory id from `catalog.radiantItems`, a colon, and an intensity from `catalog.radiantIntensities` (`bold`, `subtle`); the app sends only the items the pet wears, sorted.
+Only a `radiant` that is not an array is refused (`invalid_field`, 400).
+Inside the array the server is lenient, because a newer app may know Radiant items this server does not: an entry that is not a string, not of that form, or that names an unknown item or intensity is dropped, the first entry per item is kept, then at most `limits.maxRadiant` of them, sorted.
+`[]` clears it, and every reply that carries a profile includes it (`[]` for none); an app from before Radiant never sends it and ignores it.
 
 Friends lists and party rosters add `badges` to each profile: the ids of the entitlements that user holds that show a badge, `["founding"]` for a Founding Member (see [the economy doc](../economy.md#founding-member)) and `[]` otherwise.
 The app cannot write it.

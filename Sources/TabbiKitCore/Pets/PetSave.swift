@@ -20,6 +20,15 @@ public struct PetSave: Hashable, Codable, Sendable {
     /// it. Nil in saves from before it was kept: the next clock adopts the
     /// count, as those builds did.
     public var creditedFocusSource: ModuleID?
+    /// The Radiant upgrade pinned as a goal in the Closet, which shows how
+    /// far the balance is toward its price. Kept on this Mac only; cleared
+    /// once the item is upgraded.
+    public var radiantGoal: PetItem? {
+        get { radiantGoalID.flatMap(PetItem.init(id:)) }
+        set { radiantGoalID = newValue?.id }
+    }
+    /// Stored as an id, so a save naming an item from a newer build still loads.
+    private var radiantGoalID: String?
 
     public init(profile: PetProfile, ledger: PetPointsLedger = PetPointsLedger()) {
         self.version = PetSave.currentVersion
@@ -41,7 +50,14 @@ public struct PetSave: Hashable, Codable, Sendable {
         save.version = raw.version
         save.creditedFocusCount = raw.creditedFocusCount
         save.creditedFocusSource = raw.creditedFocusSource
+        save.radiantGoal = raw.radiantGoal.flatMap { save.canPinRadiantGoal($0) ? $0 : nil }
         return save
+    }
+
+    /// Whether `item` can be pinned as a Radiant goal: owned, eligible and
+    /// not upgraded yet.
+    public func canPinRadiantGoal(_ item: PetItem) -> Bool {
+        ledger.owns(item) && PetRadiant.isEligible(item) && !ledger.isRadiant(item)
     }
 
     /// Loads the save at `url`, or returns nil when there is none yet.
