@@ -347,7 +347,8 @@ describe("PetBreed", () => {
         }
       }
     }
-  });
+    /* Every outfit and accessory through every animation: a sweep like the costume fit tests, with their budget. */
+  }, 60_000);
 
   it("poodle has a curly coat, a topknot and a pom tail", () => {
     const poodle = sitting("poodle");

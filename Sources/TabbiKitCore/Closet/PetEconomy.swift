@@ -75,6 +75,9 @@ public enum PetPriceTier: Int, CaseIterable, Comparable, Sendable {
     case midTier
     /// Two to four typical study weeks: the long-term showpieces.
     case showpiece
+    /// Six to twelve typical study weeks: the rarest outfits, for students
+    /// who already own the rest of the shop. On a shelf of their own.
+    case heirloom
 
     /// The prices the tier allows, in points.
     public var priceRange: ClosedRange<Int> {
@@ -83,6 +86,7 @@ public enum PetPriceTier: Int, CaseIterable, Comparable, Sendable {
         case .starter: 1...PetEconomy.pointsPerTypicalDay
         case .midTier: (2 * PetEconomy.pointsPerTypicalDay)...PetEconomy.pointsPerTypicalWeek
         case .showpiece: (2 * PetEconomy.pointsPerTypicalWeek)...(4 * PetEconomy.pointsPerTypicalWeek)
+        case .heirloom: (6 * PetEconomy.pointsPerTypicalWeek)...(12 * PetEconomy.pointsPerTypicalWeek)
         }
     }
 

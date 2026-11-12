@@ -41,6 +41,9 @@ const ITEM_COSTS: Partial<Record<PetItem, number>> = {
   "accessory.chunkyHeadphones": 420,
   "accessory.headMirror": 450,
   "accessory.witchHat": 480,
+  "accessory.daisyChain": 490,
+  "accessory.sailorCollar": 500,
+  "accessory.strawberryCap": 510,
   "accessory.pirateHat": 520,
   /* Showpieces: two to four typical weeks (1050 to 2100). */
   "accessory.tinyCrown": 1050,
@@ -59,6 +62,19 @@ const ITEM_COSTS: Partial<Record<PetItem, number>> = {
   "accessory.halo": 1900,
   "accessory.angelWings": 2000,
   "accessory.kingsCape": 2050,
+  "accessory.mushroomCap": 1100,
+  "accessory.cactusPot": 1200,
+  "accessory.sunHat": 1300,
+  "accessory.aviatorCap": 1350,
+  "outfit.librarianCardigan": 1450,
+  "outfit.varsityJacket": 1550,
+  /* Heirlooms: six to twelve typical weeks (3150 to 6300), for a student who already owns the rest of the shop. */
+  "outfit.keepersPeacoat": 3200,
+  "outfit.rainSlicker": 3600,
+  "outfit.koiYukata": 4200,
+  "outfit.sushiChef": 4800,
+  "outfit.snowDayPuffer": 5400,
+  "accessory.fireflies": 6300,
 };
 
 /** Owned from the start. Limited edition items cost nothing but are never free. */

@@ -701,6 +701,8 @@
 	<string>Automation</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>Available when %@ runs as an app bundle.</string>
+	<key>Aviator Cap</key>
+	<string>Aviator Cap</string>
 	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
 	<string>Baby blue and cloud white, like a carton of blueberry milk.</string>
 	<key>Back</key>
@@ -1185,6 +1187,8 @@
 	<string>Daily focus goal met</string>
 	<key>Daily reminder</key>
 	<string>Daily reminder</string>
+	<key>Daisy Chain</key>
+	<string>Daisy Chain</string>
 	<key>Darker squares mean more time studied</key>
 	<string>Darker squares mean more time studied</string>
 	<key>Day</key>
@@ -1405,6 +1409,8 @@
 	<string>Finish all three to count the month toward the Monthly quests badge.</string>
 	<key>Finish setup</key>
 	<string>Finish setup</string>
+	<key>Fireflies</key>
+	<string>Fireflies</string>
 	<key>Fireplace</key>
 	<string>Fireplace</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
@@ -1639,6 +1645,8 @@
 	<string>Heads down</string>
 	<key>Heart Glasses</key>
 	<string>Heart Glasses</string>
+	<key>Heirloom</key>
+	<string>Heirloom</string>
 	<key>Hi! I'm %@.</key>
 	<string>Hi! I'm %@.</string>
 	<key>Hidden</key>
@@ -1833,12 +1841,16 @@
 	<string>Keep this name</string>
 	<key>Keep your current kit and tabs</key>
 	<string>Keep your current kit and tabs</string>
+	<key>Keeper's Peacoat</key>
+	<string>Keeper's Peacoat</string>
 	<key>Kindred spirits</key>
 	<string>Kindred spirits</string>
 	<key>King's Cape</key>
 	<string>King's Cape</string>
 	<key>Kit</key>
 	<string>Kit</string>
+	<key>Koi Yukata</key>
+	<string>Koi Yukata</string>
 	<key>Large</key>
 	<string>Large</string>
 	<key>Last 7 days</key>
@@ -1889,6 +1901,8 @@
 	<string>Let your pet walk out of the notch when you drift during a focus phase</string>
 	<key>Level %lld</key>
 	<string>Level %lld</string>
+	<key>Librarian Cardigan</key>
+	<string>Librarian Cardigan</string>
 	<key>Like</key>
 	<string>Like</string>
 	<key>Like Sam or Dr. Sam</key>
@@ -2041,6 +2055,8 @@
 	<string>Move to today</string>
 	<key>Move up</key>
 	<string>Move up</string>
+	<key>Mushroom Cap</key>
+	<string>Mushroom Cap</string>
 	<key>Music</key>
 	<string>Music</string>
 	<key>Mute</key>
@@ -2653,6 +2669,8 @@
 	<string>Points: 1 for every focused minute, plus a bonus for finishing a session</string>
 	<key>Pomodoro</key>
 	<string>Pomodoro</string>
+	<key>Potted Cactus</key>
+	<string>Potted Cactus</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Powers Claude usage and answers.</string>
 	<key>Preset %@</key>
@@ -2705,6 +2723,8 @@
 	<string>Quit Anki and open it again. Tabbi notices by itself.</string>
 	<key>Rain</key>
 	<string>Rain</string>
+	<key>Rain Slicker</key>
+	<string>Rain Slicker</string>
 	<key>Rare</key>
 	<string>Rare</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2871,6 +2891,8 @@
 	<string>Runs on this Mac</string>
 	<key>Sage's Robe</key>
 	<string>Sage's Robe</string>
+	<key>Sailor Collar</key>
+	<string>Sailor Collar</string>
 	<key>Sakura Sprig</key>
 	<string>Sakura Sprig</string>
 	<key>Save</key>
@@ -3105,6 +3127,8 @@
 	<string>Slow breath</string>
 	<key>Smooth</key>
 	<string>Smooth</string>
+	<key>Snow Day Puffer</key>
+	<string>Snow Day Puffer</string>
 	<key>Snowy Scarf</key>
 	<string>Snowy Scarf</string>
 	<key>Some evidence</key>
@@ -3249,6 +3273,8 @@
 	<string>Stop the preview</string>
 	<key>Stopped</key>
 	<string>Stopped</string>
+	<key>Strawberry Cap</key>
+	<string>Strawberry Cap</string>
 	<key>Streak</key>
 	<string>Streak</string>
 	<key>Streak unavailable</key>
@@ -3299,12 +3325,16 @@
 	<string>Suggest a Feature or Report a Bug</string>
 	<key>Summer</key>
 	<string>Summer</string>
+	<key>Sunflower Sun Hat</key>
+	<string>Sunflower Sun Hat</string>
 	<key>Sunset Shades</key>
 	<string>Sunset Shades</string>
 	<key>Superhero Cape</key>
 	<string>Superhero Cape</string>
 	<key>Surgical Cap</key>
 	<string>Surgical Cap</string>
+	<key>Sushi Chef</key>
+	<string>Sushi Chef</string>
 	<key>Sweet</key>
 	<string>Sweet</string>
 	<key>Switch Kit</key>
@@ -3779,6 +3809,8 @@
 	<string>Valentine's Week</string>
 	<key>Validate</key>
 	<string>Validate</string>
+	<key>Varsity Jacket</key>
+	<string>Varsity Jacket</string>
 	<key>Version %@</key>
 	<string>Version %@</string>
 	<key>Version %@ (%@)</key>

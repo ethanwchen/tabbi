@@ -701,6 +701,8 @@
 	<string>オートメーション</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>%@ をアプリバンドルとして実行しているときに使えます。</string>
+	<key>Aviator Cap</key>
+	<string>パイロット帽</string>
 	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
 	<string>ベビーブルーと雲のような白、ブルーベリーミルクのパックみたい。</string>
 	<key>Back</key>
@@ -1185,6 +1187,8 @@
 	<string>今日の集中目標を達成</string>
 	<key>Daily reminder</key>
 	<string>毎日のリマインダー</string>
+	<key>Daisy Chain</key>
+	<string>デイジーの首飾り</string>
 	<key>Darker squares mean more time studied</key>
 	<string>色が濃いほど長く勉強した日です</string>
 	<key>Day</key>
@@ -1405,6 +1409,8 @@
 	<string>3つすべて達成すると、その月が「今月のクエスト」バッジに数えられます。</string>
 	<key>Finish setup</key>
 	<string>セットアップを完了</string>
+	<key>Fireflies</key>
+	<string>ホタル</string>
 	<key>Fireplace</key>
 	<string>暖炉</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
@@ -1639,6 +1645,8 @@
 	<string>集中中</string>
 	<key>Heart Glasses</key>
 	<string>ハートのメガネ</string>
+	<key>Heirloom</key>
+	<string>家宝</string>
 	<key>Hi! I'm %@.</key>
 	<string>こんにちは！%@だよ。</string>
 	<key>Hidden</key>
@@ -1833,12 +1841,16 @@
 	<string>この名前にする</string>
 	<key>Keep your current kit and tabs</key>
 	<string>今のキットとタブのままにする</string>
+	<key>Keeper's Peacoat</key>
+	<string>灯台守のピーコート</string>
 	<key>Kindred spirits</key>
 	<string>心の友</string>
 	<key>King's Cape</key>
 	<string>王様のマント</string>
 	<key>Kit</key>
 	<string>キット</string>
+	<key>Koi Yukata</key>
+	<string>鯉の浴衣</string>
 	<key>Large</key>
 	<string>大</string>
 	<key>Last 7 days</key>
@@ -1889,6 +1901,8 @@
 	<string>集中フェーズ中に気がそれたら、ペットがノッチから出てきます</string>
 	<key>Level %lld</key>
 	<string>レベル%lld</string>
+	<key>Librarian Cardigan</key>
+	<string>司書のカーディガン</string>
 	<key>Like</key>
 	<string>いいね</string>
 	<key>Like Sam or Dr. Sam</key>
@@ -2041,6 +2055,8 @@
 	<string>今日に移動</string>
 	<key>Move up</key>
 	<string>上へ移動</string>
+	<key>Mushroom Cap</key>
+	<string>きのこ帽子</string>
 	<key>Music</key>
 	<string>ミュージック</string>
 	<key>Mute</key>
@@ -2653,6 +2669,8 @@
 	<string>ポイント: 集中1分ごとに1ポイント、セッションを終えるとボーナス</string>
 	<key>Pomodoro</key>
 	<string>ポモドーロ</string>
+	<key>Potted Cactus</key>
+	<string>鉢植えサボテン</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Claudeの使用量表示と回答に使います。</string>
 	<key>Preset %@</key>
@@ -2705,6 +2723,8 @@
 	<string>Ankiを終了して、もう一度開いてください。Tabbiが自動で気づきます。</string>
 	<key>Rain</key>
 	<string>雨</string>
+	<key>Rain Slicker</key>
+	<string>レインコート</string>
 	<key>Rare</key>
 	<string>レア</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2871,6 +2891,8 @@
 	<string>このMacで動作</string>
 	<key>Sage's Robe</key>
 	<string>賢者のローブ</string>
+	<key>Sailor Collar</key>
+	<string>セーラーカラー</string>
 	<key>Sakura Sprig</key>
 	<string>桜のひと枝</string>
 	<key>Save</key>
@@ -3105,6 +3127,8 @@
 	<string>深呼吸</string>
 	<key>Smooth</key>
 	<string>なめらか</string>
+	<key>Snow Day Puffer</key>
+	<string>雪の日のダウン</string>
 	<key>Snowy Scarf</key>
 	<string>雪のマフラー</string>
 	<key>Some evidence</key>
@@ -3249,6 +3273,8 @@
 	<string>試聴を停止</string>
 	<key>Stopped</key>
 	<string>停止しました</string>
+	<key>Strawberry Cap</key>
+	<string>いちごニット帽</string>
 	<key>Streak</key>
 	<string>連続記録</string>
 	<key>Streak unavailable</key>
@@ -3299,12 +3325,16 @@
 	<string>機能の提案・不具合の報告</string>
 	<key>Summer</key>
 	<string>夏</string>
+	<key>Sunflower Sun Hat</key>
+	<string>ひまわりの麦わら帽子</string>
 	<key>Sunset Shades</key>
 	<string>サンセットサングラス</string>
 	<key>Superhero Cape</key>
 	<string>ヒーローマント</string>
 	<key>Surgical Cap</key>
 	<string>手術帽</string>
+	<key>Sushi Chef</key>
+	<string>寿司職人</string>
 	<key>Sweet</key>
 	<string>スイーツ</string>
 	<key>Switch Kit</key>
@@ -3779,6 +3809,8 @@
 	<string>バレンタインウィーク</string>
 	<key>Validate</key>
 	<string>確認</string>
+	<key>Varsity Jacket</key>
+	<string>スタジャン</string>
 	<key>Version %@</key>
 	<string>バージョン %@</string>
 	<key>Version %@ (%@)</key>

@@ -288,7 +288,8 @@
   height: 100%;
   overflow-y: auto;
   scrollbar-width: none;
-  padding-bottom: 12px;
+  /* The bottom edge fade's length (EdgeFade's 16 px), so scrolled to the end the last row sits whole and unfaded above it. */
+  padding-bottom: 16px;
 }
 
 .closet-grid-scroll[data-still] {

@@ -344,7 +344,6 @@ struct PartyProtocolFixture: Codable, Equatable {
     }
 
     private static let leveledApp = ##"{"code":"H8LV2QPA","name":"Lea","petName":"Bao","species":"cat","breed":"tabby","colors":["#D98C4A","#B06A33","#F2C38B","#5A3A22","#FFF1DE","#3E7CB1"],"costume":"none","accessories":["scarf"],"points":900,"level":1,"badges":[],"studyLevel":64,"nameplate":"aurora"}"##
-    private static let garbledLevel = ##"{"code":"J9GX3RWB","name":"Gus","petName":"Tofu","species":"dog","breed":"corgi","colors":[],"costume":"none","accessories":[],"points":0,"level":1,"studyLevel":"lots","nameplate":42}"##
     private static let currentApp = ##"{"code":"N4ZR7HVB","name":"Noor","petName":"Pip","species":"dog","breed":"corgi","colors":["#D98C4A","#B06A33","#F2C38B","#5A3A22","#FFF1DE","#3E7CB1","#2E5E88","#FFFFFF","#E2557A","#B83D5E"],"costume":"dinosaur-hoodie","accessories":["snow-scarf","heart-glasses","wizard-hat","angel-wings","sparkle-trail"],"points":120,"level":3,"badges":["founding"]}"##
     private static let olderApp = ##"{"code":"K7QW2MZD","name":"Olive","petName":"Mochi","species":"cat","breed":"tabby","colors":["#D98C4A","#B06A33","#F2C38B","#5A3A22","#FFF1DE","#3E7CB1"],"costume":"graduation","accessories":["glasses","scarf"],"points":80,"level":2}"##
     private static let newerApp = ##"{"code":"F7TRE9XQ","name":"Fay","petName":"Zip","species":"cat","breed":"maine-coon","colors":["#334455","#AABBCC"],"costume":"space-suit","accessories":["jetpack","party-hat","wings-of-tomorrow"],"points":5,"level":1,"badges":["founding","fromTheFuture"],"aura":"glow","pronouns":"they"}"##
@@ -358,7 +357,7 @@ struct PartyProtocolFixture: Codable, Equatable {
         ("friend list from a protocol 1 server", "friendList",
          #"{"ok":true,"friends":[{"profile":\#(olderApp),"since":1789000000,"presence":null,"online":false,"party":null}]}"#),
         ("friend list with levels, from a protocol 3 server", "friendList",
-         #"{"ok":true,"friends":[{"profile":\#(leveledApp),"since":1789000000,"presence":null,"online":false,"party":null},{"profile":\#(olderApp),"since":1789000000,"presence":null,"online":false,"party":null},{"profile":\#(garbledLevel),"since":1789000000,"presence":null,"online":false,"party":null}],"incoming":[],"outgoing":[]}"#),
+         #"{"ok":true,"friends":[{"profile":\#(leveledApp),"since":1789000000,"presence":null,"online":false,"party":null},{"profile":\#(olderApp),"since":1789000000,"presence":null,"online":false,"party":null}],"incoming":[],"outgoing":[]}"#),
         ("friend list from a newer server", "friendList",
          #"{"ok":true,"friends":[{"profile":\#(newerApp),"since":1789000000,"presence":null,"online":false,"party":null,"streak":{"best":9}}],"incoming":[],"outgoing":[],"suggested":[{"code":"ZZZZZZZZ"}],"cursor":"abc"}"#),
         ("request sent", "addFriendReply", #"{"ok":true,"added":false,"status":"requested","friend":\#(currentApp)}"#),

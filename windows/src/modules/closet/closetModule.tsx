@@ -51,6 +51,7 @@ const SNAPSHOT_STATES = [
   "level-12",
   "level-37",
   "level-64",
+  "wardrobe-heirloom",
   "streak",
   "look",
   "weeks",
@@ -206,6 +207,8 @@ export const ClosetModule = defineModule(
           case "level-64":
             /* The Study Level on the name line and the Goals Level card, from the first level to Galaxy II. */
             return show("goals", { studyLevel: Number(state.slice("level-".length)) });
+          case "wardrobe-heirloom":
+            return show("wardrobe", { tryingOnItem: outfitItem("koiYukata"), scrolled: 1 });
           case "founding":
             return show("limited", { tryingOn: "foundersPin" });
           case "founding-unearned":

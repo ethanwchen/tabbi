@@ -2,6 +2,7 @@
   "accessories" : {
     "angelWings" : "angel-wings",
     "astronautHelmet" : "astronaut-helmet",
+    "aviatorCap" : "aviator-cap",
     "backwardsCap" : "backwards-cap",
     "beanie" : "beanie",
     "beeAntennae" : "bee-antennae",
@@ -9,12 +10,15 @@
     "blossomSprout" : "blossom-sprout",
     "bowTie" : "bow",
     "bunnyEars" : "bunny-ears",
+    "cactusPot" : "cactus-pot",
     "chefHat" : "chef-hat",
     "cherryPetals" : "cherry-petals",
     "chunkyHeadphones" : "headphones",
     "coolSunglasses" : "sunglasses",
     "cowboyHat" : "cowboy-hat",
+    "daisyChain" : "daisy-chain",
     "explorersHat" : "explorers-hat",
+    "fireflies" : "fireflies",
     "flameHeadband" : "flame-headband",
     "flowerCrown" : "flower",
     "foundersPin" : "founders-pin",
@@ -29,6 +33,7 @@
     "lionDanceHat" : "lion-dance-hat",
     "littleSprout" : "little-sprout",
     "moonlitWitchHat" : "moonlit-witch-hat",
+    "mushroomCap" : "mushroom-cap",
     "nightcap" : "nightcap",
     "ninjaHeadband" : "ninja-headband",
     "owlSpectacles" : "owl-spectacles",
@@ -38,13 +43,16 @@
     "rainCloud" : "rain-cloud",
     "reindeerAntlers" : "reindeer-antlers",
     "roundGlasses" : "glasses",
+    "sailorCollar" : "sailor-collar",
     "sakuraSprig" : "sakura-sprig",
     "scarf" : "scarf",
     "snowScarf" : "snow-scarf",
     "sparkleTrail" : "sparkle-trail",
     "sportySweatband" : "sporty-sweatband",
     "stethoscope" : "stethoscope",
+    "strawberryCap" : "strawberry-cap",
     "summerShades" : "summer-shades",
+    "sunHat" : "sun-hat",
     "surgicalCap" : "surgical-cap",
     "teamMedal" : "team-medal",
     "tinyCrown" : "crown",
@@ -71,13 +79,20 @@
     "cozyHoodie" : "hoodie",
     "cozyPajamas" : "pajamas",
     "dinosaurHoodie" : "dinosaur-hoodie",
+    "keepersPeacoat" : "keepers-peacoat",
+    "koiYukata" : "koi-yukata",
+    "librarianCardigan" : "librarian-cardigan",
     "none" : "none",
+    "rainSlicker" : "rain-slicker",
     "sagesRobe" : "sages-robe",
     "scholarsRobe" : "scholars-robe",
     "scrubs" : "scrubs",
+    "snowDayPuffer" : "snow-day-puffer",
     "starryCloak" : "starry-cloak",
     "studyHoodie" : "study-hoodie",
     "superheroCape" : "superhero",
+    "sushiChef" : "sushi-chef",
+    "varsityJacket" : "varsity-jacket",
     "whiteCoat" : "white-coat",
     "wizardRobe" : "wizard"
   },
@@ -431,30 +446,6 @@
               "species" : "cat"
             },
             "since" : 1789000000
-          },
-          {
-            "online" : false,
-            "party" : null,
-            "presence" : null,
-            "profile" : {
-              "accessories" : [
-
-              ],
-              "breed" : "corgi",
-              "code" : "J9GX3RWB",
-              "colors" : [
-
-              ],
-              "costume" : "none",
-              "level" : 1,
-              "name" : "Gus",
-              "nameplate" : 42,
-              "petName" : "Tofu",
-              "points" : 0,
-              "species" : "dog",
-              "studyLevel" : "lots"
-            },
-            "since" : 1789000000
           }
         ],
         "incoming" : [
@@ -487,26 +478,6 @@
           "outfit" : "none",
           "species" : "cat"
         },
-        "J9GX3RWB" : {
-          "accessories" : [
-
-          ],
-          "breed" : "corgi",
-          "colors" : {
-            "accessoryBase" : "#E0607A",
-            "accessoryShade" : "#B04460",
-            "belly" : "#FFF6EA",
-            "costumeBase" : "#5BC0BE",
-            "costumeShade" : "#3E9593",
-            "costumeTrim" : "#E8FFFB",
-            "furAccent" : "#F2A65A",
-            "furBase" : "#E88D3C",
-            "furShade" : "#C76F28",
-            "furSpot" : "#3A3036"
-          },
-          "outfit" : "none",
-          "species" : "dog"
-        },
         "K7QW2MZD" : {
           "accessories" : [
             "scarf",
@@ -536,17 +507,13 @@
           "H8LV2QPA" : [
 
           ],
-          "J9GX3RWB" : [
-
-          ],
           "K7QW2MZD" : [
 
           ]
         },
         "friends" : [
           "H8LV2QPA",
-          "K7QW2MZD",
-          "J9GX3RWB"
+          "K7QW2MZD"
         ],
         "incoming" : [
 
@@ -556,7 +523,6 @@
         ],
         "standings" : {
           "H8LV2QPA" : "64 galaxy-2 aurora",
-          "J9GX3RWB" : null,
           "K7QW2MZD" : null
         }
       }
@@ -2352,6 +2318,314 @@
           "furSpot" : "#8A6450"
         },
         "outfit" : "bakersApron",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "librarian-cardigan",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit librarianCardigan",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "librarianCardigan",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "varsity-jacket",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit varsityJacket",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "varsityJacket",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "keepers-peacoat",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit keepersPeacoat",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "keepersPeacoat",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "rain-slicker",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit rainSlicker",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "rainSlicker",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "koi-yukata",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit koiYukata",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "koiYukata",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "sushi-chef",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit sushiChef",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "sushiChef",
+        "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : [
+          "#F3E6D2",
+          "#DCCAB0",
+          "#5A4034",
+          "#8A6450",
+          "#FBF4E8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "snow-day-puffer",
+        "petName" : "Luna",
+        "species" : "cat"
+      },
+      "name" : "outfit snowDayPuffer",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FBF4E8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#5A4034",
+          "furBase" : "#F3E6D2",
+          "furShade" : "#DCCAB0",
+          "furSpot" : "#8A6450"
+        },
+        "outfit" : "snowDayPuffer",
         "species" : "cat"
       }
     },

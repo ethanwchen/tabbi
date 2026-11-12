@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { partyProfile, type PartyProfile, type PartyProfileUpdate } from "../../../src/core/party/partyModels";
-import { PARTY_COLOR_ROLES, forCatalogVersion1, forCatalogVersion3, olderCatalogFallback, localBreed, partyPet, partyPetUpdate, wireAccessory, wireOutfit } from "../../../src/core/party/partyPetAppearance";
+import { PARTY_COLOR_ROLES, forCatalogVersion1, forCatalogVersion3, forCatalogVersion4, olderCatalogFallback, localBreed, partyPet, partyPetUpdate, wireAccessory, wireOutfit } from "../../../src/core/party/partyPetAppearance";
 import { breedDisplayName } from "../../../src/core/pets/petBreed";
 import { PET_ACCESSORIES, PET_OUTFITS } from "../../../src/core/pets/petCostume";
 import { PET_BREEDS } from "../../../src/core/pets/petKinds";
@@ -171,7 +171,7 @@ describe("PartyPetAppearance", () => {
 
   it("carries the mastery outfits to friends, and leaves them out for a catalog version 3 server", () => {
     const catalog = loadRepoJson<{ version: number; costumes: string[]; accessories: string[] }>("backend/shared/catalog.json");
-    expect(catalog.version).toBe(4);
+    expect(catalog.version).toBe(5);
     const pet = new PetProfile("Nova", "corgi", { outfit: "astronautSuit", accessories: ["friendshipBandana", "nightcap", "roundGlasses"] });
     const update = partyPetUpdate(pet);
     expect(update.costume).toBe("astronaut-suit");
@@ -190,6 +190,31 @@ describe("PartyPetAppearance", () => {
     expect(forCatalogVersion3(pajamas)).toEqual(pajamas);
     for (const outfit of ["astronautSuit", "starryCloak", "apprenticeRobe", "scholarsRobe", "sagesRobe", "bakersApron"] as const) {
       expect(catalog.costumes).toContain(wireOutfit(outfit));
+    }
+  });
+
+  it("carries release 7's items to friends, and leaves them out for a catalog version 4 server", () => {
+    const catalog = loadRepoJson<{ version: number; costumes: string[]; accessories: string[] }>("backend/shared/catalog.json");
+    expect(catalog.version).toBe(5);
+    const pet = new PetProfile("Juno", "corgi", { outfit: "rainSlicker", accessories: ["daisyChain", "mushroomCap", "roundGlasses"] });
+    const update = partyPetUpdate(pet);
+    expect(update.costume).toBe("rain-slicker");
+    expect(update.accessories).toEqual(["daisy-chain", "glasses", "mushroom-cap"]);
+    const back = partyPet(profileFrom(update));
+    expect(back.outfit).toBe("rainSlicker");
+    expect(new Set(back.accessories)).toEqual(new Set(pet.accessories));
+    const older = forCatalogVersion4(update);
+    expect(older.costume).toBe("none");
+    expect(older.accessories).toEqual(["glasses"]);
+    expect(olderCatalogFallback(update)).toEqual(older);
+    const lantern = partyPetUpdate(new PetProfile("Bo", "corgi", { outfit: "sushiChef", accessories: ["tinyLantern", "fireflies"] }));
+    expect(forCatalogVersion4(lantern)).toEqual({ ...lantern, costume: "none", accessories: ["tiny-lantern"] });
+    expect(olderCatalogFallback(forCatalogVersion4(lantern))).toEqual(forCatalogVersion3(lantern));
+    for (const outfit of ["librarianCardigan", "varsityJacket", "keepersPeacoat", "rainSlicker", "koiYukata", "sushiChef", "snowDayPuffer"] as const) {
+      expect(catalog.costumes).toContain(wireOutfit(outfit));
+    }
+    for (const accessory of ["daisyChain", "sailorCollar", "strawberryCap", "mushroomCap", "cactusPot", "sunHat", "aviatorCap", "fireflies"] as const) {
+      expect(catalog.accessories).toContain(wireAccessory(accessory));
     }
   });
 

@@ -29,7 +29,8 @@ final class PetEconomyTests: XCTestCase {
         XCTAssertEqual(PetEconomy.studyToEarn(525), "about 5 study days")
         XCTAssertEqual(PetEconomy.studyToEarn(526), "about 2 weeks")
         XCTAssertEqual(PetEconomy.typicalWeeks(toEarn: 1050), 2)
-        XCTAssertEqual(PetEconomy.studyToEarn(2100), "about 4 weeks", "the priciest item takes about a month")
+        XCTAssertEqual(PetEconomy.studyToEarn(2100), "about 4 weeks", "the priciest showpiece takes about a month")
+        XCTAssertEqual(PetEconomy.studyToEarn(6300), "about 12 weeks", "the priciest heirloom takes about three months")
     }
 
     func testTiersDoNotOverlapAndLeaveGaps() {
@@ -39,7 +40,9 @@ final class PetEconomyTests: XCTestCase {
         }
         XCTAssertNil(PetPriceTier(cost: 150), "between a day and two days is no tier")
         XCTAssertNil(PetPriceTier(cost: 800), "between a week and two weeks is no tier")
-        XCTAssertNil(PetPriceTier(cost: 5000), "beyond four weeks is no tier")
+        XCTAssertNil(PetPriceTier(cost: 2500), "between four and six weeks is no tier")
+        XCTAssertNil(PetPriceTier(cost: 6301), "beyond twelve weeks is no tier")
+        XCTAssertEqual(PetPriceTier.heirloom.priceRange, 3150...6300, "6 to 12 typical weeks")
     }
 
     func testEveryPriceSitsInsideATier() {
@@ -70,9 +73,23 @@ final class PetEconomyTests: XCTestCase {
             case .starter: XCTAssertEqual(days, 1, item.id)
             case .midTier: XCTAssertTrue((2...5).contains(days), item.id)
             case .showpiece: XCTAssertTrue((10...20).contains(days), "\(item.id): 2 to 4 weeks of 5 days")
+            case .heirloom: XCTAssertTrue((30...60).contains(days), "\(item.id): 6 to 12 weeks of 5 days")
             }
         }
         XCTAssertEqual(PetItem.accessory(.graduationCap).tier, .showpiece)
         XCTAssertEqual(PetItem.accessory(.beanie).tier, .starter)
+        XCTAssertEqual(PetItem.accessory(.fireflies).tier, .heirloom)
+    }
+
+    /// Heirlooms sit on a shelf of their own, after every theme shelf, so
+    /// the wardrobe still lists cheaper tiers first; no other shelf holds one.
+    func testHeirloomsHaveTheirOwnLastShelf() {
+        for item in PetItem.shopItems where item != .outfit(.none) {
+            XCTAssertEqual(item.theme == .heirloom, item.tier == .heirloom, item.id)
+        }
+        XCTAssertEqual(PetCloset.shelves.last?.theme, .heirloom)
+        let order = PetCloset.shelves.flatMap(\.items).map(\.tier)
+        XCTAssertEqual(Array(order.suffix(PetItemTheme.heirloom.items.count)), Array(repeating: .heirloom,
+                                                                                    count: PetItemTheme.heirloom.items.count))
     }
 }

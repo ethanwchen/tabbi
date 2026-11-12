@@ -253,6 +253,10 @@ enum SnapshotRenderer {
                 for level in [1, 12, 37, 64] {
                     addClosetShot("level-\(level)", ClosetShot(section: .goals, studyLevel: level))
                 }
+                // The Wardrobe from its end: the Heirloom shelf, with an
+                // heirloom tried on.
+                addClosetShot("wardrobe-heirloom",
+                              ClosetShot(section: .wardrobe, tryingOn: .outfit(.koiYukata), showsEnd: true))
                 let headphones = PetItem.accessory(.chunkyHeadphones)
                 addClosetShot("long-name", ClosetShot(section: .wardrobe, tryingOn: headphones, name: "Wolfgang Wombats"))
                 addClosetShot("long-name-scrolling", ClosetShot(section: .wardrobe, tryingOn: headphones,

@@ -82,8 +82,9 @@ export class PartyAccount {
    * A server from before protocol 3 refuses the Study Level fields; the
    * profile goes again without them, so friends there see no level.
    * A server on an older catalog refuses newer ids as an invalid field; the
-   * profile is then sent again without catalog version 4's ids, and if that
-   * is refused too, as catalog version 1 takes it.
+   * profile is then sent again without catalog version 5's ids, then
+   * without version 4's, and if that is refused too, as catalog version 1
+   * takes it.
    */
   async connect(profile: PartyProfileUpdate): Promise<PartyProfile> {
     let update = profile;

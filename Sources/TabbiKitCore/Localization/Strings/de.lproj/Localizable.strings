@@ -701,6 +701,8 @@
 	<string>Automation</string>
 	<key>Available when %@ runs as an app bundle.</key>
 	<string>Verfügbar, wenn %@ als App-Bundle läuft.</string>
+	<key>Aviator Cap</key>
+	<string>Fliegerkappe</string>
 	<key>Baby blue and cloud white, like a carton of blueberry milk.</key>
 	<string>Babyblau und Wolkenweiß, wie ein Karton Blaubeermilch.</string>
 	<key>Back</key>
@@ -1185,6 +1187,8 @@
 	<string>Tagesziel erreicht</string>
 	<key>Daily reminder</key>
 	<string>Tägliche Erinnerung</string>
+	<key>Daisy Chain</key>
+	<string>Gänseblümchenkette</string>
 	<key>Darker squares mean more time studied</key>
 	<string>Dunklere Felder bedeuten mehr Lernzeit</string>
 	<key>Day</key>
@@ -1405,6 +1409,8 @@
 	<string>Schaff alle drei, dann zählt der Monat für das Abzeichen Monatsquests.</string>
 	<key>Finish setup</key>
 	<string>Einrichtung abschließen</string>
+	<key>Fireflies</key>
+	<string>Glühwürmchen</string>
 	<key>Fireplace</key>
 	<string>Kaminfeuer</string>
 	<key>Fit reviews, study blocks and breaks around today's calendar</key>
@@ -1639,6 +1645,8 @@
 	<string>Voll konzentriert</string>
 	<key>Heart Glasses</key>
 	<string>Herzbrille</string>
+	<key>Heirloom</key>
+	<string>Erbstücke</string>
 	<key>Hi! I'm %@.</key>
 	<string>Hallo! Ich bin %@.</string>
 	<key>Hidden</key>
@@ -1833,12 +1841,16 @@
 	<string>Diesen Namen behalten</string>
 	<key>Keep your current kit and tabs</key>
 	<string>Aktuelles Kit und Tabs behalten</string>
+	<key>Keeper's Peacoat</key>
+	<string>Mantel des Leuchtturmwärters</string>
 	<key>Kindred spirits</key>
 	<string>Seelenpaar</string>
 	<key>King's Cape</key>
 	<string>Königsumhang</string>
 	<key>Kit</key>
 	<string>Kit</string>
+	<key>Koi Yukata</key>
+	<string>Koi-Yukata</string>
 	<key>Large</key>
 	<string>Groß</string>
 	<key>Last 7 days</key>
@@ -1889,6 +1901,8 @@
 	<string>Dein Haustier kommt aus der Notch, wenn du in einer Fokusphase abschweifst</string>
 	<key>Level %lld</key>
 	<string>Level %lld</string>
+	<key>Librarian Cardigan</key>
+	<string>Bibliotheks-Strickjacke</string>
 	<key>Like</key>
 	<string>Gefällt mir</string>
 	<key>Like Sam or Dr. Sam</key>
@@ -2041,6 +2055,8 @@
 	<string>Auf heute verschieben</string>
 	<key>Move up</key>
 	<string>Nach oben</string>
+	<key>Mushroom Cap</key>
+	<string>Pilzhut</string>
 	<key>Music</key>
 	<string>Musik</string>
 	<key>Mute</key>
@@ -2653,6 +2669,8 @@
 	<string>Punkte: 1 pro Fokusminute, plus ein Bonus, wenn du eine Session beendest</string>
 	<key>Pomodoro</key>
 	<string>Pomodoro</string>
+	<key>Potted Cactus</key>
+	<string>Topfkaktus</string>
 	<key>Powers Claude usage and answers.</key>
 	<string>Für Claude-Nutzung und Antworten.</string>
 	<key>Preset %@</key>
@@ -2705,6 +2723,8 @@
 	<string>Beende Anki und öffne es neu. Tabbi merkt das von selbst.</string>
 	<key>Rain</key>
 	<string>Regen</string>
+	<key>Rain Slicker</key>
+	<string>Regenmantel</string>
 	<key>Rare</key>
 	<string>Selten</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2871,6 +2891,8 @@
 	<string>Läuft auf diesem Mac</string>
 	<key>Sage's Robe</key>
 	<string>Weisenrobe</string>
+	<key>Sailor Collar</key>
+	<string>Matrosenkragen</string>
 	<key>Sakura Sprig</key>
 	<string>Kirschblütenzweig</string>
 	<key>Save</key>
@@ -3105,6 +3127,8 @@
 	<string>Tief atmen</string>
 	<key>Smooth</key>
 	<string>Weich</string>
+	<key>Snow Day Puffer</key>
+	<string>Schneetag-Daunenjacke</string>
 	<key>Snowy Scarf</key>
 	<string>Schneeschal</string>
 	<key>Some evidence</key>
@@ -3249,6 +3273,8 @@
 	<string>Anhören beenden</string>
 	<key>Stopped</key>
 	<string>Gestoppt</string>
+	<key>Strawberry Cap</key>
+	<string>Erdbeermütze</string>
 	<key>Streak</key>
 	<string>Serie</string>
 	<key>Streak unavailable</key>
@@ -3299,12 +3325,16 @@
 	<string>Idee vorschlagen oder Fehler melden</string>
 	<key>Summer</key>
 	<string>Sommer</string>
+	<key>Sunflower Sun Hat</key>
+	<string>Sonnenhut mit Sonnenblume</string>
 	<key>Sunset Shades</key>
 	<string>Sonnenuntergangsbrille</string>
 	<key>Superhero Cape</key>
 	<string>Heldenumhang</string>
 	<key>Surgical Cap</key>
 	<string>OP-Haube</string>
+	<key>Sushi Chef</key>
+	<string>Sushi-Koch</string>
 	<key>Sweet</key>
 	<string>Süß</string>
 	<key>Switch Kit</key>
@@ -3779,6 +3809,8 @@
 	<string>Valentinswoche</string>
 	<key>Validate</key>
 	<string>Prüfen</string>
+	<key>Varsity Jacket</key>
+	<string>College-Jacke</string>
 	<key>Version %@</key>
 	<string>Version %@</string>
 	<key>Version %@ (%@)</key>

@@ -221,12 +221,14 @@ final class PetClosetTests: XCTestCase {
         XCTAssertFalse(PetItem.accessory(.scarf).isNew, "the med set shipped first")
         XCTAssertFalse(PetItem.outfit(.scrubs).isNew)
         XCTAssertFalse(PetItem.accessory(.wizardHat).isNew, "the second batch is no longer the latest")
-        XCTAssertTrue(PetItem.accessory(.angelWings).isNew)
+        XCTAssertFalse(PetItem.accessory(.angelWings).isNew, "the animated batch is no longer the latest")
+        XCTAssertTrue(PetItem.accessory(.mushroomCap).isNew)
         XCTAssertFalse(PetItem.accessory(.goldenLaurel).isNew, "limited items have their own badge")
+        XCTAssertFalse(PetItem.accessory(.tinyLantern).isNew, "mastery items have their own badge")
 
         var closet = closet(earned: 2000)
-        XCTAssertTrue(closet.isNew(.accessory(.angelWings)))
-        XCTAssertEqual(closet.tap(.accessory(.angelWings)), .boughtAndWore)
-        XCTAssertFalse(closet.isNew(.accessory(.angelWings)), "the badge goes once the item is unlocked")
+        XCTAssertTrue(closet.isNew(.accessory(.mushroomCap)))
+        XCTAssertEqual(closet.tap(.accessory(.mushroomCap)), .boughtAndWore)
+        XCTAssertFalse(closet.isNew(.accessory(.mushroomCap)), "the badge goes once the item is unlocked")
     }
 }
