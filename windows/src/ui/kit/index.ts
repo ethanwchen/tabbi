@@ -22,6 +22,7 @@ export * from "./MarqueeText";
 export * from "./rowsFit";
 export * from "./RowsThatFit";
 export * from "./TextThatFits";
+export * from "./ViewsThatFit";
 export * from "./EdgeFade";
 export * from "./StatusMessage";
 export * from "./ModulePlaceholder";
