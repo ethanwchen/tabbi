@@ -4,6 +4,21 @@ import Foundation
 /// Shared measuring for the Radiant tests: renders looks with a given
 /// layout and reports, per frame and tick, what the effects changed.
 enum RadiantAudit {
+    /// `TABBI_RADIANT_EXHAUSTIVE=1` checks every breed, animation and mix
+    /// of intensities (run it optimized: `swift test -c release`); the
+    /// default run, sized for CI, checks one breed per body shape (breeds
+    /// that share one draw the same pixels, `RadiantArtTests` proves it) in
+    /// the animations that cover every stance.
+    static var isExhaustive: Bool { ProcessInfo.processInfo.environment["TABBI_RADIANT_EXHAUSTIVE"] == "1" }
+
+    static var breeds: [PetBreed] { isExhaustive ? PetBreed.allCases : PetGallery.bodyShapeBreeds }
+
+    /// Sitting, hopping, walking, stretching, curled up, asleep, a prop, a
+    /// gesture and hanging from the notch.
+    static var animations: [PetAnimation] {
+        isExhaustive ? PetAnimation.allCases : [.idle, .celebrate, .walk, .stretch, .nap, .sleep, .typing, .wave, .peekIn]
+    }
+
     /// The outfit and accessories wearing `items`.
     static func wearing(_ items: [PetItem]) -> (PetOutfit, [PetAccessory]) {
         var outfit = PetOutfit.none
@@ -55,7 +70,7 @@ enum RadiantAudit {
     /// t (pixels where the Radiant frame or the one before differs from the
     /// normal frame), over every frame.
     static func audit(_ items: [PetItem], layout: RadiantLayout, breed: PetBreed,
-                      animations: [PetAnimation] = PetAnimation.allCases, ceilings: [Int?] = [nil, 2]) -> Result {
+                      animations: [PetAnimation] = RadiantAudit.animations, ceilings: [Int?] = [nil, 2]) -> Result {
         let (outfit, accessories) = wearing(items)
         var result = Result(maxChange: Array(repeating: 0, count: layout.loop))
         for animation in animations {

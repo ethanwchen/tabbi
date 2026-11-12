@@ -264,7 +264,9 @@ Radiant effects have their own, counted as the effect's pixels that change from 
 - All Radiant effects worn together change at most 42 pixels per tick: one Bold effect beside the busiest Subtle one.
 
 `radiant-costs.json` lists each placement's cost on every tick; when the worn effects' costs together would pass 42 on any tick, the resolver has them take turns, each playing its loop in its own cycle while the others hold their still.
-`RadiantCombinationTests` renders every pair and triple that can be worn together, with every mix of Bold and Subtle, on all 19 breeds, in every animation, frame and tick, at full size and under the ceiling, and checks no collisions, no eye or face pixel touched, the margin, the ceiling and the combined budget.
+`RadiantCombinationTests` renders every pair and triple that can be worn together, at full size and under the ceiling, and checks no collisions, no eye or face pixel touched, the margin, the ceiling and the combined budget.
+By default (sized for CI) it checks all Bold and all Subtle on one breed per body shape in the animations that cover every stance; breeds sharing a body shape look the same to the effects (`RadiantArtTests` proves it).
+`TABBI_RADIANT_EXHAUSTIVE=1 swift test -c release --filter 'RadiantCombinationTests|RadiantBudgetTests'` checks every mix of Bold and Subtle on all 19 breeds in every animation, frame and tick, and is how `radiant-costs.json` is recorded (add `TABBI_RECORD_RADIANT_COSTS=1`).
 `swift run PetGallery <dir> radiant` writes each effect's strips and GIFs, a sheet per effect on every body shape, and `combos.png` with every pair and triple.
 
 ### Bond growth

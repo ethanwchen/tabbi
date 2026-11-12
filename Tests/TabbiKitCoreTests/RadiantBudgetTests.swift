@@ -2,14 +2,15 @@ import Foundation
 import XCTest
 @testable import TabbiKitCore
 
-/// Radiant effects one at a time: every placement of every effect, on all 19
-/// breeds, in every animation, frame and tick, at full size and under the
+/// Radiant effects one at a time: every placement of every effect, on every
+/// body shape (all 19 breeds with `TABBI_RADIANT_EXHAUSTIVE=1`), in every
+/// animation, frame and tick, at full size and under the
 /// closed notch's ceiling. Each keeps off the eyes and face, inside the
 /// frame's margin and below the ceiling, changes no more pixels from one
 /// tick to the next than `radiant-costs.json` records for it, and stays
 /// within the Radiant per-tick budget.
 ///
-/// `TABBI_RECORD_RADIANT_COSTS=1 swift test -c release --filter RadiantBudgetTests/testRecordCosts`
+/// `TABBI_RADIANT_EXHAUSTIVE=1 TABBI_RECORD_RADIANT_COSTS=1 swift test -c release --filter RadiantBudgetTests/testRecordCosts`
 /// measures every placement again and rewrites `radiant-costs.json`.
 final class RadiantBudgetTests: XCTestCase {
     static var costsURL: URL {
@@ -22,7 +23,7 @@ final class RadiantBudgetTests: XCTestCase {
                         file: StaticString = #filePath, line: UInt = #line) -> [Int] {
         let layout = RadiantAudit.single(item, intensity, placement: placement)
         var worst = Array(repeating: 0, count: layout.loop)
-        for breed in PetBreed.allCases {
+        for breed in RadiantAudit.breeds {
             let result = RadiantAudit.audit([item], layout: layout, breed: breed)
             let label = "\(item) \(intensity) placement \(placement) on \(breed)"
             XCTAssertEqual(result.eyeHits, 0, "covers an eye: \(label)", file: file, line: line)
@@ -37,6 +38,7 @@ final class RadiantBudgetTests: XCTestCase {
 
     func testRecordCosts() throws {
         try XCTSkipUnless(ProcessInfo.processInfo.environment["TABBI_RECORD_RADIANT_COSTS"] == "1", "Recording only")
+        try XCTSkipUnless(RadiantAudit.isExhaustive, "Record with TABBI_RADIANT_EXHAUSTIVE=1, over every breed and animation")
         var table: [String: [String: [[Int]]]] = [:]
         var boldMax = 0, anyMax = 0
         for art in RadiantArt.shared.items {
@@ -69,7 +71,13 @@ final class RadiantBudgetTests: XCTestCase {
         for placement in effect.placements.indices {
             let measured = Self.measure(item, intensity, placement: placement)
             let recorded = try XCTUnwrap(costs.cost(item, intensity, placement: placement), "no recorded cost")
-            XCTAssertEqual(recorded, measured, "\(item) \(intensity) placement \(placement): rerun with TABBI_RECORD_RADIANT_COSTS=1")
+            if RadiantAudit.isExhaustive {
+                XCTAssertEqual(recorded, measured, "\(item) \(intensity) placement \(placement): rerun with TABBI_RECORD_RADIANT_COSTS=1")
+            } else {
+                for (tick, cost) in measured.enumerated() {
+                    XCTAssertLessThanOrEqual(cost, recorded[tick], "\(item) \(intensity) placement \(placement) tick \(tick)")
+                }
+            }
             XCTAssertLessThanOrEqual(measured.max() ?? 0, costs.perTickBudget, "\(item) \(intensity) placement \(placement)")
         }
     }

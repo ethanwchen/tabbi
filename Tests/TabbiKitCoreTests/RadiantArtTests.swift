@@ -76,4 +76,39 @@ final class RadiantArtTests: XCTestCase {
             }
         }
     }
+
+    /// Breeds that share a body shape draw the same Radiant pixels: the
+    /// renderer reads only where the pet is, where its face and effects are,
+    /// and where its items are, never fur colors. So the default (CI) run of
+    /// `RadiantBudgetTests` and `RadiantCombinationTests` checks one breed per
+    /// body shape, and `TABBI_RADIANT_EXHAUSTIVE=1` all 19.
+    func testBreedsSharingABodyShapeLookTheSameToTheEffects() {
+        func signature(_ canvas: PetCanvas) -> [UInt8] {
+            canvas.pixels.map { role in
+                guard let role else { return 0 }
+                if RadiantGeometry.faceRoles.contains(role) { return 1 }
+                if RadiantGeometry.effectRoles.contains(role) { return 2 }
+                if [.blush, .outline].contains(role) { return 3 }
+                // Fur in any color is the same to the effects; item roles are
+                // the item's own and are compared exactly.
+                return PetPalette.tintableFurRoles.contains(role) || role == .belly ? 4 : 10 + UInt8(PetPaletteRole.allCases.firstIndex(of: role)!)
+            }
+        }
+        for breed in PetBreed.allCases {
+            guard let twin = PetGallery.bodyShapeBreeds.first(where: { $0.bodyShape == breed.bodyShape }), twin != breed else { continue }
+            XCTAssertEqual(breed.hasTail, twin.hasTail, "\(breed)")
+            for item in [nil] + PetRadiant.eligibleItems {
+                let (outfit, accessories) = RadiantAudit.wearing(item.map { [$0] } ?? [])
+                for animation in PetAnimation.allCases {
+                    let a = PetComposer.clip(animation, for: breed, outfit: outfit, accessories: accessories)
+                    let b = PetComposer.clip(animation, for: twin, outfit: outfit, accessories: accessories)
+                    for (fa, fb) in zip(a.frames, b.frames) {
+                        let ta = fa.itemFrames.isEmpty ? [fa.canvas] : fa.itemFrames
+                        let tb = fb.itemFrames.isEmpty ? [fb.canvas] : fb.itemFrames
+                        XCTAssertEqual(ta.map(signature), tb.map(signature), "\(breed) as \(twin): \(item.map(\.id) ?? "bare") \(animation)")
+                    }
+                }
+            }
+        }
+    }
 }

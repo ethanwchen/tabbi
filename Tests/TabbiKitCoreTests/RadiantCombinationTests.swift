@@ -3,8 +3,10 @@ import XCTest
 @testable import TabbiKitCore
 
 /// Radiant items worn together: every pair and triple that can be worn at
-/// once (their slots differ), with every mix of Bold and Subtle, on all 19
-/// breeds, in every animation, frame and tick, at full size and under the
+/// once (their slots differ), all Bold and all Subtle on every body shape in
+/// the animations that cover every stance, and with
+/// `TABBI_RADIANT_EXHAUSTIVE=1` every mix of Bold and Subtle on all 19
+/// breeds in every animation, every frame and tick, at full size and under the
 /// closed notch's ceiling. The resolver lays them out so no effect draws on
 /// or beside another's pixels (no collisions at all), none covers an eye or
 /// the face, all stay inside the margin and below the ceiling, and the
@@ -21,12 +23,15 @@ final class RadiantCombinationTests: XCTestCase {
         let items = RadiantAudit.combinations[index]
         let (outfit, accessories) = RadiantAudit.wearing(items)
         let budget = RadiantArt.costs.combinedBudget
-        for mix in 0..<(1 << items.count) {
+        // Every mix of Bold and Subtle exhaustively; otherwise all Bold (the
+        // default) and all Subtle.
+        let mixes = RadiantAudit.isExhaustive ? Array(0..<(1 << items.count)) : [0, (1 << items.count) - 1]
+        for mix in mixes {
             var look: [PetItem: PetRadiantIntensity] = [:]
             for (n, item) in items.enumerated() { look[item] = (mix >> n) & 1 == 0 ? .bold : .subtle }
             let layout = try XCTUnwrap(RadiantLayout.resolve(PetRadiantLook(look), outfit: outfit, accessories: accessories))
             XCTAssertEqual(layout.entries.count, items.count)
-            for breed in PetBreed.allCases {
+            for breed in RadiantAudit.breeds {
                 let result = RadiantAudit.audit(items, layout: layout, breed: breed)
                 let label = "\(look.map { "\($0.key) \($0.value)" }.sorted()) on \(breed)"
                 XCTAssertEqual(result.collisions, 0, "effects collide: \(label)")
