@@ -137,6 +137,14 @@ export interface PartyHeartbeatReply {
   readonly nextHeartbeat: Seconds | undefined;
   /** Friend requests waiting for me; undefined from a server without friend requests. */
   readonly incomingRequests: number | undefined;
+  /** Study Crews news riding along (protocol 3 and up); undefined from older servers. */
+  readonly crews: PartyCrewsPulse | undefined;
+}
+
+/** Port of PartyCrewsPulse: how many join requests wait for the crew I own, and which crew I am in, so an approval shows without polling. */
+export interface PartyCrewsPulse {
+  readonly requests: number;
+  readonly crew: string | undefined;
 }
 
 /** Port of PartyRef: the party a friend is in, as the friends list shows it. */

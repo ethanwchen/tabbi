@@ -75,7 +75,7 @@ public enum CrewCatalog {
         }
     }
 
-    public static let nameMaxLength = 24
+    public static let nameMaxLength = 20
     public static let descriptionMaxLength = 120
     public static let maxMembers = 20
     public static let searchPageSize = 20

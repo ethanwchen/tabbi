@@ -1,44 +1,76 @@
 /*
- * Port of CrewsStore: the Party tab's Crew section: my crew, the weekly top
- * 3, Find and the New crew form, and the finished focus sessions it reports
- * to the board.
+ * Port of CrewsStore: the Party tab's Crews mode: My crew, This week, the
+ * Hall of Fame, Find, the crew pages and the crest editor (the Crews UI
+ * spec), and the finished focus sessions it reports to the board.
  *
  * It talks to the server through Party's identity (`PartyStore.crewAccount`)
  * and only while Party is connected, so Crews follows Party's age check, its
  * server setting and its invisible mode for free. Like Party it fetches only
- * while the Crew section is on screen, and never in a demo or snapshot run,
- * which show the demo crews.
+ * while Crews mode is on screen, and never in a demo or snapshot run, which
+ * show the demo crews.
  *
  * Sessions are the exception: they are queued as they finish (merged, so one
  * stretch is sent once) and sent in the background while I am in a crew,
- * since the board counts them whether or not the panel is open.
+ * since the board counts them whether or not the panel is open. The Party
+ * heartbeat's crews pulse badges the tab when people ask to join my crew and
+ * tells the store when the owner I asked lets me in.
  */
 
 import type { ModuleContext } from "../../app/context";
 import { Store } from "../../app/store";
-import { findCrewInvite } from "../../core/crews/crewCatalog";
+import { crewColors, crewEmblems, crewFrames, findCrewInvite } from "../../core/crews/crewCatalog";
 import { defaultCrest, randomCrest, resolvedCrest, type CrewCrest } from "../../core/crews/crewCrestArt";
 import {
+  approveJoinRequest,
   blockCrewMember,
+  cancelJoinRequest,
   createCrew,
   crewBoard,
+  crewHall,
   crewPage,
-  joinCrewByID,
+  declineJoinRequest,
   joinCrewByInvite,
   leaveCrew,
   myCrew,
   removeCrewMember,
   reportCrew,
   reportCrewSessions,
+  requestToJoin,
   searchCrews,
   setShowsPet,
   updateCrew,
 } from "../../core/crews/crewClient";
-import { crewsDemo, demoCrewResults, demoNightOwls, DEMO_LOFI, DEMO_MED_SQUAD, type CrewDemoScenario } from "../../core/crews/crewDemo";
+import { crewsDemo, CrewDemoData, CREW_DEMO_SCENARIOS, type CrewDemoScenario } from "../../core/crews/crewDemo";
 import { crewNextChange } from "../../core/crews/crewFormat";
-import { CrewCode, crewCrest, type CrewDetail, type CrewDraft, type CrewMember, type CrewReportReason, type CrewSessionsReply, type CrewSummary, type CrewVisibility } from "../../core/crews/crewModels";
+import {
+  CrewCode,
+  crewCrest,
+  type CrewDetail,
+  type CrewDraft,
+  type CrewJoinRequest,
+  type CrewMember,
+  type CrewReportReason,
+  type CrewSessionsReply,
+  type CrewSummary,
+  type CrewVisibility,
+} from "../../core/crews/crewModels";
 import { CrewSessionQueue, crewSessionFor, loadCrewSessionQueue, saveCrewSessionQueue } from "../../core/crews/crewSessionQueue";
-import { cleanCrewText, crewDraftProblem, crewErrorMessage, crewsState, didLoadBoard, didLoadMine, inCrew, showSection, type CrewDraftProblem, type CrewSection, type CrewsState } from "../../core/crews/crewsState";
+import {
+  cleanCrewText,
+  crewDraftProblem,
+  crewErrorMessage,
+  crewsState,
+  didLoadBoard,
+  didLoadHall,
+  didLoadMine,
+  inCrew,
+  popCrewScreen,
+  showSection,
+  type CrewDraftProblem,
+  type CrewSection,
+  type CrewsState,
+} from "../../core/crews/crewsState";
+import type { PartyCrewsPulse } from "../../core/party/partyModels";
 import { tr } from "../../core/localization/tr";
 import type { PartyAccount } from "../../core/party/partyAccount";
 import { PartyError } from "../../core/party/partyError";
@@ -55,8 +87,13 @@ export const CREWS_RETRY_INTERVAL = 600;
 
 /** The action in flight. */
 export type CrewAction =
-  | { readonly kind: "save" | "join" | "leave" | "showPet" | "report" }
-  | { readonly kind: "open" | "remove" | "block"; readonly id: string };
+  | {
+      readonly kind: "save" | "join" | "leave" | "showPet" | "report" | "cancelRequest";
+    }
+  | {
+      readonly kind: "open" | "remove" | "block" | "approve" | "decline";
+      readonly id: string;
+    };
 
 /** What a crew report is about: a crew, or one member of it. */
 export interface CrewReportTarget {
@@ -64,7 +101,7 @@ export interface CrewReportTarget {
   readonly member: CrewMember | undefined;
 }
 
-/** The New crew and Edit form. */
+/** The crest editor, with the crest builder's choice. */
 export interface CrewDraftForm {
   readonly name: string;
   readonly description: string;
@@ -73,11 +110,29 @@ export interface CrewDraftForm {
 }
 
 export function emptyDraft(): CrewDraftForm {
-  return { name: "", description: "", crest: defaultCrest(), visibility: "public" };
+  return {
+    name: "",
+    description: "",
+    crest: defaultCrest(),
+    visibility: "public",
+  };
 }
 
 export function draftFrom(crew: CrewDetail): CrewDraftForm {
-  return { name: crew.summary.name, description: crew.summary.description, crest: resolvedCrest(crewCrest(crew.summary)), visibility: crew.summary.visibility };
+  return {
+    name: crew.summary.name,
+    description: crew.summary.description,
+    crest: resolvedCrest(crewCrest(crew.summary)),
+    visibility: crew.summary.visibility,
+  };
+}
+
+/** A new random crest, never the one showing; the name stays. */
+export function shuffledDraft(draft: CrewDraftForm, random: () => number = Math.random): CrewDraftForm {
+  const current = draft.crest;
+  let next = randomCrest(random);
+  for (let tries = 0; tries < 32 && next.frame === current.frame && next.emblem === current.emblem && next.color === current.color; tries++) next = randomCrest(random);
+  return { ...draft, crest: next };
 }
 
 export function draftProblem(draft: CrewDraftForm): CrewDraftProblem | undefined {
@@ -101,17 +156,42 @@ function draftChanges(draft: CrewDraftForm, crew: CrewDetail): CrewDraft {
 
 export interface CrewsStoreState {
   readonly crews: CrewsState;
-  /** The Party or Crew switch at the top left of the Party tab. */
+  /** The Party or Crews mode switch at the top left of the Party tab. */
   readonly showsCrews: boolean;
   readonly pending: CrewAction | undefined;
+  /** What the crest editor holds while it is open. */
   readonly draft: CrewDraftForm;
   readonly reporting: CrewReportTarget | undefined;
+  /** The More menu of My crew, while it is open. */
+  readonly showsMoreMenu: boolean;
+  /** Join requests waiting for the crew I own, from the heartbeat. */
+  readonly waitingRequests: number;
   /** The moment the week's countdown measures against. */
   readonly now: Instant;
 }
 
-/** Snapshot states the Party module lists for the Crew section. */
-export const CREW_SNAPSHOT_STATES = ["crew-mine", "crew-noCrew", "crew-create", "crew-edit", "crew-find", "crew-lastWeek", "crew-viewing", "crew-invite", "crew-report"] as const;
+/** Snapshot states the Party module lists for Crews mode: every demo scenario, My crew's More menu, and the report card. */
+export const CREW_SNAPSHOT_STATES: readonly string[] = [...CREW_DEMO_SCENARIOS.map((scenario) => `crew-${scenario}`), "crew-menu", "crew-report"];
+
+/** The editor's draft a demo screen shows. */
+function demoDraft(scenario: CrewDemoScenario, crews: CrewsState): CrewDraftForm {
+  if (scenario === "edit" && crews.mine !== undefined) return draftFrom(crews.mine);
+  if (scenario === "create") {
+    const frames = crewFrames();
+    const emblems = crewEmblems();
+    const colors = crewColors();
+    return {
+      ...emptyDraft(),
+      name: "Bibliotheksratten",
+      crest: {
+        frame: frames[1 % frames.length] as string,
+        emblem: emblems[3 % emblems.length] as string,
+        color: (colors[5 % colors.length] as { id: string }).id,
+      },
+    };
+  }
+  return emptyDraft();
+}
 
 type Timer = ReturnType<typeof setTimeout> | undefined;
 
@@ -127,6 +207,8 @@ export class CrewsStore extends Store<CrewsStoreState> {
   private retryTimer: Timer;
   private clockTimer: Timer;
   private searchGeneration = 0;
+  /** The crew id the last heartbeat named, to notice an approval; undefined before the first pulse. */
+  private pulseCrew: { readonly crew: string | undefined } | undefined;
   private readonly stops: (() => void)[] = [];
 
   constructor(
@@ -135,12 +217,15 @@ export class CrewsStore extends Store<CrewsStoreState> {
   ) {
     const now = context.now();
     const ephemeral = context.isDemo || context.isSnapshot;
+    const crews = context.isDemo ? crewsDemo("week", now) : crewsState(now);
     super({
-      crews: context.isDemo ? crewsDemo("mine", now) : crewsState(now),
+      crews,
       showsCrews: false,
       pending: undefined,
       draft: emptyDraft(),
       reporting: undefined,
+      showsMoreMenu: false,
+      waitingRequests: crews.mine?.requests.length ?? 0,
       now,
     });
     this.isDemo = context.isDemo;
@@ -162,7 +247,18 @@ export class CrewsStore extends Store<CrewsStoreState> {
         const session = crewSessionFor(record);
         if (session !== undefined) this.queueSession(session);
       }),
+      party.crewsPulse((pulse) => this.didReceive(pulse)),
     );
+  }
+
+  /** Follows the heartbeat's crews pulse: waiting requests badge the tab, and a crew appearing means my request was approved. */
+  private didReceive(pulse: PartyCrewsPulse): void {
+    this.setState({ waitingRequests: pulse.requests });
+    const previous = this.pulseCrew;
+    this.pulseCrew = { crew: pulse.crew };
+    /* A different crew than last seen (approved, removed): fetch mine. */
+    if (previous !== undefined && previous.crew !== pulse.crew) this.loadMine(true);
+    else if (pulse.crew !== undefined && this.state.crews.mine?.summary.id !== pulse.crew && this.state.crews.mineLoaded) this.loadMine(true);
   }
 
   dispose(): void {
@@ -199,13 +295,14 @@ export class CrewsStore extends Store<CrewsStoreState> {
     this.visible = visible;
     if (visible && this.state.showsCrews) this.refreshNow();
     else globalThis.clearTimeout(this.refreshTimer);
+    if (!visible) this.setState({ showsMoreMenu: false });
     this.scheduleClock();
   }
 
-  /** Flips the Party or Crew switch. */
+  /** Flips the Party or Crews mode switch. */
   setShowsCrews(shows: boolean): void {
     if (shows === this.state.showsCrews) return;
-    this.setState({ showsCrews: shows });
+    this.setState({ showsCrews: shows, showsMoreMenu: false });
     if (shows && this.visible) this.refreshNow();
     else globalThis.clearTimeout(this.refreshTimer);
     this.scheduleClock();
@@ -213,47 +310,61 @@ export class CrewsStore extends Store<CrewsStoreState> {
 
   /* MARK: Navigation */
 
+  /** Goes to a section, closing any pushed screen. */
   show(section: CrewSection): void {
     this.setCrews((crews) => showSection(crews, section));
-    if (section === "create") this.setState({ draft: emptyDraft() });
-    if (section === "find" && this.state.crews.results === undefined) this.search(this.state.crews.query);
+    this.setState({ showsMoreMenu: false });
+    this.load(section);
   }
 
-  showLastWeek(shows: boolean): void {
-    this.setCrews((crews) => ({ ...crews, showsLastWeek: shows && crews.board?.featured !== undefined }));
+  /** Back from a crew page or the editor. */
+  pop(): void {
+    this.setCrews(popCrewScreen);
+    this.setState({ showsMoreMenu: false });
   }
 
-  /** Opens a crew's page from the top 3 or Find. */
+  setShowsMoreMenu(shows: boolean): void {
+    this.setState({ showsMoreMenu: shows });
+  }
+
+  /** Opens a crew's page from a board, Find or a member. */
   openCrew(id: string): void {
+    this.setState({ showsMoreMenu: false });
+    const from = this.state.crews.section;
     const mine = this.state.crews.mine;
     if (mine !== undefined && mine.summary.id === id) {
-      this.setCrews((crews) => ({ ...crews, viewing: undefined, section: "mine" }));
+      this.setCrews((crews) => showSection(crews, "mine"));
       return;
     }
     if (this.isDemo || this.isSnapshot) {
-      const known = [DEMO_MED_SQUAD, DEMO_LOFI];
-      this.setCrews((crews) => ({ ...crews, viewing: known.find((crew) => crew.summary.id === id) ?? DEMO_MED_SQUAD }));
+      const crew = new CrewDemoData(this.state.now, this.state.crews.week).detailFor(id);
+      this.setCrews((crews) => ({
+        ...crews,
+        pushed: { kind: "crew", crew, from },
+      }));
       return;
     }
     this.run({ kind: "open", id }, async (account) => {
       const crew = await account.perform((client) => crewPage(client, id));
-      this.setCrews((crews) => ({ ...crews, viewing: crew }));
+      this.setCrews((crews) => ({
+        ...crews,
+        pushed: { kind: "crew", crew, from },
+      }));
     });
   }
 
-  closeCrewPage(): void {
-    this.setCrews((crews) => ({ ...crews, viewing: undefined }));
-  }
-
-  beginEdit(): void {
+  /** Opens the crest editor for a new crew (with a random crest) or, for the owner, to edit mine. */
+  openEditor(editing: boolean, random: () => number = Math.random): void {
     const mine = this.state.crews.mine;
-    if (mine === undefined || !mine.owner) return;
-    this.setState({ draft: draftFrom(mine) });
-    this.setCrews((crews) => ({ ...crews, editing: true, viewing: undefined, section: "mine" }));
-  }
-
-  cancelEdit(): void {
-    this.setCrews((crews) => ({ ...crews, editing: false, section: crews.section === "create" ? "mine" : crews.section }));
+    const owns = editing && mine !== undefined && mine.owner;
+    this.setState({
+      showsMoreMenu: false,
+      draft: owns ? draftFrom(mine) : { ...emptyDraft(), crest: randomCrest(random) },
+    });
+    this.setCrews((crews) => ({
+      ...crews,
+      pushed: { kind: "editor", editing: owns, from: crews.section },
+    }));
   }
 
   updateDraft(change: Partial<CrewDraftForm>): void {
@@ -265,27 +376,25 @@ export class CrewsStore extends Store<CrewsStoreState> {
     this.updateDraft({ crest: { ...this.state.draft.crest, ...change } });
   }
 
-  /** The builder's Shuffle: a random frame, emblem and color. */
+  /** The editor's Shuffle: a random frame, emblem and color, never the one showing. */
   shuffleCrest(random: () => number = Math.random): void {
-    this.updateDraft({ crest: randomCrest(random) });
+    this.setState({ draft: shuffledDraft(this.state.draft, random) });
   }
 
   /* MARK: Actions */
 
-  /** Creates my crew from the New crew form, or saves the owner's edit. */
+  /** Creates my crew from the editor, or saves the owner's edit. */
   saveDraft(): void {
     const draft = this.state.draft;
     if (draftProblem(draft) !== undefined) return;
-    if (this.isDemo || this.isSnapshot) {
-      this.party.showNotice(tr("This is a demo. Run without TABBI_DEMO to make a crew."), false);
-      return;
-    }
+    if (this.isDemo || this.isSnapshot) return this.demoOnly();
     const mine = this.state.crews.mine;
-    if (this.state.crews.editing && mine !== undefined) {
+    const pushed = this.state.crews.pushed;
+    if (pushed?.kind === "editor" && pushed.editing && mine !== undefined) {
       const change = draftChanges(draft, mine);
       this.run({ kind: "save" }, async (account) => {
         const crew = await account.perform((client) => updateCrew(client, change));
-        this.setCrews((crews) => ({ ...didLoadMine(crews, crew, crews.week), editing: false }));
+        this.setCrews((crews) => showSection(didLoadMine(crews, crew, crews.week), "mine"));
         this.party.showNotice(tr("Saved."), true);
       });
       return;
@@ -297,39 +406,88 @@ export class CrewsStore extends Store<CrewsStoreState> {
     });
   }
 
-  /** Joins with a typed or pasted invite code (or a whole invite message). */
+  /** Joins with a typed or pasted invite code (or a whole invite message): the invite is the owner's yes, so it joins at once. */
   joinInvite(text: string): void {
     const code = findCrewInvite(text);
     if (code === undefined) {
       this.party.showNotice(tr("Crew invite codes have %lld characters.", CrewCode.inviteLength), false);
       return;
     }
-    this.join({ invite: code });
-  }
-
-  /** Joins a public crew from Find or its page. */
-  joinCrew(id: string): void {
-    this.join({ crew: id });
-  }
-
-  private join(target: { invite: string } | { crew: string }): void {
-    if (this.isDemo || this.isSnapshot) {
-      this.party.showNotice(tr("This is a demo. Run without TABBI_DEMO to join a crew."), false);
-      return;
-    }
+    if (this.isDemo || this.isSnapshot) return this.demoOnly();
     this.run({ kind: "join" }, async (account) => {
-      const crew = await account.perform((client) => ("invite" in target ? joinCrewByInvite(client, target.invite) : joinCrewByID(client, target.crew)));
+      const crew = await account.perform((client) => joinCrewByInvite(client, code));
       this.setCrews((crews) => showSection({ ...didLoadMine(crews, crew, crews.week), invite: undefined }, "mine"));
       this.party.showNotice(tr("You joined %@.", crew.summary.name), true);
       this.sendSessions();
     });
   }
 
-  leave(): void {
+  /** Asks to join a public crew; its owner lets me in. */
+  requestToJoin(crew: CrewSummary): void {
     if (this.isDemo || this.isSnapshot) {
-      this.party.showNotice(tr("This is a demo. Run without TABBI_DEMO to leave a crew."), false);
+      const now = this.state.now;
+      this.setCrews((crews) => ({
+        ...crews,
+        myRequest: { crew, requestedAt: now, expiresAt: now + 7 * 86_400 },
+      }));
       return;
     }
+    this.run({ kind: "join" }, async (account) => {
+      const outcome = await account.perform((client) => requestToJoin(client, crew.id, this.context.now()));
+      if (outcome.kind === "joined") {
+        this.setCrews((crews) => showSection(didLoadMine(crews, outcome.crew, crews.week), "mine"));
+        this.party.showNotice(tr("You joined %@.", outcome.crew.summary.name), true);
+        this.sendSessions();
+      } else {
+        this.setCrews((crews) => ({ ...crews, myRequest: outcome.request }));
+        this.party.showNotice(tr("Asked to join %@. Its owner lets you in.", crew.name), true);
+      }
+    });
+  }
+
+  /** Withdraws my pending request. */
+  cancelRequest(): void {
+    if (this.isDemo || this.isSnapshot) {
+      this.setCrews((crews) => ({ ...crews, myRequest: undefined }));
+      return;
+    }
+    this.run({ kind: "cancelRequest" }, async (account) => {
+      await account.perform((client) => cancelJoinRequest(client));
+      this.setCrews((crews) => ({ ...crews, myRequest: undefined }));
+    });
+  }
+
+  /** The owner lets someone in. */
+  approve(request: CrewJoinRequest): void {
+    if (this.isDemo || this.isSnapshot) return this.dropRequest(request);
+    this.run({ kind: "approve", id: request.ref }, async (account) => {
+      const crew = await account.perform((client) => approveJoinRequest(client, request.ref));
+      this.setCrews((crews) => didLoadMine(crews, crew, crews.week));
+      this.setState({ waitingRequests: crew.requests.length });
+      this.party.showNotice(tr("%@ joined the crew.", request.name), true);
+    });
+  }
+
+  /** The owner says no, quietly: the request just goes away. */
+  decline(request: CrewJoinRequest): void {
+    if (this.isDemo || this.isSnapshot) return this.dropRequest(request);
+    this.run({ kind: "decline", id: request.ref }, async (account) => {
+      await account.perform((client) => declineJoinRequest(client, request.ref));
+      this.dropRequest(request);
+    });
+  }
+
+  private dropRequest(request: CrewJoinRequest): void {
+    const mine = this.state.crews.mine;
+    if (mine === undefined) return;
+    const requests = mine.requests.filter((other) => other.ref !== request.ref);
+    this.setCrews((crews) => didLoadMine(crews, { ...mine, requests }, crews.week));
+    this.setState({ waitingRequests: requests.length });
+  }
+
+  leave(): void {
+    this.setState({ showsMoreMenu: false });
+    if (this.isDemo || this.isSnapshot) return this.demoOnly();
     const name = this.state.crews.mine?.summary.name ?? "";
     this.run({ kind: "leave" }, async (account) => {
       await account.perform((client) => leaveCrew(client));
@@ -340,7 +498,7 @@ export class CrewsStore extends Store<CrewsStoreState> {
 
   /** The owner takes a member out; they cannot join this crew again. */
   remove(member: CrewMember): void {
-    if (this.isDemo || this.isSnapshot) return;
+    if (this.isDemo || this.isSnapshot) return this.demoOnly();
     this.run({ kind: "remove", id: member.ref }, async (account) => {
       const crew = await account.perform((client) => removeCrewMember(client, member.ref));
       this.setCrews((crews) => didLoadMine(crews, crew, crews.week));
@@ -350,14 +508,8 @@ export class CrewsStore extends Store<CrewsStoreState> {
 
   /** Shows or hides my pet on crew pages. */
   setShowsPet(shows: boolean): void {
-    if (this.isDemo || this.isSnapshot) {
-      const mine = this.state.crews.mine;
-      if (mine === undefined) return;
-      const demo = demoNightOwls(this.context.now()).members;
-      const members = mine.members.map((member, index) => (member.me ? { ...member, pet: shows ? demo[index]?.pet : undefined } : member));
-      this.setCrews((crews) => ({ ...crews, mine: { ...mine, members } }));
-      return;
-    }
+    this.setState({ showsMoreMenu: false });
+    if (this.isDemo || this.isSnapshot) return this.demoOnly();
     this.run({ kind: "showPet" }, async (account) => {
       const crew = await account.perform((client) => setShowsPet(client, shows));
       this.setCrews((crews) => didLoadMine(crews, crew, crews.week));
@@ -365,7 +517,7 @@ export class CrewsStore extends Store<CrewsStoreState> {
   }
 
   block(member: CrewMember, crew: CrewDetail): void {
-    if (this.isDemo || this.isSnapshot) return;
+    if (this.isDemo || this.isSnapshot) return this.demoOnly();
     this.run({ kind: "block", id: member.ref }, async (account) => {
       await account.perform((client) => blockCrewMember(client, crew.summary.id, member.ref));
       this.party.showNotice(tr("Blocked %@. Unblock them in Party options.", member.name), true);
@@ -374,7 +526,11 @@ export class CrewsStore extends Store<CrewsStoreState> {
   }
 
   beginReport(target: CrewReportTarget): void {
-    this.setState({ reporting: target });
+    this.setState({ reporting: target, showsMoreMenu: false });
+  }
+
+  private demoOnly(): void {
+    this.party.showNotice(tr("This is a demo. Run without TABBI_DEMO to study with a crew."), false);
   }
 
   cancelReport(): void {
@@ -406,9 +562,9 @@ export class CrewsStore extends Store<CrewsStoreState> {
 
   /* MARK: Invites */
 
-  /** A crew invite link was opened: the Crew section asks before joining. */
+  /** A crew invite link was opened: My crew asks before joining. */
   openInvite(code: string): void {
-    this.setCrews((crews) => ({ ...crews, invite: code, viewing: undefined, editing: false, section: "mine" }));
+    this.setCrews((crews) => ({ ...showSection(crews, "mine"), invite: code }));
     this.setShowsCrews(true);
   }
 
@@ -422,8 +578,11 @@ export class CrewsStore extends Store<CrewsStoreState> {
     this.setCrews((crews) => ({ ...crews, query }));
     if (this.isDemo || this.isSnapshot) {
       const needle = query.trim().toLowerCase();
-      const all = demoCrewResults();
-      this.setCrews((crews) => ({ ...crews, results: needle === "" ? all : all.filter((crew) => crew.name.toLowerCase().includes(needle)) }));
+      const all = new CrewDemoData(this.state.now, this.state.crews.week).publicCrews;
+      this.setCrews((crews) => ({
+        ...crews,
+        results: needle === "" ? all : all.filter((crew) => crew.name.toLowerCase().includes(needle)),
+      }));
       return;
     }
     globalThis.clearTimeout(this.searchTimer);
@@ -431,24 +590,55 @@ export class CrewsStore extends Store<CrewsStoreState> {
     if (account === undefined) return;
     const generation = ++this.searchGeneration;
     this.searchTimer = globalThis.setTimeout(() => {
-      account.perform((client) => searchCrews(client, query)).then(
-        (results) => {
-          if (generation === this.searchGeneration && this.state.crews.query === query) this.setCrews((crews) => ({ ...crews, results }));
-        },
-        (error: unknown) => {
-          if (generation === this.searchGeneration) this.setCrews((crews) => ({ ...crews, loadError: CrewsStore.partyError(error) }));
-        },
-      );
+      account
+        .perform((client) => searchCrews(client, query))
+        .then(
+          (results) => {
+            if (generation === this.searchGeneration && this.state.crews.query === query) this.setCrews((crews) => ({ ...crews, results }));
+          },
+          (error: unknown) => {
+            if (generation === this.searchGeneration)
+              this.setCrews((crews) => ({
+                ...crews,
+                loadError: CrewsStore.partyError(error),
+              }));
+          },
+        );
     }, CREWS_SEARCH_DELAY * 1000);
   }
 
   /* MARK: Loading */
 
+  /** Loads what a section shows. */
+  private load(section: CrewSection): void {
+    if (this.isDemo || this.isSnapshot) return;
+    switch (section) {
+      case "mine":
+        this.loadMine(false);
+        break;
+      case "week":
+        this.loadBoard();
+        break;
+      case "hall":
+        this.loadHall();
+        break;
+      case "find":
+        if (this.state.crews.results === undefined) this.search(this.state.crews.query);
+        break;
+    }
+  }
+
+  /** Retries after a failure ("Try again" in the offline state). */
+  retry(): void {
+    this.setCrews((crews) => ({ ...crews, loadError: undefined }));
+    this.party.retry();
+    this.refreshNow();
+  }
+
   private refreshNow(): void {
     if (this.isDemo || this.isSnapshot) return;
     this.loadMine(false);
-    this.loadBoard();
-    if (this.state.crews.section === "find") this.search(this.state.crews.query);
+    this.load(this.state.crews.section);
     this.scheduleRefresh();
   }
 
@@ -461,28 +651,81 @@ export class CrewsStore extends Store<CrewsStoreState> {
   private loadMine(thenSend: boolean): void {
     const account = this.party.crewAccount;
     if (this.isDemo || this.isSnapshot || account === undefined) return;
-    account.perform((client) => myCrew(client)).then(
-      ({ crew, week }) => {
-        this.setCrews((crews) => didLoadMine(crews, crew, week));
-        if (crew === undefined) {
-          /* Nothing to count: forget sessions kept for a crew I left. */
-          this.queue = new CrewSessionQueue();
-          this.saveQueue();
-        } else if (thenSend) {
-          this.sendSessions();
-        }
-      },
-      (error: unknown) => this.setCrews((crews) => ({ ...crews, loadError: CrewsStore.partyError(error) })),
-    );
+    account
+      .perform((client) => myCrew(client))
+      .then(
+        ({ crew, week, request }) => {
+          this.setCrews((crews) => didLoadMine(crews, crew, week, request));
+          this.setState({ waitingRequests: crew?.requests.length ?? 0 });
+          if (crew === undefined) {
+            /* Nothing to count: forget sessions kept for a crew I left. */
+            this.queue = new CrewSessionQueue();
+            this.saveQueue();
+          } else if (thenSend) {
+            this.sendSessions();
+          }
+        },
+        (error: unknown) =>
+          this.setCrews((crews) => ({
+            ...crews,
+            loadError: CrewsStore.partyError(error),
+          })),
+      );
   }
 
   private loadBoard(): void {
     const account = this.party.crewAccount;
     if (this.isDemo || this.isSnapshot || account === undefined) return;
-    account.perform((client) => crewBoard(client)).then(
-      (board) => this.setCrews((crews) => didLoadBoard(crews, board)),
-      () => undefined,
-    );
+    account
+      .perform((client) => crewBoard(client))
+      .then(
+        (board) => this.setCrews((crews) => didLoadBoard(crews, board)),
+        (error: unknown) =>
+          this.setCrews((crews) => ({
+            ...crews,
+            loadError: CrewsStore.partyError(error),
+          })),
+      );
+  }
+
+  /** The next page of the weekly board's rows, when the list scrolls near its end. */
+  loadMoreBoard(): void {
+    const account = this.party.crewAccount;
+    const cursor = this.state.crews.board?.next;
+    if (this.isDemo || this.isSnapshot || account === undefined || cursor === undefined) return;
+    account
+      .perform((client) => crewBoard(client, cursor))
+      .then(
+        (page) => this.setCrews((crews) => didLoadBoard(crews, page, true)),
+        () => undefined,
+      );
+  }
+
+  private loadHall(): void {
+    const account = this.party.crewAccount;
+    if (this.isDemo || this.isSnapshot || account === undefined) return;
+    account
+      .perform((client) => crewHall(client))
+      .then(
+        (page) => this.setCrews((crews) => didLoadHall(crews, page)),
+        (error: unknown) =>
+          this.setCrews((crews) => ({
+            ...crews,
+            loadError: CrewsStore.partyError(error),
+          })),
+      );
+  }
+
+  loadMoreHall(): void {
+    const account = this.party.crewAccount;
+    const cursor = this.state.crews.hallNext;
+    if (this.isDemo || this.isSnapshot || account === undefined || cursor === undefined) return;
+    account
+      .perform((client) => crewHall(client, cursor))
+      .then(
+        (page) => this.setCrews((crews) => didLoadHall(crews, page, true)),
+        () => undefined,
+      );
   }
 
   /* MARK: Sessions */
@@ -529,7 +772,11 @@ export class CrewsStore extends Store<CrewsStoreState> {
       if (mine === undefined) return { ...crews, week: reply.week };
       const summary = reply.crewMinutes === undefined ? mine.summary : { ...mine.summary, weekMinutes: reply.crewMinutes };
       const members = mine.members.map((member) => (member.me ? { ...member, weekMinutes: reply.myMinutes } : member));
-      return { ...crews, week: reply.week, mine: { ...mine, summary, members } };
+      return {
+        ...crews,
+        week: reply.week,
+        mine: { ...mine, summary, members },
+      };
     });
   }
 
@@ -579,22 +826,40 @@ export class CrewsStore extends Store<CrewsStoreState> {
 
   /* MARK: Snapshots */
 
-  /** Snapshot runs only: shows a Crew screen (`crew-<scenario>` or `crew-report`), or the Party side for anything else. */
+  /** Snapshot runs only: shows a Crews screen (`crew-<scenario>`, `crew-menu` or `crew-report`), or the Party side for anything else. */
   showSnapshotState(name: string): void {
     if (!this.isSnapshot) return;
     if (!name.startsWith("crew-")) {
-      this.setState({ showsCrews: false, reporting: undefined });
+      this.setState({
+        showsCrews: false,
+        reporting: undefined,
+        showsMoreMenu: false,
+      });
       return;
     }
     const now = this.context.now();
     if (name === "crew-report") {
-      const crews = crewsDemo("viewing", now);
-      const viewing = crews.viewing;
-      this.setState({ crews, showsCrews: true, now, reporting: viewing === undefined ? undefined : { crew: viewing.summary, member: viewing.members[0] } });
+      const crews = crewsDemo("crew", now);
+      const shown = crews.pushed?.kind === "crew" ? crews.pushed.crew : undefined;
+      this.setState({
+        crews,
+        showsCrews: true,
+        now,
+        showsMoreMenu: false,
+        reporting: shown === undefined ? undefined : { crew: shown.summary, member: shown.members[0] },
+      });
       return;
     }
-    const scenario = name.slice("crew-".length) as CrewDemoScenario;
+    const scenario: CrewDemoScenario = name === "crew-menu" ? "mine" : (name.slice("crew-".length) as CrewDemoScenario);
     const crews = crewsDemo(scenario, now);
-    this.setState({ crews, showsCrews: true, now, reporting: undefined, draft: scenario === "edit" && crews.mine !== undefined ? draftFrom(crews.mine) : emptyDraft() });
+    this.setState({
+      crews,
+      showsCrews: true,
+      now,
+      reporting: undefined,
+      showsMoreMenu: name === "crew-menu",
+      draft: demoDraft(scenario, crews),
+      waitingRequests: crews.mine?.requests.length ?? 0,
+    });
   }
 }

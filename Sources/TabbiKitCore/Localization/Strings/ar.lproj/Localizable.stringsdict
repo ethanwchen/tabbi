@@ -291,6 +291,30 @@
 			<string>%lld كوب ماء اليوم</string>
 		</dict>
 	</dict>
+	<key>%lld members</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld أعضاء</string>
+			<key>many</key>
+			<string>%lld عضوًا</string>
+			<key>one</key>
+			<string>%lld عضو</string>
+			<key>other</key>
+			<string>%lld عضو</string>
+			<key>two</key>
+			<string>%lld عضوان</string>
+			<key>zero</key>
+			<string>%lld عضو</string>
+		</dict>
+	</dict>
 	<key>%lld minutes in the bank.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -313,6 +337,30 @@
 			<string>%lld دقيقتان في الرصيد.</string>
 			<key>zero</key>
 			<string>%lld دقيقة في الرصيد.</string>
+		</dict>
+	</dict>
+	<key>%lld more</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld أخرى</string>
+			<key>many</key>
+			<string>%lld أخرى</string>
+			<key>one</key>
+			<string>%lld آخر</string>
+			<key>other</key>
+			<string>%lld أخرى</string>
+			<key>two</key>
+			<string>%lld آخران</string>
+			<key>zero</key>
+			<string>%lld أخرى</string>
 		</dict>
 	</dict>
 	<key>%lld more points for %@</key>
@@ -385,6 +433,30 @@
 			<string>%lld فترتان لم تعودا تتسعان</string>
 			<key>zero</key>
 			<string>%lld فترة لم تعد تتسع</string>
+		</dict>
+	</dict>
+	<key>%lld of %lld members</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld من %lld عضوًا</string>
+			<key>many</key>
+			<string>%lld من %lld عضوًا</string>
+			<key>one</key>
+			<string>%lld من %lld عضوًا</string>
+			<key>other</key>
+			<string>%lld من %lld عضوًا</string>
+			<key>two</key>
+			<string>%lld من %lld عضوًا</string>
+			<key>zero</key>
+			<string>%lld من %lld عضوًا</string>
 		</dict>
 	</dict>
 	<key>%lld planned</key>
@@ -2209,6 +2281,30 @@
 			<string>مع %lld صديقين</string>
 			<key>zero</key>
 			<string>مع %lld صديق</string>
+		</dict>
+	</dict>
+	<key>· %lld want to join</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>· %lld يريدون الانضمام</string>
+			<key>many</key>
+			<string>· %lld يريدون الانضمام</string>
+			<key>one</key>
+			<string>· %lld يريد الانضمام</string>
+			<key>other</key>
+			<string>· %lld يريدون الانضمام</string>
+			<key>two</key>
+			<string>· %lld يريدان الانضمام</string>
+			<key>zero</key>
+			<string>· %lld يريدون الانضمام</string>
 		</dict>
 	</dict>
 </dict>

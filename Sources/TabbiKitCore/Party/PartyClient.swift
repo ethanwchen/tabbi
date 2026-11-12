@@ -191,7 +191,7 @@ public struct PartyClient: Sendable {
     public func heartbeat(_ heartbeat: PartyHeartbeat) async throws -> PartyHeartbeatReply {
         let reply = try await send("POST", "/v1/presence", body: heartbeat, as: PresenceReply.self)
         return PartyHeartbeatReply(presence: reply.presence, nextHeartbeat: reply.heartbeatSeconds,
-                                   incomingRequests: reply.incomingRequests)
+                                   incomingRequests: reply.incomingRequests, crews: reply.crews)
     }
 
     /// `GET /v1/leaderboard`: this ISO week's minutes for me and my friends.
@@ -372,6 +372,7 @@ private struct PresenceReply: Decodable {
     let presence: PartyPresence
     let heartbeatSeconds: TimeInterval?
     let incomingRequests: Int?
+    let crews: PartyCrewsPulse?
 }
 
 private struct LeaderboardReply: Decodable {

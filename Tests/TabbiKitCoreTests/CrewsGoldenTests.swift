@@ -124,9 +124,8 @@ struct CrewsFixture: Codable, Equatable {
 
     struct HoursCase: Codable, Equatable {
         var minutes: Int
-        /// `tenths` or `whole`.
-        var form: String
-        var value: Int
+        /// Tenths of an hour, rounded down; the app always shows one decimal.
+        var tenths: Int
     }
 
     struct RemainingCase: Codable, Equatable {
@@ -208,11 +207,15 @@ struct CrewsFixture: Codable, Equatable {
                                                                                          emblem: CrewCatalog.emblems.last!, color: "teal")) }),
             ("hide my pet", "memberSettingsBody", { _ = try await $0.setShowsPet(false) }),
             ("join by invite", "joinBody", { _ = try await $0.joinCrew(invite: "w4ln-ut7") }),
-            ("join a public crew", "joinBody", { _ = try await $0.joinCrew(id: "MEDSQUAD2K") }),
+            ("ask to join a public crew", "joinBody", { _ = try await $0.requestToJoin(id: "MEDSQUAD2K") }),
+            ("cancel my request", nil, { _ = try await $0.cancelJoinRequest() }),
+            ("approve a request", nil, { _ = try await $0.approveJoinRequest(ref: "LENAREF3QW") }),
+            ("decline a request", nil, { _ = try await $0.declineJoinRequest(ref: "LENAREF3QW") }),
             ("leave", nil, { _ = try await $0.leaveCrew() }),
             ("remove a member", nil, { _ = try await $0.removeCrewMember(ref: "MAYAREF4QR") }),
             ("search", nil, { _ = try await $0.searchCrews("night owls+") }),
             ("board", nil, { _ = try await $0.crewBoard() }),
+            ("board, next page", nil, { _ = try await $0.crewBoard(cursor: "eyJyIjo1fQ") }),
             ("hall of fame", nil, { _ = try await $0.crewHall() }),
             ("hall of fame, next page", nil, { _ = try await $0.crewHall(cursor: "eyJnIjoxfQ+/=") }),
             ("mine", nil, { _ = try await $0.myCrew() }),
@@ -243,14 +246,21 @@ struct CrewsFixture: Codable, Equatable {
     private static func replies() throws -> [Reply] {
         let samples: [(String, String, String)] = [
             ("mine, in a crew", "mineReply", CrewReplySamples.mine),
-            ("mine, no crew", "mineReply", #"{"ok":true,"crew":null,"week":{"id":"2026-W46","startsAt":1794182400,"endsAt":1794787200}}"#),
+            ("mine, no crew", "mineReply", #"{"ok":true,"crew":null,"week":{"id":"2026-W46","startsAt":1794182400,"endsAt":1794787200},"request":null}"#),
             ("board with featured", "boardReply", CrewReplySamples.board),
-            ("board, first week", "boardReply", #"{"ok":true,"week":{"id":"2026-W46","startsAt":1794182400,"endsAt":1794787200},"top":[],"featured":null}"#),
+            ("board, first week", "boardReply", #"{"ok":true,"week":{"id":"2026-W46","startsAt":1794182400,"endsAt":1794787200},"top":[],"featured":null,"rows":[],"next":null,"crewCount":0,"mine":null}"#),
+            ("board, next page", "boardReply", CrewReplySamples.boardNext),
+            ("board, my crew hidden", "boardReply", #"{"ok":true,"week":{"id":"2026-W46","startsAt":1794182400,"endsAt":1794787200},"top":[],"featured":null,"rows":[],"next":null,"crewCount":0,"mine":{"rank":null,"minutes":0}}"#),
             ("search", "searchReply", CrewReplySamples.search),
             ("hall of fame", "hallReply", CrewReplySamples.hall),
             ("crew page of another crew", "crewReply", CrewReplySamples.visitor),
             ("newer server crew page", "crewReply", CrewReplySamples.newer),
-            ("join", "joinReply", CrewReplySamples.join),
+            ("join by invite", "joinReply", CrewReplySamples.join),
+            ("ask to join a public crew", "joinReply", CrewReplySamples.requested),
+            ("mine, waiting to join", "mineReply", CrewReplySamples.mineWaiting),
+            ("approve a request", "crewReply", CrewReplySamples.mine),
+            ("cancel a request", "cancelReply", #"{"ok":true,"cancelled":true}"#),
+            ("decline a request", "declineReply", #"{"ok":true,"declined":true}"#),
             ("leave", "leaveReply", #"{"ok":true,"left":true}"#),
             ("sessions", "sessionsReply", CrewReplySamples.sessions),
             ("newer server sessions", "sessionsReply", CrewReplySamples.newerSessions),
@@ -271,12 +281,15 @@ struct CrewsFixture: Codable, Equatable {
         }
         func crew(_ c: CrewSummary) -> String {
             "crew \(c.id) \"\(c.name)\" crest=\(c.crest.resolved.frame)/\(c.crest.resolved.emblem)/\(c.crest.resolved.color) pips=\(c.pips) "
-                + "\(c.visibility.rawValue) laurel=\(c.laurel?.rawValue ?? "none") trophies=\(c.trophies) "
+                + "\(c.visibility.rawValue) laurel=\(c.laurel?.rawValue ?? "none") trophies=\(c.trophies) golds=\(c.golds) "
                 + "members=\(c.memberCount)/\(c.maxMembers) minutes=\(c.weekMinutes) full=\(c.isFull)"
         }
         func detail(_ d: CrewDetail) -> [String] {
             ["\(crew(d.summary)) rank=\(d.rank.map(String.init) ?? "none") mine=\(d.mine) owner=\(d.owner) "
-                + "invite=\(d.inviteCode ?? "none") hidden=\(d.hidden) medals=\(d.medals.gold)/\(d.medals.silver)/\(d.medals.bronze)"]
+                + "invite=\(d.inviteCode ?? "none") hidden=\(d.hidden) medals=\(d.medals.gold)/\(d.medals.silver)/\(d.medals.bronze) "
+                + "crews=\(d.crewCount)"]
+                + d.history.map { "week \($0.week.id) place=\($0.place.map(String.init) ?? "none") minutes=\($0.minutes) medal=\($0.medal?.rawValue ?? "none")" }
+                + d.requests.map { "request \($0.ref) \"\($0.name)\" pet=\($0.pet?.petName ?? "hidden") at=\(Int($0.requestedAt.timeIntervalSince1970))-\(Int($0.expiresAt.timeIntervalSince1970))" }
                 + d.members.map { m in
                     let pet = m.partyProfile.map { profile -> String in
                         let drawn = PartyPetAppearance.pet(for: profile)
@@ -287,19 +300,26 @@ struct CrewsFixture: Codable, Equatable {
                         + "minutes=\(m.weekMinutes) owner=\(m.owner) me=\(m.me)"
                 }
         }
-        func entry(_ e: CrewBoardEntry) -> String { "#\(e.rank) \(e.minutes) \(crew(e.crew))" }
+        func entry(_ e: CrewBoardEntry) -> String {
+            "#\(e.rank) \(e.minutes) pets=\(e.pets.map(\.petName).joined(separator: ",")) tied=\(e.tiedWith.joined(separator: ",")) \(crew(e.crew))"
+        }
+        func request(_ r: CrewMyRequest?) -> [String] {
+            r.map { ["waiting \($0.crew.id) at=\(Int($0.requestedAt.timeIntervalSince1970))-\(Int($0.expiresAt.timeIntervalSince1970))"] } ?? []
+        }
         switch schema {
         case "mineReply":
-            struct R: Decodable { let crew: CrewDetail?; let week: CrewWeek }
+            struct R: Decodable { let crew: CrewDetail?; let week: CrewWeek; let request: CrewMyRequest? }
             let r = try decoder.decode(R.self, from: data)
-            return [week(r.week)] + (r.crew.map(detail) ?? ["no crew"])
+            return [week(r.week)] + (r.crew.map(detail) ?? ["no crew"]) + request(r.request)
         case "crewReply", "joinReply", "removeReply":
-            struct R: Decodable { let crew: CrewDetail; let joined: Bool? }
+            struct R: Decodable { let crew: CrewDetail; let joined: Bool?; let request: CrewMyRequest? }
             let r = try decoder.decode(R.self, from: data)
-            return (r.joined.map { ["joined=\($0)"] } ?? []) + detail(r.crew)
+            return (r.joined.map { ["joined=\($0)"] } ?? []) + request(r.request) + detail(r.crew)
         case "boardReply":
             let r = try decoder.decode(CrewBoard.self, from: data)
-            return [week(r.week)] + r.top.map(entry)
+            return [week(r.week), "crews=\(r.crewCount) next=\(r.next ?? "none")",
+                    "mine=\(r.mine.map { "\($0.rank.map(String.init) ?? "none")/\($0.minutes)" } ?? "none")"]
+                + r.top.map(entry) + r.rows.map { "row " + entry($0) }
                 + (r.featured.map { ["featured \(week($0.week))"] + $0.entries.map(entry) } ?? ["no featured"])
         case "searchReply":
             struct R: Decodable { let crews: [CrewSummary] }
@@ -311,7 +331,14 @@ struct CrewsFixture: Codable, Equatable {
         case "hallReply":
             let r = try decoder.decode(CrewHallPage.self, from: data)
             return r.entries.map { "#\($0.rank) \($0.medals.gold)/\($0.medals.silver)/\($0.medals.bronze) at=\(Int($0.reachedAt.timeIntervalSince1970)) \(crew($0.crew))" }
-                + ["next=\(r.next ?? "none")"]
+                + ["next=\(r.next ?? "none")",
+                   "mine=\(r.mine.map { "\($0.rank.map(String.init) ?? "none") \($0.medals.gold)/\($0.medals.silver)/\($0.medals.bronze)" } ?? "none")"]
+        case "cancelReply":
+            struct R: Decodable { let cancelled: Bool }
+            return ["cancelled=\(try decoder.decode(R.self, from: data).cancelled)"]
+        case "declineReply":
+            struct R: Decodable { let declined: Bool }
+            return ["declined=\(try decoder.decode(R.self, from: data).declined)"]
         case "leaveReply":
             struct R: Decodable { let left: Bool }
             return ["left=\(try decoder.decode(R.self, from: data).left)"]
@@ -329,11 +356,8 @@ struct CrewsFixture: Codable, Equatable {
     // MARK: Formats and logic
 
     private static func hoursCases() -> [HoursCase] {
-        [0, 5, 6, 59, 60, 61, 252, 599, 600, 659, 7_260, 9_999].map { minutes in
-            switch CrewFormat.hoursValue(minutes: minutes) {
-            case .tenths(let value): HoursCase(minutes: minutes, form: "tenths", value: value)
-            case .whole(let value): HoursCase(minutes: minutes, form: "whole", value: value)
-            }
+        [-5, 0, 5, 6, 59, 60, 61, 252, 599, 600, 659, 7_260, 9_999].map {
+            HoursCase(minutes: $0, tenths: CrewFormat.tenths(minutes: $0))
         }
     }
 
@@ -389,7 +413,7 @@ struct CrewsFixture: Codable, Equatable {
     private static func draftCases() -> [DraftCase] {
         let cases: [(String, String)] = [
             ("Night Owls", ""), ("   ", ""), ("  Night Owls  ", "Late study sessions."),
-            (String(repeating: "a", count: 24), ""), (String(repeating: "a", count: 25), ""),
+            (String(repeating: "a", count: 20), ""), (String(repeating: "a", count: 21), ""),
             ("Fuck Squad", ""), ("Scunthorpe Scholars", ""), ("Night Owls", String(repeating: "b", count: 121)),
             ("Night Owls", "We are a shit crew"), ("Night\nOwls", "two\nlines"),
         ]
@@ -413,8 +437,8 @@ enum CrewReplySamples {
 
     static let mine = """
     {"ok":true,\(week),"crew":{"id":"NGHTQWLS2K","name":"Night Owls","description":"Late study sessions.","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])",
-    "color":"indigo","visibility":"private","laurel":"gold","trophies":3,"memberCount":3,"maxMembers":20,"weekMinutes":2860,
-    "createdAt":1790000000,"medals":{"gold":2,"silver":1,"bronze":0},"rank":2,"mine":true,"owner":true,"inviteCode":"W4LNUT7","hidden":false,
+    "color":"indigo","visibility":"private","laurel":"gold","trophies":3,"golds":2,"memberCount":3,"maxMembers":20,"weekMinutes":2860,
+    "createdAt":1790000000,"medals":{"gold":2,"silver":1,"bronze":0},"rank":2,"mine":true,"owner":true,"inviteCode":"W4LNUT7","hidden":false,"crewCount":38,"history":[{"week":{"id":"2026-W45","startsAt":1793577600,"endsAt":1794182400},"place":1,"minutes":11460,"medal":"gold"},{"week":{"id":"2026-W44","startsAt":1792972800,"endsAt":1793577600},"place":5,"minutes":3120,"medal":null},{"week":{"id":"2026-W43","startsAt":1792368000,"endsAt":1792972800},"place":null,"minutes":0,"medal":null}],"requests":[{"ref":"LENAREF3QW","name":"Lena","pet":{"petName":"Pickle","species":"dog","breed":"labrador","colors":[],"costume":"none","accessories":[]},"badges":[],"requestedAt":1794300000,"expiresAt":1794904800},{"ref":"QMARREF8KD","name":"Omar","pet":null,"badges":["founding"],"requestedAt":1794310000,"expiresAt":1794914800}],
     "members":[
     {"ref":"SAMREF2K7Q","name":"Sam","pet":{"petName":"Mochi","species":"cat","breed":"tabby","colors":[],"costume":"none","accessories":["scarf","graduation-cap"]},"badges":["founding"],"weekMinutes":1140,"owner":true,"me":true},
     {"ref":"MAYAREF4QR","name":"Maya","pet":{"petName":"Biscuit","species":"dog","breed":"golden-retriever","colors":[],"costume":"hoodie","accessories":["cowboy-hat"]},"badges":[],"weekMinutes":1720,"owner":false,"me":false},
@@ -423,33 +447,38 @@ enum CrewReplySamples {
 
     static let board = """
     {"ok":true,\(week),"top":[
-    {"rank":1,"minutes":9120,"crew":{"id":"MEDSQUAD2K","name":"Med School Squad","description":"Anki every morning.","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"coral","visibility":"public","laurel":"silver","trophies":5,"memberCount":14,"maxMembers":20,"weekMinutes":9120}},
-    {"rank":2,"minutes":2860,"crew":{"id":"NGHTQWLS2K","name":"Night Owls","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"indigo","visibility":"private","laurel":"gold","trophies":3,"memberCount":3,"maxMembers":20,"weekMinutes":2860}}],
+    {"rank":1,"minutes":9120,"pets":[{"petName":"Clover","species":"dog","breed":"beagle","colors":["#C8915A"],"costume":"none","accessories":["flower"]},{"petName":"Pip","species":"cat","breed":"scottish-fold","colors":[],"costume":"none","accessories":["headphones"]}],"crew":{"id":"MEDSQUAD2K","name":"Med School Squad","description":"Anki every morning.","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"coral","visibility":"public","laurel":"silver","trophies":5,"golds":3,"memberCount":14,"maxMembers":20,"weekMinutes":9120}},
+    {"rank":2,"minutes":2860,"crew":{"id":"NGHTQWLS2K","name":"Night Owls","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"indigo","visibility":"private","laurel":"gold","trophies":3,"golds":2,"memberCount":3,"maxMembers":20,"weekMinutes":2860}},
+    {"rank":3,"minutes":1500,"pets":[],"tiedWith":["Late Shift"],"crew":{"id":"TEACHERS22","name":"Teachers Lounge","description":"","frame":"\(CrewCatalog.frames[1])","emblem":"\(CrewCatalog.emblems[2])","color":"teal","visibility":"public","laurel":null,"trophies":0,"golds":0,"memberCount":4,"maxMembers":20,"weekMinutes":1500}},
+    {"rank":3,"minutes":1500,"tiedWith":["Teachers Lounge"],"crew":{"id":"LATESHFT2K","name":"Late Shift","description":"","frame":"\(CrewCatalog.frames[1])","emblem":"\(CrewCatalog.emblems[2])","color":"rose","visibility":"public","laurel":null,"trophies":0,"golds":0,"memberCount":4,"maxMembers":20,"weekMinutes":1500}}],
+    "rows":[
+    {"rank":5,"minutes":840,"crew":{"id":"PQMQDQRQ2S","name":"Pomodoro Pals","description":"","frame":"\(CrewCatalog.frames[1])","emblem":"\(CrewCatalog.emblems[2])","color":"sky","visibility":"public","laurel":null,"trophies":0,"golds":0,"memberCount":4,"maxMembers":20,"weekMinutes":840}}],
+    "next":"eyJyIjo1fQ","crewCount":38,"mine":{"rank":5,"minutes":840},
     "featured":{"week":{"id":"2026-W45","startsAt":1793577600,"endsAt":1794182400},"entries":[
-    {"rank":1,"minutes":11460,"crew":{"id":"NGHTQWLS2K","name":"Night Owls","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"indigo","visibility":"private","laurel":"gold","trophies":3,"memberCount":3,"maxMembers":20,"weekMinutes":2860}},
-    {"rank":2,"minutes":10020,"crew":{"id":"MEDSQUAD2K","name":"Med School Squad","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"coral","visibility":"public","laurel":"silver","trophies":5,"memberCount":14,"maxMembers":20,"weekMinutes":9120}},
-    {"rank":3,"minutes":4410,"crew":{"id":"BQQKWQRMS2","name":"Bookworms","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"amber","visibility":"public","laurel":"bronze","trophies":1,"memberCount":20,"maxMembers":20,"weekMinutes":3980}}]}}
+    {"rank":1,"minutes":11460,"crew":{"id":"NGHTQWLS2K","name":"Night Owls","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"indigo","visibility":"private","laurel":"gold","trophies":3,"golds":2,"memberCount":3,"maxMembers":20,"weekMinutes":2860}},
+    {"rank":2,"minutes":10020,"crew":{"id":"MEDSQUAD2K","name":"Med School Squad","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"coral","visibility":"public","laurel":"silver","trophies":5,"golds":3,"memberCount":14,"maxMembers":20,"weekMinutes":9120}},
+    {"rank":3,"minutes":4410,"crew":{"id":"BQQKWQRMS2","name":"Bookworms","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"amber","visibility":"public","laurel":"bronze","trophies":1,"golds":1,"memberCount":20,"maxMembers":20,"weekMinutes":3980}}]}}
     """
 
     static let search = """
     {"ok":true,\(week),"crews":[
-    {"id":"MEDSQUAD2K","name":"Med School Squad","description":"Anki every morning.","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"coral","visibility":"public","laurel":null,"trophies":5,"memberCount":14,"maxMembers":20,"weekMinutes":9120},
-    {"id":"BQQKWQRMS2","name":"Bookworms","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"amber","visibility":"public","laurel":"bronze","trophies":1,"memberCount":20,"maxMembers":20,"weekMinutes":3980}]}
+    {"id":"MEDSQUAD2K","name":"Med School Squad","description":"Anki every morning.","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"coral","visibility":"public","laurel":null,"trophies":5,"golds":3,"memberCount":14,"maxMembers":20,"weekMinutes":9120},
+    {"id":"BQQKWQRMS2","name":"Bookworms","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"amber","visibility":"public","laurel":"bronze","trophies":1,"golds":1,"memberCount":20,"maxMembers":20,"weekMinutes":3980}]}
     """
 
     /// Two crews tied on golds, silvers and bronzes share a rank only when they
     /// reached the tally at the same time; here the earlier one is ahead.
     static let hall = """
-    {"ok":true,"next":"eyJnIjoxfQ","entries":[
-    {"rank":1,"medals":{"gold":3,"silver":1,"bronze":0},"reachedAt":1794182400,"crew":{"id":"NGHTQWLS2K","name":"Night Owls","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"indigo","visibility":"private","laurel":"gold","trophies":4,"memberCount":5,"maxMembers":20,"weekMinutes":2860}},
-    {"rank":2,"medals":{"gold":1,"silver":3,"bronze":1},"reachedAt":1793577600,"crew":{"id":"MEDSQUAD2K","name":"Med School Squad","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"coral","visibility":"public","laurel":"silver","trophies":5,"memberCount":14,"maxMembers":20,"weekMinutes":9120}},
-    {"rank":3,"medals":{"gold":1,"silver":3,"bronze":1},"reachedAt":1794182400,"crew":{"id":"BQQKWQRMS2","name":"Bookworms","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"amber","visibility":"public","laurel":null,"trophies":5,"memberCount":20,"maxMembers":20,"weekMinutes":3980}}]}
+    {"ok":true,"next":"eyJnIjoxfQ","mine":{"rank":1,"medals":{"gold":3,"silver":1,"bronze":0},"reachedAt":1794182400},"entries":[
+    {"rank":1,"medals":{"gold":3,"silver":1,"bronze":0},"reachedAt":1794182400,"crew":{"id":"NGHTQWLS2K","name":"Night Owls","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"indigo","visibility":"private","laurel":"gold","trophies":4,"golds":3,"memberCount":5,"maxMembers":20,"weekMinutes":2860}},
+    {"rank":2,"medals":{"gold":1,"silver":3,"bronze":1},"reachedAt":1793577600,"crew":{"id":"MEDSQUAD2K","name":"Med School Squad","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"coral","visibility":"public","laurel":"silver","trophies":5,"golds":1,"memberCount":14,"maxMembers":20,"weekMinutes":9120}},
+    {"rank":3,"medals":{"gold":1,"silver":3,"bronze":1},"reachedAt":1794182400,"crew":{"id":"BQQKWQRMS2","name":"Bookworms","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"amber","visibility":"public","laurel":null,"trophies":5,"golds":1,"memberCount":20,"maxMembers":20,"weekMinutes":3980}}]}
     """
 
     static let visitor = """
     {"ok":true,"crew":{"id":"MEDSQUAD2K","name":"Med School Squad","description":"Anki every morning.","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])",
-    "color":"coral","visibility":"public","laurel":"silver","trophies":5,"memberCount":2,"maxMembers":20,"weekMinutes":9120,
-    "createdAt":1790000000,"medals":{"gold":1,"silver":3,"bronze":1},"rank":1,"mine":false,"owner":false,"inviteCode":null,"hidden":false,
+    "color":"coral","visibility":"public","laurel":"silver","trophies":5,"golds":3,"memberCount":2,"maxMembers":20,"weekMinutes":9120,
+    "createdAt":1790000000,"medals":{"gold":1,"silver":3,"bronze":1},"rank":1,"mine":false,"owner":false,"inviteCode":null,"hidden":false,"crewCount":38,"history":[{"week":{"id":"2026-W45","startsAt":1793577600,"endsAt":1794182400},"place":2,"minutes":10020,"medal":"silver"}],
     "members":[
     {"ref":"AVAREF7K3R","name":"Ava","pet":{"petName":"Clover","species":"dog","breed":"beagle","colors":["#C8915A"],"costume":"none","accessories":["flower"]},"badges":[],"weekMinutes":2640,"owner":true,"me":false},
     {"ref":"NQQRREF7HV","name":"Noor","pet":{"petName":"Pip","species":"cat","breed":"scottish-fold","colors":[],"costume":"none","accessories":["headphones"]},"badges":[],"weekMinutes":2380,"owner":false,"me":false}]}}
@@ -459,15 +488,33 @@ enum CrewReplySamples {
     /// not know, a Study Level, and fields it ignores.
     static let newer = """
     {"ok":true,"crew":{"id":"NEWERCREW2","name":"From the Future","description":"","frame":"castle","emblem":"dragon","color":"ultraviolet",
-    "visibility":"unlisted","laurel":"platinum","trophies":0,"memberCount":1,"maxMembers":30,"weekMinutes":60,"createdAt":1790000000,
+    "visibility":"unlisted","laurel":"platinum","trophies":0,"golds":0,"memberCount":1,"maxMembers":30,"weekMinutes":60,"createdAt":1790000000,
     "rank":null,"mine":false,"owner":false,"inviteCode":null,"hidden":false,"streak":4,
     "members":[{"ref":"FUTUREREF2","name":"Zed","pet":{"petName":"Byte","species":"cat","breed":"hologram-cat","colors":[],"costume":"space-suit-9000","accessories":["jetpack","scarf"]},"studyLevel":12,"badges":["founding","future"],"weekMinutes":60,"owner":true,"me":false,"mood":"sunny"}]}}
     """
 
+    static let boardNext = """
+    {"ok":true,\(week),"rows":[
+    {"rank":21,"minutes":60,"crew":{"id":"SLQWSTDY2K","name":"Slow and Steady","description":"","frame":"\(CrewCatalog.frames[1])","emblem":"\(CrewCatalog.emblems[2])","color":"slate","visibility":"public","laurel":null,"trophies":0,"golds":0,"memberCount":4,"maxMembers":20,"weekMinutes":60}}],
+    "next":null,"crewCount":38}
+    """
+
+    /// Asking to join a public crew: the owner decides, the crew page shows what a visitor sees.
+    static let requested = """
+    {"ok":true,"joined":false,"requested":true,"request":{"crew":{"id":"MEDSQUAD2K","name":"Med School Squad","description":"Anki every morning.","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"coral","visibility":"public","laurel":"silver","trophies":5,"golds":1,"memberCount":14,"maxMembers":20,"weekMinutes":9120},"requestedAt":1794300000,"expiresAt":1794904800},
+    "crew":{"id":"MEDSQUAD2K","name":"Med School Squad","description":"Anki every morning.","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])",
+    "color":"coral","visibility":"public","laurel":"silver","trophies":5,"golds":1,"memberCount":14,"maxMembers":20,"weekMinutes":9120,
+    "createdAt":1790000000,"medals":{"gold":1,"silver":3,"bronze":1},"rank":1,"mine":false,"owner":false,"inviteCode":null,"hidden":false,"crewCount":38,"history":[],"members":[]}}
+    """
+
+    static let mineWaiting = """
+    {"ok":true,\(week),"crew":null,"request":{"crew":{"id":"MEDSQUAD2K","name":"Med School Squad","description":"Anki every morning.","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])","color":"coral","visibility":"public","laurel":"silver","trophies":5,"golds":1,"memberCount":14,"maxMembers":20,"weekMinutes":9120},"requestedAt":1794300000,"expiresAt":1794904800}}
+    """
+
     static let join = """
     {"ok":true,"joined":true,"crew":{"id":"MEDSQUAD2K","name":"Med School Squad","description":"","frame":"\(CrewCatalog.frames[0])","emblem":"\(CrewCatalog.emblems[0])",
-    "color":"coral","visibility":"public","laurel":null,"trophies":0,"memberCount":15,"maxMembers":20,"weekMinutes":9120,"createdAt":1790000000,
-    "medals":{"gold":0,"silver":0,"bronze":0},"rank":1,"mine":true,"owner":false,"inviteCode":"M3DSQD7","hidden":false,
+    "color":"coral","visibility":"public","laurel":null,"trophies":0,"golds":0,"memberCount":15,"maxMembers":20,"weekMinutes":9120,"createdAt":1790000000,
+    "medals":{"gold":0,"silver":0,"bronze":0},"rank":1,"mine":true,"owner":false,"inviteCode":"M3DSQD7","hidden":false,"crewCount":38,"history":[],
     "members":[{"ref":"SAMREF2K7Q","name":"Sam","pet":null,"badges":[],"weekMinutes":0,"owner":false,"me":true}]}}
     """
 

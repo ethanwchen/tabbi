@@ -105,6 +105,6 @@ export async function befriend(a: { code: string; token: string }, b: { code: st
 export function dropCrewsTables(sql: SqlStorage): void {
   for (const table of [
     "crews", "crew_members", "crew_stints", "crew_sessions", "crew_day_credits", "crew_weeks", "crew_awards", "crew_rollups",
-    "crew_removals", "crew_reports", "crew_flags", "crew_name_holds",
+    "crew_removals", "crew_reports", "crew_flags", "crew_name_holds", "crew_join_requests", "crew_results",
   ]) sql.exec(`DROP TABLE ${table}`);
 }

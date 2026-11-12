@@ -60,6 +60,7 @@ Study Crews are protocol 3 and only add: new routes under `/v1/crews`, new table
 - An app on protocol 1 or 2 never calls a crews route, and every route it does call answers exactly as before: friends, friend requests, parties, presence and the leaderboard are untouched, and no Party reply gains a crews field.
 - A user can be in a crew on a protocol 3 app and use Party on an older app (another Mac, or Windows before its update) at the same time; the older app just shows no Crew section.
   Their crew membership stays, and their minutes count only from the sessions a protocol 3 app reports.
+- The heartbeat reply gains one field, `crews` (my crew and its waiting join requests); older apps ignore it, and nothing else in the reply changes.
 - The friends leaderboard keeps summing heartbeat minutes; crews never use them, so an older app's heartbeats neither help nor hurt a crew.
 - Crews routes need no `Tabbi-Protocol` header, so a third-party or older client that reaches one gets the same answer as a current app.
 - Board lists and Hall of Fame pages have no fixed length (ties share a place), and Hall of Fame cursors are opaque, so an app must read them as given and never build one.

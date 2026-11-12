@@ -92,7 +92,7 @@ export function crewEmblemTitle(id: string): string {
 }
 
 export const CREW_LIMITS = {
-  nameMaxLength: 24,
+  nameMaxLength: 20,
   descriptionMaxLength: 120,
   maxMembers: 20,
   searchPageSize: 20,

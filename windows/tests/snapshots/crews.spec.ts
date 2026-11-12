@@ -2,10 +2,10 @@ import { test } from "@playwright/test";
 import { shoot, snapshotStates } from "./snapshot";
 
 /*
- * The Party tab's Crew section, every screen at every panel size, in
- * English, German, Japanese and Arabic, to
+ * The Party tab's Crews mode, every screen and state of the Crews UI spec
+ * at every panel size, in English, German, Japanese and Arabic, to
  * tests/snapshots/output/<scale>/crews/<lang>/<size>-<state>.png, for review
- * beside the Mac's snapshots (open-party-crew-*.png).
+ * beside the spec's prototype and the Mac's snapshots.
  */
 
 test.use({ viewport: { width: 800, height: 600 } });

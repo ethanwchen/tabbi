@@ -115,12 +115,16 @@
 	<string>%@ 正陪你一起休息</string>
 	<key>%@ is ready in the Closet</key>
 	<string>%@已在衣櫥裡等你</string>
+	<key>%@ is second this week</key>
+	<string>%@ 本週第二</string>
 	<key>%@ is studying with the party</key>
 	<string>%@ 正和派對一起學習</string>
 	<key>%@ is studying with you</key>
 	<string>%@ 正陪你一起學習</string>
 	<key>%@ is taking the break with you</key>
 	<string>%@ 正陪你一起休息</string>
+	<key>%@ is third this week</key>
+	<string>%@ 本週第三</string>
 	<key>%@ isn't connected</key>
 	<string>%@ 未連接</string>
 	<key>%@ isn't installed</key>
@@ -131,8 +135,12 @@
 	<string>這台 Mac 上還沒有 %@。「連線」會告訴你如何加入。</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@ 尚未設定</string>
+	<key>%@ joined the crew.</key>
+	<string>%@ 已加入小隊。</string>
 	<key>%@ keeps their pet private on crew pages.</key>
 	<string>%@ 在小隊頁面隱藏了寵物。</string>
+	<key>%@ leads the week</key>
+	<string>%@ 本週領先</string>
 	<key>%@ learned a song from a bird</key>
 	<string>%@ 跟小鳥學了一首歌</string>
 	<key>%@ left</key>
@@ -159,6 +167,8 @@
 	<string>找不到 %@</string>
 	<key>%@ of %@</key>
 	<string>%1$@ / %2$@</string>
+	<key>%@ of %lld crews · %@</key>
+	<string>%2$lld 個小隊中%1$@ · %3$@</string>
 	<key>%@ of focus.</key>
 	<string>專注了 %@。</string>
 	<key>%@ opens in Music; press play there.</key>
@@ -223,6 +233,8 @@
 	<string>%1$@ 和 %2$@</string>
 	<key>%@ with %@ wants to be friends.</key>
 	<string>%1$@ 和 %2$@ 想加你為好友。</string>
+	<key>%@ with %@, %@ this week</key>
+	<string>%@ 和 %@,本週 %@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>%@ 放在「應用程式」中最好用，這樣它能在登入時開啟並自動保持最新版本。它會把自己拷貝過去，然後重新開啟。</string>
 	<key>%@ · %@ this week</key>
@@ -275,6 +287,8 @@
 	<string>%@：本月已完成</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@：你已獲得所有物品。活動結束後它們仍然屬於你。</string>
+	<key>%lld gold, %lld silver, %lld bronze</key>
+	<string>金 %lld,銀 %lld,銅 %lld</string>
 	<key>%lld h</key>
 	<string>%lld 小時</string>
 	<key>%lld in party</key>
@@ -409,6 +423,10 @@
 	<string>每個問題最多可附加 %lld 張截圖</string>
 	<key>A quiet day. Rest up and start fresh tomorrow.</key>
 	<string>平靜的一天。好好休息，明天重新出發。</string>
+	<key>A quiet start to the week</key>
+	<string>安靜的一週開始</string>
+	<key>A random frame, emblem and color</key>
+	<string>隨機邊框、徽章和顏色</string>
 	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
 	<string>寵物送來的稀有毛色。到衣櫥的「外觀」裡試試看。</string>
 	<key>A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:</key>
@@ -419,8 +437,6 @@
 	<string>範例行程。連接行事曆後，這裡會顯示你自己的行程。</string>
 	<key>A school or work setting may block it. You can check in System Settings.</key>
 	<string>可能是學校或公司的設定封鎖了它，你可以到「系統設定」查看。</string>
-	<key>A short description (optional)</key>
-	<string>簡短介紹(選填)</string>
 	<key>A shorter timer</key>
 	<string>縮短計時</string>
 	<key>A slow breath in, and out</key>
@@ -663,8 +679,8 @@
 	<string>回答來源</string>
 	<key>Answers stay in the notch. Press Command-Return to send and expand, or click Expand on a chat.</key>
 	<string>回答留在瀏海中。按 Command-Return 傳送並展開，或點聊天上的「展開」。</string>
-	<key>Anyone can find and join it.</key>
-	<string>任何人都能找到並加入。</string>
+	<key>Anyone can find it and ask to join. Click to make it private.</key>
+	<string>任何人都能找到並申請加入。按一下設為私密。</string>
 	<key>App</key>
 	<string>App</string>
 	<key>Appears when the pointer reaches the top center.</key>
@@ -695,10 +711,14 @@
 	<string>每次詢問</string>
 	<key>Ask this question again</key>
 	<string>重新提問</string>
+	<key>Ask to join %@. Its owner lets you in.</key>
+	<string>申請加入 %@,由隊長核准。</string>
 	<key>Ask “%@”</key>
 	<string>問「%@」</string>
 	<key>Asked once. Your answer stays on this Mac.</key>
 	<string>只問一次。你的回答只會保留在這台 Mac 上。</string>
+	<key>Asked to join %@. Its owner lets you in.</key>
+	<string>已申請加入 %@,等待隊長核准。</string>
 	<key>Asking Anki to open the deck for review.</key>
 	<string>正在請 Anki 打開牌組供你複習。</string>
 	<key>Astronaut Helmet</key>
@@ -739,6 +759,8 @@
 	<string>返回計時器</string>
 	<key>Back to today</key>
 	<string>回到今天</string>
+	<key>Back to your party and friends</key>
+	<string>返回派對和好友</string>
 	<key>Backwards Cap</key>
 	<string>反戴棒球帽</string>
 	<key>Badges</key>
@@ -855,6 +877,8 @@
 	<string>取消</string>
 	<key>Cancel Request</key>
 	<string>取消邀請</string>
+	<key>Cancel request</key>
+	<string>取消申請</string>
 	<key>Cancel your request to %@</key>
 	<string>取消送給 %@ 的邀請</string>
 	<key>Candy pink and milk, sweet but never loud.</key>
@@ -921,6 +945,8 @@
 	<string>請檢查派對伺服器</string>
 	<key>Check the server in Party options.</key>
 	<string>請到派對選項檢查伺服器。</string>
+	<key>Check your internet connection. Crews show up once it's back.</key>
+	<string>請檢查網路連線。恢復後會顯示小隊。</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>請檢查網路連線。恢復後就會顯示好友和派對。</string>
 	<key>Check your internet connection. You can also set up Party later in its tab.</key>
@@ -1069,8 +1095,6 @@
 	<string>關閉,不加入</string>
 	<key>Close without reporting (Esc)</key>
 	<string>關閉且不檢舉（esc）</string>
-	<key>Close without saving</key>
-	<string>關閉,不儲存</string>
 	<key>Closet</key>
 	<string>衣櫥</string>
 	<key>Code</key>
@@ -1079,6 +1103,8 @@
 	<string>Codex 用量</string>
 	<key>Coffee mug</key>
 	<string>咖啡杯</string>
+	<key>Color</key>
+	<string>顏色</string>
 	<key>Command</key>
 	<string>指令</string>
 	<key>Compact</key>
@@ -1127,6 +1153,8 @@
 	<string>拷貝</string>
 	<key>Copy Invite Link</key>
 	<string>拷貝邀請連結</string>
+	<key>Copy an invite link. A friend who opens it joins this crew in one click.</key>
+	<string>拷貝邀請連結。好友打開後一鍵加入小隊。</string>
 	<key>Copy and open %@</key>
 	<string>拷貝並打開 %@</string>
 	<key>Copy answer</key>
@@ -1143,8 +1171,6 @@
 	<string>拷貝好友代碼</string>
 	<key>Copy the AnkiConnect add-on code to paste into Anki</key>
 	<string>拷貝 AnkiConnect 附加元件代碼，以貼到 Anki 中</string>
-	<key>Copy the invite link. Friends who open it can join your crew.</key>
-	<string>拷貝邀請連結。打開連結的好友可以加入你的小隊。</string>
 	<key>Copy what Tabbi found, to paste into a message if you ask someone for help</key>
 	<string>拷貝 Tabbi 的檢查結果，向別人求助時可以貼到訊息裡</string>
 	<key>Copy what you need to paste, then open %@</key>
@@ -1213,6 +1239,8 @@
 	<string>奶油色</string>
 	<key>Create</key>
 	<string>建立</string>
+	<key>Create a crew</key>
+	<string>建立小隊</string>
 	<key>Create a party and get a code to share</key>
 	<string>建立派對並取得分享代碼</string>
 	<key>Create the crew with you as its owner</key>
@@ -1225,8 +1253,8 @@
 	<string>小隊名稱</string>
 	<key>Crew names can be up to %lld characters.</key>
 	<string>小隊名稱最多 %lld 個字元。</string>
-	<key>Crew owner</key>
-	<string>隊長</string>
+	<key>Crews</key>
+	<string>小隊</string>
 	<key>Custom</key>
 	<string>自訂</string>
 	<key>Daily focus goal met</key>
@@ -1247,6 +1275,8 @@
 	<string>拒絕</string>
 	<key>Decline %@'s request. They won't be told.</key>
 	<string>拒絕 %@ 的邀請。對方不會收到通知。</string>
+	<key>Decline. %@ isn't told.</key>
+	<string>拒絕。不會通知 %@。</string>
 	<key>Deep</key>
 	<string>深度</string>
 	<key>Deep cherry red, fizzy and warm, made for late sessions.</key>
@@ -1379,8 +1409,6 @@
 	<string>已獲得。點一下即可取下。</string>
 	<key>Earned. Click to wear.</key>
 	<string>已獲得。點一下即可穿上。</string>
-	<key>Edit Crew…</key>
-	<string>編輯小隊…</string>
 	<key>Edit crew</key>
 	<string>編輯小隊</string>
 	<key>Edit the Custom focus and break lengths</key>
@@ -1393,6 +1421,8 @@
 	<string>寄電子郵件給 %@ 團隊，回報錯誤、派對中的某個人或其他任何事</string>
 	<key>Email the %@ team about a person or a problem</key>
 	<string>寫信給 %@ 團隊，回報某人或問題</string>
+	<key>Emblem</key>
+	<string>徽章</string>
 	<key>End</key>
 	<string>結束</string>
 	<key>End it for everyone in the Party tab</key>
@@ -1403,8 +1433,6 @@
 	<string>結束這一段，依長度休息一下</string>
 	<key>Ends at %@</key>
 	<string>%@ 結束</string>
-	<key>Ends in %@</key>
-	<string>%@後結束</string>
 	<key>Enough for the %@ and the %@ now.</key>
 	<string>現在可以換%1$@和%2$@了。</string>
 	<key>Enough for the %@ now</key>
@@ -1415,6 +1443,8 @@
 	<string>在設定中輸入 AnkiConnect 設定裡的金鑰。</string>
 	<key>Event</key>
 	<string>活動</string>
+	<key>Every Sunday's top 3 earn a medal</key>
+	<string>每週日前三名獲得獎牌</string>
 	<key>Every crew can appear on the weekly top 3 with its members' pets.</key>
 	<string>任何小隊都可能帶著成員的寵物登上每週前三名。</string>
 	<key>Every deck is caught up</key>
@@ -1459,6 +1489,8 @@
 	<string>用未完成的任務和複習填滿今天的空閒時間。在這台 Mac 上規劃，你確認之前不會加入任何內容</string>
 	<key>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</key>
 	<string>用未完成的任務和複習填滿明天的空閒時間。在這台 Mac 上規劃，你確認之前不會加入任何內容</string>
+	<key>Find</key>
+	<string>尋找</string>
 	<key>Find crews</key>
 	<string>尋找小隊</string>
 	<key>Finish a Party session with friends.</key>
@@ -1509,8 +1541,6 @@
 	<string>在%@期間專注。</string>
 	<key>Focus for 50 hours in total.</key>
 	<string>累計專注 50 小時。</string>
-	<key>Focus hours this week. The board freezes Sunday 23:59 UTC.</key>
-	<string>本週專注時數。榜單在週日 23:59(UTC)定格。</string>
 	<key>Focus on this task</key>
 	<string>專注於此任務</string>
 	<key>Focus session</key>
@@ -1561,6 +1591,8 @@
 	<string>創始成員：在 Tabbi 最初 100 天內加入。</string>
 	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
 	<string>創始成員：你在 Tabbi 最初 100 天內加入。</string>
+	<key>Frame</key>
+	<string>邊框</string>
 	<key>Free all day</key>
 	<string>整天有空</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1683,6 +1715,8 @@
 	<string>做得好！</string>
 	<key>Great job, team!</key>
 	<string>大家做得好！</string>
+	<key>Hall of Fame</key>
+	<string>名人堂</string>
 	<key>Halloween</key>
 	<string>萬聖節</string>
 	<key>Halo</key>
@@ -1699,8 +1733,6 @@
 	<string>與硬體一樣的黑，安靜又俐落。</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>有代碼嗎？輸入 %lld 位數的派對代碼，然後按 Return 鍵加入</string>
-	<key>Have an invite? Type the %lld-character code and press Return to join</key>
-	<string>有邀請?輸入 %lld 位邀請碼並按 Return 加入</string>
 	<key>Head Mirror</key>
 	<string>額鏡</string>
 	<key>Headphones</key>
@@ -1741,6 +1773,8 @@
 	<string>記錄</string>
 	<key>Honey</key>
 	<string>蜂蜜色</string>
+	<key>Hours show up after the first focus session. Last week's top 3 keep their laurels until Sunday.</key>
+	<string>完成第一次專注後會顯示時數。上週前三名的桂冠保留到週日。</string>
 	<key>How %@ works</key>
 	<string>%@ 的原理</string>
 	<key>How long each item stays before the next one</key>
@@ -1831,8 +1865,8 @@
 	<string>對好友隱身</string>
 	<key>Invite</key>
 	<string>邀請</string>
-	<key>Invite code</key>
-	<string>邀請碼</string>
+	<key>Invite link</key>
+	<string>邀請連結</string>
 	<key>Invite links</key>
 	<string>邀請連結</string>
 	<key>Is %@ on this Mac?</key>
@@ -1875,6 +1909,10 @@
 	<string>沒有內容可顯示的項目會被略過。</string>
 	<key>Its config sets an API key, which this tab doesn't send.</key>
 	<string>它的設定指定了 API 密鑰，但此標籤頁不會傳送。</string>
+	<key>Its owner lets you in.</key>
+	<string>由隊長核准。</string>
+	<key>Its owner lets you in. A request goes away after 7 days.</key>
+	<string>由隊長核准。申請 7 天後失效。</string>
 	<key>Its settings turned the connection away.</key>
 	<string>它的設定拒絕了連線。</string>
 	<key>Join</key>
@@ -1889,8 +1927,6 @@
 	<string>加入小隊</string>
 	<key>Join Party</key>
 	<string>加入派對</string>
-	<key>Join a study crew</key>
-	<string>加入讀書小隊</string>
 	<key>Join this crew?</key>
 	<string>加入這個小隊?</string>
 	<key>Join this party now</key>
@@ -1939,10 +1975,8 @@
 	<string>上次同步：%@</string>
 	<key>Last week</key>
 	<string>上週</string>
-	<key>Last week's winners and their laurels</key>
-	<string>上週的獲勝小隊和桂冠</string>
-	<key>Last week's winners show here once a week has ended.</key>
-	<string>一週結束後,獲勝小隊會顯示在這裡。</string>
+	<key>Last weeks</key>
+	<string>最近幾週</string>
 	<key>Latest adventure: %@</key>
 	<string>最近的探險：%@</string>
 	<key>Launch %@</key>
@@ -1953,7 +1987,7 @@
 	<string>學習中</string>
 	<key>Leave</key>
 	<string>離開</string>
-	<key>Leave Crew</key>
+	<key>Leave crew</key>
 	<string>離開小隊</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>留空即使用預設模型，快速又便宜。</string>
@@ -1969,10 +2003,14 @@
 	<string>將此時段移出計畫</string>
 	<key>Leave this question unanswered</key>
 	<string>先不回答</string>
+	<key>Leave your crew to start a new one</key>
+	<string>離開目前的小隊才能新建</string>
 	<key>Less</key>
 	<string>少</string>
 	<key>Let %@ find you again. You won't be friends until one of you adds the other.</key>
 	<string>讓 %@ 能再找到你。要等其中一方加對方，你們才會成為好友。</string>
+	<key>Let %@ into the crew</key>
+	<string>讓 %@ 加入小隊</string>
 	<key>Let Tabbi into Anki</key>
 	<string>允許 Tabbi 連線到 Anki</string>
 	<key>Let Tabbi run your Focus shortcuts</key>
@@ -2011,6 +2049,8 @@
 	<string>即時動態</string>
 	<key>Loading</key>
 	<string>載入中</string>
+	<key>Loading the board</key>
+	<string>正在載入榜單</string>
 	<key>Loading your crew…</key>
 	<string>正在載入你的小隊…</string>
 	<key>Loading…</key>
@@ -2071,6 +2111,8 @@
 	<string>Tabbi 可以執行你的捷徑嗎？</string>
 	<key>Measuring cores...</key>
 	<string>正在測量核心...</string>
+	<key>Medals from every week's top 3</key>
+	<string>每週前三名的獎牌</string>
 	<key>Media</key>
 	<string>媒體</string>
 	<key>Meetings, music and timers beside the closed notch.</key>
@@ -2119,8 +2161,6 @@
 	<string>月光石</string>
 	<key>More</key>
 	<string>多</string>
-	<key>More crew options</key>
-	<string>更多小隊選項</string>
 	<key>More events</key>
 	<string>更多活動</string>
 	<key>More focus than last week. Nice climb!</key>
@@ -2151,6 +2191,8 @@
 	<string>音樂</string>
 	<key>Mute</key>
 	<string>靜音</string>
+	<key>My crew</key>
+	<string>我的小隊</string>
 	<key>Name</key>
 	<string>名字</string>
 	<key>Name your pet</key>
@@ -2171,6 +2213,8 @@
 	<string>新朋友</string>
 	<key>New tabs may ask for %@.</key>
 	<string>新的標籤頁可能會要求%@。</string>
+	<key>New week in %@</key>
+	<string>%@後開始新的一週</string>
 	<key>Next meeting</key>
 	<string>下一個會議</string>
 	<key>Next track</key>
@@ -2197,8 +2241,8 @@
 	<string>還沒有行事曆</string>
 	<key>No collar</key>
 	<string>無項圈</string>
-	<key>No crew has studied yet this week. Yours could be first.</key>
-	<string>本週還沒有小隊讀書。你的小隊可以搶頭香。</string>
+	<key>No crews match</key>
+	<string>沒有符合的小隊</string>
 	<key>No events</key>
 	<string>沒有行程</string>
 	<key>No events on your calendars today.</key>
@@ -2215,8 +2259,12 @@
 	<string>本週沒有空閒時間</string>
 	<key>No friends yet</key>
 	<string>還沒有好友</string>
+	<key>No hours yet this week</key>
+	<string>本週還沒有時數</string>
 	<key>No limits in your Codex logs yet</key>
 	<string>Codex 記錄中還沒有額度資料</string>
+	<key>No medals yet</key>
+	<string>還沒有獎牌</string>
 	<key>No more events today</key>
 	<string>今天沒有其他行程了</string>
 	<key>No music app found</key>
@@ -2227,10 +2275,6 @@
 	<string>沒有人使用這個好友代碼。</string>
 	<key>No one is blocked.</key>
 	<string>沒有封鎖任何人。</string>
-	<key>No public crews match.</key>
-	<string>沒有符合的公開小隊。</string>
-	<key>No public crews yet. Make the first one.</key>
-	<string>還沒有公開小隊。來建立第一個吧。</string>
 	<key>No saved chats</key>
 	<string>沒有儲存的聊天</string>
 	<key>No shortcut named “%@”. Check the name in Shortcuts.</key>
@@ -2435,6 +2479,8 @@
 	<string>只有部分權限。Tabbi 能加入行程，但無法讀取。</string>
 	<key>Only people with the invite can join.</key>
 	<string>只有收到邀請的人才能加入。</string>
+	<key>Only people with the invite link can join. Click to make it public.</key>
+	<string>只有拿到邀請連結的人才能加入。按一下設為公開。</string>
 	<key>Only the crew's owner can do that.</key>
 	<string>只有隊長可以這樣做。</string>
 	<key>Only the host can change the session.</key>
@@ -2791,8 +2837,8 @@
 	<string>隱私權政策</string>
 	<key>Private</key>
 	<string>私密</string>
-	<key>Private: only people with the invite can join.</key>
-	<string>私密:只有收到邀請的人才能加入。</string>
+	<key>Private, invite only</key>
+	<string>私密,僅限邀請</string>
 	<key>Productivity</key>
 	<string>效率</string>
 	<key>Profile</key>
@@ -2803,8 +2849,6 @@
 	<string>建議：%@。點一下以加入或跳過</string>
 	<key>Public</key>
 	<string>公開</string>
-	<key>Public: anyone can find and join it.</key>
-	<string>公開:任何人都能找到並加入。</string>
 	<key>Pumpkin Hat</key>
 	<string>南瓜帽</string>
 	<key>Pup</key>
@@ -2839,6 +2883,12 @@
 	<string>雨聲</string>
 	<key>Rain cloud</key>
 	<string>雨雲</string>
+	<key>Rank %lld, %@, %@</key>
+	<string>第%lld名,%@,%@</string>
+	<key>Rank %lld, %@, %@ this week, %@</key>
+	<string>第%lld名,%@,本週 %@,%@</string>
+	<key>Ranked by golds, then silvers, then bronzes, then whoever reached the tally first.</key>
+	<string>依金牌、銀牌、銅牌排序,相同時先達到者在前。</string>
 	<key>Rare</key>
 	<string>稀有</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2943,6 +2993,8 @@
 	<string>已向 %@ 送出邀請</string>
 	<key>Request sent to %@.</key>
 	<string>已向 %@ 送出邀請。</string>
+	<key>Requested</key>
+	<string>已申請</string>
 	<key>Reset to Default</key>
 	<string>回復預設值</string>
 	<key>Reset to Defaults</key>
@@ -3207,8 +3259,6 @@
 	<string>顯示此套件選擇的預覽。</string>
 	<key>Shuffle</key>
 	<string>隨機播放</string>
-	<key>Shuffle the crest</key>
-	<string>隨機產生隊徽</string>
 	<key>Sign In</key>
 	<string>登入</string>
 	<key>Sign Out</key>
@@ -3441,6 +3491,8 @@
 	<string>學習時段</string>
 	<key>Study buddies</key>
 	<string>讀書夥伴</string>
+	<key>Study crews: weekly board and Hall of Fame</key>
+	<string>讀書小隊:每週榜單與名人堂</string>
 	<key>Study days</key>
 	<string>學習天數</string>
 	<key>Study methods</key>
@@ -3455,10 +3507,10 @@
 	<string>讀到專注下降，休息隨之調整</string>
 	<key>Study with a cat</key>
 	<string>和貓咪一起讀書</string>
-	<key>Study with a crew and climb the weekly top 3.</key>
-	<string>和小隊一起讀書,衝進每週前三名。</string>
 	<key>Study with a dog</key>
 	<string>和狗狗一起讀書</string>
+	<key>Study with friends and climb the board together.</key>
+	<string>和好友一起讀書,一起衝榜。</string>
 	<key>Study with friends and see who is focusing now.</key>
 	<string>和朋友一起學習，看看誰正在專注。</string>
 	<key>Study with friends, see their timers.</key>
@@ -3581,6 +3633,8 @@
 	<string>謝謝。檢舉已送出，%@ 已被封鎖。</string>
 	<key>Thanks. Your report was sent.</key>
 	<string>謝謝。檢舉已送出。</string>
+	<key>That crew has a lot of requests waiting. Try again later.</key>
+	<string>這個小隊有很多待處理的申請,請稍後再試。</string>
 	<key>That crew is full.</key>
 	<string>這個小隊已滿。</string>
 	<key>That crew is gone or the code is wrong.</key>
@@ -3609,6 +3663,8 @@
 	<string>該派對已滿。</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>不能使用這個寵物名字，請換一個。</string>
+	<key>That request is no longer waiting.</key>
+	<string>這筆申請已不在等待中。</string>
 	<key>That's a wrap. Well done!</key>
 	<string>收工！表現很棒！</string>
 	<key>That's your own code.</key>
@@ -3635,8 +3691,6 @@
 	<string>「捷徑」App 沒有及時回應，請稍後再試一次。</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
 	<string>這台 Mac 上沒有捷徑命令列工具。</string>
-	<key>The Tabbi team hid this crew from the board and Find.</key>
-	<string>Tabbi 團隊已將這個小隊從榜單和尋找中隱藏。</string>
 	<key>The Tabbi team reviews it. %@ isn't told.</key>
 	<string>Tabbi 團隊會審查。%@ 不會收到通知。</string>
 	<key>The app this needs isn't on this Mac</key>
@@ -3703,8 +3757,8 @@
 	<string>計時器會以 %@ 開始</string>
 	<key>The tool's own default</key>
 	<string>工具本身的預設值</string>
-	<key>The week ends Sunday 23:59 UTC. Then the top 3 freeze and win their laurels for next week.</key>
-	<string>每週在週日 23:59(UTC)結束。屆時前三名定格,並贏得下週的桂冠。</string>
+	<key>The week runs Monday to Sunday (UTC). Ends %@. The top 3 wear a laurel next week.</key>
+	<string>每週從週一到週日(UTC),結束於 %@。前三名下週戴上桂冠。</string>
 	<key>The work no one sees is the work that changes you.</key>
 	<string>沒有人看見的努力，才是改變你的力量。</string>
 	<key>The year you were born</key>
@@ -3747,6 +3801,8 @@
 	<string>這是示範。不帶 TABBI_DEMO 執行才能離開小隊。</string>
 	<key>This is a demo. Run without TABBI_DEMO to make a crew.</key>
 	<string>這是示範。不帶 TABBI_DEMO 執行才能建立小隊。</string>
+	<key>This is a demo. Run without TABBI_DEMO to study with a crew.</key>
+	<string>這是示範。不帶 TABBI_DEMO 執行才能和小隊讀書。</string>
 	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
 	<string>這是示範。不帶 TABBI_DEMO 執行，就能和好友一起讀書。</string>
 	<key>This is usually short. Check again in a moment.</key>
@@ -3767,12 +3823,14 @@
 	<string>這項任務已在今天的清單中</string>
 	<key>This week</key>
 	<string>本週</string>
-	<key>This week's live top 3</key>
-	<string>本週即時前三名</string>
+	<key>This week's leaderboard</key>
+	<string>本週排行榜</string>
 	<key>This works. Nothing to do.</key>
 	<string>運作正常，不需要做任何事。</string>
 	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
 	<string>每月三個小目標。都是自願的，錯過一個月也不會失去什麼。</string>
+	<key>Tied with %@ at %@</key>
+	<string>與 %@ 並列,%@</string>
 	<key>Time</key>
 	<string>時間</string>
 	<key>Time for a %lld-minute break.</key>
@@ -3833,10 +3891,6 @@
 	<string>嘗試次數太多。請等一分鐘再試。</string>
 	<key>Took back the import of %@.</key>
 	<string>已撤銷 %@ 的匯入。</string>
-	<key>Top 3</key>
-	<string>前三名</string>
-	<key>Top 3 finishes: %lld gold, %lld silver, %lld bronze</key>
-	<string>前三名次數:金 %lld,銀 %lld,銅 %lld</string>
 	<key>Top decks</key>
 	<string>主要牌組</string>
 	<key>Top model</key>
@@ -3849,6 +3903,8 @@
 	<string>再試一次</string>
 	<key>Try again now</key>
 	<string>現在再試一次</string>
+	<key>Try another word, or create one.</key>
+	<string>換個詞試試,或者新建一個。</string>
 	<key>Try the server again now</key>
 	<string>立即重試伺服器</string>
 	<key>Try to reach Party again now</key>
@@ -3971,8 +4027,6 @@
 	<string>每週額度的用量</string>
 	<key>Use the default %@ server</key>
 	<string>使用預設的 %@ 伺服器</string>
-	<key>Use this icon</key>
-	<string>使用此圖像</string>
 	<key>Used to greet you.</key>
 	<string>用來跟你打招呼。</string>
 	<key>Uses your ChatGPT plan through the codex command.</key>
@@ -4015,12 +4069,16 @@
 	<string>正在等待 Anki 啟動</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>等待 Anki 啟動後打開 %@</string>
+	<key>Waiting to join %@</key>
+	<string>等待加入 %@</string>
 	<key>Waiting: %lld</key>
 	<string>等待中：%lld</string>
 	<key>Walk through the steps to connect %@</key>
 	<string>一步步帶你連接：%@</string>
 	<key>Wants to be friends</key>
 	<string>想加你為好友</string>
+	<key>Wants to join</key>
+	<string>想加入</string>
 	<key>Wardrobe</key>
 	<string>衣櫥</string>
 	<key>Warm cream and peach, soft and gentle.</key>
@@ -4053,6 +4111,8 @@
 	<string>發生了什麼事，一兩句就好</string>
 	<key>What should we call you?</key>
 	<string>我們該怎麼稱呼你？</string>
+	<key>What you study</key>
+	<string>你們在讀什麼</string>
 	<key>When Anki asked whether to let Tabbi in, the answer was no.</key>
 	<string>Anki 詢問是否允許 Tabbi 連接時，選擇了拒絕。</string>
 	<key>When focus ends</key>
@@ -4089,10 +4149,14 @@
 	<string>將 Claude Code 設為 AI 時，「問 AI」和「AI 用量」會執行你已登入的 claude CLI；%@ 絕不會讀取你的憑證。只有在找不到 claude 時才需要設定。</string>
 	<key>With Ollama open, run ollama pull %@ in Terminal once.</key>
 	<string>打開 Ollama 後，在「終端機」中執行一次 ollama pull %@。</string>
+	<key>Withdraw your request to join %@</key>
+	<string>撤回加入 %@ 的申請</string>
 	<key>Wizard Hat</key>
 	<string>巫師帽</string>
 	<key>Wizard Robe</key>
 	<string>巫師長袍</string>
+	<key>Wk %lld</key>
+	<string>第%lld週</string>
 	<key>Works from any app. On Today, type right away to add a task.</key>
 	<string>任何 App 都能用。在「今天」直接輸入任務。</string>
 	<key>Wrap up</key>
@@ -4187,10 +4251,14 @@
 	<string>你沒有落後。你有自己的時鐘，而它只會往前走。</string>
 	<key>You're not in a crew anymore.</key>
 	<string>你已不在小隊中。</string>
+	<key>You're not in a crew yet</key>
+	<string>你還沒有加入小隊</string>
 	<key>You're not in a party anymore.</key>
 	<string>你已不在派對中。</string>
 	<key>You're the only one here for now.</key>
 	<string>目前只有你一個人。</string>
+	<key>You've asked a lot of crews today. Try again tomorrow.</key>
+	<string>你今天申請了很多小隊,明天再試吧。</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>你封鎖的人太多了，請先解除封鎖某人。</string>
 	<key>You've made a lot of crews today. Try again tomorrow.</key>
@@ -4235,6 +4303,10 @@
 	<string>你的 AnkiConnect 附加元件版本太舊，Tabbi 無法使用。</string>
 	<key>Your crew</key>
 	<string>你的小隊</string>
+	<key>Your crew and its members</key>
+	<string>你的小隊和成員</string>
+	<key>Your crew studied %@ this week</key>
+	<string>你的小隊本週讀了 %@</string>
 	<key>Your data</key>
 	<string>你的資料</string>
 	<key>Your day on a timeline, with the free time in between.</key>
@@ -4269,8 +4341,6 @@
 	<string>你的名字，最多 %lld 個字元</string>
 	<key>Your own focus and break lengths</key>
 	<string>自訂專注和休息時長</string>
-	<key>Your party and friends</key>
-	<string>你的派對和好友</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>你的派對個人檔案已重設。重新連線中…</string>
 	<key>Your pet</key>
@@ -4295,8 +4365,6 @@
 	<string>你的播放列表</string>
 	<key>Your setup already matches %@</key>
 	<string>你的設定已與 %@ 相符</string>
-	<key>Your study crew and the weekly top 3</key>
-	<string>你的讀書小隊和每週前三名</string>
 	<key>Your study day by day, with the time studied on each</key>
 	<string>每天的學習和當天的學習時長</string>
 	<key>Your study streak and the freezes that protect it</key>

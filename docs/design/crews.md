@@ -18,7 +18,7 @@ There is no chat, no messages, no user-uploaded image and no free text beyond a 
 - Ranking: total focus hours per crew for the week; a crew holds at most 20 members.
 - Rewards: the weekly top 3 get a gold, silver or bronze laurel on the crew's crest for the following week, a trophy count on the crew page that grows forever, and the featured spot.
 - Visibility: every crew, public or private, can be ranked and featured, and clicking a featured crew shows its members' pets (pet look, pet name, display name, and Study Level once that ships).
-- Public crews can be found and joined by anyone eligible; private crews are joined by invite code or link only.
+- Public crews can be found by anyone eligible, who asks to join and gets in when the owner approves; private crews are joined by invite code or link only, and an invite code or link always joins at once, public or private, since the owner handed it out.
 - The create flow says plainly that every crew can appear on the weekly board with its members' pets, and each member can hide their own pet from crew pages (visible by default).
 - Crests (the owner's later direction, replacing single icons): Clash Royale style clan badges built from a frame shape, an emblem and a crew color, composited at runtime, with a gold, silver or bronze laurel for the weekly top 3; no uploaded images.
 
@@ -75,13 +75,16 @@ A crew's medals are counted forever on its row, so they survive renames and edit
 The weekly rollup writes the medals when a week closes; it runs once per week, so re-running a closed week changes nothing, and it catches up several missed weeks oldest first.
 The Hall of Fame lists every crew with at least one medal in Olympic order: most golds, then silvers, then bronzes, then whoever reached that exact tally first, then crew id.
 "Reached" is the end of the week that gave the crew its current tally, so a crew that got there earlier stays ahead of one that only caught up.
-Ranks are competition ranks over that whole order: equal tallies reached the same week share a rank.
+Ranks are distinct: 1 plus the crew's place in that whole order, so equal tallies from the same week are ordered by crew id.
 Hidden crews are left out, as on the board, and private crews are in, as on the board.
+The weekly board pages the places below the top 3 the same way, 20 at a time, and both answer where my crew stands (`mine`).
 `GET /v1/crews/hall` pages it 20 at a time with an opaque cursor; paging follows the order itself (keyset), so a walk through the pages never repeats or skips a crew.
 
 ## Visibility and privacy
 
-- Public crews show up in Find crews and can be joined by anyone eligible while they have room.
+- Public crews show up in Find crews, where anyone eligible can ask to join; the owner approves or declines each request.
+- A request waits at most 7 days, one at a time per person (a new one replaces it), at most 50 per crew, and a decline is never announced: the request just disappears.
+- The heartbeat reply tells an owner how many requests wait, so the Party tab can badge them without polling.
 - Private crews can only be joined with their invite code or link, which only members see.
 - Every crew, public or private, can be ranked on the weekly board and featured, and anyone in Party can open a crew on the board to see its members' pets.
 - A member page shows the display name, and, unless the member hid it, the pet's look and name, plus their minutes this week; once Study Level ships it shows too (`studyLevel` is optional on the wire).
@@ -92,7 +95,7 @@ Hidden crews are left out, as on the board, and private crews are in, as on the 
 
 ## Safety and moderation
 
-- Crew names (up to 24 characters) and descriptions (up to 120) go through the same name filter as display names, in the app (`PartyNameFilter`) and on the server (`isNameAllowed`); names are unique among crews, ignoring case.
+- Crew names (up to 20 characters) and descriptions (up to 120) go through the same name filter as display names, in the app (`PartyNameFilter`) and on the server (`isNameAllowed`); names are unique among crews, ignoring case.
 - Members can report a crew (its name, description or crest) or a member (`POST /v1/crews/reports`), leave at any time, and block a member (`POST /v1/crews/block`), which is the same block as everywhere in Party.
 - A block between a member and the owner takes the member out: the owner blocking removes them for good, a member blocking the owner leaves; any other block just hides the two from each other on crew pages.
 - A crew whose owner blocked me, or whom I blocked, looks like it does not exist to me (404), as a party does.
@@ -105,7 +108,7 @@ Hidden crews are left out, as on the board, and private crews are in, as on the 
 ## Server
 
 Everything lives in the existing SQLite Durable Object (`Hub`), as one new migration step (`CREWS_SCHEMA`), which runs on the next deploy and only adds tables.
-New tables: `crews`, `crew_members` (current membership, with the member `ref` and `show_pet`), `crew_stints` (who belonged where and when, kept 14 days after leaving), `crew_sessions` (reported sessions, kept 14 days), `crew_day_credits` (credited minutes per user, crew and UTC day, kept 5 weeks), `crew_weeks` (each crew's week total, kept 5 weeks), `crew_awards` (every crew placed 1 to 3 in every week, kept forever with the crew's name and crest at the time), `crew_removals`, `crew_reports`, `crew_flags` and `crew_name_holds`.
+New tables: `crews`, `crew_members` (current membership, with the member `ref` and `show_pet`), `crew_stints` (who belonged where and when, kept 14 days after leaving), `crew_sessions` (reported sessions, kept 14 days), `crew_day_credits` (credited minutes per user, crew and UTC day, kept 5 weeks), `crew_weeks` (each crew's week total, kept 5 weeks), `crew_awards` (every crew placed 1 to 3 in every week, kept forever with the crew's name and crest at the time), `crew_results` (every crew's final place and minutes per week, kept 5 weeks, for the last three weeks on a crew page), `crew_join_requests` (kept 7 days), `crew_removals`, `crew_reports`, `crew_flags` and `crew_name_holds`.
 The hourly alarm runs the weekly rollup (`rollupCrews`) and the crews retention sweep; every crews route runs the rollup first too, so the board freezes at rollover even before the alarm fires.
 The rollup is idempotent: a week already in `crew_awards` is never rolled up again.
 

@@ -2,32 +2,39 @@ import Combine
 import Foundation
 import TabbiKitCore
 
-/// The Party tab's Crew section: my crew, the weekly top 3, Find and the New
-/// crew form, and the finished focus sessions it reports to the board.
+/// The Party tab's Crews mode: My crew, This week, the Hall of Fame, Find,
+/// the crew pages and the crest editor (the Crews UI spec), and the finished
+/// focus sessions it reports to the board.
 ///
 /// It talks to the server through Party's identity (`PartyStore.crewAccount`)
 /// and only while Party is connected, so Crews follows Party's age check and
 /// server setting for free, and a snapshot run stays offline exactly when
-/// Party does. Like Party it fetches only while the Crew section is on
-/// screen; a demo run never fetches and shows `CrewsState.demo`
+/// Party does. Like Party it fetches only while Crews mode is on screen; a
+/// demo run never fetches and shows `CrewsState.demo`
 /// (`TABBI_CREWS_PREVIEW` picks the screen).
 ///
 /// Sessions are the exception: they are queued as they finish (merged, so one
 /// stretch is sent once) and sent in the background while I am in a crew,
-/// since the board counts them whether or not the panel is open.
+/// since the board counts them whether or not the panel is open. The Party
+/// heartbeat's crews pulse badges the tab when people ask to join my crew and
+/// tells the store when the owner I asked lets me in.
 @MainActor
 final class CrewsStore: ObservableObject {
     @Published private(set) var state: CrewsState
-    /// The Party or Crew switch at the top left of the Party tab.
+    /// The Party or Crews mode switch at the top left of the Party tab.
     @Published var showsCrews: Bool
     /// The action in flight, so its button can show progress.
     @Published private(set) var pending: CrewAction?
-    /// What the New crew and Edit forms hold while they are open.
+    /// What the crest editor holds while it is open.
     @Published var draft: CrewDraftForm
     /// The crew or member the report card is about, while it shows.
     @Published private(set) var reporting: CrewReportTarget?
+    /// The More menu of My crew, while it is open.
+    @Published var showsMoreMenu = false
     /// The moment the week's countdown measures against.
     @Published private(set) var now = Date()
+    /// Join requests waiting for the crew I own, from the heartbeat.
+    @Published private(set) var waitingRequests = 0
 
     let party: PartyStore
     private let isDemo: Bool
@@ -39,11 +46,10 @@ final class CrewsStore: ObservableObject {
     private var searchTask: Task<Void, Never>?
     private var sendTask: Task<Void, Never>?
     private var clockTask: Task<Void, Never>?
-    /// When my crew was last fetched, so a background session report knows
-    /// whether I am in one without asking every time.
-    private var mineFetchedAt: Date?
+    /// The crew id the last heartbeat named, to notice an approval.
+    private var pulseCrew: String??
 
-    /// How often the Crew section refreshes while it shows.
+    /// How often Crews mode refreshes while it shows.
     static let refreshInterval: TimeInterval = 60
     /// How long Find waits after a keystroke before it asks the server.
     static let searchDelay: TimeInterval = 0.35
@@ -59,12 +65,13 @@ final class CrewsStore: ObservableObject {
         isDemo = runMode.isDemo
         draft = CrewDraftForm()
         if isDemo {
-            let scenario = environment["TABBI_CREWS_PREVIEW"].flatMap(CrewDemoScenario.init) ?? .mine
+            let scenario = environment["TABBI_CREWS_PREVIEW"].flatMap(CrewDemoScenario.init) ?? .week
             state = .demo(scenario, now: Date())
             showsCrews = environment["TABBI_CREWS_PREVIEW"] != nil
             queueFile = nil
             queue = CrewSessionQueue()
-            if scenario == .edit, let mine = state.mine { draft = CrewDraftForm(editing: mine) }
+            draft = Self.demoDraft(for: scenario, state: state)
+            waitingRequests = state.mine?.requests.count ?? 0
             return
         }
         state = CrewsState()
@@ -97,6 +104,27 @@ final class CrewsStore: ObservableObject {
             .store(in: &cancellables)
     }
 
+    /// Follows the heartbeat's crews pulse: waiting requests badge the tab,
+    /// and a crew appearing means my request was approved.
+    func follow(pulse: AnyPublisher<PartyCrewsPulse, Never>) {
+        guard !isDemo else { return }
+        pulse
+            .receive(on: RunLoop.main)
+            .sink { [weak self] pulse in
+                MainActor.assumeIsolated { self?.didReceive(pulse) }
+            }
+            .store(in: &cancellables)
+    }
+
+    private func didReceive(_ pulse: PartyCrewsPulse) {
+        waitingRequests = pulse.requests
+        let previous = pulseCrew
+        pulseCrew = .some(pulse.crew)
+        // A different crew than last seen (approved, removed): fetch mine.
+        if let previous, previous != pulse.crew { loadMine(thenSend: true) }
+        if let id = pulse.crew, state.mine?.id != id, state.mineLoaded { loadMine(thenSend: true) }
+    }
+
     private func queueSession(_ session: CrewSession) {
         // Not in a crew (as last seen): nothing to count, so nothing is kept.
         guard state.inCrew || !state.mineLoaded else { return }
@@ -110,77 +138,83 @@ final class CrewsStore: ObservableObject {
             refreshTask?.cancel()
             return
         }
-        // Learn whether I am in a crew (the board and Find wait for the panel),
-        // then send what waited while offline.
         loadMine(thenSend: true)
-        if visible && showsCrews { scheduleRefresh() }
+        if visible && showsCrews { refreshNow() }
     }
 
     /// The Party panel appeared or went away.
     func setVisible(_ visible: Bool) {
         self.visible = visible
         if visible && showsCrews { refreshNow() } else { refreshTask?.cancel() }
+        if !visible { showsMoreMenu = false }
         scheduleClock()
     }
 
-    /// Flips the Party or Crew switch.
+    /// Flips the Party or Crews mode switch.
     func setShowsCrews(_ shows: Bool) {
         guard shows != showsCrews else { return }
         showsCrews = shows
+        showsMoreMenu = false
         if shows && visible { refreshNow() } else { refreshTask?.cancel() }
         scheduleClock()
     }
 
     // MARK: Navigation
 
+    /// Goes to a section, closing any pushed screen.
     func show(_ section: CrewsState.Section) {
         state.show(section)
-        if section == .create { draft = CrewDraftForm() }
-        if section == .find && state.results == nil { search(state.query) }
+        showsMoreMenu = false
+        load(section)
     }
 
-    func showLastWeek(_ shows: Bool) {
-        state.showsLastWeek = shows && state.board?.featured != nil
+    /// Back from a crew page or the editor.
+    func pop() {
+        state.pop()
+        showsMoreMenu = false
     }
 
-    /// Opens a crew's page from the top 3 or Find.
+    /// Opens a crew's page from a board, Find or a member.
     func open(crew id: String) {
+        showsMoreMenu = false
+        let from = state.section
         if let mine = state.mine, mine.id == id {
-            state.viewing = nil
-            state.section = .mine
+            state.show(.mine)
             return
         }
         if isDemo {
-            let known = [CrewDemoData.medSquad, CrewDemoData.lofi]
-            state.viewing = known.first { $0.id == id } ?? CrewDemoData.medSquad
+            let data = CrewsState.demo(.crew, now: now)
+            if case .crew(let page, _) = data.pushed { state.pushed = .crew(page, from: from) }
             return
         }
         run(.open(id)) { store, account in
             let crew = try await account.perform { try await $0.crew(id: id) }
-            store.state.viewing = crew
+            store.state.pushed = .crew(crew, from: from)
         }
     }
 
-    func closeCrewPage() {
-        state.viewing = nil
+    /// Opens the crest editor for a new crew (with a random crest) or, for
+    /// the owner, to edit mine.
+    func openEditor(editing: Bool) {
+        showsMoreMenu = false
+        if editing, let mine = state.mine, mine.owner {
+            draft = CrewDraftForm(editing: mine)
+        } else {
+            var generator = SystemRandomNumberGenerator()
+            draft = CrewDraftForm()
+            draft.crest = CrewCrest.random(using: &generator)
+        }
+        state.pushed = .editor(editing: editing && state.mine?.owner == true, from: state.section)
     }
 
-    func beginEdit() {
-        guard let mine = state.mine, mine.owner else { return }
-        draft = CrewDraftForm(editing: mine)
-        state.editing = true
-        state.viewing = nil
-        state.section = .mine
-    }
-
-    func cancelEdit() {
-        state.editing = false
-        if state.section == .create { state.section = .mine }
+    func shuffleCrest() {
+        var generator = SystemRandomNumberGenerator()
+        draft.shuffle(using: &generator)
     }
 
     // MARK: Actions
 
-    /// Creates my crew from the New crew form, or saves the owner's edit.
+    /// Creates my crew from the editor, or saves the owner's edit.
     func saveDraft() {
         guard draft.problem == nil else { return }
         let draft = draft
@@ -189,12 +223,12 @@ final class CrewsStore: ObservableObject {
                              confirms: false)
             return
         }
-        if state.editing, let mine = state.mine {
+        if case .editor(true, _) = state.pushed, let mine = state.mine {
             let change = draft.changes(from: mine)
             run(.save) { store, account in
                 let crew = try await account.perform { try await $0.updateCrew(change) }
                 store.state.didLoadMine(crew, week: store.state.week)
-                store.state.editing = false
+                store.state.show(.mine)
                 store.party.showNotice(String(localized: "Saved.", bundle: .tabbi), confirms: true)
             }
         } else {
@@ -210,39 +244,17 @@ final class CrewsStore: ObservableObject {
         }
     }
 
-    /// Joins with a typed or pasted invite code (or a whole invite message).
+    /// Joins with a typed or pasted invite code (or a whole invite message):
+    /// the invite is the owner's yes, so it joins at once.
     func join(invite text: String) {
         guard let code = CrewCode.findInvite(in: text) else {
             party.showNotice(String(localized: "Crew invite codes have \(CrewCode.inviteLength) characters.", bundle: .tabbi),
                              confirms: false)
             return
         }
-        joinCrew(.invite(code))
-    }
-
-    /// Joins a public crew from Find or its page.
-    func join(crew id: String) {
-        joinCrew(.crew(id))
-    }
-
-    private enum JoinTarget {
-        case invite(String)
-        case crew(String)
-    }
-
-    private func joinCrew(_ target: JoinTarget) {
-        if isDemo {
-            party.showNotice(String(localized: "This is a demo. Run without TABBI_DEMO to join a crew.", bundle: .tabbi),
-                             confirms: false)
-            return
-        }
+        if isDemo { return demoOnly() }
         run(.join) { store, account in
-            let crew = try await account.perform { client in
-                switch target {
-                case .invite(let code): try await client.joinCrew(invite: code)
-                case .crew(let id): try await client.joinCrew(id: id)
-                }
-            }
+            let crew = try await account.perform { try await $0.joinCrew(invite: code) }
             store.state.invite = nil
             store.state.didLoadMine(crew, week: store.state.week)
             store.state.show(.mine)
@@ -251,12 +263,71 @@ final class CrewsStore: ObservableObject {
         }
     }
 
-    func leave() {
+    /// Asks to join a public crew; its owner lets me in.
+    func requestToJoin(_ crew: CrewSummary) {
         if isDemo {
-            party.showNotice(String(localized: "This is a demo. Run without TABBI_DEMO to leave a crew.", bundle: .tabbi),
-                             confirms: false)
+            state.myRequest = CrewMyRequest(crew: crew, requestedAt: now, expiresAt: now.addingTimeInterval(7 * 86_400))
             return
         }
+        run(.join) { store, account in
+            let outcome = try await account.perform { try await $0.requestToJoin(id: crew.id) }
+            switch outcome {
+            case .joined(let detail):
+                store.state.didLoadMine(detail, week: store.state.week)
+                store.state.show(.mine)
+                store.party.showNotice(String(localized: "You joined \(detail.summary.name).", bundle: .tabbi), confirms: true)
+            case .requested(let request):
+                store.state.myRequest = request
+                store.party.showNotice(String(localized: "Asked to join \(crew.name). Its owner lets you in.", bundle: .tabbi),
+                                       confirms: true)
+            }
+        }
+    }
+
+    /// Withdraws my pending request.
+    func cancelRequest() {
+        if isDemo {
+            state.myRequest = nil
+            return
+        }
+        run(.cancelRequest) { store, account in
+            _ = try await account.perform { try await $0.cancelJoinRequest() }
+            store.state.myRequest = nil
+        }
+    }
+
+    /// The owner lets someone in.
+    func approve(_ request: CrewJoinRequest) {
+        if isDemo {
+            state.mine?.requests.removeAll { $0.id == request.id }
+            waitingRequests = state.mine?.requests.count ?? 0
+            return
+        }
+        run(.approve(request.ref)) { store, account in
+            let crew = try await account.perform { try await $0.approveJoinRequest(ref: request.ref) }
+            store.state.didLoadMine(crew, week: store.state.week)
+            store.waitingRequests = crew.requests.count
+            store.party.showNotice(String(localized: "\(request.name) joined the crew.", bundle: .tabbi), confirms: true)
+        }
+    }
+
+    /// The owner says no, quietly: the request just goes away.
+    func decline(_ request: CrewJoinRequest) {
+        if isDemo {
+            state.mine?.requests.removeAll { $0.id == request.id }
+            waitingRequests = state.mine?.requests.count ?? 0
+            return
+        }
+        run(.decline(request.ref)) { store, account in
+            try await account.perform { try await $0.declineJoinRequest(ref: request.ref) }
+            store.state.mine?.requests.removeAll { $0.id == request.id }
+            store.waitingRequests = store.state.mine?.requests.count ?? 0
+        }
+    }
+
+    func leave() {
+        showsMoreMenu = false
+        if isDemo { return demoOnly() }
         let name = state.mine?.summary.name ?? ""
         run(.leave) { store, account in
             _ = try await account.perform { try await $0.leaveCrew() }
@@ -267,7 +338,7 @@ final class CrewsStore: ObservableObject {
 
     /// The owner takes a member out; they cannot join this crew again.
     func remove(_ member: CrewMember) {
-        if isDemo { return }
+        if isDemo { return demoOnly() }
         run(.remove(member.ref)) { store, account in
             let crew = try await account.perform { try await $0.removeCrewMember(ref: member.ref) }
             store.state.didLoadMine(crew, week: store.state.week)
@@ -277,12 +348,7 @@ final class CrewsStore: ObservableObject {
 
     /// Shows or hides my pet on crew pages.
     func setShowsPet(_ shows: Bool) {
-        if isDemo {
-            guard var mine = state.mine, let index = mine.members.firstIndex(where: \.me) else { return }
-            mine.members[index].pet = shows ? CrewDemoData.nightOwls(now: now).members[index].pet : nil
-            state.mine = mine
-            return
-        }
+        if isDemo { return demoOnly() }
         run(.showPet) { store, account in
             let crew = try await account.perform { try await $0.setShowsPet(shows) }
             store.state.didLoadMine(crew, week: store.state.week)
@@ -290,7 +356,7 @@ final class CrewsStore: ObservableObject {
     }
 
     func block(_ member: CrewMember, in crew: CrewDetail) {
-        if isDemo { return }
+        if isDemo { return demoOnly() }
         run(.block(member.ref)) { store, account in
             _ = try await account.perform { try await $0.blockCrewMember(crew: crew.id, member: member.ref) }
             store.party.showNotice(String(localized: "Blocked \(member.name). Unblock them in Party options.", bundle: .tabbi),
@@ -300,6 +366,7 @@ final class CrewsStore: ObservableObject {
     }
 
     func beginReport(_ target: CrewReportTarget) {
+        showsMoreMenu = false
         reporting = target
     }
 
@@ -331,14 +398,17 @@ final class CrewsStore: ObservableObject {
         }
     }
 
+    private func demoOnly() {
+        party.showNotice(String(localized: "This is a demo. Run without TABBI_DEMO to study with a crew.", bundle: .tabbi),
+                         confirms: false)
+    }
+
     // MARK: Invites
 
-    /// A crew invite link was opened: the Crew section asks before joining.
+    /// A crew invite link was opened: My crew asks before joining.
     func open(_ invite: CrewInvite) {
         state.invite = invite.code
-        state.viewing = nil
-        state.editing = false
-        state.section = .mine
+        state.show(.mine)
         setShowsCrews(true)
     }
 
@@ -374,11 +444,28 @@ final class CrewsStore: ObservableObject {
 
     // MARK: Loading
 
+    /// Loads what a section shows.
+    private func load(_ section: CrewsState.Section) {
+        guard !isDemo else { return }
+        switch section {
+        case .mine: loadMine(thenSend: false)
+        case .week: loadBoard()
+        case .hall: loadHall()
+        case .find: if state.results == nil { search(state.query) }
+        }
+    }
+
+    /// Retries after a failure ("Try again" in the offline state).
+    func retry() {
+        state.loadError = nil
+        party.retry()
+        refreshNow()
+    }
+
     private func refreshNow() {
         guard !isDemo else { return }
         loadMine(thenSend: false)
-        loadBoard()
-        if state.section == .find { search(state.query) }
+        load(state.section)
         scheduleRefresh()
     }
 
@@ -396,10 +483,10 @@ final class CrewsStore: ObservableObject {
         guard !isDemo, let account = party.crewAccount else { return }
         Task { [weak self] in
             do {
-                let (crew, week) = try await account.perform { try await $0.myCrew() }
+                let (crew, week, request) = try await account.perform { try await $0.myCrew() }
                 guard let self else { return }
-                self.state.didLoadMine(crew, week: week)
-                self.mineFetchedAt = Date()
+                self.state.didLoadMine(crew, week: week, request: request)
+                self.waitingRequests = crew?.requests.count ?? 0
                 if crew == nil {
                     // Nothing to count: forget sessions kept for a crew I left.
                     self.queue = CrewSessionQueue()
@@ -416,8 +503,42 @@ final class CrewsStore: ObservableObject {
     private func loadBoard() {
         guard !isDemo, let account = party.crewAccount else { return }
         Task { [weak self] in
-            if let board = try? await account.perform({ try await $0.crewBoard() }) {
+            do {
+                let board = try await account.perform { try await $0.crewBoard() }
                 self?.state.didLoadBoard(board)
+            } catch {
+                self?.state.loadError = Self.partyError(error)
+            }
+        }
+    }
+
+    /// The next page of the weekly board's rows, when the list scrolls near its end.
+    func loadMoreBoard() {
+        guard !isDemo, let cursor = state.board?.next, let account = party.crewAccount else { return }
+        Task { [weak self] in
+            if let page = try? await account.perform({ try await $0.crewBoard(cursor: cursor) }) {
+                self?.state.didLoadBoard(page, appending: true)
+            }
+        }
+    }
+
+    private func loadHall() {
+        guard !isDemo, let account = party.crewAccount else { return }
+        Task { [weak self] in
+            do {
+                let page = try await account.perform { try await $0.crewHall() }
+                self?.state.didLoadHall(page)
+            } catch {
+                self?.state.loadError = Self.partyError(error)
+            }
+        }
+    }
+
+    func loadMoreHall() {
+        guard !isDemo, let cursor = state.hallNext, let account = party.crewAccount else { return }
+        Task { [weak self] in
+            if let page = try? await account.perform({ try await $0.crewHall(cursor: cursor) }) {
+                self?.state.didLoadHall(page, appending: true)
             }
         }
     }
@@ -513,34 +634,53 @@ final class CrewsStore: ObservableObject {
 
     // MARK: Snapshots
 
+    private static func demoDraft(for scenario: CrewDemoScenario, state: CrewsState) -> CrewDraftForm {
+        switch scenario {
+        case .edit: return state.mine.map(CrewDraftForm.init(editing:)) ?? CrewDraftForm()
+        case .create:
+            var draft = CrewDraftForm()
+            draft.name = "Bibliotheksratten"
+            draft.crest = CrewCrest(frame: CrewCatalog.frames[1 % CrewCatalog.frames.count],
+                                    emblem: CrewCatalog.emblems[3 % CrewCatalog.emblems.count],
+                                    color: CrewCatalog.colors[5 % CrewCatalog.colors.count].id)
+            return draft
+        default: return CrewDraftForm()
+        }
+    }
+
     /// Snapshot runs only: shows a demo screen for the next shot, or the
     /// Party side again with nil.
-    func showForSnapshot(_ scenario: CrewDemoScenario?) {
+    func showForSnapshot(_ scenario: CrewDemoScenario?, moreMenu: Bool = false) {
         guard let scenario else {
             showsCrews = false
             reporting = nil
+            showsMoreMenu = false
             return
         }
         state = .demo(scenario, now: now)
-        draft = scenario == .edit ? state.mine.map(CrewDraftForm.init(editing:)) ?? CrewDraftForm() : CrewDraftForm()
+        draft = Self.demoDraft(for: scenario, state: state)
+        waitingRequests = state.mine?.requests.count ?? 0
         reporting = nil
+        showsMoreMenu = moreMenu
         showsCrews = true
     }
 
-    /// Snapshot runs only: the report card about a featured crew's member.
+    /// Snapshot runs only: the report card about a crew's member.
     func showReportForSnapshot() {
-        state = .demo(.viewing, now: now)
+        state = .demo(.crew, now: now)
         showsCrews = true
-        if let crew = state.viewing { reporting = CrewReportTarget(crew: crew.summary, member: crew.members.first) }
+        if case .crew(let crew, _) = state.pushed { reporting = CrewReportTarget(crew: crew.summary, member: crew.members.first) }
     }
 }
 
 /// The action in flight.
 enum CrewAction: Hashable {
-    case save, join, leave, showPet, report
+    case save, join, leave, showPet, report, cancelRequest
     case open(String)
     case remove(String)
     case block(String)
+    case approve(String)
+    case decline(String)
 }
 
 /// What a crew report is about: a crew, or one member of it.
@@ -551,7 +691,7 @@ struct CrewReportTarget: Hashable, Identifiable {
     var id: String { crew.id + (member?.ref ?? "") }
 }
 
-/// The New crew and Edit form, with the crest builder's choice.
+/// The crest editor, with the crest builder's choice.
 struct CrewDraftForm: Equatable {
     var name = ""
     var description = ""
@@ -572,7 +712,7 @@ struct CrewDraftForm: Equatable {
 
     var problem: CrewDraftCheck.Problem? { CrewDraftCheck.problem(name: name, description: description) }
 
-    /// A new random crest, never the one showing.
+    /// A new random crest, never the one showing; the name stays.
     mutating func shuffle<G: RandomNumberGenerator>(using generator: inout G) {
         var next = crest
         while next == crest { next = CrewCrest.random(using: &generator) }

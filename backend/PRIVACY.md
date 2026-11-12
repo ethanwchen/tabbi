@@ -23,13 +23,15 @@ Per user, identified only by a random secret token (stored as a SHA-256 hash) an
 
 Only if you use Study Crews:
 
-- for a crew: its 10-character id, its 7-character invite code, its name (up to 24 characters), its description (up to 120), its crest (a frame, an emblem and a color), whether it is public or private, its owner's friend code, when it was created, how many medals it won in the weekly top 3 (by place) and when it reached that tally, and whether the maintainer hid it;
+- for a crew: its 10-character id, its 7-character invite code, its name (up to 20 characters), its description (up to 120), its crest (a frame, an emblem and a color), whether it is public or private, its owner's friend code, when it was created, how many medals it won in the weekly top 3 (by place) and when it reached that tally, and whether the maintainer hid it;
 - your membership: which crew you are in, a random member id that crew pages use instead of your friend code, when you joined, and whether you hid your pet from crew pages;
 - which crew you belonged to and when, so a session reported late counts for the crew of its time; kept 14 days after you leave;
 - the focus sessions your app reports while you are in a crew: when each started and ended, its focus minutes and the minutes credited, kept 14 days (sessions while you are in no crew are not stored);
 - the minutes credited to you per crew and UTC day, and each crew's total per week, kept 5 weeks (about a month), for the weekly board;
+- each crew's final place and minutes in each of the last weeks, kept 5 weeks, for the "last three weeks" on its page;
 - the crews placed 1 to 3 in every week (more on ties), with each one's name, crest and minutes at the time, kept for as long as the service runs, since they are the crews' medals;
 - the members an owner removed from a crew, so they cannot join it again;
+- a request you send to join a public crew: the crew, a random request id and when you sent it, until the owner answers it or it expires after 7 days (you have at most one at a time);
 - reports you send about a crew or a crew member: the crew, the member if any, their names at that moment, your friend code, the reason, your optional note (up to 280 characters), the time and, once handled, the outcome;
 - anti-cheat flags for the maintainer when your reports look wrong (a day or a week over the cap, many overlapping or future-dated sessions): your friend code, your crew, the week, the kind and when, at most one of each kind per week;
 - crew names a maintainer replaced, so no crew can take them again.
@@ -85,7 +87,9 @@ Only the maintainer reads it, to fix the crash, and deletes it when it is no lon
 - There is no directory of people: nobody can find you without your friend code or a shared party code.
   Public Study Crews can be searched by their name, and a crew page never shows anyone's friend code.
 - **Study Crews**: anyone in Party can open a public crew, and any crew (public or private) that is in the week's top 3 or was last week's, and sees its name, description, crest, trophies, its minutes this week, and each member's display name, minutes this week and pet (look and name) unless that member hid their pet.
+  The board and the Hall of Fame also show, on their top crews, the pets of each crew's three most active members that week, again leaving out hidden pets.
   Only members see a crew's invite code; anyone with the code can join while the crew has room, so share it only with people you want to study with.
+  Joining a public crew without its code sends its owner a request; only the owner sees it, with your display name, pet and badges, and you are never told whether it was declined.
   The weekly board shows every crew's name, crest and minutes, private crews included, and the Hall of Fame shows every crew with a medal (name, crest, medals and when it reached them), private crews included.
 - **Blocking** someone ends your friendship and hides the two of you from each other in friend lists, parties, the leaderboard and crew pages; a crew owner blocking a member removes them from the crew, and a member blocking the owner leaves it.
   They cannot add you again or join a party you host, and they are not told that you blocked them.
@@ -102,10 +106,11 @@ Your sync document and Apple account link are never shown to anyone, friends inc
 Leaving a party (`POST /v1/party/leave`) removes your membership; a party is deleted when its last member leaves, or within an hour once it has had 12 hours without activity.
 Leaving a crew (`POST /v1/crews/leave`) removes your membership at once; the record of which crew you were in goes 14 days later, and the minutes you gave the crew stay in its weekly total (a number with no name attached) until that week's data goes after 5 weeks.
 A crew is deleted when its last member leaves; its places in past weekly top 3 lists stay with the name it had then.
+Cancelling a join request (`POST /v1/crews/requests/cancel`) deletes it at once, and an unanswered one is deleted after 7 days.
 Removing a friend deletes the friendship in both directions, and cancelling a request deletes it.
 Unblocking someone deletes the block.
 A report stays until the account of the reporter or of the reported user is deleted.
-Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, friend requests sent and received, sync document, Apple account link, blocks (yours, and others' blocks of you), reports by you or about you, any ban or replaced name, your limited edition items and your Founding Member record, your Study Crew membership, the crews history and focus sessions about you, your credited minutes, crew reports by you or about you and any anti-cheat flags, removes you from your friends' lists, and takes you out of your party and your crew (a crew you owned passes to its longest-standing member).
+Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, friend requests sent and received, sync document, Apple account link, blocks (yours, and others' blocks of you), reports by you or about you, any ban or replaced name, your limited edition items and your Founding Member record, your Study Crew membership and join request, the crews history and focus sessions about you, your credited minutes, crew reports by you or about you and any anti-cheat flags, removes you from your friends' lists, and takes you out of your party and your crew (a crew you owned passes to its longest-standing member).
 Your minutes stay counted in your former crew's weekly total, which carries no name.
 If you signed in with Apple, it then revokes the app's Sign in with Apple grant with Apple.
 A pending web sign-in that was never picked up can still hold your Apple user id until the hourly cleanup erases it.

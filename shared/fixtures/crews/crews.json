@@ -15,11 +15,11 @@
     },
     {
       "description" : "",
-      "name" : "aaaaaaaaaaaaaaaaaaaaaaaa"
+      "name" : "aaaaaaaaaaaaaaaaaaaa"
     },
     {
       "description" : "",
-      "name" : "aaaaaaaaaaaaaaaaaaaaaaaaa",
+      "name" : "aaaaaaaaaaaaaaaaaaaaa",
       "problem" : "nameTooLong"
     },
     {
@@ -48,64 +48,56 @@
   ],
   "hours" : [
     {
-      "form" : "tenths",
+      "minutes" : -5,
+      "tenths" : 0
+    },
+    {
       "minutes" : 0,
-      "value" : 0
+      "tenths" : 0
     },
     {
-      "form" : "tenths",
       "minutes" : 5,
-      "value" : 0
+      "tenths" : 0
     },
     {
-      "form" : "tenths",
       "minutes" : 6,
-      "value" : 1
+      "tenths" : 1
     },
     {
-      "form" : "tenths",
       "minutes" : 59,
-      "value" : 9
+      "tenths" : 9
     },
     {
-      "form" : "tenths",
       "minutes" : 60,
-      "value" : 10
+      "tenths" : 10
     },
     {
-      "form" : "tenths",
       "minutes" : 61,
-      "value" : 10
+      "tenths" : 10
     },
     {
-      "form" : "tenths",
       "minutes" : 252,
-      "value" : 42
+      "tenths" : 42
     },
     {
-      "form" : "tenths",
       "minutes" : 599,
-      "value" : 99
+      "tenths" : 99
     },
     {
-      "form" : "whole",
       "minutes" : 600,
-      "value" : 10
+      "tenths" : 100
     },
     {
-      "form" : "whole",
       "minutes" : 659,
-      "value" : 10
+      "tenths" : 109
     },
     {
-      "form" : "whole",
       "minutes" : 7260,
-      "value" : 121
+      "tenths" : 1210
     },
     {
-      "form" : "whole",
       "minutes" : 9999,
-      "value" : 166
+      "tenths" : 1666
     }
   ],
   "invites" : [
@@ -425,10 +417,44 @@
         "crew" : {
           "color" : "indigo",
           "createdAt" : 1790000000,
+          "crewCount" : 38,
           "description" : "Late study sessions.",
           "emblem" : "owl",
           "frame" : "shield",
+          "golds" : 2,
           "hidden" : false,
+          "history" : [
+            {
+              "medal" : "gold",
+              "minutes" : 11460,
+              "place" : 1,
+              "week" : {
+                "endsAt" : 1794182400,
+                "id" : "2026-W45",
+                "startsAt" : 1793577600
+              }
+            },
+            {
+              "medal" : null,
+              "minutes" : 3120,
+              "place" : 5,
+              "week" : {
+                "endsAt" : 1793577600,
+                "id" : "2026-W44",
+                "startsAt" : 1792972800
+              }
+            },
+            {
+              "medal" : null,
+              "minutes" : 0,
+              "place" : null,
+              "week" : {
+                "endsAt" : 1792972800,
+                "id" : "2026-W43",
+                "startsAt" : 1792368000
+              }
+            }
+          ],
           "id" : "NGHTQWLS2K",
           "inviteCode" : "W4LNUT7",
           "laurel" : "gold",
@@ -501,6 +527,39 @@
           "name" : "Night Owls",
           "owner" : true,
           "rank" : 2,
+          "requests" : [
+            {
+              "badges" : [
+
+              ],
+              "expiresAt" : 1794904800,
+              "name" : "Lena",
+              "pet" : {
+                "accessories" : [
+
+                ],
+                "breed" : "labrador",
+                "colors" : [
+
+                ],
+                "costume" : "none",
+                "petName" : "Pickle",
+                "species" : "dog"
+              },
+              "ref" : "LENAREF3QW",
+              "requestedAt" : 1794300000
+            },
+            {
+              "badges" : [
+                "founding"
+              ],
+              "expiresAt" : 1794914800,
+              "name" : "Omar",
+              "pet" : null,
+              "ref" : "QMARREF8KD",
+              "requestedAt" : 1794310000
+            }
+          ],
           "trophies" : 3,
           "visibility" : "private",
           "weekMinutes" : 2860
@@ -516,7 +575,12 @@
       "schema" : "mineReply",
       "summary" : [
         "week 2026-W46 1794182400-1794787200",
-        "crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=3 private laurel=gold trophies=3 members=3/20 minutes=2860 full=false rank=2 mine=true owner=true invite=W4LNUT7 hidden=false medals=2/1/0",
+        "crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=2 private laurel=gold trophies=3 golds=2 members=3/20 minutes=2860 full=false rank=2 mine=true owner=true invite=W4LNUT7 hidden=false medals=2/1/0 crews=38",
+        "week 2026-W45 place=1 minutes=11460 medal=gold",
+        "week 2026-W44 place=5 minutes=3120 medal=none",
+        "week 2026-W43 place=none minutes=0 medal=none",
+        "request LENAREF3QW \"Lena\" pet=Pickle at=1794300000-1794904800",
+        "request QMARREF8KD \"Omar\" pet=hidden at=1794310000-1794914800",
         "member SAMREF2K7Q \"Sam\" pet=\"Mochi\" orangeTabby outfit=none accessories=scarf,graduationCap level=none minutes=1140 owner=true me=true",
         "member MAYAREF4QR \"Maya\" pet=\"Biscuit\" goldenRetriever outfit=cozyHoodie accessories=cowboyHat level=none minutes=1720 owner=false me=false",
         "member JQNAHREF2P \"Jonah\" pet=hidden level=none minutes=0 owner=false me=false"
@@ -526,6 +590,7 @@
       "json" : {
         "crew" : null,
         "ok" : true,
+        "request" : null,
         "week" : {
           "endsAt" : 1794787200,
           "id" : "2026-W46",
@@ -541,6 +606,7 @@
     },
     {
       "json" : {
+        "crewCount" : 38,
         "featured" : {
           "entries" : [
             {
@@ -549,6 +615,7 @@
                 "description" : "",
                 "emblem" : "owl",
                 "frame" : "shield",
+                "golds" : 2,
                 "id" : "NGHTQWLS2K",
                 "laurel" : "gold",
                 "maxMembers" : 20,
@@ -567,6 +634,7 @@
                 "description" : "",
                 "emblem" : "owl",
                 "frame" : "shield",
+                "golds" : 3,
                 "id" : "MEDSQUAD2K",
                 "laurel" : "silver",
                 "maxMembers" : 20,
@@ -585,6 +653,7 @@
                 "description" : "",
                 "emblem" : "owl",
                 "frame" : "shield",
+                "golds" : 1,
                 "id" : "BQQKWQRMS2",
                 "laurel" : "bronze",
                 "maxMembers" : 20,
@@ -604,7 +673,33 @@
             "startsAt" : 1793577600
           }
         },
+        "mine" : {
+          "minutes" : 840,
+          "rank" : 5
+        },
+        "next" : "eyJyIjo1fQ",
         "ok" : true,
+        "rows" : [
+          {
+            "crew" : {
+              "color" : "sky",
+              "description" : "",
+              "emblem" : "mug",
+              "frame" : "seal",
+              "golds" : 0,
+              "id" : "PQMQDQRQ2S",
+              "laurel" : null,
+              "maxMembers" : 20,
+              "memberCount" : 4,
+              "name" : "Pomodoro Pals",
+              "trophies" : 0,
+              "visibility" : "public",
+              "weekMinutes" : 840
+            },
+            "minutes" : 840,
+            "rank" : 5
+          }
+        ],
         "top" : [
           {
             "crew" : {
@@ -612,6 +707,7 @@
               "description" : "Anki every morning.",
               "emblem" : "owl",
               "frame" : "shield",
+              "golds" : 3,
               "id" : "MEDSQUAD2K",
               "laurel" : "silver",
               "maxMembers" : 20,
@@ -622,6 +718,32 @@
               "weekMinutes" : 9120
             },
             "minutes" : 9120,
+            "pets" : [
+              {
+                "accessories" : [
+                  "flower"
+                ],
+                "breed" : "beagle",
+                "colors" : [
+                  "#C8915A"
+                ],
+                "costume" : "none",
+                "petName" : "Clover",
+                "species" : "dog"
+              },
+              {
+                "accessories" : [
+                  "headphones"
+                ],
+                "breed" : "scottish-fold",
+                "colors" : [
+
+                ],
+                "costume" : "none",
+                "petName" : "Pip",
+                "species" : "cat"
+              }
+            ],
             "rank" : 1
           },
           {
@@ -630,6 +752,7 @@
               "description" : "",
               "emblem" : "owl",
               "frame" : "shield",
+              "golds" : 2,
               "id" : "NGHTQWLS2K",
               "laurel" : "gold",
               "maxMembers" : 20,
@@ -641,6 +764,53 @@
             },
             "minutes" : 2860,
             "rank" : 2
+          },
+          {
+            "crew" : {
+              "color" : "teal",
+              "description" : "",
+              "emblem" : "mug",
+              "frame" : "seal",
+              "golds" : 0,
+              "id" : "TEACHERS22",
+              "laurel" : null,
+              "maxMembers" : 20,
+              "memberCount" : 4,
+              "name" : "Teachers Lounge",
+              "trophies" : 0,
+              "visibility" : "public",
+              "weekMinutes" : 1500
+            },
+            "minutes" : 1500,
+            "pets" : [
+
+            ],
+            "rank" : 3,
+            "tiedWith" : [
+              "Late Shift"
+            ]
+          },
+          {
+            "crew" : {
+              "color" : "rose",
+              "description" : "",
+              "emblem" : "mug",
+              "frame" : "seal",
+              "golds" : 0,
+              "id" : "LATESHFT2K",
+              "laurel" : null,
+              "maxMembers" : 20,
+              "memberCount" : 4,
+              "name" : "Late Shift",
+              "trophies" : 0,
+              "visibility" : "public",
+              "weekMinutes" : 1500
+            },
+            "minutes" : 1500,
+            "rank" : 3,
+            "tiedWith" : [
+              "Teachers Lounge"
+            ]
           }
         ],
         "week" : {
@@ -653,18 +823,29 @@
       "schema" : "boardReply",
       "summary" : [
         "week 2026-W46 1794182400-1794787200",
-        "#1 9120 crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=3 public laurel=silver trophies=5 members=14/20 minutes=9120 full=false",
-        "#2 2860 crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=3 private laurel=gold trophies=3 members=3/20 minutes=2860 full=false",
+        "crews=38 next=eyJyIjo1fQ",
+        "mine=5/840",
+        "#1 9120 pets=Clover,Pip tied= crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=3 public laurel=silver trophies=5 golds=3 members=14/20 minutes=9120 full=false",
+        "#2 2860 pets= tied= crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=2 private laurel=gold trophies=3 golds=2 members=3/20 minutes=2860 full=false",
+        "#3 1500 pets= tied=Late Shift crew TEACHERS22 \"Teachers Lounge\" crest=seal/mug/teal pips=0 public laurel=none trophies=0 golds=0 members=4/20 minutes=1500 full=false",
+        "#3 1500 pets= tied=Teachers Lounge crew LATESHFT2K \"Late Shift\" crest=seal/mug/rose pips=0 public laurel=none trophies=0 golds=0 members=4/20 minutes=1500 full=false",
+        "row #5 840 pets= tied= crew PQMQDQRQ2S \"Pomodoro Pals\" crest=seal/mug/sky pips=0 public laurel=none trophies=0 golds=0 members=4/20 minutes=840 full=false",
         "featured week 2026-W45 1793577600-1794182400",
-        "#1 11460 crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=3 private laurel=gold trophies=3 members=3/20 minutes=2860 full=false",
-        "#2 10020 crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=3 public laurel=silver trophies=5 members=14/20 minutes=9120 full=false",
-        "#3 4410 crew BQQKWQRMS2 \"Bookworms\" crest=shield/owl/amber pips=1 public laurel=bronze trophies=1 members=20/20 minutes=3980 full=true"
+        "#1 11460 pets= tied= crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=2 private laurel=gold trophies=3 golds=2 members=3/20 minutes=2860 full=false",
+        "#2 10020 pets= tied= crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=3 public laurel=silver trophies=5 golds=3 members=14/20 minutes=9120 full=false",
+        "#3 4410 pets= tied= crew BQQKWQRMS2 \"Bookworms\" crest=shield/owl/amber pips=1 public laurel=bronze trophies=1 golds=1 members=20/20 minutes=3980 full=true"
       ]
     },
     {
       "json" : {
+        "crewCount" : 0,
         "featured" : null,
+        "mine" : null,
+        "next" : null,
         "ok" : true,
+        "rows" : [
+
+        ],
         "top" : [
 
         ],
@@ -678,6 +859,81 @@
       "schema" : "boardReply",
       "summary" : [
         "week 2026-W46 1794182400-1794787200",
+        "crews=0 next=none",
+        "mine=none",
+        "no featured"
+      ]
+    },
+    {
+      "json" : {
+        "crewCount" : 38,
+        "next" : null,
+        "ok" : true,
+        "rows" : [
+          {
+            "crew" : {
+              "color" : "slate",
+              "description" : "",
+              "emblem" : "mug",
+              "frame" : "seal",
+              "golds" : 0,
+              "id" : "SLQWSTDY2K",
+              "laurel" : null,
+              "maxMembers" : 20,
+              "memberCount" : 4,
+              "name" : "Slow and Steady",
+              "trophies" : 0,
+              "visibility" : "public",
+              "weekMinutes" : 60
+            },
+            "minutes" : 60,
+            "rank" : 21
+          }
+        ],
+        "week" : {
+          "endsAt" : 1794787200,
+          "id" : "2026-W46",
+          "startsAt" : 1794182400
+        }
+      },
+      "name" : "board, next page",
+      "schema" : "boardReply",
+      "summary" : [
+        "week 2026-W46 1794182400-1794787200",
+        "crews=38 next=none",
+        "mine=none",
+        "row #21 60 pets= tied= crew SLQWSTDY2K \"Slow and Steady\" crest=seal/mug/slate pips=0 public laurel=none trophies=0 golds=0 members=4/20 minutes=60 full=false",
+        "no featured"
+      ]
+    },
+    {
+      "json" : {
+        "crewCount" : 0,
+        "featured" : null,
+        "mine" : {
+          "minutes" : 0,
+          "rank" : null
+        },
+        "next" : null,
+        "ok" : true,
+        "rows" : [
+
+        ],
+        "top" : [
+
+        ],
+        "week" : {
+          "endsAt" : 1794787200,
+          "id" : "2026-W46",
+          "startsAt" : 1794182400
+        }
+      },
+      "name" : "board, my crew hidden",
+      "schema" : "boardReply",
+      "summary" : [
+        "week 2026-W46 1794182400-1794787200",
+        "crews=0 next=none",
+        "mine=none/0",
         "no featured"
       ]
     },
@@ -689,6 +945,7 @@
             "description" : "Anki every morning.",
             "emblem" : "owl",
             "frame" : "shield",
+            "golds" : 3,
             "id" : "MEDSQUAD2K",
             "laurel" : null,
             "maxMembers" : 20,
@@ -703,6 +960,7 @@
             "description" : "",
             "emblem" : "owl",
             "frame" : "shield",
+            "golds" : 1,
             "id" : "BQQKWQRMS2",
             "laurel" : "bronze",
             "maxMembers" : 20,
@@ -723,8 +981,8 @@
       "name" : "search",
       "schema" : "searchReply",
       "summary" : [
-        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=3 public laurel=none trophies=5 members=14/20 minutes=9120 full=false",
-        "crew BQQKWQRMS2 \"Bookworms\" crest=shield/owl/amber pips=1 public laurel=bronze trophies=1 members=20/20 minutes=3980 full=true"
+        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=3 public laurel=none trophies=5 golds=3 members=14/20 minutes=9120 full=false",
+        "crew BQQKWQRMS2 \"Bookworms\" crest=shield/owl/amber pips=1 public laurel=bronze trophies=1 golds=1 members=20/20 minutes=3980 full=true"
       ]
     },
     {
@@ -736,6 +994,7 @@
               "description" : "",
               "emblem" : "owl",
               "frame" : "shield",
+              "golds" : 3,
               "id" : "NGHTQWLS2K",
               "laurel" : "gold",
               "maxMembers" : 20,
@@ -759,6 +1018,7 @@
               "description" : "",
               "emblem" : "owl",
               "frame" : "shield",
+              "golds" : 1,
               "id" : "MEDSQUAD2K",
               "laurel" : "silver",
               "maxMembers" : 20,
@@ -782,6 +1042,7 @@
               "description" : "",
               "emblem" : "owl",
               "frame" : "shield",
+              "golds" : 1,
               "id" : "BQQKWQRMS2",
               "laurel" : null,
               "maxMembers" : 20,
@@ -800,16 +1061,26 @@
             "reachedAt" : 1794182400
           }
         ],
+        "mine" : {
+          "medals" : {
+            "bronze" : 0,
+            "gold" : 3,
+            "silver" : 1
+          },
+          "rank" : 1,
+          "reachedAt" : 1794182400
+        },
         "next" : "eyJnIjoxfQ",
         "ok" : true
       },
       "name" : "hall of fame",
       "schema" : "hallReply",
       "summary" : [
-        "#1 3/1/0 at=1794182400 crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=3 private laurel=gold trophies=4 members=5/20 minutes=2860 full=false",
-        "#2 1/3/1 at=1793577600 crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=3 public laurel=silver trophies=5 members=14/20 minutes=9120 full=false",
-        "#3 1/3/1 at=1794182400 crew BQQKWQRMS2 \"Bookworms\" crest=shield/owl/amber pips=3 public laurel=none trophies=5 members=20/20 minutes=3980 full=true",
-        "next=eyJnIjoxfQ"
+        "#1 3/1/0 at=1794182400 crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=3 private laurel=gold trophies=4 golds=3 members=5/20 minutes=2860 full=false",
+        "#2 1/3/1 at=1793577600 crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=1 public laurel=silver trophies=5 golds=1 members=14/20 minutes=9120 full=false",
+        "#3 1/3/1 at=1794182400 crew BQQKWQRMS2 \"Bookworms\" crest=shield/owl/amber pips=1 public laurel=none trophies=5 golds=1 members=20/20 minutes=3980 full=true",
+        "next=eyJnIjoxfQ",
+        "mine=1 3/1/0"
       ]
     },
     {
@@ -817,10 +1088,24 @@
         "crew" : {
           "color" : "coral",
           "createdAt" : 1790000000,
+          "crewCount" : 38,
           "description" : "Anki every morning.",
           "emblem" : "owl",
           "frame" : "shield",
+          "golds" : 3,
           "hidden" : false,
+          "history" : [
+            {
+              "medal" : "silver",
+              "minutes" : 10020,
+              "place" : 2,
+              "week" : {
+                "endsAt" : 1794182400,
+                "id" : "2026-W45",
+                "startsAt" : 1793577600
+              }
+            }
+          ],
           "id" : "MEDSQUAD2K",
           "inviteCode" : null,
           "laurel" : "silver",
@@ -890,7 +1175,8 @@
       "name" : "crew page of another crew",
       "schema" : "crewReply",
       "summary" : [
-        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=3 public laurel=silver trophies=5 members=2/20 minutes=9120 full=false rank=1 mine=false owner=false invite=none hidden=false medals=1/3/1",
+        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=3 public laurel=silver trophies=5 golds=3 members=2/20 minutes=9120 full=false rank=1 mine=false owner=false invite=none hidden=false medals=1/3/1 crews=38",
+        "week 2026-W45 place=2 minutes=10020 medal=silver",
         "member AVAREF7K3R \"Ava\" pet=\"Clover\" beagle outfit=none accessories=flowerCrown level=none minutes=2640 owner=true me=false",
         "member NQQRREF7HV \"Noor\" pet=\"Pip\" scottishFold outfit=none accessories=chunkyHeadphones level=none minutes=2380 owner=false me=false"
       ]
@@ -903,6 +1189,7 @@
           "description" : "",
           "emblem" : "dragon",
           "frame" : "castle",
+          "golds" : 0,
           "hidden" : false,
           "id" : "NEWERCREW2",
           "inviteCode" : null,
@@ -951,7 +1238,7 @@
       "name" : "newer server crew page",
       "schema" : "crewReply",
       "summary" : [
-        "crew NEWERCREW2 \"From the Future\" crest=shield/owl/coral pips=0 private laurel=none trophies=0 members=1/30 minutes=60 full=false rank=none mine=false owner=false invite=none hidden=false medals=0/0/0",
+        "crew NEWERCREW2 \"From the Future\" crest=shield/owl/coral pips=0 private laurel=none trophies=0 golds=0 members=1/30 minutes=60 full=false rank=none mine=false owner=false invite=none hidden=false medals=0/0/0 crews=0",
         "member FUTUREREF2 \"Zed\" pet=\"Byte\" britishShorthair outfit=none accessories=scarf level=12 minutes=60 owner=true me=false"
       ]
     },
@@ -960,10 +1247,15 @@
         "crew" : {
           "color" : "coral",
           "createdAt" : 1790000000,
+          "crewCount" : 38,
           "description" : "",
           "emblem" : "owl",
           "frame" : "shield",
+          "golds" : 0,
           "hidden" : false,
+          "history" : [
+
+          ],
           "id" : "MEDSQUAD2K",
           "inviteCode" : "M3DSQD7",
           "laurel" : null,
@@ -998,12 +1290,310 @@
         "joined" : true,
         "ok" : true
       },
-      "name" : "join",
+      "name" : "join by invite",
       "schema" : "joinReply",
       "summary" : [
         "joined=true",
-        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=0 public laurel=none trophies=0 members=15/20 minutes=9120 full=false rank=1 mine=true owner=false invite=M3DSQD7 hidden=false medals=0/0/0",
+        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=0 public laurel=none trophies=0 golds=0 members=15/20 minutes=9120 full=false rank=1 mine=true owner=false invite=M3DSQD7 hidden=false medals=0/0/0 crews=38",
         "member SAMREF2K7Q \"Sam\" pet=hidden level=none minutes=0 owner=false me=true"
+      ]
+    },
+    {
+      "json" : {
+        "crew" : {
+          "color" : "coral",
+          "createdAt" : 1790000000,
+          "crewCount" : 38,
+          "description" : "Anki every morning.",
+          "emblem" : "owl",
+          "frame" : "shield",
+          "golds" : 1,
+          "hidden" : false,
+          "history" : [
+
+          ],
+          "id" : "MEDSQUAD2K",
+          "inviteCode" : null,
+          "laurel" : "silver",
+          "maxMembers" : 20,
+          "medals" : {
+            "bronze" : 1,
+            "gold" : 1,
+            "silver" : 3
+          },
+          "memberCount" : 14,
+          "members" : [
+
+          ],
+          "mine" : false,
+          "name" : "Med School Squad",
+          "owner" : false,
+          "rank" : 1,
+          "trophies" : 5,
+          "visibility" : "public",
+          "weekMinutes" : 9120
+        },
+        "joined" : false,
+        "ok" : true,
+        "request" : {
+          "crew" : {
+            "color" : "coral",
+            "description" : "Anki every morning.",
+            "emblem" : "owl",
+            "frame" : "shield",
+            "golds" : 1,
+            "id" : "MEDSQUAD2K",
+            "laurel" : "silver",
+            "maxMembers" : 20,
+            "memberCount" : 14,
+            "name" : "Med School Squad",
+            "trophies" : 5,
+            "visibility" : "public",
+            "weekMinutes" : 9120
+          },
+          "expiresAt" : 1794904800,
+          "requestedAt" : 1794300000
+        },
+        "requested" : true
+      },
+      "name" : "ask to join a public crew",
+      "schema" : "joinReply",
+      "summary" : [
+        "joined=false",
+        "waiting MEDSQUAD2K at=1794300000-1794904800",
+        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=1 public laurel=silver trophies=5 golds=1 members=14/20 minutes=9120 full=false rank=1 mine=false owner=false invite=none hidden=false medals=1/3/1 crews=38"
+      ]
+    },
+    {
+      "json" : {
+        "crew" : null,
+        "ok" : true,
+        "request" : {
+          "crew" : {
+            "color" : "coral",
+            "description" : "Anki every morning.",
+            "emblem" : "owl",
+            "frame" : "shield",
+            "golds" : 1,
+            "id" : "MEDSQUAD2K",
+            "laurel" : "silver",
+            "maxMembers" : 20,
+            "memberCount" : 14,
+            "name" : "Med School Squad",
+            "trophies" : 5,
+            "visibility" : "public",
+            "weekMinutes" : 9120
+          },
+          "expiresAt" : 1794904800,
+          "requestedAt" : 1794300000
+        },
+        "week" : {
+          "endsAt" : 1794787200,
+          "id" : "2026-W46",
+          "startsAt" : 1794182400
+        }
+      },
+      "name" : "mine, waiting to join",
+      "schema" : "mineReply",
+      "summary" : [
+        "week 2026-W46 1794182400-1794787200",
+        "no crew",
+        "waiting MEDSQUAD2K at=1794300000-1794904800"
+      ]
+    },
+    {
+      "json" : {
+        "crew" : {
+          "color" : "indigo",
+          "createdAt" : 1790000000,
+          "crewCount" : 38,
+          "description" : "Late study sessions.",
+          "emblem" : "owl",
+          "frame" : "shield",
+          "golds" : 2,
+          "hidden" : false,
+          "history" : [
+            {
+              "medal" : "gold",
+              "minutes" : 11460,
+              "place" : 1,
+              "week" : {
+                "endsAt" : 1794182400,
+                "id" : "2026-W45",
+                "startsAt" : 1793577600
+              }
+            },
+            {
+              "medal" : null,
+              "minutes" : 3120,
+              "place" : 5,
+              "week" : {
+                "endsAt" : 1793577600,
+                "id" : "2026-W44",
+                "startsAt" : 1792972800
+              }
+            },
+            {
+              "medal" : null,
+              "minutes" : 0,
+              "place" : null,
+              "week" : {
+                "endsAt" : 1792972800,
+                "id" : "2026-W43",
+                "startsAt" : 1792368000
+              }
+            }
+          ],
+          "id" : "NGHTQWLS2K",
+          "inviteCode" : "W4LNUT7",
+          "laurel" : "gold",
+          "maxMembers" : 20,
+          "medals" : {
+            "bronze" : 0,
+            "gold" : 2,
+            "silver" : 1
+          },
+          "memberCount" : 3,
+          "members" : [
+            {
+              "badges" : [
+                "founding"
+              ],
+              "me" : true,
+              "name" : "Sam",
+              "owner" : true,
+              "pet" : {
+                "accessories" : [
+                  "scarf",
+                  "graduation-cap"
+                ],
+                "breed" : "tabby",
+                "colors" : [
+
+                ],
+                "costume" : "none",
+                "petName" : "Mochi",
+                "species" : "cat"
+              },
+              "ref" : "SAMREF2K7Q",
+              "weekMinutes" : 1140
+            },
+            {
+              "badges" : [
+
+              ],
+              "me" : false,
+              "name" : "Maya",
+              "owner" : false,
+              "pet" : {
+                "accessories" : [
+                  "cowboy-hat"
+                ],
+                "breed" : "golden-retriever",
+                "colors" : [
+
+                ],
+                "costume" : "hoodie",
+                "petName" : "Biscuit",
+                "species" : "dog"
+              },
+              "ref" : "MAYAREF4QR",
+              "weekMinutes" : 1720
+            },
+            {
+              "badges" : [
+
+              ],
+              "me" : false,
+              "name" : "Jonah",
+              "owner" : false,
+              "pet" : null,
+              "ref" : "JQNAHREF2P",
+              "weekMinutes" : 0
+            }
+          ],
+          "mine" : true,
+          "name" : "Night Owls",
+          "owner" : true,
+          "rank" : 2,
+          "requests" : [
+            {
+              "badges" : [
+
+              ],
+              "expiresAt" : 1794904800,
+              "name" : "Lena",
+              "pet" : {
+                "accessories" : [
+
+                ],
+                "breed" : "labrador",
+                "colors" : [
+
+                ],
+                "costume" : "none",
+                "petName" : "Pickle",
+                "species" : "dog"
+              },
+              "ref" : "LENAREF3QW",
+              "requestedAt" : 1794300000
+            },
+            {
+              "badges" : [
+                "founding"
+              ],
+              "expiresAt" : 1794914800,
+              "name" : "Omar",
+              "pet" : null,
+              "ref" : "QMARREF8KD",
+              "requestedAt" : 1794310000
+            }
+          ],
+          "trophies" : 3,
+          "visibility" : "private",
+          "weekMinutes" : 2860
+        },
+        "ok" : true,
+        "week" : {
+          "endsAt" : 1794787200,
+          "id" : "2026-W46",
+          "startsAt" : 1794182400
+        }
+      },
+      "name" : "approve a request",
+      "schema" : "crewReply",
+      "summary" : [
+        "crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=2 private laurel=gold trophies=3 golds=2 members=3/20 minutes=2860 full=false rank=2 mine=true owner=true invite=W4LNUT7 hidden=false medals=2/1/0 crews=38",
+        "week 2026-W45 place=1 minutes=11460 medal=gold",
+        "week 2026-W44 place=5 minutes=3120 medal=none",
+        "week 2026-W43 place=none minutes=0 medal=none",
+        "request LENAREF3QW \"Lena\" pet=Pickle at=1794300000-1794904800",
+        "request QMARREF8KD \"Omar\" pet=hidden at=1794310000-1794914800",
+        "member SAMREF2K7Q \"Sam\" pet=\"Mochi\" orangeTabby outfit=none accessories=scarf,graduationCap level=none minutes=1140 owner=true me=true",
+        "member MAYAREF4QR \"Maya\" pet=\"Biscuit\" goldenRetriever outfit=cozyHoodie accessories=cowboyHat level=none minutes=1720 owner=false me=false",
+        "member JQNAHREF2P \"Jonah\" pet=hidden level=none minutes=0 owner=false me=false"
+      ]
+    },
+    {
+      "json" : {
+        "cancelled" : true,
+        "ok" : true
+      },
+      "name" : "cancel a request",
+      "schema" : "cancelReply",
+      "summary" : [
+        "cancelled=true"
+      ]
+    },
+    {
+      "json" : {
+        "declined" : true,
+        "ok" : true
+      },
+      "name" : "decline a request",
+      "schema" : "declineReply",
+      "summary" : [
+        "declined=true"
       ]
     },
     {
@@ -1185,9 +1775,33 @@
         "crew" : "MEDSQUAD2K"
       },
       "method" : "POST",
-      "name" : "join a public crew",
+      "name" : "ask to join a public crew",
       "path" : "/v1/crews/join",
       "schema" : "joinBody"
+    },
+    {
+      "body" : {
+
+      },
+      "method" : "POST",
+      "name" : "cancel my request",
+      "path" : "/v1/crews/requests/cancel"
+    },
+    {
+      "body" : {
+
+      },
+      "method" : "POST",
+      "name" : "approve a request",
+      "path" : "/v1/crews/mine/requests/LENAREF3QW/approve"
+    },
+    {
+      "body" : {
+
+      },
+      "method" : "POST",
+      "name" : "decline a request",
+      "path" : "/v1/crews/mine/requests/LENAREF3QW/decline"
     },
     {
       "body" : {
@@ -1214,6 +1828,11 @@
       "method" : "GET",
       "name" : "board",
       "path" : "/v1/crews/board"
+    },
+    {
+      "method" : "GET",
+      "name" : "board, next page",
+      "path" : "/v1/crews/board?cursor=eyJyIjo1fQ"
     },
     {
       "method" : "GET",

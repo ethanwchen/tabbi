@@ -171,6 +171,20 @@
 			<string>今日の水 %lld杯</string>
 		</dict>
 	</dict>
+	<key>%lld members</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>メンバー%lld人</string>
+		</dict>
+	</dict>
 	<key>%lld minutes in the bank.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -183,6 +197,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>%lld分たまったよ。</string>
+		</dict>
+	</dict>
+	<key>%lld more</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>他%lld件</string>
 		</dict>
 	</dict>
 	<key>%lld more points for %@</key>
@@ -225,6 +253,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>%lld件が入らなくなりました</string>
+		</dict>
+	</dict>
+	<key>%lld of %lld members</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>メンバー%lld/%lld人</string>
 		</dict>
 	</dict>
 	<key>%lld planned</key>
@@ -995,6 +1037,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>友だち%lld人と</string>
+		</dict>
+	</dict>
+	<key>· %lld want to join</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>・%lld人が参加希望</string>
 		</dict>
 	</dict>
 </dict>

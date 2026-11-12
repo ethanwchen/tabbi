@@ -115,12 +115,16 @@
 	<string>%@ отдыхает вместе с тобой</string>
 	<key>%@ is ready in the Closet</key>
 	<string>«%@» ждет в Гардеробе</string>
+	<key>%@ is second this week</key>
+	<string>%@ на втором месте на этой неделе</string>
 	<key>%@ is studying with the party</key>
 	<string>%@ учится вместе с пати</string>
 	<key>%@ is studying with you</key>
 	<string>%@ учится вместе с тобой</string>
 	<key>%@ is taking the break with you</key>
 	<string>%@ отдыхает вместе с тобой</string>
+	<key>%@ is third this week</key>
+	<string>%@ на третьем месте на этой неделе</string>
 	<key>%@ isn't connected</key>
 	<string>%@: не подключено</string>
 	<key>%@ isn't installed</key>
@@ -131,8 +135,12 @@
 	<string>%@ еще нет на этом Mac. В разделе «Подключения» показано, как добавить.</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@: еще не настроено</string>
+	<key>%@ joined the crew.</key>
+	<string>%@ теперь в команде.</string>
 	<key>%@ keeps their pet private on crew pages.</key>
 	<string>%@ скрывает питомца на страницах команд.</string>
+	<key>%@ leads the week</key>
+	<string>%@ лидирует на этой неделе</string>
 	<key>%@ learned a song from a bird</key>
 	<string>%@ учит песенку у птички</string>
 	<key>%@ left</key>
@@ -159,6 +167,8 @@
 	<string>%@ не найден</string>
 	<key>%@ of %@</key>
 	<string>%1$@ из %2$@</string>
+	<key>%@ of %lld crews · %@</key>
+	<string>%@ из %lld команд · %@</string>
 	<key>%@ of focus.</key>
 	<string>%@ фокуса.</string>
 	<key>%@ opens in Music; press play there.</key>
@@ -223,6 +233,8 @@
 	<string>%1$@ и %2$@</string>
 	<key>%@ with %@ wants to be friends.</key>
 	<string>%1$@ и %2$@ хотят дружить с тобой.</string>
+	<key>%@ with %@, %@ this week</key>
+	<string>%@ и %@, %@ за неделю</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>%@ лучше всего работает из папки «Программы»: оттуда приложение открывается при входе в систему и само обновляется. Оно скопирует себя туда и откроется снова.</string>
 	<key>%@ · %@ this week</key>
@@ -275,6 +287,8 @@
 	<string>%@: готово в этом месяце</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: все предметы получены. Они останутся у тебя и после события.</string>
+	<key>%lld gold, %lld silver, %lld bronze</key>
+	<string>золото %lld, серебро %lld, бронза %lld</string>
 	<key>%lld h</key>
 	<string>%lld ч</string>
 	<key>%lld in party</key>
@@ -409,6 +423,10 @@
 	<string>К вопросу можно приложить до %lld снимков экрана</string>
 	<key>A quiet day. Rest up and start fresh tomorrow.</key>
 	<string>Тихий день. Отдохни, а завтра начнешь с новыми силами.</string>
+	<key>A quiet start to the week</key>
+	<string>Тихое начало недели</string>
+	<key>A random frame, emblem and color</key>
+	<string>Случайные рамка, эмблема и цвет</string>
 	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
 	<string>Редкий цвет меха от питомца. Примерь его в Гардеробе, в разделе «Оформление».</string>
 	<key>A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:</key>
@@ -419,8 +437,6 @@
 	<string>Пример дня. Твои события появятся здесь, когда подключишь календарь.</string>
 	<key>A school or work setting may block it. You can check in System Settings.</key>
 	<string>Его могут блокировать настройки школы или работы. Проверь в Системных настройках.</string>
-	<key>A short description (optional)</key>
-	<string>Краткое описание (необязательно)</string>
 	<key>A shorter timer</key>
 	<string>Таймер короче</string>
 	<key>A slow breath in, and out</key>
@@ -663,8 +679,8 @@
 	<string>Ответы от</string>
 	<key>Answers stay in the notch. Press Command-Return to send and expand, or click Expand on a chat.</key>
 	<string>Ответы остаются в вырезе. Command-Return отправит и развернет, или нажми «Развернуть» в чате.</string>
-	<key>Anyone can find and join it.</key>
-	<string>Кто угодно может найти её и вступить.</string>
+	<key>Anyone can find it and ask to join. Click to make it private.</key>
+	<string>Её может найти кто угодно и попроситься в неё. Нажми, чтобы сделать закрытой.</string>
 	<key>App</key>
 	<string>Приложение</string>
 	<key>Appears when the pointer reaches the top center.</key>
@@ -695,10 +711,14 @@
 	<string>Спрашивать</string>
 	<key>Ask this question again</key>
 	<string>Задать вопрос еще раз</string>
+	<key>Ask to join %@. Its owner lets you in.</key>
+	<string>Попроситься в %@. Владелец впустит тебя.</string>
 	<key>Ask “%@”</key>
 	<string>Спросить «%@»</string>
 	<key>Asked once. Your answer stays on this Mac.</key>
 	<string>Спросим один раз. Ответ останется на этом Mac.</string>
+	<key>Asked to join %@. Its owner lets you in.</key>
+	<string>Заявка в %@ отправлена. Владелец впустит тебя.</string>
 	<key>Asking Anki to open the deck for review.</key>
 	<string>Просим Anki открыть колоду для повтора.</string>
 	<key>Astronaut Helmet</key>
@@ -739,6 +759,8 @@
 	<string>Назад к таймеру</string>
 	<key>Back to today</key>
 	<string>Назад к сегодня</string>
+	<key>Back to your party and friends</key>
+	<string>Назад к Party и друзьям</string>
 	<key>Backwards Cap</key>
 	<string>Кепка козырьком назад</string>
 	<key>Badges</key>
@@ -855,6 +877,8 @@
 	<string>Отменить</string>
 	<key>Cancel Request</key>
 	<string>Отменить заявку</string>
+	<key>Cancel request</key>
+	<string>Отменить заявку</string>
 	<key>Cancel your request to %@</key>
 	<string>Отменить заявку: %@</string>
 	<key>Candy pink and milk, sweet but never loud.</key>
@@ -921,6 +945,8 @@
 	<string>Проверь сервер пати</string>
 	<key>Check the server in Party options.</key>
 	<string>Проверь сервер в настройках Party.</string>
+	<key>Check your internet connection. Crews show up once it's back.</key>
+	<string>Проверь подключение к интернету. Команды появятся, когда оно вернётся.</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>Проверь подключение к интернету. Друзья и пати появятся, когда оно вернется.</string>
 	<key>Check your internet connection. You can also set up Party later in its tab.</key>
@@ -1069,8 +1095,6 @@
 	<string>Закрыть, не вступая</string>
 	<key>Close without reporting (Esc)</key>
 	<string>Закрыть без жалобы (Esc)</string>
-	<key>Close without saving</key>
-	<string>Закрыть без сохранения</string>
 	<key>Closet</key>
 	<string>Гардероб</string>
 	<key>Code</key>
@@ -1079,6 +1103,8 @@
 	<string>Использование Codex</string>
 	<key>Coffee mug</key>
 	<string>Кружка кофе</string>
+	<key>Color</key>
+	<string>Цвет</string>
 	<key>Command</key>
 	<string>Команда</string>
 	<key>Compact</key>
@@ -1127,6 +1153,8 @@
 	<string>Скопировать</string>
 	<key>Copy Invite Link</key>
 	<string>Скопировать ссылку-приглашение</string>
+	<key>Copy an invite link. A friend who opens it joins this crew in one click.</key>
+	<string>Скопировать ссылку-приглашение. Друг, открывший её, вступит в команду в один клик.</string>
 	<key>Copy and open %@</key>
 	<string>Скопировать и открыть %@</string>
 	<key>Copy answer</key>
@@ -1143,8 +1171,6 @@
 	<string>Скопировать код друга</string>
 	<key>Copy the AnkiConnect add-on code to paste into Anki</key>
 	<string>Скопировать код дополнения AnkiConnect для вставки в Anki</string>
-	<key>Copy the invite link. Friends who open it can join your crew.</key>
-	<string>Скопировать ссылку-приглашение. Друзья, открывшие её, смогут вступить в твою команду.</string>
 	<key>Copy what Tabbi found, to paste into a message if you ask someone for help</key>
 	<string>Скопировать результаты проверки, чтобы вставить их в сообщение, если попросишь кого-то о помощи</string>
 	<key>Copy what you need to paste, then open %@</key>
@@ -1213,6 +1239,8 @@
 	<string>Кремовый</string>
 	<key>Create</key>
 	<string>Создать</string>
+	<key>Create a crew</key>
+	<string>Создать команду</string>
 	<key>Create a party and get a code to share</key>
 	<string>Создай пати и получи код, чтобы поделиться</string>
 	<key>Create the crew with you as its owner</key>
@@ -1225,8 +1253,8 @@
 	<string>Название команды</string>
 	<key>Crew names can be up to %lld characters.</key>
 	<string>Название не длиннее %lld символов.</string>
-	<key>Crew owner</key>
-	<string>Владелец команды</string>
+	<key>Crews</key>
+	<string>Команды</string>
 	<key>Custom</key>
 	<string>Свой</string>
 	<key>Daily focus goal met</key>
@@ -1247,6 +1275,8 @@
 	<string>Отклонить</string>
 	<key>Decline %@'s request. They won't be told.</key>
 	<string>Отклонить заявку: %@. Человек об этом не узнает.</string>
+	<key>Decline. %@ isn't told.</key>
+	<string>Отклонить. %@ не узнает.</string>
 	<key>Deep</key>
 	<string>Глуб.</string>
 	<key>Deep cherry red, fizzy and warm, made for late sessions.</key>
@@ -1379,8 +1409,6 @@
 	<string>Получено. Нажми, чтобы снять.</string>
 	<key>Earned. Click to wear.</key>
 	<string>Получено. Нажми, чтобы надеть.</string>
-	<key>Edit Crew…</key>
-	<string>Изменить команду…</string>
 	<key>Edit crew</key>
 	<string>Изменить команду</string>
 	<key>Edit the Custom focus and break lengths</key>
@@ -1393,6 +1421,8 @@
 	<string>Написать команде %@ об ошибке, о человеке в Party или о чем-то еще</string>
 	<key>Email the %@ team about a person or a problem</key>
 	<string>Написать команде %@ о человеке или проблеме</string>
+	<key>Emblem</key>
+	<string>Эмблема</string>
 	<key>End</key>
 	<string>Завершить</string>
 	<key>End it for everyone in the Party tab</key>
@@ -1403,8 +1433,6 @@
 	<string>Завершить этот отрезок и сделать подходящий перерыв</string>
 	<key>Ends at %@</key>
 	<string>До %@</string>
-	<key>Ends in %@</key>
-	<string>Конец через %@</string>
 	<key>Enough for the %@ and the %@ now.</key>
 	<string>Уже хватает на «%1$@» и «%2$@».</string>
 	<key>Enough for the %@ now</key>
@@ -1415,6 +1443,8 @@
 	<string>Введи ключ из настроек AnkiConnect в настройках.</string>
 	<key>Event</key>
 	<string>Событие</string>
+	<key>Every Sunday's top 3 earn a medal</key>
+	<string>Каждое воскресенье топ-3 получает медаль</string>
 	<key>Every crew can appear on the weekly top 3 with its members' pets.</key>
 	<string>Любая команда может попасть в топ-3 недели вместе с питомцами участников.</string>
 	<key>Every deck is caught up</key>
@@ -1459,6 +1489,8 @@
 	<string>Заполнить свободное время сегодня открытыми задачами и повторами. План строится на этом Mac, ничего не добавится без тебя</string>
 	<key>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</key>
 	<string>Заполнить свободное время завтра открытыми задачами и повторами. План строится на этом Mac, ничего не добавится без тебя</string>
+	<key>Find</key>
+	<string>Поиск</string>
 	<key>Find crews</key>
 	<string>Найти команды</string>
 	<key>Finish a Party session with friends.</key>
@@ -1509,8 +1541,6 @@
 	<string>Фокусируйся во время события «%@».</string>
 	<key>Focus for 50 hours in total.</key>
 	<string>Фокусируйся в сумме 50 часов.</string>
-	<key>Focus hours this week. The board freezes Sunday 23:59 UTC.</key>
-	<string>Часы фокуса за неделю. Таблица фиксируется в воскресенье в 23:59 UTC.</string>
 	<key>Focus on this task</key>
 	<string>Фокус на этой задаче</string>
 	<key>Focus session</key>
@@ -1561,6 +1591,8 @@
 	<string>Участник-основатель: с Tabbi с первых 100 дней.</string>
 	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
 	<string>Участник-основатель: ты с Tabbi с первых 100 дней.</string>
+	<key>Frame</key>
+	<string>Рамка</string>
 	<key>Free all day</key>
 	<string>Весь день свободен</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1683,6 +1715,8 @@
 	<string>Отлично!</string>
 	<key>Great job, team!</key>
 	<string>Отлично, команда!</string>
+	<key>Hall of Fame</key>
+	<string>Зал славы</string>
 	<key>Halloween</key>
 	<string>Хэллоуин</string>
 	<key>Halo</key>
@@ -1699,8 +1733,6 @@
 	<string>Глубокий чёрный, спокойный и чёткий.</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>Есть код? Введи %lld-значный код пати и нажми Return, чтобы присоединиться</string>
-	<key>Have an invite? Type the %lld-character code and press Return to join</key>
-	<string>Есть приглашение? Введи код из %lld символов и нажми Return</string>
 	<key>Head Mirror</key>
 	<string>Лобное зеркало</string>
 	<key>Headphones</key>
@@ -1741,6 +1773,8 @@
 	<string>История</string>
 	<key>Honey</key>
 	<string>Медовый</string>
+	<key>Hours show up after the first focus session. Last week's top 3 keep their laurels until Sunday.</key>
+	<string>Часы появятся после первой сессии фокуса. Топ-3 прошлой недели носит лавры до воскресенья.</string>
 	<key>How %@ works</key>
 	<string>Как работает %@</string>
 	<key>How long each item stays before the next one</key>
@@ -1831,8 +1865,8 @@
 	<string>Скрыто от друзей</string>
 	<key>Invite</key>
 	<string>Пригласить</string>
-	<key>Invite code</key>
-	<string>Код приглашения</string>
+	<key>Invite link</key>
+	<string>Приглашение</string>
 	<key>Invite links</key>
 	<string>Ссылки-приглашения</string>
 	<key>Is %@ on this Mac?</key>
@@ -1875,6 +1909,10 @@
 	<string>Пункты без содержимого пропускаются.</string>
 	<key>Its config sets an API key, which this tab doesn't send.</key>
 	<string>В ее настройках задан ключ API, который эта вкладка не отправляет.</string>
+	<key>Its owner lets you in.</key>
+	<string>Владелец впустит тебя.</string>
+	<key>Its owner lets you in. A request goes away after 7 days.</key>
+	<string>Владелец впустит тебя. Заявка исчезнет через 7 дней.</string>
 	<key>Its settings turned the connection away.</key>
 	<string>Ее настройки отклонили подключение.</string>
 	<key>Join</key>
@@ -1889,8 +1927,6 @@
 	<string>Вступить</string>
 	<key>Join Party</key>
 	<string>Присоединиться к Party</string>
-	<key>Join a study crew</key>
-	<string>Вступи в учебную команду</string>
 	<key>Join this crew?</key>
 	<string>Вступить в эту команду?</string>
 	<key>Join this party now</key>
@@ -1939,10 +1975,8 @@
 	<string>Синхронизировано: %@</string>
 	<key>Last week</key>
 	<string>Прошлая неделя</string>
-	<key>Last week's winners and their laurels</key>
-	<string>Победители прошлой недели и их лавры</string>
-	<key>Last week's winners show here once a week has ended.</key>
-	<string>Победители появятся здесь, когда закончится неделя.</string>
+	<key>Last weeks</key>
+	<string>Последние недели</string>
 	<key>Latest adventure: %@</key>
 	<string>Последнее приключение: %@</string>
 	<key>Launch %@</key>
@@ -1953,7 +1987,7 @@
 	<string>Изучаемые</string>
 	<key>Leave</key>
 	<string>Выйти</string>
-	<key>Leave Crew</key>
+	<key>Leave crew</key>
 	<string>Покинуть команду</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>Оставь пустым для модели по умолчанию: она быстрая и недорогая.</string>
@@ -1969,10 +2003,14 @@
 	<string>Не включать этот блок в план</string>
 	<key>Leave this question unanswered</key>
 	<string>Оставить вопрос без ответа</string>
+	<key>Leave your crew to start a new one</key>
+	<string>Чтобы создать новую команду, покинь текущую</string>
 	<key>Less</key>
 	<string>Меньше</string>
 	<key>Let %@ find you again. You won't be friends until one of you adds the other.</key>
 	<string>%@ снова сможет тебя найти. Друзьями вы станете, когда кто-то добавит другого.</string>
+	<key>Let %@ into the crew</key>
+	<string>Впустить в команду: %@</string>
 	<key>Let Tabbi into Anki</key>
 	<string>Пустить Tabbi в Anki</string>
 	<key>Let Tabbi run your Focus shortcuts</key>
@@ -2011,6 +2049,8 @@
 	<string>Активность</string>
 	<key>Loading</key>
 	<string>Загрузка</string>
+	<key>Loading the board</key>
+	<string>Загрузка таблицы</string>
 	<key>Loading your crew…</key>
 	<string>Загружаем твою команду…</string>
 	<key>Loading…</key>
@@ -2071,6 +2111,8 @@
 	<string>Может ли Tabbi запускать твои быстрые команды?</string>
 	<key>Measuring cores...</key>
 	<string>Замер ядер...</string>
+	<key>Medals from every week's top 3</key>
+	<string>Медали топ-3 каждой недели</string>
 	<key>Media</key>
 	<string>Медиа</string>
 	<key>Meetings, music and timers beside the closed notch.</key>
@@ -2119,8 +2161,6 @@
 	<string>Лунный</string>
 	<key>More</key>
 	<string>Больше</string>
-	<key>More crew options</key>
-	<string>Другие настройки команды</string>
 	<key>More events</key>
 	<string>Другие события</string>
 	<key>More focus than last week. Nice climb!</key>
@@ -2151,6 +2191,8 @@
 	<string>Музыка</string>
 	<key>Mute</key>
 	<string>Выключить звук</string>
+	<key>My crew</key>
+	<string>Моя команда</string>
 	<key>Name</key>
 	<string>Имя</string>
 	<key>Name your pet</key>
@@ -2171,6 +2213,8 @@
 	<string>Новые друзья</string>
 	<key>New tabs may ask for %@.</key>
 	<string>Новые вкладки могут запросить: %@.</string>
+	<key>New week in %@</key>
+	<string>Новая неделя через %@</string>
 	<key>Next meeting</key>
 	<string>Следующая встреча</string>
 	<key>Next track</key>
@@ -2197,8 +2241,8 @@
 	<string>Календарей пока нет</string>
 	<key>No collar</key>
 	<string>Без ошейника</string>
-	<key>No crew has studied yet this week. Yours could be first.</key>
-	<string>На этой неделе ещё никто не занимался. Твоя команда может быть первой.</string>
+	<key>No crews match</key>
+	<string>Подходящих команд нет</string>
 	<key>No events</key>
 	<string>Нет событий</string>
 	<key>No events on your calendars today.</key>
@@ -2215,8 +2259,12 @@
 	<string>На этой неделе нет свободного времени</string>
 	<key>No friends yet</key>
 	<string>Пока нет друзей</string>
+	<key>No hours yet this week</key>
+	<string>На этой неделе пока нет часов</string>
 	<key>No limits in your Codex logs yet</key>
 	<string>В журналах Codex пока нет лимитов</string>
+	<key>No medals yet</key>
+	<string>Пока нет медалей</string>
 	<key>No more events today</key>
 	<string>Сегодня больше нет событий</string>
 	<key>No music app found</key>
@@ -2227,10 +2275,6 @@
 	<string>Такого кода друга нет.</string>
 	<key>No one is blocked.</key>
 	<string>Никто не заблокирован.</string>
-	<key>No public crews match.</key>
-	<string>Подходящих открытых команд нет.</string>
-	<key>No public crews yet. Make the first one.</key>
-	<string>Открытых команд пока нет. Создай первую.</string>
 	<key>No saved chats</key>
 	<string>Нет сохраненных чатов</string>
 	<key>No shortcut named “%@”. Check the name in Shortcuts.</key>
@@ -2435,6 +2479,8 @@
 	<string>Только частично. Tabbi может добавлять события, но не читать их.</string>
 	<key>Only people with the invite can join.</key>
 	<string>Вступить можно только по приглашению.</string>
+	<key>Only people with the invite link can join. Click to make it public.</key>
+	<string>Вступить можно только по ссылке-приглашению. Нажми, чтобы сделать открытой.</string>
 	<key>Only the crew's owner can do that.</key>
 	<string>Это может только владелец команды.</string>
 	<key>Only the host can change the session.</key>
@@ -2791,8 +2837,8 @@
 	<string>Политика конфиденциальности</string>
 	<key>Private</key>
 	<string>Закрытая</string>
-	<key>Private: only people with the invite can join.</key>
-	<string>Закрытая: вступить можно только по приглашению.</string>
+	<key>Private, invite only</key>
+	<string>Закрытая, по приглашению</string>
 	<key>Productivity</key>
 	<string>Продуктивность</string>
 	<key>Profile</key>
@@ -2803,8 +2849,6 @@
 	<string>Предложено: %@. Нажми, чтобы добавить или пропустить</string>
 	<key>Public</key>
 	<string>Открытая</string>
-	<key>Public: anyone can find and join it.</key>
-	<string>Открытая: кто угодно может найти её и вступить.</string>
 	<key>Pumpkin Hat</key>
 	<string>Шапка-тыква</string>
 	<key>Pup</key>
@@ -2839,6 +2883,12 @@
 	<string>Дождь</string>
 	<key>Rain cloud</key>
 	<string>Дождевая туча</string>
+	<key>Rank %lld, %@, %@</key>
+	<string>Место %lld, %@, %@</string>
+	<key>Rank %lld, %@, %@ this week, %@</key>
+	<string>Место %lld, %@, %@ за неделю, %@</string>
+	<key>Ranked by golds, then silvers, then bronzes, then whoever reached the tally first.</key>
+	<string>По золоту, затем серебру, затем бронзе, затем кто раньше набрал этот счёт.</string>
 	<key>Rare</key>
 	<string>Редкие</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2943,6 +2993,8 @@
 	<string>Заявка отправлена: %@</string>
 	<key>Request sent to %@.</key>
 	<string>Заявка отправлена: %@.</string>
+	<key>Requested</key>
+	<string>Заявка отправлена</string>
 	<key>Reset to Default</key>
 	<string>По умолчанию</string>
 	<key>Reset to Defaults</key>
@@ -3207,8 +3259,6 @@
 	<string>Показывает превью, выбранные этим набором.</string>
 	<key>Shuffle</key>
 	<string>Перемешать</string>
-	<key>Shuffle the crest</key>
-	<string>Случайный герб</string>
 	<key>Sign In</key>
 	<string>Войти</string>
 	<key>Sign Out</key>
@@ -3441,6 +3491,8 @@
 	<string>Учебный блок</string>
 	<key>Study buddies</key>
 	<string>Напарники</string>
+	<key>Study crews: weekly board and Hall of Fame</key>
+	<string>Учебные команды: таблица недели и Зал славы</string>
 	<key>Study days</key>
 	<string>Дни учёбы</string>
 	<key>Study methods</key>
@@ -3455,10 +3507,10 @@
 	<string>Учитесь, пока не устанете, перерыв по времени</string>
 	<key>Study with a cat</key>
 	<string>Учиться с котиком</string>
-	<key>Study with a crew and climb the weekly top 3.</key>
-	<string>Занимайся в команде и пробейся в топ-3 недели.</string>
 	<key>Study with a dog</key>
 	<string>Учиться с собакой</string>
+	<key>Study with friends and climb the board together.</key>
+	<string>Занимайтесь с друзьями и поднимайтесь в таблице вместе.</string>
 	<key>Study with friends and see who is focusing now.</key>
 	<string>Учись с друзьями и смотри, кто сейчас в фокусе.</string>
 	<key>Study with friends, see their timers.</key>
@@ -3581,6 +3633,8 @@
 	<string>Спасибо. Жалоба отправлена, %@ заблокирован.</string>
 	<key>Thanks. Your report was sent.</key>
 	<string>Спасибо. Жалоба отправлена.</string>
+	<key>That crew has a lot of requests waiting. Try again later.</key>
+	<string>У этой команды много заявок. Попробуй позже.</string>
 	<key>That crew is full.</key>
 	<string>В этой команде нет мест.</string>
 	<key>That crew is gone or the code is wrong.</key>
@@ -3609,6 +3663,8 @@
 	<string>В этой пати нет мест.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>Это имя питомца недопустимо. Выбери другое.</string>
+	<key>That request is no longer waiting.</key>
+	<string>Этой заявки больше нет.</string>
 	<key>That's a wrap. Well done!</key>
 	<string>Вот и все. Молодец!</string>
 	<key>That's your own code.</key>
@@ -3635,8 +3691,6 @@
 	<string>Приложение «Быстрые команды» не ответило вовремя. Попробуй чуть позже.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
 	<string>Инструмент командной строки Быстрых команд недоступен на этом Mac.</string>
-	<key>The Tabbi team hid this crew from the board and Find.</key>
-	<string>Команда Tabbi скрыла эту команду из таблицы и поиска.</string>
 	<key>The Tabbi team reviews it. %@ isn't told.</key>
 	<string>Команда Tabbi рассмотрит жалобу. %@ не узнает об этом.</string>
 	<key>The app this needs isn't on this Mac</key>
@@ -3703,8 +3757,8 @@
 	<string>Таймер начнется с метода %@</string>
 	<key>The tool's own default</key>
 	<string>По умолчанию в инструменте</string>
-	<key>The week ends Sunday 23:59 UTC. Then the top 3 freeze and win their laurels for next week.</key>
-	<string>Неделя заканчивается в воскресенье в 23:59 UTC. Тогда топ-3 фиксируется и получает лавры на следующую неделю.</string>
+	<key>The week runs Monday to Sunday (UTC). Ends %@. The top 3 wear a laurel next week.</key>
+	<string>Неделя идёт с понедельника по воскресенье (UTC). Конец: %@. Топ-3 носит лавры на следующей неделе.</string>
 	<key>The work no one sees is the work that changes you.</key>
 	<string>Работа, которую никто не видит, и меняет тебя.</string>
 	<key>The year you were born</key>
@@ -3747,6 +3801,8 @@
 	<string>Это демо. Запусти без TABBI_DEMO, чтобы покинуть команду.</string>
 	<key>This is a demo. Run without TABBI_DEMO to make a crew.</key>
 	<string>Это демо. Запусти без TABBI_DEMO, чтобы создать команду.</string>
+	<key>This is a demo. Run without TABBI_DEMO to study with a crew.</key>
+	<string>Это демо. Запусти без TABBI_DEMO, чтобы заниматься в команде.</string>
 	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
 	<string>Это демо. Запусти без TABBI_DEMO, чтобы заниматься с друзьями.</string>
 	<key>This is usually short. Check again in a moment.</key>
@@ -3767,12 +3823,14 @@
 	<string>Эта задача есть в списке на сегодня</string>
 	<key>This week</key>
 	<string>Эта неделя</string>
-	<key>This week's live top 3</key>
-	<string>Топ-3 этой недели прямо сейчас</string>
+	<key>This week's leaderboard</key>
+	<string>Таблица этой недели</string>
 	<key>This works. Nothing to do.</key>
 	<string>Все работает. Делать ничего не нужно.</string>
 	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
 	<string>Три маленькие цели каждый месяц. Они необязательны, и пропущенный месяц ничего не стоит.</string>
+	<key>Tied with %@ at %@</key>
+	<string>Наравне с %@: %@</string>
 	<key>Time</key>
 	<string>Время</string>
 	<key>Time for a %lld-minute break.</key>
@@ -3833,10 +3891,6 @@
 	<string>Слишком много попыток. Подожди минуту и попробуй снова.</string>
 	<key>Took back the import of %@.</key>
 	<string>Импорт %@ отменен.</string>
-	<key>Top 3</key>
-	<string>Топ-3</string>
-	<key>Top 3 finishes: %lld gold, %lld silver, %lld bronze</key>
-	<string>В топ-3: золото %lld, серебро %lld, бронза %lld</string>
 	<key>Top decks</key>
 	<string>Главные колоды</string>
 	<key>Top model</key>
@@ -3849,6 +3903,8 @@
 	<string>Попробовать снова</string>
 	<key>Try again now</key>
 	<string>Попробовать снова сейчас</string>
+	<key>Try another word, or create one.</key>
+	<string>Попробуй другое слово или создай команду.</string>
 	<key>Try the server again now</key>
 	<string>Снова подключиться к серверу</string>
 	<key>Try to reach Party again now</key>
@@ -3971,8 +4027,6 @@
 	<string>Расход недельного лимита</string>
 	<key>Use the default %@ server</key>
 	<string>Использовать стандартный сервер %@</string>
-	<key>Use this icon</key>
-	<string>Выбрать этот значок</string>
 	<key>Used to greet you.</key>
 	<string>Так мы тебя приветствуем.</string>
 	<key>Uses your ChatGPT plan through the codex command.</key>
@@ -4015,12 +4069,16 @@
 	<string>Ждем запуска Anki</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>Ждем запуска Anki, затем откроется %@</string>
+	<key>Waiting to join %@</key>
+	<string>Ждём ответа от %@</string>
 	<key>Waiting: %lld</key>
 	<string>Ожидают: %lld</string>
 	<key>Walk through the steps to connect %@</key>
 	<string>Пройти шаги подключения: %@</string>
 	<key>Wants to be friends</key>
 	<string>Хочет дружить</string>
+	<key>Wants to join</key>
+	<string>Хочет вступить</string>
 	<key>Wardrobe</key>
 	<string>Одежда</string>
 	<key>Warm cream and peach, soft and gentle.</key>
@@ -4053,6 +4111,8 @@
 	<string>Что случилось, в паре предложений</string>
 	<key>What should we call you?</key>
 	<string>Как тебя зовут?</string>
+	<key>What you study</key>
+	<string>Что вы изучаете</string>
 	<key>When Anki asked whether to let Tabbi in, the answer was no.</key>
 	<string>Когда Anki спросил, пускать ли Tabbi, ответ был «нет».</string>
 	<key>When focus ends</key>
@@ -4089,10 +4149,14 @@
 	<string>Если твой ИИ - Claude Code, вкладки «Спросить ИИ» и «Лимиты ИИ» запускают твой claude CLI с выполненным входом; %@ никогда не читает твои учетные данные. Укажи путь, только если claude не находится автоматически.</string>
 	<key>With Ollama open, run ollama pull %@ in Terminal once.</key>
 	<string>Открой Ollama и один раз выполни ollama pull %@ в Терминале.</string>
+	<key>Withdraw your request to join %@</key>
+	<string>Отозвать заявку в %@</string>
 	<key>Wizard Hat</key>
 	<string>Шляпа волшебника</string>
 	<key>Wizard Robe</key>
 	<string>Мантия волшебника</string>
+	<key>Wk %lld</key>
+	<string>Нед. %lld</string>
 	<key>Works from any app. On Today, type right away to add a task.</key>
 	<string>Везде. На «Сегодня» сразу вводи задачу.</string>
 	<key>Wrap up</key>
@@ -4187,10 +4251,14 @@
 	<string>Ты не отстаешь. У тебя свои часы, и они идут только вперед.</string>
 	<key>You're not in a crew anymore.</key>
 	<string>Ты больше не в команде.</string>
+	<key>You're not in a crew yet</key>
+	<string>Ты пока не в команде</string>
 	<key>You're not in a party anymore.</key>
 	<string>Ты больше не в пати.</string>
 	<key>You're the only one here for now.</key>
 	<string>Пока ты здесь один(одна).</string>
+	<key>You've asked a lot of crews today. Try again tomorrow.</key>
+	<string>Сегодня ты отправил(а) много заявок. Попробуй завтра.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>Слишком много блокировок. Сначала разблокируй кого-то.</string>
 	<key>You've made a lot of crews today. Try again tomorrow.</key>
@@ -4235,6 +4303,10 @@
 	<string>Твоя версия аддона AnkiConnect слишком старая для Tabbi.</string>
 	<key>Your crew</key>
 	<string>Твоя команда</string>
+	<key>Your crew and its members</key>
+	<string>Твоя команда и её участники</string>
+	<key>Your crew studied %@ this week</key>
+	<string>Твоя команда занималась %@ на этой неделе</string>
 	<key>Your data</key>
 	<string>Твои данные</string>
 	<key>Your day on a timeline, with the free time in between.</key>
@@ -4269,8 +4341,6 @@
 	<string>Твое имя, до %lld символов</string>
 	<key>Your own focus and break lengths</key>
 	<string>Свои длины фокуса и перерыва</string>
-	<key>Your party and friends</key>
-	<string>Твоя Party и друзья</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>Профиль Party сброшен. Переподключение…</string>
 	<key>Your pet</key>
@@ -4295,8 +4365,6 @@
 	<string>Твой плейлист</string>
 	<key>Your setup already matches %@</key>
 	<string>Настройки уже совпадают с %@</string>
-	<key>Your study crew and the weekly top 3</key>
-	<string>Твоя учебная команда и топ-3 недели</string>
 	<key>Your study day by day, with the time studied on each</key>
 	<string>Твоя учёба день за днём и время каждого дня</string>
 	<key>Your study streak and the freezes that protect it</key>

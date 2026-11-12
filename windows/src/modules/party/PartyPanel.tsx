@@ -1,7 +1,7 @@
 /*
  * Port of PartyPanel: the Party tab: the party (or a way into one) on the
  * left and friends on the right once connected (or, with the switch on
- * Crew, the Crew section in their place); before that, a single calm
+ * Crews, the Crews card in their place); before that, a single calm
  * state for connecting, an unreachable server, the age check, or a server
  * setting that can't work. The report card covers it while open, a notice
  * sits at the bottom and the team celebration across the top.
@@ -24,7 +24,7 @@ import { FRIENDS_WIDTH, PartyFriendsCard } from "./PartyFriendsCard";
 import { PartyReportCard } from "./PartyReportCard";
 import { PartyStage } from "./PartyStage";
 import type { PartyStore } from "./partyStore";
-import { CrewReportCard } from "./CrewBoardCard";
+import { CrewReportCard } from "./CrewEditorAndFind";
 import { CrewsPanel } from "./CrewsPanel";
 import type { CrewsStore } from "./crewsStore";
 import "./party.css";

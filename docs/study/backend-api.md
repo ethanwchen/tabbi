@@ -190,7 +190,10 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `POST /v1/crews` | token | create a crew |
 | `PATCH /v1/crews/mine` | token, owner | edit my crew |
 | `PATCH /v1/crews/mine/me` | token | my own settings in my crew (`showPet`) |
-| `POST /v1/crews/join` | token | join a crew by invite code, or a public crew by id |
+| `POST /v1/crews/join` | token | join a crew by invite code, or ask to join a public crew by id |
+| `POST /v1/crews/requests/cancel` | token | withdraw my request to join a crew |
+| `POST /v1/crews/mine/requests/{ref}/approve` | token, owner | let someone who asked into my crew |
+| `POST /v1/crews/mine/requests/{ref}/decline` | token, owner | turn a request down, quietly |
 | `POST /v1/crews/leave` | token | leave my crew |
 | `POST /v1/crews/mine/members/{ref}/remove` | token, owner | remove a member for good |
 | `GET /v1/crews` | token | search public crews by name |
@@ -456,6 +459,7 @@ It must be "today" somewhere on Earth (UTC-12 to UTC+14), which rejects a wrong 
 `200 {"ok": true, "presence": Presence, "heartbeatSeconds": 120, "incomingRequests": 1}`.
 `heartbeatSeconds` is when to send the next heartbeat (`null` after `offline`: stop sending).
 `incomingRequests` counts the friend requests waiting for me, so the app can badge its Party tab without fetching the friends list while the panel is closed.
+Since protocol 3 the reply also carries `crews: { requests, crew }`: my Study Crew's id (`null` outside a crew) and, when I own it, how many join requests wait for it (0 otherwise), so the app can badge the tab and notice an approval without polling the crews routes; older apps ignore it.
 
 Errors: `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`.
 
@@ -631,26 +635,32 @@ A crew's crest is a frame, an emblem and a color; their ids come from `backend/s
 ### Crew objects
 
 - `week`: `{ id, startsAt, endsAt }`, the crew week from Monday 00:00 UTC to the next Monday 00:00 UTC (`endsAt` exclusive), `id` its ISO week key such as `2026-W46`.
-- `crewSummary`: `{ id, name, description, frame, emblem, color, visibility, laurel, trophies, memberCount, maxMembers, weekMinutes }`.
+- `crewSummary`: `{ id, name, description, frame, emblem, color, visibility, laurel, trophies, golds, memberCount, maxMembers, weekMinutes }`; `golds` counts the all-time golds, which the apps draw as up to three pips on large crests.
   `visibility` is `public` or `private`; `laurel` is `gold`, `silver`, `bronze` or `null`, the place the crew won last week, which it wears this week; `trophies` counts every medal ever (every place 1 to 3); `weekMinutes` are this week's credited minutes.
-- `crewDetail`: a summary plus `{ createdAt, medals, rank, members, mine, owner, inviteCode, hidden }`.
+- `crewDetail`: a summary plus `{ createdAt, medals, rank, crewCount, history, members, mine, owner, inviteCode, hidden }`.
+  `crewCount` is how many visible crews have minutes this week (as on the board), so an app can say "12th of 38 crews".
+  `history` is the last three finished weeks, newest first, each `{ week, place, minutes, medal }`: the crew's final place (`null` without minutes or while hidden), its minutes, and the medal a place 1 to 3 won; a week that ended before the crew existed is left out.
+  `members` run most minutes this week first, then by name.
   `medals` is `{ gold, silver, bronze }`; `rank` is this week's live rank among all visible crews (equal minutes share it), or `null` with no minutes; `mine` and `owner` say whether I belong to and own it; `inviteCode` is sent only to members, and `hidden` (the maintainer hid the crew) is only ever `true` for members.
+  Only the owner's view has `requests`, the join requests waiting, oldest first.
+- `crewJoinRequest` (the owner sees it): `{ ref, name, pet, badges, requestedAt, expiresAt }`; `ref` is the request's opaque id for approve, decline and block, and `pet` is the requester's pet as a Party profile carries it.
+- `crewJoinRequestMine` (the requester sees it): `{ crew: crewSummary, requestedAt, expiresAt }`.
 - `crewMember`: `{ ref, name, pet, badges, weekMinutes, owner, me }`, owner first, then in join order.
   `pet` is `{ petName, species, breed, colors, costume, accessories }`, the same fields and ids as a Party profile, or `null` when the member hid their pet.
   `studyLevel` (an integer from 1) is reserved for the Study Level release and is not sent yet.
   Members I blocked or who blocked me, and banned users, are left out.
-- `boardEntry`: `{ rank, minutes, crew }`; `rank` is the place by competition ranking on the week's minutes (equal minutes share it, the next place skips), and in `featured` the summary's `laurel` is the medal that place won.
-- `hallEntry`: `{ rank, medals: { gold, silver, bronze }, reachedAt, crew }`; `reachedAt` is the end of the week that gave the crew its current tally.
+- `boardEntry`: `{ rank, minutes, crew, tiedWith?, pets? }`; `tiedWith` names up to two other crews on the same place, and `pets` (in `top` and `featured`) are the pets of the crew's three most active members that week (most minutes, hidden pets skipped, so possibly fewer); `rank` is the place by competition ranking on the week's minutes (equal minutes share it, the next place skips), and in `featured` the summary's `laurel` is the medal that place won.
+- `hallEntry`: `{ rank, medals: { gold, silver, bronze }, reachedAt, crew, pets? }`; `reachedAt` is the end of the week that gave the crew its current tally, and the first page's top three carry `pets` like the board's top entries.
 
 ### `GET /v1/crews/mine`
 
-`200 {ok, crew: crewDetail | null, week}`.
+`200 {ok, crew: crewDetail | null, week, request}`; `request` is my pending join request (`crewJoinRequestMine`) while I am in no crew, else `null`.
 
 ### `POST /v1/crews`
 
 Body `{ name, description?, frame, emblem, color, visibility }`; `201 {ok, crew: crewDetail}` with me as owner and only member.
 A frame, emblem or color id not in the catalog is `400 invalid_field`.
-Names (1 to 24 characters) and descriptions (up to 120, may be empty) pass the same name filter as display names (`400 crew_name_not_allowed`, `400 description_not_allowed`), and no two crews share a name, ignoring case (`409 name_taken`).
+Names (1 to 20 characters) and descriptions (up to 120, may be empty) pass the same name filter as display names (`400 crew_name_not_allowed`, `400 description_not_allowed`), and no two crews share a name, ignoring case (`409 name_taken`).
 `409 in_crew` while I am in a crew; `403 banned`; `429 crew_limit` after 3 new crews in a UTC day.
 
 ### `PATCH /v1/crews/mine`
@@ -666,8 +676,22 @@ Body `{ showPet }`: `false` replaces my pet with `null` on every crew page; my n
 ### `POST /v1/crews/join`
 
 Body exactly one of `{ code }` (an invite code, for any crew) or `{ crew }` (the id of a public crew).
-`200 {ok, joined, crew}`; `joined` is `false` when I am already in that crew.
-`404 crew_not_found` for no such crew, a private crew by id, a hidden crew, or a crew whose owner and I blocked each other; `403 removed_from_crew` when its owner removed me; `409 in_crew` while I am in another crew (leave it first); `409 crew_full` at 20 members; `403 banned`.
+An invite code joins at once, public or private, since the owner handed it out: `200 {ok, joined: true, crew}`, and `joined` is `false` when I am already in that crew.
+A public crew by id asks its owner instead: `200 {ok, joined: false, requested: true, request: crewJoinRequestMine, crew}`.
+I have at most one request at a time, so asking another crew replaces it, and asking the same crew again is a no-op success.
+A request expires after 7 days, and goes away when I join any crew, when the owner approves or declines it (a decline is never announced: the request just disappears), when the owner and I block each other, when I am banned or delete my account, and when the crew is hidden or deleted.
+`404 crew_not_found` for no such crew, a private crew by id, a hidden crew, or a crew whose owner and I blocked each other; `403 removed_from_crew` when its owner removed me; `409 in_crew` while I am in another crew (leave it first); `409 crew_full` at 20 members (invite codes); `409 requests_full` when 50 requests already wait for that crew; `429 request_limit` after 20 new requests in a UTC day; `403 banned`.
+
+### `POST /v1/crews/requests/cancel`
+
+`200 {ok, cancelled}`, `false` when I had no request.
+
+### `POST /v1/crews/mine/requests/{ref}/approve` and `.../decline`
+
+The owner answers a request by its `ref`.
+Approve: `200 {ok, crew}` with the requester as a member; `409 crew_full` keeps the request, `409 in_crew` (they joined another crew meanwhile) drops it, and `404 request_not_found` when it is gone or expired.
+Decline: `200 {ok, declined: true}`; the requester is not told and their request simply disappears.
+`403 not_owner` for anyone but the owner.
 
 ### `POST /v1/crews/leave`
 
@@ -688,8 +712,11 @@ At most 20 searches a minute.
 
 ### `GET /v1/crews/board`
 
-`200 {ok, week, top, featured}`.
+`200 {ok, week, top, featured, rows, next, crewCount, mine}`.
 `top` is this week's live places 1 to 3 (`boardEntry`).
+`rows` are the places below, most minutes first, then by crew id, 20 at a time; `next` is the cursor for the following page (`null` at the end), and `GET /v1/crews/board?cursor=<next>` answers only `{ok, week, rows, next, crewCount}` for it.
+`crewCount` is how many visible crews have minutes this week; `mine` is `{ rank, minutes }` for my crew this week (`rank` is `null` with no minutes), or `null` outside a crew.
+Every entry has `tiedWith` (the other crews on its place, at most two), and the `top` and `featured` entries have `pets`.
 `featured` is `{ week, entries }`, last week's frozen places with the medals they won, or `null` when last week had none.
 Places use standard competition ranking on the week's minutes: two crews tied first are both first (both gold) and the next crew is third, and ties for third can place more than three crews, so neither list has a fixed length.
 Both lists run most minutes first, then by crew id.
@@ -698,9 +725,9 @@ Hidden crews and crews with no minutes are never placed.
 
 ### `GET /v1/crews/hall?cursor=`
 
-The all-time Hall of Fame: `200 {ok, entries: [hallEntry], next}`, 20 entries a page.
+The all-time Hall of Fame: `200 {ok, entries: [hallEntry], next, mine}`, 20 entries a page; `mine` (first page only) is my crew's `{ rank, medals, reachedAt }`, with `rank` `null` before its first medal, or `null` outside a crew.
 Every crew with at least one medal is listed, private crews included and hidden crews left out, in Olympic order: most golds, then silvers, then bronzes, then the earlier `reachedAt`, then crew id.
-`rank` is the competition rank over that whole order; equal tallies with equal `reachedAt` share it.
+`rank` is 1 plus the crew's position in that whole order, so every rank is distinct.
 `next` is an opaque cursor for the following page (send it back as `?cursor=`), or `null` on the last page; paging follows the order itself, so a walk through the pages never repeats or skips a crew.
 A cursor the server did not hand out is `400 invalid_field`.
 Medals stay with a crew through renames and edits; a deleted crew leaves the Hall of Fame.
@@ -737,7 +764,7 @@ Body `{ crew, member?, reason, note? }`: a crew, or one of its members by `ref`;
 
 ### `POST /v1/crews/block`
 
-Body `{ crew, member }`: blocks that member exactly as `POST /v1/blocks` does.
+Body `{ crew, member }`: blocks that member exactly as `POST /v1/blocks` does; the owner can also pass a join request's `ref` to block the requester, which drops the request.
 `200 {ok, blocked}` (`false` when I had already blocked them); `400 self_block`, `404 member_not_found`.
 In a shared crew, the owner blocking a member removes them for good and a member blocking the owner leaves; any other block only hides the two from each other on crew pages.
 
@@ -992,7 +1019,7 @@ Keep to these intervals, and stop every timer whose data is not on screen.
 | `GET /v1/friends` | when the friends panel opens, then every 60 s while it stays open |
 | `GET /v1/party` | every 30 s while I am in a party and the party view is visible; once when the notch opens otherwise |
 | `GET /v1/leaderboard` | once each time its view opens; no timer |
-| `GET /v1/crews/mine`, `GET /v1/crews/board` | when the Crew section opens, then every 60 s while it stays open |
+| `GET /v1/crews/mine`, `GET /v1/crews/board` | when the Crew section opens, then every 60 s while it stays open, and again when a heartbeat's `crews` changes |
 | `GET /v1/crews?q=`, `GET /v1/crews/{id}`, `GET /v1/crews/hall` | when the user searches, opens a crew or opens the Hall of Fame (and the next page as they scroll); no timer |
 | `POST /v1/crews/sessions` | while in a crew, after a focus stretch ends, batched (at most 20 sessions a request), retried with backoff |
 | `POST /v1/auth/apple` | once, when the user taps Sign in with Apple; never on a timer |

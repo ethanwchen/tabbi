@@ -275,6 +275,10 @@ export class PartyClient {
       presence: readPresence(reply.presence),
       nextHeartbeat: read.optional(reply, "heartbeatSeconds", read.number),
       incomingRequests: read.optional(reply, "incomingRequests", read.integer),
+      crews: read.optionalObject(reply, "crews", (raw) => {
+        const crews = read.record(raw, "crews");
+        return { requests: read.optional(crews, "requests", read.integer) ?? 0, crew: read.optional(crews, "crew", read.string) };
+      }),
     };
   }
 

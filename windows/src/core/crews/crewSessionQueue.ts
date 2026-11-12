@@ -56,7 +56,11 @@ export class CrewSessionQueue {
         const end = Math.max(other.end, merged.end);
         /* Overlapping logs count the shared time once: at most the merged stretch's length, and at least either one alone. */
         const minutes = Math.min(other.minutes + merged.minutes, maxMinutes(start, end));
-        merged = { start, end, minutes: Math.max(minutes, Math.max(other.minutes, merged.minutes)) };
+        merged = {
+          start,
+          end,
+          minutes: Math.max(minutes, Math.max(other.minutes, merged.minutes)),
+        };
       } else {
         rest.push(other);
       }
@@ -88,8 +92,15 @@ const SCHEMA = new VersionedJSON(1);
 
 /** The queue as the Mac writes it: `{"pending":[{"end","minutes","start"}],"schemaVersion":1}` with unix seconds. */
 export function encodeCrewSessionQueue(queue: CrewSessionQueue): string {
-  const pending = queue.pending.map((session) => ({ end: session.end, minutes: session.minutes, start: session.start }));
-  return JSON.stringify({ pending, [VersionedJSON.versionKey]: SCHEMA.current });
+  const pending = queue.pending.map((session) => ({
+    end: session.end,
+    minutes: session.minutes,
+    start: session.start,
+  }));
+  return JSON.stringify({
+    pending,
+    [VersionedJSON.versionKey]: SCHEMA.current,
+  });
 }
 
 /** Reads a saved queue; a missing or broken file starts over. */

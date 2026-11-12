@@ -9,19 +9,17 @@ import type { CrewWeek } from "./crewModels";
  * it reads the same as on the Mac in every language.
  */
 
-/** Whole hours from 10 hours up, otherwise tenths of an hour; rounded down, so the board never claims time not yet studied. */
-export type CrewHours = { readonly form: "tenths"; readonly value: number } | { readonly form: "whole"; readonly value: number };
-
-export function crewHoursValue(minutes: number): CrewHours {
-  const m = Math.max(Math.trunc(minutes), 0);
-  return m >= 600 ? { form: "whole", value: Math.trunc(m / 60) } : { form: "tenths", value: Math.trunc(m / 6) };
+/** Focus time on the board in tenths of an hour, rounded down, so the board never claims time not yet studied. */
+export function crewTenths(minutes: number): number {
+  return Math.trunc(Math.max(Math.trunc(minutes), 0) / 6);
 }
 
-/** "0.5 h", "4.2 h", "12 h". */
+/** A crew's or member's focus time: always one decimal and the localized unit ("0.5 h", "39.6 h", "39,6 Std."), in the app's number format. */
 export function crewHours(minutes: number, language: string = currentLanguage()): string {
-  const hours = crewHoursValue(minutes);
-  if (hours.form === "whole") return tr("%lld h", hours.value);
-  const number = new Intl.NumberFormat(numberLocale(language), { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(hours.value / 10);
+  const number = new Intl.NumberFormat(numberLocale(language), {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  }).format(crewTenths(minutes) / 10);
   return tr("%@ h", number);
 }
 
@@ -29,7 +27,10 @@ export function crewHours(minutes: number, language: string = currentLanguage())
 export type CrewRemaining =
   | { readonly form: "lessThanAMinute"; readonly values: readonly [] }
   | { readonly form: "minutes"; readonly values: readonly [number] }
-  | { readonly form: "hoursMinutes"; readonly values: readonly [number, number] }
+  | {
+      readonly form: "hoursMinutes";
+      readonly values: readonly [number, number];
+    }
   | { readonly form: "daysHours"; readonly values: readonly [number, number] };
 
 export function crewRemainingValue(end: Instant, now: Instant): CrewRemaining {
@@ -58,9 +59,52 @@ export function crewRemaining(end: Instant, now: Instant): string {
   }
 }
 
-/** "Ends in 2d 5h", the board's countdown. */
+/** "New week in 3d 4h", the weekly board's countdown. */
 export function crewCountdown(week: CrewWeek, now: Instant): string {
-  return tr("Ends in %@", crewRemaining(week.endsAt, now));
+  return tr("New week in %@", crewRemaining(week.endsAt, now));
+}
+
+/** The week's end in the user's own time zone, for the countdown's tooltip: "Sunday 11:59 PM". */
+export function crewWeekEnd(week: CrewWeek, language: string = currentLanguage(), timeZone?: string): string {
+  return new Intl.DateTimeFormat(numberLocale(language), {
+    weekday: "long",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone,
+  }).format(new Date((week.endsAt - 1) * 1000));
+}
+
+const ENGLISH_ORDINALS: Record<string, string> = {
+  one: "st",
+  two: "nd",
+  few: "rd",
+  other: "th",
+};
+
+/** A place as the language writes it, as Foundation's ordinal style does: "1st" and "12th" in English, "12." in German, "第12" in Japanese, "12" in Arabic. */
+export function crewOrdinal(place: number, language: string = currentLanguage()): string {
+  const n = String(Math.trunc(place));
+  switch (language.split("-")[0]) {
+    case "en":
+      return n + (ENGLISH_ORDINALS[new Intl.PluralRules("en", { type: "ordinal" }).select(place)] ?? "th");
+    case "de":
+      return `${n}.`;
+    case "ja":
+    case "zh":
+      return `第${n}`;
+    case "ko":
+      return `${n}번째`;
+    case "fr":
+      return place === 1 ? "1er" : `${n}e`;
+    case "es":
+      return `${n}.º`;
+    case "pt":
+      return `${n}º`;
+    case "fil":
+      return `ika${n}`;
+    default:
+      return n;
+  }
 }
 
 /** When the countdown text next changes, so a view can tick exactly then. */
@@ -80,4 +124,19 @@ export function crewRank(rank: number): string {
 /** "12 of 20" members. */
 export function crewMembers(count: number, max: number): string {
   return tr("%lld of %lld", count, max);
+}
+
+/** "12 of 20 members". */
+export function crewMembersOf(count: number, max: number): string {
+  return tr("%lld of %lld members", count, max);
+}
+
+/** "9 members". */
+export function crewMemberCount(count: number): string {
+  return tr("%lld members", count);
+}
+
+/** "Wk 45" (the ISO week number) for a crew's history. */
+export function crewWeekLabel(week: CrewWeek): string {
+  return tr("Wk %lld", Number.parseInt(week.id.split("W").pop() ?? "", 10) || 0);
 }

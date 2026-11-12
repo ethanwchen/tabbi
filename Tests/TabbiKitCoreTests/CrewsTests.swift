@@ -170,7 +170,10 @@ final class CrewsTests: XCTestCase {
     }
 
     func testCrewDetailRoundTrips() throws {
-        let detail = CrewDemoData.nightOwls(now: Date(timeIntervalSince1970: 1_794_300_000))
+        let now = Date(timeIntervalSince1970: 1_794_300_000)
+        let detail = CrewDemoData(now: now, week: .containing(now)).mine(requests: true)
+        XCTAssertFalse(detail.requests.isEmpty)
+        XCTAssertFalse(detail.history.isEmpty)
         let data = try PartyClient.makeEncoder().encode(detail)
         XCTAssertEqual(try PartyClient.makeDecoder().decode(CrewDetail.self, from: data), detail)
     }
@@ -193,9 +196,13 @@ final class CrewsTests: XCTestCase {
     }
 
     func testHoursAndCountdown() {
-        XCTAssertEqual(CrewFormat.hoursValue(minutes: 59), .tenths(9))
-        XCTAssertEqual(CrewFormat.hoursValue(minutes: 600), .whole(10))
-        XCTAssertEqual(CrewFormat.hoursValue(minutes: -5), .tenths(0))
+        XCTAssertEqual(CrewFormat.tenths(minutes: 59), 9)
+        XCTAssertEqual(CrewFormat.tenths(minutes: 600), 100)
+        XCTAssertEqual(CrewFormat.tenths(minutes: -5), 0)
+        let en = Locale(identifier: "en_US")
+        XCTAssertEqual(CrewFormat.hours(minutes: 600, locale: en), String(localized: "\("10.0") h", bundle: .tabbi))
+        XCTAssertEqual(CrewFormat.hours(minutes: 59, locale: Locale(identifier: "de_DE")),
+                       String(localized: "\("0,9") h", bundle: .tabbi), "always one decimal, in the locale's numbers")
         let end = Date(timeIntervalSince1970: 1_000_000)
         XCTAssertEqual(CrewFormat.remainingValue(until: end, now: end.addingTimeInterval(-59)), .lessThanAMinute)
         XCTAssertEqual(CrewFormat.remainingValue(until: end, now: end.addingTimeInterval(-3_660)), .hoursMinutes(1, 1))
@@ -258,21 +265,38 @@ final class CrewsTests: XCTestCase {
     // MARK: State and checks
 
     func testStateNavigation() {
-        var state = CrewsState.demo(.viewing, now: Date())
-        XCTAssertNotNil(state.viewing)
-        state.show(.find)
-        XCTAssertNil(state.viewing)
-        XCTAssertEqual(state.section, .find)
-        state.editing = true
+        let now = Date()
+        var state = CrewsState.demo(.crew, now: now)
+        XCTAssertEqual(state.pushed?.from, .week)
+        state.pop()
+        XCTAssertNil(state.pushed)
+        XCTAssertEqual(state.section, .week)
+        state = CrewsState.demo(.edit, now: now)
         state.didLoadMine(nil, week: state.week)
-        XCTAssertFalse(state.editing, "leaving closes the edit form")
+        XCTAssertNil(state.pushed, "leaving closes the edit form")
         XCTAssertFalse(state.inCrew)
-        var board = state.board!
-        board.featured = nil
-        state.showsLastWeek = true
-        state.didLoadBoard(board)
-        XCTAssertFalse(state.showsLastWeek, "no last week to show")
-        XCTAssertEqual(state.boardEntries, board.top)
+        state.show(.find)
+        XCTAssertEqual(state.section, .find)
+
+        state = CrewsState.demo(.week, now: now)
+        XCTAssertNotNil(state.myWeekEntry, "my crew is on the demo board")
+        XCTAssertFalse(state.isQuietWeek)
+        XCTAssertTrue(CrewsState.demo(.quietWeek, now: now).isQuietWeek)
+        var page = try! XCTUnwrap(state.board)
+        let before = state.weekEntries.count
+        page.rows = [page.rows[0]]
+        state.didLoadBoard(page, appending: true)
+        XCTAssertEqual(state.weekEntries.count, before, "a row already loaded is not repeated")
+    }
+
+    func testRequestsFollowMine() {
+        let now = Date()
+        var state = CrewsState.demo(.requested, now: now)
+        let crew = try! XCTUnwrap(state.myRequest?.crew.id)
+        XCTAssertTrue(state.hasRequested(crew))
+        let mine = CrewsState.demo(.mine, now: now).mine
+        state.didLoadMine(mine, week: state.week, request: state.myRequest)
+        XCTAssertNil(state.myRequest, "a request ends once I am in a crew")
     }
 
     func testDraftChecks() {

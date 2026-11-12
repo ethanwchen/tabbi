@@ -208,7 +208,8 @@ enum SnapshotRenderer {
             _ = withParty.setEnabled(.party, true)
             for size in PanelSize.allCases {
                 let prefix = size == .default ? "open-party-crew" : "open-\(size.rawValue)-party-crew"
-                let screens = CrewDemoScenario.allCases.map { ("-" + $0.rawValue, CrewShot.screen($0)) } + [("-report", .report)]
+                let screens = CrewDemoScenario.allCases.map { ("-" + $0.rawValue, CrewShot.screen($0)) }
+                    + [("-report", .report), ("-more-menu", .moreMenu)]
                 for (suffix, crewShot) in screens {
                     let model = NotchViewModel(geometry: geometry, layout: withParty)
                     model.panelSize = size
@@ -595,6 +596,8 @@ enum SnapshotRenderer {
     /// report card about a featured crew's member.
     private enum CrewShot {
         case screen(CrewDemoScenario)
+        /// My crew with its More menu open.
+        case moreMenu
         case report
     }
 
@@ -747,6 +750,7 @@ enum SnapshotRenderer {
             switch shot.crews {
             case .screen(let scenario): crews?.showForSnapshot(scenario)
             case .report: crews?.showReportForSnapshot()
+            case .moreMenu: crews?.showForSnapshot(.mine, moreMenu: true)
             case nil: crews?.showForSnapshot(nil)
             }
             today?.showForSnapshot(name == "open-planner-yesterday" ? .yesterday

@@ -1,85 +1,145 @@
 import Foundation
 
-/// What the Party tab's Crew section shows, kept apart from the network so
-/// it can be tested and rendered in demo snapshots.
+/// What the Party tab's Crews mode shows, kept apart from the network so it
+/// can be tested and rendered in demo snapshots. The navigation follows the
+/// Crews UI spec: four sections in a pill row, and at most one pushed
+/// screen (a crew's page or the crest editor) over the section that opened it.
 public struct CrewsState: Equatable, Sendable {
-    /// What the Crew section's main card shows; the weekly top 3 sits
-    /// beside it in every section.
+    /// The sections of the pill row, in order.
     public enum Section: String, CaseIterable, Equatable, Sendable {
-        case mine, find, create
+        case mine, week, hall, find
+    }
+
+    /// A screen pushed over a section; one level deep.
+    public enum Pushed: Equatable, Sendable {
+        /// A crew's page, opened from `from`.
+        case crew(CrewDetail, from: Section)
+        /// The crest editor: a new crew, or the owner editing theirs.
+        case editor(editing: Bool, from: Section)
+
+        public var from: Section {
+            switch self {
+            case .crew(_, let from), .editor(_, let from): from
+            }
+        }
     }
 
     public var section: Section
+    public var pushed: Pushed?
     /// The current week, from the last reply (or computed until one comes).
     public var week: CrewWeek
     /// My crew; nil when I am in none. Only meaningful once `mineLoaded`.
     public var mine: CrewDetail?
     public var mineLoaded: Bool
+    /// My pending request to join a public crew, while I am in none.
+    public var myRequest: CrewMyRequest?
+    /// The weekly board, with every page of rows loaded so far.
     public var board: CrewBoard?
-    /// The top 3 card shows last week's frozen winners instead of the live race.
-    public var showsLastWeek: Bool
+    /// The Hall of Fame, every page loaded so far, and the next cursor.
+    public var hall: [CrewHallEntry]?
+    public var hallNext: String?
+    /// My crew's standing in the Hall of Fame, from its first page.
+    public var hallMine: CrewHallStanding?
     public var query: String
     /// Find's results for `query`; nil until the first answer.
     public var results: [CrewSummary]?
-    /// A crew page opened from the top 3 or Find, over the section that opened it.
-    public var viewing: CrewDetail?
-    /// The owner is editing my crew (the create form, filled in).
-    public var editing: Bool
     /// An invite link's code, waiting for the user to confirm joining.
     public var invite: String?
     /// The last failure to load, shown in place of the section's content.
     public var loadError: PartyError?
 
-    public init(section: Section = .mine, week: CrewWeek = .containing(Date()), mine: CrewDetail? = nil,
-                mineLoaded: Bool = false, board: CrewBoard? = nil, showsLastWeek: Bool = false, query: String = "",
-                results: [CrewSummary]? = nil, viewing: CrewDetail? = nil, editing: Bool = false, invite: String? = nil,
-                loadError: PartyError? = nil) {
+    public init(section: Section = .week, pushed: Pushed? = nil, week: CrewWeek = .containing(Date()),
+                mine: CrewDetail? = nil, mineLoaded: Bool = false, myRequest: CrewMyRequest? = nil,
+                board: CrewBoard? = nil, hall: [CrewHallEntry]? = nil, hallNext: String? = nil, query: String = "",
+                results: [CrewSummary]? = nil, invite: String? = nil, loadError: PartyError? = nil) {
         self.section = section
+        self.pushed = pushed
         self.week = week
         self.mine = mine
         self.mineLoaded = mineLoaded
+        self.myRequest = myRequest
         self.board = board
-        self.showsLastWeek = showsLastWeek
+        self.hall = hall
+        self.hallNext = hallNext
         self.query = query
         self.results = results
-        self.viewing = viewing
-        self.editing = editing
         self.invite = invite
         self.loadError = loadError
     }
 
     public var inCrew: Bool { mine != nil }
 
-    /// The entries the top 3 card shows now: the live race, or last week's winners.
-    public var boardEntries: [CrewBoardEntry] {
-        guard let board else { return [] }
-        return showsLastWeek ? board.featured?.entries ?? [] : board.top
-    }
+    /// Whether I asked to join `crew` and wait for its owner.
+    public func hasRequested(_ crew: String) -> Bool { myRequest?.crew.id == crew }
 
-    /// Moves to a section, closing any crew page and edit form.
+    /// Goes to a section, closing any pushed screen.
     public mutating func show(_ section: Section) {
         self.section = section
-        viewing = nil
-        editing = false
+        pushed = nil
+    }
+
+    /// Back from a pushed screen to the section that opened it.
+    public mutating func pop() {
+        guard let pushed else { return }
+        section = pushed.from
+        self.pushed = nil
     }
 
     /// My crew came back from the server (or I left it).
-    public mutating func didLoadMine(_ crew: CrewDetail?, week: CrewWeek) {
+    public mutating func didLoadMine(_ crew: CrewDetail?, week: CrewWeek, request: CrewMyRequest? = nil) {
         mine = crew
         self.week = week
+        myRequest = crew == nil ? request : nil
         mineLoaded = true
         loadError = nil
-        if crew == nil { editing = false }
-        // A crew page of my own crew follows the fresh copy.
-        if let viewing, viewing.id == crew?.id { self.viewing = crew }
+        if crew == nil, case .editor(true, _) = pushed { pushed = nil }
+        // A page of my own crew follows the fresh copy.
+        if case .crew(let shown, let from) = pushed, let crew, shown.id == crew.id { pushed = .crew(crew, from: from) }
     }
 
-    public mutating func didLoadBoard(_ board: CrewBoard) {
-        self.board = board
-        week = board.week
+    /// The first page of the board, or a further page of rows when `appending`.
+    public mutating func didLoadBoard(_ page: CrewBoard, appending: Bool = false) {
+        if appending, var board {
+            board.rows += page.rows.filter { row in !board.rows.contains { $0.id == row.id } }
+            board.next = page.next
+            self.board = board
+        } else {
+            board = page
+        }
+        week = page.week
         loadError = nil
-        // Last week's winners only exist once a week has frozen.
-        if board.featured == nil { showsLastWeek = false }
+    }
+
+    public mutating func didLoadHall(_ page: CrewHallPage, appending: Bool = false) {
+        if appending, let loaded = hall {
+            hall = loaded + page.entries.filter { entry in !loaded.contains { $0.id == entry.id } }
+        } else {
+            hall = page.entries
+            hallMine = page.mine
+        }
+        hallNext = page.next
+        loadError = nil
+    }
+
+    /// The week has no minutes yet: the sleeping-pet state.
+    public var isQuietWeek: Bool {
+        guard let board else { return false }
+        return board.top.isEmpty && board.rows.isEmpty
+    }
+
+    /// Every crew on the weekly board loaded so far, in place order.
+    public var weekEntries: [CrewBoardEntry] { (board?.top ?? []) + (board?.rows ?? []) }
+
+    /// My crew's entry on the weekly board, when loaded.
+    public var myWeekEntry: CrewBoardEntry? {
+        guard let id = mine?.id else { return nil }
+        return weekEntries.first { $0.id == id }
+    }
+
+    /// My crew in the Hall of Fame, when it has a medal and is loaded.
+    public var myHallEntry: CrewHallEntry? {
+        guard let id = mine?.id else { return nil }
+        return hall?.first { $0.id == id }
     }
 }
 
@@ -141,6 +201,9 @@ public enum CrewErrorText {
         case "description_not_allowed": return CrewDraftCheck.Problem.descriptionNotAllowed.message
         case "removed_from_crew": return String(localized: "You can't join that crew.", bundle: .tabbi)
         case "member_not_found": return String(localized: "That member left the crew.", bundle: .tabbi)
+        case "request_not_found": return String(localized: "That request is no longer waiting.", bundle: .tabbi)
+        case "requests_full": return String(localized: "That crew has a lot of requests waiting. Try again later.", bundle: .tabbi)
+        case "request_limit": return String(localized: "You've asked a lot of crews today. Try again tomorrow.", bundle: .tabbi)
         case "crew_limit": return String(localized: "You've made a lot of crews today. Try again tomorrow.", bundle: .tabbi)
         default: return error.message
         }

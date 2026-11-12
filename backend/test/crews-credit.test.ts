@@ -362,7 +362,7 @@ describe("the Hall of Fame", () => {
   /** The hall's entries for just these crews (other tests' crews may be in it too). */
   const only = <T extends { crew: { id: string } }>(entries: T[], ids: string[]) => entries.filter((e) => ids.includes(e.crew.id));
 
-  it("orders by golds, silvers, bronzes, then who reached the tally first, with shared ranks", async () => {
+  it("orders by golds, silvers, bronzes, then who reached the tally first, then id, with distinct ranks", async () => {
     fresh(9 * 3600);
     const crews = [];
     for (let i = 0; i < 4; i++) crews.push(await makeCrew({ visibility: i === 3 ? "private" : "public" }));
@@ -382,8 +382,9 @@ describe("the Hall of Fame", () => {
     expect(page.map((e) => e.crew.id)).toEqual([a, b, ...cd]);
     expect(page[0].medals).toEqual({ gold: 1, silver: 1, bronze: 1 });
     expect(page[1].medals).toEqual({ gold: 1, silver: 1, bronze: 0 });
-    expect(page[2].rank).toBe(page[3].rank);
+    // C and D have the same tally from the same week: the id decides, and every rank is its own.
     expect(page[2].rank).toBe(page[1].rank + 1);
+    expect(page[3].rank).toBe(page[2].rank + 1);
     expect(page[2].reachedAt).toBe(week3End);
     // The private crew is listed, like on the board.
     expect(page.some((e) => e.crew.id === d)).toBe(true);
@@ -441,17 +442,18 @@ describe("the Hall of Fame", () => {
     const crews = [];
     for (let i = 0; i < HALL_PAGE + 5; i++) crews.push(await makeCrew());
     advance(3600);
-    // Every crew tied first: each wins a gold, reached the same week, so they share one rank.
+    // Every crew tied first: each wins a gold, reached the same week, so only the id orders them.
     await playWeek(crews, crews.map(() => 30));
     const all = await hallAll(crews[0].owner.token);
     const ids = all.map((e) => e.crew.id);
     expect(new Set(ids).size).toBe(ids.length);
     const mine = only(all, crews.map((c) => c.crew.id));
     expect(mine).toHaveLength(crews.length);
-    // Equal tallies reached the same week share one rank, in id order.
-    expect(new Set(mine.map((e) => e.rank)).size).toBe(1);
+    // Equal tallies reached the same week are in id order, each with its own rank.
+    expect(new Set(mine.map((e) => e.rank)).size).toBe(mine.length);
     expect(mine.map((e) => e.crew.id)).toEqual([...mine.map((e) => e.crew.id)].sort());
-    for (let i = 1; i < all.length; i++) expect(all[i].rank).toBeGreaterThanOrEqual(all[i - 1].rank);
+    // Ranks are 1 plus the position in the whole order, across pages.
+    expect(all.map((e) => e.rank)).toEqual(all.map((_, i) => i + 1));
     // The same walk again gives the same order, page by page.
     expect((await hallAll(crews[0].owner.token)).map((e) => e.crew.id)).toEqual(ids);
     const first = await hall(crews[0].owner.token);

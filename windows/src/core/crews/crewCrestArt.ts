@@ -9,7 +9,7 @@ import { CREW_LAURELS, type CrewLaurel } from "./crewModels";
  * never a copy), so new frames and emblems are data, not code. Every layer
  * is a grid of palette characters (`.` is clear, a later layer paints only
  * its own cells): the laurel first (for the weekly top 3), then the frame,
- * the emblem at the frame's slot, and up to three trophy pips. `C`, `D` and
+ * the emblem centered in the frame's slot, and up to three trophy pips. `C`, `D` and
  * `H` take the crew color's base, shade and highlight, a crew color may set
  * further roles of its own (the emblem outline), `g` and `h` take the rank's
  * leaf and shade, and every other character has a fixed color. Nearest
@@ -45,6 +45,9 @@ export interface CrewCrestFrame {
 export interface CrewCrestEmblem {
   readonly id: string;
   readonly name: string;
+  /** Any size from 1 up to the slot; it is centered in the frame's slot. */
+  readonly width: number;
+  readonly height: number;
   readonly pixels: readonly (string | undefined)[];
 }
 
@@ -69,7 +72,10 @@ export interface CrewCrestSet {
   readonly fixed: ReadonlyMap<string, PetColor>;
   readonly ranks: ReadonlyMap<CrewLaurel, { readonly leaf: PetColor; readonly shade: PetColor }>;
   readonly laurel: readonly (string | undefined)[];
-  readonly pip: { readonly side: number; readonly pixels: readonly (string | undefined)[] };
+  readonly pip: {
+    readonly side: number;
+    readonly pixels: readonly (string | undefined)[];
+  };
   readonly pipPositions: readonly { readonly x: number; readonly y: number }[];
 }
 
@@ -153,7 +159,17 @@ export function decodeCrewCrestSet(raw: unknown): CrewCrestSet {
   const emblems: CrewCrestEmblem[] = [];
   for (const emblem of raw.emblems) {
     if (!isRecord(emblem) || typeof emblem.id !== "string" || emblem.id === "" || emblems.some((e) => e.id === emblem.id)) fail(`emblem id ${isRecord(emblem) ? String(emblem.id) : ""}`);
-    emblems.push({ id: emblem.id, name: typeof emblem.name === "string" ? emblem.name : emblem.id, pixels: parse(emblem.grid, `emblem ${emblem.id}`, slot, slot) });
+    const rows = strings(emblem.grid, `emblem ${emblem.id}`);
+    const width = [...(rows[0] ?? "")].length;
+    const height = rows.length;
+    if (width < 1 || width > slot || height < 1 || height > slot) fail(`emblem ${emblem.id} must fit the ${slot} by ${slot} slot`);
+    emblems.push({
+      id: emblem.id,
+      name: typeof emblem.name === "string" ? emblem.name : emblem.id,
+      width,
+      height,
+      pixels: parse(rows, `emblem ${emblem.id}`, width, height),
+    });
   }
   if (!Array.isArray(raw.crewColors) || frames.length === 0 || emblems.length === 0 || raw.crewColors.length === 0) fail("no frames, emblems or colors");
 
@@ -167,7 +183,12 @@ export function decodeCrewCrestSet(raw: unknown): CrewCrestSet {
       const c = byRole.get(role) ?? fail(`color ${color.id}: unknown role ${role}`);
       overrides.set(c, hex(value, `${color.id}.${role}`));
     }
-    colors.set(color.id, { base: hex(color.base, color.id), shade: hex(color.shade, color.id), highlight: hex(color.hi, color.id), overrides });
+    colors.set(color.id, {
+      base: hex(color.base, color.id),
+      shade: hex(color.shade, color.id),
+      highlight: hex(color.hi, color.id),
+      overrides,
+    });
     colorIDs.push(color.id);
   }
   /* Every character must get a color from the fixed table, the crew color, the rank or every crew color's own role. */
@@ -182,11 +203,17 @@ export function decodeCrewCrestSet(raw: unknown): CrewCrestSet {
   for (const laurel of CREW_LAURELS) {
     const rank = raw.ranks[laurel];
     if (!isRecord(rank)) fail(`ranks.${laurel} missing`);
-    ranks.set(laurel, { leaf: hex(rank.leaf, "rank"), shade: hex(rank.shade, "rank") });
+    ranks.set(laurel, {
+      leaf: hex(rank.leaf, "rank"),
+      shade: hex(rank.shade, "rank"),
+    });
   }
   const pipRows = strings(raw.pip, "pip");
   const pipSide = pipRows.length;
-  const pip = { side: pipSide, pixels: parse(pipRows, "pip", pipSide, pipSide) };
+  const pip = {
+    side: pipSide,
+    pixels: parse(pipRows, "pip", pipSide, pipSide),
+  };
   if (!Array.isArray(raw.pipPositions)) fail("pipPositions");
   const pipPositions = raw.pipPositions.map((position: unknown) => {
     if (!Array.isArray(position) || position.length !== 2 || !position.every((v) => typeof v === "number" && Number.isInteger(v) && v >= 0 && v <= grid - pipSide)) {
@@ -194,7 +221,19 @@ export function decodeCrewCrestSet(raw: unknown): CrewCrestSet {
     }
     return { x: position[0] as number, y: position[1] as number };
   });
-  return { grid, slot, frames, emblems, colorIDs, colors, fixed, ranks, laurel: parse(raw.laurel, "laurel", grid, grid), pip, pipPositions };
+  return {
+    grid,
+    slot,
+    frames,
+    emblems,
+    colorIDs,
+    colors,
+    fixed,
+    ranks,
+    laurel: parse(raw.laurel, "laurel", grid, grid),
+    pip,
+    pipPositions,
+  };
 }
 
 let shipped: CrewCrestSet | undefined;
@@ -223,13 +262,21 @@ export function resolvedCrest(crest: CrewCrest, set: CrewCrestSet = crewCrestArt
 }
 
 export function defaultCrest(set: CrewCrestSet = crewCrestArt()): CrewCrest {
-  return { frame: set.frames[0]?.id ?? "", emblem: set.emblems[0]?.id ?? "", color: set.colorIDs[0] ?? "" };
+  return {
+    frame: set.frames[0]?.id ?? "",
+    emblem: set.emblems[0]?.id ?? "",
+    color: set.colorIDs[0] ?? "",
+  };
 }
 
 /** A random crest, for the builder's Shuffle. */
 export function randomCrest(random: () => number = Math.random, set: CrewCrestSet = crewCrestArt()): CrewCrest {
   const pick = <T>(list: readonly T[]): T => list[Math.min(list.length - 1, Math.floor(random() * list.length))] as T;
-  return { frame: pick(set.frames).id, emblem: pick(set.emblems).id, color: pick(set.colorIDs) };
+  return {
+    frame: pick(set.frames).id,
+    emblem: pick(set.emblems).id,
+    color: pick(set.colorIDs),
+  };
 }
 
 /** The layers, in order: laurel, frame, emblem at the frame's slot, pips. Characters row-major, undefined for clear. */
@@ -240,11 +287,14 @@ export function composeCrest(crest: CrewCrest, withLaurel: boolean, pips: number
   frame.pixels.forEach((c, index) => {
     if (c !== undefined) pixels[index] = c;
   });
+  /* The emblem is centered in the frame's slot (a full-size emblem lands at the slot itself). */
   const emblem = crestEmblem(crest.emblem, set);
-  for (let y = 0; y < set.slot; y++) {
-    for (let x = 0; x < set.slot; x++) {
-      const c = emblem.pixels[y * set.slot + x];
-      if (c !== undefined) pixels[(frame.slot.y + y) * grid + frame.slot.x + x] = c;
+  const ox = frame.slot.x + Math.floor((set.slot - emblem.width) / 2);
+  const oy = frame.slot.y + Math.floor((set.slot - emblem.height) / 2);
+  for (let y = 0; y < emblem.height; y++) {
+    for (let x = 0; x < emblem.width; x++) {
+      const c = emblem.pixels[y * emblem.width + x];
+      if (c !== undefined) pixels[(oy + y) * grid + ox + x] = c;
     }
   }
   for (const position of set.pipPositions.slice(0, Math.max(0, pips))) {
@@ -283,24 +333,14 @@ export function crewCrestScale(pixelSize: number, devicePixelRatio: number): num
 
 const bitmaps = new Map<string, PetBitmap>();
 
-/** The crest as straight RGBA, each sprite pixel an exact `scale` block, cached. */
-export function crewCrestBitmap(crestIn: CrewCrest, laurel: CrewLaurel | undefined, pipsIn: number, scaleIn: number): PetBitmap {
-  const set = crewCrestArt();
-  const crest = resolvedCrest(crestIn, set);
-  const pips = Math.min(Math.max(Math.trunc(pipsIn), 0), CREW_CREST_MAX_PIPS);
-  const scale = Math.max(1, Math.trunc(scaleIn));
-  const key = `${crest.frame}|${crest.emblem}|${crest.color}|${laurel ?? "none"}|${pips}|${scale}`;
-  const hit = bitmaps.get(key);
-  if (hit) return hit;
-  const palette = crestPalette(crest.color, laurel, set);
-  const characters = composeCrest(crest, laurel !== undefined, pips, set);
-  const side = set.grid;
-  const width = side * scale;
-  const data = new Uint8ClampedArray(width * width * 4);
-  for (let sy = 0; sy < side; sy++) {
-    for (let sx = 0; sx < side; sx++) {
-      const c = characters[sy * side + sx];
-      const color = c === undefined ? undefined : palette.get(c);
+/** Sprite pixels as straight RGBA, each one an exact `scale` block, like `PixelImage.render`. */
+export function pixelBitmap(colors: readonly (PetColor | undefined)[], spriteWidth: number, spriteHeight: number, scale: number): PetBitmap {
+  const width = spriteWidth * scale;
+  const height = spriteHeight * scale;
+  const data = new Uint8ClampedArray(width * height * 4);
+  for (let sy = 0; sy < spriteHeight; sy++) {
+    for (let sx = 0; sx < spriteWidth; sx++) {
+      const color = colors[sy * spriteWidth + sx];
       if (!color) continue;
       for (let dy = 0; dy < scale; dy++) {
         let offset = ((sy * scale + dy) * width + sx * scale) * 4;
@@ -314,9 +354,82 @@ export function crewCrestBitmap(crestIn: CrewCrest, laurel: CrewLaurel | undefin
       }
     }
   }
-  /* A builder session can try a few hundred crests; keep the cache bounded. */
+  return { width, height, data };
+}
+
+/** Keeps a bitmap cache bounded: a builder session can try a few hundred crests. */
+function cached(key: string, make: () => PetBitmap): PetBitmap {
+  const hit = bitmaps.get(key);
+  if (hit) return hit;
   if (bitmaps.size > 2000) bitmaps.clear();
-  const bitmap: PetBitmap = { width, height: width, data };
+  const bitmap = make();
   bitmaps.set(key, bitmap);
   return bitmap;
+}
+
+/** The crest as straight RGBA, each sprite pixel an exact `scale` block, cached. */
+export function crewCrestBitmap(crestIn: CrewCrest, laurel: CrewLaurel | undefined, pipsIn: number, scaleIn: number): PetBitmap {
+  const set = crewCrestArt();
+  const crest = resolvedCrest(crestIn, set);
+  const pips = Math.min(Math.max(Math.trunc(pipsIn), 0), CREW_CREST_MAX_PIPS);
+  const scale = Math.max(1, Math.trunc(scaleIn));
+  return cached(`${crest.frame}|${crest.emblem}|${crest.color}|${laurel ?? "none"}|${pips}|${scale}`, () => {
+    const palette = crestPalette(crest.color, laurel, set);
+    const characters = composeCrest(crest, laurel !== undefined, pips, set);
+    return pixelBitmap(
+      characters.map((c) => (c === undefined ? undefined : palette.get(c))),
+      set.grid,
+      set.grid,
+      scale,
+    );
+  });
+}
+
+/** An emblem alone in a crew color (its outline follows the color), for the editor's emblem picker. */
+export function crewEmblemBitmap(emblemID: string, color: string, scaleIn: number): PetBitmap {
+  const set = crewCrestArt();
+  const emblem = crestEmblem(emblemID, set);
+  const scale = Math.max(1, Math.trunc(scaleIn));
+  return cached(`emblem|${emblem.id}|${color}|${scale}`, () => {
+    const palette = crestPalette(color, undefined, set);
+    return pixelBitmap(
+      emblem.pixels.map((c) => (c === undefined ? undefined : palette.get(c))),
+      emblem.width,
+      emblem.height,
+      scale,
+    );
+  });
+}
+
+/*
+ * Port of CrewMedalArt: the pixel medal of the tallies and a crew's history,
+ * in the badge style: a ribbon in ink, an outlined disc with one highlight
+ * and one shade, in the metal's colors.
+ */
+export const CREW_MEDAL_WIDTH = 9;
+export const CREW_MEDAL_HEIGHT = 10;
+export const CREW_MEDAL_GRID: readonly string[] = ["...OO....", "..OQqO...", "..OQqO...", ".OOOOOO..", "OMHHMMMO.", "OMHMMMmO.", "OMMMMMmO.", "OMMMmmmO.", ".OMmmmO..", "..OOOO..."];
+
+/** The colors of every character for a metal. */
+export function crewMedalPalette(metal: CrewLaurel): Record<string, string> {
+  const ink = { O: "#2A1A14", Q: "#3F4A78", q: "#2C3456" };
+  switch (metal) {
+    case "gold":
+      return { ...ink, M: "#F2C14E", H: "#FFE9A6", m: "#C98A2A" };
+    case "silver":
+      return { ...ink, M: "#C7D1DE", H: "#FFFFFF", m: "#8E9BAB" };
+    case "bronze":
+      return { ...ink, M: "#D9945C", H: "#F3C1A0", m: "#A8683A" };
+  }
+}
+
+/** The medal's pixels as colors, row-major, undefined for clear. */
+export function crewMedalColors(metal: CrewLaurel): (PetColor | undefined)[] {
+  const palette = crewMedalPalette(metal);
+  return CREW_MEDAL_GRID.flatMap((row) => [...row].map((c) => (c === "." || palette[c] === undefined ? undefined : colorFromHex(palette[c]))));
+}
+
+export function crewMedalBitmap(metal: CrewLaurel, scaleIn: number): PetBitmap {
+  const scale = Math.max(1, Math.trunc(scaleIn));
+  return cached(`medal|${metal}|${scale}`, () => pixelBitmap(crewMedalColors(metal), CREW_MEDAL_WIDTH, CREW_MEDAL_HEIGHT, scale));
 }

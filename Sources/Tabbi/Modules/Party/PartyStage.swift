@@ -43,14 +43,16 @@ private struct PartyRoom: View {
 
     private var header: some View {
         HStack(spacing: Theme.Spacing.s) {
-            // On a narrow panel the Party or Crew switch shrinks to its icons
-            // first, then the count shortens, so nothing truncates.
+            // The Crews UI spec's ladder: the member count drops first, then
+            // the Party pill's title, then the share button, and only then
+            // the Crews pill's title, so nothing truncates.
+            let count = String(localized: "\(party.members.count) of \(party.maxMembers)", bundle: .tabbi)
             ViewThatFits(in: .horizontal) {
-                headerLabels(title: true, count: String(localized: "\(party.members.count) of \(party.maxMembers)", bundle: .tabbi))
-                headerLabels(title: false, count: String(localized: "\(party.members.count) of \(party.maxMembers)", bundle: .tabbi))
-                headerLabels(title: false, count: "\(party.members.count)/\(party.maxMembers)")
-                // The pets below show who's in, so the count is the last to go.
-                headerLabels(title: false, count: nil)
+                headerLabels(partyTitle: true, crewsTitle: true, share: true, count: count)
+                headerLabels(partyTitle: true, crewsTitle: true, share: true, count: nil)
+                headerLabels(partyTitle: false, crewsTitle: true, share: true, count: nil)
+                headerLabels(partyTitle: false, crewsTitle: true, share: false, count: nil)
+                headerLabels(partyTitle: false, crewsTitle: false, share: false, count: nil)
             }
             Spacer(minLength: Theme.Spacing.s)
             PartyTextButton(title: String(localized: "Leave", bundle: .tabbi), isBusy: store.pending == .leaveParty,
@@ -62,15 +64,16 @@ private struct PartyRoom: View {
         }
     }
 
-    private func headerLabels(title: Bool, count: String?) -> some View {
-        HStack(spacing: Theme.Spacing.s) {
-            // The Party or Crew switch stands where the title was; `title`
-            // says whether it spells out its two words.
-            PartySectionSwitch(crews: crews, showsTitles: title)
+    private func headerLabels(partyTitle: Bool, crewsTitle: Bool, share: Bool, count: String?) -> some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            // The Party and Crews mode switch stands where the title was.
+            PartyModeSwitch(crews: crews, partyTitle: partyTitle, crewsTitle: crewsTitle)
             PartyCopyCode(code: party.code, help: String(localized: "The party code. Click to copy it, then send it to friends.", bundle: .tabbi))
                 .fixedSize()
-            PartyShareInvite(invite: .joinParty(code: party.code),
-                             help: String(localized: "Share an invite link. Friends who open it can join this party in one click.", bundle: .tabbi))
+            if share {
+                PartyShareInvite(invite: .joinParty(code: party.code),
+                                 help: String(localized: "Share an invite link. Friends who open it can join this party in one click.", bundle: .tabbi))
+            }
             if let count {
                 Text(count)
                     .font(Theme.Typography.caption.monospacedDigit())
@@ -349,7 +352,7 @@ private struct PartyLobby: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
-            PartySectionSwitch(crews: crews)
+            PartyModeSwitch(crews: crews)
             HStack(spacing: Theme.Spacing.m) {
                 if let profile = store.state.profile {
                     PartyPet(profile: profile, pixelSize: 1.5)

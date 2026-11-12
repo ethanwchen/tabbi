@@ -146,10 +146,12 @@ public struct CrewSummary: Codable, Hashable, Sendable, Identifiable {
     public var memberCount: Int
     public var maxMembers: Int
     public var weekMinutes: Int
+    /// All-time gold medals, drawn as up to three pips on large crests.
+    public var golds: Int
 
     public init(id: String, name: String, description: String = "", frame: String, emblem: String, color: String,
                 visibility: CrewVisibility, laurel: CrewLaurel? = nil, trophies: Int = 0, memberCount: Int,
-                maxMembers: Int = CrewCatalog.maxMembers, weekMinutes: Int = 0) {
+                maxMembers: Int = CrewCatalog.maxMembers, weekMinutes: Int = 0, golds: Int = 0) {
         self.id = id
         self.name = name
         self.description = description
@@ -162,10 +164,11 @@ public struct CrewSummary: Codable, Hashable, Sendable, Identifiable {
         self.memberCount = memberCount
         self.maxMembers = maxMembers
         self.weekMinutes = weekMinutes
+        self.golds = golds
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, name, description, frame, emblem, color, visibility, laurel, trophies, memberCount, maxMembers, weekMinutes
+        case id, name, description, frame, emblem, color, visibility, laurel, trophies, memberCount, maxMembers, weekMinutes, golds
     }
 
     public init(from decoder: any Decoder) throws {
@@ -184,14 +187,16 @@ public struct CrewSummary: Codable, Hashable, Sendable, Identifiable {
         memberCount = try container.decode(Int.self, forKey: .memberCount)
         maxMembers = try container.decodeIfPresent(Int.self, forKey: .maxMembers) ?? CrewCatalog.maxMembers
         weekMinutes = try container.decodeIfPresent(Int.self, forKey: .weekMinutes) ?? 0
+        golds = try container.decodeIfPresent(Int.self, forKey: .golds) ?? 0
     }
 
     public var isFull: Bool { memberCount >= maxMembers }
 
     public var crest: CrewCrest { CrewCrest(self) }
 
-    /// Trophy pips on the crest: one per top 3 finish, at most three.
-    public var pips: Int { min(trophies, CrewCrestArt.maxPips) }
+    /// Pips on a large crest: one per all-time gold, at most three. Rows
+    /// and small crests draw none.
+    public var pips: Int { min(golds, CrewCrestArt.maxPips) }
 }
 
 /// Gold, silver and bronze finishes so far.
@@ -223,11 +228,18 @@ public struct CrewDetail: Codable, Hashable, Sendable, Identifiable {
     public var inviteCode: String?
     /// The maintainer hid it from the board and Find; only members are told.
     public var hidden: Bool
+    /// The last finished weeks, newest first (at most three).
+    public var history: [CrewWeekResult]
+    /// How many crews have minutes this week, for "12th of 38 crews".
+    public var crewCount: Int
+    /// People asking to join, oldest first; only the owner gets them.
+    public var requests: [CrewJoinRequest]
 
     public var id: String { summary.id }
 
     public init(summary: CrewSummary, createdAt: Date, medals: CrewMedals = CrewMedals(), rank: Int? = nil,
-                members: [CrewMember], mine: Bool, owner: Bool, inviteCode: String? = nil, hidden: Bool = false) {
+                members: [CrewMember], mine: Bool, owner: Bool, inviteCode: String? = nil, hidden: Bool = false,
+                history: [CrewWeekResult] = [], crewCount: Int = 0, requests: [CrewJoinRequest] = []) {
         self.summary = summary
         self.createdAt = createdAt
         self.medals = medals
@@ -237,10 +249,13 @@ public struct CrewDetail: Codable, Hashable, Sendable, Identifiable {
         self.owner = owner
         self.inviteCode = inviteCode
         self.hidden = hidden
+        self.history = history
+        self.crewCount = crewCount
+        self.requests = requests
     }
 
     private enum CodingKeys: String, CodingKey {
-        case createdAt, medals, rank, members, mine, owner, inviteCode, hidden
+        case createdAt, medals, rank, members, mine, owner, inviteCode, hidden, history, crewCount, requests
     }
 
     public init(from decoder: any Decoder) throws {
@@ -254,6 +269,9 @@ public struct CrewDetail: Codable, Hashable, Sendable, Identifiable {
         owner = try container.decodeIfPresent(Bool.self, forKey: .owner) ?? false
         inviteCode = try container.decodeIfPresent(String.self, forKey: .inviteCode)
         hidden = try container.decodeIfPresent(Bool.self, forKey: .hidden) ?? false
+        history = try container.decodeIfPresent([CrewWeekResult].self, forKey: .history) ?? []
+        crewCount = try container.decodeIfPresent(Int.self, forKey: .crewCount) ?? 0
+        requests = try container.decodeIfPresent([CrewJoinRequest].self, forKey: .requests) ?? []
     }
 
     public func encode(to encoder: any Encoder) throws {
@@ -267,6 +285,9 @@ public struct CrewDetail: Codable, Hashable, Sendable, Identifiable {
         try container.encode(owner, forKey: .owner)
         try container.encode(inviteCode, forKey: .inviteCode)
         try container.encode(hidden, forKey: .hidden)
+        try container.encode(history, forKey: .history)
+        try container.encode(crewCount, forKey: .crewCount)
+        try container.encode(requests, forKey: .requests)
     }
 
     /// My own member row, when I belong.
@@ -275,16 +296,123 @@ public struct CrewDetail: Codable, Hashable, Sendable, Identifiable {
 
 /// One place on the board.
 public struct CrewBoardEntry: Codable, Hashable, Sendable, Identifiable {
+    /// A competition place: tied crews share it and the next is skipped.
     public var rank: Int
     public var minutes: Int
     public var crew: CrewSummary
+    /// The pets of the crew's most active members (featured entries only).
+    public var pets: [CrewPet]
+    /// The other crews on the same place, for "tied with ...".
+    public var tiedWith: [String]
 
     public var id: String { crew.id }
 
-    public init(rank: Int, minutes: Int, crew: CrewSummary) {
+    public init(rank: Int, minutes: Int, crew: CrewSummary, pets: [CrewPet] = [], tiedWith: [String] = []) {
         self.rank = rank
         self.minutes = minutes
         self.crew = crew
+        self.pets = pets
+        self.tiedWith = tiedWith
+    }
+
+    private enum CodingKeys: String, CodingKey { case rank, minutes, crew, pets, tiedWith }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        rank = try container.decode(Int.self, forKey: .rank)
+        minutes = try container.decode(Int.self, forKey: .minutes)
+        crew = try container.decode(CrewSummary.self, forKey: .crew)
+        pets = try container.decodeIfPresent([CrewPet].self, forKey: .pets) ?? []
+        tiedWith = try container.decodeIfPresent([String].self, forKey: .tiedWith) ?? []
+    }
+}
+
+/// One finished week on a crew page: its place (nil with no minutes),
+/// minutes and the medal it won, if any.
+public struct CrewWeekResult: Codable, Hashable, Sendable, Identifiable {
+    public var week: CrewWeek
+    public var place: Int?
+    public var minutes: Int
+    public var medal: CrewLaurel?
+
+    public var id: String { week.id }
+
+    public init(week: CrewWeek, place: Int?, minutes: Int, medal: CrewLaurel?) {
+        self.week = week
+        self.place = place
+        self.minutes = minutes
+        self.medal = medal
+    }
+
+    private enum CodingKeys: String, CodingKey { case week, place, minutes, medal }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        week = try container.decode(CrewWeek.self, forKey: .week)
+        place = try container.decodeIfPresent(Int.self, forKey: .place)
+        minutes = try container.decodeIfPresent(Int.self, forKey: .minutes) ?? 0
+        medal = try? container.decodeIfPresent(CrewLaurel.self, forKey: .medal)
+    }
+}
+
+/// Someone asking to join a public crew, as its owner sees them.
+public struct CrewJoinRequest: Codable, Hashable, Sendable, Identifiable {
+    public var ref: String
+    public var name: String
+    public var pet: CrewPet?
+    public var badges: [String]
+    public var requestedAt: Date
+    public var expiresAt: Date
+
+    public var id: String { ref }
+
+    public init(ref: String, name: String, pet: CrewPet?, badges: [String] = [], requestedAt: Date, expiresAt: Date) {
+        self.ref = ref
+        self.name = name
+        self.pet = pet
+        self.badges = badges
+        self.requestedAt = requestedAt
+        self.expiresAt = expiresAt
+    }
+
+    private enum CodingKeys: String, CodingKey { case ref, name, pet, badges, requestedAt, expiresAt }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        ref = try container.decode(String.self, forKey: .ref)
+        name = try container.decode(String.self, forKey: .name)
+        pet = try container.decodeIfPresent(CrewPet.self, forKey: .pet)
+        badges = try container.decodeIfPresent([String].self, forKey: .badges) ?? []
+        requestedAt = try container.decode(Date.self, forKey: .requestedAt)
+        expiresAt = try container.decode(Date.self, forKey: .expiresAt)
+    }
+
+    /// The requester as a crew member, so the same rows and pets draw them.
+    public var member: CrewMember { CrewMember(ref: ref, name: name, pet: pet, badges: badges) }
+}
+
+/// My own pending request to join a public crew.
+public struct CrewMyRequest: Codable, Hashable, Sendable {
+    public var crew: CrewSummary
+    public var requestedAt: Date
+    public var expiresAt: Date
+
+    public init(crew: CrewSummary, requestedAt: Date, expiresAt: Date) {
+        self.crew = crew
+        self.requestedAt = requestedAt
+        self.expiresAt = expiresAt
+    }
+}
+
+/// My crew's standing this week on the board.
+public struct CrewStanding: Codable, Hashable, Sendable {
+    /// Nil with no minutes yet.
+    public var rank: Int?
+    public var minutes: Int
+
+    public init(rank: Int?, minutes: Int) {
+        self.rank = rank
+        self.minutes = minutes
     }
 }
 
@@ -302,13 +430,40 @@ public struct CrewFeatured: Codable, Hashable, Sendable {
 /// `GET /v1/crews/board`: this week's live top 3 and last week's winners.
 public struct CrewBoard: Codable, Hashable, Sendable {
     public var week: CrewWeek
+    /// Places 1 to 3 (more with ties), with their pets.
     public var top: [CrewBoardEntry]
     public var featured: CrewFeatured?
+    /// Places 4 and down, one page at a time.
+    public var rows: [CrewBoardEntry]
+    /// The cursor for the next page of `rows`, nil at the end.
+    public var next: String?
+    /// How many crews have minutes this week.
+    public var crewCount: Int
+    /// My crew this week, or nil without a crew.
+    public var mine: CrewStanding?
 
-    public init(week: CrewWeek, top: [CrewBoardEntry], featured: CrewFeatured?) {
+    public init(week: CrewWeek, top: [CrewBoardEntry], featured: CrewFeatured?, rows: [CrewBoardEntry] = [],
+                next: String? = nil, crewCount: Int = 0, mine: CrewStanding? = nil) {
         self.week = week
         self.top = top
         self.featured = featured
+        self.rows = rows
+        self.next = next
+        self.crewCount = crewCount
+        self.mine = mine
+    }
+
+    private enum CodingKeys: String, CodingKey { case week, top, featured, rows, next, crewCount, mine }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        week = try container.decode(CrewWeek.self, forKey: .week)
+        top = try container.decodeIfPresent([CrewBoardEntry].self, forKey: .top) ?? []
+        featured = try container.decodeIfPresent(CrewFeatured.self, forKey: .featured)
+        rows = try container.decodeIfPresent([CrewBoardEntry].self, forKey: .rows) ?? []
+        next = try container.decodeIfPresent(String.self, forKey: .next)
+        crewCount = try container.decodeIfPresent(Int.self, forKey: .crewCount) ?? 0
+        mine = try container.decodeIfPresent(CrewStanding.self, forKey: .mine)
     }
 }
 
@@ -463,14 +618,28 @@ public struct CrewHallEntry: Codable, Hashable, Sendable, Identifiable {
     /// When the crew reached its current tally (the end of that week); earlier wins a tie.
     public var reachedAt: Date
     public var crew: CrewSummary
+    /// The pets of the crew's most active members (the first three only).
+    public var pets: [CrewPet]
 
     public var id: String { crew.id }
 
-    public init(rank: Int, medals: CrewMedals, reachedAt: Date, crew: CrewSummary) {
+    public init(rank: Int, medals: CrewMedals, reachedAt: Date, crew: CrewSummary, pets: [CrewPet] = []) {
         self.rank = rank
         self.medals = medals
         self.reachedAt = reachedAt
         self.crew = crew
+        self.pets = pets
+    }
+
+    private enum CodingKeys: String, CodingKey { case rank, medals, reachedAt, crew, pets }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        rank = try container.decode(Int.self, forKey: .rank)
+        medals = try container.decode(CrewMedals.self, forKey: .medals)
+        reachedAt = try container.decode(Date.self, forKey: .reachedAt)
+        crew = try container.decode(CrewSummary.self, forKey: .crew)
+        pets = try container.decodeIfPresent([CrewPet].self, forKey: .pets) ?? []
     }
 }
 
@@ -479,9 +648,26 @@ public struct CrewHallEntry: Codable, Hashable, Sendable, Identifiable {
 public struct CrewHallPage: Codable, Hashable, Sendable {
     public var entries: [CrewHallEntry]
     public var next: String?
+    /// Where my crew stands (first page only): nil without a crew; a nil rank
+    /// before its first medal.
+    public var mine: CrewHallStanding?
 
-    public init(entries: [CrewHallEntry], next: String?) {
+    public init(entries: [CrewHallEntry], next: String?, mine: CrewHallStanding? = nil) {
         self.entries = entries
         self.next = next
+        self.mine = mine
+    }
+}
+
+/// My crew in the Hall of Fame.
+public struct CrewHallStanding: Codable, Hashable, Sendable {
+    public var rank: Int?
+    public var medals: CrewMedals
+    public var reachedAt: Date?
+
+    public init(rank: Int?, medals: CrewMedals, reachedAt: Date?) {
+        self.rank = rank
+        self.medals = medals
+        self.reachedAt = reachedAt
     }
 }

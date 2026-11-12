@@ -115,12 +115,16 @@
 	<string>%@ está na pausa com você</string>
 	<key>%@ is ready in the Closet</key>
 	<string>%@ já está esperando no Closet</string>
+	<key>%@ is second this week</key>
+	<string>%@ está em segundo nesta semana</string>
 	<key>%@ is studying with the party</key>
 	<string>%@ está estudando com a party</string>
 	<key>%@ is studying with you</key>
 	<string>%@ está estudando com você</string>
 	<key>%@ is taking the break with you</key>
 	<string>%@ está fazendo a pausa com você</string>
+	<key>%@ is third this week</key>
+	<string>%@ está em terceiro nesta semana</string>
 	<key>%@ isn't connected</key>
 	<string>%@ não está conectado</string>
 	<key>%@ isn't installed</key>
@@ -131,8 +135,12 @@
 	<string>O %@ ainda não está neste Mac. Conexões mostra como adicionar.</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@ ainda não está configurado</string>
+	<key>%@ joined the crew.</key>
+	<string>%@ entrou na equipe.</string>
 	<key>%@ keeps their pet private on crew pages.</key>
 	<string>%@ mantém o pet oculto nas páginas de equipe.</string>
+	<key>%@ leads the week</key>
+	<string>%@ lidera a semana</string>
 	<key>%@ learned a song from a bird</key>
 	<string>%@ aprendeu uma música com um passarinho</string>
 	<key>%@ left</key>
@@ -159,6 +167,8 @@
 	<string>%@ não encontrado</string>
 	<key>%@ of %@</key>
 	<string>%1$@ de %2$@</string>
+	<key>%@ of %lld crews · %@</key>
+	<string>%@ de %lld equipes · %@</string>
 	<key>%@ of focus.</key>
 	<string>%@ de foco.</string>
 	<key>%@ opens in Music; press play there.</key>
@@ -223,6 +233,8 @@
 	<string>%1$@ com %2$@</string>
 	<key>%@ with %@ wants to be friends.</key>
 	<string>%1$@ com %2$@ quer ser seu amigo.</string>
+	<key>%@ with %@, %@ this week</key>
+	<string>%@ com %@, %@ nesta semana</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>O %@ funciona melhor em Aplicativos, onde pode abrir quando você inicia a sessão e se manter atualizado. Ele se copia para lá e abre de novo.</string>
 	<key>%@ · %@ this week</key>
@@ -275,6 +287,8 @@
 	<string>%@: feita este mês</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: você conquistou todos os itens. Eles continuam seus depois do evento.</string>
+	<key>%lld gold, %lld silver, %lld bronze</key>
+	<string>%lld ouro, %lld prata, %lld bronze</string>
 	<key>%lld h</key>
 	<string>%lld h</string>
 	<key>%lld in party</key>
@@ -409,6 +423,10 @@
 	<string>Uma pergunta aceita até %lld capturas</string>
 	<key>A quiet day. Rest up and start fresh tomorrow.</key>
 	<string>Um dia tranquilo. Descanse e recomece amanhã.</string>
+	<key>A quiet start to the week</key>
+	<string>Um começo de semana tranquilo</string>
+	<key>A random frame, emblem and color</key>
+	<string>Moldura, emblema e cor aleatórios</string>
 	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
 	<string>Uma cor de pelo rara do seu pet. Experimente no Closet, em Aparência.</string>
 	<key>A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:</key>
@@ -419,8 +437,6 @@
 	<string>Um dia de exemplo. Seus eventos aparecem aqui quando a agenda estiver conectada.</string>
 	<key>A school or work setting may block it. You can check in System Settings.</key>
 	<string>Uma configuração da escola ou do trabalho pode bloquear. Verifique nos Ajustes do Sistema.</string>
-	<key>A short description (optional)</key>
-	<string>Descrição curta (opcional)</string>
 	<key>A shorter timer</key>
 	<string>Timer mais curto</string>
 	<key>A slow breath in, and out</key>
@@ -663,8 +679,8 @@
 	<string>Respostas de</string>
 	<key>Answers stay in the notch. Press Command-Return to send and expand, or click Expand on a chat.</key>
 	<string>As respostas ficam no notch. Use Command-Return para enviar e ampliar, ou clique em Ampliar.</string>
-	<key>Anyone can find and join it.</key>
-	<string>Qualquer pessoa pode encontrar e entrar.</string>
+	<key>Anyone can find it and ask to join. Click to make it private.</key>
+	<string>Qualquer pessoa pode encontrar e pedir para entrar. Clique para tornar privada.</string>
 	<key>App</key>
 	<string>App</string>
 	<key>Appears when the pointer reaches the top center.</key>
@@ -695,10 +711,14 @@
 	<string>Perguntar sempre</string>
 	<key>Ask this question again</key>
 	<string>Fazer esta pergunta de novo</string>
+	<key>Ask to join %@. Its owner lets you in.</key>
+	<string>Peça para entrar em %@. O dono deixa você entrar.</string>
 	<key>Ask “%@”</key>
 	<string>Perguntar “%@”</string>
 	<key>Asked once. Your answer stays on this Mac.</key>
 	<string>Perguntado só uma vez. Sua resposta fica neste Mac.</string>
+	<key>Asked to join %@. Its owner lets you in.</key>
+	<string>Você pediu para entrar em %@. O dono deixa você entrar.</string>
 	<key>Asking Anki to open the deck for review.</key>
 	<string>Pedindo ao Anki para abrir o baralho.</string>
 	<key>Astronaut Helmet</key>
@@ -739,6 +759,8 @@
 	<string>Voltar ao timer</string>
 	<key>Back to today</key>
 	<string>Voltar para hoje</string>
+	<key>Back to your party and friends</key>
+	<string>Voltar ao seu grupo e amigos</string>
 	<key>Backwards Cap</key>
 	<string>Boné virado</string>
 	<key>Badges</key>
@@ -855,6 +877,8 @@
 	<string>Cancelar</string>
 	<key>Cancel Request</key>
 	<string>Cancelar pedido</string>
+	<key>Cancel request</key>
+	<string>Cancelar pedido</string>
 	<key>Cancel your request to %@</key>
 	<string>Cancelar seu pedido para %@</string>
 	<key>Candy pink and milk, sweet but never loud.</key>
@@ -921,6 +945,8 @@
 	<string>Verifique o servidor de grupos</string>
 	<key>Check the server in Party options.</key>
 	<string>Confira o servidor nas opções do Grupo.</string>
+	<key>Check your internet connection. Crews show up once it's back.</key>
+	<string>Verifique sua conexão com a internet. As equipes aparecem quando ela voltar.</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>Verifique sua conexão com a internet. Amigos e grupos aparecem quando ela voltar.</string>
 	<key>Check your internet connection. You can also set up Party later in its tab.</key>
@@ -1069,8 +1095,6 @@
 	<string>Fechar sem entrar</string>
 	<key>Close without reporting (Esc)</key>
 	<string>Fechar sem denunciar (Esc)</string>
-	<key>Close without saving</key>
-	<string>Fechar sem salvar</string>
 	<key>Closet</key>
 	<string>Closet</string>
 	<key>Code</key>
@@ -1079,6 +1103,8 @@
 	<string>Uso do Codex</string>
 	<key>Coffee mug</key>
 	<string>Caneca de café</string>
+	<key>Color</key>
+	<string>Cor</string>
 	<key>Command</key>
 	<string>Comando</string>
 	<key>Compact</key>
@@ -1127,6 +1153,8 @@
 	<string>Copiar</string>
 	<key>Copy Invite Link</key>
 	<string>Copiar link de convite</string>
+	<key>Copy an invite link. A friend who opens it joins this crew in one click.</key>
+	<string>Copie um link de convite. Quem abrir entra na equipe com um clique.</string>
 	<key>Copy and open %@</key>
 	<string>Copiar e abrir %@</string>
 	<key>Copy answer</key>
@@ -1143,8 +1171,6 @@
 	<string>Copiar código de amigo</string>
 	<key>Copy the AnkiConnect add-on code to paste into Anki</key>
 	<string>Copie o código do AnkiConnect para colar no Anki</string>
-	<key>Copy the invite link. Friends who open it can join your crew.</key>
-	<string>Copie o link de convite. Quem abrir pode entrar na sua equipe.</string>
 	<key>Copy what Tabbi found, to paste into a message if you ask someone for help</key>
 	<string>Copiar o que o Tabbi encontrou, para colar numa mensagem se pedir ajuda a alguém</string>
 	<key>Copy what you need to paste, then open %@</key>
@@ -1213,6 +1239,8 @@
 	<string>Creme</string>
 	<key>Create</key>
 	<string>Criar</string>
+	<key>Create a crew</key>
+	<string>Criar uma equipe</string>
 	<key>Create a party and get a code to share</key>
 	<string>Crie um grupo e receba um código para compartilhar</string>
 	<key>Create the crew with you as its owner</key>
@@ -1225,8 +1253,8 @@
 	<string>Nome da equipe</string>
 	<key>Crew names can be up to %lld characters.</key>
 	<string>O nome pode ter até %lld caracteres.</string>
-	<key>Crew owner</key>
-	<string>Dono da equipe</string>
+	<key>Crews</key>
+	<string>Equipes</string>
 	<key>Custom</key>
 	<string>Personalizado</string>
 	<key>Daily focus goal met</key>
@@ -1247,6 +1275,8 @@
 	<string>Recusar</string>
 	<key>Decline %@'s request. They won't be told.</key>
 	<string>Recusar o pedido de %@. A pessoa não vai ser avisada.</string>
+	<key>Decline. %@ isn't told.</key>
+	<string>Recusar. %@ não é avisado.</string>
 	<key>Deep</key>
 	<string>Profundo</string>
 	<key>Deep cherry red, fizzy and warm, made for late sessions.</key>
@@ -1379,8 +1409,6 @@
 	<string>Conquistado. Clique para tirar.</string>
 	<key>Earned. Click to wear.</key>
 	<string>Conquistado. Clique para usar.</string>
-	<key>Edit Crew…</key>
-	<string>Editar equipe…</string>
 	<key>Edit crew</key>
 	<string>Editar equipe</string>
 	<key>Edit the Custom focus and break lengths</key>
@@ -1393,6 +1421,8 @@
 	<string>Envie um e-mail à equipe do %@ sobre um bug, uma pessoa no Grupo ou qualquer outra coisa</string>
 	<key>Email the %@ team about a person or a problem</key>
 	<string>Escreva à equipe do %@ sobre alguém ou um problema</string>
+	<key>Emblem</key>
+	<string>Emblema</string>
 	<key>End</key>
 	<string>Encerrar</string>
 	<key>End it for everyone in the Party tab</key>
@@ -1403,8 +1433,6 @@
 	<string>Encerre o trecho e faça uma pausa proporcional</string>
 	<key>Ends at %@</key>
 	<string>Termina às %@</string>
-	<key>Ends in %@</key>
-	<string>Termina em %@</string>
 	<key>Enough for the %@ and the %@ now.</key>
 	<string>Já dá para pegar %1$@ e %2$@.</string>
 	<key>Enough for the %@ now</key>
@@ -1415,6 +1443,8 @@
 	<string>Digite a chave da configuração do AnkiConnect nos Ajustes.</string>
 	<key>Event</key>
 	<string>Evento</string>
+	<key>Every Sunday's top 3 earn a medal</key>
+	<string>Todo domingo o top 3 ganha uma medalha</string>
 	<key>Every crew can appear on the weekly top 3 with its members' pets.</key>
 	<string>Qualquer equipe pode aparecer no top 3 da semana com os pets dos membros.</string>
 	<key>Every deck is caught up</key>
@@ -1459,6 +1489,8 @@
 	<string>Preencha o tempo livre de hoje com tarefas e revisões. Planejado neste Mac, nada é adicionado sem você confirmar</string>
 	<key>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</key>
 	<string>Preencha o tempo livre de amanhã com tarefas e revisões. Planejado neste Mac, nada é adicionado sem você confirmar</string>
+	<key>Find</key>
+	<string>Buscar</string>
 	<key>Find crews</key>
 	<string>Encontrar equipes</string>
 	<key>Finish a Party session with friends.</key>
@@ -1509,8 +1541,6 @@
 	<string>Foque durante %@.</string>
 	<key>Focus for 50 hours in total.</key>
 	<string>Foque 50 horas no total.</string>
-	<key>Focus hours this week. The board freezes Sunday 23:59 UTC.</key>
-	<string>Horas de foco nesta semana. O placar congela no domingo às 23:59 UTC.</string>
 	<key>Focus on this task</key>
 	<string>Focar nesta tarefa</string>
 	<key>Focus session</key>
@@ -1561,6 +1591,8 @@
 	<string>Membro fundador: chegou ao Tabbi nos primeiros 100 dias.</string>
 	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
 	<string>Membro fundador: você chegou ao Tabbi nos primeiros 100 dias.</string>
+	<key>Frame</key>
+	<string>Moldura</string>
 	<key>Free all day</key>
 	<string>Livre o dia todo</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1683,6 +1715,8 @@
 	<string>Mandou bem!</string>
 	<key>Great job, team!</key>
 	<string>Mandou bem, equipe!</string>
+	<key>Hall of Fame</key>
+	<string>Hall da Fama</string>
 	<key>Halloween</key>
 	<string>Halloween</string>
 	<key>Halo</key>
@@ -1699,8 +1733,6 @@
 	<string>Preto como o hardware, calmo e nítido.</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>Tem um código? Digite o código do grupo de %lld caracteres e pressione Return para entrar</string>
-	<key>Have an invite? Type the %lld-character code and press Return to join</key>
-	<string>Tem um convite? Digite o código de %lld caracteres e pressione Return</string>
 	<key>Head Mirror</key>
 	<string>Espelho frontal</string>
 	<key>Headphones</key>
@@ -1741,6 +1773,8 @@
 	<string>Histórico</string>
 	<key>Honey</key>
 	<string>Mel</string>
+	<key>Hours show up after the first focus session. Last week's top 3 keep their laurels until Sunday.</key>
+	<string>As horas aparecem depois da primeira sessão de foco. O top 3 da semana passada mantém os louros até domingo.</string>
 	<key>How %@ works</key>
 	<string>Como funciona o %@</string>
 	<key>How long each item stays before the next one</key>
@@ -1831,8 +1865,8 @@
 	<string>Invisível para os amigos</string>
 	<key>Invite</key>
 	<string>Convidar</string>
-	<key>Invite code</key>
-	<string>Código de convite</string>
+	<key>Invite link</key>
+	<string>Link de convite</string>
 	<key>Invite links</key>
 	<string>Links de convite</string>
 	<key>Is %@ on this Mac?</key>
@@ -1875,6 +1909,10 @@
 	<string>Itens sem nada para mostrar são pulados.</string>
 	<key>Its config sets an API key, which this tab doesn't send.</key>
 	<string>A configuração dele define uma chave de API que esta aba não envia.</string>
+	<key>Its owner lets you in.</key>
+	<string>O dono deixa você entrar.</string>
+	<key>Its owner lets you in. A request goes away after 7 days.</key>
+	<string>O dono deixa você entrar. O pedido expira em 7 dias.</string>
 	<key>Its settings turned the connection away.</key>
 	<string>As configurações dele recusaram a conexão.</string>
 	<key>Join</key>
@@ -1889,8 +1927,6 @@
 	<string>Entrar na equipe</string>
 	<key>Join Party</key>
 	<string>Entrar no Grupo</string>
-	<key>Join a study crew</key>
-	<string>Entre em uma equipe de estudo</string>
 	<key>Join this crew?</key>
 	<string>Entrar nesta equipe?</string>
 	<key>Join this party now</key>
@@ -1939,10 +1975,8 @@
 	<string>Última sincronização: %@</string>
 	<key>Last week</key>
 	<string>Semana passada</string>
-	<key>Last week's winners and their laurels</key>
-	<string>Os vencedores da semana passada e seus louros</string>
-	<key>Last week's winners show here once a week has ended.</key>
-	<string>Os vencedores aparecem aqui quando uma semana termina.</string>
+	<key>Last weeks</key>
+	<string>Últimas semanas</string>
 	<key>Latest adventure: %@</key>
 	<string>Última aventura: %@</string>
 	<key>Launch %@</key>
@@ -1953,7 +1987,7 @@
 	<string>Aprendendo</string>
 	<key>Leave</key>
 	<string>Sair</string>
-	<key>Leave Crew</key>
+	<key>Leave crew</key>
 	<string>Sair da equipe</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>Deixe vazio para o padrão, que é rápido e barato.</string>
@@ -1969,10 +2003,14 @@
 	<string>Deixar este bloco fora do plano</string>
 	<key>Leave this question unanswered</key>
 	<string>Deixar sem resposta</string>
+	<key>Leave your crew to start a new one</key>
+	<string>Saia da sua equipe para criar outra</string>
 	<key>Less</key>
 	<string>Menos</string>
 	<key>Let %@ find you again. You won't be friends until one of you adds the other.</key>
 	<string>Deixe %@ te achar de novo. Vocês só serão amigos quando um adicionar o outro.</string>
+	<key>Let %@ into the crew</key>
+	<string>Deixar %@ entrar na equipe</string>
 	<key>Let Tabbi into Anki</key>
 	<string>Deixe o Tabbi entrar no Anki</string>
 	<key>Let Tabbi run your Focus shortcuts</key>
@@ -2011,6 +2049,8 @@
 	<string>Atividade ao vivo</string>
 	<key>Loading</key>
 	<string>Carregando</string>
+	<key>Loading the board</key>
+	<string>Carregando o placar</string>
 	<key>Loading your crew…</key>
 	<string>Carregando sua equipe…</string>
 	<key>Loading…</key>
@@ -2071,6 +2111,8 @@
 	<string>O Tabbi pode executar seus atalhos?</string>
 	<key>Measuring cores...</key>
 	<string>Medindo núcleos...</string>
+	<key>Medals from every week's top 3</key>
+	<string>Medalhas do top 3 de cada semana</string>
 	<key>Media</key>
 	<string>Mídia</string>
 	<key>Meetings, music and timers beside the closed notch.</key>
@@ -2119,8 +2161,6 @@
 	<string>Pedra-da-lua</string>
 	<key>More</key>
 	<string>Mais</string>
-	<key>More crew options</key>
-	<string>Mais opções da equipe</string>
 	<key>More events</key>
 	<string>Mais eventos</string>
 	<key>More focus than last week. Nice climb!</key>
@@ -2151,6 +2191,8 @@
 	<string>Música</string>
 	<key>Mute</key>
 	<string>Silenciar</string>
+	<key>My crew</key>
+	<string>Minha equipe</string>
 	<key>Name</key>
 	<string>Nome</string>
 	<key>Name your pet</key>
@@ -2171,6 +2213,8 @@
 	<string>Novos amigos</string>
 	<key>New tabs may ask for %@.</key>
 	<string>As novas abas podem pedir %@.</string>
+	<key>New week in %@</key>
+	<string>Nova semana em %@</string>
 	<key>Next meeting</key>
 	<string>Próxima reunião</string>
 	<key>Next track</key>
@@ -2197,8 +2241,8 @@
 	<string>Nenhum calendário ainda</string>
 	<key>No collar</key>
 	<string>Sem coleira</string>
-	<key>No crew has studied yet this week. Yours could be first.</key>
-	<string>Nenhuma equipe estudou ainda nesta semana. A sua pode ser a primeira.</string>
+	<key>No crews match</key>
+	<string>Nenhuma equipe corresponde</string>
 	<key>No events</key>
 	<string>Sem eventos</string>
 	<key>No events on your calendars today.</key>
@@ -2215,8 +2259,12 @@
 	<string>Sem tempo livre nesta semana</string>
 	<key>No friends yet</key>
 	<string>Nenhum amigo ainda</string>
+	<key>No hours yet this week</key>
+	<string>Ainda sem horas nesta semana</string>
 	<key>No limits in your Codex logs yet</key>
 	<string>Ainda sem limites nos seus logs do Codex</string>
+	<key>No medals yet</key>
+	<string>Ainda sem medalhas</string>
 	<key>No more events today</key>
 	<string>Sem mais eventos hoje</string>
 	<key>No music app found</key>
@@ -2227,10 +2275,6 @@
 	<string>Ninguém tem esse código de amigo.</string>
 	<key>No one is blocked.</key>
 	<string>Ninguém bloqueado.</string>
-	<key>No public crews match.</key>
-	<string>Nenhuma equipe pública corresponde.</string>
-	<key>No public crews yet. Make the first one.</key>
-	<string>Ainda não há equipes públicas. Crie a primeira.</string>
 	<key>No saved chats</key>
 	<string>Nenhum chat salvo</string>
 	<key>No shortcut named “%@”. Check the name in Shortcuts.</key>
@@ -2435,6 +2479,8 @@
 	<string>Só em parte. O Tabbi pode adicionar eventos, mas não lê-los.</string>
 	<key>Only people with the invite can join.</key>
 	<string>Só quem tem o convite pode entrar.</string>
+	<key>Only people with the invite link can join. Click to make it public.</key>
+	<string>Só quem tem o link de convite pode entrar. Clique para tornar pública.</string>
 	<key>Only the crew's owner can do that.</key>
 	<string>Só o dono da equipe pode fazer isso.</string>
 	<key>Only the host can change the session.</key>
@@ -2791,8 +2837,8 @@
 	<string>Política de Privacidade</string>
 	<key>Private</key>
 	<string>Privada</string>
-	<key>Private: only people with the invite can join.</key>
-	<string>Privada: só quem tem o convite pode entrar.</string>
+	<key>Private, invite only</key>
+	<string>Privada, só com convite</string>
 	<key>Productivity</key>
 	<string>Produtividade</string>
 	<key>Profile</key>
@@ -2803,8 +2849,6 @@
 	<string>Sugestão: %@. Clique para adicionar ou pular</string>
 	<key>Public</key>
 	<string>Pública</string>
-	<key>Public: anyone can find and join it.</key>
-	<string>Pública: qualquer pessoa pode encontrar e entrar.</string>
 	<key>Pumpkin Hat</key>
 	<string>Chapéu de abóbora</string>
 	<key>Pup</key>
@@ -2839,6 +2883,12 @@
 	<string>Chuva</string>
 	<key>Rain cloud</key>
 	<string>Nuvem de chuva</string>
+	<key>Rank %lld, %@, %@</key>
+	<string>Posição %lld, %@, %@</string>
+	<key>Rank %lld, %@, %@ this week, %@</key>
+	<string>Posição %lld, %@, %@ nesta semana, %@</string>
+	<key>Ranked by golds, then silvers, then bronzes, then whoever reached the tally first.</key>
+	<string>Ordenado por ouros, depois pratas, depois bronzes e depois por quem chegou primeiro.</string>
 	<key>Rare</key>
 	<string>Raros</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2943,6 +2993,8 @@
 	<string>Pedido enviado para %@</string>
 	<key>Request sent to %@.</key>
 	<string>Pedido enviado para %@.</string>
+	<key>Requested</key>
+	<string>Solicitado</string>
 	<key>Reset to Default</key>
 	<string>Restaurar padrão</string>
 	<key>Reset to Defaults</key>
@@ -3207,8 +3259,6 @@
 	<string>Mostra as prévias que este kit escolhe.</string>
 	<key>Shuffle</key>
 	<string>Aleatório</string>
-	<key>Shuffle the crest</key>
-	<string>Brasão aleatório</string>
 	<key>Sign In</key>
 	<string>Entrar</string>
 	<key>Sign Out</key>
@@ -3441,6 +3491,8 @@
 	<string>Bloco de estudo</string>
 	<key>Study buddies</key>
 	<string>Dupla de estudo</string>
+	<key>Study crews: weekly board and Hall of Fame</key>
+	<string>Equipes de estudo: placar semanal e Hall da Fama</string>
 	<key>Study days</key>
 	<string>Dias de estudo</string>
 	<key>Study methods</key>
@@ -3455,10 +3507,10 @@
 	<string>Estude até perder o foco, a pausa se ajusta</string>
 	<key>Study with a cat</key>
 	<string>Estudar com um gato</string>
-	<key>Study with a crew and climb the weekly top 3.</key>
-	<string>Estude em equipe e suba no top 3 da semana.</string>
 	<key>Study with a dog</key>
 	<string>Estudar com um cachorro</string>
+	<key>Study with friends and climb the board together.</key>
+	<string>Estude com amigos e subam juntos no placar.</string>
 	<key>Study with friends and see who is focusing now.</key>
 	<string>Estude com amigos e veja quem está focando agora.</string>
 	<key>Study with friends, see their timers.</key>
@@ -3581,6 +3633,8 @@
 	<string>Obrigado. Sua denúncia foi enviada e %@ foi bloqueado.</string>
 	<key>Thanks. Your report was sent.</key>
 	<string>Obrigado. Sua denúncia foi enviada.</string>
+	<key>That crew has a lot of requests waiting. Try again later.</key>
+	<string>Essa equipe tem muitos pedidos esperando. Tente mais tarde.</string>
 	<key>That crew is full.</key>
 	<string>Essa equipe está cheia.</string>
 	<key>That crew is gone or the code is wrong.</key>
@@ -3609,6 +3663,8 @@
 	<string>Esse grupo está cheio.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>Esse nome de pet não é permitido. Escolha outro.</string>
+	<key>That request is no longer waiting.</key>
+	<string>Esse pedido não está mais esperando.</string>
 	<key>That's a wrap. Well done!</key>
 	<string>Fechou. Muito bem!</string>
 	<key>That's your own code.</key>
@@ -3635,8 +3691,6 @@
 	<string>O app Atalhos não respondeu a tempo. Tente de novo daqui a pouco.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
 	<string>A ferramenta de linha de comando do Atalhos não está disponível neste Mac.</string>
-	<key>The Tabbi team hid this crew from the board and Find.</key>
-	<string>A equipe do Tabbi ocultou esta equipe do placar e da busca.</string>
 	<key>The Tabbi team reviews it. %@ isn't told.</key>
 	<string>A equipe do Tabbi analisa. %@ não fica sabendo.</string>
 	<key>The app this needs isn't on this Mac</key>
@@ -3703,8 +3757,8 @@
 	<string>O timer começa com %@</string>
 	<key>The tool's own default</key>
 	<string>O padrão da ferramenta</string>
-	<key>The week ends Sunday 23:59 UTC. Then the top 3 freeze and win their laurels for next week.</key>
-	<string>A semana termina no domingo às 23:59 UTC. Aí o top 3 congela e ganha seus louros para a semana seguinte.</string>
+	<key>The week runs Monday to Sunday (UTC). Ends %@. The top 3 wear a laurel next week.</key>
+	<string>A semana vai de segunda a domingo (UTC). Termina %@. O top 3 usa um louro na semana seguinte.</string>
 	<key>The work no one sees is the work that changes you.</key>
 	<string>O trabalho que ninguém vê é o que muda você.</string>
 	<key>The year you were born</key>
@@ -3747,6 +3801,8 @@
 	<string>Isto é uma demo. Execute sem TABBI_DEMO para sair de uma equipe.</string>
 	<key>This is a demo. Run without TABBI_DEMO to make a crew.</key>
 	<string>Isto é uma demo. Execute sem TABBI_DEMO para criar uma equipe.</string>
+	<key>This is a demo. Run without TABBI_DEMO to study with a crew.</key>
+	<string>Isto é uma demo. Execute sem TABBI_DEMO para estudar em equipe.</string>
 	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
 	<string>Isto é uma demonstração. Execute sem TABBI_DEMO para estudar com amigos.</string>
 	<key>This is usually short. Check again in a moment.</key>
@@ -3767,12 +3823,14 @@
 	<string>Esta tarefa está na lista de hoje</string>
 	<key>This week</key>
 	<string>Esta semana</string>
-	<key>This week's live top 3</key>
-	<string>O top 3 ao vivo da semana</string>
+	<key>This week's leaderboard</key>
+	<string>Placar desta semana</string>
 	<key>This works. Nothing to do.</key>
 	<string>Está funcionando. Nada a fazer.</string>
 	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
 	<string>Três metas pequenas por mês. São opcionais, e um mês perdido não custa nada.</string>
+	<key>Tied with %@ at %@</key>
+	<string>Empatado com %@ com %@</string>
 	<key>Time</key>
 	<string>Horário</string>
 	<key>Time for a %lld-minute break.</key>
@@ -3833,10 +3891,6 @@
 	<string>Muitas tentativas por enquanto. Espere um minuto e tente de novo.</string>
 	<key>Took back the import of %@.</key>
 	<string>A importação de %@ foi desfeita.</string>
-	<key>Top 3</key>
-	<string>Top 3</string>
-	<key>Top 3 finishes: %lld gold, %lld silver, %lld bronze</key>
-	<string>Vezes no top 3: %lld ouro, %lld prata, %lld bronze</string>
 	<key>Top decks</key>
 	<string>Principais baralhos</string>
 	<key>Top model</key>
@@ -3849,6 +3903,8 @@
 	<string>Tentar de novo</string>
 	<key>Try again now</key>
 	<string>Tentar de novo agora</string>
+	<key>Try another word, or create one.</key>
+	<string>Tente outra palavra ou crie uma.</string>
 	<key>Try the server again now</key>
 	<string>Tentar o servidor de novo agora</string>
 	<key>Try to reach Party again now</key>
@@ -3971,8 +4027,6 @@
 	<string>Uso do seu limite semanal</string>
 	<key>Use the default %@ server</key>
 	<string>Usar o servidor padrão do %@</string>
-	<key>Use this icon</key>
-	<string>Usar este ícone</string>
 	<key>Used to greet you.</key>
 	<string>Usado para cumprimentar você.</string>
 	<key>Uses your ChatGPT plan through the codex command.</key>
@@ -4015,12 +4069,16 @@
 	<string>Aguardando o Anki iniciar</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>Aguardando o Anki iniciar para abrir %@</string>
+	<key>Waiting to join %@</key>
+	<string>Aguardando para entrar em %@</string>
 	<key>Waiting: %lld</key>
 	<string>Aguardando: %lld</string>
 	<key>Walk through the steps to connect %@</key>
 	<string>Ver os passos para conectar: %@</string>
 	<key>Wants to be friends</key>
 	<string>Quer ser seu amigo</string>
+	<key>Wants to join</key>
+	<string>Quer entrar</string>
 	<key>Wardrobe</key>
 	<string>Guarda-roupa</string>
 	<key>Warm cream and peach, soft and gentle.</key>
@@ -4053,6 +4111,8 @@
 	<string>O que aconteceu, em uma ou duas frases</string>
 	<key>What should we call you?</key>
 	<string>Como podemos te chamar?</string>
+	<key>What you study</key>
+	<string>O que vocês estudam</string>
 	<key>When Anki asked whether to let Tabbi in, the answer was no.</key>
 	<string>Quando o Anki perguntou se podia deixar o Tabbi entrar, a resposta foi não.</string>
 	<key>When focus ends</key>
@@ -4089,10 +4149,14 @@
 	<string>Com o Claude Code como sua IA, Pergunte à IA e Uso de IA usam o seu próprio CLI claude conectado; o %@ nunca lê suas credenciais. Configure isto só se o claude não for encontrado automaticamente.</string>
 	<key>With Ollama open, run ollama pull %@ in Terminal once.</key>
 	<string>Com o Ollama aberto, rode ollama pull %@ uma vez no Terminal.</string>
+	<key>Withdraw your request to join %@</key>
+	<string>Retirar seu pedido para entrar em %@</string>
 	<key>Wizard Hat</key>
 	<string>Chapéu de mago</string>
 	<key>Wizard Robe</key>
 	<string>Manto de mago</string>
+	<key>Wk %lld</key>
+	<string>Sem. %lld</string>
 	<key>Works from any app. On Today, type right away to add a task.</key>
 	<string>Funciona em qualquer app. Em Hoje, digite na hora para adicionar uma tarefa.</string>
 	<key>Wrap up</key>
@@ -4187,10 +4251,14 @@
 	<string>Não tem atraso nenhum. Você segue o seu próprio relógio, e ele só anda para frente.</string>
 	<key>You're not in a crew anymore.</key>
 	<string>Você não está mais em uma equipe.</string>
+	<key>You're not in a crew yet</key>
+	<string>Você ainda não está em uma equipe</string>
 	<key>You're not in a party anymore.</key>
 	<string>Você não está mais em um grupo.</string>
 	<key>You're the only one here for now.</key>
 	<string>Por enquanto, só você está aqui.</string>
+	<key>You've asked a lot of crews today. Try again tomorrow.</key>
+	<string>Você pediu para entrar em muitas equipes hoje. Tente amanhã.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>Você bloqueou gente demais. Desbloqueie alguém primeiro.</string>
 	<key>You've made a lot of crews today. Try again tomorrow.</key>
@@ -4235,6 +4303,10 @@
 	<string>Seu complemento AnkiConnect é antigo demais para o Tabbi.</string>
 	<key>Your crew</key>
 	<string>Sua equipe</string>
+	<key>Your crew and its members</key>
+	<string>Sua equipe e os membros</string>
+	<key>Your crew studied %@ this week</key>
+	<string>Sua equipe estudou %@ nesta semana</string>
 	<key>Your data</key>
 	<string>Seus dados</string>
 	<key>Your day on a timeline, with the free time in between.</key>
@@ -4269,8 +4341,6 @@
 	<string>Seu nome, até %lld caracteres</string>
 	<key>Your own focus and break lengths</key>
 	<string>Seus próprios tempos de foco e pausa</string>
-	<key>Your party and friends</key>
-	<string>Seu grupo e amigos</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>Seu perfil de grupo foi redefinido. Reconectando…</string>
 	<key>Your pet</key>
@@ -4295,8 +4365,6 @@
 	<string>Sua playlist</string>
 	<key>Your setup already matches %@</key>
 	<string>Sua configuração já corresponde a %@</string>
-	<key>Your study crew and the weekly top 3</key>
-	<string>Sua equipe de estudo e o top 3 da semana</string>
 	<key>Your study day by day, with the time studied on each</key>
 	<string>Seu estudo dia a dia, com o tempo de cada dia</string>
 	<key>Your study streak and the freezes that protect it</key>

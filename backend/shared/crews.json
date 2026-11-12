@@ -44,7 +44,7 @@
     "bronze"
   ],
   "limits": {
-    "nameMaxLength": 24,
+    "nameMaxLength": 20,
     "descriptionMaxLength": 120,
     "maxMembers": 20,
     "searchPageSize": 20,

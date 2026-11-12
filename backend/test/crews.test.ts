@@ -112,7 +112,9 @@ describe("joining, leaving and removing", () => {
     expect((await call("POST", "/v1/crews/join", { code: priv.crew.inviteCode }, me.token)).body.joined).toBe(false);
     expectError(await call("POST", "/v1/crews/join", { crew: pub.crew.id }, me.token), 409, "in_crew");
     await call("POST", "/v1/crews/leave", {}, me.token);
-    expect((await call("POST", "/v1/crews/join", { crew: pub.crew.id }, me.token)).body.joined).toBe(true);
+    // A public crew by id asks its owner (crews-requests.test.ts); by invite it joins at once.
+    expect((await call("POST", "/v1/crews/join", { crew: pub.crew.id }, me.token)).body).toMatchObject({ joined: false, requested: true });
+    expect((await call("POST", "/v1/crews/join", { code: pub.crew.inviteCode }, me.token)).body.joined).toBe(true);
     expectError(await call("POST", "/v1/crews/join", { code: "AAAAAAA" }, me.token), 404, "crew_not_found");
     expectError(await call("POST", "/v1/crews/join", { code: "AAAAAAA", crew: pub.crew.id }, me.token), 400, "invalid_field");
     expectError(await call("POST", "/v1/crews/join", { code: "OOOOOOO" }, me.token), 400, "invalid_field");
@@ -247,9 +249,10 @@ describe("moderation", () => {
     const dee = byCy.members.find((m: { name: string }) => m.name === "Dee").ref;
     await call("POST", "/v1/crews/block", { crew: crew.id, member: dee }, c.token);
     const names = (await call("GET", "/v1/crews/mine", undefined, c.token)).body.crew.members.map((m: { name: string }) => m.name);
-    expect(names).toEqual(["Owner", "Cy"]);
+    // No one has minutes, so members are in name order.
+    expect(names).toEqual(["Cy", "Owner"]);
     expect((await call("GET", "/v1/crews/mine", undefined, d.token)).body.crew.members.map((m: { name: string }) => m.name))
-      .toEqual(["Owner", "Dee"]);
+      .toEqual(["Dee", "Owner"]);
     expect((await call("POST", "/v1/crews/block", { crew: crew.id, member: dee }, c.token)).body.blocked).toBe(false);
     const self = byCy.members.find((m: { me: boolean }) => m.me).ref;
     expectError(await call("POST", "/v1/crews/block", { crew: crew.id, member: self }, c.token), 400, "self_block");

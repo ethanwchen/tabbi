@@ -1,5 +1,7 @@
 import { tr } from "../localization/tr";
 import { PartyCode, read, type PartyProfile } from "../party/partyModels";
+import { partyPetUpdate } from "../party/partyPetAppearance";
+import type { PetProfile } from "../pets/petProfile";
 import type { Instant } from "../time";
 
 /*
@@ -32,7 +34,11 @@ export function crewWeekContaining(instant: Instant): CrewWeek {
   const year = new Date(thursday * 86_400_000).getUTCFullYear();
   const yearStart = Math.floor(Date.UTC(year, 0, 1) / 86_400_000);
   const week = Math.floor((thursday - yearStart) / 7) + 1;
-  return { id: `${String(year).padStart(4, "0")}-W${String(week).padStart(2, "0")}`, startsAt: monday * 86_400, endsAt: (monday + 7) * 86_400 };
+  return {
+    id: `${String(year).padStart(4, "0")}-W${String(week).padStart(2, "0")}`,
+    startsAt: monday * 86_400,
+    endsAt: (monday + 7) * 86_400,
+  };
 }
 
 export const CREW_LAURELS = ["gold", "silver", "bronze"] as const;
@@ -74,11 +80,27 @@ export interface CrewMember {
 
 /** The member's pet as a Party profile, so the shared Party appearance code draws it; undefined when hidden. */
 export function memberPartyProfile(member: CrewMember): PartyProfile | undefined {
-  const pet = member.pet;
-  if (pet === undefined) return undefined;
+  return member.pet === undefined ? undefined : crewPetProfile(member.pet, member.name, member.ref, member.badges);
+}
+
+/** A local pet as a crew pet, through the Party appearance. */
+export function crewPetOf(profile: PetProfile): CrewPet {
+  const update = partyPetUpdate(profile);
   return {
-    code: member.ref,
-    name: member.name,
+    petName: update.petName ?? profile.name,
+    species: update.species ?? "cat",
+    breed: update.breed ?? "tabby",
+    colors: update.colors ?? [],
+    costume: update.costume ?? "none",
+    accessories: update.accessories ?? [],
+  };
+}
+
+/** A crew pet as a Party profile, so Party's pet drawing shows it. */
+export function crewPetProfile(pet: CrewPet, name: string, code = "", badges: readonly string[] = []): PartyProfile {
+  return {
+    code,
+    name,
     petName: pet.petName,
     species: pet.species,
     breed: pet.breed,
@@ -87,7 +109,7 @@ export function memberPartyProfile(member: CrewMember): PartyProfile | undefined
     accessories: pet.accessories,
     points: 0,
     level: 1,
-    badges: member.badges,
+    badges,
   };
 }
 
@@ -110,6 +132,8 @@ export interface CrewSummary {
   readonly memberCount: number;
   readonly maxMembers: number;
   readonly weekMinutes: number;
+  /** All-time gold medals, which the hero crests show as pips. */
+  readonly golds: number;
 }
 
 export function crewIsFull(crew: CrewSummary): boolean {
@@ -117,13 +141,17 @@ export function crewIsFull(crew: CrewSummary): boolean {
 }
 
 /** The crew's crest as it came (`resolvedCrest` swaps ids this app lacks for the defaults). */
-export function crewCrest(crew: CrewSummary): { frame: string; emblem: string; color: string } {
+export function crewCrest(crew: CrewSummary): {
+  frame: string;
+  emblem: string;
+  color: string;
+} {
   return { frame: crew.frame, emblem: crew.emblem, color: crew.color };
 }
 
-/** Trophy pips on the crest: one per top 3 finish, at most three. */
+/** Pips on a hero crest: one per all-time gold, at most three. */
 export function crewPips(crew: CrewSummary): number {
-  return Math.min(crew.trophies, 3);
+  return Math.min(crew.golds, 3);
 }
 
 /** Gold, silver and bronze finishes so far. */
@@ -149,6 +177,61 @@ export interface CrewDetail {
   readonly inviteCode: string | undefined;
   /** The maintainer hid it from the board and Find; only members are told. */
   readonly hidden: boolean;
+  /** The last finished weeks, newest first. */
+  readonly history: readonly CrewWeekResult[];
+  /** How many crews have minutes this week, for "12th of 38 crews". */
+  readonly crewCount: number;
+  /** Requests to join waiting for the owner (the owner's own view only). */
+  readonly requests: readonly CrewJoinRequest[];
+}
+
+/** One finished week on a crew page: its place (undefined with no minutes), minutes and the medal it won, if any. */
+export interface CrewWeekResult {
+  readonly week: CrewWeek;
+  readonly place: number | undefined;
+  readonly minutes: number;
+  readonly medal: CrewLaurel | undefined;
+}
+
+/** Someone asking to join a public crew, as its owner sees them. */
+export interface CrewJoinRequest {
+  readonly ref: string;
+  readonly name: string;
+  readonly pet: CrewPet | undefined;
+  readonly badges: readonly string[];
+  readonly requestedAt: Instant;
+  readonly expiresAt: Instant;
+}
+
+/** The requester as a crew member, so the same rows and pets draw them. */
+export function requestMember(request: CrewJoinRequest): CrewMember {
+  return {
+    ref: request.ref,
+    name: request.name,
+    pet: request.pet,
+    studyLevel: undefined,
+    badges: request.badges,
+    weekMinutes: 0,
+    owner: false,
+    me: false,
+  };
+}
+
+/** My own pending request to join a public crew. */
+export interface CrewMyRequest {
+  readonly crew: CrewSummary;
+  readonly requestedAt: Instant;
+  readonly expiresAt: Instant;
+}
+
+/** What asking to join a public crew led to: in the crew (a server from before join requests), or waiting for the owner. */
+export type CrewJoinOutcome = { readonly kind: "joined"; readonly crew: CrewDetail } | { readonly kind: "requested"; readonly request: CrewMyRequest };
+
+/** My crew's standing this week on the board. */
+export interface CrewStanding {
+  /** Undefined with no minutes yet. */
+  readonly rank: number | undefined;
+  readonly minutes: number;
 }
 
 /** My own member row, when I belong. */
@@ -158,9 +241,14 @@ export function crewMe(crew: CrewDetail): CrewMember | undefined {
 
 /** One place on the board. */
 export interface CrewBoardEntry {
+  /** A competition place: tied crews share it and the next is skipped. */
   readonly rank: number;
   readonly minutes: number;
   readonly crew: CrewSummary;
+  /** The pets of the crew's most active members (featured entries only). */
+  readonly pets: readonly CrewPet[];
+  /** The names of the crews tied at this place. */
+  readonly tiedWith: readonly string[];
 }
 
 /** A finished week's frozen top 3. */
@@ -172,8 +260,17 @@ export interface CrewFeatured {
 /** `GET /v1/crews/board`: this week's live top 3 and last week's winners. */
 export interface CrewBoard {
   readonly week: CrewWeek;
+  /** Places 1 to 3 (more with ties), with their pets. */
   readonly top: readonly CrewBoardEntry[];
   readonly featured: CrewFeatured | undefined;
+  /** Places 4 and down, one page at a time. */
+  readonly rows: readonly CrewBoardEntry[];
+  /** The cursor for the next page of `rows`, undefined at the end. */
+  readonly next: string | undefined;
+  /** How many crews have minutes this week. */
+  readonly crewCount: number;
+  /** My crew this week, or undefined without a crew. */
+  readonly mine: CrewStanding | undefined;
 }
 
 /** What I send to create or edit a crew; an absent field of an edit keeps the server's value. */
@@ -194,12 +291,23 @@ export interface CrewHallEntry {
   /** When the crew reached its current tally (the end of that week); earlier wins a tie. */
   readonly reachedAt: Instant;
   readonly crew: CrewSummary;
+  /** The pets of the crew's most active members (the first three only). */
+  readonly pets: readonly CrewPet[];
 }
 
 /** `GET /v1/crews/hall`: one page of the Hall of Fame and the cursor for the next, undefined at the end. */
 export interface CrewHallPage {
   readonly entries: readonly CrewHallEntry[];
   readonly next: string | undefined;
+  /** Where my crew stands (first page only): undefined without a crew; an undefined rank before its first medal. */
+  readonly mine: CrewHallStanding | undefined;
+}
+
+/** My crew in the Hall of Fame. */
+export interface CrewHallStanding {
+  readonly rank: number | undefined;
+  readonly medals: CrewMedals;
+  readonly reachedAt: Instant | undefined;
 }
 
 /** One finished focus stretch, as the server credits it. */
@@ -264,7 +372,11 @@ function laurelOf(value: unknown): CrewLaurel | undefined {
 
 export function readCrewWeek(value: unknown): CrewWeek {
   const object = read.record(value, "week");
-  return { id: read.string(object, "id"), startsAt: read.number(object, "startsAt"), endsAt: read.number(object, "endsAt") };
+  return {
+    id: read.string(object, "id"),
+    startsAt: read.number(object, "startsAt"),
+    endsAt: read.number(object, "endsAt"),
+  };
 }
 
 export function readCrewPet(value: unknown): CrewPet {
@@ -310,12 +422,17 @@ export function readCrewSummary(value: unknown): CrewSummary {
     memberCount: read.integer(object, "memberCount"),
     maxMembers: read.optional(object, "maxMembers", read.integer) ?? 20,
     weekMinutes: read.optional(object, "weekMinutes", read.integer) ?? 0,
+    golds: read.optional(object, "golds", read.integer) ?? 0,
   };
 }
 
 function readMedals(raw: unknown): CrewMedals {
   const m = read.record(raw, "medals");
-  return { gold: read.integer(m, "gold"), silver: read.integer(m, "silver"), bronze: read.integer(m, "bronze") };
+  return {
+    gold: read.integer(m, "gold"),
+    silver: read.integer(m, "silver"),
+    bronze: read.integer(m, "bronze"),
+  };
 }
 
 export function readCrewHallPage(value: unknown): CrewHallPage {
@@ -323,9 +440,23 @@ export function readCrewHallPage(value: unknown): CrewHallPage {
   return {
     entries: read.array(object, "entries").map((raw) => {
       const entry = read.record(raw, "entry");
-      return { rank: read.integer(entry, "rank"), medals: readMedals(entry.medals), reachedAt: read.number(entry, "reachedAt"), crew: readCrewSummary(entry.crew) };
+      return {
+        rank: read.integer(entry, "rank"),
+        medals: readMedals(entry.medals),
+        reachedAt: read.number(entry, "reachedAt"),
+        crew: readCrewSummary(entry.crew),
+        pets: (read.optional(entry, "pets", read.array) ?? []).map(readCrewPet),
+      };
     }),
     next: read.optional(object, "next", read.string),
+    mine: read.optionalObject(object, "mine", (raw) => {
+      const mine = read.record(raw, "mine");
+      return {
+        rank: read.optional(mine, "rank", read.integer),
+        medals: readMedals(mine.medals),
+        reachedAt: read.optional(mine, "reachedAt", read.number),
+      };
+    }),
   };
 }
 
@@ -342,22 +473,75 @@ export function readCrewDetail(value: unknown): CrewDetail {
     owner: read.optional(object, "owner", read.boolean) ?? false,
     inviteCode: read.optional(object, "inviteCode", read.string),
     hidden: read.optional(object, "hidden", read.boolean) ?? false,
+    history: (read.optional(object, "history", read.array) ?? []).map(readCrewWeekResult),
+    crewCount: read.optional(object, "crewCount", read.integer) ?? 0,
+    requests: (read.optional(object, "requests", read.array) ?? []).map(readCrewJoinRequest),
+  };
+}
+
+export function readCrewWeekResult(value: unknown): CrewWeekResult {
+  const object = read.record(value, "week");
+  return {
+    week: readCrewWeek(object.week),
+    place: read.optional(object, "place", read.integer),
+    minutes: read.optional(object, "minutes", read.integer) ?? 0,
+    medal: laurelOf(object.medal),
+  };
+}
+
+export function readCrewJoinRequest(value: unknown): CrewJoinRequest {
+  const object = read.record(value, "request");
+  return {
+    ref: read.string(object, "ref"),
+    name: read.string(object, "name"),
+    pet: read.optionalObject(object, "pet", readCrewPet),
+    badges: read.optional(object, "badges", read.strings) ?? [],
+    requestedAt: read.number(object, "requestedAt"),
+    expiresAt: read.number(object, "expiresAt"),
+  };
+}
+
+export function readCrewMyRequest(value: unknown): CrewMyRequest {
+  const object = read.record(value, "request");
+  return {
+    crew: readCrewSummary(object.crew),
+    requestedAt: read.number(object, "requestedAt"),
+    expiresAt: read.number(object, "expiresAt"),
   };
 }
 
 export function readCrewBoardEntry(value: unknown): CrewBoardEntry {
   const object = read.record(value, "entry");
-  return { rank: read.integer(object, "rank"), minutes: read.integer(object, "minutes"), crew: readCrewSummary(object.crew) };
+  return {
+    rank: read.integer(object, "rank"),
+    minutes: read.integer(object, "minutes"),
+    crew: readCrewSummary(object.crew),
+    pets: (read.optional(object, "pets", read.array) ?? []).map(readCrewPet),
+    tiedWith: read.optional(object, "tiedWith", read.strings) ?? [],
+  };
 }
 
 export function readCrewBoard(value: unknown): CrewBoard {
   const object = read.record(value, "board");
   return {
     week: readCrewWeek(object.week),
-    top: read.array(object, "top").map(readCrewBoardEntry),
+    top: (read.optional(object, "top", read.array) ?? []).map(readCrewBoardEntry),
     featured: read.optionalObject(object, "featured", (raw) => {
       const featured = read.record(raw, "featured");
-      return { week: readCrewWeek(featured.week), entries: read.array(featured, "entries").map(readCrewBoardEntry) };
+      return {
+        week: readCrewWeek(featured.week),
+        entries: read.array(featured, "entries").map(readCrewBoardEntry),
+      };
+    }),
+    rows: (read.optional(object, "rows", read.array) ?? []).map(readCrewBoardEntry),
+    next: read.optional(object, "next", read.string),
+    crewCount: read.optional(object, "crewCount", read.integer) ?? 0,
+    mine: read.optionalObject(object, "mine", (raw) => {
+      const mine = read.record(raw, "mine");
+      return {
+        rank: read.optional(mine, "rank", read.integer),
+        minutes: read.optional(mine, "minutes", read.integer) ?? 0,
+      };
     }),
   };
 }
@@ -367,7 +551,10 @@ export function readCrewSessionsReply(value: unknown): CrewSessionsReply {
   return {
     results: read.array(object, "results").map((raw) => {
       const result = read.record(raw, "result");
-      return { status: read.string(result, "status"), credited: read.integer(result, "credited") };
+      return {
+        status: read.string(result, "status"),
+        credited: read.integer(result, "credited"),
+      };
     }),
     week: readCrewWeek(object.week),
     crewMinutes: read.optional(object, "crewMinutes", read.integer),

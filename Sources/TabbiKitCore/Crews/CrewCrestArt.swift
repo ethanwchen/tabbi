@@ -91,6 +91,16 @@ public enum CrewCrestArt {
         return art.compose(crest, laurel: laurel != nil, pips: pips).map { $0.flatMap { palette[$0] } }
     }
 
+    /// An emblem alone in a crew color (its outline follows the color), for
+    /// the editor's emblem picker.
+    public static func emblemImage(_ emblem: String, color: String, scale: Int) -> CGImage? {
+        let set = art
+        let shown = set.emblem(emblem)
+        let palette = set.palette(color: CrewCatalog.color(color).id, laurel: nil)
+        let colors = shown.pixels.map { $0.flatMap { palette[$0] } }
+        return PixelImage.render(colors, width: shown.width, height: shown.height, scale: max(1, scale))
+    }
+
     /// The crest as a crisp image at a whole number of device pixels per
     /// sprite pixel, cached.
     public static func image(_ crest: CrewCrest, laurel: CrewLaurel?, pips: Int = 0, scale: Int) -> CGImage? {
@@ -390,11 +400,15 @@ final class CrewCrestImageCache: @unchecked Sendable {
 /// exact `scale` block, like `PetRenderer.render`.
 enum PixelImage {
     static func render(_ colors: [PetColor?], side: Int, scale: Int) -> CGImage? {
-        let width = side * scale, height = side * scale
+        render(colors, width: side, height: side, scale: scale)
+    }
+
+    static func render(_ colors: [PetColor?], width spriteWidth: Int, height spriteHeight: Int, scale: Int) -> CGImage? {
+        let width = spriteWidth * scale, height = spriteHeight * scale
         var bytes = [UInt8](repeating: 0, count: width * height * 4)
-        for sy in 0..<side {
-            for sx in 0..<side {
-                guard let color = colors[sy * side + sx] else { continue }
+        for sy in 0..<spriteHeight {
+            for sx in 0..<spriteWidth {
+                guard let color = colors[sy * spriteWidth + sx] else { continue }
                 let a = UInt16(color.alpha)
                 let premultiplied = [color.red, color.green, color.blue].map { UInt8(UInt16($0) * a / 255) }
                 for dy in 0..<scale {

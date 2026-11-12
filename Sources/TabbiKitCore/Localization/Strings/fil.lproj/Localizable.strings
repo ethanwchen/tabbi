@@ -115,12 +115,16 @@
 	<string>Nagbe-break si %@ kasama mo</string>
 	<key>%@ is ready in the Closet</key>
 	<string>Handa na ang %@ sa Closet</string>
+	<key>%@ is second this week</key>
+	<string>Pangalawa ang %@ ngayong linggo</string>
 	<key>%@ is studying with the party</key>
 	<string>Nag-aaral si %@ kasama ang party</string>
 	<key>%@ is studying with you</key>
 	<string>Nag-aaral si %@ kasama mo</string>
 	<key>%@ is taking the break with you</key>
 	<string>Nagbe-break si %@ kasama mo</string>
+	<key>%@ is third this week</key>
+	<string>Pangatlo ang %@ ngayong linggo</string>
 	<key>%@ isn't connected</key>
 	<string>Hindi nakakonekta ang %@</string>
 	<key>%@ isn't installed</key>
@@ -131,8 +135,12 @@
 	<string>Wala pa ang %@ sa Mac na ito. Ipapakita ng Connections kung paano ito idagdag.</string>
 	<key>%@ isn't set up yet</key>
 	<string>Hindi pa naka-set up ang %@</string>
+	<key>%@ joined the crew.</key>
+	<string>Sumali na si %@ sa crew.</string>
 	<key>%@ keeps their pet private on crew pages.</key>
 	<string>Nakatago ang pet ni %@ sa mga crew page.</string>
+	<key>%@ leads the week</key>
+	<string>Nangunguna ang %@ ngayong linggo</string>
 	<key>%@ learned a song from a bird</key>
 	<string>Natuto si %@ ng awit mula sa ibon</string>
 	<key>%@ left</key>
@@ -159,6 +167,8 @@
 	<string>Hindi makita ang %@</string>
 	<key>%@ of %@</key>
 	<string>%1$@ ng %2$@</string>
+	<key>%@ of %lld crews · %@</key>
+	<string>%@ sa %lld crew · %@</string>
 	<key>%@ of focus.</key>
 	<string>%@ ng focus.</string>
 	<key>%@ opens in Music; press play there.</key>
@@ -223,6 +233,8 @@
 	<string>%1$@ kasama si %2$@</string>
 	<key>%@ with %@ wants to be friends.</key>
 	<string>Gusto kang maging kaibigan ni %1$@ kasama si %2$@.</string>
+	<key>%@ with %@, %@ this week</key>
+	<string>%@ kasama si %@, %@ ngayong linggo</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>Mas maganda ang %@ kapag nasa Applications, kung saan puwede itong magbukas pag-log in mo at mag-update nang kusa. Kokopyahin nito ang sarili roon at magbubukas ulit.</string>
 	<key>%@ · %@ this week</key>
@@ -275,6 +287,8 @@
 	<string>%@: tapos na ngayong buwan</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: nakuha mo ang lahat ng item. Sa iyo pa rin sila pagkatapos ng event.</string>
+	<key>%lld gold, %lld silver, %lld bronze</key>
+	<string>%lld gold, %lld silver, %lld bronze</string>
 	<key>%lld h</key>
 	<string>%lld oras</string>
 	<key>%lld in party</key>
@@ -409,6 +423,10 @@
 	<string>Hanggang %lld screenshot lang ang puwede sa isang tanong</string>
 	<key>A quiet day. Rest up and start fresh tomorrow.</key>
 	<string>Tahimik na araw. Magpahinga ka at magsimula ulit bukas.</string>
+	<key>A quiet start to the week</key>
+	<string>Tahimik na simula ng linggo</string>
+	<key>A random frame, emblem and color</key>
+	<string>Random na frame, emblem at kulay</string>
 	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
 	<string>Isang rare na kulay ng balahibo mula sa pet mo. Subukan ito sa Closet sa ilalim ng Look.</string>
 	<key>A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:</key>
@@ -419,8 +437,6 @@
 	<string>Halimbawang araw. Lalabas dito ang sarili mong mga event kapag naka-connect na ang calendar.</string>
 	<key>A school or work setting may block it. You can check in System Settings.</key>
 	<string>Baka bina-block ito ng setting ng school o trabaho. Puwede mong i-check sa System Settings.</string>
-	<key>A short description (optional)</key>
-	<string>Maikling paglalarawan (opsyonal)</string>
 	<key>A shorter timer</key>
 	<string>Mas maikling timer</string>
 	<key>A slow breath in, and out</key>
@@ -663,8 +679,8 @@
 	<string>Sagot mula sa</string>
 	<key>Answers stay in the notch. Press Command-Return to send and expand, or click Expand on a chat.</key>
 	<string>Nasa notch ang mga sagot. Command-Return para mag-send at mag-expand, o i-click ang Expand.</string>
-	<key>Anyone can find and join it.</key>
-	<string>Puwede itong mahanap at salihan ng kahit sino.</string>
+	<key>Anyone can find it and ask to join. Click to make it private.</key>
+	<string>Puwede itong mahanap at hilinging salihan ng kahit sino. I-click para gawing private.</string>
 	<key>App</key>
 	<string>App</string>
 	<key>Appears when the pointer reaches the top center.</key>
@@ -695,10 +711,14 @@
 	<string>Itanong muna</string>
 	<key>Ask this question again</key>
 	<string>Itanong ulit ito</string>
+	<key>Ask to join %@. Its owner lets you in.</key>
+	<string>Humiling na sumali sa %@. Ang may-ari ang magpapasok sa iyo.</string>
 	<key>Ask “%@”</key>
 	<string>Itanong ang “%@”</string>
 	<key>Asked once. Your answer stays on this Mac.</key>
 	<string>Isang beses lang itatanong. Mananatili sa Mac na ito ang sagot mo.</string>
+	<key>Asked to join %@. Its owner lets you in.</key>
+	<string>Humiling ka nang sumali sa %@. Ang may-ari ang magpapasok sa iyo.</string>
 	<key>Asking Anki to open the deck for review.</key>
 	<string>Hinihiling sa Anki na buksan ang deck para sa review.</string>
 	<key>Astronaut Helmet</key>
@@ -739,6 +759,8 @@
 	<string>Bumalik sa timer</string>
 	<key>Back to today</key>
 	<string>Balik sa ngayon</string>
+	<key>Back to your party and friends</key>
+	<string>Bumalik sa party at mga kaibigan mo</string>
 	<key>Backwards Cap</key>
 	<string>Baligtad na Cap</string>
 	<key>Badges</key>
@@ -855,6 +877,8 @@
 	<string>Kanselahin</string>
 	<key>Cancel Request</key>
 	<string>Kanselahin ang Request</string>
+	<key>Cancel request</key>
+	<string>Kanselahin ang request</string>
 	<key>Cancel your request to %@</key>
 	<string>Kanselahin ang request mo kay %@</string>
 	<key>Candy pink and milk, sweet but never loud.</key>
@@ -921,6 +945,8 @@
 	<string>Suriin ang party server</string>
 	<key>Check the server in Party options.</key>
 	<string>Tingnan ang server sa Party options.</string>
+	<key>Check your internet connection. Crews show up once it's back.</key>
+	<string>Tingnan ang internet connection mo. Lalabas ang mga crew pagbalik nito.</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>Suriin ang internet connection mo. Lalabas ang mga kaibigan at party kapag bumalik na ito.</string>
 	<key>Check your internet connection. You can also set up Party later in its tab.</key>
@@ -1069,8 +1095,6 @@
 	<string>Isara nang hindi sumasali</string>
 	<key>Close without reporting (Esc)</key>
 	<string>Isara nang hindi nagre-report (Esc)</string>
-	<key>Close without saving</key>
-	<string>Isara nang hindi sine-save</string>
 	<key>Closet</key>
 	<string>Closet</string>
 	<key>Code</key>
@@ -1079,6 +1103,8 @@
 	<string>Usage ng Codex</string>
 	<key>Coffee mug</key>
 	<string>Tasa ng kape</string>
+	<key>Color</key>
+	<string>Kulay</string>
 	<key>Command</key>
 	<string>Command</string>
 	<key>Compact</key>
@@ -1127,6 +1153,8 @@
 	<string>Kopyahin</string>
 	<key>Copy Invite Link</key>
 	<string>Kopyahin ang Invite Link</string>
+	<key>Copy an invite link. A friend who opens it joins this crew in one click.</key>
+	<string>Kopyahin ang invite link. Ang kaibigang magbubukas nito ay sasali sa isang click.</string>
 	<key>Copy and open %@</key>
 	<string>Kopyahin at buksan ang %@</string>
 	<key>Copy answer</key>
@@ -1143,8 +1171,6 @@
 	<string>Kopyahin ang friend code</string>
 	<key>Copy the AnkiConnect add-on code to paste into Anki</key>
 	<string>Kopyahin ang code ng AnkiConnect add-on para i-paste sa Anki</string>
-	<key>Copy the invite link. Friends who open it can join your crew.</key>
-	<string>Kopyahin ang invite link. Puwedeng sumali sa crew mo ang mga kaibigang magbubukas nito.</string>
 	<key>Copy what Tabbi found, to paste into a message if you ask someone for help</key>
 	<string>Kopyahin ang nakita ng Tabbi, para i-paste sa message kung hihingi ka ng tulong</string>
 	<key>Copy what you need to paste, then open %@</key>
@@ -1213,6 +1239,8 @@
 	<string>Cream</string>
 	<key>Create</key>
 	<string>Gumawa</string>
+	<key>Create a crew</key>
+	<string>Gumawa ng crew</string>
 	<key>Create a party and get a code to share</key>
 	<string>Gumawa ng party at kumuha ng code na maibabahagi</string>
 	<key>Create the crew with you as its owner</key>
@@ -1225,8 +1253,8 @@
 	<string>Pangalan ng crew</string>
 	<key>Crew names can be up to %lld characters.</key>
 	<string>Hanggang %lld character ang pangalan ng crew.</string>
-	<key>Crew owner</key>
-	<string>May-ari ng crew</string>
+	<key>Crews</key>
+	<string>Mga crew</string>
 	<key>Custom</key>
 	<string>Custom</string>
 	<key>Daily focus goal met</key>
@@ -1247,6 +1275,8 @@
 	<string>Tanggihan</string>
 	<key>Decline %@'s request. They won't be told.</key>
 	<string>Tanggihan ang request ni %@. Hindi nila malalaman.</string>
+	<key>Decline. %@ isn't told.</key>
+	<string>Tanggihan. Hindi sasabihan si %@.</string>
 	<key>Deep</key>
 	<string>Deep</string>
 	<key>Deep cherry red, fizzy and warm, made for late sessions.</key>
@@ -1379,8 +1409,6 @@
 	<string>Nakuha. I-click para hubarin.</string>
 	<key>Earned. Click to wear.</key>
 	<string>Nakuha. I-click para isuot.</string>
-	<key>Edit Crew…</key>
-	<string>I-edit ang crew…</string>
 	<key>Edit crew</key>
 	<string>I-edit ang crew</string>
 	<key>Edit the Custom focus and break lengths</key>
@@ -1393,6 +1421,8 @@
 	<string>Mag-email sa %@ team tungkol sa bug, isang tao sa Party o kahit ano</string>
 	<key>Email the %@ team about a person or a problem</key>
 	<string>Mag-email sa %@ team tungkol sa isang tao o problema</string>
+	<key>Emblem</key>
+	<string>Emblem</string>
 	<key>End</key>
 	<string>Tapusin</string>
 	<key>End it for everyone in the Party tab</key>
@@ -1402,8 +1432,6 @@
 	<key>End this stretch and take a sized break</key>
 	<string>Tapusin ang yugtong ito at mag-break nang akma ang haba</string>
 	<key>Ends at %@</key>
-	<string>Matatapos sa %@</string>
-	<key>Ends in %@</key>
 	<string>Matatapos sa %@</string>
 	<key>Enough for the %@ and the %@ now.</key>
 	<string>Sapat na para sa %1$@ at %2$@.</string>
@@ -1415,6 +1443,8 @@
 	<string>Ilagay sa Settings ang key mula sa config ng AnkiConnect.</string>
 	<key>Event</key>
 	<string>Event</string>
+	<key>Every Sunday's top 3 earn a medal</key>
+	<string>Tuwing Linggo, may medalya ang top 3</string>
 	<key>Every crew can appear on the weekly top 3 with its members' pets.</key>
 	<string>Puwedeng lumabas ang kahit anong crew sa weekly top 3 kasama ang pets ng mga miyembro.</string>
 	<key>Every deck is caught up</key>
@@ -1459,6 +1489,8 @@
 	<string>Punuin ang libreng oras ngayon ng mga natitira mong task at review. Pinaplano sa Mac na ito, walang idadagdag hangga't hindi mo sinasabi</string>
 	<key>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</key>
 	<string>Punuin ang libreng oras bukas ng mga natitira mong task at review. Pinaplano sa Mac na ito, walang idadagdag hangga't hindi mo sinasabi</string>
+	<key>Find</key>
+	<string>Hanapin</string>
 	<key>Find crews</key>
 	<string>Maghanap ng crew</string>
 	<key>Finish a Party session with friends.</key>
@@ -1509,8 +1541,6 @@
 	<string>Mag-focus sa panahon ng %@.</string>
 	<key>Focus for 50 hours in total.</key>
 	<string>Mag-focus nang 50 oras sa kabuuan.</string>
-	<key>Focus hours this week. The board freezes Sunday 23:59 UTC.</key>
-	<string>Oras ng focus ngayong linggo. Magfi-freeze ang board sa Linggo, 23:59 UTC.</string>
 	<key>Focus on this task</key>
 	<string>Mag-focus sa task na ito</string>
 	<key>Focus session</key>
@@ -1561,6 +1591,8 @@
 	<string>Kasaping Tagapagtatag: sumali sa Tabbi sa unang 100 araw nito.</string>
 	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
 	<string>Kasaping Tagapagtatag: sumali ka sa Tabbi sa unang 100 araw nito.</string>
+	<key>Frame</key>
+	<string>Frame</string>
 	<key>Free all day</key>
 	<string>Libre buong araw</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1683,6 +1715,8 @@
 	<string>Galing mo!</string>
 	<key>Great job, team!</key>
 	<string>Galing ninyo, team!</string>
+	<key>Hall of Fame</key>
+	<string>Hall of Fame</string>
 	<key>Halloween</key>
 	<string>Halloween</string>
 	<key>Halo</key>
@@ -1699,8 +1733,6 @@
 	<string>Itim gaya ng hardware, kalmado at malinaw.</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>May code ka? I-type ang %lld-character na party code at pindutin ang Return para sumali</string>
-	<key>Have an invite? Type the %lld-character code and press Return to join</key>
-	<string>May invite ka? I-type ang %lld-character na code at pindutin ang Return para sumali</string>
 	<key>Head Mirror</key>
 	<string>Head Mirror</string>
 	<key>Headphones</key>
@@ -1741,6 +1773,8 @@
 	<string>History</string>
 	<key>Honey</key>
 	<string>Pulot</string>
+	<key>Hours show up after the first focus session. Last week's top 3 keep their laurels until Sunday.</key>
+	<string>Lalabas ang oras pagkatapos ng unang focus session. Hawak ng top 3 noong isang linggo ang laurels nila hanggang Linggo.</string>
 	<key>How %@ works</key>
 	<string>Paano gumagana ang %@</string>
 	<key>How long each item stays before the next one</key>
@@ -1831,8 +1865,8 @@
 	<string>Hindi kita ng mga kaibigan</string>
 	<key>Invite</key>
 	<string>Mag-invite</string>
-	<key>Invite code</key>
-	<string>Invite code</string>
+	<key>Invite link</key>
+	<string>Invite link</string>
 	<key>Invite links</key>
 	<string>Mga invite link</string>
 	<key>Is %@ on this Mac?</key>
@@ -1875,6 +1909,10 @@
 	<string>Nilalaktawan ang mga item na walang maipakita.</string>
 	<key>Its config sets an API key, which this tab doesn't send.</key>
 	<string>May API key sa config nito, na hindi ipinapadala ng tab na ito.</string>
+	<key>Its owner lets you in.</key>
+	<string>Ang may-ari ang magpapasok sa iyo.</string>
+	<key>Its owner lets you in. A request goes away after 7 days.</key>
+	<string>Ang may-ari ang magpapasok sa iyo. Mawawala ang request pagkalipas ng 7 araw.</string>
 	<key>Its settings turned the connection away.</key>
 	<string>Tinanggihan ng settings nito ang koneksyon.</string>
 	<key>Join</key>
@@ -1889,8 +1927,6 @@
 	<string>Sumali sa crew</string>
 	<key>Join Party</key>
 	<string>Sumali sa Party</string>
-	<key>Join a study crew</key>
-	<string>Sumali sa isang study crew</string>
 	<key>Join this crew?</key>
 	<string>Sumali sa crew na ito?</string>
 	<key>Join this party now</key>
@@ -1939,10 +1975,8 @@
 	<string>Na-sync %@</string>
 	<key>Last week</key>
 	<string>Noong isang linggo</string>
-	<key>Last week's winners and their laurels</key>
-	<string>Mga nanalo noong isang linggo at ang laurels nila</string>
-	<key>Last week's winners show here once a week has ended.</key>
-	<string>Lalabas dito ang mga nanalo kapag natapos ang isang linggo.</string>
+	<key>Last weeks</key>
+	<string>Mga nakaraang linggo</string>
 	<key>Latest adventure: %@</key>
 	<string>Huling pakikipagsapalaran: %@</string>
 	<key>Launch %@</key>
@@ -1953,7 +1987,7 @@
 	<string>Inaaral</string>
 	<key>Leave</key>
 	<string>Umalis</string>
-	<key>Leave Crew</key>
+	<key>Leave crew</key>
 	<string>Umalis sa crew</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>Iwanang blangko para sa default, na mabilis at mura.</string>
@@ -1969,10 +2003,14 @@
 	<string>Huwag isama ang block na ito sa plan</string>
 	<key>Leave this question unanswered</key>
 	<string>Huwag sagutin ang tanong na ito</string>
+	<key>Leave your crew to start a new one</key>
+	<string>Umalis sa crew mo para magsimula ng bago</string>
 	<key>Less</key>
 	<string>Kaunti</string>
 	<key>Let %@ find you again. You won't be friends until one of you adds the other.</key>
 	<string>Hayaang makita ka ulit ni %@. Hindi kayo magkaibigan hangga't walang nag-a-add.</string>
+	<key>Let %@ into the crew</key>
+	<string>Papasukin si %@ sa crew</string>
 	<key>Let Tabbi into Anki</key>
 	<string>Papasukin ang Tabbi sa Anki</string>
 	<key>Let Tabbi run your Focus shortcuts</key>
@@ -2011,6 +2049,8 @@
 	<string>Live activity</string>
 	<key>Loading</key>
 	<string>Naglo-load</string>
+	<key>Loading the board</key>
+	<string>Nilo-load ang board</string>
 	<key>Loading your crew…</key>
 	<string>Nilo-load ang crew mo…</string>
 	<key>Loading…</key>
@@ -2071,6 +2111,8 @@
 	<string>Puwede bang patakbuhin ng Tabbi ang mga shortcut mo?</string>
 	<key>Measuring cores...</key>
 	<string>Sinusukat ang core...</string>
+	<key>Medals from every week's top 3</key>
+	<string>Mga medalya ng top 3 bawat linggo</string>
 	<key>Media</key>
 	<string>Media</string>
 	<key>Meetings, music and timers beside the closed notch.</key>
@@ -2119,8 +2161,6 @@
 	<string>Moonstone</string>
 	<key>More</key>
 	<string>Mas marami</string>
-	<key>More crew options</key>
-	<string>Iba pang opsyon ng crew</string>
 	<key>More events</key>
 	<string>Iba pang event</string>
 	<key>More focus than last week. Nice climb!</key>
@@ -2151,6 +2191,8 @@
 	<string>Music</string>
 	<key>Mute</key>
 	<string>I-mute</string>
+	<key>My crew</key>
+	<string>Crew ko</string>
 	<key>Name</key>
 	<string>Pangalan</string>
 	<key>Name your pet</key>
@@ -2171,6 +2213,8 @@
 	<string>Bagong kaibigan</string>
 	<key>New tabs may ask for %@.</key>
 	<string>Puwedeng humingi ng %@ ang mga bagong tab.</string>
+	<key>New week in %@</key>
+	<string>Bagong linggo sa %@</string>
 	<key>Next meeting</key>
 	<string>Susunod na meeting</string>
 	<key>Next track</key>
@@ -2197,8 +2241,8 @@
 	<string>Wala pang calendar</string>
 	<key>No collar</key>
 	<string>Walang kuwintas</string>
-	<key>No crew has studied yet this week. Yours could be first.</key>
-	<string>Wala pang crew na nag-aral ngayong linggo. Puwedeng mauna ang sa iyo.</string>
+	<key>No crews match</key>
+	<string>Walang tumugmang crew</string>
 	<key>No events</key>
 	<string>Walang event</string>
 	<key>No events on your calendars today.</key>
@@ -2215,8 +2259,12 @@
 	<string>Walang libreng oras ngayong linggo</string>
 	<key>No friends yet</key>
 	<string>Wala pang kaibigan</string>
+	<key>No hours yet this week</key>
+	<string>Wala pang oras ngayong linggo</string>
 	<key>No limits in your Codex logs yet</key>
 	<string>Wala pang limit sa mga Codex log mo</string>
+	<key>No medals yet</key>
+	<string>Wala pang medalya</string>
 	<key>No more events today</key>
 	<string>Wala nang event ngayon</string>
 	<key>No music app found</key>
@@ -2227,10 +2275,6 @@
 	<string>Walang may ganyang friend code.</string>
 	<key>No one is blocked.</key>
 	<string>Walang naka-block.</string>
-	<key>No public crews match.</key>
-	<string>Walang tumugmang public crew.</string>
-	<key>No public crews yet. Make the first one.</key>
-	<string>Wala pang public crew. Gawin ang una.</string>
 	<key>No saved chats</key>
 	<string>Walang naka-save na chat</string>
 	<key>No shortcut named “%@”. Check the name in Shortcuts.</key>
@@ -2435,6 +2479,8 @@
 	<string>Bahagya lang. Nakakapagdagdag ng events ang Tabbi pero hindi nito mabasa.</string>
 	<key>Only people with the invite can join.</key>
 	<string>Ang may invite lang ang puwedeng sumali.</string>
+	<key>Only people with the invite link can join. Click to make it public.</key>
+	<string>Ang may invite link lang ang puwedeng sumali. I-click para gawing public.</string>
 	<key>Only the crew's owner can do that.</key>
 	<string>Ang may-ari lang ng crew ang puwedeng gumawa niyan.</string>
 	<key>Only the host can change the session.</key>
@@ -2791,8 +2837,8 @@
 	<string>Patakaran sa Privacy</string>
 	<key>Private</key>
 	<string>Private</string>
-	<key>Private: only people with the invite can join.</key>
-	<string>Private: ang may invite lang ang puwedeng sumali.</string>
+	<key>Private, invite only</key>
+	<string>Private, invite lang</string>
 	<key>Productivity</key>
 	<string>Productivity</string>
 	<key>Profile</key>
@@ -2803,8 +2849,6 @@
 	<string>Mungkahi: %@. I-click para idagdag o i-skip</string>
 	<key>Public</key>
 	<string>Public</string>
-	<key>Public: anyone can find and join it.</key>
-	<string>Public: puwede itong mahanap at salihan ng kahit sino.</string>
 	<key>Pumpkin Hat</key>
 	<string>Sombrerong Kalabasa</string>
 	<key>Pup</key>
@@ -2839,6 +2883,12 @@
 	<string>Ulan</string>
 	<key>Rain cloud</key>
 	<string>Ulap-ulan</string>
+	<key>Rank %lld, %@, %@</key>
+	<string>Rank %lld, %@, %@</string>
+	<key>Rank %lld, %@, %@ this week, %@</key>
+	<string>Rank %lld, %@, %@ ngayong linggo, %@</string>
+	<key>Ranked by golds, then silvers, then bronzes, then whoever reached the tally first.</key>
+	<string>Ayon sa gold, saka silver, saka bronze, saka kung sino ang unang nakaabot.</string>
 	<key>Rare</key>
 	<string>Rare</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2943,6 +2993,8 @@
 	<string>Naipadala ang request kay %@</string>
 	<key>Request sent to %@.</key>
 	<string>Naipadala ang request kay %@.</string>
+	<key>Requested</key>
+	<string>Na-request</string>
 	<key>Reset to Default</key>
 	<string>Ibalik sa Default</string>
 	<key>Reset to Defaults</key>
@@ -3207,8 +3259,6 @@
 	<string>Ipinapakita ang mga preview na pinili ng kit na ito.</string>
 	<key>Shuffle</key>
 	<string>Shuffle</string>
-	<key>Shuffle the crest</key>
-	<string>I-shuffle ang crest</string>
 	<key>Sign In</key>
 	<string>Mag-sign In</string>
 	<key>Sign Out</key>
@@ -3441,6 +3491,8 @@
 	<string>Study block</string>
 	<key>Study buddies</key>
 	<string>Study buddy</string>
+	<key>Study crews: weekly board and Hall of Fame</key>
+	<string>Mga study crew: weekly board at Hall of Fame</string>
 	<key>Study days</key>
 	<string>Mga araw ng pag-aaral</string>
 	<key>Study methods</key>
@@ -3455,10 +3507,10 @@
 	<string>Mag-aral hanggang humina ang focus, umaangkop ang break</string>
 	<key>Study with a cat</key>
 	<string>Mag-aral kasama ang pusa</string>
-	<key>Study with a crew and climb the weekly top 3.</key>
-	<string>Mag-aral kasama ang crew at umakyat sa weekly top 3.</string>
 	<key>Study with a dog</key>
 	<string>Mag-aral kasama ang aso</string>
+	<key>Study with friends and climb the board together.</key>
+	<string>Mag-aral kasama ang mga kaibigan at sabay umakyat sa board.</string>
 	<key>Study with friends and see who is focusing now.</key>
 	<string>Mag-aral kasama ang mga kaibigan at tingnan kung sino ang nagfo-focus ngayon.</string>
 	<key>Study with friends, see their timers.</key>
@@ -3581,6 +3633,8 @@
 	<string>Salamat. Naipadala ang report mo at naka-block na si %@.</string>
 	<key>Thanks. Your report was sent.</key>
 	<string>Salamat. Naipadala ang report mo.</string>
+	<key>That crew has a lot of requests waiting. Try again later.</key>
+	<string>Maraming naghihintay na request sa crew na iyan. Subukan ulit mamaya.</string>
 	<key>That crew is full.</key>
 	<string>Puno na ang crew na iyan.</string>
 	<key>That crew is gone or the code is wrong.</key>
@@ -3609,6 +3663,8 @@
 	<string>Puno na ang party na iyan.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>Hindi puwede ang pangalang iyan para sa pet. Pumili ng iba.</string>
+	<key>That request is no longer waiting.</key>
+	<string>Wala na ang request na iyan.</string>
 	<key>That's a wrap. Well done!</key>
 	<string>Tapos na. Magaling!</string>
 	<key>That's your own code.</key>
@@ -3635,8 +3691,6 @@
 	<string>Hindi agad sumagot ang Shortcuts app. Subukan ulit mamaya.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
 	<string>Walang Shortcuts command line tool sa Mac na ito.</string>
-	<key>The Tabbi team hid this crew from the board and Find.</key>
-	<string>Itinago ng Tabbi team ang crew na ito sa board at sa Find.</string>
 	<key>The Tabbi team reviews it. %@ isn't told.</key>
 	<string>Rerebyuhin ito ng Tabbi team. Hindi sasabihan si %@.</string>
 	<key>The app this needs isn't on this Mac</key>
@@ -3703,8 +3757,8 @@
 	<string>Magsisimula ang timer sa %@</string>
 	<key>The tool's own default</key>
 	<string>Default ng tool</string>
-	<key>The week ends Sunday 23:59 UTC. Then the top 3 freeze and win their laurels for next week.</key>
-	<string>Matatapos ang linggo sa Linggo, 23:59 UTC. Saka mafi-freeze ang top 3 at mapapanalunan nila ang laurels para sa susunod na linggo.</string>
+	<key>The week runs Monday to Sunday (UTC). Ends %@. The top 3 wear a laurel next week.</key>
+	<string>Lunes hanggang Linggo ang linggo (UTC). Matatapos %@. May laurel ang top 3 sa susunod na linggo.</string>
 	<key>The work no one sees is the work that changes you.</key>
 	<string>Ang trabahong walang nakakakita ang siyang nagbabago sa iyo.</string>
 	<key>The year you were born</key>
@@ -3747,6 +3801,8 @@
 	<string>Demo ito. Patakbuhin nang walang TABBI_DEMO para umalis sa crew.</string>
 	<key>This is a demo. Run without TABBI_DEMO to make a crew.</key>
 	<string>Demo ito. Patakbuhin nang walang TABBI_DEMO para gumawa ng crew.</string>
+	<key>This is a demo. Run without TABBI_DEMO to study with a crew.</key>
+	<string>Demo ito. Patakbuhin nang walang TABBI_DEMO para mag-aral kasama ang crew.</string>
 	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
 	<string>Demo ito. Patakbuhin nang walang TABBI_DEMO para mag-aral kasama ang mga kaibigan.</string>
 	<key>This is usually short. Check again in a moment.</key>
@@ -3767,12 +3823,14 @@
 	<string>Nasa listahan ngayon ang task na ito</string>
 	<key>This week</key>
 	<string>Ngayong linggo</string>
-	<key>This week's live top 3</key>
-	<string>Ang live na top 3 ngayong linggo</string>
+	<key>This week's leaderboard</key>
+	<string>Leaderboard ngayong linggo</string>
 	<key>This works. Nothing to do.</key>
 	<string>Gumagana ito. Wala ka nang gagawin.</string>
 	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
 	<string>Tatlong maliliit na layunin bawat buwan. Opsyonal ang mga ito, at walang mawawala kapag may buwang nalaktawan.</string>
+	<key>Tied with %@ at %@</key>
+	<string>Tabla kay %@ sa %@</string>
 	<key>Time</key>
 	<string>Oras</string>
 	<key>Time for a %lld-minute break.</key>
@@ -3833,10 +3891,6 @@
 	<string>Masyadong maraming subok. Maghintay ng isang minuto, saka subukan ulit.</string>
 	<key>Took back the import of %@.</key>
 	<string>Binawi ang pag-import ng %@.</string>
-	<key>Top 3</key>
-	<string>Top 3</string>
-	<key>Top 3 finishes: %lld gold, %lld silver, %lld bronze</key>
-	<string>Top 3 finishes: %lld gold, %lld silver, %lld bronze</string>
 	<key>Top decks</key>
 	<string>Mga top deck</string>
 	<key>Top model</key>
@@ -3849,6 +3903,8 @@
 	<string>Subukan ulit</string>
 	<key>Try again now</key>
 	<string>Subukan ulit ngayon</string>
+	<key>Try another word, or create one.</key>
+	<string>Subukan ang ibang salita, o gumawa ng isa.</string>
 	<key>Try the server again now</key>
 	<string>Subukan ulit ang server ngayon</string>
 	<key>Try to reach Party again now</key>
@@ -3971,8 +4027,6 @@
 	<string>Gamit sa weekly limit mo</string>
 	<key>Use the default %@ server</key>
 	<string>Gamitin ang default na %@ server</string>
-	<key>Use this icon</key>
-	<string>Gamitin ang icon na ito</string>
 	<key>Used to greet you.</key>
 	<string>Gagamitin sa pagbati sa iyo.</string>
 	<key>Uses your ChatGPT plan through the codex command.</key>
@@ -4015,12 +4069,16 @@
 	<string>Hinihintay magsimula ang Anki</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>Hinihintay magsimula ang Anki, tapos bubuksan ang %@</string>
+	<key>Waiting to join %@</key>
+	<string>Naghihintay sumali sa %@</string>
 	<key>Waiting: %lld</key>
 	<string>Naghihintay: %lld</string>
 	<key>Walk through the steps to connect %@</key>
 	<string>Sundan ang mga hakbang para ikonekta ang %@</string>
 	<key>Wants to be friends</key>
 	<string>Gustong makipagkaibigan</string>
+	<key>Wants to join</key>
+	<string>Gustong sumali</string>
 	<key>Wardrobe</key>
 	<string>Wardrobe</string>
 	<key>Warm cream and peach, soft and gentle.</key>
@@ -4053,6 +4111,8 @@
 	<string>Ano ang nangyari, sa isa o dalawang pangungusap</string>
 	<key>What should we call you?</key>
 	<string>Ano'ng itatawag namin sa iyo?</string>
+	<key>What you study</key>
+	<string>Ano ang pinag-aaralan ninyo</string>
 	<key>When Anki asked whether to let Tabbi in, the answer was no.</key>
 	<string>Nang tanungin ng Anki kung papapasukin ang Tabbi, hindi ang sagot.</string>
 	<key>When focus ends</key>
@@ -4089,10 +4149,14 @@
 	<string>Pag Claude Code ang AI mo, ginagamit ng Ask AI at AI Usage ang sarili mong naka-sign in na claude CLI; hindi kailanman binabasa ng %@ ang credentials mo. I-set lang ito kung hindi awtomatikong nakikita ang claude.</string>
 	<key>With Ollama open, run ollama pull %@ in Terminal once.</key>
 	<string>Habang bukas ang Ollama, patakbuhin ang ollama pull %@ sa Terminal minsan.</string>
+	<key>Withdraw your request to join %@</key>
+	<string>Bawiin ang request mong sumali sa %@</string>
 	<key>Wizard Hat</key>
 	<string>Sombrero ng Wizard</string>
 	<key>Wizard Robe</key>
 	<string>Balabal ng Wizard</string>
+	<key>Wk %lld</key>
+	<string>Wk %lld</string>
 	<key>Works from any app. On Today, type right away to add a task.</key>
 	<string>Kahit saan. Sa Ngayon, i-type agad ang task.</string>
 	<key>Wrap up</key>
@@ -4187,10 +4251,14 @@
 	<string>Hindi ka nahuhuli. Sarili mong orasan ang sinusunod mo, at pasulong lang ito.</string>
 	<key>You're not in a crew anymore.</key>
 	<string>Wala ka na sa crew.</string>
+	<key>You're not in a crew yet</key>
+	<string>Wala ka pa sa crew</string>
 	<key>You're not in a party anymore.</key>
 	<string>Wala ka na sa party.</string>
 	<key>You're the only one here for now.</key>
 	<string>Ikaw pa lang ang nandito sa ngayon.</string>
+	<key>You've asked a lot of crews today. Try again tomorrow.</key>
+	<string>Marami ka nang nahilingang crew ngayon. Subukan ulit bukas.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>Sobrang dami na ng na-block mo. Mag-unblock muna ng isa.</string>
 	<key>You've made a lot of crews today. Try again tomorrow.</key>
@@ -4235,6 +4303,10 @@
 	<string>Masyadong luma para sa Tabbi ang AnkiConnect add-on mo.</string>
 	<key>Your crew</key>
 	<string>Ang crew mo</string>
+	<key>Your crew and its members</key>
+	<string>Ang crew mo at mga miyembro nito</string>
+	<key>Your crew studied %@ this week</key>
+	<string>Nag-aral ang crew mo ng %@ ngayong linggo</string>
 	<key>Your data</key>
 	<string>Data mo</string>
 	<key>Your day on a timeline, with the free time in between.</key>
@@ -4269,8 +4341,6 @@
 	<string>Pangalan mo, hanggang %lld character</string>
 	<key>Your own focus and break lengths</key>
 	<string>Sariling haba ng focus at break</string>
-	<key>Your party and friends</key>
-	<string>Ang party at mga kaibigan mo</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>Na-reset ang party profile mo. Kumokonekta ulit…</string>
 	<key>Your pet</key>
@@ -4295,8 +4365,6 @@
 	<string>Ang playlist mo</string>
 	<key>Your setup already matches %@</key>
 	<string>Tugma na ang setup mo sa %@</string>
-	<key>Your study crew and the weekly top 3</key>
-	<string>Ang study crew mo at ang weekly top 3</string>
 	<key>Your study day by day, with the time studied on each</key>
 	<string>Ang pag-aaral mo araw-araw, kasama ang oras bawat araw</string>
 	<key>Your study streak and the freezes that protect it</key>

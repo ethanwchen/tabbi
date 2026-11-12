@@ -729,6 +729,10 @@ final class PartyStore: ObservableObject {
 
     // MARK: Crews
 
+    /// The heartbeat reply's Study Crews news (waiting join requests, my
+    /// crew), which `CrewsStore` follows.
+    let crewsPulse = PassthroughSubject<PartyCrewsPulse, Never>()
+
     /// The identity Crews calls the server with, while Party is connected.
     var crewAccount: PartyAccount? { state.connection == .connected ? account : nil }
 
@@ -943,6 +947,7 @@ final class PartyStore: ObservableObject {
                 let reply = try await account.perform { try await $0.heartbeat(body) }
                 guard let self, !Task.isCancelled else { return }
                 if let waiting = reply.incomingRequests { state.didCountWaitingRequests(waiting) }
+                if let pulse = reply.crews { crewsPulse.send(pulse) }
                 delay = heartbeats.delayAfterSuccess(reply)
             } catch {
                 guard let self, !Task.isCancelled else { return }

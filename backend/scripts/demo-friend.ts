@@ -15,8 +15,9 @@
  *
  * `study` keeps it online for the review: it heartbeats "studying" every two minutes and, with --party, hosts
  * a party the reviewer can join from their friend list. With --crew it also keeps a public Study Crew named
- * REVIEW_CREW_NAME (creating it the first time) and reports each 25 minutes it studied there, so the reviewer
- * finds the crew in Find crews, joins it, and sees it on the weekly board. It stops by itself after --hours
+ * REVIEW_CREW_NAME (creating it the first time), reports each 25 minutes it studied there, and approves every
+ * request to join it as soon as a heartbeat says one waits, so the reviewer finds the crew in Find crews, asks to
+ * join, is let in within two minutes, and sees it on the weekly board. It stops by itself after --hours
  * (8 by default), or on Ctrl-C, sending a last "offline".
  *
  * The secret token goes only into --token-file (created with mode 0600, never printed): keep that file out of
@@ -152,6 +153,7 @@ export async function run(o: Options, d: Deps): Promise<void> {
           { status: "studying", method: "pomodoro", phaseEndsAt, sessionMinutes: 0, todayMinutes: 25, streakDays: 3 });
         expect(r, 200, "heartbeat");
         heartbeats += 1;
+        if (o.crew && Number(r.body.crews?.requests) > 0) await approveRequests(d, o, token);
         await d.sleep(Math.max(30, Math.min(Number(r.body.heartbeatSeconds) || 120, 120)) * 1000);
       }
       expect(await send(d, o, "POST", "/v1/presence", token, { status: "offline" }), 200, "going offline");
@@ -189,6 +191,18 @@ async function joinReviewCrew(d: Deps, o: Options, token: string): Promise<void>
   });
   expect(created, 201, "creating the review crew");
   d.log(`Created crew ${REVIEW_CREW_NAME}; reviewers find it in Find crews.`);
+}
+
+/** Lets in everyone waiting to join the review crew. */
+async function approveRequests(d: Deps, o: Options, token: string): Promise<void> {
+  const mine = await send(d, o, "GET", "/v1/crews/mine", token);
+  expect(mine, 200, "GET /v1/crews/mine");
+  for (const request of mine.body.crew?.requests ?? []) {
+    const r = await send(d, o, "POST", `/v1/crews/mine/requests/${request.ref}/approve`, token);
+    // Someone who joined another crew meanwhile, or a full crew, is skipped; nothing else should fail.
+    if (r.status !== 409) expect(r, 200, "approving a request");
+    if (r.status === 200) d.log(`Let ${request.name} into the crew.`);
+  }
 }
 
 declare const process: { argv: string[]; exitCode?: number; on(event: string, listener: () => void): void; exit(code?: number): void };

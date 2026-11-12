@@ -2,23 +2,26 @@ import { describe, expect, it } from "vitest";
 import { ACTIVITY_KINDS, ACTIVITY_UNITS, makeActivityRecord } from "../../src/core/activity/activityRecord";
 import { crewColors, crewEmblems, crewFrames, findCrewInvite } from "../../src/core/crews/crewCatalog";
 import {
+  approveJoinRequest,
   blockCrewMember,
+  cancelJoinRequest,
   createCrew,
   crewBoard,
   crewHall,
   crewPage,
-  joinCrewByID,
+  declineJoinRequest,
   joinCrewByInvite,
   leaveCrew,
   myCrew,
   removeCrewMember,
   reportCrew,
   reportCrewSessions,
+  requestToJoin,
   searchCrews,
   setShowsPet,
   updateCrew,
 } from "../../src/core/crews/crewClient";
-import { crewHoursValue, crewRemainingValue } from "../../src/core/crews/crewFormat";
+import { crewTenths, crewRemainingValue } from "../../src/core/crews/crewFormat";
 import { composeCrest, crestPalette, resolvedCrest } from "../../src/core/crews/crewCrestArt";
 import {
   crewCrest,
@@ -62,7 +65,7 @@ interface CrewsFixture {
   protocol: number;
   requests: { name: string; method: string; path: string; schema?: string; body?: JSONValue }[];
   replies: { name: string; schema: string; json: JSONValue; summary: string[] }[];
-  hours: { minutes: number; form: string; value: number }[];
+  hours: { minutes: number; tenths?: number; form?: string; value?: number }[];
   remaining: { seconds: number; form: string; values: number[] }[];
   weeks: { at: number; week: CrewWeek }[];
   queue: { name: string; records: number[][]; pending: number[][] }[];
@@ -96,7 +99,11 @@ const CALLS: Record<string, (client: PartyClient) => Promise<unknown>> = {
   "update the crest": (c) => updateCrew(c, { frame: crewFrames().at(-1) ?? "", emblem: crewEmblems().at(-1) ?? "", color: "teal" }),
   "hide my pet": (c) => setShowsPet(c, false),
   "join by invite": (c) => joinCrewByInvite(c, "w4ln-ut7"),
-  "join a public crew": (c) => joinCrewByID(c, "MEDSQUAD2K"),
+  "join a public crew": (c) => requestToJoin(c, "MEDSQUAD2K"),
+  "cancel my request": (c) => cancelJoinRequest(c),
+  "approve a request": (c) => approveJoinRequest(c, "AVAREQ7K3R"),
+  "decline a request": (c) => declineJoinRequest(c, "AVAREQ7K3R"),
+  "board, next page": (c) => crewBoard(c, "eyJyIjo0fQ+/="),
   leave: (c) => leaveCrew(c),
   "remove a member": (c) => removeCrewMember(c, "MAYAREF4QR"),
   search: (c) => searchCrews(c, "night owls+"),
@@ -216,7 +223,11 @@ describe("crews fixture", () => {
   });
 
   it("writes hours in the recorded forms", () => {
-    for (const recorded of fixture.hours) expect(crewHoursValue(recorded.minutes), String(recorded.minutes)).toEqual({ form: recorded.form, value: recorded.value });
+    /* Hours are tenths at every size now; a fixture from before that pins tenths below 10 hours only. */
+    for (const recorded of fixture.hours) {
+      const tenths = recorded.tenths ?? (recorded.form === "tenths" ? recorded.value : undefined);
+      if (tenths !== undefined) expect(crewTenths(recorded.minutes), String(recorded.minutes)).toBe(tenths);
+    }
   });
 
   it("counts the week down in the recorded forms", () => {

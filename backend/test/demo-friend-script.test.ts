@@ -124,8 +124,13 @@ describe("the demo friend", () => {
     const found = await call("GET", `/v1/crews?q=${encodeURIComponent("review crew")}`, undefined, reviewer.token, freshIp());
     const crew = found.body.crews.find((c: { name: string }) => c.name === REVIEW_CREW_NAME);
     expect(crew).toMatchObject({ visibility: "public", memberCount: 1 });
-    const joined = await call("POST", "/v1/crews/join", { crew: crew.id }, reviewer.token, freshIp());
-    expect(joined.body).toMatchObject({ joined: true, crew: { memberCount: 2 } });
+    // Joining a public crew asks its owner; the studying demo friend lets the reviewer in.
+    const asked = await call("POST", "/v1/crews/join", { crew: crew.id }, reviewer.token, freshIp());
+    expect(asked.body).toMatchObject({ joined: false, requested: true, crew: { memberCount: 1 } });
+    await run(options("study", "--hours", "0.05", "--crew"), deps(tokens, lines));
+    expect(lines).toContain("Let Reviewer into the crew.");
+    const mine = await call("GET", "/v1/crews/mine", undefined, reviewer.token, freshIp());
+    expect(mine.body.crew).toMatchObject({ name: REVIEW_CREW_NAME, memberCount: 2 });
     await run(options("delete"), deps(tokens));
   });
 

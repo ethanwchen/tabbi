@@ -4,11 +4,13 @@ import { REPORT_NOTE_LIMIT } from "../party/partyModeration";
 import type { PartyClient } from "../party/partyClient";
 import { CREW_LIMITS } from "./crewCatalog";
 import type { CrewCrest } from "./crewCrestArt";
+import type { Instant } from "../time";
 import {
   CrewCode,
   readCrewBoard,
   readCrewDetail,
   readCrewHallPage,
+  readCrewMyRequest,
   readCrewSessionsReply,
   readCrewSummary,
   readCrewWeek,
@@ -16,6 +18,8 @@ import {
   type CrewDetail,
   type CrewDraft,
   type CrewHallPage,
+  type CrewJoinOutcome,
+  type CrewMyRequest,
   type CrewReportReason,
   type CrewSession,
   type CrewSessionsReply,
@@ -56,15 +60,32 @@ function encodeQuery(text: string): string {
   return encodeURIComponent(text).replace(/%(21|24|27|28|29|2A|2C|2F|3A|3B|3F|40)/g, (_, hex: string) => String.fromCharCode(parseInt(hex, 16)));
 }
 
-/** `GET /v1/crews/mine`: my crew, or undefined, and the current week. */
-export async function myCrew(client: PartyClient): Promise<{ crew: CrewDetail | undefined; week: CrewWeek }> {
+/** `GET /v1/crews/mine`: my crew, or undefined, the current week, and my pending request to join a public crew while I am in none. */
+export async function myCrew(client: PartyClient): Promise<{
+  crew: CrewDetail | undefined;
+  week: CrewWeek;
+  request: CrewMyRequest | undefined;
+}> {
   const reply = await client.send("GET", "/v1/crews/mine");
-  return { crew: read.optionalObject(reply, "crew", readCrewDetail), week: readCrewWeek(reply.week) };
+  return {
+    crew: read.optionalObject(reply, "crew", readCrewDetail),
+    week: readCrewWeek(reply.week),
+    request: read.optionalObject(reply, "request", readCrewMyRequest),
+  };
 }
 
 /** `POST /v1/crews`: a new crew owned by me. `in_crew` while I am in one. */
 export async function createCrew(client: PartyClient, name: string, description: string, crest: CrewCrest, visibility: CrewVisibility): Promise<CrewDetail> {
-  const reply = await client.send("POST", "/v1/crews", { body: draftBody({ name, description, frame: crest.frame, emblem: crest.emblem, color: crest.color, visibility }) });
+  const reply = await client.send("POST", "/v1/crews", {
+    body: draftBody({
+      name,
+      description,
+      frame: crest.frame,
+      emblem: crest.emblem,
+      color: crest.color,
+      visibility,
+    }),
+  });
   return readCrewDetail(reply.crew);
 }
 
@@ -75,7 +96,13 @@ export async function updateCrew(client: PartyClient, draft: CrewDraft): Promise
 
 /** `PATCH /v1/crews/mine/me`: whether my pet shows on crew pages. */
 export async function setShowsPet(client: PartyClient, showsPet: boolean): Promise<CrewDetail> {
-  return readCrewDetail((await client.send("PATCH", "/v1/crews/mine/me", { body: { showPet: showsPet } })).crew);
+  return readCrewDetail(
+    (
+      await client.send("PATCH", "/v1/crews/mine/me", {
+        body: { showPet: showsPet },
+      })
+    ).crew,
+  );
 }
 
 /** `POST /v1/crews/join` with an invite code. */
@@ -84,10 +111,43 @@ export async function joinCrewByInvite(client: PartyClient, invite: string): Pro
   return readCrewDetail((await client.send("POST", "/v1/crews/join", { body: { code } })).crew);
 }
 
-/** `POST /v1/crews/join` with a public crew's id. */
-export async function joinCrewByID(client: PartyClient, id: string): Promise<CrewDetail> {
+/** `POST /v1/crews/join` with a public crew's id: asks its owner, who approves or declines. A server that still joins at once answers joined. */
+export async function requestToJoin(client: PartyClient, id: string, now: Instant = Date.now() / 1000): Promise<CrewJoinOutcome> {
   const crew = valid(CrewCode.crewID(id));
-  return readCrewDetail((await client.send("POST", "/v1/crews/join", { body: { crew } })).crew);
+  const reply = await client.send("POST", "/v1/crews/join", { body: { crew } });
+  const detail = readCrewDetail(reply.crew);
+  if (read.boolean(reply, "joined")) return { kind: "joined", crew: detail };
+  const request = read.optionalObject(reply, "request", readCrewMyRequest) ?? {
+    crew: detail.summary,
+    requestedAt: now,
+    expiresAt: now + 7 * 86_400,
+  };
+  return { kind: "requested", request };
+}
+
+/** `POST /v1/crews/requests/cancel`: withdraws my pending request. */
+export async function cancelJoinRequest(client: PartyClient): Promise<boolean> {
+  return read.boolean(await client.send("POST", "/v1/crews/requests/cancel", { body: {} }), "cancelled");
+}
+
+/** `POST /v1/crews/mine/requests/{ref}/approve` (owner). */
+export async function approveJoinRequest(client: PartyClient, ref: string): Promise<CrewDetail> {
+  const member = valid(CrewCode.crewID(ref));
+  return readCrewDetail(
+    (
+      await client.send("POST", `/v1/crews/mine/requests/${member}/approve`, {
+        body: {},
+      })
+    ).crew,
+  );
+}
+
+/** `POST /v1/crews/mine/requests/{ref}/decline` (owner). Quiet: the requester's request just goes away. */
+export async function declineJoinRequest(client: PartyClient, ref: string): Promise<void> {
+  const member = valid(CrewCode.crewID(ref));
+  await client.send("POST", `/v1/crews/mine/requests/${member}/decline`, {
+    body: {},
+  });
 }
 
 /** `POST /v1/crews/leave`. False when I was not in one. */
@@ -98,7 +158,13 @@ export async function leaveCrew(client: PartyClient): Promise<boolean> {
 /** `POST /v1/crews/mine/members/{ref}/remove` (owner). */
 export async function removeCrewMember(client: PartyClient, ref: string): Promise<CrewDetail> {
   const valid10 = valid(CrewCode.crewID(ref));
-  return readCrewDetail((await client.send("POST", `/v1/crews/mine/members/${valid10}/remove`, { body: {} })).crew);
+  return readCrewDetail(
+    (
+      await client.send("POST", `/v1/crews/mine/members/${valid10}/remove`, {
+        body: {},
+      })
+    ).crew,
+  );
 }
 
 /** `GET /v1/crews?q=`: public crews, most minutes this week first. */
@@ -109,15 +175,19 @@ export async function searchCrews(client: PartyClient, query: string): Promise<C
   return read.array(await client.send("GET", path), "crews").map(readCrewSummary);
 }
 
-/** `GET /v1/crews/board`. */
-export async function crewBoard(client: PartyClient): Promise<CrewBoard> {
-  return readCrewBoard(await client.send("GET", "/v1/crews/board"));
+/** `path` with an opaque cursor as its query, `+` and `=` encoded as Foundation does. */
+function paged(path: string, cursor: string | undefined): string {
+  return cursor === undefined ? path : `${path}?cursor=${encodeQuery(cursor)}`;
+}
+
+/** `GET /v1/crews/board[?cursor=]`: the week's places; a cursor asks for the next page of `rows`. */
+export async function crewBoard(client: PartyClient, cursor?: string): Promise<CrewBoard> {
+  return readCrewBoard(await client.send("GET", paged("/v1/crews/board", cursor)));
 }
 
 /** `GET /v1/crews/hall?cursor=`: a page of the all-time Hall of Fame; pass the previous page's `next` for the following one. */
 export async function crewHall(client: PartyClient, cursor?: string): Promise<CrewHallPage> {
-  const path = cursor === undefined ? "/v1/crews/hall" : `/v1/crews/hall?cursor=${encodeQuery(cursor)}`;
-  return readCrewHallPage(await client.send("GET", path));
+  return readCrewHallPage(await client.send("GET", paged("/v1/crews/hall", cursor)));
 }
 
 /** `GET /v1/crews/{id}`: a crew page. */
@@ -128,7 +198,13 @@ export async function crewPage(client: PartyClient, id: string): Promise<CrewDet
 
 /** `POST /v1/crews/sessions`: finished focus sessions, at most a request's worth at a time. */
 export async function reportCrewSessions(client: PartyClient, sessions: readonly CrewSession[]): Promise<CrewSessionsReply> {
-  const body = { sessions: sessions.map((session) => ({ end: Math.round(session.end), minutes: session.minutes, start: Math.round(session.start) })) };
+  const body = {
+    sessions: sessions.map((session) => ({
+      end: Math.round(session.end),
+      minutes: session.minutes,
+      start: Math.round(session.start),
+    })),
+  };
   return readCrewSessionsReply(await client.send("POST", "/v1/crews/sessions", { body }));
 }
 

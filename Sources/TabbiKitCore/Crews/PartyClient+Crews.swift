@@ -6,10 +6,11 @@ import Foundation
 /// visibility, my pet setting, and finished focus sessions as start, end
 /// and minutes. Nothing about what was studied leaves the device.
 extension PartyClient {
-    /// `GET /v1/crews/mine`: my crew, or nil, and the current week.
-    public func myCrew() async throws -> (crew: CrewDetail?, week: CrewWeek) {
+    /// `GET /v1/crews/mine`: my crew, or nil, the current week, and my
+    /// pending request to join a public crew while I am in none.
+    public func myCrew() async throws -> (crew: CrewDetail?, week: CrewWeek, request: CrewMyRequest?) {
         let reply = try await send("GET", "/v1/crews/mine", as: MineReply.self)
-        return (reply.crew, reply.week)
+        return (reply.crew, reply.week, reply.request)
     }
 
     /// `POST /v1/crews`: a new crew owned by me. `in_crew` while I am in one.
@@ -36,10 +37,34 @@ extension PartyClient {
         return try await send("POST", "/v1/crews/join", body: ["code": code], as: JoinReply.self).crew
     }
 
-    /// `POST /v1/crews/join` with a public crew's id.
-    public func joinCrew(id: String) async throws -> CrewDetail {
+    /// `POST /v1/crews/join` with a public crew's id: asks its owner, who
+    /// approves or declines. A server that still joins at once answers joined.
+    public func requestToJoin(id: String) async throws -> CrewJoinOutcome {
         guard let id = CrewCode.crewID(id) else { throw PartyError.invalidRequest("invalid_field") }
-        return try await send("POST", "/v1/crews/join", body: ["crew": id], as: JoinReply.self).crew
+        let reply = try await send("POST", "/v1/crews/join", body: ["crew": id], as: JoinReply.self)
+        if reply.joined { return .joined(reply.crew) }
+        return .requested(reply.request ?? CrewMyRequest(crew: reply.crew.summary, requestedAt: Date(),
+                                                          expiresAt: Date().addingTimeInterval(7 * 86_400)))
+    }
+
+    /// `POST /v1/crews/requests/cancel`: withdraws my pending request.
+    @discardableResult
+    public func cancelJoinRequest() async throws -> Bool {
+        try await send("POST", "/v1/crews/requests/cancel", body: [String: String](), as: CancelReply.self).cancelled
+    }
+
+    /// `POST /v1/crews/mine/requests/{ref}/approve` (owner).
+    public func approveJoinRequest(ref: String) async throws -> CrewDetail {
+        guard let ref = CrewCode.crewID(ref) else { throw PartyError.invalidRequest("invalid_field") }
+        return try await send("POST", "/v1/crews/mine/requests/\(ref)/approve", body: [String: String](),
+                              as: CrewReply.self).crew
+    }
+
+    /// `POST /v1/crews/mine/requests/{ref}/decline` (owner). Quiet: the
+    /// requester's request just goes away.
+    public func declineJoinRequest(ref: String) async throws {
+        guard let ref = CrewCode.crewID(ref) else { throw PartyError.invalidRequest("invalid_field") }
+        _ = try await send("POST", "/v1/crews/mine/requests/\(ref)/decline", body: [String: String](), as: DeclineReply.self)
     }
 
     /// `POST /v1/crews/leave`. False when I was not in one.
@@ -68,21 +93,24 @@ extension PartyClient {
         return try await send("GET", path, as: SearchReply.self).crews
     }
 
-    /// `GET /v1/crews/board`.
-    public func crewBoard() async throws -> CrewBoard {
-        try await send("GET", "/v1/crews/board", as: CrewBoard.self)
+    /// `GET /v1/crews/board[?cursor=]`: the week's places; a cursor asks
+    /// for the next page of `rows`.
+    public func crewBoard(cursor: String? = nil) async throws -> CrewBoard {
+        try await send("GET", Self.paged("/v1/crews/board", cursor: cursor), as: CrewBoard.self)
     }
 
     /// `GET /v1/crews/hall?cursor=`: a page of the all-time Hall of Fame;
     /// pass the previous page's `next` for the following one.
     public func crewHall(cursor: String? = nil) async throws -> CrewHallPage {
-        var path = "/v1/crews/hall"
-        if let cursor {
-            var components = URLComponents()
-            components.queryItems = [URLQueryItem(name: "cursor", value: cursor)]
-            path += "?" + (components.percentEncodedQuery ?? "").replacingOccurrences(of: "+", with: "%2B")
-        }
-        return try await send("GET", path, as: CrewHallPage.self)
+        try await send("GET", Self.paged("/v1/crews/hall", cursor: cursor), as: CrewHallPage.self)
+    }
+
+    /// `path` with an opaque cursor as its query, `+` and `/` encoded.
+    static func paged(_ path: String, cursor: String?) -> String {
+        guard let cursor else { return path }
+        var components = URLComponents()
+        components.queryItems = [URLQueryItem(name: "cursor", value: cursor)]
+        return path + "?" + (components.percentEncodedQuery ?? "").replacingOccurrences(of: "+", with: "%2B")
     }
 
     /// `GET /v1/crews/{id}`: a crew page.
@@ -117,7 +145,14 @@ extension PartyClient {
 private struct MineReply: Decodable {
     let crew: CrewDetail?
     let week: CrewWeek
+    let request: CrewMyRequest?
 }
+
+private struct CancelReply: Decodable {
+    let cancelled: Bool
+}
+
+private struct DeclineReply: Decodable {}
 
 private struct CrewReply: Decodable {
     let crew: CrewDetail
@@ -126,6 +161,15 @@ private struct CrewReply: Decodable {
 private struct JoinReply: Decodable {
     let joined: Bool
     let crew: CrewDetail
+    let request: CrewMyRequest?
+}
+
+/// What asking to join a public crew led to.
+public enum CrewJoinOutcome: Hashable, Sendable {
+    /// In the crew (a server from before join requests).
+    case joined(CrewDetail)
+    /// Waiting for the owner.
+    case requested(CrewMyRequest)
 }
 
 private struct LeaveReply: Decodable {

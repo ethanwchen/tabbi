@@ -1739,6 +1739,8 @@ export class Hub extends DurableObject<Env> {
     return json({
       ok: true, presence: next, heartbeatSeconds: heartbeatSeconds(next.status),
       incomingRequests: this.incomingRequestCount(caller.code),
+      // Study Crews (protocol 3): my crew and the join requests waiting for it, for a badge. Older apps ignore it.
+      crews: this.crews.heartbeatInfo(caller.code, now),
     });
   }
 

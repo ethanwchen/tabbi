@@ -10,7 +10,7 @@ import {
   CREATE_FIELDS, CREW_BLOCK_FIELDS, CREW_CHANGES_PER_MIN, CREW_CREATES_PER_DAY, CREW_ID_LENGTH, CREW_ID_RE, CREW_JOIN_FIELDS,
   CREW_REPORT_FIELDS, CREW_SEARCHES_PER_MIN, CREW_SEARCH_PAGE, CREW_SESSION_REPORTS_PER_MIN, CREW_SESSION_RETENTION_S,
   CREW_WEEK_RETENTION_S, CrewFields, CrewWeek, DAILY_CAP_MINUTES, FUTURE_FLAG_PER_DAY, FlagKind, INVITE_CODE_LENGTH,
-  HALL_PAGE, HallKey, MAX_CREW_MEMBERS, MEMBER_REF_LENGTH, MEMBER_REF_RE, MEMBER_SETTINGS_FIELDS, OVERLAP_FLAG_PER_DAY, PLACES,
+  BOARD_PAGE, BoardKey, HALL_PAGE, HallKey, decodeBoardCursor, encodeBoardCursor, JOIN_REQUESTS_PER_DAY, JOIN_REQUEST_TTL_S, MAX_CREW_JOIN_REQUESTS, MAX_CREW_MEMBERS, MEMBER_REF_LENGTH, MEMBER_REF_RE, MEMBER_SETTINGS_FIELDS, OVERLAP_FLAG_PER_DAY, PLACES,
   SESSIONS_FIELDS, SessionStatus, Stint, UPDATE_FIELDS, WEEKLY_CAP_MINUTES, allocateMinutes, checkSession, decodeHallCursor,
   encodeHallCursor, laurelOfRank, nameKey, weekFromId, weekPlaces,
   parseCode, parseCrewFields, parseCrewJoin, parseCrewReport, parseSessionList, parseShowPet, previousWeek, sessionSegments,
@@ -106,11 +106,30 @@ CREATE TABLE crew_awards (
   PRIMARY KEY (week, crew)
 ) WITHOUT ROWID;
 CREATE INDEX crew_awards_by_crew ON crew_awards (crew);
+-- Every crew's final place (null when hidden) and minutes in a frozen week, for its recent history; kept 5 weeks.
+CREATE TABLE crew_results (
+  week    TEXT NOT NULL,
+  crew    TEXT NOT NULL,
+  place   INTEGER,
+  minutes INTEGER NOT NULL,
+  PRIMARY KEY (crew, week)
+) WITHOUT ROWID;
+CREATE INDEX crew_results_by_week ON crew_results (week);
 -- Weeks already frozen, so the rollup never runs twice for one week.
 CREATE TABLE crew_rollups (
   week      TEXT PRIMARY KEY,
   rolled_at INTEGER NOT NULL
 ) WITHOUT ROWID;
+-- A request to join a public crew, waiting for its owner: one per user at a time (a new one replaces it), with
+-- an opaque ref the owner answers by. Expires after JOIN_REQUEST_TTL_S; dropped when the user joins any crew.
+CREATE TABLE crew_join_requests (
+  code       TEXT PRIMARY KEY,
+  crew       TEXT NOT NULL,
+  ref        TEXT NOT NULL UNIQUE,
+  created_at INTEGER NOT NULL
+) WITHOUT ROWID;
+CREATE INDEX crew_join_requests_by_crew ON crew_join_requests (crew, created_at);
+CREATE INDEX crew_join_requests_by_created ON crew_join_requests (created_at);
 -- Members an owner removed; they cannot join that crew again.
 CREATE TABLE crew_removals (
   crew       TEXT NOT NULL,
@@ -218,13 +237,19 @@ export class CrewService {
     this.rollupIfDue(now);
     if (path === "/v1/crews" && method === "GET") return this.search(req, caller, now);
     if (path === "/v1/crews" && method === "POST") return await this.create(req, caller, now);
-    if (path === "/v1/crews/mine" && method === "GET") return json({ ok: true, crew: this.mineDetail(caller, now), week: weekOf(now) });
+    if (path === "/v1/crews/mine" && method === "GET") {
+      const crew = this.mineDetail(caller, now);
+      return json({ ok: true, crew, week: weekOf(now), request: crew ? null : this.myRequest(caller, now) });
+    }
     if (path === "/v1/crews/mine" && method === "PATCH") return await this.update(req, caller, now);
     if (path === "/v1/crews/mine/me" && method === "PATCH") return await this.memberSettings(req, caller, now);
     if (path === "/v1/crews/join" && method === "POST") return await this.join(req, caller, now);
     if (path === "/v1/crews/leave" && method === "POST") return await this.leaveRoute(req, caller, now);
-    if (path === "/v1/crews/board" && method === "GET") return this.board(now);
-    if (path === "/v1/crews/hall" && method === "GET") return this.hall(req, now);
+    if (path === "/v1/crews/requests/cancel" && method === "POST") return await this.cancelRequest(req, caller, now);
+    const answer = /^\/v1\/crews\/mine\/requests\/([^/]+)\/(approve|decline)$/.exec(path);
+    if (answer && method === "POST") return answer[2] === "approve" ? this.approve(caller, answer[1], now) : this.decline(caller, answer[1], now);
+    if (path === "/v1/crews/board" && method === "GET") return this.board(req, caller, now);
+    if (path === "/v1/crews/hall" && method === "GET") return this.hall(req, caller, now);
     if (path === "/v1/crews/sessions" && method === "POST") return await this.reportSessions(req, caller, now);
     if (path === "/v1/crews/reports" && method === "POST") return await this.report(req, caller, now);
     if (path === "/v1/crews/block" && method === "POST") return await this.blockRoute(req, caller, now);
@@ -319,6 +344,7 @@ export class CrewService {
       visibility: c.visibility,
       laurel: laurels.get(c.id) ?? null,
       trophies: c.gold + c.silver + c.bronze,
+      golds: c.gold,
       memberCount: memberCount ?? this.memberCount(c.id),
       maxMembers: MAX_CREW_MEMBERS,
       weekMinutes: minutes ?? this.weekMinutes(c.id, weekOf(now).id),
@@ -360,6 +386,8 @@ export class CrewService {
       createdAt: c.created_at,
       medals: { gold: c.gold, silver: c.silver, bronze: c.bronze },
       rank: c.hidden ? null : this.liveRank(c.id, minutes, week),
+      crewCount: this.crewCount(week),
+      history: this.history(c, now),
       members: rows.map((r) => ({
         ref: r.ref,
         name: r.name,
@@ -373,12 +401,144 @@ export class CrewService {
         weekMinutes: credited.get(r.code) ?? 0,
         owner: r.code === c.owner,
         me: r.code === viewer,
-      })),
+      })).sort((a, b) => b.weekMinutes - a.weekMinutes || a.name.localeCompare(b.name) || (a.ref < b.ref ? -1 : 1)),
       mine,
       owner: c.owner === viewer,
       inviteCode: mine ? c.invite_code : null,
       hidden: mine ? c.hidden === 1 : false,
+      ...(c.owner === viewer ? { requests: this.pendingRequests(c.id, viewer, now) } : {}),
     };
+  }
+
+  // ---------- join requests ----------
+
+  /** The join requests waiting for crew `crew`, oldest first, as its owner `viewer` sees them. */
+  private pendingRequests(crew: string, viewer: string, now: number) {
+    const rows = this.sql.exec<{
+      code: string; ref: string; created_at: number; name: string; pet_name: string; species: string; breed: string;
+      colors: string; costume: string; accessories: string;
+    }>(
+      `SELECT r.code, r.ref, r.created_at, u.name, u.pet_name, u.species, u.breed, u.colors, u.costume, u.accessories
+       FROM crew_join_requests r JOIN users u ON u.code = r.code
+       WHERE r.crew = ?1 AND r.created_at > ?2
+         AND r.code NOT IN (SELECT blocked FROM blocks WHERE blocker = ?3)
+         AND r.code NOT IN (SELECT blocker FROM blocks WHERE blocked = ?3)
+         AND r.code NOT IN (SELECT code FROM bans)
+       ORDER BY r.created_at, r.ref`,
+      crew, now - JOIN_REQUEST_TTL_S, viewer,
+    ).toArray();
+    const badges = this.host.badgesByCode(rows.map((r) => r.code), now);
+    return rows.map((r) => ({
+      ref: r.ref,
+      name: r.name,
+      pet: {
+        petName: r.pet_name, species: r.species, breed: r.breed,
+        colors: JSON.parse(r.colors) as string[], costume: r.costume, accessories: JSON.parse(r.accessories) as string[],
+      },
+      badges: badges.get(r.code) ?? [],
+      requestedAt: r.created_at,
+      expiresAt: r.created_at + JOIN_REQUEST_TTL_S,
+    }));
+  }
+
+  /** My pending join request, if it is still live and its crew still visible. */
+  private myRequestRow(code: string, now: number): { crew: CrewRow; created_at: number } | null {
+    const r = this.sql.exec<{ crew: string; created_at: number }>(
+      "SELECT crew, created_at FROM crew_join_requests WHERE code = ? AND created_at > ?", code, now - JOIN_REQUEST_TTL_S).toArray()[0];
+    const crew = r && this.crewRow(r.crew);
+    return r && crew && !crew.hidden ? { crew, created_at: r.created_at } : null;
+  }
+
+  private myRequest(code: string, now: number) {
+    const r = this.myRequestRow(code, now);
+    return r ? { crew: this.summary(r.crew, now), requestedAt: r.created_at, expiresAt: r.created_at + JOIN_REQUEST_TTL_S } : null;
+  }
+
+  /** How many live join requests wait for `crew`. */
+  private pendingCount(crew: string, now: number): number {
+    return this.sql.exec<{ n: number }>(
+      "SELECT COUNT(*) AS n FROM crew_join_requests WHERE crew = ? AND created_at > ?", crew, now - JOIN_REQUEST_TTL_S).one().n;
+  }
+
+  /**
+   * Asks to join public crew `crew` (from POST /v1/crews/join with `{ crew }`): one request per user, so a new
+   * one replaces mine; asking the same crew again is a no-op success.
+   */
+  private requestToJoin(caller: string, crew: CrewRow, now: number): Response {
+    const pending = this.myRequestRow(caller, now);
+    if (pending?.crew.id !== crew.id) {
+      if (this.pendingCount(crew.id, now) >= MAX_CREW_JOIN_REQUESTS) {
+        throw new HttpError(409, "requests_full", "this crew has too many requests waiting; try again later");
+      }
+      try {
+        this.host.rateLimit("crewrequestday:" + caller, JOIN_REQUESTS_PER_DAY, now, 86_400);
+      } catch (e) {
+        if (e instanceof HttpError && e.status === 429) {
+          throw new HttpError(429, "request_limit", `at most ${JOIN_REQUESTS_PER_DAY} crew requests a day`, e.headers);
+        }
+        throw e;
+      }
+      const ref = this.newId(MEMBER_REF_LENGTH, "ref", "crew_join_requests");
+      this.sql.exec("INSERT OR REPLACE INTO crew_join_requests (code, crew, ref, created_at) VALUES (?, ?, ?, ?)", caller, crew.id, ref, now);
+    }
+    return json({ ok: true, joined: false, requested: true, request: this.myRequest(caller, now), crew: this.detail(crew, caller, now) });
+  }
+
+  /** The live join request with `raw` ref waiting for my crew, which I must own. */
+  private ownedRequest(caller: string, raw: string, now: number) {
+    const ref = parseCode(raw, MEMBER_REF_RE, "request");
+    this.host.rateLimit("crewchange:" + caller, CREW_CHANGES_PER_MIN, now);
+    const { crew } = this.myCrew(caller);
+    if (crew.owner !== caller) throw new HttpError(403, "not_owner", "only the crew's owner can answer requests");
+    const request = this.sql.exec<{ code: string }>(
+      "SELECT code FROM crew_join_requests WHERE ref = ? AND crew = ? AND created_at > ?", ref, crew.id, now - JOIN_REQUEST_TTL_S).toArray()[0];
+    if (!request) throw new HttpError(404, "request_not_found", "no request for your crew has that id");
+    return { crew, code: request.code };
+  }
+
+  /** POST /v1/crews/mine/requests/{ref}/approve: the requester joins my crew. */
+  private approve(caller: string, raw: string, now: number): Response {
+    const { crew, code } = this.ownedRequest(caller, raw, now);
+    const drop = () => this.sql.exec("DELETE FROM crew_join_requests WHERE code = ?", code);
+    if (this.host.isBanned(code) || this.blockedEitherWay(caller, code)) {
+      drop();
+      throw new HttpError(404, "request_not_found", "no request for your crew has that id");
+    }
+    if (this.memberRow(code)) {
+      drop();
+      throw new HttpError(409, "in_crew", "they joined another crew meanwhile");
+    }
+    if (this.memberCount(crew.id) >= MAX_CREW_MEMBERS) {
+      throw new HttpError(409, "crew_full", `a crew has at most ${MAX_CREW_MEMBERS} members`);
+    }
+    this.host.transaction(() => this.addMember(code, crew.id, now));
+    return json({ ok: true, crew: this.detail(this.crewRow(crew.id)!, caller, now) });
+  }
+
+  /** POST /v1/crews/mine/requests/{ref}/decline: the request goes away; the requester is never told. */
+  private decline(caller: string, raw: string, now: number): Response {
+    const { code } = this.ownedRequest(caller, raw, now);
+    this.sql.exec("DELETE FROM crew_join_requests WHERE code = ?", code);
+    return json({ ok: true, declined: true });
+  }
+
+  /** POST /v1/crews/requests/cancel: withdraws my pending join request. */
+  private async cancelRequest(req: Request, caller: string, now: number): Promise<Response> {
+    await readBody(req, []);
+    this.host.rateLimit("crewchange:" + caller, CREW_CHANGES_PER_MIN, now);
+    const cancelled = this.sql.exec("DELETE FROM crew_join_requests WHERE code = ?", caller).rowsWritten > 0;
+    return json({ ok: true, cancelled });
+  }
+
+  /**
+   * What the presence heartbeat reply carries about crews (two indexed lookups): my crew's id, and the join
+   * requests waiting for it when I own it, so the app can badge the tab and notice an approval without polling.
+   */
+  heartbeatInfo(code: string, now: number): { requests: number; crew: string | null } {
+    const member = this.memberRow(code);
+    if (!member) return { requests: 0, crew: null };
+    const owns = this.sql.exec("SELECT 1 FROM crews WHERE id = ? AND owner = ?", member.crew, code).toArray().length > 0;
+    return { requests: owns ? this.pendingCount(member.crew, now) : 0, crew: member.crew };
   }
 
   private mineDetail(caller: string, now: number) {
@@ -403,18 +563,116 @@ export class CrewService {
     return weekPlaces(rows);
   }
 
-  /** This week's live places 1 to 3, most minutes first, then by crew id. */
-  private liveTop(now: number) {
+  /**
+   * This week's live places 1 to 3, most minutes first, then by crew id. With a `viewer` each entry also
+   * carries `tiedWith` and the pets of the crew's most active members, as that viewer may see them.
+   */
+  private liveTop(now: number, viewer?: string) {
     const laurels = this.laurels(now);
-    return this.placed(weekOf(now).id).map((r) => ({
+    const week = weekOf(now).id;
+    const placed = this.placed(week);
+    return placed.map((r) => ({
       rank: r.rank,
       minutes: r.minutes,
       crew: this.summary(r, now, laurels, r.minutes, r.members),
+      ...(viewer === undefined ? {} : {
+        tiedWith: this.tiedWith(week, r.id, r.minutes),
+        pets: this.activePets(r.id, week, viewer),
+      }),
     }));
   }
 
-  /** Last week's frozen places, the featured crews, leaving out crews since deleted or hidden. */
-  private featured(now: number) {
+  /** Visible crews with minutes this week: how many crews the board ranks. */
+  private crewCount(week: string): number {
+    return this.sql.exec<{ n: number }>(
+      "SELECT COUNT(*) AS n FROM crew_weeks w JOIN crews c ON c.id = w.crew WHERE w.week = ? AND w.minutes > 0 AND c.hidden = 0", week,
+    ).one().n;
+  }
+
+  /** The names of up to two other visible crews with exactly `minutes` this week (the same place). */
+  private tiedWith(week: string, crew: string, minutes: number): string[] {
+    return this.sql.exec<{ name: string }>(
+      `SELECT c.name FROM crew_weeks w JOIN crews c ON c.id = w.crew
+       WHERE w.week = ? AND w.minutes = ? AND w.crew != ? AND c.hidden = 0 ORDER BY c.id LIMIT 2`, week, minutes, crew,
+    ).toArray().map((r) => r.name);
+  }
+
+  /**
+   * The pets of a crew's three most active members in `week` (most credited minutes, then longest in the
+   * crew), as `viewer` may see them: hidden pets, banned members and members blocked either way are skipped.
+   */
+  private activePets(crew: string, week: string, viewer: string) {
+    return this.sql.exec<{ pet_name: string; species: string; breed: string; colors: string; costume: string; accessories: string }>(
+      `SELECT u.pet_name, u.species, u.breed, u.colors, u.costume, u.accessories,
+         (SELECT COALESCE(SUM(minutes), 0) FROM crew_day_credits d WHERE d.code = m.code AND d.crew = m.crew AND d.week = ?2) AS minutes
+       FROM crew_members m JOIN users u ON u.code = m.code
+       WHERE m.crew = ?1 AND m.show_pet = 1
+         AND m.code NOT IN (SELECT blocked FROM blocks WHERE blocker = ?3)
+         AND m.code NOT IN (SELECT blocker FROM blocks WHERE blocked = ?3)
+         AND m.code NOT IN (SELECT code FROM bans)
+       ORDER BY minutes DESC, m.joined_at, m.rowid LIMIT 3`,
+      crew, week, viewer,
+    ).toArray().map((r) => ({
+      petName: r.pet_name, species: r.species, breed: r.breed,
+      colors: JSON.parse(r.colors) as string[], costume: r.costume, accessories: JSON.parse(r.accessories) as string[],
+    }));
+  }
+
+  /**
+   * The crew's last three finished weeks, newest first: its final place and minutes, and the medal a place
+   * 1 to 3 won. A week that ended before the crew existed is left out; a week it had no minutes in shows
+   * no place and 0 minutes.
+   */
+  private history(c: CrewRow, now: number) {
+    const out = [];
+    let week = previousWeek(now);
+    for (let i = 0; i < 3 && c.created_at < week.endsAt; i++) {
+      const r = this.sql.exec<{ place: number | null; minutes: number }>(
+        "SELECT place, minutes FROM crew_results WHERE crew = ? AND week = ?", c.id, week.id).toArray()[0];
+      const place = r?.place ?? null;
+      out.push({ week, place, minutes: r?.minutes ?? 0, medal: place === null ? null : laurelOfRank(place) });
+      week = previousWeek(week.startsAt);
+    }
+    return out;
+  }
+
+  /**
+   * The weekly board's rows: visible crews with minutes this week below the places 1 to 3, most minutes
+   * first, then by id, BOARD_PAGE at a time after `after`, each with its shared place and `tiedWith`.
+   */
+  private boardRows(now: number, after: BoardKey | null) {
+    const week = weekOf(now).id;
+    const placed = this.placed(week);
+    if (placed.length < 3) return { rows: [], next: null };
+    const floor = Math.min(...placed.map((p) => p.minutes));
+    const rows = this.sql.exec<CrewRow & { minutes: number; members: number }>(
+      `SELECT c.*, w.minutes, (SELECT COUNT(*) FROM crew_members m WHERE m.crew = c.id) AS members
+       FROM crew_weeks w JOIN crews c ON c.id = w.crew
+       WHERE w.week = ?1 AND w.minutes > 0 AND w.minutes < ?2 AND c.hidden = 0
+         AND (?3 = 0 OR w.minutes < ?4 OR (w.minutes = ?4 AND c.id > ?5))
+       ORDER BY w.minutes DESC, c.id ASC LIMIT ?6`,
+      week, floor, after ? 1 : 0, after?.minutes ?? 0, after?.id ?? "", BOARD_PAGE + 1,
+    ).toArray();
+    const page = rows.slice(0, BOARD_PAGE);
+    const laurels = this.laurels(now);
+    const last = page.at(-1);
+    return {
+      rows: page.map((r) => ({
+        rank: this.liveRank(r.id, r.minutes, week) ?? 1,
+        minutes: r.minutes,
+        crew: this.summary(r, now, laurels, r.minutes, r.members),
+        tiedWith: this.tiedWith(week, r.id, r.minutes),
+      })),
+      next: rows.length > BOARD_PAGE && last ? encodeBoardCursor({ minutes: last.minutes, id: last.id }) : null,
+    };
+  }
+
+  /**
+   * Last week's frozen places, the featured crews, leaving out crews since deleted or hidden. With a
+   * `viewer` each entry also carries `tiedWith` (crews that shared its place) and the pets of the crew's
+   * most active members that week.
+   */
+  private featured(now: number, viewer?: string) {
     const last = previousWeek(now);
     const rows = this.sql.exec<CrewRow & { rank: number; award_minutes: number }>(
       `SELECT c.*, a.rank, a.minutes AS award_minutes FROM crew_awards a JOIN crews c ON c.id = a.crew
@@ -424,16 +682,23 @@ export class CrewService {
     const won = new Map(rows.map((r) => [r.id, laurelOfRank(r.rank) ?? ""]));
     return {
       week: last,
-      entries: rows.map((r) => ({ rank: r.rank, minutes: r.award_minutes, crew: this.summary(r, now, won) })),
+      entries: rows.map((r) => ({
+        rank: r.rank, minutes: r.award_minutes, crew: this.summary(r, now, won),
+        ...(viewer === undefined ? {} : {
+          tiedWith: rows.filter((o) => o.rank === r.rank && o.id !== r.id).slice(0, 2).map((o) => o.name),
+          pets: this.activePets(r.id, last.id, viewer),
+        }),
+      })),
     };
   }
 
   /**
    * GET /v1/crews/hall?cursor=: every visible crew with a medal, in Olympic order (most golds, then
-   * silvers, then bronzes, then whoever reached that tally first, then id), HALL_PAGE at a time. Paging
-   * is keyset on that order, so a page never repeats or skips a crew that did not change in between.
+   * silvers, then bronzes, then whoever reached that tally first, then id), HALL_PAGE at a time. Ranks are
+   * distinct: 1 plus the crew's position in that order. Paging is keyset on the order, so a page never
+   * repeats or skips a crew that did not change in between.
    */
-  private hall(req: Request, now: number): Response {
+  private hall(req: Request, caller: string, now: number): Response {
     const raw = new URL(req.url).searchParams.get("cursor");
     const after: HallKey | null = raw === null || raw === "" ? null : decodeHallCursor(raw);
     const order = "c.gold DESC, c.silver DESC, c.bronze DESC, c.medals_at ASC, c.id ASC";
@@ -447,29 +712,63 @@ export class CrewService {
     ).toArray();
     const page = rows.slice(0, HALL_PAGE);
     const laurels = this.laurels(now);
-    const entries = page.map((r) => {
-      const ahead = this.sql.exec<{ n: number }>(
-        `SELECT COUNT(*) AS n FROM crews c WHERE c.hidden = 0 AND c.gold + c.silver + c.bronze > 0 AND (
-           c.gold > ?1 OR (c.gold = ?1 AND (c.silver > ?2 OR (c.silver = ?2 AND (c.bronze > ?3
-             OR (c.bronze = ?3 AND c.medals_at < ?4))))))`,
-        r.gold, r.silver, r.bronze, r.medals_at ?? 0,
-      ).one().n;
-      return {
-        rank: ahead + 1,
-        medals: { gold: r.gold, silver: r.silver, bronze: r.bronze },
-        reachedAt: r.medals_at ?? 0,
-        crew: this.summary(r, now, laurels, undefined, r.members),
-      };
-    });
+    const week = weekOf(now).id;
+    const entries = page.map((r, i) => ({
+      rank: this.hallRank(r),
+      medals: { gold: r.gold, silver: r.silver, bronze: r.bronze },
+      reachedAt: r.medals_at ?? 0,
+      crew: this.summary(r, now, laurels, undefined, r.members),
+      // The first page's top three are featured tiles, with the pets of their most active members this week.
+      ...(after === null && i < 3 ? { pets: this.activePets(r.id, week, caller) } : {}),
+    }));
     const last = page.at(-1);
     const next = rows.length > HALL_PAGE && last
       ? encodeHallCursor({ gold: last.gold, silver: last.silver, bronze: last.bronze, reachedAt: last.medals_at ?? 0, id: last.id })
       : null;
-    return json({ ok: true, entries, next });
+    if (after !== null) return json({ ok: true, entries, next });
+    // On the first page, where my crew stands: no rank and a zero tally before its first medal.
+    const member = this.memberRow(caller);
+    const crew = member && this.crewRow(member.crew);
+    const mine = crew ? {
+      rank: crew.hidden || crew.gold + crew.silver + crew.bronze === 0 ? null : this.hallRank(crew),
+      medals: { gold: crew.gold, silver: crew.silver, bronze: crew.bronze },
+      reachedAt: crew.medals_at,
+    } : null;
+    return json({ ok: true, entries, next, mine });
   }
 
-  private board(now: number): Response {
-    return json({ ok: true, week: weekOf(now), top: this.liveTop(now), featured: this.featured(now) });
+  /** 1 plus the number of visible medal crews ahead of `r` in the Hall of Fame's order. */
+  private hallRank(r: CrewRow): number {
+    return 1 + this.sql.exec<{ n: number }>(
+      `SELECT COUNT(*) AS n FROM crews c WHERE c.hidden = 0 AND c.gold + c.silver + c.bronze > 0 AND (
+         c.gold > ?1 OR (c.gold = ?1 AND (c.silver > ?2 OR (c.silver = ?2 AND (c.bronze > ?3
+           OR (c.bronze = ?3 AND (c.medals_at < ?4 OR (c.medals_at = ?4 AND c.id < ?5))))))))`,
+      r.gold, r.silver, r.bronze, r.medals_at ?? 0, r.id,
+    ).one().n;
+  }
+
+  /**
+   * GET /v1/crews/board[?cursor=]: the week's places 1 to 3 (`top`), last week's (`featured`), the first
+   * page of the places below (`rows`, `next`), how many crews have minutes (`crewCount`) and where my crew
+   * stands (`mine`). With a cursor it answers only the next page of rows (`week`, `rows`, `next`, `crewCount`).
+   */
+  private board(req: Request, caller: string, now: number): Response {
+    const week = weekOf(now);
+    const raw = new URL(req.url).searchParams.get("cursor");
+    const crewCount = this.crewCount(week.id);
+    if (raw !== null && raw !== "") {
+      return json({ ok: true, week, ...this.boardRows(now, decodeBoardCursor(raw)), crewCount });
+    }
+    const member = this.memberRow(caller);
+    const crew = member && this.crewRow(member.crew);
+    const mine = crew ? (() => {
+      const minutes = this.weekMinutes(crew.id, week.id);
+      return { rank: crew.hidden ? null : this.liveRank(crew.id, minutes, week.id), minutes };
+    })() : null;
+    return json({
+      ok: true, week, top: this.liveTop(now, caller), featured: this.featured(now, caller),
+      ...this.boardRows(now, null), crewCount, mine,
+    });
   }
 
   /**
@@ -541,6 +840,7 @@ export class CrewService {
   private addMember(code: string, crew: string, now: number): void {
     const ref = this.newId(MEMBER_REF_LENGTH, "ref", "crew_members");
     this.sql.exec("INSERT INTO crew_members (code, crew, ref, joined_at) VALUES (?, ?, ?, ?)", code, crew, ref, now);
+    this.sql.exec("DELETE FROM crew_join_requests WHERE code = ?", code);
     this.sql.exec("INSERT OR REPLACE INTO crew_stints (code, crew, joined_at, left_at) VALUES (?, ?, ?, NULL)", code, crew, now);
   }
 
@@ -620,6 +920,8 @@ export class CrewService {
       throw new HttpError(403, "removed_from_crew", "the crew's owner removed you from this crew");
     }
     if (current) throw new HttpError(409, "in_crew", "leave your crew first");
+    // A public crew by id asks its owner; an invite code is the owner's consent and joins at once.
+    if ("crew" in target) return this.requestToJoin(caller, crew, now);
     if (this.memberCount(crew.id) >= MAX_CREW_MEMBERS) {
       throw new HttpError(409, "crew_full", `a crew has at most ${MAX_CREW_MEMBERS} members`);
     }
@@ -670,7 +972,9 @@ export class CrewService {
     this.sql.exec("UPDATE crew_stints SET left_at = ? WHERE crew = ? AND left_at IS NULL", now, id);
     this.sql.exec("DELETE FROM crew_members WHERE crew = ?", id);
     this.sql.exec("DELETE FROM crew_removals WHERE crew = ?", id);
+    this.sql.exec("DELETE FROM crew_join_requests WHERE crew = ?", id);
     this.sql.exec("DELETE FROM crew_weeks WHERE crew = ?", id);
+    this.sql.exec("DELETE FROM crew_results WHERE crew = ?", id);
     this.sql.exec("DELETE FROM crews WHERE id = ?", id);
   }
 
@@ -842,6 +1146,16 @@ export class CrewService {
   private freeze(week: string, now: number): void {
     if (this.sql.exec("SELECT 1 FROM crew_rollups WHERE week = ?", week).toArray().length > 0) return;
     const endsAt = weekFromId(week).endsAt;
+    const places = new Map(this.placed(week).map((p) => [p.id, p.rank]));
+    // Every crew's final standing, for its history: competition ranks over the visible crews, none for hidden ones.
+    const all = this.sql.exec<{ crew: string; minutes: number; hidden: number }>(
+      "SELECT w.crew, w.minutes, c.hidden FROM crew_weeks w JOIN crews c ON c.id = w.crew WHERE w.week = ? AND w.minutes > 0", week,
+    ).toArray();
+    const visible = all.filter((r) => !r.hidden).map((r) => r.minutes);
+    for (const r of all) {
+      const place = r.hidden ? null : places.get(r.crew) ?? 1 + visible.filter((m) => m > r.minutes).length;
+      this.sql.exec("INSERT OR REPLACE INTO crew_results (week, crew, place, minutes) VALUES (?, ?, ?, ?)", week, r.crew, place, r.minutes);
+    }
     for (const r of this.placed(week)) {
       this.sql.exec(
         "INSERT INTO crew_awards (week, rank, crew, minutes, name, frame, emblem, color) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
@@ -860,9 +1174,11 @@ export class CrewService {
     const oldWeek = weekOf(now - CREW_WEEK_RETENTION_S).id;
     this.host.transaction(() => {
       this.sql.exec("DELETE FROM crew_sessions WHERE end < ?", now - CREW_SESSION_RETENTION_S);
+      this.sql.exec("DELETE FROM crew_join_requests WHERE created_at <= ?", now - JOIN_REQUEST_TTL_S);
       this.sql.exec("DELETE FROM crew_stints WHERE left_at IS NOT NULL AND left_at < ?", now - CREW_SESSION_RETENTION_S);
       this.sql.exec("DELETE FROM crew_day_credits WHERE week < ?", oldWeek);
       this.sql.exec("DELETE FROM crew_weeks WHERE week < ?", oldWeek);
+      this.sql.exec("DELETE FROM crew_results WHERE week < ?", oldWeek);
     });
     this.sweptOn = today;
     this.badReports.clear();
@@ -911,9 +1227,14 @@ export class CrewService {
   private async blockRoute(req: Request, caller: string, now: number): Promise<Response> {
     const body = await readBody(req, CREW_BLOCK_FIELDS);
     const crew = this.viewable(String(body.crew ?? ""), caller, now);
-    const member = this.visibleMember(crew, body.member);
-    if (member.code === caller) throw new HttpError(400, "self_block", "you cannot block yourself");
-    return json({ ok: true, blocked: this.host.block(caller, member.code, now) });
+    // The owner can also block someone asking to join, by the request's ref.
+    const ref = parseCode(body.member, MEMBER_REF_RE, "member");
+    const requester = crew.owner === caller
+      ? this.sql.exec<{ code: string }>("SELECT code FROM crew_join_requests WHERE ref = ? AND crew = ?", ref, crew.id).toArray()[0]?.code
+      : undefined;
+    const code = requester ?? this.visibleMember(crew, ref).code;
+    if (code === caller) throw new HttpError(400, "self_block", "you cannot block yourself");
+    return json({ ok: true, blocked: this.host.block(caller, code, now) });
   }
 
   /**
@@ -921,6 +1242,9 @@ export class CrewService {
    * a member blocking the owner leaves. Other blocks only hide the two from each other on crew pages.
    */
   onBlock(blocker: string, blocked: string, now: number): void {
+    this.sql.exec(
+      `DELETE FROM crew_join_requests WHERE (code = ?1 AND crew IN (SELECT id FROM crews WHERE owner = ?2))
+         OR (code = ?2 AND crew IN (SELECT id FROM crews WHERE owner = ?1))`, blocker, blocked);
     const a = this.memberRow(blocker);
     const b = this.memberRow(blocked);
     if (!a || !b || a.crew !== b.crew) return;
@@ -938,6 +1262,7 @@ export class CrewService {
 
   /** A ban (call inside its transaction): the user leaves their crew and loses the open week's minutes. */
   onBan(code: string, now: number): void {
+    this.sql.exec("DELETE FROM crew_join_requests WHERE code = ?", code);
     this.voidCredits(code, weekOf(now).id);
     this.leave(code, now);
   }
@@ -945,6 +1270,7 @@ export class CrewService {
   /** Account deletion (call inside its transaction): every crews row about the user goes. */
   purgeUser(code: string, now: number): void {
     this.leave(code, now);
+    this.sql.exec("DELETE FROM crew_join_requests WHERE code = ?", code);
     this.sql.exec("DELETE FROM crew_stints WHERE code = ?", code);
     this.sql.exec("DELETE FROM crew_sessions WHERE code = ?", code);
     this.sql.exec("DELETE FROM crew_day_credits WHERE code = ?", code);
@@ -972,6 +1298,8 @@ export class CrewService {
       `INSERT INTO crew_day_credits (code, crew, day, week, minutes) SELECT ?, crew, day, week, minutes FROM crew_day_credits WHERE code = ? AND true
        ON CONFLICT (code, crew, day) DO UPDATE SET minutes = minutes + excluded.minutes`, to, from);
     this.sql.exec("INSERT OR IGNORE INTO crew_removals (crew, code, created_at) SELECT crew, ?, created_at FROM crew_removals WHERE code = ?", to, from);
+    if (!this.memberRow(to)) this.sql.exec("UPDATE OR IGNORE crew_join_requests SET code = ? WHERE code = ?", to, from);
+    this.sql.exec("DELETE FROM crew_join_requests WHERE code = ?", from);
     this.sql.exec("UPDATE crew_reports SET reporter = ? WHERE reporter = ?", to, from);
     this.sql.exec("UPDATE crew_reports SET member = ? WHERE member = ?", to, from);
     this.sql.exec("UPDATE OR IGNORE crew_flags SET code = ? WHERE code = ?", to, from);
@@ -1121,7 +1449,10 @@ export class CrewService {
     const crew = this.adminTarget(raw);
     this.host.transaction(() => {
       this.sql.exec("UPDATE crews SET hidden = ? WHERE id = ?", hidden ? 1 : 0, crew.id);
-      if (hidden) this.resolveCrewReports(crew.id, "hidden", now);
+      if (hidden) {
+        this.resolveCrewReports(crew.id, "hidden", now);
+        this.sql.exec("DELETE FROM crew_join_requests WHERE crew = ?", crew.id);
+      }
     });
     return json({ ok: true, hidden, changed: (crew.hidden === 1) !== hidden });
   }

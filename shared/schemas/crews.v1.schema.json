@@ -187,6 +187,7 @@
         "visibility",
         "laurel",
         "trophies",
+        "golds",
         "memberCount",
         "maxMembers",
         "weekMinutes"
@@ -196,7 +197,8 @@
           "$ref": "#/$defs/crewId"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "maxLength": 20
         },
         "description": {
           "type": "string"
@@ -219,6 +221,11 @@
         "trophies": {
           "type": "integer",
           "minimum": 0
+        },
+        "golds": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "All-time golds, for the hero pips (apps show at most three)."
         },
         "memberCount": {
           "type": "integer",
@@ -247,12 +254,15 @@
         "visibility",
         "laurel",
         "trophies",
+        "golds",
         "memberCount",
         "maxMembers",
         "weekMinutes",
         "createdAt",
         "medals",
         "rank",
+        "crewCount",
+        "history",
         "members",
         "mine",
         "owner",
@@ -264,7 +274,8 @@
           "$ref": "#/$defs/crewId"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "maxLength": 20
         },
         "description": {
           "type": "string"
@@ -287,6 +298,11 @@
         "trophies": {
           "type": "integer",
           "minimum": 0
+        },
+        "golds": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "All-time golds, for the hero pips (apps show at most three)."
         },
         "memberCount": {
           "type": "integer",
@@ -334,11 +350,25 @@
           ],
           "minimum": 1
         },
+        "crewCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Visible crews with minutes this week, as on the board."
+        },
+        "history": {
+          "description": "The last three finished weeks, newest first; weeks that ended before the crew existed are left out.",
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/historyWeek"
+          }
+        },
         "members": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/crewMember"
-          }
+          },
+          "description": "Most minutes this week first, then by name."
         },
         "mine": {
           "type": "boolean"
@@ -358,6 +388,13 @@
         },
         "hidden": {
           "type": "boolean"
+        },
+        "requests": {
+          "description": "Only for the owner: the join requests waiting, oldest first.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/crewJoinRequest"
+          }
         }
       },
       "additionalProperties": false
@@ -381,6 +418,22 @@
         },
         "crew": {
           "$ref": "#/$defs/crewSummary"
+        },
+        "tiedWith": {
+          "description": "The names of up to two other crews on the same place (board and featured entries).",
+          "type": "array",
+          "maxItems": 2,
+          "items": {
+            "type": "string"
+          }
+        },
+        "pets": {
+          "description": "In top and featured: the pets of the crew's three most active members that week (hidden pets skipped).",
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/crewPet"
+          }
         }
       },
       "additionalProperties": false
@@ -409,6 +462,17 @@
         },
         "week": {
           "$ref": "#/$defs/week"
+        },
+        "request": {
+          "description": "My pending join request while I am in no crew, else null.",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/crewJoinRequestMine"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
@@ -429,7 +493,7 @@
       }
     },
     "joinReply": {
-      "description": "POST /v1/crews/join.",
+      "description": "POST /v1/crews/join. An invite code joins at once; a public crew by id asks its owner (joined false, requested true, request set).",
       "type": "object",
       "required": [
         "ok",
@@ -445,6 +509,19 @@
         },
         "crew": {
           "$ref": "#/$defs/crewDetail"
+        },
+        "requested": {
+          "type": "boolean"
+        },
+        "request": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/crewJoinRequestMine"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
@@ -508,13 +585,14 @@
       }
     },
     "boardReply": {
-      "description": "GET /v1/crews/board: this week's live places 1 to 3 and last week's frozen places (the featured crews). Equal minutes share a place, so either list can hold more than three crews.",
+      "description": "GET /v1/crews/board[?cursor=]. The first page has every field; with a cursor only week, rows, next and crewCount.",
       "type": "object",
       "required": [
         "ok",
         "week",
-        "top",
-        "featured"
+        "rows",
+        "next",
+        "crewCount"
       ],
       "properties": {
         "ok": {
@@ -550,6 +628,54 @@
                 }
               },
               "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rows": {
+          "description": "Places 4 and down, most minutes first, then by crew id, 20 a page.",
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/boardEntry"
+          }
+        },
+        "next": {
+          "description": "The cursor for the next page of rows, null at the end.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "crewCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Visible crews with minutes this week."
+        },
+        "mine": {
+          "description": "My crew this week (rank null with 0 minutes or while hidden), null outside a crew.",
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "rank",
+                "minutes"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "rank": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1
+                },
+                "minutes": {
+                  "$ref": "#/$defs/minutes"
+                }
+              }
             },
             {
               "type": "null"
@@ -667,7 +793,7 @@
         "name": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 24
+          "maxLength": 20
         },
         "description": {
           "type": [
@@ -699,7 +825,7 @@
         "name": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 24
+          "maxLength": 20
         },
         "description": {
           "type": [
@@ -887,7 +1013,7 @@
       ],
       "properties": {
         "rank": {
-          "description": "Competition rank over the whole Olympic order; equal tallies reached at the same time share it.",
+          "description": "1 plus the crew's position in the whole Olympic order (golds, silvers, bronzes, earlier reachedAt, crew id); every rank is distinct.",
           "type": "integer",
           "minimum": 1
         },
@@ -920,6 +1046,14 @@
         },
         "crew": {
           "$ref": "#/$defs/crewSummary"
+        },
+        "pets": {
+          "description": "On the first page's top three: the pets of the crew's three most active members this week.",
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/crewPet"
+          }
         }
       },
       "additionalProperties": false
@@ -948,6 +1082,187 @@
             "string",
             "null"
           ]
+        },
+        "mine": {
+          "description": "First page only: my crew's place (null before its first medal or while hidden), tally and when it was reached; null outside a crew.",
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "rank",
+                "medals",
+                "reachedAt"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "rank": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1
+                },
+                "medals": {
+                  "type": "object",
+                  "required": [
+                    "gold",
+                    "silver",
+                    "bronze"
+                  ],
+                  "properties": {
+                    "gold": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "silver": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "bronze": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "reachedAt": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "crewJoinRequest": {
+      "description": "A request to join my crew, as its owner sees it (oldest first).",
+      "type": "object",
+      "required": [
+        "ref",
+        "name",
+        "pet",
+        "badges",
+        "requestedAt",
+        "expiresAt"
+      ],
+      "properties": {
+        "ref": {
+          "description": "The request's opaque id, for approve, decline and block.",
+          "$ref": "#/$defs/memberRef"
+        },
+        "name": {
+          "type": "string"
+        },
+        "pet": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/crewPet"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "badges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requestedAt": {
+          "$ref": "#/$defs/unixSeconds"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/unixSeconds"
+        }
+      },
+      "additionalProperties": false
+    },
+    "crewJoinRequestMine": {
+      "description": "My pending request to join a public crew.",
+      "type": "object",
+      "required": [
+        "crew",
+        "requestedAt",
+        "expiresAt"
+      ],
+      "properties": {
+        "crew": {
+          "$ref": "#/$defs/crewSummary"
+        },
+        "requestedAt": {
+          "$ref": "#/$defs/unixSeconds"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/unixSeconds"
+        }
+      },
+      "additionalProperties": false
+    },
+    "declineReply": {
+      "description": "POST /v1/crews/mine/requests/{ref}/decline.",
+      "type": "object",
+      "required": [
+        "ok",
+        "declined"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "declined": {
+          "type": "boolean"
+        }
+      }
+    },
+    "cancelReply": {
+      "description": "POST /v1/crews/requests/cancel; cancelled is false when I had no request.",
+      "type": "object",
+      "required": [
+        "ok",
+        "cancelled"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "cancelled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "historyWeek": {
+      "description": "One finished week of a crew: its final place (null without minutes or while hidden), minutes, and the medal a place 1 to 3 won.",
+      "type": "object",
+      "required": [
+        "week",
+        "place",
+        "minutes",
+        "medal"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "week": {
+          "$ref": "#/$defs/week"
+        },
+        "place": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "minutes": {
+          "$ref": "#/$defs/minutes"
+        },
+        "medal": {
+          "$ref": "#/$defs/laurel"
         }
       }
     }

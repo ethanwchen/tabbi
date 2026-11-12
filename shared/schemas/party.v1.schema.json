@@ -125,7 +125,16 @@
         "ok": { "const": true },
         "presence": { "$ref": "#/$defs/presence" },
         "heartbeatSeconds": { "description": "Seconds until the next heartbeat; null after offline.", "type": ["number", "null"] },
-        "incomingRequests": { "description": "Protocol 2: friend requests waiting for me, for a badge.", "type": "integer", "minimum": 0 }
+        "incomingRequests": { "description": "Protocol 2: friend requests waiting for me, for a badge.", "type": "integer", "minimum": 0 },
+        "crews": {
+          "description": "Protocol 3: my Study Crew's id (null outside a crew) and the join requests waiting for it when I own it, for a badge.",
+          "type": "object",
+          "required": ["requests", "crew"],
+          "properties": {
+            "requests": { "type": "integer", "minimum": 0 },
+            "crew": { "type": ["string", "null"] }
+          }
+        }
       }
     },
     "partyRef": {

@@ -40,6 +40,13 @@ export const CREW_SESSION_RETENTION_S = 14 * 86_400;
 /** Credited minutes and crew week totals are kept this long, so this week and last week are always there. */
 export const CREW_WEEK_RETENTION_S = 35 * 86_400;
 
+/** A join request to a public crew waits this long for the owner, then expires. */
+export const JOIN_REQUEST_TTL_S = 7 * 86_400;
+/** Pending join requests one crew can hold; more wait until the owner answers some. */
+export const MAX_CREW_JOIN_REQUESTS = 50;
+/** New join requests one user can send per UTC day. */
+export const JOIN_REQUESTS_PER_DAY = 20;
+
 /** Rate limits, per user, on top of the general per-token limit. */
 export const CREW_SESSION_REPORTS_PER_MIN = 6;
 export const CREW_SEARCHES_PER_MIN = 20;
@@ -286,6 +293,42 @@ export interface HallKey {
   bronze: number;
   reachedAt: number;
   id: string;
+}
+
+/** An opaque cursor: base64url of a small JSON array. */
+function encodeCursor(v: unknown[]): string {
+  return btoa(JSON.stringify(v)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function decodeCursor(raw: string): unknown {
+  if (!/^[A-Za-z0-9_-]{1,200}$/.test(raw)) throw new HttpError(400, "invalid_field", "invalid cursor");
+  try {
+    return JSON.parse(atob(raw.replace(/-/g, "+").replace(/_/g, "/")));
+  } catch {
+    throw new HttpError(400, "invalid_field", "invalid cursor");
+  }
+}
+
+/** Weekly board rows (places 4 and down) per page. */
+export const BOARD_PAGE = 20;
+
+/** Where a crew stands on the weekly board: its minutes, then its id. */
+export interface BoardKey {
+  minutes: number;
+  id: string;
+}
+
+export function encodeBoardCursor(k: BoardKey): string {
+  return encodeCursor([k.minutes, k.id]);
+}
+
+/** Reads a cursor from `encodeBoardCursor`; anything else is `400 invalid_field`. */
+export function decodeBoardCursor(raw: string): BoardKey {
+  const v = decodeCursor(raw);
+  if (!Array.isArray(v) || v.length !== 2 || !Number.isSafeInteger(v[0]) || v[0] < 0 || typeof v[1] !== "string" || !CREW_ID_RE.test(v[1])) {
+    throw new HttpError(400, "invalid_field", "invalid cursor");
+  }
+  return { minutes: v[0], id: v[1] };
 }
 
 /** The opaque cursor after `k`: base64url of its sort key. */
