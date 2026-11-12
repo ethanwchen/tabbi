@@ -8,6 +8,9 @@ import XCTest
 /// and frame timing matches the old Swift definitions is `PetGoldenFrameTests`.
 final class PetArtTests: XCTestCase {
     private static let families = ["animations", "badge", "breeds", "cat", "costume", "dog", "effect", "paw", "prop", "tail", "walk"]
+    /// Art in the same folder with a format of its own: the Study Crews
+    /// crests (`crewCrests.v1`, `CrewCrestArt`, checked in `CrewsTests`).
+    private static let otherFormats = ["crew"]
 
     private var repoRoot: URL {
         URL(fileURLWithPath: #filePath)
@@ -16,9 +19,14 @@ final class PetArtTests: XCTestCase {
 
     func testEveryBundledArtFileLoads() throws {
         let urls = try XCTUnwrap(KitResources.bundle?.urls(forResourcesWithExtension: "json", subdirectory: PetArt.subdirectory))
-        XCTAssertEqual(urls.map { $0.deletingPathExtension().lastPathComponent }.sorted(), Self.families)
+        XCTAssertEqual(urls.map { $0.deletingPathExtension().lastPathComponent }.sorted(),
+                       (Self.families + Self.otherFormats).sorted())
         for url in urls {
-            XCTAssertNoThrow(try PetArtFile.decode(Data(contentsOf: url)), url.lastPathComponent)
+            if url.deletingPathExtension().lastPathComponent == "crew" {
+                XCTAssertNoThrow(try CrewCrestSet.decode(Data(contentsOf: url)), url.lastPathComponent)
+            } else {
+                XCTAssertNoThrow(try PetArtFile.decode(Data(contentsOf: url)), url.lastPathComponent)
+            }
         }
     }
 

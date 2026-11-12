@@ -404,7 +404,10 @@
   display: flex;
   justify-content: space-between;
   gap: 2px;
-  max-width: 220px;
+}
+.crew-row > .crew-icon-row {
+  flex: 1;
+  min-width: 0;
 }
 .crew-color-choice {
   width: 20px;

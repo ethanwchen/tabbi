@@ -8,8 +8,8 @@
 
 import { useCallback, type ReactNode } from "react";
 import { useStore } from "../../app/useStore";
-import { CREW_LIMITS, crewIcons } from "../../core/crews/crewCatalog";
-import { CREW_ICON_COMPACT_PIXEL_SIZE } from "../../core/crews/crewIconArt";
+import { CREW_LIMITS } from "../../core/crews/crewCatalog";
+import { CREW_CREST_COMPACT_PIXEL_SIZE, defaultCrest } from "../../core/crews/crewCrestArt";
 import { crewHours, crewMembers, crewRank } from "../../core/crews/crewFormat";
 import { CrewCode, crewIsFull, crewMe, type CrewDetail, type CrewMember, type CrewSummary } from "../../core/crews/crewModels";
 import { crewErrorMessage, inCrew } from "../../core/crews/crewsState";
@@ -21,7 +21,7 @@ import { TextThatFits } from "../../ui/kit/TextThatFits";
 import { Tooltip } from "../../ui/kit/Tooltip";
 import { useContextMenu, type ContextMenuItem } from "../../ui/kit/ContextMenu";
 import { CrewBoardCard, CrewFormView, CrewPreviewCard } from "./CrewBoardCard";
-import { CrewIconButton, CrewIconView, CrewInviteButton, CrewMemberPet, CrewSummaryIcon, CrewTextField, FirstThatFits, PartySectionSwitch, rankColor } from "./CrewComponents";
+import { CrewCrestView, CrewIconButton, CrewInviteButton, CrewMemberPet, CrewSummaryCrest, CrewTextField, FirstThatFits, PartySectionSwitch, rankColor } from "./CrewComponents";
 import { FRIENDS_WIDTH } from "./PartyFriendsCard";
 import { PartyCodeField, PartyPillButton, PartyTextButton } from "./PartyComponents";
 import type { CrewsStore } from "./crewsStore";
@@ -136,7 +136,7 @@ function CrewIdentity({ crew }: { crew: CrewDetail }) {
   const rankText = crew.rank === undefined ? tr("this week") : tr("%@ this week", crewRank(crew.rank));
   return (
     <div className="crew-identity">
-      <CrewSummaryIcon crew={summary} />
+      <CrewSummaryCrest crew={summary} />
       <div className="crew-identity-words">
         <Tooltip text={summary.description === "" ? summary.name : summary.description}>
           <span className="kit-title crew-name kit-user-text">{summary.name}</span>
@@ -255,7 +255,7 @@ function CrewMemberColumn({ crews, crew, member }: { crews: CrewsStore; crew: Cr
 function CrewEmptyView({ crews }: { crews: CrewsStore }) {
   const intro = (showsIcon: boolean, showsLine: boolean) => (
     <div className="crew-intro">
-      {showsIcon && <CrewIconView icon={crewIcons()[0] ?? ""} color="coral" laurel="gold" />}
+      {showsIcon && <CrewCrestView crest={defaultCrest()} laurel="gold" pips={3} />}
       <div className="crew-intro-words">
         <span className="kit-title">{tr("Join a study crew")}</span>
         {showsLine && <span className="kit-body kit-secondary">{tr("Study with a crew and climb the weekly top 3.")}</span>}
@@ -361,7 +361,7 @@ function CrewFindRow({ crews, crew }: { crews: CrewsStore; crew: CrewSummary }) 
   return (
     <Tooltip text={tr("Open %@", crew.name)}>
       <div className="crew-find-row" role="button" tabIndex={0} onClick={() => crews.openCrew(crew.id)}>
-        <CrewSummaryIcon crew={crew} pixelSize={CREW_ICON_COMPACT_PIXEL_SIZE} />
+        <CrewSummaryCrest crew={crew} pixelSize={CREW_CREST_COMPACT_PIXEL_SIZE} />
         <div className="crew-find-words">
           <Tooltip text={crew.description === "" ? crew.name : crew.description}>
             <span className="kit-body-emphasis crew-truncate kit-user-text">{crew.name}</span>

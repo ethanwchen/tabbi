@@ -1,8 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { CREW_CATALOG_VERSION, CREW_COLORS, CREW_LIMITS, crewIcons, crewInviteAppURL, crewInviteWebURL, parseCrewInvite, resolvedCrewColor, resolvedCrewIcon } from "../../../src/core/crews/crewCatalog";
+import {
+  CREW_CATALOG_VERSION,
+  CREW_LIMITS,
+  crewColors,
+  crewEmblems,
+  crewFrames,
+  crewInviteAppURL,
+  crewInviteWebURL,
+  parseCrewInvite,
+  resolvedCrewColor,
+  resolvedCrewEmblem,
+  resolvedCrewFrame,
+} from "../../../src/core/crews/crewCatalog";
 import { crewsDemo, CREW_DEMO_SCENARIOS } from "../../../src/core/crews/crewDemo";
 import { crewNextChange } from "../../../src/core/crews/crewFormat";
-import { decodeCrewIconSet, outlined } from "../../../src/core/crews/crewIconArt";
+import { composeCrest, crewCrestArt, decodeCrewCrestSet, randomCrest } from "../../../src/core/crews/crewCrestArt";
 import { CREW_LAURELS, CREW_VISIBILITIES, readCrewMember, readCrewSummary } from "../../../src/core/crews/crewModels";
 import { CrewSessionQueue, CREW_SESSION_MAX_AGE, decodeCrewSessionQueue, encodeCrewSessionQueue, loadCrewSessionQueue, saveCrewSessionQueue } from "../../../src/core/crews/crewSessionQueue";
 import { boardEntries, crewErrorMessage, didLoadBoard, didLoadMine, inCrew, showSection } from "../../../src/core/crews/crewsState";
@@ -12,7 +24,8 @@ import { loadRepoJson } from "../../support/fixtures";
 
 interface ServerCatalog {
   version: number;
-  icons: string[];
+  frames: string[];
+  emblems: string[];
   colors: Record<string, string>;
   visibilities: string[];
   laurels: string[];
@@ -23,16 +36,19 @@ describe("crew catalog", () => {
   it("matches the server's backend/shared/crews.json", () => {
     const server = loadRepoJson<ServerCatalog>("backend/shared/crews.json");
     expect(server.version).toBe(CREW_CATALOG_VERSION);
-    expect(server.icons).toEqual(crewIcons());
-    expect(server.colors).toEqual(Object.fromEntries(CREW_COLORS.map((color) => [color.id, color.hex])));
+    expect(server.frames).toEqual(crewFrames());
+    expect(server.emblems).toEqual(crewEmblems());
+    expect(server.colors).toEqual(Object.fromEntries(crewColors().map((color) => [color.id, color.hex])));
+    expect(crewColors()).toHaveLength(10);
     expect(server.visibilities).toEqual([...CREW_VISIBILITIES]);
     expect(server.laurels).toEqual([...CREW_LAURELS]);
     expect(server.limits).toEqual({ ...CREW_LIMITS });
   });
 
-  it("falls back to the first icon and color", () => {
-    expect(resolvedCrewIcon("hologram")).toBe(crewIcons()[0]);
-    expect(resolvedCrewColor("ultraviolet").id).toBe("coral");
+  it("falls back to the first frame, emblem and color", () => {
+    expect(resolvedCrewFrame("castle")).toBe(crewFrames()[0]);
+    expect(resolvedCrewEmblem("dragon")).toBe(crewEmblems()[0]);
+    expect(resolvedCrewColor("ultraviolet").id).toBe(crewColors()[0]?.id);
   });
 
   it("parses crew invite links strictly", () => {
@@ -45,44 +61,70 @@ describe("crew catalog", () => {
   });
 });
 
-describe("crew icon set", () => {
-  const base = {
-    schema: "crew-icons.v1",
-    canvas: 6,
-    outline: "O",
-    tint: { base: "C", shade: "D", light: "L" },
-    colors: { O: "#000000", W: "#FFFFFF" },
-    metals: { gold: ["#111111", "#222222", "#333333"], silver: ["#111111", "#222222", "#333333"], bronze: ["#111111", "#222222", "#333333"] },
-    laurel: { base: "G", shade: "J", light: "Z", grid: Array.from({ length: 6 }, () => "......") },
-    icons: [{ id: "a", grid: ["....", ".CW.", ".DL.", "...."] }],
-  };
-
-  it("loads a valid set and refuses broken ones", () => {
-    expect(() => decodeCrewIconSet(base)).not.toThrow();
-    expect(() => decodeCrewIconSet({ ...base, schema: "crew-icons.v2" })).toThrow();
-    expect(() => decodeCrewIconSet({ ...base, icons: [{ id: "a", grid: ["....", ".CQ.", "....", "...."] }] })).toThrow();
-    expect(() => decodeCrewIconSet({ ...base, icons: [{ id: "a", grid: ["...", "....", "..."] }] })).toThrow();
-    expect(() => decodeCrewIconSet({ ...base, icons: [] })).toThrow();
-    expect(() => decodeCrewIconSet({ ...base, icons: [{ id: "a", grid: ["C"] }, { id: "a", grid: ["C"] }] })).toThrow();
-    const big = (n: number) => ({
-      ...base,
-      canvas: 48,
-      laurel: { ...base.laurel, grid: Array.from({ length: 48 }, () => ".".repeat(48)) },
-      icons: [{ id: "big", grid: Array.from({ length: n }, () => "W".repeat(n)) }],
-    });
-    expect(() => decodeCrewIconSet(big(40))).not.toThrow();
-    expect(() => decodeCrewIconSet(big(41))).toThrow();
+describe("crew crest set", () => {
+  const row = (n: number, c = ".") => c.repeat(n);
+  const base = () => ({
+    schema: "crewCrests.v1",
+    grid: 8,
+    slot: 4,
+    palette: {
+      O: { role: "outline", hex: "#000000" },
+      o: { role: "emblemOutline", hex: null },
+      C: { role: "crewBase", hex: null },
+      D: { role: "crewShade", hex: null },
+      H: { role: "crewHighlight", hex: null },
+      g: { role: "rankLeaf", hex: null },
+      h: { role: "rankShade", hex: null },
+      W: { role: "white", hex: "#FFFFFF" },
+    },
+    crewColors: [{ id: "red", base: "#FF0000", shade: "#800000", hi: "#FF8080", emblemOutline: "#111111" }],
+    ranks: { gold: { leaf: "#FFD700", shade: "#B8860B" }, silver: { leaf: "#C0C0C0", shade: "#808080" }, bronze: { leaf: "#CD7F32", shade: "#8B4513" } },
+    frames: [{ id: "box", name: "Box", slot: [2, 2], grid: Array.from({ length: 8 }, () => row(8, "C")) }],
+    emblems: [{ id: "dot", name: "Dot", grid: [row(4), ".Wo.", ".oW.", row(4)] }],
+    laurel: Array.from({ length: 8 }, () => row(8)),
+    pip: ["W"],
+    pipPositions: [[7, 0], [7, 1], [7, 2]],
   });
 
-  it("outlines around the silhouette only", () => {
-    const result = outlined([undefined, undefined, undefined, undefined, "W", undefined, undefined, undefined, undefined], 3, 3, "O");
-    expect(result.map((c) => c ?? ".").join("")).toBe(".O.OWO.O.");
+  it("loads a valid set and refuses broken ones", () => {
+    expect(() => decodeCrewCrestSet(base())).not.toThrow();
+    const broken: ((raw: ReturnType<typeof base>) => unknown)[] = [
+      (raw) => ({ ...raw, schema: "crewCrests.v2" }),
+      (raw) => ({ ...raw, emblems: [{ id: "dot", name: "Dot", grid: [row(4), ".Q..", row(4), row(4)] }] }),
+      (raw) => ({ ...raw, emblems: [{ id: "dot", name: "Dot", grid: [row(3), row(4), row(4), row(4)] }] }),
+      (raw) => ({ ...raw, frames: [{ ...raw.frames[0], slot: [5, 0] }] }),
+      (raw) => ({ ...raw, frames: [] }),
+      (raw) => ({ ...raw, crewColors: [{ id: "red", base: "#FF0000", shade: "#800000", hi: "#FF8080" }] }),
+      (raw) => ({ ...raw, crewColors: [{ ...raw.crewColors[0], sparkle: "#FFFFFF" }] }),
+      (raw) => ({ ...raw, ranks: { gold: raw.ranks.gold } }),
+      (raw) => ({ ...raw, pipPositions: [[8, 0]] }),
+    ];
+    for (const change of broken) expect(() => decodeCrewCrestSet(change(base()))).toThrow();
+  });
+
+  it("composes laurel, frame, emblem and pips in order", () => {
+    const set = decodeCrewCrestSet(base());
+    const pixels = composeCrest({ frame: "box", emblem: "dot", color: "red" }, false, 2, set);
+    expect(pixels.slice(3 * 8, 4 * 8).join("")).toBe("CCCWoCCC");
+    expect(pixels[7]).toBe("W");
+    expect(pixels[15]).toBe("W");
+    expect(pixels[23]).toBe("C");
+    /* Unknown ids draw the first frame and emblem. */
+    expect(composeCrest({ frame: "castle", emblem: "dragon", color: "x" }, false, 0, set)).toEqual(composeCrest({ frame: "box", emblem: "dot", color: "red" }, false, 0, set));
+  });
+
+  it("shuffles to real crests", () => {
+    const art = crewCrestArt();
+    const crest = randomCrest(() => 0.999);
+    expect(art.frames.at(-1)?.id).toBe(crest.frame);
+    expect(art.emblems.at(-1)?.id).toBe(crest.emblem);
+    expect(art.colorIDs.at(-1)).toBe(crest.color);
   });
 });
 
 describe("crew models", () => {
   it("reads newer values leniently", () => {
-    const summary = readCrewSummary({ id: "NGHTQWLS2K", name: "N", icon: "x", color: "y", visibility: "unlisted", laurel: "platinum", memberCount: 2 });
+    const summary = readCrewSummary({ id: "NGHTQWLS2K", name: "N", frame: "x", emblem: "z", color: "y", visibility: "unlisted", laurel: "platinum", memberCount: 2 });
     expect(summary.visibility).toBe("private");
     expect(summary.laurel).toBeUndefined();
     expect(summary.maxMembers).toBe(20);

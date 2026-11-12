@@ -8,10 +8,10 @@
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { useStore } from "../../app/useStore";
-import { crewInviteWebURL, crewPetColor, resolvedCrewColor } from "../../core/crews/crewCatalog";
-import { CREW_ICON_REGULAR_PIXEL_SIZE, crewIconBitmap, crewIconScale, crewIconSet } from "../../core/crews/crewIconArt";
+import { crewInviteWebURL } from "../../core/crews/crewCatalog";
+import { CREW_CREST_REGULAR_PIXEL_SIZE, crewCrestArt, crewCrestBitmap, crewCrestScale, type CrewCrest } from "../../core/crews/crewCrestArt";
 import { crewRank } from "../../core/crews/crewFormat";
-import { memberPartyProfile, type CrewLaurel, type CrewMember, type CrewSummary } from "../../core/crews/crewModels";
+import { crewCrest, crewPips, memberPartyProfile, type CrewLaurel, type CrewMember, type CrewSummary } from "../../core/crews/crewModels";
 import { tr } from "../../core/localization/tr";
 import { Icon } from "../../ui/kit/Icon";
 import { IconButton } from "../../ui/kit/IconButton";
@@ -30,22 +30,22 @@ function useDevicePixelRatio(): number {
   return ratio;
 }
 
-/** The box a crew icon takes in the layout at `pixelSize` CSS px per sprite pixel. */
-export function crewIconSide(pixelSize: number): number {
-  return crewIconSet().canvas * pixelSize;
+/** The box a crest takes in the layout at `pixelSize` CSS px per sprite pixel. */
+export function crewCrestSide(pixelSize: number): number {
+  return crewCrestArt().grid * pixelSize;
 }
 
-/** A crew's icon in its color, with the laurel it wears this week, drawn at whole device pixels like the Goals badges. */
-export function CrewIconView({ icon, color, laurel, pixelSize = CREW_ICON_REGULAR_PIXEL_SIZE }: { icon: string; color: string; laurel?: CrewLaurel | undefined; pixelSize?: number }) {
+/** A crew's crest with the laurel it wears this week and its trophy pips, drawn at whole device pixels like the Goals badges. */
+export function CrewCrestView({ crest, laurel, pips = 0, pixelSize = CREW_CREST_REGULAR_PIXEL_SIZE }: { crest: CrewCrest; laurel?: CrewLaurel | undefined; pips?: number; pixelSize?: number }) {
   const element = useRef<HTMLCanvasElement>(null);
   const ratio = useDevicePixelRatio();
   useLayoutEffect(() => {
     const canvas = element.current;
     if (!canvas) return;
-    /* The large panel scales its content as a whole (--panel-scale); the box divides that out so the icon lands on whole device pixels. */
+    /* The large panel scales its content as a whole (--panel-scale); the box divides that out so the crest lands on whole device pixels. */
     const panelScale = Number.parseFloat(getComputedStyle(canvas).getPropertyValue("--panel-scale")) || 1;
-    const scale = crewIconScale(pixelSize * panelScale, ratio);
-    const side = crewIconSet().canvas;
+    const scale = crewCrestScale(pixelSize * panelScale, ratio);
+    const side = crewCrestArt().grid;
     const css = (side * scale) / ratio / panelScale;
     canvas.width = side * scale;
     canvas.height = side * scale;
@@ -54,12 +54,12 @@ export function CrewIconView({ icon, color, laurel, pixelSize = CREW_ICON_REGULA
     const context = canvas.getContext("2d");
     if (!context) return;
     context.imageSmoothingEnabled = false;
-    const bitmap = crewIconBitmap(icon, crewPetColor(resolvedCrewColor(color)), laurel, scale);
+    const bitmap = crewCrestBitmap(crest, laurel, pips, scale);
     const image = context.createImageData(bitmap.width, bitmap.height);
     image.data.set(bitmap.data);
     context.putImageData(image, 0, 0);
-  }, [icon, color, laurel, pixelSize, ratio]);
-  const side = crewIconSide(pixelSize);
+  }, [crest, laurel, pips, pixelSize, ratio]);
+  const side = crewCrestSide(pixelSize);
   return (
     <span className="crew-icon" style={{ width: side, height: side }} aria-hidden="true">
       <canvas ref={element} className="crew-icon-canvas" />
@@ -67,8 +67,9 @@ export function CrewIconView({ icon, color, laurel, pixelSize = CREW_ICON_REGULA
   );
 }
 
-export function CrewSummaryIcon({ crew, pixelSize }: { crew: CrewSummary; pixelSize?: number }) {
-  return <CrewIconView icon={crew.icon} color={crew.color} laurel={crew.laurel} {...(pixelSize === undefined ? {} : { pixelSize })} />;
+/** A crew's crest as every list shows it: its laurel this week and its trophy pips. */
+export function CrewSummaryCrest({ crew, pixelSize }: { crew: CrewSummary; pixelSize?: number }) {
+  return <CrewCrestView crest={crewCrest(crew)} laurel={crew.laurel} pips={crewPips(crew)} {...(pixelSize === undefined ? {} : { pixelSize })} />;
 }
 
 /**

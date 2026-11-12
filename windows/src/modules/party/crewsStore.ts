@@ -16,7 +16,8 @@
 
 import type { ModuleContext } from "../../app/context";
 import { Store } from "../../app/store";
-import { CREW_COLORS, crewIcons, findCrewInvite, resolvedCrewColor, resolvedCrewIcon } from "../../core/crews/crewCatalog";
+import { findCrewInvite } from "../../core/crews/crewCatalog";
+import { defaultCrest, randomCrest, resolvedCrest, type CrewCrest } from "../../core/crews/crewCrestArt";
 import {
   blockCrewMember,
   createCrew,
@@ -35,7 +36,7 @@ import {
 } from "../../core/crews/crewClient";
 import { crewsDemo, demoCrewResults, demoNightOwls, DEMO_LOFI, DEMO_MED_SQUAD, type CrewDemoScenario } from "../../core/crews/crewDemo";
 import { crewNextChange } from "../../core/crews/crewFormat";
-import { CrewCode, type CrewDetail, type CrewDraft, type CrewMember, type CrewReportReason, type CrewSessionsReply, type CrewSummary, type CrewVisibility } from "../../core/crews/crewModels";
+import { CrewCode, crewCrest, type CrewDetail, type CrewDraft, type CrewMember, type CrewReportReason, type CrewSessionsReply, type CrewSummary, type CrewVisibility } from "../../core/crews/crewModels";
 import { CrewSessionQueue, crewSessionFor, loadCrewSessionQueue, saveCrewSessionQueue } from "../../core/crews/crewSessionQueue";
 import { cleanCrewText, crewDraftProblem, crewErrorMessage, crewsState, didLoadBoard, didLoadMine, inCrew, showSection, type CrewDraftProblem, type CrewSection, type CrewsState } from "../../core/crews/crewsState";
 import { tr } from "../../core/localization/tr";
@@ -67,23 +68,16 @@ export interface CrewReportTarget {
 export interface CrewDraftForm {
   readonly name: string;
   readonly description: string;
-  readonly icon: string;
-  readonly color: string;
+  readonly crest: CrewCrest;
   readonly visibility: CrewVisibility;
 }
 
 export function emptyDraft(): CrewDraftForm {
-  return { name: "", description: "", icon: crewIcons()[0] ?? "", color: CREW_COLORS[0]?.id ?? "coral", visibility: "public" };
+  return { name: "", description: "", crest: defaultCrest(), visibility: "public" };
 }
 
 export function draftFrom(crew: CrewDetail): CrewDraftForm {
-  return {
-    name: crew.summary.name,
-    description: crew.summary.description,
-    icon: resolvedCrewIcon(crew.summary.icon),
-    color: resolvedCrewColor(crew.summary.color).id,
-    visibility: crew.summary.visibility,
-  };
+  return { name: crew.summary.name, description: crew.summary.description, crest: resolvedCrest(crewCrest(crew.summary)), visibility: crew.summary.visibility };
 }
 
 export function draftProblem(draft: CrewDraftForm): CrewDraftProblem | undefined {
@@ -98,8 +92,9 @@ function draftChanges(draft: CrewDraftForm, crew: CrewDetail): CrewDraft {
   return {
     ...(name === summary.name ? {} : { name }),
     ...(description === summary.description ? {} : { description }),
-    ...(draft.icon === summary.icon ? {} : { icon: draft.icon }),
-    ...(draft.color === summary.color ? {} : { color: draft.color }),
+    ...(draft.crest.frame === summary.frame ? {} : { frame: draft.crest.frame }),
+    ...(draft.crest.emblem === summary.emblem ? {} : { emblem: draft.crest.emblem }),
+    ...(draft.crest.color === summary.color ? {} : { color: draft.crest.color }),
     ...(draft.visibility === summary.visibility ? {} : { visibility: draft.visibility }),
   };
 }
@@ -265,6 +260,16 @@ export class CrewsStore extends Store<CrewsStoreState> {
     this.setState({ draft: { ...this.state.draft, ...change } });
   }
 
+  /** Changes part of the draft's crest: its frame, emblem or color. */
+  updateCrest(change: Partial<CrewCrest>): void {
+    this.updateDraft({ crest: { ...this.state.draft.crest, ...change } });
+  }
+
+  /** The builder's Shuffle: a random frame, emblem and color. */
+  shuffleCrest(random: () => number = Math.random): void {
+    this.updateDraft({ crest: randomCrest(random) });
+  }
+
   /* MARK: Actions */
 
   /** Creates my crew from the New crew form, or saves the owner's edit. */
@@ -286,7 +291,7 @@ export class CrewsStore extends Store<CrewsStoreState> {
       return;
     }
     this.run({ kind: "save" }, async (account) => {
-      const crew = await account.perform((client) => createCrew(client, cleanCrewText(draft.name), cleanCrewText(draft.description), draft.icon, draft.color, draft.visibility));
+      const crew = await account.perform((client) => createCrew(client, cleanCrewText(draft.name), cleanCrewText(draft.description), draft.crest, draft.visibility));
       this.setCrews((crews) => showSection(didLoadMine(crews, crew, crews.week), "mine"));
       this.loadBoard();
     });

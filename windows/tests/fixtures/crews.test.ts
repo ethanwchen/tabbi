@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { ACTIVITY_KINDS, ACTIVITY_UNITS, makeActivityRecord } from "../../src/core/activity/activityRecord";
-import { CREW_COLORS, crewIcons, crewPetColor, findCrewInvite, resolvedCrewColor, resolvedCrewIcon } from "../../src/core/crews/crewCatalog";
+import { crewColors, crewEmblems, crewFrames, findCrewInvite } from "../../src/core/crews/crewCatalog";
 import {
   blockCrewMember,
   createCrew,
   crewBoard,
+  crewHall,
   crewPage,
   joinCrewByID,
   joinCrewByInvite,
@@ -18,13 +19,16 @@ import {
   updateCrew,
 } from "../../src/core/crews/crewClient";
 import { crewHoursValue, crewRemainingValue } from "../../src/core/crews/crewFormat";
-import { composeCrewIcon, crewIconIDs, crewIconPalette } from "../../src/core/crews/crewIconArt";
+import { composeCrest, crestPalette, resolvedCrest } from "../../src/core/crews/crewCrestArt";
 import {
+  crewCrest,
   crewIsFull,
+  crewPips,
   crewWeekContaining,
   memberPartyProfile,
   readCrewBoard,
   readCrewDetail,
+  readCrewHallPage,
   readCrewSessionsReply,
   readCrewSummary,
   readCrewWeek,
@@ -66,14 +70,14 @@ interface CrewsFixture {
   invites: { text: string; code?: string }[];
 }
 
-interface IconsFixture {
-  canvas: number;
-  icons: { id: string; plain: string[]; laurel: string[] }[];
+interface CrestsFixture {
+  grid: number;
+  cases: { frame: string; emblem: string; color: string; laurel?: string; pips: number; rows: string[] }[];
   palettes: Record<string, Record<string, Record<string, string>>>;
 }
 
 const fixture = loadFixture<CrewsFixture>("crews/crews.json");
-const icons = loadFixture<IconsFixture>("crews/icons.json");
+const crests = loadFixture<CrestsFixture>("crews/crests.json");
 const TOKEN = "a".repeat(64);
 
 function recordingClient(): { client: PartyClient; sent: PartyHttpRequest[] } {
@@ -87,8 +91,9 @@ function recordingClient(): { client: PartyClient; sent: PartyHttpRequest[] } {
 
 const at = 1_793_000_000;
 const CALLS: Record<string, (client: PartyClient) => Promise<unknown>> = {
-  create: (c) => createCrew(c, "Night Owls", "Late study sessions.", crewIcons()[0] ?? "", "indigo", "private"),
+  create: (c) => createCrew(c, "Night Owls", "Late study sessions.", { frame: crewFrames()[0] ?? "", emblem: crewEmblems()[0] ?? "", color: "indigo" }, "private"),
   "update name and visibility": (c) => updateCrew(c, { name: "Night Owls 2", visibility: "public" }),
+  "update the crest": (c) => updateCrew(c, { frame: crewFrames().at(-1) ?? "", emblem: crewEmblems().at(-1) ?? "", color: "teal" }),
   "hide my pet": (c) => setShowsPet(c, false),
   "join by invite": (c) => joinCrewByInvite(c, "w4ln-ut7"),
   "join a public crew": (c) => joinCrewByID(c, "MEDSQUAD2K"),
@@ -96,6 +101,8 @@ const CALLS: Record<string, (client: PartyClient) => Promise<unknown>> = {
   "remove a member": (c) => removeCrewMember(c, "MAYAREF4QR"),
   search: (c) => searchCrews(c, "night owls+"),
   board: (c) => crewBoard(c),
+  "hall of fame": (c) => crewHall(c),
+  "hall of fame, next page": (c) => crewHall(c, "eyJnIjoxfQ+/="),
   mine: (c) => myCrew(c),
   "crew page": (c) => crewPage(c, "MEDSQUAD2K"),
   sessions: (c) =>
@@ -112,10 +119,14 @@ const CALLS: Record<string, (client: PartyClient) => Promise<unknown>> = {
 
 const bool = (value: boolean) => (value ? "true" : "false");
 const week = (w: CrewWeek) => `week ${w.id} ${Math.trunc(w.startsAt)}-${Math.trunc(w.endsAt)}`;
-const crew = (c: CrewSummary) =>
-  `crew ${c.id} "${c.name}" icon=${resolvedCrewIcon(c.icon)} color=${resolvedCrewColor(c.color).id} ` +
+const crew = (c: CrewSummary) => {
+  const crest = resolvedCrest(crewCrest(c));
+  return (
+  `crew ${c.id} "${c.name}" crest=${crest.frame}/${crest.emblem}/${crest.color} pips=${crewPips(c)} ` +
   `${c.visibility} laurel=${c.laurel ?? "none"} trophies=${c.trophies} ` +
-  `members=${c.memberCount}/${c.maxMembers} minutes=${c.weekMinutes} full=${bool(crewIsFull(c))}`;
+  `members=${c.memberCount}/${c.maxMembers} minutes=${c.weekMinutes} full=${bool(crewIsFull(c))}`
+  );
+};
 function detail(d: CrewDetail): string[] {
   return [
     `${crew(d.summary)} rank=${d.rank ?? "none"} mine=${bool(d.mine)} owner=${bool(d.owner)} invite=${d.inviteCode ?? "none"} hidden=${bool(d.hidden)} medals=${d.medals.gold}/${d.medals.silver}/${d.medals.bronze}`,
@@ -158,6 +169,13 @@ function summary(json: JSONValue, schema: string): string[] {
     case "sessionsReply": {
       const r = readCrewSessionsReply(reply);
       return [week(r.week), `crew=${r.crewMinutes ?? "none"} me=${r.myMinutes}`, ...r.results.map((result) => `${result.status} ${result.credited}`)];
+    }
+    case "hallReply": {
+      const page = readCrewHallPage(reply);
+      return [
+        ...page.entries.map((e) => `#${e.rank} ${e.medals.gold}/${e.medals.silver}/${e.medals.bronze} at=${Math.trunc(e.reachedAt)} ${crew(e.crew)}`),
+        `next=${page.next ?? "none"}`,
+      ];
     }
     case "leaveReply":
       return [`left=${bool(read.boolean(reply, "left"))}`];
@@ -209,14 +227,8 @@ describe("crews fixture", () => {
     }
   });
 
-  /* The Mac's fixture encoder writes a Date as seconds since 2001 (Foundation's reference date), so the recorded week is shifted back to unix seconds. */
-  const REFERENCE_DATE = 978_307_200;
-
   it("finds the recorded crew weeks", () => {
-    for (const recorded of fixture.weeks) {
-      const unix = { id: recorded.week.id, startsAt: recorded.week.startsAt + REFERENCE_DATE, endsAt: recorded.week.endsAt + REFERENCE_DATE };
-      expect(crewWeekContaining(recorded.at), String(recorded.at)).toEqual(unix);
-    }
+    for (const recorded of fixture.weeks) expect(crewWeekContaining(recorded.at), String(recorded.at)).toEqual(recorded.week);
   });
 
   it.each(fixture.queue.map((c) => [c.name, c] as const))("queue: %s", (_, recorded) => {
@@ -237,25 +249,19 @@ describe("crews fixture", () => {
   });
 });
 
-describe("crew icons fixture", () => {
-  it("lists the same icons on the same canvas", () => {
-    expect(crewIconIDs()).toEqual(icons.icons.map((icon) => icon.id));
-  });
-
-  it.each(icons.icons.map((icon) => [icon.id, icon] as const))("composes %s", (_, recorded) => {
-    const rows = (pixels: (string | undefined)[]) =>
-      Array.from({ length: icons.canvas }, (__, y) => pixels.slice(y * icons.canvas, (y + 1) * icons.canvas).map((c) => c ?? ".").join(""));
-    expect(rows(composeCrewIcon(recorded.id, false))).toEqual(recorded.plain);
-    expect(rows(composeCrewIcon(recorded.id, true))).toEqual(recorded.laurel);
+describe("crew crests fixture", () => {
+  it.each(crests.cases.map((c, index) => [`${index} ${c.frame} ${c.emblem} ${c.color} ${c.laurel ?? "none"} ${c.pips}`, c] as const))("composes %s", (_, recorded) => {
+    const pixels = composeCrest({ frame: recorded.frame, emblem: recorded.emblem, color: recorded.color }, recorded.laurel !== undefined, recorded.pips);
+    const rows = Array.from({ length: crests.grid }, (__, y) => pixels.slice(y * crests.grid, (y + 1) * crests.grid).map((c) => c ?? ".").join(""));
+    expect(rows).toEqual(recorded.rows);
   });
 
   it("colors every character as recorded", () => {
-    expect(Object.keys(icons.palettes).sort()).toEqual(CREW_COLORS.map((c) => c.id).sort());
-    for (const color of CREW_COLORS) {
+    expect(Object.keys(crests.palettes).sort()).toEqual(crewColors().map((c) => c.id).sort());
+    for (const color of crewColors()) {
       for (const laurel of [undefined, ...CREW_LAURELS]) {
-        const palette = crewIconPalette(crewPetColor(color), laurel);
-        const got = Object.fromEntries([...palette].map(([c, value]) => [c, colorHex(value)]));
-        expect(got, `${color.id} ${laurel ?? "none"}`).toEqual(icons.palettes[color.id]?.[laurel ?? "none"]);
+        const got = Object.fromEntries([...crestPalette(color.id, laurel)].map(([c, value]) => [c, colorHex(value)]));
+        expect(got, `${color.id} ${laurel ?? "none"}`).toEqual(crests.palettes[color.id]?.[laurel ?? "none"]);
       }
     }
   });

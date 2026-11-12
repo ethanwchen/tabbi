@@ -7,8 +7,8 @@
 
 import { useState, type KeyboardEvent } from "react";
 import { useStore } from "../../app/useStore";
-import { CREW_COLORS, CREW_LIMITS, crewColorTitle, crewIcons, crewPetColor } from "../../core/crews/crewCatalog";
-import { CREW_ICON_COMPACT_PIXEL_SIZE } from "../../core/crews/crewIconArt";
+import { CREW_LIMITS, crewColors, crewColorTitle, crewEmblems, crewEmblemTitle, crewFrames, crewFrameTitle } from "../../core/crews/crewCatalog";
+import { CREW_CREST_COMPACT_PIXEL_SIZE, type CrewCrest } from "../../core/crews/crewCrestArt";
 import { crewCountdown, crewHours } from "../../core/crews/crewFormat";
 import { CREW_REPORT_REASONS, crewReportReasonTitle, type CrewBoardEntry, type CrewReportReason } from "../../core/crews/crewModels";
 import { boardEntries, cleanCrewText, crewDraftProblemMessage } from "../../core/crews/crewsState";
@@ -19,7 +19,7 @@ import { EdgeFade } from "../../ui/kit/EdgeFade";
 import { Icon } from "../../ui/kit/Icon";
 import { MarqueeText } from "../../ui/kit/MarqueeText";
 import { Tooltip } from "../../ui/kit/Tooltip";
-import { CrewIconView, CrewMemberPet, CrewRankBadge, CrewSummaryIcon, CrewTextField, FirstThatFits } from "./CrewComponents";
+import { CrewCrestView, CrewIconButton, CrewMemberPet, CrewRankBadge, CrewSummaryCrest, CrewTextField, FirstThatFits } from "./CrewComponents";
 import { CrewHeader } from "./CrewsPanel";
 import { PartyPillButton, PartyTextButton } from "./PartyComponents";
 import { draftProblem, type CrewReportTarget, type CrewsStore } from "./crewsStore";
@@ -89,7 +89,7 @@ function CrewBoardRow({ crews, entry, isMine, isOpen }: { crews: CrewsStore; ent
     <Tooltip text={tr("See %@ and its members' pets", entry.crew.name)}>
       <div className="crew-board-row" role="button" tabIndex={0} data-open={isOpen || undefined} onClick={() => crews.openCrew(entry.crew.id)}>
         <CrewRankBadge rank={entry.rank} />
-        <CrewSummaryIcon crew={entry.crew} pixelSize={CREW_ICON_COMPACT_PIXEL_SIZE} />
+        <CrewSummaryCrest crew={entry.crew} pixelSize={CREW_CREST_COMPACT_PIXEL_SIZE} />
         <div className="crew-board-words">
           <span className="kit-body-emphasis crew-truncate kit-user-text">{entry.crew.name}</span>
           <span className="kit-caption crew-number crew-nowrap" style={{ color: isMine ? "var(--accent)" : "var(--secondary-text)" }}>
@@ -127,22 +127,15 @@ export function CrewFormView({ crews }: { crews: CrewsStore }) {
         help={tr("One line about your crew, up to %lld characters", CREW_LIMITS.descriptionMaxLength)}
         onChange={(description) => crews.updateDraft({ description })}
       />
-      <EdgeFade edge="end" length={12} className="crew-icon-row">
-        <div className="crew-icon-row-inner" role="radiogroup">
-          {crewIcons().map((icon) => (
-            <Tooltip key={icon} text={tr("Use this icon")}>
-              <button type="button" role="radio" aria-checked={draft.icon === icon} className="crew-icon-choice" data-selected={draft.icon === icon || undefined} onClick={() => crews.updateDraft({ icon })}>
-                <CrewIconView icon={icon} color={draft.color} pixelSize={CREW_ICON_COMPACT_PIXEL_SIZE} />
-              </button>
-            </Tooltip>
-          ))}
-        </div>
-      </EdgeFade>
+      {/* The crest builder: frames with Shuffle, emblems and colors. Its final layout follows the Crews UI spec. */}
+      <div className="crew-row">
+        <CrestChoiceRow ids={crewFrames()} crest={(frame) => ({ ...draft.crest, frame })} title={crewFrameTitle} selected={draft.crest.frame} onPick={(frame) => crews.updateCrest({ frame })} />
+        <CrewIconButton symbol="shuffle" help={tr("Shuffle the crest")} onClick={() => crews.shuffleCrest()} />
+      </div>
+      <CrestChoiceRow ids={crewEmblems()} crest={(emblem) => ({ ...draft.crest, emblem })} title={crewEmblemTitle} selected={draft.crest.emblem} onPick={(emblem) => crews.updateCrest({ emblem })} />
       <div className="crew-colors" role="radiogroup">
-        {CREW_COLORS.map((color) => {
-          const pet = crewPetColor(color);
-          const fill = `rgb(${pet.red}, ${pet.green}, ${pet.blue})`;
-          const selected = draft.color === color.id;
+        {crewColors().map((color) => {
+          const selected = draft.crest.color === color.id;
           return (
             <Tooltip key={color.id} text={crewColorTitle(color)}>
               <button
@@ -152,14 +145,31 @@ export function CrewFormView({ crews }: { crews: CrewsStore }) {
                 aria-label={crewColorTitle(color)}
                 className="crew-color-choice"
                 data-selected={selected || undefined}
-                style={{ ["--crew-color" as string]: fill }}
-                onClick={() => crews.updateDraft({ color: color.id })}
+                style={{ ["--crew-color" as string]: color.hex }}
+                onClick={() => crews.updateCrest({ color: color.id })}
               />
             </Tooltip>
           );
         })}
       </div>
     </div>
+  );
+}
+
+/** One row of crest choices that scrolls sideways, each drawn as the crest it would make. */
+function CrestChoiceRow({ ids, crest, title, selected, onPick }: { ids: readonly string[]; crest: (id: string) => CrewCrest; title: (id: string) => string; selected: string; onPick: (id: string) => void }) {
+  return (
+    <EdgeFade edge="end" length={12} className="crew-icon-row">
+      <div className="crew-icon-row-inner" role="radiogroup">
+        {ids.map((id) => (
+          <Tooltip key={id} text={title(id)}>
+            <button type="button" role="radio" aria-checked={selected === id} aria-label={title(id)} className="crew-icon-choice" data-selected={selected === id || undefined} onClick={() => onPick(id)}>
+              <CrewCrestView crest={crest(id)} pixelSize={CREW_CREST_COMPACT_PIXEL_SIZE} />
+            </button>
+          </Tooltip>
+        ))}
+      </div>
+    </EdgeFade>
   );
 }
 
@@ -174,7 +184,7 @@ export function CrewPreviewCard({ crews }: { crews: CrewsStore }) {
   return (
     <Card padding={8} className="crew-preview">
       <div className="crew-preview-identity">
-        <CrewIconView icon={draft.icon} color={draft.color} pixelSize={CREW_ICON_COMPACT_PIXEL_SIZE} />
+        <CrewCrestView crest={draft.crest} pixelSize={CREW_CREST_COMPACT_PIXEL_SIZE} />
         <span className={name === "" ? "kit-body-emphasis kit-tertiary crew-wrap" : "kit-body-emphasis crew-wrap kit-user-text"}>{name === "" ? tr("Your crew") : name}</span>
       </div>
       <div className="crew-visibility">
@@ -250,7 +260,7 @@ export function CrewReportCard({ target, crews }: { target: CrewReportTarget; cr
   return (
     <Card className="party-report" onKeyDown={onKeyDown}>
       <div className="party-report-header">
-        {target.member !== undefined ? <CrewMemberPet member={target.member} /> : <CrewSummaryIcon crew={target.crew} pixelSize={CREW_ICON_COMPACT_PIXEL_SIZE} />}
+        {target.member !== undefined ? <CrewMemberPet member={target.member} /> : <CrewSummaryCrest crew={target.crew} pixelSize={CREW_CREST_COMPACT_PIXEL_SIZE} />}
         <div className="party-report-words">
           <MarqueeText text={tr("Report %@", name)} userText className="kit-body-emphasis" />
           <MarqueeText text={tr("The Tabbi team reviews it. %@ isn't told.", name)} userText className="kit-caption kit-secondary" />
