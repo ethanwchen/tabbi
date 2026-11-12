@@ -5,7 +5,7 @@ This page is the policy every Party change follows, and what each protocol versi
 
 ## The contract
 
-The wire format is written down once, in [`shared/schemas/party.v1.schema.json`](../shared/schemas/party.v1.schema.json), with the endpoints and errors in [the API doc](study/backend-api.md).
+The wire format is written down once, in [`shared/schemas/party.v1.schema.json`](../shared/schemas/party.v1.schema.json) and, for Study Crews, [`shared/schemas/crews.v1.schema.json`](../shared/schemas/crews.v1.schema.json), with the endpoints and errors in [the API doc](study/backend-api.md).
 [`shared/fixtures/party/party.json`](../shared/fixtures/party/party.json) pins how the Mac app writes profiles and reads sample replies, including replies from older and newer servers.
 `PartyProtocolGoldenTests` keeps the Mac app equal to that fixture, `backend/test/compat.test.ts` checks the server's replies and the fixture against the schema, and the Windows port checks itself against the same files.
 Nothing in the contract is Mac-only: there are no macOS fields, and Sign in with Apple is an optional way to keep one friend code across devices, never a requirement.
@@ -20,7 +20,8 @@ The catalog (`backend/shared/catalog.json`) has its own `version`, which counts 
 | Protocol | Apps | What changed |
 | --- | --- | --- |
 | 1 | up to 1.0.0 | Instant friendships, catalog version 1 |
-| 2 | from this release | Friend requests, every Closet item has a server id (catalog version 2), ten profile colors, the tab badge count in heartbeat replies |
+| 2 | 1.0.1 up to Study Crews | Friend requests, every Closet item has a server id (catalog version 2), ten profile colors, the tab badge count in heartbeat replies |
+| 3 | from Study Crews | Study Crews: new `/v1/crews` routes (the weekly board and the all-time Hall of Fame among them) and the `crews` catalog beside `catalog` in `GET /v1/catalog`; no existing route, body or reply changes |
 
 ## Rules for every change
 
@@ -52,3 +53,15 @@ A self-hosted server still on catalog version 1 refuses the newer ids, and the a
 Catalog version 4 adds the mastery outfits from the Closet's Goals section (`docs/design/progression.md`): six outfits and eight accessories with new ids, while the Cozy Pajamas and the Friendship Bandana reuse `pajamas` and `bandana`, which catalog version 1 already listed and nothing drew.
 Older apps drop the new ids and draw the rest of the pet.
 A server still on catalog version 3 refuses them, so the app first sends the profile again without just those ids (`PartyProfileUpdate.forCatalogVersion3()`) and only falls back to what catalog version 1 takes if that is refused too.
+
+## Crews across versions
+
+Study Crews are protocol 3 and only add: new routes under `/v1/crews`, new tables, and one new field in the `GET /v1/catalog` reply (`crews`, beside the unchanged `catalog`).
+- An app on protocol 1 or 2 never calls a crews route, and every route it does call answers exactly as before: friends, friend requests, parties, presence and the leaderboard are untouched, and no Party reply gains a crews field.
+- A user can be in a crew on a protocol 3 app and use Party on an older app (another Mac, or Windows before its update) at the same time; the older app just shows no Crew section.
+  Their crew membership stays, and their minutes count only from the sessions a protocol 3 app reports.
+- The friends leaderboard keeps summing heartbeat minutes; crews never use them, so an older app's heartbeats neither help nor hurt a crew.
+- Crews routes need no `Tabbi-Protocol` header, so a third-party or older client that reaches one gets the same answer as a current app.
+- Board lists and Hall of Fame pages have no fixed length (ties share a place), and Hall of Fame cursors are opaque, so an app must read them as given and never build one.
+- Crest frame, emblem and color ids, like catalog ids, are only ever added once shipped; an app draws an id it does not know as the first one, so a newer server never breaks an older crews app.
+- `backend/test/crews.test.ts` keeps a protocol 1, a protocol 2 and a protocol 3 app friends and in one party while the protocol 3 user is in a crew, and `backend/test/compat.test.ts` checks the shared crews fixture against the schema.

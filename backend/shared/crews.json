@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "frames": [
+    "shield",
+    "seal",
+    "pennant",
+    "hexagon",
+    "star",
+    "heater"
+  ],
+  "emblems": [
+    "owl",
+    "bird",
+    "mug",
+    "books",
+    "headphones",
+    "stopwatch",
+    "moon",
+    "cloud",
+    "cat",
+    "pup",
+    "turtle",
+    "lamp"
+  ],
+  "colors": {
+    "coral": "#F07A6E",
+    "amber": "#F0A433",
+    "mint": "#6FCF97",
+    "teal": "#3FB4AE",
+    "sky": "#4A9EE8",
+    "indigo": "#5E6CE0",
+    "violet": "#9A7BE8",
+    "rose": "#EE86B4",
+    "slate": "#8A8D99",
+    "charcoal": "#2E2E35"
+  },
+  "visibilities": [
+    "public",
+    "private"
+  ],
+  "laurels": [
+    "gold",
+    "silver",
+    "bronze"
+  ],
+  "limits": {
+    "nameMaxLength": 24,
+    "descriptionMaxLength": 120,
+    "maxMembers": 20,
+    "searchPageSize": 20,
+    "maxSessionsPerReport": 20,
+    "maxSessionMinutes": 720,
+    "dailyCapMinutes": 960,
+    "weeklyCapMinutes": 4800
+  }
+}

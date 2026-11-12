@@ -55,8 +55,9 @@ function gridTexts(grids: readonly SpriteGrid[]): string[] {
 describe("PetArt", () => {
   it("every bundled art file loads", () => {
     const folder = fileURLToPath(new URL(`../../../../${ART_FOLDER}`, import.meta.url));
+    /* crew.json is the Study Crews icon set, in its own format (crew-icons.v1, read by crewIconArt.ts and tested with it). */
     const names = readdirSync(folder)
-      .filter((name) => name.endsWith(".json"))
+      .filter((name) => name.endsWith(".json") && name !== "crew.json")
       .map((name) => name.slice(0, -".json".length))
       .sort();
     expect(names).toEqual(FAMILIES);

@@ -81,7 +81,7 @@
     "whiteCoat" : "white-coat",
     "wizardRobe" : "wizard"
   },
-  "protocol" : 2,
+  "protocol" : 3,
   "protocolHeader" : "Tabbi-Protocol",
   "replies" : [
     {

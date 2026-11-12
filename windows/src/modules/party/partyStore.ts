@@ -739,6 +739,23 @@ export class PartyStore extends Store<PartyStoreState> {
     this.setNotice(message, true);
   }
 
+  /* MARK: Crews */
+
+  /** The identity Crews calls the server with, while Party is connected. */
+  get crewAccount(): PartyAccount | undefined {
+    return this.state.party.connection.kind === "connected" ? this.account : undefined;
+  }
+
+  /** Whether this store renders a snapshot, so Crews stays offline too. */
+  get isSnapshotRun(): boolean {
+    return this.isSnapshot;
+  }
+
+  /** Shows a Crews notice in the panel's notice capsule. */
+  showNotice(message: string, confirms: boolean): void {
+    this.setNotice(message, confirms);
+  }
+
   /* MARK: Moderation */
 
   /** Blocks someone from a friend's or member's menu: they go from the panel at once. */

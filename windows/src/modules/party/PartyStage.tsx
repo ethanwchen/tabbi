@@ -18,10 +18,16 @@ import { useElementWidth } from "../../ui/kit/useElementWidth";
 import { PartyCodeField, PartyCopyCode, PartyPet, PartyPillButton, PartyShareInvite, PartyTextButton, statusColor } from "./PartyComponents";
 import { useModerationMenu } from "./PartyModeration";
 import type { PartyStore } from "./partyStore";
+import { FirstThatFits, PartySectionSwitch } from "./CrewComponents";
+import type { CrewsStore } from "./crewsStore";
 
-export function PartyStage({ store, onFieldFocus }: { store: PartyStore; onFieldFocus: (focused: boolean) => void }) {
+export function PartyStage({ store, crews, onFieldFocus }: { store: PartyStore; crews: CrewsStore; onFieldFocus: (focused: boolean) => void }) {
   const party = useStore(store, (state) => state.party.party);
-  return <Card className="party-stage">{party === undefined ? <PartyLobby store={store} onFieldFocus={onFieldFocus} /> : <PartyRoom party={party} store={store} />}</Card>;
+  return (
+    <Card className="party-stage">
+      {party === undefined ? <PartyLobby store={store} crews={crews} onFieldFocus={onFieldFocus} /> : <PartyRoom party={party} store={store} crews={crews} />}
+    </Card>
+  );
 }
 
 /* MARK: In a party */
@@ -29,29 +35,35 @@ export function PartyStage({ store, onFieldFocus }: { store: PartyStore; onField
 const ROOMY_WIDTH = 72;
 
 /** The party I'm in: its code, everyone's pets, and the shared session. */
-function PartyRoom({ party, store }: { party: Party; store: PartyStore }) {
+function PartyRoom({ party, store, crews }: { party: Party; store: PartyStore; crews: CrewsStore }) {
   const state = useStore(store);
   const [members, width] = useElementWidth<HTMLDivElement>();
   const count = Math.max(party.members.length, 1);
   const column = width === 0 ? ROOMY_WIDTH : Math.min(ROOMY_WIDTH, Math.floor((width - 4 * (count - 1)) / count));
   const isHost = state.party.isHost;
-  return (
-    <div className="party-room">
-      <div className="party-room-header">
-        <span className="kit-title party-room-title">{tr("Party")}</span>
-        <PartyCopyCode code={party.code} help={tr("The party code. Click to copy it, then send it to friends.")} />
-        <PartyShareInvite invite={{ kind: "joinParty", code: party.code }} help={tr("Share an invite link. Friends who open it can join this party in one click.")} />
+  const roomHeader = (titles: boolean, count: boolean) => (
+    <div className="party-room-header">
+      <PartySectionSwitch crews={crews} showsTitles={titles} />
+      <PartyCopyCode code={party.code} help={tr("The party code. Click to copy it, then send it to friends.")} />
+      <PartyShareInvite invite={{ kind: "joinParty", code: party.code }} help={tr("Share an invite link. Friends who open it can join this party in one click.")} />
+      {count && (
         <Tooltip text={tr("Members in this party")}>
           <span className="kit-caption kit-tertiary party-room-count">{tr("%lld of %lld", party.members.length, party.maxMembers)}</span>
         </Tooltip>
-        <span className="party-spacer" />
-        <PartyTextButton
-          title={tr("Leave")}
-          busy={store.isPending({ kind: "leaveParty" })}
-          help={isHost && party.members.length > 1 ? tr("Leave the party; the next member becomes host") : tr("Leave the party")}
-          onClick={() => store.leaveParty()}
-        />
-      </div>
+      )}
+      <span className="party-spacer" />
+      <PartyTextButton
+        title={tr("Leave")}
+        busy={store.isPending({ kind: "leaveParty" })}
+        help={isHost && party.members.length > 1 ? tr("Leave the party; the next member becomes host") : tr("Leave the party")}
+        onClick={() => store.leaveParty()}
+      />
+    </div>
+  );
+  return (
+    <div className="party-room">
+      {/* The Party or Crew switch stands where the title was; on a narrow panel it shrinks to its icons first, then the count goes. */}
+      <FirstThatFits candidates={[roomHeader(true, true), roomHeader(false, true), roomHeader(false, false)]} />
       <div ref={members} className="party-members">
         {party.members.map((member) => (
           <PartyMemberView key={member.profile.code} member={member} isMe={member.profile.code === state.party.friendCode} width={column} store={store} now={state.now} />
@@ -189,12 +201,13 @@ function RunningSession({ session, store, labeled }: { session: PartySession; st
 /* MARK: Not in a party */
 
 /** Outside a party: my pet with an invitation to start one or join by code. */
-function PartyLobby({ store, onFieldFocus }: { store: PartyStore; onFieldFocus: (focused: boolean) => void }) {
+function PartyLobby({ store, crews, onFieldFocus }: { store: PartyStore; crews: CrewsStore; onFieldFocus: (focused: boolean) => void }) {
   const state = useStore(store);
   const [row, width] = useElementWidth<HTMLDivElement>();
   const shortStart = width > 0 && width < 236;
   return (
     <div className="party-lobby">
+      <PartySectionSwitch crews={crews} showsTitles />
       <div className="party-lobby-intro">
         {state.party.profile !== undefined && <PartyPet profile={state.party.profile} pixelSize={1.5} />}
         <div className="party-lobby-words">

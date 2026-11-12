@@ -5,6 +5,8 @@
 <dict>
 	<key>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</key>
 	<string>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</string>
+	<key>#%lld</key>
+	<string>#%lld</string>
 	<key>%@ %@</key>
 	<string>%@ %@</string>
 	<key>%@ %@ so far</key>
@@ -69,6 +71,8 @@
 	<string>%@ free</string>
 	<key>%@ free this week</key>
 	<string>%@ free this week</string>
+	<key>%@ h</key>
+	<string>%@ h</string>
 	<key>%@ handles them under its own terms and privacy policy. %@'s AI features send nothing else, and nothing until you allow it. You can switch to None in Connections at any time.</key>
 	<string>%@ handles them under its own terms and privacy policy. %@'s AI features send nothing else, and nothing until you allow it. You can switch to None in Connections at any time.</string>
 	<key>%@ in %@</key>
@@ -127,6 +131,8 @@
 	<string>%@ isn't on this Mac yet. Connections shows you how to add it.</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@ isn't set up yet</string>
+	<key>%@ keeps their pet private on crew pages.</key>
+	<string>%@ keeps their pet private on crew pages.</string>
 	<key>%@ learned a song from a bird</key>
 	<string>%@ learned a song from a bird</string>
 	<key>%@ left</key>
@@ -189,6 +195,8 @@
 	<string>%@ suggests no changes.</string>
 	<key>%@ this month.</key>
 	<string>%@ this month.</string>
+	<key>%@ this week</key>
+	<string>%@ this week</string>
 	<key>%@ to %@</key>
 	<string>%@ to %@</string>
 	<key>%@ today</key>
@@ -217,8 +225,12 @@
 	<string>%@ with %@ wants to be friends.</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</string>
+	<key>%@ · %@ this week</key>
+	<string>%@ · %@ this week</string>
 	<key>%@ · Paused</key>
 	<string>%@ · Paused</string>
+	<key>%@ · Your crew</key>
+	<string>%@ · Your crew</string>
 	<key>%@, %@</key>
 	<string>%@, %@</string>
 	<key>%@, %@ left</key>
@@ -307,6 +319,8 @@
 	<string>%lld/%lld min</string>
 	<key>%lld/%lld session</key>
 	<string>%lld/%lld session</string>
+	<key>%lldd %lldh</key>
+	<string>%lldd %lldh</string>
 	<key>%lldh</key>
 	<string>%lldh</string>
 	<key>%lldh %lldm</key>
@@ -343,6 +357,8 @@
 	<string>90 min deep block, 20 min rest</string>
 	<key>&lt;1 min</key>
 	<string>&lt;1 min</string>
+	<key>&lt;1m</key>
+	<string>&lt;1m</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
 	<string>A Pomodoro timer that switches between focus and breaks.</string>
 	<key>A Spotify link or URI, an Apple Music link, or the name of a playlist in your Music library</key>
@@ -403,6 +419,8 @@
 	<string>A sample day. Your own events show here once the calendar is connected.</string>
 	<key>A school or work setting may block it. You can check in System Settings.</key>
 	<string>A school or work setting may block it. You can check in System Settings.</string>
+	<key>A short description (optional)</key>
+	<string>A short description (optional)</string>
 	<key>A shorter timer</key>
 	<string>A shorter timer</string>
 	<key>A slow breath in, and out</key>
@@ -563,6 +581,8 @@
 	<string>Always Visible</string>
 	<key>Always drawn around the hardware notch.</key>
 	<string>Always drawn around the hardware notch.</string>
+	<key>Amber</key>
+	<string>Amber</string>
 	<key>Angel Wings</key>
 	<string>Angel Wings</string>
 	<key>Animations</key>
@@ -631,6 +651,8 @@
 	<string>AnkiConnect's settings keep Tabbi out. Putting them back to normal fixes it and leaves your cards alone.</string>
 	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
 	<string>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</string>
+	<key>Another crew has that name. Please pick another.</key>
+	<string>Another crew has that name. Please pick another.</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>Another steady week. Keep it cozy.</string>
 	<key>Answers</key>
@@ -641,6 +663,8 @@
 	<string>Answers from</string>
 	<key>Answers stay in the notch. Press Command-Return to send and expand, or click Expand on a chat.</key>
 	<string>Answers stay in the notch. Press Command-Return to send and expand, or click Expand on a chat.</string>
+	<key>Anyone can find and join it.</key>
+	<string>Anyone can find and join it.</string>
 	<key>App</key>
 	<string>App</string>
 	<key>Appears when the pointer reaches the top center.</key>
@@ -759,6 +783,8 @@
 	<string>Bonus minutes toward this event's limited items</string>
 	<key>Bonus points from your pet, added to your balance</key>
 	<string>Bonus points from your pet, added to your balance</string>
+	<key>Books</key>
+	<string>Books</string>
 	<key>Bow Tie</key>
 	<string>Bow Tie</string>
 	<key>Break</key>
@@ -781,6 +807,8 @@
 	<string>Bring Anki to the front to see what it's doing; this tab reconnects on its own</string>
 	<key>Brown noise</key>
 	<string>Brown noise</string>
+	<key>Browse public crews to join</key>
+	<string>Browse public crews to join</string>
 	<key>Built-in display</key>
 	<string>Built-in display</string>
 	<key>Bunny Ears</key>
@@ -871,6 +899,8 @@
 	<string>Chats stay on this Mac</string>
 	<key>Chats stay on this Mac, in %@'s own folder. Delete them from History in the Ask AI tab.</key>
 	<string>Chats stay on this Mac, in %@'s own folder. Delete them from History in the Ask AI tab.</string>
+	<key>Cheating</key>
+	<string>Cheating</string>
 	<key>Check %@ again</key>
 	<string>Check %@ again</string>
 	<key>Check again</key>
@@ -1035,14 +1065,20 @@
 	<string>Close this. Party keeps trying by itself.</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>Close this. You can set up Party any time.</string>
+	<key>Close without joining</key>
+	<string>Close without joining</string>
 	<key>Close without reporting (Esc)</key>
 	<string>Close without reporting (Esc)</string>
+	<key>Close without saving</key>
+	<string>Close without saving</string>
 	<key>Closet</key>
 	<string>Closet</string>
 	<key>Code</key>
 	<string>Code</string>
 	<key>Codex usage</key>
 	<string>Codex usage</string>
+	<key>Coffee mug</key>
+	<string>Coffee mug</string>
 	<key>Command</key>
 	<string>Command</string>
 	<key>Compact</key>
@@ -1107,6 +1143,8 @@
 	<string>Copy friend code</string>
 	<key>Copy the AnkiConnect add-on code to paste into Anki</key>
 	<string>Copy the AnkiConnect add-on code to paste into Anki</string>
+	<key>Copy the invite link. Friends who open it can join your crew.</key>
+	<string>Copy the invite link. Friends who open it can join your crew.</string>
 	<key>Copy what Tabbi found, to paste into a message if you ask someone for help</key>
 	<string>Copy what Tabbi found, to paste into a message if you ask someone for help</string>
 	<key>Copy what you need to paste, then open %@</key>
@@ -1117,6 +1155,8 @@
 	<string>Copy your friend code to share it</string>
 	<key>Copy “%@” so you can paste it</key>
 	<string>Copy “%@” so you can paste it</string>
+	<key>Coral</key>
+	<string>Coral</string>
 	<key>Couldn't add this friend</key>
 	<string>Couldn't add this friend</string>
 	<key>Couldn't add to your calendar. Try again</key>
@@ -1171,8 +1211,22 @@
 	<string>Crash reports</string>
 	<key>Cream</key>
 	<string>Cream</string>
+	<key>Create</key>
+	<string>Create</string>
 	<key>Create a party and get a code to share</key>
 	<string>Create a party and get a code to share</string>
+	<key>Create the crew with you as its owner</key>
+	<string>Create the crew with you as its owner</string>
+	<key>Crew</key>
+	<string>Crew</string>
+	<key>Crew invite codes have %lld characters.</key>
+	<string>Crew invite codes have %lld characters.</string>
+	<key>Crew name</key>
+	<string>Crew name</string>
+	<key>Crew names can be up to %lld characters.</key>
+	<string>Crew names can be up to %lld characters.</string>
+	<key>Crew owner</key>
+	<string>Crew owner</string>
 	<key>Custom</key>
 	<string>Custom</string>
 	<key>Daily focus goal met</key>
@@ -1241,6 +1295,10 @@
 	<string>Deleting your account…</string>
 	<key>Deleting…</key>
 	<string>Deleting…</string>
+	<key>Descriptions can be up to %lld characters.</key>
+	<string>Descriptions can be up to %lld characters.</string>
+	<key>Desk lamp</key>
+	<string>Desk lamp</string>
 	<key>Desktop widget</key>
 	<string>Desktop widget</string>
 	<key>Details: %@</key>
@@ -1311,6 +1369,8 @@
 	<string>Each day's list shows up here the day after.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>Each week you focus shows up here.</string>
+	<key>Early bird</key>
+	<string>Early bird</string>
 	<key>Earned by reaching study milestones</key>
 	<string>Earned by reaching study milestones</string>
 	<key>Earned by studying, never sold</key>
@@ -1319,6 +1379,10 @@
 	<string>Earned. Click to take off.</string>
 	<key>Earned. Click to wear.</key>
 	<string>Earned. Click to wear.</string>
+	<key>Edit Crew…</key>
+	<string>Edit Crew…</string>
+	<key>Edit crew</key>
+	<string>Edit crew</string>
 	<key>Edit the Custom focus and break lengths</key>
 	<string>Edit the Custom focus and break lengths</string>
 	<key>Email Support</key>
@@ -1339,6 +1403,8 @@
 	<string>End this stretch and take a sized break</string>
 	<key>Ends at %@</key>
 	<string>Ends at %@</string>
+	<key>Ends in %@</key>
+	<string>Ends in %@</string>
 	<key>Enough for the %@ and the %@ now.</key>
 	<string>Enough for the %@ and the %@ now.</string>
 	<key>Enough for the %@ now</key>
@@ -1349,6 +1415,8 @@
 	<string>Enter the key from AnkiConnect's config in Settings.</string>
 	<key>Event</key>
 	<string>Event</string>
+	<key>Every crew can appear on the weekly top 3 with its members' pets.</key>
+	<string>Every crew can appear on the weekly top 3 with its members' pets.</string>
 	<key>Every deck is caught up</key>
 	<string>Every deck is caught up</string>
 	<key>Every focused minute fills in today's square</key>
@@ -1391,6 +1459,8 @@
 	<string>Fill today's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</string>
 	<key>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</key>
 	<string>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</string>
+	<key>Find crews</key>
+	<string>Find crews</string>
 	<key>Finish a Party session with friends.</key>
 	<string>Finish a Party session with friends.</string>
 	<key>Finish all three to count the month toward the Monthly quests badge.</key>
@@ -1439,6 +1509,8 @@
 	<string>Focus during %@.</string>
 	<key>Focus for 50 hours in total.</key>
 	<string>Focus for 50 hours in total.</string>
+	<key>Focus hours this week. The board freezes Sunday 23:59 UTC.</key>
+	<string>Focus hours this week. The board freezes Sunday 23:59 UTC.</string>
 	<key>Focus on this task</key>
 	<string>Focus on this task</string>
 	<key>Focus session</key>
@@ -1575,6 +1647,8 @@
 	<string>Get the free Anki app from apps.ankiweb.net.</string>
 	<key>Give your cat a name</key>
 	<string>Give your cat a name</string>
+	<key>Give your crew a name.</key>
+	<string>Give your crew a name.</string>
 	<key>Give your dog a name</key>
 	<string>Give your dog a name</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
@@ -1625,18 +1699,28 @@
 	<string>Hardware black, calm and crisp.</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>Have a code? Type the %lld-character party code and press Return to join</string>
+	<key>Have an invite? Type the %lld-character code and press Return to join</key>
+	<string>Have an invite? Type the %lld-character code and press Return to join</string>
 	<key>Head Mirror</key>
 	<string>Head Mirror</string>
+	<key>Headphones</key>
+	<string>Headphones</string>
 	<key>Heads down</key>
 	<string>Heads down</string>
 	<key>Heart Glasses</key>
 	<string>Heart Glasses</string>
+	<key>Heater shield</key>
+	<string>Heater shield</string>
+	<key>Hexagon</key>
+	<string>Hexagon</string>
 	<key>Hi! I'm %@.</key>
 	<string>Hi! I'm %@.</string>
 	<key>Hidden</key>
 	<string>Hidden</string>
 	<key>Hide %@ Until I Press %@</key>
 	<string>Hide %@ Until I Press %@</string>
+	<key>Hide My Pet on Crew Pages</key>
+	<string>Hide My Pet on Crew Pages</string>
 	<key>Hide each other everywhere in Party. You can unblock in Party options.</key>
 	<string>Hide each other everywhere in Party. You can unblock in Party options.</string>
 	<key>Hide from screen sharing</key>
@@ -1705,6 +1789,8 @@
 	<string>In the open notch, arrow keys or a two-finger swipe switch tabs, 1-9 jump to a tab, and Esc or a swipe up closes. On the closed notch, swipe down or middle-click to see the next live activity.</string>
 	<key>Inappropriate name</key>
 	<string>Inappropriate name</string>
+	<key>Indigo</key>
+	<string>Indigo</string>
 	<key>Indigo night sky with a little gold star.</key>
 	<string>Indigo night sky with a little gold star.</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
@@ -1743,6 +1829,10 @@
 	<string>Invisible to friends</string>
 	<key>Invisible: friends see you as away</key>
 	<string>Invisible: friends see you as away</string>
+	<key>Invite</key>
+	<string>Invite</string>
+	<key>Invite code</key>
+	<string>Invite code</string>
 	<key>Invite links</key>
 	<string>Invite links</string>
 	<key>Is %@ on this Mac?</key>
@@ -1793,12 +1883,22 @@
 	<string>Join %@ call</string>
 	<key>Join %@'s party</key>
 	<string>Join %@'s party</string>
+	<key>Join %@. Your focus minutes count for it from now on.</key>
+	<string>Join %@. Your focus minutes count for it from now on.</string>
+	<key>Join Crew</key>
+	<string>Join Crew</string>
 	<key>Join Party</key>
 	<string>Join Party</string>
+	<key>Join a study crew</key>
+	<string>Join a study crew</string>
+	<key>Join this crew?</key>
+	<string>Join this crew?</string>
 	<key>Join this party now</key>
 	<string>Join this party now</string>
 	<key>Join this party?</key>
 	<string>Join this party?</string>
+	<key>Join with invite code %@</key>
+	<string>Join with invite code %@</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>Joining Party. This takes a second.</string>
 	<key>Joining the party server</key>
@@ -1837,6 +1937,12 @@
 	<string>Last 7 days</string>
 	<key>Last synced %@</key>
 	<string>Last synced %@</string>
+	<key>Last week</key>
+	<string>Last week</string>
+	<key>Last week's winners and their laurels</key>
+	<string>Last week's winners and their laurels</string>
+	<key>Last week's winners show here once a week has ended.</key>
+	<string>Last week's winners show here once a week has ended.</string>
 	<key>Latest adventure: %@</key>
 	<string>Latest adventure: %@</string>
 	<key>Launch %@</key>
@@ -1847,6 +1953,8 @@
 	<string>Learning</string>
 	<key>Leave</key>
 	<string>Leave</string>
+	<key>Leave Crew</key>
+	<string>Leave Crew</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>Leave empty for the default, which is quick and inexpensive.</string>
 	<key>Leave notifications on while studying</key>
@@ -1903,6 +2011,8 @@
 	<string>Live activity</string>
 	<key>Loading</key>
 	<string>Loading</string>
+	<key>Loading your crew…</key>
+	<string>Loading your crew…</string>
 	<key>Loading…</key>
 	<string>Loading…</string>
 	<key>Location</key>
@@ -1933,8 +2043,12 @@
 	<string>Looking for your shortcuts</string>
 	<key>Lunar New Year</key>
 	<string>Lunar New Year</string>
+	<key>Lv %lld</key>
+	<string>Lv %lld</string>
 	<key>Main display</key>
 	<string>Main display</string>
+	<key>Make a crew and invite friends</key>
+	<string>Make a crew and invite friends</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
 	<string>Make one more the same way, turned Off, and name it:</string>
 	<key>Make sure Calendars is turned on for that account.</key>
@@ -1961,6 +2075,8 @@
 	<string>Media</string>
 	<key>Meetings, music and timers beside the closed notch.</key>
 	<string>Meetings, music and timers beside the closed notch.</string>
+	<key>Members</key>
+	<string>Members</string>
 	<key>Members in this party</key>
 	<string>Members in this party</string>
 	<key>Memory</key>
@@ -1995,12 +2111,16 @@
 	<string>Monthly quests</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>Monthly quests, badges and outfits earned from long goals</string>
+	<key>Moon</key>
+	<string>Moon</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Moonlit Witch Hat</string>
 	<key>Moonstone</key>
 	<string>Moonstone</string>
 	<key>More</key>
 	<string>More</string>
+	<key>More crew options</key>
+	<string>More crew options</string>
 	<key>More events</key>
 	<string>More events</string>
 	<key>More focus than last week. Nice climb!</key>
@@ -2045,6 +2165,8 @@
 	<string>New</string>
 	<key>New chat</key>
 	<string>New chat</string>
+	<key>New crew</key>
+	<string>New crew</string>
 	<key>New friends</key>
 	<string>New friends</string>
 	<key>New tabs may ask for %@.</key>
@@ -2075,6 +2197,8 @@
 	<string>No calendars yet</string>
 	<key>No collar</key>
 	<string>No collar</string>
+	<key>No crew has studied yet this week. Yours could be first.</key>
+	<string>No crew has studied yet this week. Yours could be first.</string>
 	<key>No events</key>
 	<string>No events</string>
 	<key>No events on your calendars today.</key>
@@ -2103,6 +2227,10 @@
 	<string>No one has that friend code.</string>
 	<key>No one is blocked.</key>
 	<string>No one is blocked.</string>
+	<key>No public crews match.</key>
+	<string>No public crews match.</string>
+	<key>No public crews yet. Make the first one.</key>
+	<string>No public crews yet. Make the first one.</string>
 	<key>No saved chats</key>
 	<string>No saved chats</string>
 	<key>No shortcut named “%@”. Check the name in Shortcuts.</key>
@@ -2287,6 +2415,8 @@
 	<string>One calm session at a time. You've got this.</string>
 	<key>One countdown, no breaks</key>
 	<string>One countdown, no breaks</string>
+	<key>One line about your crew, up to %lld characters</key>
+	<string>One line about your crew, up to %lld characters</string>
 	<key>One moment.</key>
 	<string>One moment.</string>
 	<key>One question first</key>
@@ -2303,6 +2433,10 @@
 	<string>Online</string>
 	<key>Only partly. Tabbi can add events but can't read them.</key>
 	<string>Only partly. Tabbi can add events but can't read them.</string>
+	<key>Only people with the invite can join.</key>
+	<string>Only people with the invite can join.</string>
+	<key>Only the crew's owner can do that.</key>
+	<string>Only the crew's owner can do that.</string>
 	<key>Only the host can change the session.</key>
 	<string>Only the host can change the session.</string>
 	<key>Only while a focus phase runs, at most a few times an hour. Your pet checks how long since you last typed or moved the pointer, and which app is in front. Nothing else, and no permissions.</key>
@@ -2437,6 +2571,8 @@
 	<string>Outfits and accessories to unlock with study points</string>
 	<key>Outfits to earn</key>
 	<string>Outfits to earn</string>
+	<key>Owl</key>
+	<string>Owl</string>
 	<key>Owl Spectacles</key>
 	<string>Owl Spectacles</string>
 	<key>Owned</key>
@@ -2519,6 +2655,8 @@
 	<string>Pay as you go with an OpenAI API key.</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>Peak %@  ·  Avg %@</string>
+	<key>Pennant</key>
+	<string>Pennant</string>
 	<key>Pet</key>
 	<string>Pet</string>
 	<key>Pet Coach</key>
@@ -2651,6 +2789,10 @@
 	<string>Privacy</string>
 	<key>Privacy Policy</key>
 	<string>Privacy Policy</string>
+	<key>Private</key>
+	<string>Private</string>
+	<key>Private: only people with the invite can join.</key>
+	<string>Private: only people with the invite can join.</string>
 	<key>Productivity</key>
 	<string>Productivity</string>
 	<key>Profile</key>
@@ -2659,8 +2801,14 @@
 	<string>Proposed: %@, %@. Click to add or skip it</string>
 	<key>Proposed: %@. Click to add or skip it</key>
 	<string>Proposed: %@. Click to add or skip it</string>
+	<key>Public</key>
+	<string>Public</string>
+	<key>Public: anyone can find and join it.</key>
+	<string>Public: anyone can find and join it.</string>
 	<key>Pumpkin Hat</key>
 	<string>Pumpkin Hat</string>
+	<key>Pup</key>
+	<string>Pup</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
 	<string>Put General back the way a new install has it. Launch at login stays as it is.</string>
 	<key>Put the recap away</key>
@@ -2689,6 +2837,8 @@
 	<string>Quit Anki and open it again. Tabbi notices by itself.</string>
 	<key>Rain</key>
 	<string>Rain</string>
+	<key>Rain cloud</key>
+	<string>Rain cloud</string>
 	<key>Rare</key>
 	<string>Rare</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2745,6 +2895,8 @@
 	<string>Remove</string>
 	<key>Remove %@</key>
 	<string>Remove %@</string>
+	<key>Remove %@ from Crew</key>
+	<string>Remove %@ from Crew</string>
 	<key>Remove %@ from the blend</key>
 	<string>Remove %@ from the blend</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
@@ -2757,6 +2909,8 @@
 	<string>Remove from the blend</string>
 	<key>Remove this screenshot</key>
 	<string>Remove this screenshot</string>
+	<key>Removed %@ from the crew.</key>
+	<string>Removed %@ from the crew.</string>
 	<key>Removed %@.</key>
 	<string>Removed %@.</string>
 	<key>Removes your profile, friends and parties from the server.</key>
@@ -2779,6 +2933,8 @@
 	<string>Report %@…</string>
 	<key>Report a problem: %@</key>
 	<string>Report a problem: %@</string>
+	<key>Report this crew</key>
+	<string>Report this crew</string>
 	<key>Request</key>
 	<string>Request</string>
 	<key>Request sent</key>
@@ -2835,6 +2991,8 @@
 	<string>Right-click to remove, report or block.</string>
 	<key>Right-click to report or block.</key>
 	<string>Right-click to report or block.</string>
+	<key>Rose</key>
+	<string>Rose</string>
 	<key>Round %lld of %lld</key>
 	<string>Round %lld of %lld</string>
 	<key>Round Glasses</key>
@@ -2865,6 +3023,8 @@
 	<string>Save this key in your Keychain</string>
 	<key>Save today's review and show the checklist</key>
 	<string>Save today's review and show the checklist</string>
+	<key>Save your changes</key>
+	<string>Save your changes</string>
 	<key>Save your name and pet and join Party</key>
 	<string>Save your name and pet and join Party</string>
 	<key>Saved chats</key>
@@ -2873,6 +3033,8 @@
 	<string>Saved chats are kept only on this Mac and never uploaded</string>
 	<key>Saved in your Keychain</key>
 	<string>Saved in your Keychain</string>
+	<key>Saved.</key>
+	<string>Saved.</string>
 	<key>Schedule</key>
 	<string>Schedule</string>
 	<key>Scholar's Robe</key>
@@ -2881,10 +3043,18 @@
 	<string>Screenshot sent with this question</string>
 	<key>Scrubs</key>
 	<string>Scrubs</string>
+	<key>Seal</key>
+	<string>Seal</string>
 	<key>Search for Set Focus, add it, and pick Do Not Disturb, turned On.</key>
 	<string>Search for Set Focus, add it, and pick Do Not Disturb, turned On.</string>
+	<key>Search public crews</key>
+	<string>Search public crews</string>
+	<key>Search public crews by name</key>
+	<string>Search public crews by name</string>
 	<key>Seasonal</key>
 	<string>Seasonal</string>
+	<key>See %@ and its members' pets</key>
+	<string>See %@ and its members' pets</string>
 	<key>See due cards and start reviews.</key>
 	<string>See due cards and start reviews.</string>
 	<key>See today's events in the notch.</key>
@@ -2959,6 +3129,8 @@
 	<string>Share your code, or add theirs below. Start a party from the Party tab.</string>
 	<key>Shared focus: %@ left</key>
 	<string>Shared focus: %@ left</string>
+	<key>Shield</key>
+	<string>Shield</string>
 	<key>Shortcut</key>
 	<string>Shortcut</string>
 	<key>Shortcut %@</key>
@@ -2975,6 +3147,8 @@
 	<string>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</string>
 	<key>Show %@</key>
 	<string>Show %@</string>
+	<key>Show My Pet on Crew Pages</key>
+	<string>Show My Pet on Crew Pages</string>
 	<key>Show Other Copy</key>
 	<string>Show Other Copy</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
@@ -3033,6 +3207,8 @@
 	<string>Shows the previews this kit picks.</string>
 	<key>Shuffle</key>
 	<string>Shuffle</string>
+	<key>Shuffle the crest</key>
+	<string>Shuffle the crest</string>
 	<key>Sign In</key>
 	<string>Sign In</string>
 	<key>Sign Out</key>
@@ -3083,6 +3259,8 @@
 	<string>Skip to the break</string>
 	<key>Sky</key>
 	<string>Sky</string>
+	<key>Slate</key>
+	<string>Slate</string>
 	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
 	<string>Sleep is part of the work. Go dream up tomorrow's moves.</string>
 	<key>Slow breath</key>
@@ -3095,6 +3273,8 @@
 	<string>Some evidence</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>Some is infinitely more than none. Rest. The board will be here.</string>
+	<key>Someone invited you to a study crew. Your focus minutes count for it from now on.</key>
+	<string>Someone invited you to a study crew. Your focus minutes count for it from now on.</string>
 	<key>Something not working?</key>
 	<string>Something not working?</string>
 	<key>Soulmates</key>
@@ -3129,6 +3309,8 @@
 	<string>Stand up for a moment</string>
 	<key>Stand, shake out your legs, and sit back down when you like.</key>
 	<string>Stand, shake out your legs, and sit back down when you like.</string>
+	<key>Star</key>
+	<string>Star</string>
 	<key>Star tag</key>
 	<string>Star tag</string>
 	<key>Starlight, every tier earned</key>
@@ -3233,6 +3415,8 @@
 	<string>Stop the preview</string>
 	<key>Stopped</key>
 	<string>Stopped</string>
+	<key>Stopwatch</key>
+	<string>Stopwatch</string>
 	<key>Streak</key>
 	<string>Streak</string>
 	<key>Streak unavailable</key>
@@ -3251,6 +3435,8 @@
 	<string>Study 7 days in a row.</string>
 	<key>Study Hoodie</key>
 	<string>Study Hoodie</string>
+	<key>Study Level %lld</key>
+	<string>Study Level %lld</string>
 	<key>Study block</key>
 	<string>Study block</string>
 	<key>Study buddies</key>
@@ -3269,6 +3455,8 @@
 	<string>Study until focus slips, break scales</string>
 	<key>Study with a cat</key>
 	<string>Study with a cat</string>
+	<key>Study with a crew and climb the weekly top 3.</key>
+	<string>Study with a crew and climb the weekly top 3.</string>
 	<key>Study with a dog</key>
 	<string>Study with a dog</string>
 	<key>Study with friends and see who is focusing now.</key>
@@ -3375,6 +3563,8 @@
 	<string>Tasks</string>
 	<key>Tasks left today</key>
 	<string>Tasks left today</string>
+	<key>Teal</key>
+	<string>Teal</string>
 	<key>Team Medal</key>
 	<string>Team Medal</string>
 	<key>Ten hours of betting on yourself. Keep betting.</key>
@@ -3391,12 +3581,22 @@
 	<string>Thanks. Your report was sent and %@ is blocked.</string>
 	<key>Thanks. Your report was sent.</key>
 	<string>Thanks. Your report was sent.</string>
+	<key>That crew is full.</key>
+	<string>That crew is full.</string>
+	<key>That crew is gone or the code is wrong.</key>
+	<string>That crew is gone or the code is wrong.</string>
+	<key>That crew name isn't allowed. Please pick another.</key>
+	<string>That crew name isn't allowed. Please pick another.</string>
+	<key>That description isn't allowed. Please change it.</key>
+	<string>That description isn't allowed. Please change it.</string>
 	<key>That folder has no %@ logs. Choose the %@ folder in your home folder.</key>
 	<string>That folder has no %@ logs. Choose the %@ folder in your home folder.</string>
 	<key>That friend request is no longer there.</key>
 	<string>That friend request is no longer there.</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
 	<string>That key can't be part of a shortcut. Try a letter, number, or Space.</string>
+	<key>That member left the crew.</key>
+	<string>That member left the crew.</string>
 	<key>That name and your pet's name aren't allowed. Please pick others.</key>
 	<string>That name and your pet's name aren't allowed. Please pick others.</string>
 	<key>That name isn't allowed. Please pick another.</key>
@@ -3435,6 +3635,8 @@
 	<string>The Shortcuts app didn't answer in time. Try again in a moment.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
 	<string>The Shortcuts command line tool isn't available on this Mac.</string>
+	<key>The Tabbi team hid this crew from the board and Find.</key>
+	<string>The Tabbi team hid this crew from the board and Find.</string>
 	<key>The Tabbi team reviews it. %@ isn't told.</key>
 	<string>The Tabbi team reviews it. %@ isn't told.</string>
 	<key>The app this needs isn't on this Mac</key>
@@ -3501,6 +3703,8 @@
 	<string>The timer starts with %@</string>
 	<key>The tool's own default</key>
 	<string>The tool's own default</string>
+	<key>The week ends Sunday 23:59 UTC. Then the top 3 freeze and win their laurels for next week.</key>
+	<string>The week ends Sunday 23:59 UTC. Then the top 3 freeze and win their laurels for next week.</string>
 	<key>The work no one sees is the work that changes you.</key>
 	<string>The work no one sees is the work that changes you.</string>
 	<key>The year you were born</key>
@@ -3537,6 +3741,12 @@
 	<string>This is a demo. No report was sent.</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>This is a demo. Nothing was deleted.</string>
+	<key>This is a demo. Run without TABBI_DEMO to join a crew.</key>
+	<string>This is a demo. Run without TABBI_DEMO to join a crew.</string>
+	<key>This is a demo. Run without TABBI_DEMO to leave a crew.</key>
+	<string>This is a demo. Run without TABBI_DEMO to leave a crew.</string>
+	<key>This is a demo. Run without TABBI_DEMO to make a crew.</key>
+	<string>This is a demo. Run without TABBI_DEMO to make a crew.</string>
 	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
 	<string>This is a demo. Run without TABBI_DEMO to study with friends.</string>
 	<key>This is usually short. Check again in a moment.</key>
@@ -3555,6 +3765,10 @@
 	<string>This takes a second.</string>
 	<key>This task is on today's list</key>
 	<string>This task is on today's list</string>
+	<key>This week</key>
+	<string>This week</string>
+	<key>This week's live top 3</key>
+	<string>This week's live top 3</string>
 	<key>This works. Nothing to do.</key>
 	<string>This works. Nothing to do.</string>
 	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
@@ -3619,6 +3833,10 @@
 	<string>Too many tries for now. Wait a minute, then try again.</string>
 	<key>Took back the import of %@.</key>
 	<string>Took back the import of %@.</string>
+	<key>Top 3</key>
+	<string>Top 3</string>
+	<key>Top 3 finishes: %lld gold, %lld silver, %lld bronze</key>
+	<string>Top 3 finishes: %lld gold, %lld silver, %lld bronze</string>
 	<key>Top decks</key>
 	<string>Top decks</string>
 	<key>Top model</key>
@@ -3681,6 +3899,8 @@
 	<string>Turn shuffle on</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>Turning Do Not Disturb on…</string>
+	<key>Turtle</key>
+	<string>Turtle</string>
 	<key>Two copies of %@ are installed</key>
 	<string>Two copies of %@ are installed</string>
 	<key>Type a name first</key>
@@ -3725,6 +3945,8 @@
 	<string>Up next</string>
 	<key>Up next shows your %@ as the day goes, and Plan my day fits work around them.</key>
 	<string>Up next shows your %@ as the day goes, and Plan my day fits work around them.</string>
+	<key>Up to %lld characters. Everyone in Party can see it on the board.</key>
+	<string>Up to %lld characters. Everyone in Party can see it on the board.</string>
 	<key>Update AnkiConnect</key>
 	<string>Update AnkiConnect</string>
 	<key>Update AnkiConnect from Tools › Add-ons › Check for Updates.</key>
@@ -3749,6 +3971,8 @@
 	<string>Usage of your weekly limit</string>
 	<key>Use the default %@ server</key>
 	<string>Use the default %@ server</string>
+	<key>Use this icon</key>
+	<string>Use this icon</string>
 	<key>Used to greet you.</key>
 	<string>Used to greet you.</string>
 	<key>Uses your ChatGPT plan through the codex command.</key>
@@ -3769,6 +3993,8 @@
 	<string>Version %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>View on GitHub</string>
+	<key>Violet</key>
+	<string>Violet</string>
 	<key>Visible: friends see when you study</key>
 	<string>Visible: friends see when you study</string>
 	<key>Vivid accents with a violet glow.</key>
@@ -3927,14 +4153,20 @@
 	<string>You can set this up any time in the %@ tab.</string>
 	<key>You can turn alerts off any time in System Settings.</key>
 	<string>You can turn alerts off any time in System Settings.</string>
+	<key>You can't join that crew.</key>
+	<string>You can't join that crew.</string>
 	<key>You didn't feel like it, and you did it anyway. That's the whole secret.</key>
 	<string>You didn't feel like it, and you did it anyway. That's the whole secret.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>You get one free freeze each week, and can hold %lld extra.</string>
 	<key>You have 50 friend requests waiting. Cancel some first.</key>
 	<string>You have 50 friend requests waiting. Cancel some first.</string>
+	<key>You joined %@.</key>
+	<string>You joined %@.</string>
 	<key>You joined the party</key>
 	<string>You joined the party</string>
+	<key>You left %@.</key>
+	<string>You left %@.</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>You put in %@ of study today. Rest up and start fresh tomorrow.</string>
 	<key>You started it for the party</key>
@@ -3943,18 +4175,26 @@
 	<string>You'll be friends once they accept.</string>
 	<key>You'll see %@ in your Party tab.</key>
 	<string>You'll see %@ in your Party tab.</string>
+	<key>You're already in a crew. Leave it first to join another.</key>
+	<string>You're already in a crew. Leave it first to join another.</string>
+	<key>You're already in a crew. Leave it first.</key>
+	<string>You're already in a crew. Leave it first.</string>
 	<key>You're already in this party</key>
 	<string>You're already in this party</string>
 	<key>You're in Party</key>
 	<string>You're in Party</string>
 	<key>You're not behind. You're on your own clock, and it only moves forward.</key>
 	<string>You're not behind. You're on your own clock, and it only moves forward.</string>
+	<key>You're not in a crew anymore.</key>
+	<string>You're not in a crew anymore.</string>
 	<key>You're not in a party anymore.</key>
 	<string>You're not in a party anymore.</string>
 	<key>You're the only one here for now.</key>
 	<string>You're the only one here for now.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>You've blocked too many people. Unblock someone first.</string>
+	<key>You've made a lot of crews today. Try again tomorrow.</key>
+	<string>You've made a lot of crews today. Try again tomorrow.</string>
 	<key>You've sent a lot of friend requests today. Try again tomorrow.</key>
 	<string>You've sent a lot of friend requests today. Try again tomorrow.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
@@ -3993,6 +4233,8 @@
 	<string>Your copy of AnkiConnect is too old for Tabbi. Anki can update it in a few clicks.</string>
 	<key>Your copy of the AnkiConnect add-on is too old for Tabbi.</key>
 	<string>Your copy of the AnkiConnect add-on is too old for Tabbi.</string>
+	<key>Your crew</key>
+	<string>Your crew</string>
 	<key>Your data</key>
 	<string>Your data</string>
 	<key>Your day on a timeline, with the free time in between.</key>
@@ -4027,6 +4269,8 @@
 	<string>Your name, up to %lld characters</string>
 	<key>Your own focus and break lengths</key>
 	<string>Your own focus and break lengths</string>
+	<key>Your party and friends</key>
+	<string>Your party and friends</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>Your party profile was reset. Reconnecting…</string>
 	<key>Your pet</key>
@@ -4051,6 +4295,8 @@
 	<string>Your playlist</string>
 	<key>Your setup already matches %@</key>
 	<string>Your setup already matches %@</string>
+	<key>Your study crew and the weekly top 3</key>
+	<string>Your study crew and the weekly top 3</string>
 	<key>Your study day by day, with the time studied on each</key>
 	<string>Your study day by day, with the time studied on each</string>
 	<key>Your study streak and the freezes that protect it</key>
@@ -4195,6 +4441,8 @@
 	<string>Strawberry Milk</string>
 	<key>theme.taro</key>
 	<string>Taro</string>
+	<key>this week</key>
+	<string>this week</string>
 	<key>today</key>
 	<string>today</string>
 	<key>tokens</key>

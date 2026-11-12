@@ -1,6 +1,6 @@
 /**
  * The Hub: one SQLite-backed Durable Object that owns all state (users, friends, presence, parties,
- * daily study minutes).
+ * daily study minutes, Study Crews).
  *
  * Why a single object: it gives strongly consistent, transactional state (symmetric friendships and
  * party capacity cannot race), and on the Workers Free plan one always-warm object costs at most
@@ -53,6 +53,7 @@ import {
   RELEASE_PAGES_MAX, StoredCount, countDownloads, downloadsBadge, downloadMilestone, fetchReleases,
 } from "./downloads";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
+import { CREWS_SCHEMA, CrewService } from "./crewService";
 
 export interface Env extends AppleSecrets, AdminSecrets, WebAuthVars, DownloadsSecrets, FoundingVars {
   HUB: DurableObjectNamespace<Hub>;
@@ -353,7 +354,7 @@ CREATE INDEX friend_requests_by_recipient ON friend_requests (recipient, created
 const MIGRATIONS = [
   SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA, GRANTS_SCHEMA,
   SUGGESTIONS_SCHEMA, SUGGESTION_APP_SCHEMA, CRASHES_SCHEMA, WEB_SIGN_IN_SCHEMA, DOWNLOAD_COUNTS_SCHEMA,
-  ENTITLEMENTS_SCHEMA, FRIEND_REQUESTS_SCHEMA,
+  ENTITLEMENTS_SCHEMA, FRIEND_REQUESTS_SCHEMA, CREWS_SCHEMA,
 ];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
@@ -509,6 +510,8 @@ export class Hub extends DurableObject<Env> {
   private githubCounts: { at: number; downloads: Downloads | null; nextCheck: number } | null = null;
   /** The GitHub fetch in flight, which concurrent requests share. */
   private githubRefresh: Promise<void> | null = null;
+  /** Study Crews (crewService.ts), on this Hub's storage. */
+  private crews: CrewService;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -521,6 +524,15 @@ export class Hub extends DurableObject<Env> {
       },
     };
     migrate(ctx.storage);
+    this.crews = new CrewService({
+      sql: this.sql,
+      transaction: (fn) => ctx.storage.transactionSync(fn),
+      rateLimit: (id, perWindow, now, windowS) => this.rateLimit(id, perWindow, now, windowS),
+      isBanned: (code) => this.isBanned(code),
+      hasBlocked: (blocker, blocked) => this.hasBlocked(blocker, blocked),
+      badgesByCode: (codes, now) => this.badgesByCode(codes, now),
+      block: (blocker, blocked, now) => this.blockUser(blocker, blocked, now),
+    });
     ctx.blockConcurrencyWhile(async () => {
       if ((await ctx.storage.getAlarm()) === null) await ctx.storage.setAlarm(Date.now() + RETENTION_SWEEP_S * 1000);
     });
@@ -535,6 +547,8 @@ export class Hub extends DurableObject<Env> {
     const now = nowS();
     this.sweepRetention(now);
     this.evictIdlePresence(now);
+    this.crews.rollupIfDue(now);
+    this.crews.sweep(now);
     this.tally();
     await this.ctx.storage.setAlarm(Date.now() + RETENTION_SWEEP_S * 1000);
   }
@@ -674,6 +688,9 @@ export class Hub extends DurableObject<Env> {
     // route's promise on a later tick is reported as unhandled by workerd.
     if (path === "/v1/sync" && method === "PUT") return await this.putSync(req, caller, now);
 
+    const crews = await this.crews.route(req, path, method, caller.code, now);
+    if (crews) return crews;
+
     throw new HttpError(404, "not_found", "not found");
   }
 
@@ -772,6 +789,8 @@ export class Hub extends DurableObject<Env> {
     if (grants && method === "POST") return await this.adminGrant(req, grants[1], now);
     const grant = /^\/v1\/admin\/users\/([^/]+)\/grants\/([^/]+)$/.exec(path);
     if (grant && method === "DELETE") return this.adminRevoke(grant[1], decodeURIComponent(grant[2]));
+    const crews = await this.crews.adminRoute(req, path, method, now);
+    if (crews) return crews;
     throw notFound();
   }
 
@@ -822,6 +841,7 @@ export class Hub extends DurableObject<Env> {
         ),
       },
       suggestions: this.count("SELECT COUNT(*) AS n FROM suggestions"),
+      crews: this.crews.stats(now),
       hub: this.currentUsage(),
     });
   }
@@ -1098,6 +1118,7 @@ export class Hub extends DurableObject<Env> {
   /** Deletes a user and all their rows (call inside a transaction). */
   private purgeUser(code: string, now: number): void {
     this.leaveParty(code, now);
+    this.crews.purgeUser(code, now);
     this.sql.exec("DELETE FROM users WHERE code = ?", code);
     // Both directions via the primary key: the reverse rows are found through my own friend list.
     this.sql.exec("DELETE FROM friends WHERE b = ? AND a IN (SELECT b FROM friends WHERE a = ?)", code, code);
@@ -1363,21 +1384,30 @@ export class Hub extends DurableObject<Env> {
     // Re-blocking someone I already blocked is answered from my own list, so it reveals nothing new.
     const row = (already ? this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0] : undefined)
       ?? this.knownUser(caller, code);
-    if (!already) {
-      const count = this.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM blocks WHERE blocker = ?", caller.code).one().n;
-      if (count >= MAX_BLOCKS) throw new HttpError(409, "block_limit", `you already blocked ${MAX_BLOCKS} people`);
-      const mine = this.currentParty(caller.code, now);
-      const shared = mine !== null && mine === this.currentParty(code, now) ? mine : null;
-      const host = shared ? this.sql.exec<{ host: string }>("SELECT host FROM parties WHERE code = ?", shared).one().host : null;
-      this.ctx.storage.transactionSync(() => {
-        this.sql.exec("INSERT INTO blocks (blocker, blocked, created_at) VALUES (?, ?, ?)", caller.code, code, now);
-        this.sql.exec("DELETE FROM friends WHERE (a = ? AND b = ?) OR (a = ? AND b = ?)", caller.code, code, code, caller.code);
-        this.deleteRequests(caller.code, code);
-        if (host === caller.code) this.leaveParty(code, now);
-        else if (host === code) this.leaveParty(caller.code, now);
-      });
-    }
+    if (!already) this.blockUser(caller.code, code, now);
     return json({ ok: true, blocked: !already, block: { code, name: row.name, petName: row.pet_name } });
+  }
+
+  /**
+   * Blocks `code` for `blocker`: ends the friendship and requests, applies the party rule above and the
+   * crew rule (crewService.ts `onBlock`). Returns false when the block already existed.
+   */
+  private blockUser(blocker: string, code: string, now: number): boolean {
+    if (this.hasBlocked(blocker, code)) return false;
+    const count = this.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM blocks WHERE blocker = ?", blocker).one().n;
+    if (count >= MAX_BLOCKS) throw new HttpError(409, "block_limit", `you already blocked ${MAX_BLOCKS} people`);
+    const mine = this.currentParty(blocker, now);
+    const shared = mine !== null && mine === this.currentParty(code, now) ? mine : null;
+    const host = shared ? this.sql.exec<{ host: string }>("SELECT host FROM parties WHERE code = ?", shared).one().host : null;
+    this.ctx.storage.transactionSync(() => {
+      this.sql.exec("INSERT INTO blocks (blocker, blocked, created_at) VALUES (?, ?, ?)", blocker, code, now);
+      this.sql.exec("DELETE FROM friends WHERE (a = ? AND b = ?) OR (a = ? AND b = ?)", blocker, code, code, blocker);
+      this.deleteRequests(blocker, code);
+      if (host === blocker) this.leaveParty(code, now);
+      else if (host === code) this.leaveParty(blocker, now);
+      this.crews.onBlock(blocker, code, now);
+    });
+    return true;
   }
 
   /** DELETE /v1/blocks/{code}: lifts my block. The friendship is not restored; either can add again. */
@@ -1538,6 +1568,7 @@ export class Hub extends DurableObject<Env> {
     this.ctx.storage.transactionSync(() => {
       banned = this.sql.exec("INSERT OR IGNORE INTO bans (code, created_at) VALUES (?, ?)", row.code, now).rowsWritten > 0;
       this.leaveParty(row.code, now);
+      this.crews.onBan(row.code, now);
       this.resolveReportsAbout(row.code, "banned", now);
     });
     return json({ ok: true, banned });
@@ -2031,6 +2062,7 @@ export class Hub extends DurableObject<Env> {
       "INSERT OR IGNORE INTO name_holds (code, kind, value, created_at) SELECT ?, kind, value, created_at FROM name_holds WHERE code = ?",
       to, from);
     this.sql.exec("INSERT OR IGNORE INTO grants (code, item, created_at) SELECT ?, item, created_at FROM grants WHERE code = ?", to, from);
+    this.crews.foldInto(from, to, now);
     this.purgeUser(from, now);
     // An inherited ban takes the account out of its party, as banning it would; blocks the account just
     // inherited apply to its party as they would to a fresh block.

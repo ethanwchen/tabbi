@@ -5,6 +5,8 @@
 <dict>
 	<key>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</key>
 	<string>"%@ يشتاق إليك. 10 دقائق؟" مرة واحدة في اليوم على الأكثر، وفقط إن لم تدرس أو تحقق هدفك بعد. أوضاع التركيز تُسكته.</string>
+	<key>#%lld</key>
+	<string>#%lld</string>
 	<key>%@ %@</key>
 	<string>%1$@ %2$@</string>
 	<key>%@ %@ so far</key>
@@ -69,6 +71,8 @@
 	<string>%@ متاحة</string>
 	<key>%@ free this week</key>
 	<string>%@ متاحة هذا الأسبوع</string>
+	<key>%@ h</key>
+	<string>%@ س</string>
 	<key>%@ handles them under its own terms and privacy policy. %@'s AI features send nothing else, and nothing until you allow it. You can switch to None in Connections at any time.</key>
 	<string>يعالجها %1$@ وفق شروطه وسياسة الخصوصية الخاصة به. لا ترسل ميزات AI في %2$@ أي شيء آخر، ولا ترسل شيئًا قبل أن تسمح بذلك. يمكنك التبديل إلى بلا في الاتصالات في أي وقت.</string>
 	<key>%@ in %@</key>
@@ -127,6 +131,8 @@
 	<string>%@ غير موجود على هذا الـMac بعد. تشرح لك الاتصالات كيفية إضافته.</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@ غير مُعدّ بعد</string>
+	<key>%@ keeps their pet private on crew pages.</key>
+	<string>يُخفي %@ حيوانه في صفحات الفرق.</string>
 	<key>%@ learned a song from a bird</key>
 	<string>%@ تعلم أغنية من عصفور</string>
 	<key>%@ left</key>
@@ -189,6 +195,8 @@
 	<string>%@ لا يقترح أي تغييرات.</string>
 	<key>%@ this month.</key>
 	<string>%@ هذا الشهر.</string>
+	<key>%@ this week</key>
+	<string>%@ هذا الأسبوع</string>
 	<key>%@ to %@</key>
 	<string>%1$@ نحو %2$@</string>
 	<key>%@ today</key>
@@ -217,8 +225,12 @@
 	<string>%1$@ مع %2$@ يريد أن يصبح صديقك.</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>يعمل %@ بأفضل شكل من مجلد التطبيقات، حيث يمكنه الفتح عند تسجيل الدخول وتحديث نفسه. سينسخ نفسه إلى هناك ثم يُفتح من جديد.</string>
+	<key>%@ · %@ this week</key>
+	<string>%@ · %@ هذا الأسبوع</string>
 	<key>%@ · Paused</key>
 	<string>%@ · متوقف مؤقتًا</string>
+	<key>%@ · Your crew</key>
+	<string>%@ · فريقك</string>
 	<key>%@, %@</key>
 	<string>%1$@، %2$@</string>
 	<key>%@, %@ left</key>
@@ -301,6 +313,8 @@
 	<string>%lld/%lld د</string>
 	<key>%lld/%lld session</key>
 	<string>%lld/%lld جلسة</string>
+	<key>%lldd %lldh</key>
+	<string>%lld ي %lld س</string>
 	<key>%lldh</key>
 	<string>%lld س</string>
 	<key>%lldh %lldm</key>
@@ -334,6 +348,8 @@
 	<key>90 min deep block, 20 min rest</key>
 	<string>كتلة عميقة 90 د، راحة 20 د</string>
 	<key>&lt;1 min</key>
+	<string>&lt;1 د</string>
+	<key>&lt;1m</key>
 	<string>&lt;1 د</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
 	<string>مؤقت بومودورو يتنقل بين التركيز والاستراحات.</string>
@@ -393,6 +409,8 @@
 	<string>يوم تجريبي. ستظهر أحداثك هنا بعد ربط التقويم.</string>
 	<key>A school or work setting may block it. You can check in System Settings.</key>
 	<string>قد تحظره إعدادات المدرسة أو العمل. يمكنك التحقق في إعدادات النظام.</string>
+	<key>A short description (optional)</key>
+	<string>وصف قصير (اختياري)</string>
 	<key>A shorter timer</key>
 	<string>مؤقت أقصر</string>
 	<key>A slow breath in, and out</key>
@@ -553,6 +571,8 @@
 	<string>ظاهر دائمًا</string>
 	<key>Always drawn around the hardware notch.</key>
 	<string>يُرسم دائمًا حول النوتش الفعلي.</string>
+	<key>Amber</key>
+	<string>كهرماني</string>
 	<key>Angel Wings</key>
 	<string>أجنحة ملاك</string>
 	<key>Animations</key>
@@ -621,6 +641,8 @@
 	<string>إعدادات AnkiConnect تمنع Tabbi. إعادتها إلى الوضع الافتراضي تحل المشكلة ولا تمس بطاقاتك.</string>
 	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
 	<string>توجد نسخة أخرى في %@. تشترك النسختان في أداة واحدة قد تصبح فارغة عندما ينتقل macOS بينهما. احتفظ بالنسخة التي تستخدمها وانقل الأخرى إلى سلة المهملات.</string>
+	<key>Another crew has that name. Please pick another.</key>
+	<string>يوجد فريق آخر بهذا الاسم. اختر اسمًا آخر.</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>أسبوع ثابت آخر. واصل بهدوء.</string>
 	<key>Answers</key>
@@ -631,6 +653,8 @@
 	<string>الإجابات من</string>
 	<key>Answers stay in the notch. Press Command-Return to send and expand, or click Expand on a chat.</key>
 	<string>تبقى الإجابات في النوتش. اضغط Command-Return للإرسال والتكبير، أو انقر توسيع في المحادثة.</string>
+	<key>Anyone can find and join it.</key>
+	<string>يمكن لأي شخص العثور عليه والانضمام إليه.</string>
 	<key>App</key>
 	<string>التطبيق</string>
 	<key>Appears when the pointer reaches the top center.</key>
@@ -749,6 +773,8 @@
 	<string>دقائق إضافية لعناصر هذا الحدث المحدودة</string>
 	<key>Bonus points from your pet, added to your balance</key>
 	<string>نقاط إضافية من رفيقك، أُضيفت إلى رصيدك</string>
+	<key>Books</key>
+	<string>كتب</string>
 	<key>Bow Tie</key>
 	<string>ربطة عنق فراشة</string>
 	<key>Break</key>
@@ -771,6 +797,8 @@
 	<string>اعرض Anki في المقدمة لترى ما يفعله؛ ستعيد علامة التبويب هذه الاتصال تلقائيًا</string>
 	<key>Brown noise</key>
 	<string>ضجيج بني</string>
+	<key>Browse public crews to join</key>
+	<string>تصفح الفرق العامة للانضمام إليها</string>
 	<key>Built-in display</key>
 	<string>الشاشة المدمجة</string>
 	<key>Bunny Ears</key>
@@ -859,6 +887,8 @@
 	<string>تبقى المحادثات على هذا الـ Mac</string>
 	<key>Chats stay on this Mac, in %@'s own folder. Delete them from History in the Ask AI tab.</key>
 	<string>تبقى المحادثات على هذا الـ Mac، في مجلد %@ الخاص. احذفها من السجل في علامة اسأل AI.</string>
+	<key>Cheating</key>
+	<string>غش</string>
 	<key>Check %@ again</key>
 	<string>تحقّق من %@ مجددًا</string>
 	<key>Check again</key>
@@ -1023,14 +1053,20 @@
 	<string>أغلق هذا. تواصل المجموعة المحاولة وحدها.</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>أغلق هذا. يمكنك إعداد المجموعة في أي وقت.</string>
+	<key>Close without joining</key>
+	<string>إغلاق دون انضمام</string>
 	<key>Close without reporting (Esc)</key>
 	<string>الإغلاق دون إبلاغ (Esc)</string>
+	<key>Close without saving</key>
+	<string>إغلاق دون حفظ</string>
 	<key>Closet</key>
 	<string>الخزانة</string>
 	<key>Code</key>
 	<string>رمز</string>
 	<key>Codex usage</key>
 	<string>استخدام Codex</string>
+	<key>Coffee mug</key>
+	<string>كوب قهوة</string>
 	<key>Command</key>
 	<string>الأمر</string>
 	<key>Compact</key>
@@ -1095,6 +1131,8 @@
 	<string>نسخ رمز الصديق</string>
 	<key>Copy the AnkiConnect add-on code to paste into Anki</key>
 	<string>انسخ رمز إضافة AnkiConnect للصقه في Anki</string>
+	<key>Copy the invite link. Friends who open it can join your crew.</key>
+	<string>انسخ رابط الدعوة. يمكن للأصدقاء الذين يفتحونه الانضمام إلى فريقك.</string>
 	<key>Copy what Tabbi found, to paste into a message if you ask someone for help</key>
 	<string>انسخ ما وجده Tabbi للصقه في رسالة إن طلبت المساعدة من أحد</string>
 	<key>Copy what you need to paste, then open %@</key>
@@ -1105,6 +1143,8 @@
 	<string>انسخ رمز الصديق الخاص بك لمشاركته</string>
 	<key>Copy “%@” so you can paste it</key>
 	<string>انسخ «%@» لتتمكن من لصقه</string>
+	<key>Coral</key>
+	<string>مرجاني</string>
 	<key>Couldn't add this friend</key>
 	<string>تعذّرت إضافة هذا الصديق</string>
 	<key>Couldn't add to your calendar. Try again</key>
@@ -1159,8 +1199,22 @@
 	<string>تقارير الأعطال</string>
 	<key>Cream</key>
 	<string>كريمي</string>
+	<key>Create</key>
+	<string>إنشاء</string>
 	<key>Create a party and get a code to share</key>
 	<string>أنشئ مجموعة واحصل على رمز لمشاركته</string>
+	<key>Create the crew with you as its owner</key>
+	<string>أنشئ الفريق وستكون مالكه</string>
+	<key>Crew</key>
+	<string>الفريق</string>
+	<key>Crew invite codes have %lld characters.</key>
+	<string>تتكون رموز دعوة الفريق من %lld أحرف.</string>
+	<key>Crew name</key>
+	<string>اسم الفريق</string>
+	<key>Crew names can be up to %lld characters.</key>
+	<string>يمكن أن يصل اسم الفريق إلى %lld حرفًا.</string>
+	<key>Crew owner</key>
+	<string>مالك الفريق</string>
 	<key>Custom</key>
 	<string>مخصّص</string>
 	<key>Daily focus goal met</key>
@@ -1229,6 +1283,10 @@
 	<string>جارٍ حذف حسابك…</string>
 	<key>Deleting…</key>
 	<string>جارٍ الحذف…</string>
+	<key>Descriptions can be up to %lld characters.</key>
+	<string>يمكن أن يصل الوصف إلى %lld حرفًا.</string>
+	<key>Desk lamp</key>
+	<string>مصباح مكتب</string>
 	<key>Desktop widget</key>
 	<string>أداة سطح المكتب</string>
 	<key>Details: %@</key>
@@ -1299,6 +1357,8 @@
 	<string>تظهر قائمة كل يوم هنا في اليوم التالي.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>يظهر هنا كل أسبوع تركّز فيه.</string>
+	<key>Early bird</key>
+	<string>الطائر المبكر</string>
 	<key>Earned by reaching study milestones</key>
 	<string>تُكسب ببلوغ مراحل في الدراسة</string>
 	<key>Earned by studying, never sold</key>
@@ -1307,6 +1367,10 @@
 	<string>مكتسب. انقر لنزعه.</string>
 	<key>Earned. Click to wear.</key>
 	<string>مكتسب. انقر لارتدائه.</string>
+	<key>Edit Crew…</key>
+	<string>تعديل الفريق…</string>
+	<key>Edit crew</key>
+	<string>تعديل الفريق</string>
 	<key>Edit the Custom focus and break lengths</key>
 	<string>تعديل مدد التركيز والاستراحة المخصّصة</string>
 	<key>Email Support</key>
@@ -1327,6 +1391,8 @@
 	<string>أنهِ هذه الفترة وخذ استراحة على قدرها</string>
 	<key>Ends at %@</key>
 	<string>تنتهي في %@</string>
+	<key>Ends in %@</key>
+	<string>ينتهي خلال %@</string>
 	<key>Enough for the %@ and the %@ now.</key>
 	<string>يكفي الآن لـ %@ و%@.</string>
 	<key>Enough for the %@ now</key>
@@ -1337,6 +1403,8 @@
 	<string>أدخل المفتاح من إعدادات AnkiConnect في الإعدادات.</string>
 	<key>Event</key>
 	<string>حدث</string>
+	<key>Every crew can appear on the weekly top 3 with its members' pets.</key>
+	<string>يمكن أن يظهر أي فريق في أفضل 3 الأسبوعية مع حيوانات أعضائه.</string>
 	<key>Every deck is caught up</key>
 	<string>كل الرزم محدّثة</string>
 	<key>Every focused minute fills in today's square</key>
@@ -1379,6 +1447,8 @@
 	<string>املأ وقت اليوم الحر بمهامك المفتوحة ومراجعاتك. يُخطّط على هذا الـ Mac، ولا يُضاف شيء حتى توافق</string>
 	<key>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</key>
 	<string>املأ وقت الغد الحر بمهامك المفتوحة ومراجعاتك. يُخطّط على هذا الـ Mac، ولا يُضاف شيء حتى توافق</string>
+	<key>Find crews</key>
+	<string>البحث عن فرق</string>
 	<key>Finish a Party session with friends.</key>
 	<string>أنهِ جلسة في المجموعة مع أصدقائك.</string>
 	<key>Finish all three to count the month toward the Monthly quests badge.</key>
@@ -1427,6 +1497,8 @@
 	<string>ركّز خلال %@.</string>
 	<key>Focus for 50 hours in total.</key>
 	<string>ركّز 50 ساعة إجمالًا.</string>
+	<key>Focus hours this week. The board freezes Sunday 23:59 UTC.</key>
+	<string>ساعات التركيز هذا الأسبوع. تتجمد اللوحة يوم الأحد 23:59 UTC.</string>
 	<key>Focus on this task</key>
 	<string>ركّز على هذه المهمة</string>
 	<key>Focus session</key>
@@ -1563,6 +1635,8 @@
 	<string>احصل على تطبيق Anki المجاني من apps.ankiweb.net.</string>
 	<key>Give your cat a name</key>
 	<string>امنح قطتك اسمًا</string>
+	<key>Give your crew a name.</key>
+	<string>اختر اسمًا لفريقك.</string>
 	<key>Give your dog a name</key>
 	<string>سمِّ كلبك</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
@@ -1611,18 +1685,28 @@
 	<string>الصعب يصير سهلًا كما تُرسم الدروب: خطوة واحدة، مرات كثيرة.</string>
 	<key>Hardware black, calm and crisp.</key>
 	<string>أسود مثل الجهاز، هادئ وواضح.</string>
+	<key>Have an invite? Type the %lld-character code and press Return to join</key>
+	<string>لديك دعوة؟ اكتب الرمز المكوّن من %lld أحرف واضغط Return للانضمام</string>
 	<key>Head Mirror</key>
 	<string>مرآة الرأس</string>
+	<key>Headphones</key>
+	<string>سماعات</string>
 	<key>Heads down</key>
 	<string>منغمس في العمل</string>
 	<key>Heart Glasses</key>
 	<string>نظارة القلوب</string>
+	<key>Heater shield</key>
+	<string>درع مقوّس</string>
+	<key>Hexagon</key>
+	<string>سداسي</string>
 	<key>Hi! I'm %@.</key>
 	<string>مرحبًا! أنا %@.</string>
 	<key>Hidden</key>
 	<string>مخفي</string>
 	<key>Hide %@ Until I Press %@</key>
 	<string>إخفاء %1$@ حتى أضغط %2$@</string>
+	<key>Hide My Pet on Crew Pages</key>
+	<string>إخفاء حيواني في صفحات الفرق</string>
 	<key>Hide each other everywhere in Party. You can unblock in Party options.</key>
 	<string>تختفيان عن بعضكما في كل مكان في المجموعة. يمكنك إلغاء الحظر من خيارات المجموعة.</string>
 	<key>Hide from screen sharing</key>
@@ -1691,6 +1775,8 @@
 	<string>في النوتش المفتوح، تبدّل الأسهم أو التمرير بإصبعين بين علامات التبويب، وتنتقل 1-9 إلى علامة تبويب، ويغلقه Esc أو التمرير لأعلى. في النوتش المغلق، مرّر لأسفل أو انقر بالزر الأوسط لرؤية النشاط المباشر التالي.</string>
 	<key>Inappropriate name</key>
 	<string>اسم غير لائق</string>
+	<key>Indigo</key>
+	<string>نيلي</string>
 	<key>Indigo night sky with a little gold star.</key>
 	<string>سماء ليلية نيلية مع نجمة ذهبية صغيرة.</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
@@ -1729,6 +1815,10 @@
 	<string>مخفي عن الأصدقاء</string>
 	<key>Invisible: friends see you as away</key>
 	<string>مخفي عن الأصدقاء</string>
+	<key>Invite</key>
+	<string>دعوة</string>
+	<key>Invite code</key>
+	<string>رمز الدعوة</string>
 	<key>Invite links</key>
 	<string>روابط الدعوة</string>
 	<key>Is %@ on this Mac?</key>
@@ -1777,12 +1867,22 @@
 	<string>الانضمام إلى مكالمة %@</string>
 	<key>Join %@'s party</key>
 	<string>الانضمام إلى مجموعة %@</string>
+	<key>Join %@. Your focus minutes count for it from now on.</key>
+	<string>انضم إلى %@. ستُحتسب دقائق تركيزك له من الآن.</string>
+	<key>Join Crew</key>
+	<string>الانضمام إلى الفريق</string>
 	<key>Join Party</key>
 	<string>الانضمام إلى المجموعة</string>
+	<key>Join a study crew</key>
+	<string>انضم إلى فريق دراسة</string>
+	<key>Join this crew?</key>
+	<string>هل تنضم إلى هذا الفريق؟</string>
 	<key>Join this party now</key>
 	<string>الانضمام إلى هذه المجموعة الآن</string>
 	<key>Join this party?</key>
 	<string>الانضمام إلى هذه المجموعة؟</string>
+	<key>Join with invite code %@</key>
+	<string>انضم برمز الدعوة %@</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>جارٍ الانضمام إلى المجموعة. لحظة واحدة.</string>
 	<key>Joining the party server</key>
@@ -1821,6 +1921,12 @@
 	<string>آخر 7 أيام</string>
 	<key>Last synced %@</key>
 	<string>آخر مزامنة %@</string>
+	<key>Last week</key>
+	<string>الأسبوع الماضي</string>
+	<key>Last week's winners and their laurels</key>
+	<string>فائزو الأسبوع الماضي وأكاليلهم</string>
+	<key>Last week's winners show here once a week has ended.</key>
+	<string>يظهر فائزو الأسبوع الماضي هنا بعد انتهاء أسبوع.</string>
 	<key>Latest adventure: %@</key>
 	<string>آخر مغامرة: %@</string>
 	<key>Launch %@</key>
@@ -1831,6 +1937,8 @@
 	<string>قيد التعلّم</string>
 	<key>Leave</key>
 	<string>مغادرة</string>
+	<key>Leave Crew</key>
+	<string>مغادرة الفريق</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>اتركه فارغًا للافتراضي، فهو سريع وقليل التكلفة.</string>
 	<key>Leave notifications on while studying</key>
@@ -1887,6 +1995,8 @@
 	<string>النشاط المباشر</string>
 	<key>Loading</key>
 	<string>جارٍ التحميل</string>
+	<key>Loading your crew…</key>
+	<string>جارٍ تحميل فريقك…</string>
 	<key>Loading…</key>
 	<string>جارٍ التحميل…</string>
 	<key>Location</key>
@@ -1917,8 +2027,12 @@
 	<string>جارٍ البحث عن اختصاراتك</string>
 	<key>Lunar New Year</key>
 	<string>رأس السنة القمرية</string>
+	<key>Lv %lld</key>
+	<string>مستوى %lld</string>
 	<key>Main display</key>
 	<string>الشاشة الرئيسية</string>
+	<key>Make a crew and invite friends</key>
+	<string>أنشئ فريقًا وادعُ أصدقاءك</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
 	<string>أنشئ اختصارًا آخر بالطريقة نفسها، مع الإيقاف، وسمِّه:</string>
 	<key>Make sure Calendars is turned on for that account.</key>
@@ -1945,6 +2059,8 @@
 	<string>الوسائط</string>
 	<key>Meetings, music and timers beside the closed notch.</key>
 	<string>الاجتماعات والموسيقى والمؤقتات بجانب النوتش المغلق.</string>
+	<key>Members</key>
+	<string>الأعضاء</string>
 	<key>Members in this party</key>
 	<string>أعضاء هذه المجموعة</string>
 	<key>Memory</key>
@@ -1979,12 +2095,16 @@
 	<string>مهام شهرية</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>مهام شهرية وشارات وأزياء تُكتسب من أهداف طويلة</string>
+	<key>Moon</key>
+	<string>قمر</string>
 	<key>Moonlit Witch Hat</key>
 	<string>قبعة ساحرة القمر</string>
 	<key>Moonstone</key>
 	<string>حجر القمر</string>
 	<key>More</key>
 	<string>أكثر</string>
+	<key>More crew options</key>
+	<string>خيارات أخرى للفريق</string>
 	<key>More events</key>
 	<string>مناسبات أخرى</string>
 	<key>More focus than last week. Nice climb!</key>
@@ -2029,6 +2149,8 @@
 	<string>جديدة</string>
 	<key>New chat</key>
 	<string>محادثة جديدة</string>
+	<key>New crew</key>
+	<string>فريق جديد</string>
 	<key>New friends</key>
 	<string>أصدقاء جدد</string>
 	<key>New tabs may ask for %@.</key>
@@ -2059,6 +2181,8 @@
 	<string>لا توجد تقويمات بعد</string>
 	<key>No collar</key>
 	<string>بلا طوق</string>
+	<key>No crew has studied yet this week. Yours could be first.</key>
+	<string>لم يدرس أي فريق بعد هذا الأسبوع. قد يكون فريقك الأول.</string>
 	<key>No events</key>
 	<string>لا أحداث</string>
 	<key>No events on your calendars today.</key>
@@ -2087,6 +2211,10 @@
 	<string>لا أحد يملك رمز الصداقة هذا.</string>
 	<key>No one is blocked.</key>
 	<string>لا أحد محظور.</string>
+	<key>No public crews match.</key>
+	<string>لا توجد فرق عامة مطابقة.</string>
+	<key>No public crews yet. Make the first one.</key>
+	<string>لا توجد فرق عامة بعد. أنشئ أول فريق.</string>
 	<key>No saved chats</key>
 	<string>لا محادثات محفوظة</string>
 	<key>No shortcut named “%@”. Check the name in Shortcuts.</key>
@@ -2271,6 +2399,8 @@
 	<string>جلسة هادئة تلو الأخرى. النجاح قريب.</string>
 	<key>One countdown, no breaks</key>
 	<string>عدّ تنازلي واحد، بلا استراحات</string>
+	<key>One line about your crew, up to %lld characters</key>
+	<string>سطر واحد عن فريقك، حتى %lld حرفًا</string>
 	<key>One moment.</key>
 	<string>لحظة.</string>
 	<key>One question first</key>
@@ -2287,6 +2417,10 @@
 	<string>متصل</string>
 	<key>Only partly. Tabbi can add events but can't read them.</key>
 	<string>جزئيًا فقط. يستطيع Tabbi إضافة الأحداث لكن لا يستطيع قراءتها.</string>
+	<key>Only people with the invite can join.</key>
+	<string>يمكن فقط لمن لديهم الدعوة الانضمام.</string>
+	<key>Only the crew's owner can do that.</key>
+	<string>لا يستطيع ذلك إلا مالك الفريق.</string>
 	<key>Only the host can change the session.</key>
 	<string>المضيف وحده يمكنه تغيير الجلسة.</string>
 	<key>Only while a focus phase runs, at most a few times an hour. Your pet checks how long since you last typed or moved the pointer, and which app is in front. Nothing else, and no permissions.</key>
@@ -2421,6 +2555,8 @@
 	<string>أزياء وإكسسوارات تُفتح بنقاط الدراسة</string>
 	<key>Outfits to earn</key>
 	<string>أزياء تُكتسب</string>
+	<key>Owl</key>
+	<string>بومة</string>
 	<key>Owl Spectacles</key>
 	<string>نظارة البومة</string>
 	<key>Owned</key>
@@ -2503,6 +2639,8 @@
 	<string>ادفع حسب الاستخدام بمفتاح API من OpenAI.</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>الذروة %@  ·  المتوسط %@</string>
+	<key>Pennant</key>
+	<string>راية</string>
 	<key>Pet</key>
 	<string>الحيوان الأليف</string>
 	<key>Pet Coach</key>
@@ -2635,6 +2773,10 @@
 	<string>الخصوصية</string>
 	<key>Privacy Policy</key>
 	<string>سياسة الخصوصية</string>
+	<key>Private</key>
+	<string>خاص</string>
+	<key>Private: only people with the invite can join.</key>
+	<string>خاص: يمكن فقط لمن لديهم الدعوة الانضمام.</string>
 	<key>Productivity</key>
 	<string>الإنتاجية</string>
 	<key>Profile</key>
@@ -2643,8 +2785,14 @@
 	<string>مقترح: %1$@، %2$@. انقر لإضافته أو تخطيه</string>
 	<key>Proposed: %@. Click to add or skip it</key>
 	<string>مقترح: %@. انقر لإضافته أو تخطيه</string>
+	<key>Public</key>
+	<string>عام</string>
+	<key>Public: anyone can find and join it.</key>
+	<string>عام: يمكن لأي شخص العثور عليه والانضمام إليه.</string>
 	<key>Pumpkin Hat</key>
 	<string>قبعة اليقطين</string>
+	<key>Pup</key>
+	<string>جرو</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
 	<string>إعادة قسم عام كما في التثبيت الجديد. يبقى خيار الفتح عند تسجيل الدخول كما هو.</string>
 	<key>Put the recap away</key>
@@ -2673,6 +2821,8 @@
 	<string>أغلق Anki وافتحه مجددًا. سيلاحظ Tabbi ذلك تلقائيًا.</string>
 	<key>Rain</key>
 	<string>مطر</string>
+	<key>Rain cloud</key>
+	<string>غيمة ماطرة</string>
 	<key>Rare</key>
 	<string>نادر</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2727,6 +2877,8 @@
 	<string>إزالة</string>
 	<key>Remove %@</key>
 	<string>إزالة %@</string>
+	<key>Remove %@ from Crew</key>
+	<string>إزالة %@ من الفريق</string>
 	<key>Remove %@ from the blend</key>
 	<string>أزل %@ من المزيج</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
@@ -2739,6 +2891,8 @@
 	<string>إزالة من المزيج</string>
 	<key>Remove this screenshot</key>
 	<string>إزالة لقطة الشاشة هذه</string>
+	<key>Removed %@ from the crew.</key>
+	<string>تمت إزالة %@ من الفريق.</string>
 	<key>Removed %@.</key>
 	<string>تمت إزالة %@.</string>
 	<key>Removes your profile, friends and parties from the server.</key>
@@ -2761,6 +2915,8 @@
 	<string>الإبلاغ عن %@…</string>
 	<key>Report a problem: %@</key>
 	<string>الإبلاغ عن مشكلة: %@</string>
+	<key>Report this crew</key>
+	<string>الإبلاغ عن هذا الفريق</string>
 	<key>Request</key>
 	<string>طلب</string>
 	<key>Request sent</key>
@@ -2815,6 +2971,8 @@
 	<string>انقر بزر الماوس الأيمن للإزالة أو الإبلاغ أو الحظر.</string>
 	<key>Right-click to report or block.</key>
 	<string>انقر بزر الماوس الأيمن للإبلاغ أو الحظر.</string>
+	<key>Rose</key>
+	<string>وردي</string>
 	<key>Round %lld of %lld</key>
 	<string>الجولة %lld من %lld</string>
 	<key>Round Glasses</key>
@@ -2845,6 +3003,8 @@
 	<string>حفظ هذا المفتاح في سلسلة المفاتيح</string>
 	<key>Save today's review and show the checklist</key>
 	<string>حفظ مراجعة اليوم وعرض القائمة</string>
+	<key>Save your changes</key>
+	<string>احفظ تغييراتك</string>
 	<key>Save your name and pet and join Party</key>
 	<string>احفظ اسمك ورفيقك وانضم إلى المجموعة</string>
 	<key>Saved chats</key>
@@ -2853,6 +3013,8 @@
 	<string>المحادثات المحفوظة تبقى على هذا الـMac فقط ولا تُرفع أبدًا</string>
 	<key>Saved in your Keychain</key>
 	<string>محفوظ في سلسلة المفاتيح</string>
+	<key>Saved.</key>
+	<string>تم الحفظ.</string>
 	<key>Schedule</key>
 	<string>الجدول</string>
 	<key>Scholar's Robe</key>
@@ -2861,10 +3023,18 @@
 	<string>لقطة شاشة أُرسلت مع هذا السؤال</string>
 	<key>Scrubs</key>
 	<string>زي طبي</string>
+	<key>Seal</key>
+	<string>ختم</string>
 	<key>Search for Set Focus, add it, and pick Do Not Disturb, turned On.</key>
 	<string>ابحث عن تعيين التركيز، وأضفه، واختر عدم الإزعاج، مع التشغيل.</string>
+	<key>Search public crews</key>
+	<string>ابحث في الفرق العامة</string>
+	<key>Search public crews by name</key>
+	<string>ابحث في الفرق العامة بالاسم</string>
 	<key>Seasonal</key>
 	<string>موسمي</string>
+	<key>See %@ and its members' pets</key>
+	<string>شاهد %@ وحيوانات أعضائه</string>
 	<key>See due cards and start reviews.</key>
 	<string>اعرض البطاقات المستحقة وابدأ المراجعة.</string>
 	<key>See today's events in the notch.</key>
@@ -2939,6 +3109,8 @@
 	<string>شارك رمزك أو أضف رمزهم أدناه. ابدأ مجموعة من علامة تبويب المجموعة.</string>
 	<key>Shared focus: %@ left</key>
 	<string>تركيز مشترك: بقي %@</string>
+	<key>Shield</key>
+	<string>درع</string>
 	<key>Shortcut</key>
 	<string>الاختصار</string>
 	<key>Shortcut %@</key>
@@ -2955,6 +3127,8 @@
 	<string>الوصول إلى الاختصارات متوقف. شغّل Shortcuts Events لـ Tabbi في إعدادات الأتمتة.</string>
 	<key>Show %@</key>
 	<string>إظهار %@</string>
+	<key>Show My Pet on Crew Pages</key>
+	<string>إظهار حيواني في صفحات الفرق</string>
 	<key>Show Other Copy</key>
 	<string>إظهار النسخة الأخرى</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
@@ -3013,6 +3187,8 @@
 	<string>يعرض المعاينات التي تختارها هذه الحزمة.</string>
 	<key>Shuffle</key>
 	<string>ترتيب عشوائي</string>
+	<key>Shuffle the crest</key>
+	<string>اختيار شعار عشوائي</string>
 	<key>Sign In</key>
 	<string>تسجيل الدخول</string>
 	<key>Sign Out</key>
@@ -3063,6 +3239,8 @@
 	<string>الانتقال إلى الاستراحة</string>
 	<key>Sky</key>
 	<string>سماوي</string>
+	<key>Slate</key>
+	<string>أردوازي</string>
 	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
 	<string>النوم جزء من العمل. اذهب واحلم بنقلات الغد.</string>
 	<key>Slow breath</key>
@@ -3075,6 +3253,8 @@
 	<string>بعض الأدلة</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>القليل أكثر بكثير من لا شيء. استرح، فالرقعة باقية.</string>
+	<key>Someone invited you to a study crew. Your focus minutes count for it from now on.</key>
+	<string>دعاك أحدهم إلى فريق دراسة. ستُحتسب دقائق تركيزك له من الآن.</string>
 	<key>Something not working?</key>
 	<string>هل هناك ما لا يعمل؟</string>
 	<key>Soulmates</key>
@@ -3109,6 +3289,8 @@
 	<string>قف للحظة</string>
 	<key>Stand, shake out your legs, and sit back down when you like.</key>
 	<string>قف، وحرّك ساقيك، واجلس متى شئت.</string>
+	<key>Star</key>
+	<string>نجمة</string>
 	<key>Star tag</key>
 	<string>قلادة نجمة</string>
 	<key>Starlight, every tier earned</key>
@@ -3209,6 +3391,8 @@
 	<string>أوقف المعاينة</string>
 	<key>Stopped</key>
 	<string>توقّف</string>
+	<key>Stopwatch</key>
+	<string>ساعة إيقاف</string>
 	<key>Streak</key>
 	<string>السلسلة</string>
 	<key>Streak unavailable</key>
@@ -3227,6 +3411,8 @@
 	<string>ادرس 7 أيام متتالية.</string>
 	<key>Study Hoodie</key>
 	<string>هودي الدراسة</string>
+	<key>Study Level %lld</key>
+	<string>مستوى الدراسة %lld</string>
 	<key>Study block</key>
 	<string>فترة دراسة</string>
 	<key>Study buddies</key>
@@ -3245,6 +3431,8 @@
 	<string>ادرس حتى يتراجع تركيزك، والاستراحة تتناسب</string>
 	<key>Study with a cat</key>
 	<string>ادرس مع قطة</string>
+	<key>Study with a crew and climb the weekly top 3.</key>
+	<string>ادرس مع فريق واصعد إلى أفضل 3 الأسبوعية.</string>
 	<key>Study with a dog</key>
 	<string>ادرس مع كلب</string>
 	<key>Study with friends and see who is focusing now.</key>
@@ -3351,6 +3539,8 @@
 	<string>المهام</string>
 	<key>Tasks left today</key>
 	<string>المهام المتبقية اليوم</string>
+	<key>Teal</key>
+	<string>أزرق مخضر</string>
 	<key>Team Medal</key>
 	<string>ميدالية الفريق</string>
 	<key>Ten hours of betting on yourself. Keep betting.</key>
@@ -3367,12 +3557,22 @@
 	<string>شكرًا. أُرسل بلاغك وتم حظر %@.</string>
 	<key>Thanks. Your report was sent.</key>
 	<string>شكرًا. أُرسل بلاغك.</string>
+	<key>That crew is full.</key>
+	<string>هذا الفريق ممتلئ.</string>
+	<key>That crew is gone or the code is wrong.</key>
+	<string>هذا الفريق لم يعد موجودًا أو الرمز خاطئ.</string>
+	<key>That crew name isn't allowed. Please pick another.</key>
+	<string>اسم الفريق هذا غير مسموح به. اختر اسمًا آخر.</string>
+	<key>That description isn't allowed. Please change it.</key>
+	<string>هذا الوصف غير مسموح به. يرجى تغييره.</string>
 	<key>That folder has no %@ logs. Choose the %@ folder in your home folder.</key>
 	<string>لا يحتوي هذا المجلد على سجلات %1$@. اختر المجلد %2$@ في مجلد الصفحة الرئيسية.</string>
 	<key>That friend request is no longer there.</key>
 	<string>طلب الصداقة هذا لم يعد موجودًا.</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
 	<string>لا يمكن أن يكون هذا المفتاح جزءًا من اختصار. جرّب حرفًا أو رقمًا أو المسافة.</string>
+	<key>That member left the crew.</key>
+	<string>غادر هذا العضو الفريق.</string>
 	<key>That name and your pet's name aren't allowed. Please pick others.</key>
 	<string>هذا الاسم واسم رفيقك غير مسموح بهما. يُرجى اختيار غيرهما.</string>
 	<key>That name isn't allowed. Please pick another.</key>
@@ -3411,6 +3611,8 @@
 	<string>لم يستجب تطبيق الاختصارات في الوقت المحدد. حاول مرة أخرى بعد قليل.</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
 	<string>أداة سطر الأوامر الخاصة بالاختصارات غير متوفرة على هذا الـMac.</string>
+	<key>The Tabbi team hid this crew from the board and Find.</key>
+	<string>أخفى فريق Tabbi هذا الفريق من اللوحة والبحث.</string>
 	<key>The Tabbi team reviews it. %@ isn't told.</key>
 	<string>يراجعه فريق Tabbi. لن يتم إبلاغ %@.</string>
 	<key>The app this needs isn't on this Mac</key>
@@ -3471,6 +3673,8 @@
 	<string>يبدأ المؤقت بـ%@</string>
 	<key>The tool's own default</key>
 	<string>الافتراضي الخاص بالأداة</string>
+	<key>The week ends Sunday 23:59 UTC. Then the top 3 freeze and win their laurels for next week.</key>
+	<string>ينتهي الأسبوع يوم الأحد 23:59 UTC. عندها تتجمد أفضل 3 وتفوز بأكاليلها للأسبوع التالي.</string>
 	<key>The work no one sees is the work that changes you.</key>
 	<string>العمل الذي لا يراه أحد هو ما يغيّرك.</string>
 	<key>The year you were born</key>
@@ -3507,6 +3711,12 @@
 	<string>هذا عرض تجريبي. لم يُرسل أي بلاغ.</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>هذا عرض تجريبي. لم يُحذف شيء.</string>
+	<key>This is a demo. Run without TABBI_DEMO to join a crew.</key>
+	<string>هذا عرض توضيحي. شغّل التطبيق دون TABBI_DEMO للانضمام إلى فريق.</string>
+	<key>This is a demo. Run without TABBI_DEMO to leave a crew.</key>
+	<string>هذا عرض توضيحي. شغّل التطبيق دون TABBI_DEMO لمغادرة فريق.</string>
+	<key>This is a demo. Run without TABBI_DEMO to make a crew.</key>
+	<string>هذا عرض توضيحي. شغّل التطبيق دون TABBI_DEMO لإنشاء فريق.</string>
 	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
 	<string>هذا عرض تجريبي. شغّل التطبيق دون TABBI_DEMO للدراسة مع الأصدقاء.</string>
 	<key>This is usually short. Check again in a moment.</key>
@@ -3525,6 +3735,10 @@
 	<string>يستغرق هذا لحظة.</string>
 	<key>This task is on today's list</key>
 	<string>هذه المهمة في قائمة اليوم</string>
+	<key>This week</key>
+	<string>هذا الأسبوع</string>
+	<key>This week's live top 3</key>
+	<string>أفضل 3 لهذا الأسبوع مباشرة</string>
 	<key>This works. Nothing to do.</key>
 	<string>هذا يعمل. لا شيء لفعله.</string>
 	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
@@ -3587,6 +3801,10 @@
 	<string>محاولات كثيرة حاليًا. انتظر دقيقة ثم حاول مرة أخرى.</string>
 	<key>Took back the import of %@.</key>
 	<string>تم التراجع عن استيراد %@.</string>
+	<key>Top 3</key>
+	<string>أفضل 3</string>
+	<key>Top 3 finishes: %lld gold, %lld silver, %lld bronze</key>
+	<string>مراكز ضمن أفضل 3: %lld ذهبية، %lld فضية، %lld برونزية</string>
 	<key>Top decks</key>
 	<string>أهم الرزم</string>
 	<key>Top model</key>
@@ -3649,6 +3867,8 @@
 	<string>تشغيل الترتيب العشوائي</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>جارٍ تشغيل عدم الإزعاج…</string>
+	<key>Turtle</key>
+	<string>سلحفاة</string>
 	<key>Two copies of %@ are installed</key>
 	<string>توجد نسختان من %@ مثبتتان</string>
 	<key>Type a name first</key>
@@ -3689,6 +3909,8 @@
 	<string>التالي</string>
 	<key>Up next shows your %@ as the day goes, and Plan my day fits work around them.</key>
 	<string>يعرض التالي %@ على مدار اليوم، ويرتّب خطّط يومي العمل حولها.</string>
+	<key>Up to %lld characters. Everyone in Party can see it on the board.</key>
+	<string>حتى %lld حرفًا. يمكن لكل من في المجموعة رؤيته في اللوحة.</string>
 	<key>Update AnkiConnect</key>
 	<string>حدّث AnkiConnect</string>
 	<key>Update AnkiConnect from Tools › Add-ons › Check for Updates.</key>
@@ -3713,6 +3935,8 @@
 	<string>استخدام حدّك الأسبوعي</string>
 	<key>Use the default %@ server</key>
 	<string>استخدام خادم %@ الافتراضي</string>
+	<key>Use this icon</key>
+	<string>استخدم هذه الأيقونة</string>
 	<key>Used to greet you.</key>
 	<string>لنحيّيك به.</string>
 	<key>Uses your ChatGPT plan through the codex command.</key>
@@ -3733,6 +3957,8 @@
 	<string>الإصدار %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>عرض على GitHub</string>
+	<key>Violet</key>
+	<string>بنفسجي</string>
 	<key>Visible: friends see when you study</key>
 	<string>ظاهر للأصدقاء</string>
 	<key>Vivid accents with a violet glow.</key>
@@ -3891,12 +4117,18 @@
 	<string>يمكنك إعداد هذا في أي وقت من علامة تبويب %@.</string>
 	<key>You can turn alerts off any time in System Settings.</key>
 	<string>يمكنك إيقاف التنبيهات في أي وقت من إعدادات النظام.</string>
+	<key>You can't join that crew.</key>
+	<string>لا يمكنك الانضمام إلى هذا الفريق.</string>
 	<key>You didn't feel like it, and you did it anyway. That's the whole secret.</key>
 	<string>لم تكن لديك رغبة، وفعلتها رغم ذلك. هذا هو السر كله.</string>
 	<key>You have 50 friend requests waiting. Cancel some first.</key>
 	<string>لديك 50 طلب صداقة بانتظار الرد. ألغِ بعضها أولًا.</string>
+	<key>You joined %@.</key>
+	<string>انضممت إلى %@.</string>
 	<key>You joined the party</key>
 	<string>انضممت إلى المجموعة</string>
+	<key>You left %@.</key>
+	<string>غادرت %@.</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>أمضيت %@ في الدراسة اليوم. وقت الراحة، وغدًا بداية جديدة.</string>
 	<key>You started it for the party</key>
@@ -3905,18 +4137,26 @@
 	<string>ستصبحان صديقين بعد قبول الطلب.</string>
 	<key>You'll see %@ in your Party tab.</key>
 	<string>سترى %@ في علامة تبويب المجموعة.</string>
+	<key>You're already in a crew. Leave it first to join another.</key>
+	<string>أنت في فريق بالفعل. غادره أولًا للانضمام إلى آخر.</string>
+	<key>You're already in a crew. Leave it first.</key>
+	<string>أنت في فريق بالفعل. غادره أولًا.</string>
 	<key>You're already in this party</key>
 	<string>أنت في هذه المجموعة بالفعل</string>
 	<key>You're in Party</key>
 	<string>أنت في المجموعة</string>
 	<key>You're not behind. You're on your own clock, and it only moves forward.</key>
 	<string>لست متأخرًا. لك توقيتك الخاص، وهو لا يمضي إلا للأمام.</string>
+	<key>You're not in a crew anymore.</key>
+	<string>لم تعد في فريق.</string>
 	<key>You're not in a party anymore.</key>
 	<string>لم تعد في مجموعة.</string>
 	<key>You're the only one here for now.</key>
 	<string>أنت الوحيد هنا حاليًا.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>حظرت عددًا كبيرًا من الأشخاص. ألغِ حظر أحدهم أولًا.</string>
+	<key>You've made a lot of crews today. Try again tomorrow.</key>
+	<string>أنشأت فرقًا كثيرة اليوم. حاول مرة أخرى غدًا.</string>
 	<key>You've sent a lot of friend requests today. Try again tomorrow.</key>
 	<string>أرسلت الكثير من طلبات الصداقة اليوم. حاول مجددًا غدًا.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
@@ -3955,6 +4195,8 @@
 	<string>نسخة AnkiConnect لديك قديمة جدًا على Tabbi. يمكن لـ Anki تحديثها ببضع نقرات.</string>
 	<key>Your copy of the AnkiConnect add-on is too old for Tabbi.</key>
 	<string>نسخة إضافة AnkiConnect لديك قديمة جدًا على Tabbi.</string>
+	<key>Your crew</key>
+	<string>فريقك</string>
 	<key>Your data</key>
 	<string>بياناتك</string>
 	<key>Your day on a timeline, with the free time in between.</key>
@@ -3987,6 +4229,8 @@
 	<string>اسمك</string>
 	<key>Your own focus and break lengths</key>
 	<string>مدد التركيز والاستراحة الخاصة بك</string>
+	<key>Your party and friends</key>
+	<string>مجموعتك وأصدقاؤك</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>أُعيد ضبط ملفك في المجموعة. جارٍ إعادة الاتصال…</string>
 	<key>Your pet</key>
@@ -4011,6 +4255,8 @@
 	<string>قائمة التشغيل لديك</string>
 	<key>Your setup already matches %@</key>
 	<string>إعداداتك تطابق %@ بالفعل</string>
+	<key>Your study crew and the weekly top 3</key>
+	<string>فريق دراستك وأفضل 3 الأسبوعية</string>
 	<key>Your study day by day, with the time studied on each</key>
 	<string>دراستك يومًا بيوم، مع وقت الدراسة في كل يوم</string>
 	<key>Your study streak and the freezes that protect it</key>
@@ -4153,6 +4399,8 @@
 	<string>حليب الفراولة</string>
 	<key>theme.taro</key>
 	<string>تارو</string>
+	<key>this week</key>
+	<string>هذا الأسبوع</string>
 	<key>today</key>
 	<string>اليوم</string>
 	<key>tokens</key>

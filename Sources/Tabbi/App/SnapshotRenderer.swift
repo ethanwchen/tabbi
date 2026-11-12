@@ -201,6 +201,23 @@ enum SnapshotRenderer {
             shots.append(Shot(name, model))
         }
 
+        // The Party tab's Crew section, every screen at every panel size,
+        // rendered after the others because the screen is store state.
+        if layout.order.contains(.party) {
+            var withParty = layout
+            _ = withParty.setEnabled(.party, true)
+            for size in PanelSize.allCases {
+                let prefix = size == .default ? "open-party-crew" : "open-\(size.rawValue)-party-crew"
+                let screens = CrewDemoScenario.allCases.map { ("-" + $0.rawValue, CrewShot.screen($0)) } + [("-report", .report)]
+                for (suffix, crewShot) in screens {
+                    let model = NotchViewModel(geometry: geometry, layout: withParty)
+                    model.panelSize = size
+                    model.open(.party)
+                    shots.append(Shot(prefix + suffix, model, crews: crewShot))
+                }
+            }
+        }
+
         // The break buddy's card in place of the timer at the start of a
         // break, in Study and in Focus, and in the Compact panel, rendered
         // after the others because the moment is the break buddy's state.
@@ -361,6 +378,14 @@ enum SnapshotRenderer {
             // reviewing the art (the quiet coin on the Sweet cards most of all).
             if closet != nil {
                 renderStill(ClosetBadgeTierSheet(), as: "closet-badge-tiers", scale: max(2, notchStyle.scale), to: folder)
+            }
+            // Every crew crest frame, emblem, color and laurel, at
+            // one and four device pixels per sprite pixel.
+            if layout.order.contains(.party) {
+                for scale in [1, 4] {
+                    renderStill(CrewCrestSheet().environment(\.displayScale, CGFloat(scale)), as: "crew-crests-\(scale)x",
+                                scale: CGFloat(scale), to: folder)
+                }
             }
         }
         Theme.apply(kitTheme)
@@ -550,16 +575,27 @@ enum SnapshotRenderer {
         /// The Closet's section and pet in it, if it shows one other than
         /// the first section with nothing tried on.
         var closet: ClosetShot?
+        /// The Party tab's Crew screen showing in it, if any.
+        var crews: CrewShot?
 
         init(_ name: String, _ model: NotchViewModel, onboarding: OnboardingFlow? = nil,
-             recap: (WeeklyRecap, RecapCheer)? = nil, invite: PartyInviteFlow? = nil, closet: ClosetShot? = nil) {
+             recap: (WeeklyRecap, RecapCheer)? = nil, invite: PartyInviteFlow? = nil, closet: ClosetShot? = nil,
+             crews: CrewShot? = nil) {
             self.name = name
             self.model = model
             self.onboarding = onboarding
             self.recap = recap
             self.invite = invite
             self.closet = closet
+            self.crews = crews
         }
+    }
+
+    /// A Crew screen of the Party tab: one of the demo screens, or the
+    /// report card about a featured crew's member.
+    private enum CrewShot {
+        case screen(CrewDemoScenario)
+        case report
     }
 
     /// Writes one SwiftUI view as a PNG, as the coach shots are written.
@@ -688,6 +724,7 @@ enum SnapshotRenderer {
         let timer = services.modules.module(StudyModule.self)
         let today = services.modules.module(TodayModule.self)?.store
         let party = services.modules.module(PartyModule.self)?.store
+        let crews = services.modules.module(PartyModule.self)?.crews
         let schedule = services.modules.module(ScheduleModule.self)
         let nowPlaying = services.modules.module(NowPlayingModule.self)
         let usage = services.modules.module(ClaudeUsageModule.self)?.store
@@ -707,6 +744,11 @@ enum SnapshotRenderer {
             closet?.breakBuddy.showForSnapshot(breakSource.map { BreakMoment.sample(at: Date(), source: $0) })
             party?.showCelebrationForSnapshot(name == "open-party-celebrating")
             party?.showInviteForSnapshot(shot.invite)
+            switch shot.crews {
+            case .screen(let scenario): crews?.showForSnapshot(scenario)
+            case .report: crews?.showReportForSnapshot()
+            case nil: crews?.showForSnapshot(nil)
+            }
             today?.showForSnapshot(name == "open-planner-yesterday" ? .yesterday
                 : name.hasPrefix("open-planner-tomorrow") ? .tomorrow : .today,
                 planning: name == "open-planner-tomorrow-plan")
@@ -784,6 +826,7 @@ enum SnapshotRenderer {
         closet?.breakBuddy.showForSnapshot(nil)
         party?.showCelebrationForSnapshot(false)
         party?.showInviteForSnapshot(nil)
+        crews?.showForSnapshot(nil)
         today?.show(.today)
         schedule?.showForSnapshot(.today)
         nowPlaying?.showForSnapshot(.players)

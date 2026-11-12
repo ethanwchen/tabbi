@@ -4,7 +4,7 @@
  *
  *   node scripts/demo-friend.ts create --url <server> --token-file <file>   # once; prints the friend code
  *   node scripts/demo-friend.ts show   --url <server> --token-file <file>   # the code, name and friends
- *   node scripts/demo-friend.ts study  --url <server> --token-file <file> [--hours 48] [--party]
+ *   node scripts/demo-friend.ts study  --url <server> --token-file <file> [--hours 48] [--party] [--crew]
  *   node scripts/demo-friend.ts delete --url <server> --token-file <file>
  *
  * The account registers and sends every request without a Tabbi-Protocol header, as a protocol 1 app does, so
@@ -14,8 +14,10 @@
  * friendship), and it never adds anyone itself.
  *
  * `study` keeps it online for the review: it heartbeats "studying" every two minutes and, with --party, hosts
- * a party the reviewer can join from their friend list. It stops by itself after --hours (8 by default), or
- * on Ctrl-C, sending a last "offline".
+ * a party the reviewer can join from their friend list. With --crew it also keeps a public Study Crew named
+ * REVIEW_CREW_NAME (creating it the first time) and reports each 25 minutes it studied there, so the reviewer
+ * finds the crew in Find crews, joins it, and sees it on the weekly board. It stops by itself after --hours
+ * (8 by default), or on Ctrl-C, sending a last "offline".
  *
  * The secret token goes only into --token-file (created with mode 0600, never printed): keep that file out of
  * the repository. `create` refuses to overwrite a token file, so an account is never lost by accident.
@@ -30,17 +32,24 @@ export interface Options {
   name: string;
   hours: number;
   party: boolean;
+  crew: boolean;
 }
+
+/** The public crew the demo friend keeps for App Review with --crew. */
+export const REVIEW_CREW_NAME = "Tabbi Review Crew";
+/** How often, while studying with --crew, the demo friend reports a finished focus session. */
+const CREW_SESSION_MS = 25 * 60_000;
 
 const COMMANDS: readonly Command[] = ["create", "show", "study", "delete"];
 
 export function parseArgs(argv: string[]): Options {
   const [command, ...rest] = argv;
   if (!COMMANDS.includes(command as Command)) throw new Error(`the first argument must be one of: ${COMMANDS.join(", ")}`);
-  const o: Options = { command: command as Command, url: "", tokenFile: "", name: "Demo Friend", hours: 8, party: false };
+  const o: Options = { command: command as Command, url: "", tokenFile: "", name: "Demo Friend", hours: 8, party: false, crew: false };
   for (let i = 0; i < rest.length; i++) {
     const flag = rest[i];
     if (flag === "--party") { o.party = true; continue; }
+    if (flag === "--crew") { o.crew = true; continue; }
     const value = rest[++i];
     if (value === undefined) throw new Error(`${flag} needs a value`);
     if (flag === "--url") o.url = value.replace(/\/+$/, "");
@@ -125,9 +134,19 @@ export async function run(o: Options, d: Deps): Promise<void> {
         expect(party, 201, "hosting a party");
         d.log(`Hosting party ${party.body.party.code}; friends see it in their list and can join.`);
       }
+      if (o.crew) await joinReviewCrew(d, o, token);
       const end = d.now() + o.hours * 3600_000;
       let heartbeats = 0;
+      let studiedSince = d.now();
       while (d.now() < end) {
+        if (o.crew && d.now() - studiedSince >= CREW_SESSION_MS) {
+          const start = Math.floor(studiedSince / 1000);
+          const stop = Math.floor(d.now() / 1000);
+          const r = await send(d, o, "POST", "/v1/crews/sessions", token,
+            { sessions: [{ start, end: stop, minutes: Math.floor((stop - start) / 60) }] });
+          expect(r, 200, "reporting a crew session");
+          studiedSince = d.now();
+        }
         const phaseEndsAt = Math.floor(d.now() / 1000) + 25 * 60;
         const r = await send(d, o, "POST", "/v1/presence", token,
           { status: "studying", method: "pomodoro", phaseEndsAt, sessionMinutes: 0, todayMinutes: 25, streakDays: 3 });
@@ -147,6 +166,29 @@ export async function run(o: Options, d: Deps): Promise<void> {
       return;
     }
   }
+}
+
+/**
+ * Puts the demo friend in the public review crew: its own crew if it is in one already, otherwise a new crew
+ * with REVIEW_CREW_NAME and the first frame, emblem and color of the server's crews catalog.
+ */
+async function joinReviewCrew(d: Deps, o: Options, token: string): Promise<void> {
+  const mine = await send(d, o, "GET", "/v1/crews/mine", token);
+  expect(mine, 200, "GET /v1/crews/mine");
+  if (mine.body.crew) {
+    d.log(`In crew ${mine.body.crew.name}; reviewers find it in Find crews.`);
+    return;
+  }
+  const catalog = await send(d, o, "GET", "/v1/catalog");
+  expect(catalog, 200, "GET /v1/catalog");
+  const crews = catalog.body.crews;
+  if (!crews) throw new Error("this server has no Study Crews (protocol 3) yet");
+  const created = await send(d, o, "POST", "/v1/crews", token, {
+    name: REVIEW_CREW_NAME, description: "The App Review demo crew. Join to see how crews work.",
+    frame: crews.frames[0], emblem: crews.emblems[0], color: Object.keys(crews.colors)[0], visibility: "public",
+  });
+  expect(created, 201, "creating the review crew");
+  d.log(`Created crew ${REVIEW_CREW_NAME}; reviewers find it in Find crews.`);
 }
 
 declare const process: { argv: string[]; exitCode?: number; on(event: string, listener: () => void): void; exit(code?: number): void };

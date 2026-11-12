@@ -5,6 +5,8 @@
 <dict>
 	<key>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</key>
 	<string>「%@が会いたがってるよ。10分だけどう?」1日1回まで、まだ勉強も目標達成もしていない日だけ。集中モード中は届きません。</string>
+	<key>#%lld</key>
+	<string>%lld位</string>
 	<key>%@ %@</key>
 	<string>%1$@ %2$@</string>
 	<key>%@ %@ so far</key>
@@ -69,6 +71,8 @@
 	<string>空き %@</string>
 	<key>%@ free this week</key>
 	<string>今週の空き %@</string>
+	<key>%@ h</key>
+	<string>%@時間</string>
 	<key>%@ handles them under its own terms and privacy policy. %@'s AI features send nothing else, and nothing until you allow it. You can switch to None in Connections at any time.</key>
 	<string>%1$@は独自の利用規約とプライバシーポリシーに基づいてこれを扱います。%2$@のAI機能はこれ以外は何も送信せず、許可するまでは何も送信しません。「接続」でいつでも「なし」に切り替えられます。</string>
 	<key>%@ in %@</key>
@@ -127,6 +131,8 @@
 	<string>%@ はまだこの Mac にありません。追加方法は「接続」で確認できます。</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@ はまだ設定されていません</string>
+	<key>%@ keeps their pet private on crew pages.</key>
+	<string>%@はクルーページでペットを非公開にしています。</string>
 	<key>%@ learned a song from a bird</key>
 	<string>%@が小鳥に歌を教わった</string>
 	<key>%@ left</key>
@@ -189,6 +195,8 @@
 	<string>%@ からの変更提案はありません。</string>
 	<key>%@ this month.</key>
 	<string>今月は%@。</string>
+	<key>%@ this week</key>
+	<string>今週%@</string>
 	<key>%@ to %@</key>
 	<string>%2$@まで %1$@</string>
 	<key>%@ today</key>
@@ -217,8 +225,12 @@
 	<string>%1$@と%2$@からフレンド申請が届いています。</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>%@はアプリケーションフォルダから使うのがおすすめです。ログイン時に自動で開き、自分でアップデートできます。自分をそこにコピーして、もう一度開きます。</string>
+	<key>%@ · %@ this week</key>
+	<string>%@・今週%@</string>
 	<key>%@ · Paused</key>
 	<string>%@ · 一時停止中</string>
+	<key>%@ · Your crew</key>
+	<string>%@・あなたのクルー</string>
 	<key>%@, %@</key>
 	<string>%1$@、%2$@</string>
 	<key>%@, %@ left</key>
@@ -307,6 +319,8 @@
 	<string>%lld/%lld分</string>
 	<key>%lld/%lld session</key>
 	<string>%lld/%lldセッション</string>
+	<key>%lldd %lldh</key>
+	<string>%lld日%lld時間</string>
 	<key>%lldh</key>
 	<string>%lld時間</string>
 	<key>%lldh %lldm</key>
@@ -342,6 +356,8 @@
 	<key>90 min deep block, 20 min rest</key>
 	<string>深い集中90分、休息20分</string>
 	<key>&lt;1 min</key>
+	<string>1分未満</string>
+	<key>&lt;1m</key>
 	<string>1分未満</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
 	<string>集中と休憩を切り替えるポモドーロタイマー。</string>
@@ -403,6 +419,8 @@
 	<string>サンプルの1日です。カレンダーを接続すると、あなたの予定がここに表示されます。</string>
 	<key>A school or work setting may block it. You can check in System Settings.</key>
 	<string>学校や職場の設定でブロックされている場合があります。システム設定で確認できます。</string>
+	<key>A short description (optional)</key>
+	<string>短い説明(任意)</string>
 	<key>A shorter timer</key>
 	<string>タイマーを短く</string>
 	<key>A slow breath in, and out</key>
@@ -563,6 +581,8 @@
 	<string>常に表示</string>
 	<key>Always drawn around the hardware notch.</key>
 	<string>本体のノッチの周りに常に表示されます。</string>
+	<key>Amber</key>
+	<string>アンバー</string>
 	<key>Angel Wings</key>
 	<string>天使の羽</string>
 	<key>Animations</key>
@@ -631,6 +651,8 @@
 	<string>AnkiConnectの設定がTabbiの接続を妨げています。設定を元に戻せば解決し、カードには影響しません。</string>
 	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
 	<string>もう1つのコピーが%@にあります。2つのコピーは1つのウィジェットを共有するため、macOSが切り替えるとウィジェットが空白になることがあります。使っている方を残し、もう一方をゴミ箱に入れてください。</string>
+	<key>Another crew has that name. Please pick another.</key>
+	<string>その名前のクルーはすでにあります。別の名前を選んでください。</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>今週もコツコツ。この調子でのんびりね。</string>
 	<key>Answers</key>
@@ -641,6 +663,8 @@
 	<string>回答元</string>
 	<key>Answers stay in the notch. Press Command-Return to send and expand, or click Expand on a chat.</key>
 	<string>回答はノッチ内に表示。Command-Returnで送信して拡大、またはチャットの「拡大」をクリック。</string>
+	<key>Anyone can find and join it.</key>
+	<string>誰でも見つけて参加できます。</string>
 	<key>App</key>
 	<string>アプリ</string>
 	<key>Appears when the pointer reaches the top center.</key>
@@ -759,6 +783,8 @@
 	<string>このイベントの限定アイテムに向けたボーナス時間</string>
 	<key>Bonus points from your pet, added to your balance</key>
 	<string>ペットからのボーナスポイント。残高に追加されました</string>
+	<key>Books</key>
+	<string>本</string>
 	<key>Bow Tie</key>
 	<string>蝶ネクタイ</string>
 	<key>Break</key>
@@ -781,6 +807,8 @@
 	<string>Anki を前面に出して状況を確認できます。このタブは自動で再接続します</string>
 	<key>Brown noise</key>
 	<string>ブラウンノイズ</string>
+	<key>Browse public crews to join</key>
+	<string>参加できる公開クルーを探す</string>
 	<key>Built-in display</key>
 	<string>内蔵ディスプレイ</string>
 	<key>Bunny Ears</key>
@@ -871,6 +899,8 @@
 	<string>チャットはこのMacにだけ保存</string>
 	<key>Chats stay on this Mac, in %@'s own folder. Delete them from History in the Ask AI tab.</key>
 	<string>チャットはこのMacの%@専用フォルダに保存されます。「AIに質問」タブの履歴から削除できます。</string>
+	<key>Cheating</key>
+	<string>不正</string>
 	<key>Check %@ again</key>
 	<string>%@をもう一度確認</string>
 	<key>Check again</key>
@@ -1035,14 +1065,20 @@
 	<string>閉じます。パーティは自動で接続を続けます。</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>閉じます。パーティはいつでも設定できます。</string>
+	<key>Close without joining</key>
+	<string>参加せずに閉じる</string>
 	<key>Close without reporting (Esc)</key>
 	<string>報告せずに閉じる（esc）</string>
+	<key>Close without saving</key>
+	<string>保存せずに閉じる</string>
 	<key>Closet</key>
 	<string>クローゼット</string>
 	<key>Code</key>
 	<string>コード</string>
 	<key>Codex usage</key>
 	<string>Codexの使用量</string>
+	<key>Coffee mug</key>
+	<string>マグカップ</string>
 	<key>Command</key>
 	<string>コマンド</string>
 	<key>Compact</key>
@@ -1107,6 +1143,8 @@
 	<string>フレンドコードをコピー</string>
 	<key>Copy the AnkiConnect add-on code to paste into Anki</key>
 	<string>Anki に貼り付ける AnkiConnect のコードをコピー</string>
+	<key>Copy the invite link. Friends who open it can join your crew.</key>
+	<string>招待リンクをコピーします。開いた友だちはクルーに参加できます。</string>
 	<key>Copy what Tabbi found, to paste into a message if you ask someone for help</key>
 	<string>Tabbiの確認結果をコピーして、誰かに助けを求めるときのメッセージにペーストできます</string>
 	<key>Copy what you need to paste, then open %@</key>
@@ -1117,6 +1155,8 @@
 	<string>フレンドコードをコピーして共有</string>
 	<key>Copy “%@” so you can paste it</key>
 	<string>「%@」をコピーしてペーストできるようにする</string>
+	<key>Coral</key>
+	<string>コーラル</string>
 	<key>Couldn't add this friend</key>
 	<string>フレンドを追加できませんでした</string>
 	<key>Couldn't add to your calendar. Try again</key>
@@ -1171,8 +1211,22 @@
 	<string>クラッシュレポート</string>
 	<key>Cream</key>
 	<string>クリーム</string>
+	<key>Create</key>
+	<string>作成</string>
 	<key>Create a party and get a code to share</key>
 	<string>パーティを作成して共有用のコードを取得</string>
+	<key>Create the crew with you as its owner</key>
+	<string>あなたがオーナーのクルーを作成します</string>
+	<key>Crew</key>
+	<string>クルー</string>
+	<key>Crew invite codes have %lld characters.</key>
+	<string>クルーの招待コードは%lld文字です。</string>
+	<key>Crew name</key>
+	<string>クルー名</string>
+	<key>Crew names can be up to %lld characters.</key>
+	<string>クルー名は%lld文字までです。</string>
+	<key>Crew owner</key>
+	<string>クルーのオーナー</string>
 	<key>Custom</key>
 	<string>カスタム</string>
 	<key>Daily focus goal met</key>
@@ -1241,6 +1295,10 @@
 	<string>アカウントを削除中…</string>
 	<key>Deleting…</key>
 	<string>削除中…</string>
+	<key>Descriptions can be up to %lld characters.</key>
+	<string>説明は%lld文字までです。</string>
+	<key>Desk lamp</key>
+	<string>デスクランプ</string>
 	<key>Desktop widget</key>
 	<string>デスクトップウィジェット</string>
 	<key>Details: %@</key>
@@ -1311,6 +1369,8 @@
 	<string>各日のリストは翌日ここに表示されます。</string>
 	<key>Each week you focus shows up here.</key>
 	<string>集中した週がここに表示されます。</string>
+	<key>Early bird</key>
+	<string>早起き鳥</string>
 	<key>Earned by reaching study milestones</key>
 	<string>学習のマイルストーン達成で獲得</string>
 	<key>Earned by studying, never sold</key>
@@ -1319,6 +1379,10 @@
 	<string>獲得済み。クリックで外す。</string>
 	<key>Earned. Click to wear.</key>
 	<string>獲得済み。クリックで着る。</string>
+	<key>Edit Crew…</key>
+	<string>クルーを編集…</string>
+	<key>Edit crew</key>
+	<string>クルーを編集</string>
 	<key>Edit the Custom focus and break lengths</key>
 	<string>カスタムの集中時間と休憩時間を編集</string>
 	<key>Email Support</key>
@@ -1339,6 +1403,8 @@
 	<string>ここで区切って、長さに合った休憩を取る</string>
 	<key>Ends at %@</key>
 	<string>%@に終了</string>
+	<key>Ends in %@</key>
+	<string>残り%@</string>
 	<key>Enough for the %@ and the %@ now.</key>
 	<string>%1$@と%2$@と交換できます。</string>
 	<key>Enough for the %@ now</key>
@@ -1349,6 +1415,8 @@
 	<string>AnkiConnect の設定にあるキーを「設定」に入力してください。</string>
 	<key>Event</key>
 	<string>イベント</string>
+	<key>Every crew can appear on the weekly top 3 with its members' pets.</key>
+	<string>どのクルーも、メンバーのペットと一緒に週間トップ3に載ることがあります。</string>
 	<key>Every deck is caught up</key>
 	<string>すべてのデッキが完了</string>
 	<key>Every focused minute fills in today's square</key>
@@ -1391,6 +1459,8 @@
 	<string>今日の空き時間を未完了のタスクと復習で埋めます。この Mac 上で計画し、許可するまで何も追加しません</string>
 	<key>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</key>
 	<string>明日の空き時間を未完了のタスクと復習で埋めます。この Mac 上で計画し、許可するまで何も追加しません</string>
+	<key>Find crews</key>
+	<string>クルーを探す</string>
 	<key>Finish a Party session with friends.</key>
 	<string>友だちとパーティのセッションを1回終えよう。</string>
 	<key>Finish all three to count the month toward the Monthly quests badge.</key>
@@ -1439,6 +1509,8 @@
 	<string>%@の期間中に集中しよう。</string>
 	<key>Focus for 50 hours in total.</key>
 	<string>合計50時間集中しよう。</string>
+	<key>Focus hours this week. The board freezes Sunday 23:59 UTC.</key>
+	<string>今週の集中時間です。ボードは日曜23:59(UTC)に確定します。</string>
 	<key>Focus on this task</key>
 	<string>このタスクに集中</string>
 	<key>Focus session</key>
@@ -1575,6 +1647,8 @@
 	<string>無料の Anki アプリを apps.ankiweb.net から入手してください。</string>
 	<key>Give your cat a name</key>
 	<string>ネコに名前をつけよう</string>
+	<key>Give your crew a name.</key>
+	<string>クルーに名前を付けましょう。</string>
 	<key>Give your dog a name</key>
 	<string>イヌに名前をつけよう</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
@@ -1625,18 +1699,28 @@
 	<string>本体と同じ黒、静かでくっきり。</string>
 	<key>Have a code? Type the %lld-character party code and press Return to join</key>
 	<string>コードをお持ちですか？%lld文字のパーティコードを入力してReturnキーを押すと参加できます</string>
+	<key>Have an invite? Type the %lld-character code and press Return to join</key>
+	<string>招待がありますか?%lld文字のコードを入力してReturnキーで参加</string>
 	<key>Head Mirror</key>
 	<string>額帯鏡</string>
+	<key>Headphones</key>
+	<string>ヘッドホン</string>
 	<key>Heads down</key>
 	<string>集中中</string>
 	<key>Heart Glasses</key>
 	<string>ハートのメガネ</string>
+	<key>Heater shield</key>
+	<string>ヒーターシールド</string>
+	<key>Hexagon</key>
+	<string>六角形</string>
 	<key>Hi! I'm %@.</key>
 	<string>こんにちは！%@だよ。</string>
 	<key>Hidden</key>
 	<string>非表示</string>
 	<key>Hide %@ Until I Press %@</key>
 	<string>%2$@ を押すまで %1$@ を隠す</string>
+	<key>Hide My Pet on Crew Pages</key>
+	<string>クルーページで自分のペットを隠す</string>
 	<key>Hide each other everywhere in Party. You can unblock in Party options.</key>
 	<string>パーティのどこでもお互いに表示されなくなります。パーティのオプションで解除できます。</string>
 	<key>Hide from screen sharing</key>
@@ -1705,6 +1789,8 @@
 	<string>ノッチを開いているときは、矢印キーか2本指スワイプでタブを切り替え、1-9でタブへ移動、Escか上スワイプで閉じます。閉じたノッチでは、下スワイプか中クリックで次のライブアクティビティを表示します。</string>
 	<key>Inappropriate name</key>
 	<string>不適切な名前</string>
+	<key>Indigo</key>
+	<string>インディゴ</string>
 	<key>Indigo night sky with a little gold star.</key>
 	<string>藍色の夜空に、小さな金色の星。</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
@@ -1743,6 +1829,10 @@
 	<string>フレンドに非表示</string>
 	<key>Invisible: friends see you as away</key>
 	<string>フレンドに非表示</string>
+	<key>Invite</key>
+	<string>招待</string>
+	<key>Invite code</key>
+	<string>招待コード</string>
 	<key>Invite links</key>
 	<string>招待リンク</string>
 	<key>Is %@ on this Mac?</key>
@@ -1793,12 +1883,22 @@
 	<string>%@ の通話に参加</string>
 	<key>Join %@'s party</key>
 	<string>%@のパーティに参加</string>
+	<key>Join %@. Your focus minutes count for it from now on.</key>
+	<string>%@に参加します。これからの集中時間がこのクルーに加算されます。</string>
+	<key>Join Crew</key>
+	<string>クルーに参加</string>
 	<key>Join Party</key>
 	<string>パーティに参加</string>
+	<key>Join a study crew</key>
+	<string>勉強クルーに参加しよう</string>
+	<key>Join this crew?</key>
+	<string>このクルーに参加しますか?</string>
 	<key>Join this party now</key>
 	<string>今すぐこのパーティに参加</string>
 	<key>Join this party?</key>
 	<string>このパーティに参加しますか？</string>
+	<key>Join with invite code %@</key>
+	<string>招待コード%@で参加</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>パーティに参加中です。少しお待ちください。</string>
 	<key>Joining the party server</key>
@@ -1837,6 +1937,12 @@
 	<string>過去7日間</string>
 	<key>Last synced %@</key>
 	<string>最終同期：%@</string>
+	<key>Last week</key>
+	<string>先週</string>
+	<key>Last week's winners and their laurels</key>
+	<string>先週の入賞クルーと月桂冠</string>
+	<key>Last week's winners show here once a week has ended.</key>
+	<string>1週間が終わると、ここに入賞クルーが表示されます。</string>
 	<key>Latest adventure: %@</key>
 	<string>最近の冒険: %@</string>
 	<key>Launch %@</key>
@@ -1847,6 +1953,8 @@
 	<string>学習中</string>
 	<key>Leave</key>
 	<string>退出</string>
+	<key>Leave Crew</key>
+	<string>クルーを退出</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>空欄なら、速くて安価なデフォルトを使います。</string>
 	<key>Leave notifications on while studying</key>
@@ -1903,6 +2011,8 @@
 	<string>ライブアクティビティ</string>
 	<key>Loading</key>
 	<string>読み込み中</string>
+	<key>Loading your crew…</key>
+	<string>クルーを読み込み中…</string>
 	<key>Loading…</key>
 	<string>読み込み中…</string>
 	<key>Location</key>
@@ -1933,8 +2043,12 @@
 	<string>ショートカットを探しています</string>
 	<key>Lunar New Year</key>
 	<string>旧正月</string>
+	<key>Lv %lld</key>
+	<string>Lv%lld</string>
 	<key>Main display</key>
 	<string>メインディスプレイ</string>
+	<key>Make a crew and invite friends</key>
+	<string>クルーを作って友だちを招待</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
 	<string>同じ手順で「オフ」にしたものをもう1つ作り、次の名前を付けます：</string>
 	<key>Make sure Calendars is turned on for that account.</key>
@@ -1961,6 +2075,8 @@
 	<string>メディア</string>
 	<key>Meetings, music and timers beside the closed notch.</key>
 	<string>閉じたノッチの横に会議、音楽、タイマーを表示。</string>
+	<key>Members</key>
+	<string>メンバー</string>
 	<key>Members in this party</key>
 	<string>このパーティのメンバー</string>
 	<key>Memory</key>
@@ -1995,12 +2111,16 @@
 	<string>今月のクエスト</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>今月のクエスト、バッジ、長い目標で手に入る衣装</string>
+	<key>Moon</key>
+	<string>月</string>
 	<key>Moonlit Witch Hat</key>
 	<string>月夜の魔女の帽子</string>
 	<key>Moonstone</key>
 	<string>ムーンストーン</string>
 	<key>More</key>
 	<string>多</string>
+	<key>More crew options</key>
+	<string>その他のクルーのオプション</string>
 	<key>More events</key>
 	<string>ほかのイベント</string>
 	<key>More focus than last week. Nice climb!</key>
@@ -2045,6 +2165,8 @@
 	<string>新規</string>
 	<key>New chat</key>
 	<string>新しいチャット</string>
+	<key>New crew</key>
+	<string>新しいクルー</string>
 	<key>New friends</key>
 	<string>新しい友だち</string>
 	<key>New tabs may ask for %@.</key>
@@ -2075,6 +2197,8 @@
 	<string>カレンダーがまだありません</string>
 	<key>No collar</key>
 	<string>首輪なし</string>
+	<key>No crew has studied yet this week. Yours could be first.</key>
+	<string>今週はまだどのクルーも勉強していません。一番乗りのチャンスです。</string>
 	<key>No events</key>
 	<string>予定なし</string>
 	<key>No events on your calendars today.</key>
@@ -2103,6 +2227,10 @@
 	<string>そのフレンドコードの人はいません。</string>
 	<key>No one is blocked.</key>
 	<string>ブロック中の人はいません。</string>
+	<key>No public crews match.</key>
+	<string>一致する公開クルーはありません。</string>
+	<key>No public crews yet. Make the first one.</key>
+	<string>公開クルーはまだありません。最初のクルーを作りましょう。</string>
 	<key>No saved chats</key>
 	<string>保存したチャットはありません</string>
 	<key>No shortcut named “%@”. Check the name in Shortcuts.</key>
@@ -2287,6 +2415,8 @@
 	<string>一回ずつ、落ち着いて。きっと大丈夫。</string>
 	<key>One countdown, no breaks</key>
 	<string>カウントダウン1回、休憩なし</string>
+	<key>One line about your crew, up to %lld characters</key>
+	<string>クルーの一言紹介(%lld文字まで)</string>
 	<key>One moment.</key>
 	<string>少々お待ちください。</string>
 	<key>One question first</key>
@@ -2303,6 +2433,10 @@
 	<string>オンライン</string>
 	<key>Only partly. Tabbi can add events but can't read them.</key>
 	<string>一部だけです。Tabbiはイベントを追加できますが、読み取れません。</string>
+	<key>Only people with the invite can join.</key>
+	<string>招待を受けた人だけが参加できます。</string>
+	<key>Only the crew's owner can do that.</key>
+	<string>それができるのはクルーのオーナーだけです。</string>
 	<key>Only the host can change the session.</key>
 	<string>セッションを変更できるのはホストだけです。</string>
 	<key>Only while a focus phase runs, at most a few times an hour. Your pet checks how long since you last typed or moved the pointer, and which app is in front. Nothing else, and no permissions.</key>
@@ -2437,6 +2571,8 @@
 	<string>勉強ポイントで手に入る衣装とアクセサリー</string>
 	<key>Outfits to earn</key>
 	<string>手に入る衣装</string>
+	<key>Owl</key>
+	<string>フクロウ</string>
 	<key>Owl Spectacles</key>
 	<string>フクロウのメガネ</string>
 	<key>Owned</key>
@@ -2519,6 +2655,8 @@
 	<string>OpenAIのAPIキーで使った分だけ支払い。</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>最大 %@  ·  平均 %@</string>
+	<key>Pennant</key>
+	<string>ペナント</string>
 	<key>Pet</key>
 	<string>ペット</string>
 	<key>Pet Coach</key>
@@ -2651,6 +2789,10 @@
 	<string>プライバシー</string>
 	<key>Privacy Policy</key>
 	<string>プライバシーポリシー</string>
+	<key>Private</key>
+	<string>非公開</string>
+	<key>Private: only people with the invite can join.</key>
+	<string>非公開: 招待を受けた人だけが参加できます。</string>
 	<key>Productivity</key>
 	<string>生産性</string>
 	<key>Profile</key>
@@ -2659,8 +2801,14 @@
 	<string>提案: %1$@、%2$@。クリックで追加またはスキップ</string>
 	<key>Proposed: %@. Click to add or skip it</key>
 	<string>提案: %@。クリックで追加またはスキップ</string>
+	<key>Public</key>
+	<string>公開</string>
+	<key>Public: anyone can find and join it.</key>
+	<string>公開: 誰でも見つけて参加できます。</string>
 	<key>Pumpkin Hat</key>
 	<string>かぼちゃの帽子</string>
+	<key>Pup</key>
+	<string>子犬</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
 	<string>「一般」を新規インストール時の状態に戻します。「ログイン時に起動」はそのままです。</string>
 	<key>Put the recap away</key>
@@ -2689,6 +2837,8 @@
 	<string>Ankiを終了して、もう一度開いてください。Tabbiが自動で気づきます。</string>
 	<key>Rain</key>
 	<string>雨</string>
+	<key>Rain cloud</key>
+	<string>雨雲</string>
 	<key>Rare</key>
 	<string>レア</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2745,6 +2895,8 @@
 	<string>削除</string>
 	<key>Remove %@</key>
 	<string>%@を削除</string>
+	<key>Remove %@ from Crew</key>
+	<string>%@をクルーから外す</string>
 	<key>Remove %@ from the blend</key>
 	<string>%@をブレンドから外す</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
@@ -2757,6 +2909,8 @@
 	<string>ブレンドから外す</string>
 	<key>Remove this screenshot</key>
 	<string>このスクリーンショットを削除</string>
+	<key>Removed %@ from the crew.</key>
+	<string>%@をクルーから外しました。</string>
 	<key>Removed %@.</key>
 	<string>%@を削除しました。</string>
 	<key>Removes your profile, friends and parties from the server.</key>
@@ -2779,6 +2933,8 @@
 	<string>%@を報告…</string>
 	<key>Report a problem: %@</key>
 	<string>問題を報告: %@</string>
+	<key>Report this crew</key>
+	<string>このクルーを報告</string>
 	<key>Request</key>
 	<string>申請</string>
 	<key>Request sent</key>
@@ -2835,6 +2991,8 @@
 	<string>右クリックで削除、報告、ブロックができます。</string>
 	<key>Right-click to report or block.</key>
 	<string>右クリックで報告、ブロックができます。</string>
+	<key>Rose</key>
+	<string>ローズ</string>
 	<key>Round %lld of %lld</key>
 	<string>ラウンド %1$lld/%2$lld</string>
 	<key>Round Glasses</key>
@@ -2865,6 +3023,8 @@
 	<string>このキーをキーチェーンに保存</string>
 	<key>Save today's review and show the checklist</key>
 	<string>今日の振り返りを保存してチェックリストを表示</string>
+	<key>Save your changes</key>
+	<string>変更を保存</string>
 	<key>Save your name and pet and join Party</key>
 	<string>名前とペットを保存してパーティに参加</string>
 	<key>Saved chats</key>
@@ -2873,6 +3033,8 @@
 	<string>保存したチャットはこのMacにだけ残り、アップロードされません</string>
 	<key>Saved in your Keychain</key>
 	<string>キーチェーンに保存済み</string>
+	<key>Saved.</key>
+	<string>保存しました。</string>
 	<key>Schedule</key>
 	<string>スケジュール</string>
 	<key>Scholar's Robe</key>
@@ -2881,10 +3043,18 @@
 	<string>この質問と一緒に送ったスクリーンショット</string>
 	<key>Scrubs</key>
 	<string>スクラブ</string>
+	<key>Seal</key>
+	<string>封印</string>
 	<key>Search for Set Focus, add it, and pick Do Not Disturb, turned On.</key>
 	<string>「集中モードを設定」を検索して追加し、「おやすみモード」を選んで「オン」にします。</string>
+	<key>Search public crews</key>
+	<string>公開クルーを検索</string>
+	<key>Search public crews by name</key>
+	<string>名前で公開クルーを検索</string>
 	<key>Seasonal</key>
 	<string>季節</string>
+	<key>See %@ and its members' pets</key>
+	<string>%@とメンバーのペットを見る</string>
 	<key>See due cards and start reviews.</key>
 	<string>期限のカードを確認して復習を開始。</string>
 	<key>See today's events in the notch.</key>
@@ -2959,6 +3129,8 @@
 	<string>コードを共有するか、下に相手のコードを追加しましょう。パーティはパーティタブで始められます。</string>
 	<key>Shared focus: %@ left</key>
 	<string>みんなで集中: 残り%@</string>
+	<key>Shield</key>
+	<string>シールド</string>
 	<key>Shortcut</key>
 	<string>ショートカット</string>
 	<key>Shortcut %@</key>
@@ -2975,6 +3147,8 @@
 	<string>ショートカットへのアクセスがオフです。オートメーションの設定でTabbiのShortcuts Eventsをオンにしてください。</string>
 	<key>Show %@</key>
 	<string>%@を表示</string>
+	<key>Show My Pet on Crew Pages</key>
+	<string>クルーページで自分のペットを表示</string>
 	<key>Show Other Copy</key>
 	<string>もう一方を表示</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
@@ -3033,6 +3207,8 @@
 	<string>このキットが選んだプレビューを表示します。</string>
 	<key>Shuffle</key>
 	<string>シャッフル</string>
+	<key>Shuffle the crest</key>
+	<string>エンブレムをシャッフル</string>
 	<key>Sign In</key>
 	<string>サインイン</string>
 	<key>Sign Out</key>
@@ -3083,6 +3259,8 @@
 	<string>休憩へスキップ</string>
 	<key>Sky</key>
 	<string>スカイ</string>
+	<key>Slate</key>
+	<string>スレート</string>
 	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
 	<string>眠るのも努力のうち。明日の一手を夢で考えよう。</string>
 	<key>Slow breath</key>
@@ -3095,6 +3273,8 @@
 	<string>一部根拠あり</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>少しでも、ゼロより限りなく大きい。休もう。盤はここで待ってる。</string>
+	<key>Someone invited you to a study crew. Your focus minutes count for it from now on.</key>
+	<string>勉強クルーに招待されました。これからの集中時間がこのクルーに加算されます。</string>
 	<key>Something not working?</key>
 	<string>うまく動かないときは</string>
 	<key>Soulmates</key>
@@ -3129,6 +3309,8 @@
 	<string>少し立ち上がろう</string>
 	<key>Stand, shake out your legs, and sit back down when you like.</key>
 	<string>立って脚を軽くほぐしたら、好きなときに座ろう。</string>
+	<key>Star</key>
+	<string>スター</string>
 	<key>Star tag</key>
 	<string>星のチャーム</string>
 	<key>Starlight, every tier earned</key>
@@ -3233,6 +3415,8 @@
 	<string>試聴を停止</string>
 	<key>Stopped</key>
 	<string>停止しました</string>
+	<key>Stopwatch</key>
+	<string>ストップウォッチ</string>
 	<key>Streak</key>
 	<string>連続記録</string>
 	<key>Streak unavailable</key>
@@ -3251,6 +3435,8 @@
 	<string>7日連続で学習しよう。</string>
 	<key>Study Hoodie</key>
 	<string>勉強パーカー</string>
+	<key>Study Level %lld</key>
+	<string>勉強レベル%lld</string>
 	<key>Study block</key>
 	<string>勉強ブロック</string>
 	<key>Study buddies</key>
@@ -3269,6 +3455,8 @@
 	<string>集中が切れるまで、休憩は時間に比例</string>
 	<key>Study with a cat</key>
 	<string>ネコと勉強する</string>
+	<key>Study with a crew and climb the weekly top 3.</key>
+	<string>クルーで勉強して、週間トップ3を目指そう。</string>
 	<key>Study with a dog</key>
 	<string>イヌと勉強する</string>
 	<key>Study with friends and see who is focusing now.</key>
@@ -3375,6 +3563,8 @@
 	<string>タスク</string>
 	<key>Tasks left today</key>
 	<string>今日の残りタスク</string>
+	<key>Teal</key>
+	<string>ティール</string>
 	<key>Team Medal</key>
 	<string>チームメダル</string>
 	<key>Ten hours of betting on yourself. Keep betting.</key>
@@ -3391,12 +3581,22 @@
 	<string>ありがとうございます。報告を送信し、%@をブロックしました。</string>
 	<key>Thanks. Your report was sent.</key>
 	<string>ありがとうございます。報告を送信しました。</string>
+	<key>That crew is full.</key>
+	<string>そのクルーは満員です。</string>
+	<key>That crew is gone or the code is wrong.</key>
+	<string>そのクルーはもうないか、コードが違います。</string>
+	<key>That crew name isn't allowed. Please pick another.</key>
+	<string>そのクルー名は使えません。別の名前を選んでください。</string>
+	<key>That description isn't allowed. Please change it.</key>
+	<string>その説明は使えません。変更してください。</string>
 	<key>That folder has no %@ logs. Choose the %@ folder in your home folder.</key>
 	<string>そのフォルダには%1$@のログがありません。ホームフォルダ内の%2$@フォルダを選択してください。</string>
 	<key>That friend request is no longer there.</key>
 	<string>そのフレンド申請はもうありません。</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
 	<string>そのキーはショートカットに使えません。文字、数字、またはスペースを試してください。</string>
+	<key>That member left the crew.</key>
+	<string>そのメンバーはクルーを退出しました。</string>
 	<key>That name and your pet's name aren't allowed. Please pick others.</key>
 	<string>その名前とペットの名前は使えません。別の名前にしてください。</string>
 	<key>That name isn't allowed. Please pick another.</key>
@@ -3435,6 +3635,8 @@
 	<string>ショートカットAppが時間内に応答しませんでした。少ししてからもう一度お試しください。</string>
 	<key>The Shortcuts command line tool isn't available on this Mac.</key>
 	<string>このMacではショートカットのコマンドラインツールを使えません。</string>
+	<key>The Tabbi team hid this crew from the board and Find.</key>
+	<string>Tabbiチームがこのクルーをボードと検索から非表示にしました。</string>
 	<key>The Tabbi team reviews it. %@ isn't told.</key>
 	<string>Tabbiチームが確認します。%@には通知されません。</string>
 	<key>The app this needs isn't on this Mac</key>
@@ -3501,6 +3703,8 @@
 	<string>タイマーは%@で始まります</string>
 	<key>The tool's own default</key>
 	<string>ツールのデフォルト</string>
+	<key>The week ends Sunday 23:59 UTC. Then the top 3 freeze and win their laurels for next week.</key>
+	<string>週は日曜23:59(UTC)に終わります。その時点のトップ3が確定し、翌週の月桂冠を獲得します。</string>
 	<key>The work no one sees is the work that changes you.</key>
 	<string>誰にも見えない努力こそが、あなたを変えていく。</string>
 	<key>The year you were born</key>
@@ -3537,6 +3741,12 @@
 	<string>これはデモです。報告は送信されていません。</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>これはデモです。何も削除されていません。</string>
+	<key>This is a demo. Run without TABBI_DEMO to join a crew.</key>
+	<string>これはデモです。クルーに参加するにはTABBI_DEMOなしで起動してください。</string>
+	<key>This is a demo. Run without TABBI_DEMO to leave a crew.</key>
+	<string>これはデモです。クルーを退出するにはTABBI_DEMOなしで起動してください。</string>
+	<key>This is a demo. Run without TABBI_DEMO to make a crew.</key>
+	<string>これはデモです。クルーを作るにはTABBI_DEMOなしで起動してください。</string>
 	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
 	<string>これはデモです。フレンドと勉強するには TABBI_DEMO なしで起動してください。</string>
 	<key>This is usually short. Check again in a moment.</key>
@@ -3555,6 +3765,10 @@
 	<string>少しお待ちください。</string>
 	<key>This task is on today's list</key>
 	<string>このタスクは今日のリストにあります</string>
+	<key>This week</key>
+	<string>今週</string>
+	<key>This week's live top 3</key>
+	<string>今週のトップ3(リアルタイム)</string>
 	<key>This works. Nothing to do.</key>
 	<string>正常に動作しています。操作は不要です。</string>
 	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
@@ -3619,6 +3833,10 @@
 	<string>試行回数が多すぎます。少し待ってから、もう一度お試しください。</string>
 	<key>Took back the import of %@.</key>
 	<string>%@の読み込みを取り消しました。</string>
+	<key>Top 3</key>
+	<string>トップ3</string>
+	<key>Top 3 finishes: %lld gold, %lld silver, %lld bronze</key>
+	<string>トップ3入り: 金%lld、銀%lld、銅%lld</string>
 	<key>Top decks</key>
 	<string>上位のデッキ</string>
 	<key>Top model</key>
@@ -3681,6 +3899,8 @@
 	<string>シャッフルをオン</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>おやすみモードをオンにしています…</string>
+	<key>Turtle</key>
+	<string>カメ</string>
 	<key>Two copies of %@ are installed</key>
 	<string>%@が2つインストールされています</string>
 	<key>Type a name first</key>
@@ -3725,6 +3945,8 @@
 	<string>次の予定</string>
 	<key>Up next shows your %@ as the day goes, and Plan my day fits work around them.</key>
 	<string>「次の予定」で1日の%@を確認でき、「1日を計画」がその合間に作業を組み込みます。</string>
+	<key>Up to %lld characters. Everyone in Party can see it on the board.</key>
+	<string>%lld文字まで。パーティの全員がボードで見られます。</string>
 	<key>Update AnkiConnect</key>
 	<string>AnkiConnect をアップデート</string>
 	<key>Update AnkiConnect from Tools › Add-ons › Check for Updates.</key>
@@ -3749,6 +3971,8 @@
 	<string>週間上限の使用量</string>
 	<key>Use the default %@ server</key>
 	<string>デフォルトの%@サーバーを使う</string>
+	<key>Use this icon</key>
+	<string>このアイコンを使う</string>
 	<key>Used to greet you.</key>
 	<string>あいさつに使われます。</string>
 	<key>Uses your ChatGPT plan through the codex command.</key>
@@ -3769,6 +3993,8 @@
 	<string>バージョン %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>GitHubで見る</string>
+	<key>Violet</key>
+	<string>バイオレット</string>
 	<key>Visible: friends see when you study</key>
 	<string>フレンドに表示中</string>
 	<key>Vivid accents with a violet glow.</key>
@@ -3927,14 +4153,20 @@
 	<string>「%@」タブでいつでも設定できます。</string>
 	<key>You can turn alerts off any time in System Settings.</key>
 	<string>通知はシステム設定でいつでもオフにできます。</string>
+	<key>You can't join that crew.</key>
+	<string>そのクルーには参加できません。</string>
 	<key>You didn't feel like it, and you did it anyway. That's the whole secret.</key>
 	<string>気が乗らなくても、やった。秘訣はそれだけ。</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>毎週フリーズが1つ無料でもらえ、ほかに%lld個まで持てます。</string>
 	<key>You have 50 friend requests waiting. Cancel some first.</key>
 	<string>返事待ちのフレンド申請が50件あります。先にいくつか取り消してください。</string>
+	<key>You joined %@.</key>
+	<string>%@に参加しました。</string>
 	<key>You joined the party</key>
 	<string>パーティに参加しました</string>
+	<key>You left %@.</key>
+	<string>%@を退出しました。</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>今日は%@勉強しました。ゆっくり休んで、明日また始めましょう。</string>
 	<key>You started it for the party</key>
@@ -3943,18 +4175,26 @@
 	<string>相手が承認するとフレンドになります。</string>
 	<key>You'll see %@ in your Party tab.</key>
 	<string>パーティタブに%@が表示されます。</string>
+	<key>You're already in a crew. Leave it first to join another.</key>
+	<string>すでにクルーに入っています。別のクルーに参加するには先に退出してください。</string>
+	<key>You're already in a crew. Leave it first.</key>
+	<string>すでにクルーに入っています。先に退出してください。</string>
 	<key>You're already in this party</key>
 	<string>このパーティにはもう参加しています</string>
 	<key>You're in Party</key>
 	<string>パーティに参加中</string>
 	<key>You're not behind. You're on your own clock, and it only moves forward.</key>
 	<string>遅れてなんかいない。自分の時計で進んでいて、その針は前にしか進まない。</string>
+	<key>You're not in a crew anymore.</key>
+	<string>クルーから外れています。</string>
 	<key>You're not in a party anymore.</key>
 	<string>パーティに参加していません。</string>
 	<key>You're the only one here for now.</key>
 	<string>今はあなただけです。</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>ブロックした人が多すぎます。先に誰かのブロックを解除してください。</string>
+	<key>You've made a lot of crews today. Try again tomorrow.</key>
+	<string>今日はたくさんクルーを作りました。明日また試してください。</string>
 	<key>You've sent a lot of friend requests today. Try again tomorrow.</key>
 	<string>今日はフレンド申請をたくさん送りました。明日もう一度お試しください。</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
@@ -3993,6 +4233,8 @@
 	<string>お使いのAnkiConnectはTabbiには古すぎます。Ankiで数回クリックすればアップデートできます。</string>
 	<key>Your copy of the AnkiConnect add-on is too old for Tabbi.</key>
 	<string>お使いのAnkiConnectアドオンは古すぎてTabbiで使えません。</string>
+	<key>Your crew</key>
+	<string>あなたのクルー</string>
 	<key>Your data</key>
 	<string>あなたのデータ</string>
 	<key>Your day on a timeline, with the free time in between.</key>
@@ -4027,6 +4269,8 @@
 	<string>名前（%lld文字まで）</string>
 	<key>Your own focus and break lengths</key>
 	<string>集中と休憩の長さを自分で設定</string>
+	<key>Your party and friends</key>
+	<string>パーティとフレンド</string>
 	<key>Your party profile was reset. Reconnecting…</key>
 	<string>パーティのプロフィールがリセットされました。再接続中…</string>
 	<key>Your pet</key>
@@ -4051,6 +4295,8 @@
 	<string>あなたのプレイリスト</string>
 	<key>Your setup already matches %@</key>
 	<string>すでに %@ と同じ設定です</string>
+	<key>Your study crew and the weekly top 3</key>
+	<string>勉強クルーと週間トップ3</string>
 	<key>Your study day by day, with the time studied on each</key>
 	<string>毎日の勉強と、その日の勉強時間</string>
 	<key>Your study streak and the freezes that protect it</key>
@@ -4195,6 +4441,8 @@
 	<string>いちごミルク</string>
 	<key>theme.taro</key>
 	<string>タロイモ</string>
+	<key>this week</key>
+	<string>今週</string>
 	<key>today</key>
 	<string>今日</string>
 	<key>tokens</key>

@@ -285,6 +285,10 @@ enum PartyField: Hashable {
     case friendCode
     case partyCode
     case reportNote
+    case crewName
+    case crewDescription
+    case crewSearch
+    case crewInvite
 }
 
 /// A one-line field for a friend or party code: Return submits, Esc clears.

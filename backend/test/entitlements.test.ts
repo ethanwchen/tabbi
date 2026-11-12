@@ -7,7 +7,7 @@ import {
 import { GRANTABLE_ITEMS } from "../src/grants";
 import { migrate } from "../src/hub";
 import { identityToken, installFakeApple } from "./fake-apple";
-import { ADMIN_TOKEN, call, freshIp, hub, register, befriend } from "./helpers";
+import { ADMIN_TOKEN, call, freshIp, hub, register, befriend, dropCrewsTables } from "./helpers";
 
 installFakeApple();
 
@@ -224,11 +224,12 @@ describe("schema step 13", () => {
       const sql = state.storage.sql;
       sql.exec("DROP TABLE entitlements");
       sql.exec("DROP TABLE friend_requests");
+      dropCrewsTables(sql);
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
       sql.exec("UPDATE schema_version SET version = 12");
       sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, created_at) VALUES ('s', 'CCCCCCCC', 'r', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 14 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
       expect(sql.exec("SELECT apple_sub, code FROM apple_accounts").toArray()).toEqual([{ apple_sub: "s", code: "CCCCCCCC" }]);
       expect(sql.exec("SELECT * FROM entitlements").toArray()).toEqual([]);
     });

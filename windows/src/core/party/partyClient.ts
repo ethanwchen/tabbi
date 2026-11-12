@@ -336,7 +336,8 @@ export class PartyClient {
 
   /* MARK: Plumbing */
 
-  private async send(
+  /** One request with the envelope, token and protocol header; public so the Crews routes (core/crews/crewClient.ts) share it. */
+  async send(
     method: PartyMethod,
     path: string,
     options: { body?: object; authorized?: boolean } = {},

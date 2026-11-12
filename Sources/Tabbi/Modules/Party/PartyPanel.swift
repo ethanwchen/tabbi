@@ -7,6 +7,7 @@ import TabbiKit
 /// connecting, an unreachable server, or a server setting that can't work.
 struct PartyPanel: View {
     @ObservedObject var store: PartyStore
+    @ObservedObject var crews: CrewsStore
     @EnvironmentObject private var notch: NotchViewModel
     @FocusState private var focus: PartyField?
 
@@ -23,11 +24,17 @@ struct PartyPanel: View {
             .motion(Theme.Motion.snappy, value: store.celebration)
             .motion(Theme.Motion.snappy, value: store.notice)
             .motion(Theme.Motion.snappy, value: store.reporting)
-            .onAppear { store.setVisible(true) }
+            .motion(Theme.Motion.snappy, value: crews.reporting)
+            .motion(Theme.Motion.content, value: crews.showsCrews)
+            .onAppear {
+                store.setVisible(true)
+                crews.setVisible(true)
+            }
             .onChange(of: focus) { _, field in notch.isPinned = field != nil }
             .onDisappear {
                 notch.isPinned = false
                 store.setVisible(false)
+                crews.setVisible(false)
             }
             .task(id: store.notice) {
                 // A notice is about the last click; let it go after a moment.
@@ -51,9 +58,12 @@ struct PartyPanel: View {
     @ViewBuilder
     private var content: some View {
         switch store.state.connection {
+        case .connected where crews.showsCrews:
+            CrewsPanel(crews: crews, focus: $focus)
+                .transition(.opacity)
         case .connected:
             HStack(spacing: Theme.Spacing.m) {
-                PartyStage(store: store, focus: $focus)
+                PartyStage(store: store, crews: crews, focus: $focus)
                 PartyFriendsCard(store: store, focus: $focus)
                     .frame(width: Self.friendsWidth)
             }
@@ -123,7 +133,11 @@ struct PartyPanel: View {
 
     @ViewBuilder
     private var report: some View {
-        if let profile = store.reporting, store.state.connection == .connected {
+        if let target = crews.reporting, store.state.connection == .connected {
+            CrewReportCard(target: target, crews: crews, focus: $focus)
+                .id(target.id)
+                .transition(.opacity.combined(with: .scale(scale: 0.98)))
+        } else if let profile = store.reporting, store.state.connection == .connected {
             PartyReportCard(profile: profile, store: store, focus: $focus)
                 .id(profile.code)
                 .transition(.opacity.combined(with: .scale(scale: 0.98)))

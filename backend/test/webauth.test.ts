@@ -5,7 +5,7 @@ import { APPLE_AUTH_PER_MIN, APPLE_CLIENT_ID, APPLE_ISSUER, APPLE_REVOKE_URL, AP
 import { migrate } from "../src/hub";
 import { APP_CALLBACK_URL, WEB_CALLBACK_PATH, WEB_CODE_TTL_S, WEB_TOKEN_PATH, servicesId, webNonce } from "../src/webauth";
 import { apple, claimsOf, identityToken, installFakeApple } from "./fake-apple";
-import { BASE, call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
+import { BASE, call, expectError, freshIp, hub, pinClockToMinuteStart, register, dropCrewsTables } from "./helpers";
 
 installFakeApple();
 
@@ -293,12 +293,13 @@ describe("schema step 11", () => {
       sql.exec("DROP TABLE download_counts");
       sql.exec("DROP TABLE entitlements");
       sql.exec("DROP TABLE friend_requests");
+      dropCrewsTables(sql);
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
       sql.exec("ALTER TABLE apple_accounts DROP COLUMN client_id");
       sql.exec("UPDATE schema_version SET version = 10");
       sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, created_at) VALUES ('s', 'CCCCCCCC', 'r', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 14 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
       expect(sql.exec("SELECT apple_sub, refresh_token, client_id FROM apple_accounts").toArray())
         .toEqual([{ apple_sub: "s", refresh_token: "r", client_id: null }]);
       expect(sql.exec("SELECT * FROM web_sign_ins").toArray()).toEqual([]);

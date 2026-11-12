@@ -1,0 +1,540 @@
+/* The Party tab's Crew section (CrewsPanel.tsx, CrewBoardCard.tsx, CrewComponents.tsx), the Mac's Crews views. */
+
+.crews-panel .crew-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+.crew-main > * {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.crew-nowrap {
+  white-space: nowrap;
+}
+.crew-number {
+  font-variant-numeric: tabular-nums;
+}
+.crew-truncate {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.crew-wrap {
+  overflow-wrap: anywhere;
+}
+.crew-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* Fits: the Mac's ViewThatFits over whole views. */
+.crew-fits {
+  position: relative;
+  min-width: 0;
+}
+.crew-fits-horizontal {
+  width: 100%;
+}
+.crew-fits-vertical {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.crew-fits-probe {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.crew-fits-horizontal > .crew-fits-probe {
+  width: max-content;
+}
+.crew-fits-vertical > .crew-fits-probe {
+  width: 100%;
+}
+.crew-fits-shown {
+  width: 100%;
+  min-width: 0;
+}
+
+/* The crew icon */
+.crew-icon {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+}
+.crew-icon-canvas {
+  image-rendering: pixelated;
+}
+
+/* The Party or Crew switch */
+.party-section-switch {
+  display: inline-flex;
+  align-self: flex-start;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 12px;
+  background: var(--surface);
+  flex: none;
+}
+.party-section-segment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--secondary-text);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: default;
+  transition:
+    background-color var(--spring-snappy),
+    color var(--spring-snappy);
+}
+.party-section-segment:hover {
+  background: var(--surface-hover);
+  color: var(--primary-text);
+}
+.party-section-segment[data-selected] {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* Small controls */
+.crew-icon-button {
+  flex: none;
+  border-radius: 10px;
+  background: var(--surface);
+}
+.crew-more {
+  display: inline-flex;
+  flex: none;
+}
+.crew-invite-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  white-space: nowrap;
+  flex: none;
+  cursor: default;
+  transition: background-color var(--spring-snappy);
+}
+.crew-invite-button:hover {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.crew-invite-button[data-copied] {
+  color: var(--success);
+}
+.crew-text-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  padding-inline: 8px;
+  border-radius: 6px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 0.5px var(--stroke);
+  cursor: text;
+  flex: none;
+  min-width: 0;
+  transition:
+    background-color var(--spring-snappy),
+    box-shadow var(--spring-snappy);
+}
+.crew-text-field:hover,
+.crew-text-field[data-focused] {
+  background: var(--surface-hover);
+}
+.crew-text-field[data-focused] {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+.crew-text-field-symbol {
+  color: var(--tertiary-text);
+  flex: none;
+}
+.crew-text-field[data-focused] .crew-text-field-symbol {
+  color: var(--accent);
+}
+.crew-text-field-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--primary-text);
+  font: inherit;
+  outline: none;
+}
+.crew-text-field-input::placeholder {
+  color: var(--tertiary-text);
+}
+.crew-hidden-pet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tertiary-text);
+}
+.crew-hidden-pet-disc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--surface);
+}
+.crew-rank-badge {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  color: rgb(26 26 26);
+  font-size: 10.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Main views */
+.crew-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  min-width: 0;
+}
+.crew-page,
+.crew-empty,
+.crew-find,
+.crew-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  min-height: 0;
+}
+.crew-empty {
+  gap: 8px;
+}
+.crew-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.crew-identity-words {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+.crew-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.crew-hours-line {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+}
+.crew-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.crew-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.crew-members {
+  flex: 1;
+  min-height: 66px;
+  display: flex;
+  align-items: flex-end;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+.crew-members::-webkit-scrollbar {
+  display: none;
+}
+.crew-members-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+.crew-member {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  width: 60px;
+  padding: 2px 0;
+  border-radius: 6px;
+  transition: background-color var(--spring-snappy);
+}
+.crew-member:hover {
+  background: var(--surface-hover);
+}
+.crew-member-pet {
+  display: flex;
+  justify-content: center;
+}
+.crew-member-name {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  max-width: 100%;
+  font-weight: 600;
+  color: var(--primary-text);
+}
+.crew-member-hours {
+  display: inline-flex;
+  gap: 2px;
+  white-space: nowrap;
+}
+.crew-intro-fits {
+  min-height: 0;
+}
+.crew-intro {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.crew-intro-words {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.crew-loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.crew-find-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.crew-find-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 4px;
+  border-radius: 6px;
+  cursor: default;
+  transition: background-color var(--spring-snappy);
+}
+.crew-find-row:hover {
+  background: var(--surface-hover);
+}
+.crew-find-words {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+/* The form */
+.crew-icon-row {
+  flex: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+.crew-icon-row::-webkit-scrollbar {
+  display: none;
+}
+.crew-icon-row-inner {
+  display: flex;
+  gap: 4px;
+  padding: 2px;
+}
+.crew-icon-choice {
+  display: inline-flex;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  cursor: default;
+  box-shadow: inset 0 0 0 1.5px transparent;
+  transition:
+    background-color var(--spring-snappy),
+    box-shadow var(--spring-snappy);
+}
+.crew-icon-choice:hover {
+  background: var(--surface-hover);
+}
+.crew-icon-choice[data-selected] {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+.crew-colors {
+  display: flex;
+  justify-content: space-between;
+  gap: 2px;
+  max-width: 220px;
+}
+.crew-color-choice {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--crew-color) 7px, transparent 7.5px);
+  box-shadow: inset 0 0 0 1px transparent;
+  cursor: default;
+}
+.crew-color-choice:hover {
+  box-shadow: inset 0 0 0 1px var(--stroke);
+}
+.crew-color-choice[data-selected] {
+  background:
+    radial-gradient(circle, var(--crew-color) 5.5px, white 6px, white 7px, transparent 7.5px);
+  box-shadow: inset 0 0 0 1px var(--crew-color);
+}
+
+/* The board card */
+.crew-board,
+.crew-preview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.crew-preview {
+  gap: 8px;
+}
+.crew-board-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding-inline: 4px;
+}
+.crew-countdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.crew-board-rows {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+}
+.crew-board-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.crew-board-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 1px 4px;
+  border-radius: 6px;
+  cursor: default;
+  transition: background-color var(--spring-snappy);
+}
+.crew-board-row:hover,
+.crew-board-row[data-open] {
+  background: var(--surface-hover);
+}
+.crew-board-words {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.crew-board-tabs,
+.crew-visibility-choices {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 11px;
+  background: var(--surface);
+}
+.crew-board-tab,
+.crew-visibility-choice {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 18px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--secondary-text);
+  white-space: nowrap;
+  cursor: default;
+  transition:
+    background-color var(--spring-snappy),
+    color var(--spring-snappy);
+}
+.crew-board-tab:hover,
+.crew-visibility-choice:hover {
+  color: var(--primary-text);
+}
+.crew-board-tab[data-selected] {
+  background: var(--surface-hover);
+  color: var(--primary-text);
+}
+.crew-board-tab:disabled {
+  opacity: 0.45;
+}
+.crew-visibility-choice[data-selected] {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.crew-preview-identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.crew-visibility {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.party-report-reasons[data-tight] {
+  gap: 2px;
+  flex-wrap: wrap;
+}

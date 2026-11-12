@@ -1,4 +1,4 @@
-// The /add/<code> and /join/<code> Pages Functions. Run `python3 site/build.py`
+// The /add/<code>, /join/<code> and /crew/<code> Pages Functions. Run `python3 site/build.py`
 // first: these read the generated _generated.mjs.
 
 import assert from 'node:assert/strict';
@@ -50,6 +50,18 @@ test('a join page links to the party', () => {
   assert.ok(html.includes('<p class="invite-code">AB3C9X</p>'));
   assert.ok(html.includes('href="tabbi://join/AB3C9X"'));
   assert.ok(html.includes('url=tabbi://join/AB3C9X'));
+});
+
+test('a crew page links to the crew invite', () => {
+  assert.equal(inviteCode('crew', 'w4ln-ut7'), 'W4LNUT7');
+  assert.equal(inviteCode('crew', 'AB3C9X'), null, 'a party code is not a crew invite');
+  assert.equal(inviteCode('crew', 'K7QW2MZD'), null, 'a friend code is not a crew invite');
+  const { status, html } = invitePage('crew', 'w4lnut7', MAC);
+  assert.equal(status, 200);
+  assert.ok(html.includes('<p class="invite-code">W4L-NUT7</p>'));
+  assert.ok(html.includes('href="tabbi://crew/W4LNUT7"'));
+  assert.ok(html.includes('url=tabbi://crew/W4LNUT7'));
+  assert.ok(!/INVITECODE|INVITE-SHOWN|invite-refresh/.test(html), 'every placeholder is filled');
 });
 
 test('a phone gets the page without the refresh', () => {

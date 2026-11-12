@@ -1,0 +1,919 @@
+{
+ "schema": "crewCrests.v1",
+ "grid": 32,
+ "slot": 24,
+ "notes": [
+  "A crest is rank (laurel, drawn first) + frame + emblem stamped at the frame's slot + up to three pips at pipPositions.",
+  "Character grids with palette roles, like pets.v1 and badge.json; '.' is transparent and a later layer only paints its non-transparent cells.",
+  "Roles C, D, H take the crew color's base, shade and highlight (crewColors); o is the emblem outline, the crew color's emblemOutline (the pet outline, or a rim gray on dark crews); g and h take the rank's leaf and shade (ranks).",
+  "Nearest-neighbor only: 1 sprite px per pt at 32 pt, 1.5 pt per sprite px at 48 pt (3 device px on Retina), 4x and up on the crew page."
+ ],
+ "palette": {
+  "O": {
+   "role": "outline",
+   "hex": "#2A1A14"
+  },
+  "o": {
+   "role": "emblemOutline",
+   "hex": null
+  },
+  "C": {
+   "role": "crewBase",
+   "hex": null
+  },
+  "D": {
+   "role": "crewShade",
+   "hex": null
+  },
+  "H": {
+   "role": "crewHighlight",
+   "hex": null
+  },
+  "M": {
+   "role": "rimMetal",
+   "hex": "#C9D3DD"
+  },
+  "m": {
+   "role": "rimMetalShade",
+   "hex": "#8E9BAB"
+  },
+  "W": {
+   "role": "cream",
+   "hex": "#FFF1DC"
+  },
+  "V": {
+   "role": "creamShade",
+   "hex": "#D9C4A6"
+  },
+  "Q": {
+   "role": "ink",
+   "hex": "#3F4A78"
+  },
+  "q": {
+   "role": "inkShade",
+   "hex": "#2C3456"
+  },
+  "U": {
+   "role": "white",
+   "hex": "#FFFFFF"
+  },
+  "K": {
+   "role": "taupe",
+   "hex": "#8C7F72"
+  },
+  "k": {
+   "role": "taupeLight",
+   "hex": "#B5A99B"
+  },
+  "E": {
+   "role": "eye",
+   "hex": "#1E1420"
+  },
+  "I": {
+   "role": "iris",
+   "hex": "#3F86D6"
+  },
+  "N": {
+   "role": "nose",
+   "hex": "#E77A8C"
+  },
+  "P": {
+   "role": "blush",
+   "hex": "#FF9AAE"
+  },
+  "B": {
+   "role": "furBase",
+   "hex": "#E9A25B"
+  },
+  "A": {
+   "role": "furShade",
+   "hex": "#C87A3E"
+  },
+  "Y": {
+   "role": "gold",
+   "hex": "#F2C14E"
+  },
+  "y": {
+   "role": "goldLight",
+   "hex": "#FFE9A6"
+  },
+  "F": {
+   "role": "leaf",
+   "hex": "#6CC46A"
+  },
+  "f": {
+   "role": "leafShade",
+   "hex": "#4C9A4B"
+  },
+  "G": {
+   "role": "leafLight",
+   "hex": "#A8E08A"
+  },
+  "S": {
+   "role": "sky",
+   "hex": "#86C7EE"
+  },
+  "s": {
+   "role": "skyDeep",
+   "hex": "#4A90D9"
+  },
+  "J": {
+   "role": "coffee",
+   "hex": "#6B4226"
+  },
+  "j": {
+   "role": "coffeeLight",
+   "hex": "#9C6B45"
+  },
+  "Z": {
+   "role": "sparkle",
+   "hex": "#F4F1FF"
+  },
+  "X": {
+   "role": "crimson",
+   "hex": "#B8304C"
+  },
+  "R": {
+   "role": "rose",
+   "hex": "#E8627C"
+  },
+  "L": {
+   "role": "brown",
+   "hex": "#A67F58"
+  },
+  "l": {
+   "role": "brownShade",
+   "hex": "#7E5C3D"
+  },
+  "g": {
+   "role": "rankLeaf",
+   "hex": null
+  },
+  "h": {
+   "role": "rankShade",
+   "hex": null
+  }
+ },
+ "crewColors": [
+  {
+   "id": "coral",
+   "base": "#F07A6E",
+   "shade": "#EE3B29",
+   "hi": "#F7C3BE",
+   "emblemOutline": "#2A1A14"
+  },
+  {
+   "id": "amber",
+   "base": "#F0A433",
+   "shade": "#D1810B",
+   "hi": "#F3C886",
+   "emblemOutline": "#2A1A14"
+  },
+  {
+   "id": "mint",
+   "base": "#6FCF97",
+   "shade": "#39BE70",
+   "hi": "#B2E3C6",
+   "emblemOutline": "#2A1A14"
+  },
+  {
+   "id": "teal",
+   "base": "#3FB4AE",
+   "shade": "#29837E",
+   "hi": "#7DCDC9",
+   "emblemOutline": "#2A1A14"
+  },
+  {
+   "id": "sky",
+   "base": "#4A9EE8",
+   "shade": "#167BD5",
+   "hi": "#99C7EF",
+   "emblemOutline": "#2A1A14"
+  },
+  {
+   "id": "indigo",
+   "base": "#5E6CE0",
+   "shade": "#2336D4",
+   "hi": "#A9B0EC",
+   "emblemOutline": "#2A1A14"
+  },
+  {
+   "id": "violet",
+   "base": "#9A7BE8",
+   "shade": "#6A3AE2",
+   "hi": "#D3C6F3",
+   "emblemOutline": "#2A1A14"
+  },
+  {
+   "id": "rose",
+   "base": "#EE86B4",
+   "shade": "#E9438D",
+   "hi": "#F8D3E3",
+   "emblemOutline": "#2A1A14"
+  },
+  {
+   "id": "slate",
+   "base": "#8A8D99",
+   "shade": "#62677A",
+   "hi": "#BBBCBF",
+   "emblemOutline": "#2A1A14"
+  },
+  {
+   "id": "charcoal",
+   "base": "#2E2E35",
+   "shade": "#1C1C23",
+   "hi": "#58585D",
+   "emblemOutline": "#9A9CAA"
+  }
+ ],
+ "ranks": {
+  "gold": {
+   "leaf": "#F2C14E",
+   "shade": "#C98A2A"
+  },
+  "silver": {
+   "leaf": "#C7D1DE",
+   "shade": "#8E9BAB"
+  },
+  "bronze": {
+   "leaf": "#D9945C",
+   "shade": "#A8683A"
+  }
+ },
+ "frames": [
+  {
+   "id": "shield",
+   "name": "Shield",
+   "note": "The classic: flat top, straight shoulders, a clean point. Metal rim.",
+   "slot": [
+    4,
+    3
+   ],
+   "grid": [
+    "................................",
+    "................................",
+    "................................",
+    ".....OOOOOOOOOOOOOOOOOOOOO......",
+    ".....OMMMMMMMMMMMMMMMMMMMmO.....",
+    "....OMHHCCCCCCCCCCCCCCCDDmO.....",
+    "....OMHCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMDCCCCCCCCCCCCCCCCDDmO.....",
+    "....OmDCCCCCCCCCCCCCCCDDmO......",
+    ".....OMCCCCCCCCCCCCCCCDDmO......",
+    ".....OMDCCCCCCCCCCCCCCDDmO......",
+    ".....OmDCCCCCCCCCCCCCDDmO.......",
+    "......OMDCCCCCCCCCCCCDDmO.......",
+    "......OmDDCCCCCCCCCCDDmO........",
+    ".......OmDDDCCCCCCCDDmO.........",
+    "........OmDDDCCCCCDDmO..........",
+    ".........OmmDDDCDDDmO...........",
+    "..........OOmDDDDDmO............",
+    "............OmmDmmO.............",
+    ".............OOmOO..............",
+    "...............O................",
+    "................................",
+    "................................"
+   ]
+  },
+  {
+   "id": "seal",
+   "name": "Seal",
+   "note": "A round wax seal with a cream rim and an inner ring.",
+   "slot": [
+    4,
+    4
+   ],
+   "grid": [
+    "................................",
+    "................................",
+    "...............O................",
+    "..........OOOOOVOOOOO...........",
+    "........OOWWWWWDWWWWVOO.........",
+    ".......OWWCDDDDDDDDDDWVO........",
+    "......OWHDDCCCCCCCCCDDDVO.......",
+    ".....OWHDDCCCCCCCCCCCDDDVO......",
+    "....OWHDCCCCCCCCCCCCCCCDDVO.....",
+    "....OWDCCCCCCCCCCCCCCCCDDVO.....",
+    "...OWCDCCCCCCCCCCCCCCCCCDDVO....",
+    "...OWDCCCCCCCCCCCCCCCCCCDDVO....",
+    "..OWCDCCCCCCCCCCCCCCCCCCCDDVO...",
+    "..OWDCCCCCCCCCCCCCCCCCCCCDDVO...",
+    "..OWDCCCCCCCCCCCCCCCCCCCCDDVO...",
+    "..OWDCCCCCCCCCCCCCCCCCCCCDDVO...",
+    "..OWDCCCCCCCCCCCCCCCCCCCCDDVO...",
+    "..OWDCCCCCCCCCCCCCCCCCCCCDDVO...",
+    "..OWDCCCCCCCCCCCCCCCCCCCCDDVO...",
+    "..OVDDCCCCCCCCCCCCCCCCCCCDDVO...",
+    "...OWDCCCCCCCCCCCCCCCCCCDDVO....",
+    "...OVDDCCCCCCCCCCCCCCCCCDDVO....",
+    "....OWDCCCCCCCCCCCCCCCCDDVO.....",
+    "....OVDDCCCCCCCCCCCCCCCDDVO.....",
+    ".....OVDDDCCCCCCCCCCCDDDVO......",
+    "......OVDDDDDDDCDDDDDDDVO.......",
+    ".......OVVDDDDDDDDDDDVVO........",
+    "........OOVVVVVDVVVVVOO.........",
+    "..........OOOOOVOOOOO...........",
+    "...............O................",
+    "................................",
+    "................................"
+   ]
+  },
+  {
+   "id": "pennant",
+   "name": "Pennant",
+   "note": "A hanging banner on a metal rod with a swallowtail bottom. Cream rim.",
+   "slot": [
+    4,
+    5
+   ],
+   "grid": [
+    "................................",
+    "...OO......................OO...",
+    "...OOOOOOOOOOOOOOOOOOOOOOOOOO...",
+    "...OMMMMMMMMMMMMMMMMMmmmmmmmO...",
+    "...OOOOOOOOOOOOOOOOOOOOOOOOOO...",
+    "...OO.OOOOOOOOOOOOOOOOOOO..OO...",
+    "......OWWWWWWWWWWWWWWWWVO.......",
+    "......OWHHCCCCCCCCCCCDDVO.......",
+    "......OWHCCCCCCCCCCCCDDVO.......",
+    "......OWCCCCCCCCCCCCCDDVO.......",
+    "......OWCCCCCCCCCCCCCDDVO.......",
+    "......OWCCCCCCCCCCCCCDDVO.......",
+    "......OWCCCCCCCCCCCCCDDVO.......",
+    "......OWCCCCCCCCCCCCCDDVO.......",
+    "......OWCCCCCCCCCCCCCDDVO.......",
+    "......OWCCCCCCCCCCCCCDDVO.......",
+    "......OWCCCCCCCCCCCCCDDVO.......",
+    "......OWCCCCCCCCCCCCCDDVO.......",
+    "......OWCCCCCCCCCCCCCDDVO.......",
+    "......OWCCCCCCCDCCCCCDDVO.......",
+    "......OWCCCCCDDDDDCCCDDVO.......",
+    "......OWCCCDDDDVDDDDCDDVO.......",
+    "......OWCDDDDVVOVVDDDDDVO.......",
+    "......OWDDDVVOO.OOVVDDDVO.......",
+    "......OWDVVOO.....OOVVDVO.......",
+    "......OVVOO.........OOVVO.......",
+    "......OOO.............OOO.......",
+    "......O.................O.......",
+    "................................",
+    "................................",
+    "................................",
+    "................................"
+   ]
+  },
+  {
+   "id": "hexagon",
+   "name": "Hex Guard",
+   "note": "A flat-top hexagon, the widest frame, metal rim.",
+   "slot": [
+    4,
+    4
+   ],
+   "grid": [
+    "................................",
+    "................................",
+    ".........OOOOOOOOOOOOO..........",
+    "........OMMMMMMMMMMMMmO.........",
+    "........OMHHCCCCCCCDDmO.........",
+    ".......OMHCCCCCCCCCCDDmO........",
+    ".......OMCCCCCCCCCCCDDmO........",
+    "......OMCCCCCCCCCCCCCDDmO.......",
+    "......OMCCCCCCCCCCCCCDDmO.......",
+    ".....OMCCCCCCCCCCCCCCCDDmO......",
+    ".....OMCCCCCCCCCCCCCCCDDmO......",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "...OMCCCCCCCCCCCCCCCCCCCDDmO....",
+    "...OMCCCCCCCCCCCCCCCCCCCDDmO....",
+    "..OmDCCCCCCCCCCCCCCCCCCCCDDmO...",
+    "...OMDCCCCCCCCCCCCCCCCCCDDmO....",
+    "...OmDCCCCCCCCCCCCCCCCCCDDmO....",
+    "....OMDCCCCCCCCCCCCCCCCDDmO.....",
+    "....OmDCCCCCCCCCCCCCCCCDDmO.....",
+    ".....OMDCCCCCCCCCCCCCCDDmO......",
+    ".....OmDCCCCCCCCCCCCCCDDmO......",
+    "......OMDCCCCCCCCCCCCDDmO.......",
+    "......OmDCCCCCCCCCCCCDDmO.......",
+    ".......OMDCCCCCCCCCCDDmO........",
+    ".......OmDDDDDDDDDDDDDmO........",
+    "........OMDDDDDDDDDDDmO.........",
+    "........OmmmmmmmmmmmmmO.........",
+    ".........OOOOOOOOOOOOO..........",
+    "................................",
+    "................................",
+    "................................"
+   ]
+  },
+  {
+   "id": "star",
+   "name": "Star Crest",
+   "note": "A fat five-point star, the emblem on its center. Metal rim.",
+   "slot": [
+    4,
+    5
+   ],
+   "grid": [
+    "................................",
+    "...............O................",
+    "..............OmO...............",
+    ".............OMDmO..............",
+    ".............OMDmO..............",
+    "............OMCDDmO.............",
+    "...........OMCCCDDmO............",
+    "..........OMCCCCCDDmO...........",
+    ".........OMCCCCCCCDDmO..........",
+    "......OOOMCCCCCCCCCDDmOOO.......",
+    "....OOMMMCCCCCCCCCCCDDMMmOO.....",
+    ".OOOMMHCCCCCCCCCCCCCCCCDDMmOOO..",
+    ".OmMHHCCCCCCCCCCCCCCCCCCCDDMmO..",
+    "..OmDCCCCCCCCCCCCCCCCCCCCDDmO...",
+    "...OMDCCCCCCCCCCCCCCCCCCDDmO....",
+    "...OmDCCCCCCCCCCCCCCCCCCDDmO....",
+    "....OMDCCCCCCCCCCCCCCCCDDmO.....",
+    "....OmDDCCCCCCCCCCCCCCCDDmO.....",
+    ".....OmDCCCCCCCCCCCCCCDDmO......",
+    "......OMCCCCCCCCCCCCCDDmO.......",
+    "......OMCCCCCCCCCCCCCDDmO.......",
+    "......OMCCCCCCCCCCCCCDDmO.......",
+    "......OMCCCCCCCCCCCCCDDmO.......",
+    "......OMCCCCDDDDDDDCCDDmO.......",
+    "......OMDDDDDDDDDDDDDDDmO.......",
+    "......OMDDDDmmmmmmmDDDDmO.......",
+    "......OMmmmmOOOOOOOmmmmmO.......",
+    "......OmOOOO.......OOOOmO.......",
+    "......OO...............OO.......",
+    "................................",
+    "................................",
+    "................................"
+   ]
+  },
+  {
+   "id": "heater",
+   "name": "Heater",
+   "note": "A rounded heater shield with a notch at the top. Metal rim.",
+   "slot": [
+    4,
+    4
+   ],
+   "grid": [
+    "................................",
+    "................................",
+    "................................",
+    "....OOOOOOOOOO...OOOOOOOOOO.....",
+    "....OMMMMMMMMmO.OMMMMMMMMmO.....",
+    "....OMHHCCCCDDmOMCCCCCCDDmO.....",
+    "....OMHCCCCCCDDMCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMCCCCCCCCCCCCCCCCCDDmO.....",
+    "....OMDCCCCCCCCCCCCCCCCDDmO.....",
+    "....OmDCCCCCCCCCCCCCCCCDDmO.....",
+    ".....OMCCCCCCCCCCCCCCCDDmO......",
+    ".....OMCCCCCCCCCCCCCCCDDmO......",
+    ".....OMDCCCCCCCCCCCCCCDDmO......",
+    ".....OmDDCCCCCCCCCCCCCDDmO......",
+    "......OmDCCCCCCCCCCCCDDmO.......",
+    ".......OMDCCCCCCCCCCDDmO........",
+    ".......OmDDDCCCCCCCDDDmO........",
+    "........OmDDDDCCCDDDDmO.........",
+    ".........OmmDDDDDDDmmO..........",
+    "..........OOmmDDDmmOO...........",
+    "............OOmmmOO.............",
+    "..............OOO...............",
+    "................................",
+    "................................",
+    "................................"
+   ]
+  }
+ ],
+ "emblems": [
+  {
+   "id": "owl",
+   "name": "Owl",
+   "grid": [
+    "..oo................oo..",
+    ".oKKo..............oKKo.",
+    ".oKKKoo..........ooKKKo.",
+    ".oKKKKKooooooooooKKKKKo.",
+    "oKKKKKKKKKKKKKKKKKKKKKKo",
+    "oKKooooooKKKKKKooooooKKo",
+    "oKoUUUUUUoKKKKoUUUUUUoKo",
+    "oKoUUEEEUUoKKoUUEEEUUoKo",
+    "oKoUEEEEEUoKKoUEEEEEUoKo",
+    "oKoUEZEEEUoKKoUEEEZEUoKo",
+    "oKoUEEEEEUoKKoUEEEEEUoKo",
+    "oKoUUEEEUUoYYoUUEEEUUoKo",
+    "oKKoUUUUUoKYYKoUUUUUoKKo",
+    "oKKKoooooKKYYKKoooooKKKo",
+    ".oKKKKKKKKKooKKKKKKKKKo.",
+    ".oKKKKKKKKKKKKKKKKKKKKo.",
+    "..oKKKKKKKKKKKKKKKKKKo..",
+    "...ooKKKKKKKKKKKKKKoo...",
+    ".....oooooooooooooo.....",
+    "........................",
+    "........................",
+    "........................",
+    "........................",
+    "........................"
+   ]
+  },
+  {
+   "id": "bird",
+   "name": "Early Bird",
+   "grid": [
+    "..........oyyyyyyyyo....",
+    "........ooyyyyyyyyyYoo..",
+    ".......oyyyyYYYYYYYYYYo.",
+    ".......oyyYYYYYYYZZZYYo.",
+    "......oyyYYYYYYYYZYYYYYo",
+    ".....oyyyYYYYYYYYZYYYYYY",
+    ".....oyyYYYYYYYYYZZYYYYY",
+    ".....oyyYYYYYYYYYZZYYYYY",
+    ".....oyyYYYYYYYYYYYYYYYY",
+    ".....ooooYYYYYYYYYYYYZZY",
+    ".....oSSSoYYYYYYYYYYYZYY",
+    "....oSSZSSoooYYYYYYYYZZY",
+    "....oSSSSSoYYoYYYYYYYYYY",
+    ".oooSSSSSSoooYYYYYYYYYYo",
+    "oSSSoSSSSSSoYoYYYYYYYYo.",
+    "oSSSSosSSSSooYYYYYYYYYo.",
+    ".oSSSossSSSoYYYYYYYYoo..",
+    "..oossssSSoYYYYYYYYo....",
+    "...ossssSo.oooooooo.....",
+    "....ooooo...............",
+    ".....oYooYo.............",
+    ".....ooo.oo.............",
+    "........................",
+    "........................"
+   ]
+  },
+  {
+   "id": "mug",
+   "name": "Coffee Mug",
+   "grid": [
+    "............ZZZ.........",
+    "..........ZZZZZZ........",
+    ".........ZZZ..ZZ........",
+    "........ZZZ.............",
+    "........ZZZZ............",
+    ".........ZZZZZ..........",
+    "...........ZZZ..........",
+    "....ooooooooooo.........",
+    "...oJJJJJJJJJJJo........",
+    "...oWJJJJJJJJJWoooo.....",
+    "...oWWWWWWWWWWoWWWWo....",
+    "...oWUWWWWWWWWoWooWo....",
+    "....oUWWWWWWWWoWo.Wo....",
+    "....oWWWWWWWWWoWo.Wo....",
+    "....oWWWWWWWWWoWooWo....",
+    ".....oWWWWWWWWWoWWo.....",
+    ".....oWWWWWWWWWooo......",
+    ".....oVWWWWWWWVo........",
+    "......oVVWWWWVVo........",
+    "......oVVVVVVVVo........",
+    ".......oooooooo.........",
+    "........................",
+    "........................",
+    "........................"
+   ]
+  },
+  {
+   "id": "books",
+   "name": "Open Book",
+   "grid": [
+    "........................",
+    "...........oo...........",
+    "..oooooooooooooooooooo..",
+    ".oWWWWWWWWWooWWWWWWWWWo.",
+    "oWUUWWWWWWWooWWWWWWWWWWo",
+    "oWWVVVVVWWWooWWWVVVVVWWo",
+    "oWWWWWWWWWWooWWWWWWWWWWo",
+    "oWWVVVVVWWWooWWWVVVVVWWo",
+    "oWWWWWWWWWWooWWWWWWWWWWo",
+    "oWWVVVVVWWWooWWWVVVVVWWo",
+    "oWWWWWWWWWWooWWWWWWWWWWo",
+    "oWWVVVVWWWWooWWWWVVVVWWo",
+    "oWWWWWWWWWWooWWWWWWWWWWo",
+    ".oWWWWWWWWWooWWWWWWWWWo.",
+    ".oXXXXXXXXXooXXXXXXXXXo.",
+    "..oXXXXXXXXooXXXXXXXXo..",
+    "...ooooooooYYoooooooo...",
+    "..........oYYo..........",
+    "..........oYYo..........",
+    "..........oYYo..........",
+    "..........oYoo..........",
+    "...........oo...........",
+    "........................",
+    "........................"
+   ]
+  },
+  {
+   "id": "headphones",
+   "name": "Headphones",
+   "grid": [
+    "..........oooo..........",
+    "........ooWWWWoo........",
+    "......ooWWWWWWWWo.......",
+    ".....oWWWWooooWWWo......",
+    "....oWWWoo....oWWWo.....",
+    "...oWWWo.......oWWWo....",
+    "...oWWo.........oWWo....",
+    "..oWWo..........oWWo....",
+    "..oWWo..........oWWo....",
+    "..oWWo.........ooWWoo...",
+    ".ooWWoo........oWWWWWo..",
+    "ooWWWWoo.......oWQQQWo..",
+    "oWWWWWWWo......oWQQQWo..",
+    "oWQQQQQWo......oWQQQWo..",
+    "oWQQQQQWo......oWWWWWo..",
+    "oWQQQQQWo.......ooooo...",
+    "oWQQQQQWo.........ZZZZ..",
+    "oWWWWWWWo.........Z..Z..",
+    ".ooooooo..........Z..Z..",
+    ".................ZZ.ZZ..",
+    ".................ZZ.ZZ..",
+    "........................",
+    "........................",
+    "........................"
+   ]
+  },
+  {
+   "id": "stopwatch",
+   "name": "Stopwatch",
+   "grid": [
+    "........................",
+    ".................oo.....",
+    "................oYYo....",
+    "........oooooooooYYo....",
+    "......ooMMMMMMMMoMMo....",
+    "...oooMMMMMMMMMMMMMo....",
+    "..oYoMMMMUUUUUUMMMMo....",
+    "..oMMMMUUUUmmUUUUMMMo...",
+    "...oMMUUUUUUUUXUUUMMo...",
+    "ZZZMMMUUZUUUUUoUUUMMMo..",
+    "..oMMUUZUUUUUoUUUUUMMo..",
+    "..oMMUUUUUUUUoUUUUUMmo..",
+    "..oMMUUUUUUUoUUUUUUmmo..",
+    "ZZoMMUmUUUUUXUUUUmUmmo..",
+    "..oMMUUUUUUUUoUUUUUmmo..",
+    "..oMMUUUUUUUUUooUUUmmo..",
+    "..oMMMUUUUUUUUUUUUmmmo..",
+    "ZZZoMMUUUUUUUUUUUUmmo...",
+    "...oMMMUUUUUUUUUUmmmo...",
+    "....oMMMMUUmmUUmmmmo....",
+    ".....oMMMMMmmmmmmmo.....",
+    "......ooMMmmmmmmoo......",
+    "........oooooooo........",
+    "........................"
+   ]
+  },
+  {
+   "id": "moon",
+   "name": "Moon",
+   "grid": [
+    "........................",
+    ".......oooo.............",
+    ".....ooyyyyo............",
+    "....oyyyyyo.............",
+    "...oyyyyyo..............",
+    "..oyyyyyo...............",
+    ".oyyyyyyo...............",
+    "oyyyyyyyo...............",
+    "oyyyyyyo................",
+    "yyyyyyyo................",
+    "yyyyyyyo................",
+    "yyyyyyyyo..........Z....",
+    "yyyyyyoyo.........ZZZ...",
+    "yyyyyyyoo........ZZZZZ..",
+    "yyyyyyyyyo........UUZ...",
+    "yyyyPPyyyyo........Z....",
+    "oyyyyyyyyyyo............",
+    "oyyyyyyyyoyoooo...o.....",
+    ".oyyyyyyyyoyyyyoooYo....",
+    "..oyyyyyyyyyyyyYYYo.....",
+    "...oyYYYyyyyyYYYYo......",
+    "....oYYYYYYYYYYYo.......",
+    ".....ooYYYYYYYoo........",
+    ".......ooooooo.........."
+   ]
+  },
+  {
+   "id": "cloud",
+   "name": "Storm Cloud",
+   "grid": [
+    "........oooooo..........",
+    "......ooWWWWWWoo........",
+    "....ooWWWWWWWWWWooo.....",
+    "..ooWWWWWWWWWWWWWWWoo...",
+    ".oWWWWWWWWWWWWWWWWWWWo..",
+    "oWUWWWWWWWWWWWWWWWWWWWo.",
+    "oWWWWWWWWWWWWWWWWWWWWWo.",
+    "oVWWWWWWWWWWWWWWWWWWWVo.",
+    ".oVVVVVVVVVVVVVVVVVVVo..",
+    "..oooooooooYYoooooooo...",
+    "..........oYYYo.........",
+    ".........oYYYo..........",
+    "........oYYYo...........",
+    ".......oYYYYYYoo........",
+    "........ooooYYYo........",
+    "...........oyYo.........",
+    "..........oyYo..........",
+    ".........oyYo...........",
+    "........oyo.............",
+    ".......oyo..............",
+    "......oo................",
+    "........................",
+    "........................",
+    "........................"
+   ]
+  },
+  {
+   "id": "cat",
+   "name": "Shorthair",
+   "grid": [
+    ".oo..................oo.",
+    ".oKKo..............oKKo.",
+    ".oKPKo............oKPKo.",
+    ".oKPPKooooooooooooKPPKo.",
+    ".oKKWWWWWWWWWWWWWWWWKKo.",
+    "oKWWWWWWKWWWWWWKWWWWWWKo",
+    "oWWWWWWWKWWKKWWKWWWWWWWo",
+    "oWWWWWWWKWWKKWWKWWWWWWWo",
+    "oWWWKKWWWWWWWWWWWWKKWWWo",
+    "oWWWooooWWWWWWWWooooWWWo",
+    "oWWoIIIIoWWWWWWoIIIIoWWo",
+    "oWWoIZIIoWWWWWWoIIZIoWWo",
+    "oWWoIIIIoWWWWWWoIIIIoWWo",
+    "oWWWooooWWWWWWWWooooWWWo",
+    "oWPPWWWWWWWNNWWWWWWWPPWo",
+    "oWPPWWWWWWoWWoWWWWWWPPWo",
+    ".oWWWWWWWWWWWWWWWWWWWWo.",
+    ".oWWWWWWWWWWWWWWWWWWWWo.",
+    "..oWWWWWWWWWWWWWWWWWWo..",
+    "...oooWWWWWWWWWWWWooo...",
+    "......oooooooooooo......",
+    "........................",
+    "........................",
+    "........................"
+   ]
+  },
+  {
+   "id": "pup",
+   "name": "Golden Pup",
+   "grid": [
+    "....oooooooooooooooo....",
+    "..ooABBBBBBBBBBBBBBAoo..",
+    ".oAAoBBBBBBBBBBBBBBoAAo.",
+    ".oAAoBBBBBBBBBBBBBBoAAo.",
+    ".oAAoBBBBBBBBBBBBBBoAAo.",
+    ".oAAoBBoooBBBBoooBBoAAo.",
+    ".oAAoBoEEEoBBoEEEoBoAAo.",
+    ".oAAoBoEZEoBBoEZEoBoAAo.",
+    ".oAAoBoEEEoBBoEEEoBoAAo.",
+    ".oAAoBBoooBBBBoooBBoAAo.",
+    ".oAAoBBBBWWWWWWBBBBoAAo.",
+    ".oAAoBBBWWWEEWWWBBBoAAo.",
+    ".oAAoBBBWWWEEWWWBBBoAAo.",
+    "..oooBBBWWWWWWWWBBBooo..",
+    "....oBBBWWoWWoWWBBBo....",
+    ".....oBBWWWRRWWWBBo.....",
+    "......oBBoRRRRoBBo......",
+    ".......oooRRRRooo.......",
+    ".........oooooo.........",
+    "........................",
+    "........................",
+    "........................",
+    "........................",
+    "........................"
+   ]
+  },
+  {
+   "id": "turtle",
+   "name": "Turtle",
+   "grid": [
+    ".....oooooooooooooo.....",
+    "...ooFFFFFFFFFFFFFFoo...",
+    "..oFFFFFfFFFFFFfFFFFFo..",
+    ".oFFFFFFfFFFFFFfFFFFFFo.",
+    ".oFFfffffFFFFFFfffffFFo.",
+    "oFFFFFFFfFFFFFFfFFFFFFFo",
+    "oFFFFFFFfFFFFFFfFFFFFFFo",
+    "oFfffffffFFFFFFfffffffFo",
+    "oFFFFFFFfFFFFFFfFFFFFFFo",
+    "offffffffFFFFFFffffffffo",
+    "oooooooooooooooooooooooo",
+    "oGGoGGGGGGGGGGGGGGGGoGGo",
+    "oGGoGoooGGGGGGGGoooGoGGo",
+    "oGGoGoEEoGGGGGGoEEoGoGGo",
+    "oGGoGoZEoGGGGGGoEZoGoGGo",
+    "ooooGoooGGGGGGGGoooGoooo",
+    "....oGGGGGGGGGGGGGGo....",
+    "....oGGGGoGGGGoGGGGo....",
+    ".....oGGGGGGGGGGGGo.....",
+    "......oooooooooooo......",
+    "........................",
+    "........................",
+    "........................",
+    "........................"
+   ]
+  },
+  {
+   "id": "lamp",
+   "name": "Desk Lamp",
+   "grid": [
+    ".......oooooooo.........",
+    "......okKKKKKKKo........",
+    ".....oKKKKKKKKKKooo.....",
+    "....oKKKKKKKKKKKKoMMo...",
+    "...oKKKKKKKKKKKKKKooMo..",
+    "...oooooooooooooooo.oMo.",
+    "....ooyyyyyyyyyyoo..oMo.",
+    "....oyyyyyZZyyyyyo...oMo",
+    "...oyyyyyyyyyyyyyyo..oMo",
+    "...oyyyyyyyyyyyyyyo..oMo",
+    "..oyyyyyyyyyyyyyyyyo.oMo",
+    "..oyyyyyyyyyyyyyyyyo.oMo",
+    ".oyyyyyyyyyyyyyyyyyyooMo",
+    ".oyyyyyyyyyyyyyyyyyyooMo",
+    "oyyyyyyyyyyyyyyyyyyyyoMo",
+    "oooooooooooooooooooooooo",
+    ".................oMMMMMo",
+    ".................ooooooo",
+    "........................",
+    "........................",
+    "........................",
+    "........................",
+    "........................",
+    "........................"
+   ]
+  }
+ ],
+ "laurel": [
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "................................",
+  "...g........................g...",
+  "..gg........................gg..",
+  "..g..........................g..",
+  "..hh........................hh..",
+  "..hh........................hh..",
+  "..hh........................hh..",
+  ".gh..........................hg.",
+  "ggh..........................hgg",
+  ".gh..........................hg.",
+  "..hg........................gh..",
+  "..hg........................gh..",
+  "..hg........................gh..",
+  ".hh..........................hh.",
+  "hhh..........................hhh",
+  ".hh..........................hh.",
+  "..hg........................gh..",
+  "..hg........................gh..",
+  "...g........................g...",
+  "....h..hhh.....hh.....hhh..h....",
+  ".....hhhhhhhhhghhghhhhhhhhh.....",
+  "....ggg...ggggghhggggg...ggg....",
+  ".....g.....g.g.hh.g.g.....g....."
+ ],
+ "pip": [
+  ".OO.",
+  "OYyO",
+  "OYYO",
+  ".OO."
+ ],
+ "pipPositions": [
+  [
+   28,
+   0
+  ],
+  [
+   28,
+   4
+  ],
+  [
+   28,
+   8
+  ]
+ ]
+}

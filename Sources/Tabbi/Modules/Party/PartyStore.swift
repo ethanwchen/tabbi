@@ -727,6 +727,20 @@ final class PartyStore: ObservableObject {
         noticeConfirms = true
     }
 
+    // MARK: Crews
+
+    /// The identity Crews calls the server with, while Party is connected.
+    var crewAccount: PartyAccount? { state.connection == .connected ? account : nil }
+
+    /// Whether this store renders a `--snapshot`, so Crews stays offline too.
+    var isSnapshotRun: Bool { isSnapshot }
+
+    /// Shows a Crews notice in the panel's notice capsule.
+    func showNotice(_ message: String, confirms: Bool) {
+        notice = message
+        noticeConfirms = confirms
+    }
+
     /// Runs one panel action: one at a time, with its failure as `notice`.
     private func run(_ action: PartyAction, _ body: @escaping (PartyStore, PartyAccount) async throws -> Void) {
         guard pending == nil else { return }

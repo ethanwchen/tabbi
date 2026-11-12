@@ -8,6 +8,8 @@ public enum AppLink: Hashable, Sendable {
     case open
     /// A Party invite (`tabbi://add/<code>` or `tabbi://join/<code>`).
     case invite(PartyInvite)
+    /// A Study Crews invite (`tabbi://crew/<code>`).
+    case crew(CrewInvite)
 
     /// The host of the plain open link.
     public static let openHost = "open"
@@ -16,6 +18,10 @@ public enum AppLink: Hashable, Sendable {
     public init?(url: URL) {
         if let invite = PartyInvite(url: url) {
             self = .invite(invite)
+            return
+        }
+        if let invite = CrewInvite(url: url) {
+            self = .crew(invite)
             return
         }
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),

@@ -45,10 +45,11 @@ export const REGISTER_PER_MIN = 10;
 export const AUTH_FAILURES_PER_MIN = 60;
 /**
  * The Party protocol this server speaks, and the oldest it still serves. A client names its own in the
- * PROTOCOL_HEADER of every request; a request without one is protocol 1 (the apps up to 1.0.0). See
- * docs/party-compatibility.md: the server never drops what an older protocol sends or expects.
+ * PROTOCOL_HEADER of every request; a request without one is protocol 1 (the apps up to 1.0.0). Protocol 2
+ * added friend requests, protocol 3 Study Crews. See docs/party-compatibility.md: the server never drops
+ * what an older protocol sends or expects.
  */
-export const PROTOCOL_VERSION = 2;
+export const PROTOCOL_VERSION = 3;
 export const MIN_PROTOCOL_VERSION = 1;
 export const PROTOCOL_HEADER = "Tabbi-Protocol";
 /** The first protocol whose apps show friend requests. Users on an older one get instant friendships. */

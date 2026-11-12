@@ -3,7 +3,8 @@ import catalog from "../shared/catalog.json";
 import fixture from "../../shared/fixtures/party/party.json";
 import { PROTOCOL_HEADER } from "../src/lib";
 import { BASE, call, oldCall, register } from "./helpers";
-import { check } from "./schema";
+import { check, checkCrews } from "./schema";
+import { crewBody } from "./crewHelpers";
 
 /**
  * Apps on different versions (and the Mac and Windows apps) Party and stay friends together. "Old" is an
@@ -212,6 +213,47 @@ describe("the shared wire contract (shared/schemas/party.v1.schema.json)", () =>
     for (const update of fixture.updates) {
       for (const id of update.body.accessories ?? []) expect(catalog.accessories, `${update.name}: ${id}`).toContain(id);
       if (update.body.costume) expect(catalog.costumes, update.name).toContain(update.body.costume);
+    }
+  });
+});
+
+/**
+ * shared/fixtures/crews/crews.json, written by the Mac app's golden tests, pins the Crews requests the
+ * apps send and the replies they decode; every one must fit shared/schemas/crews.v1.schema.json.
+ */
+const crewFixtures = import.meta.glob<{
+  requests?: { name: string; method: string; path: string; schema: string; body: unknown }[];
+  replies?: { name: string; schema: string; json: unknown }[];
+}>("../../shared/fixtures/crews/crews.json", { eager: true, import: "default" });
+
+describe("the Crews wire contract (shared/schemas/crews.v1.schema.json)", () => {
+  it("describes the request bodies the apps send", () => {
+    expect(checkCrews("createBody", crewBody())).toEqual([]);
+    expect(checkCrews("createBody", { ...crewBody(), deck: "x" })).not.toEqual([]);
+    expect(checkCrews("updateBody", { description: "" })).toEqual([]);
+    expect(checkCrews("joinBody", { code: "K7QW2MZ" })).toEqual([]);
+    expect(checkCrews("joinBody", { crew: "K7QW2MZD3F" })).toEqual([]);
+    expect(checkCrews("joinBody", { code: "K7QW2MZ", crew: "K7QW2MZD3F" })).not.toEqual([]);
+    expect(checkCrews("sessionsBody", { sessions: [{ start: 1, end: 61, minutes: 1 }] })).toEqual([]);
+    expect(checkCrews("sessionsBody", { sessions: [] })).not.toEqual([]);
+    expect(checkCrews("memberSettingsBody", { showPet: false })).toEqual([]);
+    expect(checkCrews("reportBody", { crew: "K7QW2MZD3F", reason: "cheating" })).toEqual([]);
+    expect(checkCrews("blockBody", { crew: "K7QW2MZD3F", member: "K7QW2MZD3F" })).toEqual([]);
+  });
+
+  it("describes every request and reply in the shared Crews fixture, when there is one", () => {
+    for (const fixture of Object.values(crewFixtures)) {
+      for (const r of fixture.requests ?? []) {
+        // A route without a body schema (leave, remove) sends an empty object or nothing.
+        if (r.schema) expect(checkCrews(r.schema, r.body), r.name).toEqual([]);
+        else expect(r.body === undefined || r.body === null || Object.keys(r.body).length === 0, r.name).toBe(true);
+        expect(r.path, r.name).toMatch(/^\/v1\/crews/);
+      }
+      // A "newer server" reply carries ids and fields this server never sends, to pin how the
+      // app reads them; it is the app's leniency under test, not this server's shape.
+      for (const r of fixture.replies ?? []) {
+        if (!r.name.startsWith("newer server")) expect(checkCrews(r.schema, r.json), r.name).toEqual([]);
+      }
     }
   });
 });

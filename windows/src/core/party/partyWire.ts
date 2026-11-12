@@ -18,7 +18,7 @@
  */
 
 /** The Party protocol this app speaks, sent in `PROTOCOL_HEADER` on every request. Backend `PROTOCOL_VERSION`. */
-export const PROTOCOL_VERSION = 2;
+export const PROTOCOL_VERSION = 3;
 /** Backend `PROTOCOL_HEADER`. */
 export const PROTOCOL_HEADER = "Tabbi-Protocol";
 

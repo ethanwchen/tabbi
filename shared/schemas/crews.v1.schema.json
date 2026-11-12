@@ -1,0 +1,955 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tabbinotch.com/schemas/crews.v1.schema.json",
+  "title": "Tabbi Study Crews wire contract",
+  "description": "The Study Crews routes (Party protocol 3) both apps speak. docs/design/crews.md describes the behavior and docs/study/backend-api.md the routes; shared/fixtures/crews/crews.json pins what the Mac app sends and reads.",
+  "$defs": {
+    "crewId": {
+      "type": "string",
+      "pattern": "^[A-HJ-NP-Z2-9]{10}$",
+      "description": "A crew's id: 10 characters from the friend code alphabet. Not secret."
+    },
+    "inviteCode": {
+      "type": "string",
+      "pattern": "^[A-HJ-NP-Z2-9]{7}$",
+      "description": "A crew's invite code: 7 characters from the friend code alphabet, shown to members only."
+    },
+    "memberRef": {
+      "type": "string",
+      "pattern": "^[A-HJ-NP-Z2-9]{10}$",
+      "description": "A member's opaque id on crew pages; crew pages never carry friend codes."
+    },
+    "unixSeconds": {
+      "description": "Whole seconds since 1970-01-01 UTC.",
+      "type": "integer"
+    },
+    "minutes": {
+      "description": "Credited focus minutes.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "frameId": {
+      "description": "A crest frame id from backend/shared/crews.json; an app draws one it does not know as the first frame.",
+      "type": "string"
+    },
+    "emblemId": {
+      "description": "A crest emblem id from backend/shared/crews.json; an app draws one it does not know as the first emblem.",
+      "type": "string"
+    },
+    "colorId": {
+      "description": "A crew color id from backend/shared/crews.json; an app draws one it does not know as the first color.",
+      "type": "string"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "public",
+        "private"
+      ]
+    },
+    "laurel": {
+      "description": "The laurel a crew wears this week (the tier it won last week), or in featured entries the tier won.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "gold",
+        "silver",
+        "bronze",
+        null
+      ]
+    },
+    "week": {
+      "description": "A crew week: Monday 00:00 UTC to the next Monday 00:00 UTC (endsAt exclusive); id is the ISO week key.",
+      "type": "object",
+      "required": [
+        "id",
+        "startsAt",
+        "endsAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-W[0-9]{2}$"
+        },
+        "startsAt": {
+          "$ref": "#/$defs/unixSeconds"
+        },
+        "endsAt": {
+          "$ref": "#/$defs/unixSeconds"
+        }
+      },
+      "additionalProperties": false
+    },
+    "crewPet": {
+      "description": "A member's pet, with the same fields and ids as a Party profile.",
+      "type": "object",
+      "required": [
+        "petName",
+        "species",
+        "breed",
+        "colors",
+        "costume",
+        "accessories"
+      ],
+      "properties": {
+        "petName": {
+          "type": "string"
+        },
+        "species": {
+          "type": "string"
+        },
+        "breed": {
+          "type": "string"
+        },
+        "colors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$"
+          }
+        },
+        "costume": {
+          "type": "string"
+        },
+        "accessories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "crewMember": {
+      "description": "One member on a crew page. pet is null when the member hid it. studyLevel is optional (from the Study Level release).",
+      "type": "object",
+      "required": [
+        "ref",
+        "name",
+        "pet",
+        "badges",
+        "weekMinutes",
+        "owner",
+        "me"
+      ],
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/memberRef"
+        },
+        "name": {
+          "type": "string"
+        },
+        "pet": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/crewPet"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "studyLevel": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "badges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "weekMinutes": {
+          "$ref": "#/$defs/minutes"
+        },
+        "owner": {
+          "type": "boolean"
+        },
+        "me": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "crewSummary": {
+      "description": "A crew in lists and on the board. Its crest is frame, emblem and color.",
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "description",
+        "frame",
+        "emblem",
+        "color",
+        "visibility",
+        "laurel",
+        "trophies",
+        "memberCount",
+        "maxMembers",
+        "weekMinutes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/crewId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "frame": {
+          "$ref": "#/$defs/frameId"
+        },
+        "emblem": {
+          "$ref": "#/$defs/emblemId"
+        },
+        "color": {
+          "$ref": "#/$defs/colorId"
+        },
+        "visibility": {
+          "$ref": "#/$defs/visibility"
+        },
+        "laurel": {
+          "$ref": "#/$defs/laurel"
+        },
+        "trophies": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "memberCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxMembers": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "weekMinutes": {
+          "$ref": "#/$defs/minutes"
+        }
+      },
+      "additionalProperties": false
+    },
+    "crewDetail": {
+      "description": "A crew page: the summary plus its members. inviteCode and hidden are only for members.",
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "description",
+        "frame",
+        "emblem",
+        "color",
+        "visibility",
+        "laurel",
+        "trophies",
+        "memberCount",
+        "maxMembers",
+        "weekMinutes",
+        "createdAt",
+        "medals",
+        "rank",
+        "members",
+        "mine",
+        "owner",
+        "inviteCode",
+        "hidden"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/crewId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "frame": {
+          "$ref": "#/$defs/frameId"
+        },
+        "emblem": {
+          "$ref": "#/$defs/emblemId"
+        },
+        "color": {
+          "$ref": "#/$defs/colorId"
+        },
+        "visibility": {
+          "$ref": "#/$defs/visibility"
+        },
+        "laurel": {
+          "$ref": "#/$defs/laurel"
+        },
+        "trophies": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "memberCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxMembers": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "weekMinutes": {
+          "$ref": "#/$defs/minutes"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/unixSeconds"
+        },
+        "medals": {
+          "description": "Every top 3 finish, by tier.",
+          "type": "object",
+          "required": [
+            "gold",
+            "silver",
+            "bronze"
+          ],
+          "properties": {
+            "gold": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "silver": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "bronze": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "rank": {
+          "description": "This week's live rank (ties share it), null with no minutes.",
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/crewMember"
+          }
+        },
+        "mine": {
+          "type": "boolean"
+        },
+        "owner": {
+          "type": "boolean"
+        },
+        "inviteCode": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/inviteCode"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hidden": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "boardEntry": {
+      "description": "One crew on the board.",
+      "type": "object",
+      "required": [
+        "rank",
+        "minutes",
+        "crew"
+      ],
+      "properties": {
+        "rank": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The place by competition ranking on the week's minutes: equal minutes share it and the next place skips."
+        },
+        "minutes": {
+          "$ref": "#/$defs/minutes"
+        },
+        "crew": {
+          "$ref": "#/$defs/crewSummary"
+        }
+      },
+      "additionalProperties": false
+    },
+    "mineReply": {
+      "description": "GET /v1/crews/mine.",
+      "type": "object",
+      "required": [
+        "ok",
+        "crew",
+        "week"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "crew": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/crewDetail"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "week": {
+          "$ref": "#/$defs/week"
+        }
+      }
+    },
+    "crewReply": {
+      "description": "POST /v1/crews, PATCH /v1/crews/mine, PATCH /v1/crews/mine/me, GET /v1/crews/{id}.",
+      "type": "object",
+      "required": [
+        "ok",
+        "crew"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "crew": {
+          "$ref": "#/$defs/crewDetail"
+        }
+      }
+    },
+    "joinReply": {
+      "description": "POST /v1/crews/join.",
+      "type": "object",
+      "required": [
+        "ok",
+        "joined",
+        "crew"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "joined": {
+          "type": "boolean"
+        },
+        "crew": {
+          "$ref": "#/$defs/crewDetail"
+        }
+      }
+    },
+    "leaveReply": {
+      "description": "POST /v1/crews/leave.",
+      "type": "object",
+      "required": [
+        "ok",
+        "left"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "left": {
+          "type": "boolean"
+        }
+      }
+    },
+    "removeReply": {
+      "description": "POST /v1/crews/mine/members/{ref}/remove.",
+      "type": "object",
+      "required": [
+        "ok",
+        "removed",
+        "crew"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "removed": {
+          "type": "boolean"
+        },
+        "crew": {
+          "$ref": "#/$defs/crewDetail"
+        }
+      }
+    },
+    "searchReply": {
+      "description": "GET /v1/crews?q=.",
+      "type": "object",
+      "required": [
+        "ok",
+        "crews",
+        "week"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "crews": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/crewSummary"
+          }
+        },
+        "week": {
+          "$ref": "#/$defs/week"
+        }
+      }
+    },
+    "boardReply": {
+      "description": "GET /v1/crews/board: this week's live places 1 to 3 and last week's frozen places (the featured crews). Equal minutes share a place, so either list can hold more than three crews.",
+      "type": "object",
+      "required": [
+        "ok",
+        "week",
+        "top",
+        "featured"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "week": {
+          "$ref": "#/$defs/week"
+        },
+        "top": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/boardEntry"
+          }
+        },
+        "featured": {
+          "oneOf": [
+            {
+              "description": "Last week's winners.",
+              "type": "object",
+              "required": [
+                "week",
+                "entries"
+              ],
+              "properties": {
+                "week": {
+                  "$ref": "#/$defs/week"
+                },
+                "entries": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/boardEntry"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "sessionResult": {
+      "description": "What one reported session credited.",
+      "type": "object",
+      "required": [
+        "status",
+        "credited"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "credited",
+            "capped",
+            "duplicate",
+            "overlap",
+            "future",
+            "invalid",
+            "week_closed",
+            "no_crew"
+          ]
+        },
+        "credited": {
+          "$ref": "#/$defs/minutes"
+        }
+      },
+      "additionalProperties": false
+    },
+    "sessionsReply": {
+      "description": "POST /v1/crews/sessions.",
+      "type": "object",
+      "required": [
+        "ok",
+        "results",
+        "week",
+        "crewMinutes",
+        "myMinutes"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sessionResult"
+          }
+        },
+        "week": {
+          "$ref": "#/$defs/week"
+        },
+        "crewMinutes": {
+          "description": "My crew's minutes this week, null outside a crew.",
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "myMinutes": {
+          "$ref": "#/$defs/minutes"
+        }
+      }
+    },
+    "reportReply": {
+      "description": "POST /v1/crews/reports; created is false when it updated my open report.",
+      "type": "object",
+      "required": [
+        "ok",
+        "created"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "created": {
+          "type": "boolean"
+        }
+      }
+    },
+    "blockReply": {
+      "description": "POST /v1/crews/block; blocked is false when I had already blocked them.",
+      "type": "object",
+      "required": [
+        "ok",
+        "blocked"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "blocked": {
+          "type": "boolean"
+        }
+      }
+    },
+    "createBody": {
+      "description": "POST /v1/crews.",
+      "type": "object",
+      "required": [
+        "name",
+        "frame",
+        "emblem",
+        "color",
+        "visibility"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 120
+        },
+        "frame": {
+          "$ref": "#/$defs/frameId"
+        },
+        "emblem": {
+          "$ref": "#/$defs/emblemId"
+        },
+        "color": {
+          "$ref": "#/$defs/colorId"
+        },
+        "visibility": {
+          "$ref": "#/$defs/visibility"
+        }
+      },
+      "additionalProperties": false
+    },
+    "updateBody": {
+      "description": "PATCH /v1/crews/mine (owner): any of the fields; an empty or null description clears it.",
+      "type": "object",
+      "required": [],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 120
+        },
+        "frame": {
+          "$ref": "#/$defs/frameId"
+        },
+        "emblem": {
+          "$ref": "#/$defs/emblemId"
+        },
+        "color": {
+          "$ref": "#/$defs/colorId"
+        },
+        "visibility": {
+          "$ref": "#/$defs/visibility"
+        }
+      },
+      "additionalProperties": false
+    },
+    "memberSettingsBody": {
+      "description": "PATCH /v1/crews/mine/me.",
+      "type": "object",
+      "required": [
+        "showPet"
+      ],
+      "properties": {
+        "showPet": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "joinBody": {
+      "description": "POST /v1/crews/join: an invite code, or the id of a public crew.",
+      "oneOf": [
+        {
+          "description": "By invite.",
+          "type": "object",
+          "required": [
+            "code"
+          ],
+          "properties": {
+            "code": {
+              "$ref": "#/$defs/inviteCode"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "A public crew.",
+          "type": "object",
+          "required": [
+            "crew"
+          ],
+          "properties": {
+            "crew": {
+              "$ref": "#/$defs/crewId"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "session": {
+      "description": "One finished focus session: end after start, minutes from 1 to its length in minutes rounded up, at most 720 minutes long.",
+      "type": "object",
+      "required": [
+        "start",
+        "end",
+        "minutes"
+      ],
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/unixSeconds"
+        },
+        "end": {
+          "$ref": "#/$defs/unixSeconds"
+        },
+        "minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 720
+        }
+      },
+      "additionalProperties": false
+    },
+    "sessionsBody": {
+      "description": "POST /v1/crews/sessions.",
+      "type": "object",
+      "required": [
+        "sessions"
+      ],
+      "properties": {
+        "sessions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/session"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "reportBody": {
+      "description": "POST /v1/crews/reports: a crew, or one of its members by ref.",
+      "type": "object",
+      "required": [
+        "crew",
+        "reason"
+      ],
+      "properties": {
+        "crew": {
+          "$ref": "#/$defs/crewId"
+        },
+        "member": {
+          "$ref": "#/$defs/memberRef"
+        },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "inappropriate_name",
+            "harassment",
+            "spam",
+            "cheating",
+            "other"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 280
+        }
+      },
+      "additionalProperties": false
+    },
+    "blockBody": {
+      "description": "POST /v1/crews/block.",
+      "type": "object",
+      "required": [
+        "crew",
+        "member"
+      ],
+      "properties": {
+        "crew": {
+          "$ref": "#/$defs/crewId"
+        },
+        "member": {
+          "$ref": "#/$defs/memberRef"
+        }
+      },
+      "additionalProperties": false
+    },
+    "error": {
+      "description": "Every failure, as in the Party schema.",
+      "type": "object",
+      "required": [
+        "ok",
+        "error",
+        "message"
+      ],
+      "properties": {
+        "ok": {
+          "const": false
+        },
+        "error": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "hallEntry": {
+      "description": "One crew in the Hall of Fame.",
+      "type": "object",
+      "required": [
+        "rank",
+        "medals",
+        "reachedAt",
+        "crew"
+      ],
+      "properties": {
+        "rank": {
+          "description": "Competition rank over the whole Olympic order; equal tallies reached at the same time share it.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "medals": {
+          "type": "object",
+          "required": [
+            "gold",
+            "silver",
+            "bronze"
+          ],
+          "properties": {
+            "gold": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "silver": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "bronze": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "reachedAt": {
+          "description": "The end of the week that gave the crew its current tally (unix seconds).",
+          "$ref": "#/$defs/unixSeconds"
+        },
+        "crew": {
+          "$ref": "#/$defs/crewSummary"
+        }
+      },
+      "additionalProperties": false
+    },
+    "hallReply": {
+      "description": "GET /v1/crews/hall?cursor=: every visible crew with a medal in Olympic order (golds, silvers, bronzes, earlier reachedAt, id), 20 a page; next is the cursor for the following page, null at the end.",
+      "type": "object",
+      "required": [
+        "ok",
+        "entries",
+        "next"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "entries": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/hallEntry"
+          }
+        },
+        "next": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

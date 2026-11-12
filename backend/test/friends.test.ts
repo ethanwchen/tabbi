@@ -2,7 +2,7 @@ import { runInDurableObject } from "cloudflare:test";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { migrate } from "../src/hub";
 import { FRIEND_REQUESTS_PER_DAY, FRIEND_REQUESTS_PER_MIN, MAX_FRIENDS, MAX_PENDING_REQUESTS } from "../src/lib";
-import { admin, befriend, call, expectError, hub, register } from "./helpers";
+import { admin, befriend, call, expectError, hub, register, dropCrewsTables } from "./helpers";
 
 type User = { code: string; token: string };
 const codes = (list: { profile: { code: string } }[]) => list.map((x) => x.profile.code);
@@ -284,11 +284,12 @@ describe("schema step 14", () => {
     await runInDurableObject(hub(), (_, state) => {
       const sql = state.storage.sql;
       sql.exec("DROP TABLE friend_requests");
+      dropCrewsTables(sql);
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
       sql.exec("UPDATE schema_version SET version = 13");
       sql.exec("INSERT OR IGNORE INTO friends (a, b, created_at) VALUES ('MIGR8AAA', 'MIGR8BBB', 5), ('MIGR8BBB', 'MIGR8AAA', 5)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 14 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
       expect(sql.exec("SELECT * FROM friend_requests").toArray()).toEqual([]);
       expect(sql.exec("SELECT a, b, created_at FROM friends WHERE a IN ('MIGR8AAA', 'MIGR8BBB') ORDER BY a").toArray()).toEqual([
         { a: "MIGR8AAA", b: "MIGR8BBB", created_at: 5 },

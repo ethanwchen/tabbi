@@ -97,3 +97,14 @@ export async function befriend(a: { code: string; token: string }, b: { code: st
   const accepted = await call("POST", `/v1/friends/${a.code}/accept`, undefined, b.token);
   expect(accepted.status).toBe(200);
 }
+
+/**
+ * Undoes schema step 15 (Study Crews), for the tests that rewind a database to an older version and
+ * migrate it forward again.
+ */
+export function dropCrewsTables(sql: SqlStorage): void {
+  for (const table of [
+    "crews", "crew_members", "crew_stints", "crew_sessions", "crew_day_credits", "crew_weeks", "crew_awards", "crew_rollups",
+    "crew_removals", "crew_reports", "crew_flags", "crew_name_holds",
+  ]) sql.exec(`DROP TABLE ${table}`);
+}

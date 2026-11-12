@@ -17,6 +17,8 @@ final class PartyModule: NotchModule {
         setup: [.party]
     )
     let store: PartyStore
+    /// The Crew section: my crew, the weekly top 3 and the sessions it reports.
+    let crews: CrewsStore
     private var completionSubscription: AnyCancellable?
     private var identitySubscription: AnyCancellable?
     private var grantsSubscription: AnyCancellable?
@@ -29,6 +31,8 @@ final class PartyModule: NotchModule {
 
     init(context: ModuleContext) {
         store = PartyStore(runMode: context.runMode)
+        crews = CrewsStore(party: store, runMode: context.runMode, storage: context.storage.folder("Party"))
+        crews.follow(activity: context.activityLog.recorded)
         account = context.accountSync
         settings = context.settings
         store.isSignedIn = { [weak account] in account?.isSignedIn ?? false }
@@ -124,6 +128,13 @@ final class PartyModule: NotchModule {
         store.$invite.map { $0 != nil }.removeDuplicates().eraseToAnyPublisher()
     }
 
+    /// A crew invite link (`tabbi://crew/<code>`): the Crew section asks
+    /// before joining. Party is turned on first if it was off.
+    func open(_ invite: CrewInvite) {
+        if !settings.settings.modules.isEnabled(Self.descriptor.id) { settings.settings.modules.add(Self.descriptor.id) }
+        crews.open(invite)
+    }
+
     /// Adds Party as the last tab, which starts it, then lets the invite go on.
     private func turnOnForInvite() {
         settings.settings.modules.add(Self.descriptor.id)
@@ -131,7 +142,7 @@ final class PartyModule: NotchModule {
     }
 
     func makePanel() -> AnyView {
-        AnyView(PartyPanel(store: store))
+        AnyView(PartyPanel(store: store, crews: crews))
     }
 
     /// Onboarding's party step: the name friends see, my code to share,
