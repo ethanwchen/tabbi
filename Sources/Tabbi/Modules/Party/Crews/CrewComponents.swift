@@ -249,16 +249,23 @@ struct PartyModeSwitch: View {
     @ObservedObject var crews: CrewsStore
     var partyTitle = true
     var crewsTitle = true
+    /// The last step of a header's ladder: only the way to the other mode,
+    /// as a glyph, when even two glyphs would push the header past the card.
+    var otherModeOnly = false
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs) {
-            CrewPill(title: String(localized: "Party", bundle: .tabbi), symbol: "person.3.fill", showsTitle: partyTitle,
-                     isSelected: !crews.showsCrews, help: String(localized: "Back to your party and friends", bundle: .tabbi)) {
-                withMotion(Theme.Motion.content) { crews.setShowsCrews(false) }
+            if !(otherModeOnly && !crews.showsCrews) {
+                CrewPill(title: String(localized: "Party", bundle: .tabbi), symbol: "person.3.fill", showsTitle: partyTitle && !otherModeOnly,
+                         isSelected: !crews.showsCrews, help: String(localized: "Back to your party and friends", bundle: .tabbi)) {
+                    withMotion(Theme.Motion.content) { crews.setShowsCrews(false) }
+                }
             }
-            CrewPill(title: String(localized: "Crews", bundle: .tabbi), symbol: "shield.fill", showsTitle: crewsTitle,
-                     isSelected: crews.showsCrews, help: String(localized: "Study crews: weekly board and Hall of Fame", bundle: .tabbi)) {
-                withMotion(Theme.Motion.content) { crews.setShowsCrews(true) }
+            if !(otherModeOnly && crews.showsCrews) {
+                CrewPill(title: String(localized: "Crews", bundle: .tabbi), symbol: "shield.fill", showsTitle: crewsTitle && !otherModeOnly,
+                         isSelected: crews.showsCrews, help: String(localized: "Study crews: weekly board and Hall of Fame", bundle: .tabbi)) {
+                    withMotion(Theme.Motion.content) { crews.setShowsCrews(true) }
+                }
             }
         }
         .fixedSize()

@@ -283,22 +283,32 @@ export function CrewPill({
   );
 }
 
-/** The Party and Crews mode switch in the Party stage's header; `partyTitle` and `crewsTitle` step down the spec's fit ladder. */
+/**
+ * The Party and Crews mode switch in the Party stage's header; `partyTitle`
+ * and `crewsTitle` step down the spec's fit ladder, and `otherModeOnly`, its
+ * last step, keeps only the pill that switches to the other mode.
+ */
 export function PartyModeSwitch({
   showsCrews,
   partyTitle = true,
   crewsTitle = true,
+  otherModeOnly = false,
   onChange,
 }: {
   showsCrews: boolean;
   partyTitle?: boolean;
   crewsTitle?: boolean;
+  otherModeOnly?: boolean;
   onChange: (crews: boolean) => void;
 }) {
   return (
     <div className="crew-pills" role="tablist">
-      <CrewPill title={tr("Party")} symbol="person.3.fill" showsTitle={partyTitle} selected={!showsCrews} help={tr("Back to your party and friends")} onClick={() => onChange(false)} />
-      <CrewPill title={tr("Crews")} symbol="shield.fill" showsTitle={crewsTitle} selected={showsCrews} help={tr("Study crews: weekly board and Hall of Fame")} onClick={() => onChange(true)} />
+      {!(otherModeOnly && !showsCrews) && (
+        <CrewPill title={tr("Party")} symbol="person.3.fill" showsTitle={partyTitle} selected={!showsCrews} help={tr("Back to your party and friends")} onClick={() => onChange(false)} />
+      )}
+      {!(otherModeOnly && showsCrews) && (
+        <CrewPill title={tr("Crews")} symbol="shield.fill" showsTitle={crewsTitle} selected={showsCrews} help={tr("Study crews: weekly board and Hall of Fame")} onClick={() => onChange(true)} />
+      )}
     </div>
   );
 }

@@ -47,17 +47,19 @@ const STATUS_GAP = 4;
 /**
  * The room header's layouts, roomiest first (the Mac's PartyRoom.header):
  * the Party or Crews switch stands where the title was, and the count
- * shortens and goes before the switch's titles and the share button do.
+ * shortens and goes before the switch's titles and the share button do;
+ * last, only the pill to the other mode stays.
  */
-const HEADER_VARIANTS: readonly { count: "long" | "short" | "none"; partyTitle: boolean; share: boolean; crewsTitle: boolean }[] = [
-  { count: "long", partyTitle: true, share: true, crewsTitle: true },
-  { count: "short", partyTitle: true, share: true, crewsTitle: true },
-  { count: "none", partyTitle: true, share: true, crewsTitle: true },
-  { count: "none", partyTitle: false, share: true, crewsTitle: true },
-  { count: "none", partyTitle: false, share: false, crewsTitle: true },
-  { count: "none", partyTitle: false, share: false, crewsTitle: false },
+const HEADER_VARIANTS: readonly { count: "long" | "short" | "none"; partyTitle: boolean; share: boolean; crewsTitle: boolean; otherModeOnly: boolean }[] = [
+  { count: "long", partyTitle: true, share: true, crewsTitle: true, otherModeOnly: false },
+  { count: "short", partyTitle: true, share: true, crewsTitle: true, otherModeOnly: false },
+  { count: "none", partyTitle: true, share: true, crewsTitle: true, otherModeOnly: false },
+  { count: "none", partyTitle: false, share: true, crewsTitle: true, otherModeOnly: false },
+  { count: "none", partyTitle: false, share: false, crewsTitle: true, otherModeOnly: false },
+  { count: "none", partyTitle: false, share: false, crewsTitle: false, otherModeOnly: false },
+  { count: "none", partyTitle: false, share: false, crewsTitle: false, otherModeOnly: true },
 ];
-const LAST_HEADER_VARIANT = { count: "none", partyTitle: false, share: false, crewsTitle: false } as const;
+const LAST_HEADER_VARIANT = { count: "none", partyTitle: false, share: false, crewsTitle: false, otherModeOnly: true } as const;
 
 /** The party I'm in: its code, everyone's pets, and the shared session. */
 function PartyRoom({ party, store, crews }: { party: Party; store: PartyStore; crews: CrewsStore }) {
@@ -91,7 +93,7 @@ function PartyRoom({ party, store, crews }: { party: Party; store: PartyStore; c
                   : undefined;
             return (
               <>
-                <PartyModeSwitch showsCrews={showsCrews} partyTitle={variant.partyTitle} crewsTitle={variant.crewsTitle} onChange={(shows) => crews.setShowsCrews(shows)} />
+                <PartyModeSwitch showsCrews={showsCrews} partyTitle={variant.partyTitle} crewsTitle={variant.crewsTitle} otherModeOnly={variant.otherModeOnly} onChange={(shows) => crews.setShowsCrews(shows)} />
                 <PartyCopyCode code={party.code} help={tr("The party code. Click to copy it, then send it to friends.")} />
                 {variant.share && <PartyShareInvite invite={{ kind: "joinParty", code: party.code }} help={tr("Share an invite link. Friends who open it can join this party in one click.")} />}
                 {count !== undefined && (

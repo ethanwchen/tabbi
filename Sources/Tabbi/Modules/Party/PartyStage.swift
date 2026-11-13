@@ -53,6 +53,7 @@ private struct PartyRoom: View {
                 headerLabels(partyTitle: false, crewsTitle: true, share: true, count: nil)
                 headerLabels(partyTitle: false, crewsTitle: true, share: false, count: nil)
                 headerLabels(partyTitle: false, crewsTitle: false, share: false, count: nil)
+                headerLabels(partyTitle: false, crewsTitle: false, share: false, count: nil, otherModeOnly: true)
             }
             Spacer(minLength: Theme.Spacing.s)
             PartyTextButton(title: String(localized: "Leave", bundle: .tabbi), isBusy: store.pending == .leaveParty,
@@ -64,10 +65,10 @@ private struct PartyRoom: View {
         }
     }
 
-    private func headerLabels(partyTitle: Bool, crewsTitle: Bool, share: Bool, count: String?) -> some View {
+    private func headerLabels(partyTitle: Bool, crewsTitle: Bool, share: Bool, count: String?, otherModeOnly: Bool = false) -> some View {
         HStack(spacing: Theme.Spacing.xs) {
             // The Party and Crews mode switch stands where the title was.
-            PartyModeSwitch(crews: crews, partyTitle: partyTitle, crewsTitle: crewsTitle)
+            PartyModeSwitch(crews: crews, partyTitle: partyTitle, crewsTitle: crewsTitle, otherModeOnly: otherModeOnly)
             PartyCopyCode(code: party.code, help: String(localized: "The party code. Click to copy it, then send it to friends.", bundle: .tabbi))
                 .fixedSize()
             if share {

@@ -349,7 +349,7 @@ App Store Connect's App Privacy answers cannot be set through the API, so enter 
    - Usage: App Functionality only.
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
-8. For **Product Interaction** (Party presence that friends and party members see: studying, on a break or away, the study method, when the phase ends, minutes today and the streak; the party the user is in and its shared session; study minutes per day for the weekly leaderboard; for a Study Crew member, each finished focus session's start, end and minutes, kept 14 days, and the minutes credited per day for the crew board; and, with the account, points per Mac, the days the user studied and the longest streak):
+8. For **Product Interaction** (Party presence that friends and party members see: studying, on a break or away, the study method, when the phase ends, minutes today and the streak; the party the user is in and its shared session; study minutes per day for the weekly leaderboard; for a Study Crew member, each finished focus session's start, end and minutes, kept 14 days, and the minutes credited per day for the crew board; the Study Level the app shares, shown to friends and beside the name on crew pages; and, with the account, points per Mac, the days the user studied and the longest streak):
    - Usage: App Functionality only.
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
