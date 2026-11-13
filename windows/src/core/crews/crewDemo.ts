@@ -251,7 +251,7 @@ export class CrewDemoData {
       golds: fields.golds,
     });
     this.crews = [
-      crew("NGHTQWLS2K", "Night Owls", "shield", "owl", "indigo", "public", {
+      crew("NGHTQWLS2K", "Night Owls", "shield", "moon", "indigo", "public", {
         members: 18,
         minutes: 3_138,
         golds: 3,
@@ -259,7 +259,7 @@ export class CrewDemoData {
         laurel: "gold",
         description: "Late study sessions, quiet focus.",
       }),
-      crew("MEDSQUAD2K", "Med School Grind", "heater", "books", "coral", "public", {
+      crew("MEDSQUAD2K", "Med School Grind", "heater", "apple", "coral", "public", {
         members: 20,
         minutes: 2_868,
         golds: 3,
@@ -267,30 +267,30 @@ export class CrewDemoData {
         laurel: "silver",
         description: "Anki every morning.",
       }),
-      crew("BJBLRATTEN", "Bibliotheksratten", "seal", "cat", "amber", "public", {
+      crew("BJBLRATTEN", "Bibliotheksratten", "seal", "book", "amber", "public", {
         members: 15,
         minutes: 2_646,
         golds: 1,
         trophies: 3,
         laurel: "bronze",
       }),
-      crew("LATENJGHT2", "Late Night Legends", "star", "moon", "violet", "public", { members: 11, minutes: 2_376, golds: 0, trophies: 2 }),
-      crew("DEEPWQRKDQ", "Deep Work Dojo", "hexagon", "headphones", "teal", "public", { members: 9, minutes: 2_310, golds: 1, trophies: 2 }),
-      crew("QUJETHQURS", "Quiet Hours", "pennant", "lamp", "sky", "private", {
+      crew("LATENJGHT2", "Late Night Legends", "star", "star-smile", "violet", "public", { members: 11, minutes: 2_376, golds: 0, trophies: 2 }),
+      crew("DEEPWQRKDQ", "Deep Work Dojo", "hexagon", "pencil", "teal", "public", { members: 9, minutes: 2_310, golds: 1, trophies: 2 }),
+      crew("QUJETHQURS", "Quiet Hours", "pennant", "mug", "sky", "private", {
         members: 12,
         minutes: 2_160,
         golds: 0,
         trophies: 1,
       }),
-      crew("RAJNYDAYRD", "Rainy Day Readers", "seal", "cloud", "mint", "public", { members: 7, minutes: 1_890, golds: 0, trophies: 0 }),
-      crew(CrewDemoData.myID, "Pomodoro Pals", "shield", "stopwatch", "teal", "public", { members: 5, minutes: 1_464, golds: 0, trophies: 0 }),
-      crew("EARLYB8RDS", "Early Birds", "heater", "bird", "sky", "public", {
+      crew("RAJNYDAYRD", "Rainy Day Readers", "seal", "mushroom", "mint", "public", { members: 7, minutes: 1_890, golds: 0, trophies: 0 }),
+      crew(CrewDemoData.myID, "Pomodoro Pals", "shield", "onigiri", "teal", "public", { members: 5, minutes: 1_464, golds: 0, trophies: 0 }),
+      crew("EARLYB8RDS", "Early Birds", "heater", "frog", "sky", "public", {
         members: 6,
         minutes: 1_320,
         golds: 0,
         trophies: 0,
       }),
-      crew("LQFJBEATSX", "Lofi and Chill", "pennant", "headphones", "rose", "public", { members: 14, minutes: 1_110, golds: 0, trophies: 0 }),
+      crew("LQFJBEATSX", "Lofi and Chill", "pennant", "paw", "rose", "public", { members: 14, minutes: 1_110, golds: 0, trophies: 0 }),
     ];
   }
 

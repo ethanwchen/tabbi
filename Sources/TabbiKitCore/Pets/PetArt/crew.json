@@ -1,7 +1,7 @@
 {
  "schema": "crewCrests.v1",
  "grid": 32,
- "slot": 24,
+ "slot": 15,
  "notes": [
   "A crest is rank (laurel, drawn first) + frame + emblem stamped at the frame's slot + up to three pips at pipPositions.",
   "Character grids with palette roles, like pets.v1 and badge.json; '.' is transparent and a later layer only paints its non-transparent cells.",
@@ -45,50 +45,6 @@
    "role": "creamShade",
    "hex": "#D9C4A6"
   },
-  "Q": {
-   "role": "ink",
-   "hex": "#3F4A78"
-  },
-  "q": {
-   "role": "inkShade",
-   "hex": "#2C3456"
-  },
-  "U": {
-   "role": "white",
-   "hex": "#FFFFFF"
-  },
-  "K": {
-   "role": "taupe",
-   "hex": "#8C7F72"
-  },
-  "k": {
-   "role": "taupeLight",
-   "hex": "#B5A99B"
-  },
-  "E": {
-   "role": "eye",
-   "hex": "#1E1420"
-  },
-  "I": {
-   "role": "iris",
-   "hex": "#3F86D6"
-  },
-  "N": {
-   "role": "nose",
-   "hex": "#E77A8C"
-  },
-  "P": {
-   "role": "blush",
-   "hex": "#FF9AAE"
-  },
-  "B": {
-   "role": "furBase",
-   "hex": "#E9A25B"
-  },
-  "A": {
-   "role": "furShade",
-   "hex": "#C87A3E"
-  },
   "Y": {
    "role": "gold",
    "hex": "#F2C14E"
@@ -97,54 +53,6 @@
    "role": "goldLight",
    "hex": "#FFE9A6"
   },
-  "F": {
-   "role": "leaf",
-   "hex": "#6CC46A"
-  },
-  "f": {
-   "role": "leafShade",
-   "hex": "#4C9A4B"
-  },
-  "G": {
-   "role": "leafLight",
-   "hex": "#A8E08A"
-  },
-  "S": {
-   "role": "sky",
-   "hex": "#86C7EE"
-  },
-  "s": {
-   "role": "skyDeep",
-   "hex": "#4A90D9"
-  },
-  "J": {
-   "role": "coffee",
-   "hex": "#6B4226"
-  },
-  "j": {
-   "role": "coffeeLight",
-   "hex": "#9C6B45"
-  },
-  "Z": {
-   "role": "sparkle",
-   "hex": "#F4F1FF"
-  },
-  "X": {
-   "role": "crimson",
-   "hex": "#B8304C"
-  },
-  "R": {
-   "role": "rose",
-   "hex": "#E8627C"
-  },
-  "L": {
-   "role": "brown",
-   "hex": "#A67F58"
-  },
-  "l": {
-   "role": "brownShade",
-   "hex": "#7E5C3D"
-  },
   "g": {
    "role": "rankLeaf",
    "hex": null
@@ -152,6 +60,90 @@
   "h": {
    "role": "rankShade",
    "hex": null
+  },
+  "a": {
+   "role": "emblem1",
+   "hex": "#FFF4DC"
+  },
+  "b": {
+   "role": "emblem2",
+   "hex": "#E8D2A8"
+  },
+  "c": {
+   "role": "emblem3",
+   "hex": "#D63A3A"
+  },
+  "d": {
+   "role": "emblem4",
+   "hex": "#FF5F5F"
+  },
+  "e": {
+   "role": "emblem5",
+   "hex": "#FFD23F"
+  },
+  "i": {
+   "role": "emblem6",
+   "hex": "#E8A51C"
+  },
+  "n": {
+   "role": "emblem7",
+   "hex": "#C08552"
+  },
+  "p": {
+   "role": "emblem8",
+   "hex": "#FFA3C9"
+  },
+  "r": {
+   "role": "emblem9",
+   "hex": "#C9CFD8"
+  },
+  "t": {
+   "role": "emblem10",
+   "hex": "#8F98A6"
+  },
+  "u": {
+   "role": "emblem11",
+   "hex": "#FFB75C"
+  },
+  "v": {
+   "role": "emblem12",
+   "hex": "#EE8E2E"
+  },
+  "w": {
+   "role": "emblem13",
+   "hex": "#EBC78E"
+  },
+  "x": {
+   "role": "emblem14",
+   "hex": "#C99B5C"
+  },
+  "z": {
+   "role": "emblem15",
+   "hex": "#1C262A"
+  },
+  "T": {
+   "role": "emblem16",
+   "hex": "#E9739F"
+  },
+  "0": {
+   "role": "emblem17",
+   "hex": "#FFA3B8"
+  },
+  "1": {
+   "role": "emblem18",
+   "hex": "#3A3A44"
+  },
+  "2": {
+   "role": "emblem19",
+   "hex": "#8E5A33"
+  },
+  "3": {
+   "role": "emblem20",
+   "hex": "#7BE26A"
+  },
+  "4": {
+   "role": "emblem21",
+   "hex": "#43B850"
   }
  },
  "crewColors": [
@@ -246,8 +238,8 @@
    "name": "Shield",
    "note": "The classic: flat top, straight shoulders, a clean point. Metal rim.",
    "slot": [
-    4,
-    3
+    8,
+    6
    ],
    "grid": [
     "................................",
@@ -289,8 +281,8 @@
    "name": "Seal",
    "note": "A round wax seal with a cream rim and an inner ring.",
    "slot": [
-    4,
-    4
+    8,
+    8
    ],
    "grid": [
     "................................",
@@ -332,8 +324,8 @@
    "name": "Pennant",
    "note": "A hanging banner on a metal rod with a swallowtail bottom. Cream rim.",
    "slot": [
-    4,
-    5
+    8,
+    7
    ],
    "grid": [
     "................................",
@@ -375,8 +367,8 @@
    "name": "Hex Guard",
    "note": "A flat-top hexagon, the widest frame, metal rim.",
    "slot": [
-    4,
-    4
+    8,
+    8
    ],
    "grid": [
     "................................",
@@ -418,8 +410,8 @@
    "name": "Star Crest",
    "note": "A fat five-point star, the emblem on its center. Metal rim.",
    "slot": [
-    4,
-    5
+    8,
+    10
    ],
    "grid": [
     "................................",
@@ -461,8 +453,8 @@
    "name": "Heater",
    "note": "A rounded heater shield with a notch at the top. Metal rim.",
    "slot": [
-    4,
-    4
+    8,
+    6
    ],
    "grid": [
     "................................",
@@ -502,363 +494,213 @@
  ],
  "emblems": [
   {
-   "id": "owl",
-   "name": "Owl",
-   "grid": [
-    "..oo................oo..",
-    ".oKKo..............oKKo.",
-    ".oKKKoo..........ooKKKo.",
-    ".oKKKKKooooooooooKKKKKo.",
-    "oKKKKKKKKKKKKKKKKKKKKKKo",
-    "oKKooooooKKKKKKooooooKKo",
-    "oKoUUUUUUoKKKKoUUUUUUoKo",
-    "oKoUUEEEUUoKKoUUEEEUUoKo",
-    "oKoUEEEEEUoKKoUEEEEEUoKo",
-    "oKoUEZEEEUoKKoUEEEZEUoKo",
-    "oKoUEEEEEUoKKoUEEEEEUoKo",
-    "oKoUUEEEUUoYYoUUEEEUUoKo",
-    "oKKoUUUUUoKYYKoUUUUUoKKo",
-    "oKKKoooooKKYYKKoooooKKKo",
-    ".oKKKKKKKKKooKKKKKKKKKo.",
-    ".oKKKKKKKKKKKKKKKKKKKKo.",
-    "..oKKKKKKKKKKKKKKKKKKo..",
-    "...ooKKKKKKKKKKKKKKoo...",
-    ".....oooooooooooooo.....",
-    "........................",
-    "........................",
-    "........................",
-    "........................",
-    "........................"
-   ]
-  },
-  {
-   "id": "bird",
-   "name": "Early Bird",
-   "grid": [
-    "..........oyyyyyyyyo....",
-    "........ooyyyyyyyyyYoo..",
-    ".......oyyyyYYYYYYYYYYo.",
-    ".......oyyYYYYYYYZZZYYo.",
-    "......oyyYYYYYYYYZYYYYYo",
-    ".....oyyyYYYYYYYYZYYYYYY",
-    ".....oyyYYYYYYYYYZZYYYYY",
-    ".....oyyYYYYYYYYYZZYYYYY",
-    ".....oyyYYYYYYYYYYYYYYYY",
-    ".....ooooYYYYYYYYYYYYZZY",
-    ".....oSSSoYYYYYYYYYYYZYY",
-    "....oSSZSSoooYYYYYYYYZZY",
-    "....oSSSSSoYYoYYYYYYYYYY",
-    ".oooSSSSSSoooYYYYYYYYYYo",
-    "oSSSoSSSSSSoYoYYYYYYYYo.",
-    "oSSSSosSSSSooYYYYYYYYYo.",
-    ".oSSSossSSSoYYYYYYYYoo..",
-    "..oossssSSoYYYYYYYYo....",
-    "...ossssSo.oooooooo.....",
-    "....ooooo...............",
-    ".....oYooYo.............",
-    ".....ooo.oo.............",
-    "........................",
-    "........................"
-   ]
-  },
-  {
-   "id": "mug",
-   "name": "Coffee Mug",
-   "grid": [
-    "............ZZZ.........",
-    "..........ZZZZZZ........",
-    ".........ZZZ..ZZ........",
-    "........ZZZ.............",
-    "........ZZZZ............",
-    ".........ZZZZZ..........",
-    "...........ZZZ..........",
-    "....ooooooooooo.........",
-    "...oJJJJJJJJJJJo........",
-    "...oWJJJJJJJJJWoooo.....",
-    "...oWWWWWWWWWWoWWWWo....",
-    "...oWUWWWWWWWWoWooWo....",
-    "....oUWWWWWWWWoWo.Wo....",
-    "....oWWWWWWWWWoWo.Wo....",
-    "....oWWWWWWWWWoWooWo....",
-    ".....oWWWWWWWWWoWWo.....",
-    ".....oWWWWWWWWWooo......",
-    ".....oVWWWWWWWVo........",
-    "......oVVWWWWVVo........",
-    "......oVVVVVVVVo........",
-    ".......oooooooo.........",
-    "........................",
-    "........................",
-    "........................"
-   ]
-  },
-  {
-   "id": "books",
+   "id": "book",
    "name": "Open Book",
    "grid": [
-    "........................",
-    "...........oo...........",
-    "..oooooooooooooooooooo..",
-    ".oWWWWWWWWWooWWWWWWWWWo.",
-    "oWUUWWWWWWWooWWWWWWWWWWo",
-    "oWWVVVVVWWWooWWWVVVVVWWo",
-    "oWWWWWWWWWWooWWWWWWWWWWo",
-    "oWWVVVVVWWWooWWWVVVVVWWo",
-    "oWWWWWWWWWWooWWWWWWWWWWo",
-    "oWWVVVVVWWWooWWWVVVVVWWo",
-    "oWWWWWWWWWWooWWWWWWWWWWo",
-    "oWWVVVVWWWWooWWWWVVVVWWo",
-    "oWWWWWWWWWWooWWWWWWWWWWo",
-    ".oWWWWWWWWWooWWWWWWWWWo.",
-    ".oXXXXXXXXXooXXXXXXXXXo.",
-    "..oXXXXXXXXooXXXXXXXXo..",
-    "...ooooooooYYoooooooo...",
-    "..........oYYo..........",
-    "..........oYYo..........",
-    "..........oYYo..........",
-    "..........oYoo..........",
-    "...........oo...........",
-    "........................",
-    "........................"
-   ]
-  },
-  {
-   "id": "headphones",
-   "name": "Headphones",
-   "grid": [
-    "..........oooo..........",
-    "........ooWWWWoo........",
-    "......ooWWWWWWWWo.......",
-    ".....oWWWWooooWWWo......",
-    "....oWWWoo....oWWWo.....",
-    "...oWWWo.......oWWWo....",
-    "...oWWo.........oWWo....",
-    "..oWWo..........oWWo....",
-    "..oWWo..........oWWo....",
-    "..oWWo.........ooWWoo...",
-    ".ooWWoo........oWWWWWo..",
-    "ooWWWWoo.......oWQQQWo..",
-    "oWWWWWWWo......oWQQQWo..",
-    "oWQQQQQWo......oWQQQWo..",
-    "oWQQQQQWo......oWWWWWo..",
-    "oWQQQQQWo.......ooooo...",
-    "oWQQQQQWo.........ZZZZ..",
-    "oWWWWWWWo.........Z..Z..",
-    ".ooooooo..........Z..Z..",
-    ".................ZZ.ZZ..",
-    ".................ZZ.ZZ..",
-    "........................",
-    "........................",
-    "........................"
-   ]
-  },
-  {
-   "id": "stopwatch",
-   "name": "Stopwatch",
-   "grid": [
-    "........................",
-    ".................oo.....",
-    "................oYYo....",
-    "........oooooooooYYo....",
-    "......ooMMMMMMMMoMMo....",
-    "...oooMMMMMMMMMMMMMo....",
-    "..oYoMMMMUUUUUUMMMMo....",
-    "..oMMMMUUUUmmUUUUMMMo...",
-    "...oMMUUUUUUUUXUUUMMo...",
-    "ZZZMMMUUZUUUUUoUUUMMMo..",
-    "..oMMUUZUUUUUoUUUUUMMo..",
-    "..oMMUUUUUUUUoUUUUUMmo..",
-    "..oMMUUUUUUUoUUUUUUmmo..",
-    "ZZoMMUmUUUUUXUUUUmUmmo..",
-    "..oMMUUUUUUUUoUUUUUmmo..",
-    "..oMMUUUUUUUUUooUUUmmo..",
-    "..oMMMUUUUUUUUUUUUmmmo..",
-    "ZZZoMMUUUUUUUUUUUUmmo...",
-    "...oMMMUUUUUUUUUUmmmo...",
-    "....oMMMMUUmmUUmmmmo....",
-    ".....oMMMMMmmmmmmmo.....",
-    "......ooMMmmmmmmoo......",
-    "........oooooooo........",
-    "........................"
+    "...............",
+    "...............",
+    ".ooooo.o.ooooo.",
+    "oaaaaaoooaaaaao",
+    "oabbbaaoaabbbao",
+    "oaaaaaaoaaaaaao",
+    "oabbbbaoabbbbao",
+    "oaaaaaaoaaaaaao",
+    "oabbbaaoaabbbao",
+    "oaaaaaaoaaaaaao",
+    "obbbbbbobbbbbbo",
+    "ocdddddddddddco",
+    ".oooooodoooooo.",
+    ".....ododo.....",
+    "......ooo......"
    ]
   },
   {
    "id": "moon",
-   "name": "Moon",
+   "name": "Moon and Star",
    "grid": [
-    "........................",
-    ".......oooo.............",
-    ".....ooyyyyo............",
-    "....oyyyyyo.............",
-    "...oyyyyyo..............",
-    "..oyyyyyo...............",
-    ".oyyyyyyo...............",
-    "oyyyyyyyo...............",
-    "oyyyyyyo................",
-    "yyyyyyyo................",
-    "yyyyyyyo................",
-    "yyyyyyyyo..........Z....",
-    "yyyyyyoyo.........ZZZ...",
-    "yyyyyyyoo........ZZZZZ..",
-    "yyyyyyyyyo........UUZ...",
-    "yyyyPPyyyyo........Z....",
-    "oyyyyyyyyyyo............",
-    "oyyyyyyyyoyoooo...o.....",
-    ".oyyyyyyyyoyyyyoooYo....",
-    "..oyyyyyyyyyyyyYYYo.....",
-    "...oyYYYyyyyyYYYYo......",
-    "....oYYYYYYYYYYYo.......",
-    ".....ooYYYYYYYoo........",
-    ".......ooooooo.........."
+    "......oo.......",
+    "....ooeeo......",
+    "...oeeeo.......",
+    "..oeeeo........",
+    ".oeeeeo........",
+    ".oeeeeo........",
+    "oiieeeo....o...",
+    "oiieeeo...oao..",
+    "oiieeeo..oaaao.",
+    ".oiieeeo..oao..",
+    ".oiieeeeoooo...",
+    "..oiiieeeeeeo..",
+    "...oiieeeeeo...",
+    "....ooeeeoo....",
+    "......ooo......"
    ]
   },
   {
-   "id": "cloud",
-   "name": "Storm Cloud",
+   "id": "mug",
+   "name": "Cozy Mug",
    "grid": [
-    "........oooooo..........",
-    "......ooWWWWWWoo........",
-    "....ooWWWWWWWWWWooo.....",
-    "..ooWWWWWWWWWWWWWWWoo...",
-    ".oWWWWWWWWWWWWWWWWWWWo..",
-    "oWUWWWWWWWWWWWWWWWWWWWo.",
-    "oWWWWWWWWWWWWWWWWWWWWWo.",
-    "oVWWWWWWWWWWWWWWWWWWWVo.",
-    ".oVVVVVVVVVVVVVVVVVVVo..",
-    "..oooooooooYYoooooooo...",
-    "..........oYYYo.........",
-    ".........oYYYo..........",
-    "........oYYYo...........",
-    ".......oYYYYYYoo........",
-    "........ooooYYYo........",
-    "...........oyYo.........",
-    "..........oyYo..........",
-    ".........oyYo...........",
-    "........oyo.............",
-    ".......oyo..............",
-    "......oo................",
-    "........................",
-    "........................",
-    "........................"
+    ".....o..o......",
+    "....oaooao.....",
+    ".....oaooao....",
+    "...ooaooaooo...",
+    "..onnnnnnnnnoo.",
+    "..oaaaaaaaaaaao",
+    "..oappaaappaoao",
+    "..oppppappppoao",
+    "..oapppppppaoao",
+    "..oaapppppaaaao",
+    "..oaaapppaaaoo.",
+    "..oaaaapaaaao..",
+    "..obaaaaaaabo..",
+    "...obbbbbbbo...",
+    "....ooooooo...."
    ]
   },
   {
-   "id": "cat",
-   "name": "Shorthair",
+   "id": "pencil",
+   "name": "Pencil",
    "grid": [
-    ".oo..................oo.",
-    ".oKKo..............oKKo.",
-    ".oKPKo............oKPKo.",
-    ".oKPPKooooooooooooKPPKo.",
-    ".oKKWWWWWWWWWWWWWWWWKKo.",
-    "oKWWWWWWKWWWWWWKWWWWWWKo",
-    "oWWWWWWWKWWKKWWKWWWWWWWo",
-    "oWWWWWWWKWWKKWWKWWWWWWWo",
-    "oWWWKKWWWWWWWWWWWWKKWWWo",
-    "oWWWooooWWWWWWWWooooWWWo",
-    "oWWoIIIIoWWWWWWoIIIIoWWo",
-    "oWWoIZIIoWWWWWWoIIZIoWWo",
-    "oWWoIIIIoWWWWWWoIIIIoWWo",
-    "oWWWooooWWWWWWWWooooWWWo",
-    "oWPPWWWWWWWNNWWWWWWWPPWo",
-    "oWPPWWWWWWoWWoWWWWWWPPWo",
-    ".oWWWWWWWWWWWWWWWWWWWWo.",
-    ".oWWWWWWWWWWWWWWWWWWWWo.",
-    "..oWWWWWWWWWWWWWWWWWWo..",
-    "...oooWWWWWWWWWWWWooo...",
-    "......oooooooooooo......",
-    "........................",
-    "........................",
-    "........................"
+    ".....ooooo.....",
+    "....opppppo....",
+    "....opppppo....",
+    "....orrrrro....",
+    "....ottttto....",
+    "....oueeevo....",
+    "....oueeevo....",
+    "....oueeevo....",
+    "....oueeevo....",
+    "....oueeevo....",
+    "....owwwwxo....",
+    ".....owwxo.....",
+    "......ozo......",
+    ".......o.......",
+    "..............."
    ]
   },
   {
-   "id": "pup",
-   "name": "Golden Pup",
+   "id": "paw",
+   "name": "Paw",
    "grid": [
-    "....oooooooooooooooo....",
-    "..ooABBBBBBBBBBBBBBAoo..",
-    ".oAAoBBBBBBBBBBBBBBoAAo.",
-    ".oAAoBBBBBBBBBBBBBBoAAo.",
-    ".oAAoBBBBBBBBBBBBBBoAAo.",
-    ".oAAoBBoooBBBBoooBBoAAo.",
-    ".oAAoBoEEEoBBoEEEoBoAAo.",
-    ".oAAoBoEZEoBBoEZEoBoAAo.",
-    ".oAAoBoEEEoBBoEEEoBoAAo.",
-    ".oAAoBBoooBBBBoooBBoAAo.",
-    ".oAAoBBBBWWWWWWBBBBoAAo.",
-    ".oAAoBBBWWWEEWWWBBBoAAo.",
-    ".oAAoBBBWWWEEWWWBBBoAAo.",
-    "..oooBBBWWWWWWWWBBBooo..",
-    "....oBBBWWoWWoWWBBBo....",
-    ".....oBBWWWRRWWWBBo.....",
-    "......oBBoRRRRoBBo......",
-    ".......oooRRRRooo.......",
-    ".........oooooo.........",
-    "........................",
-    "........................",
-    "........................",
-    "........................",
-    "........................"
+    "...............",
+    "....oo...oo....",
+    "...oppo.oppo...",
+    "..oppppoppppo..",
+    ".ooppppoppppoo.",
+    "oppoppo.oppoppo",
+    "opppooooooopppo",
+    "opppopppppopppo",
+    ".opopppppppopo.",
+    "..opppppppppo..",
+    "..opppppppppo..",
+    "..oTpppppppTo..",
+    "...oTToooTTo...",
+    "....oo...oo....",
+    "..............."
    ]
   },
   {
-   "id": "turtle",
-   "name": "Turtle",
+   "id": "star-smile",
+   "name": "Happy Star",
    "grid": [
-    ".....oooooooooooooo.....",
-    "...ooFFFFFFFFFFFFFFoo...",
-    "..oFFFFFfFFFFFFfFFFFFo..",
-    ".oFFFFFFfFFFFFFfFFFFFFo.",
-    ".oFFfffffFFFFFFfffffFFo.",
-    "oFFFFFFFfFFFFFFfFFFFFFFo",
-    "oFFFFFFFfFFFFFFfFFFFFFFo",
-    "oFfffffffFFFFFFfffffffFo",
-    "oFFFFFFFfFFFFFFfFFFFFFFo",
-    "offffffffFFFFFFffffffffo",
-    "oooooooooooooooooooooooo",
-    "oGGoGGGGGGGGGGGGGGGGoGGo",
-    "oGGoGoooGGGGGGGGoooGoGGo",
-    "oGGoGoEEoGGGGGGoEEoGoGGo",
-    "oGGoGoZEoGGGGGGoEZoGoGGo",
-    "ooooGoooGGGGGGGGoooGoooo",
-    "....oGGGGGGGGGGGGGGo....",
-    "....oGGGGoGGGGoGGGGo....",
-    ".....oGGGGGGGGGGGGo.....",
-    "......oooooooooooo......",
-    "........................",
-    "........................",
-    "........................",
-    "........................"
+    ".......o.......",
+    "......oeo......",
+    ".....oeeeo.....",
+    ".oooooeeeooooo.",
+    "oeeeeeeeeeeeeeo",
+    ".oeeezeeezeeeo.",
+    "..oeezeeezeeo..",
+    "...o0eezee0o...",
+    "...oeeeeeeeo...",
+    "..oeeeeieeeeo..",
+    "..oeeeioieeeo..",
+    ".oeeioo.ooieeo.",
+    ".oeio.....oieo.",
+    "..oo.......oo..",
+    "..............."
    ]
   },
   {
-   "id": "lamp",
-   "name": "Desk Lamp",
+   "id": "onigiri",
+   "name": "Onigiri",
    "grid": [
-    ".......oooooooo.........",
-    "......okKKKKKKKo........",
-    ".....oKKKKKKKKKKooo.....",
-    "....oKKKKKKKKKKKKoMMo...",
-    "...oKKKKKKKKKKKKKKooMo..",
-    "...oooooooooooooooo.oMo.",
-    "....ooyyyyyyyyyyoo..oMo.",
-    "....oyyyyyZZyyyyyo...oMo",
-    "...oyyyyyyyyyyyyyyo..oMo",
-    "...oyyyyyyyyyyyyyyo..oMo",
-    "..oyyyyyyyyyyyyyyyyo.oMo",
-    "..oyyyyyyyyyyyyyyyyo.oMo",
-    ".oyyyyyyyyyyyyyyyyyyooMo",
-    ".oyyyyyyyyyyyyyyyyyyooMo",
-    "oyyyyyyyyyyyyyyyyyyyyoMo",
-    "oooooooooooooooooooooooo",
-    ".................oMMMMMo",
-    ".................ooooooo",
-    "........................",
-    "........................",
-    "........................",
-    "........................",
-    "........................",
-    "........................"
+    "...............",
+    ".......o.......",
+    "......oao......",
+    ".....oaaao.....",
+    "....oaaaaao....",
+    "...oaaaaaaao...",
+    "...oazaaazao...",
+    "..oaazaaazaao..",
+    "..oa0aazaa0ao..",
+    ".oaaaaaaaaaaao.",
+    ".oaaa11111aaao.",
+    "oaaaa11111aaaao",
+    "obaaa11111aaabo",
+    ".ooooooooooooo.",
+    "..............."
+   ]
+  },
+  {
+   "id": "mushroom",
+   "name": "Mushroom Pal",
+   "grid": [
+    "...............",
+    ".....ooooo.....",
+    "...oodddddoo...",
+    "..oddaddddddo..",
+    ".oddaadddaaddo.",
+    "oddddddddaadddo",
+    "odaaddddddddddo",
+    "ocdddddaaddddco",
+    ".occccccccccco.",
+    "..ooaaaaaaaoo..",
+    "...oazaaazao...",
+    "...oa0aza0ao...",
+    "...obaaaaabo...",
+    "....ooooooo....",
+    "..............."
+   ]
+  },
+  {
+   "id": "apple",
+   "name": "Teacher's Apple",
+   "grid": [
+    ".......o.oo....",
+    "......o2o33o...",
+    "...oooo233o....",
+    "..odddd2dddo...",
+    ".oddadddddddo..",
+    "oddadddddddddo.",
+    "odddzddddzdddo.",
+    "odddzddddzdddo.",
+    "odd0ddzzdd0ddo.",
+    ".oddddddddddo..",
+    ".ocddddddddco..",
+    "..occddddcco...",
+    "...oooooooo....",
+    "...............",
+    "..............."
+   ]
+  },
+  {
+   "id": "frog",
+   "name": "Froggy",
+   "grid": [
+    "...............",
+    "...............",
+    "..ooo.....ooo..",
+    ".o333o...o333o.",
+    "o3aaa3ooo3aaa3o",
+    "o3aza33333aza3o",
+    "o3333333333333o",
+    "o3333333333333o",
+    "o3033333333303o",
+    "o333z33333z333o",
+    "o4333zzzzz3334o",
+    ".o43333333334o.",
+    "..o444444444o..",
+    "...ooooooooo...",
+    "..............."
    ]
   }
  ],

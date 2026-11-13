@@ -1089,8 +1089,6 @@
 	<string>رمز</string>
 	<key>Codex usage</key>
 	<string>استخدام Codex</string>
-	<key>Coffee Mug</key>
-	<string>كوب قهوة</string>
 	<key>Color</key>
 	<string>اللون</string>
 	<key>Command</key>
@@ -1213,6 +1211,8 @@
 	<string>دافئ</string>
 	<key>Cozy Hoodie</key>
 	<string>هودي دافئ</string>
+	<key>Cozy Mug</key>
+	<string>كوب دافئ</string>
 	<key>Cozy Pajamas</key>
 	<string>بيجامة دافئة</string>
 	<key>Cozy Scarf</key>
@@ -1317,8 +1317,6 @@
 	<string>جارٍ الحذف…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>يمكن أن يصل الوصف إلى %lld حرفًا.</string>
-	<key>Desk Lamp</key>
-	<string>مصباح مكتب</string>
 	<key>Desktop widget</key>
 	<string>أداة سطح المكتب</string>
 	<key>Details: %@</key>
@@ -1389,8 +1387,6 @@
 	<string>تظهر قائمة كل يوم هنا في اليوم التالي.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>يظهر هنا كل أسبوع تركّز فيه.</string>
-	<key>Early Bird</key>
-	<string>طائر الصباح</string>
 	<key>Earned by reaching study milestones</key>
 	<string>تُكسب ببلوغ مراحل في الدراسة</string>
 	<key>Earned by studying, never sold</key>
@@ -1633,6 +1629,8 @@
 	<string>باندانا الصداقة</string>
 	<key>Frog Hat</key>
 	<string>قبعة الضفدع</string>
+	<key>Froggy</key>
+	<string>ضفدوع</string>
 	<key>From your Claude Code logs</key>
 	<string>من سجلات Claude Code لديك</string>
 	<key>Frosted glass cards over a cool blue glow.</key>
@@ -1697,8 +1695,6 @@
 	<string>قلادة ذهبية</string>
 	<key>Golden Laurel</key>
 	<string>إكليل الغار الذهبي</string>
-	<key>Golden Pup</key>
-	<string>جرو ذهبي</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>أمسك كوبك واشرب بضع رشفات.</string>
 	<key>Graduation Cap</key>
@@ -1715,6 +1711,8 @@
 	<string>الهالوين</string>
 	<key>Halo</key>
 	<string>هالة</string>
+	<key>Happy Star</key>
+	<string>نجمة سعيدة</string>
 	<key>Happy wiggle</key>
 	<string>هزة ذيل سعيدة</string>
 	<key>Haptic feedback</key>
@@ -1727,8 +1725,6 @@
 	<string>أسود مثل الجهاز، هادئ وواضح.</string>
 	<key>Head Mirror</key>
 	<string>مرآة الرأس</string>
-	<key>Headphones</key>
-	<string>سماعات</string>
 	<key>Heads down</key>
 	<string>منغمس في العمل</string>
 	<key>Heart Glasses</key>
@@ -2151,8 +2147,8 @@
 	<string>مهام شهرية</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>مهام شهرية وشارات وأزياء تُكتسب من أهداف طويلة</string>
-	<key>Moon</key>
-	<string>قمر</string>
+	<key>Moon and Star</key>
+	<string>قمر ونجمة</string>
 	<key>Moonlit Witch Hat</key>
 	<string>قبعة ساحرة القمر</string>
 	<key>Moonstone</key>
@@ -2187,6 +2183,8 @@
 	<string>نقل لأعلى</string>
 	<key>Mushroom Cap</key>
 	<string>قبعة الفطر</string>
+	<key>Mushroom Pal</key>
+	<string>صديق الفطر</string>
 	<key>Music</key>
 	<string>الموسيقى</string>
 	<key>Mute</key>
@@ -2473,6 +2471,8 @@
 	<string>خطوة واحدة لفتح الرزم من هنا</string>
 	<key>One tap moves on.</key>
 	<string>نقرة واحدة وننتقل.</string>
+	<key>Onigiri</key>
+	<string>أونيغيري</string>
 	<key>Online</key>
 	<string>متصل</string>
 	<key>Only partly. Tabbi can add events but can't read them.</key>
@@ -2619,8 +2619,6 @@
 	<string>أزياء وإكسسوارات تُفتح بنقاط الدراسة</string>
 	<key>Outfits to earn</key>
 	<string>أزياء تُكتسب</string>
-	<key>Owl</key>
-	<string>بومة</string>
 	<key>Owl Spectacles</key>
 	<string>نظارة البومة</string>
 	<key>Owned</key>
@@ -2697,12 +2695,16 @@
 	<string>متوقف مؤقتًا</string>
 	<key>Paused in %@</key>
 	<string>متوقف مؤقتًا في %@</string>
+	<key>Paw</key>
+	<string>مخلب</string>
 	<key>Pay as you go with an Anthropic API key.</key>
 	<string>ادفع حسب الاستخدام بمفتاح API من Anthropic.</string>
 	<key>Pay as you go with an OpenAI API key.</key>
 	<string>ادفع حسب الاستخدام بمفتاح API من OpenAI.</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>الذروة %@  ·  المتوسط %@</string>
+	<key>Pencil</key>
+	<string>قلم رصاص</string>
 	<key>Pennant</key>
 	<string>راية</string>
 	<key>Pet</key>
@@ -3197,8 +3199,6 @@
 	<string>الوصول إلى الاختصارات متوقف</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>الوصول إلى الاختصارات متوقف. شغّل Shortcuts Events لـ Tabbi في إعدادات الأتمتة.</string>
-	<key>Shorthair</key>
-	<string>قط قصير الشعر</string>
 	<key>Show %@</key>
 	<string>إظهار %@</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3363,8 +3363,6 @@
 	<string>قف للحظة</string>
 	<key>Stand, shake out your legs, and sit back down when you like.</key>
 	<string>قف، وحرّك ساقيك، واجلس متى شئت.</string>
-	<key>Star</key>
-	<string>نجمة</string>
 	<key>Star Crest</key>
 	<string>شعار النجمة</string>
 	<key>Star tag</key>
@@ -3467,10 +3465,6 @@
 	<string>أوقف المعاينة</string>
 	<key>Stopped</key>
 	<string>توقّف</string>
-	<key>Stopwatch</key>
-	<string>ساعة إيقاف</string>
-	<key>Storm Cloud</key>
-	<string>سحابة عاصفة</string>
 	<key>Strawberry Cap</key>
 	<string>قبعة الفراولة</string>
 	<key>Streak</key>
@@ -3625,6 +3619,8 @@
 	<string>المهام</string>
 	<key>Tasks left today</key>
 	<string>المهام المتبقية اليوم</string>
+	<key>Teacher's Apple</key>
+	<string>تفاحة المعلم</string>
 	<key>Teal</key>
 	<string>أزرق مخضر</string>
 	<key>Team Medal</key>
@@ -3957,8 +3953,6 @@
 	<string>تشغيل الترتيب العشوائي</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>جارٍ تشغيل عدم الإزعاج…</string>
-	<key>Turtle</key>
-	<string>سلحفاة</string>
 	<key>Two copies of %@ are installed</key>
 	<string>توجد نسختان من %@ مثبتتان</string>
 	<key>Type a name first</key>

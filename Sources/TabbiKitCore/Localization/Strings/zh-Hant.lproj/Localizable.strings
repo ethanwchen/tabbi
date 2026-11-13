@@ -1101,8 +1101,6 @@
 	<string>程式碼</string>
 	<key>Codex usage</key>
 	<string>Codex 用量</string>
-	<key>Coffee Mug</key>
-	<string>咖啡杯</string>
 	<key>Color</key>
 	<string>顏色</string>
 	<key>Command</key>
@@ -1225,6 +1223,8 @@
 	<string>溫馨</string>
 	<key>Cozy Hoodie</key>
 	<string>舒適帽T</string>
+	<key>Cozy Mug</key>
+	<string>暖暖馬克杯</string>
 	<key>Cozy Pajamas</key>
 	<string>舒適睡衣</string>
 	<key>Cozy Scarf</key>
@@ -1329,8 +1329,6 @@
 	<string>刪除中…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>簡介最多 %lld 個字元。</string>
-	<key>Desk Lamp</key>
-	<string>檯燈</string>
 	<key>Desktop widget</key>
 	<string>桌面小工具</string>
 	<key>Details: %@</key>
@@ -1401,8 +1399,6 @@
 	<string>每天的清單會在隔天顯示在這裡。</string>
 	<key>Each week you focus shows up here.</key>
 	<string>你專注過的每一週都會顯示在這裡。</string>
-	<key>Early Bird</key>
-	<string>早起鳥</string>
 	<key>Earned by reaching study milestones</key>
 	<string>達成學習里程碑即可獲得</string>
 	<key>Earned by studying, never sold</key>
@@ -1645,6 +1641,8 @@
 	<string>友誼方巾</string>
 	<key>Frog Hat</key>
 	<string>青蛙帽</string>
+	<key>Froggy</key>
+	<string>小青蛙</string>
 	<key>From your Claude Code logs</key>
 	<string>來自你的 Claude Code 記錄</string>
 	<key>Frosted glass cards over a cool blue glow.</key>
@@ -1709,8 +1707,6 @@
 	<string>金色吊牌</string>
 	<key>Golden Laurel</key>
 	<string>金色桂冠</string>
-	<key>Golden Pup</key>
-	<string>金毛小狗</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>拿起杯子，喝幾口。</string>
 	<key>Graduation Cap</key>
@@ -1727,6 +1723,8 @@
 	<string>萬聖節</string>
 	<key>Halo</key>
 	<string>光環</string>
+	<key>Happy Star</key>
+	<string>開心星星</string>
 	<key>Happy wiggle</key>
 	<string>開心搖尾巴</string>
 	<key>Haptic feedback</key>
@@ -1741,8 +1739,6 @@
 	<string>有代碼嗎？輸入 %lld 位數的派對代碼，然後按 Return 鍵加入</string>
 	<key>Head Mirror</key>
 	<string>額鏡</string>
-	<key>Headphones</key>
-	<string>耳機</string>
 	<key>Heads down</key>
 	<string>專心中</string>
 	<key>Heart Glasses</key>
@@ -2167,8 +2163,8 @@
 	<string>每月任務</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>每月任務、徽章和長期目標贏得的服裝</string>
-	<key>Moon</key>
-	<string>月亮</string>
+	<key>Moon and Star</key>
+	<string>月亮和星星</string>
 	<key>Moonlit Witch Hat</key>
 	<string>月光女巫帽</string>
 	<key>Moonstone</key>
@@ -2203,6 +2199,8 @@
 	<string>上移</string>
 	<key>Mushroom Cap</key>
 	<string>蘑菇帽</string>
+	<key>Mushroom Pal</key>
+	<string>蘑菇夥伴</string>
 	<key>Music</key>
 	<string>音樂</string>
 	<key>Mute</key>
@@ -2489,6 +2487,8 @@
 	<string>還差一步就能從這裡打開牌組</string>
 	<key>One tap moves on.</key>
 	<string>選一個就會繼續。</string>
+	<key>Onigiri</key>
+	<string>飯糰</string>
 	<key>Online</key>
 	<string>在線上</string>
 	<key>Only partly. Tabbi can add events but can't read them.</key>
@@ -2635,8 +2635,6 @@
 	<string>用學習點數解鎖的服裝和配件</string>
 	<key>Outfits to earn</key>
 	<string>可贏得的服裝</string>
-	<key>Owl</key>
-	<string>貓頭鷹</string>
 	<key>Owl Spectacles</key>
 	<string>貓頭鷹眼鏡</string>
 	<key>Owned</key>
@@ -2713,12 +2711,16 @@
 	<string>已暫停</string>
 	<key>Paused in %@</key>
 	<string>已在 %@ 中暫停</string>
+	<key>Paw</key>
+	<string>爪印</string>
 	<key>Pay as you go with an Anthropic API key.</key>
 	<string>使用 Anthropic API 密鑰，用多少付多少。</string>
 	<key>Pay as you go with an OpenAI API key.</key>
 	<string>使用 OpenAI API 密鑰，用多少付多少。</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>峰值 %@  ·  平均 %@</string>
+	<key>Pencil</key>
+	<string>鉛筆</string>
 	<key>Pennant</key>
 	<string>錦旗</string>
 	<key>Pet</key>
@@ -3217,8 +3219,6 @@
 	<string>捷徑取用權限已關閉</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>捷徑取用權限已關閉。請在「自動化」設定中為 Tabbi 開啟 Shortcuts Events。</string>
-	<key>Shorthair</key>
-	<string>短毛貓</string>
 	<key>Show %@</key>
 	<string>顯示 %@</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3383,8 +3383,6 @@
 	<string>站起來一會兒</string>
 	<key>Stand, shake out your legs, and sit back down when you like.</key>
 	<string>站起來抖抖腿，想坐時再坐下。</string>
-	<key>Star</key>
-	<string>星形</string>
 	<key>Star Crest</key>
 	<string>星形徽章</string>
 	<key>Star tag</key>
@@ -3491,10 +3489,6 @@
 	<string>停止試聽</string>
 	<key>Stopped</key>
 	<string>已停止</string>
-	<key>Stopwatch</key>
-	<string>碼錶</string>
-	<key>Storm Cloud</key>
-	<string>雷雨雲</string>
 	<key>Strawberry Cap</key>
 	<string>草莓帽</string>
 	<key>Streak</key>
@@ -3649,6 +3643,8 @@
 	<string>任務</string>
 	<key>Tasks left today</key>
 	<string>今天剩下的任務</string>
+	<key>Teacher's Apple</key>
+	<string>老師的蘋果</string>
 	<key>Teal</key>
 	<string>青綠色</string>
 	<key>Team Medal</key>
@@ -3989,8 +3985,6 @@
 	<string>開啟隨機播放</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>正在開啟勿擾模式…</string>
-	<key>Turtle</key>
-	<string>烏龜</string>
 	<key>Two copies of %@ are installed</key>
 	<string>安裝了兩個 %@</string>
 	<key>Type a name first</key>

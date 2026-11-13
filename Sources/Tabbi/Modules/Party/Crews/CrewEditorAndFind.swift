@@ -263,6 +263,9 @@ private struct AnyInsettableShape: InsettableShape {
 }
 
 /// An emblem alone, in the crew color's outline.
+/// An emblem option: as large as fits the 24 pt tile in half-point steps
+/// (1.5 pt per sprite pixel for a 15 px emblem, whole device pixels on
+/// Retina, as the hero crest), so a small emblem does not float in air.
 struct CrewEmblemView: View {
     let emblem: String
     let color: String
@@ -270,7 +273,7 @@ struct CrewEmblemView: View {
     var body: some View {
         let shown = CrewCrestArt.art.emblem(emblem)
         CrewPixelImage(size: CGSize(width: shown.width, height: shown.height),
-                       pixelSize: CGFloat(max(1, 24 / max(shown.width, shown.height)))) {
+                       pixelSize: max(1, (48 / CGFloat(max(shown.width, shown.height))).rounded(.down) / 2)) {
             CrewCrestArt.emblemImage(emblem, color: color, scale: $0)
         }
     }

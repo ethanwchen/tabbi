@@ -1101,8 +1101,6 @@
 	<string>Code</string>
 	<key>Codex usage</key>
 	<string>Utilisation de Codex</string>
-	<key>Coffee Mug</key>
-	<string>Tasse de café</string>
 	<key>Color</key>
 	<string>Couleur</string>
 	<key>Command</key>
@@ -1225,6 +1223,8 @@
 	<string>Douillet</string>
 	<key>Cozy Hoodie</key>
 	<string>Sweat douillet</string>
+	<key>Cozy Mug</key>
+	<string>Tasse douillette</string>
 	<key>Cozy Pajamas</key>
 	<string>Pyjama douillet</string>
 	<key>Cozy Scarf</key>
@@ -1329,8 +1329,6 @@
 	<string>Suppression…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>La description peut contenir jusqu'à %lld caractères.</string>
-	<key>Desk Lamp</key>
-	<string>Lampe de bureau</string>
 	<key>Desktop widget</key>
 	<string>Widget de bureau</string>
 	<key>Details: %@</key>
@@ -1401,8 +1399,6 @@
 	<string>La liste de chaque jour apparaît ici le lendemain.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>Chaque semaine de focus s'affiche ici.</string>
-	<key>Early Bird</key>
-	<string>Lève-tôt</string>
 	<key>Earned by reaching study milestones</key>
 	<string>Gagnés en atteignant des étapes d'étude</string>
 	<key>Earned by studying, never sold</key>
@@ -1645,6 +1641,8 @@
 	<string>Bandana de l'amitié</string>
 	<key>Frog Hat</key>
 	<string>Bonnet grenouille</string>
+	<key>Froggy</key>
+	<string>Grenouillette</string>
 	<key>From your Claude Code logs</key>
 	<string>Depuis tes journaux Claude Code</string>
 	<key>Frosted glass cards over a cool blue glow.</key>
@@ -1709,8 +1707,6 @@
 	<string>Médaille dorée</string>
 	<key>Golden Laurel</key>
 	<string>Laurier doré</string>
-	<key>Golden Pup</key>
-	<string>Chiot doré</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>Prends ton verre et bois quelques gorgées.</string>
 	<key>Graduation Cap</key>
@@ -1727,6 +1723,8 @@
 	<string>Halloween</string>
 	<key>Halo</key>
 	<string>Auréole</string>
+	<key>Happy Star</key>
+	<string>Étoile joyeuse</string>
 	<key>Happy wiggle</key>
 	<string>Frétillement joyeux</string>
 	<key>Haptic feedback</key>
@@ -1741,8 +1739,6 @@
 	<string>Tu as un code ? Tape le code de groupe à %lld caractères et appuie sur Entrée pour rejoindre</string>
 	<key>Head Mirror</key>
 	<string>Miroir frontal</string>
-	<key>Headphones</key>
-	<string>Casque</string>
 	<key>Heads down</key>
 	<string>En pleine concentration</string>
 	<key>Heart Glasses</key>
@@ -2167,8 +2163,8 @@
 	<string>Quêtes du mois</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>Quêtes du mois, badges et tenues gagnés par des objectifs au long cours</string>
-	<key>Moon</key>
-	<string>Lune</string>
+	<key>Moon and Star</key>
+	<string>Lune et étoile</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Chapeau de sorcière lunaire</string>
 	<key>Moonstone</key>
@@ -2203,6 +2199,8 @@
 	<string>Monter</string>
 	<key>Mushroom Cap</key>
 	<string>Chapeau champignon</string>
+	<key>Mushroom Pal</key>
+	<string>Ami champignon</string>
 	<key>Music</key>
 	<string>Musique</string>
 	<key>Mute</key>
@@ -2489,6 +2487,8 @@
 	<string>Une étape pour ouvrir les paquets d'ici</string>
 	<key>One tap moves on.</key>
 	<string>Un clic et on continue.</string>
+	<key>Onigiri</key>
+	<string>Onigiri</string>
 	<key>Online</key>
 	<string>En ligne</string>
 	<key>Only partly. Tabbi can add events but can't read them.</key>
@@ -2635,8 +2635,6 @@
 	<string>Tenues et accessoires à débloquer avec tes points d'étude</string>
 	<key>Outfits to earn</key>
 	<string>Tenues à gagner</string>
-	<key>Owl</key>
-	<string>Hibou</string>
 	<key>Owl Spectacles</key>
 	<string>Lunettes de hibou</string>
 	<key>Owned</key>
@@ -2713,12 +2711,16 @@
 	<string>En pause</string>
 	<key>Paused in %@</key>
 	<string>En pause dans %@</string>
+	<key>Paw</key>
+	<string>Patte</string>
 	<key>Pay as you go with an Anthropic API key.</key>
 	<string>Paiement à l'usage avec une clé d'API Anthropic.</string>
 	<key>Pay as you go with an OpenAI API key.</key>
 	<string>Paiement à l'usage avec une clé d'API OpenAI.</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>Max %@  ·  Moy %@</string>
+	<key>Pencil</key>
+	<string>Crayon</string>
 	<key>Pennant</key>
 	<string>Fanion</string>
 	<key>Pet</key>
@@ -3217,8 +3219,6 @@
 	<string>L'accès aux Raccourcis est désactivé</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>L'accès aux Raccourcis est désactivé. Active Shortcuts Events pour Tabbi dans les réglages d'Automatisation.</string>
-	<key>Shorthair</key>
-	<string>Chat à poil court</string>
 	<key>Show %@</key>
 	<string>Afficher %@</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3383,8 +3383,6 @@
 	<string>Lève-toi un instant</string>
 	<key>Stand, shake out your legs, and sit back down when you like.</key>
 	<string>Lève-toi, secoue tes jambes et rassieds-toi quand tu veux.</string>
-	<key>Star</key>
-	<string>Étoile</string>
 	<key>Star Crest</key>
 	<string>Blason étoile</string>
 	<key>Star tag</key>
@@ -3491,10 +3489,6 @@
 	<string>Arrêter l'écoute</string>
 	<key>Stopped</key>
 	<string>Arrêté</string>
-	<key>Stopwatch</key>
-	<string>Chronomètre</string>
-	<key>Storm Cloud</key>
-	<string>Nuage d'orage</string>
 	<key>Strawberry Cap</key>
 	<string>Bonnet fraise</string>
 	<key>Streak</key>
@@ -3649,6 +3643,8 @@
 	<string>Tâches</string>
 	<key>Tasks left today</key>
 	<string>Tâches restantes du jour</string>
+	<key>Teacher's Apple</key>
+	<string>Pomme du prof</string>
 	<key>Teal</key>
 	<string>Bleu canard</string>
 	<key>Team Medal</key>
@@ -3989,8 +3985,6 @@
 	<string>Activer l'aléatoire</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>Activation de Ne pas déranger…</string>
-	<key>Turtle</key>
-	<string>Tortue</string>
 	<key>Two copies of %@ are installed</key>
 	<string>Deux copies de %@ sont installées</string>
 	<key>Type a name first</key>

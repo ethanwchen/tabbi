@@ -9,18 +9,16 @@
     "heater"
   ],
   "emblems": [
-    "owl",
-    "bird",
-    "mug",
-    "books",
-    "headphones",
-    "stopwatch",
+    "book",
     "moon",
-    "cloud",
-    "cat",
-    "pup",
-    "turtle",
-    "lamp"
+    "mug",
+    "pencil",
+    "paw",
+    "star-smile",
+    "onigiri",
+    "mushroom",
+    "apple",
+    "frog"
   ],
   "colors": {
     "coral": "#F07A6E",

@@ -84,6 +84,7 @@ export function CrewPixelImage({
   pixelSize,
   bitmap,
   deps,
+  limit,
   className,
   style,
 }: {
@@ -92,6 +93,8 @@ export function CrewPixelImage({
   pixelSize: number;
   bitmap: (scale: number) => PetBitmap;
   deps: readonly unknown[];
+  /** A side in CSS px the art never outgrows when rounding to whole device pixels goes up (1.5 px per sprite pixel on a 100 percent display). */
+  limit?: number;
   className?: string;
   style?: CSSProperties;
 }) {
@@ -101,7 +104,8 @@ export function CrewPixelImage({
     const canvas = element.current;
     if (!canvas) return;
     const panelScale = Number.parseFloat(getComputedStyle(canvas).getPropertyValue("--panel-scale")) || 1;
-    const scale = crewCrestScale(pixelSize * panelScale, ratio);
+    const rounded = crewCrestScale(pixelSize * panelScale, ratio);
+    const scale = limit === undefined ? rounded : Math.max(1, Math.min(rounded, Math.floor((limit * ratio * panelScale) / Math.max(width, height))));
     const drawn = bitmap(scale);
     canvas.width = drawn.width;
     canvas.height = drawn.height;
@@ -114,7 +118,7 @@ export function CrewPixelImage({
     image.data.set(drawn.data);
     context.putImageData(image, 0, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- `deps` names what the bitmap is drawn from
-  }, [pixelSize, ratio, ...deps]);
+  }, [pixelSize, ratio, limit, width, height, ...deps]);
   return (
     <span className={["crew-pixels", className].filter(Boolean).join(" ")} style={{ width: width * pixelSize, height: height * pixelSize, ...style }} aria-hidden="true">
       <canvas ref={element} />
@@ -157,8 +161,9 @@ export function CrewSummaryCrest({ crew, hero = false, laurel = true }: { crew: 
 /** An emblem alone, in the crew color's outline, as large as fits a 24 px option. */
 export function CrewEmblemView({ emblem, color }: { emblem: string; color: string }) {
   const shown = crestEmblem(emblem);
-  const pixelSize = Math.max(1, Math.floor(24 / Math.max(shown.width, shown.height)));
-  return <CrewPixelImage width={shown.width} height={shown.height} pixelSize={pixelSize} bitmap={(scale) => crewEmblemBitmap(emblem, color, scale)} deps={[emblem, color]} />;
+  /* Half-point steps, as the hero crest: 1.5 px per sprite pixel for a 15 px emblem (22.5 px in the 24 px option, whole device pixels at 2x), 1 for a 24 px one. */
+  const pixelSize = Math.max(1, Math.floor(48 / Math.max(shown.width, shown.height)) / 2);
+  return <CrewPixelImage width={shown.width} height={shown.height} pixelSize={pixelSize} limit={24} bitmap={(scale) => crewEmblemBitmap(emblem, color, scale)} deps={[emblem, color]} />;
 }
 
 /** One pixel medal. */

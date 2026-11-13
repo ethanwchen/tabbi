@@ -1101,8 +1101,6 @@
 	<string>코드</string>
 	<key>Codex usage</key>
 	<string>Codex 사용량</string>
-	<key>Coffee Mug</key>
-	<string>커피 머그</string>
 	<key>Color</key>
 	<string>색상</string>
 	<key>Command</key>
@@ -1225,6 +1223,8 @@
 	<string>포근함</string>
 	<key>Cozy Hoodie</key>
 	<string>포근한 후드티</string>
+	<key>Cozy Mug</key>
+	<string>포근한 머그</string>
 	<key>Cozy Pajamas</key>
 	<string>포근한 잠옷</string>
 	<key>Cozy Scarf</key>
@@ -1329,8 +1329,6 @@
 	<string>삭제 중…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>설명은 %lld자까지예요.</string>
-	<key>Desk Lamp</key>
-	<string>책상 스탠드</string>
 	<key>Desktop widget</key>
 	<string>데스크톱 위젯</string>
 	<key>Details: %@</key>
@@ -1401,8 +1399,6 @@
 	<string>하루의 목록은 다음 날 여기에 표시돼요.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>집중한 주가 여기에 모여요.</string>
-	<key>Early Bird</key>
-	<string>아침형 새</string>
 	<key>Earned by reaching study milestones</key>
 	<string>공부 마일스톤을 달성하면 획득해요</string>
 	<key>Earned by studying, never sold</key>
@@ -1645,6 +1641,8 @@
 	<string>우정 반다나</string>
 	<key>Frog Hat</key>
 	<string>개구리 모자</string>
+	<key>Froggy</key>
+	<string>개구리</string>
 	<key>From your Claude Code logs</key>
 	<string>내 Claude Code 로그 기준</string>
 	<key>Frosted glass cards over a cool blue glow.</key>
@@ -1709,8 +1707,6 @@
 	<string>금빛 태그</string>
 	<key>Golden Laurel</key>
 	<string>황금 월계관</string>
-	<key>Golden Pup</key>
-	<string>골든 강아지</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>컵을 들고 몇 모금 마셔요.</string>
 	<key>Graduation Cap</key>
@@ -1727,6 +1723,8 @@
 	<string>핼러윈</string>
 	<key>Halo</key>
 	<string>후광</string>
+	<key>Happy Star</key>
+	<string>행복한 별</string>
 	<key>Happy wiggle</key>
 	<string>신나는 꼬리 흔들기</string>
 	<key>Haptic feedback</key>
@@ -1741,8 +1739,6 @@
 	<string>코드가 있나요? %lld자리 파티 코드를 입력하고 Return 키를 눌러 참가하세요</string>
 	<key>Head Mirror</key>
 	<string>이마 반사경</string>
-	<key>Headphones</key>
-	<string>헤드폰</string>
 	<key>Heads down</key>
 	<string>집중하는 중</string>
 	<key>Heart Glasses</key>
@@ -2167,8 +2163,8 @@
 	<string>월간 퀘스트</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>월간 퀘스트, 배지, 긴 목표로 얻는 의상</string>
-	<key>Moon</key>
-	<string>달</string>
+	<key>Moon and Star</key>
+	<string>달과 별</string>
 	<key>Moonlit Witch Hat</key>
 	<string>달빛 마녀 모자</string>
 	<key>Moonstone</key>
@@ -2203,6 +2199,8 @@
 	<string>위로 이동</string>
 	<key>Mushroom Cap</key>
 	<string>버섯 모자</string>
+	<key>Mushroom Pal</key>
+	<string>버섯 친구</string>
 	<key>Music</key>
 	<string>음악</string>
 	<key>Mute</key>
@@ -2489,6 +2487,8 @@
 	<string>한 단계만 더하면 여기서 덱을 열 수 있어요</string>
 	<key>One tap moves on.</key>
 	<string>하나를 고르면 넘어가요.</string>
+	<key>Onigiri</key>
+	<string>주먹밥</string>
 	<key>Online</key>
 	<string>온라인</string>
 	<key>Only partly. Tabbi can add events but can't read them.</key>
@@ -2635,8 +2635,6 @@
 	<string>공부 포인트로 여는 의상과 액세서리</string>
 	<key>Outfits to earn</key>
 	<string>모을 수 있는 의상</string>
-	<key>Owl</key>
-	<string>부엉이</string>
 	<key>Owl Spectacles</key>
 	<string>부엉이 안경</string>
 	<key>Owned</key>
@@ -2713,12 +2711,16 @@
 	<string>일시정지됨</string>
 	<key>Paused in %@</key>
 	<string>%@에서 일시정지됨</string>
+	<key>Paw</key>
+	<string>발바닥</string>
 	<key>Pay as you go with an Anthropic API key.</key>
 	<string>Anthropic API 키로 쓴 만큼 결제해요.</string>
 	<key>Pay as you go with an OpenAI API key.</key>
 	<string>OpenAI API 키로 쓴 만큼 결제해요.</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>최대 %@  ·  평균 %@</string>
+	<key>Pencil</key>
+	<string>연필</string>
 	<key>Pennant</key>
 	<string>페넌트</string>
 	<key>Pet</key>
@@ -3217,8 +3219,6 @@
 	<string>단축어 접근이 꺼져 있음</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>단축어 접근이 꺼져 있어요. 자동화 설정에서 Tabbi의 Shortcuts Events를 켜세요.</string>
-	<key>Shorthair</key>
-	<string>단모종 고양이</string>
 	<key>Show %@</key>
 	<string>%@ 보기</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3383,8 +3383,6 @@
 	<string>잠깐 일어나 봐요</string>
 	<key>Stand, shake out your legs, and sit back down when you like.</key>
 	<string>일어나서 다리를 털고, 원할 때 다시 앉아요.</string>
-	<key>Star</key>
-	<string>별</string>
 	<key>Star Crest</key>
 	<string>별 문장</string>
 	<key>Star tag</key>
@@ -3491,10 +3489,6 @@
 	<string>미리 듣기 정지</string>
 	<key>Stopped</key>
 	<string>중지됨</string>
-	<key>Stopwatch</key>
-	<string>스톱워치</string>
-	<key>Storm Cloud</key>
-	<string>먹구름</string>
 	<key>Strawberry Cap</key>
 	<string>딸기 비니</string>
 	<key>Streak</key>
@@ -3649,6 +3643,8 @@
 	<string>할 일</string>
 	<key>Tasks left today</key>
 	<string>오늘 남은 할 일</string>
+	<key>Teacher's Apple</key>
+	<string>선생님의 사과</string>
 	<key>Teal</key>
 	<string>틸</string>
 	<key>Team Medal</key>
@@ -3989,8 +3985,6 @@
 	<string>셔플 켜기</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>방해금지 모드를 켜는 중…</string>
-	<key>Turtle</key>
-	<string>거북이</string>
 	<key>Two copies of %@ are installed</key>
 	<string>%@이(가) 두 개 설치되어 있어요</string>
 	<key>Type a name first</key>

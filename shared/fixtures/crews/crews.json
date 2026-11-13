@@ -419,7 +419,7 @@
           "createdAt" : 1790000000,
           "crewCount" : 38,
           "description" : "Late study sessions.",
-          "emblem" : "owl",
+          "emblem" : "book",
           "frame" : "shield",
           "golds" : 2,
           "hidden" : false,
@@ -575,7 +575,7 @@
       "schema" : "mineReply",
       "summary" : [
         "week 2026-W46 1794182400-1794787200",
-        "crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=2 private laurel=gold trophies=3 golds=2 members=3/20 minutes=2860 full=false rank=2 mine=true owner=true invite=W4LNUT7 hidden=false medals=2/1/0 crews=38",
+        "crew NGHTQWLS2K \"Night Owls\" crest=shield/book/indigo pips=2 private laurel=gold trophies=3 golds=2 members=3/20 minutes=2860 full=false rank=2 mine=true owner=true invite=W4LNUT7 hidden=false medals=2/1/0 crews=38",
         "week 2026-W45 place=1 minutes=11460 medal=gold",
         "week 2026-W44 place=5 minutes=3120 medal=none",
         "week 2026-W43 place=none minutes=0 medal=none",
@@ -613,7 +613,7 @@
               "crew" : {
                 "color" : "indigo",
                 "description" : "",
-                "emblem" : "owl",
+                "emblem" : "book",
                 "frame" : "shield",
                 "golds" : 2,
                 "id" : "NGHTQWLS2K",
@@ -632,7 +632,7 @@
               "crew" : {
                 "color" : "coral",
                 "description" : "",
-                "emblem" : "owl",
+                "emblem" : "book",
                 "frame" : "shield",
                 "golds" : 3,
                 "id" : "MEDSQUAD2K",
@@ -651,7 +651,7 @@
               "crew" : {
                 "color" : "amber",
                 "description" : "",
-                "emblem" : "owl",
+                "emblem" : "book",
                 "frame" : "shield",
                 "golds" : 1,
                 "id" : "BQQKWQRMS2",
@@ -705,7 +705,7 @@
             "crew" : {
               "color" : "coral",
               "description" : "Anki every morning.",
-              "emblem" : "owl",
+              "emblem" : "book",
               "frame" : "shield",
               "golds" : 3,
               "id" : "MEDSQUAD2K",
@@ -750,7 +750,7 @@
             "crew" : {
               "color" : "indigo",
               "description" : "",
-              "emblem" : "owl",
+              "emblem" : "book",
               "frame" : "shield",
               "golds" : 2,
               "id" : "NGHTQWLS2K",
@@ -825,15 +825,15 @@
         "week 2026-W46 1794182400-1794787200",
         "crews=38 next=eyJyIjo1fQ",
         "mine=5/840",
-        "#1 9120 pets=Clover,Pip tied= crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=3 public laurel=silver trophies=5 golds=3 members=14/20 minutes=9120 full=false",
-        "#2 2860 pets= tied= crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=2 private laurel=gold trophies=3 golds=2 members=3/20 minutes=2860 full=false",
+        "#1 9120 pets=Clover,Pip tied= crew MEDSQUAD2K \"Med School Squad\" crest=shield/book/coral pips=3 public laurel=silver trophies=5 golds=3 members=14/20 minutes=9120 full=false",
+        "#2 2860 pets= tied= crew NGHTQWLS2K \"Night Owls\" crest=shield/book/indigo pips=2 private laurel=gold trophies=3 golds=2 members=3/20 minutes=2860 full=false",
         "#3 1500 pets= tied=Late Shift crew TEACHERS22 \"Teachers Lounge\" crest=seal/mug/teal pips=0 public laurel=none trophies=0 golds=0 members=4/20 minutes=1500 full=false",
         "#3 1500 pets= tied=Teachers Lounge crew LATESHFT2K \"Late Shift\" crest=seal/mug/rose pips=0 public laurel=none trophies=0 golds=0 members=4/20 minutes=1500 full=false",
         "row #5 840 pets= tied= crew PQMQDQRQ2S \"Pomodoro Pals\" crest=seal/mug/sky pips=0 public laurel=none trophies=0 golds=0 members=4/20 minutes=840 full=false",
         "featured week 2026-W45 1793577600-1794182400",
-        "#1 11460 pets= tied= crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=2 private laurel=gold trophies=3 golds=2 members=3/20 minutes=2860 full=false",
-        "#2 10020 pets= tied= crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=3 public laurel=silver trophies=5 golds=3 members=14/20 minutes=9120 full=false",
-        "#3 4410 pets= tied= crew BQQKWQRMS2 \"Bookworms\" crest=shield/owl/amber pips=1 public laurel=bronze trophies=1 golds=1 members=20/20 minutes=3980 full=true"
+        "#1 11460 pets= tied= crew NGHTQWLS2K \"Night Owls\" crest=shield/book/indigo pips=2 private laurel=gold trophies=3 golds=2 members=3/20 minutes=2860 full=false",
+        "#2 10020 pets= tied= crew MEDSQUAD2K \"Med School Squad\" crest=shield/book/coral pips=3 public laurel=silver trophies=5 golds=3 members=14/20 minutes=9120 full=false",
+        "#3 4410 pets= tied= crew BQQKWQRMS2 \"Bookworms\" crest=shield/book/amber pips=1 public laurel=bronze trophies=1 golds=1 members=20/20 minutes=3980 full=true"
       ]
     },
     {
@@ -943,7 +943,7 @@
           {
             "color" : "coral",
             "description" : "Anki every morning.",
-            "emblem" : "owl",
+            "emblem" : "book",
             "frame" : "shield",
             "golds" : 3,
             "id" : "MEDSQUAD2K",
@@ -958,7 +958,7 @@
           {
             "color" : "amber",
             "description" : "",
-            "emblem" : "owl",
+            "emblem" : "book",
             "frame" : "shield",
             "golds" : 1,
             "id" : "BQQKWQRMS2",
@@ -981,8 +981,8 @@
       "name" : "search",
       "schema" : "searchReply",
       "summary" : [
-        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=3 public laurel=none trophies=5 golds=3 members=14/20 minutes=9120 full=false",
-        "crew BQQKWQRMS2 \"Bookworms\" crest=shield/owl/amber pips=1 public laurel=bronze trophies=1 golds=1 members=20/20 minutes=3980 full=true"
+        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/book/coral pips=3 public laurel=none trophies=5 golds=3 members=14/20 minutes=9120 full=false",
+        "crew BQQKWQRMS2 \"Bookworms\" crest=shield/book/amber pips=1 public laurel=bronze trophies=1 golds=1 members=20/20 minutes=3980 full=true"
       ]
     },
     {
@@ -992,7 +992,7 @@
             "crew" : {
               "color" : "indigo",
               "description" : "",
-              "emblem" : "owl",
+              "emblem" : "book",
               "frame" : "shield",
               "golds" : 3,
               "id" : "NGHTQWLS2K",
@@ -1016,7 +1016,7 @@
             "crew" : {
               "color" : "coral",
               "description" : "",
-              "emblem" : "owl",
+              "emblem" : "book",
               "frame" : "shield",
               "golds" : 1,
               "id" : "MEDSQUAD2K",
@@ -1040,7 +1040,7 @@
             "crew" : {
               "color" : "amber",
               "description" : "",
-              "emblem" : "owl",
+              "emblem" : "book",
               "frame" : "shield",
               "golds" : 1,
               "id" : "BQQKWQRMS2",
@@ -1076,9 +1076,9 @@
       "name" : "hall of fame",
       "schema" : "hallReply",
       "summary" : [
-        "#1 3/1/0 at=1794182400 crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=3 private laurel=gold trophies=4 golds=3 members=5/20 minutes=2860 full=false",
-        "#2 1/3/1 at=1793577600 crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=1 public laurel=silver trophies=5 golds=1 members=14/20 minutes=9120 full=false",
-        "#3 1/3/1 at=1794182400 crew BQQKWQRMS2 \"Bookworms\" crest=shield/owl/amber pips=1 public laurel=none trophies=5 golds=1 members=20/20 minutes=3980 full=true",
+        "#1 3/1/0 at=1794182400 crew NGHTQWLS2K \"Night Owls\" crest=shield/book/indigo pips=3 private laurel=gold trophies=4 golds=3 members=5/20 minutes=2860 full=false",
+        "#2 1/3/1 at=1793577600 crew MEDSQUAD2K \"Med School Squad\" crest=shield/book/coral pips=1 public laurel=silver trophies=5 golds=1 members=14/20 minutes=9120 full=false",
+        "#3 1/3/1 at=1794182400 crew BQQKWQRMS2 \"Bookworms\" crest=shield/book/amber pips=1 public laurel=none trophies=5 golds=1 members=20/20 minutes=3980 full=true",
         "next=eyJnIjoxfQ",
         "mine=1 3/1/0"
       ]
@@ -1090,7 +1090,7 @@
           "createdAt" : 1790000000,
           "crewCount" : 38,
           "description" : "Anki every morning.",
-          "emblem" : "owl",
+          "emblem" : "book",
           "frame" : "shield",
           "golds" : 3,
           "hidden" : false,
@@ -1175,7 +1175,7 @@
       "name" : "crew page of another crew",
       "schema" : "crewReply",
       "summary" : [
-        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=3 public laurel=silver trophies=5 golds=3 members=2/20 minutes=9120 full=false rank=1 mine=false owner=false invite=none hidden=false medals=1/3/1 crews=38",
+        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/book/coral pips=3 public laurel=silver trophies=5 golds=3 members=2/20 minutes=9120 full=false rank=1 mine=false owner=false invite=none hidden=false medals=1/3/1 crews=38",
         "week 2026-W45 place=2 minutes=10020 medal=silver",
         "member AVAREF7K3R \"Ava\" pet=\"Clover\" beagle outfit=none accessories=flowerCrown level=none minutes=2640 owner=true me=false",
         "member NQQRREF7HV \"Noor\" pet=\"Pip\" scottishFold outfit=none accessories=chunkyHeadphones level=none minutes=2380 owner=false me=false"
@@ -1238,7 +1238,7 @@
       "name" : "newer server crew page",
       "schema" : "crewReply",
       "summary" : [
-        "crew NEWERCREW2 \"From the Future\" crest=shield/owl/coral pips=0 private laurel=none trophies=0 golds=0 members=1/30 minutes=60 full=false rank=none mine=false owner=false invite=none hidden=false medals=0/0/0 crews=0",
+        "crew NEWERCREW2 \"From the Future\" crest=shield/book/coral pips=0 private laurel=none trophies=0 golds=0 members=1/30 minutes=60 full=false rank=none mine=false owner=false invite=none hidden=false medals=0/0/0 crews=0",
         "member FUTUREREF2 \"Zed\" pet=\"Byte\" britishShorthair outfit=none accessories=scarf level=12 minutes=60 owner=true me=false"
       ]
     },
@@ -1249,7 +1249,7 @@
           "createdAt" : 1790000000,
           "crewCount" : 38,
           "description" : "",
-          "emblem" : "owl",
+          "emblem" : "book",
           "frame" : "shield",
           "golds" : 0,
           "hidden" : false,
@@ -1294,7 +1294,7 @@
       "schema" : "joinReply",
       "summary" : [
         "joined=true",
-        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=0 public laurel=none trophies=0 golds=0 members=15/20 minutes=9120 full=false rank=1 mine=true owner=false invite=M3DSQD7 hidden=false medals=0/0/0 crews=38",
+        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/book/coral pips=0 public laurel=none trophies=0 golds=0 members=15/20 minutes=9120 full=false rank=1 mine=true owner=false invite=M3DSQD7 hidden=false medals=0/0/0 crews=38",
         "member SAMREF2K7Q \"Sam\" pet=hidden level=none minutes=0 owner=false me=true"
       ]
     },
@@ -1305,7 +1305,7 @@
           "createdAt" : 1790000000,
           "crewCount" : 38,
           "description" : "Anki every morning.",
-          "emblem" : "owl",
+          "emblem" : "book",
           "frame" : "shield",
           "golds" : 1,
           "hidden" : false,
@@ -1339,7 +1339,7 @@
           "crew" : {
             "color" : "coral",
             "description" : "Anki every morning.",
-            "emblem" : "owl",
+            "emblem" : "book",
             "frame" : "shield",
             "golds" : 1,
             "id" : "MEDSQUAD2K",
@@ -1361,7 +1361,7 @@
       "summary" : [
         "joined=false",
         "waiting MEDSQUAD2K at=1794300000-1794904800",
-        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/owl/coral pips=1 public laurel=silver trophies=5 golds=1 members=14/20 minutes=9120 full=false rank=1 mine=false owner=false invite=none hidden=false medals=1/3/1 crews=38"
+        "crew MEDSQUAD2K \"Med School Squad\" crest=shield/book/coral pips=1 public laurel=silver trophies=5 golds=1 members=14/20 minutes=9120 full=false rank=1 mine=false owner=false invite=none hidden=false medals=1/3/1 crews=38"
       ]
     },
     {
@@ -1372,7 +1372,7 @@
           "crew" : {
             "color" : "coral",
             "description" : "Anki every morning.",
-            "emblem" : "owl",
+            "emblem" : "book",
             "frame" : "shield",
             "golds" : 1,
             "id" : "MEDSQUAD2K",
@@ -1408,7 +1408,7 @@
           "createdAt" : 1790000000,
           "crewCount" : 38,
           "description" : "Late study sessions.",
-          "emblem" : "owl",
+          "emblem" : "book",
           "frame" : "shield",
           "golds" : 2,
           "hidden" : false,
@@ -1563,7 +1563,7 @@
       "name" : "approve a request",
       "schema" : "crewReply",
       "summary" : [
-        "crew NGHTQWLS2K \"Night Owls\" crest=shield/owl/indigo pips=2 private laurel=gold trophies=3 golds=2 members=3/20 minutes=2860 full=false rank=2 mine=true owner=true invite=W4LNUT7 hidden=false medals=2/1/0 crews=38",
+        "crew NGHTQWLS2K \"Night Owls\" crest=shield/book/indigo pips=2 private laurel=gold trophies=3 golds=2 members=3/20 minutes=2860 full=false rank=2 mine=true owner=true invite=W4LNUT7 hidden=false medals=2/1/0 crews=38",
         "week 2026-W45 place=1 minutes=11460 medal=gold",
         "week 2026-W44 place=5 minutes=3120 medal=none",
         "week 2026-W43 place=none minutes=0 medal=none",
@@ -1721,7 +1721,7 @@
       "body" : {
         "color" : "indigo",
         "description" : "Late study sessions.",
-        "emblem" : "owl",
+        "emblem" : "book",
         "frame" : "shield",
         "name" : "Night Owls",
         "visibility" : "private"
@@ -1744,7 +1744,7 @@
     {
       "body" : {
         "color" : "teal",
-        "emblem" : "lamp",
+        "emblem" : "frog",
         "frame" : "heater"
       },
       "method" : "PATCH",

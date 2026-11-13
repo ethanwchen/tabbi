@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Drops a new set of crew crest emblems (and optionally frame slots) into Tabbi.
 
-Usage: scripts/crews-import-art.py emblems.json [frames-patch.json] [--translations names.json]
+Usage: scripts/crews-import-art.py emblems.json [frames-patch.json] [--palette palette.json] [--translations names.json]
 
 Crew crests are data: `Sources/TabbiKitCore/Pets/PetArt/crew.json` (format
 crewCrests.v1) holds the frames, emblems, palette, crew colors and laurels,
@@ -9,13 +9,18 @@ the Mac and Windows apps compose crests from it at run time, and the server
 accepts the ids listed in `backend/shared/crews.json`. Swapping the emblem
 set therefore changes only data, and this script does all of it:
 
-1. `emblems.json` (a designer's crewEmblems.vN file: `palette` and an
-   ordered `emblems` list of `{id, name, grid}`, each grid at most the
-   slot's size) replaces the emblems in crew.json in its order; palette
-   characters it adds are merged in, and one that means something else in
-   crew.json stops the import.
-2. `frames-patch.json`, when given, moves frame slots or replaces frame
-   grids: `{"frames": {"shield": {"slot": [4, 3]}, ...}}`, a plain
+1. `emblems.json` (a designer's crewEmblems.vN file: an ordered `emblems`
+   list of `{id, name, grid}`, each grid at most the slot's size, and a
+   `palette`, or one from `--palette`) replaces the emblems in crew.json in
+   its order. The emblem palette is its own layer: a character that means
+   another color in crew.json (crew roles C, D, H, the rim metal M, ...)
+   is moved to the crew.json character of the same color or to a free
+   one, so the composed pixels are the designer's exactly. A palette value
+   is a hex, or null for a role crew.json already has (`o`, the crew
+   color's emblemOutline). Grids are used as drawn, never re-centered.
+2. `frames-patch.json`, when given, sets the emblem slot size (`slot`) and
+   moves frame slots or replaces frame grids:
+   `{"slot": 15, "frames": [{"id": "shield", "slot": [8, 6]}, ...]}`, a
    `{id: {...}}` map or a list of `{id, ...}`. Only `slot` and `grid` are
    read, and only for frames crew.json already has.
 3. `backend/shared/crews.json` gets the same frame and emblem ids, in order.
@@ -74,19 +79,48 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("emblems")
     parser.add_argument("frames_patch", nargs="?")
+    parser.add_argument("--palette")
     parser.add_argument("--translations")
     args = parser.parse_args()
 
     crest = json.loads(CREST.read_text())
     source = json.loads(pathlib.Path(args.emblems).read_text())
+    patch = json.loads(pathlib.Path(args.frames_patch).read_text()) if args.frames_patch else None
+    if isinstance(patch, dict) and "slot" in patch:
+        crest["slot"] = patch["slot"]
     slot = crest["slot"]
 
-    # Palette: merge, never redefine.
+    raw = json.loads(pathlib.Path(args.palette).read_text()).get("palette") if args.palette else source.get("palette")
+    if not raw:
+        fail("no palette: give the emblems file a palette or pass --palette")
+    layer = {char: (entry.get("hex") if isinstance(entry, dict) else entry) for char, entry in raw.items()}
+
+    # Map each emblem character onto crew.json's palette by color.
     palette = crest["palette"]
-    for char, entry in source.get("palette", {}).items():
-        if char in palette and palette[char] != entry:
-            fail(f"palette {char!r} is {palette[char]} in crew.json but {entry} in {args.emblems}")
-        palette.setdefault(char, entry)
+    by_hex = {entry["hex"].upper(): char for char, entry in palette.items() if entry.get("hex")}
+    free = [c for c in "abcdefinprtuvwxzT0123456789" if c not in palette]
+    mapping = {}
+
+    def map_char(char):
+        if char in mapping:
+            return mapping[char]
+        if char not in layer:
+            fail(f"emblem character {char!r} is not in the palette")
+        value = layer[char]
+        if value is None:
+            if char not in palette or palette[char].get("hex") is not None:
+                fail(f"palette {char!r} is a role, but crew.json has no role on {char!r}")
+            mapping[char] = char
+        elif value.upper() in by_hex:
+            mapping[char] = by_hex[value.upper()]
+        else:
+            if not free:
+                fail("crew.json has no free palette characters left")
+            new = free.pop(0)
+            palette[new] = {"role": f"emblem{len(mapping)}", "hex": value.upper()}
+            by_hex[value.upper()] = new
+            mapping[char] = new
+        return mapping[char]
 
     emblems = []
     seen = set()
@@ -95,16 +129,14 @@ def main():
             fail(f"emblem {item.get('id')} twice")
         seen.add(item.get("id"))
         check_grid("emblem", item, slot, slot)
-        unknown = {c for row in item["grid"] for c in row if c != "."} - set(palette)
-        if unknown:
-            fail(f"emblem {item['id']} uses {''.join(sorted(unknown))}, which the palette lacks")
-        emblems.append({"id": item["id"], "name": item.get("name", item["id"]), "grid": item["grid"]})
+        grid = ["".join("." if c == "." else map_char(c) for c in row) for row in item["grid"]]
+        emblems.append({"id": item["id"], "name": item.get("name", item["id"]), "grid": grid})
     if not emblems:
         fail(f"{args.emblems} has no emblems")
     crest["emblems"] = emblems
 
-    if args.frames_patch:
-        patches = frame_patches(json.loads(pathlib.Path(args.frames_patch).read_text()))
+    if patch is not None:
+        patches = frame_patches(patch)
         known = {f["id"]: f for f in crest["frames"]}
         for frame_id, patch in patches.items():
             if frame_id not in known:
@@ -117,6 +149,12 @@ def main():
                 if x < 0 or y < 0 or x + slot > crest["grid"] or y + slot > crest["grid"]:
                     fail(f"frame {frame_id}: slot {patch['slot']} puts the emblem off the canvas")
                 known[frame_id]["slot"] = [x, y]
+
+    # Drop colors no layer draws any more (the old emblems'); roles stay.
+    used = {c for f in crest["frames"] for row in f["grid"] for c in row}
+    used |= {c for e in emblems for row in e["grid"] for c in row}
+    used |= {c for row in crest["laurel"] for c in row} | {c for row in crest["pip"] for c in row}
+    crest["palette"] = {c: e for c, e in palette.items() if e.get("hex") is None or c in used}
 
     CREST.write_text(json.dumps(crest, indent=1, ensure_ascii=False) + "\n")
 

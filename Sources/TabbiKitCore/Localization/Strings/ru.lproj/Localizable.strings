@@ -1101,8 +1101,6 @@
 	<string>Код</string>
 	<key>Codex usage</key>
 	<string>Использование Codex</string>
-	<key>Coffee Mug</key>
-	<string>Кружка кофе</string>
 	<key>Color</key>
 	<string>Цвет</string>
 	<key>Command</key>
@@ -1225,6 +1223,8 @@
 	<string>Уютные</string>
 	<key>Cozy Hoodie</key>
 	<string>Уютное худи</string>
+	<key>Cozy Mug</key>
+	<string>Уютная кружка</string>
 	<key>Cozy Pajamas</key>
 	<string>Уютная пижама</string>
 	<key>Cozy Scarf</key>
@@ -1329,8 +1329,6 @@
 	<string>Удаление…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>Описание не длиннее %lld символов.</string>
-	<key>Desk Lamp</key>
-	<string>Настольная лампа</string>
 	<key>Desktop widget</key>
 	<string>Виджет на рабочем столе</string>
 	<key>Details: %@</key>
@@ -1401,8 +1399,6 @@
 	<string>Список каждого дня появится здесь на следующий день.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>Здесь появится каждая неделя с фокусом.</string>
-	<key>Early Bird</key>
-	<string>Ранняя пташка</string>
 	<key>Earned by reaching study milestones</key>
 	<string>Даются за учебные рубежи</string>
 	<key>Earned by studying, never sold</key>
@@ -1645,6 +1641,8 @@
 	<string>Бандана дружбы</string>
 	<key>Frog Hat</key>
 	<string>Шапка-лягушка</string>
+	<key>Froggy</key>
+	<string>Лягушонок</string>
 	<key>From your Claude Code logs</key>
 	<string>Из твоих журналов Claude Code</string>
 	<key>Frosted glass cards over a cool blue glow.</key>
@@ -1709,8 +1707,6 @@
 	<string>Золотой жетон</string>
 	<key>Golden Laurel</key>
 	<string>Золотой лавр</string>
-	<key>Golden Pup</key>
-	<string>Золотистый щенок</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>Возьми стакан и сделай пару глотков.</string>
 	<key>Graduation Cap</key>
@@ -1727,6 +1723,8 @@
 	<string>Хэллоуин</string>
 	<key>Halo</key>
 	<string>Нимб</string>
+	<key>Happy Star</key>
+	<string>Весёлая звезда</string>
 	<key>Happy wiggle</key>
 	<string>Радостное виляние</string>
 	<key>Haptic feedback</key>
@@ -1741,8 +1739,6 @@
 	<string>Есть код? Введи %lld-значный код пати и нажми Return, чтобы присоединиться</string>
 	<key>Head Mirror</key>
 	<string>Лобное зеркало</string>
-	<key>Headphones</key>
-	<string>Наушники</string>
 	<key>Heads down</key>
 	<string>В работе</string>
 	<key>Heart Glasses</key>
@@ -2167,8 +2163,8 @@
 	<string>Задания месяца</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>Задания месяца, значки и наряды за долгие цели</string>
-	<key>Moon</key>
-	<string>Луна</string>
+	<key>Moon and Star</key>
+	<string>Луна и звезда</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Лунная шляпа ведьмы</string>
 	<key>Moonstone</key>
@@ -2203,6 +2199,8 @@
 	<string>Переместить вверх</string>
 	<key>Mushroom Cap</key>
 	<string>Шляпка-гриб</string>
+	<key>Mushroom Pal</key>
+	<string>Грибочек</string>
 	<key>Music</key>
 	<string>Музыка</string>
 	<key>Mute</key>
@@ -2489,6 +2487,8 @@
 	<string>Еще шаг, чтобы открывать колоды отсюда</string>
 	<key>One tap moves on.</key>
 	<string>Одно нажатие, и дальше.</string>
+	<key>Onigiri</key>
+	<string>Онигири</string>
 	<key>Online</key>
 	<string>В сети</string>
 	<key>Only partly. Tabbi can add events but can't read them.</key>
@@ -2635,8 +2635,6 @@
 	<string>Наряды и аксессуары за очки учёбы</string>
 	<key>Outfits to earn</key>
 	<string>Наряды за цели</string>
-	<key>Owl</key>
-	<string>Сова</string>
 	<key>Owl Spectacles</key>
 	<string>Совиные очки</string>
 	<key>Owned</key>
@@ -2713,12 +2711,16 @@
 	<string>Пауза</string>
 	<key>Paused in %@</key>
 	<string>Пауза в %@</string>
+	<key>Paw</key>
+	<string>Лапка</string>
 	<key>Pay as you go with an Anthropic API key.</key>
 	<string>Оплата по факту с ключом API Anthropic.</string>
 	<key>Pay as you go with an OpenAI API key.</key>
 	<string>Оплата по факту с ключом API OpenAI.</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>Макс. %@  ·  Ср. %@</string>
+	<key>Pencil</key>
+	<string>Карандаш</string>
 	<key>Pennant</key>
 	<string>Вымпел</string>
 	<key>Pet</key>
@@ -3217,8 +3219,6 @@
 	<string>Доступ к Быстрым командам выключен</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>Доступ к Быстрым командам выключен. Включи Shortcuts Events для Tabbi в настройках «Автоматизация».</string>
-	<key>Shorthair</key>
-	<string>Короткошёрстная кошка</string>
 	<key>Show %@</key>
 	<string>Показать %@</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3383,8 +3383,6 @@
 	<string>Встань ненадолго</string>
 	<key>Stand, shake out your legs, and sit back down when you like.</key>
 	<string>Встань, разомни ноги и садись обратно, когда захочешь.</string>
-	<key>Star</key>
-	<string>Звезда</string>
 	<key>Star Crest</key>
 	<string>Звёздный герб</string>
 	<key>Star tag</key>
@@ -3491,10 +3489,6 @@
 	<string>Остановить прослушивание</string>
 	<key>Stopped</key>
 	<string>Остановлено</string>
-	<key>Stopwatch</key>
-	<string>Секундомер</string>
-	<key>Storm Cloud</key>
-	<string>Грозовая туча</string>
 	<key>Strawberry Cap</key>
 	<string>Клубничная шапочка</string>
 	<key>Streak</key>
@@ -3649,6 +3643,8 @@
 	<string>Задачи</string>
 	<key>Tasks left today</key>
 	<string>Задачи на сегодня</string>
+	<key>Teacher's Apple</key>
+	<string>Яблоко для учителя</string>
 	<key>Teal</key>
 	<string>Бирюзовый</string>
 	<key>Team Medal</key>
@@ -3989,8 +3985,6 @@
 	<string>Включить перемешивание</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>Включаем «Не беспокоить»…</string>
-	<key>Turtle</key>
-	<string>Черепаха</string>
 	<key>Two copies of %@ are installed</key>
 	<string>Установлены две копии %@</string>
 	<key>Type a name first</key>

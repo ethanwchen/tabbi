@@ -1101,8 +1101,6 @@
 	<string>Code</string>
 	<key>Codex usage</key>
 	<string>Codex usage</string>
-	<key>Coffee Mug</key>
-	<string>Coffee Mug</string>
 	<key>Color</key>
 	<string>Color</string>
 	<key>Command</key>
@@ -1225,6 +1223,8 @@
 	<string>Cozy</string>
 	<key>Cozy Hoodie</key>
 	<string>Cozy Hoodie</string>
+	<key>Cozy Mug</key>
+	<string>Cozy Mug</string>
 	<key>Cozy Pajamas</key>
 	<string>Cozy Pajamas</string>
 	<key>Cozy Scarf</key>
@@ -1329,8 +1329,6 @@
 	<string>Deleting…</string>
 	<key>Descriptions can be up to %lld characters.</key>
 	<string>Descriptions can be up to %lld characters.</string>
-	<key>Desk Lamp</key>
-	<string>Desk Lamp</string>
 	<key>Desktop widget</key>
 	<string>Desktop widget</string>
 	<key>Details: %@</key>
@@ -1401,8 +1399,6 @@
 	<string>Each day's list shows up here the day after.</string>
 	<key>Each week you focus shows up here.</key>
 	<string>Each week you focus shows up here.</string>
-	<key>Early Bird</key>
-	<string>Early Bird</string>
 	<key>Earned by reaching study milestones</key>
 	<string>Earned by reaching study milestones</string>
 	<key>Earned by studying, never sold</key>
@@ -1645,6 +1641,8 @@
 	<string>Friendship Bandana</string>
 	<key>Frog Hat</key>
 	<string>Frog Hat</string>
+	<key>Froggy</key>
+	<string>Froggy</string>
 	<key>From your Claude Code logs</key>
 	<string>From your Claude Code logs</string>
 	<key>Frosted glass cards over a cool blue glow.</key>
@@ -1709,8 +1707,6 @@
 	<string>Gold tag</string>
 	<key>Golden Laurel</key>
 	<string>Golden Laurel</string>
-	<key>Golden Pup</key>
-	<string>Golden Pup</string>
 	<key>Grab your glass and take a few sips.</key>
 	<string>Grab your glass and take a few sips.</string>
 	<key>Graduation Cap</key>
@@ -1727,6 +1723,8 @@
 	<string>Halloween</string>
 	<key>Halo</key>
 	<string>Halo</string>
+	<key>Happy Star</key>
+	<string>Happy Star</string>
 	<key>Happy wiggle</key>
 	<string>Happy wiggle</string>
 	<key>Haptic feedback</key>
@@ -1741,8 +1739,6 @@
 	<string>Have a code? Type the %lld-character party code and press Return to join</string>
 	<key>Head Mirror</key>
 	<string>Head Mirror</string>
-	<key>Headphones</key>
-	<string>Headphones</string>
 	<key>Heads down</key>
 	<string>Heads down</string>
 	<key>Heart Glasses</key>
@@ -2167,8 +2163,8 @@
 	<string>Monthly quests</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>Monthly quests, badges and outfits earned from long goals</string>
-	<key>Moon</key>
-	<string>Moon</string>
+	<key>Moon and Star</key>
+	<string>Moon and Star</string>
 	<key>Moonlit Witch Hat</key>
 	<string>Moonlit Witch Hat</string>
 	<key>Moonstone</key>
@@ -2203,6 +2199,8 @@
 	<string>Move up</string>
 	<key>Mushroom Cap</key>
 	<string>Mushroom Cap</string>
+	<key>Mushroom Pal</key>
+	<string>Mushroom Pal</string>
 	<key>Music</key>
 	<string>Music</string>
 	<key>Mute</key>
@@ -2489,6 +2487,8 @@
 	<string>One step to open decks from here</string>
 	<key>One tap moves on.</key>
 	<string>One tap moves on.</string>
+	<key>Onigiri</key>
+	<string>Onigiri</string>
 	<key>Online</key>
 	<string>Online</string>
 	<key>Only partly. Tabbi can add events but can't read them.</key>
@@ -2635,8 +2635,6 @@
 	<string>Outfits and accessories to unlock with study points</string>
 	<key>Outfits to earn</key>
 	<string>Outfits to earn</string>
-	<key>Owl</key>
-	<string>Owl</string>
 	<key>Owl Spectacles</key>
 	<string>Owl Spectacles</string>
 	<key>Owned</key>
@@ -2713,12 +2711,16 @@
 	<string>Paused</string>
 	<key>Paused in %@</key>
 	<string>Paused in %@</string>
+	<key>Paw</key>
+	<string>Paw</string>
 	<key>Pay as you go with an Anthropic API key.</key>
 	<string>Pay as you go with an Anthropic API key.</string>
 	<key>Pay as you go with an OpenAI API key.</key>
 	<string>Pay as you go with an OpenAI API key.</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>Peak %@  ·  Avg %@</string>
+	<key>Pencil</key>
+	<string>Pencil</string>
 	<key>Pennant</key>
 	<string>Pennant</string>
 	<key>Pet</key>
@@ -3217,8 +3219,6 @@
 	<string>Shortcuts access is off</string>
 	<key>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</key>
 	<string>Shortcuts access is off. Turn on Shortcuts Events for Tabbi in Automation settings.</string>
-	<key>Shorthair</key>
-	<string>Shorthair</string>
 	<key>Show %@</key>
 	<string>Show %@</string>
 	<key>Show My Pet on Crew Pages</key>
@@ -3383,8 +3383,6 @@
 	<string>Stand up for a moment</string>
 	<key>Stand, shake out your legs, and sit back down when you like.</key>
 	<string>Stand, shake out your legs, and sit back down when you like.</string>
-	<key>Star</key>
-	<string>Star</string>
 	<key>Star Crest</key>
 	<string>Star Crest</string>
 	<key>Star tag</key>
@@ -3491,10 +3489,6 @@
 	<string>Stop the preview</string>
 	<key>Stopped</key>
 	<string>Stopped</string>
-	<key>Stopwatch</key>
-	<string>Stopwatch</string>
-	<key>Storm Cloud</key>
-	<string>Storm Cloud</string>
 	<key>Strawberry Cap</key>
 	<string>Strawberry Cap</string>
 	<key>Streak</key>
@@ -3649,6 +3643,8 @@
 	<string>Tasks</string>
 	<key>Tasks left today</key>
 	<string>Tasks left today</string>
+	<key>Teacher's Apple</key>
+	<string>Teacher's Apple</string>
 	<key>Teal</key>
 	<string>Teal</string>
 	<key>Team Medal</key>
@@ -3989,8 +3985,6 @@
 	<string>Turn shuffle on</string>
 	<key>Turning Do Not Disturb on…</key>
 	<string>Turning Do Not Disturb on…</string>
-	<key>Turtle</key>
-	<string>Turtle</string>
 	<key>Two copies of %@ are installed</key>
 	<string>Two copies of %@ are installed</string>
 	<key>Type a name first</key>
