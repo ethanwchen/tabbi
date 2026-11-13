@@ -5,7 +5,7 @@
  */
 
 import { useStore } from "../../app/useStore";
-import { tr } from "../../core/localization/tr";
+import { currentLanguage, tr } from "../../core/localization/tr";
 import { PartyCode, type Party, type PartyMember, type PartySession } from "../../core/party/partyModels";
 import { minutesLeft, rosterDuration, rosterStatus, rosterTimeLeft, statusLine } from "../../core/party/partyRoster";
 import { isFoundingMember, profileStanding } from "../../core/party/partyModels";
@@ -22,7 +22,7 @@ import { ViewsThatFit } from "../../ui/kit/ViewsThatFit";
 import { PartyCodeField, PartyCopyCode, PartyPet, PartyPillButton, PartyShareInvite, PartyTextButton, statusColor } from "./PartyComponents";
 import { useModerationMenu } from "./PartyModeration";
 import type { PartyStore } from "./partyStore";
-import { PartyModeSwitch } from "./CrewComponents";
+import { PartyModeSwitch, useFitStep } from "./CrewComponents";
 import type { CrewsStore } from "./crewsStore";
 
 export function PartyStage({ store, crews, onFieldFocus }: { store: PartyStore; crews: CrewsStore; onFieldFocus: (focused: boolean) => void }) {
@@ -271,14 +271,17 @@ function RunningSession({ session, store, labeled }: { session: PartySession; st
 function PartyLobby({ store, crews, onFieldFocus }: { store: PartyStore; crews: CrewsStore; onFieldFocus: (focused: boolean) => void }) {
   const state = useStore(store);
   const showsCrews = useStore(crews, (crewsState) => crewsState.showsCrews);
+  /* As on the Mac: the long invitation while it fits whole, else the short one, else none; never an ellipsis. */
+  const [lobby, step] = useFitStep<HTMLDivElement>(2, `${currentLanguage()}|${state.party.profile !== undefined}`);
+  const line = step === 0 ? tr("Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.") : step === 1 ? tr("Start a party, or join a friend's.") : undefined;
   return (
-    <div className="party-lobby">
+    <div ref={lobby} className="party-lobby">
       <PartyModeSwitch showsCrews={showsCrews} onChange={(shows) => crews.setShowsCrews(shows)} />
       <div className="party-lobby-intro">
         {state.party.profile !== undefined && <PartyPet profile={state.party.profile} pixelSize={1.5} />}
         <div className="party-lobby-words">
           <span className="kit-title">{tr("Study together")}</span>
-          <span className="kit-body kit-secondary party-lobby-line">{tr("Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.")}</span>
+          {line !== undefined && <span className="kit-body kit-secondary party-lobby-line">{line}</span>}
         </div>
       </div>
       {/*

@@ -201,6 +201,19 @@ enum SnapshotRenderer {
             shots.append(Shot(name, model))
         }
 
+        // The Party lobby outside a party, at every panel size, with the
+        // Party | Crews switch above it.
+        if layout.order.contains(.party) {
+            var withParty = layout
+            _ = withParty.setEnabled(.party, true)
+            for size in PanelSize.allCases {
+                let model = NotchViewModel(geometry: geometry, layout: withParty)
+                model.panelSize = size
+                model.open(.party)
+                shots.append(Shot(size == .default ? "open-party-lobby" : "open-\(size.rawValue)-party-lobby", model))
+            }
+        }
+
         // The Party tab's Crew section, every screen at every panel size,
         // rendered after the others because the screen is store state.
         if layout.order.contains(.party) {
@@ -761,7 +774,8 @@ enum SnapshotRenderer {
             let breakSource: ModuleID? = name.hasPrefix("open-") && name.hasSuffix("study-break") ? .study
                 : name == "open-focus-break" ? .focus : nil
             closet?.breakBuddy.showForSnapshot(breakSource.map { BreakMoment.sample(at: Date(), source: $0) })
-            party?.showCelebrationForSnapshot(name == "open-party-celebrating")
+            party?.showForSnapshot(name == "open-party-celebrating" ? .celebrating
+                : name.hasSuffix("-party-lobby") ? .lobby : nil)
             party?.showInviteForSnapshot(shot.invite)
             switch shot.crews {
             case .screen(let scenario): crews?.showForSnapshot(scenario)
@@ -845,7 +859,7 @@ enum SnapshotRenderer {
         services.onboarding.show(nil)
         timer?.showForSnapshot(partySession: nil)
         closet?.breakBuddy.showForSnapshot(nil)
-        party?.showCelebrationForSnapshot(false)
+        party?.showForSnapshot(nil)
         party?.showInviteForSnapshot(nil)
         crews?.showForSnapshot(nil)
         today?.show(.today)

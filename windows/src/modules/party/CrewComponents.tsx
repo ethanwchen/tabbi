@@ -47,6 +47,8 @@ export const CrewLayout = {
   moreHeight: 14,
   /** The pinned row and the hairline above it. */
   pinnedHeight: 32 + 6,
+  /** The one-line pinned caption and the hairline above it. */
+  slimPinnedHeight: 14 + 6,
 } as const;
 
 /** The card's inner width below which the Crews screens take their Compact form (Compact is 432, Regular 480, Large 496 before scaling). */
@@ -307,7 +309,7 @@ export function PartyModeSwitch({
         <CrewPill title={tr("Party")} symbol="person.3.fill" showsTitle={partyTitle} selected={!showsCrews} help={tr("Back to your party and friends")} onClick={() => onChange(false)} />
       )}
       {!(otherModeOnly && showsCrews) && (
-        <CrewPill title={tr("Crews")} symbol="shield.fill" showsTitle={crewsTitle} selected={showsCrews} help={tr("Study crews: weekly board and Hall of Fame")} onClick={() => onChange(true)} />
+        <CrewPill title={tr("Crews")} symbol="flag.fill" showsTitle={crewsTitle} selected={showsCrews} help={tr("Study crews: weekly board and Hall of Fame")} onClick={() => onChange(true)} />
       )}
     </div>
   );
@@ -539,8 +541,8 @@ function useElementHeight<T extends HTMLElement>(): [React.RefObject<T | null>, 
 }
 
 /** How a whole-row list fits `available` px: the rows that show, and whether a "+N more" caption fits under them (else a hairline). */
-export function crewRowListFit(available: number, count: number, pinned: boolean): { visible: number; more: "caption" | "line" | undefined } {
-  const room = Math.max(0, available - (pinned ? CrewLayout.pinnedHeight : 0));
+export function crewRowListFit(available: number, count: number, pinned: boolean, pinnedHeight: number = CrewLayout.pinnedHeight): { visible: number; more: "caption" | "line" | undefined } {
+  const room = Math.max(0, available - (pinned ? pinnedHeight : 0));
   const visible = Math.max(1, Math.floor(room / CrewLayout.rowHeight));
   if (count <= visible || pinned) return { visible: Math.min(visible, Math.max(count, 0)), more: undefined };
   return {
@@ -556,9 +558,27 @@ export function crewRowListFit(available: number, count: number, pinned: boolean
  * pinned row (my crew) sits under a hairline below it and replaces the
  * caption. `onNearEnd` asks for another page when the last rows show.
  */
-export function CrewRowList({ count, row, pinned, onNearEnd, label }: { count: number; row: (index: number) => ReactNode; pinned?: ReactNode; onNearEnd?: () => void; label?: string }) {
+export function CrewRowList({
+  count,
+  row,
+  pinned,
+  slimPinned,
+  minimumRows = 0,
+  onNearEnd,
+  label,
+}: {
+  count: number;
+  row: (index: number) => ReactNode;
+  pinned?: ReactNode;
+  /** A one-line form of `pinned` (14 px), used when the full pinned row would leave fewer than `minimumRows` whole rows above it. */
+  slimPinned?: ReactNode;
+  minimumRows?: number;
+  onNearEnd?: () => void;
+  label?: string;
+}) {
   const [box, height] = useElementHeight<HTMLDivElement>();
-  const fit = crewRowListFit(height, count, pinned !== undefined);
+  const usesSlim = pinned !== undefined && slimPinned !== undefined && crewRowListFit(height, count, true).visible < Math.min(count, minimumRows);
+  const fit = crewRowListFit(height, count, pinned !== undefined, usesSlim ? CrewLayout.slimPinnedHeight : CrewLayout.pinnedHeight);
   const scrolls = height > 0 && count > fit.visible;
   const extra = count - fit.visible;
   return (
@@ -590,7 +610,7 @@ export function CrewRowList({ count, row, pinned, onNearEnd, label }: { count: n
       {pinned !== undefined && (
         <>
           <div className="crew-list-separator" />
-          {pinned}
+          {usesSlim ? slimPinned : pinned}
         </>
       )}
     </div>

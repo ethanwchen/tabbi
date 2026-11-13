@@ -106,7 +106,7 @@ struct CrewBoardBody: View {
                 } else {
                     CrewBoardRow(crews: crews, item: item, isMine: item.id == mine?.id)
                 }
-            }, pinned: pinned ? pinnedRow : nil, nearEnd: nearEnd)
+            }, pinned: pinned ? pinnedRow : nil, slimPinned: pinned ? slimPinnedRow : nil, minimumRows: 3, nearEnd: nearEnd)
         } else {
             let top = Array(items.prefix { $0.rank <= 3 }.prefix(3))
             let rest = Array(items.dropFirst(top.count))
@@ -122,6 +122,28 @@ struct CrewBoardBody: View {
                 }, pinned: pinned ? pinnedRow : nil, nearEnd: nearEnd)
             }
         }
+    }
+
+    /// My crew in one caption line, under a Compact list that shows the
+    /// top 3 whole: "Your crew", its place and its hours or medals.
+    private var slimPinnedRow: AnyView? {
+        guard mine != nil, let mineValue else { return nil }
+        let rank = myIndex.map { items[$0].rank } ?? mineRank
+        return AnyView(HStack(spacing: 6) {
+            Rectangle().fill(PartyStyle.accent).frame(width: 2, height: 12)
+            Text("Your crew", bundle: .tabbi).foregroundStyle(PartyStyle.accent).fixedSize()
+            Text(verbatim: rank.map { CrewFormat.ordinal($0) } ?? "-").foregroundStyle(Theme.Palette.secondaryText).fixedSize()
+            Spacer(minLength: 4)
+            switch mineValue {
+            case .minutes(let minutes):
+                Text(CrewFormat.hours(minutes: minutes)).foregroundStyle(Theme.Palette.primaryText).fixedSize()
+            case .medals(let medals):
+                CrewTally(medals: medals)
+            }
+        }
+        .font(Theme.Typography.caption.monospacedDigit())
+        .padding(.horizontal, 4)
+        .accessibilityElement(children: .combine))
     }
 
     /// My crew under the list: its place, or a dash before it has one.

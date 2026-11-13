@@ -105,7 +105,7 @@ final class PartyStore: ObservableObject {
     /// closed notch drop it on time even while the panel is hidden.
     private var sessionEndTask: Task<Void, Never>?
     private var celebrationTask: Task<Void, Never>?
-    /// What the store showed before `showCelebrationForSnapshot(_:)`.
+    /// What the store showed before `showForSnapshot(_:)`.
     private var beforeSnapshot: (state: PartyState, celebration: PartyTeamCelebration?)?
     /// Writes a name edited in Party back to the app-wide name.
     private var saveName: ((String) -> Void)?
@@ -637,16 +637,16 @@ final class PartyStore: ObservableObject {
         celebration = nil
     }
 
-    /// Snapshot runs only: shows the team celebrating a session that just
-    /// ended (`PartyDemoScenario.celebrating`) for the next shot, or puts
-    /// back what the store showed before.
-    func showCelebrationForSnapshot(_ isShowing: Bool) {
+    /// Snapshot runs only: shows a demo scenario for the next shot (the
+    /// team celebrating a session that just ended, or the lobby outside a
+    /// party), or puts back what the store showed before when nil.
+    func showForSnapshot(_ scenario: PartyDemoScenario?) {
         guard isSnapshot else { return }
-        if isShowing {
+        if let scenario {
             if beforeSnapshot == nil { beforeSnapshot = (state, celebration) }
             celebrationTask?.cancel()
-            state = .demo(.celebrating, now: now)
-            celebration = .demo(now: now)
+            state = .demo(scenario, now: now)
+            celebration = scenario == .celebrating ? .demo(now: now) : nil
         } else if let before = beforeSnapshot {
             (state, celebration) = before
             beforeSnapshot = nil

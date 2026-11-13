@@ -6,7 +6,7 @@
  */
 
 import { useStore } from "../../app/useStore";
-import { crewHours } from "../../core/crews/crewFormat";
+import { crewHours, crewOrdinal } from "../../core/crews/crewFormat";
 import type { CrewBoardEntry, CrewHallEntry, CrewMedals, CrewPet, CrewSummary } from "../../core/crews/crewModels";
 import { isQuietWeek, myHallEntry, weekEntries } from "../../core/crews/crewsState";
 import { tr } from "../../core/localization/tr";
@@ -146,6 +146,8 @@ function CrewBoardBody({
           return index < 3 && item.rank <= 3 ? <CrewFeaturedRow crews={crews} item={item} mine={isMine} /> : <CrewBoardRow crews={crews} item={item} mine={isMine} />;
         }}
         pinned={pinnedRow(pinned)}
+        slimPinned={pinned && pinnedItem !== undefined ? <CrewPinnedCaption item={pinnedItem} /> : undefined}
+        minimumRows={3}
         onNearEnd={onNearEnd}
       />
     );
@@ -173,6 +175,19 @@ function CrewBoardBody({
         pinned={pinnedRow(pinned)}
         onNearEnd={onNearEnd}
       />
+    </div>
+  );
+}
+
+/** My crew in one caption line, under a Compact list that shows the top 3 whole: "Your crew", its place and its hours or medals. */
+function CrewPinnedCaption({ item }: { item: CrewBoardItem }) {
+  return (
+    <div className="crew-pinned-caption kit-caption crew-number" aria-label={crewBoardLabel(item)}>
+      <span className="crew-pinned-bar" />
+      <span className="crew-pinned-label">{tr("Your crew")}</span>
+      <span className="kit-secondary">{item.rank > 0 ? crewOrdinal(item.rank) : "-"}</span>
+      <span className="crews-head-spacer" />
+      {item.value.kind === "minutes" ? <span className="crew-pinned-hours">{crewHours(item.value.minutes)}</span> : <CrewTally medals={item.value.medals} />}
     </div>
   );
 }

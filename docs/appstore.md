@@ -264,9 +264,11 @@ For later versions, one warm line naming the headline change, then short New, Be
 For 1.0.6:
 
 ```
-Study together! Study Crews arrive in the Party tab, with fifteen new outfits and the Heirloom shelf.
+Study together and level up! Study Crews and the Study Level arrive, with fifteen new outfits and the Heirloom shelf.
 
 New
+- Study Level: endless levels from your focus hours, a new rank and emblem every 10 levels, and name colors to unlock
+- Your level and name color show to friends in Party
 - Study Crews: start or join a crew, race for the weekly top 3 by focus hours, and earn medals for your crew's crest
 - Design a crest from frames, ten cute emblems and ten colors; the Hall of Fame keeps every medal
 - 15 outfits, from a Strawberry Cap and Mushroom Cap to a Varsity Jacket and Sailor Collar

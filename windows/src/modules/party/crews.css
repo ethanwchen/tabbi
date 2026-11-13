@@ -475,6 +475,27 @@
   background: var(--stroke);
   flex: none;
 }
+.crew-pinned-caption {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 14px;
+  padding: 0 4px;
+  white-space: nowrap;
+  flex: none;
+}
+.crew-pinned-bar {
+  width: 2px;
+  height: 12px;
+  background: var(--accent);
+  flex: none;
+}
+.crew-pinned-label {
+  color: var(--accent);
+}
+.crew-pinned-hours {
+  color: var(--primary-text);
+}
 .crew-list-separator {
   height: 0.5px;
   margin: 3px 4px 2.5px;

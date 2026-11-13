@@ -15,8 +15,8 @@ with open(pathlib.Path(__file__).parent.parent / 'Resources' / 'Info.plist', 'rb
 # (version, when, one sentence). Keep each line short and warm: the details
 # live in the GitHub release notes, which the page links to.
 RELEASES = [
-    ('1.0.6', 'Study Crews and the Heirloom shelf',
-     'Study Crews: study together, race for the weekly top 3 and earn medals for your crest. Plus fifteen new outfits and an Heirloom shelf of long goals.'),
+    ('1.0.6', 'Study Crews and Study Level',
+     'Study Crews: race for the weekly top 3 together. Study Level: endless levels from focus hours, with ranks and name colors. Plus fifteen new outfits and the Heirloom shelf.'),
     ('1.0.5', 'Goals and badges',
      'Forty-eight badges from Bronze to Starlight, sixteen mastery outfits you earn instead of buy, monthly quests, and a widget that never goes blank.'),
     ('1.0.4', 'Party everywhere',

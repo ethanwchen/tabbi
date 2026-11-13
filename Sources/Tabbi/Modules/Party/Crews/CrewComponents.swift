@@ -262,7 +262,7 @@ struct PartyModeSwitch: View {
                 }
             }
             if !(otherModeOnly && crews.showsCrews) {
-                CrewPill(title: String(localized: "Crews", bundle: .tabbi), symbol: "shield.fill", showsTitle: crewsTitle && !otherModeOnly,
+                CrewPill(title: String(localized: "Crews", bundle: .tabbi), symbol: "flag.fill", showsTitle: crewsTitle && !otherModeOnly,
                          isSelected: crews.showsCrews, help: String(localized: "Study crews: weekly board and Hall of Fame", bundle: .tabbi)) {
                     withMotion(Theme.Motion.content) { crews.setShowsCrews(true) }
                 }
@@ -469,14 +469,25 @@ struct CrewRowList<Row: View, Pinned: View>: View {
     let count: Int
     @ViewBuilder var row: (Int) -> Row
     var pinned: Pinned?
+    /// A one-line form of the pinned row, for a list so short that the full
+    /// pinned row would leave fewer than `minimumRows` rows above it.
+    var slimPinned: AnyView?
+    /// The rows that must show above the pinned row (the top 3), when the
+    /// list has that many.
+    var minimumRows = 0
     /// Called when the last loaded rows come into view, to load another page.
     var nearEnd: () -> Void = {}
 
+    private static var separatorHeight: CGFloat { 6 }
+
     var body: some View {
         GeometryReader { proxy in
-            let pinnedHeight: CGFloat = pinned == nil ? 0 : CrewLayout.rowHeight + 6
+            let fullPinned: CGFloat = pinned == nil ? 0 : CrewLayout.rowHeight + Self.separatorHeight
+            let fits = { (pinnedHeight: CGFloat) in max(1, Int(max(0, proxy.size.height - pinnedHeight) / CrewLayout.rowHeight)) }
+            let usesSlim = pinned != nil && slimPinned != nil && fits(fullPinned) < min(count, minimumRows)
+            let pinnedHeight = usesSlim ? CrewLayout.moreHeight + Self.separatorHeight : fullPinned
             let available = max(0, proxy.size.height - pinnedHeight)
-            let visible = max(1, Int(available / CrewLayout.rowHeight))
+            let visible = fits(pinnedHeight)
             let extra = count - visible
             let leftOver = available - CGFloat(min(count, visible)) * CrewLayout.rowHeight
             VStack(alignment: .leading, spacing: 0) {
@@ -495,7 +506,11 @@ struct CrewRowList<Row: View, Pinned: View>: View {
                 if let pinned {
                     Rectangle().fill(Theme.Palette.stroke).frame(height: 0.5)
                         .padding(.horizontal, 4).padding(.top, 3).padding(.bottom, 2.5)
-                    pinned
+                    if usesSlim, let slimPinned {
+                        slimPinned.frame(height: CrewLayout.moreHeight)
+                    } else {
+                        pinned
+                    }
                 }
                 Spacer(minLength: 0)
             }
