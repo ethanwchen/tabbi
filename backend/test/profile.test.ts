@@ -1,6 +1,7 @@
 import { SELF } from "cloudflare:test";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import catalog from "../shared/catalog.json";
+import crewsCatalog from "../shared/crews.json";
 import { REGISTER_PER_MIN, RATE_LIMIT_PER_MIN } from "../src/lib";
 import { BASE, call, expectError, freshIp, pinClockToMinuteStart, register } from "./helpers";
 
@@ -19,9 +20,10 @@ const FULL = {
 describe("worker basics", () => {
   it("answers the health check, the catalog and CORS preflight", async () => {
     const root = await call("GET", "/");
-    expect(root.body).toEqual({ ok: true, service: "tabbi-friends", version: 1, protocol: 3, minProtocol: 1 });
+    expect(root.body).toEqual({ ok: true, service: "tabbi-friends", version: 1, protocol: 4, minProtocol: 1 });
     const cat = await call("GET", "/v1/catalog");
-    expect(cat.body).toEqual({ ok: true, catalog });
+    // Protocol 3 adds the crews catalog beside the Party one; `catalog` is unchanged for older apps.
+    expect(cat.body).toEqual({ ok: true, catalog, crews: crewsCatalog });
     const pre = await SELF.fetch(BASE + "/v1/me", { method: "OPTIONS" });
     expect(pre.status).toBe(204);
     expect(pre.headers.get("Access-Control-Allow-Origin")).toBe("*");

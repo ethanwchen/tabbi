@@ -155,6 +155,7 @@ describe("PetCostumeFit", () => {
     }
   });
 
+  /* Every breed, animation and outfit: several seconds of composing on a busy machine, so it gets more than the 5 second default. */
   it("outfits never cover an eye", () => {
     for (const breed of PET_BREEDS) {
       for (const animation of PET_ANIMATIONS) {

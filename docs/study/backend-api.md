@@ -1,7 +1,7 @@
 # Tabbi friends API (client contract)
 
 This is the contract between the Tabbi apps (Mac and Windows) and the `tabbi-friends` Cloudflare Worker in [`backend/`](../../backend).
-Its JSON is also a schema, [`shared/schemas/party.v1.schema.json`](../../shared/schemas/party.v1.schema.json), with golden fixtures in [`shared/fixtures/party/`](../../shared/fixtures/party), and every change follows [the compatibility policy](../party-compatibility.md).
+Its JSON is also a schema, [`shared/schemas/party.v1.schema.json`](../../shared/schemas/party.v1.schema.json) (and [`crews.v1.schema.json`](../../shared/schemas/crews.v1.schema.json) for [Study Crews](#study-crews)), with golden fixtures in [`shared/fixtures/party/`](../../shared/fixtures/party) and `shared/fixtures/crews/`, and every change follows [the compatibility policy](../party-compatibility.md).
 Deployment, architecture and the free-tier math are in [`backend/README.md`](../../backend/README.md); what is stored is in [`backend/PRIVACY.md`](../../backend/PRIVACY.md).
 
 ## Basics
@@ -24,7 +24,7 @@ Deployment, architecture and the free-tier math are in [`backend/README.md`](../
 - Every reply is JSON with `ok: true` on success, or `ok: false` with `error` (a stable code) and `message` (English, for logs only) on failure.
   Branch on `error`, never on `message`.
 - Replies are `Cache-Control: no-store`; CORS is open (`*`), so a web client works too.
-- Every app request sends `Tabbi-Protocol: 3`, the Party protocol it speaks; a request without the header is protocol 1 (apps up to 1.0.0).
+- Every app request sends `Tabbi-Protocol: 4`, the Party protocol it speaks (apps from 1.0.1 sent 2, and 1.0.6 before Study Crews sent 3); a request without the header is protocol 1 (apps up to 1.0.0).
   The server keeps the highest protocol each user's apps sent and serves every protocol from `minProtocol` up (see [compatibility](../party-compatibility.md)).
 - Replies may gain fields at any time: ignore what you do not know, and draw a pet without any id you do not know.
 
@@ -45,6 +45,7 @@ Each Mac then has its own token for the same friend code.
 [`backend/shared/catalog.json`](../../backend/shared/catalog.json) lists the valid species, breeds per species, costumes, accessories, statuses, study methods, recommended heartbeat intervals and limits.
 The app should bundle the same file so pickers only offer valid values.
 `GET /v1/catalog` serves it too (no auth) if the app wants to check for a newer `version`.
+Since protocol 3 the same reply also carries `crews`, the Study Crews catalog [`backend/shared/crews.json`](../../backend/shared/crews.json): the crest frame and emblem ids in picker order, the color ids with their hex values, and the crews limits.
 
 ## Objects
 
@@ -194,11 +195,28 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `GET /v1/sync` | token, Apple account | my sync document and its revision |
 | `PUT /v1/sync` | token, Apple account | replace my sync document if I merged into the current revision |
 | `GET /v1/grants` | token | the limited edition items the maintainer granted me |
+| `GET /v1/crews/mine` | token | my crew or `null`, and the current crew week, see [Study Crews](#study-crews) |
+| `POST /v1/crews` | token | create a crew |
+| `PATCH /v1/crews/mine` | token, owner | edit my crew |
+| `PATCH /v1/crews/mine/me` | token | my own settings in my crew (`showPet`) |
+| `POST /v1/crews/join` | token | join a crew by invite code, or ask to join a public crew by id |
+| `POST /v1/crews/requests/cancel` | token | withdraw my request to join a crew |
+| `POST /v1/crews/mine/requests/{ref}/approve` | token, owner | let someone who asked into my crew |
+| `POST /v1/crews/mine/requests/{ref}/decline` | token, owner | turn a request down, quietly |
+| `POST /v1/crews/leave` | token | leave my crew |
+| `POST /v1/crews/mine/members/{ref}/remove` | token, owner | remove a member for good |
+| `GET /v1/crews` | token | search public crews by name |
+| `GET /v1/crews/board` | token | this week's live places 1 to 3 and last week's featured crews |
+| `GET /v1/crews/hall` | token | the all-time Hall of Fame of medals, 20 crews a page |
+| `GET /v1/crews/{id}` | token | a crew page with its members' pets |
+| `POST /v1/crews/sessions` | token | report finished focus sessions |
+| `POST /v1/crews/reports` | token | report a crew or one of its members |
+| `POST /v1/crews/block` | token | block a member of a crew |
 | `POST /v1/suggestions` | none | the website's Suggest form: send the maintainer an idea |
 | `POST /v1/crashes` | none | a crash report the person agreed to send |
 | `GET /v1/public/downloads` | none | the website's rounded download figure, see [Downloads](#downloads-maintainer) |
 | `GET /v1/public/downloads/badge` | none | the README's shields.io badge with the exact total, see [Downloads](#downloads-maintainer) |
-| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer), limited edition grants, see [Limited edition grants](#limited-edition-grants-maintainer), the suggestions inbox, see [Suggestions](#suggestions-maintainer), crash reports, see [Crash reports](#crash-reports-maintainer), aggregate counts, see [Stats](#stats-maintainer), and the App Store units behind the download figure, see [Downloads](#downloads-maintainer) |
+| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer), limited edition grants, see [Limited edition grants](#limited-edition-grants-maintainer), the suggestions inbox, see [Suggestions](#suggestions-maintainer), crash reports, see [Crash reports](#crash-reports-maintainer), aggregate counts, see [Stats](#stats-maintainer), the App Store units behind the download figure, see [Downloads](#downloads-maintainer), and crew moderation, see [Crews moderation](#crews-moderation-maintainer) |
 
 ### `GET /`
 
@@ -450,6 +468,7 @@ It must be "today" somewhere on Earth (UTC-12 to UTC+14), which rejects a wrong 
 `200 {"ok": true, "presence": Presence, "heartbeatSeconds": 120, "incomingRequests": 1}`.
 `heartbeatSeconds` is when to send the next heartbeat (`null` after `offline`: stop sending).
 `incomingRequests` counts the friend requests waiting for me, so the app can badge its Party tab without fetching the friends list while the panel is closed.
+Since protocol 3 the reply also carries `crews: { requests, crew }`: my Study Crew's id (`null` outside a crew) and, when I own it, how many join requests wait for it (0 otherwise), so the app can badge the tab and notice an approval without polling the crews routes; older apps ignore it.
 
 Errors: `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`.
 
@@ -614,6 +633,150 @@ The same rules hold for the moderation routes below.
 - `DELETE /v1/admin/users/{code}` deletes a user as `DELETE /v1/me` does, without calling Apple, and returns `{ok, deleted}` (`false` if no such user).
   It re-applies account deletions that a restore brought back.
 
+## Study Crews
+
+Study Crews (protocol 3) are standing groups of up to 20 people ranked every week by their members' focus minutes; the design is [docs/design/crews.md](../design/crews.md).
+Every route needs the token and no protocol header; apps from before protocol 3 never call them and keep using Party as before.
+The shapes are `$defs` in [`shared/schemas/crews.v1.schema.json`](../../shared/schemas/crews.v1.schema.json).
+A crew `id` has 10 characters and an invite `code` 7, both from the friend code alphabet; a member's `ref` (10 characters) addresses them on crew pages, which never carry friend codes.
+A crew's crest is a frame, an emblem and a color; their ids come from `backend/shared/crews.json` (served as `crews` by `GET /v1/catalog`), the first of each is the default, and an app draws an id it does not know as the first one.
+
+### Crew objects
+
+- `week`: `{ id, startsAt, endsAt }`, the crew week from Monday 00:00 UTC to the next Monday 00:00 UTC (`endsAt` exclusive), `id` its ISO week key such as `2026-W46`.
+- `crewSummary`: `{ id, name, description, frame, emblem, color, visibility, laurel, trophies, golds, memberCount, maxMembers, weekMinutes }`; `golds` counts the all-time golds, which the apps draw as up to three pips on large crests.
+  `visibility` is `public` or `private`; `laurel` is `gold`, `silver`, `bronze` or `null`, the place the crew won last week, which it wears this week; `trophies` counts every medal ever (every place 1 to 3); `weekMinutes` are this week's credited minutes.
+- `crewDetail`: a summary plus `{ createdAt, medals, rank, crewCount, history, members, mine, owner, inviteCode, hidden }`.
+  `crewCount` is how many visible crews have minutes this week (as on the board), so an app can say "12th of 38 crews".
+  `history` is the last three finished weeks, newest first, each `{ week, place, minutes, medal }`: the crew's final place (`null` without minutes or while hidden), its minutes, and the medal a place 1 to 3 won; a week that ended before the crew existed is left out.
+  `members` run most minutes this week first, then by name.
+  `medals` is `{ gold, silver, bronze }`; `rank` is this week's live rank among all visible crews (equal minutes share it), or `null` with no minutes; `mine` and `owner` say whether I belong to and own it; `inviteCode` is sent only to members, and `hidden` (the maintainer hid the crew) is only ever `true` for members.
+  Only the owner's view has `requests`, the join requests waiting, oldest first.
+- `crewJoinRequest` (the owner sees it): `{ ref, name, pet, badges, requestedAt, expiresAt }`; `ref` is the request's opaque id for approve, decline and block, and `pet` is the requester's pet as a Party profile carries it.
+- `crewJoinRequestMine` (the requester sees it): `{ crew: crewSummary, requestedAt, expiresAt }`.
+- `crewMember`: `{ ref, name, pet, badges, weekMinutes, owner, me }`, owner first, then in join order.
+  `pet` is `{ petName, species, breed, colors, costume, accessories }`, the same fields and ids as a Party profile, or `null` when the member hid their pet.
+  `studyLevel` (an integer from 1) is reserved for the Study Level release and is not sent yet.
+  Members I blocked or who blocked me, and banned users, are left out.
+- `boardEntry`: `{ rank, minutes, crew, tiedWith?, pets? }`; `tiedWith` names up to two other crews on the same place, and `pets` (in `top` and `featured`) are the pets of the crew's three most active members that week (most minutes, hidden pets skipped, so possibly fewer); `rank` is the place by competition ranking on the week's minutes (equal minutes share it, the next place skips), and in `featured` the summary's `laurel` is the medal that place won.
+- `hallEntry`: `{ rank, medals: { gold, silver, bronze }, reachedAt, crew, pets? }`; `reachedAt` is the end of the week that gave the crew its current tally, and the first page's top three carry `pets` like the board's top entries.
+
+### `GET /v1/crews/mine`
+
+`200 {ok, crew: crewDetail | null, week, request}`; `request` is my pending join request (`crewJoinRequestMine`) while I am in no crew, else `null`.
+
+### `POST /v1/crews`
+
+Body `{ name, description?, frame, emblem, color, visibility }`; `201 {ok, crew: crewDetail}` with me as owner and only member.
+A frame, emblem or color id not in the catalog is `400 invalid_field`.
+Names (1 to 20 characters) and descriptions (up to 120, may be empty) pass the same name filter as display names (`400 crew_name_not_allowed`, `400 description_not_allowed`), and no two crews share a name, ignoring case (`409 name_taken`).
+`409 in_crew` while I am in a crew; `403 banned`; `429 crew_limit` after 3 new crews in a UTC day.
+
+### `PATCH /v1/crews/mine`
+
+The owner sends any of `name`, `description`, `frame`, `emblem`, `color`, `visibility`; an empty or `null` description clears it.
+`200 {ok, crew}`; `404 not_in_crew`, `403 not_owner`, plus the create errors.
+
+### `PATCH /v1/crews/mine/me`
+
+Body `{ showPet }`: `false` replaces my pet with `null` on every crew page; my name and minutes still show.
+`200 {ok, crew}`; `404 not_in_crew`.
+
+### `POST /v1/crews/join`
+
+Body exactly one of `{ code }` (an invite code, for any crew) or `{ crew }` (the id of a public crew).
+An invite code joins at once, public or private, since the owner handed it out: `200 {ok, joined: true, crew}`, and `joined` is `false` when I am already in that crew.
+A public crew by id asks its owner instead: `200 {ok, joined: false, requested: true, request: crewJoinRequestMine, crew}`.
+I have at most one request at a time, so asking another crew replaces it, and asking the same crew again is a no-op success.
+A request expires after 7 days, and goes away when I join any crew, when the owner approves or declines it (a decline is never announced: the request just disappears), when the owner and I block each other, when I am banned or delete my account, and when the crew is hidden or deleted.
+`404 crew_not_found` for no such crew, a private crew by id, a hidden crew, or a crew whose owner and I blocked each other; `403 removed_from_crew` when its owner removed me; `409 in_crew` while I am in another crew (leave it first); `409 crew_full` at 20 members (invite codes); `409 requests_full` when 50 requests already wait for that crew; `429 request_limit` after 20 new requests in a UTC day; `403 banned`.
+
+### `POST /v1/crews/requests/cancel`
+
+`200 {ok, cancelled}`, `false` when I had no request.
+
+### `POST /v1/crews/mine/requests/{ref}/approve` and `.../decline`
+
+The owner answers a request by its `ref`.
+Approve: `200 {ok, crew}` with the requester as a member; `409 crew_full` keeps the request, `409 in_crew` (they joined another crew meanwhile) drops it, and `404 request_not_found` when it is gone or expired.
+Decline: `200 {ok, declined: true}`; the requester is not told and their request simply disappears.
+`403 not_owner` for anyone but the owner.
+
+### `POST /v1/crews/leave`
+
+`200 {ok, left}` (`false` when I was in none).
+A leaving owner hands the crew to the longest-standing member; the last member leaving deletes the crew.
+Minutes I gave the crew this week stay with it.
+
+### `POST /v1/crews/mine/members/{ref}/remove`
+
+The owner removes a member, who can never join this crew again.
+`200 {ok, removed: true, crew}`; `403 not_owner`, `404 member_not_found`.
+
+### `GET /v1/crews?q=`
+
+Public crews whose name contains `q` (case-insensitive; optional), most minutes this week first, then by name, at most 20: `200 {ok, crews: [crewSummary], week}`.
+Hidden crews and crews whose owner and I blocked each other are left out.
+At most 20 searches a minute.
+
+### `GET /v1/crews/board`
+
+`200 {ok, week, top, featured, rows, next, crewCount, mine}`.
+`top` is this week's live places 1 to 3 (`boardEntry`).
+`rows` are the places below, most minutes first, then by crew id, 20 at a time; `next` is the cursor for the following page (`null` at the end), and `GET /v1/crews/board?cursor=<next>` answers only `{ok, week, rows, next, crewCount}` for it.
+`crewCount` is how many visible crews have minutes this week; `mine` is `{ rank, minutes }` for my crew this week (`rank` is `null` with no minutes), or `null` outside a crew.
+Every entry has `tiedWith` (the other crews on its place, at most two), and the `top` and `featured` entries have `pets`.
+`featured` is `{ week, entries }`, last week's frozen places with the medals they won, or `null` when last week had none.
+Places use standard competition ranking on the week's minutes: two crews tied first are both first (both gold) and the next crew is third, and ties for third can place more than three crews, so neither list has a fixed length.
+Both lists run most minutes first, then by crew id.
+The board freezes when the week rolls over: the hourly alarm and every crews request freeze any finished week that is not frozen yet, oldest first, and give every placed crew its medal.
+Hidden crews and crews with no minutes are never placed.
+
+### `GET /v1/crews/hall?cursor=`
+
+The all-time Hall of Fame: `200 {ok, entries: [hallEntry], next, mine}`, 20 entries a page; `mine` (first page only) is my crew's `{ rank, medals, reachedAt }`, with `rank` `null` before its first medal, or `null` outside a crew.
+Every crew with at least one medal is listed, private crews included and hidden crews left out, in Olympic order: most golds, then silvers, then bronzes, then the earlier `reachedAt`, then crew id.
+`rank` is 1 plus the crew's position in that whole order, so every rank is distinct.
+`next` is an opaque cursor for the following page (send it back as `?cursor=`), or `null` on the last page; paging follows the order itself, so a walk through the pages never repeats or skips a crew.
+A cursor the server did not hand out is `400 invalid_field`.
+Medals stay with a crew through renames and edits; a deleted crew leaves the Hall of Fame.
+
+### `GET /v1/crews/{id}`
+
+`200 {ok, crew: crewDetail}` for my crew, any public crew, or a crew in this week's live top 3 or last week's featured entries; otherwise `404 crew_not_found`.
+
+### `POST /v1/crews/sessions`
+
+Body `{ sessions: [{ start, end, minutes }] }`, 1 to 20 finished focus sessions, at most 6 requests a minute.
+`200 {ok, results: [{ status, credited }], week, crewMinutes, myMinutes}`, one result per session in order; `crewMinutes` is my crew's total this week (`null` outside a crew) and `myMinutes` everything credited to me this week.
+
+| `status` | Meaning |
+| --- | --- |
+| `credited` | counted; `credited` minutes went to the crews I belonged to while I studied, from my join time on |
+| `capped` | counted up to the daily (960) or weekly (4,800) cap; the rest dropped |
+| `duplicate` | the same start and end as a session already reported; nothing counted twice |
+| `overlap` | overlaps a session already reported |
+| `future` | ends more than 2 minutes after the server's clock |
+| `invalid` | malformed, `end` not after `start`, longer than 720 minutes, or `minutes` outside 1 to its length rounded up |
+| `week_closed` | lies wholly in a frozen week (a session across the rollover counts its part in the open week) |
+| `no_crew` | I belonged to no crew during it; nothing is stored |
+
+The server credits minutes spread evenly over the session's seconds and split at UTC midnight, never a total from the app.
+Repeated overlapping (5 in a UTC day) or future (3) reports and reaching a cap raise a flag for the maintainer.
+The app sends each finished stretch once, retries on network errors, and drops a session once it has any `status`.
+
+### `POST /v1/crews/reports`
+
+Body `{ crew, member?, reason, note? }`: a crew, or one of its members by `ref`; `reason` is `inappropriate_name`, `harassment`, `spam`, `cheating` or `other`; `note` up to 280 characters.
+`201 {ok, created: true}`, or `200 {ok, created: false}` when it updated my open report about the same crew and member.
+`400 self_report`, `404 crew_not_found`, `404 member_not_found`, `429 report_limit` (20 reports a day across users and crews).
+
+### `POST /v1/crews/block`
+
+Body `{ crew, member }`: blocks that member exactly as `POST /v1/blocks` does; the owner can also pass a join request's `ref` to block the requester, which drops the request.
+`200 {ok, blocked}` (`false` when I had already blocked them); `400 self_block`, `404 member_not_found`.
+In a shared crew, the owner blocking a member removes them for good and a member blocking the owner leaves; any other block only hides the two from each other on crew pages.
+
 ## Moderation (maintainer)
 
 Reports wait on the server until the maintainer reads them; nothing happens to a reported user automatically.
@@ -670,6 +833,30 @@ curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/reports/
   Replies `{"ok": true, "banned": true}` (`false` if already banned).
 - Sign in with Apple carries a ban, held names and reports over when an anonymous user folds into an account; the account keeps both users' held names.
 - An account that inherits a ban this way leaves its party at once, just as a ban does; the next member becomes host.
+- A ban also takes the user out of their Study Crew and removes the minutes they gave it in the open week.
+
+## Crews moderation (maintainer)
+
+Crew reports and anti-cheat flags wait here like user reports, with the same admin token.
+
+| Method and path | Purpose |
+| --- | --- |
+| `GET /v1/admin/crews/reports` | open crew and crew member reports, newest first (at most 100); `?status=all` includes resolved ones |
+| `POST /v1/admin/crews/reports/{id}/dismiss` | close a crew report |
+| `GET /v1/admin/crews/flags` | open anti-cheat flags, newest first (at most 100); `?status=all` includes resolved ones |
+| `POST /v1/admin/crews/flags/{id}/dismiss` | close a flag |
+| `POST /v1/admin/crews/flags/{id}/void` | remove the flagged user's minutes for the flag's week while it is open, and close the flag |
+| `GET /v1/admin/crews/{id}` | a crew with its owner, invite code and members' friend codes and minutes |
+| `POST /v1/admin/crews/{id}/rename` | rename the crew to `Crew` and the first four characters of its id, clear its description, and hold the old name |
+| `POST /v1/admin/crews/{id}/hide` | take the crew off search, the board and the featured spot; members keep it |
+| `DELETE /v1/admin/crews/{id}/hide` | show it again |
+| `DELETE /v1/admin/crews/{id}` | delete the crew; its members leave, its past awards stay as recorded |
+
+A crew report is `{ id, createdAt, reason, note, resolvedAt, resolution, reporter, crew: { id, name, currentName }, member: { code, name, currentName } | null }`, where `name` is what the reporter saw.
+A flag is `{ id, createdAt, week, kind, detail, resolvedAt, resolution, user: { code, name }, crew: { id, name } | null, weekMinutes }`, `kind` one of `daily_cap`, `weekly_cap`, `overlaps` and `future`, at most one per user, week and kind.
+Void answers `{ ok, voided, frozen }`: `voided` minutes came off, and `frozen: true` (nothing voided) when the week already froze.
+Renaming, hiding and deleting resolve the open reports about the crew itself (`renamed`, `hidden`, `deleted`); act on a reported member with the user routes above.
+A renamed crew's old name can never be taken again (`crew_name_not_allowed`).
 
 ## Limited edition grants (maintainer)
 
@@ -759,6 +946,7 @@ The same `ADMIN_TOKEN` rules as the moderation routes apply.
   "signups": [{"day": "2026-09-10", "users": 14}, "... one entry per UTC day ...", {"day": "2026-10-09", "users": 9}],
   "parties": {"open": 12, "members": 31},
   "suggestions": 4,
+  "crews": {"total": 40, "public": 31, "hidden": 1, "members": 212, "activeThisWeek": 27, "openReports": 2, "openFlags": 1},
   "hub": {"since": 1788990000, "requests": 52113, "rowsRead": 640122, "rowsWritten": 2210}
 }
 ```
@@ -769,6 +957,7 @@ The same `ADMIN_TOKEN` rules as the moderation routes apply.
 - `signups` lists new friend codes per UTC day for the last 30 days, oldest first, with zero days included.
   An anonymous user who later signs in with Apple on a Mac that already has an account folds into that account and stops counting.
 - `parties` counts parties that have not expired and their members; `suggestions` counts suggestions waiting in the inbox.
+- `crews` counts Study Crews (all, public and hidden ones), their members, the crews with minutes this week, and the open crew reports and anti-cheat flags.
 - `hub` is what the Hub has served since it last started (a deploy or an eviction starts it over): requests and the SQLite rows they read and wrote, which is what Cloudflare bills for.
   The load test uses it to measure rows per request; see [`../ops.md`](../ops.md#scale).
 
@@ -839,6 +1028,9 @@ Keep to these intervals, and stop every timer whose data is not on screen.
 | `GET /v1/friends` | when the friends panel opens, then every 60 s while it stays open |
 | `GET /v1/party` | every 30 s while I am in a party and the party view is visible; once when the notch opens otherwise |
 | `GET /v1/leaderboard` | once each time its view opens; no timer |
+| `GET /v1/crews/mine`, `GET /v1/crews/board` | when the Crew section opens, then every 60 s while it stays open, and again when a heartbeat's `crews` changes |
+| `GET /v1/crews?q=`, `GET /v1/crews/{id}`, `GET /v1/crews/hall` | when the user searches, opens a crew or opens the Hall of Fame (and the next page as they scroll); no timer |
+| `POST /v1/crews/sessions` | while in a crew, after a focus stretch ends, batched (at most 20 sessions a request), retried with backoff |
 | `POST /v1/auth/apple` | once, when the user taps Sign in with Apple; never on a timer |
 | `POST /v1/auth/signout` | once, when the user taps Sign Out |
 | `GET /v1/me`, `PATCH /v1/me` | on launch and after the user edits their pet; not on a timer |

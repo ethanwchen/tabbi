@@ -3,7 +3,7 @@ import { env } from "cloudflare:workers";
 import { describe, expect, it, vi } from "vitest";
 import { migrate } from "../src/hub";
 import { MAX_SYNC_BYTES, SYNC_PUT_PER_MIN } from "../src/sync";
-import { BASE, Reply, call, expectError, hub, linkAppleAccount, pinClockToMinuteStart, register } from "./helpers";
+import { BASE, Reply, call, expectError, hub, linkAppleAccount, pinClockToMinuteStart, register, dropCrewsTables } from "./helpers";
 
 const DOC = {
   schemaVersion: 1,
@@ -160,6 +160,7 @@ describe("schema migrations", () => {
       sql.exec("DROP TABLE download_counts");
       sql.exec("DROP TABLE entitlements");
       sql.exec("DROP TABLE friend_requests");
+      dropCrewsTables(sql);
       sql.exec("ALTER TABLE users DROP COLUMN study_level");
       sql.exec("ALTER TABLE users DROP COLUMN nameplate");
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
@@ -167,14 +168,14 @@ describe("schema migrations", () => {
       sql.exec(`INSERT INTO users (code, token_hash, name, pet_name, species, breed, colors, costume, accessories, points, level, created_at)
         VALUES ('AAAAAAAA', 'h', 'n', 'p', 'cat', 'tabby', '[]', 'none', '[]', 5, 1, 0)`);
       migrate(state.storage);
-      expect(sql.exec<{ version: number }>("SELECT version FROM schema_version").one().version).toBe(15);
+      expect(sql.exec<{ version: number }>("SELECT version FROM schema_version").one().version).toBe(16);
       expect(sql.exec<{ points: number }>("SELECT points FROM users WHERE code = 'AAAAAAAA'").one().points).toBe(5);
       expect(sql.exec("SELECT * FROM sync_documents").toArray()).toEqual([]);
       expect(sql.exec("SELECT * FROM used_identity_tokens").toArray()).toEqual([]);
       expect(sql.exec("SELECT * FROM grants").toArray()).toEqual([]);
       // Running again is a no-op.
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 16 }]);
     });
   });
 
@@ -190,6 +191,7 @@ describe("schema migrations", () => {
       sql.exec("DROP TABLE download_counts");
       sql.exec("DROP TABLE entitlements");
       sql.exec("DROP TABLE friend_requests");
+      dropCrewsTables(sql);
       sql.exec("ALTER TABLE users DROP COLUMN study_level");
       sql.exec("ALTER TABLE users DROP COLUMN nameplate");
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
@@ -200,7 +202,7 @@ describe("schema migrations", () => {
       sql.exec("UPDATE schema_version SET version = 4");
       sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, created_at) VALUES ('s', 'BBBBBBBB', NULL, 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 16 }]);
       expect(sql.exec("SELECT apple_sub FROM apple_accounts").toArray()).toEqual([{ apple_sub: "s" }]);
       expect(sql.exec("SELECT * FROM used_identity_tokens").toArray()).toEqual([]);
     });

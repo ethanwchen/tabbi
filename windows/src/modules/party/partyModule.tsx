@@ -16,6 +16,8 @@ import { useTheme } from "../../ui/kit/context";
 import { accentVariables } from "../../ui/kit/tokens";
 import { PartyInviteBody, PartyInviteTitle, type PartyInviteActions } from "./PartyInviteView";
 import { PARTY_SNAPSHOT_STATES, PartyStore } from "./partyStore";
+import { CREW_SNAPSHOT_STATES, CrewsStore } from "./crewsStore";
+import { parseCrewInvite } from "../../core/crews/crewCatalog";
 import { accountSync, partyCredentialStore } from "./syncService";
 
 /* The views load on first use; the store and descriptor stay eager. */
@@ -72,6 +74,8 @@ export const PartyModule = defineModule(
     store.ageAnswered = () => account.refreshAgeStatus();
     account.identityChanged.on(() => store.identityDidChange());
     store.follow();
+    /* The Crew section: my crew, the weekly top 3 and the sessions it reports. */
+    const crews = new CrewsStore(context, store);
     /* A stay in a shared session ended: the activity log records the focus stretch, and a finished session celebrates; a hidden panel gets a toast instead. */
     store.onCompletion((completion) => {
       const { record, celebration } = store.finish(completion);
@@ -82,7 +86,7 @@ export const PartyModule = defineModule(
 
     const openURL = (url: string) => store.openURL(url);
     function Panel() {
-      return <PartyPanel store={store} onOpenURL={openURL} />;
+      return <PartyPanel store={store} crews={crews} onOpenURL={openURL} />;
     }
     function SetupView() {
       return <PartyOnboardingView store={store} accent={PARTY_DESCRIPTOR.accent} />;
@@ -141,8 +145,21 @@ export const PartyModule = defineModule(
         store.stop();
         account.stop();
       },
-      /* An invite link (`tabbi://add/<code>`, `tabbi://join/<code>`) or the sign-in callback (`tabbi://auth/apple`). */
+      /* An invite link (`tabbi://add/<code>`, `tabbi://join/<code>`), a crew invite (`tabbi://crew/<code>`), or the sign-in callback (`tabbi://auth/apple`). */
       openLink: (url) => {
+        const crewInvite = parseCrewInvite(url);
+        if (crewInvite !== undefined) {
+          /* Party turns on first if it was off; the Crew section then asks before joining. */
+          if (!context.settings.current.modules.isEnabled(PARTY_DESCRIPTOR.id)) {
+            context.settings.update((settings) => {
+              const modules = settings.modules.clone();
+              modules.add(PARTY_DESCRIPTOR.id);
+              return { ...settings, modules };
+            });
+          }
+          crews.openInvite(crewInvite);
+          return true;
+        }
         const invite = parseInvite(url);
         if (invite !== undefined) {
           store.open(invite, context.settings.current.modules.isEnabled(PARTY_DESCRIPTOR.id));
@@ -150,8 +167,16 @@ export const PartyModule = defineModule(
         }
         return account.receiveCallback(url);
       },
-      showSnapshotState: (state) => store.showSnapshotState(state),
+      showSnapshotState: (state) => {
+        if (state.startsWith("crew-")) {
+          /* The Crew section shows only while Party is connected, so it stands on the hosting demo. */
+          store.showSnapshotState("hosting");
+        } else {
+          store.showSnapshotState(state);
+        }
+        crews.showSnapshotState(state);
+      },
     };
   },
-  { snapshotStates: PARTY_SNAPSHOT_STATES },
+  { snapshotStates: [...PARTY_SNAPSHOT_STATES, ...CREW_SNAPSHOT_STATES] },
 );

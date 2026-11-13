@@ -54,9 +54,9 @@ public struct PartyClient: Sendable {
     /// The Party protocol this app speaks, sent as `protocolHeader` on
     /// every request. Protocol 2 added friend requests and catalog version
     /// 2's item ids, protocol 3 the Study Level and nameplate color in the
-    /// profile; a server answers an app that sends no header as protocol 1.
-    /// See `docs/party-compatibility.md`.
-    public static let protocolVersion = 3
+    /// profile, protocol 4 Study Crews; a server answers an app that sends
+    /// no header as protocol 1. See `docs/party-compatibility.md`.
+    public static let protocolVersion = 4
     public static let protocolHeader = "Tabbi-Protocol"
 
     // MARK: Health
@@ -192,7 +192,7 @@ public struct PartyClient: Sendable {
     public func heartbeat(_ heartbeat: PartyHeartbeat) async throws -> PartyHeartbeatReply {
         let reply = try await send("POST", "/v1/presence", body: heartbeat, as: PresenceReply.self)
         return PartyHeartbeatReply(presence: reply.presence, nextHeartbeat: reply.heartbeatSeconds,
-                                   incomingRequests: reply.incomingRequests)
+                                   incomingRequests: reply.incomingRequests, crews: reply.crews)
     }
 
     /// `GET /v1/leaderboard`: this ISO week's minutes for me and my friends.
@@ -274,13 +274,15 @@ public struct PartyClient: Sendable {
         return code
     }
 
-    private func send<Reply: Decodable>(
+    // Internal rather than private so the Crews routes
+    // (`PartyClient+Crews.swift`) share the same envelope and headers.
+    func send<Reply: Decodable>(
         _ method: String, _ path: String, authorized: Bool = true, as type: Reply.Type
     ) async throws -> Reply {
         try await perform(PartyHTTPRequest(method: method, path: path), authorized: authorized, as: type)
     }
 
-    private func send<Body: Encodable, Reply: Decodable>(
+    func send<Body: Encodable, Reply: Decodable>(
         _ method: String, _ path: String, body: Body, authorized: Bool = true, as type: Reply.Type
     ) async throws -> Reply {
         let data = try Self.makeEncoder().encode(body)
@@ -371,6 +373,7 @@ private struct PresenceReply: Decodable {
     let presence: PartyPresence
     let heartbeatSeconds: TimeInterval?
     let incomingRequests: Int?
+    let crews: PartyCrewsPulse?
 }
 
 private struct LeaderboardReply: Decodable {

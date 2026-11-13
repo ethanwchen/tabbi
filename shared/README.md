@@ -11,6 +11,7 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
   `kit.v1.schema.json` describes kit files (`formatVersion` 1), bundled in `Sources/TabbiKitCore/Kits/Bundled` or imported; see `docs/kits.md`.
   `edition.v1.schema.json` describes the edition files in `Sources/TabbiKitCore/Editions/BundledEditions`.
   `catalog.v1.schema.json` describes the Party catalog, `backend/shared/catalog.json`.
+  `crews.v1.schema.json` is the Study Crews wire contract (protocol 3, docs/design/crews.md); `backend/test/compat.test.ts` checks the server's replies and the crews fixture against it.
   `party.v1.schema.json` is the Party wire contract: every request body and reply the apps and the server exchange (endpoints and errors in `docs/study/backend-api.md`, versioning in `docs/party-compatibility.md`); `backend/test/compat.test.ts` checks the server's replies against it.
   `sync-document.v1.schema.json` describes the Party sync document both apps write to the same server document (`SyncDocument`); `SyncDocumentGoldenTests` keeps its fields equal to what the Swift encoder writes.
   `activity-record.v1.schema.json` describes an `ActivityRecord` and the per-day file `ActivityLogRepository` writes in the edition's `Activity` folder.
@@ -32,12 +33,13 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
   `onboarding/` pins first-run setup: step order and skipping for different kits, answers and tab choices;
   `formatting/` pins durations and date ranges in all 12 languages;
   `break-buddy/` pins the break buddy: its moves, which move the planner picks for a break and the water tally's counts;
+  `crews/` pins Study Crews: the requests the app sends, how sample replies read, the board's hours and countdown, the session queue, the draft checks, invite links, and every crest's pixels and palettes;
   `progression/` pins the Closet's Goals section: badge tiers, the tally read from activity logs, the gentle streak, monthly quests, the mastery outfits each tier unlocks and the progression save, and in `levels.json` the Study Level: its curve, ranks, nameplate colors and rank emblems.
 
 Fixtures are regenerated only on purpose, after an intended change:
 
 ```sh
-TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|ThemeGoldenTests|StudyMethodGoldenTests|ClaudeStreamGoldenTests|FocusTimerGoldenTests|StudySessionGoldenTests|TickerGoldenTests|PlanMyDayGoldenTests|PartyProtocolGoldenTests|SyncDocumentGoldenTests|ClosetGoldenTests|ActivityLogGoldenTests|StreaksRecapGoldenTests|AnkiGoldenTests|KitGoldenTests|OnboardingGoldenTests|FormattingGoldenTests|BreakBuddyGoldenTests|ProgressionGoldenTests|StudyLevelGoldenTests'
+TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|ThemeGoldenTests|StudyMethodGoldenTests|ClaudeStreamGoldenTests|FocusTimerGoldenTests|StudySessionGoldenTests|TickerGoldenTests|PlanMyDayGoldenTests|PartyProtocolGoldenTests|SyncDocumentGoldenTests|ClosetGoldenTests|ActivityLogGoldenTests|StreaksRecapGoldenTests|AnkiGoldenTests|KitGoldenTests|OnboardingGoldenTests|FormattingGoldenTests|BreakBuddyGoldenTests|ProgressionGoldenTests|StudyLevelGoldenTests|CrewsGoldenTests'
 ```
 
 A push to a branch named `shared/...` runs `.github/workflows/record-fixtures.yml`, which records the newer fixtures on a Mac runner, uploads `shared/fixtures/` as the `fixtures` artifact and then checks the tests against that recording.

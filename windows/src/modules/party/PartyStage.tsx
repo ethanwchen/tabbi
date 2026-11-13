@@ -5,7 +5,7 @@
  */
 
 import { useStore } from "../../app/useStore";
-import { tr } from "../../core/localization/tr";
+import { currentLanguage, tr } from "../../core/localization/tr";
 import { PartyCode, type Party, type PartyMember, type PartySession } from "../../core/party/partyModels";
 import { minutesLeft, rosterDuration, rosterStatus, rosterTimeLeft, statusLine } from "../../core/party/partyRoster";
 import { isFoundingMember, profileStanding } from "../../core/party/partyModels";
@@ -22,10 +22,16 @@ import { ViewsThatFit } from "../../ui/kit/ViewsThatFit";
 import { PartyCodeField, PartyCopyCode, PartyPet, PartyPillButton, PartyShareInvite, PartyTextButton, statusColor } from "./PartyComponents";
 import { useModerationMenu } from "./PartyModeration";
 import type { PartyStore } from "./partyStore";
+import { PartyModeSwitch, useFitStep } from "./CrewComponents";
+import type { CrewsStore } from "./crewsStore";
 
-export function PartyStage({ store, onFieldFocus }: { store: PartyStore; onFieldFocus: (focused: boolean) => void }) {
+export function PartyStage({ store, crews, onFieldFocus }: { store: PartyStore; crews: CrewsStore; onFieldFocus: (focused: boolean) => void }) {
   const party = useStore(store, (state) => state.party.party);
-  return <Card className="party-stage">{party === undefined ? <PartyLobby store={store} onFieldFocus={onFieldFocus} /> : <PartyRoom party={party} store={store} />}</Card>;
+  return (
+    <Card className="party-stage">
+      {party === undefined ? <PartyLobby store={store} crews={crews} onFieldFocus={onFieldFocus} /> : <PartyRoom party={party} store={store} crews={crews} />}
+    </Card>
+  );
 }
 
 /* MARK: In a party */
@@ -38,33 +44,44 @@ const CAPTION_WEIGHT = 500;
 const STATUS_DOT = 5;
 const STATUS_GAP = 4;
 
-/** The room header's layouts, roomiest first (the Mac's PartyRoom.header). */
-const HEADER_VARIANTS: readonly { title: boolean; count: "long" | "short" | "none" }[] = [
-  { title: true, count: "long" },
-  { title: false, count: "long" },
-  { title: false, count: "short" },
-  { title: false, count: "none" },
+/**
+ * The room header's layouts, roomiest first (the Mac's PartyRoom.header):
+ * the Party or Crews switch stands where the title was, and the count
+ * shortens and goes before the switch's titles and the share button do;
+ * last, only the pill to the other mode stays.
+ */
+const HEADER_VARIANTS: readonly { count: "long" | "short" | "none"; partyTitle: boolean; share: boolean; crewsTitle: boolean; otherModeOnly: boolean }[] = [
+  { count: "long", partyTitle: true, share: true, crewsTitle: true, otherModeOnly: false },
+  { count: "short", partyTitle: true, share: true, crewsTitle: true, otherModeOnly: false },
+  { count: "none", partyTitle: true, share: true, crewsTitle: true, otherModeOnly: false },
+  { count: "none", partyTitle: false, share: true, crewsTitle: true, otherModeOnly: false },
+  { count: "none", partyTitle: false, share: false, crewsTitle: true, otherModeOnly: false },
+  { count: "none", partyTitle: false, share: false, crewsTitle: false, otherModeOnly: false },
+  { count: "none", partyTitle: false, share: false, crewsTitle: false, otherModeOnly: true },
 ];
-const LAST_HEADER_VARIANT = { title: false, count: "none" } as const;
+const LAST_HEADER_VARIANT = { count: "none", partyTitle: false, share: false, crewsTitle: false, otherModeOnly: true } as const;
 
 /** The party I'm in: its code, everyone's pets, and the shared session. */
-function PartyRoom({ party, store }: { party: Party; store: PartyStore }) {
+function PartyRoom({ party, store, crews }: { party: Party; store: PartyStore; crews: CrewsStore }) {
   const state = useStore(store);
   const [members, width] = useElementWidth<HTMLDivElement>();
   const count = Math.max(party.members.length, 1);
   const column = width === 0 ? ROOMY_WIDTH : Math.min(ROOMY_WIDTH, Math.floor((width - 4 * (count - 1)) / count));
   const isHost = state.party.isHost;
+  const showsCrews = useStore(crews, (crewsState) => crewsState.showsCrews);
   return (
     <div className="party-room">
       <div className="party-room-header">
         {/*
-         * As on the Mac: on a narrow panel the title goes first (the code
-         * says it's a party), then the count shortens, then goes, so no word
-         * is squeezed, wrapped or covered by Leave in any language.
+         * As on the Mac: the Party or Crews switch stands where the title
+         * was; on a narrow panel the count shortens, then goes, then the
+         * Party pill loses its title, then the share button goes, and only
+         * then the Crews pill (the Crews UI spec's ladder), so no word is
+         * squeezed, wrapped or covered by Leave in any language.
          */}
         <ViewsThatFit
           count={HEADER_VARIANTS.length}
-          fitKey={`${party.code}|${party.members.length}|${party.maxMembers}`}
+          fitKey={`${party.code}|${party.members.length}|${party.maxMembers}|${showsCrews}`}
           className="party-room-labels"
           render={(index) => {
             const variant = HEADER_VARIANTS[index] ?? LAST_HEADER_VARIANT;
@@ -76,9 +93,9 @@ function PartyRoom({ party, store }: { party: Party; store: PartyStore }) {
                   : undefined;
             return (
               <>
-                {variant.title && <span className="kit-title party-room-title">{tr("Party")}</span>}
+                <PartyModeSwitch showsCrews={showsCrews} partyTitle={variant.partyTitle} crewsTitle={variant.crewsTitle} otherModeOnly={variant.otherModeOnly} onChange={(shows) => crews.setShowsCrews(shows)} />
                 <PartyCopyCode code={party.code} help={tr("The party code. Click to copy it, then send it to friends.")} />
-                <PartyShareInvite invite={{ kind: "joinParty", code: party.code }} help={tr("Share an invite link. Friends who open it can join this party in one click.")} />
+                {variant.share && <PartyShareInvite invite={{ kind: "joinParty", code: party.code }} help={tr("Share an invite link. Friends who open it can join this party in one click.")} />}
                 {count !== undefined && (
                   <Tooltip text={tr("Members in this party")}>
                     <span className="kit-caption kit-tertiary party-room-count">{count}</span>
@@ -251,16 +268,20 @@ function RunningSession({ session, store, labeled }: { session: PartySession; st
 /* MARK: Not in a party */
 
 /** Outside a party: my pet with an invitation to start one or join by code. */
-function PartyLobby({ store, onFieldFocus }: { store: PartyStore; onFieldFocus: (focused: boolean) => void }) {
+function PartyLobby({ store, crews, onFieldFocus }: { store: PartyStore; crews: CrewsStore; onFieldFocus: (focused: boolean) => void }) {
   const state = useStore(store);
-
+  const showsCrews = useStore(crews, (crewsState) => crewsState.showsCrews);
+  /* As on the Mac: the long invitation while it fits whole, else the short one, else none; never an ellipsis. */
+  const [lobby, step] = useFitStep<HTMLDivElement>(2, `${currentLanguage()}|${state.party.profile !== undefined}`);
+  const line = step === 0 ? tr("Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.") : step === 1 ? tr("Start a party, or join a friend's.") : undefined;
   return (
-    <div className="party-lobby">
+    <div ref={lobby} className="party-lobby">
+      <PartyModeSwitch showsCrews={showsCrews} onChange={(shows) => crews.setShowsCrews(shows)} />
       <div className="party-lobby-intro">
         {state.party.profile !== undefined && <PartyPet profile={state.party.profile} pixelSize={1.5} />}
         <div className="party-lobby-words">
           <span className="kit-title">{tr("Study together")}</span>
-          <span className="kit-body kit-secondary party-lobby-line">{tr("Start a party and share its code, or join a friend's. Your pets sit side by side while you focus.")}</span>
+          {line !== undefined && <span className="kit-body kit-secondary party-lobby-line">{line}</span>}
         </div>
       </div>
       {/*

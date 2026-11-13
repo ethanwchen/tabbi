@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { MAX_BLOCKS } from "../src/moderation";
 import { env, runInDurableObject } from "cloudflare:test";
 import { migrate } from "../src/hub";
-import { admin, call, expectError, hub, register, befriend } from "./helpers";
+import { admin, call, expectError, hub, register, befriend, dropCrewsTables } from "./helpers";
 
 const codes = (list: { profile: { code: string } }[]) => list.map((x) => x.profile.code);
 const friendsOf = async (u: { token: string }) => codes((await call("GET", "/v1/friends", undefined, u.token)).body.friends);
@@ -226,6 +226,7 @@ describe("schema step 3", () => {
       sql.exec("DROP TABLE download_counts");
       sql.exec("DROP TABLE entitlements");
       sql.exec("DROP TABLE friend_requests");
+      dropCrewsTables(sql);
       sql.exec("ALTER TABLE users DROP COLUMN study_level");
       sql.exec("ALTER TABLE users DROP COLUMN nameplate");
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
@@ -233,7 +234,7 @@ describe("schema step 3", () => {
       sql.exec("UPDATE schema_version SET version = 2");
       sql.exec("INSERT INTO friends (a, b, created_at) VALUES ('AAAAAAAA', 'BBBBBBBB', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 16 }]);
       expect(sql.exec("SELECT * FROM blocks").toArray()).toEqual([]);
       expect(sql.exec("SELECT a FROM friends").toArray()).toEqual([{ a: "AAAAAAAA" }]);
     });

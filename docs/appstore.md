@@ -17,7 +17,7 @@ What a sandboxed app cannot do takes a sandboxed path instead (AI Usage, Do Not 
 | App Sandbox | no | yes (`packaging/Tabbi-AppStore.entitlements`) |
 | Updates | Sparkle | the App Store (Sparkle is not linked at all) |
 | Move to Applications, single instance, quarantine checks | InstallHygiene | left out (the App Store installs the app) |
-| Party | yes | yes, the same tab, age check, invite links, reporting and blocking (from 1.0.4) |
+| Party | yes | yes, the same tab, age check, invite links, reporting and blocking (from 1.0.4), and Study Crews in the same tab (from the Crews release) |
 | AI Usage | reads `~/.claude` and `~/.codex`, and asks the `claude` CLI for live limits | reads only the Claude Code or Codex folder the user picks; Claude Code shows tokens per day in place of live limits, Codex shows its limits from its logs (from 1.0.4) |
 | AI providers (Settings > Connections > AI) | Claude Code, Codex and Gemini CLI, the Anthropic, OpenAI and Gemini APIs, Ollama | the Anthropic, OpenAI and Gemini APIs with the user's key, and Ollama on `localhost` |
 | Ask AI | yes | yes, through the API providers and Ollama |
@@ -51,6 +51,8 @@ The age question is Party's alone and optional: it shows only when the user turn
 Only the date the user surely turns 13 is kept, on the Mac; nothing about it is sent (guideline 5.1.1(v)).
 The wire protocol is untouched, so App Store users party with every other version on the Mac and on Windows ([party-compatibility.md](party-compatibility.md)).
 No kit turns Party on, so a fresh install never shows it or the age question unless the user picks it.
+Study Crews ([design/crews.md](design/crews.md)) are a section of the same Party tab and the same code in both editions: they use the Party identity and server, so they stay off with Party under 13, and crew invite links (`tabbi://crew/<code>`) arrive through the same URL scheme.
+Crews keep the same safeguards: crew names and descriptions pass the name filter on the Mac and the server, a crew or a member can be reported (the flag on a crew's page, or right-click a member) and members blocked, owners can remove members, and the maintainer can rename, hide or delete a crew.
 
 ### AI Usage in the sandbox
 
@@ -163,13 +165,14 @@ The listing copy comes from the listing research (October 2026), with only the f
 - Copyright: the maintainer's name and the year
 - Age rating: update the questionnaire for 1.0.4, since Party adds content made by other users, and expect 13+ (the age the app's Party check and the Terms ask for); accept a higher rating if the answers give one.
   The answers (App Store Connect > App Information > Age Ratings > Edit):
-  - User-Generated Content: Yes. Other users' display names and pet names show in Party; they pass a name filter on the Mac and on the server, every user can report and block, and the maintainer reviews reports and can rename or ban an identity.
-  - Messaging and Chat: No. Party has no messages between users; the optional note in a report goes only to the maintainer.
+  - User-Generated Content: Yes. Other users' display names and pet names show in Party, and crew names and descriptions in Study Crews; they pass a name filter on the Mac and on the server, every user can report and block, and the maintainer reviews reports and can rename or ban an identity, and rename, hide or delete a crew.
+  - Messaging and Chat: No. Party and Crews have no messages between users; the optional note in a report goes only to the maintainer.
   - Unrestricted Web Access: No. Links open in the user's browser.
   - Advertising: No.
   - Contests, Gambling, Loot boxes and the content-frequency questions (violence, sexual content, profanity, mature themes, horror, medical, alcohol and tobacco and drugs, weapons): None.
   - Parental Controls: No. Age Assurance: No (the app does not verify age; Party asks the user's birth month and year and stays off under 13).
   - Answer yes wherever the questionnaire asks about AI-generated content, since Ask AI shows a provider's answers that Tabbi does not filter.
+  - Study Crews change none of these answers: their only user content is a filtered crew name and description, they add no messaging, and their weekly top 3 rewards are a laurel and a trophy count, never a purchase, a prize or chance (Contests stays None).
 - Sign-in information: not required (signing in is optional and only syncs the pet and streaks)
 - Pricing: free.
   The app has no tip, coffee or other external payment link in either edition, and this listing has none (Guideline 3.1.1); the website's optional Support Tabbi link lives only on the website.
@@ -261,9 +264,13 @@ For later versions, one warm line naming the headline change, then short New, Be
 For 1.0.6:
 
 ```
-New things to earn! Fifteen new outfits and the Heirloom shelf, six long-term treasures for steady studiers.
+Study together and level up! Study Crews and the Study Level arrive, with fifteen new outfits and the Heirloom shelf.
 
 New
+- Study Level: endless levels from your focus hours, a new rank and emblem every 10 levels, and name colors to unlock
+- Your level and name color show to friends in Party
+- Study Crews: start or join a crew, race for the weekly top 3 by focus hours, and earn medals for your crew's crest
+- Design a crest from frames, ten cute emblems and ten colors; the Hall of Fame keeps every medal
 - 15 outfits, from a Strawberry Cap and Mushroom Cap to a Varsity Jacket and Sailor Collar
 - The Heirloom shelf: the Keeper's Peacoat, Rain Slicker, Koi Yukata, Sushi Chef, Snow Day Puffer and Fireflies
 
@@ -328,7 +335,7 @@ App Store Connect's App Privacy answers cannot be set through the API, so enter 
    - Usage: App Functionality only.
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
-4. For **Contacts** (the friend list Party keeps on the server: the friend codes the user is friends with, friend requests sent and received, and the codes the user blocked; Apple's definition counts a social graph):
+4. For **Contacts** (the friend list Party keeps on the server: the friend codes the user is friends with, friend requests sent and received, and the codes the user blocked, and the Study Crew the user belongs to; Apple's definition counts a social graph):
    - Usage: App Functionality only.
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
@@ -340,11 +347,11 @@ App Store Connect's App Privacy answers cannot be set through the API, so enter 
    - Usage: App Functionality only.
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
-7. For **Other User Content** (the pet's look and name that Party shows and the account syncs, unlocked and granted items, and the reports the user files about another user: the reason and an optional note, which only the maintainer reads):
+7. For **Other User Content** (the pet's look and name that Party shows and the account syncs, unlocked and granted items, the name and description of a Study Crew the user makes, whether the user hides their pet on crew pages, and the reports the user files about another user or a crew: the reason and an optional note, which only the maintainer reads):
    - Usage: App Functionality only.
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
-8. For **Product Interaction** (Party presence that friends and party members see: studying, on a break or away, the study method, when the phase ends, minutes today and the streak; the party the user is in and its shared session; study minutes per day for the weekly leaderboard; and, with the account, points per Mac, the days the user studied and the longest streak):
+8. For **Product Interaction** (Party presence that friends and party members see: studying, on a break or away, the study method, when the phase ends, minutes today and the streak; the party the user is in and its shared session; study minutes per day for the weekly leaderboard; for a Study Crew member, each finished focus session's start, end and minutes, kept 14 days, and the minutes credited per day for the crew board; the Study Level the app shares, shown to friends and beside the name on crew pages; and, with the account, points per Mac, the days the user studied and the longest streak):
    - Usage: App Functionality only.
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
@@ -362,6 +369,7 @@ It also gives the required reasons for the APIs the binary links: UserDefaults (
 The widget extension has its own manifest (`PrivacyInfo-AppStore-Widget.xcprivacy`) with the same reasons and no collected data.
 If App Store Connect warns about a required reason API (ITMS-91053), add it to both manifests with the reason that matches the code.
 
+Study Crews add no data type: a crew's name and description are Other User Content, membership belongs to the social graph under Contacts, and finished focus sessions are Product Interaction, all for App Functionality, linked to the Party identity and not used for tracking, so the selections and the privacy manifest stay exactly as they are; only the descriptions above (and `backend/PRIVACY.md`) gained the crew details.
 Name, Contacts, Device ID and Product Interaction are the cautious reading: Apple's definitions are loose, and declaring a type the app arguably does not need costs nothing, while leaving out one it does is a mislabel.
 Party works without an account: its identity is a random token on the Mac and a friend code on the server, and "linked" means linked to that identity, which Apple counts as the user's identity.
 
@@ -384,7 +392,7 @@ Before submitting, check that the Worker has the Sign in with Apple secrets ([sy
 
 ### Notes for the reviewer
 
-Paste these lines into App Store Connect > the version > App Review Information > Notes (2815 characters with single spaces, of the 4000 allowed), after replacing `DEMO_CODE` with the demo friend's code (below).
+Paste these lines into App Store Connect > the version > App Review Information > Notes (3336 characters with single spaces, of the 4000 allowed), after replacing `DEMO_CODE` with the demo friend's code (below).
 
 > Tabbi turns the area around the notch at the top of a MacBook screen into a small panel of tabs: a focus timer, today's tasks and calendar, now playing, study tools, study with friends and a pixel pet.
 > There is no Dock icon and no window at launch; the app lives at the top center of the screen. Click the black notch area to open the panel, or press Control-Option-Space. On a Mac without a notch, Tabbi draws a small black pill at the top center of the menu bar.
@@ -398,6 +406,7 @@ Paste these lines into App Store Connect > the version > App Review Information 
 > 3. In Friends, type our demo friend's code DEMO_CODE and press Return. It accepts at once and shows in the list.
 > 4. Right-click Demo Friend > Report: pick a reason, Send Report (Also block is on by default). The report reaches our moderation queue. Or right-click > Block.
 > 5. Start a party for a party code and invite link (tabbi:// links open the app).
+> STUDY CREWS (same tab): click Crews at the top left of the Party tab, then Find, open Tabbi Review Crew to see its members' pets, and Ask to join; the demo account owns it and approves within a minute (an invite link joins at once). Focus minutes from then on count toward This week's top 3 (it freezes Sunday 23:59 UTC); Hall of Fame keeps the medals. Report a crew with the flag on its page; right-click a member to report or block; owners approve or decline requests and can remove members. Create a crew makes one (name, crest, public or private). Top 3 crews win only a laurel and a medal on their crest, never points or purchases.
 > Names pass a filter on the Mac and the server; the maintainer reviews every report and can rename or ban an identity. Contact: support@tabbinotch.com.
 > Signing in with Apple (Settings > General > Account) is optional, only syncs the pet, streaks and Party identity between the user's Macs, and asks for no personal information or birthday. Delete Account there deletes everything the server holds and revokes the grant (5.1.1(v)).
 > After a crash, an alert asks before sending a crash report (Send or Don't Send), and shows exactly what is sent.
@@ -413,6 +422,8 @@ npm run demo-friend -- create --url https://tabbi-friends.drosophil-anki-friends
 # prints the friend code for the notes; once is enough, the account stays
 npm run demo-friend -- study --url https://tabbi-friends.drosophil-anki-friends-backend.workers.dev --token-file ~/.tabbi-demo-friend.json --hours 48 --party
 # optional, while the build is in review: shows it studying in a party the reviewer can join from the friend list
+npm run demo-friend -- study --url https://tabbi-friends.drosophil-anki-friends-backend.workers.dev --token-file ~/.tabbi-demo-friend.json --hours 48 --crew
+# for a build with Study Crews: keeps the public crew Tabbi Review Crew the notes point to, with the demo friend's minutes on the board, and approves the reviewer's request to join it
 ```
 
 Reports the reviewer files about the demo friend land in the moderation queue like any other; resolve them as "no action" and never ban it.
@@ -435,6 +446,14 @@ Version 1.0.0 (build 130) was rejected on 19 October 2026, reviewed on a MacBook
    The sheet is gone, the button sits in the Settings window itself, and `AppleNativeSignIn` makes the app active and hands Apple's sheet that window before it asks; a failure now shows in the row the user is looking at, in their language.
 
 The reply to App Review is in the 1.0.3 submission notes.
+
+Plan for the Study Crews release, so it does not repeat those rejections:
+
+- Guideline 1.2 (user-generated content): crew names and descriptions pass the same name filter on the Mac and the server, a crew and each member can be reported, members can block each other, owners can remove members, and the maintainer can rename, hide or delete a crew from the crews moderation queue (`GET /v1/admin/crews/reports`) as well as ban the people in it; the notes above name each step.
+- Guideline 5.1.1 (data and age): Crews ask for no new data and follow Party's age check, so they stay off under 13 and the server never receives an age; the App Privacy selections and age rating answers stay as they are (answer sheet above), with the descriptions updated.
+- Guideline 2.1 (completeness): the reviewer can test every step alone, since the demo friend keeps a public crew (`study --crew`), and a new crew can be made and left at once.
+- Guideline 3.1.1 and 5.3 (no purchases, no contests): the weekly top 3 win only a laurel on their icon, a trophy count and a featured spot; no points, prizes, payments or chance are involved.
+- Before submitting: deploy the Worker with protocol 3 and the crews migration, deploy the site with its `/crew/<code>` page, run `demo-friend study --crew`, and check Find, asking to join and the approval, the board, the Hall of Fame and reporting on the TestFlight build against production.
 
 ### Checklist for 1.0.4 (what the maintainer sets by hand)
 

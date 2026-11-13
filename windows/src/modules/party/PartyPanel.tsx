@@ -1,6 +1,7 @@
 /*
  * Port of PartyPanel: the Party tab: the party (or a way into one) on the
- * left and friends on the right once connected; before that, a single calm
+ * left and friends on the right once connected (or, with the switch on
+ * Crews, the Crews card in their place); before that, a single calm
  * state for connecting, an unreachable server, the age check, or a server
  * setting that can't work. The report card covers it while open, a notice
  * sits at the bottom and the team celebration across the top.
@@ -23,21 +24,31 @@ import { FRIENDS_WIDTH, PartyFriendsCard } from "./PartyFriendsCard";
 import { PartyReportCard } from "./PartyReportCard";
 import { PartyStage } from "./PartyStage";
 import type { PartyStore } from "./partyStore";
+import { CrewReportCard } from "./CrewEditorAndFind";
+import { CrewsPanel } from "./CrewsPanel";
+import type { CrewsStore } from "./crewsStore";
 import "./party.css";
 
-export function PartyPanel({ store, onOpenURL }: { store: PartyStore; onOpenURL: (url: string) => void }) {
+export function PartyPanel({ store, crews, onOpenURL }: { store: PartyStore; crews: CrewsStore; onOpenURL: (url: string) => void }) {
   const state = useStore(store);
+  const crewsState = useStore(crews);
   useEffect(() => {
     store.setVisible(true);
-    return () => store.setVisible(false);
-  }, [store]);
+    crews.setVisible(true);
+    return () => {
+      store.setVisible(false);
+      crews.setVisible(false);
+    };
+  }, [store, crews]);
   const connection = state.party.connection;
   let content: ReactNode;
   switch (connection.kind) {
     case "connected":
-      content = (
+      content = crewsState.showsCrews ? (
+        <CrewsPanel crews={crews} />
+      ) : (
         <div className="party-columns">
-          <PartyStage store={store} onFieldFocus={() => {}} />
+          <PartyStage store={store} crews={crews} onFieldFocus={() => {}} />
           <div style={{ width: FRIENDS_WIDTH, flex: "none", display: "flex" }}>
             <PartyFriendsCard store={store} onFieldFocus={() => {}} />
           </div>
@@ -81,7 +92,12 @@ export function PartyPanel({ store, onOpenURL }: { store: PartyStore; onOpenURL:
   return (
     <div className="party-panel">
       {content}
-      {state.reporting !== undefined && connection.kind === "connected" && (
+      {crewsState.reporting !== undefined && connection.kind === "connected" && (
+        <div className="party-overlay">
+          <CrewReportCard key={crewsState.reporting.crew.id + (crewsState.reporting.member?.ref ?? "")} target={crewsState.reporting} crews={crews} />
+        </div>
+      )}
+      {crewsState.reporting === undefined && state.reporting !== undefined && connection.kind === "connected" && (
         <div className="party-overlay">
           <PartyReportCard key={state.reporting.code} profile={state.reporting} store={store} />
         </div>

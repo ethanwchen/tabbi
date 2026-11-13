@@ -1,4 +1,5 @@
-// Serves the Party invite pages, /add/<friend code> and /join/<party code>
+// Serves the Party invite pages, /add/<friend code>, /join/<party code> and
+// /crew/<crew invite code>
 // (PartyInvite in TabbiKitCore), on the server, because the site's CSP allows
 // no script in the browser. build.py writes the pages and the code rules
 // into _generated.mjs; its --serve preview answers the same way

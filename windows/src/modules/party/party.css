@@ -281,6 +281,12 @@
   gap: 16px;
   flex: 1;
   min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+/* Nothing in the lobby shrinks, so a line that doesn't fit overflows and the shorter one takes its place. */
+.party-lobby > * {
+  flex-shrink: 0;
 }
 .party-lobby-intro {
   display: flex;
@@ -294,10 +300,7 @@
   min-width: 0;
 }
 .party-lobby-line {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  overflow-wrap: anywhere;
 }
 .party-lobby-actions {
   display: flex;

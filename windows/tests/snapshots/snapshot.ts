@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import type { BrowserContext, Page } from "@playwright/test";
 
 /*
  * Helpers for the snapshot specs: the harness (`?snapshot=<state>`, see
@@ -46,6 +46,37 @@ export async function shoot(page: Page, state: string, query: string, path: stri
   /* One more frame, so text measured after the fonts loaded is drawn. */
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   await page.locator(".snapshot-frame").screenshot({ path });
+}
+
+/**
+ * Shoots each job on pages from `context`, starting a fresh page every
+ * `perPage` shots and closing it after, so a long walk never piles up one
+ * renderer's memory: on CI's runner a single page walking 140 states ran
+ * out of resources (net::ERR_INSUFFICIENT_RESOURCES, a fonts.ready that
+ * never resolved). At most one page per test is open at a time.
+ */
+export async function shootAll(
+  context: BrowserContext,
+  jobs: { state: string; query: string; path: string }[],
+  perPage = 20,
+): Promise<void> {
+  let page: Page | undefined;
+  try {
+    for (const [index, job] of jobs.entries()) {
+      if (index % perPage === 0) {
+        await page?.close();
+        page = await context.newPage();
+      }
+      await shoot(page as Page, job.state, job.query, job.path);
+    }
+  } finally {
+    await page?.close();
+  }
+}
+
+/** Every `parts`-th state from `part`, so a long list splits into tests of equal size. */
+export function slice<T>(items: T[], part: number, parts: number): T[] {
+  return items.filter((_, index) => index % parts === part);
 }
 
 /** A file name for a state: `open:study:running` becomes `open-study-running`. */

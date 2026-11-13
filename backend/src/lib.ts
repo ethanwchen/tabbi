@@ -52,9 +52,10 @@ export const AUTH_FAILURES_PER_MIN = 60;
  * PROTOCOL_HEADER of every request; a request without one is protocol 1 (the apps up to 1.0.0). See
  * docs/party-compatibility.md: the server never drops what an older protocol sends or expects.
  * Protocol 2 added friend requests; protocol 3 adds the optional `studyLevel` and `nameplate` profile
- * fields (the Study Level, shown to friends and never trusted for anything but display).
+ * fields (the Study Level, shown to friends and never trusted for anything but display); protocol 4 adds
+ * Study Crews.
  */
-export const PROTOCOL_VERSION = 3;
+export const PROTOCOL_VERSION = 4;
 export const MIN_PROTOCOL_VERSION = 1;
 export const PROTOCOL_HEADER = "Tabbi-Protocol";
 /** The first protocol whose apps show friend requests. Users on an older one get instant friendships. */

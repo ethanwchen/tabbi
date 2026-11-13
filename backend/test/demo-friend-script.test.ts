@@ -1,6 +1,6 @@
 import { SELF } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
-import { DEMO_PROFILE, parseArgs, run, type Deps, type TokenStore } from "../scripts/demo-friend";
+import { DEMO_PROFILE, REVIEW_CREW_NAME, parseArgs, run, type Deps, type TokenStore } from "../scripts/demo-friend";
 import { BASE, call, freshIp, register } from "./helpers";
 
 /** The Worker, as the script reaches it, from a client IP of its own so no rate limit is shared. */
@@ -39,9 +39,9 @@ const options = (command: string, ...extra: string[]) =>
 describe("parseArgs", () => {
   it("needs a command, the server and a token file", () => {
     expect(parseArgs(["create", "--url", "http://localhost:8787/", "--token-file", "t.json"]))
-      .toEqual({ command: "create", url: "http://localhost:8787", tokenFile: "t.json", name: "Demo Friend", hours: 8, party: false });
-    expect(parseArgs(["study", "--url", "https://x.example", "--token-file", "t", "--hours", "48", "--party"]))
-      .toMatchObject({ command: "study", hours: 48, party: true });
+      .toEqual({ command: "create", url: "http://localhost:8787", tokenFile: "t.json", name: "Demo Friend", hours: 8, party: false, crew: false });
+    expect(parseArgs(["study", "--url", "https://x.example", "--token-file", "t", "--hours", "48", "--party", "--crew"]))
+      .toMatchObject({ command: "study", hours: 48, party: true, crew: true });
     expect(() => parseArgs(["make", "--url", "https://x.example", "--token-file", "t"])).toThrow(/first argument/);
     expect(() => parseArgs(["create", "--token-file", "t"])).toThrow(/--url/);
     expect(() => parseArgs(["create", "--url", "https://x.example"])).toThrow(/--token-file/);
@@ -110,6 +110,28 @@ describe("the demo friend", () => {
     expect(lines.at(-1)).toMatch(/^Studied for 0.1 h \(\d+ heartbeats\), now offline\.$/);
     const after = (await call("GET", "/v1/friends", undefined, reviewer.token, freshIp())).body.friends[0];
     expect(after.online).toBe(false);
+  });
+
+  it("keeps a public review crew that a reviewer finds and joins, once", async () => {
+    const tokens = memoryTokens();
+    await run(options("create"), deps(tokens));
+    const lines: string[] = [];
+    await run(options("study", "--hours", "0.05", "--crew"), deps(tokens, lines));
+    expect(lines[0]).toBe(`Created crew ${REVIEW_CREW_NAME}; reviewers find it in Find crews.`);
+    await run(options("study", "--hours", "0.05", "--crew"), deps(tokens, lines));
+    expect(lines.at(-2)).toBe(`In crew ${REVIEW_CREW_NAME}; reviewers find it in Find crews.`);
+    const reviewer = await register({ name: "Reviewer" });
+    const found = await call("GET", `/v1/crews?q=${encodeURIComponent("review crew")}`, undefined, reviewer.token, freshIp());
+    const crew = found.body.crews.find((c: { name: string }) => c.name === REVIEW_CREW_NAME);
+    expect(crew).toMatchObject({ visibility: "public", memberCount: 1 });
+    // Joining a public crew asks its owner; the studying demo friend lets the reviewer in.
+    const asked = await call("POST", "/v1/crews/join", { crew: crew.id }, reviewer.token, freshIp());
+    expect(asked.body).toMatchObject({ joined: false, requested: true, crew: { memberCount: 1 } });
+    await run(options("study", "--hours", "0.05", "--crew"), deps(tokens, lines));
+    expect(lines).toContain("Let Reviewer into the crew.");
+    const mine = await call("GET", "/v1/crews/mine", undefined, reviewer.token, freshIp());
+    expect(mine.body.crew).toMatchObject({ name: REVIEW_CREW_NAME, memberCount: 2 });
+    await run(options("delete"), deps(tokens));
   });
 
   it("deletes the account and the token file", async () => {

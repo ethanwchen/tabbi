@@ -6,15 +6,16 @@ import TabbiKit
 /// session below, or, outside a party, ways to start or join one.
 struct PartyStage: View {
     @ObservedObject var store: PartyStore
+    @ObservedObject var crews: CrewsStore
     var focus: FocusState<PartyField?>.Binding
 
     var body: some View {
         Card {
             Group {
                 if let party = store.state.party {
-                    PartyRoom(party: party, store: store)
+                    PartyRoom(party: party, store: store, crews: crews)
                 } else {
-                    PartyLobby(store: store, focus: focus)
+                    PartyLobby(store: store, crews: crews, focus: focus)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -29,6 +30,7 @@ struct PartyStage: View {
 private struct PartyRoom: View {
     let party: Party
     @ObservedObject var store: PartyStore
+    @ObservedObject var crews: CrewsStore
 
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
@@ -41,14 +43,17 @@ private struct PartyRoom: View {
 
     private var header: some View {
         HStack(spacing: Theme.Spacing.s) {
-            // On a narrow panel the title goes first (the code says it's a
-            // party), then the count shortens, so nothing truncates.
+            // The Crews UI spec's ladder: the member count drops first, then
+            // the Party pill's title, then the share button, and only then
+            // the Crews pill's title, so nothing truncates.
+            let count = String(localized: "\(party.members.count) of \(party.maxMembers)", bundle: .tabbi)
             ViewThatFits(in: .horizontal) {
-                headerLabels(title: true, count: String(localized: "\(party.members.count) of \(party.maxMembers)", bundle: .tabbi))
-                headerLabels(title: false, count: String(localized: "\(party.members.count) of \(party.maxMembers)", bundle: .tabbi))
-                headerLabels(title: false, count: "\(party.members.count)/\(party.maxMembers)")
-                // The pets below show who's in, so the count is the last to go.
-                headerLabels(title: false, count: nil)
+                headerLabels(partyTitle: true, crewsTitle: true, share: true, count: count)
+                headerLabels(partyTitle: true, crewsTitle: true, share: true, count: nil)
+                headerLabels(partyTitle: false, crewsTitle: true, share: true, count: nil)
+                headerLabels(partyTitle: false, crewsTitle: true, share: false, count: nil)
+                headerLabels(partyTitle: false, crewsTitle: false, share: false, count: nil)
+                headerLabels(partyTitle: false, crewsTitle: false, share: false, count: nil, otherModeOnly: true)
             }
             Spacer(minLength: Theme.Spacing.s)
             PartyTextButton(title: String(localized: "Leave", bundle: .tabbi), isBusy: store.pending == .leaveParty,
@@ -60,18 +65,16 @@ private struct PartyRoom: View {
         }
     }
 
-    private func headerLabels(title: Bool, count: String?) -> some View {
-        HStack(spacing: Theme.Spacing.s) {
-            if title {
-                Text("Party", bundle: .tabbi)
-                    .font(Theme.Typography.title)
-                    .foregroundStyle(Theme.Palette.primaryText)
-                    .fixedSize()
-            }
+    private func headerLabels(partyTitle: Bool, crewsTitle: Bool, share: Bool, count: String?, otherModeOnly: Bool = false) -> some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            // The Party and Crews mode switch stands where the title was.
+            PartyModeSwitch(crews: crews, partyTitle: partyTitle, crewsTitle: crewsTitle, otherModeOnly: otherModeOnly)
             PartyCopyCode(code: party.code, help: String(localized: "The party code. Click to copy it, then send it to friends.", bundle: .tabbi))
                 .fixedSize()
-            PartyShareInvite(invite: .joinParty(code: party.code),
-                             help: String(localized: "Share an invite link. Friends who open it can join this party in one click.", bundle: .tabbi))
+            if share {
+                PartyShareInvite(invite: .joinParty(code: party.code),
+                                 help: String(localized: "Share an invite link. Friends who open it can join this party in one click.", bundle: .tabbi))
+            }
             if let count {
                 Text(count)
                     .font(Theme.Typography.caption.monospacedDigit())
@@ -332,6 +335,7 @@ private struct PartySessionBar: View {
 /// Outside a party: my pet with an invitation to start one or join by code.
 private struct PartyLobby: View {
     @ObservedObject var store: PartyStore
+    @ObservedObject var crews: CrewsStore
     var focus: FocusState<PartyField?>.Binding
 
     /// Room for the field's icon, placeholder and Paste.
@@ -354,7 +358,8 @@ private struct PartyLobby: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.l) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+            PartyModeSwitch(crews: crews)
             HStack(spacing: Theme.Spacing.m) {
                 if let profile = store.state.profile {
                     PartyPet(profile: profile, pixelSize: 1.5)

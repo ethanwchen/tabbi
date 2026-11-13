@@ -254,11 +254,28 @@ public struct PartyHeartbeatReply: Hashable, Sendable {
     /// badge while its panel is closed; nil from a server without friend
     /// requests.
     public var incomingRequests: Int?
+    /// Study Crews news riding along (protocol 3 and up): requests waiting
+    /// for the crew I own, and the crew I am in; nil from older servers.
+    public var crews: PartyCrewsPulse?
 
-    public init(presence: PartyPresence, nextHeartbeat: TimeInterval?, incomingRequests: Int? = nil) {
+    public init(presence: PartyPresence, nextHeartbeat: TimeInterval?, incomingRequests: Int? = nil,
+                crews: PartyCrewsPulse? = nil) {
         self.presence = presence
         self.nextHeartbeat = nextHeartbeat
         self.incomingRequests = incomingRequests
+        self.crews = crews
+    }
+}
+
+/// The heartbeat reply's `crews`: how many join requests wait for the crew I
+/// own, and which crew I am in, so an approval shows without polling.
+public struct PartyCrewsPulse: Codable, Hashable, Sendable {
+    public var requests: Int
+    public var crew: String?
+
+    public init(requests: Int, crew: String?) {
+        self.requests = requests
+        self.crew = crew
     }
 }
 

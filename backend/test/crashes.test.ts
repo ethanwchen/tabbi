@@ -5,7 +5,7 @@ import {
   MAX_CRASH_THREADS, parseCrash,
 } from "../src/crashes";
 import { migrate } from "../src/hub";
-import { admin, call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
+import { admin, call, expectError, freshIp, hub, pinClockToMinuteStart, register, dropCrewsTables } from "./helpers";
 
 /** A report shaped like the one the app sends after a crash on the main thread. */
 const REPORT = {
@@ -196,13 +196,14 @@ describe("schema step 10", () => {
       sql.exec("DROP TABLE download_counts");
       sql.exec("DROP TABLE entitlements");
       sql.exec("DROP TABLE friend_requests");
+      dropCrewsTables(sql);
       sql.exec("ALTER TABLE users DROP COLUMN study_level");
       sql.exec("ALTER TABLE users DROP COLUMN nameplate");
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
       sql.exec("ALTER TABLE apple_accounts DROP COLUMN client_id");
       sql.exec("UPDATE schema_version SET version = 9");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 16 }]);
       expect(sql.exec("SELECT name FROM users WHERE code = ?", user.code).toArray()).toEqual([{ name: "Kept" }]);
       expect(sql.exec("SELECT * FROM crashes").toArray()).toEqual([]);
     });

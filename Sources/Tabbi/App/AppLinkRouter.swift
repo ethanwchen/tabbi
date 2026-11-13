@@ -3,8 +3,9 @@ import TabbiKit
 import TabbiKitCore
 
 /// Sends a `tabbi://` link to whoever handles it: an invite to Party, whose
-/// confirmation fills the notch (it offers to turn Party on first), and the
-/// widget's open link to the notch itself.
+/// confirmation fills the notch (it offers to turn Party on first), a crew
+/// invite, which opens the Party tab's Crew section, and the widget's open
+/// link to the notch itself.
 @MainActor
 struct AppLinkRouter {
     let services: AppServices
@@ -21,6 +22,11 @@ struct AppLinkRouter {
             // An edition without Party ignores invites.
             guard let party = services.modules.module(PartyModule.self) else { return false }
             party.open(invite)
+        case .crew(let invite):
+            // The Crew section asks before joining, in the open Party tab.
+            guard let party = services.modules.module(PartyModule.self) else { return false }
+            party.open(invite)
+            notch.open(PartyModule.descriptor.id)
         }
         return true
     }

@@ -171,6 +171,20 @@
 			<string>오늘 물 %lld잔</string>
 		</dict>
 	</dict>
+	<key>%lld members</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>멤버 %lld명</string>
+		</dict>
+	</dict>
 	<key>%lld minutes in the bank.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -183,6 +197,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>%lld분 적립 완료.</string>
+		</dict>
+	</dict>
+	<key>%lld more</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld개 더</string>
 		</dict>
 	</dict>
 	<key>%lld more points for %@</key>
@@ -225,6 +253,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>%lld개가 더 이상 맞지 않아요</string>
+		</dict>
+	</dict>
+	<key>%lld of %lld members</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>멤버 %lld/%lld명</string>
 		</dict>
 	</dict>
 	<key>%lld planned</key>
@@ -995,6 +1037,20 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>친구 %lld명과</string>
+		</dict>
+	</dict>
+	<key>· %lld want to join</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>· %lld명이 참가 희망</string>
 		</dict>
 	</dict>
 </dict>

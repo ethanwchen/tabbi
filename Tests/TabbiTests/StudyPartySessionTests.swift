@@ -65,11 +65,11 @@ final class PartyCelebrationSnapshotTests: XCTestCase {
         XCTAssertNotNil(before.party?.session)
         XCTAssertNil(store.celebration)
 
-        store.showCelebrationForSnapshot(true)
+        store.showForSnapshot(.celebrating)
         XCTAssertEqual(store.celebration?.title, "Great job, team!")
         XCTAssertNil(store.state.party?.session, "The session it celebrates has ended")
 
-        store.showCelebrationForSnapshot(false)
+        store.showForSnapshot(nil)
         XCTAssertNil(store.celebration)
         XCTAssertEqual(store.state, before)
     }

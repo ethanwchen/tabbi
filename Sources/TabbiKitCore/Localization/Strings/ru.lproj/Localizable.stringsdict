@@ -243,6 +243,26 @@
 			<string>%lld стакана воды сегодня</string>
 		</dict>
 	</dict>
+	<key>%lld members</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld участника</string>
+			<key>many</key>
+			<string>%lld участников</string>
+			<key>one</key>
+			<string>%lld участник</string>
+			<key>other</key>
+			<string>%lld участника</string>
+		</dict>
+	</dict>
 	<key>%lld minutes in the bank.</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -261,6 +281,26 @@
 			<string>%lld минута в копилке.</string>
 			<key>other</key>
 			<string>%lld минуты в копилке.</string>
+		</dict>
+	</dict>
+	<key>%lld more</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>ещё %lld</string>
+			<key>many</key>
+			<string>ещё %lld</string>
+			<key>one</key>
+			<string>ещё %lld</string>
+			<key>other</key>
+			<string>ещё %lld</string>
 		</dict>
 	</dict>
 	<key>%lld more points for %@</key>
@@ -321,6 +361,26 @@
 			<string>%lld больше не помещается</string>
 			<key>other</key>
 			<string>%lld больше не помещаются</string>
+		</dict>
+	</dict>
+	<key>%lld of %lld members</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld из %lld участников</string>
+			<key>many</key>
+			<string>%lld из %lld участников</string>
+			<key>one</key>
+			<string>%lld из %lld участников</string>
+			<key>other</key>
+			<string>%lld из %lld участников</string>
 		</dict>
 	</dict>
 	<key>%lld planned</key>
@@ -1421,6 +1481,26 @@
 			<string>с %lld другом</string>
 			<key>other</key>
 			<string>с %lld друга</string>
+		</dict>
+	</dict>
+	<key>· %lld want to join</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>· %lld хотят вступить</string>
+			<key>many</key>
+			<string>· %lld хотят вступить</string>
+			<key>one</key>
+			<string>· %lld хочет вступить</string>
+			<key>other</key>
+			<string>· %lld хотят вступить</string>
 		</dict>
 	</dict>
 </dict>

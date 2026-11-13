@@ -1,0 +1,1089 @@
+/*
+ * The Crews screens, measured from the Crews UI spec and its prototype
+ * (runs/crews/ui-design): 22 px pill rows with a 6 px gap, 32 px rows,
+ * 80 px featured tiles, a 168 px hero column (160 in the editor), pixel art
+ * at whole device pixels, logical properties so Arabic mirrors, and numbers
+ * kept in left-to-right runs.
+ */
+
+.crews-frame {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  --crew-gold: #f2c14e;
+  --crew-silver: #c7d1de;
+  --crew-bronze: #d9945c;
+}
+.crews-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.crews-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  animation: crews-fade 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.crews-card[data-motion="reduced"] .crews-screen {
+  animation-duration: 0.18s;
+  animation-timing-function: ease-in-out;
+}
+.crews-card[data-motion="none"] .crews-screen,
+.crews-card[data-motion="none"] .crew-menu {
+  animation: none;
+}
+@keyframes crews-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.crews-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+/* Numbers keep their digits in order (each is its own isolated run) while a unit or word around them reads in the panel's direction. */
+.crew-number {
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+}
+.crew-nowrap {
+  white-space: nowrap;
+}
+
+/* The pill row */
+.crews-head-fits {
+  flex: none;
+}
+.crews-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 22px;
+  min-width: 0;
+  white-space: nowrap;
+}
+.crews-head-spacer {
+  flex: 1;
+  min-width: 4px;
+}
+.crews-head-trail {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  margin-inline-start: auto;
+}
+.crews-head-caption {
+  flex: none;
+}
+.crews-head-title {
+  flex: 1;
+  min-width: 0;
+  color: var(--primary-text);
+}
+.crew-pills {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 22px;
+  flex: none;
+}
+.crew-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--secondary-text);
+  white-space: nowrap;
+  cursor: pointer;
+  flex: none;
+  transition:
+    background 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.crew-pill[data-titled] {
+  padding: 0 8px;
+}
+.crew-pill:hover {
+  color: var(--primary-text);
+  background: var(--surface-hover);
+}
+.crew-pill[aria-selected="true"] {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.crew-pill-dot {
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-end: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  pointer-events: none;
+}
+.crew-pill-separator {
+  width: 0.5px;
+  height: 14px;
+  margin: 0 4px;
+  background: var(--stroke);
+  flex: none;
+}
+.crew-back-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--secondary-text);
+  white-space: nowrap;
+  cursor: pointer;
+  flex: none;
+}
+.crew-back-pill:hover {
+  color: var(--primary-text);
+  background: var(--surface-hover);
+}
+
+/* Buttons and tags */
+.crew-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 10px;
+  white-space: nowrap;
+  cursor: pointer;
+  flex: none;
+  transition:
+    background 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.crew-button[data-height="24"] {
+  height: 24px;
+  border-radius: 12px;
+}
+.crew-button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.crew-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.crew-button[data-style="tint"] {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent);
+}
+.crew-button[data-style="tint"]:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.crew-button[data-style="prominent"] {
+  background: color-mix(in srgb, var(--accent) 90%, transparent);
+  color: var(--on-accent);
+}
+.crew-button[data-style="prominent"]:hover:not(:disabled) {
+  background: var(--accent);
+}
+.crew-button[data-style="quiet"] {
+  padding: 0 8px;
+  background: var(--surface);
+  color: var(--secondary-text);
+}
+.crew-button[data-style="quiet"]:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--primary-text);
+}
+.crew-icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--primary-text);
+  cursor: pointer;
+  flex: none;
+  transition: background 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.crew-icon-button:hover:not(:disabled),
+.crew-icon-button[aria-expanded="true"] {
+  background: var(--surface-hover);
+}
+.crew-icon-button[data-filled] {
+  background: color-mix(in srgb, var(--accent) 90%, transparent);
+  color: var(--on-accent);
+}
+.crew-icon-button[data-filled]:hover:not(:disabled) {
+  background: var(--accent);
+}
+.crew-icon-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.crew-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 16px;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--secondary-text);
+  white-space: nowrap;
+  flex: none;
+}
+.crew-tag[data-accent] {
+  color: var(--accent);
+}
+
+/* The in-panel menu under My crew's More button */
+.crew-menu {
+  position: absolute;
+  inset-block-start: 34px;
+  inset-inline-end: 8px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 120px;
+  padding: 4px;
+  border-radius: 10px;
+  background: #1f1f22;
+  border: 0.5px solid var(--stroke);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  animation: crews-fade 0.16s ease-out;
+}
+.crew-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--primary-text);
+  text-align: start;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.crew-menu-item:hover,
+.crew-menu-item:focus-visible {
+  background: var(--surface-hover);
+}
+.crew-menu-item[data-danger] {
+  color: var(--danger);
+}
+
+/* The text field, the Party code field's 24 px shape */
+.crew-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  padding-inline: 8px 4px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 0.5px solid var(--stroke);
+  color: var(--tertiary-text);
+  min-width: 0;
+  flex: none;
+  cursor: text;
+  transition: background 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.crew-field:hover {
+  background: var(--surface-hover);
+}
+.crew-field:focus-within {
+  background: var(--surface-hover);
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+.crew-field:focus-within .crew-field-symbol {
+  color: var(--accent);
+}
+.crew-field-symbol {
+  flex: none;
+}
+.crew-field-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--primary-text);
+  font: inherit;
+  font-size: 12px;
+}
+.crew-field-input::placeholder {
+  color: var(--tertiary-text);
+}
+
+/* Pixel art */
+.crew-pixels {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  direction: ltr;
+}
+.crew-pixels canvas {
+  display: block;
+  image-rendering: pixelated;
+}
+.crew-pet {
+  display: inline-flex;
+  flex: none;
+}
+.crew-hidden-pet {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex: none;
+  color: var(--tertiary-text);
+  box-sizing: border-box;
+}
+.crew-pet-group {
+  display: inline-flex;
+  align-items: flex-end;
+  flex: none;
+  direction: ltr;
+}
+.crew-pet-slot {
+  display: inline-flex;
+  flex: none;
+}
+.crew-pet-slot + .crew-pet-slot {
+  margin-inline-start: var(--crew-pet-overlap);
+}
+
+/* Medal tally and the place chip */
+.crew-tally {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+  direction: ltr;
+}
+.crew-tally-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--primary-text);
+  font-variant-numeric: tabular-nums;
+}
+.crew-tally[data-large] .crew-tally-item {
+  font-size: 13px;
+  gap: 4px;
+}
+.crew-tally-item[data-zero] {
+  color: var(--tertiary-text);
+}
+.crew-tally-item[data-zero] .crew-tally-medal {
+  filter: grayscale(1);
+  opacity: 0.35;
+}
+.crew-place-chip {
+  display: inline-block;
+  height: 14px;
+  padding: 0 5px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 14px;
+  white-space: nowrap;
+  flex: none;
+  color: var(--secondary-text);
+  background: color-mix(in srgb, var(--secondary-text) 22%, transparent);
+}
+.crew-place-chip[data-metal="gold"] {
+  color: var(--crew-gold);
+  background: color-mix(in srgb, var(--crew-gold) 22%, transparent);
+}
+.crew-place-chip[data-metal="silver"] {
+  color: var(--crew-silver);
+  background: color-mix(in srgb, var(--crew-silver) 22%, transparent);
+}
+.crew-place-chip[data-metal="bronze"] {
+  color: var(--crew-bronze);
+  background: color-mix(in srgb, var(--crew-bronze) 22%, transparent);
+}
+
+/* Whole-row lists */
+.crew-row-list {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.crew-rows {
+  flex: none;
+  overflow: hidden;
+}
+.crew-rows[data-scrolls] {
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+}
+.crew-rows[data-scrolls]::-webkit-scrollbar {
+  display: none;
+}
+.crew-rows-item {
+  scroll-snap-align: start;
+}
+.crew-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 14px;
+  color: var(--tertiary-text);
+  flex: none;
+}
+.crew-more-line {
+  height: 0.5px;
+  margin: 2px 4px 0;
+  background: var(--stroke);
+  flex: none;
+}
+.crew-pinned-caption {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 14px;
+  padding: 0 4px;
+  white-space: nowrap;
+  flex: none;
+}
+.crew-pinned-bar {
+  width: 2px;
+  height: 12px;
+  background: var(--accent);
+  flex: none;
+}
+.crew-pinned-label {
+  color: var(--accent);
+}
+.crew-pinned-hours {
+  color: var(--primary-text);
+}
+.crew-list-separator {
+  height: 0.5px;
+  margin: 3px 4px 2.5px;
+  background: var(--stroke);
+  flex: none;
+}
+.crew-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 4px;
+  border-radius: 6px;
+  min-width: 0;
+  overflow: hidden;
+  transition: background 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.crew-row[data-clickable] {
+  cursor: pointer;
+}
+.crew-row[data-clickable]:hover {
+  background: var(--surface);
+}
+.crew-row[data-mine],
+.crew-row[data-mine]:hover {
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+}
+.crew-row[data-mine]::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 2px;
+  background: var(--accent);
+}
+.crew-request-row {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.crew-row-name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.2;
+}
+.crew-row-title {
+  color: var(--primary-text);
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  hyphens: auto;
+}
+.crew-row-caption {
+  color: var(--tertiary-text);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.crew-row-caption[data-accent] {
+  color: var(--accent);
+}
+.crew-rank {
+  min-width: 16px;
+  text-align: end;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--secondary-text);
+  white-space: nowrap;
+  flex: none;
+}
+.crew-rank-tie {
+  font-size: 9px;
+  vertical-align: top;
+  margin-inline-start: 1px;
+  color: var(--tertiary-text);
+}
+.crew-rank-column {
+  display: inline-flex;
+  justify-content: center;
+  min-width: 16px;
+  flex: none;
+}
+/* A Compact board's rank column fits the widest place chip, so the crests line up. */
+.crews-card[data-compact] .crew-rank,
+.crews-card[data-compact] .crew-rank-column {
+  min-width: 28px;
+}
+.crew-row-pets {
+  display: inline-flex;
+  align-items: flex-end;
+  height: 30px;
+  overflow: hidden;
+  flex: none;
+}
+.crew-row-trail {
+  display: inline-flex;
+  flex: none;
+}
+.crew-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-text);
+  white-space: nowrap;
+  text-align: end;
+  flex: none;
+}
+
+/* The boards */
+.crew-board {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.crew-tiles {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+.crew-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 80px;
+  padding: 6px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 0.5px solid var(--stroke);
+  overflow: hidden;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.crew-tile > * {
+  flex: none;
+}
+.crew-tile:hover {
+  background: var(--surface-hover);
+}
+.crew-tile[data-first] {
+  border: 1px solid color-mix(in srgb, var(--crew-gold) 45%, transparent);
+}
+.crew-tile[data-mine],
+.crew-tile[data-mine]:hover {
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+}
+.crew-tile-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+.crew-tile-pets {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 29px;
+  overflow: hidden;
+}
+.crew-tile-name {
+  width: 100%;
+  color: var(--primary-text);
+  text-align: center;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  hyphens: auto;
+}
+.crew-tile-name[data-empty] {
+  color: var(--tertiary-text);
+}
+.crew-skeleton {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.crew-skeleton-tile {
+  gap: 6px;
+  cursor: default;
+  background: color-mix(in srgb, var(--surface) 50%, transparent);
+}
+.crew-skeleton-rows {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.crew-skeleton-name {
+  gap: 4px;
+}
+
+/* The hero layout: My crew and a crew page */
+.crew-hero-layout {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.crew-hero {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 168px;
+  flex: none;
+  min-height: 0;
+}
+.crew-hero > * {
+  flex: none;
+}
+.crew-hero-top {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  width: 100%;
+}
+.crew-hero-pets {
+  display: flex;
+  align-items: flex-end;
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  overflow: hidden;
+}
+.crew-hero-name {
+  width: 100%;
+  color: var(--primary-text);
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  hyphens: auto;
+}
+.crew-hero-words {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.crew-hero-sentence {
+  color: var(--primary-text);
+  line-height: 1.25;
+}
+.crew-history {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: auto;
+  color: var(--secondary-text);
+}
+.crew-history-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.crew-history-week {
+  width: 46px;
+  flex: none;
+}
+.crew-history-blank {
+  width: 9px;
+  height: 10px;
+  flex: none;
+}
+.crew-history-place {
+  min-width: 22px;
+  font-weight: 600;
+  color: var(--primary-text);
+}
+.crew-history-place[data-metal="gold"] {
+  color: var(--crew-gold);
+}
+.crew-history-place[data-metal="silver"] {
+  color: var(--crew-silver);
+}
+.crew-history-place[data-metal="bronze"] {
+  color: var(--crew-bronze);
+}
+.crew-history-place[data-metal="none"] {
+  color: var(--tertiary-text);
+}
+.crew-members {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.crew-members-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 16px;
+  padding: 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  flex: none;
+}
+.crew-members-head-fits {
+  flex: none;
+}
+.crew-members-waiting {
+  color: var(--accent);
+}
+.crew-member-pet {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 26px;
+  height: 30px;
+  overflow: hidden;
+  flex: none;
+}
+.crew-member-level {
+  white-space: nowrap;
+  flex: none;
+}
+.crew-member-hours {
+  min-width: 44px;
+}
+
+/* Find */
+.crew-find {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.crew-find-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* The crest editor */
+.crew-editor {
+  gap: 12px;
+}
+.crew-editor-side {
+  overflow: hidden;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 160px;
+  flex: none;
+}
+.crews-card[data-compact] .crew-editor-side {
+  width: 150px;
+}
+.crew-editor-preview {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px;
+  margin-bottom: 2px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 0.5px solid var(--stroke);
+}
+.crew-editor-crest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 48px;
+  flex: none;
+}
+/* With the name under it the crest stands in a tile's width, so the name wraps as it will on a featured tile. */
+.crew-editor-crest[data-named] {
+  width: 68px;
+}
+.crew-editor-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+.crew-editor-note {
+  color: var(--tertiary-text);
+  overflow-wrap: anywhere;
+}
+.crew-editor-note[data-warning] {
+  color: var(--warning);
+}
+.crew-editor-pickers {
+  display: grid;
+  grid-template-columns: minmax(46px, max-content) minmax(0, 1fr);
+  align-items: center;
+  align-content: start;
+  gap: 6px 4px;
+  flex: 1;
+  min-width: 0;
+}
+.crews-card[data-compact] .crew-editor-pickers {
+  grid-template-columns: minmax(40px, max-content) minmax(0, 1fr);
+}
+.crew-picker {
+  display: contents;
+}
+.crew-editor-pickers .crew-editor-note {
+  grid-column: 1 / -1;
+  padding-top: 2px;
+}
+.crew-picker-label {
+  white-space: nowrap;
+}
+.crew-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+.crew-choice-row {
+  flex: 1;
+  min-width: 0;
+}
+.crew-options-row {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+.crew-options-row[data-scrolls] {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.crew-options-row[data-scrolls]::-webkit-scrollbar {
+  display: none;
+}
+.crew-options-row > * {
+  scroll-snap-align: start;
+}
+.crew-button[data-glyph] {
+  width: 20px;
+  padding: 0;
+  justify-content: center;
+}
+.crew-editor-actions-fits {
+  flex: 1;
+  min-width: 0;
+}
+.crew-options-colors {
+  flex-wrap: nowrap;
+  gap: 2px;
+}
+.crews-card[data-compact] .crew-options-frames {
+  gap: 2px;
+}
+.crews-card[data-compact] .crew-options-colors {
+  gap: 1px;
+}
+.crew-option {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  flex: none;
+  transition:
+    background 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.crew-option:hover {
+  background: var(--surface-hover);
+}
+.crew-option[aria-checked="true"] {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+.crew-option[data-kind="emblem"] {
+  width: 24px;
+  height: 24px;
+}
+.crew-option[data-kind="color"] {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+}
+.crew-swatch {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+/* Friendly states */
+.crew-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  padding: 0 24px;
+  text-align: center;
+}
+.crew-status-badge {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.crew-status-words {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 360px;
+  color: var(--primary-text);
+}
+.crew-status-detail {
+  line-height: 1.35;
+}
+.crew-status-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* The crew report card's reasons wrap to a second row before any is cut. */
+.party-report-reasons[data-tight] {
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+/* FirstThatFits */
+.crew-fits {
+  position: relative;
+  min-width: 0;
+}
+.crew-fits-horizontal {
+  width: 100%;
+}
+.crew-fits-vertical {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.crew-fits-probe {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.crew-fits-horizontal > .crew-fits-probe {
+  width: max-content;
+}
+.crew-fits-vertical > .crew-fits-probe {
+  width: 100%;
+}
+.crew-fits-shown {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Skeleton shapes keep the nested corners of what they stand in for. */
+.crew-skeleton .kit-skeleton-line {
+  border-radius: 4px;
+}
+.crew-skeleton .crew-row > .kit-skeleton-line:nth-child(2),
+.crew-skeleton .crew-tile-top > .kit-skeleton-line:last-child {
+  border-radius: 6px;
+}
+.crew-skeleton .crew-tile-top > .kit-skeleton-line:first-child {
+  border-radius: 7px;
+}

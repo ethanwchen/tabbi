@@ -411,8 +411,9 @@ NOT_FOUND = '''
       </div>
 '''
 
-# Party invites. People share https://tabbinotch.com/add/<friend code> and
-# /join/<party code> (PartyInvite in TabbiKitCore). The site has no script,
+# Party invites. People share https://tabbinotch.com/add/<friend code>,
+# /join/<party code> (PartyInvite in TabbiKitCore) and /crew/<crew invite
+# code> (CrewInvite). The site has no script,
 # so a Pages Function (functions/add/[code].js, functions/join/[code].js,
 # through _invite.mjs) checks the code and fills it into one of these pages
 # on the server. Each page sends Tabbi the same link as tabbi://add/<code>
@@ -423,13 +424,13 @@ NOT_FOUND = '''
 #
 # The codes use PartyCode's alphabet (no I, O, 0 or 1) and lengths.
 INVITE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-INVITE_CODE_LENGTHS = {'add': 8, 'join': 6}
+INVITE_CODE_LENGTHS = {'add': 8, 'join': 6, 'crew': 7}
 # Placeholders the Function replaces. Neither is a valid code (I and O are
 # not in the alphabet), so a page that slipped through unfilled shows it.
 INVITE_CODE = 'INVITECODE'
 INVITE_SHOWN = 'INVITE-SHOWN'
 INVITE_REFRESH = '<!--invite-refresh-->'
-INVITE_SLUGS = {'add': 'invite-add.html', 'join': 'invite-join.html', 'invalid': 'invite-invalid.html'}
+INVITE_SLUGS = {'add': 'invite-add.html', 'join': 'invite-join.html', 'crew': 'invite-crew.html', 'invalid': 'invite-invalid.html'}
 
 
 def invite_body(label, note):
@@ -456,6 +457,11 @@ INVITE_JOIN = invite_body(
     'Party code',
     'New to Tabbi? Download it, then open this link again. Tabbi asks before you join. Party is in the direct download and, from version 1.0.4, the App Store edition.',
 ).replace('ACTION', 'join')
+
+INVITE_CREW = invite_body(
+    'Crew invite',
+    'New to Tabbi? Download it, then open this link again. Tabbi asks before you join the crew. Study Crews live in the Party tab.',
+).replace('ACTION', 'crew')
 
 INVITE_INVALID = f'''
       <div class="lost">
@@ -525,6 +531,9 @@ pages = [
     ('invite-join.html', 'Join a party on Tabbi',
      'A friend invited you to a study party in Tabbi. Open the link in Tabbi on your Mac to join.',
      INVITE_JOIN, {'title': 'You are invited to a party', 'subtitle': 'Open this invite in Tabbi on your Mac to focus together with your friends.'}, False, False),
+    ('invite-crew.html', 'Join a study crew on Tabbi',
+     'A friend invited you to their study crew in Tabbi. Open the link in Tabbi on your Mac to join.',
+     INVITE_CREW, {'title': 'You are invited to a crew', 'subtitle': 'Open this invite in Tabbi on your Mac to study with the crew and climb the weekly top 3.'}, False, False),
     ('invite-invalid.html', 'Invite not found | Tabbi',
      'That invite link is not right.',
      INVITE_INVALID, {'title': 'This invite looks off', 'subtitle': 'The cat could not read the code in this link.'}, False, False),
@@ -933,7 +942,7 @@ def download_for(platform_hint, user_agent):
 
 
 # What functions/add/[code].js and functions/join/[code].js match.
-INVITE_PATH_RE = re.compile(r'/(add|join)/([^/]+)')
+INVITE_PATH_RE = re.compile(r'/(add|join|crew)/([^/]+)')
 
 
 if __name__ == '__main__':

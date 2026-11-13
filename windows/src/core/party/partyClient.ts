@@ -275,6 +275,10 @@ export class PartyClient {
       presence: readPresence(reply.presence),
       nextHeartbeat: read.optional(reply, "heartbeatSeconds", read.number),
       incomingRequests: read.optional(reply, "incomingRequests", read.integer),
+      crews: read.optionalObject(reply, "crews", (raw) => {
+        const crews = read.record(raw, "crews");
+        return { requests: read.optional(crews, "requests", read.integer) ?? 0, crew: read.optional(crews, "crew", read.string) };
+      }),
     };
   }
 
@@ -336,7 +340,8 @@ export class PartyClient {
 
   /* MARK: Plumbing */
 
-  private async send(
+  /** One request with the envelope, token and protocol header; public so the Crews routes (core/crews/crewClient.ts) share it. */
+  async send(
     method: PartyMethod,
     path: string,
     options: { body?: object; authorized?: boolean } = {},

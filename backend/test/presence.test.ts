@@ -45,6 +45,7 @@ describe("presence", () => {
       },
       heartbeatSeconds: catalog.heartbeatSeconds.studying,
       incomingRequests: 0,
+      crews: { requests: 0, crew: null },
     });
     expect(Math.abs(r.body.presence.lastSeen - now())).toBeLessThanOrEqual(2);
 

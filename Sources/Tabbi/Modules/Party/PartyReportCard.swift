@@ -78,7 +78,7 @@ struct PartyReportCard: View {
 }
 
 /// A one-line note field, limited to what the server keeps.
-private struct PartyNoteField: View {
+struct PartyNoteField: View {
     @Binding var text: String
     var focus: FocusState<PartyField?>.Binding
     @State private var hovering = false
@@ -126,7 +126,7 @@ private struct PartyNoteField: View {
 }
 
 /// One option of a small single choice, as a capsule that fills when picked.
-private struct PartyChoiceChip: View {
+struct PartyChoiceChip: View {
     let title: String
     let isSelected: Bool
     let help: String
@@ -156,7 +156,7 @@ private struct PartyChoiceChip: View {
 }
 
 /// A small checkbox with its label, both clickable.
-private struct PartyCheckbox: View {
+struct PartyCheckbox: View {
     let title: String
     @Binding var isOn: Bool
     let help: String

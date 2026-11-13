@@ -5,7 +5,7 @@ This page is the policy every Party change follows, and what each protocol versi
 
 ## The contract
 
-The wire format is written down once, in [`shared/schemas/party.v1.schema.json`](../shared/schemas/party.v1.schema.json), with the endpoints and errors in [the API doc](study/backend-api.md).
+The wire format is written down once, in [`shared/schemas/party.v1.schema.json`](../shared/schemas/party.v1.schema.json) and, for Study Crews, [`shared/schemas/crews.v1.schema.json`](../shared/schemas/crews.v1.schema.json), with the endpoints and errors in [the API doc](study/backend-api.md).
 [`shared/fixtures/party/party.json`](../shared/fixtures/party/party.json) pins how the Mac app writes profiles and reads sample replies, including replies from older and newer servers.
 `PartyProtocolGoldenTests` keeps the Mac app equal to that fixture, `backend/test/compat.test.ts` checks the server's replies and the fixture against the schema, and the Windows port checks itself against the same files.
 Nothing in the contract is Mac-only: there are no macOS fields, and Sign in with Apple is an optional way to keep one friend code across devices, never a requirement.
@@ -21,7 +21,8 @@ The catalog (`backend/shared/catalog.json`) has its own `version`, which counts 
 | --- | --- | --- |
 | 1 | up to 1.0.0 | Instant friendships, catalog version 1 |
 | 2 | from this release | Friend requests, every Closet item has a server id (catalog version 2), ten profile colors, the tab badge count in heartbeat replies |
-| 3 | from 1.0.6 | The Study Level and nameplate color in the profile (`studyLevel`, `nameplate`), the catalog's `nameplates` list and `limits.maxStudyLevel` |
+| 3 | Study Level builds before Study Crews (1.0.6 ships 4) | The Study Level and nameplate color in the profile (`studyLevel`, `nameplate`), the catalog's `nameplates` list and `limits.maxStudyLevel` |
+| 4 | from 1.0.6 | Study Crews: new `/v1/crews` routes (the weekly board and the all-time Hall of Fame among them), the `crews` catalog beside `catalog` in `GET /v1/catalog` and the `crews` field in heartbeat replies, which older apps ignore |
 
 ## Rules for every change
 
@@ -72,3 +73,17 @@ The rank is never sent: it follows from the level, so every app names it in its 
 - The catalog's `version` stays as it was: the nameplate ids are their own list, added with the protocol, and like every id they are only ever added.
 
 `backend/test/compat.test.ts` runs a protocol 2 app and a current app as friends in one party, an app with no protocol header beside them, and the server's validation; `PartyAccountTests` runs a current app against a server that refuses the fields; `shared/fixtures/party/party.json` pins the bodies and how replies with and without a level read on the Mac and on Windows.
+
+## Crews across versions
+
+Study Crews are protocol 4 and only add: new routes under `/v1/crews`, new tables, and one new field in the `GET /v1/catalog` reply (`crews`, beside the unchanged `catalog`).
+- An app on protocol 1, 2 or 3 never calls a crews route, and every route it does call answers exactly as before: friends, friend requests, parties, presence and the leaderboard are untouched, and no Party reply gains a crews field.
+- A user can be in a crew on a protocol 4 app and use Party on an older app (another Mac, or Windows before its update) at the same time; the older app just shows no Crew section.
+  Their crew membership stays, and their minutes count only from the sessions a protocol 4 app reports.
+- Crew pages carry each member's `studyLevel` the same way profiles do: only for members whose app sent one, display only, and an app that cannot read it shows no level.
+- The heartbeat reply gains one field, `crews` (my crew and its waiting join requests); older apps ignore it, and nothing else in the reply changes.
+- The friends leaderboard keeps summing heartbeat minutes; crews never use them, so an older app's heartbeats neither help nor hurt a crew.
+- Crews routes need no `Tabbi-Protocol` header, so a third-party or older client that reaches one gets the same answer as a current app.
+- Board lists and Hall of Fame pages have no fixed length (ties share a place), and Hall of Fame cursors are opaque, so an app must read them as given and never build one.
+- Crest frame, emblem and color ids, like catalog ids, are only ever added once shipped; an app draws an id it does not know as the first one, so a newer server never breaks an older crews app.
+- `backend/test/crews.test.ts` keeps a protocol 1, a protocol 2 and a protocol 4 app friends and in one party while the protocol 4 user is in a crew, and `backend/test/compat.test.ts` checks the shared crews fixture against the schema.

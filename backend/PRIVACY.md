@@ -1,6 +1,6 @@
 # Privacy
 
-The Tabbi friends service exists so you can see which friends are studying, study together in a party where everyone's pets sit side by side, and compare weekly study minutes.
+The Tabbi friends service exists so you can see which friends are studying, study together in a party where everyone's pets sit side by side, compare weekly study minutes, and study in a Study Crew that can climb the weekly top 3.
 It is designed to know as little as possible.
 Party and Sign in with Apple are for people 13 and older.
 Before Party sends anything, the app asks the user's birth month and year and keeps the answer on the Mac; the service never receives a birth date or an age.
@@ -10,7 +10,7 @@ Sign in with Apple does not ask for a birthday, but an answer under 13 given in 
 
 Per user, identified only by a random secret token (stored as a SHA-256 hash) and a public 8-character friend code:
 
-- the profile: a display name (up to 24 characters, any nickname works), the pet's name (up to 24 characters), species, breed, up to 10 colors, costume, up to 8 accessories, points and level, the Study Level and nameplate color your app shares (shown to friends only, never used for anything else), when the friend code was created, and the newest Party protocol version your apps use (so the service knows whether they can show friend requests);
+- the profile: a display name (up to 24 characters, any nickname works), the pet's name (up to 24 characters), species, breed, up to 10 colors, costume, up to 8 accessories, points and level, the Study Level and nameplate color your app shares (shown to friends, and the Study Level beside your name on crew pages if you are in a crew; never used for anything else), when the friend code was created, and the newest Party protocol version your apps use (so the service knows whether they can show friend requests);
 - presence from the last heartbeat: status (`studying`, `break`, `idle` or `offline`), the study method id (for example `pomodoro`), when the current phase ends, minutes in the current session, minutes studied today, the study streak in days, your local calendar day, and the time of the last heartbeat;
 - study minutes per local calendar day, kept for 28 days (older days are deleted daily, whether or not you still use the service), for the weekly leaderboard;
 - the friend codes you are friends with, and when each friendship started;
@@ -20,6 +20,21 @@ Per user, identified only by a random secret token (stored as a SHA-256 hash) an
 - if the maintainer acts on a report: whether you are banned, and every name and pet name they replaced, so they cannot be set again;
 - the ids of limited edition pet items the maintainer gave you for free (for example the launch-week cap), and when;
 - the party you are in, when you joined it, and, for the party itself, its 6-character code, its host, when it was created, its last activity time and the shared session the host started (study method, phase end and when it started).
+
+Only if you use Study Crews:
+
+- for a crew: its 10-character id, its 7-character invite code, its name (up to 20 characters), its description (up to 120), its crest (a frame, an emblem and a color), whether it is public or private, its owner's friend code, when it was created, how many medals it won in the weekly top 3 (by place) and when it reached that tally, and whether the maintainer hid it;
+- your membership: which crew you are in, a random member id that crew pages use instead of your friend code, when you joined, and whether you hid your pet from crew pages;
+- which crew you belonged to and when, so a session reported late counts for the crew of its time; kept 14 days after you leave;
+- the focus sessions your app reports while you are in a crew: when each started and ended, its focus minutes and the minutes credited, kept 14 days (sessions while you are in no crew are not stored);
+- the minutes credited to you per crew and UTC day, and each crew's total per week, kept 5 weeks (about a month), for the weekly board;
+- each crew's final place and minutes in each of the last weeks, kept 5 weeks, for the "last three weeks" on its page;
+- the crews placed 1 to 3 in every week (more on ties), with each one's name, crest and minutes at the time, kept for as long as the service runs, since they are the crews' medals;
+- the members an owner removed from a crew, so they cannot join it again;
+- a request you send to join a public crew: the crew, a random request id and when you sent it, until the owner answers it or it expires after 7 days (you have at most one at a time);
+- reports you send about a crew or a crew member: the crew, the member if any, their names at that moment, your friend code, the reason, your optional note (up to 280 characters), the time and, once handled, the outcome;
+- anti-cheat flags for the maintainer when your reports look wrong (a day or a week over the cap, many overlapping or future-dated sessions): your friend code, your crew, the week, the kind and when, at most one of each kind per week;
+- crew names a maintainer replaced, so no crew can take them again.
 
 Only if you choose to sign in with Apple, so your pet and progress follow you across your Macs:
 
@@ -69,13 +84,19 @@ Only the maintainer reads it, to fix the crash, and deletes it when it is no lon
 - **Friends** (friendship is mutual and needs your friend code) see your profile (with a Founding badge if you are a Founding Member), your presence (shown as `offline` once heartbeats stop), whether you are in a party with its code and size, and your weekly study minutes on the leaderboard.
 - **Party members** see the profile and presence of everyone in the same party, including members who are not their friends.
   Anyone who has a party's code can join it while it has room, so share party codes only with people you want to study with.
-- There is no directory or search: nobody can find you without your friend code or a shared party code.
-- **Blocking** someone ends your friendship and hides the two of you from each other in friend lists, parties and the leaderboard.
+- There is no directory of people: nobody can find you without your friend code or a shared party code.
+  Public Study Crews can be searched by their name, and a crew page never shows anyone's friend code.
+- **Study Crews**: anyone in Party can open a public crew, and any crew (public or private) that is in the week's top 3 or was last week's, and sees its name, description, crest, trophies, its minutes this week, and each member's display name, minutes this week and pet (look and name) unless that member hid their pet.
+  The board and the Hall of Fame also show, on their top crews, the pets of each crew's three most active members that week, again leaving out hidden pets.
+  Only members see a crew's invite code; anyone with the code can join while the crew has room, so share it only with people you want to study with.
+  Joining a public crew without its code sends its owner a request; only the owner sees it, with your display name, pet and badges, and you are never told whether it was declined.
+  The weekly board shows every crew's name, crest and minutes, private crews included, and the Hall of Fame shows every crew with a medal (name, crest, medals and when it reached them), private crews included.
+- **Blocking** someone ends your friendship and hides the two of you from each other in friend lists, parties, the leaderboard and crew pages; a crew owner blocking a member removes them from the crew, and a member blocking the owner leaves it.
   They cannot add you again or join a party you host, and they are not told that you blocked them.
   Only you see your blocked list, and you can unblock someone at any time.
 - **Reports** are read only by the maintainer who runs the service, to decide whether to rename or ban someone.
   The person you report is not told who reported them, or that they were reported.
-- **Banned** users keep their data but disappear from everyone else's friend lists, parties and leaderboards, and cannot change their name or join parties.
+- **Banned** users keep their data but disappear from everyone else's friend lists, parties, leaderboards and crew pages, leave their crew (losing the minutes they gave it that week), and cannot change their name or join parties or crews.
 
 You always see your own complete profile and presence.
 Your sync document and Apple account link are never shown to anyone, friends included.
@@ -83,15 +104,19 @@ Your sync document and Apple account link are never shown to anyone, friends inc
 ## How to delete
 
 Leaving a party (`POST /v1/party/leave`) removes your membership; a party is deleted when its last member leaves, or within an hour once it has had 12 hours without activity.
+Leaving a crew (`POST /v1/crews/leave`) removes your membership at once; the record of which crew you were in goes 14 days later, and the minutes you gave the crew stay in its weekly total (a number with no name attached) until that week's data goes after 5 weeks.
+A crew is deleted when its last member leaves; its places in past weekly top 3 lists stay with the name it had then.
+Cancelling a join request (`POST /v1/crews/requests/cancel`) deletes it at once, and an unanswered one is deleted after 7 days.
 Removing a friend deletes the friendship in both directions, and cancelling a request deletes it.
 Unblocking someone deletes the block.
 A report stays until the account of the reporter or of the reported user is deleted.
-Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, friend requests sent and received, sync document, Apple account link, blocks (yours, and others' blocks of you), reports by you or about you, any ban or replaced name, your limited edition items and your Founding Member record, removes you from your friends' lists, and takes you out of your party.
+Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, friend requests sent and received, sync document, Apple account link, blocks (yours, and others' blocks of you), reports by you or about you, any ban or replaced name, your limited edition items and your Founding Member record, your Study Crew membership and join request, the crews history and focus sessions about you, your credited minutes, crew reports by you or about you and any anti-cheat flags, removes you from your friends' lists, and takes you out of your party and your crew (a crew you owned passes to its longest-standing member).
+Your minutes stay counted in your former crew's weekly total, which carries no name.
 If you signed in with Apple, it then revokes the app's Sign in with Apple grant with Apple.
 A pending web sign-in that was never picked up can still hold your Apple user id until the hourly cleanup erases it.
 Your secret token, and the token of every other Mac you signed in on, stops working at once.
 Signing out on one Mac (`POST /v1/auth/signout`) deletes that Mac's token on the server; your account and other Macs stay signed in.
-Signing in with Apple on a Mac that already had a friend code of its own moves that code's friends (up to the friend limit, leaving out anyone either side blocked), waiting friend requests, blocks, reports, any ban or replaced name, limited edition items and study minutes to your account and deletes the old code.
+Signing in with Apple on a Mac that already had a friend code of its own moves that code's friends (up to the friend limit, leaving out anyone either side blocked), waiting friend requests, blocks, reports, any ban or replaced name, limited edition items, study minutes and Study Crew data (its crew membership when your account has none, and its sessions and credited minutes) to your account and deletes the old code.
 If that Apple ID has no account yet, the existing code simply becomes the account.
 Reports between that code and your account are deleted, since they would now be about yourself.
 
@@ -101,7 +126,7 @@ If the service is ever restored from a backup, the operator deletes again every 
 
 ## Aggregate counts
 
-The maintainer can see a few totals the service counts from the data above, so they know how many people use it: how many friend codes and Apple sign-ins exist, how many users sent a heartbeat in the last day, week and month, how many new friend codes were created on each of the last 30 days, how many parties and party members there are, how many users are banned, how many suggestions wait, and how many requests and rows the service handles.
+The maintainer can see a few totals the service counts from the data above, so they know how many people use it: how many friend codes and Apple sign-ins exist, how many users sent a heartbeat in the last day, week and month, how many new friend codes were created on each of the last 30 days, how many parties and party members there are, how many Study Crews and crew members there are (and how many crews are public, hidden or have minutes this week, with the open crew reports and flags), how many users are banned, how many suggestions wait, and how many requests and rows the service handles.
 These are counts only: they never name or identify anyone, and nothing is stored or sent for them.
 Two of them are public, rounded down (for example `1.2k+`, or `under 10`), through `GET /v1/public/stats`, which the project's GitHub page shows as a badge: how many friend codes exist and how many users sent a heartbeat in the last 7 days.
 The app sends nothing extra; Tabbi has no tracking, analytics or telemetry of any kind.

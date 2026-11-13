@@ -63,7 +63,7 @@ describe("GET /v1/admin/stats", () => {
 
   it("returns only aggregate counts", async () => {
     const body = await stats();
-    expect(Object.keys(body).sort()).toEqual(["active", "at", "hub", "ok", "parties", "signups", "suggestions", "users"]);
+    expect(Object.keys(body).sort()).toEqual(["active", "at", "crews", "hub", "ok", "parties", "signups", "suggestions", "users"]);
     expect(body.at).toBe(nowS());
     expect(JSON.stringify(body)).not.toMatch(/"code"|"name"|"token"/);
   });

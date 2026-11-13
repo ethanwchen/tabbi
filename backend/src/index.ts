@@ -7,6 +7,7 @@
  * Every 5xx, every slow request and a small sample of the rest get a structured log line (log.ts).
  */
 import { CATALOG, MIN_PROTOCOL_VERSION, PROTOCOL_VERSION, SERVICE } from "./lib";
+import { CREWS_CATALOG } from "./crews";
 import { CORS, json } from "./http";
 import { errorFields, logEvent, requestLog } from "./log";
 import type { Env } from "./hub";
@@ -34,7 +35,8 @@ async function handle(req: Request, env: Env): Promise<Response> {
   if (path === "/" || path === "/v1") {
     return json({ ok: true, service: SERVICE, version: 1, protocol: PROTOCOL_VERSION, minProtocol: MIN_PROTOCOL_VERSION });
   }
-  if (path === "/v1/catalog" && req.method === "GET") return json({ ok: true, catalog: CATALOG });
+  // `crews` (protocol 3) rides beside the Party catalog; older apps read only `catalog`.
+  if (path === "/v1/catalog" && req.method === "GET") return json({ ok: true, catalog: CATALOG, crews: CREWS_CATALOG });
   if (!path.startsWith("/v1/")) return json({ ok: false, error: "not_found", message: "not found" }, 404);
   try {
     return await env.HUB.get(env.HUB.idFromName("hub")).fetch(req);

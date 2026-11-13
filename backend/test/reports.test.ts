@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { env, runInDurableObject } from "cloudflare:test";
 import { migrate } from "../src/hub";
 import { MAX_REPORTS_PER_DAY, REPORTS_PER_MIN } from "../src/moderation";
-import { admin, call, expectError, freshIp, hub, pinClockToMinuteStart, register, befriend } from "./helpers";
+import { admin, call, dropCrewsTables, expectError, freshIp, hub, pinClockToMinuteStart, register, befriend } from "./helpers";
 
 const report = (by: { token: string }, who: { code: string }, reason = "inappropriate_name", note?: string) =>
   call("POST", "/v1/reports", note === undefined ? { code: who.code, reason } : { code: who.code, reason, note }, by.token);
@@ -228,6 +228,7 @@ describe("schema step 4", () => {
       sql.exec("DROP TABLE download_counts");
       sql.exec("DROP TABLE entitlements");
       sql.exec("DROP TABLE friend_requests");
+      dropCrewsTables(sql);
       sql.exec("ALTER TABLE users DROP COLUMN study_level");
       sql.exec("ALTER TABLE users DROP COLUMN nameplate");
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
@@ -235,7 +236,7 @@ describe("schema step 4", () => {
       sql.exec("UPDATE schema_version SET version = 3");
       sql.exec("INSERT INTO blocks (blocker, blocked, created_at) VALUES ('AAAAAAAA', 'BBBBBBBB', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 16 }]);
       expect(sql.exec("SELECT * FROM reports").toArray()).toEqual([]);
       expect(sql.exec("SELECT * FROM bans").toArray()).toEqual([]);
       expect(sql.exec("SELECT * FROM name_holds").toArray()).toEqual([]);
@@ -257,6 +258,7 @@ describe("schema step 6", () => {
       sql.exec("DROP TABLE download_counts");
       sql.exec("DROP TABLE entitlements");
       sql.exec("DROP TABLE friend_requests");
+      dropCrewsTables(sql);
       sql.exec("ALTER TABLE users DROP COLUMN study_level");
       sql.exec("ALTER TABLE users DROP COLUMN nameplate");
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
@@ -267,7 +269,7 @@ describe("schema step 6", () => {
       sql.exec("INSERT INTO name_holds VALUES ('AAAAAAAA', 'Rude', 'Worse', 7), ('BBBBBBBB', 'student', 'Bad Pet', 8)");
       sql.exec("UPDATE schema_version SET version = 5");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 16 }]);
       expect(sql.exec("SELECT code, kind, value, created_at FROM name_holds ORDER BY code, kind").toArray()).toEqual([
         { code: "AAAAAAAA", kind: "name", value: "Rude", created_at: 7 },
         { code: "AAAAAAAA", kind: "pet", value: "Worse", created_at: 7 },

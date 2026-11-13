@@ -426,6 +426,7 @@ describe("PartyHeartbeatSchedule", () => {
     presence: { status, method: undefined, phaseEndsAt: undefined, sessionMinutes: 0, todayMinutes: 0, streakDays: 0, day: "2026-10-02", lastSeen: 0 },
     nextHeartbeat: next,
     incomingRequests: undefined,
+    crews: undefined,
   });
 
   it("follows the server's interval and stops after offline", () => {

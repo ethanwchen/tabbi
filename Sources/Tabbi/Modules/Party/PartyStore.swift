@@ -105,7 +105,7 @@ final class PartyStore: ObservableObject {
     /// closed notch drop it on time even while the panel is hidden.
     private var sessionEndTask: Task<Void, Never>?
     private var celebrationTask: Task<Void, Never>?
-    /// What the store showed before `showCelebrationForSnapshot(_:)`.
+    /// What the store showed before `showForSnapshot(_:)`.
     private var beforeSnapshot: (state: PartyState, celebration: PartyTeamCelebration?)?
     /// Writes a name edited in Party back to the app-wide name.
     private var saveName: ((String) -> Void)?
@@ -637,16 +637,16 @@ final class PartyStore: ObservableObject {
         celebration = nil
     }
 
-    /// Snapshot runs only: shows the team celebrating a session that just
-    /// ended (`PartyDemoScenario.celebrating`) for the next shot, or puts
-    /// back what the store showed before.
-    func showCelebrationForSnapshot(_ isShowing: Bool) {
+    /// Snapshot runs only: shows a demo scenario for the next shot (the
+    /// team celebrating a session that just ended, or the lobby outside a
+    /// party), or puts back what the store showed before when nil.
+    func showForSnapshot(_ scenario: PartyDemoScenario?) {
         guard isSnapshot else { return }
-        if isShowing {
+        if let scenario {
             if beforeSnapshot == nil { beforeSnapshot = (state, celebration) }
             celebrationTask?.cancel()
-            state = .demo(.celebrating, now: now)
-            celebration = .demo(now: now)
+            state = .demo(scenario, now: now)
+            celebration = scenario == .celebrating ? .demo(now: now) : nil
         } else if let before = beforeSnapshot {
             (state, celebration) = before
             beforeSnapshot = nil
@@ -744,6 +744,24 @@ final class PartyStore: ObservableObject {
     private func confirm(_ message: String) {
         notice = message
         noticeConfirms = true
+    }
+
+    // MARK: Crews
+
+    /// The heartbeat reply's Study Crews news (waiting join requests, my
+    /// crew), which `CrewsStore` follows.
+    let crewsPulse = PassthroughSubject<PartyCrewsPulse, Never>()
+
+    /// The identity Crews calls the server with, while Party is connected.
+    var crewAccount: PartyAccount? { state.connection == .connected ? account : nil }
+
+    /// Whether this store renders a `--snapshot`, so Crews stays offline too.
+    var isSnapshotRun: Bool { isSnapshot }
+
+    /// Shows a Crews notice in the panel's notice capsule.
+    func showNotice(_ message: String, confirms: Bool) {
+        notice = message
+        noticeConfirms = confirms
     }
 
     /// Runs one panel action: one at a time, with its failure as `notice`.
@@ -949,6 +967,7 @@ final class PartyStore: ObservableObject {
                 let reply = try await account.perform { try await $0.heartbeat(body) }
                 guard let self, !Task.isCancelled else { return }
                 if let waiting = reply.incomingRequests { state.didCountWaitingRequests(waiting) }
+                if let pulse = reply.crews { crewsPulse.send(pulse) }
                 delay = heartbeats.delayAfterSuccess(reply)
             } catch {
                 guard let self, !Task.isCancelled else { return }

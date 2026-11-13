@@ -29,7 +29,7 @@ The only JavaScript in the browser is the home page's notch demo, one self-hoste
 - `_pet_sprites.swift` and `_pet_sprites.sh` - export the interactive demo's pet sprites from the app's pet renderer (see Demo pet sprites).
 - `test/downloads.test.mjs` - tests `_downloads.py` (it runs python3).
 - `functions/suggest.js` and `_suggest_prefill.mjs` - the Pages Function that fills the Suggest form's app facts; `test/` tests it.
-- `functions/add/[code].js`, `functions/join/[code].js` and `_invite.mjs` - the Pages Functions that serve Party invite links (see Party invites); `test/` tests them.
+- `functions/add/[code].js`, `functions/join/[code].js`, `functions/crew/[code].js` and `_invite.mjs` - the Pages Functions that serve Party and Study Crews invite links (see Party invites); `test/` tests them.
 - `functions/download.js`, `functions/appstore.js` and `_download.mjs` - the `/download` and `/appstore` redirects (see Mac App Store); `test/download.test.mjs` tests them.
 - `deploy.sh` - builds and deploys to the Cloudflare Pages project `tabbi`.
 

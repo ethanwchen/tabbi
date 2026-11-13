@@ -22,7 +22,7 @@
  */
 
 import type { ModuleContext } from "../../app/context";
-import { Store, type Observable } from "../../app/store";
+import { Emitter, Store, type Observable } from "../../app/store";
 import type { ActivityRecord } from "../../core/activity/activityRecord";
 import { tr } from "../../core/localization/tr";
 import { isEphemeral } from "../../core/modules/runMode";
@@ -40,7 +40,7 @@ import { PartyError, partyErrorMessage } from "../../core/party/partyError";
 import { PartyHeartbeatSchedule } from "../../core/party/partyHeartbeatSchedule";
 import type { PartyInvite } from "../../core/party/partyInvite";
 import { PartyInviteFlow } from "../../core/party/partyInviteFlow";
-import { PartyCode, sharingStanding, type Party, type PartyFriendRequest, type PartyProfile } from "../../core/party/partyModels";
+import { PartyCode, sharingStanding, type Party, type PartyCrewsPulse, type PartyFriendRequest, type PartyProfile } from "../../core/party/partyModels";
 import type { StudyStanding } from "../../core/progression/studyLevel";
 import { NO_REFUSAL, refusalUnion, type PartyBlockedUser, type PartyNameRefusal, type PartyReport, type PartyReportReason } from "../../core/party/partyModeration";
 import { PartyPresenceTracker } from "../../core/party/partyPresenceTracker";
@@ -755,6 +755,27 @@ export class PartyStore extends Store<PartyStoreState> {
     this.setNotice(message, true);
   }
 
+  /* MARK: Crews */
+
+  private readonly crewsPulseEmitter = new Emitter<PartyCrewsPulse>();
+  /** The heartbeat reply's Study Crews news (waiting join requests, my crew), which `CrewsStore` follows. */
+  readonly crewsPulse = this.crewsPulseEmitter.on;
+
+  /** The identity Crews calls the server with, while Party is connected. */
+  get crewAccount(): PartyAccount | undefined {
+    return this.state.party.connection.kind === "connected" ? this.account : undefined;
+  }
+
+  /** Whether this store renders a snapshot, so Crews stays offline too. */
+  get isSnapshotRun(): boolean {
+    return this.isSnapshot;
+  }
+
+  /** Shows a Crews notice in the panel's notice capsule. */
+  showNotice(message: string, confirms: boolean): void {
+    this.setNotice(message, confirms);
+  }
+
   /* MARK: Moderation */
 
   /** Blocks someone from a friend's or member's menu: they go from the panel at once. */
@@ -1065,6 +1086,7 @@ export class PartyStore extends Store<PartyStoreState> {
           const waiting = reply.incomingRequests;
           this.replaceParty((party) => party.didCountWaitingRequests(waiting));
         }
+        if (reply.crews !== undefined) this.crewsPulseEmitter.emit(reply.crews);
         this.scheduleHeartbeat(this.heartbeats.delayAfterSuccess(reply), generation);
       },
       (error: unknown) => {

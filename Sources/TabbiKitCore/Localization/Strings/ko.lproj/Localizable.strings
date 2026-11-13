@@ -5,6 +5,8 @@
 <dict>
 	<key>"%@ misses you. 10 minutes?" At most once a day, and only if you haven't studied or met your goal yet. Focus modes silence it.</key>
 	<string>“%@이(가) 보고 싶어 해요. 10분만 할까요?” 하루 최대 한 번, 아직 공부하지 않았거나 목표를 못 채운 날에만 와요. 집중 모드에서는 울리지 않아요.</string>
+	<key>#%lld</key>
+	<string>%lld위</string>
 	<key>%@ %@</key>
 	<string>%1$@ %2$@</string>
 	<key>%@ %@ so far</key>
@@ -69,6 +71,8 @@
 	<string>%@ 여유</string>
 	<key>%@ free this week</key>
 	<string>이번 주 %@ 여유</string>
+	<key>%@ h</key>
+	<string>%@시간</string>
 	<key>%@ handles them under its own terms and privacy policy. %@'s AI features send nothing else, and nothing until you allow it. You can switch to None in Connections at any time.</key>
 	<string>%1$@은(는) 자체 약관과 개인정보 처리방침에 따라 이를 처리합니다. %2$@의 AI 기능은 이 외에는 아무것도 보내지 않으며, 허용하기 전에는 아무것도 보내지 않습니다. 언제든지 연결에서 없음으로 바꿀 수 있습니다.</string>
 	<key>%@ in %@</key>
@@ -111,12 +115,16 @@
 	<string>%@도 함께 쉬는 중</string>
 	<key>%@ is ready in the Closet</key>
 	<string>옷장에서 %@ 준비 완료</string>
+	<key>%@ is second this week</key>
+	<string>%@ 크루가 이번 주 2위예요</string>
 	<key>%@ is studying with the party</key>
 	<string>%@는 파티와 함께 공부 중</string>
 	<key>%@ is studying with you</key>
 	<string>%@가 함께 공부 중</string>
 	<key>%@ is taking the break with you</key>
 	<string>%@도 함께 쉬는 중</string>
+	<key>%@ is third this week</key>
+	<string>%@ 크루가 이번 주 3위예요</string>
 	<key>%@ isn't connected</key>
 	<string>%@ 연결 안 됨</string>
 	<key>%@ isn't installed</key>
@@ -127,6 +135,12 @@
 	<string>이 Mac에 아직 %@가 없어요. 연결에서 추가하는 방법을 알려 드려요.</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@가 아직 설정되지 않았어요</string>
+	<key>%@ joined the crew.</key>
+	<string>%@ 님이 크루에 참가했어요.</string>
+	<key>%@ keeps their pet private on crew pages.</key>
+	<string>%@ 님은 크루 페이지에서 펫을 숨겼어요.</string>
+	<key>%@ leads the week</key>
+	<string>%@ 크루가 이번 주 선두예요</string>
 	<key>%@ learned a song from a bird</key>
 	<string>%@가 새에게 노래를 배웠어요</string>
 	<key>%@ left</key>
@@ -157,6 +171,8 @@
 	<string>%@을(를) 찾을 수 없음</string>
 	<key>%@ of %@</key>
 	<string>%1$@ / %2$@</string>
+	<key>%@ of %lld crews · %@</key>
+	<string>%2$lld개 크루 중 %1$@ · %3$@</string>
 	<key>%@ of focus.</key>
 	<string>%@ 집중했어요.</string>
 	<key>%@ opens in Music; press play there.</key>
@@ -193,6 +209,8 @@
 	<string>%@의 변경 제안이 없어요.</string>
 	<key>%@ this month.</key>
 	<string>이번 달 %@.</string>
+	<key>%@ this week</key>
+	<string>이번 주 %@</string>
 	<key>%@ to %@</key>
 	<string>%2$@까지 %1$@</string>
 	<key>%@ today</key>
@@ -219,10 +237,16 @@
 	<string>%1$@ 및 %2$@</string>
 	<key>%@ with %@ wants to be friends.</key>
 	<string>%1$@ 님과 %2$@이(가) 친구가 되고 싶어 해요.</string>
+	<key>%@ with %@, %@ this week</key>
+	<string>%@와 %@, 이번 주 %@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
 	<string>%@은(는) 응용 프로그램 폴더에서 가장 잘 작동해요. 로그인할 때 열리고 스스로 업데이트할 수 있거든요. 그곳으로 복사한 뒤 다시 열려요.</string>
+	<key>%@ · %@ this week</key>
+	<string>%@ · 이번 주 %@</string>
 	<key>%@ · Paused</key>
 	<string>%@ · 일시정지</string>
+	<key>%@ · Your crew</key>
+	<string>%@ · 내 크루</string>
 	<key>%@, %@</key>
 	<string>%1$@, %2$@</string>
 	<key>%@, %@ left</key>
@@ -267,6 +291,8 @@
 	<string>%@: 이번 달 완료</string>
 	<key>%@: you earned every item. They stay yours after the event.</key>
 	<string>%@: 모든 아이템을 획득했어요. 이벤트가 끝나도 계속 내 거예요.</string>
+	<key>%lld gold, %lld silver, %lld bronze</key>
+	<string>금 %lld, 은 %lld, 동 %lld</string>
 	<key>%lld h</key>
 	<string>%lld시간</string>
 	<key>%lld in party</key>
@@ -313,6 +339,8 @@
 	<string>%lld/%lld분</string>
 	<key>%lld/%lld session</key>
 	<string>%lld/%lld세션</string>
+	<key>%lldd %lldh</key>
+	<string>%lld일 %lld시간</string>
 	<key>%lldh</key>
 	<string>%lld시간</string>
 	<key>%lldh %lldm</key>
@@ -348,6 +376,8 @@
 	<key>90 min deep block, 20 min rest</key>
 	<string>깊은 집중 90분, 휴식 20분</string>
 	<key>&lt;1 min</key>
+	<string>1분 미만</string>
+	<key>&lt;1m</key>
 	<string>1분 미만</string>
 	<key>A Pomodoro timer that switches between focus and breaks.</key>
 	<string>집중과 휴식을 번갈아 주는 뽀모도로 타이머.</string>
@@ -399,6 +429,10 @@
 	<string>질문 하나에 스크린샷은 최대 %lld장까지</string>
 	<key>A quiet day. Rest up and start fresh tomorrow.</key>
 	<string>조용한 하루였어요. 푹 쉬고 내일 새롭게 시작해요.</string>
+	<key>A quiet start to the week</key>
+	<string>조용한 한 주의 시작</string>
+	<key>A random frame, emblem and color</key>
+	<string>프레임, 엠블럼, 색상을 무작위로</string>
 	<key>A rare fur color from your pet. Try it in the Closet under Look.</key>
 	<string>펫이 준 희귀한 털색이에요. 옷장의 모양에서 입혀 보세요.</string>
 	<key>A report helps fix the problem. It holds the app version, macOS version, edition, the crash stack and thread names, and never your content, names, tasks or tokens. This is exactly what is sent:</key>
@@ -569,6 +603,8 @@
 	<string>항상 표시</string>
 	<key>Always drawn around the hardware notch.</key>
 	<string>항상 실제 노치 주위에 그려져요.</string>
+	<key>Amber</key>
+	<string>앰버</string>
 	<key>Angel Wings</key>
 	<string>천사 날개</string>
 	<key>Animations</key>
@@ -637,6 +673,8 @@
 	<string>AnkiConnect 설정 때문에 Tabbi가 접속하지 못하고 있어요. 설정을 기본값으로 되돌리면 해결되고, 카드는 그대로예요.</string>
 	<key>Another copy is in %@. The copies share one widget, which can go blank when macOS switches between them. Keep the copy you use and move the other to the Trash.</key>
 	<string>다른 사본이 %@에 있어요. 두 사본은 위젯 하나를 함께 쓰기 때문에 macOS가 둘 사이를 전환하면 위젯이 빈 화면이 될 수 있어요. 사용하는 사본만 남기고 다른 하나는 휴지통으로 옮기세요.</string>
+	<key>Another crew has that name. Please pick another.</key>
+	<string>같은 이름의 크루가 이미 있어요. 다른 이름을 골라 주세요.</string>
 	<key>Another steady week. Keep it cozy.</key>
 	<string>이번 주도 꾸준했어요. 포근하게 이어가요.</string>
 	<key>Answers</key>
@@ -647,6 +685,8 @@
 	<string>답변 제공</string>
 	<key>Answers stay in the notch. Press Command-Return to send and expand, or click Expand on a chat.</key>
 	<string>답변은 노치에 표시돼요. Command-Return으로 보내고 확대하거나, 채팅에서 확대를 클릭하세요.</string>
+	<key>Anyone can find it and ask to join. Click to make it private.</key>
+	<string>누구나 찾아서 참가를 요청할 수 있어요. 클릭하면 비공개로 바뀌어요.</string>
 	<key>App</key>
 	<string>앱</string>
 	<key>Appears when the pointer reaches the top center.</key>
@@ -677,10 +717,14 @@
 	<string>매번 묻기</string>
 	<key>Ask this question again</key>
 	<string>이 질문 다시 하기</string>
+	<key>Ask to join %@. Its owner lets you in.</key>
+	<string>%@에 참가를 요청해요. 주인이 들여보내 줘요.</string>
 	<key>Ask “%@”</key>
 	<string>“%@” 물어보기</string>
 	<key>Asked once. Your answer stays on this Mac.</key>
 	<string>한 번만 물어봐요. 답은 이 Mac에만 남아요.</string>
+	<key>Asked to join %@. Its owner lets you in.</key>
+	<string>%@에 참가를 요청했어요. 주인이 들여보내 줘요.</string>
 	<key>Asking Anki to open the deck for review.</key>
 	<string>Anki에 덱을 열어 달라고 요청 중이에요.</string>
 	<key>Astronaut Helmet</key>
@@ -723,6 +767,8 @@
 	<string>타이머로 돌아가기</string>
 	<key>Back to today</key>
 	<string>오늘로 돌아가기</string>
+	<key>Back to your party and friends</key>
+	<string>파티와 친구로 돌아가기</string>
 	<key>Backwards Cap</key>
 	<string>뒤로 쓴 모자</string>
 	<key>Badges</key>
@@ -789,6 +835,8 @@
 	<string>Anki를 앞으로 가져와 무엇을 하는지 확인하세요. 이 탭은 알아서 다시 연결돼요</string>
 	<key>Brown noise</key>
 	<string>브라운 노이즈</string>
+	<key>Browse public crews to join</key>
+	<string>참가할 공개 크루 둘러보기</string>
 	<key>Built-in display</key>
 	<string>내장 디스플레이</string>
 	<key>Bunny Ears</key>
@@ -835,6 +883,8 @@
 	<string>취소</string>
 	<key>Cancel Request</key>
 	<string>요청 취소</string>
+	<key>Cancel request</key>
+	<string>요청 취소</string>
 	<key>Cancel your request to %@</key>
 	<string>%@ 님에게 보낸 요청 취소</string>
 	<key>Candy pink and milk, sweet but never loud.</key>
@@ -879,6 +929,8 @@
 	<string>채팅은 이 Mac에만 저장돼요</string>
 	<key>Chats stay on this Mac, in %@'s own folder. Delete them from History in the Ask AI tab.</key>
 	<string>채팅은 이 Mac의 %@ 폴더에만 저장돼요. AI에게 묻기 탭의 기록에서 삭제할 수 있어요.</string>
+	<key>Cheating</key>
+	<string>부정행위</string>
 	<key>Check %@ again</key>
 	<string>다시 확인: %@</string>
 	<key>Check again</key>
@@ -899,6 +951,8 @@
 	<string>파티 서버를 확인하세요</string>
 	<key>Check the server in Party options.</key>
 	<string>파티 옵션에서 서버를 확인해 주세요.</string>
+	<key>Check your internet connection. Crews show up once it's back.</key>
+	<string>인터넷 연결을 확인하세요. 연결되면 크루가 나타나요.</string>
 	<key>Check your internet connection. Friends and parties show up once it's back.</key>
 	<string>인터넷 연결을 확인하세요. 연결되면 친구와 파티가 표시돼요.</string>
 	<key>Check your internet connection. You can also set up Party later in its tab.</key>
@@ -1043,6 +1097,8 @@
 	<string>닫기. 파티가 알아서 계속 연결을 시도해요.</string>
 	<key>Close this. You can set up Party any time.</key>
 	<string>닫기. 파티는 언제든 설정할 수 있어요.</string>
+	<key>Close without joining</key>
+	<string>참가하지 않고 닫기</string>
 	<key>Close without reporting (Esc)</key>
 	<string>신고하지 않고 닫기 (esc)</string>
 	<key>Closet</key>
@@ -1051,6 +1107,8 @@
 	<string>코드</string>
 	<key>Codex usage</key>
 	<string>Codex 사용량</string>
+	<key>Color</key>
+	<string>색상</string>
 	<key>Command</key>
 	<string>명령</string>
 	<key>Compact</key>
@@ -1099,6 +1157,8 @@
 	<string>복사</string>
 	<key>Copy Invite Link</key>
 	<string>초대 링크 복사</string>
+	<key>Copy an invite link. A friend who opens it joins this crew in one click.</key>
+	<string>초대 링크를 복사해요. 링크를 연 친구는 한 번의 클릭으로 참가해요.</string>
 	<key>Copy and open %@</key>
 	<string>복사 후 %@ 열기</string>
 	<key>Copy answer</key>
@@ -1125,6 +1185,8 @@
 	<string>친구 코드를 복사해서 공유하세요</string>
 	<key>Copy “%@” so you can paste it</key>
 	<string>붙여넣을 수 있도록 ‘%@’ 복사</string>
+	<key>Coral</key>
+	<string>코럴</string>
 	<key>Couldn't add this friend</key>
 	<string>친구를 추가할 수 없어요</string>
 	<key>Couldn't add to your calendar. Try again</key>
@@ -1167,6 +1229,8 @@
 	<string>포근함</string>
 	<key>Cozy Hoodie</key>
 	<string>포근한 후드티</string>
+	<key>Cozy Mug</key>
+	<string>포근한 머그</string>
 	<key>Cozy Pajamas</key>
 	<string>포근한 잠옷</string>
 	<key>Cozy Scarf</key>
@@ -1179,8 +1243,24 @@
 	<string>충돌 보고서</string>
 	<key>Cream</key>
 	<string>크림</string>
+	<key>Create</key>
+	<string>만들기</string>
+	<key>Create a crew</key>
+	<string>크루 만들기</string>
 	<key>Create a party and get a code to share</key>
 	<string>파티를 만들고 공유할 코드 받기</string>
+	<key>Create the crew with you as its owner</key>
+	<string>내가 주인인 크루를 만들어요</string>
+	<key>Crew</key>
+	<string>크루</string>
+	<key>Crew invite codes have %lld characters.</key>
+	<string>크루 초대 코드는 %lld자예요.</string>
+	<key>Crew name</key>
+	<string>크루 이름</string>
+	<key>Crew names can be up to %lld characters.</key>
+	<string>크루 이름은 %lld자까지예요.</string>
+	<key>Crews</key>
+	<string>크루</string>
 	<key>Custom</key>
 	<string>사용자 지정</string>
 	<key>Daily focus goal met</key>
@@ -1203,6 +1283,8 @@
 	<string>거절</string>
 	<key>Decline %@'s request. They won't be told.</key>
 	<string>%@ 님의 요청을 거절해요. 상대에게 알리지 않아요.</string>
+	<key>Decline. %@ isn't told.</key>
+	<string>거절해요. %@ 님에게는 알리지 않아요.</string>
 	<key>Deep</key>
 	<string>딥</string>
 	<key>Deep cherry red, fizzy and warm, made for late sessions.</key>
@@ -1251,6 +1333,8 @@
 	<string>계정을 삭제하는 중…</string>
 	<key>Deleting…</key>
 	<string>삭제 중…</string>
+	<key>Descriptions can be up to %lld characters.</key>
+	<string>설명은 %lld자까지예요.</string>
 	<key>Desktop widget</key>
 	<string>데스크톱 위젯</string>
 	<key>Details: %@</key>
@@ -1329,6 +1413,8 @@
 	<string>획득함. 클릭해서 벗기.</string>
 	<key>Earned. Click to wear.</key>
 	<string>획득함. 클릭해서 입기.</string>
+	<key>Edit crew</key>
+	<string>크루 편집</string>
 	<key>Edit the Custom focus and break lengths</key>
 	<string>사용자 지정의 집중 및 휴식 시간 편집</string>
 	<key>Email Support</key>
@@ -1339,6 +1425,8 @@
 	<string>버그, Party의 사용자 또는 그 밖의 무엇이든 %@ 팀에 이메일 보내기</string>
 	<key>Email the %@ team about a person or a problem</key>
 	<string>사람이나 문제에 대해 %@ 팀에 이메일 보내기</string>
+	<key>Emblem</key>
+	<string>엠블럼</string>
 	<key>End</key>
 	<string>종료</string>
 	<key>End it for everyone in the Party tab</key>
@@ -1361,6 +1449,10 @@
 	<string>이벤트</string>
 	<key>Every 5 levels bring a name color and every 10 a new rank. Levels never give points.</key>
 	<string>5레벨마다 이름 색이, 10레벨마다 새 등급이 열려요. 레벨로는 포인트를 받지 않아요.</string>
+	<key>Every Sunday's top 3 earn a medal</key>
+	<string>매주 일요일 톱 3이 메달을 받아요</string>
+	<key>Every crew can appear on the weekly top 3 with its members' pets.</key>
+	<string>모든 크루는 멤버들의 펫과 함께 주간 톱 3에 나올 수 있어요.</string>
 	<key>Every deck is caught up</key>
 	<string>모든 덱을 다 끝냈어요</string>
 	<key>Every focused minute fills in today's square</key>
@@ -1403,6 +1495,10 @@
 	<string>오늘 여유 시간을 할 일과 복습으로 채워요. 이 Mac에서 계획하며, 허락 전엔 아무것도 추가하지 않아요</string>
 	<key>Fill tomorrow's free time with your open tasks and reviews. Planned on this Mac, nothing is added until you say so</key>
 	<string>내일 여유 시간을 할 일과 복습으로 채워요. 이 Mac에서 계획하며, 허락 전엔 아무것도 추가하지 않아요</string>
+	<key>Find</key>
+	<string>찾기</string>
+	<key>Find crews</key>
+	<string>크루 찾기</string>
 	<key>Finish a Party session with friends.</key>
 	<string>친구들과 파티 세션을 끝내세요.</string>
 	<key>Finish all three to count the month toward the Monthly quests badge.</key>
@@ -1503,6 +1599,8 @@
 	<string>창립 멤버: Tabbi의 첫 100일 안에 함께했어요.</string>
 	<key>Founding Member: you joined Tabbi in its first 100 days.</key>
 	<string>창립 멤버: Tabbi의 첫 100일 안에 함께했어요.</string>
+	<key>Frame</key>
+	<string>프레임</string>
 	<key>Free all day</key>
 	<string>하루 종일 비어 있어요</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1551,6 +1649,8 @@
 	<string>우정 반다나</string>
 	<key>Frog Hat</key>
 	<string>개구리 모자</string>
+	<key>Froggy</key>
+	<string>개구리</string>
 	<key>From your Claude Code logs</key>
 	<string>내 Claude Code 로그 기준</string>
 	<key>Frosted glass cards over a cool blue glow.</key>
@@ -1589,6 +1689,8 @@
 	<string>apps.ankiweb.net에서 무료 Anki 앱을 받으세요.</string>
 	<key>Give your cat a name</key>
 	<string>고양이에게 이름을 지어 주세요</string>
+	<key>Give your crew a name.</key>
+	<string>크루 이름을 정해 주세요.</string>
 	<key>Give your dog a name</key>
 	<string>강아지에게 이름을 지어 주세요</string>
 	<key>Glass controls need macOS 26 and fall back to a solid style when Reduce Transparency is on.</key>
@@ -1623,10 +1725,14 @@
 	<string>잘했어요!</string>
 	<key>Great job, team!</key>
 	<string>팀 모두 수고했어요!</string>
+	<key>Hall of Fame</key>
+	<string>명예의 전당</string>
 	<key>Halloween</key>
 	<string>핼러윈</string>
 	<key>Halo</key>
 	<string>후광</string>
+	<key>Happy Star</key>
+	<string>행복한 별</string>
 	<key>Happy wiggle</key>
 	<string>신나는 꼬리 흔들기</string>
 	<key>Haptic feedback</key>
@@ -1645,14 +1751,20 @@
 	<string>집중하는 중</string>
 	<key>Heart Glasses</key>
 	<string>하트 안경</string>
+	<key>Heater</key>
+	<string>히터 방패</string>
 	<key>Heirloom</key>
 	<string>가보</string>
+	<key>Hex Guard</key>
+	<string>육각 방패</string>
 	<key>Hi! I'm %@.</key>
 	<string>안녕! 나는 %@야.</string>
 	<key>Hidden</key>
 	<string>숨김</string>
 	<key>Hide %@ Until I Press %@</key>
 	<string>%2$@ 키를 누를 때까지 %1$@ 숨기기</string>
+	<key>Hide My Pet on Crew Pages</key>
+	<string>크루 페이지에서 내 펫 숨기기</string>
 	<key>Hide each other everywhere in Party. You can unblock in Party options.</key>
 	<string>파티 어디에서도 서로 보이지 않아요. 파티 옵션에서 해제할 수 있어요.</string>
 	<key>Hide from screen sharing</key>
@@ -1673,6 +1785,8 @@
 	<string>기록</string>
 	<key>Honey</key>
 	<string>꿀색</string>
+	<key>Hours show up after the first focus session. Last week's top 3 keep their laurels until Sunday.</key>
+	<string>첫 집중 세션이 끝나면 시간이 나타나요. 지난주 톱 3은 일요일까지 월계관을 써요.</string>
 	<key>How %@ works</key>
 	<string>%@ 방법 알아보기</string>
 	<key>How long each item stays before the next one</key>
@@ -1721,6 +1835,8 @@
 	<string>노치가 열려 있을 땐 화살표 키나 두 손가락 쓸기로 탭을 바꾸고, 1-9로 탭에 바로 가고, Esc나 위로 쓸기로 닫아요. 닫힌 노치에서는 아래로 쓸거나 가운데 클릭하면 다음 실시간 현황을 볼 수 있어요.</string>
 	<key>Inappropriate name</key>
 	<string>부적절한 이름</string>
+	<key>Indigo</key>
+	<string>인디고</string>
 	<key>Indigo night sky with a little gold star.</key>
 	<string>남색 밤하늘에 작은 금빛 별 하나.</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
@@ -1759,6 +1875,10 @@
 	<string>친구에게 숨김</string>
 	<key>Invisible: friends see you as away</key>
 	<string>친구에게 숨김</string>
+	<key>Invite</key>
+	<string>초대</string>
+	<key>Invite link</key>
+	<string>초대 링크</string>
 	<key>Invite links</key>
 	<string>초대 링크</string>
 	<key>Is %@ on this Mac?</key>
@@ -1801,6 +1921,10 @@
 	<string>보여 줄 내용이 없는 항목은 건너뛰어요.</string>
 	<key>Its config sets an API key, which this tab doesn't send.</key>
 	<string>설정에 API 키가 있지만 이 탭은 보내지 않아요.</string>
+	<key>Its owner lets you in.</key>
+	<string>주인이 들여보내 줘요.</string>
+	<key>Its owner lets you in. A request goes away after 7 days.</key>
+	<string>주인이 들여보내 줘요. 요청은 7일 후에 사라져요.</string>
 	<key>Its settings turned the connection away.</key>
 	<string>설정 때문에 연결이 거부됐어요.</string>
 	<key>Join</key>
@@ -1809,12 +1933,20 @@
 	<string>%@ 통화 참여</string>
 	<key>Join %@'s party</key>
 	<string>%@ 님의 파티에 참가</string>
+	<key>Join %@. Your focus minutes count for it from now on.</key>
+	<string>%@에 참가해요. 이제부터 집중 시간이 이 크루에 더해져요.</string>
+	<key>Join Crew</key>
+	<string>크루 참가</string>
 	<key>Join Party</key>
 	<string>파티 참여</string>
+	<key>Join this crew?</key>
+	<string>이 크루에 참가할까요?</string>
 	<key>Join this party now</key>
 	<string>지금 이 파티에 참여</string>
 	<key>Join this party?</key>
 	<string>이 파티에 참여할까요?</string>
+	<key>Join with invite code %@</key>
+	<string>초대 코드 %@로 참가</string>
 	<key>Joining Party. This takes a second.</key>
 	<string>파티에 참여하는 중이에요. 잠깐이면 돼요.</string>
 	<key>Joining the party server</key>
@@ -1857,6 +1989,10 @@
 	<string>최근 7일</string>
 	<key>Last synced %@</key>
 	<string>마지막 동기화: %@</string>
+	<key>Last week</key>
+	<string>지난주</string>
+	<key>Last weeks</key>
+	<string>최근 몇 주</string>
 	<key>Latest adventure: %@</key>
 	<string>최근 모험: %@</string>
 	<key>Launch %@</key>
@@ -1867,6 +2003,8 @@
 	<string>학습 중</string>
 	<key>Leave</key>
 	<string>나가기</string>
+	<key>Leave crew</key>
+	<string>크루 나가기</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>비워 두면 빠르고 저렴한 기본값을 써요.</string>
 	<key>Leave notifications on while studying</key>
@@ -1881,10 +2019,14 @@
 	<string>이 블록을 계획에서 빼기</string>
 	<key>Leave this question unanswered</key>
 	<string>이 질문은 건너뛰기</string>
+	<key>Leave your crew to start a new one</key>
+	<string>새로 만들려면 지금 크루에서 나가세요</string>
 	<key>Less</key>
 	<string>적음</string>
 	<key>Let %@ find you again. You won't be friends until one of you adds the other.</key>
 	<string>%@이(가) 다시 나를 찾을 수 있어요. 둘 중 한 명이 추가해야 친구가 돼요.</string>
+	<key>Let %@ into the crew</key>
+	<string>%@ 님을 크루에 들이기</string>
 	<key>Let Tabbi into Anki</key>
 	<string>Anki에 Tabbi 접속 허용</string>
 	<key>Let Tabbi run your Focus shortcuts</key>
@@ -1927,6 +2069,10 @@
 	<string>실시간 현황</string>
 	<key>Loading</key>
 	<string>불러오는 중</string>
+	<key>Loading the board</key>
+	<string>보드를 불러오는 중</string>
+	<key>Loading your crew…</key>
+	<string>크루를 불러오는 중…</string>
 	<key>Loading…</key>
 	<string>불러오는 중…</string>
 	<key>Location</key>
@@ -1963,6 +2109,8 @@
 	<string>Lv %1$lld: %2$@</string>
 	<key>Main display</key>
 	<string>주 디스플레이</string>
+	<key>Make a crew and invite friends</key>
+	<string>크루를 만들고 친구를 초대하세요</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
 	<string>같은 방법으로 '끔'으로 설정한 단축어를 하나 더 만들고 이름을 이렇게 지정하세요:</string>
 	<key>Make sure Calendars is turned on for that account.</key>
@@ -1985,10 +2133,14 @@
 	<string>Tabbi가 단축어를 실행할 수 있나요?</string>
 	<key>Measuring cores...</key>
 	<string>코어 측정 중...</string>
+	<key>Medals from every week's top 3</key>
+	<string>매주 톱 3의 메달</string>
 	<key>Media</key>
 	<string>미디어</string>
 	<key>Meetings, music and timers beside the closed notch.</key>
 	<string>닫힌 노치 옆에 회의, 음악, 타이머를 보여 줘요.</string>
+	<key>Members</key>
+	<string>멤버</string>
 	<key>Members in this party</key>
 	<string>이 파티의 멤버</string>
 	<key>Memory</key>
@@ -2023,6 +2175,8 @@
 	<string>월간 퀘스트</string>
 	<key>Monthly quests, badges and outfits earned from long goals</key>
 	<string>월간 퀘스트, 배지, 긴 목표로 얻는 의상</string>
+	<key>Moon and Star</key>
+	<string>달과 별</string>
 	<key>Moonlit Witch Hat</key>
 	<string>달빛 마녀 모자</string>
 	<key>Moonstone</key>
@@ -2057,10 +2211,14 @@
 	<string>위로 이동</string>
 	<key>Mushroom Cap</key>
 	<string>버섯 모자</string>
+	<key>Mushroom Pal</key>
+	<string>버섯 친구</string>
 	<key>Music</key>
 	<string>음악</string>
 	<key>Mute</key>
 	<string>음소거</string>
+	<key>My crew</key>
+	<string>내 크루</string>
 	<key>Name</key>
 	<string>이름</string>
 	<key>Name your pet</key>
@@ -2075,10 +2233,14 @@
 	<string>새 카드</string>
 	<key>New chat</key>
 	<string>새 채팅</string>
+	<key>New crew</key>
+	<string>새 크루</string>
 	<key>New friends</key>
 	<string>새 친구</string>
 	<key>New tabs may ask for %@.</key>
 	<string>새 탭이 %@ 권한을 요청할 수 있어요.</string>
+	<key>New week in %@</key>
+	<string>새 주까지 %@</string>
 	<key>Next meeting</key>
 	<string>다음 일정</string>
 	<key>Next track</key>
@@ -2107,6 +2269,8 @@
 	<string>아직 캘린더 없음</string>
 	<key>No collar</key>
 	<string>목걸이 없음</string>
+	<key>No crews match</key>
+	<string>일치하는 크루가 없어요</string>
 	<key>No events</key>
 	<string>일정 없음</string>
 	<key>No events on your calendars today.</key>
@@ -2123,8 +2287,12 @@
 	<string>이번 주 여유 시간 없음</string>
 	<key>No friends yet</key>
 	<string>아직 친구가 없어요</string>
+	<key>No hours yet this week</key>
+	<string>이번 주에는 아직 시간이 없어요</string>
 	<key>No limits in your Codex logs yet</key>
 	<string>Codex 로그에 아직 한도 정보가 없어요</string>
+	<key>No medals yet</key>
+	<string>아직 메달이 없어요</string>
 	<key>No more events today</key>
 	<string>오늘 남은 일정이 없어요</string>
 	<key>No music app found</key>
@@ -2319,6 +2487,8 @@
 	<string>한 번에 한 세션씩 차분하게. 할 수 있어요.</string>
 	<key>One countdown, no breaks</key>
 	<string>카운트다운 한 번, 휴식 없음</string>
+	<key>One line about your crew, up to %lld characters</key>
+	<string>크루 한 줄 소개(%lld자까지)</string>
 	<key>One moment.</key>
 	<string>잠시만요.</string>
 	<key>One question first</key>
@@ -2331,10 +2501,18 @@
 	<string>한 단계만 더하면 여기서 덱을 열 수 있어요</string>
 	<key>One tap moves on.</key>
 	<string>하나를 고르면 넘어가요.</string>
+	<key>Onigiri</key>
+	<string>주먹밥</string>
 	<key>Online</key>
 	<string>온라인</string>
 	<key>Only partly. Tabbi can add events but can't read them.</key>
 	<string>일부만요. Tabbi가 이벤트를 추가할 수는 있지만 읽을 수는 없어요.</string>
+	<key>Only people with the invite can join.</key>
+	<string>초대받은 사람만 참가할 수 있어요.</string>
+	<key>Only people with the invite link can join. Click to make it public.</key>
+	<string>초대 링크가 있는 사람만 참가할 수 있어요. 클릭하면 공개로 바뀌어요.</string>
+	<key>Only the crew's owner can do that.</key>
+	<string>크루 주인만 할 수 있어요.</string>
 	<key>Only the host can change the session.</key>
 	<string>호스트만 세션을 바꿀 수 있어요.</string>
 	<key>Only while a focus phase runs, at most a few times an hour. Your pet checks how long since you last typed or moved the pointer, and which app is in front. Nothing else, and no permissions.</key>
@@ -2373,6 +2551,8 @@
 	<string>Anki를 열면 이 탭이 알아서 연결돼요</string>
 	<key>Open Automation settings</key>
 	<string>자동화 설정 열기</string>
+	<key>Open Book</key>
+	<string>펼친 책</string>
 	<key>Open Calendars privacy settings</key>
 	<string>캘린더 개인정보 설정 열기</string>
 	<key>Open Calendars privacy settings to turn access on</key>
@@ -2545,12 +2725,18 @@
 	<string>일시정지됨</string>
 	<key>Paused in %@</key>
 	<string>%@에서 일시정지됨</string>
+	<key>Paw</key>
+	<string>발바닥</string>
 	<key>Pay as you go with an Anthropic API key.</key>
 	<string>Anthropic API 키로 쓴 만큼 결제해요.</string>
 	<key>Pay as you go with an OpenAI API key.</key>
 	<string>OpenAI API 키로 쓴 만큼 결제해요.</string>
 	<key>Peak %@  ·  Avg %@</key>
 	<string>최대 %@  ·  평균 %@</string>
+	<key>Pencil</key>
+	<string>연필</string>
+	<key>Pennant</key>
+	<string>페넌트</string>
 	<key>Pet</key>
 	<string>펫</string>
 	<key>Pet Coach</key>
@@ -2685,6 +2871,10 @@
 	<string>개인정보 보호</string>
 	<key>Privacy Policy</key>
 	<string>개인정보 처리방침</string>
+	<key>Private</key>
+	<string>비공개</string>
+	<key>Private, invite only</key>
+	<string>비공개, 초대 전용</string>
 	<key>Productivity</key>
 	<string>생산성</string>
 	<key>Profile</key>
@@ -2693,6 +2883,8 @@
 	<string>제안: %1$@, %2$@. 클릭해서 추가하거나 건너뛰기</string>
 	<key>Proposed: %@. Click to add or skip it</key>
 	<string>제안: %@. 클릭해서 추가하거나 건너뛰기</string>
+	<key>Public</key>
+	<string>공개</string>
 	<key>Pumpkin Hat</key>
 	<string>호박 모자</string>
 	<key>Put General back the way a new install has it. Launch at login stays as it is.</key>
@@ -2725,6 +2917,12 @@
 	<string>빗소리</string>
 	<key>Rain Slicker</key>
 	<string>레인코트</string>
+	<key>Rank %lld, %@, %@</key>
+	<string>%lld위, %@, %@</string>
+	<key>Rank %lld, %@, %@ this week, %@</key>
+	<string>%lld위, %@, 이번 주 %@, %@</string>
+	<key>Ranked by golds, then silvers, then bronzes, then whoever reached the tally first.</key>
+	<string>금, 은, 동 순서이고, 같으면 먼저 도달한 크루가 앞서요.</string>
 	<key>Rare</key>
 	<string>희귀</string>
 	<key>Reach your arms up high, then roll your shoulders back.</key>
@@ -2781,6 +2979,8 @@
 	<string>삭제</string>
 	<key>Remove %@</key>
 	<string>%@ 제거</string>
+	<key>Remove %@ from Crew</key>
+	<string>%@ 님을 크루에서 내보내기</string>
 	<key>Remove %@ from the blend</key>
 	<string>블렌드에서 %@ 빼기</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
@@ -2793,6 +2993,8 @@
 	<string>블렌드에서 빼기</string>
 	<key>Remove this screenshot</key>
 	<string>이 스크린샷 삭제</string>
+	<key>Removed %@ from the crew.</key>
+	<string>%@ 님을 크루에서 내보냈어요.</string>
 	<key>Removed %@.</key>
 	<string>%@ 키트를 삭제했어요.</string>
 	<key>Removes your profile, friends and parties from the server.</key>
@@ -2815,6 +3017,8 @@
 	<string>%@ 신고…</string>
 	<key>Report a problem: %@</key>
 	<string>문제 신고: %@</string>
+	<key>Report this crew</key>
+	<string>이 크루 신고</string>
 	<key>Request</key>
 	<string>요청</string>
 	<key>Request sent</key>
@@ -2823,6 +3027,8 @@
 	<string>%@ 님에게 요청을 보냈어요</string>
 	<key>Request sent to %@.</key>
 	<string>%@ 님에게 요청을 보냈어요.</string>
+	<key>Requested</key>
+	<string>요청함</string>
 	<key>Reset to Default</key>
 	<string>기본값으로 재설정</string>
 	<key>Reset to Defaults</key>
@@ -2871,6 +3077,8 @@
 	<string>오른쪽 클릭으로 제거, 신고 또는 차단할 수 있어요.</string>
 	<key>Right-click to report or block.</key>
 	<string>오른쪽 클릭으로 신고 또는 차단할 수 있어요.</string>
+	<key>Rose</key>
+	<string>로즈</string>
 	<key>Round %lld of %lld</key>
 	<string>%1$lld/%2$lld 라운드</string>
 	<key>Round Glasses</key>
@@ -2903,6 +3111,8 @@
 	<string>이 키를 키체인에 저장</string>
 	<key>Save today's review and show the checklist</key>
 	<string>오늘의 마무리를 저장하고 체크리스트 보기</string>
+	<key>Save your changes</key>
+	<string>변경 사항 저장</string>
 	<key>Save your name and pet and join Party</key>
 	<string>이름과 펫을 저장하고 파티에 참여</string>
 	<key>Saved chats</key>
@@ -2911,6 +3121,8 @@
 	<string>저장된 채팅은 이 Mac에만 보관되고 업로드되지 않아요</string>
 	<key>Saved in your Keychain</key>
 	<string>키체인에 저장됨</string>
+	<key>Saved.</key>
+	<string>저장했어요.</string>
 	<key>Schedule</key>
 	<string>일정</string>
 	<key>Scholar's Robe</key>
@@ -2919,10 +3131,18 @@
 	<string>이 질문과 함께 보낸 스크린샷</string>
 	<key>Scrubs</key>
 	<string>수술복</string>
+	<key>Seal</key>
+	<string>인장</string>
 	<key>Search for Set Focus, add it, and pick Do Not Disturb, turned On.</key>
 	<string>'집중 모드 설정'을 검색해 추가하고, '방해금지 모드'를 골라 '켬'으로 설정하세요.</string>
+	<key>Search public crews</key>
+	<string>공개 크루 검색</string>
+	<key>Search public crews by name</key>
+	<string>이름으로 공개 크루 검색</string>
 	<key>Seasonal</key>
 	<string>시즌</string>
+	<key>See %@ and its members' pets</key>
+	<string>%@ 크루와 멤버들의 펫 보기</string>
 	<key>See due cards and start reviews.</key>
 	<string>복습할 카드를 보고 바로 시작해요.</string>
 	<key>See today's events in the notch.</key>
@@ -2997,6 +3217,8 @@
 	<string>내 코드를 공유하거나 아래에 친구 코드를 추가하세요. 파티는 파티 탭에서 시작해요.</string>
 	<key>Shared focus: %@ left</key>
 	<string>함께 집중: %@ 남음</string>
+	<key>Shield</key>
+	<string>방패</string>
 	<key>Shortcut</key>
 	<string>단축키</string>
 	<key>Shortcut %@</key>
@@ -3013,6 +3235,8 @@
 	<string>단축어 접근이 꺼져 있어요. 자동화 설정에서 Tabbi의 Shortcuts Events를 켜세요.</string>
 	<key>Show %@</key>
 	<string>%@ 보기</string>
+	<key>Show My Pet on Crew Pages</key>
+	<string>크루 페이지에서 내 펫 보이기</string>
 	<key>Show Other Copy</key>
 	<string>다른 사본 보기</string>
 	<key>Show SoundCloud from Safari or Chrome</key>
@@ -3121,6 +3345,8 @@
 	<string>휴식으로 건너뛰기</string>
 	<key>Sky</key>
 	<string>하늘색</string>
+	<key>Slate</key>
+	<string>슬레이트</string>
 	<key>Sleep is part of the work. Go dream up tomorrow's moves.</key>
 	<string>잠도 노력의 일부예요. 가서 내일의 수를 꿈꿔 봐요.</string>
 	<key>Slow breath</key>
@@ -3135,6 +3361,8 @@
 	<string>일부 근거 있음</string>
 	<key>Some is infinitely more than none. Rest. The board will be here.</key>
 	<string>조금이라도 한 건 안 한 것보다 훨씬 커요. 쉬어요. 판은 여기 그대로 있을 거예요.</string>
+	<key>Someone invited you to a study crew. Your focus minutes count for it from now on.</key>
+	<string>공부 크루에 초대받았어요. 이제부터 집중 시간이 이 크루에 더해져요.</string>
 	<key>Something not working?</key>
 	<string>잘 안 되나요?</string>
 	<key>Soulmates</key>
@@ -3169,6 +3397,8 @@
 	<string>잠깐 일어나 봐요</string>
 	<key>Stand, shake out your legs, and sit back down when you like.</key>
 	<string>일어나서 다리를 털고, 원할 때 다시 앉아요.</string>
+	<key>Star Crest</key>
+	<string>별 문장</string>
 	<key>Star tag</key>
 	<string>별 태그</string>
 	<key>Starlight, every tier earned</key>
@@ -3293,10 +3523,14 @@
 	<string>7일 연속 공부하세요.</string>
 	<key>Study Hoodie</key>
 	<string>공부 후드티</string>
+	<key>Study Level %lld</key>
+	<string>공부 레벨 %lld</string>
 	<key>Study block</key>
 	<string>공부 블록</string>
 	<key>Study buddies</key>
 	<string>공부 메이트</string>
+	<key>Study crews: weekly board and Hall of Fame</key>
+	<string>공부 크루: 주간 보드와 명예의 전당</string>
 	<key>Study days</key>
 	<string>공부한 날</string>
 	<key>Study methods</key>
@@ -3313,6 +3547,8 @@
 	<string>고양이와 공부하기</string>
 	<key>Study with a dog</key>
 	<string>강아지와 공부하기</string>
+	<key>Study with friends and climb the board together.</key>
+	<string>친구와 공부하고 함께 보드를 올라가요.</string>
 	<key>Study with friends and see who is focusing now.</key>
 	<string>친구와 함께 공부하고 지금 누가 집중 중인지 봐요.</string>
 	<key>Study with friends, see their timers.</key>
@@ -3421,6 +3657,10 @@
 	<string>할 일</string>
 	<key>Tasks left today</key>
 	<string>오늘 남은 할 일</string>
+	<key>Teacher's Apple</key>
+	<string>선생님의 사과</string>
+	<key>Teal</key>
+	<string>틸</string>
 	<key>Team Medal</key>
 	<string>팀 메달</string>
 	<key>Ten hours of betting on yourself. Keep betting.</key>
@@ -3437,12 +3677,24 @@
 	<string>고마워요. 신고를 보냈고 %@ 님을 차단했어요.</string>
 	<key>Thanks. Your report was sent.</key>
 	<string>고마워요. 신고를 보냈어요.</string>
+	<key>That crew has a lot of requests waiting. Try again later.</key>
+	<string>그 크루에 대기 중인 요청이 많아요. 나중에 다시 해 보세요.</string>
+	<key>That crew is full.</key>
+	<string>그 크루는 꽉 찼어요.</string>
+	<key>That crew is gone or the code is wrong.</key>
+	<string>그 크루가 없어졌거나 코드가 틀렸어요.</string>
+	<key>That crew name isn't allowed. Please pick another.</key>
+	<string>그 크루 이름은 쓸 수 없어요. 다른 이름을 골라 주세요.</string>
+	<key>That description isn't allowed. Please change it.</key>
+	<string>그 설명은 쓸 수 없어요. 바꿔 주세요.</string>
 	<key>That folder has no %@ logs. Choose the %@ folder in your home folder.</key>
 	<string>그 폴더에는 %1$@ 로그가 없어요. 홈 폴더에서 %2$@ 폴더를 선택하세요.</string>
 	<key>That friend request is no longer there.</key>
 	<string>그 친구 요청은 더 이상 없어요.</string>
 	<key>That key can't be part of a shortcut. Try a letter, number, or Space.</key>
 	<string>그 키는 단축키에 쓸 수 없어요. 글자, 숫자 또는 Space를 써 보세요.</string>
+	<key>That member left the crew.</key>
+	<string>그 멤버는 크루를 나갔어요.</string>
 	<key>That name and your pet's name aren't allowed. Please pick others.</key>
 	<string>이름과 펫 이름 모두 사용할 수 없어요. 다른 이름을 골라 주세요.</string>
 	<key>That name isn't allowed. Please pick another.</key>
@@ -3455,6 +3707,8 @@
 	<string>파티가 꽉 찼어요.</string>
 	<key>That pet name isn't allowed. Please pick another.</key>
 	<string>사용할 수 없는 펫 이름이에요. 다른 이름을 골라 주세요.</string>
+	<key>That request is no longer waiting.</key>
+	<string>그 요청은 더 이상 대기 중이 아니에요.</string>
 	<key>That's a wrap. Well done!</key>
 	<string>끝! 수고했어요!</string>
 	<key>That's your own code.</key>
@@ -3547,6 +3801,8 @@
 	<string>타이머가 %@(으)로 시작해요</string>
 	<key>The tool's own default</key>
 	<string>도구 기본값</string>
+	<key>The week runs Monday to Sunday (UTC). Ends %@. The top 3 wear a laurel next week.</key>
+	<string>한 주는 월요일부터 일요일까지예요(UTC). %@에 끝나요. 톱 3은 다음 주에 월계관을 써요.</string>
 	<key>The work no one sees is the work that changes you.</key>
 	<string>아무도 보지 않는 노력이 나를 바꿔요.</string>
 	<key>The year you were born</key>
@@ -3583,6 +3839,14 @@
 	<string>데모예요. 신고는 보내지 않았어요.</string>
 	<key>This is a demo. Nothing was deleted.</key>
 	<string>데모예요. 아무것도 삭제되지 않았어요.</string>
+	<key>This is a demo. Run without TABBI_DEMO to join a crew.</key>
+	<string>데모예요. 크루에 참가하려면 TABBI_DEMO 없이 실행하세요.</string>
+	<key>This is a demo. Run without TABBI_DEMO to leave a crew.</key>
+	<string>데모예요. 크루를 나가려면 TABBI_DEMO 없이 실행하세요.</string>
+	<key>This is a demo. Run without TABBI_DEMO to make a crew.</key>
+	<string>데모예요. 크루를 만들려면 TABBI_DEMO 없이 실행하세요.</string>
+	<key>This is a demo. Run without TABBI_DEMO to study with a crew.</key>
+	<string>데모예요. 크루와 공부하려면 TABBI_DEMO 없이 실행하세요.</string>
 	<key>This is a demo. Run without TABBI_DEMO to study with friends.</key>
 	<string>데모예요. 친구와 공부하려면 TABBI_DEMO 없이 실행하세요.</string>
 	<key>This is usually short. Check again in a moment.</key>
@@ -3601,10 +3865,16 @@
 	<string>잠깐이면 돼요.</string>
 	<key>This task is on today's list</key>
 	<string>이 할 일은 오늘 목록에 있어요</string>
+	<key>This week</key>
+	<string>이번 주</string>
+	<key>This week's leaderboard</key>
+	<string>이번 주 리더보드</string>
 	<key>This works. Nothing to do.</key>
 	<string>잘 작동해요. 할 일이 없어요.</string>
 	<key>Three small goals each month. They are optional, and a month you miss costs nothing.</key>
 	<string>매달 작은 목표 세 가지. 선택 사항이고, 놓친 달이 있어도 잃는 건 없어요.</string>
+	<key>Tied with %@ at %@</key>
+	<string>%@와 %@로 동점</string>
 	<key>Time</key>
 	<string>시간</string>
 	<key>Time for a %lld-minute break.</key>
@@ -3677,6 +3947,8 @@
 	<string>다시 시도</string>
 	<key>Try again now</key>
 	<string>지금 다시 시도</string>
+	<key>Try another word, or create one.</key>
+	<string>다른 단어로 찾거나 새로 만들어 보세요.</string>
 	<key>Try the server again now</key>
 	<string>지금 서버에 다시 연결</string>
 	<key>Try to reach Party again now</key>
@@ -3771,6 +4043,8 @@
 	<string>다음 일정</string>
 	<key>Up next shows your %@ as the day goes, and Plan my day fits work around them.</key>
 	<string>다음 일정에서 하루의 %@을 보여 주고, 하루 계획이 그 사이에 작업을 넣어 줘요.</string>
+	<key>Up to %lld characters. Everyone in Party can see it on the board.</key>
+	<string>%lld자까지. 파티의 모두가 보드에서 볼 수 있어요.</string>
 	<key>Update AnkiConnect</key>
 	<string>AnkiConnect 업데이트</string>
 	<key>Update AnkiConnect from Tools › Add-ons › Check for Updates.</key>
@@ -3817,6 +4091,8 @@
 	<string>버전 %@ (%@)</string>
 	<key>View on GitHub</key>
 	<string>GitHub에서 보기</string>
+	<key>Violet</key>
+	<string>바이올렛</string>
 	<key>Visible: friends see when you study</key>
 	<string>친구에게 공개</string>
 	<key>Vivid accents with a violet glow.</key>
@@ -3837,12 +4113,16 @@
 	<string>Anki가 켜지길 기다리는 중</string>
 	<key>Waiting for Anki to start, then opening %@</key>
 	<string>Anki가 켜지면 %@ 덱을 열어요</string>
+	<key>Waiting to join %@</key>
+	<string>%@ 참가 대기 중</string>
 	<key>Waiting: %lld</key>
 	<string>대기 중: %lld</string>
 	<key>Walk through the steps to connect %@</key>
 	<string>단계별로 연결하기: %@</string>
 	<key>Wants to be friends</key>
 	<string>친구 요청</string>
+	<key>Wants to join</key>
+	<string>참가하고 싶어 해요</string>
 	<key>Wardrobe</key>
 	<string>옷장</string>
 	<key>Warm cream and peach, soft and gentle.</key>
@@ -3875,6 +4155,8 @@
 	<string>무슨 일이 있었는지 한두 문장으로</string>
 	<key>What should we call you?</key>
 	<string>뭐라고 부를까요?</string>
+	<key>What you study</key>
+	<string>공부하는 것</string>
 	<key>When Anki asked whether to let Tabbi in, the answer was no.</key>
 	<string>Anki가 Tabbi 접근 허용 여부를 물었을 때 거부를 선택했어요.</string>
 	<key>When focus ends</key>
@@ -3911,10 +4193,14 @@
 	<string>Claude Code를 AI로 쓰면 AI에게 묻기와 AI 사용량이 로그인된 내 claude CLI를 실행해요. %@는 자격 증명을 절대 읽지 않아요. claude를 자동으로 찾지 못할 때만 설정하세요.</string>
 	<key>With Ollama open, run ollama pull %@ in Terminal once.</key>
 	<string>Ollama를 연 상태로 터미널에서 ollama pull %@를 한 번 실행하세요.</string>
+	<key>Withdraw your request to join %@</key>
+	<string>%@ 참가 요청 취소</string>
 	<key>Wizard Hat</key>
 	<string>마법사 모자</string>
 	<key>Wizard Robe</key>
 	<string>마법사 로브</string>
+	<key>Wk %lld</key>
+	<string>%lld주차</string>
 	<key>Works from any app. On Today, type right away to add a task.</key>
 	<string>어떤 앱에서든 돼요. 오늘 탭에서는 바로 입력해서 할 일을 추가해요.</string>
 	<key>Wrap up</key>
@@ -3975,14 +4261,20 @@
 	<string>%@ 탭에서 언제든 설정할 수 있어요.</string>
 	<key>You can turn alerts off any time in System Settings.</key>
 	<string>알림은 시스템 설정에서 언제든 끌 수 있어요.</string>
+	<key>You can't join that crew.</key>
+	<string>그 크루에는 참가할 수 없어요.</string>
 	<key>You didn't feel like it, and you did it anyway. That's the whole secret.</key>
 	<string>하기 싫었는데도 해냈어요. 비결은 그게 전부예요.</string>
 	<key>You get one free freeze each week, and can hold %lld extra.</key>
 	<string>매주 보호 하나를 무료로 받고, %lld개까지 더 가지고 있을 수 있어요.</string>
 	<key>You have 50 friend requests waiting. Cancel some first.</key>
 	<string>응답을 기다리는 친구 요청이 50개예요. 먼저 몇 개를 취소하세요.</string>
+	<key>You joined %@.</key>
+	<string>%@에 참가했어요.</string>
 	<key>You joined the party</key>
 	<string>파티에 참여했어요</string>
+	<key>You left %@.</key>
+	<string>%@에서 나왔어요.</string>
 	<key>You put in %@ of study today. Rest up and start fresh tomorrow.</key>
 	<string>오늘 %@ 공부했어요. 푹 쉬고 내일 새롭게 시작해요.</string>
 	<key>You started it for the party</key>
@@ -3991,18 +4283,30 @@
 	<string>상대가 수락하면 친구가 돼요.</string>
 	<key>You'll see %@ in your Party tab.</key>
 	<string>파티 탭에서 %@을(를) 볼 수 있어요.</string>
+	<key>You're already in a crew. Leave it first to join another.</key>
+	<string>이미 크루에 들어가 있어요. 다른 크루에 참가하려면 먼저 나가 주세요.</string>
+	<key>You're already in a crew. Leave it first.</key>
+	<string>이미 크루에 들어가 있어요. 먼저 나가 주세요.</string>
 	<key>You're already in this party</key>
 	<string>이미 이 파티에 있어요</string>
 	<key>You're in Party</key>
 	<string>파티에 참여했어요</string>
 	<key>You're not behind. You're on your own clock, and it only moves forward.</key>
 	<string>늦은 게 아니에요. 나만의 시계로 가고 있고, 그 시계는 앞으로만 가요.</string>
+	<key>You're not in a crew anymore.</key>
+	<string>더 이상 크루에 있지 않아요.</string>
+	<key>You're not in a crew yet</key>
+	<string>아직 크루에 없어요</string>
 	<key>You're not in a party anymore.</key>
 	<string>더 이상 파티에 있지 않아요.</string>
 	<key>You're the only one here for now.</key>
 	<string>지금은 혼자예요.</string>
+	<key>You've asked a lot of crews today. Try again tomorrow.</key>
+	<string>오늘 많은 크루에 요청했어요. 내일 다시 해 보세요.</string>
 	<key>You've blocked too many people. Unblock someone first.</key>
 	<string>너무 많은 사람을 차단했어요. 먼저 누군가를 차단 해제하세요.</string>
+	<key>You've made a lot of crews today. Try again tomorrow.</key>
+	<string>오늘 크루를 많이 만들었어요. 내일 다시 해 보세요.</string>
 	<key>You've sent a lot of friend requests today. Try again tomorrow.</key>
 	<string>오늘 친구 요청을 많이 보냈어요. 내일 다시 시도하세요.</string>
 	<key>You've sent a lot of reports today. Try again tomorrow.</key>
@@ -4043,6 +4347,12 @@
 	<string>지금 쓰는 AnkiConnect는 Tabbi에 쓰기엔 너무 오래됐어요. Anki에서 몇 번만 클릭하면 업데이트할 수 있어요.</string>
 	<key>Your copy of the AnkiConnect add-on is too old for Tabbi.</key>
 	<string>설치된 AnkiConnect 애드온이 너무 오래되어 Tabbi에서 쓸 수 없어요.</string>
+	<key>Your crew</key>
+	<string>내 크루</string>
+	<key>Your crew and its members</key>
+	<string>내 크루와 멤버</string>
+	<key>Your crew studied %@ this week</key>
+	<string>내 크루는 이번 주 %@ 공부했어요</string>
 	<key>Your data</key>
 	<string>내 데이터</string>
 	<key>Your day on a timeline, with the free time in between.</key>
@@ -4135,6 +4445,8 @@
 	<string>카드</string>
 	<key>cards</key>
 	<string>카드</string>
+	<key>crew.shuffle</key>
+	<string>섞기</string>
 	<key>day</key>
 	<string>일</string>
 	<key>day streak</key>
@@ -4285,6 +4597,8 @@
 	<string>딸기 우유</string>
 	<key>theme.taro</key>
 	<string>타로</string>
+	<key>this week</key>
+	<string>이번 주</string>
 	<key>today</key>
 	<string>오늘</string>
 	<key>tokens</key>

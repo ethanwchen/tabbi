@@ -85,15 +85,17 @@ jobs:
 
   # The snapshot run on its own runners, split in shards that run side by
   # side: one runner took close to the whole job budget on its own, and a slow
-  # runner pushed it past. Each shard uploads its PNGs as its own artifact.
+  # runner pushed it past. Four shards of two browsers each keep every runner
+  # well inside its memory now that Crews added a few hundred states.
+  # Each shard uploads its PNGs as its own artifact.
   snapshots:
-    name: Windows snapshots (${{ matrix.shard }}/3)
+    name: Windows snapshots (${{ matrix.shard }}/4)
     runs-on: windows-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2, 3, 4]
     defaults:
       run:
         working-directory: windows
@@ -109,7 +111,7 @@ jobs:
       - run: npm ci
 
       - name: Snapshots
-        run: npx playwright test --shard=${{ matrix.shard }}/3
+        run: npx playwright test --shard=${{ matrix.shard }}/4
 
       - uses: actions/upload-artifact@v4
         if: always()
