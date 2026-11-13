@@ -1,0 +1,1729 @@
+{
+  "constants" : {
+    "canvasSize" : 18,
+    "curveExponent" : 1.6,
+    "curveScale" : 4,
+    "emblemSize" : 16,
+    "levelsPerNameplate" : 5,
+    "levelsPerRank" : 10,
+    "maxPips" : 4,
+    "maxShared" : 999,
+    "rankTiers" : [
+      "spark",
+      "ember",
+      "comet",
+      "nova",
+      "nebula",
+      "galaxy"
+    ],
+    "saveSchemaVersion" : 2
+  },
+  "curve" : [
+    {
+      "hours" : 0,
+      "level" : 0,
+      "minutes" : 0
+    },
+    {
+      "hours" : 4,
+      "level" : 1,
+      "minutes" : 240
+    },
+    {
+      "hours" : 12,
+      "level" : 2,
+      "minutes" : 720
+    },
+    {
+      "hours" : 23,
+      "level" : 3,
+      "minutes" : 1380
+    },
+    {
+      "hours" : 37,
+      "level" : 4,
+      "minutes" : 2220
+    },
+    {
+      "hours" : 53,
+      "level" : 5,
+      "minutes" : 3180
+    },
+    {
+      "hours" : 70,
+      "level" : 6,
+      "minutes" : 4200
+    },
+    {
+      "hours" : 90,
+      "level" : 7,
+      "minutes" : 5400
+    },
+    {
+      "hours" : 111,
+      "level" : 8,
+      "minutes" : 6660
+    },
+    {
+      "hours" : 135,
+      "level" : 9,
+      "minutes" : 8100
+    },
+    {
+      "hours" : 159,
+      "level" : 10,
+      "minutes" : 9540
+    },
+    {
+      "hours" : 185,
+      "level" : 11,
+      "minutes" : 11100
+    },
+    {
+      "hours" : 213,
+      "level" : 12,
+      "minutes" : 12780
+    },
+    {
+      "hours" : 242,
+      "level" : 13,
+      "minutes" : 14520
+    },
+    {
+      "hours" : 273,
+      "level" : 14,
+      "minutes" : 16380
+    },
+    {
+      "hours" : 305,
+      "level" : 15,
+      "minutes" : 18300
+    },
+    {
+      "hours" : 338,
+      "level" : 16,
+      "minutes" : 20280
+    },
+    {
+      "hours" : 372,
+      "level" : 17,
+      "minutes" : 22320
+    },
+    {
+      "hours" : 408,
+      "level" : 18,
+      "minutes" : 24480
+    },
+    {
+      "hours" : 445,
+      "level" : 19,
+      "minutes" : 26700
+    },
+    {
+      "hours" : 483,
+      "level" : 20,
+      "minutes" : 28980
+    },
+    {
+      "hours" : 522,
+      "level" : 21,
+      "minutes" : 31320
+    },
+    {
+      "hours" : 562,
+      "level" : 22,
+      "minutes" : 33720
+    },
+    {
+      "hours" : 604,
+      "level" : 23,
+      "minutes" : 36240
+    },
+    {
+      "hours" : 646,
+      "level" : 24,
+      "minutes" : 38760
+    },
+    {
+      "hours" : 690,
+      "level" : 25,
+      "minutes" : 41400
+    },
+    {
+      "hours" : 735,
+      "level" : 26,
+      "minutes" : 44100
+    },
+    {
+      "hours" : 780,
+      "level" : 27,
+      "minutes" : 46800
+    },
+    {
+      "hours" : 827,
+      "level" : 28,
+      "minutes" : 49620
+    },
+    {
+      "hours" : 875,
+      "level" : 29,
+      "minutes" : 52500
+    },
+    {
+      "hours" : 924,
+      "level" : 30,
+      "minutes" : 55440
+    },
+    {
+      "hours" : 973,
+      "level" : 31,
+      "minutes" : 58380
+    },
+    {
+      "hours" : 1024,
+      "level" : 32,
+      "minutes" : 61440
+    },
+    {
+      "hours" : 1076,
+      "level" : 33,
+      "minutes" : 64560
+    },
+    {
+      "hours" : 1128,
+      "level" : 34,
+      "minutes" : 67680
+    },
+    {
+      "hours" : 1182,
+      "level" : 35,
+      "minutes" : 70920
+    },
+    {
+      "hours" : 1236,
+      "level" : 36,
+      "minutes" : 74160
+    },
+    {
+      "hours" : 1292,
+      "level" : 37,
+      "minutes" : 77520
+    },
+    {
+      "hours" : 1348,
+      "level" : 38,
+      "minutes" : 80880
+    },
+    {
+      "hours" : 1405,
+      "level" : 39,
+      "minutes" : 84300
+    },
+    {
+      "hours" : 1463,
+      "level" : 40,
+      "minutes" : 87780
+    },
+    {
+      "hours" : 1522,
+      "level" : 41,
+      "minutes" : 91320
+    },
+    {
+      "hours" : 1582,
+      "level" : 42,
+      "minutes" : 94920
+    },
+    {
+      "hours" : 1643,
+      "level" : 43,
+      "minutes" : 98580
+    },
+    {
+      "hours" : 1704,
+      "level" : 44,
+      "minutes" : 102240
+    },
+    {
+      "hours" : 1767,
+      "level" : 45,
+      "minutes" : 106020
+    },
+    {
+      "hours" : 1830,
+      "level" : 46,
+      "minutes" : 109800
+    },
+    {
+      "hours" : 1894,
+      "level" : 47,
+      "minutes" : 113640
+    },
+    {
+      "hours" : 1959,
+      "level" : 48,
+      "minutes" : 117540
+    },
+    {
+      "hours" : 2025,
+      "level" : 49,
+      "minutes" : 121500
+    },
+    {
+      "hours" : 2091,
+      "level" : 50,
+      "minutes" : 125460
+    },
+    {
+      "hours" : 2159,
+      "level" : 51,
+      "minutes" : 129540
+    },
+    {
+      "hours" : 2227,
+      "level" : 52,
+      "minutes" : 133620
+    },
+    {
+      "hours" : 2296,
+      "level" : 53,
+      "minutes" : 137760
+    },
+    {
+      "hours" : 2365,
+      "level" : 54,
+      "minutes" : 141900
+    },
+    {
+      "hours" : 2436,
+      "level" : 55,
+      "minutes" : 146160
+    },
+    {
+      "hours" : 2507,
+      "level" : 56,
+      "minutes" : 150420
+    },
+    {
+      "hours" : 2579,
+      "level" : 57,
+      "minutes" : 154740
+    },
+    {
+      "hours" : 2652,
+      "level" : 58,
+      "minutes" : 159120
+    },
+    {
+      "hours" : 2725,
+      "level" : 59,
+      "minutes" : 163500
+    },
+    {
+      "hours" : 2800,
+      "level" : 60,
+      "minutes" : 168000
+    },
+    {
+      "hours" : 2875,
+      "level" : 61,
+      "minutes" : 172500
+    },
+    {
+      "hours" : 2950,
+      "level" : 62,
+      "minutes" : 177000
+    },
+    {
+      "hours" : 3027,
+      "level" : 63,
+      "minutes" : 181620
+    },
+    {
+      "hours" : 3104,
+      "level" : 64,
+      "minutes" : 186240
+    },
+    {
+      "hours" : 3182,
+      "level" : 65,
+      "minutes" : 190920
+    },
+    {
+      "hours" : 3261,
+      "level" : 66,
+      "minutes" : 195660
+    },
+    {
+      "hours" : 3340,
+      "level" : 67,
+      "minutes" : 200400
+    },
+    {
+      "hours" : 3420,
+      "level" : 68,
+      "minutes" : 205200
+    },
+    {
+      "hours" : 3501,
+      "level" : 69,
+      "minutes" : 210060
+    },
+    {
+      "hours" : 3583,
+      "level" : 70,
+      "minutes" : 214980
+    },
+    {
+      "hours" : 3665,
+      "level" : 71,
+      "minutes" : 219900
+    },
+    {
+      "hours" : 3748,
+      "level" : 72,
+      "minutes" : 224880
+    },
+    {
+      "hours" : 3832,
+      "level" : 73,
+      "minutes" : 229920
+    },
+    {
+      "hours" : 3916,
+      "level" : 74,
+      "minutes" : 234960
+    },
+    {
+      "hours" : 4001,
+      "level" : 75,
+      "minutes" : 240060
+    },
+    {
+      "hours" : 4087,
+      "level" : 76,
+      "minutes" : 245220
+    },
+    {
+      "hours" : 4173,
+      "level" : 77,
+      "minutes" : 250380
+    },
+    {
+      "hours" : 4260,
+      "level" : 78,
+      "minutes" : 255600
+    },
+    {
+      "hours" : 4348,
+      "level" : 79,
+      "minutes" : 260880
+    },
+    {
+      "hours" : 4436,
+      "level" : 80,
+      "minutes" : 266160
+    },
+    {
+      "hours" : 4525,
+      "level" : 81,
+      "minutes" : 271500
+    },
+    {
+      "hours" : 4615,
+      "level" : 82,
+      "minutes" : 276900
+    },
+    {
+      "hours" : 4705,
+      "level" : 83,
+      "minutes" : 282300
+    },
+    {
+      "hours" : 4796,
+      "level" : 84,
+      "minutes" : 287760
+    },
+    {
+      "hours" : 4888,
+      "level" : 85,
+      "minutes" : 293280
+    },
+    {
+      "hours" : 4980,
+      "level" : 86,
+      "minutes" : 298800
+    },
+    {
+      "hours" : 5073,
+      "level" : 87,
+      "minutes" : 304380
+    },
+    {
+      "hours" : 5167,
+      "level" : 88,
+      "minutes" : 310020
+    },
+    {
+      "hours" : 5261,
+      "level" : 89,
+      "minutes" : 315660
+    },
+    {
+      "hours" : 5356,
+      "level" : 90,
+      "minutes" : 321360
+    },
+    {
+      "hours" : 5452,
+      "level" : 91,
+      "minutes" : 327120
+    },
+    {
+      "hours" : 5548,
+      "level" : 92,
+      "minutes" : 332880
+    },
+    {
+      "hours" : 5645,
+      "level" : 93,
+      "minutes" : 338700
+    },
+    {
+      "hours" : 5742,
+      "level" : 94,
+      "minutes" : 344520
+    },
+    {
+      "hours" : 5840,
+      "level" : 95,
+      "minutes" : 350400
+    },
+    {
+      "hours" : 5939,
+      "level" : 96,
+      "minutes" : 356340
+    },
+    {
+      "hours" : 6038,
+      "level" : 97,
+      "minutes" : 362280
+    },
+    {
+      "hours" : 6138,
+      "level" : 98,
+      "minutes" : 368280
+    },
+    {
+      "hours" : 6238,
+      "level" : 99,
+      "minutes" : 374280
+    },
+    {
+      "hours" : 6340,
+      "level" : 100,
+      "minutes" : 380400
+    },
+    {
+      "hours" : 6441,
+      "level" : 101,
+      "minutes" : 386460
+    },
+    {
+      "hours" : 6544,
+      "level" : 102,
+      "minutes" : 392640
+    },
+    {
+      "hours" : 6647,
+      "level" : 103,
+      "minutes" : 398820
+    },
+    {
+      "hours" : 6750,
+      "level" : 104,
+      "minutes" : 405000
+    },
+    {
+      "hours" : 6854,
+      "level" : 105,
+      "minutes" : 411240
+    },
+    {
+      "hours" : 6959,
+      "level" : 106,
+      "minutes" : 417540
+    },
+    {
+      "hours" : 7064,
+      "level" : 107,
+      "minutes" : 423840
+    },
+    {
+      "hours" : 7170,
+      "level" : 108,
+      "minutes" : 430200
+    },
+    {
+      "hours" : 7277,
+      "level" : 109,
+      "minutes" : 436620
+    },
+    {
+      "hours" : 7384,
+      "level" : 110,
+      "minutes" : 443040
+    },
+    {
+      "hours" : 7492,
+      "level" : 111,
+      "minutes" : 449520
+    },
+    {
+      "hours" : 7600,
+      "level" : 112,
+      "minutes" : 456000
+    },
+    {
+      "hours" : 7709,
+      "level" : 113,
+      "minutes" : 462540
+    },
+    {
+      "hours" : 7818,
+      "level" : 114,
+      "minutes" : 469080
+    },
+    {
+      "hours" : 7928,
+      "level" : 115,
+      "minutes" : 475680
+    },
+    {
+      "hours" : 8039,
+      "level" : 116,
+      "minutes" : 482340
+    },
+    {
+      "hours" : 8150,
+      "level" : 117,
+      "minutes" : 489000
+    },
+    {
+      "hours" : 8262,
+      "level" : 118,
+      "minutes" : 495720
+    },
+    {
+      "hours" : 8374,
+      "level" : 119,
+      "minutes" : 502440
+    },
+    {
+      "hours" : 8487,
+      "level" : 120,
+      "minutes" : 509220
+    },
+    {
+      "hours" : 12128,
+      "level" : 150,
+      "minutes" : 727680
+    },
+    {
+      "hours" : 19218,
+      "level" : 200,
+      "minutes" : 1153080
+    },
+    {
+      "hours" : 27464,
+      "level" : 250,
+      "minutes" : 1647840
+    },
+    {
+      "hours" : 36767,
+      "level" : 300,
+      "minutes" : 2206020
+    },
+    {
+      "hours" : 58258,
+      "level" : 400,
+      "minutes" : 3495480
+    },
+    {
+      "hours" : 83255,
+      "level" : 500,
+      "minutes" : 4995300
+    },
+    {
+      "hours" : 159279,
+      "level" : 750,
+      "minutes" : 9556740
+    },
+    {
+      "hours" : 251979,
+      "level" : 999,
+      "minutes" : 15118740
+    },
+    {
+      "hours" : 252383,
+      "level" : 1000,
+      "minutes" : 15142980
+    },
+    {
+      "hours" : 445298,
+      "level" : 1426,
+      "minutes" : 26717880
+    },
+    {
+      "hours" : 765082,
+      "level" : 2000,
+      "minutes" : 45904920
+    }
+  ],
+  "emblems" : [
+    {
+      "colors" : [
+        "#2A1A14",
+        "#FFF8E1",
+        "#FFD66B",
+        "#FFF3C4",
+        "#E0A23A",
+        "#FFFFFF"
+      ],
+      "rank" : "spark",
+      "rle" : "18./18./8.2A8./7.ABCA7./7.A2CA3.D3./6.AB2CEA6./6.AC2DEA6./2.4AC4DE4A2./.AB3C2D2F2D4EA./.A4C2D2F2D4EA./2.4AE4DE4A2./6.AE2DEA6./6.AC3EA6./3.D3.A2EA7./7.A2EA7./8.2A8./18./18."
+    },
+    {
+      "colors" : [
+        "#2A1A14",
+        "#FF8A3D",
+        "#FFB27A",
+        "#D2452A",
+        "#FFC94D",
+        "#FFF4D6"
+      ],
+      "rank" : "ember",
+      "rle" : "18./18./7.2A9./7.ABA8./6.ACBA8./6.A2BDA2.A4./5.AC2BDA.ABA3./5.A3B2D2ABA3./4.A3BEB2DBDA3./4.A2B3EB3DA3./3.A2B2EF2EB3DA2./3.A2BE3FEB3DA2./3.A2B2EF2EB3DA2./4.A2B3EB3DA3./5.2A3B2D2A4./7.5A6./18./18."
+    },
+    {
+      "colors" : [
+        "#14202A",
+        "#5FB8F0",
+        "#DFF5FF",
+        "#F2FBFF",
+        "#8FD8FF",
+        "#4A9BD6"
+      ],
+      "rank" : "comet",
+      "rle" : "18./.2A15./.AB2A13./2.A2B2A11./2.ABC2B2A9./3.AB2C2B2A7./3.2AB2C3BA6./4.2A2BCB4A4./5.2A2BACD2EA3./6.ABAC3D2EA2./7.AE4D2EFA./7.AE4DE2FA./7.A2E2D2E2FA./7.A5E3FA./8.A3E3FA2./9.2A2F2A3./11.2A5./18."
+    },
+    {
+      "colors" : [
+        "#2A1420",
+        "#FF9BD2",
+        "#D45C9E",
+        "#FFD0EA",
+        "#FFE3F2",
+        "#FFFFFF"
+      ],
+      "rank" : "nova",
+      "rle" : "18./8.2A8./7.ABCA7./2.2A3.ABCA3.2A2./2.ADA2.ABCA2.ABA2./3.AB3ABC3ABA3./4.2A2B2E2BCA4./.4AB6EC4A./.A3B3E2F2E4CA./.A3C3E2F2E4CA./.4AB6EC4A./4.A2B4E2CA4./3.AB2A4C2ACA3./2.ABA2.ABCA2.ACA2./2.2A3.ABCA3.2A2./7.ABCA7./8.2A8./18."
+    },
+    {
+      "colors" : [
+        "#F4F1FF",
+        "#1C1430",
+        "#D9CCFF",
+        "#A88BFF",
+        "#FF9BD2",
+        "#EDE6FF",
+        "#6E54C8"
+      ],
+      "rank" : "nebula",
+      "rle" : "18./18./2.A4.4B7./5.2BC3D3B.A2./4.BC2D2E4DB3./3.B2D2E4F3DB2./2.B2DEF5DF2DGB./2.BDEF2D3F2DFDGB./.B2DEFDF2DF2DF2GB./.B3DFDFD2F2DF2GB./.B3DF2DF3DFD2GB./.B4DF4DFDE2GB./2.B4D4FD2EGB2./2.B2G6D2E2GB2./3.2B8G2B3./5.8B2.A2./18./18."
+    },
+    {
+      "colors" : [
+        "#0E1030",
+        "#4654C8",
+        "#DDE2FF",
+        "#C8D0FF",
+        "#FFFFFF",
+        "#2E3790",
+        "#FFD66B"
+      ],
+      "rank" : "galaxy",
+      "rle" : "18./6.6A6./4.2A6B2A4./3.ABCB3D4BA3./2.ABCBD3BD4BA2./2.A2BD5BDBEBA2./.A2BD6BD4BA./.A2BD3BDBD4BFA./.ABD3BD2G4B2FA./.A6B2GD3BDFA./.A5BDBD3BD2FA./.A4BD6BD2FA./2.A2BED5BD2FA2./2.A4BD3BD3FA2./3.A4B3D3FA3./4.2AB5F2A4./6.6A6./18."
+    },
+    {
+      "colors" : [
+        "#FFD66B",
+        "#0E1030",
+        "#FFFFFF",
+        "#4654C8",
+        "#DDE2FF",
+        "#C8D0FF",
+        "#2E3790"
+      ],
+      "rank" : "galaxy-2",
+      "rle" : "16.A./6.6B3.ACA/4.2B6D2B2.A./3.BDED3F4DB3./2.BDEDF3DF4DB2./2.B2DF5DFDCDB2./.B2DF6DF4DB./.B2DF3DFDF4DGB./.BDF3DF2A4D2GB./.B6D2AF3DFGB./.B5DFDF3DF2GB./.B4DF6DF2GB./2.B2DCF5DF2GB2./2.B4DF3DF3GB2./3.B4D3F3GB3./4.2BD5G2B4./6.6B6./18."
+    },
+    {
+      "colors" : [
+        "#FFD66B",
+        "#FFFFFF",
+        "#0E1030",
+        "#4654C8",
+        "#DDE2FF",
+        "#C8D0FF",
+        "#2E3790"
+      ],
+      "rank" : "galaxy-3",
+      "rle" : ".A14.A./ABA3.6C3.ABA/.A2.2C6D2C2.A./3.CDED3F4DC3./2.CDEDF3DF4DC2./2.C2DF5DFDBDC2./.C2DF6DF4DC./.C2DF3DFDF4DGC./.CDF3DF2A4D2GC./.C6D2AF3DFGC./.C5DFDF3DF2GC./.C4DF6DF2GC./2.C2DBF5DF2GC2./2.C4DF3DF3GC2./3.C4D3F3GC3./4.2CD5G2C4./6.6C6./18."
+    },
+    {
+      "colors" : [
+        "#FFD66B",
+        "#FFFFFF",
+        "#0E1030",
+        "#4654C8",
+        "#DDE2FF",
+        "#C8D0FF",
+        "#2E3790"
+      ],
+      "rank" : "galaxy-4",
+      "rle" : ".A14.A./ABA3.6C3.ABA/.A2.2C6D2C2.A./3.CDED3F4DC3./2.CDEDF3DF4DC2./2.C2DF5DFDBDC2./.C2DF6DF4DC./.C2DF3DFDF4DGC./.CDF3DF2A4D2GC./.C6D2AF3DFGC./.C5DFDF3DF2GC./.C4DF6DF2GC./2.C2DBF5DF2GC2./2.C4DF3DF3GC2./3.C4D3F3GC3./.A2.2CD5G2C4./ABA3.6C6./.A16."
+    },
+    {
+      "colors" : [
+        "#FFD66B",
+        "#FFFFFF",
+        "#0E1030",
+        "#4654C8",
+        "#DDE2FF",
+        "#C8D0FF",
+        "#2E3790"
+      ],
+      "rank" : "galaxy-5",
+      "rle" : ".A14.A./ABA3.6C3.ABA/.A2.2C6D2C2.A./3.CDED3F4DC3./2.CDEDF3DF4DC2./2.C2DF5DFDBDC2./.C2DF6DF4DC./.C2DF3DFDF4DGC./.CDF3DF2A4D2GC./.C6D2AF3DFGC./.C5DFDF3DF2GC./.C4DF6DF2GC./2.C2DBF5DF2GC2./2.C4DF3DF3GC2./3.C4D3F3GC3./.A2.2CD5G2C2.A./ABA3.6C3.ABA/.A14.A."
+    },
+    {
+      "colors" : [
+        "#FFD66B",
+        "#FFFFFF",
+        "#0E1030",
+        "#4654C8",
+        "#DDE2FF",
+        "#C8D0FF",
+        "#2E3790"
+      ],
+      "rank" : "galaxy-6",
+      "rle" : ".A14.A./ABA3.6C3.ABA/.A2.2C6D2C2.A./3.CDED3F4DC3./2.CDEDF3DF4DC2./2.C2DF5DFDBDC2./.C2DF6DF4DC./.C2DF3DFDF4DGC./.CDF3DF2A4D2GC./.C6D2AF3DFGC./.C5DFDF3DF2GC./.C4DF6DF2GC./2.C2DBF5DF2GC2./2.C4DF3DF3GC2./3.C4D3F3GC3./.A2.2CD5G2C2.A./ABA3.6C3.ABA/.A14.A."
+    }
+  ],
+  "levels" : [
+    {
+      "focusMinutes" : 0,
+      "fraction" : 0,
+      "level" : 0,
+      "nameplates" : [
+        "plain"
+      ],
+      "nextNameplate" : "peach",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "spark",
+      "rankFirstLevel" : 0
+    },
+    {
+      "focusMinutes" : 1,
+      "fraction" : 0.004166666666666667,
+      "level" : 0,
+      "nameplates" : [
+        "plain"
+      ],
+      "nextNameplate" : "peach",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "spark",
+      "rankFirstLevel" : 0
+    },
+    {
+      "focusMinutes" : 59,
+      "fraction" : 0.24583333333333332,
+      "level" : 0,
+      "nameplates" : [
+        "plain"
+      ],
+      "nextNameplate" : "peach",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "spark",
+      "rankFirstLevel" : 0
+    },
+    {
+      "focusMinutes" : 60,
+      "fraction" : 0.25,
+      "level" : 0,
+      "nameplates" : [
+        "plain"
+      ],
+      "nextNameplate" : "peach",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "spark",
+      "rankFirstLevel" : 0
+    },
+    {
+      "focusMinutes" : 239,
+      "fraction" : 0.9958333333333333,
+      "level" : 0,
+      "nameplates" : [
+        "plain"
+      ],
+      "nextNameplate" : "peach",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "spark",
+      "rankFirstLevel" : 0
+    },
+    {
+      "focusMinutes" : 240,
+      "fraction" : 0,
+      "level" : 1,
+      "nameplates" : [
+        "plain"
+      ],
+      "nextNameplate" : "peach",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "spark",
+      "rankFirstLevel" : 0
+    },
+    {
+      "focusMinutes" : 241,
+      "fraction" : 0.0020833333333333333,
+      "level" : 1,
+      "nameplates" : [
+        "plain"
+      ],
+      "nextNameplate" : "peach",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "spark",
+      "rankFirstLevel" : 0
+    },
+    {
+      "focusMinutes" : 719,
+      "fraction" : 0.9979166666666667,
+      "level" : 1,
+      "nameplates" : [
+        "plain"
+      ],
+      "nextNameplate" : "peach",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "spark",
+      "rankFirstLevel" : 0
+    },
+    {
+      "focusMinutes" : 720,
+      "fraction" : 0,
+      "level" : 2,
+      "nameplates" : [
+        "plain"
+      ],
+      "nextNameplate" : "peach",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "spark",
+      "rankFirstLevel" : 0
+    },
+    {
+      "focusMinutes" : 1379,
+      "fraction" : 0.9984848484848485,
+      "level" : 2,
+      "nameplates" : [
+        "plain"
+      ],
+      "nextNameplate" : "peach",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "spark",
+      "rankFirstLevel" : 0
+    },
+    {
+      "focusMinutes" : 1380,
+      "fraction" : 0,
+      "level" : 3,
+      "nameplates" : [
+        "plain"
+      ],
+      "nextNameplate" : "peach",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "spark",
+      "rankFirstLevel" : 0
+    },
+    {
+      "focusMinutes" : 3179,
+      "fraction" : 0.9989583333333333,
+      "level" : 4,
+      "nameplates" : [
+        "plain"
+      ],
+      "nextNameplate" : "peach",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "spark",
+      "rankFirstLevel" : 0
+    },
+    {
+      "focusMinutes" : 3180,
+      "fraction" : 0,
+      "level" : 5,
+      "nameplates" : [
+        "plain",
+        "peach"
+      ],
+      "nextNameplate" : "ember",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "spark",
+      "rankFirstLevel" : 0
+    },
+    {
+      "focusMinutes" : 9540,
+      "fraction" : 0,
+      "level" : 10,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember"
+      ],
+      "nextNameplate" : "honey",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "ember",
+      "rankFirstLevel" : 10
+    },
+    {
+      "focusMinutes" : 12779,
+      "fraction" : 0.9994047619047619,
+      "level" : 11,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember"
+      ],
+      "nextNameplate" : "honey",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "ember",
+      "rankFirstLevel" : 10
+    },
+    {
+      "focusMinutes" : 12780,
+      "fraction" : 0,
+      "level" : 12,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember"
+      ],
+      "nextNameplate" : "honey",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "ember",
+      "rankFirstLevel" : 10
+    },
+    {
+      "focusMinutes" : 13500,
+      "fraction" : 0.41379310344827586,
+      "level" : 12,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember"
+      ],
+      "nextNameplate" : "honey",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "ember",
+      "rankFirstLevel" : 10
+    },
+    {
+      "focusMinutes" : 14519,
+      "fraction" : 0.9994252873563219,
+      "level" : 12,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember"
+      ],
+      "nextNameplate" : "honey",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "ember",
+      "rankFirstLevel" : 10
+    },
+    {
+      "focusMinutes" : 14520,
+      "fraction" : 0,
+      "level" : 13,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember"
+      ],
+      "nextNameplate" : "honey",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "ember",
+      "rankFirstLevel" : 10
+    },
+    {
+      "focusMinutes" : 41400,
+      "fraction" : 0,
+      "level" : 25,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint"
+      ],
+      "nextNameplate" : "rose",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "comet",
+      "rankFirstLevel" : 20
+    },
+    {
+      "focusMinutes" : 77580,
+      "fraction" : 0.017857142857142856,
+      "level" : 37,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint",
+        "rose",
+        "lilac"
+      ],
+      "nextNameplate" : "nebula",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "nova",
+      "rankFirstLevel" : 30
+    },
+    {
+      "focusMinutes" : 125460,
+      "fraction" : 0,
+      "level" : 50,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint",
+        "rose",
+        "lilac",
+        "nebula",
+        "coral",
+        "gold"
+      ],
+      "nextNameplate" : "aurora",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "galaxy",
+      "rankFirstLevel" : 50
+    },
+    {
+      "focusMinutes" : 150000,
+      "fraction" : 0.9014084507042254,
+      "level" : 55,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint",
+        "rose",
+        "lilac",
+        "nebula",
+        "coral",
+        "gold",
+        "aurora"
+      ],
+      "nextNameplate" : "starlight",
+      "numeral" : 1,
+      "pips" : 0,
+      "rank" : "galaxy",
+      "rankFirstLevel" : 50
+    },
+    {
+      "focusMinutes" : 168000,
+      "fraction" : 0,
+      "level" : 60,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint",
+        "rose",
+        "lilac",
+        "nebula",
+        "coral",
+        "gold",
+        "aurora",
+        "starlight"
+      ],
+      "numeral" : 2,
+      "pips" : 1,
+      "rank" : "galaxy-2",
+      "rankFirstLevel" : 60
+    },
+    {
+      "focusMinutes" : 186240,
+      "fraction" : 0,
+      "level" : 64,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint",
+        "rose",
+        "lilac",
+        "nebula",
+        "coral",
+        "gold",
+        "aurora",
+        "starlight"
+      ],
+      "numeral" : 2,
+      "pips" : 1,
+      "rank" : "galaxy-2",
+      "rankFirstLevel" : 60
+    },
+    {
+      "focusMinutes" : 186300,
+      "fraction" : 0.01282051282051282,
+      "level" : 64,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint",
+        "rose",
+        "lilac",
+        "nebula",
+        "coral",
+        "gold",
+        "aurora",
+        "starlight"
+      ],
+      "numeral" : 2,
+      "pips" : 1,
+      "rank" : "galaxy-2",
+      "rankFirstLevel" : 60
+    },
+    {
+      "focusMinutes" : 214980,
+      "fraction" : 0,
+      "level" : 70,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint",
+        "rose",
+        "lilac",
+        "nebula",
+        "coral",
+        "gold",
+        "aurora",
+        "starlight"
+      ],
+      "numeral" : 3,
+      "pips" : 2,
+      "rank" : "galaxy-3",
+      "rankFirstLevel" : 70
+    },
+    {
+      "focusMinutes" : 240000,
+      "fraction" : 0.9882352941176471,
+      "level" : 74,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint",
+        "rose",
+        "lilac",
+        "nebula",
+        "coral",
+        "gold",
+        "aurora",
+        "starlight"
+      ],
+      "numeral" : 3,
+      "pips" : 2,
+      "rank" : "galaxy-3",
+      "rankFirstLevel" : 70
+    },
+    {
+      "focusMinutes" : 380400,
+      "fraction" : 0,
+      "level" : 100,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint",
+        "rose",
+        "lilac",
+        "nebula",
+        "coral",
+        "gold",
+        "aurora",
+        "starlight"
+      ],
+      "numeral" : 6,
+      "pips" : 4,
+      "rank" : "galaxy-6",
+      "rankFirstLevel" : 100
+    },
+    {
+      "focusMinutes" : 1000000,
+      "fraction" : 0.9634703196347032,
+      "level" : 182,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint",
+        "rose",
+        "lilac",
+        "nebula",
+        "coral",
+        "gold",
+        "aurora",
+        "starlight"
+      ],
+      "numeral" : 14,
+      "pips" : 4,
+      "rank" : "galaxy-14",
+      "rankFirstLevel" : 180
+    },
+    {
+      "focusMinutes" : 15118740,
+      "fraction" : 0,
+      "level" : 999,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint",
+        "rose",
+        "lilac",
+        "nebula",
+        "coral",
+        "gold",
+        "aurora",
+        "starlight"
+      ],
+      "numeral" : 95,
+      "pips" : 4,
+      "rank" : "galaxy-95",
+      "rankFirstLevel" : 990
+    },
+    {
+      "focusMinutes" : 15118800,
+      "fraction" : 0.0024752475247524753,
+      "level" : 999,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint",
+        "rose",
+        "lilac",
+        "nebula",
+        "coral",
+        "gold",
+        "aurora",
+        "starlight"
+      ],
+      "numeral" : 95,
+      "pips" : 4,
+      "rank" : "galaxy-95",
+      "rankFirstLevel" : 990
+    },
+    {
+      "focusMinutes" : 20000000,
+      "fraction" : 0.902746844840386,
+      "level" : 1189,
+      "nameplates" : [
+        "plain",
+        "peach",
+        "ember",
+        "honey",
+        "sky",
+        "mint",
+        "rose",
+        "lilac",
+        "nebula",
+        "coral",
+        "gold",
+        "aurora",
+        "starlight"
+      ],
+      "numeral" : 114,
+      "pips" : 4,
+      "rank" : "galaxy-114",
+      "rankFirstLevel" : 1180
+    }
+  ],
+  "nameplates" : [
+    {
+      "color" : "#F5F5F7",
+      "glows" : false,
+      "id" : "plain",
+      "unlockLevel" : 0
+    },
+    {
+      "color" : "#FFC2A6",
+      "glows" : false,
+      "id" : "peach",
+      "unlockLevel" : 5
+    },
+    {
+      "color" : "#FFA06B",
+      "glows" : false,
+      "id" : "ember",
+      "unlockLevel" : 10
+    },
+    {
+      "color" : "#FFD873",
+      "glows" : false,
+      "id" : "honey",
+      "unlockLevel" : 15
+    },
+    {
+      "color" : "#9AD8FF",
+      "glows" : false,
+      "id" : "sky",
+      "unlockLevel" : 20
+    },
+    {
+      "color" : "#8FE8C0",
+      "glows" : false,
+      "id" : "mint",
+      "unlockLevel" : 25
+    },
+    {
+      "color" : "#FFA3C9",
+      "glows" : false,
+      "id" : "rose",
+      "unlockLevel" : 30
+    },
+    {
+      "color" : "#CDB4FF",
+      "glows" : false,
+      "id" : "lilac",
+      "unlockLevel" : 35
+    },
+    {
+      "color" : "#B5A3FF",
+      "glows" : true,
+      "id" : "nebula",
+      "unlockLevel" : 40
+    },
+    {
+      "color" : "#FF9E94",
+      "glows" : true,
+      "id" : "coral",
+      "unlockLevel" : 45
+    },
+    {
+      "color" : "#FFCF4D",
+      "glows" : true,
+      "id" : "gold",
+      "unlockLevel" : 50
+    },
+    {
+      "color" : "#7FF2DC",
+      "glows" : true,
+      "id" : "aurora",
+      "unlockLevel" : 55
+    },
+    {
+      "color" : "#ECE4FF",
+      "glows" : true,
+      "id" : "starlight",
+      "unlockLevel" : 60
+    }
+  ],
+  "roman" : {
+    "1" : "I",
+    "10" : "X",
+    "14" : "XIV",
+    "1994" : "MCMXCIV",
+    "2" : "II",
+    "3" : "III",
+    "3999" : "MMMCMXCIX",
+    "4" : "IV",
+    "40" : "XL",
+    "400" : "CD",
+    "4000" : "4000",
+    "49" : "XLIX",
+    "5" : "V",
+    "9" : "IX",
+    "90" : "XC",
+    "95" : "XCV"
+  },
+  "saves" : [
+    {
+      "json" : "{\"schemaVersion\":1,\"best\":{\"focusHours\":15000},\"reached\":{},\"completedMonths\":[],\"seen\":[]}",
+      "name" : "version 1, no level yet",
+      "output" : {
+        "bestFocusMinutes" : 15000,
+        "encoded" : "{\n  \"best\" : {\n    \"focusHours\" : 15000\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"level\" : 0,\n  \"levelSeen\" : 0,\n  \"reached\" : {\n\n  },\n  \"schemaVersion\" : 2,\n  \"seen\" : [\n\n  ]\n}",
+        "level" : 0,
+        "levelSeen" : 0
+      }
+    },
+    {
+      "json" : "{\"schemaVersion\":2,\"best\":{\"focusHours\":77580},\"level\":37,\"levelSeen\":30,\"nameplate\":\"lilac\"}",
+      "name" : "version 2, picked lilac",
+      "output" : {
+        "bestFocusMinutes" : 77580,
+        "encoded" : "{\n  \"best\" : {\n    \"focusHours\" : 77580\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"level\" : 37,\n  \"levelSeen\" : 30,\n  \"nameplate\" : \"lilac\",\n  \"reached\" : {\n\n  },\n  \"schemaVersion\" : 2,\n  \"seen\" : [\n\n  ]\n}",
+        "level" : 37,
+        "levelSeen" : 30,
+        "nameplate" : "lilac"
+      }
+    },
+    {
+      "json" : "{\"schemaVersion\":2,\"level\":\"9\",\"levelSeen\":-2,\"nameplate\":\"neon\"}",
+      "name" : "unknown nameplate and wrong types",
+      "output" : {
+        "encoded" : "{\n  \"best\" : {\n\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"level\" : 0,\n  \"levelSeen\" : 0,\n  \"reached\" : {\n\n  },\n  \"schemaVersion\" : 2,\n  \"seen\" : [\n\n  ]\n}",
+        "level" : 0,
+        "levelSeen" : 0
+      }
+    },
+    {
+      "json" : "{\"schemaVersion\":2,\"level\":4,\"levelSeen\":12,\"nameplate\":\"plain\"}",
+      "name" : "seen above reached, plain picked",
+      "output" : {
+        "encoded" : "{\n  \"best\" : {\n\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"level\" : 4,\n  \"levelSeen\" : 4,\n  \"reached\" : {\n\n  },\n  \"schemaVersion\" : 2,\n  \"seen\" : [\n\n  ]\n}",
+        "level" : 4,
+        "levelSeen" : 4
+      }
+    },
+    {
+      "json" : "{\"level\":-7}",
+      "name" : "negative level",
+      "output" : {
+        "encoded" : "{\n  \"best\" : {\n\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"level\" : 0,\n  \"levelSeen\" : 0,\n  \"reached\" : {\n\n  },\n  \"schemaVersion\" : 2,\n  \"seen\" : [\n\n  ]\n}",
+        "level" : 0,
+        "levelSeen" : 0
+      }
+    },
+    {
+      "json" : "[]",
+      "name" : "not an object"
+    }
+  ],
+  "scenarios" : [
+    {
+      "input" : {
+        "markSeen" : false,
+        "picks" : [
+
+        ]
+      },
+      "name" : "fresh, no focus",
+      "output" : {
+        "hasUnseenLevel" : false,
+        "level" : 0,
+        "levelsGained" : 0,
+        "nameplate" : "plain",
+        "picked" : [
+
+        ],
+        "rank" : "spark",
+        "savedLevel" : 0,
+        "savedLevelSeen" : 0,
+        "sharedLevel" : 0,
+        "sharedNameplate" : "plain",
+        "unlocksSomething" : false
+      }
+    },
+    {
+      "input" : {
+        "focusMinutes" : 240,
+        "markSeen" : false,
+        "picks" : [
+          "peach"
+        ]
+      },
+      "name" : "first four hours",
+      "output" : {
+        "firstLevelGained" : 1,
+        "hasUnseenLevel" : true,
+        "lastLevelGained" : 1,
+        "level" : 1,
+        "levelsGained" : 1,
+        "nameplate" : "plain",
+        "picked" : [
+          false
+        ],
+        "rank" : "spark",
+        "savedLevel" : 1,
+        "savedLevelSeen" : 0,
+        "sharedLevel" : 1,
+        "sharedNameplate" : "plain",
+        "unlocksSomething" : false
+      }
+    },
+    {
+      "input" : {
+        "markSeen" : true,
+        "picks" : [
+          "gold",
+          "lilac",
+          "plain",
+          "nebula"
+        ],
+        "save" : "{\"schemaVersion\":1,\"best\":{\"focusHours\":186300}}"
+      },
+      "name" : "long history lands quietly",
+      "output" : {
+        "firstLevelGained" : 1,
+        "hasUnseenLevel" : false,
+        "lastLevelGained" : 64,
+        "level" : 64,
+        "levelsGained" : 64,
+        "nameplate" : "nebula",
+        "picked" : [
+          true,
+          true,
+          true,
+          true
+        ],
+        "rank" : "galaxy-2",
+        "savedLevel" : 64,
+        "savedLevelSeen" : 64,
+        "sharedLevel" : 64,
+        "sharedNameplate" : "nebula",
+        "unlocksSomething" : true
+      }
+    },
+    {
+      "input" : {
+        "markSeen" : false,
+        "picks" : [
+
+        ],
+        "save" : "{\"schemaVersion\":2,\"best\":{\"focusHours\":100},\"level\":12,\"levelSeen\":12,\"nameplate\":\"ember\"}"
+      },
+      "name" : "deleted logs keep the level",
+      "output" : {
+        "hasUnseenLevel" : false,
+        "level" : 12,
+        "levelsGained" : 0,
+        "nameplate" : "ember",
+        "picked" : [
+
+        ],
+        "rank" : "ember",
+        "savedLevel" : 12,
+        "savedLevelSeen" : 12,
+        "sharedLevel" : 12,
+        "sharedNameplate" : "ember",
+        "unlocksSomething" : false
+      }
+    },
+    {
+      "input" : {
+        "focusMinutes" : 30,
+        "markSeen" : false,
+        "picks" : [
+          "sky"
+        ],
+        "save" : "{\"schemaVersion\":2,\"level\":3,\"levelSeen\":3,\"nameplate\":\"gold\"}"
+      },
+      "name" : "a locked pick in the save draws plain",
+      "output" : {
+        "hasUnseenLevel" : false,
+        "level" : 3,
+        "levelsGained" : 0,
+        "nameplate" : "plain",
+        "picked" : [
+          false
+        ],
+        "rank" : "spark",
+        "savedLevel" : 3,
+        "savedLevelSeen" : 3,
+        "sharedLevel" : 3,
+        "sharedNameplate" : "plain",
+        "unlocksSomething" : false
+      }
+    },
+    {
+      "input" : {
+        "markSeen" : true,
+        "picks" : [
+          "starlight"
+        ],
+        "save" : "{\"schemaVersion\":2,\"best\":{\"focusHours\":20000000}}"
+      },
+      "name" : "past the shared cap",
+      "output" : {
+        "firstLevelGained" : 1,
+        "hasUnseenLevel" : false,
+        "lastLevelGained" : 1189,
+        "level" : 1189,
+        "levelsGained" : 1189,
+        "nameplate" : "starlight",
+        "picked" : [
+          true
+        ],
+        "rank" : "galaxy-114",
+        "savedLevel" : 1189,
+        "savedLevelSeen" : 1189,
+        "sharedLevel" : 999,
+        "sharedNameplate" : "starlight",
+        "unlocksSomething" : true
+      }
+    }
+  ],
+  "schema" : "tabbi.levels.golden",
+  "version" : 1
+}

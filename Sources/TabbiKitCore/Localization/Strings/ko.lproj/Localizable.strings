@@ -143,6 +143,10 @@
 	<string>%@이(가) 보고 싶어 해요</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@ 탭을 %3$lld개 중 %2$lld번째로 옮겼어요</string>
+	<key>%@ name color</key>
+	<string>이름 색: %@</string>
+	<key>%@ name color, unlocks at Level %lld</key>
+	<string>이름 색: %1$@, 레벨 %2$lld에서 열려요</string>
 	<key>%@ napped on a sunny windowsill</key>
 	<string>%@가 창가에서 낮잠 잤어요</string>
 	<key>%@ naps until the timer runs</key>
@@ -291,6 +295,8 @@
 	<string>%lld/%lld 완료</string>
 	<key>%lld of %lld earned</key>
 	<string>%2$lld개 중 %1$lld개 획득</string>
+	<key>%lld of %lld h to Level %lld</key>
+	<string>레벨 %3$lld까지 %1$lld/%2$lld시간</string>
 	<key>%lld of %lld outfits</key>
 	<string>의상 %1$lld/%2$lld</string>
 	<key>%lld pts to go</key>
@@ -1353,6 +1359,8 @@
 	<string>AnkiConnect 설정에 있는 키를 설정에 입력하세요.</string>
 	<key>Event</key>
 	<string>이벤트</string>
+	<key>Every 5 levels bring a name color and every 10 a new rank. Levels never give points.</key>
+	<string>5레벨마다 이름 색이, 10레벨마다 새 등급이 열려요. 레벨로는 포인트를 받지 않아요.</string>
 	<key>Every deck is caught up</key>
 	<string>모든 덱을 다 끝냈어요</string>
 	<key>Every focused minute fills in today's square</key>
@@ -1891,6 +1899,8 @@
 	<string>집중 세션이 끝난 직후 펫이 가끔 응원의 한마디를 해요. 하루에 한 번까지</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>집중 시간에 딴짓하면 펫이 노치에서 걸어 나와요</string>
+	<key>Level %lld</key>
+	<string>레벨 %lld</string>
 	<key>Librarian Cardigan</key>
 	<string>사서 카디건</string>
 	<key>Like</key>
@@ -1947,6 +1957,10 @@
 	<string>단축어 찾는 중</string>
 	<key>Lunar New Year</key>
 	<string>설날</string>
+	<key>Lv %lld</key>
+	<string>Lv %lld</string>
+	<key>Lv %lld: %@</key>
+	<string>Lv %1$lld: %2$@</string>
 	<key>Main display</key>
 	<string>주 디스플레이</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
@@ -2079,6 +2093,8 @@
 	<string>이제 Mac이 Tabbi의 알림을 허용할지 물어봐요. 답은 언제든 시스템 설정에서 바꿀 수 있어요.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>이제 Mac이 Tabbi의 캘린더 사용을 허용할지 물어봐요. 답은 언제든 시스템 설정에서 바꿀 수 있어요.</string>
+	<key>Next: %@ at Lv %lld</key>
+	<string>다음: Lv %2$lld에 %1$@</string>
 	<key>Next: %@, %@</key>
 	<string>다음: %1$@, %2$@</string>
 	<key>Nightcap</key>
@@ -4011,6 +4027,8 @@
 	<string>내 파티 데이터</string>
 	<key>Your Party data was deleted.</key>
 	<string>파티 데이터가 삭제됐어요.</string>
+	<key>Your Study Level grows with every hour you focus and never goes down.</key>
+	<string>공부 레벨은 집중한 시간마다 오르고, 절대 내려가지 않아요.</string>
 	<key>Your best week</key>
 	<string>최고의 주</string>
 	<key>Your best week yet!</key>
@@ -4147,6 +4165,32 @@
 	<string>회의와 통화</string>
 	<key>min</key>
 	<string>분</string>
+	<key>nameplate.aurora</key>
+	<string>오로라</string>
+	<key>nameplate.coral</key>
+	<string>코랄</string>
+	<key>nameplate.ember</key>
+	<string>불씨</string>
+	<key>nameplate.gold</key>
+	<string>골드</string>
+	<key>nameplate.honey</key>
+	<string>허니</string>
+	<key>nameplate.lilac</key>
+	<string>라일락</string>
+	<key>nameplate.mint</key>
+	<string>민트</string>
+	<key>nameplate.nebula</key>
+	<string>성운</string>
+	<key>nameplate.peach</key>
+	<string>피치</string>
+	<key>nameplate.plain</key>
+	<string>기본</string>
+	<key>nameplate.rose</key>
+	<string>로즈</string>
+	<key>nameplate.sky</key>
+	<string>스카이</string>
+	<key>nameplate.starlight</key>
+	<string>별빛</string>
 	<key>no free time</key>
 	<string>여유 시간 없음</string>
 	<key>nothing yet; pick a sound</key>
@@ -4163,6 +4207,20 @@
 	<string>포인트</string>
 	<key>pts</key>
 	<string>점</string>
+	<key>rank.comet</key>
+	<string>혜성</string>
+	<key>rank.ember</key>
+	<string>불씨</string>
+	<key>rank.galaxy</key>
+	<string>은하</string>
+	<key>rank.nebula</key>
+	<string>성운</string>
+	<key>rank.nova</key>
+	<string>신성</string>
+	<key>rank.numbered %@ %@</key>
+	<string>%1$@ %2$@</string>
+	<key>rank.spark</key>
+	<string>스파크</string>
 	<key>ready to unlock</key>
 	<string>해제 가능</string>
 	<key>resets %@</key>

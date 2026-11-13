@@ -143,6 +143,10 @@
 	<string>Nami-miss ka ni %@</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>Nasa posisyon %2$lld ng %3$lld na ang %1$@</string>
+	<key>%@ name color</key>
+	<string>Kulay ng pangalan: %@</string>
+	<key>%@ name color, unlocks at Level %lld</key>
+	<string>Kulay ng pangalan: %1$@, mabubuksan sa Level %2$lld</string>
 	<key>%@ napped on a sunny windowsill</key>
 	<string>Umidlip si %@ sa maaraw na bintana</string>
 	<key>%@ naps until the timer runs</key>
@@ -291,6 +295,8 @@
 	<string>%lld/%lld tapos</string>
 	<key>%lld of %lld earned</key>
 	<string>%1$lld ng %2$lld ang nakuha</string>
+	<key>%lld of %lld h to Level %lld</key>
+	<string>%1$lld sa %2$lld oras para sa Level %3$lld</string>
 	<key>%lld of %lld outfits</key>
 	<string>%1$lld sa %2$lld outfit</string>
 	<key>%lld pts to go</key>
@@ -1353,6 +1359,8 @@
 	<string>Ilagay sa Settings ang key mula sa config ng AnkiConnect.</string>
 	<key>Event</key>
 	<string>Event</string>
+	<key>Every 5 levels bring a name color and every 10 a new rank. Levels never give points.</key>
+	<string>Bawat 5 level may bagong kulay ng pangalan, at bawat 10 may bagong rank. Hindi nagbibigay ng puntos ang level.</string>
 	<key>Every deck is caught up</key>
 	<string>Tapos na ang lahat ng deck</string>
 	<key>Every focused minute fills in today's square</key>
@@ -1891,6 +1899,8 @@
 	<string>Hayaang magsabi ang pet mo ng pampalakas-loob paminsan-minsan pagkatapos ng focus session, hanggang isang beses kada araw</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>Hayaang lumabas ang pet sa notch kapag nalilihis ka sa focus</string>
+	<key>Level %lld</key>
+	<string>Level %lld</string>
 	<key>Librarian Cardigan</key>
 	<string>Cardigan ng Librarian</string>
 	<key>Like</key>
@@ -1947,6 +1957,10 @@
 	<string>Hinahanap ang shortcuts mo</string>
 	<key>Lunar New Year</key>
 	<string>Lunar New Year</string>
+	<key>Lv %lld</key>
+	<string>Lv %lld</string>
+	<key>Lv %lld: %@</key>
+	<string>Lv %1$lld: %2$@</string>
 	<key>Main display</key>
 	<string>Pangunahing display</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
@@ -2079,6 +2093,8 @@
 	<string>Susunod, tatanungin ng Mac mo kung puwedeng magpadala ng alerto ang Tabbi. Puwede mong baguhin ang sagot mo anumang oras sa System Settings.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>Susunod, tatanungin ng Mac mo kung puwedeng gamitin ng Tabbi ang calendar mo. Puwede mong baguhin ang sagot mo anumang oras sa System Settings.</string>
+	<key>Next: %@ at Lv %lld</key>
+	<string>Susunod: %1$@ sa Lv %2$lld</string>
 	<key>Next: %@, %@</key>
 	<string>Susunod: %1$@, %2$@</string>
 	<key>Nightcap</key>
@@ -4011,6 +4027,8 @@
 	<string>Party data mo</string>
 	<key>Your Party data was deleted.</key>
 	<string>Nabura na ang Party data mo.</string>
+	<key>Your Study Level grows with every hour you focus and never goes down.</key>
+	<string>Tumataas ang Study Level mo sa bawat oras ng focus at hindi ito bumababa.</string>
 	<key>Your best week</key>
 	<string>Pinakamagandang linggo mo</string>
 	<key>Your best week yet!</key>
@@ -4147,6 +4165,32 @@
 	<string>meeting at tawag</string>
 	<key>min</key>
 	<string>min</string>
+	<key>nameplate.aurora</key>
+	<string>Aurora</string>
+	<key>nameplate.coral</key>
+	<string>Coral</string>
+	<key>nameplate.ember</key>
+	<string>Baga</string>
+	<key>nameplate.gold</key>
+	<string>Ginto</string>
+	<key>nameplate.honey</key>
+	<string>Pulot</string>
+	<key>nameplate.lilac</key>
+	<string>Lila</string>
+	<key>nameplate.mint</key>
+	<string>Mint</string>
+	<key>nameplate.nebula</key>
+	<string>Nebula</string>
+	<key>nameplate.peach</key>
+	<string>Peach</string>
+	<key>nameplate.plain</key>
+	<string>Simple</string>
+	<key>nameplate.rose</key>
+	<string>Rosas</string>
+	<key>nameplate.sky</key>
+	<string>Langit</string>
+	<key>nameplate.starlight</key>
+	<string>Bituin</string>
 	<key>no free time</key>
 	<string>walang libreng oras</string>
 	<key>nothing yet; pick a sound</key>
@@ -4163,6 +4207,20 @@
 	<string>puntos</string>
 	<key>pts</key>
 	<string>pts</string>
+	<key>rank.comet</key>
+	<string>Kometa</string>
+	<key>rank.ember</key>
+	<string>Baga</string>
+	<key>rank.galaxy</key>
+	<string>Galaksiya</string>
+	<key>rank.nebula</key>
+	<string>Nebula</string>
+	<key>rank.nova</key>
+	<string>Nova</string>
+	<key>rank.numbered %@ %@</key>
+	<string>%1$@ %2$@</string>
+	<key>rank.spark</key>
+	<string>Kislap</string>
 	<key>ready to unlock</key>
 	<string>puwede nang i-unlock</string>
 	<key>resets %@</key>

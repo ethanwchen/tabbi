@@ -19,6 +19,7 @@ import { partyPetUpdate } from "./partyPetAppearance";
 import { presenceDayString } from "./partyPresenceTracker";
 import { PartySessionCompletion } from "./partySessionTracker";
 import { partySettings } from "./partySettings";
+import type { StudyStanding } from "../progression/studyLevel";
 import { PartyState } from "./partyState";
 import { PartyTeamCelebration } from "./partyTeamCelebration";
 
@@ -28,11 +29,18 @@ import { PartyTeamCelebration } from "./partyTeamCelebration";
  * party I could join, the rest cover every status, and Noor asked to be
  * friends. Maya and I are Founding Members, so the badge shows. Everyone
  * wears a hat the server could not carry before catalog version 2, and
- * nobody wears a cape (no capes in demo art). Built relative to `now`.
+ * nobody wears a cape (no capes in demo art). Most share a Study Level and
+ * nameplate; Jonah's app is older and shares none. Built relative to `now`.
  */
 
 /** A profile as the server would return it for `pet`. */
-function demoProfile(code: string, name: string, pet: PetProfile, badges: readonly string[] = []): PartyProfile {
+function demoProfile(
+  code: string,
+  name: string,
+  pet: PetProfile,
+  badges: readonly string[] = [],
+  standing?: StudyStanding,
+): PartyProfile {
   const update = partyPetUpdate(pet);
   return partyProfile({
     code,
@@ -44,6 +52,7 @@ function demoProfile(code: string, name: string, pet: PetProfile, badges: readon
     costume: update.costume ?? "none",
     accessories: update.accessories ?? [],
     badges,
+    ...(standing === undefined ? {} : { studyLevel: standing.level, nameplate: standing.nameplate }),
   });
 }
 
@@ -87,12 +96,18 @@ export function partyDemoState(now: Instant, timeZone: string): PartyState {
   });
   const since = now - 14 * 86_400;
 
-  const me = demoProfile("K7QW2MZD", "Sam", pet("Mochi", "orangeTabby", ["scarf", "graduationCap"]), [PARTY_BADGE_FOUNDING]);
-  const maya = demoProfile("M4YA8QRT", "Maya", pet("Biscuit", "goldenRetriever", ["roundGlasses", "cowboyHat"]), [PARTY_BADGE_FOUNDING]);
-  const priya = demoProfile("PR1YA6KD", "Priya", pet("Luna", "siamese", ["surgicalCap"], "scrubs"));
-  const leo = demoProfile("LE0J9WXC", "Leo", pet("Waffles", "corgi", ["frogHat"], "cozyHoodie"));
+  const me = demoProfile("K7QW2MZD", "Sam", pet("Mochi", "orangeTabby", ["scarf", "graduationCap"]), [PARTY_BADGE_FOUNDING], {
+    level: 12,
+    nameplate: "ember",
+  });
+  const maya = demoProfile("M4YA8QRT", "Maya", pet("Biscuit", "goldenRetriever", ["roundGlasses", "cowboyHat"]), [PARTY_BADGE_FOUNDING], {
+    level: 37,
+    nameplate: "lilac",
+  });
+  const priya = demoProfile("PR1YA6KD", "Priya", pet("Luna", "siamese", ["surgicalCap"], "scrubs"), [], { level: 64, nameplate: "aurora" });
+  const leo = demoProfile("LE0J9WXC", "Leo", pet("Waffles", "corgi", ["frogHat"], "cozyHoodie"), [], { level: 3, nameplate: "plain" });
   const jonah = demoProfile("J0NAH2PF", "Jonah", pet("Pepper", "blackCat", ["wizardHat"]));
-  const noor = demoProfile("N4ZR7HVB", "Noor", pet("Pip", "scottishFold", ["chunkyHeadphones"]));
+  const noor = demoProfile("N4ZR7HVB", "Noor", pet("Pip", "scottishFold", ["chunkyHeadphones"]), [], { level: 22, nameplate: "honey" });
 
   const party: Party = {
     code: "Q4RT8M",

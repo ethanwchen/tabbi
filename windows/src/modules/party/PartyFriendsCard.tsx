@@ -10,7 +10,9 @@ import { useElementSize } from "../closet/useElementSize";
 import { useStore } from "../../app/useStore";
 import { tr } from "../../core/localization/tr";
 import { partyErrorMessage } from "../../core/party/partyError";
-import { canJoin, isFoundingMember, PartyCode, type PartyFriend, type PartyFriendRequest } from "../../core/party/partyModels";
+import { canJoin, isFoundingMember, PartyCode, profileStanding, type PartyFriend, type PartyFriendRequest } from "../../core/party/partyModels";
+import { rankForLevel, standingHelp } from "../../core/progression/studyLevel";
+import { StudyLevelLabel, StudyRankEmblem, VariantsThatFit, nameplateStyle } from "../../ui/kit/StudyLevel";
 import { compactStatusLine, rosterDuration, rosterStatus } from "../../core/party/partyRoster";
 import { Card } from "../../ui/kit/Card";
 import { FoundingBadge } from "../../ui/kit/FoundingBadge";
@@ -108,6 +110,8 @@ function PartyFriendRow({ friend, store, now }: { friend: PartyFriend; store: Pa
   const myParty = useStore(store, (state) => state.party.party?.code);
   const status = rosterStatus(friend.presence, friend.online);
   const parts = [tr("%@ with %@", friend.profile.name, friend.profile.petName)];
+  const standing = profileStanding(friend.profile);
+  if (standing !== undefined) parts.push(standingHelp(standing));
   if (isFoundingMember(friend.profile)) parts.push(tr("Founding Member"));
   if (friend.presence !== undefined && friend.online && friend.presence.todayMinutes > 0) parts.push(tr("%@ studied today", rosterDuration(friend.presence.todayMinutes)));
   if (friend.presence !== undefined && friend.presence.streakDays > 1) parts.push(tr("%lld-day streak", friend.presence.streakDays));
@@ -123,8 +127,50 @@ function PartyFriendRow({ friend, store, now }: { friend: PartyFriend; store: Pa
         <PartyPet profile={friend.profile} asleep={status === "offline"} />
         <div className="party-row-text">
           <div className="party-row-name">
-            <MarqueeText text={friend.profile.name} userText className={status === "offline" ? "kit-body-emphasis kit-secondary" : "kit-body-emphasis"} />
-            {isFoundingMember(friend.profile) && <FoundingBadge isMe={false} />}
+            {standing === undefined ? (
+              <>
+                <span className="party-row-name-text" style={{ ...nameplateStyle("plain"), opacity: status === "offline" ? 0.75 : 1 }}>
+                  <MarqueeText text={friend.profile.name} userText className="kit-body-emphasis" />
+                </span>
+                {isFoundingMember(friend.profile) && <FoundingBadge isMe={false} />}
+              </>
+            ) : (
+              /*
+               * Their Study Level steps down from "Lv N" to "N" to the emblem
+               * alone before the name would give way; the tooltip keeps the
+               * level and rank. Only a name too long even beside the emblem scrolls.
+               */
+              <VariantsThatFit
+                count={3}
+                fitKey={`${friend.profile.name}|${standing.level}|${standing.nameplate}`}
+                className="party-row-name-fit"
+                render={(index) => (
+                  <>
+                    <span
+                      className="party-row-name-text"
+                      data-whole={index < 2 || undefined}
+                      style={{ ...nameplateStyle(standing.nameplate), opacity: status === "offline" ? 0.75 : 1 }}
+                    >
+                      {index < 2 ? (
+                        <span className="kit-body-emphasis kit-user-text party-nowrap">{friend.profile.name}</span>
+                      ) : (
+                        <MarqueeText text={friend.profile.name} userText className="kit-body-emphasis" />
+                      )}
+                    </span>
+                    {isFoundingMember(friend.profile) && <FoundingBadge isMe={false} />}
+                    {index < 2 ? (
+                      <StudyLevelLabel standing={standing} length={index === 0 ? "level" : "number"} pixelSize={0.5} />
+                    ) : (
+                      <Tooltip text={standingHelp(standing)}>
+                        <span className="kit-study-level" role="img" aria-label={standingHelp(standing)}>
+                          <StudyRankEmblem rank={rankForLevel(standing.level)} pixelSize={0.5} />
+                        </span>
+                      </Tooltip>
+                    )}
+                  </>
+                )}
+              />
+            )}
           </div>
           <div className="party-row-status kit-caption kit-tertiary">
             <span className="party-dot" style={{ background: statusColor(status) }} />

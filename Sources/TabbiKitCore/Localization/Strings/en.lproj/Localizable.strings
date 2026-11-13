@@ -143,6 +143,10 @@
 	<string>%@ misses you</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%@ moved to position %lld of %lld</string>
+	<key>%@ name color</key>
+	<string>%@ name color</string>
+	<key>%@ name color, unlocks at Level %lld</key>
+	<string>%@ name color, unlocks at Level %lld</string>
 	<key>%@ napped on a sunny windowsill</key>
 	<string>%@ napped on a sunny windowsill</string>
 	<key>%@ naps until the timer runs</key>
@@ -291,6 +295,8 @@
 	<string>%lld of %lld done</string>
 	<key>%lld of %lld earned</key>
 	<string>%lld of %lld earned</string>
+	<key>%lld of %lld h to Level %lld</key>
+	<string>%lld of %lld h to Level %lld</string>
 	<key>%lld of %lld outfits</key>
 	<string>%lld of %lld outfits</string>
 	<key>%lld pts to go</key>
@@ -1353,6 +1359,8 @@
 	<string>Enter the key from AnkiConnect's config in Settings.</string>
 	<key>Event</key>
 	<string>Event</string>
+	<key>Every 5 levels bring a name color and every 10 a new rank. Levels never give points.</key>
+	<string>Every 5 levels bring a name color and every 10 a new rank. Levels never give points.</string>
 	<key>Every deck is caught up</key>
 	<string>Every deck is caught up</string>
 	<key>Every focused minute fills in today's square</key>
@@ -1891,6 +1899,8 @@
 	<string>Let your pet say a rare encouraging line right after a focus session ends, at most once a day</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>Let your pet walk out of the notch when you drift during a focus phase</string>
+	<key>Level %lld</key>
+	<string>Level %lld</string>
 	<key>Librarian Cardigan</key>
 	<string>Librarian Cardigan</string>
 	<key>Like</key>
@@ -1947,6 +1957,10 @@
 	<string>Looking for your shortcuts</string>
 	<key>Lunar New Year</key>
 	<string>Lunar New Year</string>
+	<key>Lv %lld</key>
+	<string>Lv %lld</string>
+	<key>Lv %lld: %@</key>
+	<string>Lv %lld: %@</string>
 	<key>Main display</key>
 	<string>Main display</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
@@ -2079,6 +2093,8 @@
 	<string>Next, your Mac asks if Tabbi can send alerts. You can change your answer any time in System Settings.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</string>
+	<key>Next: %@ at Lv %lld</key>
+	<string>Next: %@ at Lv %lld</string>
 	<key>Next: %@, %@</key>
 	<string>Next: %@, %@</string>
 	<key>Nightcap</key>
@@ -4011,6 +4027,8 @@
 	<string>Your Party data</string>
 	<key>Your Party data was deleted.</key>
 	<string>Your Party data was deleted.</string>
+	<key>Your Study Level grows with every hour you focus and never goes down.</key>
+	<string>Your Study Level grows with every hour you focus and never goes down.</string>
 	<key>Your best week</key>
 	<string>Your best week</string>
 	<key>Your best week yet!</key>
@@ -4147,6 +4165,32 @@
 	<string>meetings and calls</string>
 	<key>min</key>
 	<string>min</string>
+	<key>nameplate.aurora</key>
+	<string>Aurora</string>
+	<key>nameplate.coral</key>
+	<string>Coral</string>
+	<key>nameplate.ember</key>
+	<string>Ember</string>
+	<key>nameplate.gold</key>
+	<string>Gold</string>
+	<key>nameplate.honey</key>
+	<string>Honey</string>
+	<key>nameplate.lilac</key>
+	<string>Lilac</string>
+	<key>nameplate.mint</key>
+	<string>Mint</string>
+	<key>nameplate.nebula</key>
+	<string>Nebula</string>
+	<key>nameplate.peach</key>
+	<string>Peach</string>
+	<key>nameplate.plain</key>
+	<string>Plain</string>
+	<key>nameplate.rose</key>
+	<string>Rose</string>
+	<key>nameplate.sky</key>
+	<string>Sky</string>
+	<key>nameplate.starlight</key>
+	<string>Starlight</string>
 	<key>no free time</key>
 	<string>no free time</string>
 	<key>nothing yet; pick a sound</key>
@@ -4163,6 +4207,20 @@
 	<string>points</string>
 	<key>pts</key>
 	<string>pts</string>
+	<key>rank.comet</key>
+	<string>Comet</string>
+	<key>rank.ember</key>
+	<string>Ember</string>
+	<key>rank.galaxy</key>
+	<string>Galaxy</string>
+	<key>rank.nebula</key>
+	<string>Nebula</string>
+	<key>rank.nova</key>
+	<string>Nova</string>
+	<key>rank.numbered %@ %@</key>
+	<string>%1$@ %2$@</string>
+	<key>rank.spark</key>
+	<string>Spark</string>
 	<key>ready to unlock</key>
 	<string>ready to unlock</string>
 	<key>resets %@</key>

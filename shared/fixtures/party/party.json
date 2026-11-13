@@ -96,7 +96,7 @@
     "whiteCoat" : "white-coat",
     "wizardRobe" : "wizard"
   },
-  "protocol" : 2,
+  "protocol" : 3,
   "protocolHeader" : "Tabbi-Protocol",
   "replies" : [
     {
@@ -296,7 +296,12 @@
         ],
         "outgoing" : [
           "F7TRE9XQ"
-        ]
+        ],
+        "standings" : {
+          "F7TRE9XQ" : null,
+          "K7QW2MZD" : null,
+          "N4ZR7HVB" : null
+        }
       }
     },
     {
@@ -373,7 +378,153 @@
         ],
         "outgoing" : [
 
+        ],
+        "standings" : {
+          "K7QW2MZD" : null
+        }
+      }
+    },
+    {
+      "json" : {
+        "friends" : [
+          {
+            "online" : false,
+            "party" : null,
+            "presence" : null,
+            "profile" : {
+              "accessories" : [
+                "scarf"
+              ],
+              "badges" : [
+
+              ],
+              "breed" : "tabby",
+              "code" : "H8LV2QPA",
+              "colors" : [
+                "#D98C4A",
+                "#B06A33",
+                "#F2C38B",
+                "#5A3A22",
+                "#FFF1DE",
+                "#3E7CB1"
+              ],
+              "costume" : "none",
+              "level" : 1,
+              "name" : "Lea",
+              "nameplate" : "aurora",
+              "petName" : "Bao",
+              "points" : 900,
+              "species" : "cat",
+              "studyLevel" : 64
+            },
+            "since" : 1789000000
+          },
+          {
+            "online" : false,
+            "party" : null,
+            "presence" : null,
+            "profile" : {
+              "accessories" : [
+                "glasses",
+                "scarf"
+              ],
+              "breed" : "tabby",
+              "code" : "K7QW2MZD",
+              "colors" : [
+                "#D98C4A",
+                "#B06A33",
+                "#F2C38B",
+                "#5A3A22",
+                "#FFF1DE",
+                "#3E7CB1"
+              ],
+              "costume" : "graduation",
+              "level" : 2,
+              "name" : "Olive",
+              "petName" : "Mochi",
+              "points" : 80,
+              "species" : "cat"
+            },
+            "since" : 1789000000
+          }
+        ],
+        "incoming" : [
+
+        ],
+        "ok" : true,
+        "outgoing" : [
+
         ]
+      },
+      "name" : "friend list with levels, from a protocol 3 server",
+      "pets" : {
+        "H8LV2QPA" : {
+          "accessories" : [
+            "scarf"
+          ],
+          "breed" : "orangeTabby",
+          "colors" : {
+            "accessoryBase" : "#E0607A",
+            "accessoryShade" : "#B04460",
+            "belly" : "#FFF1DE",
+            "costumeBase" : "#3E7CB1",
+            "costumeShade" : "#3E9593",
+            "costumeTrim" : "#E8FFFB",
+            "furAccent" : "#F2C38B",
+            "furBase" : "#D98C4A",
+            "furShade" : "#B06A33",
+            "furSpot" : "#5A3A22"
+          },
+          "outfit" : "none",
+          "species" : "cat"
+        },
+        "K7QW2MZD" : {
+          "accessories" : [
+            "scarf",
+            "roundGlasses",
+            "graduationCap"
+          ],
+          "breed" : "orangeTabby",
+          "colors" : {
+            "accessoryBase" : "#E0607A",
+            "accessoryShade" : "#B04460",
+            "belly" : "#FFF1DE",
+            "costumeBase" : "#3E7CB1",
+            "costumeShade" : "#3E9593",
+            "costumeTrim" : "#E8FFFB",
+            "furAccent" : "#F2C38B",
+            "furBase" : "#D98C4A",
+            "furShade" : "#B06A33",
+            "furSpot" : "#5A3A22"
+          },
+          "outfit" : "none",
+          "species" : "cat"
+        }
+      },
+      "schema" : "friendList",
+      "summary" : {
+        "badges" : {
+          "H8LV2QPA" : [
+
+          ],
+          "K7QW2MZD" : [
+
+          ]
+        },
+        "friends" : [
+          "H8LV2QPA",
+          "K7QW2MZD"
+        ],
+        "incoming" : [
+
+        ],
+        "outgoing" : [
+
+        ],
+        "standings" : {
+          "H8LV2QPA" : "64 galaxy-2 aurora",
+          "K7QW2MZD" : null
+        }
       }
     },
     {
@@ -467,7 +618,10 @@
         ],
         "outgoing" : [
 
-        ]
+        ],
+        "standings" : {
+          "F7TRE9XQ" : null
+        }
       }
     },
     {
@@ -785,6 +939,149 @@
           "code" : "Q4RT8M",
           "createdAt" : 1789990000,
           "expiresAt" : 1790042200,
+          "host" : "H8LV2QPA",
+          "lastActive" : 1789999000,
+          "maxMembers" : 8,
+          "members" : [
+            {
+              "host" : true,
+              "joinedAt" : 1789990000,
+              "online" : true,
+              "presence" : {
+                "day" : "2026-10-15",
+                "lastSeen" : 1789999100,
+                "method" : "pomodoro",
+                "phaseEndsAt" : 1790000000,
+                "sessionMinutes" : 5,
+                "status" : "studying",
+                "streakDays" : 6,
+                "todayMinutes" : 95
+              },
+              "profile" : {
+                "accessories" : [
+                  "scarf"
+                ],
+                "badges" : [
+
+                ],
+                "breed" : "tabby",
+                "code" : "H8LV2QPA",
+                "colors" : [
+                  "#D98C4A",
+                  "#B06A33",
+                  "#F2C38B",
+                  "#5A3A22",
+                  "#FFF1DE",
+                  "#3E7CB1"
+                ],
+                "costume" : "none",
+                "level" : 1,
+                "name" : "Lea",
+                "nameplate" : "aurora",
+                "petName" : "Bao",
+                "points" : 900,
+                "species" : "cat",
+                "studyLevel" : 64
+              }
+            },
+            {
+              "host" : false,
+              "joinedAt" : 1789991000,
+              "online" : false,
+              "presence" : null,
+              "profile" : {
+                "accessories" : [
+                  "glasses",
+                  "scarf"
+                ],
+                "breed" : "tabby",
+                "code" : "K7QW2MZD",
+                "colors" : [
+                  "#D98C4A",
+                  "#B06A33",
+                  "#F2C38B",
+                  "#5A3A22",
+                  "#FFF1DE",
+                  "#3E7CB1"
+                ],
+                "costume" : "graduation",
+                "level" : 2,
+                "name" : "Olive",
+                "petName" : "Mochi",
+                "points" : 80,
+                "species" : "cat"
+              }
+            }
+          ],
+          "session" : null
+        }
+      },
+      "name" : "party of an app with a level and an older app",
+      "pets" : {
+        "H8LV2QPA" : {
+          "accessories" : [
+            "scarf"
+          ],
+          "breed" : "orangeTabby",
+          "colors" : {
+            "accessoryBase" : "#E0607A",
+            "accessoryShade" : "#B04460",
+            "belly" : "#FFF1DE",
+            "costumeBase" : "#3E7CB1",
+            "costumeShade" : "#3E9593",
+            "costumeTrim" : "#E8FFFB",
+            "furAccent" : "#F2C38B",
+            "furBase" : "#D98C4A",
+            "furShade" : "#B06A33",
+            "furSpot" : "#5A3A22"
+          },
+          "outfit" : "none",
+          "species" : "cat"
+        },
+        "K7QW2MZD" : {
+          "accessories" : [
+            "scarf",
+            "roundGlasses",
+            "graduationCap"
+          ],
+          "breed" : "orangeTabby",
+          "colors" : {
+            "accessoryBase" : "#E0607A",
+            "accessoryShade" : "#B04460",
+            "belly" : "#FFF1DE",
+            "costumeBase" : "#3E7CB1",
+            "costumeShade" : "#3E9593",
+            "costumeTrim" : "#E8FFFB",
+            "furAccent" : "#F2C38B",
+            "furBase" : "#D98C4A",
+            "furShade" : "#B06A33",
+            "furSpot" : "#5A3A22"
+          },
+          "outfit" : "none",
+          "species" : "cat"
+        }
+      },
+      "schema" : "partyReply",
+      "summary" : {
+        "host" : "H8LV2QPA",
+        "members" : [
+          "H8LV2QPA",
+          "K7QW2MZD"
+        ],
+        "session" : null,
+        "standings" : {
+          "H8LV2QPA" : "64 galaxy-2 aurora",
+          "K7QW2MZD" : null
+        }
+      }
+    },
+    {
+      "json" : {
+        "ok" : true,
+        "party" : {
+          "code" : "Q4RT8M",
+          "createdAt" : 1789990000,
+          "expiresAt" : 1790042200,
           "host" : "N4ZR7HVB",
           "lastActive" : 1789999000,
           "maxMembers" : 8,
@@ -982,7 +1279,12 @@
           "K7QW2MZD",
           "F7TRE9XQ"
         ],
-        "session" : "pomodoro"
+        "session" : "pomodoro",
+        "standings" : {
+          "F7TRE9XQ" : null,
+          "K7QW2MZD" : null,
+          "N4ZR7HVB" : null
+        }
       }
     }
   ],
@@ -2325,6 +2627,156 @@
         },
         "outfit" : "snowDayPuffer",
         "species" : "cat"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "british-shorthair",
+        "colors" : [
+          "#EEEBE7",
+          "#D8D2CB",
+          "#A8A098",
+          "#3A3036",
+          "#FFFFFF",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "none",
+        "nameplate" : "plain",
+        "petName" : "British Shorthair",
+        "species" : "cat",
+        "studyLevel" : 0
+      },
+      "name" : "starter cat at level 0",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishShorthair",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FFFFFF",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#A8A098",
+          "furBase" : "#EEEBE7",
+          "furShade" : "#D8D2CB",
+          "furSpot" : "#3A3036"
+        },
+        "outfit" : "none",
+        "species" : "cat"
+      },
+      "standing" : {
+        "level" : 0,
+        "nameplate" : "plain"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "tabby",
+        "colors" : [
+          "#F2A65A",
+          "#D9823E",
+          "#C0652B",
+          "#3A3036",
+          "#FFE9CF",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "none",
+        "nameplate" : "lilac",
+        "petName" : "Mochi",
+        "species" : "cat",
+        "studyLevel" : 37
+      },
+      "name" : "level 37 with lilac",
+      "pet" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "orangeTabby",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#FFE9CF",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#C0652B",
+          "furBase" : "#F2A65A",
+          "furShade" : "#D9823E",
+          "furSpot" : "#3A3036"
+        },
+        "outfit" : "none",
+        "species" : "cat"
+      },
+      "standing" : {
+        "level" : 37,
+        "nameplate" : "lilac"
+      }
+    },
+    {
+      "body" : {
+        "accessories" : [
+
+        ],
+        "breed" : "golden-retriever",
+        "colors" : [
+          "#E6AE52",
+          "#C98C36",
+          "#F3CB82",
+          "#3A3036",
+          "#F7DCA8",
+          "#5BC0BE",
+          "#3E9593",
+          "#E8FFFB",
+          "#E0607A",
+          "#B04460"
+        ],
+        "costume" : "none",
+        "nameplate" : "starlight",
+        "petName" : "Biscuit",
+        "species" : "dog",
+        "studyLevel" : 999
+      },
+      "name" : "past the level friends are told",
+      "pet" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "colors" : {
+          "accessoryBase" : "#E0607A",
+          "accessoryShade" : "#B04460",
+          "belly" : "#F7DCA8",
+          "costumeBase" : "#5BC0BE",
+          "costumeShade" : "#3E9593",
+          "costumeTrim" : "#E8FFFB",
+          "furAccent" : "#F3CB82",
+          "furBase" : "#E6AE52",
+          "furShade" : "#C98C36",
+          "furSpot" : "#3A3036"
+        },
+        "outfit" : "none",
+        "species" : "dog"
+      },
+      "standing" : {
+        "level" : 1400,
+        "nameplate" : "starlight"
       }
     }
   ]

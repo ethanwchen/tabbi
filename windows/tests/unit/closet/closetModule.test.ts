@@ -104,7 +104,7 @@ describe("ClosetModule on the runtime", () => {
     await settle();
     const saved = host.documents.get("durable:Pet/progression");
     expect(saved).toContain('"sessions.2"');
-    expect(saved).toContain('"schemaVersion" : 1');
+    expect(saved).toContain('"schemaVersion" : 2');
   });
 
   it("shows the demo closet, writes nothing, and handles every snapshot state it lists", async () => {

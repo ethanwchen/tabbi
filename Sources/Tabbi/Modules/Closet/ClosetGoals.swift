@@ -4,7 +4,8 @@ import TabbiKit
 
 private var accent: Color { ClosetModule.descriptor.accentColor }
 
-/// The Closet's Goals section: this month's quests, the mastery outfits
+/// The Closet's Goals section: the Study Level (`ClosetLevelCard`), this
+/// month's quests, the mastery outfits
 /// (earned from badge tiers, never sold) and the badge collection, from
 /// the pet's `PetProgression`. Like the Wardrobe and Limited sections it
 /// scrolls and fades out at the bottom, and the footer details whatever the
@@ -50,6 +51,7 @@ struct ClosetGoals: View {
 
     private var content: some View {
         LazyVStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            ClosetLevelCard(store: store)
             ClosetQuestBanner(month: Date.now, quests: store.progression.quests(at: .now)) { quest in
                 hovered = quest.map(Hover.quest)
             }

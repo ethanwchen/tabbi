@@ -205,11 +205,27 @@ private struct ClosetPetCard: View {
                         .fill(Theme.Palette.surfaceHover)
                 )
         } else {
-            ClosetNameButton(name: store.profile.name) {
+            // The Study Level sits beside the name ("Mochi  Lv 12 Ember"):
+            // the rank's name goes first, then "Lv", and only a name too
+            // long for the card scrolls, so nothing is ever cut off.
+            ViewThatFits(in: .horizontal) {
+                ForEach(StudyLevelLabel.Length.allCases, id: \.self) { length in
+                    nameLine(length: length, scrolls: false)
+                }
+                nameLine(length: .number, scrolls: true)
+            }
+        }
+    }
+
+    private func nameLine(length: StudyLevelLabel.Length, scrolls: Bool) -> some View {
+        HStack(spacing: Theme.Spacing.xxs) {
+            ClosetNameButton(name: store.profile.name, nameplate: store.progression.nameplate, scrolls: scrolls) {
                 draft = store.profile.name
                 isRenaming = true
             }
+            StudyLevelLabel(store.progression.standing, length: length)
         }
+        .motion(Theme.Motion.content, value: store.progression.studyLevel)
     }
 
     private func commit() {
@@ -242,18 +258,28 @@ private struct ClosetAdventureLine: View {
     }
 }
 
-/// The pet's name with a pencil that appears on hover; click to rename.
+/// The pet's name in its nameplate color, with a pencil that appears on
+/// hover; click to rename. `scrolls` lets a name too long for the card
+/// scroll instead of pushing the level out.
 private struct ClosetNameButton: View {
     let name: String
+    let nameplate: Nameplate
+    let scrolls: Bool
     let action: () -> Void
     @State private var hovering = false
 
     var body: some View {
         Button(action: action) {
             HStack(spacing: Theme.Spacing.xs) {
-                MarqueeText(name, help: String(localized: "Rename your pet", bundle: .tabbi))
-                    .font(Theme.Typography.title)
-                    .foregroundStyle(Theme.Palette.primaryText)
+                Group {
+                    if scrolls {
+                        MarqueeText(name, help: String(localized: "Rename your pet", bundle: .tabbi))
+                    } else {
+                        Text(name).lineLimit(1).fixedSize()
+                    }
+                }
+                .font(Theme.Typography.title)
+                .nameplate(nameplate)
                 Image(systemName: "pencil")
                     .font(.system(size: 9.5, weight: .bold))
                     .foregroundStyle(hovering ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)

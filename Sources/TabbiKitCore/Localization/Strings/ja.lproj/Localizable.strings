@@ -143,6 +143,10 @@
 	<string>%@がさみしがってるよ</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@を%3$lld個中%2$lld番目に移動しました</string>
+	<key>%@ name color</key>
+	<string>名前の色：%@</string>
+	<key>%@ name color, unlocks at Level %lld</key>
+	<string>名前の色：%1$@（レベル%2$lldで解放）</string>
 	<key>%@ napped on a sunny windowsill</key>
 	<string>%@が窓辺でひなたぼっこ</string>
 	<key>%@ naps until the timer runs</key>
@@ -291,6 +295,8 @@
 	<string>%lld/%lld完了</string>
 	<key>%lld of %lld earned</key>
 	<string>%2$lld個中%1$lld個ゲット</string>
+	<key>%lld of %lld h to Level %lld</key>
+	<string>レベル%3$lldまで %1$lld/%2$lld時間</string>
 	<key>%lld of %lld outfits</key>
 	<string>衣装 %1$lld/%2$lld</string>
 	<key>%lld pts to go</key>
@@ -1353,6 +1359,8 @@
 	<string>AnkiConnect の設定にあるキーを「設定」に入力してください。</string>
 	<key>Event</key>
 	<string>イベント</string>
+	<key>Every 5 levels bring a name color and every 10 a new rank. Levels never give points.</key>
+	<string>5レベルごとに名前の色、10レベルごとに新しいランクが手に入ります。レベルでポイントは増えません。</string>
 	<key>Every deck is caught up</key>
 	<string>すべてのデッキが完了</string>
 	<key>Every focused minute fills in today's square</key>
@@ -1891,6 +1899,8 @@
 	<string>集中セッションの直後に、ペットがときどき励ましのひとことを話します。1日に1回まで</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>集中フェーズ中に気がそれたら、ペットがノッチから出てきます</string>
+	<key>Level %lld</key>
+	<string>レベル%lld</string>
 	<key>Librarian Cardigan</key>
 	<string>司書のカーディガン</string>
 	<key>Like</key>
@@ -1947,6 +1957,10 @@
 	<string>ショートカットを探しています</string>
 	<key>Lunar New Year</key>
 	<string>旧正月</string>
+	<key>Lv %lld</key>
+	<string>Lv %lld</string>
+	<key>Lv %lld: %@</key>
+	<string>Lv %1$lld：%2$@</string>
 	<key>Main display</key>
 	<string>メインディスプレイ</string>
 	<key>Make one more the same way, turned Off, and name it:</key>
@@ -2079,6 +2093,8 @@
 	<string>次に、Tabbiが通知を送ってよいかMacが確認します。答えはいつでもシステム設定で変更できます。</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>次に、TabbiがカレンダーにアクセスしてよいかMacが確認します。答えはいつでもシステム設定で変更できます。</string>
+	<key>Next: %@ at Lv %lld</key>
+	<string>次：Lv %2$lldで%1$@</string>
 	<key>Next: %@, %@</key>
 	<string>次：%1$@、%2$@</string>
 	<key>Nightcap</key>
@@ -4011,6 +4027,8 @@
 	<string>パーティのデータ</string>
 	<key>Your Party data was deleted.</key>
 	<string>パーティのデータを削除しました。</string>
+	<key>Your Study Level grows with every hour you focus and never goes down.</key>
+	<string>学習レベルは集中した時間ごとに上がり、下がることはありません。</string>
 	<key>Your best week</key>
 	<string>ベストな週</string>
 	<key>Your best week yet!</key>
@@ -4147,6 +4165,32 @@
 	<string>会議や通話</string>
 	<key>min</key>
 	<string>分</string>
+	<key>nameplate.aurora</key>
+	<string>オーロラ</string>
+	<key>nameplate.coral</key>
+	<string>コーラル</string>
+	<key>nameplate.ember</key>
+	<string>熾火</string>
+	<key>nameplate.gold</key>
+	<string>ゴールド</string>
+	<key>nameplate.honey</key>
+	<string>ハニー</string>
+	<key>nameplate.lilac</key>
+	<string>ライラック</string>
+	<key>nameplate.mint</key>
+	<string>ミント</string>
+	<key>nameplate.nebula</key>
+	<string>星雲</string>
+	<key>nameplate.peach</key>
+	<string>ピーチ</string>
+	<key>nameplate.plain</key>
+	<string>プレーン</string>
+	<key>nameplate.rose</key>
+	<string>ローズ</string>
+	<key>nameplate.sky</key>
+	<string>スカイ</string>
+	<key>nameplate.starlight</key>
+	<string>星明かり</string>
 	<key>no free time</key>
 	<string>空き時間なし</string>
 	<key>nothing yet; pick a sound</key>
@@ -4163,6 +4207,20 @@
 	<string>ポイント</string>
 	<key>pts</key>
 	<string>pt</string>
+	<key>rank.comet</key>
+	<string>彗星</string>
+	<key>rank.ember</key>
+	<string>熾火</string>
+	<key>rank.galaxy</key>
+	<string>銀河</string>
+	<key>rank.nebula</key>
+	<string>星雲</string>
+	<key>rank.nova</key>
+	<string>新星</string>
+	<key>rank.numbered %@ %@</key>
+	<string>%1$@ %2$@</string>
+	<key>rank.spark</key>
+	<string>火花</string>
 	<key>ready to unlock</key>
 	<string>解放できます</string>
 	<key>resets %@</key>

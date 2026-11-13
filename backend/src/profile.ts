@@ -1,7 +1,7 @@
 // Profile model: the pet and the few public numbers a user shares with friends.
 import {
-  BREEDS, COSTUMES, DEFAULT_NAME, DEFAULT_PET_NAME, HttpError, MAX_NAME, MAX_PET_NAME, Obj, SPECIES,
-  cleanText, int, oneOf, parseAccessories, parseColors,
+  BREEDS, COSTUMES, DEFAULT_NAME, DEFAULT_PET_NAME, HttpError, MAX_NAME, MAX_PET_NAME, MAX_STUDY_LEVEL, NAMEPLATES, Obj,
+  SPECIES, clampedInt, cleanText, int, oneOf, parseAccessories, parseColors,
 } from "./lib";
 import { isNameAllowed } from "./names";
 
@@ -17,11 +17,20 @@ export interface Profile {
   accessories: string[];
   points: number;
   level: number;
+  /**
+   * The Study Level (protocol 3, from 0), clamped to 0...MAX_STUDY_LEVEL. Only shown to friends; the
+   * server derives nothing from it. Absent for users whose apps never sent one.
+   */
+  studyLevel?: number;
+  /** The nameplate color id beside the Study Level (`catalog.nameplates`), absent until sent. */
+  nameplate?: string;
 }
 
 /** Body fields accepted by `POST /v1/register` and `PATCH /v1/me`. */
 export const PROFILE_FIELDS = [
   "name", "petName", "species", "breed", "colors", "costume", "accessories", "points", "level",
+  // Protocol 3. Older apps never send them; a server from before refuses them as unknown fields.
+  "studyLevel", "nameplate",
 ] as const;
 
 export type ProfilePatch = Partial<Omit<Profile, "code">>;
@@ -65,6 +74,10 @@ export function parseProfilePatch(body: Obj): ProfilePatch {
   if (body.accessories !== undefined) p.accessories = parseAccessories(body.accessories);
   if (body.points !== undefined) p.points = int(body.points, "points", 0, 100_000_000);
   if (body.level !== undefined) p.level = int(body.level, "level", 1, 999);
+  if (body.studyLevel !== undefined && body.studyLevel !== null) {
+    p.studyLevel = clampedInt(body.studyLevel, "studyLevel", 0, MAX_STUDY_LEVEL);
+  }
+  if (body.nameplate !== undefined && body.nameplate !== null) p.nameplate = oneOf(body.nameplate, NAMEPLATES, "nameplate");
   return p;
 }
 

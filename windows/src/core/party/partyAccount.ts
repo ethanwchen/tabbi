@@ -2,7 +2,7 @@ import type { Seconds } from "../time";
 import { PartyClient } from "./partyClient";
 import { credentialsOf, sameCredentials, type PartyCredentials, type PartyCredentialStore } from "./partyCredentialStore";
 import { PartyError } from "./partyError";
-import { type PartyProfile, type PartyProfileUpdate, type PartyRegistration } from "./partyModels";
+import { withoutStudyLevel, type PartyProfile, type PartyProfileUpdate, type PartyRegistration } from "./partyModels";
 import {
   NO_REFUSAL,
   refusalContains,
@@ -79,6 +79,8 @@ export class PartyAccount {
    *
    * A refused name (`name_not_allowed`, `pet_name_not_allowed`) is left out
    * and the rest sent again, so a refused name never takes Party offline.
+   * A server from before protocol 3 refuses the Study Level fields; the
+   * profile goes again without them, so friends there see no level.
    * A server on an older catalog refuses newer ids as an invalid field; the
    * profile is then sent again without catalog version 5's ids, then
    * without version 4's, and if that is refused too, as catalog version 1
@@ -94,6 +96,12 @@ export class PartyAccount {
         return synced;
       } catch (error) {
         if (!(error instanceof PartyError)) throw error;
+        // A server from before protocol 3 refuses the Study Level fields
+        // first; without them it takes the rest as before.
+        if (error.kind === "invalidRequest" && (update.studyLevel !== undefined || update.nameplate !== undefined)) {
+          update = withoutStudyLevel(update);
+          continue;
+        }
         const older = error.kind === "invalidRequest" ? olderCatalogFallback(update) : undefined;
         if (older !== undefined) {
           update = older;

@@ -18,7 +18,7 @@
  */
 
 /** The Party protocol this app speaks, sent in `PROTOCOL_HEADER` on every request. Backend `PROTOCOL_VERSION`. */
-export const PROTOCOL_VERSION = 2;
+export const PROTOCOL_VERSION = 3;
 /** Backend `PROTOCOL_HEADER`. */
 export const PROTOCOL_HEADER = "Tabbi-Protocol";
 
@@ -30,7 +30,10 @@ export const MAX_SYNC_BYTES = 64 * 1024;
 /* MARK: Request bodies */
 
 /** Body fields of `POST /v1/register` and `PATCH /v1/me` (backend `PROFILE_FIELDS`). */
-export const PROFILE_BODY_FIELDS = ["name", "petName", "species", "breed", "colors", "costume", "accessories", "points", "level"] as const;
+/* `studyLevel` and `nameplate` came with protocol 3: a server from before refuses them as unknown fields. */
+export const PROFILE_BODY_FIELDS = [
+  "name", "petName", "species", "breed", "colors", "costume", "accessories", "points", "level", "studyLevel", "nameplate",
+] as const;
 
 /** A profile write: every field optional; an absent one keeps the server's value (backend `ProfilePatch`). */
 export interface ProfileBody {
@@ -43,6 +46,10 @@ export interface ProfileBody {
   accessories?: string[];
   points?: number;
   level?: number;
+  /** The Study Level, 0 to 999 (protocol 3). */
+  studyLevel?: number;
+  /** A nameplate color id from `catalog.nameplates` (protocol 3). */
+  nameplate?: string;
 }
 
 /** Body fields of `POST /v1/presence` (backend `PRESENCE_FIELDS`). */
@@ -122,6 +129,9 @@ export interface WireProfile {
   points: number;
   level: number;
   badges?: string[];
+  /** Protocol 3, only when the user's app shared one. */
+  studyLevel?: number;
+  nameplate?: string;
 }
 
 /** Backend `Presence`. */

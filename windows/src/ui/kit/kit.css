@@ -261,6 +261,33 @@
   white-space: nowrap;
 }
 
+/* Study Level (StudyLevel.tsx): the rank emblem, the label beside a name, and rows that pick the variant that fits. */
+.kit-rank-emblem {
+  flex: none;
+  image-rendering: pixelated;
+}
+
+.kit-study-level {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.kit-study-level-rank {
+  white-space: pre;
+}
+
+.kit-variants-fit {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
 /* EdgeFade */
 .kit-edge-fade {
   overflow: hidden;
