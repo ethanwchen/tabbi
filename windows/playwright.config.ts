@@ -27,8 +27,12 @@ export default defineConfig({
   testDir: "tests/snapshots",
   outputDir: "test-results",
   reporter: "list",
-  /* A few browsers at a time: each test walks many states, and more workers only queue on the CPU. */
-  workers: 4,
+  /*
+   * A few browsers at a time: each test walks many states, and more workers
+   * only queue on the CPU. CI's runner has less memory, and four Edge
+   * renderers at once ran it out of resources, so it runs two.
+   */
+  workers: process.env.CI ? 2 : 4,
   /*
    * Every test opens its own page and writes its own PNGs, so tests within a
    * file run in parallel too, and CI's --shard splits the run by test rather
@@ -40,7 +44,8 @@ export default defineConfig({
   timeout: 10 * 60_000,
   use: {
     baseURL: origin,
-    channel: "msedge",
+    /* Edge, as WebView2; a Mac without Edge can set TABBI_SNAPSHOT_CHANNEL=chrome. */
+    channel: process.env.TABBI_SNAPSHOT_CHANNEL ?? "msedge",
     viewport: { width: 560, height: 236 },
   },
   projects: [

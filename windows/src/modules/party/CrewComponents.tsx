@@ -501,7 +501,7 @@ export function useCrewNameHyphenation<T extends HTMLElement>(text: string): Rea
     if (typeof ResizeObserver === "undefined") return;
     let width = target.clientWidth;
     const observer = new ResizeObserver(() => {
-      if (Math.abs(target.clientWidth - width) < 0.5) return;
+      if (Math.abs(target.clientWidth - width) < 1) return;
       width = target.clientWidth;
       fit();
     });
@@ -530,7 +530,7 @@ function useElementHeight<T extends HTMLElement>(): [React.RefObject<T | null>, 
   useLayoutEffect(() => {
     const target = element.current;
     if (!target) return;
-    const measure = () => setHeight((previous) => (Math.abs(previous - target.clientHeight) < 0.5 ? previous : target.clientHeight));
+    const measure = () => setHeight((previous) => (Math.abs(previous - target.clientHeight) < 1 ? previous : target.clientHeight));
     measure();
     if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(measure);
@@ -693,31 +693,38 @@ export function CrewRowName({ name, caption, captionAccent = false }: { name: st
 /**
  * How many of a column's fallbacks it needs so nothing spills out of it:
  * 0 while everything fits, then one more step for each layout pass in which
- * the element's content is taller than its box, up to `steps`. A resize, or
- * a change in `key`, starts over from 0. The passes run before paint.
+ * the element's content is taller than its box, up to `steps`. The passes
+ * run before paint. It settles deterministically: the step is fitted once
+ * per box height (in whole pixels) and content key and remembered, so a
+ * resize starts over only at a height not fitted before, and a box whose
+ * height wobbles between two sizes (fractional display scales) goes back to
+ * the step it already found there instead of fitting again.
  */
 export function useFitStep<T extends HTMLElement>(steps: number, key: string): [React.RefObject<T | null>, number] {
   const element = useRef<T>(null);
-  const [fit, setFit] = useState({ key, step: 0 });
-  const [epoch, setEpoch] = useState(0);
-  const [measured, setMeasured] = useState({ key, epoch });
-  if (measured.key !== key || measured.epoch !== epoch) {
-    setMeasured({ key, epoch });
-    setFit({ key, step: 0 });
-  }
+  const fitted = useRef(new Map<string, number>());
+  const [fit, setFit] = useState({ key, size: -1, step: 0 });
+  /* New content measures again from its first layout pass (the effect below looks up what this size already found). */
+  if (fit.key !== key) setFit({ key, size: -1, step: 0 });
   useLayoutEffect(() => {
     const target = element.current;
     if (!target || target.clientHeight === 0) return;
-    if (target.scrollHeight > target.clientHeight + 0.5 && fit.step < steps) setFit({ key, step: fit.step + 1 });
-  }, [fit, steps, key, epoch]);
+    const size = Math.round(target.clientHeight);
+    if (size !== fit.size) {
+      setFit({ key, size, step: fitted.current.get(`${key}|${size}`) ?? 0 });
+      return;
+    }
+    const memo = `${key}|${size}`;
+    if (fitted.current.has(memo)) return;
+    if (target.scrollHeight > target.clientHeight + 1 && fit.step < steps) setFit({ key, size, step: fit.step + 1 });
+    else fitted.current.set(memo, fit.step);
+  }, [fit, steps, key]);
   useLayoutEffect(() => {
     const target = element.current;
     if (!target || typeof ResizeObserver === "undefined") return;
-    let last = target.clientHeight;
     const observer = new ResizeObserver(() => {
-      if (Math.abs(target.clientHeight - last) < 0.5) return;
-      last = target.clientHeight;
-      setEpoch((value) => value + 1);
+      const size = Math.round(target.clientHeight);
+      setFit((current) => (current.size === size || size === 0 ? current : { key: current.key, size, step: fitted.current.get(`${current.key}|${size}`) ?? 0 }));
     });
     observer.observe(target);
     return () => observer.disconnect();

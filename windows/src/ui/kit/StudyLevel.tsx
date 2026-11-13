@@ -46,8 +46,10 @@ export function StudyRankEmblem({ rank, pixelSize = 1 }: { rank: StudyRank; pixe
     if (!canvas) return;
     const panelScale = Number.parseFloat(getComputedStyle(canvas).getPropertyValue("--panel-scale")) || 1;
     const scale = emblemScale(pixelSize * panelScale, ratio);
-    canvas.width = RANK_ART_SIZE * scale;
-    canvas.height = RANK_ART_SIZE * scale;
+    /* Resizing a canvas reallocates it even at the same size, so only on a change. */
+    const size = RANK_ART_SIZE * scale;
+    if (canvas.width !== size) canvas.width = size;
+    if (canvas.height !== size) canvas.height = size;
     const context = canvas.getContext("2d");
     if (!context) return;
     context.imageSmoothingEnabled = false;
