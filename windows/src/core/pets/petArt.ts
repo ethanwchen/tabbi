@@ -7,6 +7,7 @@ import dogFile from "@mac/Pets/PetArt/dog.json";
 import effectFile from "@mac/Pets/PetArt/effect.json";
 import pawFile from "@mac/Pets/PetArt/paw.json";
 import propFile from "@mac/Pets/PetArt/prop.json";
+import rankFile from "@mac/Pets/PetArt/rank.json";
 import tailFile from "@mac/Pets/PetArt/tail.json";
 import walkFile from "@mac/Pets/PetArt/walk.json";
 import { PET_ANIMATIONS, PET_BODY_SHAPES, PET_BREEDS, PET_SPECIES, isOneOf } from "./petKinds";
@@ -420,6 +421,7 @@ export const PET_ART_SOURCES = {
   tail: tailFile,
   walk: walkFile,
   badge: badgeFile,
+  rank: rankFile,
   breeds: breedsFile,
   animations: animationsFile,
 } as const;

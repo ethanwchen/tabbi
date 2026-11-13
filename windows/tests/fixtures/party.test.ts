@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PartyClient, encodeSorted, profileBody } from "../../src/core/party/partyClient";
-import type { PartyProfile } from "../../src/core/party/partyModels";
+import { profileStanding, sharingStanding, type PartyProfile } from "../../src/core/party/partyModels";
 import { PARTY_COLOR_ROLES, partyPet, partyPetUpdate, wireAccessory, wireOutfit } from "../../src/core/party/partyPetAppearance";
 import type { PartyHttpRequest, PartyTransport } from "../../src/core/party/partyTransport";
 import { PROTOCOL_HEADER, PROTOCOL_VERSION } from "../../src/core/party/partyWire";
@@ -8,6 +8,7 @@ import { PET_ACCESSORIES, PET_OUTFITS, type PetAccessory, type PetOutfit } from 
 import { PET_BREEDS, isOneOf } from "../../src/core/pets/petKinds";
 import { colorFromHex, colorHex, isPetPaletteRole } from "../../src/core/pets/petPalette";
 import { PetProfile } from "../../src/core/pets/petProfile";
+import { isNameplate, rankForLevel, rankID } from "../../src/core/progression/studyLevel";
 import { loadFixture } from "../support/fixtures";
 
 /*
@@ -35,7 +36,7 @@ interface PartyFixture {
   colorRoles: string[];
   outfits: Record<string, string>;
   accessories: Record<string, string>;
-  updates: { name: string; pet: FixturePet; body: Record<string, JSONValue> }[];
+  updates: { name: string; pet: FixturePet; standing?: { level: number; nameplate: string }; body: Record<string, JSONValue> }[];
   replies: { name: string; schema: string; json: JSONValue; summary: Record<string, JSONValue>; pets: Record<string, FixturePet> }[];
 }
 
@@ -66,6 +67,17 @@ function drawn(pet: PetProfile): FixturePet {
   };
 }
 
+/** The Study Level drawn for each profile: "level rank nameplate", or null for none, as the Mac's summary. */
+function standingsOf(profiles: readonly PartyProfile[]): Record<string, JSONValue> {
+  const out: Record<string, JSONValue> = {};
+  for (const profile of profiles) {
+    if (profile.code in out) continue;
+    const standing = profileStanding(profile);
+    out[profile.code] = standing === undefined ? null : `${standing.level} ${rankID(rankForLevel(standing.level))} ${standing.nameplate}`;
+  }
+  return out;
+}
+
 function petsOf(profiles: readonly PartyProfile[]): Record<string, FixturePet> {
   const pets: Record<string, FixturePet> = {};
   for (const profile of profiles) if (!(profile.code in pets)) pets[profile.code] = drawn(partyPet(profile));
@@ -84,6 +96,7 @@ async function readReply(json: JSONValue, schema: string): Promise<{ summary: Re
           incoming: list.incoming.map((request) => request.profile.code),
           outgoing: list.outgoing.map((request) => request.profile.code),
           badges: Object.fromEntries(list.friends.map((friend) => [friend.profile.code, [...friend.profile.badges]])),
+          standings: standingsOf([...list.friends, ...list.incoming, ...list.outgoing].map((entry) => entry.profile)),
         },
         pets: petsOf([...list.friends, ...list.incoming, ...list.outgoing].map((entry) => entry.profile)),
       };
@@ -111,6 +124,7 @@ async function readReply(json: JSONValue, schema: string): Promise<{ summary: Re
           members: party.members.map((member) => member.profile.code),
           host: party.host,
           session: party.session?.method ?? null,
+          standings: standingsOf(party.members.map((member) => member.profile)),
         },
         pets: petsOf(party.members.map((member) => member.profile)),
       };
@@ -166,7 +180,13 @@ describe("party fixture", () => {
       expect(typeof name).toBe("string");
       const pet = petFrom(update.pet, String(name));
       expect(drawn(pet)).toEqual(update.pet);
-      const body = JSON.parse(encodeSorted(profileBody(partyPetUpdate(pet)))) as unknown;
+      const shared = update.standing;
+      const petUpdate = partyPetUpdate(pet);
+      const sent =
+        shared === undefined
+          ? petUpdate
+          : sharingStanding(petUpdate, { level: shared.level, nameplate: isNameplate(shared.nameplate) ? shared.nameplate : "plain" });
+      const body = JSON.parse(encodeSorted(profileBody(sent))) as unknown;
       expect(body).toEqual(update.body);
     });
   });

@@ -23,9 +23,13 @@ export const STUDY_METHODS = catalog.studyMethods as readonly string[];
 export const COSTUMES = catalog.costumes as readonly string[];
 export const ACCESSORIES = catalog.accessories as readonly string[];
 export const BREEDS = catalog.breeds as Record<string, readonly string[]>;
+/** Nameplate color ids a profile may name (protocol 3); plain is the default. */
+export const NAMEPLATES = catalog.nameplates as readonly string[];
 
 export const MAX_NAME = catalog.limits.nameMaxLength;
 export const MAX_PET_NAME = catalog.limits.petNameMaxLength;
+/** The highest Study Level kept: a sent level is clamped to 0...this, since it is only ever displayed. */
+export const MAX_STUDY_LEVEL = catalog.limits.maxStudyLevel;
 export const MAX_COLORS = catalog.limits.maxColors;
 export const MAX_ACCESSORIES = catalog.limits.maxAccessories;
 export const MAX_FRIENDS = catalog.limits.maxFriends;
@@ -45,11 +49,13 @@ export const REGISTER_PER_MIN = 10;
 export const AUTH_FAILURES_PER_MIN = 60;
 /**
  * The Party protocol this server speaks, and the oldest it still serves. A client names its own in the
- * PROTOCOL_HEADER of every request; a request without one is protocol 1 (the apps up to 1.0.0). Protocol 2
- * added friend requests, protocol 3 Study Crews. See docs/party-compatibility.md: the server never drops
- * what an older protocol sends or expects.
+ * PROTOCOL_HEADER of every request; a request without one is protocol 1 (the apps up to 1.0.0). See
+ * docs/party-compatibility.md: the server never drops what an older protocol sends or expects.
+ * Protocol 2 added friend requests; protocol 3 adds the optional `studyLevel` and `nameplate` profile
+ * fields (the Study Level, shown to friends and never trusted for anything but display); protocol 4 adds
+ * Study Crews.
  */
-export const PROTOCOL_VERSION = 3;
+export const PROTOCOL_VERSION = 4;
 export const MIN_PROTOCOL_VERSION = 1;
 export const PROTOCOL_HEADER = "Tabbi-Protocol";
 /** The first protocol whose apps show friend requests. Users on an older one get instant friendships. */
@@ -248,6 +254,15 @@ export function oneOf(v: unknown, list: readonly string[], field: string): strin
 export function int(v: unknown, field: string, min: number, max: number): number {
   if (typeof v !== "number" || !Number.isInteger(v) || v < min || v > max) throw invalid(field);
   return v;
+}
+
+/**
+ * An integer clamped to min...max: a whole JSON number out of range is pulled in rather than refused
+ * (for display-only values such as the Study Level), while anything that is not a whole number is.
+ */
+export function clampedInt(v: unknown, field: string, min: number, max: number): number {
+  if (typeof v !== "number" || !Number.isInteger(v)) throw invalid(field);
+  return Math.min(Math.max(v, min), max);
 }
 
 /** Up to `MAX_COLORS` `#RRGGBB` strings, normalized to upper case. */

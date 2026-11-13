@@ -129,9 +129,14 @@ private struct PartyMemberView: View {
                 }
             HStack(spacing: Theme.Spacing.xxs) {
                 if member.host && roomy { crown }
+                // The rank's emblem before the name, in its nameplate color;
+                // someone on an older app shows neither.
+                if let standing = member.profile.standing, roomy {
+                    StudyRankEmblem(standing.rank, pixelSize: 0.5)
+                }
                 Text(isMe ? String(localized: "You", bundle: .tabbi) : member.profile.name)
                     .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.primaryText)
+                    .nameplate(member.profile.standing?.nameplate ?? .plain)
                     .minimumScaleFactor(roomy ? 1 : 0.8)
                 if member.profile.isFoundingMember && roomy { FoundingBadge(isMe: isMe) }
             }
@@ -195,6 +200,7 @@ private struct PartyMemberView: View {
     private func help(_ status: PartyStatus) -> String {
         let name = isMe ? String(localized: "You", bundle: .tabbi) : member.profile.name
         var parts = [String(localized: "\(name) with \(member.profile.petName)", bundle: .tabbi)]
+        if let standing = member.profile.standing { parts.append(StudyLevelLabel.help(standing)) }
         if member.profile.isFoundingMember { parts.append(String(localized: "Founding Member", bundle: .tabbi)) }
         parts.append(PartyRoster.statusLine(member.presence, online: member.online, at: now))
         if let minutes = member.presence?.todayMinutes, minutes > 0 {

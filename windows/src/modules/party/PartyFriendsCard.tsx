@@ -5,14 +5,16 @@
  * someone by code.
  */
 
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
+import { useElementSize } from "../closet/useElementSize";
 import { useStore } from "../../app/useStore";
 import { tr } from "../../core/localization/tr";
 import { partyErrorMessage } from "../../core/party/partyError";
-import { canJoin, isFoundingMember, PartyCode, type PartyFriend, type PartyFriendRequest } from "../../core/party/partyModels";
+import { canJoin, isFoundingMember, PartyCode, profileStanding, type PartyFriend, type PartyFriendRequest } from "../../core/party/partyModels";
+import { rankForLevel, standingHelp } from "../../core/progression/studyLevel";
+import { StudyLevelLabel, StudyRankEmblem, VariantsThatFit, nameplateStyle } from "../../ui/kit/StudyLevel";
 import { compactStatusLine, rosterDuration, rosterStatus } from "../../core/party/partyRoster";
 import { Card } from "../../ui/kit/Card";
-import { EdgeFade } from "../../ui/kit/EdgeFade";
 import { FoundingBadge } from "../../ui/kit/FoundingBadge";
 import { Icon } from "../../ui/kit/Icon";
 import { IconButton } from "../../ui/kit/IconButton";
@@ -21,6 +23,9 @@ import { Tooltip } from "../../ui/kit/Tooltip";
 import { PartyCodeField, PartyCopyCode, PartyPet, PartyPillButton, PartyShareInvite, statusColor } from "./PartyComponents";
 import { useModerationMenu } from "./PartyModeration";
 import type { PartyStore } from "./partyStore";
+
+/** Every friend and request row is this tall (the Mac's PartyFriendsCard.rowHeight). */
+export const FRIEND_ROW_HEIGHT = 34;
 
 /** Width of the friends column in the Party tab; the stage keeps the rest. */
 export const FRIENDS_WIDTH = 212;
@@ -37,6 +42,12 @@ export function PartyFriendsCard({ store, onFieldFocus, width = FRIENDS_WIDTH }:
   const inner = width - 16;
   const showsLabel = inner >= 200;
   const roomyRows = inner >= 236;
+  // The list shows only whole rows (the Mac's PartyFriendsCard.rowHeight):
+  // its height rounds down to a multiple of the row height and scrolling
+  // snaps to a row, so no row is ever cut in half at the bottom.
+  const listRef = useRef<HTMLDivElement>(null);
+  const listHeight = useElementSize(listRef).height;
+  const rowsShown = Math.max(1, Math.floor((listHeight + 0.5) / FRIEND_ROW_HEIGHT));
   return (
     <Card padding={8} className="party-friends">
       <div className="party-friends-header">
@@ -59,7 +70,7 @@ export function PartyFriendsCard({ store, onFieldFocus, width = FRIENDS_WIDTH }:
           </div>
         )}
       </div>
-      <div className="party-friends-list">
+      <div className="party-friends-list" ref={listRef}>
         {!party.friendsLoaded ? null : !party.hasPeople ? (
           <div className="party-friends-empty">
             <Icon id="person.2" size={16} style={{ color: "var(--accent)" }} />
@@ -67,7 +78,7 @@ export function PartyFriendsCard({ store, onFieldFocus, width = FRIENDS_WIDTH }:
             <span className="kit-caption kit-secondary">{tr("Share your code above, or add theirs below.")}</span>
           </div>
         ) : (
-          <EdgeFade edge="bottom" length={12} className="party-friends-scroll">
+          <div className="party-friends-scroll" style={{ height: rowsShown * FRIEND_ROW_HEIGHT }}>
             <div className="party-friends-rows">
               {party.incomingRequests.map((request) => (
                 <PartyRequestRow key={request.profile.code} request={request} isIncoming store={store} roomy={roomyRows} />
@@ -79,12 +90,11 @@ export function PartyFriendsCard({ store, onFieldFocus, width = FRIENDS_WIDTH }:
                 <PartyRequestRow key={request.profile.code} request={request} isIncoming={false} store={store} roomy={roomyRows} />
               ))}
             </div>
-          </EdgeFade>
+          </div>
         )}
       </div>
       <PartyCodeField
         placeholder={tr("Friend's code")}
-        shortPlaceholder={tr("Code")}
         symbol="person.badge.plus"
         length={PartyCode.friendCodeLength}
         help={tr("Type or paste a friend's %lld-character code and press Return", PartyCode.friendCodeLength)}
@@ -100,6 +110,8 @@ function PartyFriendRow({ friend, store, now }: { friend: PartyFriend; store: Pa
   const myParty = useStore(store, (state) => state.party.party?.code);
   const status = rosterStatus(friend.presence, friend.online);
   const parts = [tr("%@ with %@", friend.profile.name, friend.profile.petName)];
+  const standing = profileStanding(friend.profile);
+  if (standing !== undefined) parts.push(standingHelp(standing));
   if (isFoundingMember(friend.profile)) parts.push(tr("Founding Member"));
   if (friend.presence !== undefined && friend.online && friend.presence.todayMinutes > 0) parts.push(tr("%@ studied today", rosterDuration(friend.presence.todayMinutes)));
   if (friend.presence !== undefined && friend.presence.streakDays > 1) parts.push(tr("%lld-day streak", friend.presence.streakDays));
@@ -115,8 +127,50 @@ function PartyFriendRow({ friend, store, now }: { friend: PartyFriend; store: Pa
         <PartyPet profile={friend.profile} asleep={status === "offline"} />
         <div className="party-row-text">
           <div className="party-row-name">
-            <MarqueeText text={friend.profile.name} userText className={status === "offline" ? "kit-body-emphasis kit-secondary" : "kit-body-emphasis"} />
-            {isFoundingMember(friend.profile) && <FoundingBadge isMe={false} />}
+            {standing === undefined ? (
+              <>
+                <span className="party-row-name-text" style={{ ...nameplateStyle("plain"), opacity: status === "offline" ? 0.75 : 1 }}>
+                  <MarqueeText text={friend.profile.name} userText className="kit-body-emphasis" />
+                </span>
+                {isFoundingMember(friend.profile) && <FoundingBadge isMe={false} />}
+              </>
+            ) : (
+              /*
+               * Their Study Level steps down from "Lv N" to "N" to the emblem
+               * alone before the name would give way; the tooltip keeps the
+               * level and rank. Only a name too long even beside the emblem scrolls.
+               */
+              <VariantsThatFit
+                count={3}
+                fitKey={`${friend.profile.name}|${standing.level}|${standing.nameplate}`}
+                className="party-row-name-fit"
+                render={(index) => (
+                  <>
+                    <span
+                      className="party-row-name-text"
+                      data-whole={index < 2 || undefined}
+                      style={{ ...nameplateStyle(standing.nameplate), opacity: status === "offline" ? 0.75 : 1 }}
+                    >
+                      {index < 2 ? (
+                        <span className="kit-body-emphasis kit-user-text party-nowrap">{friend.profile.name}</span>
+                      ) : (
+                        <MarqueeText text={friend.profile.name} userText className="kit-body-emphasis" />
+                      )}
+                    </span>
+                    {isFoundingMember(friend.profile) && <FoundingBadge isMe={false} />}
+                    {index < 2 ? (
+                      <StudyLevelLabel standing={standing} length={index === 0 ? "level" : "number"} pixelSize={0.5} />
+                    ) : (
+                      <Tooltip text={standingHelp(standing)}>
+                        <span className="kit-study-level" role="img" aria-label={standingHelp(standing)}>
+                          <StudyRankEmblem rank={rankForLevel(standing.level)} pixelSize={0.5} />
+                        </span>
+                      </Tooltip>
+                    )}
+                  </>
+                )}
+              />
+            )}
           </div>
           <div className="party-row-status kit-caption kit-tertiary">
             <span className="party-dot" style={{ background: statusColor(status) }} />

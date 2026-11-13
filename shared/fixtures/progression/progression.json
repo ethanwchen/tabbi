@@ -32,7 +32,7 @@
       "tasks" : 20,
       "water" : 30
     },
-    "saveSchemaVersion" : 1,
+    "saveSchemaVersion" : 2,
     "steadyWeekDays" : 3,
     "tiers" : [
       "bronze",
@@ -230,7 +230,7 @@
         "completedMonths" : [
           "2026-10"
         ],
-        "encoded" : "{\n  \"best\" : {\n    \"focusHours\" : 3200\n  },\n  \"completedMonths\" : [\n    \"2026-10\"\n  ],\n  \"reached\" : {\n    \"focusHours.1\" : \"2026-10-03T09:30:00Z\",\n    \"focusHours.2\" : \"2026-10-28T20:00:00Z\"\n  },\n  \"schemaVersion\" : 1,\n  \"seen\" : [\n    \"focusHours.1\"\n  ]\n}",
+        "encoded" : "{\n  \"best\" : {\n    \"focusHours\" : 3200\n  },\n  \"completedMonths\" : [\n    \"2026-10\"\n  ],\n  \"level\" : 0,\n  \"levelSeen\" : 0,\n  \"reached\" : {\n    \"focusHours.1\" : \"2026-10-03T09:30:00Z\",\n    \"focusHours.2\" : \"2026-10-28T20:00:00Z\"\n  },\n  \"schemaVersion\" : 2,\n  \"seen\" : [\n    \"focusHours.1\"\n  ]\n}",
         "reached" : {
           "focusHours.1" : 1791019800,
           "focusHours.2" : 1793217600
@@ -250,7 +250,7 @@
         "completedMonths" : [
 
         ],
-        "encoded" : "{\n  \"best\" : {\n    \"water\" : 25\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"reached\" : {\n    \"water.1\" : \"2026-10-03T09:30:00Z\"\n  },\n  \"schemaVersion\" : 1,\n  \"seen\" : [\n\n  ]\n}",
+        "encoded" : "{\n  \"best\" : {\n    \"water\" : 25\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"level\" : 0,\n  \"levelSeen\" : 0,\n  \"reached\" : {\n    \"water.1\" : \"2026-10-03T09:30:00Z\"\n  },\n  \"schemaVersion\" : 2,\n  \"seen\" : [\n\n  ]\n}",
         "reached" : {
           "water.1" : 1791019800
         },
@@ -269,7 +269,7 @@
         "completedMonths" : [
           "2026-10"
         ],
-        "encoded" : "{\n  \"best\" : {\n    \"focusHours\" : 90\n  },\n  \"completedMonths\" : [\n    \"2026-10\"\n  ],\n  \"reached\" : {\n    \"focusHours.1\" : \"2026-10-03T09:30:00Z\"\n  },\n  \"schemaVersion\" : 1,\n  \"seen\" : [\n    \"focusHours.1\"\n  ]\n}",
+        "encoded" : "{\n  \"best\" : {\n    \"focusHours\" : 90\n  },\n  \"completedMonths\" : [\n    \"2026-10\"\n  ],\n  \"level\" : 0,\n  \"levelSeen\" : 0,\n  \"reached\" : {\n    \"focusHours.1\" : \"2026-10-03T09:30:00Z\"\n  },\n  \"schemaVersion\" : 2,\n  \"seen\" : [\n    \"focusHours.1\"\n  ]\n}",
         "reached" : {
           "focusHours.1" : 1791019800
         },
@@ -288,7 +288,7 @@
         "completedMonths" : [
 
         ],
-        "encoded" : "{\n  \"best\" : {\n\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"reached\" : {\n\n  },\n  \"schemaVersion\" : 1,\n  \"seen\" : [\n\n  ]\n}",
+        "encoded" : "{\n  \"best\" : {\n\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"level\" : 0,\n  \"levelSeen\" : 0,\n  \"reached\" : {\n\n  },\n  \"schemaVersion\" : 2,\n  \"seen\" : [\n\n  ]\n}",
         "reached" : {
 
         },
@@ -307,7 +307,7 @@
         "completedMonths" : [
 
         ],
-        "encoded" : "{\n  \"best\" : {\n\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"reached\" : {\n\n  },\n  \"schemaVersion\" : 1,\n  \"seen\" : [\n\n  ]\n}",
+        "encoded" : "{\n  \"best\" : {\n\n  },\n  \"completedMonths\" : [\n\n  ],\n  \"level\" : 0,\n  \"levelSeen\" : 0,\n  \"reached\" : {\n\n  },\n  \"schemaVersion\" : 2,\n  \"seen\" : [\n\n  ]\n}",
         "reached" : {
 
         },

@@ -47,6 +47,10 @@ const SNAPSHOT_STATES = [
   "goals-badges",
   "goals-trying",
   "goals-new",
+  "level-1",
+  "level-12",
+  "level-37",
+  "level-64",
   "wardrobe-heirloom",
   "streak",
   "look",
@@ -70,6 +74,8 @@ interface SnapshotShot {
   readonly tryingOnItem?: PetItem;
   /** Shows the newest badge tier as not seen yet (the Goals pill's dot). */
   readonly newGoal?: boolean;
+  /** Shows the pet at this Study Level, part of the way to the next. */
+  readonly studyLevel?: number;
 }
 
 export const ClosetModule = defineModule(
@@ -147,6 +153,7 @@ export const ClosetModule = defineModule(
         ...(shot.name === undefined ? {} : { name: shot.name }),
         ...(shot.scrolled === undefined ? {} : { scrolled: shot.scrolled }),
         ...(shot.newGoal === undefined ? {} : { newGoal: shot.newGoal }),
+        ...(shot.studyLevel === undefined ? {} : { studyLevel: shot.studyLevel }),
       });
       store.tryOn(shot.tryingOnItem ?? (shot.tryingOn === undefined || !PET_ACCESSORIES.includes(shot.tryingOn) ? undefined : accessoryItem(shot.tryingOn)));
     };
@@ -194,6 +201,12 @@ export const ClosetModule = defineModule(
             return show("goals", { tryingOnItem: outfitItem("astronautSuit") });
           case "goals-new":
             return show("wardrobe", { newGoal: true });
+          case "level-1":
+          case "level-12":
+          case "level-37":
+          case "level-64":
+            /* The Study Level on the name line and the Goals Level card, from the first level to Galaxy II. */
+            return show("goals", { studyLevel: Number(state.slice("level-".length)) });
           case "wardrobe-heirloom":
             return show("wardrobe", { tryingOnItem: outfitItem("koiYukata"), scrolled: 1 });
           case "founding":

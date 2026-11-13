@@ -10,7 +10,7 @@ Sign in with Apple does not ask for a birthday, but an answer under 13 given in 
 
 Per user, identified only by a random secret token (stored as a SHA-256 hash) and a public 8-character friend code:
 
-- the profile: a display name (up to 24 characters, any nickname works), the pet's name (up to 24 characters), species, breed, up to 10 colors, costume, up to 8 accessories, points and level, when the friend code was created, and the newest Party protocol version your apps use (so the service knows whether they can show friend requests);
+- the profile: a display name (up to 24 characters, any nickname works), the pet's name (up to 24 characters), species, breed, up to 10 colors, costume, up to 8 accessories, points and level, the Study Level and nameplate color your app shares (shown to friends, and the Study Level beside your name on crew pages if you are in a crew; never used for anything else), when the friend code was created, and the newest Party protocol version your apps use (so the service knows whether they can show friend requests);
 - presence from the last heartbeat: status (`studying`, `break`, `idle` or `offline`), the study method id (for example `pomodoro`), when the current phase ends, minutes in the current session, minutes studied today, the study streak in days, your local calendar day, and the time of the last heartbeat;
 - study minutes per local calendar day, kept for 28 days (older days are deleted daily, whether or not you still use the service), for the weekly leaderboard;
 - the friend codes you are friends with, and when each friendship started;

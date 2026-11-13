@@ -42,6 +42,7 @@ final class PartyModule: NotchModule {
         self.notifications = notifications
         store.followFocus(from: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         store.follow(pet: context.studyPet.profiles)
+        store.follow(standing: context.studyPet.standings)
         let settings = context.settings
         store.follow(name: settings.$settings.map(\.displayName).eraseToAnyPublisher(),
                      save: { [weak settings] name in settings?.settings.displayName = name })

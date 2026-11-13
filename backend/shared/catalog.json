@@ -38,6 +38,7 @@
   "statuses": ["studying", "break", "idle", "offline"],
   "studyMethods": ["pomodoro", "52-17", "flowtime", "timeblock", "anki", "qbank", "lecture", "free"],
   "heartbeatSeconds": { "studying": 120, "break": 120, "idle": 300 },
+  "nameplates": ["plain", "peach", "ember", "honey", "sky", "mint", "rose", "lilac", "nebula", "coral", "gold", "aurora", "starlight"],
   "limits": {
     "nameMaxLength": 24,
     "petNameMaxLength": 24,
@@ -45,6 +46,7 @@
     "maxAccessories": 8,
     "maxFriends": 50,
     "maxPartyMembers": 8,
-    "partyIdleExpirySeconds": 43200
+    "partyIdleExpirySeconds": 43200,
+    "maxStudyLevel": 999
   }
 }

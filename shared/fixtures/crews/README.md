@@ -6,7 +6,7 @@ They pin the Study Crews contract both apps follow (docs/design/crews.md), so th
 
 `crews.json`:
 
-- `protocol`: the Party protocol the app sends in `Tabbi-Protocol` (3 since Crews; 4 once Study Level ships first).
+- `protocol`: the Party protocol the app sends in `Tabbi-Protocol` (4 since Study Crews; 3 brought the Study Level).
 - `requests`: what the app sends for each call: method, path (with the search query encoded, `+` as `%2B`), and the body with its `$defs` name in the schema (`schema`), or no schema for a body-less route, which sends `{}`.
 - `replies`: sample server replies (`json`) with their `$defs` name (`schema`) and what the app reads from them (`summary`), one line per fact.
   The lines are built by `CrewsFixture.summary(of:schema:)`; a port builds the same lines from its own models.

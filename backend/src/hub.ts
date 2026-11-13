@@ -347,6 +347,15 @@ CREATE INDEX friend_requests_by_recipient ON friend_requests (recipient, created
 `;
 
 /**
+ * The Study Level (protocol 3): the level and nameplate color a user's app shares with friends, display
+ * only. Both stay NULL for users whose apps never sent them, so their replies look exactly as before.
+ */
+const STUDY_LEVEL_SCHEMA = `
+ALTER TABLE users ADD COLUMN study_level INTEGER;
+ALTER TABLE users ADD COLUMN nameplate TEXT;
+`;
+
+/**
  * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
  * created before versioning (which have its tables but no recorded version) pass through it unchanged.
@@ -354,7 +363,7 @@ CREATE INDEX friend_requests_by_recipient ON friend_requests (recipient, created
 const MIGRATIONS = [
   SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA, GRANTS_SCHEMA,
   SUGGESTIONS_SCHEMA, SUGGESTION_APP_SCHEMA, CRASHES_SCHEMA, WEB_SIGN_IN_SCHEMA, DOWNLOAD_COUNTS_SCHEMA,
-  ENTITLEMENTS_SCHEMA, FRIEND_REQUESTS_SCHEMA, CREWS_SCHEMA,
+  ENTITLEMENTS_SCHEMA, FRIEND_REQUESTS_SCHEMA, STUDY_LEVEL_SCHEMA, CREWS_SCHEMA,
 ];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
@@ -393,10 +402,12 @@ interface UserRow extends Record<string, SqlStorageValue> {
   level: number;
   created_at: number;
   protocol: number;
+  study_level: number | null;
+  nameplate: string | null;
 }
 
 function rowToProfile(r: UserRow): Profile {
-  return {
+  const profile: Profile = {
     code: r.code,
     name: r.name,
     petName: r.pet_name,
@@ -408,6 +419,10 @@ function rowToProfile(r: UserRow): Profile {
     points: r.points,
     level: r.level,
   };
+  // Only once the user's app shared them, so replies about everyone else keep their old shape.
+  if (r.study_level !== null && r.study_level !== undefined) profile.studyLevel = r.study_level;
+  if (r.nameplate !== null && r.nameplate !== undefined) profile.nameplate = r.nameplate;
+  return profile;
 }
 
 interface PresenceRow extends Record<string, SqlStorageValue> {
@@ -1071,11 +1086,12 @@ export class Hub extends DurableObject<Env> {
     if (this.userExists(code)) throw new HttpError(503, "unavailable", "could not allocate a code, retry");
     const profile = applyProfilePatch(defaultProfile(code), patch);
     this.sql.exec(
-      `INSERT INTO users (code, token_hash, name, pet_name, species, breed, colors, costume, accessories, points, level, created_at, protocol)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO users (code, token_hash, name, pet_name, species, breed, colors, costume, accessories, points, level,
+         created_at, protocol, study_level, nameplate)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       code, tokenHash, profile.name, profile.petName, profile.species, profile.breed,
       JSON.stringify(profile.colors), profile.costume, JSON.stringify(profile.accessories),
-      profile.points, profile.level, now, protocol,
+      profile.points, profile.level, now, protocol, profile.studyLevel ?? null, profile.nameplate ?? null,
     );
     return profile;
   }
@@ -1089,9 +1105,10 @@ export class Hub extends DurableObject<Env> {
     if (!sameProfile(next, caller.profile)) {
       this.sql.exec(
         `UPDATE users SET name = ?, pet_name = ?, species = ?, breed = ?, colors = ?, costume = ?,
-           accessories = ?, points = ?, level = ? WHERE code = ?`,
+           accessories = ?, points = ?, level = ?, study_level = ?, nameplate = ? WHERE code = ?`,
         next.name, next.petName, next.species, next.breed, JSON.stringify(next.colors), next.costume,
-        JSON.stringify(next.accessories), next.points, next.level, caller.code,
+        JSON.stringify(next.accessories), next.points, next.level, next.studyLevel ?? null, next.nameplate ?? null,
+        caller.code,
       );
     }
     if (isRegister) return json({ ok: true, code: caller.code, profile: next });
@@ -1555,7 +1572,9 @@ export class Hub extends DurableObject<Env> {
       }
       this.resolveReportsAbout(row.code, "renamed", now);
     });
-    return json({ ok: true, profile: { ...rowToProfile(row), name: DEFAULT_NAME, petName: DEFAULT_PET_NAME } });
+    // The moderation reply drops the display-only Study Level fields: it is about the names.
+    const { studyLevel: _level, nameplate: _nameplate, ...renamed } = rowToProfile(row);
+    return json({ ok: true, profile: { ...renamed, name: DEFAULT_NAME, petName: DEFAULT_PET_NAME } });
   }
 
   /**

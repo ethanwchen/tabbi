@@ -146,7 +146,7 @@
       "text" : "hello"
     }
   ],
-  "protocol" : 3,
+  "protocol" : 4,
   "queue" : [
     {
       "name" : "one session",

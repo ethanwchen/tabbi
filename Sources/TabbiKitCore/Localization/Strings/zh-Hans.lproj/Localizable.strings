@@ -157,6 +157,10 @@
 	<string>%@ 想你了</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@ 已移到第 %2$lld 位，共 %3$lld 个</string>
+	<key>%@ name color</key>
+	<string>名字颜色：%@</string>
+	<key>%@ name color, unlocks at Level %lld</key>
+	<string>名字颜色：%1$@，等级 %2$lld 解锁</string>
 	<key>%@ napped on a sunny windowsill</key>
 	<string>%@ 在洒满阳光的窗台打盹</string>
 	<key>%@ naps until the timer runs</key>
@@ -317,6 +321,8 @@
 	<string>完成 %lld/%lld</string>
 	<key>%lld of %lld earned</key>
 	<string>已获得 %1$lld/%2$lld</string>
+	<key>%lld of %lld h to Level %lld</key>
+	<string>升到等级 %3$lld：%1$lld/%2$lld 小时</string>
 	<key>%lld of %lld outfits</key>
 	<string>服装 %1$lld/%2$lld</string>
 	<key>%lld pts to go</key>
@@ -1441,6 +1447,8 @@
 	<string>在设置中输入 AnkiConnect 配置里的密钥。</string>
 	<key>Event</key>
 	<string>活动</string>
+	<key>Every 5 levels bring a name color and every 10 a new rank. Levels never give points.</key>
+	<string>每 5 级解锁一种名字颜色，每 10 级获得新段位。等级不会带来积分。</string>
 	<key>Every Sunday's top 3 earn a medal</key>
 	<string>每周日前三名获得奖牌</string>
 	<key>Every crew can appear on the weekly top 3 with its members' pets.</key>
@@ -2033,6 +2041,8 @@
 	<string>专注时段一结束，宠物偶尔会说一句鼓励的话，每天最多一次</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>专注阶段走神时，让宠物从刘海里走出来</string>
+	<key>Level %lld</key>
+	<string>等级 %lld</string>
 	<key>Librarian Cardigan</key>
 	<string>图书管理员开衫</string>
 	<key>Like</key>
@@ -2095,6 +2105,8 @@
 	<string>春节</string>
 	<key>Lv %lld</key>
 	<string>Lv %lld</string>
+	<key>Lv %lld: %@</key>
+	<string>Lv %1$lld：%2$@</string>
 	<key>Main display</key>
 	<string>主显示器</string>
 	<key>Make a crew and invite friends</key>
@@ -2243,6 +2255,8 @@
 	<string>接下来，Mac 会询问是否允许 Tabbi 发送提醒。你可以随时在系统设置中更改。</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>接下来，Mac 会询问是否允许 Tabbi 使用你的日历。你可以随时在系统设置中更改。</string>
+	<key>Next: %@ at Lv %lld</key>
+	<string>下一个：Lv %2$lld 解锁%1$@</string>
 	<key>Next: %@, %@</key>
 	<string>下一个：%1$@，%2$@</string>
 	<key>Nightcap</key>
@@ -4317,6 +4331,8 @@
 	<string>你的派对数据</string>
 	<key>Your Party data was deleted.</key>
 	<string>你的派对数据已删除。</string>
+	<key>Your Study Level grows with every hour you focus and never goes down.</key>
+	<string>学习等级随每个专注小时增长，永远不会下降。</string>
 	<key>Your best week</key>
 	<string>你最棒的一周</string>
 	<key>Your best week yet!</key>
@@ -4461,6 +4477,32 @@
 	<string>会议和通话</string>
 	<key>min</key>
 	<string>分钟</string>
+	<key>nameplate.aurora</key>
+	<string>极光</string>
+	<key>nameplate.coral</key>
+	<string>珊瑚</string>
+	<key>nameplate.ember</key>
+	<string>余烬</string>
+	<key>nameplate.gold</key>
+	<string>金色</string>
+	<key>nameplate.honey</key>
+	<string>蜂蜜</string>
+	<key>nameplate.lilac</key>
+	<string>丁香</string>
+	<key>nameplate.mint</key>
+	<string>薄荷</string>
+	<key>nameplate.nebula</key>
+	<string>星云</string>
+	<key>nameplate.peach</key>
+	<string>蜜桃</string>
+	<key>nameplate.plain</key>
+	<string>默认</string>
+	<key>nameplate.rose</key>
+	<string>玫瑰</string>
+	<key>nameplate.sky</key>
+	<string>天空</string>
+	<key>nameplate.starlight</key>
+	<string>星光</string>
 	<key>no free time</key>
 	<string>没有空闲时间</string>
 	<key>nothing yet; pick a sound</key>
@@ -4477,6 +4519,20 @@
 	<string>积分</string>
 	<key>pts</key>
 	<string>分</string>
+	<key>rank.comet</key>
+	<string>彗星</string>
+	<key>rank.ember</key>
+	<string>余烬</string>
+	<key>rank.galaxy</key>
+	<string>银河</string>
+	<key>rank.nebula</key>
+	<string>星云</string>
+	<key>rank.nova</key>
+	<string>新星</string>
+	<key>rank.numbered %@ %@</key>
+	<string>%1$@ %2$@</string>
+	<key>rank.spark</key>
+	<string>火花</string>
 	<key>ready to unlock</key>
 	<string>可以解锁</string>
 	<key>resets %@</key>

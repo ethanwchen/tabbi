@@ -264,9 +264,11 @@ For later versions, one warm line naming the headline change, then short New, Be
 For 1.0.6:
 
 ```
-New things to earn! Fifteen new outfits and the Heirloom shelf, six long-term treasures for steady studiers.
+Study together! Study Crews arrive in the Party tab, with fifteen new outfits and the Heirloom shelf.
 
 New
+- Study Crews: start or join a crew, race for the weekly top 3 by focus hours, and earn medals for your crew's crest
+- Design a crest from frames, ten cute emblems and ten colors; the Hall of Fame keeps every medal
 - 15 outfits, from a Strawberry Cap and Mushroom Cap to a Varsity Jacket and Sailor Collar
 - The Heirloom shelf: the Keeper's Peacoat, Rain Slicker, Koi Yukata, Sushi Chef, Snow Day Puffer and Fireflies
 

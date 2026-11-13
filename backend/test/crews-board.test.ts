@@ -152,6 +152,18 @@ describe("a crew page", () => {
     expect(page.members[0]).not.toHaveProperty("studyLevel");
   });
 
+  it("shows each member's Study Level once their app has shared one", async () => {
+    fresh();
+    const { owner, crew } = await makeCrew({}, await user("Zed"));
+    const amy = await user("Amy");
+    await joinByCode(amy, crew.inviteCode);
+    expect((await call("PATCH", "/v1/me", { studyLevel: 12 }, amy.token)).status).toBe(200);
+    const page = (await call("GET", "/v1/crews/mine", undefined, owner.token)).body.crew;
+    const levels = Object.fromEntries(page.members.map((m: { name: string; studyLevel?: number }) => [m.name, m.studyLevel]));
+    expect(levels).toEqual({ Amy: 12, Zed: undefined });
+    expect(checkCrews("crewReply", { ok: true, crew: page })).toEqual([]);
+  });
+
   it("shows the last three finished weeks, a week outside the top 3 included, and nothing before the crew existed", async () => {
     const monday = fresh();
     const crews = [];

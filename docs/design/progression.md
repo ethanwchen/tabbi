@@ -124,8 +124,8 @@ Every candidate was judged against the notch canvas (about 500 by 150 pt per pan
   Four tiers with a rare Starlight top give returning users something new to light up for months, and a badge is a 24 pt medallion, which fits twelve to a card.
 - **Monthly quests** give someone who has everything a fresh, small reason to come back each month.
   A month that started late or went badly costs nothing, which keeps them free of FOMO and of streak pressure.
-- **Titles shown in Party** were left out: showing them to friends needs a new profile field and a Party protocol bump (`docs/party-compatibility.md`, rule 5), which the iPhone app's planned connection (PR #156) also builds on.
-  They fit better as a later, separate protocol change.
+- **Titles shown in Party** were left out of 1.0.5: showing them to friends needs a new profile field and a Party protocol bump (`docs/party-compatibility.md`, rule 5).
+  The Study Level (below) made that change in 1.0.6: protocol 3 shares the level, whose rank is the title, and the nameplate color.
 - **A room or desk for the pet** was left out: the notch has no room for a scene beside the panel, and it would need a new art pipeline.
 - **Collectible stickers** were folded into the badges: the same collection, without a second set of art to keep readable at notch size.
 - **Seasonal quests** already exist as seasonal events; monthly quests are the year-round, item-free version.
@@ -158,6 +158,142 @@ Progress the app already had when this shipped unlocks quietly at launch (with t
 - **`Pet/progression.json`** (a `VersionedJSON` document, schema 1) keeps what the log alone could lose if day files were deleted by hand: each track's best value so far, the badge tiers reached and when, the months of quests completed, and which tiers were already seen.
   Progress shown is the larger of the log and the best value saved, so deleting old day files never takes progress back.
   It is never synced, like the pet's journal; a file that cannot be read is left alone and never overwritten.
+
+## Study Level (1.0.6)
+
+The badges and outfits reward many habits, each with an end.
+The Study Level is the one ladder with no end: a level earned only from total focus hours, shown on the pet and to friends in Party.
+
+### The rules
+
+- Levels come only from total focus hours: the same focused minutes the Focus time badge counts (`focus.completed`, from the activity log).
+- A level never resets and nothing is ever lost.
+  `Pet/progression.json` keeps the best focus total and the highest level reached, so deleting day files never lowers a level, and a future change to the curve could not either.
+- History counts retroactively.
+  On the first launch with this version a long-time user lands at their real level quietly: the Goals pill shows its dot, and nothing celebrates.
+- Levels give no points.
+  Points stay tied to studying itself (`PetPointsRules`), and `StudyLevelTests` and `ClosetStudyLevelAppTests` prove a level up leaves the points ledger exactly as the same study would anywhere else.
+- Every level, the pet celebrates and the number beside its name goes up; only a level that unlocks a name color or a rank also sparkles over the open panel.
+  The closed notch shows nothing new.
+- Every 5 levels a new nameplate color unlocks, up to Level 60; every 10 levels a new rank and its emblem.
+
+### The curve
+
+The total hours to reach level `n` are `round(4 * n^1.6)` (`StudyLevel.hoursToReach`, the one place the curve lives).
+Level 1 takes 4 hours, so a new user levels up within days; each later level asks a little more than the one before (whole hours round, so neighbours can differ by an hour), never a wall.
+Level 0 is everyone's start, under 4 hours.
+
+The numbers are the design's, kept as they were: nothing in the tests or the snapshots asked for a change.
+The design note said "about 52 h" for Level 5; the exact value is 53 h (`4 * 5^1.6` is 52.5), and the table below is exact.
+The days assume study every day.
+
+| Level | Total hours | This level | 1 h a day | 2 h a day | 3 h a day | Brings |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 4 | 4 | 4 days | 2 days | 1 day |  |
+| 2 | 12 | 8 | 12 days | 6 days | 4 days |  |
+| 3 | 23 | 11 | 23 days | 12 days | 8 days |  |
+| 4 | 37 | 14 | 37 days | 18 days | 12 days |  |
+| 5 | 53 | 16 | 53 days | 26 days | 18 days | Peach name color |
+| 6 | 70 | 17 | 2 months | 35 days | 23 days |  |
+| 7 | 90 | 20 | 3 months | 45 days | 30 days |  |
+| 8 | 111 | 21 | 4 months | 56 days | 37 days |  |
+| 9 | 135 | 24 | 4 months | 2 months | 45 days |  |
+| 10 | 159 | 24 | 5 months | 3 months | 53 days | Ember rank, Ember name color |
+| 11 | 185 | 26 | 6 months | 3 months | 2 months |  |
+| 12 | 213 | 28 | 7 months | 3 months | 2 months |  |
+| 13 | 242 | 29 | 8 months | 4 months | 3 months |  |
+| 14 | 273 | 31 | 9 months | 4 months | 3 months |  |
+| 15 | 305 | 32 | 10 months | 5 months | 3 months | Honey name color |
+| 16 | 338 | 33 | 11 months | 6 months | 4 months |  |
+| 17 | 372 | 34 | 12 months | 6 months | 4 months |  |
+| 18 | 408 | 36 | 13 months | 7 months | 4 months |  |
+| 19 | 445 | 37 | 15 months | 7 months | 5 months |  |
+| 20 | 483 | 38 | 16 months | 8 months | 5 months | Comet rank, Sky name color |
+| 21 | 522 | 39 | 17 months | 9 months | 6 months |  |
+| 22 | 562 | 40 | 18 months | 9 months | 6 months |  |
+| 23 | 604 | 42 | 20 months | 10 months | 7 months |  |
+| 24 | 646 | 42 | 21 months | 11 months | 7 months |  |
+| 25 | 690 | 44 | 23 months | 11 months | 8 months | Mint name color |
+| 26 | 735 | 45 | 2.0 years | 12 months | 8 months |  |
+| 27 | 780 | 45 | 2.1 years | 13 months | 9 months |  |
+| 28 | 827 | 47 | 2.3 years | 14 months | 9 months |  |
+| 29 | 875 | 48 | 2.4 years | 14 months | 10 months |  |
+| 30 | 924 | 49 | 2.5 years | 15 months | 10 months | Nova rank, Rose name color |
+| 31 | 973 | 49 | 2.7 years | 16 months | 11 months |  |
+| 32 | 1,024 | 51 | 2.8 years | 17 months | 11 months |  |
+| 33 | 1,076 | 52 | 2.9 years | 18 months | 12 months |  |
+| 34 | 1,128 | 52 | 3.1 years | 19 months | 12 months |  |
+| 35 | 1,182 | 54 | 3.2 years | 19 months | 13 months | Lilac name color |
+| 36 | 1,236 | 54 | 3.4 years | 20 months | 14 months |  |
+| 37 | 1,292 | 56 | 3.5 years | 21 months | 14 months |  |
+| 38 | 1,348 | 56 | 3.7 years | 22 months | 15 months |  |
+| 39 | 1,405 | 57 | 3.8 years | 23 months | 15 months |  |
+| 40 | 1,463 | 58 | 4.0 years | 2.0 years | 16 months | Nebula rank, Nebula name color |
+| 41 | 1,522 | 59 | 4.2 years | 2.1 years | 17 months |  |
+| 42 | 1,582 | 60 | 4.3 years | 2.2 years | 17 months |  |
+| 43 | 1,643 | 61 | 4.5 years | 2.2 years | 18 months |  |
+| 44 | 1,704 | 61 | 4.7 years | 2.3 years | 19 months |  |
+| 45 | 1,767 | 63 | 4.8 years | 2.4 years | 19 months | Coral name color |
+| 46 | 1,830 | 63 | 5.0 years | 2.5 years | 20 months |  |
+| 47 | 1,894 | 64 | 5.2 years | 2.6 years | 21 months |  |
+| 48 | 1,959 | 65 | 5.4 years | 2.7 years | 21 months |  |
+| 49 | 2,025 | 66 | 5.5 years | 2.8 years | 22 months |  |
+| 50 | 2,091 | 66 | 5.7 years | 2.9 years | 23 months | Galaxy rank, Gold name color |
+| 51 | 2,159 | 68 | 5.9 years | 3.0 years | 24 months |  |
+| 52 | 2,227 | 68 | 6.1 years | 3.0 years | 2.0 years |  |
+| 53 | 2,296 | 69 | 6.3 years | 3.1 years | 2.1 years |  |
+| 54 | 2,365 | 69 | 6.5 years | 3.2 years | 2.2 years |  |
+| 55 | 2,436 | 71 | 6.7 years | 3.3 years | 2.2 years | Aurora name color |
+| 56 | 2,507 | 71 | 6.9 years | 3.4 years | 2.3 years |  |
+| 57 | 2,579 | 72 | 7.1 years | 3.5 years | 2.4 years |  |
+| 58 | 2,652 | 73 | 7.3 years | 3.6 years | 2.4 years |  |
+| 59 | 2,725 | 73 | 7.5 years | 3.7 years | 2.5 years |  |
+| 60 | 2,800 | 75 | 7.7 years | 3.8 years | 2.6 years | Galaxy II rank, Starlight name color |
+
+Past Level 60 the curve keeps going without a cap: Level 64 at 3,104 h, Level 70 at 3,583 h, Level 100 at 6,340 h.
+Friends are told at most Level 999 (about 252,000 hours), which only stops a garbled number.
+
+### Ranks
+
+| Levels | Rank | Emblem |
+| --- | --- | --- |
+| 0 to 9 | Spark | a warm four point sparkle |
+| 10 to 19 | Ember | an orange flame with a hot core |
+| 20 to 29 | Comet | a pale blue comet with its tail |
+| 30 to 39 | Nova | a pink star bursting with rays |
+| 40 to 49 | Nebula | a violet cloud with a pink and white swirl |
+| 50 to 59 | Galaxy | an indigo spiral galaxy with a gold core |
+| 60, 70, 80 ... | Galaxy II, III, IV ... | the Galaxy with one small gold star per numeral in its corners, up to four (Galaxy V on) |
+
+The emblems are drawn in the pet's sprite language, like the badges: a 16 by 16 grid per named rank and the small star in `Pets/PetArt/rank.json` (`pets.v1`), stamped one pixel in from the edge of an 18 by 18 canvas and colored through each rank's `RankPalette` (`RankArt`).
+They render through `PetCanvas` at whole device pixels per sprite pixel, nearest neighbor: 1 pt per pixel beside the pet's name, 1.5 pt on the Level card and 0.5 pt (one Retina pixel) in Party's tight rows.
+The Windows port draws them from the same file, and `shared/fixtures/progression/levels.json` pins every emblem's pixels.
+
+### Nameplate colors
+
+A nameplate color tints the pet's name under it in the Closet and the person's name on their Party card.
+Plain is everyone's; then Peach (5), Ember (10), Honey (15), Sky (20), Mint (25), Rose (30), Lilac (35), Nebula (40), Coral (45), Gold (50), Aurora (55) and Starlight (60).
+From Nebula on, the name also glows softly.
+Every color reads at 7:1 or better on the black notch.
+The palette ends at Level 60, where Galaxy II begins; past that the ranks keep counting.
+
+### Where it shows
+
+- **The pet's name line** in the Closet: "Mochi  [emblem] Lv 12 Ember", the name in its nameplate color.
+  Where the card is narrow it drops the rank's name, then "Lv", and only a name too long for the card scrolls, so nothing is ever cut off in any language or panel size; the tooltip always says it in full.
+- **The Level card** at the top of the Goals section: the emblem, "Level 12  Ember", what the next level brings ("Next: Honey name color at Lv 15", or "Lv 15: Honey name color" where room is short), a bar toward the next level with "230 of 242 h to Level 13" (or "230/242 h"), and the thirteen nameplate colors as dots.
+  Unlocked dots are clicked to wear, the worn one is ringed, and locked ones wait dimmed with their level in the tooltip.
+- **Party**: the rank's emblem before each member's name and the name in their nameplate color, and in the friends list "Lv 12" beside the name (shortened to "12", then to the emblem alone, before the name would be cut); every tooltip names the level and rank.
+  Someone on an older app shows neither, never a wrong level.
+
+### Data
+
+- `StudyLevel`, `StudyRank`, `Nameplate` and `StudyStanding` (`Progression/StudyLevel.swift`) and `RankArt` are pure TabbiKitCore.
+- `PetProgression` derives the level from the focus total and the save, reports levels gained in a refresh (`Change.levels`), and keeps the picked nameplate.
+- `Pet/progression.json` goes to schema 2, additively: `level` (the highest reached), `levelSeen` (the highest seen on the Goals shelf) and `nameplate` (the color picked, absent for plain).
+  A version 1 file reads as level 0 never seen, which is what makes the first launch land quietly with the dot.
+  The Closet now writes the file whenever anything in it changes, not only when a tier is reached, so every new best focus total is kept.
+- Party gets the level and nameplate from the Closet (`ClosetStore.standings`) and shares them in the profile (protocol 3, `docs/party-compatibility.md`).
 
 ## Party and Windows
 

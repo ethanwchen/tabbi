@@ -157,6 +157,10 @@
 	<string>%@ يشتاق إليك</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>نُقل %1$@ إلى الموضع %2$lld من %3$lld</string>
+	<key>%@ name color</key>
+	<string>لون الاسم %@</string>
+	<key>%@ name color, unlocks at Level %lld</key>
+	<string>لون الاسم %1$@، يُفتح عند المستوى %2$lld</string>
 	<key>%@ napped on a sunny windowsill</key>
 	<string>%@ غفا على حافة نافذة مشمسة</string>
 	<key>%@ naps until the timer runs</key>
@@ -317,6 +321,8 @@
 	<string>أُنجز %1$lld من %2$lld</string>
 	<key>%lld of %lld earned</key>
 	<string>حصلت على %1$lld من %2$lld</string>
+	<key>%lld of %lld h to Level %lld</key>
+	<string>%1$lld من %2$lld س حتى المستوى %3$lld</string>
 	<key>%lld of %lld outfits</key>
 	<string>%1$lld من %2$lld أزياء</string>
 	<key>%lld/%lld days</key>
@@ -1429,6 +1435,8 @@
 	<string>أدخل المفتاح من إعدادات AnkiConnect في الإعدادات.</string>
 	<key>Event</key>
 	<string>حدث</string>
+	<key>Every 5 levels bring a name color and every 10 a new rank. Levels never give points.</key>
+	<string>كل 5 مستويات تفتح لونًا للاسم، وكل 10 رتبة جديدة. المستويات لا تمنح نقاطًا أبدًا.</string>
 	<key>Every Sunday's top 3 earn a medal</key>
 	<string>تحصل أفضل 3 فرق كل أحد على ميدالية</string>
 	<key>Every crew can appear on the weekly top 3 with its members' pets.</key>
@@ -2017,6 +2025,8 @@
 	<string>دع رفيقك يقول عبارة تشجيع نادرة فور انتهاء جلسة تركيز، مرة في اليوم على الأكثر</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>دع رفيقك يخرج من النوتش حين يتشتت انتباهك أثناء التركيز</string>
+	<key>Level %lld</key>
+	<string>المستوى %lld</string>
 	<key>Librarian Cardigan</key>
 	<string>سترة أمين المكتبة</string>
 	<key>Like</key>
@@ -2079,6 +2089,8 @@
 	<string>رأس السنة القمرية</string>
 	<key>Lv %lld</key>
 	<string>مستوى %lld</string>
+	<key>Lv %lld: %@</key>
+	<string>مستوى %1$lld: %2$@</string>
 	<key>Main display</key>
 	<string>الشاشة الرئيسية</string>
 	<key>Make a crew and invite friends</key>
@@ -2227,6 +2239,8 @@
 	<string>بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع إرسال التنبيهات. يمكنك تغيير إجابتك في أي وقت من إعدادات النظام.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>بعد ذلك، يسألك جهاز Mac إن كان Tabbi يستطيع استخدام تقويمك. يمكنك تغيير إجابتك في أي وقت من إعدادات النظام.</string>
+	<key>Next: %@ at Lv %lld</key>
+	<string>التالي: %1$@ عند مستوى %2$lld</string>
 	<key>Next: %@, %@</key>
 	<string>التالي: %1$@، %2$@</string>
 	<key>Nightcap</key>
@@ -4279,6 +4293,8 @@
 	<string>بياناتك في المجموعة</string>
 	<key>Your Party data was deleted.</key>
 	<string>حُذفت بياناتك في المجموعة.</string>
+	<key>Your Study Level grows with every hour you focus and never goes down.</key>
+	<string>يرتفع مستوى دراستك مع كل ساعة تركيز ولا ينخفض أبدًا.</string>
 	<key>Your best week</key>
 	<string>أفضل أسبوع لك</string>
 	<key>Your best week yet!</key>
@@ -4419,6 +4435,32 @@
 	<string>الاجتماعات والمكالمات</string>
 	<key>min</key>
 	<string>دقيقة</string>
+	<key>nameplate.aurora</key>
+	<string>شفقي</string>
+	<key>nameplate.coral</key>
+	<string>مرجاني</string>
+	<key>nameplate.ember</key>
+	<string>جمري</string>
+	<key>nameplate.gold</key>
+	<string>ذهبي</string>
+	<key>nameplate.honey</key>
+	<string>عسلي</string>
+	<key>nameplate.lilac</key>
+	<string>ليلكي</string>
+	<key>nameplate.mint</key>
+	<string>نعناعي</string>
+	<key>nameplate.nebula</key>
+	<string>سديمي</string>
+	<key>nameplate.peach</key>
+	<string>خوخي</string>
+	<key>nameplate.plain</key>
+	<string>عادي</string>
+	<key>nameplate.rose</key>
+	<string>وردي</string>
+	<key>nameplate.sky</key>
+	<string>سماوي</string>
+	<key>nameplate.starlight</key>
+	<string>نجمي</string>
 	<key>no free time</key>
 	<string>لا وقت فراغ</string>
 	<key>nothing yet; pick a sound</key>
@@ -4435,6 +4477,20 @@
 	<string>نقاط</string>
 	<key>pts</key>
 	<string>نقطة</string>
+	<key>rank.comet</key>
+	<string>مذنّب</string>
+	<key>rank.ember</key>
+	<string>جمرة</string>
+	<key>rank.galaxy</key>
+	<string>مجرّة</string>
+	<key>rank.nebula</key>
+	<string>سديم</string>
+	<key>rank.nova</key>
+	<string>نجم مستعر</string>
+	<key>rank.numbered %@ %@</key>
+	<string>%1$@ %2$@</string>
+	<key>rank.spark</key>
+	<string>شرارة</string>
 	<key>ready to unlock</key>
 	<string>جاهز للفتح</string>
 	<key>resets %@</key>

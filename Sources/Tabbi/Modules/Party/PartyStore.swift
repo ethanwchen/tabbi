@@ -79,6 +79,9 @@ final class PartyStore: ObservableObject {
     private var focus: ProvidedFocus?
     /// My pet as friends should see it.
     @Published private(set) var pet = PetProfile.starter(.cat)
+    /// My Study Level and nameplate as friends should see them; nil until
+    /// the Closet has counted the log, so a level 0 is never sent by mistake.
+    @Published private(set) var standing: StudyStanding?
     /// The names the server refused on the last connect (say, a name a
     /// maintainer replaced); `refusedNames` adds the ones the app's own
     /// filter catches as they are typed.
@@ -195,6 +198,22 @@ final class PartyStore: ObservableObject {
         profiles
             .sink { [weak self] profile in self?.update(pet: profile) }
             .store(in: &cancellables)
+    }
+
+    /// Follows the pet's Study Level and nameplate color
+    /// (`ClosetStore.standings`), so friends see them beside the pet.
+    func follow(standing standings: AnyPublisher<StudyStanding, Never>) {
+        standings
+            .removeDuplicates()
+            .sink { [weak self] standing in self?.update(standing: standing) }
+            .store(in: &cancellables)
+    }
+
+    /// My Study Level or nameplate changed: friends see it after the sync.
+    func update(standing: StudyStanding) {
+        guard standing != self.standing else { return }
+        self.standing = standing
+        if account != nil { connect() }
     }
 
     /// Makes the app-wide name (`AppSettings.displayName`) the name friends
@@ -900,7 +919,8 @@ final class PartyStore: ObservableObject {
         guard isRunning, let account else { return }
         connectTask?.cancel()
         state.willReconnect()
-        let update = settings.profileUpdate(for: pet)
+        var update = settings.profileUpdate(for: pet)
+        if let standing { update = update.sharing(standing) }
         connectTask = Task { [weak self] in
             do {
                 let profile = try await account.connect(profile: update)

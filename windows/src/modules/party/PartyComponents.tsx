@@ -17,6 +17,8 @@ import { PetView } from "../../ui/kit/PetView";
 import { Pill } from "../../ui/kit/Pill";
 import { Tooltip } from "../../ui/kit/Tooltip";
 import { useKit } from "../../ui/kit/context";
+import { useElementWidth } from "../../ui/kit/useElementWidth";
+import { textWidth } from "../../ui/shell/measure";
 import { PetPlayer } from "../../ui/kit/petPlayer";
 
 /** The dot beside a status: accent while studying, amber on a break, green when around, gray when away. */
@@ -152,7 +154,6 @@ export function PartyPillButton({
  */
 export function PartyCodeField({
   placeholder,
-  shortPlaceholder,
   symbol,
   length,
   help,
@@ -160,8 +161,6 @@ export function PartyCodeField({
   onFocusChange,
 }: {
   placeholder: string;
-  /** A shorter placeholder for a field too narrow for `placeholder` ("Code" for "Code von Freund"), so the hint is never cut. */
-  shortPlaceholder?: string;
   symbol: string;
   length: number;
   help: string;
@@ -171,24 +170,31 @@ export function PartyCodeField({
   const [text, setText] = useState("");
   const [focused, setFocused] = useState(false);
   const input = useRef<HTMLInputElement>(null);
-  const [fits, setFits] = useState(true);
+  const [field, fieldWidth] = useElementWidth<HTMLDivElement>();
+  // The placeholder's width in its own font, measured on the input as drawn.
+  const [placeholderWidth, setPlaceholderWidth] = useState(0);
   useLayoutEffect(() => {
     const element = input.current;
-    if (!element || shortPlaceholder === undefined) return;
-    const measure = () => {
-      const context = document.createElement("canvas").getContext("2d");
-      if (!context) return;
-      const style = getComputedStyle(element);
-      context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-      setFits(context.measureText(placeholder).width <= element.clientWidth + 0.5);
-    };
-    measure();
-    if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(measure);
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [placeholder, shortPlaceholder]);
-  const hint = fits || shortPlaceholder === undefined ? placeholder : shortPlaceholder;
+    if (!element) return;
+    const style = getComputedStyle(element, "::placeholder");
+    setPlaceholderWidth(textWidth(placeholder, parseFloat(style.fontSize) || PLACEHOLDER_SIZE, Number(style.fontWeight) || 400, style.fontFamily));
+  }, [placeholder]);
+  // As on the Mac, Paste shrinks to its icon before the placeholder is cut,
+  // and then the field's leading symbol goes; the field never gets narrower
+  // than that last layout needs, so a row that cannot hold it shortens
+  // something else instead (the lobby's Start button).
+  // The word "Paste" as drawn (the language's font can differ from the
+  // canvas estimate), measured while it shows.
+  const pasteButton = useRef<HTMLButtonElement>(null);
+  const [pasteWord, setPasteWord] = useState(0);
+  const layout = codeFieldLayout(placeholderWidth, fieldWidth, pasteWord || undefined);
+  useLayoutEffect(() => {
+    const button = pasteButton.current;
+    if (!button || layout !== "full") return;
+    const width = button.getBoundingClientRect().width;
+    if (width > 0 && Math.abs(width - pasteWord) > 0.25) setPasteWord(width);
+  }, [layout, pasteWord]);
+  const pasteIconOnly = layout !== "full";
   const send = () => {
     const draft = text;
     if (draft.trim() === "") return;
@@ -220,13 +226,19 @@ export function PartyCodeField({
   };
   return (
     <Tooltip text={help}>
-      <div className="party-code-field" data-focused={focused || undefined} onClick={() => input.current?.focus()}>
-        <Icon id={symbol} size={11} className="party-code-field-symbol" />
+      <div
+        ref={field}
+        className="party-code-field"
+        data-focused={focused || undefined}
+        style={{ minWidth: placeholderWidth > 0 ? codeFieldMinWidth(placeholderWidth) : undefined }}
+        onClick={() => input.current?.focus()}
+      >
+        {layout !== "noSymbol" && <Icon id={symbol} size={11} className="party-code-field-symbol" />}
         <input
           ref={input}
           className="party-code-field-input"
           aria-label={placeholder}
-          placeholder={hint}
+          placeholder={placeholder}
           value={text}
           spellCheck={false}
           autoComplete="off"
@@ -243,8 +255,8 @@ export function PartyCodeField({
         />
         {text === "" ? (
           <Tooltip text={tr("Paste a code you copied")}>
-            <button type="button" className="party-paste" onClick={() => void paste()}>
-              {tr("Paste")}
+            <button ref={pasteButton} type="button" className="party-paste" data-icon-only={pasteIconOnly || undefined} aria-label={tr("Paste")} onClick={() => void paste()}>
+              {pasteIconOnly ? <Icon id="doc.on.clipboard" size={9} /> : tr("Paste")}
             </button>
           </Tooltip>
         ) : (
@@ -253,6 +265,43 @@ export function PartyCodeField({
       </div>
     </Tooltip>
   );
+}
+
+/* The code field's type and the Paste capsule's sizes (party.css). */
+const PLACEHOLDER_SIZE = 12;
+const PASTE_SIZE = 10.5;
+const PASTE_PADDING = 16;
+const PASTE_ICON_WIDTH = 20;
+
+/* The field's padding (8 and 4), the gap between its items and its symbol. */
+const FIELD_PADDING = 8 + 4;
+const FIELD_GAP = 8;
+const FIELD_SYMBOL = 11;
+
+/** The Paste capsule's width with its word. */
+function pasteWordWidth(): number {
+  return textWidth(tr("Paste"), PASTE_SIZE, 500) + PASTE_PADDING;
+}
+
+export type CodeFieldLayout = "full" | "pasteIcon" | "noSymbol";
+
+/** The width a code field needs to show a placeholder `placeholder` wide whole, in `layout`. */
+export function codeFieldWidth(placeholder: number, layout: CodeFieldLayout, pasteWord: number = pasteWordWidth()): number {
+  const symbol = layout === "noSymbol" ? 0 : FIELD_SYMBOL + FIELD_GAP;
+  const paste = layout === "full" ? pasteWord : PASTE_ICON_WIDTH;
+  return FIELD_PADDING + symbol + placeholder + FIELD_GAP + paste;
+}
+
+/** The narrowest a code field may get: its placeholder whole, with Paste as an icon and no symbol. */
+export function codeFieldMinWidth(placeholder: number): number {
+  return Math.ceil(codeFieldWidth(placeholder, "noSymbol"));
+}
+
+/** The roomiest layout whose placeholder shows whole in a field `width` wide (0 is not measured yet). */
+export function codeFieldLayout(placeholder: number, width: number, pasteWord: number = pasteWordWidth()): CodeFieldLayout {
+  if (width === 0 || placeholder === 0) return "full";
+  const layouts: CodeFieldLayout[] = ["full", "pasteIcon"];
+  return layouts.find((layout) => codeFieldWidth(placeholder, layout, pasteWord) <= width + 0.5) ?? "noSymbol";
 }
 
 /** The user's locale for dates. */

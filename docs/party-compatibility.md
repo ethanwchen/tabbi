@@ -20,8 +20,9 @@ The catalog (`backend/shared/catalog.json`) has its own `version`, which counts 
 | Protocol | Apps | What changed |
 | --- | --- | --- |
 | 1 | up to 1.0.0 | Instant friendships, catalog version 1 |
-| 2 | 1.0.1 up to Study Crews | Friend requests, every Closet item has a server id (catalog version 2), ten profile colors, the tab badge count in heartbeat replies |
-| 3 | from Study Crews | Study Crews: new `/v1/crews` routes (the weekly board and the all-time Hall of Fame among them) and the `crews` catalog beside `catalog` in `GET /v1/catalog`; no existing route, body or reply changes |
+| 2 | from this release | Friend requests, every Closet item has a server id (catalog version 2), ten profile colors, the tab badge count in heartbeat replies |
+| 3 | Study Level builds before Study Crews (1.0.6 ships 4) | The Study Level and nameplate color in the profile (`studyLevel`, `nameplate`), the catalog's `nameplates` list and `limits.maxStudyLevel` |
+| 4 | from 1.0.6 | Study Crews: new `/v1/crews` routes (the weekly board and the all-time Hall of Fame among them), the `crews` catalog beside `catalog` in `GET /v1/catalog` and the `crews` field in heartbeat replies, which older apps ignore |
 
 ## Rules for every change
 
@@ -58,15 +59,31 @@ Catalog version 5 adds release 7's shop items (`docs/economy.md`): seven outfits
 Older apps drop the new ids and draw the rest of the pet.
 A server still on catalog version 4 refuses them, so the app first sends the profile again without just those ids (`PartyProfileUpdate.forCatalogVersion4()`), then without version 4's ids as well, and only then as catalog version 1 takes it, one catalog at a time.
 
+## Study Level across versions
+
+Protocol 3 adds two optional profile fields: `studyLevel`, the Study Level from 0 (`docs/design/progression.md`), and `nameplate`, the id of the name color picked, from the catalog's `nameplates`.
+The rank is never sent: it follows from the level, so every app names it in its own language.
+
+- They are display only.
+  The server clamps `studyLevel` to 0 through `limits.maxStudyLevel` (999), refuses anything that is not a whole number and any nameplate id the catalog does not list, and never derives anything from them: not points, not the older `level` field, not the leaderboard.
+- Replies carry them only for users whose app sent them, so a reply about someone on an older app looks exactly as before, and apps show no level for that person rather than a wrong one.
+- Older apps (protocol 1 and 2) never send them and ignore them in replies, so an older and a current app share a party and a friends list as before.
+- A current app talking to a server from before protocol 3 has the two fields refused as unknown; it sends the profile again without them (`PartyProfileUpdate.withoutStudyLevel()`), before any of the older catalog fallbacks, so Party stays online and friends there see the pet without a level.
+- A value an app cannot read (a string, a level out of range, an unknown nameplate) reads as no level, or as plain, never as an error.
+- The catalog's `version` stays as it was: the nameplate ids are their own list, added with the protocol, and like every id they are only ever added.
+
+`backend/test/compat.test.ts` runs a protocol 2 app and a current app as friends in one party, an app with no protocol header beside them, and the server's validation; `PartyAccountTests` runs a current app against a server that refuses the fields; `shared/fixtures/party/party.json` pins the bodies and how replies with and without a level read on the Mac and on Windows.
+
 ## Crews across versions
 
-Study Crews are protocol 3 and only add: new routes under `/v1/crews`, new tables, and one new field in the `GET /v1/catalog` reply (`crews`, beside the unchanged `catalog`).
-- An app on protocol 1 or 2 never calls a crews route, and every route it does call answers exactly as before: friends, friend requests, parties, presence and the leaderboard are untouched, and no Party reply gains a crews field.
-- A user can be in a crew on a protocol 3 app and use Party on an older app (another Mac, or Windows before its update) at the same time; the older app just shows no Crew section.
-  Their crew membership stays, and their minutes count only from the sessions a protocol 3 app reports.
+Study Crews are protocol 4 and only add: new routes under `/v1/crews`, new tables, and one new field in the `GET /v1/catalog` reply (`crews`, beside the unchanged `catalog`).
+- An app on protocol 1, 2 or 3 never calls a crews route, and every route it does call answers exactly as before: friends, friend requests, parties, presence and the leaderboard are untouched, and no Party reply gains a crews field.
+- A user can be in a crew on a protocol 4 app and use Party on an older app (another Mac, or Windows before its update) at the same time; the older app just shows no Crew section.
+  Their crew membership stays, and their minutes count only from the sessions a protocol 4 app reports.
+- Crew pages carry each member's `studyLevel` the same way profiles do: only for members whose app sent one, display only, and an app that cannot read it shows no level.
 - The heartbeat reply gains one field, `crews` (my crew and its waiting join requests); older apps ignore it, and nothing else in the reply changes.
 - The friends leaderboard keeps summing heartbeat minutes; crews never use them, so an older app's heartbeats neither help nor hurt a crew.
 - Crews routes need no `Tabbi-Protocol` header, so a third-party or older client that reaches one gets the same answer as a current app.
 - Board lists and Hall of Fame pages have no fixed length (ties share a place), and Hall of Fame cursors are opaque, so an app must read them as given and never build one.
 - Crest frame, emblem and color ids, like catalog ids, are only ever added once shipped; an app draws an id it does not know as the first one, so a newer server never breaks an older crews app.
-- `backend/test/crews.test.ts` keeps a protocol 1, a protocol 2 and a protocol 3 app friends and in one party while the protocol 3 user is in a crew, and `backend/test/compat.test.ts` checks the shared crews fixture against the schema.
+- `backend/test/crews.test.ts` keeps a protocol 1, a protocol 2 and a protocol 4 app friends and in one party while the protocol 4 user is in a crew, and `backend/test/compat.test.ts` checks the shared crews fixture against the schema.

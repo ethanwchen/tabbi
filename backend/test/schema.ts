@@ -10,9 +10,9 @@ import crews from "../../shared/schemas/crews.v1.schema.json";
 
 type Node = Record<string, unknown>;
 const KNOWN = new Set([
-  "$schema", "$id", "title", "description", "$defs", "$ref", "type", "const", "enum", "pattern", "minimum",
+  "$schema", "$id", "title", "description", "$defs", "$ref", "type", "const", "enum", "pattern", "minimum", "maximum",
   "maxItems", "uniqueItems", "required", "properties", "additionalProperties", "items", "oneOf",
-  "maximum", "minLength", "maxLength", "minItems",
+  "minLength", "maxLength", "minItems",
 ]);
 
 export const partySchema = schema as unknown as Node;

@@ -20,7 +20,7 @@ const FULL = {
 describe("worker basics", () => {
   it("answers the health check, the catalog and CORS preflight", async () => {
     const root = await call("GET", "/");
-    expect(root.body).toEqual({ ok: true, service: "tabbi-friends", version: 1, protocol: 3, minProtocol: 1 });
+    expect(root.body).toEqual({ ok: true, service: "tabbi-friends", version: 1, protocol: 4, minProtocol: 1 });
     const cat = await call("GET", "/v1/catalog");
     // Protocol 3 adds the crews catalog beside the Party one; `catalog` is unchanged for older apps.
     expect(cat.body).toEqual({ ok: true, catalog, crews: crewsCatalog });
@@ -102,6 +102,14 @@ describe("profile validation", () => {
     ["huge points", { points: 1e12 }, "invalid_field"],
     ["level zero", { level: 0 }, "invalid_field"],
     ["level as string", { level: "3" }, "invalid_field"],
+    ["study level as string", { studyLevel: "12" }, "invalid_field"],
+    ["fractional study level", { studyLevel: 12.5 }, "invalid_field"],
+    ["study level as boolean", { studyLevel: true }, "invalid_field"],
+    ["study level as object", { studyLevel: {} }, "invalid_field"],
+    ["study level as array", { studyLevel: [12] }, "invalid_field"],
+    ["study level NaN text", { studyLevel: "NaN" }, "invalid_field"],
+    ["unknown nameplate", { nameplate: "rainbow" }, "invalid_field"],
+    ["nameplate not a string", { nameplate: 3 }, "invalid_field"],
   ];
   it.each(bad)("rejects %s on register and PATCH /v1/me", async (_label, body, error) => {
     expectError(await call("POST", "/v1/register", body, undefined, freshIp()), 400, error);
@@ -114,6 +122,54 @@ describe("profile validation", () => {
     expectError(await call("PATCH", "/v1/me", "{nope", a.token), 400, "invalid_json");
     expectError(await call("PATCH", "/v1/me", "[1]", a.token), 400, "invalid_json");
     expectError(await call("PATCH", "/v1/me", { name: "x".repeat(5000) }, a.token), 413, "body_too_large");
+  });
+});
+
+describe("the Study Level (protocol 3)", () => {
+  it("is left out of the profile until an app sends it", async () => {
+    const a = await register(FULL);
+    expect(a.profile).not.toHaveProperty("studyLevel");
+    expect(a.profile).not.toHaveProperty("nameplate");
+  });
+
+  it("stores a level and nameplate, clamping a level out of range rather than refusing it", async () => {
+    const a = await register({ studyLevel: 12, nameplate: "honey" });
+    expect(a.profile).toMatchObject({ studyLevel: 12, nameplate: "honey" });
+    expect((await call("PATCH", "/v1/me", { studyLevel: 5000 }, a.token)).body.profile.studyLevel).toBe(999);
+    expect((await call("PATCH", "/v1/me", { studyLevel: -3 }, a.token)).body.profile.studyLevel).toBe(0);
+    expect((await call("PATCH", "/v1/me", { studyLevel: 1e300 }, a.token)).body.profile.studyLevel).toBe(catalog.limits.maxStudyLevel);
+    expect((await call("PATCH", "/v1/me", { studyLevel: 37, nameplate: "aurora" }, a.token)).body.profile)
+      .toMatchObject({ studyLevel: 37, nameplate: "aurora" });
+  });
+
+  it("keeps the stored values when a field is null or missing", async () => {
+    const a = await register({ studyLevel: 12, nameplate: "honey" });
+    const r = await call("PATCH", "/v1/me", { studyLevel: null, nameplate: null, petName: "Kiwi" }, a.token);
+    expect(r.body.profile).toMatchObject({ studyLevel: 12, nameplate: "honey", petName: "Kiwi" });
+    expect((await call("GET", "/v1/me", undefined, a.token)).body.profile).toMatchObject({ studyLevel: 12, nameplate: "honey" });
+  });
+
+  it("refuses a level that is not a finite whole number, even written as raw JSON", async () => {
+    const a = await register();
+    expectError(await call("PATCH", "/v1/me", '{"studyLevel": 1e400}', a.token), 400, "invalid_field");
+    expectError(await call("PATCH", "/v1/me", '{"studyLevel": -1e400}', a.token), 400, "invalid_field");
+    expectError(await call("PATCH", "/v1/me", '{"studyLevel": 3.000001}', a.token), 400, "invalid_field");
+  });
+
+  it("derives nothing from the level: points, the old level field and the leaderboard stay as they were", async () => {
+    const a = await register({ points: 40, level: 2 });
+    const before = (await call("GET", "/v1/leaderboard", undefined, a.token)).body;
+    const r = await call("PATCH", "/v1/me", { studyLevel: 999, nameplate: "starlight" }, a.token);
+    expect(r.body.profile).toMatchObject({ points: 40, level: 2, studyLevel: 999 });
+    const after = (await call("GET", "/v1/leaderboard", undefined, a.token)).body;
+    expect(after.entries.map((e: { minutes: number; rank: number }) => [e.rank, e.minutes]))
+      .toEqual(before.entries.map((e: { minutes: number; rank: number }) => [e.rank, e.minutes]));
+  });
+
+  it("lists every nameplate id an app may send", () => {
+    expect(catalog.nameplates).toEqual(["plain", "peach", "ember", "honey", "sky", "mint", "rose", "lilac", "nebula",
+      "coral", "gold", "aurora", "starlight"]);
+    expect(catalog.limits.maxStudyLevel).toBe(999);
   });
 });
 

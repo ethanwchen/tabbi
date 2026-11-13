@@ -40,7 +40,8 @@ import { PartyError, partyErrorMessage } from "../../core/party/partyError";
 import { PartyHeartbeatSchedule } from "../../core/party/partyHeartbeatSchedule";
 import type { PartyInvite } from "../../core/party/partyInvite";
 import { PartyInviteFlow } from "../../core/party/partyInviteFlow";
-import { PartyCode, type Party, type PartyCrewsPulse, type PartyFriendRequest, type PartyProfile } from "../../core/party/partyModels";
+import { PartyCode, sharingStanding, type Party, type PartyCrewsPulse, type PartyFriendRequest, type PartyProfile } from "../../core/party/partyModels";
+import type { StudyStanding } from "../../core/progression/studyLevel";
 import { NO_REFUSAL, refusalUnion, type PartyBlockedUser, type PartyNameRefusal, type PartyReport, type PartyReportReason } from "../../core/party/partyModeration";
 import { PartyPresenceTracker } from "../../core/party/partyPresenceTracker";
 import { PartyRefreshPlan, type PartyFeed } from "../../core/party/partyRefreshPlan";
@@ -106,6 +107,8 @@ export interface PartyStoreState {
   readonly deletionNotice: string | undefined;
   /** My pet as friends should see it. */
   readonly pet: PetProfile;
+  /** My Study Level and nameplate as friends should see them (ClosetStore's standing). */
+  readonly standing: StudyStanding | undefined;
   /** The names the server refused on the last connect. */
   readonly serverRefusedNames: PartyNameRefusal;
   /** Whether the stored settings have been read; nothing connects before. */
@@ -200,6 +203,7 @@ export class PartyStore extends Store<PartyStoreState> {
       celebration: undefined,
       deletionNotice: undefined,
       pet,
+      standing: undefined,
       serverRefusedNames: NO_REFUSAL,
       settingsLoaded: ephemeral,
     });
@@ -220,11 +224,15 @@ export class PartyStore extends Store<PartyStoreState> {
     const context = this.context;
     this.stops.push(
       context.snapshot.subscribe(() => this.focusDidChange(context.snapshot.get().focus)),
-      studyPet(context).subscribe(() => this.updatePet(studyPet(context).state.profile)),
+      studyPet(context).subscribe(() => {
+        this.updatePet(studyPet(context).state.profile);
+        this.updateStanding(studyPet(context).state.progression.standing);
+      }),
       context.settings.settings.subscribe(() => this.nameDidChange(context.settings.current.displayName)),
     );
     this.focusDidChange(context.snapshot.get().focus);
     this.nameDidChange(context.settings.current.displayName);
+    this.updateStanding(studyPet(context).state.progression.standing);
   }
 
   /** Each stay in a shared session as it ends, whether it ran to its end or was cut short. */
@@ -527,6 +535,14 @@ export class PartyStore extends Store<PartyStoreState> {
     if (pet.equals(this.state.pet)) return;
     if (pet.name !== this.state.pet.name) this.setState({ serverRefusedNames: { ...this.state.serverRefusedNames, petName: false } });
     this.setState({ pet });
+    if (this.account !== undefined) this.connect();
+  }
+
+  /** My Study Level or nameplate changed: friends see it after the sync. */
+  private updateStanding(standing: StudyStanding): void {
+    const current = this.state.standing;
+    if (current !== undefined && current.level === standing.level && current.nameplate === standing.nameplate) return;
+    this.setState({ standing });
     if (this.account !== undefined) this.connect();
   }
 
@@ -1019,7 +1035,9 @@ export class PartyStore extends Store<PartyStoreState> {
     this.cancelConnect();
     const generation = this.connectGeneration;
     this.replaceParty((party) => party.willReconnect());
-    const update = partyProfileUpdate(this.state.settings, this.state.pet);
+    const petUpdate = partyProfileUpdate(this.state.settings, this.state.pet);
+    const standing = this.state.standing;
+    const update = standing === undefined ? petUpdate : sharingStanding(petUpdate, standing);
     account.connect(update).then(
       (profile) => {
         if (generation !== this.connectGeneration || this.account !== account) return;

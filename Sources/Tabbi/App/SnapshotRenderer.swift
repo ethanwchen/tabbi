@@ -266,6 +266,11 @@ enum SnapshotRenderer {
                 addClosetShot("goals-badges", ClosetShot(section: .goals, showsEnd: true))
                 addClosetShot("goals-trying", ClosetShot(section: .goals, tryingOn: .outfit(.astronautSuit)))
                 addClosetShot("goals-new", ClosetShot(section: .wardrobe, newGoal: true))
+                // The Study Level on the name line and the Goals Level card,
+                // from the first level to Galaxy II.
+                for level in [1, 12, 37, 64] {
+                    addClosetShot("level-\(level)", ClosetShot(section: .goals, studyLevel: level))
+                }
                 // The Wardrobe from its end: the Heirloom shelf, with an
                 // heirloom tried on.
                 addClosetShot("wardrobe-heirloom",
@@ -383,6 +388,11 @@ enum SnapshotRenderer {
             // reviewing the art (the quiet coin on the Sweet cards most of all).
             if closet != nil {
                 renderStill(ClosetBadgeTierSheet(), as: "closet-badge-tiers", scale: max(2, notchStyle.scale), to: folder)
+                // The Study Level's rank emblems at 1x and 4x, and the
+                // nameplate colors on a name.
+                renderStill(ClosetRankSheet(), as: "closet-rank-emblems", scale: 1, to: folder)
+                renderStill(ClosetRankSheet(), as: "closet-rank-emblems-4x", scale: 4, to: folder)
+                renderStill(ClosetNameplateSheet(), as: "closet-nameplates", scale: max(2, notchStyle.scale), to: folder)
             }
             // Every crew crest frame, emblem, color and laurel, at
             // one and four device pixels per sprite pixel.
@@ -633,6 +643,8 @@ enum SnapshotRenderer {
         var showsEnd = false
         /// Shows the newest badge tier as not seen yet (the Goals pill's dot).
         var newGoal = false
+        /// Shows the pet at this Study Level, part of the way to the next.
+        var studyLevel: Int?
     }
 
     /// The weekly recap card in a heavy week (the demo's best yet) and a
@@ -771,7 +783,8 @@ enum SnapshotRenderer {
                 : name == "open-spotify-soundcloud-javascript-off" ? .soundCloudJavaScriptOff : .players)
             if let firstSection { closet?.store.section = shot.closet?.section ?? firstSection }
             closet?.store.showForSnapshot(foundingMember: shot.closet?.foundingMember ?? true, name: shot.closet?.name,
-                                          newGoal: shot.closet?.newGoal ?? false)
+                                          newGoal: shot.closet?.newGoal ?? false,
+                                          studyLevel: shot.closet?.studyLevel)
             closet?.store.tryOn(shot.closet?.tryingOn)
             model.themeID = Theme.current.id
             if name == "closed-pet-cheer", case .pet(var pet) = model.preview {

@@ -70,13 +70,19 @@ struct PartyFriendsCard: View {
         } else if !state.hasPeople {
             emptyFriends
         } else {
-            scrollingRows
-                // Rows fade out at the bottom edge instead of being cut off.
-                .edgeFade(.bottom, length: Self.fadeHeight)
+            // The list shows only whole rows: its height rounds down to a
+            // multiple of the row height, and scrolling stops on a row, so
+            // no row is ever cut in half at the bottom, in any panel size.
+            GeometryReader { proxy in
+                let shown = max(1, Int((proxy.size.height + 0.5) / Self.rowHeight))
+                scrollingRows
+                    .frame(height: CGFloat(shown) * Self.rowHeight, alignment: .top)
+            }
         }
     }
 
-    private static let fadeHeight = Theme.Spacing.m
+    /// Every friend and request row is this tall.
+    static let rowHeight: CGFloat = 34
 
     @ViewBuilder
     private var scrollingRows: some View {
@@ -86,11 +92,11 @@ struct PartyFriendsCard: View {
                 .overlay(alignment: .top) { rows }
                 .clipped()
         } else {
-            ScrollView(.vertical) { rows }
+            ScrollView(.vertical) { rows.scrollTargetLayout() }
                 .scrollIndicators(.automatic)
                 .scrollBounceBehavior(.basedOnSize)
-                // A margin as tall as the fade, so the last row can scroll clear of it.
-                .contentMargins(.bottom, Self.fadeHeight, for: .scrollContent)
+                // Scrolling comes to rest on a row's edge, never mid-row.
+                .scrollTargetBehavior(.viewAligned)
         }
     }
 
@@ -143,8 +149,17 @@ private struct PartyFriendRow: View {
                 HStack(spacing: Theme.Spacing.xs) {
                     Text(friend.profile.name)
                         .font(Theme.Typography.bodyEmphasis)
-                        .foregroundStyle(status == .offline ? Theme.Palette.secondaryText : Theme.Palette.primaryText)
+                        .nameplate(friend.profile.standing?.nameplate ?? .plain)
+                        .opacity(status == .offline ? 0.75 : 1)
                     if friend.profile.isFoundingMember { FoundingBadge(isMe: false) }
+                    // Their Study Level, shortened before the name would be cut.
+                    if let standing = friend.profile.standing {
+                        ViewThatFits(in: .horizontal) {
+                            StudyLevelLabel(standing, length: .level, pixelSize: 0.5)
+                            StudyLevelLabel(standing, length: .number, pixelSize: 0.5)
+                            StudyRankEmblem(standing.rank, pixelSize: 0.5).help(StudyLevelLabel.help(standing))
+                        }
+                    }
                 }
                 HStack(spacing: Theme.Spacing.xs) {
                     Circle()
@@ -166,7 +181,7 @@ private struct PartyFriendRow: View {
             trailing
         }
         .padding(.trailing, Theme.Spacing.xxs)
-        .frame(height: 34)
+        .frame(height: PartyFriendsCard.rowHeight)
         .background(
             RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
                 .fill(hovering ? Theme.Palette.surface : .clear)
@@ -203,6 +218,7 @@ private struct PartyFriendRow: View {
 
     private var help: String {
         var parts = [String(localized: "\(friend.profile.name) with \(friend.profile.petName)", bundle: .tabbi)]
+        if let standing = friend.profile.standing { parts.append(StudyLevelLabel.help(standing)) }
         if friend.profile.isFoundingMember { parts.append(String(localized: "Founding Member", bundle: .tabbi)) }
         if let presence = friend.presence, friend.online, presence.todayMinutes > 0 {
             let studied = PartyRoster.duration(minutes: presence.todayMinutes)
@@ -240,7 +256,7 @@ private struct PartyRequestRow: View {
             row(longStatus: false, acceptTitle: false)
         }
         .padding(.trailing, Theme.Spacing.xxs)
-        .frame(height: 34)
+        .frame(height: PartyFriendsCard.rowHeight)
         .background(
             RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
                 .fill(hovering ? Theme.Palette.surface : (isIncoming ? PartyStyle.accent.opacity(0.08) : .clear))

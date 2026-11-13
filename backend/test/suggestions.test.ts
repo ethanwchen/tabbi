@@ -227,6 +227,8 @@ describe("schema step 9", () => {
       sql.exec("DROP TABLE entitlements");
       sql.exec("DROP TABLE friend_requests");
       dropCrewsTables(sql);
+      sql.exec("ALTER TABLE users DROP COLUMN study_level");
+      sql.exec("ALTER TABLE users DROP COLUMN nameplate");
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
       sql.exec("ALTER TABLE apple_accounts DROP COLUMN client_id");
       sql.exec("UPDATE schema_version SET version = 7");
@@ -244,12 +246,14 @@ describe("schema step 9", () => {
       sql.exec("DROP TABLE entitlements");
       sql.exec("DROP TABLE friend_requests");
       dropCrewsTables(sql);
+      sql.exec("ALTER TABLE users DROP COLUMN study_level");
+      sql.exec("ALTER TABLE users DROP COLUMN nameplate");
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
       sql.exec("ALTER TABLE apple_accounts DROP COLUMN client_id");
       sql.exec("INSERT INTO suggestions (category, message, email, created_at) VALUES ('tab', 'Kept from before', NULL, 1)");
       sql.exec("UPDATE schema_version SET version = 8");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 16 }]);
       expect(sql.exec("SELECT message, app_version, macos, edition FROM suggestions").toArray())
         .toEqual([{ message: "Kept from before", app_version: null, macos: null, edition: null }]);
       sql.exec("DELETE FROM suggestions");
@@ -269,11 +273,13 @@ describe("schema step 8", () => {
       sql.exec("DROP TABLE entitlements");
       sql.exec("DROP TABLE friend_requests");
       dropCrewsTables(sql);
+      sql.exec("ALTER TABLE users DROP COLUMN study_level");
+      sql.exec("ALTER TABLE users DROP COLUMN nameplate");
       sql.exec("ALTER TABLE users DROP COLUMN protocol");
       sql.exec("ALTER TABLE apple_accounts DROP COLUMN client_id");
       sql.exec("UPDATE schema_version SET version = 7");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 15 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 16 }]);
       expect(sql.exec("SELECT name FROM users WHERE code = ?", user.code).toArray()).toEqual([{ name: "Kept" }]);
       expect(sql.exec("SELECT * FROM suggestions").toArray()).toEqual([]);
     });

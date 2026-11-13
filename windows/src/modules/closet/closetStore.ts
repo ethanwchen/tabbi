@@ -45,11 +45,12 @@ import type { StudyStreak } from "../../core/streaks/studyStreak";
 import { resolveTheme } from "../../core/themes/themeCatalog";
 import type { Instant } from "../../core/time";
 import { PetPlayer } from "../../ui/kit/petPlayer";
-import { PetProgression, changeIsEmpty } from "../../core/progression/petProgression";
+import { PetProgression, changeIsEmpty, changeUnlocksSomething } from "../../core/progression/petProgression";
 import { progressionDemo } from "../../core/progression/progressionDemo";
 import { ProgressTally } from "../../core/progression/progressTally";
 import { ProgressionSave } from "../../core/progression/progressionSave";
 import { badgeFromID, badgeID, compareBadges } from "../../core/progression/progressTrack";
+import { minutesToReach, unlockedNameplates, type Nameplate } from "../../core/progression/studyLevel";
 import { accentCss } from "../../ui/kit/tokens";
 import { closetCalendar } from "./closetCalendar";
 import { CLOSET_ACCENT } from "./closetDescriptor";
@@ -289,11 +290,16 @@ export class ClosetStore extends Store<ClosetState> {
     this.setState({ milestones, seasons });
     this.bondMayHaveGrown();
     await this.loaded;
-    /* Goals the log had already reached count quietly: saved, with a dot on the Goals pill, and nothing celebrates. */
+    /*
+     * Goals and Study Levels the log had already reached count quietly:
+     * saved, with a dot on the Goals pill, and nothing celebrates, so a
+     * long-time user lands at their real level calmly.
+     */
+    const saved = this.state.progression.save.encoded();
     const progression = new PetProgression(this.state.progression.save, new ProgressTally(history, calendar));
-    const change = progression.refresh(this.context.now(), this.state.closet.save.ledger.streakFreezes, calendar);
+    progression.refresh(this.context.now(), this.state.closet.save.ledger.streakFreezes, calendar);
     this.setState({ progression });
-    if (!changeIsEmpty(change)) this.persistProgression();
+    if (progression.save.encoded() !== saved) this.persistProgression();
     if (this.unlockLimited().length > 0) this.persist();
   }
 
@@ -334,9 +340,12 @@ export class ClosetStore extends Store<ClosetState> {
     this.state.milestones.add(record, calendar);
     this.state.seasons.add(record);
     const progression = this.state.progression;
+    const saved = progression.save.encoded();
     progression.add(record, calendar);
     const goals = progression.refresh(this.context.now(), this.state.closet.save.ledger.streakFreezes, calendar);
-    if (!changeIsEmpty(goals)) this.persistProgression();
+    /* Every new best is kept, not only new tiers, so deleting day files never takes back a level. */
+    if (progression.save.encoded() !== saved) this.persistProgression();
+    /* Study points come from the study alone; a level gained adds nothing to the ledger. */
     const award = creditRecord(this.state.closet, record);
     const unlocked = this.unlockLimited();
     this.bump();
@@ -344,12 +353,24 @@ export class ClosetStore extends Store<ClosetState> {
     if (award === undefined && unlocked.length === 0 && changeIsEmpty(goals)) return;
     if (award !== undefined || unlocked.length > 0) this.persist();
     if (award !== undefined) this.celebrate(award);
-    if (unlocked.length > 0 || !changeIsEmpty(goals)) this.celebrateLimited();
+    if (unlocked.length > 0 || goals.badges.length > 0 || goals.months.length > 0 || changeUnlocksSomething(goals)) {
+      this.celebrateLimited();
+    } else if (goals.levels.length > 0) {
+      /* A plain level up: the pet celebrates, the panel stays calm. */
+      this.preview.send({ kind: "celebrate" });
+    }
   }
 
   /** Badge tiers reached since the Goals section was last open, for the dot on its pill. */
   get hasUnseenGoals(): boolean {
-    return this.state.progression.unseen.length > 0;
+    return this.state.progression.unseen.length > 0 || this.state.progression.hasUnseenLevel;
+  }
+
+  /** Picks the nameplate color the pet's name wears here and in Party. */
+  pickNameplate(nameplate: Nameplate): void {
+    if (!this.state.progression.pick(nameplate)) return;
+    this.bump();
+    this.persistProgression();
   }
 
   /** The Goals section is showing: every tier reached so far is seen. */
@@ -558,11 +579,12 @@ export class ClosetStore extends Store<ClosetState> {
       readonly scrolled?: number;
       /** Shows the newest badge tier as not seen yet (the Goals pill's dot). */
       readonly newGoal?: boolean;
+      readonly studyLevel?: number;
     } = {},
   ): void {
     if (!this.isSnapshot) return;
     this.setState({ snapshotScrolled: options.scrolled });
-    this.showGoalForSnapshot(options.newGoal ?? false);
+    this.showGoalForSnapshot(options.newGoal ?? false, options.studyLevel);
     const base = this.snapshotBase ?? this.state.closet;
     this.snapshotBase = base;
     const save = base.save.copy();
@@ -582,7 +604,7 @@ export class ClosetStore extends Store<ClosetState> {
   }
 
   /** Snapshot runs only: shows the highest tier reached as new and unseen, so the Goals pill's dot can be reviewed. */
-  private showGoalForSnapshot(isNew: boolean): void {
+  private showGoalForSnapshot(isNew: boolean, studyLevel?: number): void {
     const base = this.snapshotProgression ?? this.state.progression;
     this.snapshotProgression = base;
     const save = base.save.copy();
@@ -590,8 +612,19 @@ export class ClosetStore extends Store<ClosetState> {
       const latest = [...save.reached.keys()].flatMap((id) => badgeFromID(id) ?? []).sort(compareBadges).pop();
       if (latest) save.seen.delete(badgeID(latest));
     }
+    if (studyLevel !== undefined) {
+      /* Part of the way to the next level, wearing the newest color. */
+      const start = minutesToReach(studyLevel);
+      const end = minutesToReach(studyLevel + 1);
+      save.best.set("focusHours", start + Math.trunc(((end - start) * 45) / 100));
+      save.level = studyLevel;
+      save.levelSeen = studyLevel;
+      const newest = unlockedNameplates(studyLevel).pop();
+      save.nameplate = newest === "plain" ? undefined : newest;
+    }
     if (save.equals(this.state.progression.save)) return;
-    const shown = new PetProgression(save, base.tally);
+    /* A level shot counts its focus from the save alone; the demo log would lift every shot to its own level. */
+    const shown = new PetProgression(save, studyLevel === undefined ? base.tally : new ProgressTally());
     shown.refresh(this.context.now(), this.state.closet.save.ledger.streakFreezes, this.calendar);
     this.setState({ progression: shown });
   }

@@ -380,6 +380,6 @@ describe("Crews beside older apps", () => {
     expect(cleo.minutes).toBe(0);
     // Crews routes need no protocol header, so nothing breaks if an older app ever reaches one.
     expect((await oldCall("GET", "/v1/crews/board", undefined, v1.token)).status).toBe(200);
-    expect((await call("GET", "/")).body).toMatchObject({ protocol: 3, minProtocol: 1 });
+    expect((await call("GET", "/")).body).toMatchObject({ protocol: 4, minProtocol: 1 });
   });
 });

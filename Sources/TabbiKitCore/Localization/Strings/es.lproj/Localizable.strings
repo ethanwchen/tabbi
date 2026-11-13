@@ -157,6 +157,10 @@
 	<string>%@ te echa de menos</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@ se movió a la posición %2$lld de %3$lld</string>
+	<key>%@ name color</key>
+	<string>Color de nombre %@</string>
+	<key>%@ name color, unlocks at Level %lld</key>
+	<string>Color de nombre %1$@, se desbloquea en el nivel %2$lld</string>
 	<key>%@ napped on a sunny windowsill</key>
 	<string>%@ durmió en una ventana soleada</string>
 	<key>%@ naps until the timer runs</key>
@@ -317,6 +321,8 @@
 	<string>%lld de %lld hechas</string>
 	<key>%lld of %lld earned</key>
 	<string>%1$lld de %2$lld conseguidos</string>
+	<key>%lld of %lld h to Level %lld</key>
+	<string>%1$lld de %2$lld h para el nivel %3$lld</string>
 	<key>%lld of %lld outfits</key>
 	<string>%1$lld de %2$lld atuendos</string>
 	<key>%lld pts to go</key>
@@ -1441,6 +1447,8 @@
 	<string>Introduce la clave de la configuración de AnkiConnect en Ajustes.</string>
 	<key>Event</key>
 	<string>Evento</string>
+	<key>Every 5 levels bring a name color and every 10 a new rank. Levels never give points.</key>
+	<string>Cada 5 niveles ganas un color de nombre y cada 10 un rango nuevo. Los niveles nunca dan puntos.</string>
 	<key>Every Sunday's top 3 earn a medal</key>
 	<string>Cada domingo, el top 3 gana una medalla</string>
 	<key>Every crew can appear on the weekly top 3 with its members' pets.</key>
@@ -2033,6 +2041,8 @@
 	<string>Deja que tu mascota diga de vez en cuando una frase de ánimo justo al terminar una sesión de enfoque, como mucho una vez al día</string>
 	<key>Let your pet walk out of the notch when you drift during a focus phase</key>
 	<string>Tu mascota sale del notch cuando te distraes en una fase de enfoque</string>
+	<key>Level %lld</key>
+	<string>Nivel %lld</string>
 	<key>Librarian Cardigan</key>
 	<string>Cárdigan de bibliotecaria</string>
 	<key>Like</key>
@@ -2095,6 +2105,8 @@
 	<string>Año Nuevo Lunar</string>
 	<key>Lv %lld</key>
 	<string>Nv. %lld</string>
+	<key>Lv %lld: %@</key>
+	<string>Nv. %1$lld: %2$@</string>
 	<key>Main display</key>
 	<string>Pantalla principal</string>
 	<key>Make a crew and invite friends</key>
@@ -2243,6 +2255,8 @@
 	<string>Ahora tu Mac preguntará si Tabbi puede enviar alertas. Puedes cambiar tu respuesta cuando quieras en Ajustes del Sistema.</string>
 	<key>Next, your Mac asks if Tabbi can use your calendar. You can change your answer any time in System Settings.</key>
 	<string>Ahora tu Mac preguntará si Tabbi puede usar tu calendario. Puedes cambiar tu respuesta cuando quieras en Ajustes del Sistema.</string>
+	<key>Next: %@ at Lv %lld</key>
+	<string>Siguiente: %1$@ en Nv. %2$lld</string>
 	<key>Next: %@, %@</key>
 	<string>Siguiente: %1$@, %2$@</string>
 	<key>Nightcap</key>
@@ -4317,6 +4331,8 @@
 	<string>Tus datos de Grupo</string>
 	<key>Your Party data was deleted.</key>
 	<string>Se eliminaron tus datos de Grupo.</string>
+	<key>Your Study Level grows with every hour you focus and never goes down.</key>
+	<string>Tu nivel de estudio sube con cada hora de concentración y nunca baja.</string>
 	<key>Your best week</key>
 	<string>Tu mejor semana</string>
 	<key>Your best week yet!</key>
@@ -4461,6 +4477,32 @@
 	<string>reuniones y llamadas</string>
 	<key>min</key>
 	<string>min</string>
+	<key>nameplate.aurora</key>
+	<string>Aurora</string>
+	<key>nameplate.coral</key>
+	<string>Coral</string>
+	<key>nameplate.ember</key>
+	<string>Brasa</string>
+	<key>nameplate.gold</key>
+	<string>Oro</string>
+	<key>nameplate.honey</key>
+	<string>Miel</string>
+	<key>nameplate.lilac</key>
+	<string>Lila</string>
+	<key>nameplate.mint</key>
+	<string>Menta</string>
+	<key>nameplate.nebula</key>
+	<string>Nebulosa</string>
+	<key>nameplate.peach</key>
+	<string>Melocotón</string>
+	<key>nameplate.plain</key>
+	<string>Sencillo</string>
+	<key>nameplate.rose</key>
+	<string>Rosa</string>
+	<key>nameplate.sky</key>
+	<string>Cielo</string>
+	<key>nameplate.starlight</key>
+	<string>Luz estelar</string>
 	<key>no free time</key>
 	<string>sin tiempo libre</string>
 	<key>nothing yet; pick a sound</key>
@@ -4477,6 +4519,20 @@
 	<string>puntos</string>
 	<key>pts</key>
 	<string>pts</string>
+	<key>rank.comet</key>
+	<string>Cometa</string>
+	<key>rank.ember</key>
+	<string>Brasa</string>
+	<key>rank.galaxy</key>
+	<string>Galaxia</string>
+	<key>rank.nebula</key>
+	<string>Nebulosa</string>
+	<key>rank.nova</key>
+	<string>Nova</string>
+	<key>rank.numbered %@ %@</key>
+	<string>%1$@ %2$@</string>
+	<key>rank.spark</key>
+	<string>Chispa</string>
 	<key>ready to unlock</key>
 	<string>listo para desbloquear</string>
 	<key>resets %@</key>

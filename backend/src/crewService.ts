@@ -366,8 +366,9 @@ export class CrewService {
     const minutes = this.weekMinutes(c.id, week);
     const rows = this.sql.exec<MemberRow & {
       name: string; pet_name: string; species: string; breed: string; colors: string; costume: string; accessories: string;
+      study_level: number | null;
     }>(
-      `SELECT m.*, u.name, u.pet_name, u.species, u.breed, u.colors, u.costume, u.accessories
+      `SELECT m.*, u.name, u.pet_name, u.species, u.breed, u.colors, u.costume, u.accessories, u.study_level
        FROM crew_members m JOIN users u ON u.code = m.code
        WHERE m.crew = ?1
          AND m.code NOT IN (SELECT blocked FROM blocks WHERE blocker = ?2)
@@ -397,6 +398,8 @@ export class CrewService {
             colors: JSON.parse(r.colors) as string[], costume: r.costume, accessories: JSON.parse(r.accessories) as string[],
           }
           : null,
+        // The Study Level a protocol 3 app last sent with the profile; left out until one has.
+        ...(r.study_level !== null && r.study_level !== undefined ? { studyLevel: r.study_level } : {}),
         badges: badges.get(r.code) ?? [],
         weekMinutes: credited.get(r.code) ?? 0,
         owner: r.code === c.owner,

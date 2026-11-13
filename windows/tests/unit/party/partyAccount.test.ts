@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { PartyAccount } from "../../../src/core/party/partyAccount";
 import { InMemoryPartyCredentialStore } from "../../../src/core/party/partyCredentialStore";
 import { PartyError } from "../../../src/core/party/partyError";
+import { sharingStanding } from "../../../src/core/party/partyModels";
 import { partyPetUpdate } from "../../../src/core/party/partyPetAppearance";
 import { PARTY_PRODUCTION_URL } from "../../../src/core/party/partyServer";
 import type { PartyHttpRequest, PartyHttpResponse, PartyTransport } from "../../../src/core/party/partyTransport";
@@ -20,6 +21,8 @@ class FakeFriendsServer {
   catalogVersion1 = false;
   /** Answers like a server still on catalog version 3: the mastery outfits' ids (and release 7's) are an `invalid_field`. */
   catalogVersion3 = false;
+  /** Answers like a server from before protocol 3: the Study Level fields are an `unknown_field`. */
+  protocol2 = false;
   /** Answers like a server still on catalog version 4: release 7's ids are an `invalid_field`. */
   catalogVersion4 = false;
   readonly takenBodies: Record<string, unknown>[] = [];
@@ -60,6 +63,9 @@ class FakeFriendsServer {
     if (typeof fields?.name === "string" && this.heldNames.has(fields.name)) return reply('{"ok":false,"error":"name_not_allowed","message":"no"}', 400);
     if (typeof fields?.petName === "string" && this.heldPetNames.has(fields.petName)) {
       return reply('{"ok":false,"error":"pet_name_not_allowed","message":"no"}', 400);
+    }
+    if (this.protocol2 && fields !== undefined && ("studyLevel" in fields || "nameplate" in fields)) {
+      return reply('{"ok":false,"error":"unknown_field","message":"unknown field: studyLevel"}', 400);
     }
     if (this.catalogVersion1 && fields !== undefined) {
       const known = new Set(["glasses", "sunglasses", "headphones", "bow", "scarf", "crown", "flower", "party-hat", "beanie", "halo"]);
@@ -214,6 +220,48 @@ describe("PartyAccount", () => {
     expect(taken?.accessories).toEqual(["bandana", "glasses"]);
     expect(taken?.costume).toBe("none");
     expect((taken?.colors as unknown[] | undefined)?.length).toBe(10);
+  });
+
+  it("sends the Study Level to a current server", async () => {
+    const token = FakeFriendsServer.token(9);
+    const fake = new FakeFriendsServer([token]);
+    const store = new InMemoryPartyCredentialStore({ [server]: { token, code: FakeFriendsServer.code(9) } });
+    const update = sharingStanding(partyPetUpdate(new PetProfile("Mochi", "orangeTabby")), { level: 1400, nameplate: "gold" });
+    await account(fake, store).connect(update);
+    expect(fake.requests).toEqual(["PATCH /v1/me"]);
+    const taken = fake.takenBodies[fake.takenBodies.length - 1];
+    expect(taken?.studyLevel, "capped at what the server keeps").toBe(999);
+    expect(taken?.nameplate).toBe("gold");
+  });
+
+  it("drops the Study Level for a server from before protocol 3", async () => {
+    const token = FakeFriendsServer.token(10);
+    const fake = new FakeFriendsServer([token]);
+    fake.protocol2 = true;
+    const store = new InMemoryPartyCredentialStore({ [server]: { token, code: FakeFriendsServer.code(10) } });
+    const update = sharingStanding(partyPetUpdate(new PetProfile("Mochi", "orangeTabby")), { level: 12, nameplate: "ember" });
+    const profile = await account(fake, store).connect(update);
+    expect(profile.code).toBe(FakeFriendsServer.code(10));
+    expect(fake.requests, "refused once, then sent without the level").toEqual(["PATCH /v1/me", "PATCH /v1/me"]);
+    const taken = fake.takenBodies[fake.takenBodies.length - 1];
+    expect(taken).not.toHaveProperty("studyLevel");
+    expect(taken).not.toHaveProperty("nameplate");
+    expect(taken?.petName).toBe("Mochi");
+  });
+
+  it("drops the Study Level first, then the mastery outfits, for an old server on catalog version 3", async () => {
+    const token = FakeFriendsServer.token(11);
+    const fake = new FakeFriendsServer([token]);
+    fake.protocol2 = true;
+    fake.catalogVersion3 = true;
+    const store = new InMemoryPartyCredentialStore({ [server]: { token, code: FakeFriendsServer.code(11) } });
+    const pet = new PetProfile("Nova", "corgi", { outfit: "astronautSuit", accessories: ["nightcap", "roundGlasses"] });
+    await account(fake, store).connect(sharingStanding(partyPetUpdate(pet), { level: 37, nameplate: "lilac" }));
+    expect(fake.requests).toEqual(["PATCH /v1/me", "PATCH /v1/me", "PATCH /v1/me"]);
+    const taken = fake.takenBodies[fake.takenBodies.length - 1];
+    expect(taken).not.toHaveProperty("studyLevel");
+    expect(taken?.accessories).toEqual(["glasses"]);
+    expect(taken?.costume).toBe("none");
   });
 
   it("sends a catalog version 4 server everything but release 7's items", async () => {

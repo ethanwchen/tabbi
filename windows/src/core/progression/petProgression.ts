@@ -6,6 +6,14 @@ import { MonthlyQuests, monthAt, type MonthKey, type MonthlyQuestProgress } from
 import { ProgressTally, longestGentleStreak } from "./progressTally";
 import { ProgressionSave } from "./progressionSave";
 import {
+  levelFromMinutes,
+  levelStartsRank,
+  levelUnlocksNameplate,
+  nameplateUnlockLevel,
+  type Nameplate,
+  type StudyStanding,
+} from "./studyLevel";
+import {
   ALL_BADGES,
   PROGRESS_TIERS,
   PROGRESS_TRACKS,
@@ -29,14 +37,20 @@ import {
  * files never takes progress back.
  */
 
-/** What one `refresh` added: badge tiers reached and months finished for the first time. */
+/** What one `refresh` added: badge tiers reached, months finished and Study Levels gained (lowest first) for the first time. */
 export interface ProgressionChange {
   readonly badges: ProgressBadge[];
   readonly months: MonthKey[];
+  readonly levels: number[];
 }
 
 export function changeIsEmpty(change: ProgressionChange): boolean {
-  return change.badges.length === 0 && change.months.length === 0;
+  return change.badges.length === 0 && change.months.length === 0 && change.levels.length === 0;
+}
+
+/** Whether a level gained unlocked a nameplate color or a rank, worth a sparkle over the panel. */
+export function changeUnlocksSomething(change: ProgressionChange): boolean {
+  return change.levels.some((level) => levelUnlocksNameplate(level) || levelStartsRank(level));
 }
 
 export class PetProgression {
@@ -57,7 +71,7 @@ export class PetProgression {
 
   /** Recounts every track at `now` and records new bests, tiers and finished months in the save. */
   refresh(now: Instant, freezePurchases: readonly Instant[], calendar: DayCalendar): ProgressionChange {
-    const change: ProgressionChange = { badges: [], months: [] };
+    const change: ProgressionChange = { badges: [], months: [], levels: [] };
     for (const month of MonthlyQuests.completedMonths(this.tally, now, calendar)) {
       if (!this.save.completedMonths.has(month)) {
         this.save.completedMonths.add(month);
@@ -91,7 +105,45 @@ export class PetProgression {
         }
       }
     }
+    const level = levelFromMinutes(this.value("focusHours"));
+    if (level > this.save.level) {
+      for (let gained = this.save.level + 1; gained <= level; gained++) change.levels.push(gained);
+      this.save.level = level;
+    }
     return change;
+  }
+
+  // Study Level
+
+  /** From every focused minute so far, never below the highest the save remembers. */
+  get studyLevel(): number {
+    return Math.max(levelFromMinutes(this.value("focusHours")), this.save.level);
+  }
+
+  get focusMinutes(): number {
+    return this.value("focusHours");
+  }
+
+  /** The nameplate shown: the one picked, if the level has it. */
+  get nameplate(): Nameplate {
+    const picked = this.save.nameplate;
+    if (picked === undefined || nameplateUnlockLevel(picked) > this.studyLevel) return "plain";
+    return picked;
+  }
+
+  get standing(): StudyStanding {
+    return { level: this.studyLevel, nameplate: this.nameplate };
+  }
+
+  /** Picks a nameplate; false (and nothing changes) when still locked or already picked. */
+  pick(nameplate: Nameplate): boolean {
+    if (nameplateUnlockLevel(nameplate) > this.studyLevel || nameplate === this.nameplate) return false;
+    this.save.nameplate = nameplate === "plain" ? undefined : nameplate;
+    return true;
+  }
+
+  get hasUnseenLevel(): boolean {
+    return this.studyLevel > this.save.levelSeen;
   }
 
   value(track: ProgressTrack): number {
@@ -129,11 +181,14 @@ export class PetProgression {
       .sort(compareBadges);
   }
 
-  /** Marks every tier reached so far as seen; returns whether anything changed. */
+  /** Marks every tier and the level reached so far as seen; returns whether anything changed. */
   markSeen(): boolean {
     const unseen = this.unseen;
-    if (unseen.length === 0) return false;
+    const level = this.studyLevel;
+    if (unseen.length === 0 && level <= this.save.levelSeen) return false;
     for (const badge of unseen) this.save.seen.add(badgeID(badge));
+    this.save.level = Math.max(this.save.level, level);
+    this.save.levelSeen = Math.max(this.save.levelSeen, level);
     return true;
   }
 
